@@ -40,19 +40,19 @@ These models can be extended with capabilities from the Math Language by adding 
 Consider the following EmbeddedMontiArc model:  
 
 component Delay{  
-  ports in (0:1) in1,  
-        out (0:1) out1;  
+&nbsp;&nbsp;ports in (0:1) in1,  
+&nbsp;&nbsp;out (0:1) out1;  
            
 }  
 
 To use the Math Language an "implementation Math" section has to be added:  
 component Delay{  
-  ports in (0:1) in1,  
-        out (0:1) out1;  
+&nbsp;&nbsp;ports in (0:1) in1,  
+&nbsp;&nbsp;out (0:1) out1;  
   
-  implementation Math{  
-      //Math code   
-  }  
+&nbsp;&nbsp;implementation Math{  
+&nbsp;&nbsp;&nbsp;&nbsp;//Math code   
+&nbsp;&nbsp;}  
 }  
 
 
@@ -62,14 +62,14 @@ To achieve, this behaviour, the component can be enriched with that functionalit
 This results in the following component:  
 
 component Delay{  
-  ports in (0:1) in1,  
-        out (0:1) out1;  
+&nbsp;&nbsp;ports in (0:1) in1,  
+&nbsp;&nbsp;out (0:1) out1;  
           
-  implementation Math{  
-    static (0:1) delayValue=0; // default value on start  
-    out1=delayValue; //set output to value of last tick  
-    delayValue=in1; // store current tick value for next tick  
-  }  
+&nbsp;&nbsp;implementation Math{  
+&nbsp;&nbsp;&nbsp;&nbsp;static (0:1) delayValue=0; // default value on start  
+&nbsp;&nbsp;&nbsp;&nbsp;out1=delayValue; //set output to value of last tick  
+&nbsp;&nbsp;&nbsp;&nbsp;delayValue=in1; // store current tick value for next tick  
+&nbsp;&nbsp;}  
 }  
 
 When looking at this example, inside of the implementation Math section, a static variable "delayValue" which has a value between  
