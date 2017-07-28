@@ -53,7 +53,7 @@ Q(0:10km) sumDistance = bigDistance + smallDistance;
 units like km to m. Notice that in both cases `smallDistance` stores `4000m`, as it is expected from the just explained  
 internal unit conversions.   
 
-_Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max` _
+> Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max` 
 
 internal unit conversions.   
 
