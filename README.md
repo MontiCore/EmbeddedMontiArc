@@ -53,6 +53,10 @@ Q(0:10km) sumDistance = bigDistance + smallDistance;
 units like km to m. Notice that in both cases `smallDistance` stores `4000m`, as it is expected from the just explained  
 internal unit conversions.   
 
+_Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max` _
+
+internal unit conversions.   
+
 * How to select values from a matrix?
   
 * Listing of all supported opertions (+,*, ^, \, .*, .\, ...)
@@ -75,11 +79,11 @@ component Delay {  
 
 To use the Math Language an `implementation Math` section has to be added:
 ```
-component Delay{  
+component Delay {  
   ports in  (0:1) in1,  
         out (0:1) out1;  
   
-  implementation Math{  
+  implementation Math {  
     //Math code   
   }  
 }  
@@ -90,11 +94,11 @@ The intended functionality of the Delay component is to delay input for 1 tick, 
 To achieve, this behaviour, the component can be enriched with that functionality by using the Math Language.  
 This results in the following component:  
 ```
-component Delay{  
+component Delay {  
   ports in  (0:1) in1,  
         out (0:1) out1;  
           
-  implementation Math{  
+  implementation Math {  
     static Q(0:1) delayValue=0; // default value on start  
     out1=delayValue; //set output to value of last tick  
     delayValue=in1; // store current tick value for next tick  
