@@ -34,7 +34,8 @@ Math (Sascha)
 
 EmbeddedMontiArcMath (Sascha)
 ----
-* How to embedded Math language into EmbeddedMontiArc?  
+* How to embedded Math language into EmbeddedMontiArc?
+  
 In the EmbeddedMontiArc section several examples of how valid models look like were ilustrated.  
 These models can be extended with capabilities from the Math Language by adding an "implementation Math" section.  
 Consider the following EmbeddedMontiArc model:  
