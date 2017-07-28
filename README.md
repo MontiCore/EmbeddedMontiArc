@@ -36,17 +36,21 @@ Math (Sascha)
 Currently all units will be automatically converted to the SI base units  
 See https://en.wikipedia.org/wiki/SI_base_unit for reference  
 An example of numbers with different units that can be added together is presented in the following:  
-&nbsp;&nbsp;Q(O:5km) bigDistance = 4;  
-&nbsp;&nbsp;Q(0:5m) smallDistance = 4;  
-&nbsp;&nbsp;Q(0:10000m) sumDistance = bigDistance + smallDistance;  
-  
-This results in "sumDistance" containing 4004m. When changing the example to:  
-&nbsp;&nbsp;Q(O:5km) bigDistance = 4;  
-&nbsp;&nbsp;Q(0:5m) smallDistance = 4;  
-&nbsp;&nbsp;Q(0:10km) sumDistance = bigDistance + smallDistance;  
-  
-"sumDistance" still contains 4004m as everything is converted to base units internally, which avoids manually converting  
-units like km to m. Notice that in both cases "smallDistance" stores 4000m, as it is expected from the just explained  
+```
+Q(O:5km) bigDistance = 4;
+Q(0:5m) smallDistance = 4;
+Q(0:10000m) sumDistance = bigDistance + smallDistance;
+```
+  
+This results in `sumDistance` containing `4004m`. When changing the example to:
+```
+Q(O:5km) bigDistance = 4;  
+Q(0:5m) smallDistance = 4;  
+Q(0:10km) sumDistance = bigDistance + smallDistance;
+```
+  
+`sumDistance` still contains `4004m` as everything is converted to base units internally, which avoids manually converting  
+units like km to m. Notice that in both cases `smallDistance` stores `4000m`, as it is expected from the just explained  
 internal unit conversions.   
 
 * How to select values from a matrix?
@@ -61,44 +65,45 @@ EmbeddedMontiArcMath (Sascha)
   
 In the EmbeddedMontiArc section several examples of how valid models look like were ilustrated.  
 These models can be extended with capabilities from the Math Language by adding an "implementation Math" section.  
-Consider the following EmbeddedMontiArc model:  
+Consider the following EmbeddedMontiArc model:  
+```
+component Delay {  
+  ports in  (0:1) in1,  
+        out (0:1) out1;            
+}  
+```
 
-component Delay{  
-&nbsp;&nbsp;ports in (0:1) in1,  
-&nbsp;&nbsp;out (0:1) out1;  
-           
-}  
-
-To use the Math Language an "implementation Math" section has to be added:  
-component Delay{  
-&nbsp;&nbsp;ports in (0:1) in1,  
-&nbsp;&nbsp;out (0:1) out1;  
+To use the Math Language an `implementation Math` section has to be added:
+```
+component Delay{  
+  ports in  (0:1) in1,  
+        out (0:1) out1;  
   
-&nbsp;&nbsp;implementation Math{  
-&nbsp;&nbsp;&nbsp;&nbsp;//Math code   
-&nbsp;&nbsp;}  
-}  
+  implementation Math{  
+    //Math code   
+  }  
+}  
+```
 
-
-The delay components dataflow is modeled by the in1 and out1 ports, which take a value between 0 and 1.  
-The intended functionality of the Delay component is to delay input for 1 tick, as can be guessed from the name.  
+The delay components dataflow is modeled by the `in1` and `out1` ports, which take a value between `0` and `1`.  
+The intended functionality of the Delay component is to delay input for 1 tick, as can be guessed from the name. 
 To achieve, this behaviour, the component can be enriched with that functionality by using the Math Language.  
-This results in the following component:  
-
-component Delay{  
-&nbsp;&nbsp;ports in (0:1) in1,  
-&nbsp;&nbsp;out (0:1) out1;  
+This results in the following component:  
+```
+component Delay{  
+  ports in  (0:1) in1,  
+        out (0:1) out1;  
           
-&nbsp;&nbsp;implementation Math{  
-&nbsp;&nbsp;&nbsp;&nbsp;static Q(0:1) delayValue=0; // default value on start  
-&nbsp;&nbsp;&nbsp;&nbsp;out1=delayValue; //set output to value of last tick  
-&nbsp;&nbsp;&nbsp;&nbsp;delayValue=in1; // store current tick value for next tick  
-&nbsp;&nbsp;}  
-}  
-
-When looking at this example, inside of the implementation Math section, a static variable "delayValue" which has a value between  
-0 and 1 is declared and initiliazed to 0. Then the "out1" port of the EmbeddedMontiArc component is set to take the value  
-of "delayValue". Finally, "delayValue" is set to the current value of the "in1" port.   
+  implementation Math{  
+    static Q(0:1) delayValue=0; // default value on start  
+    out1=delayValue; //set output to value of last tick  
+    delayValue=in1; // store current tick value for next tick  
+  }  
+}  
+```
+When looking at this example, inside of the implementation Math section, a static variable `delayValue` which has a value between  
+`0` and `1` is declared and initiliazed to `0`. Then the `out1` port of the EmbeddedMontiArc component is set to take the value  
+of `delayValue`. Finally, `delayValue` is set to the current value of the `in1` port.   
 Therefore, the Math Language can be used to add behaviour to a component which results in the ability of the  
 EmbeddedMontiArcMath Language to defined components and their behaviour, and the ability to generate code out of these.  
 
