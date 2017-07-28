@@ -26,10 +26,32 @@ EmbeddedMontiArc (Yannick)
 Math (Sascha)
 ----
 * How to create a matrix?
+  
+  
 * What Types of matrices are possible?
+  
+  
 * How to deal with units? (compatiblity, conversion of units)
+Currently all units will be automatically converted to the SI base units  
+See https://en.wikipedia.org/wiki/SI_base_unit for reference  
+An example of numbers with different units that can be added together is presented in the following:  
+&nbsp;&nbsp;Q(O:5km) bigDistance = 4;  
+&nbsp;&nbsp;Q(0:5m) smallDistance = 4;  
+&nbsp;&nbsp;Q(0:10000m) sumDistance = bigDistance + smallDistance;  
+  
+This results in "sumDistance" containing 4004m. When changing the example to:  
+&nbsp;&nbsp;Q(O:5km) bigDistance = 4;  
+&nbsp;&nbsp;Q(0:5m) smallDistance = 4;  
+&nbsp;&nbsp;Q(0:10km) sumDistance = bigDistance + smallDistance;  
+  
+"sumDistance" still contains 4004m as everything is converted to base units internally, which avoids manually converting  
+units like km to m. Notice that in both cases "smallDistance" stores 4000m, as it is expected from the just explained  
+internal unit conversions.   
+
 * How to select values from a matrix?
+  
 * Listing of all supported opertions (+,*, ^, \, .*, .\, ...)
+  
 * Listing of all supported Octave functions (eig, diag, ...)
 
 EmbeddedMontiArcMath (Sascha)
@@ -67,7 +89,7 @@ component Delay{
 &nbsp;&nbsp;out (0:1) out1;  
           
 &nbsp;&nbsp;implementation Math{  
-&nbsp;&nbsp;&nbsp;&nbsp;static (0:1) delayValue=0; // default value on start  
+&nbsp;&nbsp;&nbsp;&nbsp;static Q(0:1) delayValue=0; // default value on start  
 &nbsp;&nbsp;&nbsp;&nbsp;out1=delayValue; //set output to value of last tick  
 &nbsp;&nbsp;&nbsp;&nbsp;delayValue=in1; // store current tick value for next tick  
 &nbsp;&nbsp;}  
