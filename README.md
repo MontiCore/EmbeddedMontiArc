@@ -35,6 +35,54 @@ Math (Sascha)
 EmbeddedMontiArcMath (Sascha)
 ----
 * How to embedded Math language into EmbeddedMontiArc?
+In the EmbeddedMontiArc section several examples of how valid models look like were ilustrated.
+These models can be extended with capabilities from the Math Language by adding an "implementation Math" section.
+Consider the following EmbeddedMontiArc model:
+
+component Delay{
+  ports in (0:1) in1,
+        out (0:1) out1;
+       
+}
+
+To use the Math Language an "implementation Math" section has to be added:
+component Delay{
+  ports in (0:1) in1,
+        out (0:1) out1;
+
+  implementation Math{
+      //Math code 
+  }
+}
+
+
+The delay components dataflow is modeled by the in1 and out1 ports, which take a value between 0 and 1.
+The intended functionality of the Delay component is to delay input for 1 tick, as can be guessed from the name.
+To achieve, this behaviour, the component can be enriched with that functionality by using the Math Language.
+This results in the following component:
+
+component Delay{
+  ports in (0:1) in1,
+        out (0:1) out1;
+        
+  implementation Math{
+    static (0:1) delayValue=0; // default value on start
+    out1=delayValue; //set output to value of last tick
+    delayValue=in1; // store current tick value for next tick
+  }
+}
+
+When looking at this example, inside of the implementation Math section, a static variable "delayValue" which has a value between
+0 and 1 is declared and initiliazed to 0. Then the "out1" port of the EmbeddedMontiArc component is set to take the value
+of "delayValue". Finally, "delayValue" is set to the current value of the "in1" port. 
+Therefore, the Math Language can be used to add behaviour to a component which results in the ability of the 
+EmbeddedMontiArcMath Language to defined components and their behaviour, and the ability to generate code out of these.
+
+
+
+To facilitate usage of ports which are definied in the EmbeddedMontiArc language, these ports are automatically adapted to be 
+visible to the Math Language. If you are interested in how the language adaption exactly works you have to consults the 
+MontiCore Language Workbench documentation.
 * How ports of EmbeddedMontiArc are adapted to matrices into Math language?
 
 EmbeddedMontiView (Fabian)
