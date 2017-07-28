@@ -31,7 +31,8 @@ Math (Sascha)
 * What Types of matrices are possible?
   
   
-* How to deal with units? (compatiblity, conversion of units)
+* How to deal with units? (compatiblity, conversion of units)  
+
 Currently all units will be automatically converted to the SI base units  
 See https://en.wikipedia.org/wiki/SI_base_unit for reference  
 An example of numbers with different units that can be added together is presented in the following:  
