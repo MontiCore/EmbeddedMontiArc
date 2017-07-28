@@ -1,5 +1,13 @@
 # Documentation of EmbeddedMontiArcMath
 
+Publications
+----
+* [KRRvW17] E. Kusmenko, A. Roth, B. Rumpe, M. von Wenckstern:
+  [Modeling Architectures of Cyber Physical Systems](http://www.se-rwth.de/publications/Systematic-Language-Extension-Mechanisms-for-the-MontiArc-Architecture-Description-Language.pdf).
+  In: Modelling Foundations and Applications (ECMFA’17), 
+      Held as Part of STAF 2017, pages 34-50. 
+      Springer International Publishing, 2017.
+
 This is only a short outline, please change it if it does not fit to your tutorial.
 And please add additional points, if you need need them.
 Every point should present exactly one feature and it should also contain minimal (but complete - model should be parseable) code examples (several code examples per points are possible, e.g showing different units).
