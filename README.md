@@ -49,7 +49,8 @@ end // end of script
 ```
   
 * What Types of matrices are possible?  
-  Sparse matrices like triangular and diagonal matrix. TODO add examples for this  
+  Sparse matrices like triangular and diagonal matrix.  
+  TODO add examples for this  
   
   
 * How to select values from a matrix?
@@ -61,7 +62,7 @@ script MathExpressions //script name
 end // end of script
 ```
 * Listing of all supported opertions (+,*, ^, \, .*, .\, ...)  
-Addition:  
+ Addition:  
 ```
 package Generation; // package declaration
 script MathExpressions //script name
@@ -79,7 +80,7 @@ script MathExpressions //script name
  Q^[2,2] matRes= mat1 * mat2; // add both matrices
 end // end of script
 ```
-Power of:  
+ Power of:  
 ```
 package Generation; // package declaration
 script MathExpressions //script name
@@ -87,7 +88,7 @@ script MathExpressions //script name
  Q^[2,2] matRes= mat1.^ 2; // does power of 2 for each element inside of the matrix
 end // end of script
 ```
-Equation Solving:
+ Equation Solving:
 ```
 package Generation; // package declaration
 script MathExpressions //script name
@@ -95,11 +96,11 @@ script MathExpressions //script name
 end // end of script
 ```
 
-Element-Wise Multiplication:  
+ Element-Wise Multiplication:  
 
-Element-Wise Division: 
+ Element-Wise Division: 
 
-Element-Wise Power of:
+ Element-Wise Power of:
 
 
 * Listing of all supported Octave functions (eig, diag, ...)
