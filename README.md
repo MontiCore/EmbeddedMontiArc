@@ -62,7 +62,7 @@ end // end of script
 ```
 * Listing of all supported opertions (+,*, ^, \, .*, .\, ...)  
 Addition:  
- ```
+```
 package Generation; // package declaration
 script MathExpressions //script name
  Q^{2,2} mat1 = [1,0; 0,1];// identity matrix
