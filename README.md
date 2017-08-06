@@ -25,10 +25,27 @@ EmbeddedMontiArc (Yannick)
 
 Math (Sascha)
 ----
-* How to create a matrix?
+  
+The Math Language is a general language which was developed to provide support for mathematical expressions and operations
+for usage in the MontiCar Language Familiy. However, it is developed as a standalone language which can therefore also be used in other projects which utilize MontiCore. In the following basic features of the Math Language are explained in combination with code examples to show how these features can be used. If you need further information related to the integration of the Math Language into another language you can consult the MontiCore documentary, or examine the EmbeddedMontiArcMath project, which extends the EmbeddedMontiArc Language with behaviour by using the Math Language.  
+
+* Basic structue of valid Math Language files  
+
+package Generation;
+
+script MathExpressions
+  Q A= 1+2;
+  Q B= 3 + A;
+  Q C = ((1  + 2 )*(3  + 4 ))^2;
+  Q^{2,2} D = ([1,1;1,1]+[2,2;2,2]) * ([3,3;3,3]+[4,4;4,4]);
+  Q E = (A+B)%5;
+
+end
+
+* How to create a matrix?  
   
   
-* What Types of matrices are possible?
+* What Types of matrices are possible?  
   
   
 * How to deal with units? (compatiblity, conversion of units)  
