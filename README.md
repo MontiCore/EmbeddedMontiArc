@@ -91,7 +91,7 @@ Equation Solving:
 ```
 package Generation; // package declaration
 script MathExpressions //script name
- Q^[2,2] matRes = [3 6 2; 1 2 8; 7 9 4] \  [2;3;4]; // Solves Ax=b for x
+ Q^[3,1] matRes = [3 6 2; 1 2 8; 7 9 4] \  [2;3;4]; // Solves Ax=b for x
 end // end of script
 ```
 
