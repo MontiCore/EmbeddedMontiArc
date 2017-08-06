@@ -40,10 +40,20 @@ end // end of script
 ```
 
 * How to create a matrix?  
+ Matrices can be written in two different ways:  
+ They can either be written like the following where each row element is separated by using a `,` and each column is separated by using  a `;`:
 ```
 package Generation; // package declaration
 script MathExpressions //script name
  Q^{2,2} = [1,0; 0,1];// identity matrix
+
+end // end of script
+```
+
+```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^{2,2} = [1 0; 0 1];// identity matrix
 
 end // end of script
 ```
@@ -97,7 +107,12 @@ end // end of script
 ```
 
  Element-Wise Multiplication:  
-
+```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^[3,3] matRes = [3 6 2; 1 2 8; 7 9 4] .*; // multiplies
+end // end of script
+```
  Element-Wise Division: 
 
  Element-Wise Power of:
