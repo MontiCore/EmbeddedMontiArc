@@ -81,7 +81,7 @@ script MathExpressions //script name
  Q^[2,2] matRes= mat1 + mat2; // add both matrices
 end // end of script
 ```
-Multiplication: 
+ Multiplication: 
 ```
 package Generation; // package declaration
 script MathExpressions //script name
