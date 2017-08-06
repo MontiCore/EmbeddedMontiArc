@@ -68,14 +68,39 @@ script MathExpressions //script name
  Q^{2,2} mat1 = [1,0; 0,1];// identity matrix
  Q^{2,2} mat2 = [2,2; 2,2];
  Q^[2,2] matRes= mat1 + mat2; // add both matrices
- Q value = mat(1,1); //get first element from matrix
 end // end of script
 ```
-Multiplication:  
+Multiplication: 
+```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^{2,2} mat1 = [1,0; 0,1];// identity matrix
+ Q^{2,2} mat2 = [2,2; 2,2];
+ Q^[2,2] matRes= mat1 * mat2; // add both matrices
+end // end of script
+```
 Power of:  
+```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^{2,2} mat1 = [1,0; 0,1];// identity matrix
+ Q^[2,2] matRes= mat1.^ 2; // does power of 2 for each element inside of the matrix
+end // end of script
+```
 Equation Solving:
+```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^[2,2] matRes = [3 6 2; 1 2 8; 7 9 4] \  [2;3;4]; // Solves Ax=b for x
+end // end of script
+```
+
 Element-Wise Multiplication:  
-Element-Wise Division:  
+
+Element-Wise Division: 
+
+Element-Wise Power of:
+
 
 * Listing of all supported Octave functions (eig, diag, ...)
 
