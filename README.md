@@ -31,16 +31,12 @@ for usage in the MontiCar Language Familiy. However, it is developed as a standa
 
 * Basic structue of valid Math Language files  
 ```
-package Generation;
+package Generation; // package declaration
+// other scripts can be imported by using "import packagename.scriptname;"
+script MathExpressions //script name
+ // instructions go here
 
-script MathExpressions
-  Q A= 1+2;
-  Q B= 3 + A;
-  Q C = ((1  + 2 )*(3  + 4 ))^2;
-  Q^{2,2} D = ([1,1;1,1]+[2,2;2,2]) * ([3,3;3,3]+[4,4;4,4]);
-  Q E = (A+B)%5;
-
-end
+end // end of script
 ```
 
 * How to create a matrix?  
