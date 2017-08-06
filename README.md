@@ -40,7 +40,13 @@ end // end of script
 ```
 
 * How to create a matrix?  
-  
+```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^{2,2} = [1,0; 0,1];// identity matrix
+
+end // end of script
+```
   
 * What Types of matrices are possible?  
   
