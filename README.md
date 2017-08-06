@@ -49,7 +49,36 @@ end // end of script
 ```
   
 * What Types of matrices are possible?  
+  Sparse matrices like triangular and diagonal matrix. TODO add examples for this  
   
+  
+* How to select values from a matrix?
+  ```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^{2,2} mat = [1,0; 0,1];// identity matrix
+ Q value = mat(1,1); //get first element from matrix
+end // end of script
+```
+* Listing of all supported opertions (+,*, ^, \, .*, .\, ...)  
+Addition:  
+ ```
+package Generation; // package declaration
+script MathExpressions //script name
+ Q^{2,2} mat1 = [1,0; 0,1];// identity matrix
+ Q^{2,2} mat2 = [2,2; 2,2];
+ Q^[2,2] matRes= mat1 + mat2; // add both matrices
+ Q value = mat(1,1); //get first element from matrix
+end // end of script
+```
+Multiplication:  
+Power of:  
+Equation Solving:
+Element-Wise Multiplication:  
+Element-Wise Division:  
+
+* Listing of all supported Octave functions (eig, diag, ...)
+
   
 * How to deal with units? (compatiblity, conversion of units)  
 
@@ -76,12 +105,6 @@ internal unit conversions.
 > Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max` 
 
 internal unit conversions.   
-
-* How to select values from a matrix?
-  
-* Listing of all supported opertions (+,*, ^, \, .*, .\, ...)
-  
-* Listing of all supported Octave functions (eig, diag, ...)
 
 EmbeddedMontiArcMath (Sascha)
 ----
