@@ -30,7 +30,7 @@ The Math Language is a general language which was developed to provide support f
 for usage in the MontiCar Language Familiy. However, it is developed as a standalone language which can therefore also be used in other projects which utilize MontiCore. In the following basic features of the Math Language are explained in combination with code examples to show how these features can be used. If you need further information related to the integration of the Math Language into another language you can consult the MontiCore documentary, or examine the EmbeddedMontiArcMath project, which extends the EmbeddedMontiArc Language with behaviour by using the Math Language.  
 
 * Basic structue of valid Math Language files  
-
+```
 package Generation;
 
 script MathExpressions
@@ -41,6 +41,7 @@ script MathExpressions
   Q E = (A+B)%5;
 
 end
+```
 
 * How to create a matrix?  
   
