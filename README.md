@@ -49,7 +49,7 @@ script MathExpressions //script name
 
 end // end of script
 ```
-
+ or each row element can be separated by using ` ` which is a space character:
 ```
 package Generation; // package declaration
 script MathExpressions //script name
