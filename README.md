@@ -53,7 +53,7 @@ end // end of script
   
   
 * How to select values from a matrix?
-  ```
+```
 package Generation; // package declaration
 script MathExpressions //script name
  Q^{2,2} mat = [1,0; 0,1];// identity matrix
