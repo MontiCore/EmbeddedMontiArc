@@ -33,9 +33,9 @@ package fas.basicLibrary;
 
 component And {
     port
-		in Boolean in1, // first inport of type Boolean
-		in Boolean in2, // second inport of type Boolean
-		out Boolean out1; // output port of type Boolean
+	   in Boolean in1, // first inport of type Boolean
+	   in Boolean in2, // second inport of type Boolean
+	   out Boolean out1; // output port of type Boolean
 }
 ```
 Each port definition consists of a ``in``/``out`` keyword, stating whether the port is an input or output port. This is followed by the type of the port, in this case all ports are of type Boolean. Each port is then given a name valid whithin the scope of the component.
@@ -88,8 +88,39 @@ component Demo {
     connect and2.out1 -> out1;
 }
 ```
-* How to deal with component and port arrays?
-* How to deal with generics and default generic values?
+* How to deal with component and port arrays?  
+
+To support reuse component types can contain arrays of ports. To create a port array we allow the user to pass a parameter to the component when instantiating it.
+```
+package fas.basicLibrary;
+
+component And<N1 n=2> { // pass a parameter for the number of ports
+    port
+	   in Boolean in[n], // create n ports of type Boolean
+	   out Boolean out1;
+}
+```
+In the above example, the And component received a parameter ``n`` of type ``N1`` (a single integer number) which is used to create an array of input ports. If upon instantiation no parameter is found n defaults to 2, as seen in the example. The EMA syntax allows Java-like array syntax. The ports can be referenced individually (e.g. ``And.in[0]``) or together (using the MATLAB-like ``And.in[:]``).
+
+* How to deal with generics and default generic values?  
+
+To make components useful in multiple contexts they can use generics. These are used to specify the types of input and output ports only upon creating the component's instance.
+```
+package fas.basicLibrary;
+
+component PlusMinus<T> { // define generic parameter T
+	port
+	   in T in1,  // all ports will be of type T
+	   in T in2,
+	   out T out1;
+}
+```
+In the above example the component ``PlusMinus`` is defined. It is used to compute an arithmetic operation on the data passed to the typed ports ``in1`` and ``in2``. The type of these ports is defined when creating an instance of the component. As an example we create an instance that computes the operation for distance values between 0m and 200m.
+```
+instance PlusMinus<(0 m : 200 m)> plusMinus;
+```
+This defines the type of all ports within the component as a range from 0 to 200, measured in meters.
+
 * How to deal with configuration parameters?
 
 Math (Sascha)
