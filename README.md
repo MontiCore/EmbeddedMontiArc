@@ -14,7 +14,10 @@ Every point should present exactly one feature and it should also contain minima
 
 EmbeddedMontiArc (Yannick)
 ----
-* Introduction/Motivation.
+* Introduction/Motivation.  
+
+EmbeddedMontiArc (EMA) is a C&C modeling language based on MontiArc. It is the core language of the MontiCAR modeling family where it is used as an architecture description language (ADL) for cyber-physical systems. EmbeddedMontiArc extends MontiArc with the concepts of port and component arrays and introduces a new type system that provides unit support for physical quantities (including possibly limited resolution of the sensors). This liberates the developers from unit checks and conversions, because it enables them to work with real-life  quantities in a type-safe manner. The following describes how to create simple components, add ports and create connections. After that we go into port arrays, generics and parametrization.
+
 * How to create a component?  
 
 A component type can easily be defined by creating a new ``.ema`` file. The new type contains a package declaration and possibly multiple import statements for other components/component packages. The component definition then starts with the keyword ``component`` followed by the components name. The following shows the example of the ``And`` component, which represents a logical And block.  
