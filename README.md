@@ -121,7 +121,21 @@ instance PlusMinus<(0 m : 200 m)> plusMinus;
 ```
 This defines the type of all ports within the component as a range from 0 to 200, measured in meters.
 
-* How to deal with configuration parameters?
+* How to deal with configuration parameters?  
+
+Component instances can be configured with initialization parameters. This can be useful to (among other things) define constants, set delay timers or fill lookup tables. Parameters are defined in rounded brackets at the end of the component head:
+```
+package fas.basicLibrary;
+
+component Constant<T>(T value) {
+	port
+		out T out1;
+}
+```
+The following line initializes a component with an output port of type ``Q(0:100)``:
+```
+instance Constant<Q(0:100)>(5) q_5;
+```
 
 Math (Sascha)
 ----
