@@ -4,8 +4,8 @@ Publications
 ----
 * [KRRvW17] E. Kusmenko, A. Roth, B. Rumpe, M. von Wenckstern:
   [Modeling Architectures of Cyber Physical Systems](http://www.se-rwth.de/publications/Systematic-Language-Extension-Mechanisms-for-the-MontiArc-Architecture-Description-Language.pdf).
-  In: Modelling Foundations and Applications (ECMFA’17), 
-      Held as Part of STAF 2017, pages 34-50. 
+  In: Modelling Foundations and Applications (ECMFA’17),
+      Held as Part of STAF 2017, pages 34-50.
       Springer International Publishing, 2017.
 
 This is only a short outline, please change it if it does not fit to your tutorial.
@@ -15,17 +15,86 @@ Every point should present exactly one feature and it should also contain minima
 EmbeddedMontiArc (Yannick)
 ----
 * Introduction/Motivation.
-* How to create a component?
-* How to add ports to a component?
-* How to instantiate a component?
-* How to connect components?
+* How to create a component?  
+
+A component type can easily be defined by creating a new ``.ema`` file. The new type contains a package declaration and possibly multiple import statements for other components/component packages. The component definition then starts with the keyword ``component`` followed by the components name. The following shows the example of the ``And`` component, which represents a logical And block.  
+```
+package fas.basicLibrary; // package declaration
+
+component And { // component header
+    // component body
+}
+```
+* How to add ports to a component?  
+
+EMA components use typed ports for input and output of data. To add a port to a component we add a ``port`` block to the component's body.
+```
+package fas.basicLibrary;
+
+component And {
+    port
+		in Boolean in1, // first inport of type Boolean
+		in Boolean in2, // second inport of type Boolean
+		out Boolean out1; // output port of type Boolean
+}
+```
+Each port definition consists of a ``in``/``out`` keyword, stating whether the port is an input or output port. This is followed by the type of the port, in this case all ports are of type Boolean. Each port is then given a name valid whithin the scope of the component.
+
+* How to instantiate a component?  
+
+In addition to ports, component types can contain instances of other components. To instantiate a component we first have to import it's type. We can then use the keyword ``instance`` to create an instance of this type and name it. To distinguish instances from their corresponding types we use lower case letters to start the names of instances. The following shows a component which uses two instances of the previously defined ``And`` component. These will become subcomponents of the enclosing component.
+```
+package fas;
+import fas.basicLibrary.And; // import the And component
+
+component Demo {
+    port
+        in Boolean in1,
+        in Boolean in2,
+        in Boolean in3,
+        out Boolean out1;
+
+    instance And and1; // create first And instance
+    instance And and2; // create second And instance
+}
+```
+
+* How to connect components?  
+
+Components are connected by connecting their ports. For this we can reference the ports of a subcomponent by their qualified names. We then connect them by using the ``connect`` keyword. Data will then be passed along these connections.
+```
+package fas;
+import fas.basicLibrary.And;
+
+component Demo {
+    port
+        in Boolean in1,
+        in Boolean in2,
+        in Boolean in3,
+        out Boolean out1;
+
+    instance And and1;
+    instance And and2;
+
+    /* Connect first input port to the input of the first subcomponent */
+    connect in1 -> and1.in1;
+    connect in2 -> and1.in2;
+
+    /* Connect output of the first subcomponent to the second subcomponent */
+    connect and1.out1 -> and2.in1;
+    connect in2 -> and2.in2;
+
+    /* Connect output of the second subcomponent to the output port of this component */
+    connect and2.out1 -> out1;
+}
+```
 * How to deal with component and port arrays?
 * How to deal with generics and default generic values?
 * How to deal with configuration parameters?
 
 Math (Sascha)
 ----
-  
+
 The Math Language is a general language which was developed to provide support for mathematical expressions and operations
 for usage in the MontiCar Language Familiy. However, it is developed as a standalone language which can therefore also be used in other projects which utilize MontiCore. In the following basic features of the Math Language are explained in combination with code examples to show how these features can be used. If you need further information related to the integration of the Math Language into another language you can consult the MontiCore documentary, or examine the EmbeddedMontiArcMath project, which extends the EmbeddedMontiArc Language with behaviour by using the Math Language.  
 
@@ -57,12 +126,12 @@ script MathExpressions //script name
 
 end // end of script
 ```
-  
+
 * What Types of matrices are possible?  
   Sparse matrices like triangular and diagonal matrix.  
   TODO add examples for this  
-  
-  
+
+
 * How to select values from a matrix?
 ```
 package Generation; // package declaration
@@ -81,7 +150,7 @@ script MathExpressions //script name
  Q^[2,2] matRes= mat1 + mat2; // add both matrices
 end // end of script
 ```
- Multiplication: 
+ Multiplication:
 ```
 package Generation; // package declaration
 script MathExpressions //script name
@@ -113,14 +182,14 @@ script MathExpressions //script name
  Q^[3,3] matRes = [3 6 2; 1 2 8; 7 9 4] .*; // multiplies
 end // end of script
 ```
- Element-Wise Division: 
+ Element-Wise Division:
 
  Element-Wise Power of:
 
 
 * Listing of all supported Octave functions (eig, diag, ...)
 
-  
+
 * How to deal with units? (compatiblity, conversion of units)  
 
 Currently all units will be automatically converted to the SI base units  
@@ -143,14 +212,14 @@ Q(0:10km) sumDistance = bigDistance + smallDistance;
 units like km to m. Notice that in both cases `smallDistance` stores `4000m`, as it is expected from the just explained  
 internal unit conversions.   
 
-> Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max` 
+> Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max`
 
-internal unit conversions.   
+internal unit conversions.  
 
 EmbeddedMontiArcMath (Sascha)
 ----
 * How to embedded Math language into EmbeddedMontiArc?
-  
+
 In the EmbeddedMontiArc section several examples of how valid models look like were ilustrated.  
 These models can be extended with capabilities from the Math Language by adding an "implementation Math" section.  
 Consider the following EmbeddedMontiArc model:  
@@ -166,7 +235,7 @@ To use the Math Language an `implementation Math` section has to be added:
 component Delay {  
   ports in  (0:1) in1,  
         out (0:1) out1;  
-  
+
   implementation Math {  
     //Math code   
   }  
@@ -174,14 +243,14 @@ component Delay {  
 ```
 
 The delay components dataflow is modeled by the `in1` and `out1` ports, which take a value between `0` and `1`.  
-The intended functionality of the Delay component is to delay input for 1 tick, as can be guessed from the name. 
+The intended functionality of the Delay component is to delay input for 1 tick, as can be guessed from the name.
 To achieve, this behaviour, the component can be enriched with that functionality by using the Math Language.  
 This results in the following component:  
 ```
 component Delay {  
   ports in  (0:1) in1,  
         out (0:1) out1;  
-          
+
   implementation Math {  
     static Q(0:1) delayValue=0; // default value on start  
     out1=delayValue; //set output to value of last tick  
@@ -191,7 +260,7 @@ component Delay {  
 ```
 When looking at this example, inside of the implementation Math section, a static variable `delayValue` which has a value between  
 `0` and `1` is declared and initiliazed to `0`. Then the `out1` port of the EmbeddedMontiArc component is set to take the value  
-of `delayValue`. Finally, `delayValue` is set to the current value of the `in1` port.   
+of `delayValue`. Finally, `delayValue` is set to the current value of the `in1` port.  
 Therefore, the Math Language can be used to add behaviour to a component which results in the ability of the  
 EmbeddedMontiArcMath Language to defined components and their behaviour, and the ability to generate code out of these.  
 
@@ -206,7 +275,7 @@ EmbeddedMontiView (Fabian)
 ----
 * What is the difference between EmbeddedMontiArc and EmbeddedMontiView?
 * How to model abstract ports (with no name, with no data type and both)?
-* What is an textual anonymous port ($port1)? 
+* What is an textual anonymous port ($port1)?
 * What are abstract connectors?
 * What are abstract hierarchies?
 * What are abstract effectors?
