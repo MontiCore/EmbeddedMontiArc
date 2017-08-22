@@ -8,6 +8,10 @@ Publications
       Held as Part of STAF 2017, pages 34-50.
       Springer International Publishing, 2017.
 
+Further Examples
+----
+* [Cooperative Drving Examples](examples/cooperativeDriving.md)
+
 This is only a short outline, please change it if it does not fit to your tutorial.
 And please add additional points, if you need need them.
 Every point should present exactly one feature and it should also contain minimal (but complete - model should be parseable) code examples (several code examples per points are possible, e.g showing different units).
