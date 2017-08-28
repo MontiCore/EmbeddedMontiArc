@@ -328,11 +328,192 @@ MontiCore Language Workbench documentation.
 EmbeddedMontiView (Fabian)
 ----
 * What is the difference between EmbeddedMontiArc and EmbeddedMontiView?
+
+TODO
+----
 * How to model abstract ports (with no name, with no data type and both)?
-* What is an textual anonymous port ($port1)?
+
+Here is an example view that shows these cases:
+```
+package example;
+
+view ExamplePorts {
+    component A {
+        ports
+            in Boolean port1,      //fully specified port
+            in ? port2,            //port without specified Type
+            out Boolean ?,         //port without specified Name
+            out ? ?;               //port without both
+    }
+}
+```
+
+----
+The following points are explained one the basis of the following model:
+```
+! NOTE THAT A SINGLE LETTER IS NOT A VALID NAME FOR A COMPONENT !
+! This is used here to shorten the examples.
+! Concatenating a 'comp' to every name is enough to make each of the following examples valid.
+! Example: instance Bcomp bcomp;
+```
+```
+package example;
+import example.B;
+import example.C;
+import example.D;
+import example.E;
+
+component A {
+    ports
+        in Boolean in1,
+        out Boolean out1,
+        out Boolean out2;
+
+    instance B b;
+    instance D d;
+    instance C e;
+
+    connect in1 -> b.in1;
+    connect b.out1 -> d.in1;
+    connect b.out2 -> e.in1;
+    connect d.out1 -> out1;
+    connect e.out1 -> out2;
+}
+```
+```
+package example;
+import example.C;
+
+component B {
+    ports
+        in Boolean in1,
+        out Boolean out1,
+        out Boolean out2;
+
+    instance C c;
+    connect in1 -> c.in1;
+    connect c.out1 -> out1, out2;
+}
+```
+```
+package example;
+
+component C {
+    ports
+        in in1,
+        out out1;
+    
+    connect in1 -> out1;
+}
+```
+```
+package example;
+
+component D {
+    ports
+        in in1,
+        out out1;
+}
+```
+---
 * What are abstract connectors?
-* What are abstract hierarchies?
+
+While connectors in EMA represent a specific connection of one port to another, abstract connectors in EMV represent a directed chain of connectors (describing the transportation of information).
+Example:
+```
+package example;
+
+view ExampleConnector {
+    component A {
+        port in in1;
+
+        component D {
+            port in in1;
+        }
+        instance D d;
+
+        connect in1 -> d.in1;
+    }
+}
+```
+The following path is matched:
+A.in1 -> b.in1 -> c.in1 -> c.out1 -> b.out1 -> d.in1
+
+---
 * What are abstract effectors?
+
+Unlike abstract connectors, abstract effectors also include computations in components, which are represented as effectors in the model.
+Atomic components (components without subcomponents) automatically have effectors from every input to every output port.
+Example:
+```
+view ExampleEffector {
+    component A {
+        ports
+            in in1,
+            out out1;
+
+        effect in1 -> out1;
+    }
+}
+```
+The following path is matched:
+A.in1 -> b.in1 -> c.in1 -> c.out1 -> b.out1 -> d.in1 -> d.out1 -> A.out1
+
+---
+* What are abstract hierarchies?
+
+The hierarchy of components within a view does not necessarily represent the original hierarchy in the model. The usage of abstract connectors and effectors permits this abstraction.
+Example:
+```
+view ExampleHierarchy {
+    component A {
+        port in in1;
+        
+        component C {
+            ports
+                in in1,
+                out out1;
+        }
+        instance C c;
+        
+        component D {
+            port in in1;
+        }
+        instance D d;
+        
+        connect in1 -> c.in1;
+        connect c.out1 -> d.in1;
+    }
+}
+```
+The component c is a direct subcomponent of A in this view while this is not true in the original model. Furthermore, A, c and d are directly connected while c is encapsuled by b in the model.
+
+---
+* What is a textual anonymous port ($port1)?
+
+Textual anonymous ports are used to distinguish different ports whose names are unknown.
+In the following example b.$port1 and b.$port2 allow to check whether two different ports are used to connect the components.
+```
+package example;
+
+view ExampleTAP {
+    component B {
+        ports
+            out $port1,
+            out $ports2;
+    }
+    instance B b;
+
+    component D { }
+    instance D d;
+
+    component E { }
+    instance E e;
+
+    connect b.$port1 -> d;
+    connect b.$port2 -> e;
+}
+```
 
 OCL (Ferdinand)
 ----
