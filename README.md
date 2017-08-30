@@ -19,7 +19,7 @@ git clone https://github.com/MontiSim/simulation.git
 git clone https://github.com/MontiSim/visualization.git
 ```
 
-For an easier installation the file https://raw.githubusercontent.com/MontiSim/Documentation/master/mainPom/pom.xml needs to be created as `pom.xml` file in that directory which contains all previously downloaded repositories.
+For an easier installation the file https://raw.githubusercontent.com/MontiSim/Documentation/master/mainPom/pom.xml.tmp needs to be created as `pom.xml` file in that directory which contains all previously downloaded repositories.
 
 After this step it is possible to compile all sub-projects with a single command:
 
