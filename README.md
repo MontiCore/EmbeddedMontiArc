@@ -25,7 +25,19 @@ For an easier installation the file https://raw.githubusercontent.com/MontiSim/D
 After this step it is possible to compile all sub-projects with a single command:
 
 ```bash
-mvn clean install
+mvn install
+```
+
+There are other useful commands for Maven. This command clears all previously compiled files:
+
+```bash
+mvn clean
+```
+
+This command installs everything without running all automatic tests, which is faster. This is case sensitive:
+
+```bash
+mvn install -DskipTests
 ```
 
 # Simulation Start: IDE
