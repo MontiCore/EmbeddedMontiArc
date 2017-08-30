@@ -14,7 +14,6 @@ All parts are located in separate Git repositories, which need to be cloned:
 ```bash
 git clone https://github.com/MontiSim/application.git
 git clone https://github.com/MontiSim/commons.git
-git clone https://github.com/MontiSim/computervision.git
 git clone https://github.com/MontiSim/controller.git
 git clone https://github.com/MontiSim/simulation.git
 git clone https://github.com/MontiSim/visualization.git

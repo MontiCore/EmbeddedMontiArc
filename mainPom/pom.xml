@@ -13,7 +13,6 @@
     <modules>
         <module>application</module>
         <module>commons</module>
-        <module>computervision</module>
         <module>controller</module>
         <module>simulation</module>
         <module>visualization</module>
