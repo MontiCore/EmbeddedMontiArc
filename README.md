@@ -40,6 +40,8 @@ mvn install -DskipTests
 ```
 
 # Simulation Start: IDE
+This `pom.xml` file on the main level can be imported in the IDE to create a project with recursive sub-projects.
+
 The `main()` function of the file `SimulatorMain.java` in the `application` repository can be started from the IDE. This creates a minimal setup for the simulation. Console and plotter results are created as outputs and it can be used for debugging.
 
 It should be noted that this class specifies its own simulation scenarios independently from the following simulation start with visualization support.
