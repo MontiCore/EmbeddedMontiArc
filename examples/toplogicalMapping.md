@@ -3,6 +3,9 @@ Generative Topographic Mapping
 
 These examples are not complete, but they show how to model this domain with EmbeddedMontiArc.
 
+GTM is a algorithm to map highdimensional data into a latent space with lower dimension to visualize it.
+
+This is the main structure of the algorithm:
 ```
 package GTM;
 import GTM.KMEANS;
@@ -19,7 +22,7 @@ component Alg {
 		in N NN		  //number of datapoints
 		in N K
 		out Q^{N,L} out	 //output Matrix in 2D (L=2)
-		//N is space of natural numbers
+		                  //N is space of natural numbers
 	
 	instance KMEANS kmeans	
 	instance INITW initW
@@ -44,15 +47,16 @@ component Alg {
 	
 	//output
 	implementation Math {
-		out = em.outW * em.outPhi;
+		out = em.outW * em.outPhi;  //multiply W and Phi
 	}
 }	
 ```
-get PCA of data to get W:
+
+Initialize the weightmatrix W with principal component analysis, which will not be implemented here:
 
 ```
 package GTM;
-import GTM.PCA;
+import GTM.PCA;   //principal component analysis
 
 component INITW {
 	port
@@ -67,14 +71,14 @@ component INITW {
 		
 }
 ```
-get b, either largest eigenvalue or half of grid spacing:
+implement the number b, which is either the largest eigenvalue or half of the grid spacing:
 
 ```
 package GTM;
-import GTM.EIGVALS;
-import GTM.SORT
-import GTM.MAX;
-import GTM.EUCLDIST;
+import GTM.EIGVALS;   //get eigenvalues
+import GTM.SORT;     //sort elements 
+import GTM.MAX;     //get maximum 
+import GTM.EUCLDIST;     //get euclidean distance
 
 component INITb {
 	port
@@ -98,7 +102,7 @@ component INITb {
 
 }
 ```
-EM algorithm:
+Expectation-Maximization-algorithm iterates on W and b until they are fitting enough:
 ```
 package GTM;
 import GTM.COMPPHI;
@@ -177,7 +181,7 @@ component EM {
 compute matrix Phi:
 ```
 package GTM;
-import GTM.GAUSSFUNC
+import GTM.GAUSSFUNC  //gaussfunction
 
 component COMPPHI {
 	port 
@@ -186,7 +190,7 @@ component COMPPHI {
 	
 	instance GAUSSFUNC gauss
 	
-	Q(0:10) sigma = 2;	
+	Q(0:10) sigma = 2;	  //sigma is a rational number between 0 and 10, randomly 2
 	
 	connect inx -> gauss.inx
 	connect sigma -> gauss.insig
@@ -212,17 +216,17 @@ component COMPR {
 	connect inW -> post.inW
 	connect inb -> post.inb	
 	
-	for N ihelp = 0 : inK
+	for N ihelp = 0 : inK                  
 		for N nhelp = 0 : inN
 			connect inx(ihelp,:) -> post,inx
 			connect inT(nhelp,:) -> post.int
 			connect post.out -> outR(ihelp,nhelp)		
 }
 ```
-compute matrix G as diagonal matrix of sum of the rows of R:
+compute matrix G as diagonal matrix of the sum of rows of R:
 ```
 package GTM;
-import GTM.SUM;
+import GTM.SUM;   
 
 component COMPG {
 	port 
@@ -240,7 +244,7 @@ component COMPG {
 		connect sum.outR(ihelp) -> outG(ihelp,ihelp)  
 }
 ```
-solve equation to get W:
+solve equation to get a new W:
 ```
 package GTM;
 component SOLVEW {
@@ -252,17 +256,17 @@ component SOLVEW {
 		out Q^{M,D} outW
 		
 	implementation Math {
-		Q{K,K} sol = inPhi.' * inG * inPhi; //transpose Phi
+		Q{K,K} sol = inPhi.' * inG * inPhi;   //inPhi.' to transpose Phi
 		Q^{M,D} sol2 = inPhi.' * inR * inT;
-		outW = sol \ sol2;
+		outW = sol \ sol2;                   //solve the equation sol * outW = sol2 with unknown outW 
 	}
 		
 }
 ```
-solve equation to get b:
+solve equation to get new b:
 ```
 package GTM;
-import GTM.NORM;
+import GTM.NORM;   //get 2-norm
 
 component SOLVEb {
 	port
@@ -280,16 +284,16 @@ component SOLVEb {
 	implementation Math {
 		for N n = 0 : inN
 			for N i = 0 : inK
-				Q^{N} sol = inR(i,n) * norm(inW * inPhi(inx(i,:),:) - t(n,:))^2     ;
-		outb = 1/(inN*inD) sol;
+				Q^{N} sol = inR(i,n) * norm(inW * inPhi(inx(i,:),:) - t(n,:))^2;  //compute over the elements of R, x and t
+		outb = 1/(inN*inD) * sol;
 	}	
 }
 ```
-check how much the likelyhood function of W changed:
+check how much the likelyhood function of W changed aufter computing the new W:
 ```
 package GTM;
-package GTM.LOG;
-package GTM.PNOISE;
+package GTM.LOG;  //logarithm
+package GTM.PNOISE;   //noisefunction
 
 component LIKELYHOOD {
 	port
