@@ -76,9 +76,9 @@ implement the number b, which is either the largest eigenvalue or half of the gr
 ```
 package GTM;
 import GTM.EIGVALS;   //get eigenvalues
-import GTM.SORT;     //sort elements 
-import GTM.MAX;     //get maximum 
-import GTM.EUCLDIST;     //get euclidean distance
+import GTM.SORT;      //sort elements 
+import GTM.MAX;      //get maximum 
+import GTM.EUCLDIST;  //get euclidean distance
 
 component INITb {
 	port
