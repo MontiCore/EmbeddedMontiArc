@@ -42,9 +42,13 @@ public enum BusEntry {
     SENSOR_WEATHER("SENSOR_WEATHER"),
     SENSOR_CAMERA("SENSOR_CAMERA"),
     SENSOR_COMPASS("SENSOR_COMPASS"),
-    SENSOR_OBJECT("SENSOR_OBJECT"),
+    SENSOR_OBSTACLE("SENSOR_OBSTACLE"),
     SENSOR_VANISHINGPOINT("SENSOR_VANISHING"),
     SENSOR_LANE("SENSOR_LANE"),
+    SENSOR_STREETTYPE("SENSOR_STREETTYPE"),
+    SENSOR_DAYNIGHT("SENSOR_DAYNIGHT"),
+    SENSOR_LEFT_FRONT_DISTANCE("SENSOR_LEFT_FRONT_DISTANCE"),
+    SENSOR_RIGHT_FRONT_DISTANCE("SENSOR_RIGHT_FRONT_DISTANCE"),
     //***************************************************************************
     //*  Actuator Entries                                                       *
     //***************************************************************************

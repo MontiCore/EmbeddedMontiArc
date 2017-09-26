@@ -68,6 +68,18 @@ public interface PhysicalObject {
     void setCollision(boolean collision);
 
     /**
+     * Function that returns a boolean indicating if an object had a computational error
+     * @return Boolean that indicates a computational error of that object
+     */
+    boolean getError();
+
+    /**
+     * Function that sets error for this object
+     * @param error Boolean that indicates a computational error of that object
+     */
+    void setError(boolean error);
+
+    /**
      * Returns the unique ID of the object. Valid IDs are positive numbers.
      * @return Unique ID
      */
