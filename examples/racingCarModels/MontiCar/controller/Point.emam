@@ -1,0 +1,3 @@
+package controller;
+struct Point{ Q(0: 0.001 : oo) x;
+			  Q(0: 0.001 : oo) y;}

@@ -1,0 +1,22 @@
+package Evolution;
+component TounemantSelection{
+	port 
+		in PIDTuple population[10],
+		in Z(0:1:9) randomVal[3],
+		
+		
+		out PIDTuple winner;
+		
+		implementation Math{
+		Q(-oo : oo) best = -oo;
+		Z(0 : 1 : 9) winIndex = -1;
+			for i= 0 : 2
+				if population[i].fitness > best{
+				 best = population[i].fitness;
+				 winIndex = i;
+				}
+			end
+		winner = population[winIndex];
+		}
+		
+}

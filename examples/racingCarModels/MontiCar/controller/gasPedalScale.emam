@@ -1,0 +1,18 @@
+package controller;
+
+component GasPedalScale{
+	ports
+		in Q(-oo : 0.0001 : oo) unscaledGasPedal,
+		
+		out Q(0 : 0.00001 : 1) gasPedal;
+		
+	implementation Math{
+		if(unscaledGasPedal < 0){
+			gasPedal = 0;
+		}elseif(unscaledGasPedal > 1){
+			gasPedal = 1;
+		}else{
+			gasPedal = unscaledGasPedal;
+		}
+	}
+}

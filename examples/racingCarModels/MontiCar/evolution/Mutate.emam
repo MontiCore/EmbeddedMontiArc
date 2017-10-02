@@ -1,0 +1,22 @@
+package controller;
+component Mutate{
+	port 	
+		in PIDTuple pidTupleIn,
+		in Q(-1 : 1) randomVals[8],
+
+		out PIDTuple pidTupleOut;
+		
+		implementaion Math{
+		pidTupleOut.PSteer = pidTupleIn.SteerP + randomVals[0];
+		pidTupleOut.ISteer = pidTupleIn.SteerI + randomVals[1];
+		pidTupleOut.DSteer = pidTupleIn.SteerD + randomVals[2];
+		
+		pidTupleOut.PSteer = pidTupleIn.SpeedP + randomVals[3];
+		pidTupleOut.DSteer = pidTupleIn.SpeedD + randomVals[4];
+		
+		pidTupleOut.PSteer = pidTupleIn.AccelP + randomVals[5];
+		pidTupleOut.ISteer = pidTupleIn.AccelI + randomVals[6];
+		pidTupleOut.DSteer = pidTupleIn.AccelD + randomVals[7];
+		
+		}
+}

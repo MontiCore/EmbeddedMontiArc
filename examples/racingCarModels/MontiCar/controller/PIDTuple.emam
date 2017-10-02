@@ -1,0 +1,13 @@
+package controller;
+
+struct PIDTuple{
+		Q(0: 0.001 :7) steerP;
+		Q(0: 0.000001 :0.003) steerI;
+		Q(0: 0.001 :20) steerD;
+		Q(0: 0.001 :20) speedP;
+		Q(0: 0.001 :20) speedI;
+		Q(0: 0.001 :20) speedD;
+		Q(0: 0.001 :20) accelP;
+		Q(0: 0.001 :20) accelI;
+		Q(0: 0.001 :20) accelD;		
+}

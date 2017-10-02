@@ -1,0 +1,40 @@
+package evolution;
+
+component Evoltion(PIDTuples tuplePopulation[20]){
+	ports 
+		in Q(0:0.001: oo) errors,
+		in Z(0 : 1 : 300) lap,
+		
+		out PIDTuple tuple;
+		
+		static Z(1 : 1 : 300) prevLap = 1;
+		static Z(0 : 1 : 19) tupleIndex = 0;
+		static Q(0 : 0.0001 : oo) errorSum = 0;
+		static Z(0 : 1 : oo) prev_time = 1;
+		
+		instance generateNewGen genNewGen;
+		
+		implementation Math{
+			Z(0 : 1 : oo) dt = prev_time - now();
+			prev_time = now();
+			errorSum = errorSum + errors*errors*dt;
+			//still same lap, do nothing
+			if(prevLap == lap){
+				tuple = tuplePopulation[tupleIndex];
+			}
+			//lap changes but not yet out of tuples
+			if(prevLap != lap && prevLap % 20 != 0){
+				tuplePopulation[tupleIndex].fitnss = -errorSum; 
+				errorSum = 0;
+				prevLap = lap;
+				tupleIndex = tupleIndex + 1;
+				tuple = tuplePopulation[tupleIndex];
+			}else{ //out of tuples, need new Generation
+				//newGeneration
+			
+			}
+		}
+		
+
+		
+}

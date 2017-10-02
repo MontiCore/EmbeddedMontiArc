@@ -1,0 +1,16 @@
+package controller;
+component MaxSpeedPerSegmentComputation{
+	ports
+		in roadInfo segments[20],
+
+		out Q(0 m/s : 0.001 m/s : 75 m/s) maxSpeed[20];
+	
+	implementation Math{
+		for i in 1 : 19:
+			if segments[i].segType == STRAIGHT{
+				allowedSpeed[i] = 75 m/s;
+			}else{
+				allowedSpeed[i] = sqrt(frictionCoefficient*9.81*segment.radius);
+			}
+	}
+}

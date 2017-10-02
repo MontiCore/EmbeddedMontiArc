@@ -1,0 +1,12 @@
+package controller;
+
+component Subtract{
+	in Q(-oo : 0.001 : oo) shouldVal,
+	in Q(-oo : 0.001 : oo) isVal,
+	
+	out Q(-oo : 0.001 : oo) errorVal;
+	
+	implementation Math{
+		errorVal = shouldVal - isVal;
+	}
+}

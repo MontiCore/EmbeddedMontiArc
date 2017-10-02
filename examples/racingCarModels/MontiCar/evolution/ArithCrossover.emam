@@ -1,0 +1,20 @@
+component ArithCrossover{
+	ports in 	PIDTuple father,
+				PIDTuple mother,
+				Q(0:0.001:1) p,
+
+		  out 	PIDTuple child;
+		  
+  implementation Math{
+		  child.steerP = (p*father.steerP + (1-p)*mother.steerP);
+		  child.steerI = (p*father.steerI + (1-p)*mother.steerI);
+		  child.steerD = (p*father.steerD + (1-p)*mother.steerD);
+		  
+		  child.speedP = (p*father.speedP + (1-p)*mother.speedP);
+		  child.speedD = (p*father.speedD + (1-p)*mother.speedD);
+		  
+		  child.accelP = (p*father.accelP + (1-p)*mother.accelP);
+		  child.accelI = (p*father.accelI + (1-p)*mother.accelI);
+		  child.accelD = (p*father.accelD + (1-p)*mother.accelD);
+	}	
+}
