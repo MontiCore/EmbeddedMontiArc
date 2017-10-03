@@ -47,7 +47,7 @@ component Alg {
 	
 	//output
 	implementation Math {
-		out = em.outW * em.outPhi;  //multiply W and Phi
+		out = R;  //R consists of the posteriori probabilities of the data and latent points
 	}
 }	
 ```
@@ -284,7 +284,8 @@ component SOLVEb {
 	implementation Math {
 		for N n = 0 : inN
 			for N i = 0 : inK
-				Q^{N} sol = inR(i,n) * norm(inW * inPhi(inx(i,:),:) - t(n,:))^2;  //compute over the elements of R, x and t
+				//compute over the elements of R, x and t:
+				Q^{N} sol = inR(i,n) * norm(inW * inPhi(inx(i,:),:) - t(n,:))^2;  
 		outb = 1/(inN*inD) * sol;
 	}	
 }
