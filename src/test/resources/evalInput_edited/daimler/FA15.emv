@@ -1,0 +1,24 @@
+package daimler;
+
+view FA15 {
+
+  component EmergencyBrake {
+  }
+  instance EmergencyBrake emergencyBrake;
+  
+  component Distronic {
+  }
+  instance Distronic distronic;
+  
+  component BrakeAssistant {
+  }
+  instance BrakeAssistant brakeAssistant;
+  
+  component VelocityControl {
+  }
+  instance VelocityControl velocityControl;
+  
+  effect emergencyBrake -> velocityControl;
+  effect distronic -> velocityControl;
+  effect brakeAssistant -> velocityControl;
+}

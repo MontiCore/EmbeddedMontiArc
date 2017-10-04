@@ -1,0 +1,7 @@
+package simpleTests.atomic;
+
+view NegTest {    
+    atomic component NotAtomicComponent { }
+    instance NotAtomicComponent notAtomicComponent;
+}
+

@@ -1,0 +1,7 @@
+package exampleBA;
+
+component DComp {
+	ports
+		in Boolean in1,
+		out Boolean out1;
+}

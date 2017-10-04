@@ -1,0 +1,18 @@
+package daimler;
+
+view SomeFAS {
+
+component Chart {
+
+  port out ? blinkenRechtsAktiv_bOut3;
+  
+  component SFunction {
+    port in Double in1;
+  }
+  instance SFunction sFunction;
+  
+  }
+instance Chart chart;
+  
+  effect sFunction.in1 -> chart.blinkenRechtsAktiv_bOut3;
+}

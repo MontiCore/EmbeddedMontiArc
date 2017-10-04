@@ -1,0 +1,11 @@
+package simpleTests;
+
+view Test00 {
+	component ACA {	}
+	instance ACA aca;
+	
+	component ACB {	}
+	instance ACB acb;
+	
+	connect aca -> acb;
+}

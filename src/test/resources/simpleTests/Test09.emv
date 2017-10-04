@@ -1,0 +1,16 @@
+package simpleTests;
+
+view Test09 {
+	component ACA {
+		ports out ? ?;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		// (0:1) has the type "SIUnitRangesType"
+		ports in SIUnitRangesType in1; 
+	}
+	instance ACB acb;
+	
+	connect aca-> acb;
+}

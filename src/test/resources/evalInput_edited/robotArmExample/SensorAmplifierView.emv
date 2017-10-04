@@ -1,0 +1,8 @@
+package robotArmExample;
+
+view SensorAmplifierView {
+
+   component SensorAmplifier { }
+   instance SensorAmplifier sensorAmplifier;
+
+}

@@ -1,0 +1,14 @@
+package avionicsSystemExample;
+
+// not consistent with architecture
+
+view PilotDisplayManagerInsidePilotDisplay {
+
+  // Display
+  component Pilot_Display {
+    // Display_Manager
+    component Pilot_DM {}
+    instance Pilot_DM pilot_DM;
+  }
+  instance Pilot_Display pilot_Display;
+}

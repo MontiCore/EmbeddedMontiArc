@@ -1,0 +1,15 @@
+package simpleTests;
+
+view Test01 {
+	component ACA {
+		ports out (0:1) out1;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		ports in (0:1) in1;
+	}
+	instance ACB acb;
+	
+	connect aca.out1 -> acb.in1;
+}

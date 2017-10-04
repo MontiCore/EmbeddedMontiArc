@@ -1,0 +1,14 @@
+package simpleTests.atomic;
+
+component CComp {
+    
+    component AtomicComponent { }
+    instance AtomicComponent atomicComponent;
+    
+    component NotAtomicComponent {
+        component SomeInnerComponent {}
+        instance SomeInnerComponent someInnerComponent;
+    }
+    instance NotAtomicComponent notAtomicComponent;
+}
+

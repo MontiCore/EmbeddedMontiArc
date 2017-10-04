@@ -1,0 +1,11 @@
+package pumpStationExample;
+
+view EmergencyInsidePumpingSystem {
+
+  component PumpingSystem {
+    component EmergencyController {
+    }
+    instance EmergencyController emergencyController;
+  }
+  instance PumpingSystem pumpingSystem;
+}

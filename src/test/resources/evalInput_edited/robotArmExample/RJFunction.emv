@@ -1,0 +1,18 @@
+package robotArmExample;
+
+view RJFunction {
+
+    component RotationalJoint {
+        component Sensor { }
+        instance Sensor sensor;
+        
+        component Actuator { }
+        instance Actuator actuator;
+        
+        component Cylinder { }
+        instance Cylinder cylinder;
+    }
+    instance RotationalJoint rotationalJoint;
+    
+    connect sensor -> actuator;
+}

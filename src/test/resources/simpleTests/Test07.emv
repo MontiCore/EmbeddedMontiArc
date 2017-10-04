@@ -1,0 +1,13 @@
+package simpleTests;
+
+view Test07 {
+	component ACA {
+		ports out ? ?;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		ports in ? ?;
+	}
+	instance ACB acb;
+}

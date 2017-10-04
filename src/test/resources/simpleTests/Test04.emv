@@ -1,0 +1,17 @@
+package simpleTests;
+
+//This view is supposed not to be satisfied
+
+view Test04 {
+	component ACA {
+		ports out Boolean out1;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		ports in ? in1;
+	}
+	instance ACB acb;
+	
+	connect aca.out1 -> acb;
+}

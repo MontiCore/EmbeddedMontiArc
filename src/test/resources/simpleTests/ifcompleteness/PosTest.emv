@@ -1,0 +1,10 @@
+package simpleTests.ifcompleteness;
+
+view PosTest {
+    component BComp {
+        ports (c) 
+            in Boolean in1,
+            in Boolean in2,
+            out Boolean out1;
+    }
+}
