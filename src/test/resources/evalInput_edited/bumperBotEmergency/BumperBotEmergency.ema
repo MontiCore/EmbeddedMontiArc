@@ -1,4 +1,4 @@
-package bumberBotEmergency;
+package bumperBotEmergency;
 
 // Synthesized architecture for ArcV specification
 component BumperBotEmergency {
