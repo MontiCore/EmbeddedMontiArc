@@ -517,9 +517,60 @@ view ExampleTAP {
 
 OCL (Ferdinand)
 ----
+* How to begin
+
+The constraints are saved in an .ocl file.
+A most basic example of the file `myOCLFile.ocl` follows. 
+The filename has to be the same as the name after the keyword `ocl`.
+
+```
+ocl myOCLFile {
+    ...
+}
+```
 * How to define an invariant?
+
+Invariants or Constraints belong within the ocl encapsulation.
+The are declared with the keyword `inv`, an **(optional)** invariant name and `:`.
+The invariant follows. Multiple Invariants are possible,
+however not supported yet by the generation tool ocl2java.
+```
+ocl myOCLFile {
+  inv myInvName:
+        2 == 1 + 1;
+}
+```
 * What does context mean?
-* How to use quantificators?
+
+It is possible to declare a context on which the invariant is checked against.
+In the following example we have a variable named a of type int as context.
+The invariant following will be checked against every possible instance of a.
+```
+ocl myOCLFile {
+  context int a inv myInvName:
+        a*a >= 0;
+}
+```
 * How to deal with Lists, Sets?
+
+Below are a few examples of different possible comprehension types, the same applies to Sets.
+For more possibilities look into UMLs OCL.
+```
+ocl myOCLFile {
+  inv:
+    List{-3..3} == List{-3, -2, -1, 0, 1, 2, 3};
+    List{1..1} == List{1};
+    List{9..5} == List{};
+    List{'a'..'c'} == List{'a', 'b', 'c'};
+    List{3, 5..7, 2} == List{3, 5, 6, 7, 2};
+    List{3..5, 7..9} == List{3, 4, 5, 7, 8, 9};
+    List{3 .. (2 + 5)} == List{3, 4, 5, 6, 7};
+    
+    List{x * x | x in List{1..5}} == List{1, 4, 9, 16, 25};
+    List{x * x | x in List{1..8}, !even(x)} == List{1, 9, 25, 49};
+}
+```
+* How to use quantificators?
 * How to deal with implications, and other operators?
 * What are OCL pre- and post conditions?
+
