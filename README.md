@@ -521,9 +521,14 @@ OCL (Ferdinand)
 
 The constraints are saved in an .ocl file.
 A most basic example of the file `myOCLFile.ocl` follows. 
-The filename has to be the same as the name after the keyword `ocl`.
+The filename has to be the same as the name after the keyword `ocl`.  
+**(optional)** It is possible to declare the package name and import libraries for static methods.
 
 ```
+package de.mypackage;
+
+import de.myLib;
+
 ocl myOCLFile {
     ...
 }
@@ -533,7 +538,7 @@ ocl myOCLFile {
 Invariants or Constraints belong within the ocl encapsulation.
 The are declared with the keyword `inv`, an **(optional)** invariant name and `:`.
 The invariant follows. Multiple Invariants are possible,
-however not supported yet by the generation tool ocl2java.
+however not supported yet by the generation tool `ocl2java`.
 ```
 ocl myOCLFile {
   inv myInvName:
@@ -551,6 +556,14 @@ ocl myOCLFile {
         a*a >= 0;
 }
 ```
+Multiple context variables and complex types are possible.
+```
+ocl myOCLFile {
+  context Connector conn, Port p1, p2 inv myInvName:
+        ... ;
+}
+```
+
 * How to deal with Lists, Sets?
 
 Below are a few examples of different possible comprehension types, the same applies to Sets.
@@ -571,6 +584,24 @@ ocl myOCLFile {
 }
 ```
 * How to use quantificators?
+
+`forall` and `exists` quantifiers are usable. However for the `ocl2java` tool the type of the quantified variable has to be set.
+```
+ocl myOCLFile {
+  context Component comp inv:
+    forall Port p in comp.ports: 
+        !(p.isOutgoing && p.isIncoming);
+}
+```
+
 * How to deal with implications, and other operators?
-* What are OCL pre- and post conditions?
+```
+ocl myOCLFile {
+  context Boolean a,b inv:
+    !b;
+    a && b;
+    a || b;
+    a imples b;
+}
+```
 
