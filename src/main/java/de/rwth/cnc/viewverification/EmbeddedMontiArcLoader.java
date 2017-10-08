@@ -60,6 +60,7 @@ public class EmbeddedMontiArcLoader {
   private static void extractComponent(CnCArchitecture arc, ComponentSymbol cmpSymbol, String name) {
     Component cmp = new Component();
     cmp.setName(name);
+    cmp.setComponentType(cmpSymbol.getName());
     cmp.setMarkedAtomic(cmpSymbol.isAtomic());
     //add all directly contained component names
     //    for (ComponentSymbol cs : cmpSymbol.getInnerComponents()) {
@@ -112,52 +113,6 @@ public class EmbeddedMontiArcLoader {
       extractSubComponentsRecursively(arc, cis.getComponentType().getReferencedSymbol());
     }
   }
-
-  /*
-  private static void extractComponentConnectionsRecursively(CnCArchitecture arcv, ComponentSymbol cmpSymbol) {
-    for (ConnectorSymbol connectorSymbol : cmpSymbol.getConnectors()) {
-      Connection con = new Connection();
-
-      String source = connectorSymbol.getSource();
-      String target = connectorSymbol.getTarget();
-      String[] sourceArray = source.split("\\.");
-      String[] targetArray = target.split("\\.");
-
-      assert sourceArray.length == 1 || sourceArray.length == 2;
-      assert targetArray.length == 1 || targetArray.length == 2;
-
-      if (sourceArray.length == 1) {
-        con.setSenderPort(source);
-        if (connectorSymbol.getSourcePort().getComponentInstance().isPresent())
-          con.setSender(connectorSymbol.getSourcePort().getComponentInstance().get().getName());
-        else
-          con.setSender(cmpSymbol.getName());
-      }
-      else {
-        con.setSender(sourceArray[0]);
-        con.setSenderPort(sourceArray[1]);
-      }
-
-      if (targetArray.length == 1) {
-        con.setReceiverPort(source);
-        if (connectorSymbol.getTargetPort().getComponentInstance().isPresent())
-          con.setSender(connectorSymbol.getTargetPort().getComponentInstance().get().getName());
-        else
-          con.setSender(cmpSymbol.getName());
-      }
-      else {
-        con.setReceiver(targetArray[0]);
-        con.setReceiverPort(targetArray[1]);
-      }
-
-      arcv.addConnection(con);
-    }
-
-    for (ComponentSymbol componentSymbol : cmpSymbol.getInnerComponents()) {
-      extractComponentConnectionsRecursively(arcv, componentSymbol);
-    }
-  }
-  */
 
   private static void extractComponentConnectionsRecursively(CnCArchitecture arc, ComponentSymbol componentSymbol) {
     //(1) get connectors

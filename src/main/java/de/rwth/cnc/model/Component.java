@@ -8,6 +8,7 @@ import java.util.Set;
 public class Component implements Cloneable {
 
   private String name;
+  private String componentType;
 
   private List<Port> ports = new ArrayList<Port>();
 
@@ -17,6 +18,14 @@ public class Component implements Cloneable {
   // it is called "marked atomic" since simply "atomic" sounds like a 
   // property that could have been derived from directly contained components 
   private boolean markedAtomic = false;
+
+  public String getComponentType() {
+    return componentType;
+  }
+
+  public void setComponentType(String componentType) {
+    this.componentType = componentType;
+  }
 
   /**
    * directly contained components
@@ -88,6 +97,7 @@ public class Component implements Cloneable {
     clone.directlyContainedComponents.addAll(directlyContainedComponents);
     clone.markedInterfaceComplete = markedInterfaceComplete;
     clone.markedAtomic = markedAtomic;
+    clone.componentType = componentType;
     clone.name = name;
     for (Port p : ports) {
       clone.addPort(p.clone());

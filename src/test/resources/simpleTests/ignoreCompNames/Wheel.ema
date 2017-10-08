@@ -1,0 +1,5 @@
+package simpleTests.ignoreCompNames;
+
+component Wheel {
+        port in Boolean in1;    
+}

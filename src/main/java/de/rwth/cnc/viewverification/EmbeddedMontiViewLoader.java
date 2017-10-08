@@ -419,6 +419,7 @@ public class EmbeddedMontiViewLoader {
   private static void extractComponent(CnCView view, ComponentSymbol cmpSymbol, String name) {
     Component cmp = new Component();
     cmp.setName(name);
+    cmp.setComponentType(cmpSymbol.getName());
     //add all directly contained component names
     //    for (ComponentSymbol cs : cmpSymbol.getInnerComponents()) {
     for (ComponentInstanceSymbol cs : cmpSymbol.getSubComponents()) {

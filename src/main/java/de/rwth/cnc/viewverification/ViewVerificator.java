@@ -1,10 +1,12 @@
 package de.rwth.cnc.viewverification;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 
 import de.rwth.cnc.model.*;
 import de.rwth.cnc.viewverification.checks.*;
+import de.rwth.cnc.viewverification.helper.StringIntTuple;
+import de.rwth.cnc.viewverification.helper.TypeVerificator;
 import de.rwth.cnc.viewverification.witness.*;
 import de.rwth.cnc.viewverification.inconsistency.*;
 
@@ -25,13 +27,13 @@ public class ViewVerificator {
     }
 
     public static List<InconsistencyItem> verify(String modelPath, String modelName, String viewPath, String viewName) {
-        return verify(modelPath, modelName, viewPath, viewName, true);
+        return verify(modelPath, modelName, viewPath, viewName, true, true);
     }
 
-    public static List<InconsistencyItem> verify(String modelPath, String modelName, String viewPath, String viewName, boolean generateWitnesses) {
+    public static List<InconsistencyItem> verify(String modelPath, String modelName, String viewPath, String viewName, boolean generateWitnesses, boolean ignoreInstanceNames) {
         CnCArchitecture model = loadComponent(modelPath, modelName);
         CnCView view = loadView(viewPath, viewName);
-        return verify(model, view, generateWitnesses);
+        return verify(model, view, generateWitnesses, ignoreInstanceNames);
     }
 
     public static List<InconsistencyItem> verify(CnCArchitecture model, CnCView view) {
@@ -53,6 +55,41 @@ public class ViewVerificator {
         List<InconsistencyItem> inconsistencyItems = buildInconsistencyItems(id);
         return inconsistencyItems;
     }
+
+    public static List<InconsistencyItem> verify(CnCArchitecture model, CnCView view, boolean generateWitnesses, boolean ignoreInstanceNames) {
+        if (!ignoreInstanceNames)
+            return verify(model, view, generateWitnesses);
+
+
+        boolean cmpTypesFitting = TypeVerificator.checkComponentTypes(model, view);
+
+        if (cmpTypesFitting) {
+
+
+            //Bruteforce eligible variation:
+
+            List<CnCView> bfViewList = TypeVerificator.bruteforceRenamedViews(model, view);
+
+            for (CnCView v : bfViewList) {
+                List<InconsistencyItem> result = verify(model, v, false);
+                if (result.size() == 0)
+                    if (generateWitnesses) {
+                        return verify(model, v, true);
+                    } else {
+                        return result;
+                    }
+            }
+        } else {
+            //No eligible variation possible.
+            InconsistencyItem ii = new InconsistencyItem(InconsistencyKind.TYPEVERIFCATIONERROR, "", "No eligible map from the view to the model possible. Probably missing component type or typo.");
+            return Arrays.asList(ii);
+        }
+
+        //No eligible variation found.
+        InconsistencyItem ii = new InconsistencyItem(InconsistencyKind.TYPEVERIFCATIONERROR, "", "No eligible map from the view to the model could be found.");
+        return Arrays.asList(ii);
+    }
+
 
     private static InconsistenciesData runChecks(CnCArchitecture model, CnCView view) {
         InconsistenciesData id = new InconsistenciesData();

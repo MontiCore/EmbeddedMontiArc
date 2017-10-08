@@ -1,0 +1,5 @@
+package simpleTests.ignoreCompNames;
+
+component Engine {
+        port out Boolean out1;    
+}

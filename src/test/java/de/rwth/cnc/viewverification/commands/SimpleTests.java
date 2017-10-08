@@ -181,5 +181,41 @@ public class SimpleTests {
     System.out.println("Test successful");
   }
 
+  @Test
+  public void simpleTest_atomic_PosTest_ignoreCompName() {
+    List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "simpleTests.atomic.CComp", TESTDIR,
+            "simpleTests.atomic.PosTest", false, true);
+
+    System.out.println("##############");
+    inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+    assert (inconsistencies.isEmpty()) : "There shouldnt be inconsistencies!";
+
+    System.out.println("Test successful");
+  }
+
+  @Test
+  public void simpleTest_ignoreCompName_PosViewA() {
+    List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "simpleTests.ignoreCompNames.Car", TESTDIR,
+            "simpleTests.ignoreCompNames.PosViewA", false, true);
+
+    System.out.println("##############");
+    inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+    assert (inconsistencies.isEmpty()) : "There shouldnt be inconsistencies!";
+
+    System.out.println("Test successful");
+  }
+
+  @Test
+  public void simpleTest_ignoreCompName_NegViewA() {
+    List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "simpleTests.ignoreCompNames.Car", TESTDIR,
+            "simpleTests.ignoreCompNames.NegViewA", false, true);
+
+    System.out.println("##############");
+    inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+    assert !(inconsistencies.isEmpty()) : "There >>should<< be inconsistencies!";
+
+    System.out.println("Test successful");
+  }
+
 
 }
