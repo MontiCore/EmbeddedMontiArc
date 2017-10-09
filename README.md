@@ -605,3 +605,4 @@ ocl myOCLFile {
 }
 ```
 
+* How to describe Extra-Functional property semantics in OCL/P?
