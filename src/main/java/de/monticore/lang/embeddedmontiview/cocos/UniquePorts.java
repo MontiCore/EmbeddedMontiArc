@@ -43,8 +43,7 @@ public class UniquePorts implements EmbeddedMontiViewASTInterfaceCoCo {
         name = StringTransformations.uncapitalize(implicitName);
       }
       if (usedNames.contains(name)) {
-        Log.error(String.format("0xAC002 The name of port '%s' is ambiguos!", name),
-            port.get_SourcePositionStart());
+        Log.error(String.format("0xAC002 The name of port '%s' is ambiguos!", name), port.get_SourcePositionStart());
       }
       usedNames.add(name);
 

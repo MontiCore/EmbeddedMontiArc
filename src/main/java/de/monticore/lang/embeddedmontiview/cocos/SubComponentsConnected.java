@@ -39,11 +39,11 @@ import java.util.stream.Collectors;
  *
  * @author ahaber, Robert Heim
  */
-public class SubComponentsConnected implements EmbeddedMontiViewASTComponentCoCo {
+public class SubComponentsConnected
+    implements EmbeddedMontiViewASTComponentCoCo {
 
   private Collection<String> getNames(Collection<PortSymbol> ports) {
-    return ports.stream().map(p -> p.getName())
-        .collect(Collectors.toList());
+    return ports.stream().map(p -> p.getName()).collect(Collectors.toList());
   }
 
   private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
@@ -71,21 +71,15 @@ public class SubComponentsConnected implements EmbeddedMontiViewASTComponentCoCo
       // Connectors in the outer context always refer to the ports in a relative-qualified way (e.g.
       // sub.portX) and hence we must prefix the remaining ones with sub's name to compare sets of
       // relative-qualified names
-      remainingSubIn = remainingSubIn.stream().map(s -> sub.getName() + "." + s)
-          .collect(Collectors.toList());
+      remainingSubIn = remainingSubIn.stream().map(s -> sub.getName() + "." + s).collect(Collectors.toList());
 
       Collection<String> outerConnectorTargets = getTargetNames(entry.getConnectors());
       remainingSubIn.removeAll(outerConnectorTargets);
       if (!remainingSubIn.isEmpty()) {
-        Collection<String> outerSubSimpleConnectorTargets = getTargetNames(
-            entry.getSubComponents().stream()
-                .flatMap(sc -> sc.getSimpleConnectors().stream()).collect(Collectors.toList()));
+        Collection<String> outerSubSimpleConnectorTargets = getTargetNames(entry.getSubComponents().stream().flatMap(sc -> sc.getSimpleConnectors().stream()).collect(Collectors.toList()));
         remainingSubIn.removeAll(outerSubSimpleConnectorTargets);
         if (!remainingSubIn.isEmpty()) {
-          remainingSubIn.forEach(p -> Log.error(
-              String.format("0xAC008 Port %s of subcomponent %s is not used!", p,
-                  sub.getFullName()),
-              node.get_SourcePositionStart()));
+          remainingSubIn.forEach(p -> Log.error(String.format("0xAC008 Port %s of subcomponent %s is not used!", p, sub.getFullName()), node.get_SourcePositionStart()));
         }
       }
       // ------- OUT PORTS -------
@@ -97,25 +91,19 @@ public class SubComponentsConnected implements EmbeddedMontiViewASTComponentCoCo
       // Connectors in the outer context always refer to the ports in a relative-qualified way (e.g.
       // sub.portX) and hence we must prefix the remaining ones with sub's name to compare sets of
       // relative-qualified names
-      remainingSubOut = remainingSubOut.stream().map(s -> sub.getName() + "." + s)
-          .collect(Collectors.toList());
+      remainingSubOut = remainingSubOut.stream().map(s -> sub.getName() + "." + s).collect(Collectors.toList());
 
       Collection<String> outerConnectorSources = getSourceNames(entry.getConnectors());
       remainingSubOut.removeAll(outerConnectorSources);
 
       if (!remainingSubOut.isEmpty()) {
         // qualified sources of simple connectors
-        List<Object> outerSubSimpleConnectorSources = entry.getSubComponents().stream()
-            .flatMap(sc -> sc.getSimpleConnectors().stream()
-                // map connector to qualified source name
-                .map(c -> sc.getName() + "." + c.getSource()))
-            .collect(Collectors.toList());
+        List<Object> outerSubSimpleConnectorSources = entry.getSubComponents().stream().flatMap(sc -> sc.getSimpleConnectors().stream()
+            // map connector to qualified source name
+            .map(c -> sc.getName() + "." + c.getSource())).collect(Collectors.toList());
         remainingSubOut.removeAll(outerSubSimpleConnectorSources);
         if (!remainingSubOut.isEmpty()) {
-          remainingSubOut.forEach(p -> Log.error(
-              String.format("0xAC009 Port %s of subcomponent %s is not used!", p,
-                  sub.getFullName()),
-              node.get_SourcePositionStart()));
+          remainingSubOut.forEach(p -> Log.error(String.format("0xAC009 Port %s of subcomponent %s is not used!", p, sub.getFullName()), node.get_SourcePositionStart()));
         }
       }
     }

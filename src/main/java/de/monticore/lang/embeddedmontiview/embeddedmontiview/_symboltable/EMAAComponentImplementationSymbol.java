@@ -11,7 +11,7 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
  * @author Robert Heim
  */
 public abstract class EMAAComponentImplementationSymbol
-        extends de.monticore.lang.montiarc.montiarc._symboltable.AComponentImplementationSymbol {
+    extends de.monticore.lang.montiarc.montiarc._symboltable.AComponentImplementationSymbol {
 
   public static final EMAAComponentImplementationKind KIND = EMAAComponentImplementationKind.INSTANCE;
 

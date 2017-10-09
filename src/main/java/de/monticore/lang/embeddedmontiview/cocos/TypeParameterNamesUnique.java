@@ -19,7 +19,8 @@ import java.util.List;
 /**
  * @author (last commit) Crispin Kirchner
  */
-public class TypeParameterNamesUnique implements EmbeddedMontiViewASTComponentHeadCoCo {
+public class TypeParameterNamesUnique
+    implements EmbeddedMontiViewASTComponentHeadCoCo {
 
   /**
    * @see de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiViewASTComponentCoCo#check(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent)
@@ -35,9 +36,7 @@ public class TypeParameterNamesUnique implements EmbeddedMontiViewASTComponentHe
     for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarations()) {
 
       if (typeParameterNames.contains(typeParameter.getNamingResolution().get().getName())) {
-        Log.error(String.format(
-            "0x35F1A The formal type parameter name \"%s\" is not unique",
-            typeParameter.getNamingResolution().get().getName()), typeParameter.get_SourcePositionStart());
+        Log.error(String.format("0x35F1A The formal type parameter name \"%s\" is not unique", typeParameter.getNamingResolution().get().getName()), typeParameter.get_SourcePositionStart());
       }
 
       else {

@@ -27,13 +27,7 @@ public class ASTComponent extends ASTComponentTOP {
     super();
   }
 
-  protected ASTComponent(
-      ASTIsAtomicTag IsAtomicTag,
-      String name,
-      ASTComponentHead head,
-      String instanceName,
-      ASTTypeArguments actualTypeArgument,
-      ASTComponentBody body) {
+  protected ASTComponent(ASTIsAtomicTag IsAtomicTag, String name, ASTComponentHead head, String instanceName, ASTTypeArguments actualTypeArgument, ASTComponentBody body) {
     super(IsAtomicTag, name, head, instanceName, actualTypeArgument, body);
   }
 

@@ -36,75 +36,52 @@ import java.util.Set;
  */
 public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
 
-    protected LinkedHashSet<ComponentSymbol> topComponents = new LinkedHashSet<>();
+  protected LinkedHashSet<ComponentSymbol> topComponents = new LinkedHashSet<>();
 
-    public EmbeddedMontiArcExpandedComponentInstanceSymbolCreator() {
+  public EmbeddedMontiArcExpandedComponentInstanceSymbolCreator() {
+  }
+
+  public static Scope getGlobalScope(final Scope scope) {
+    Scope s = scope;
+    while (s.getEnclosingScope().isPresent()) {
+      s = s.getEnclosingScope().get();
+    }
+    return s;
+  }
+
+  protected ExpandedComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters) {
+    // TODO resolve generics and parameters
+    //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
+    ExpandedComponentInstanceBuilder builder = ExpandedComponentInstanceSymbol.builder().setSymbolReference(new ComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope())).addPorts(cmp.getPorts()).addConnectors(cmp.getConnectors());
+
+    // add sub components
+    for (ComponentInstanceSymbol inst : cmp.getSubComponents()) {
+      //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
+      Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
+      builder.addSubComponent(createInstance(inst.getComponentType(), filters).setName(inst.getName()).addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(), inst.getComponentType().getActualTypeArguments()).addResolvingFilters(filters).build());
+      Log.debug(inst.toString(), "ComponentInstance CreateInstance PostSub");
     }
 
-    public static Scope getGlobalScope(final Scope scope) {
-        Scope s = scope;
-        while (s.getEnclosingScope().isPresent()) {
-            s = s.getEnclosingScope().get();
-        }
-        return s;
+    // add inherited ports and sub components
+    for (ComponentSymbol superCmp = cmp; superCmp.getSuperComponent().isPresent(); superCmp = superCmp.getSuperComponent().get()) {
+
+      if (superCmp.getSuperComponent().get().getFormalTypeParameters().size() != superCmp.getSuperComponent().get().getActualTypeArguments().size()) {
+        Log.error(String.format("Super component '%s' definition has %d generic parameters, but its" + "instantiation has %d binds generic parameters", superCmp.getFullName(), superCmp.getSuperComponent().get().getFormalTypeParameters().size(), superCmp.getSuperComponent().get().getActualTypeArguments().size()));
+        return null;
+      }
+
+      builder.addPortsIfNameDoesNotExists(superCmp.getSuperComponent().get().getPorts(), superCmp.getSuperComponent().get().getFormalTypeParameters(), superCmp.getSuperComponent().get().getActualTypeArguments());
+      builder.addConnectorsIfNameDoesNotExists(superCmp.getSuperComponent().get().getConnectors());
+      Log.debug(superCmp.toString(), "superCmp pre lambda");
+      superCmp.getSuperComponent().get().getSubComponents().stream().forEachOrdered(inst -> builder.addSubComponentIfNameDoesNotExists(createInstance(inst.getComponentType(), filters).setName(inst.getName()).addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(), inst.getComponentType().getActualTypeArguments()).addResolvingFilters(filters).build())
+
+      );
+      Log.debug(superCmp.toString(), "superCmp post lambda");
+
     }
 
-    protected ExpandedComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters) {
-        // TODO resolve generics and parameters
-        //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
-        ExpandedComponentInstanceBuilder builder =
-                ExpandedComponentInstanceSymbol.builder()
-                        .setSymbolReference(new ComponentSymbolReference(cmp.getName(),
-                                cmp.getEnclosingScope()))
-                        .addPorts(cmp.getPorts())
-                        .addConnectors(cmp.getConnectors());
-
-        // add sub components
-        for (ComponentInstanceSymbol inst : cmp.getSubComponents()) {
-            //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
-            Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
-            builder.addSubComponent(
-                    createInstance(inst.getComponentType(), filters)
-                            .setName(inst.getName())
-                            .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(),
-                                    inst.getComponentType().getActualTypeArguments()).addResolvingFilters(filters).build());
-            Log.debug(inst.toString(), "ComponentInstance CreateInstance PostSub");
-        }
-
-        // add inherited ports and sub components
-        for (ComponentSymbol superCmp = cmp;
-             superCmp.getSuperComponent().isPresent();
-             superCmp = superCmp.getSuperComponent().get()) {
-
-            if (superCmp.getSuperComponent().get().getFormalTypeParameters().size() !=
-                    superCmp.getSuperComponent().get().getActualTypeArguments().size()) {
-                Log.error(String.format("Super component '%s' definition has %d generic parameters, but its"
-                                + "instantiation has %d binds generic parameters", superCmp.getFullName(),
-                        superCmp.getSuperComponent().get().getFormalTypeParameters().size(),
-                        superCmp.getSuperComponent().get().getActualTypeArguments().size()));
-                return null;
-            }
-
-            builder.addPortsIfNameDoesNotExists(
-                    superCmp.getSuperComponent().get().getPorts(),
-                    superCmp.getSuperComponent().get().getFormalTypeParameters(),
-                    superCmp.getSuperComponent().get().getActualTypeArguments());
-            builder.addConnectorsIfNameDoesNotExists(superCmp.getSuperComponent().get().getConnectors());
-            Log.debug(superCmp.toString(), "superCmp pre lambda");
-            superCmp.getSuperComponent().get().getSubComponents().stream().forEachOrdered(
-                    inst -> builder.addSubComponentIfNameDoesNotExists(
-                            createInstance(inst.getComponentType(), filters).setName(inst.getName())
-                                    .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(),
-                                            inst.getComponentType().getActualTypeArguments())
-                                    .addResolvingFilters(filters).build())
-
-            );
-            Log.debug(superCmp.toString(), "superCmp post lambda");
-
-        }
-
-        return builder;
-    }
+    return builder;
+  }
 /*
     protected ExpandedComponentInstanceBuilder createInstance(ViewSymbol view, final Set<ResolvingFilter<? extends Symbol>> filters) {
         // TODO resolve generics and parameters

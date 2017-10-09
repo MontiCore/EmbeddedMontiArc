@@ -16,7 +16,8 @@ import java.util.List;
 /**
  * @author Crispin Kirchner
  */
-public class ParameterNamesUnique implements EmbeddedMontiViewASTComponentHeadCoCo {
+public class ParameterNamesUnique
+    implements EmbeddedMontiViewASTComponentHeadCoCo {
 
   /**
    * @see EmbeddedMontiViewASTComponentHeadCoCo#check(ASTComponentHead)
@@ -29,8 +30,7 @@ public class ParameterNamesUnique implements EmbeddedMontiViewASTComponentHeadCo
     for (ASTParameter parameter : parameters) {
 
       if (parameterNames.contains(parameter.getName())) {
-        Log.error(String.format("0xC4A61 Parameter name \"%s\" not unique", parameter.getName()),
-            parameter.get_SourcePositionStart());
+        Log.error(String.format("0xC4A61 Parameter name \"%s\" not unique", parameter.getName()), parameter.get_SourcePositionStart());
       }
 
       else {

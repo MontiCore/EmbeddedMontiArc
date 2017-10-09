@@ -16,11 +16,11 @@ import java.util.List;
 
 /**
  * Implements R1 and R2
- * 
+ *
  * @author Crispin Kirchner
  */
 public class InPortUniqueSender implements EmbeddedMontiViewASTComponentCoCo {
-  
+
   /**
    * @see EmbeddedMontiViewASTComponentCoCo#check(ASTComponent)
    */
@@ -29,33 +29,32 @@ public class InPortUniqueSender implements EmbeddedMontiViewASTComponentCoCo {
     InPortUniqueSenderCheck check = new InPortUniqueSenderCheck(node);
     check.check();
   }
-  
+
   private class InPortUniqueSenderCheck {
     private List<String> connectorTargets = new ArrayList<>();
-    
+
     private ASTComponent node;
-    
+
     public InPortUniqueSenderCheck(ASTComponent node) {
       this.node = node;
     }
-    
+
     public void check() {
       checkConnectors();
       //checkSimpleConnectors();
     }
-    
+
     private void checkTarget(ASTQualifiedNameWithArray target) {
       String targetString = target.toString();
-      
+
       if (connectorTargets.contains(targetString)) {
-        Log.error(String.format("0x2BD7E target port \"%s\" already in use.", target.toString()),
-            target.get_SourcePositionStart());
+        Log.error(String.format("0x2BD7E target port \"%s\" already in use.", target.toString()), target.get_SourcePositionStart());
       }
       else {
         connectorTargets.add(targetString);
       }
     }
-    
+
     private void checkConnectors() {
       for (ASTConnector connector : node.getConnectors()) {
         for (ASTQualifiedNameWithArray target : connector.getTargets()) {
@@ -76,5 +75,5 @@ public class InPortUniqueSender implements EmbeddedMontiViewASTComponentCoCo {
       }
     }*/
   }
-  
+
 }

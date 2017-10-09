@@ -89,8 +89,7 @@ public class EffectorSymbol extends TaggingSymbol {
     }
 
     // (1) try to load Component.Port or ExpandedComponentInstance.Port
-    String fullSource = Joiners.DOT.join(this.getPackageName(),
-        this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
+    String fullSource = Joiners.DOT.join(this.getPackageName(), this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
     Optional<PortSymbol> port = this.getEnclosingScope().<PortSymbol>resolve(fullSource, PortSymbol.KIND);
     if (port.isPresent()) {
       return port.get();
@@ -117,14 +116,12 @@ public class EffectorSymbol extends TaggingSymbol {
     }
     String instancePort = parts.next();
     Log.debug("" + instancePort, "instancePort");
-    Optional<ComponentInstanceSymbol> inst = cmp.getSpannedScope()
-        .<ComponentInstanceSymbol>resolve(instance, ComponentInstanceSymbol.KIND);
+    Optional<ComponentInstanceSymbol> inst = cmp.getSpannedScope().<ComponentInstanceSymbol>resolve(instance, ComponentInstanceSymbol.KIND);
     if (!inst.isPresent()) {
       Log.warn(String.format("Could not find instance %s in component %s, cannot resolve port", instance, cmp.getFullName()));
       return null;
     }
-    port = inst.get().getComponentType().getReferencedSymbol().getSpannedScope()
-        .resolve(instancePort, PortSymbol.KIND);
+    port = inst.get().getComponentType().getReferencedSymbol().getSpannedScope().resolve(instancePort, PortSymbol.KIND);
       /*
       PortSymbol portCS=getEnclosingScope().<PortSymbol>resolve(name,PortSymbol.KIND).get();
     Log.debug(""+portCS.getName()+" "+portCS.getFullName(),"resolved");

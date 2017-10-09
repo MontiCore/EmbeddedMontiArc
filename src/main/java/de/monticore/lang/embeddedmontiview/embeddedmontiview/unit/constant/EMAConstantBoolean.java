@@ -23,17 +23,17 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview.unit.constant;
  * Represents a constant Boolean which is used for constant connectors
  */
 public class EMAConstantBoolean extends EMAConstantValue {
-    public EMAConstantBoolean(boolean b) {
-        super(b);
-    }
+  public EMAConstantBoolean(boolean b) {
+    super(b);
+  }
 
-    @Override
-    public boolean isBoolean() {
-        return true;
-    }
+  @Override
+  public boolean isBoolean() {
+    return true;
+  }
 
-    @Override
-    public String getValueAsString(){
-        return String.valueOf(getValue());
-    }
+  @Override
+  public String getValueAsString() {
+    return String.valueOf(getValue());
+  }
 }

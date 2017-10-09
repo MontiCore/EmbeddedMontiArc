@@ -47,8 +47,7 @@ public class EmbeddedMontiArcModelNameCalculator
     if (ComponentSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponent(name));
     }
-    else if (PortSymbol.KIND.isKindOf(kind) ||
-            PortArraySymbol.KIND.isKindOf(kind)) {
+    else if (PortSymbol.KIND.isKindOf(kind) || PortArraySymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForPort(name));
     }
     else if (ConnectorSymbol.KIND.isKindOf(kind)) {
@@ -82,10 +81,7 @@ public class EmbeddedMontiArcModelNameCalculator
     List<String> parts = Splitters.DOT.splitToList(name);
     if (parts.size() > 1) {
       String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
-      return ImmutableSet.<String>builder()
-          .addAll(calculateModelNameForComponent(modelName))
-          .addAll(calculateModelNameForExpandedComponentInstance(modelName))
-          .build();
+      return ImmutableSet.<String>builder().addAll(calculateModelNameForComponent(modelName)).addAll(calculateModelNameForExpandedComponentInstance(modelName)).build();
     }
     return ImmutableSet.of();
   }
@@ -124,12 +120,7 @@ public class EmbeddedMontiArcModelNameCalculator
       return calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1)));
     }
     else if (parts.size() >= 2) {
-      return ImmutableSet.<String>builder()
-          .addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
-          .addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
-          .addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
-          .addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
-          .build();
+      return ImmutableSet.<String>builder().addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1)))).addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 2)))).addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 1)))).addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 2)))).build();
     }
     return ImmutableSet.of();
   }

@@ -21,8 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author ahaber, Robert Heim
  */
 public class TypeCompatibilityChecker {
-  private static int getPositionInFormalTypeParameters(List<JTypeSymbol> formalTypeParameters,
-      JTypeReference<? extends JTypeSymbol> searchedFormalTypeParameter) {
+  private static int getPositionInFormalTypeParameters(List<JTypeSymbol> formalTypeParameters, JTypeReference<? extends JTypeSymbol> searchedFormalTypeParameter) {
     int positionInFormal = 0;
     for (JTypeSymbol formalTypeParameter : formalTypeParameters) {
       if (formalTypeParameter.getName().equals(searchedFormalTypeParameter.getName())) {
@@ -52,11 +51,7 @@ public class TypeCompatibilityChecker {
    * @param targetTypeArguments
    * @return
    */
-  public static boolean doTypesMatch(JTypeReference<? extends JTypeSymbol> sourceType,
-      List<JTypeSymbol> sourceTypeFormalTypeParameters,
-      List<JTypeReference<? extends JTypeSymbol>> sourceTypeArguments, JTypeReference<? extends JTypeSymbol> targetType,
-      List<JTypeSymbol> targetTypeFormalTypeParameters,
-      List<JTypeReference<? extends JTypeSymbol>> targetTypeArguments) {
+  public static boolean doTypesMatch(JTypeReference<? extends JTypeSymbol> sourceType, List<JTypeSymbol> sourceTypeFormalTypeParameters, List<JTypeReference<? extends JTypeSymbol>> sourceTypeArguments, JTypeReference<? extends JTypeSymbol> targetType, List<JTypeSymbol> targetTypeFormalTypeParameters, List<JTypeReference<? extends JTypeSymbol>> targetTypeArguments) {
 
     // TODO reuse Java type checker?
 
@@ -65,69 +60,38 @@ public class TypeCompatibilityChecker {
     boolean result = false;
     if (sourceType.getReferencedSymbol().isFormalTypeParameter()) {
       // bind the generic to the actual type
-      int positionInFormal = getPositionInFormalTypeParameters(sourceTypeFormalTypeParameters,
-          sourceType);
+      int positionInFormal = getPositionInFormalTypeParameters(sourceTypeFormalTypeParameters, sourceType);
       sourceType = sourceTypeArguments.get(positionInFormal);
     }
     if (targetType.getReferencedSymbol().isFormalTypeParameter()) {
       // bind the generic to the actual type
-      int positionInFormal = getPositionInFormalTypeParameters(targetTypeFormalTypeParameters,
-          targetType);
+      int positionInFormal = getPositionInFormalTypeParameters(targetTypeFormalTypeParameters, targetType);
       targetType = targetTypeArguments.get(positionInFormal);
     }
 
-    if (sourceType.getReferencedSymbol().getFullName()
-        .equals(targetType.getReferencedSymbol().getFullName()) &&
-        sourceType.getDimension() == targetType.getDimension() &&
-        sourceType.getActualTypeArguments().size() == targetType.getActualTypeArguments().size()) {
+    if (sourceType.getReferencedSymbol().getFullName().equals(targetType.getReferencedSymbol().getFullName()) && sourceType.getDimension() == targetType.getDimension() && sourceType.getActualTypeArguments().size() == targetType.getActualTypeArguments().size()) {
       result = true;
       // type without generics does match, now we must check that the type arguments match
       List<ActualTypeArgument> sourceParams = sourceType.getActualTypeArguments();
       List<ActualTypeArgument> targetParams = targetType.getActualTypeArguments();
       for (int i = 0; i < sourceParams.size(); i++) {
-        JTypeReference<? extends JTypeSymbol> sourceTypesCurrentTypeArgument = (JTypeReference<?>) sourceParams
-            .get(i)
-            .getType();
-        JTypeReference<? extends JTypeSymbol> targetTypesCurrentTypeArgument = (JTypeReference<?>) targetParams
-            .get(i)
-            .getType();
-        if (!doTypesMatch(sourceTypesCurrentTypeArgument,
-            sourceTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()),
-            sourceTypesCurrentTypeArgument.getActualTypeArguments().stream()
-                .map(a -> (JTypeReference<?>) a.getType()).collect(Collectors.toList()),
-            targetTypesCurrentTypeArgument,
-            targetTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()),
-            targetTypesCurrentTypeArgument.getActualTypeArguments().stream()
-                .map(a -> (JTypeReference<?>) a.getType()).collect(Collectors.toList()))) {
+        JTypeReference<? extends JTypeSymbol> sourceTypesCurrentTypeArgument = (JTypeReference<?>) sourceParams.get(i).getType();
+        JTypeReference<? extends JTypeSymbol> targetTypesCurrentTypeArgument = (JTypeReference<?>) targetParams.get(i).getType();
+        if (!doTypesMatch(sourceTypesCurrentTypeArgument, sourceTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), sourceTypesCurrentTypeArgument.getActualTypeArguments().stream().map(a -> (JTypeReference<?>) a.getType()).collect(Collectors.toList()), targetTypesCurrentTypeArgument, targetTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), targetTypesCurrentTypeArgument.getActualTypeArguments().stream().map(a -> (JTypeReference<?>) a.getType()).collect(Collectors.toList()))) {
           result = false;
           break;
         }
       }
     }
-    else if (!sourceType.getReferencedSymbol().getFullName()
-        .equals(targetType.getReferencedSymbol().getFullName())) {
+    else if (!sourceType.getReferencedSymbol().getFullName().equals(targetType.getReferencedSymbol().getFullName())) {
       // check, if superclass from sourceType is compatible with targetType
       if (sourceType.getReferencedSymbol().getSuperClass().isPresent()) {
         JTypeReference<? extends JTypeSymbol> parent = sourceType.getReferencedSymbol().getSuperClass().get();
-        result = doTypesMatch(parent,
-            parent.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()),
-            parent.getActualTypeArguments().stream().map(a -> (JavaTypeSymbolReference) a.getType())
-                .collect(Collectors.toList()),
-            targetType,
-            targetTypeFormalTypeParameters,
-            targetTypeArguments);
+        result = doTypesMatch(parent, parent.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), parent.getActualTypeArguments().stream().map(a -> (JavaTypeSymbolReference) a.getType()).collect(Collectors.toList()), targetType, targetTypeFormalTypeParameters, targetTypeArguments);
       }
       if (!result && !sourceType.getReferencedSymbol().getInterfaces().isEmpty()) {
         for (JTypeReference<? extends JTypeSymbol> interf : sourceType.getReferencedSymbol().getInterfaces()) {
-          result = doTypesMatch(
-              interf,
-              interf.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()),
-              interf.getActualTypeArguments().stream()
-                  .map(a -> (JavaTypeSymbolReference) a.getType())
-                  .collect(Collectors.toList()),
-              targetType,
-              targetTypeFormalTypeParameters,
-              targetTypeArguments);
+          result = doTypesMatch(interf, interf.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), interf.getActualTypeArguments().stream().map(a -> (JavaTypeSymbolReference) a.getType()).collect(Collectors.toList()), targetType, targetTypeFormalTypeParameters, targetTypeArguments);
           if (result) {
             break;
           }

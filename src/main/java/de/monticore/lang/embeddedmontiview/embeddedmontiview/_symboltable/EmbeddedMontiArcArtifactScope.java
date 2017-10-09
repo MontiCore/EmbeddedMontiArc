@@ -34,7 +34,8 @@ import java.util.function.Predicate;
  *
  * @see <a href="https://sselab.de/lab2/private/trac/MontiArc4/ticket/36">Ticket 36</a>
  */
-public class EmbeddedMontiArcArtifactScope extends de.monticore.lang.montiarc.montiarc._symboltable.MontiArcArtifactScope {
+public class EmbeddedMontiArcArtifactScope
+    extends de.monticore.lang.montiarc.montiarc._symboltable.MontiArcArtifactScope {
 
   private CommonQualifiedNamesCalculator qualifiedNamesCalculator = new CommonQualifiedNamesCalculator();
 
@@ -52,8 +53,7 @@ public class EmbeddedMontiArcArtifactScope extends de.monticore.lang.montiarc.mo
 
     if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
-        Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
-            + "enclosing scope at all.");
+        Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no " + "enclosing scope at all.");
       }
 
       final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, getPackageName(), getImports());

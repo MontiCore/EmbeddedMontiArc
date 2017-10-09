@@ -17,7 +17,8 @@ import de.se_rwth.commons.logging.Log;
  *
  * @author Robert Heim
  */
-public class PackageLowerCase implements EmbeddedMontiViewASTEMVCompilationUnitCoCo {
+public class PackageLowerCase
+    implements EmbeddedMontiViewASTEMVCompilationUnitCoCo {
 
   /**
    * @see EmbeddedMontiViewASTEMVCompilationUnitCoCo#check(ASTEMVCompilationUnit)

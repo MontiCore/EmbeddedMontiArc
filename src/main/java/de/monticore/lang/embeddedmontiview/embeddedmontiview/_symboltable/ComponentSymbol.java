@@ -278,7 +278,6 @@ public class ComponentSymbol extends TaggingScopeSpanningSymbol {
     referencedComponent.orElse(this).isInterfaceComplete = isInterfaceComplete;
   }
 
-
   /**
    * @param formalTypeParameter generic type parameter to add
    */
@@ -554,13 +553,11 @@ public class ComponentSymbol extends TaggingScopeSpanningSymbol {
     return getSubComponents().isEmpty();
   }
 
-  public boolean isMarkedAtomic()
-  {
+  public boolean isMarkedAtomic() {
     return this.isMarkedAtomic;
   }
 
-  public void setMarkedAtomic(boolean markedAtomic)
-  {
+  public void setMarkedAtomic(boolean markedAtomic) {
     this.isMarkedAtomic = markedAtomic;
   }
 

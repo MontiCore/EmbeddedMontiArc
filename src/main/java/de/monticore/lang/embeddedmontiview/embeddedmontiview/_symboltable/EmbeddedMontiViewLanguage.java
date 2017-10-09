@@ -26,50 +26,51 @@ import java.util.LinkedHashSet;
  *
  * @author Robert Heim, Michael von Wenckstern
  */
-public class EmbeddedMontiViewLanguage extends EmbeddedMontiViewLanguageTOP implements TagableModelingLanguage {
+public class EmbeddedMontiViewLanguage extends EmbeddedMontiViewLanguageTOP
+    implements TagableModelingLanguage {
 
-    public static final String FILE_ENDING = "emv";
+  public static final String FILE_ENDING = "emv";
 
-    protected LinkedHashSet<TagSymbolCreator> tagSymbolCreators = new LinkedHashSet<>();
+  protected LinkedHashSet<TagSymbolCreator> tagSymbolCreators = new LinkedHashSet<>();
 
-    public EmbeddedMontiViewLanguage() {
-        super("Embedded MontiView Language", FILE_ENDING);
-    }
+  public EmbeddedMontiViewLanguage() {
+    super("Embedded MontiView Language", FILE_ENDING);
+  }
 
-    @Override
-    protected void initResolvingFilters() {
-        super.initResolvingFilters();
-        // is done in generated TOP-language addResolver(new
-        // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(ComponentInstanceSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(PortSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(PortArraySymbol.KIND));
-        addResolver(new EMAConnectorResolvingFilter<>(ConnectorSymbol.KIND));
-        addResolver(new EMAConnectorResolvingFilter<>(EffectorSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(ExpandedComponentInstanceSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(SIUnitSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(SIUnitRangesSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(JTypeSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(JFieldSymbol.KIND));
-        addResolver(new CommonResolvingFilter<>(JMethodSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(ResolutionDeclarationSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(UnitNumberResolutionSymbol.KIND));
-        setModelNameCalculator(new EmbeddedMontiArcModelNameCalculator());
-    }
+  @Override
+  protected void initResolvingFilters() {
+    super.initResolvingFilters();
+    // is done in generated TOP-language addResolver(new
+    // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(ComponentInstanceSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(PortSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(PortArraySymbol.KIND));
+    addResolver(new EMAConnectorResolvingFilter<>(ConnectorSymbol.KIND));
+    addResolver(new EMAConnectorResolvingFilter<>(EffectorSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(ExpandedComponentInstanceSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(SIUnitSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(SIUnitRangesSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(JTypeSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(JFieldSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(JMethodSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(ResolutionDeclarationSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(UnitNumberResolutionSymbol.KIND));
+    setModelNameCalculator(new EmbeddedMontiArcModelNameCalculator());
+  }
 
-    public void addTagSymbolCreator(TagSymbolCreator tagSymbolCreator) {
-        this.tagSymbolCreators.add(tagSymbolCreator);
-    }
+  public void addTagSymbolCreator(TagSymbolCreator tagSymbolCreator) {
+    this.tagSymbolCreators.add(tagSymbolCreator);
+  }
 
-    public ImmutableSet<TagSymbolCreator> getTagSymbolCreators() {
-        return ImmutableSet.copyOf(this.tagSymbolCreators);
-    }
+  public ImmutableSet<TagSymbolCreator> getTagSymbolCreators() {
+    return ImmutableSet.copyOf(this.tagSymbolCreators);
+  }
 
-    /**
-     * @see de.monticore.CommonModelingLanguage#provideModelLoader()
-     */
-    @Override
-    protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
-        return new EmbeddedMontiViewModelLoader(this);
-    }
+  /**
+   * @see de.monticore.CommonModelingLanguage#provideModelLoader()
+   */
+  @Override
+  protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
+    return new EmbeddedMontiViewModelLoader(this);
+  }
 }

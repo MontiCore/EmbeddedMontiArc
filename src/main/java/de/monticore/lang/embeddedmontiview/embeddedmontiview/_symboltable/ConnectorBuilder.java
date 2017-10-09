@@ -29,7 +29,7 @@ import java.util.Optional;
 public class ConnectorBuilder {
   protected Optional<String> source = Optional.empty();
   protected Optional<String> target = Optional.empty();
-//  protected Optional<ConstantPortSymbol> portSymbol = Optional.empty();
+  //  protected Optional<ConstantPortSymbol> portSymbol = Optional.empty();
 
   public static ConnectorSymbol clone(ConnectorSymbol con) {
     return new ConnectorBuilder().setSource(con.getSource()).
@@ -45,20 +45,20 @@ public class ConnectorBuilder {
     this.target = Optional.of(target);
     return this;
   }
- 
-//  public ConnectorBuilder setConstantPortSymbol(ConstantPortSymbol portSymbol) {
-//    this.portSymbol = Optional.of(portSymbol);
-//    return this;
-//  }
+
+  //  public ConnectorBuilder setConstantPortSymbol(ConstantPortSymbol portSymbol) {
+  //    this.portSymbol = Optional.of(portSymbol);
+  //    return this;
+  //  }
 
   public ConnectorSymbol build() {
     if (source.isPresent() && target.isPresent()) {
       ConnectorSymbol con = new ConnectorSymbol(this.target.get());
       con.setSource(this.source.get());
       con.setTarget(this.target.get());
-//	  if(portSymbol.orElse(null) != null) {
-//        con.setConstantPortSymbol(portSymbol.get());
-//	  }
+      //	  if(portSymbol.orElse(null) != null) {
+      //        con.setConstantPortSymbol(portSymbol.get());
+      //	  }
       return con;
     }
     Log.error("not all parameters have been set before to build the connector symbol");

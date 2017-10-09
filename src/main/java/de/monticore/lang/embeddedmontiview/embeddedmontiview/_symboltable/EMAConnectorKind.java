@@ -23,8 +23,8 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 public class EMAConnectorKind
-        extends de.monticore.lang.montiarc.montiarc._symboltable.ConnectorKind
-        implements de.monticore.symboltable.SymbolKind {
+    extends de.monticore.lang.montiarc.montiarc._symboltable.ConnectorKind
+    implements de.monticore.symboltable.SymbolKind {
 
   public static final EMAConnectorKind INSTANCE = new EMAConnectorKind();
 

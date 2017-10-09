@@ -31,25 +31,12 @@ public class ComponentWithTypeParametersHasInstance
 
     Collection<ComponentInstanceSymbol> subComponents = componentSymbol.getSubComponents();
 
-    Set<ComponentSymbol> instantiatedInnerComponents = subComponents
-        .stream()
-        .map(instanceSymbol -> instanceSymbol.getComponentType().getReferencedSymbol())
-        .filter(symbol -> symbol.hasFormalTypeParameters())
-        .collect(Collectors.toSet());
+    Set<ComponentSymbol> instantiatedInnerComponents = subComponents.stream().map(instanceSymbol -> instanceSymbol.getComponentType().getReferencedSymbol()).filter(symbol -> symbol.hasFormalTypeParameters()).collect(Collectors.toSet());
 
-    List<ComponentSymbol> notInstantiatedInnerComponents = componentSymbol
-        .getInnerComponents()
-        .stream()
-        .filter(symbol -> symbol.hasFormalTypeParameters())
-        .filter(innerComponent -> !instantiatedInnerComponents.contains(innerComponent))
-        .collect(Collectors.toList());
+    List<ComponentSymbol> notInstantiatedInnerComponents = componentSymbol.getInnerComponents().stream().filter(symbol -> symbol.hasFormalTypeParameters()).filter(innerComponent -> !instantiatedInnerComponents.contains(innerComponent)).collect(Collectors.toList());
 
     for (ComponentSymbol notInstantiatedInnerComponent : notInstantiatedInnerComponents) {
-      Log.error(
-          String.format(
-              "0x79C00 Inner component \"%s\" must have an instance defining its formal type parameters.",
-              notInstantiatedInnerComponent.getName()),
-          notInstantiatedInnerComponent.getSourcePosition());
+      Log.error(String.format("0x79C00 Inner component \"%s\" must have an instance defining its formal type parameters.", notInstantiatedInnerComponent.getName()), notInstantiatedInnerComponent.getSourcePosition());
     }
   }
 }

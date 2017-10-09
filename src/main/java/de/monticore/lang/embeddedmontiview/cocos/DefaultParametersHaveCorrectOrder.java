@@ -38,8 +38,7 @@ public class DefaultParametersHaveCorrectOrder
       }
       else {
         if (foundDefaultParameter && !param.getDefaultValue().isPresent()) {
-          Log.error("0xAC005 There are non default parameters after a default parameter",
-              node.get_SourcePositionStart());
+          Log.error("0xAC005 There are non default parameters after a default parameter", node.get_SourcePositionStart());
         }
       }
     }

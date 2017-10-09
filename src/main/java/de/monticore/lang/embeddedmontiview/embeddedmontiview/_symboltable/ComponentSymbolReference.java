@@ -40,123 +40,123 @@ import java.util.Optional;
 /**
  * Represents a reference of {@link ComponentSymbol}.
  */
-public class ComponentSymbolReference extends ComponentSymbol implements
-        SymbolReference<ComponentSymbol> {
+public class ComponentSymbolReference extends ComponentSymbol
+    implements SymbolReference<ComponentSymbol> {
 
-    protected final SymbolReference<ComponentSymbol> reference;
-    private List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
+  protected final SymbolReference<ComponentSymbol> reference;
+  private List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
 
-    public ComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
-        super(name);
-        reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
-        if (existsReferencedSymbol()) {
-            setReferencedComponent(Optional.of(getReferencedSymbol()));
+  public ComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
+    super(name);
+    reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
+    if (existsReferencedSymbol()) {
+      setReferencedComponent(Optional.of(getReferencedSymbol()));
 
+    }
+
+  }
+
+  public ComponentSymbolReference(final String name, final Scope definingScopeOfReference, EmbeddedMontiViewSymbolTableCreator emastc) {
+    super(name);
+    reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
+    if (existsReferencedSymbol()) {
+      Log.debug("Loading resolution declarationSymbols", "info");
+      setReferencedComponent(Optional.of(getReferencedSymbol()));
+      this.getResolutionDeclarationSymbols().addAll(reference.getReferencedSymbol().getResolutionDeclarationSymbols());
+
+    }
+    else {
+      Log.debug("Reference to " + name + " does not exist", "info");
+
+    }
+
+  }
+
+  public void fixResolutions(EmbeddedMontiViewSymbolTableCreator emastc) {
+
+    int count = 0;
+    for (ResolutionDeclarationSymbol resDeclSym : getResolutionDeclarationSymbols()) {
+      Log.debug("" + ((ASTUnitNumberResolution) getResolutionDeclarationSymbols().get(count).getASTResolution()).getNumber().get().intValue(), "resolus:");
+      String lastNameStart = "";
+      for (PortSymbol portSymbol : getIncomingPorts()) {
+        Log.debug(portSymbol.getName(), "Found Port:");
+        if (!portSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
+          lastNameStart = portSymbol.getNameWithoutArrayBracketPart();
+          Log.debug(lastNameStart, "Found PortArray:");
+          Log.debug(portSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
+          PortArraySymbol portArraySymbol = portSymbol.getEnclosingScope().<PortArraySymbol>resolve(lastNameStart, PortArraySymbol.KIND).get();
+          portArraySymbol.recreatePortArray(resDeclSym, emastc, this);
         }
-
+      }
     }
 
+    Log.debug("" + getIncomingPorts().size(), "incoming:");
 
-    public ComponentSymbolReference(final String name, final Scope definingScopeOfReference, EmbeddedMontiViewSymbolTableCreator emastc) {
-        super(name);
-        reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
-        if (existsReferencedSymbol()) {
-            Log.debug("Loading resolution declarationSymbols","info");
-            setReferencedComponent(Optional.of(getReferencedSymbol()));
-            this.getResolutionDeclarationSymbols().addAll(reference.getReferencedSymbol().getResolutionDeclarationSymbols());
+    Log.debug("" + getOutgoingPorts().size(), "outgoing:");
+  }
 
-        }else{
-            Log.debug("Reference to "+name +" does not exist","info");
+  public List<ActualTypeArgument> getActualTypeArguments() {
+    return ImmutableList.copyOf(actualTypeArguments);
+  }
 
-        }
+  public void setActualTypeArguments(List<ActualTypeArgument> actualTypeArguments) {
+    this.actualTypeArguments = new ArrayList<>(actualTypeArguments);
+  }
 
-    }
+  public boolean hasActualTypeArguments() {
+    return this.actualTypeArguments.size() > 0;
+  }
 
-    public void fixResolutions(EmbeddedMontiViewSymbolTableCreator emastc) {
-
-        int count = 0;
-        for (ResolutionDeclarationSymbol resDeclSym : getResolutionDeclarationSymbols()) {
-            Log.debug("" + ((ASTUnitNumberResolution) getResolutionDeclarationSymbols().get(count).getASTResolution()).getNumber().get().intValue(), "resolus:");
-            String lastNameStart = "";
-            for (PortSymbol portSymbol : getIncomingPorts()) {
-                Log.debug(portSymbol.getName(), "Found Port:");
-                if (!portSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
-                    lastNameStart = portSymbol.getNameWithoutArrayBracketPart();
-                    Log.debug(lastNameStart, "Found PortArray:");
-                    Log.debug(portSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
-                    PortArraySymbol portArraySymbol = portSymbol.getEnclosingScope().<PortArraySymbol>resolve(lastNameStart, PortArraySymbol.KIND).get();
-                    portArraySymbol.recreatePortArray(resDeclSym, emastc, this);
-                }
-            }
-        }
-
-        Log.debug("" + getIncomingPorts().size(), "incoming:");
-
-        Log.debug("" + getOutgoingPorts().size(), "outgoing:");
-    }
-
-    public List<ActualTypeArgument> getActualTypeArguments() {
-        return ImmutableList.copyOf(actualTypeArguments);
-    }
-
-    public void setActualTypeArguments(List<ActualTypeArgument> actualTypeArguments) {
-        this.actualTypeArguments = new ArrayList<>(actualTypeArguments);
-    }
-
-    public boolean hasActualTypeArguments() {
-        return this.actualTypeArguments.size() > 0;
-    }
-
-    // no overridden methods of ComponentSymbol as the ComponentSymbol itself checks whether it is a
-    // reference or not.
+  // no overridden methods of ComponentSymbol as the ComponentSymbol itself checks whether it is a
+  // reference or not.
   
   /* Methods of SymbolReference interface */
 
-    @Override
-    public ComponentSymbol getReferencedSymbol() {
-        return reference.getReferencedSymbol();
-    }
+  @Override
+  public ComponentSymbol getReferencedSymbol() {
+    return reference.getReferencedSymbol();
+  }
 
-    @Override
-    public boolean existsReferencedSymbol() {
-        return reference.existsReferencedSymbol();
-    }
+  @Override
+  public boolean existsReferencedSymbol() {
+    return reference.existsReferencedSymbol();
+  }
 
-    @Override
-    public boolean isReferencedSymbolLoaded() {
-        return reference.isReferencedSymbolLoaded();
-    }
+  @Override
+  public boolean isReferencedSymbolLoaded() {
+    return reference.isReferencedSymbolLoaded();
+  }
   
   /* Methods of Symbol interface */
 
-    @Override
-    public String getName() {
-        return getReferencedSymbol().getName();
-    }
+  @Override
+  public String getName() {
+    return getReferencedSymbol().getName();
+  }
 
-    @Override
-    public String getFullName() {
-        return getReferencedSymbol().getFullName();
-    }
+  @Override
+  public String getFullName() {
+    return getReferencedSymbol().getFullName();
+  }
 
-    @Override
-    public Scope getEnclosingScope() {
-        return getReferencedSymbol().getEnclosingScope();
-    }
+  @Override
+  public Scope getEnclosingScope() {
+    return getReferencedSymbol().getEnclosingScope();
+  }
 
-    @Override
-    public void setEnclosingScope(MutableScope scope) {
-        getReferencedSymbol().setEnclosingScope(scope);
-    }
+  @Override
+  public void setEnclosingScope(MutableScope scope) {
+    getReferencedSymbol().setEnclosingScope(scope);
+  }
 
-    @Override
-    public AccessModifier getAccessModifier() {
-        return getReferencedSymbol().getAccessModifier();
-    }
+  @Override
+  public AccessModifier getAccessModifier() {
+    return getReferencedSymbol().getAccessModifier();
+  }
 
-    @Override
-    public void setAccessModifier(AccessModifier accessModifier) {
-        getReferencedSymbol().setAccessModifier(accessModifier);
-    }
+  @Override
+  public void setAccessModifier(AccessModifier accessModifier) {
+    getReferencedSymbol().setAccessModifier(accessModifier);
+  }
 
 }

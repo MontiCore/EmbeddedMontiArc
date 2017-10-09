@@ -30,7 +30,7 @@ import java.util.*;
  * Created by MichaelvonWenckstern on 02.09.2016.
  */
 public class EMAConnectorResolvingFilter<S extends Symbol>
-        extends de.monticore.lang.montiarc.montiarc._symboltable.MAConnectorResolvingFilter<S> {
+    extends de.monticore.lang.montiarc.montiarc._symboltable.MAConnectorResolvingFilter<S> {
 
   public EMAConnectorResolvingFilter(SymbolKind targetKind) {
     super(targetKind);
@@ -40,9 +40,7 @@ public class EMAConnectorResolvingFilter<S extends Symbol>
   public Optional<Symbol> filter(ResolvingInfo resolvingInfo, String name, Map<String, Collection<Symbol>> symbols) {
     final Set<Symbol> resolvedSymbols = new LinkedHashSet<>();
 
-
     final Collection<Symbol> allSymbols = getSymbolsAsCollection(symbols);
-
 
     for (Symbol symbol : allSymbols) {
       if (symbol.isKindOf(getTargetKind())) {

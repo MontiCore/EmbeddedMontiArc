@@ -24,8 +24,7 @@ public class ComponentCapitalized implements EmbeddedMontiViewASTComponentCoCo {
   @Override
   public void check(ASTComponent node) {
     if (!Character.isUpperCase(node.getName().charAt(0))) {
-      Log.error("0xAC004 Component names must be startVal in upper-case",
-          node.get_SourcePositionStart());
+      Log.error("0xAC004 Component names must be startVal in upper-case", node.get_SourcePositionStart());
     }
   }
 }

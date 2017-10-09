@@ -16,27 +16,26 @@ import java.util.Optional;
 
 /**
  * Implements R3 and R4 from AHs PhD thesis
- * 
+ *
  * @author Crispin Kirchner
  */
-public class ReferencedSubComponentExists implements EmbeddedMontiViewASTSubComponentCoCo {
-  
+public class ReferencedSubComponentExists
+    implements EmbeddedMontiViewASTSubComponentCoCo {
+
   /**
    * @see de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentBodyCoCo#check(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponentBody)
    */
   @Override
   public void check(ASTSubComponent node) {
     String referenceName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(node.getType());
-    
+
     Scope scope = node.getEnclosingScope().get();
-    
-    Optional<ComponentSymbol> componentSymbol = scope
-        .<ComponentSymbol> resolve(referenceName, ComponentSymbol.KIND);
-    
+
+    Optional<ComponentSymbol> componentSymbol = scope.<ComponentSymbol>resolve(referenceName, ComponentSymbol.KIND);
+
     if (!componentSymbol.isPresent()) {
-      Log.error(String.format("0x069B7 Type \"%s\" could not be resolved", referenceName),
-          node.get_SourcePositionStart());
+      Log.error(String.format("0x069B7 Type \"%s\" could not be resolved", referenceName), node.get_SourcePositionStart());
     }
   }
-  
+
 }

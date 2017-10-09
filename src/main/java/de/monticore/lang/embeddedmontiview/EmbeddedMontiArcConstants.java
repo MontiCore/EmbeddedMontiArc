@@ -7,11 +7,11 @@ import java.io.File;
 
 /**
  * Constants for the MontiArc language. <br>
- * <br> 
+ * <br>
  * Copyright (c) 2017, MontiCore. All rights reserved.
  *
  * @author (last commit) $Author: ahaber $
- *          $Revision: 3080 $
+ *         $Revision: 3080 $
  */
 public final class EmbeddedMontiArcConstants {
 
@@ -35,15 +35,11 @@ public final class EmbeddedMontiArcConstants {
   /**
    * Default output directory.
    */
-  public static final String DEFAULT_GEN_DIR = "target" + File.separator +
-      "generated-sources" + File.separator +
-      "montiarc" + File.separator +
-      "sourcecode";
+  public static final String DEFAULT_GEN_DIR = "target" + File.separator + "generated-sources" + File.separator + "montiarc" + File.separator + "sourcecode";
 
   /**
    * Default model directory.
    */
-  public static final String DEFAULT_MODEL_DIR = "src" + File.separator + "main" + File.separator
-      + "models";
+  public static final String DEFAULT_MODEL_DIR = "src" + File.separator + "main" + File.separator + "models";
 
 }

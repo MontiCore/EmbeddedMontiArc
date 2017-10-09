@@ -20,7 +20,8 @@ import java.util.List;
  *
  * @author Robert Heim
  */
-public class ComponentInstanceNamesUnique implements EmbeddedMontiViewASTComponentCoCo {
+public class ComponentInstanceNamesUnique
+    implements EmbeddedMontiViewASTComponentCoCo {
 
   /**
    * @see EmbeddedMontiViewASTComponentCoCo#check(ASTComponent)
@@ -33,12 +34,9 @@ public class ComponentInstanceNamesUnique implements EmbeddedMontiViewASTCompone
 
       if (names.contains(subComp.getFullName())) {
 
-        SourcePosition pos = subComp.getAstNode().isPresent()
-            ? subComp.getAstNode().get().get_SourcePositionStart()
-            : SourcePosition.getDefaultSourcePosition();
+        SourcePosition pos = subComp.getAstNode().isPresent() ? subComp.getAstNode().get().get_SourcePositionStart() : SourcePosition.getDefaultSourcePosition();
 
-        Log.error(String.format("0xAC010 The subcomponent instance %s is not unique",
-            subComp.getFullName()), pos);
+        Log.error(String.format("0xAC010 The subcomponent instance %s is not unique", subComp.getFullName()), pos);
       }
       else {
         names.add(subComp.getFullName());

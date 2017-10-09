@@ -23,8 +23,9 @@ import de.monticore.lang.montiarc.montiarc._symboltable.PortKind;
 
 public class ConstantPortKind extends PortKind {
 
-    public static final ConstantPortKind INSTANCE = new ConstantPortKind();
-    public ConstantPortKind(){
+  public static final ConstantPortKind INSTANCE = new ConstantPortKind();
 
-    }
+  public ConstantPortKind() {
+
+  }
 }

@@ -40,8 +40,7 @@ import java.util.stream.Collectors;
 public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
 
   private Collection<String> getNames(Collection<PortSymbol> ports) {
-    return ports.stream().map(p -> p.getName())
-        .collect(Collectors.toList());
+    return ports.stream().map(p -> p.getName()).collect(Collectors.toList());
   }
 
   private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
@@ -70,8 +69,7 @@ public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
       if (entry.isInnerComponent()) {
         // ports not connected by the inner component itself might be connected from the parent
         // component or any of the parent's subcomponents' simple connectors
-        ComponentSymbol componentUsingSubComp = (ComponentSymbol) entry.getEnclosingScope()
-            .getSpanningSymbol().get();
+        ComponentSymbol componentUsingSubComp = (ComponentSymbol) entry.getEnclosingScope().getSpanningSymbol().get();
         connectorSources.addAll(getSourceNames(componentUsingSubComp.getConnectors()));
       }
 
@@ -89,13 +87,11 @@ public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
       remainingPorts = getNames(entry.getOutgoingPorts());
       Collection<String> connectorTargets = getTargetNames(entry.getConnectors());
       // add simple connectors of all subcomponents that might connect the ports.
-      entry.getSubComponents()
-          .forEach(sc -> connectorTargets.addAll(getTargetNames(sc.getSimpleConnectors())));
+      entry.getSubComponents().forEach(sc -> connectorTargets.addAll(getTargetNames(sc.getSimpleConnectors())));
 
       remainingPorts.removeAll(connectorTargets);
       if (!remainingPorts.isEmpty()) {
-        remainingPorts.forEach(p -> Log.error(String.format("0xAC007 Port %s is not used!", p),
-            node.get_SourcePositionStart()));
+        remainingPorts.forEach(p -> Log.error(String.format("0xAC007 Port %s is not used!", p), node.get_SourcePositionStart()));
       }
     }
   }
