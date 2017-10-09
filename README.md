@@ -329,7 +329,10 @@ EmbeddedMontiView (Fabian)
 ----
 * What is the difference between EmbeddedMontiArc and EmbeddedMontiView?
 
-TODO
+EmbeddedMontiView is a C&C modelling language with many similarities to EmbeddedMontiArc. It is intended to be used to create views that describe structural properties of EmbeddedMontiArc models. The [view verification](https://github.com/EmbeddedMontiArc/ViewVerification) was developed to verify the conformance of views by models.
+
+The syntax is nearly equal to EmbeddedMontiArc and allows several generalizations (for example, omitting a type by replacing it by a question mark `?`) as the following sections show.
+
 ----
 * How to model abstract ports (with no name, with no data type and both)?
 
