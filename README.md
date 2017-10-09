@@ -400,8 +400,8 @@ package example;
 
 component C {
     ports
-        in in1,
-        out out1;
+        in Boolean in1,
+        out Boolean out1;
     
     connect in1 -> out1;
 }
@@ -411,8 +411,8 @@ package example;
 
 component D {
     ports
-        in in1,
-        out out1;
+        in Boolean in1,
+        out Boolean out1;
 }
 ```
 ---
@@ -425,10 +425,10 @@ package example;
 
 view ExampleConnector {
     component A {
-        port in in1;
+        port in ? in1;
 
         component D {
-            port in in1;
+            port in ? in1;
         }
         instance D d;
 
@@ -449,8 +449,8 @@ Example:
 view ExampleEffector {
     component A {
         ports
-            in in1,
-            out out1;
+            in ? in1,
+            out ? out1;
 
         effect in1 -> out1;
     }
@@ -467,17 +467,17 @@ Example:
 ```
 view ExampleHierarchy {
     component A {
-        port in in1;
+        port in ? in1;
         
         component C {
             ports
-                in in1,
-                out out1;
+                in ? in1,
+                out ? out1;
         }
         instance C c;
         
         component D {
-            port in in1;
+            port in ? in1;
         }
         instance D d;
         
@@ -499,8 +499,8 @@ package example;
 view ExampleTAP {
     component B {
         ports
-            out $port1,
-            out $ports2;
+            out ? $port1,
+            out ? $ports2;
     }
     instance B b;
 
