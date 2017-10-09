@@ -605,3 +605,56 @@ ocl myOCLFile {
 }
 ```
 
+* Let-In Constructs
+
+These constructs allow the user to define variables which are used in an expression.
+
+```
+ocl myOCLFile {
+  context Integer a inv:
+    let
+      Integer b = 0 ;
+    in
+      a > b;
+}
+```
+
+RewriteConf
+----
+
+This is a DSL which allows writing configuration files, which can be imported by OCL files.
+They bundle several preprocessing functions for OCL files which import them.  
+
+A Conf file begins with specifying the package name. Imports to java classes for static methods
+or other resources can be added. These are added in a preprocessing step to the OCL file.
+
+Rewrite rules work as string-replacements similar to C defines. These are applied to the OCL File.   
+
+Finally with addCoco one can specify cocos which are checked on the OCL AST.
+
+Below is an example conf file CnCExt.conf and an ocl file whoch imports the former. 
+```
+package tagDef;
+
+import de.monticore.lang.ocl.nfp.NFPHelper.*;
+import de.monticore.lang.montiarc.montiarc._symboltable.*;
+import java.lang.*;
+import java.util.*;
+
+rewrite " Cmp " -> " ExpandedComponentInstanceSymbol ";
+rewrite " CTDef " -> " ComponentSymbol ";
+rewrite " Con " -> " ConnectorSymbol ";
+
+addCoco checkVariableNamingConnvention;
+```
+```
+import tagDef.CnCExt;
+
+ocl myOCLFile {
+  context Integer a inv:
+    ...
+}
+```
+
+OCL and EFP Tags
+----
