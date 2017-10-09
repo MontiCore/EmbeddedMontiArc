@@ -8,7 +8,6 @@ public class InconsistencyInterfaceMismatch extends Inconsistency {
   private Boolean incoming;
   private InconsistencyInterfaceMismatchKind mismatchKind;
 
-
   public InconsistencyInterfaceMismatch(String componentName, String portName, String portType, Boolean incoming, InconsistencyInterfaceMismatchKind mismatchKind) {
     this.componentName = componentName;
     this.portName = portName;

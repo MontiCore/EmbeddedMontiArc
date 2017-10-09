@@ -2,13 +2,13 @@ package de.rwth.cnc.viewverification.inconsistency;
 
 abstract public class Inconsistency {
 
-    private String justificationFileName;
+  private String justificationFileName;
 
-    public String getJustificationFileName() {
-        return justificationFileName;
-    }
+  public String getJustificationFileName() {
+    return justificationFileName;
+  }
 
-    public void setJustificationFileName(String justificationFileName) {
-        this.justificationFileName = justificationFileName;
-    }
+  public void setJustificationFileName(String justificationFileName) {
+    this.justificationFileName = justificationFileName;
+  }
 }

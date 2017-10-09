@@ -30,8 +30,7 @@ public class EmbeddedMontiViewLoader {
     return cmpSymbol;
   }
 
-  private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter =
-      CommonResolvingFilter.create(ComponentSymbol.KIND);
+  private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter = CommonResolvingFilter.create(ComponentSymbol.KIND);
 
   public static ViewSymbol convertToEMVView(final CnCView view) {
     ViewSymbol viewSymbol = new ViewSymbol(view.getName());
@@ -42,7 +41,7 @@ public class EmbeddedMontiViewLoader {
       ComponentSymbol topCompSymb = createComponentSymbol(view, topComp);
       //EMAComponentBuilder.addInnerComponent(viewSymbol, topCompSymb);
 
-      if(!viewSymbol.getSpannedScope().getResolvingFilters().contains(componentResolvingFilter)) {
+      if (!viewSymbol.getSpannedScope().getResolvingFilters().contains(componentResolvingFilter)) {
         ((MutableScope) viewSymbol.getSpannedScope()).addResolver(componentResolvingFilter);
       }
       ((MutableScope) viewSymbol.getSpannedScope()).add(topCompSymb);

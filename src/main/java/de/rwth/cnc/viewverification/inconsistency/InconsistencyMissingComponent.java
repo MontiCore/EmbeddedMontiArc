@@ -1,6 +1,6 @@
 package de.rwth.cnc.viewverification.inconsistency;
 
-public class InconsistencyMissingComponent extends  Inconsistency {
+public class InconsistencyMissingComponent extends Inconsistency {
 
   private String componentName;
 

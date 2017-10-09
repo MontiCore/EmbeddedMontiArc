@@ -11,7 +11,6 @@ import de.rwth.cnc.model.*;
 
 public class WitnessGeneratorHelper {
 
-
   static final String witnessFileEnding = ".emv";
 
   public static void writeStringToFile(Path outputFile, String data) {
@@ -34,7 +33,6 @@ public class WitnessGeneratorHelper {
     final String posOrNeg = isPositive ? "positive" : "negative";
     return Paths.get("target", "generated-witnesses", posOrNeg, view.getName(), topfolder, "witness_" + name + witnessFileEnding);
   }
-
 
   /**
    * returns the path containing parent and child component every component

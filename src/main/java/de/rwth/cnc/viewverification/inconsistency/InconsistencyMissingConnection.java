@@ -1,6 +1,6 @@
 package de.rwth.cnc.viewverification.inconsistency;
 
-public class InconsistencyMissingConnection extends  Inconsistency {
+public class InconsistencyMissingConnection extends Inconsistency {
 
   private String componentSource;
   private String componentTarget;

@@ -19,7 +19,6 @@ public class InconsistenciesData {
   private List<InconsistencyNotAtomic> notAtomicMismatches = new ArrayList<>();
   private List<InconsistencyIFCViolation> ifcViolations = new ArrayList<>();
 
-
   public void setView(CnCView view) {
     this.view = view;
   }
@@ -64,8 +63,6 @@ public class InconsistenciesData {
     ifcViolations.add(iifcv);
   }
 
-
-
   public List<InconsistencyMissingComponent> getMissingComponents() {
     return missingComponents;
   }
@@ -86,17 +83,15 @@ public class InconsistenciesData {
     return missingEffectors;
   }
 
-  public  List<InconsistencyNotAtomic> getNotAtomicMismatches() { return notAtomicMismatches; }
+  public List<InconsistencyNotAtomic> getNotAtomicMismatches() {
+    return notAtomicMismatches;
+  }
 
-  public  List<InconsistencyIFCViolation> getIFCViolations() { return ifcViolations; }
+  public List<InconsistencyIFCViolation> getIFCViolations() {
+    return ifcViolations;
+  }
 
   public boolean hasEntries() {
-    return missingComponents.size() > 0 ||
-            hierarchyMismatches.size() > 0 ||
-            interfaceMismatches.size() > 0 ||
-            missingConnections.size() > 0 ||
-            missingEffectors.size() > 0 ||
-            notAtomicMismatches.size() > 0 ||
-            ifcViolations.size() > 0;
+    return missingComponents.size() > 0 || hierarchyMismatches.size() > 0 || interfaceMismatches.size() > 0 || missingConnections.size() > 0 || missingEffectors.size() > 0 || notAtomicMismatches.size() > 0 || ifcViolations.size() > 0;
   }
 }
