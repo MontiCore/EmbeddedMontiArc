@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
-public class EffectorSymbol extends TaggingSymbol {
+public class EffectorSymbol extends TaggingSymbol implements ElementInstance {
 
   public static final EMAEffectorKind KIND = EMAEffectorKind.INSTANCE;
 
