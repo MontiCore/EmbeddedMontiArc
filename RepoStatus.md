@@ -9,7 +9,7 @@
 - **EmbeddedMontiArcBehaviour**
   [![Maintainability](https://api.codeclimate.com/v1/badges/0a0cec05358164a3a8bb/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArcBehaviour/maintainability)
 - **EmbeddedMontiArcMath**
-  [![Test Coverage](https://api.codeclimate.com/v1/badges/307a8911b5895523b3c5/test_coverage)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArcMath/test_coverage)
+  [![Maintainability](https://api.codeclimate.com/v1/badges/307a8911b5895523b3c5/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArcMath/maintainability)
 - **EmbeddedMontiViewView**
   [![Maintainability](https://api.codeclimate.com/v1/badges/139a2da1882c679b970e/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiView/maintainability)
 - **NumberUnit**
