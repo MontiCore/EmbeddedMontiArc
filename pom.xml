@@ -1,4 +1,26 @@
+<!--
+
+    ******************************************************************************
+     MontiCAR Modeling Family, www.se-rwth.de
+     Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+     All rights reserved.
+
+     This project is free software; you can redistribute it and/or
+     modify it under the terms of the GNU Lesser General Public
+     License as published by the Free Software Foundation; either
+     version 3.0 of the License, or (at your option) any later version.
+     This library is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     Lesser General Public License for more details.
+
+     You should have received a copy of the GNU Lesser General Public
+     License along with this project. If not, see <http://www.gnu.org/licenses/>.
+    *******************************************************************************
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
+<<<<<<< HEAD
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -64,193 +86,319 @@
 
 	<dependency>
 	  <groupId>de.monticore.lang.monticar</groupId>
+=======
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <!-- == PROJECT COORDINATES ============================================= -->
+  
+  <groupId>de.monticore.lang.monticar</groupId>
+  <artifactId>view-verification</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  
+  <properties>
+    <!-- DSLs -->
+    <javadsl.version>4.3.3</javadsl.version>
+    <cd4a.version>1.3.6.2</cd4a.version>
+    
+    <!-- .. SE-Libraries .................................................. -->
+    <mc4.maven.version>4.4.0</mc4.maven.version>
+    <monticore.version>4.5.3-SNAPSHOT</monticore.version>
+    <monticore.java.version>4.3.3</monticore.java.version>
+    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
+    <se-commons.version>1.7.6</se-commons.version>
+    
+    <!-- generator -->
+    <groovy.version>2.3.0</groovy.version>
+    
+    <!-- .. SE-Libraries .................................................. -->
+    <antlr.version>4.5.1</antlr.version>
+    <guava.version>18.0</guava.version>
+    <jsr305.version>3.0.0</jsr305.version>
+    <junit.version>4.12</junit.version>
+    <logback.version>1.1.2</logback.version>
+    
+    
+    <!-- .. Plugins ....................................................... -->
+    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
+    <assembly.plugin>2.5.4</assembly.plugin>
+    <compiler.plugin>3.3</compiler.plugin>
+    <se-groovy.maven.version>1.2.2</se-groovy.maven.version>
+    <source.plugin>2.4</source.plugin>
+    <release.plugin>2.5.1</release.plugin>
+    
+    <!-- .. Web and Servlets ...............................................-->
+    <jettyVersion>9.3.11.v20160721</jettyVersion>
+    <jsonVersion>20160212</jsonVersion>
+    
+    <!-- Classifiers -->
+    <grammars.classifier>grammars</grammars.classifier>
+    
+    
+    <!-- .. Misc .......................................................... -->
+    <java.version>1.8</java.version>
+    <wagon.provider.version>2.6</wagon.provider.version>
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8
+    </project.reporting.outputEncoding>
+  </properties>
+  
+  <!-- == DEPENDENCIES ==================================================== -->
+  <dependencies>
+    
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+>>>>>>> 0ed41106ca3562bc87b07cdedc75ff2052afc222
       <artifactId>embedded-montiview</artifactId>
       <version>0.0.1</version>
     </dependency>
-	
+    
     <dependency>
-	  <groupId>de.monticore.lang.monticar</groupId>
+      <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiarc</artifactId>
       <version>0.0.3-SNAPSHOT</version>
     </dependency>
-  
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-runtime</artifactId>
-            <version>4.5.2.1</version>
-        </dependency>
-        
+    
     <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>23.1-jre</version>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>4.5.2.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>23.1-jre</version>
     </dependency>
     
     <!--
-        <dependency>
-            <groupId>montiarc.verification</groupId>
-            <artifactId>oclma2java</artifactId>
-            <version>4.0.1-SNAPSHOT</version>
-        </dependency>
+    <dependency>
+    <groupId>montiarc.verification</groupId>
+    <artifactId>oclma2java</artifactId>
+    <version>4.0.1-SNAPSHOT</version>
+  </dependency>
+  
+  
+  <dependency>
+  <groupId>de.monticore.lang.montiarc</groupId>
+  <artifactId>de.arcd.fe</artifactId>
+  <version>1.1.7</version>
+  <classifier>grammar</classifier>
+</dependency>
 
-    
-        <dependency>
-            <groupId>de.monticore.lang.montiarc</groupId>
-            <artifactId>de.arcd.fe</artifactId>
-            <version>1.1.7</version>
-            <classifier>grammar</classifier>
-        </dependency>
+<dependency>
+<groupId>de.monticore.lang.montiarc</groupId>
+<artifactId>de.arcd.fe</artifactId>
+<version>1.1.7</version>
+</dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.montiarc</groupId>
-            <artifactId>de.arcd.fe</artifactId>
-            <version>1.1.7</version>
-        </dependency>
+<dependency>
+<groupId>de.monticore.lang.montiarc</groupId>
+<artifactId>de.arcd.plugin</artifactId>
+<version>2.0.0</version>
+</dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.montiarc</groupId>
-            <artifactId>de.arcd.plugin</artifactId>
-            <version>2.0.0</version>
-        </dependency>
+<dependency>
+<groupId>de.monticore.lang.montiarc</groupId>
+<artifactId>de.montiarc.fe</artifactId>
+<version>1.1.7</version>
+</dependency>
 
-        <dependency>
-            <groupId>de.monticore.lang.montiarc</groupId>
-            <artifactId>de.montiarc.fe</artifactId>
-            <version>1.1.7</version>
-        </dependency>
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.ets</artifactId>
+<version>2.0.3</version>
+</dependency>
 
-        <dependency>
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.freemarker</artifactId>
+<version>2.0.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.gli</artifactId>
+<version>2.0.3</version>
+<classifier>grammar</classifier>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.gli</artifactId>
+<version>2.0.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.gliplugin</artifactId>
+<version>2.0.3</version>
+<classifier>grammar</classifier>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.gliplugin</artifactId>
+<version>2.0.3</version>
+</dependency>
+-->
+<!--
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.java</artifactId>
+<version>2.0.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.javaplugin</artifactId>
+<version>2.0.3</version>
+</dependency>
+-->
+<!--
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.montiCoreTE_RE</artifactId>
+<version>2.0.5-SNAPSHOT</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>de.monticore.re</artifactId>
+<version>2.0.3</version>
+</dependency>
+-->
+
+<!--
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.cd.fe</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.cdjava.fe</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.ocl.fe</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.ocl.plugin</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.ocl.re</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.umlpcore.fe</artifactId>
+<version>1.5.3</version>
+<classifier>grammar</classifier>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.umlpcore.fe</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+<dependency>
+<groupId>de.monticore</groupId>
+<artifactId>umlp.umlpcore.plugin</artifactId>
+<version>1.5.3</version>
+</dependency>
+
+-->
+<dependency>
+  <groupId>org.eclipse.persistence</groupId>
+  <artifactId>javax.persistence</artifactId>
+  <version>2.0.0</version>
+</dependency>
+
+<!-- .. Test Libraries ............................................... -->
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>${junit.version}</version>
+  <scope>test</scope>
+</dependency>
+
+<dependency>
+  <groupId>de.monticore</groupId>
+  <artifactId>monticore-runtime</artifactId>
+  <version>${monticore.version}</version>
+  <type>test-jar</type>
+  <scope>test</scope>
+</dependency>
+
+<dependency>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-classic</artifactId>
+  <version>${logback.version}</version>
+  <scope>test</scope>
+</dependency>
+
+</dependencies>
+
+<!-- == PROJECT BUILD SETTINGS =========================================== -->
+
+<build>
+  <extensions>
+    <extension>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-webdav-jackrabbit</artifactId>
+      <version>${wagon.provider.version}</version>
+    </extension>
+  </extensions>
+  <pluginManagement>
+    <plugins>
+      <!-- MontiCore Generation -->
+      <plugin>
+        <groupId>de.monticore.mojo</groupId>
+        <artifactId>monticore-maven-plugin</artifactId>
+        <version>${monticore.plugin}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <!-- Other Configuration -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin}</version>
+        <configuration>
+          <useIncrementalCompilation>true
+          </useIncrementalCompilation>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${assembly.plugin}</version>
+        <dependencies>
+          <dependency>
             <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.ets</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.freemarker</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.gli</artifactId>
-            <version>2.0.3</version>
-            <classifier>grammar</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.gli</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.gliplugin</artifactId>
-            <version>2.0.3</version>
-            <classifier>grammar</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.gliplugin</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.java</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.javaplugin</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-        -->
-        <!--
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.montiCoreTE_RE</artifactId>
-            <version>2.0.5-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>de.monticore.re</artifactId>
-            <version>2.0.3</version>
-        </dependency>
-        -->
-        
-        <!--
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.cd.fe</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.cdjava.fe</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.ocl.fe</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.ocl.plugin</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.ocl.re</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.umlpcore.fe</artifactId>
-            <version>1.5.3</version>
-            <classifier>grammar</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.umlpcore.fe</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>umlp.umlpcore.plugin</artifactId>
-            <version>1.5.3</version>
-        </dependency>
-
-        -->
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>2.0.0</version>
-        </dependency>
-
-        <!-- .. Test Libraries ............................................... -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
+<<<<<<< HEAD
             <artifactId>monticore-runtime</artifactId>
             <version>${monticore.version}</version>
             <type>test-jar</type>
@@ -457,5 +605,152 @@
             <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
         </pluginRepository>
     </pluginRepositories>
+=======
+            <artifactId>mc-assemblies</artifactId>
+            <version>${mc.grammars.assembly.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>grammars</id>
+            <configuration>
+              <finalName>
+                ${project.artifactId}-${project.version}
+              </finalName>
+              <descriptorRefs>
+                <descriptorRef>grammars-assembly
+                </descriptorRef>
+              </descriptorRefs>
+              <formats>
+                <format>jar</format>
+              </formats>
+            </configuration>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>de.se_rwth.maven</groupId>
+        <artifactId>se-groovy-maven-plugin</artifactId>
+        <version>${se-groovy.maven.version}</version>
+        <!--           <configuration> -->
+        <!--             <arguments> -->
+        <!--               <modelPath>${basedir}/src/main/models</modelPath> -->
+        <!--               <out>${basedir}/target/gen</out> -->
+        <!--             </arguments> -->
+        <!--             <skip>false</skip> -->
+        <!--             <script>de/montiarc/simplegenerator/montiarc.groovy</script> -->
+        <!--             <baseClass>de.montiarc.simplegenerator.MontiArcScript</baseClass> -->
+        <!--           </configuration> -->
+        <!--           <executions> -->
+        <!--             <execution> -->
+        <!--               <goals> -->
+        <!--                 <goal>execute</goal> -->
+        <!--               </goals> -->
+        <!--             </execution> -->
+        <!--           </executions> -->
+        <!--           <dependencies> -->
+        <!--             <dependency> -->
+        <!--               <groupId>de.monticore.lang</groupId> -->
+        <!--               <artifactId>montiarc-simple-generator</artifactId> -->
+        <!--               <version>${project.version}</version> -->
+        <!--             </dependency> -->
+        <!--             <dependency> -->
+        <!--               <groupId>de.se_rwth.commons</groupId> -->
+        <!--               <artifactId>se-commons-utilities</artifactId> -->
+        <!--               <version>${se-commons.version}</version> -->
+        <!--             </dependency> -->
+        <!--           </dependencies> -->
+      </plugin>
+      
+      <!-- Source Jar Configuration -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${source.plugin}</version>
+        <executions>
+          <execution>
+            <id>create source jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <configuration>
+              <excludeResources>false</excludeResources>
+              <includes>
+                <include>**/*.java</include>
+                <include>**/*.ftl</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <header>${project.baseUri}/src/license/se/license.txt</header>
+          <properties>
+            <owner>Michael von Wenckstern</owner>
+            <email>vonwenckstern@se-rwth.de</email>
+          </properties>
+          <excludes>
+            <exclude>**/README</exclude>
+            <exclude>src/test/resources/**</exclude>
+            <exclude>src/main/resources/**</exclude>
+            <exclude>src/license/**</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>format</goal>
+            </goals>
+            <phase>process-sources</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </pluginManagement>
+</build>
+
+<!-- == DISTRIBUTION ==================================================== -->
+
+<distributionManagement>
+  <repository>
+    <id>github</id>
+    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+  </repository>
+  <snapshotRepository>
+    <id>github</id>
+    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+  </snapshotRepository>
+  <site>
+    <id>github</id>
+    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+  </site>
+</distributionManagement>
+
+<!-- == DEPENDENCY & PLUGIN REPOSITORIES ================================= -->
+
+<repositories>
+  <repository>
+    <id>github</id>
+    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+  </repository>
+</repositories>
+<pluginRepositories>
+  <pluginRepository>
+    <id>github</id>
+    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+  </pluginRepository>
+</pluginRepositories>
+>>>>>>> 0ed41106ca3562bc87b07cdedc75ff2052afc222
 
 </project>
