@@ -532,6 +532,9 @@ Rewrite rules work as string-replacements similar to C defines. These are applie
 Finally with addCoco one can specify cocos which are checked on the OCL AST.
 
 Below is an example conf file CnCExt.conf and an ocl file whoch imports the former. 
+
+> Modify the examples in such a way that they work for EmbeddedMontiArc and not for MontiArc anymore (since this is the EmbeddedMontiArc repo and docu)
+
 ```
 package tagDef;
 
