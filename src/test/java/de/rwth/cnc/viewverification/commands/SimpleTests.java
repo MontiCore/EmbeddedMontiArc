@@ -21,13 +21,20 @@ package de.rwth.cnc.viewverification.commands;
 
 import java.util.List;
 
+import de.rwth.cnc.LogConfig;
 import de.rwth.cnc.viewverification.ViewVerificator;
 import de.rwth.cnc.viewverification.inconsistency.InconsistencyItem;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SimpleTests {
 
   private static final String TESTDIR = "src/test/resources/";
+
+  @BeforeClass
+  public static void init(){
+    LogConfig.init();
+  }
 
   @Test
   public void simpleTest00() {
