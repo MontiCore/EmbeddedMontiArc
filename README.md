@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/cb1d2c40a5d6ef2b1d64/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/ViewVerification/maintainability)
+
 # ViewVerification
 
 consists of the three submodules:
