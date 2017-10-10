@@ -7,13 +7,16 @@
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/MontiMath.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/MontiMath)
 - **EmbeddedMontiArc**
   [![Maintainability](https://api.codeclimate.com/v1/badges/711b2a66abedc08fb7e4/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArc/maintainability)
+  [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiArc.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiArc)
 - **EmbeddedMontiArcBehaviour**
   [![Maintainability](https://api.codeclimate.com/v1/badges/0a0cec05358164a3a8bb/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArcBehaviour/maintainability)
+  [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiArcBehaviour.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiArcBehaviour)
 - **EmbeddedMontiArcMath**
   [![Maintainability](https://api.codeclimate.com/v1/badges/307a8911b5895523b3c5/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArcMath/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/ViewVerification.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/ViewVerification)
 - **EmbeddedMontiViewView**
   [![Maintainability](https://api.codeclimate.com/v1/badges/139a2da1882c679b970e/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiView/maintainability)
+  [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiView.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiView)
 - **NumberUnit**
   [![Maintainability](https://api.codeclimate.com/v1/badges/d197cb9534b46949da84/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/NumberUnit/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/NumberUnit.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/NumberUnit)
