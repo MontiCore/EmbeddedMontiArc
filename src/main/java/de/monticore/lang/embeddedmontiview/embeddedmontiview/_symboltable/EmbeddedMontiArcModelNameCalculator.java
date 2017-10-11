@@ -1,22 +1,22 @@
-/*
+/**
  * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import com.google.common.collect.ImmutableSet;
@@ -47,8 +47,7 @@ public class EmbeddedMontiArcModelNameCalculator
     if (ComponentSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponent(name));
     }
-    else if (PortSymbol.KIND.isKindOf(kind) ||
-            PortArraySymbol.KIND.isKindOf(kind)) {
+    else if (PortSymbol.KIND.isKindOf(kind) || PortArraySymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForPort(name));
     }
     else if (ConnectorSymbol.KIND.isKindOf(kind)) {
@@ -82,10 +81,7 @@ public class EmbeddedMontiArcModelNameCalculator
     List<String> parts = Splitters.DOT.splitToList(name);
     if (parts.size() > 1) {
       String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
-      return ImmutableSet.<String>builder()
-          .addAll(calculateModelNameForComponent(modelName))
-          .addAll(calculateModelNameForExpandedComponentInstance(modelName))
-          .build();
+      return ImmutableSet.<String>builder().addAll(calculateModelNameForComponent(modelName)).addAll(calculateModelNameForExpandedComponentInstance(modelName)).build();
     }
     return ImmutableSet.of();
   }
@@ -124,12 +120,7 @@ public class EmbeddedMontiArcModelNameCalculator
       return calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1)));
     }
     else if (parts.size() >= 2) {
-      return ImmutableSet.<String>builder()
-          .addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
-          .addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
-          .addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
-          .addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
-          .build();
+      return ImmutableSet.<String>builder().addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1)))).addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 2)))).addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 1)))).addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 2)))).build();
     }
     return ImmutableSet.of();
   }

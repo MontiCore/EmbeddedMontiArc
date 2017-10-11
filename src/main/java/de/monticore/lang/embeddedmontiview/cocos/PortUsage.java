@@ -1,22 +1,22 @@
-/*
+/**
  * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.embeddedmontiview.cocos;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTComponent;
@@ -40,8 +40,7 @@ import java.util.stream.Collectors;
 public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
 
   private Collection<String> getNames(Collection<PortSymbol> ports) {
-    return ports.stream().map(p -> p.getName())
-        .collect(Collectors.toList());
+    return ports.stream().map(p -> p.getName()).collect(Collectors.toList());
   }
 
   private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
@@ -70,8 +69,7 @@ public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
       if (entry.isInnerComponent()) {
         // ports not connected by the inner component itself might be connected from the parent
         // component or any of the parent's subcomponents' simple connectors
-        ComponentSymbol componentUsingSubComp = (ComponentSymbol) entry.getEnclosingScope()
-            .getSpanningSymbol().get();
+        ComponentSymbol componentUsingSubComp = (ComponentSymbol) entry.getEnclosingScope().getSpanningSymbol().get();
         connectorSources.addAll(getSourceNames(componentUsingSubComp.getConnectors()));
       }
 
@@ -89,13 +87,11 @@ public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
       remainingPorts = getNames(entry.getOutgoingPorts());
       Collection<String> connectorTargets = getTargetNames(entry.getConnectors());
       // add simple connectors of all subcomponents that might connect the ports.
-      entry.getSubComponents()
-          .forEach(sc -> connectorTargets.addAll(getTargetNames(sc.getSimpleConnectors())));
+      entry.getSubComponents().forEach(sc -> connectorTargets.addAll(getTargetNames(sc.getSimpleConnectors())));
 
       remainingPorts.removeAll(connectorTargets);
       if (!remainingPorts.isEmpty()) {
-        remainingPorts.forEach(p -> Log.error(String.format("0xAC007 Port %s is not used!", p),
-            node.get_SourcePositionStart()));
+        remainingPorts.forEach(p -> Log.error(String.format("0xAC007 Port %s is not used!", p), node.get_SourcePositionStart()));
       }
     }
   }

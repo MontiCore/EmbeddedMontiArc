@@ -1,2 +1,9 @@
 target
-embedded-montiview.iml
+nppBackup
+.project
+.settings
+.classpath
+.idea
+.git
+
+*.iml

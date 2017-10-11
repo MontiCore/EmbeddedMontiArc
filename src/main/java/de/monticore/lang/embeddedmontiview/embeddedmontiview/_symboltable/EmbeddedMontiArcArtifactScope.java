@@ -1,22 +1,22 @@
-/*
+/**
  * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.symboltable.*;
@@ -34,7 +34,8 @@ import java.util.function.Predicate;
  *
  * @see <a href="https://sselab.de/lab2/private/trac/MontiArc4/ticket/36">Ticket 36</a>
  */
-public class EmbeddedMontiArcArtifactScope extends de.monticore.lang.montiarc.montiarc._symboltable.MontiArcArtifactScope {
+public class EmbeddedMontiArcArtifactScope
+    extends de.monticore.lang.montiarc.montiarc._symboltable.MontiArcArtifactScope {
 
   private CommonQualifiedNamesCalculator qualifiedNamesCalculator = new CommonQualifiedNamesCalculator();
 
@@ -52,8 +53,7 @@ public class EmbeddedMontiArcArtifactScope extends de.monticore.lang.montiarc.mo
 
     if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
-        Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
-            + "enclosing scope at all.");
+        Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no " + "enclosing scope at all.");
       }
 
       final Set<String> potentialQualifiedNames = qualifiedNamesCalculator.calculateQualifiedNames(name, getPackageName(), getImports());

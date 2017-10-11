@@ -1,22 +1,22 @@
-/*
+/**
  * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
@@ -39,7 +39,8 @@ import java.util.Collection;
  *         TODO static methods should call a protected doMethod() to allow extending this class
  *         TODO the builder should also be used to create a new ComponentSymbol with a build() method
  */
-public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._symboltable.ComponentBuilder{
+public class EMAComponentBuilder
+    extends de.monticore.lang.montiarc.montiarc._symboltable.ComponentBuilder {
   protected static EMAComponentBuilder instance = null;
 
   protected static EMAComponentBuilder getInstance() {
@@ -52,31 +53,24 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
   public EMAComponentBuilder() {
   }
 
-  private static final ResolvingFilter<PortSymbol> portResolvingFilter =
-      CommonResolvingFilter.create(PortSymbol.KIND);
+  private static final ResolvingFilter<PortSymbol> portResolvingFilter = CommonResolvingFilter.create(PortSymbol.KIND);
 
-  private static final ResolvingFilter<ConnectorSymbol> connectorResolvingFilter =
-      CommonResolvingFilter.create(ConnectorSymbol.KIND);
+  private static final ResolvingFilter<ConnectorSymbol> connectorResolvingFilter = CommonResolvingFilter.create(ConnectorSymbol.KIND);
 
-  private static final ResolvingFilter<EffectorSymbol> effectorResolvingFilter =
-      CommonResolvingFilter.create(EffectorSymbol.KIND);
+  private static final ResolvingFilter<EffectorSymbol> effectorResolvingFilter = CommonResolvingFilter.create(EffectorSymbol.KIND);
 
-  private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter =
-      CommonResolvingFilter.create(ComponentSymbol.KIND);
+  private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter = CommonResolvingFilter.create(ComponentSymbol.KIND);
 
-  private static final ResolvingFilter<JTypeSymbol> jTypeSymbolResolvingGilter =
-      CommonResolvingFilter.create(JTypeSymbol.KIND);
+  private static final ResolvingFilter<JTypeSymbol> jTypeSymbolResolvingGilter = CommonResolvingFilter.create(JTypeSymbol.KIND);
 
-  private static final ResolvingFilter<JFieldSymbol> jAttributeResolvingFilter =
-      CommonResolvingFilter.create(JFieldSymbol.KIND);
+  private static final ResolvingFilter<JFieldSymbol> jAttributeResolvingFilter = CommonResolvingFilter.create(JFieldSymbol.KIND);
 
-  private static final ResolvingFilter<ComponentInstanceSymbol> componentInstanceResolvingFilter =
-      CommonResolvingFilter.create(ComponentInstanceSymbol.KIND);
+  private static final ResolvingFilter<ComponentInstanceSymbol> componentInstanceResolvingFilter = CommonResolvingFilter.create(ComponentInstanceSymbol.KIND);
 
   ////////////////////////// ports //////////////////////////////////////////////
 
   public static EMAComponentBuilder addPort(ComponentSymbol cs, PortSymbol ps) {
-    if(!cs.getSpannedScope().getResolvingFilters().contains(portResolvingFilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(portResolvingFilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(portResolvingFilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(ps);
@@ -115,7 +109,7 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
   ////////////////////////// connectors //////////////////////////////////////////////
 
   public static EMAComponentBuilder addConnector(ComponentSymbol cs, ConnectorSymbol con) {
-    if(!cs.getSpannedScope().getResolvingFilters().contains(connectorResolvingFilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(connectorResolvingFilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(connectorResolvingFilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(con);
@@ -123,7 +117,7 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
   }
 
   public static EMAComponentBuilder addEffector(ComponentSymbol cs, EffectorSymbol eff) {
-    if(!cs.getSpannedScope().getResolvingFilters().contains(effectorResolvingFilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(effectorResolvingFilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(effectorResolvingFilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(eff);
@@ -162,7 +156,7 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
   ////////////////////////// inner components //////////////////////////////////////////////
 
   public static EMAComponentBuilder addInnerComponent(ComponentSymbol cs, ComponentSymbol innerComponent) {
-    if(!cs.getSpannedScope().getResolvingFilters().contains(componentResolvingFilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(componentResolvingFilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(componentResolvingFilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(innerComponent);
@@ -202,10 +196,9 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
 
   public static EMAComponentBuilder addFormalTypeParameter(ComponentSymbol cs, JTypeSymbol formalTypeParameter) {
     if (!formalTypeParameter.isFormalTypeParameter()) {
-      Log.error(String.format("%s is not a formal type parameter. JTypeSymbol#isFormalTypeParameter() is false.",
-          SymbolPrinter.printFormalTypeParameters(formalTypeParameter)));
+      Log.error(String.format("%s is not a formal type parameter. JTypeSymbol#isFormalTypeParameter() is false.", SymbolPrinter.printFormalTypeParameters(formalTypeParameter)));
     }
-    if(!cs.getSpannedScope().getResolvingFilters().contains(jTypeSymbolResolvingGilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(jTypeSymbolResolvingGilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(jTypeSymbolResolvingGilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(formalTypeParameter);
@@ -244,7 +237,7 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
   ////////////////////////// config parameters //////////////////////////////////////////////
 
   public static EMAComponentBuilder addConfigParameter(ComponentSymbol cs, JFieldSymbol configParameter) {
-    if(!cs.getSpannedScope().getResolvingFilters().contains(jAttributeResolvingFilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(jAttributeResolvingFilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(jAttributeResolvingFilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(configParameter);
@@ -283,7 +276,7 @@ public class EMAComponentBuilder extends de.monticore.lang.montiarc.montiarc._sy
   ////////////////////////// sub components //////////////////////////////////////////////
 
   public static EMAComponentBuilder addSubComponent(ComponentSymbol cs, ComponentInstanceSymbol subComponent) {
-    if(!cs.getSpannedScope().getResolvingFilters().contains(componentInstanceResolvingFilter)) {
+    if (!cs.getSpannedScope().getResolvingFilters().contains(componentInstanceResolvingFilter)) {
       ((MutableScope) cs.getSpannedScope()).addResolver(componentInstanceResolvingFilter);
     }
     ((MutableScope) cs.getSpannedScope()).add(subComponent);

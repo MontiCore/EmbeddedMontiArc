@@ -1,22 +1,22 @@
-/*
+/**
  * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
@@ -89,8 +89,7 @@ public class EffectorSymbol extends TaggingSymbol implements ElementInstance {
     }
 
     // (1) try to load Component.Port or ExpandedComponentInstance.Port
-    String fullSource = Joiners.DOT.join(this.getPackageName(),
-        this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
+    String fullSource = Joiners.DOT.join(this.getPackageName(), this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
     Optional<PortSymbol> port = this.getEnclosingScope().<PortSymbol>resolve(fullSource, PortSymbol.KIND);
     if (port.isPresent()) {
       return port.get();
@@ -117,14 +116,12 @@ public class EffectorSymbol extends TaggingSymbol implements ElementInstance {
     }
     String instancePort = parts.next();
     Log.debug("" + instancePort, "instancePort");
-    Optional<ComponentInstanceSymbol> inst = cmp.getSpannedScope()
-        .<ComponentInstanceSymbol>resolve(instance, ComponentInstanceSymbol.KIND);
+    Optional<ComponentInstanceSymbol> inst = cmp.getSpannedScope().<ComponentInstanceSymbol>resolve(instance, ComponentInstanceSymbol.KIND);
     if (!inst.isPresent()) {
       Log.warn(String.format("Could not find instance %s in component %s, cannot resolve port", instance, cmp.getFullName()));
       return null;
     }
-    port = inst.get().getComponentType().getReferencedSymbol().getSpannedScope()
-        .resolve(instancePort, PortSymbol.KIND);
+    port = inst.get().getComponentType().getReferencedSymbol().getSpannedScope().resolve(instancePort, PortSymbol.KIND);
       /*
       PortSymbol portCS=getEnclosingScope().<PortSymbol>resolve(name,PortSymbol.KIND).get();
     Log.debug(""+portCS.getName()+" "+portCS.getFullName(),"resolved");

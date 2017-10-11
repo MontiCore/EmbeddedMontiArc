@@ -1,7 +1,21 @@
-/*
- * Copyright (c) 2017, MontiCore. All rights reserved.
+/**
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * http://www.se-rwth.de/
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
 package de.monticore.lang.embeddedmontiview.cocos;
 
@@ -19,7 +33,8 @@ import java.util.List;
 /**
  * @author (last commit) Crispin Kirchner
  */
-public class TypeParameterNamesUnique implements EmbeddedMontiViewASTComponentHeadCoCo {
+public class TypeParameterNamesUnique
+    implements EmbeddedMontiViewASTComponentHeadCoCo {
 
   /**
    * @see de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiViewASTComponentCoCo#check(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent)
@@ -35,9 +50,7 @@ public class TypeParameterNamesUnique implements EmbeddedMontiViewASTComponentHe
     for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarations()) {
 
       if (typeParameterNames.contains(typeParameter.getNamingResolution().get().getName())) {
-        Log.error(String.format(
-            "0x35F1A The formal type parameter name \"%s\" is not unique",
-            typeParameter.getNamingResolution().get().getName()), typeParameter.get_SourcePositionStart());
+        Log.error(String.format("0x35F1A The formal type parameter name \"%s\" is not unique", typeParameter.getNamingResolution().get().getName()), typeParameter.get_SourcePositionStart());
       }
 
       else {

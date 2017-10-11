@@ -1,7 +1,21 @@
-/*
- * Copyright (c) 2017, MontiCore. All rights reserved.
+/**
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * http://www.se-rwth.de/
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
 package de.monticore.lang.embeddedmontiview.cocos;
 
@@ -22,17 +36,12 @@ public class TopLevelComponentHasNoInstanceName
   @Override
   public void check(ASTComponent node) {
     if (!node.symbolIsPresent()) {
-      Log.error(String.format(
-          "0xE51E8 Symbol of component \"%s\" is missing. " +
-              "The context condition \"%s\" can't be checked that way.",
-          node.getName(), TopLevelComponentHasNoInstanceName.class.getName()));
+      Log.error(String.format("0xE51E8 Symbol of component \"%s\" is missing. " + "The context condition \"%s\" can't be checked that way.", node.getName(), TopLevelComponentHasNoInstanceName.class.getName()));
     }
 
     ComponentSymbol symbol = (ComponentSymbol) node.getSymbol().get();
     if (!symbol.isInnerComponent() && node.instanceNameIsPresent()) {
-      Log.error(
-          String.format("0x3F207 Top level component \"%s\" has an instance name", node.getName()),
-          node.get_SourcePositionStart());
+      Log.error(String.format("0x3F207 Top level component \"%s\" has an instance name", node.getName()), node.get_SourcePositionStart());
     }
   }
 

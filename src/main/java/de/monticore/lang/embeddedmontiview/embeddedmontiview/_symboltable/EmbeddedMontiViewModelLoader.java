@@ -1,22 +1,22 @@
-/*
+/**
  * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.io.paths.ModelPath;
@@ -46,7 +46,8 @@ import static de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable
  *
  * @author Michael von Wenckstern
  */
-public class EmbeddedMontiViewModelLoader extends EmbeddedMontiViewModelLoaderTOP {
+public class EmbeddedMontiViewModelLoader
+    extends EmbeddedMontiViewModelLoaderTOP {
 
   public EmbeddedMontiViewModelLoader(EmbeddedMontiViewLanguage language) {
     super(language);
@@ -62,9 +63,7 @@ public class EmbeddedMontiViewModelLoader extends EmbeddedMontiViewModelLoaderTO
   }
 
   @Override
-  public Collection<ASTEMVCompilationUnit> loadModelsIntoScope(final String qualifiedModelName,
-      final ModelPath modelPath, final MutableScope enclosingScope,
-      final ResolvingConfiguration ResolvingConfiguration) {
+  public Collection<ASTEMVCompilationUnit> loadModelsIntoScope(final String qualifiedModelName, final ModelPath modelPath, final MutableScope enclosingScope, final ResolvingConfiguration ResolvingConfiguration) {
 
     final Collection<ASTEMVCompilationUnit> asts = loadModels(qualifiedModelName, modelPath);
 
@@ -73,8 +72,7 @@ public class EmbeddedMontiViewModelLoader extends EmbeddedMontiViewModelLoaderTO
 
       // load tags of ast
       for (ASTTaggingUnit unit : loadTags(ast.getPackage(), modelPath)) {
-        this.getModelingLanguage().getTagSymbolCreators().stream()
-            .forEachOrdered(tc -> tc.create(unit, enclosingScope));
+        this.getModelingLanguage().getTagSymbolCreators().stream().forEachOrdered(tc -> tc.create(unit, enclosingScope));
       }
     }
 
@@ -92,11 +90,7 @@ public class EmbeddedMontiViewModelLoader extends EmbeddedMontiViewModelLoaderTO
         final Path completePath = Paths.get(mp.toString(), pN);
         final File f = completePath.toFile();
         if (f != null && f.isDirectory()) {
-          List<String> tagFiles = Arrays.stream(f.listFiles())
-              .filter(s -> s.isFile())
-              .map(s -> s.getPath())
-              .filter(s -> s.endsWith(TAG_FILE_ENDING))
-              .collect(Collectors.toList());
+          List<String> tagFiles = Arrays.stream(f.listFiles()).filter(s -> s.isFile()).map(s -> s.getPath()).filter(s -> s.endsWith(TAG_FILE_ENDING)).collect(Collectors.toList());
 
           tagFiles.stream().forEachOrdered(t -> {
             final TaggingParser parser = new TaggingParser();
@@ -108,8 +102,7 @@ public class EmbeddedMontiViewModelLoader extends EmbeddedMontiViewModelLoaderTO
               Log.error("could not open file " + t, e);
             }
             if (ast.isPresent()) {
-              if (!completePath.endsWith(
-                  ast.get().getPackage().stream().collect(Collectors.joining(File.separator)))) {
+              if (!completePath.endsWith(ast.get().getPackage().stream().collect(Collectors.joining(File.separator)))) {
                 Path p = Paths.get(t);
                 String expectedPackage = mp.toUri().relativize(p.toUri()).getPath();
                 if (p.getParent() != null) {
@@ -119,9 +112,7 @@ public class EmbeddedMontiViewModelLoader extends EmbeddedMontiViewModelLoaderTO
                 if (expectedPackage.endsWith(".")) {
                   expectedPackage = expectedPackage.substring(0, expectedPackage.length() - 1);
                 }
-                Log.error(
-                    String.format("0xAC050 package name in '%s' is wrong. package name is '%s' but should be '%s'",
-                        t, Joiners.DOT.join(ast.get().getPackage()), expectedPackage));
+                Log.error(String.format("0xAC050 package name in '%s' is wrong. package name is '%s' but should be '%s'", t, Joiners.DOT.join(ast.get().getPackage()), expectedPackage));
               }
               else {
                 foundModels.add(ast.get());
