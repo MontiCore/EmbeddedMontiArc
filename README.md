@@ -496,27 +496,22 @@ The component c is a direct subcomponent of A in this view while this is not tru
 ---
 * What is a textual anonymous port ($port1)?
 
-Textual anonymous ports are used to distinguish different ports whose names are unknown.
-In the following example b.$port1 and b.$port2 allow to check whether two different ports are used to connect the components.
+Textual anonymous ports are used to distinguish and reference different ports whose names are unknown.
+In the following example b.$port1 allows to specify the type of the connection between b and d while keeping the port anonymous.
 ```
 package example;
 
 view ExampleTAP {
     component B {
         ports
-            out ? $port1,
-            out ? $ports2;
+            out (0:1) $port1;
     }
     instance B b;
 
     component D { }
     instance D d;
-
-    component E { }
-    instance E e;
-
+    
     connect b.$port1 -> d;
-    connect b.$port2 -> e;
 }
 ```
 
