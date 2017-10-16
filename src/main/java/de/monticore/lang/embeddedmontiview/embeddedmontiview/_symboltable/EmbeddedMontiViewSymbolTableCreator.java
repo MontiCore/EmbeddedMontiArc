@@ -805,8 +805,6 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-
-
   private void setParametersOfComponent(final ComponentSymbol componentSymbol, final ASTComponentHead astMethod) {
     Log.debug(componentSymbol.toString(), "ComponentPreParam");
     Log.debug(astMethod.toString(), "ASTComponentHead");
@@ -886,52 +884,7 @@ public class EmbeddedMontiViewSymbolTableCreator
       }
       List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
       for (ASTTypeArgument astTypeArgument : astSimpleReferenceType.getTypeArguments().get().getTypeArguments()) {
-        if (astTypeArgument instanceof ASTWildcardType) {
-          ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
-
-          // Three cases can occur here: lower bound, upper bound, no bound
-          if (astWildcardType.lowerBoundIsPresent() || astWildcardType.upperBoundIsPresent()) {
-            // We have a bound.
-            // Examples: Set<? extends Number>, Set<? super Integer>
-
-            // new bound
-            boolean lowerBound = astWildcardType.lowerBoundIsPresent();
-            ASTType typeBound = lowerBound ? astWildcardType.getLowerBound().get() : astWildcardType.getUpperBound().get();
-
-            int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
-            JTypeReference<? extends JTypeSymbol> typeBoundSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound), currentScope().get(), dimension);
-            // TODO string representation?
-            // typeBoundSymbolReference.setStringRepresentation(ArcTypePrinter
-            // .printWildcardType(astWildcardType));
-            ActualTypeArgument actualTypeArgument = new ActualTypeArgument(lowerBound, !lowerBound, typeBoundSymbolReference);
-
-            // init bound
-            addTypeArgumentsToTypeSymbol(typeBoundSymbolReference, typeBound);
-
-            actualTypeArguments.add(actualTypeArgument);
-          }
-          else {
-            // No bound. Example: Set<?>
-            actualTypeArguments.add(new ActualTypeArgument(false, false, null));
-          }
-        }
-        else if (astTypeArgument instanceof ASTType) {
-          // Examples: Set<Integer>, Set<Set<?>>, Set<java.lang.String>
-          ASTType astTypeNoBound = (ASTType) astTypeArgument;
-          int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astTypeNoBound);
-          JTypeReference<? extends JTypeSymbol> typeArgumentSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(astTypeNoBound), currentScope().get(), dimension);
-
-          // TODO string representation?
-          // typeArgumentSymbolReference.setStringRepresentation(TypesPrinter
-          // .printType(astTypeNoBound));
-
-          addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, astTypeNoBound);
-
-          actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
-        }
-        else {
-          Log.error("0xU0401 Unknown type argument " + astTypeArgument + " of type " + typeReference);
-        }
+        addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference);
         typeReference.setActualTypeArguments(actualTypeArguments);
       }
     }
@@ -952,54 +905,75 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
+  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, JTypeReference<? extends JTypeSymbol> typeReference) {
+    addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference.toString());
+  }
+
+  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, ComponentSymbolReference typeReference) {
+    addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference.toString());
+  }
+
+  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, String typeReferenceString) {
+    if (astTypeArgument instanceof ASTWildcardType) {
+      addActualTypeArguments_ASTWildcardType((ASTWildcardType) astTypeArgument, actualTypeArguments);
+    }
+    else if (astTypeArgument instanceof ASTType) {
+      addActualTypeArguments_ASTType((ASTType) astTypeArgument, actualTypeArguments);
+    }
+    else {
+      Log.error("0xU0401 Unknown type argument " + astTypeArgument + " of type " + typeReferenceString);
+    }
+  }
+
+  private void addActualTypeArguments_ASTWildcardType(final ASTWildcardType astWildcardTypeArgument, List<ActualTypeArgument> actualTypeArguments) {
+    ASTWildcardType astWildcardType = astWildcardTypeArgument;
+
+    // Three cases can occur here: lower bound, upper bound, no bound
+    if (astWildcardType.lowerBoundIsPresent() || astWildcardType.upperBoundIsPresent()) {
+      // We have a bound.
+      // Examples: Set<? extends Number>, Set<? super Integer>
+
+      // new bound
+      boolean lowerBound = astWildcardType.lowerBoundIsPresent();
+      ASTType typeBound = lowerBound ? astWildcardType.getLowerBound().get() : astWildcardType.getUpperBound().get();
+
+      int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
+      JTypeReference<? extends JTypeSymbol> typeBoundSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound), currentScope().get(), dimension);
+      // TODO string representation?
+      // typeBoundSymbolReference.setStringRepresentation(ArcTypePrinter
+      // .printWildcardType(astWildcardType));
+      ActualTypeArgument actualTypeArgument = new ActualTypeArgument(lowerBound, !lowerBound, typeBoundSymbolReference);
+
+      // init bound
+      addTypeArgumentsToTypeSymbol(typeBoundSymbolReference, typeBound);
+
+      actualTypeArguments.add(actualTypeArgument);
+    }
+    else {
+      // No bound. Example: Set<?>
+      actualTypeArguments.add(new ActualTypeArgument(false, false, null));
+    }
+  }
+
+  private void addActualTypeArguments_ASTType(final ASTType astTypeArgument, List<ActualTypeArgument> actualTypeArguments) {
+    // Examples: Set<Integer>, Set<Set<?>>, Set<java.lang.String>
+    ASTType astTypeNoBound = (ASTType) astTypeArgument;
+    int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astTypeNoBound);
+    JTypeReference<? extends JTypeSymbol> typeArgumentSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(astTypeNoBound), currentScope().get(), dimension);
+
+    // TODO string representation?
+    // typeArgumentSymbolReference.setStringRepresentation(TypesPrinter
+    // .printType(astTypeNoBound));
+
+    addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, astTypeNoBound);
+
+    actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
+  }
+
   private void setActualTypeArguments(ComponentSymbolReference typeReference, List<ASTTypeArgument> astTypeArguments) {
     List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
     for (ASTTypeArgument astTypeArgument : astTypeArguments) {
-      if (astTypeArgument instanceof ASTWildcardType) {
-        ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
-
-        // Three cases can occur here: lower bound, upper bound, no bound
-        if (astWildcardType.lowerBoundIsPresent() || astWildcardType.upperBoundIsPresent()) {
-          // We have a bound.
-          // Examples: Set<? extends Number>, Set<? super Integer>
-
-          // new bound
-          boolean lowerBound = astWildcardType.lowerBoundIsPresent();
-          ASTType typeBound = lowerBound ? astWildcardType.getLowerBound().get() : astWildcardType.getUpperBound().get();
-          int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
-          JTypeReference<? extends JTypeSymbol> typeBoundSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound), currentScope().get(), dimension);
-          // TODO string representation?
-          // typeBoundSymbolReference.setStringRepresentation(ArcTypePrinter
-          // .printWildcardType(astWildcardType));
-          ActualTypeArgument actualTypeArgument = new ActualTypeArgument(lowerBound, !lowerBound, typeBoundSymbolReference);
-
-          // init bound
-          addTypeArgumentsToTypeSymbol(typeBoundSymbolReference, typeBound);
-
-          actualTypeArguments.add(actualTypeArgument);
-        }
-        else {
-          // No bound. Example: Set<?>
-          actualTypeArguments.add(new ActualTypeArgument(false, false, null));
-        }
-      }
-      else if (astTypeArgument instanceof ASTType) {
-        // Examples: Set<Integer>, Set<Set<?>>, Set<java.lang.String>
-        ASTType astTypeNoBound = (ASTType) astTypeArgument;
-        int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astTypeNoBound);
-        JTypeReference<? extends JTypeSymbol> typeArgumentSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(astTypeNoBound), currentScope().get(), dimension);
-
-        // TODO string representation?
-        // typeArgumentSymbolReference.setStringRepresentation(TypesPrinter
-        // .printType(astTypeNoBound));
-
-        addTypeArgumentsToTypeSymbol(typeArgumentSymbolReference, astTypeNoBound);
-
-        actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
-      }
-      else {
-        Log.error("0xU0401 Unknown type argument " + astTypeArgument + " of type " + typeReference);
-      }
+      addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference);
     }
     typeReference.setActualTypeArguments(actualTypeArguments);
   }

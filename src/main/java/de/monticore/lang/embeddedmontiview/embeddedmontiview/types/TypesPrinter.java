@@ -89,7 +89,17 @@ public class TypesPrinter {
   }
 
   protected String doPrintTypeWithoutTypeArgumentsAndDimension(ASTType type) {
-    return type instanceof ASTArrayType ? this.doPrintTypeWithoutTypeArgumentsAndDimension(((ASTArrayType) type).getComponentType()) : (type instanceof ASTPrimitiveType ? this.doPrintPrimitiveType((ASTPrimitiveType) type) : (type instanceof ASTReferenceType ? this.doPrintTypeWithoutTypeArguments((ASTReferenceType) type) : resolveNewType(type)));
+
+    if (type instanceof ASTArrayType)
+      return this.doPrintTypeWithoutTypeArgumentsAndDimension(((ASTArrayType) type).getComponentType());
+
+    if (type instanceof ASTPrimitiveType)
+      return this.doPrintPrimitiveType((ASTPrimitiveType) type);
+
+    if (type instanceof ASTReferenceType)
+      return this.doPrintTypeWithoutTypeArguments(type);
+
+    return resolveNewType(type);
   }
 
   protected String resolveNewType(ASTType type) {
@@ -160,7 +170,26 @@ public class TypesPrinter {
   }
 
   protected String doPrintPrimitiveType(ASTPrimitiveType type) {
-    return type == null ? "" : (type.getPrimitive() == 1 ? "boolean" : (type.getPrimitive() == 2 ? "byte" : (type.getPrimitive() == 6 ? "char" : (type.getPrimitive() == 3 ? "short" : (type.getPrimitive() == 4 ? "int" : (type.getPrimitive() == 7 ? "float" : (type.getPrimitive() == 5 ? "long" : (type.getPrimitive() == 8 ? "double" : ""))))))));
+    if (type == null)
+      return "";
+    if (type.getPrimitive() == 1)
+      return "boolean";
+    if (type.getPrimitive() == 2)
+      return "byte";
+    if (type.getPrimitive() == 3)
+      return "short";
+    if (type.getPrimitive() == 4)
+      return "int";
+    if (type.getPrimitive() == 5)
+      return "long";
+    if (type.getPrimitive() == 6)
+      return "char";
+    if (type.getPrimitive() == 7)
+      return "float";
+    if (type.getPrimitive() == 8)
+      return "double";
+
+    return "";
   }
 
   public static String printArrayType(ASTArrayType type) {

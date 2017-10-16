@@ -173,23 +173,7 @@ public class EMAJavaHelper
    */
   protected static boolean handleSimpleReferenceType(ASTTypeArgument argument, final int dim, final List<ActualTypeArgument> actualTypeArguments, final Scope symbolTable, final boolean isLowerBound, final boolean isUpperBound, @Nullable ActualTypeArgument typeArgument) {
     if (argument instanceof ASTSimpleReferenceType) {
-      ASTSimpleReferenceType simpleArg = (ASTSimpleReferenceType) argument;
-      String name = simpleArg.getNames().stream().collect(Collectors.joining("."));
-      Optional<JTypeSymbol> symbol = symbolTable.resolve(name, JTypeSymbol.KIND);
-      if (symbol.isPresent() && symbol.get().getEnclosingScope() != null) {
-        if (typeArgument == null) {
-          typeArgument = new ActualTypeArgument(isLowerBound, isUpperBound, new JavaTypeSymbolReference(symbol.get().getName(), symbol.get().getEnclosingScope(), dim));
-          actualTypeArguments.add(typeArgument);
-        }
-        if (simpleArg.getTypeArguments().isPresent()) {
-          List<ActualTypeArgument> actualTypeArguments2 = new ArrayList<>();
-          for (ASTTypeArgument astTypeArgument : simpleArg.getTypeArguments().get().getTypeArguments()) {
-            handleSimpleReferenceType(astTypeArgument, 0, actualTypeArguments2, symbolTable, false, false, typeArgument);
-          }
-          typeArgument.getType().setActualTypeArguments(actualTypeArguments2);
-        }
-      }
-      return true;
+      return handleSimpleReferenceType_ASTSimpleReferenceType((ASTSimpleReferenceType) argument, dim, actualTypeArguments, symbolTable, isLowerBound, isUpperBound, typeArgument);
     }
     else if (argument instanceof ASTComplexReferenceType) {
       ASTComplexReferenceType complexArg = (ASTComplexReferenceType) argument;
@@ -211,6 +195,25 @@ public class EMAJavaHelper
       return handleSimpleReferenceType(cmpType, arrayArg.getDimensions(), actualTypeArguments, symbolTable, false, false, null);
     }
     return false;
+  }
+
+  private static boolean handleSimpleReferenceType_ASTSimpleReferenceType(ASTSimpleReferenceType simpleArg, final int dim, final List<ActualTypeArgument> actualTypeArguments, final Scope symbolTable, final boolean isLowerBound, final boolean isUpperBound, @Nullable ActualTypeArgument typeArgument) {
+    String name = simpleArg.getNames().stream().collect(Collectors.joining("."));
+    Optional<JTypeSymbol> symbol = symbolTable.resolve(name, JTypeSymbol.KIND);
+    if (symbol.isPresent() && symbol.get().getEnclosingScope() != null) {
+      if (typeArgument == null) {
+        typeArgument = new ActualTypeArgument(isLowerBound, isUpperBound, new JavaTypeSymbolReference(symbol.get().getName(), symbol.get().getEnclosingScope(), dim));
+        actualTypeArguments.add(typeArgument);
+      }
+      if (simpleArg.getTypeArguments().isPresent()) {
+        List<ActualTypeArgument> actualTypeArguments2 = new ArrayList<>();
+        for (ASTTypeArgument astTypeArgument : simpleArg.getTypeArguments().get().getTypeArguments()) {
+          handleSimpleReferenceType(astTypeArgument, 0, actualTypeArguments2, symbolTable, false, false, typeArgument);
+        }
+        typeArgument.getType().setActualTypeArguments(actualTypeArguments2);
+      }
+    }
+    return true;
   }
 
   // TODO this should be part of JavaDSL
