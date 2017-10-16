@@ -27,7 +27,6 @@ import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.*;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview.types.TypesPrinter;
 import de.monticore.lang.embeddedmontiview.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiview.helper.Timing;
-import de.monticore.lang.embeddedmontiview.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
@@ -77,7 +76,6 @@ public class EmbeddedMontiViewSymbolTableCreator
   private Stack<ComponentSymbol> componentStack = new Stack<>();
   private ViewSymbol currentView = null;
   private List<ImportStatement> currentImports = new ArrayList<>();
-  private AutoConnection autoConnectionTrafo = new AutoConnection();
   private JavaSymbolFactory jSymbolFactory = new JavaSymbolFactory();
 
   protected boolean aboartVisitComponent = false;
@@ -799,7 +797,6 @@ public class EmbeddedMontiViewSymbolTableCreator
       return;
     }
 
-    autoConnectionTrafo.transformAtStart(node, component);
   }
 
   public void visit(ASTInterface node) {
@@ -808,10 +805,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  @Override
-  public void visit(ASTMontiArcAutoConnect node) {
-    autoConnectionTrafo.transform(node, componentStack.peek());
-  }
+
 
   private void setParametersOfComponent(final ComponentSymbol componentSymbol, final ASTComponentHead astMethod) {
     Log.debug(componentSymbol.toString(), "ComponentPreParam");
@@ -842,7 +836,6 @@ public class EmbeddedMontiViewSymbolTableCreator
   @Override
   public void endVisit(ASTComponent node) {
     ComponentSymbol component = componentStack.pop();
-    autoConnectionTrafo.transformAtEnd(node, component);
 
     removeCurrentScope();
 
