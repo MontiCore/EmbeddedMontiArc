@@ -1,4 +1,4 @@
-package wbView;
+package view.wbView;
 
 view WCET1 {
     component WeatherBalloonSensors {

@@ -25,6 +25,7 @@ import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EmbeddedMontiViewLanguage;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewSymbol;
+import de.monticore.lang.embeddedmontiview.tagging.LatencyTagSchema.LatencyTagSchema;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 
@@ -40,9 +41,14 @@ import java.util.Optional;
 public class AbstractSymtabTest {
   protected static Scope createSymTab(String viewCmpName, String... modelPath) {
     ModelingLanguageFamily fam = new ModelingLanguageFamily();
-    fam.addModelingLanguage(new EmbeddedMontiViewLanguage());
+    EmbeddedMontiViewLanguage montiViewLanguage = new EmbeddedMontiViewLanguage();
+
+    LatencyTagSchema.registerTagTypes(montiViewLanguage);
+
+    fam.addModelingLanguage(montiViewLanguage);
     // TODO should we use JavaDSLLanguage or add the resolvers in MALang?
     fam.addModelingLanguage(new JavaDSLLanguage());
+
     // TODO how to add java default types?
     final ModelPath mp = new ModelPath(Paths.get("src/main/resources/defaultTypes"));
     for (String m : modelPath) {

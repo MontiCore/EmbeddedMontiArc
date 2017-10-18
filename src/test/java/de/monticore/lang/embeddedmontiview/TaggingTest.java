@@ -19,29 +19,31 @@
  */
 package de.monticore.lang.embeddedmontiview;
 
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EffectorSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiview.tagging.LatencyTagSchema.LatencyViewEffSymbol;
+import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
-import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Yannick Deuster on 18.10.17.
  */
-public class SymtabTest extends AbstractSymtabTest {
+public class TaggingTest extends AbstractSymtabTest {
     protected final String resourcePath = "src/test/resources/";
 
     @Test
-    public void testSymtab_Effector() {
+    public void testTags_Effector() {
         Scope s = createSymTab( "view.wbView.WCET1", resourcePath);
 
         Optional<EffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIn -> dataSaveInternalOut", EffectorSymbol.KIND);
         assertTrue(eff.isPresent());
+
+        //Collection tag = eff.get().getTags((TagKind) LatencyViewEffSymbol.KIND);
+        //assertTrue(tag.size() == 1);
     }
 }

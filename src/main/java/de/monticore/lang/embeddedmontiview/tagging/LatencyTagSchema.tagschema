@@ -1,0 +1,11 @@
+package de.monticore.lang.embeddedmontiview.tagging;
+
+tagschema LatencyTagSchema {
+	tagtype LatencyCmpInst: Duration for ComponentInstance;
+	tagtype LatencyCmp: Duration for Component;
+	tagtype LatencyConn: Duration for Connector;
+	tagtype LatencyPort: Duration for Port;
+	tagtype LatencyViewPort: Duration for ViewPort;
+	tagtype LatencyViewConn: Duration for Connector;
+	tagtype LatencyViewEff: Duration for Effector;
+}
