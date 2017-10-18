@@ -41,7 +41,7 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testSymtab_Effector() {
         Scope s = createSymTab( "view.wbView.WCET1", resourcePath);
 
-        Optional<EffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIn -> dataSaveInternalOut", EffectorSymbol.KIND);
+        Optional<EffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", EffectorSymbol.KIND);
         assertTrue(eff.isPresent());
     }
 }

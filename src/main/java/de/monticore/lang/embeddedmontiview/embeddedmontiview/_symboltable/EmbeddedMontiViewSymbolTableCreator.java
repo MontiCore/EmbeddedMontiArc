@@ -477,7 +477,7 @@ public class EmbeddedMontiViewSymbolTableCreator
         Log.debug("" + targetName, "target");
         Log.debug("" + sourceName, "source");
 
-        ConnectorSymbol sym = new ConnectorSymbol(targetName);
+        ConnectorSymbol sym = new ConnectorSymbol(sourceName + targetName);
         sym.setSource(sourceName);
         sym.setTarget(targetName);
         Log.debug(sym.getTarget(), "TARGETNAME SET TO");
@@ -511,7 +511,7 @@ public class EmbeddedMontiViewSymbolTableCreator
         Log.debug("" + targetName, "target");
         Log.debug("" + sourceName, "source");
 
-        EffectorSymbol sym = new EffectorSymbol(sourceName + " -> " + targetName);
+        EffectorSymbol sym = new EffectorSymbol(sourceName  + targetName);
         sym.setSource(sourceName);
         sym.setTarget(targetName);
         Log.debug(sym.getTarget(), "TARGETNAME SET TO");

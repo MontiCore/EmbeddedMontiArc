@@ -40,10 +40,10 @@ public class TaggingTest extends AbstractSymtabTest {
     public void testTags_Effector() {
         Scope s = createSymTab( "view.wbView.WCET1", resourcePath);
 
-        Optional<EffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIn -> dataSaveInternalOut", EffectorSymbol.KIND);
+        Optional<EffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", EffectorSymbol.KIND);
         assertTrue(eff.isPresent());
 
-        //Collection tag = eff.get().getTags((TagKind) LatencyViewEffSymbol.KIND);
-        //assertTrue(tag.size() == 1);
+        Collection tag = eff.get().getTags((TagKind) LatencyViewEffSymbol.KIND);
+        assertTrue(tag.size() == 1);
     }
 }
