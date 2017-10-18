@@ -236,7 +236,7 @@ public class EffectorSymbol extends TaggingSymbol {
 
   @Override
   public String getName() {
-    return getTarget();
+    return super.getName();
   }
 
 }
