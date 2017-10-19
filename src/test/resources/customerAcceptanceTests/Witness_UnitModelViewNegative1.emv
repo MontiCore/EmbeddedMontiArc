@@ -2,6 +2,6 @@ package customerAcceptanceTests;
 
 view Witness_UnitModelViewNegative1 {
 component UnitModel {
-	ports in (-100 m/s:100 m/s) acceleration;
+	ports in (-100 m:100 m) acceleration;
 }
 }
