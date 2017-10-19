@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.viewverification;
@@ -30,6 +28,12 @@ import de.rwth.cnc.viewverification.witness.*;
 import de.rwth.cnc.viewverification.inconsistency.*;
 
 public class ViewVerificator {
+
+  private static CnCView lastGeneratedWitness;
+
+  public static CnCView getLastGeneratedWitness() {
+    return lastGeneratedWitness;
+  }
 
   private static CnCArchitecture loadComponent(String modelPath, String modelName) {
     System.out.println("START LOADING COMP");
@@ -55,19 +59,24 @@ public class ViewVerificator {
     return verify(model, view, generateWitnesses, ignoreInstanceNames);
   }
 
-  public static List<InconsistencyItem> verify(CnCArchitecture model, CnCView view) {
+  public static List<InconsistencyItem> verify(final CnCArchitecture model, CnCView view) {
     return verify(model, view, true);
   }
 
-  public static List<InconsistencyItem> verify(CnCArchitecture model, CnCView view, boolean generateWitnesses) {
+  public static List<InconsistencyItem> verify(final CnCArchitecture model_p, CnCView view, boolean generateWitnesses) {
+    CnCArchitecture model = model_p.clone();
+    for (String topName : view.getTopLevelComponentNames()) {
+      model.renameCmp(VerificationHelper.uncapitalize(topName), topName);
+    }
+
     InconsistenciesData id = runChecks(model, view);
 
     if (generateWitnesses) {
       if (id.hasEntries()) {
-        WitnessGenerator.generateWitnessesForInconsistencyData(id);
+        lastGeneratedWitness = WitnessGenerator.generateWitnessesForInconsistencyData(id);
       }
       else {
-        WitnessGenerator.generateWitnessForConsistency(model, view);
+        lastGeneratedWitness = WitnessGenerator.generateWitnessForConsistency(model, view);
       }
     }
 
@@ -87,10 +96,10 @@ public class ViewVerificator {
       //Bruteforce eligible variation:
 
       List<CnCView> bfViewList = TypeVerificator.bruteforceRenamedViews(model, view);
-
+      System.out.println("Going to try verifying " + bfViewList.size() + " different views.");
       for (CnCView v : bfViewList) {
         List<InconsistencyItem> result = verify(model, v, false);
-        if (result.size() == 0)
+        if (result.size() == 0 || bfViewList.size() == 1)
           if (generateWitnesses) {
             return verify(model, v, true);
           }

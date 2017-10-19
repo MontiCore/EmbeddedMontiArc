@@ -1,7 +1,7 @@
 package pumpStationExample;
 
 view SimulationInput {
-  
+  component PumpStation {
   component ValveActuator {
     port
      out boolean valveOpen,
@@ -23,5 +23,5 @@ view SimulationInput {
   connect valveActuator.valveOpen -> physicsSimulation.valveOpen;
   connect valveActuator.valveClose -> physicsSimulation.valveClose;
   connect pumpActuator -> physicsSimulation;
-
+}
 }

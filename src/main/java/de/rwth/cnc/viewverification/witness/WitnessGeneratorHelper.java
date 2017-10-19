@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.viewverification.witness;
@@ -23,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import de.rwth.cnc.model.*;
@@ -50,7 +50,11 @@ public class WitnessGeneratorHelper {
 
   public static Path getWitnessFilePath(boolean isPositive, CnCView view, String topfolder, String name) {
     final String posOrNeg = isPositive ? "positive" : "negative";
-    return Paths.get("target", "generated-witnesses", posOrNeg, view.getName(), topfolder, "witness_" + name + witnessFileEnding);
+    return Paths.get("target", "generated-witnesses", posOrNeg, view.getName(), topfolder, view.getPackageName().replace('.', '/'), name + witnessFileEnding);
+  }
+
+  public static Path getPositiveWitnessFilePath(CnCArchitecture model, CnCView view) {
+    return getWitnessFilePath(true, view, "", "Witness_" + model.getName());
   }
 
   /**
@@ -93,6 +97,11 @@ public class WitnessGeneratorHelper {
     addConnectorTargets(srcCmpAndPort, srcCmpAndPort, arch, witnessView);
   }
 
+  public static void addEffectorTargets(String srcCmpAndPort, CnCArchitecture arch, CnCView witnessView) {
+    Set<String> addedCmpPorts = new HashSet<>();
+    addEffectorTargets(srcCmpAndPort, srcCmpAndPort, arch, witnessView, addedCmpPorts);
+  }
+
   /**
    * internal version to prevent cycles
    *
@@ -119,6 +128,49 @@ public class WitnessGeneratorHelper {
 
       if (!srcCmpAndPortStart.equals(cmpAndPort)) {
         addConnectorTargets(srcCmpAndPortStart, cmpAndPort, arch, witnessView);
+      }
+    }
+  }
+
+  private static void addEffectorTargets(String srcCmpAndPortStart, String srcCmpAndPort, CnCArchitecture arch, CnCView witnessView, Set<String> addedCmpPorts) {
+    Set<String> receivingPortsAndCmps = arch.getEffectedCmpsAndPorts(srcCmpAndPort);
+
+    for (String cmpAndPort : receivingPortsAndCmps) {
+      if (addedCmpPorts.contains(cmpAndPort))
+        continue; //to avoid loops
+
+      addedCmpPorts.add(cmpAndPort);
+
+      String rcvCmpName = cmpAndPort.split("\\.")[0];
+      String rcvPortName = cmpAndPort.split("\\.")[1];
+      witnessView.addComponentWithIntermediateLayers(arch, rcvCmpName);
+
+      copyPortToView(arch, witnessView, rcvCmpName, rcvPortName);
+
+      String receiver = cmpAndPort.split("\\.")[0];
+      String receiverPort = cmpAndPort.split("\\.")[1];
+      String sender = srcCmpAndPort.split("\\.")[0];
+      String senderPort = srcCmpAndPort.split("\\.")[1];
+
+      if (receiver.equals(sender)) {
+        Effector effector = new Effector();
+        effector.setReceiver(receiver);
+        effector.setReceiverPort(receiverPort);
+        effector.setSender(sender);
+        effector.setSenderPort(senderPort);
+        witnessView.addEffector(effector);
+      }
+      else {
+        Connection connection = new Connection();
+        connection.setReceiver(receiver);
+        connection.setReceiverPort(receiverPort);
+        connection.setSender(sender);
+        connection.setSenderPort(senderPort);
+        witnessView.addConnection(connection);
+      }
+
+      if (!srcCmpAndPortStart.equals(cmpAndPort)) {
+        addEffectorTargets(srcCmpAndPortStart, cmpAndPort, arch, witnessView, addedCmpPorts);
       }
     }
 
@@ -148,4 +200,5 @@ public class WitnessGeneratorHelper {
       viewCmp.addPort(p.clone());
     }
   }
+
 }

@@ -3,7 +3,7 @@ package avionicsSystemExample;
 // inspired by the flow defined for Flight_System.impl
 
 view ControlFlowInSystem {
-
+component Flight_System {
    // Display
   component Pilot_Display {}
   instance Pilot_Display pilot_Display;
@@ -32,5 +32,5 @@ view ControlFlowInSystem {
   connect fM -> pCM;
   connect pCM -> pilot_DM;
   connect pilot_DM -> pilot_Display;
-  
+  }
 }

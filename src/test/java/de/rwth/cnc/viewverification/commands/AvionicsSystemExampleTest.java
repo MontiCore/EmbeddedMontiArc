@@ -45,7 +45,7 @@ public class AvionicsSystemExampleTest {
         //The fail description is wrong, if it is so.
         if (inconsistencies.isEmpty()) {
             inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
-            fail("Architecture does not satisfy View.");
+                fail("Architecture does not satisfy View.");
         }
     }
 

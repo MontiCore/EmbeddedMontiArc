@@ -1,6 +1,7 @@
 package simpleTests;
 
 view Test02 {
+    component AC {
 	component ACA {
 		ports out (0:1) out1;
 	}
@@ -12,4 +13,4 @@ view Test02 {
 	instance ACB acb;
 	
 	connect aca -> acb;
-}
+}}

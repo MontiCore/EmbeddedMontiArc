@@ -1,0 +1,11 @@
+package pumpStationExample;
+
+view PositiveEffector {
+    component PumpingSystem {
+        ports 
+            in ? pump,
+            out ? pumpActuatorPort;
+    
+    }
+    effect PumpingSystem.pump -> PumpingSystem.pumpActuatorPort;
+}

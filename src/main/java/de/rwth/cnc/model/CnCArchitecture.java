@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.model;
@@ -28,9 +26,10 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import de.rwth.cnc.viewverification.VerificationHelper;
+
 public class CnCArchitecture extends CnCView implements Cloneable {
 
-  private String filePath = "";
   private Map<String, Set<String>> directlyConnectedPorts;
   private Map<String, Set<String>> directlyEffectedPorts;
   private Map<String, Set<Connection>> connEffs;
@@ -68,19 +67,47 @@ public class CnCArchitecture extends CnCView implements Cloneable {
    * @param senderCmpAndPort
    */
   public Set<String> getEffectedCmpsAndPorts(String senderCmpAndPort) {
+    directlyEffectedPorts = null; //recalculate since we calculate OnlyEffectors below very similarly!
     if (directlyEffectedPorts == null) {
       directlyEffectedPorts = new HashMap<String, Set<String>>();
-      List<Connection> consEffs = new ArrayList<Connection>();
-      consEffs.addAll(getConnections());
-      consEffs.addAll(getEffectors());
-      for (Connection c : consEffs) {
-        String sender = c.getSender() + "." + c.getSenderPort();
+      List<Connection> connEffs = new ArrayList<>();
+      connEffs.addAll(getConnections());
+      connEffs.addAll(getEffectors());
+      for (Connection e : connEffs) {
+        String sender = e.getSender() + "." + e.getSenderPort();
         Set<String> targets = directlyEffectedPorts.get(sender);
         if (targets == null) {
           targets = new LinkedHashSet<String>();
           directlyEffectedPorts.put(sender, targets);
         }
-        targets.add(c.getReceiver() + "." + c.getReceiverPort());
+        targets.add(e.getReceiver() + "." + e.getReceiverPort());
+      }
+    }
+    if (directlyEffectedPorts.get(senderCmpAndPort) == null) {
+      return new LinkedHashSet<String>();
+    }
+    return directlyEffectedPorts.get(senderCmpAndPort);
+  }
+
+  /**
+   * copy of the above with modifications to only consider effectors
+   *
+   * @param senderCmpAndPort
+   */
+  public Set<String> getEffectedCmpsAndPortsOnlyEffectors(String senderCmpAndPort) {
+    directlyEffectedPorts = null; //recalculate!
+    if (directlyEffectedPorts == null) {
+      directlyEffectedPorts = new HashMap<String, Set<String>>();
+      List<Effector> effs = new ArrayList<Effector>();
+      effs.addAll(getEffectors());
+      for (Effector e : effs) {
+        String sender = e.getSender() + "." + e.getSenderPort();
+        Set<String> targets = directlyEffectedPorts.get(sender);
+        if (targets == null) {
+          targets = new LinkedHashSet<String>();
+          directlyEffectedPorts.put(sender, targets);
+        }
+        targets.add(e.getReceiver() + "." + e.getReceiverPort());
       }
     }
     if (directlyEffectedPorts.get(senderCmpAndPort) == null) {
@@ -182,10 +209,15 @@ public class CnCArchitecture extends CnCView implements Cloneable {
    * @return
    */
   public List<Component> getArchPath(String parentName, String childName) {
+    if (this.getComponent(parentName) == null)
+      parentName = VerificationHelper.uncapitalize(parentName);
+
+    assert this.getComponent(parentName) != null;
+
     Component parent = new Component();
     parent.setName(parentName);
 
-    if (parentName.equals(childName)) {
+    if (parentName.equals(childName) || parentName.equals(VerificationHelper.uncapitalize(childName))) {
       ArrayList<Component> path = new ArrayList<Component>();
       path.add(parent);
       return path;
@@ -255,5 +287,24 @@ public class CnCArchitecture extends CnCView implements Cloneable {
       return new LinkedHashSet<Connection>();
     }
     return conns.get(srcCmpAndPort);
+  }
+
+  @Override
+  public CnCArchitecture clone() {
+    CnCArchitecture clone = new CnCArchitecture();
+    for (Component c : components) {
+      clone.addComponent(c.clone());
+    }
+    for (Connection c : connections) {
+      clone.addConnection(c.clone());
+    }
+    for (Effector e : effectors) {
+      clone.addEffector(e.clone());
+    }
+    clone.name = name;
+    clone.packageName = packageName;
+    clone.comment = comment;
+    clone.setTopLevelComponentNames(topLevelComponentNames);
+    return clone;
   }
 }

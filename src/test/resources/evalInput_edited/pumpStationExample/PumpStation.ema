@@ -2,13 +2,13 @@ package pumpStationExample;
 
 component PumpStation {
 
-  //autoconnect port;
+  autoconnect port;
 
   component Environment {
       port
       in boolean valveOpen,
       in boolean valveClose,
-      in boolean pumpActuator,
+      in boolean pumpActuatorPort,
       out int level1,
       out boolean pump,
       out int valve,
@@ -18,7 +18,7 @@ component PumpStation {
       port
         in boolean valveOpen,
         in boolean valveClose,
-        in boolean pumpActuator,
+        in boolean pumpActuatorPort,
         out int level1,
         out int level2,
         out boolean pump,
@@ -36,7 +36,7 @@ component PumpStation {
     }
     instance SimulationPanel simulationPanel;
     
-    connect pumpActuator -> physicsSimulation.pumpActuator;
+    connect pumpActuatorPort -> physicsSimulation.pumpActuatorPort;
     connect valveOpen -> physicsSimulation.valveOpen;
     connect valveClose -> physicsSimulation.valveClose;
 
@@ -59,7 +59,7 @@ component PumpStation {
       in boolean button,
       in boolean pump,
       in int valve,
-      out boolean pumpActuator,
+      out boolean pumpActuatorPort,
       out boolean valveOpen,
       out boolean valveClose;
     
@@ -169,7 +169,7 @@ component PumpStation {
       port
         in boolean desiredPumpState,
         in boolean pumpState,
-        out boolean pumpActuator;
+        out boolean pumpActuatorPort;
     }
     instance PumpActuator pumpActuator;
 
@@ -193,7 +193,7 @@ component PumpStation {
     connect sensorReading.waterLevel1 -> controller.waterLevel1;
     connect sensorReading.valvePosition -> valveActuator.valvePosition;
     
-    connect pumpActuator.pumpActuator -> pumpActuator;
+    connect pumpActuator.pumpActuatorPort -> pumpActuatorPort;
     
     connect controller.desiredPumpState -> pumpActuator.desiredPumpState;
     connect controller.desiredValvePosition -> valveActuator.desiredValvePosition;
@@ -208,7 +208,7 @@ component PumpStation {
   connect environment.pump -> pumpingSystem.pump;
   connect environment.valve -> pumpingSystem.valve;
   
-  connect pumpingSystem.pumpActuator -> environment.pumpActuator;
+  connect pumpingSystem.pumpActuatorPort -> environment.pumpActuatorPort;
   connect pumpingSystem.valveOpen -> environment.valveOpen;
   connect pumpingSystem.valveClose -> environment.valveClose;
 }

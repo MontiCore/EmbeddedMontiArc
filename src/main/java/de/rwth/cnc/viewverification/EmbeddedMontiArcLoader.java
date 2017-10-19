@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.viewverification;
@@ -39,15 +37,20 @@ import de.rwth.cnc.model.*;
 
 public class EmbeddedMontiArcLoader {
 
-  public static CnCArchitecture loadComponent(String modelPath, String modelName) {
+  public static ComponentSymbol loadComponentSymbol(String modelPath, String modelName) {
     String filePath = Paths.get(modelPath, modelName).toAbsolutePath().toString().replace('.', '/') + ".ema";
     assert new File(filePath).exists() : "File does not exist: " + filePath;
     Scope scope_model = createSymTab_EmbeddedMontiArc(modelPath);
     ComponentSymbol cmpSymbol = scope_model.<ComponentSymbol>resolve(modelName, ComponentSymbol.KIND).orElse(null);
-    assert cmpSymbol != null;
+    assert cmpSymbol != null : "\nResolve of " + modelName + " returned null!\nPath: " + modelPath;
+    return cmpSymbol;
+  }
 
+  public static CnCArchitecture loadComponent(String modelPath, String modelName) {
+    ComponentSymbol cmpSymbol = loadComponentSymbol(modelPath, modelName);
     CnCArchitecture cncArc = createCnCArchitecture(cmpSymbol);
     cncArc.setFileOrigin(Paths.get(modelPath, modelName.replace('.', '/')));
+    cncArc.setPackageName(cmpSymbol.getPackageName());
     return cncArc;
   }
 

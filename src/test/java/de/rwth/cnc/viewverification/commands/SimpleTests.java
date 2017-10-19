@@ -234,11 +234,23 @@ public class SimpleTests {
   @Test
   public void simpleTest_ignoreCompName_NegViewA() {
     List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "simpleTests.ignoreCompNames.Car", TESTDIR,
-            "simpleTests.ignoreCompNames.NegViewA", false, true);
+        "simpleTests.ignoreCompNames.NegViewA", false, true);
 
     System.out.println("##############");
     inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
     assert !(inconsistencies.isEmpty()) : "There >>should<< be inconsistencies!";
+
+    System.out.println("Test successful");
+  }
+
+  @Test
+  public void simpleTest_unitmodel() {
+    List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "simpleTests.UnitModel", TESTDIR,
+        "simpleTests.UnitModelView", true, false);
+
+    System.out.println("##############");
+    inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+    assert (inconsistencies.isEmpty()) : "There shouldnt be inconsistencies!";
 
     System.out.println("Test successful");
   }

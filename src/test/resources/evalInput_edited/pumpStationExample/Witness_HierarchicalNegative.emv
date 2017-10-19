@@ -1,0 +1,15 @@
+package pumpStationExample;
+
+view Witness_HierarchicalNegative {
+    component PumpStation {
+        component Environment {
+            component PhysicsSimulation {}
+            instance PhysicsSimulation physicsSimulation;
+        }
+        instance Environment environment;
+        
+        component PumpingSystem {}
+        instance PumpingSystem pumpingSystem;
+  
+    }
+}

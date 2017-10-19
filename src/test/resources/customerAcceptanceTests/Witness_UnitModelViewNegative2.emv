@@ -1,0 +1,7 @@
+package customerAcceptanceTests;
+
+view Witness_UnitModelViewNegative2 {
+component UnitModel {
+	ports out (-oo km/h : oo km/h) velocity;
+}
+}

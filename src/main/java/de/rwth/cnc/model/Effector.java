@@ -25,8 +25,8 @@ package de.rwth.cnc.model;
 public class Effector extends Connection {
 
   @Override
-  public Connection clone() {
-    Connection c = new Effector();
+  public Effector clone() {
+    Effector c = new Effector();
     c.setReceiver(receiver);
     c.setReceiverPort(receiverPort);
     c.setSender(sender);

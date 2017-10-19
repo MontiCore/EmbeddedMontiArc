@@ -5,7 +5,7 @@ package avionicsSystemExample;
 // in a negative way it ...
 
 view ConnectPilotDisplayAndPCM {
-
+component Flight_System {
   // Display
   component Pilot_Display {}
   instance Pilot_Display pilot_Display;
@@ -15,5 +15,5 @@ view ConnectPilotDisplayAndPCM {
   instance PCM pCM;
   
   connect pCM -> pilot_Display;
-  
+  }
 }

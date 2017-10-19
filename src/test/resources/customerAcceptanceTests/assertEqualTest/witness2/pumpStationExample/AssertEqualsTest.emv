@@ -1,0 +1,12 @@
+package pumpStationExample;
+
+view AssertEqualsTest {
+    component SensorReading {
+        ports 
+            in boolean pump,
+            out boolean valvePosition;
+            
+    }
+    
+    effect SensorReading.pump -> SensorReading.valvePosition;
+}

@@ -3,6 +3,7 @@ package simpleTests;
 //This view is supposed not to be satisfied
 
 view Test04 {
+    component AC {
 	component ACA {
 		ports out Boolean out1;
 	}
@@ -14,4 +15,5 @@ view Test04 {
 	instance ACB acb;
 	
 	connect aca.out1 -> acb;
+}
 }

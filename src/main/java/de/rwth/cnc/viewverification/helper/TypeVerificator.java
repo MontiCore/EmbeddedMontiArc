@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.viewverification.helper;
@@ -23,6 +21,7 @@ import com.google.common.collect.Collections2;
 import de.rwth.cnc.model.CnCArchitecture;
 import de.rwth.cnc.model.CnCView;
 import de.rwth.cnc.model.Component;
+import de.rwth.cnc.viewverification.VerificationHelper;
 
 import java.util.*;
 
@@ -34,6 +33,7 @@ public class TypeVerificator {
     List<Component> modelCmpList = model.getComponents();
 
     HashMap<String, StringIntTuple> hashMap = new HashMap<>();
+    //gather occurrences of each type in the model
     for (Component c : modelCmpList) {
       String cmpType = c.getComponentType();
       StringIntTuple tuple = hashMap.get(cmpType);
@@ -45,7 +45,7 @@ public class TypeVerificator {
         tuple.incrementInteger();
       }
     }
-
+//remove number of occurrences in the view
     for (Component c : viewCmpList) {
       String cmpType = c.getComponentType();
       StringIntTuple tuple = hashMap.get(cmpType);
@@ -61,8 +61,10 @@ public class TypeVerificator {
     Collection<StringIntTuple> values = hashMap.values();
     int missing = 0;
     for (StringIntTuple tpl : values) {
-      if (tpl.getInteger() < 0)
+      if (tpl.getInteger() < 0) {
         missing++;
+        System.out.println("Number of missing " + tpl.getString() + ": " + tpl.getInteger());
+      }
     }
 
     return missing == 0;
@@ -97,14 +99,13 @@ public class TypeVerificator {
     return map;
   }
 
-  private static int[] use;
-  private static int[] numOfPerm;
+
 
   public static List<CnCView> bruteforceRenamedViews(final CnCArchitecture model, final CnCView view) {
     HashMap<String, List<Component>> modelMap = TypeVerificator.getComponentsPerTypeMap(model);
     HashMap<String, List<Component>> viewMap = TypeVerificator.getComponentsPerTypeMap(view);
 
-    CnCView view_internal = view;
+    CnCView view_internal = view.clone();
 
     List<Component> remainingComponents = new ArrayList<>();
 
@@ -113,7 +114,11 @@ public class TypeVerificator {
       List<Component> fittingComponents = modelMap.get(c.getComponentType());
       assert fittingComponents.size() > 0;
       if (fittingComponents.size() == 1) {
-        view_internal.renameCmp(c.getName(), fittingComponents.get(0).getName());
+        //the top component has to be correct
+        if (view_internal.getTopLevelComponentNames().contains(c.getName()))
+          view_internal.renameCmp(c.getName(), VerificationHelper.capitalize(fittingComponents.get(0).getName()));
+        else
+          view_internal.renameCmp(c.getName(), fittingComponents.get(0).getName());
       }
       else {
         remainingComponents.add(c);
@@ -130,9 +135,6 @@ public class TypeVerificator {
     List<String> remainingTypesList = new ArrayList<>();
     List<CnCView> viewList = new ArrayList<>();
 
-    use = new int[remainingTypes.size()];
-    numOfPerm = new int[remainingTypes.size()];
-
     long possibleViewCombinations = 1;
     int typeCountVar = 0;
     for (String type : remainingTypes) {
@@ -142,7 +144,6 @@ public class TypeVerificator {
 
       int possibilities = (int) varWithoutRepeat(viewCmps.size(), modelCmps.size());
       possibleViewCombinations *= possibilities;
-      numOfPerm[typeCountVar] = possibilities;
       remainingTypesList.add(type);
     }
 
@@ -205,6 +206,8 @@ public class TypeVerificator {
       for (Component c : modelMap.get(type)) {
         list.add(c.getName());
       }
+
+      System.out.println("Matching " + viewMap.get(type).size() + " onto " + list.size() + "x " + type);
 
       Collection<List<String>> uniquePermutations = Collections2.orderedPermutations(list);
 

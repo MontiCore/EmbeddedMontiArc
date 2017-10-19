@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.model;
@@ -26,8 +24,8 @@ import java.util.Set;
 
 public class Component implements Cloneable {
 
-  private String name;
-  private String componentType;
+  private String name = "";
+  private String componentType = "";
 
   private List<Port> ports = new ArrayList<Port>();
 
@@ -74,7 +72,13 @@ public class Component implements Cloneable {
   }
 
   public void addPort(Port port) {
-    this.ports.add(port);
+    //dont add a port twice
+    if (!port.isUnnamed()) {
+      if (!getPortNames().contains(port.getName()))
+        this.ports.add(port);
+    }
+    else
+      this.ports.add(port);
   }
 
   public boolean containsComponents() {
@@ -134,6 +138,18 @@ public class Component implements Cloneable {
         types.add("?");
     }
     return types;
+  }
+
+  public Set<String> getPortNames() {
+    Set<String> names = new LinkedHashSet<String>();
+    for (Port port : ports) {
+      if (!port.isUnnamed()) {
+        names.add(port.getName());
+      }
+      else
+        names.add("?");
+    }
+    return names;
   }
 
   @Override

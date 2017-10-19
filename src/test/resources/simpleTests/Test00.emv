@@ -1,6 +1,7 @@
 package simpleTests;
 
 view Test00 {
+    component AC {
 	component ACA {	}
 	instance ACA aca;
 	
@@ -8,4 +9,5 @@ view Test00 {
 	instance ACB acb;
 	
 	connect aca -> acb;
+    }
 }

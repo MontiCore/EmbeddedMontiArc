@@ -1,7 +1,7 @@
 package robotArmExample;
 
 view BodySensorOut {
-
+component RotationalJoint {
     component Body {
         component Actuator {
             port
@@ -28,4 +28,5 @@ view BodySensorOut {
     connect actuator -> joint;
     connect sensor -> jointLimiter;
     connect jointLimiter -> actuator;
+}
 }

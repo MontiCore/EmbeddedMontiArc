@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.model;
@@ -28,19 +26,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import de.rwth.cnc.viewverification.VerificationHelper;
+
 /**
  * this class represents a CnC View
  */
 public class CnCView implements Cloneable {
 
-  private String name = null;
-  private String comment;
-  private Path fileOrigin;
+  protected String name = null;
+  protected String comment;
+  protected Path fileOrigin;
+  protected String packageName;
 
-  private List<Component> components = new LinkedList<>();
-  private List<String> topLevelComponentNames = new LinkedList<>();
-  private List<Connection> connections = new LinkedList<>();
-  private List<Effector> effectors = new LinkedList<>();
+  protected List<Component> components = new LinkedList<>();
+  protected List<String> topLevelComponentNames = new LinkedList<>();
+  protected List<Connection> connections = new LinkedList<>();
+  protected List<Effector> effectors = new LinkedList<>();
+
+  public String getPackageName() {
+    return packageName;
+  }
+
+  public void setPackageName(String packageName) {
+    this.packageName = packageName;
+  }
 
   public void setFileOrigin(Path filePath) {
     fileOrigin = filePath;
@@ -109,6 +118,7 @@ public class CnCView implements Cloneable {
   }
 
   public void addConnection(Connection conn) {
+    assert !(conn instanceof Effector) : "Add Effectors with addEffector()!";
     this.connections.add(conn);
   }
 
@@ -232,6 +242,7 @@ public class CnCView implements Cloneable {
    * @param cmpNames
    */
   public void setTopLevelComponentNames(List<String> cmpNames) {
+    assert cmpNames.stream().allMatch(x -> Character.isUpperCase(x.charAt(0))) : "TopLevelComponentNames have to be capitalized!";
     this.topLevelComponentNames = new ArrayList<String>();
     this.topLevelComponentNames.addAll(cmpNames);
   }
@@ -317,7 +328,9 @@ public class CnCView implements Cloneable {
       return null;
     }
     else if (cmps.size() == 1) {
-      return getComponent(cmps.iterator().next());
+      Component c = getComponent(cmps.iterator().next());
+      assert c != null : "this shouldnt happen";
+      return c;
     }
     else {
       Set<String> myCmps = new LinkedHashSet<String>();
@@ -384,7 +397,15 @@ public class CnCView implements Cloneable {
   }
 
   public void addTopLevelComponentName(String name2) {
+    assert Character.isUpperCase(name2.charAt(0)) : "TopLevelComponentNames have to be capitalized!";
     topLevelComponentNames.add(name2);
+  }
+
+  public void addTopLevelComponentName(String name2, boolean capitalize) {
+    if (!capitalize)
+      addTopLevelComponentName(name2);
+    else
+      topLevelComponentNames.add(VerificationHelper.capitalize(name2));
   }
 
   /**
@@ -395,13 +416,14 @@ public class CnCView implements Cloneable {
    * @param arc
    * @param cmpName
    */
-  public void addComponentWithIntermediateLayers(CnCArchitecture arc, String cmpName) {
+  public boolean addComponentWithIntermediateLayers(CnCArchitecture arc, String cmpName) {
+    if (arc.getComponent(cmpName) == null)
+      return false;
+
     if (!this.containsComponent(cmpName)) {
       List<Component> cmpPath = arc.getArchPath(this.getTopLevelComponentNames().get(0), cmpName);
       // find first component that is not contained already in system
-      if (cmpPath == null) {
-        System.out.println();
-      }
+      assert cmpPath != null;
       String lastParentCmpName = cmpPath.get(0).getName();
       while (this.containsComponent(cmpPath.get(0).getName())) {
         lastParentCmpName = cmpPath.get(0).getName();
@@ -411,6 +433,7 @@ public class CnCView implements Cloneable {
       this.getComponent(lastParentCmpName).addContainedComponent(cmpPath.get(0).getName());
       this.getComponents().addAll(cmpPath);
     }
+    return true;
   }
 
   private boolean containsComponent(String cmpName) {
@@ -427,7 +450,12 @@ public class CnCView implements Cloneable {
     for (Connection c : connections) {
       clone.addConnection(c.clone());
     }
+    for (Effector e : effectors) {
+      clone.addEffector(e.clone());
+    }
     clone.name = name;
+    clone.packageName = packageName;
+    clone.comment = comment;
     clone.setTopLevelComponentNames(topLevelComponentNames);
     return clone;
   }
@@ -445,6 +473,7 @@ public class CnCView implements Cloneable {
     if (topLevelComponentNames.contains(ctr.getName())) {
       topLevelComponentNames.remove(ctr.getName());
       topLevelComponentNames.addAll(ctr.getContainedComponents());
+      assert topLevelComponentNames.stream().allMatch(x -> Character.isUpperCase(x.charAt(0))) : "TopLevelComponentNames have to be capitalized!";
     }
 
     for (Component parent : components) {
@@ -492,7 +521,9 @@ public class CnCView implements Cloneable {
   public void renameCmp(String cmpName, String newCmpName) {
     if (topLevelComponentNames.contains(cmpName)) {
       topLevelComponentNames.remove(cmpName);
+      assert Character.isUpperCase(newCmpName.charAt(0)) : "TopLevelComponentNames have to be capitalized!";
       topLevelComponentNames.add(newCmpName);
+
     }
 
     for (Component cmp : components) {
@@ -511,7 +542,14 @@ public class CnCView implements Cloneable {
       if (conn.getReceiver().equals(cmpName)) {
         conn.setReceiver(newCmpName);
       }
-
+    }
+    for (Effector conn : effectors) {
+      if (conn.getSender().equals(cmpName)) {
+        conn.setSender(newCmpName);
+      }
+      if (conn.getReceiver().equals(cmpName)) {
+        conn.setReceiver(newCmpName);
+      }
     }
   }
 
@@ -533,6 +571,18 @@ public class CnCView implements Cloneable {
    * @param cmpName
    * @return
    */
+  public Set<String> getReachableComponents(String cmpName, String pName, boolean alsoEffectors) {
+    Set<String> reachableCmpsPorts = new LinkedHashSet<String>();
+    Port p = getComponent(cmpName).getPort(pName);
+    reachableCmpsPorts.addAll(getReachableComponents(new LinkedHashSet<String>(), cmpName, p.getName(), alsoEffectors));
+
+    Set<String> reachableCmps = new LinkedHashSet<String>();
+    for (String cmpsPort : reachableCmpsPorts) {
+      reachableCmps.add(cmpsPort.split("\\.")[0]);
+    }
+    return reachableCmps;
+  }
+
   public Set<String> getReachableComponents(String cmpName, boolean alsoEffectors) {
     Set<String> reachableCmpsPorts = new LinkedHashSet<String>();
     for (Port p : getComponent(cmpName).getPorts()) {
@@ -553,19 +603,21 @@ public class CnCView implements Cloneable {
    * @return
    */
   private Set<String> getReachableComponents(LinkedHashSet<String> cmpsPortsVisited, String cmpName, String pName, boolean alsoEffectors) {
-    cmpsPortsVisited.add(cmpName + "." + pName);
+    String cmpPort = cmpName + "." + pName;
+    cmpsPortsVisited.add(cmpPort);
     for (Connection conn : connections) {
-      if (conn.getSender().equals(cmpName) && conn.getSenderPort().equals(pName) && !cmpsPortsVisited.contains(conn.getSender() + "." + conn.getReceiver())) {
+      if (conn.getSender().equals(cmpName) && conn.getSenderPort().equals(pName) && !cmpsPortsVisited.contains(conn.getReceiver() + "." + conn.getReceiverPort())) {
         cmpsPortsVisited.addAll(getReachableComponents(cmpsPortsVisited, conn.getReceiver(), conn.getReceiverPort(), alsoEffectors));
       }
     }
 
     if (alsoEffectors) {
       for (Effector eff : effectors) {
-        if (eff.getSender().equals(cmpName) && eff.getSenderPort().equals(pName) && !cmpsPortsVisited.contains(eff.getSender() + "." + eff.getReceiver())) {
+        if (eff.getSender().equals(cmpName) && eff.getSenderPort().equals(pName) && !cmpsPortsVisited.contains(eff.getReceiver() + "." + eff.getReceiverPort())) {
           cmpsPortsVisited.addAll(getReachableComponents(cmpsPortsVisited, eff.getReceiver(), eff.getReceiverPort(), alsoEffectors));
         }
       }
+
     }
     return cmpsPortsVisited;
   }

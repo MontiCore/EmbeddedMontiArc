@@ -1,7 +1,7 @@
 package bumperBotEmergency;
 
 view BumpControlOverview {
-
+component BumperBotEmergency {
   component BumpSensor {}
   instance BumpSensor bumpSensor;
   
@@ -14,4 +14,5 @@ view BumpControlOverview {
   connect timer -> bumpControl;
   
   connect bumpControl -> timer;
+  }
 }

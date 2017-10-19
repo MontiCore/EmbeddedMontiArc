@@ -155,6 +155,17 @@ public class PumpingSystemExampleTest {
         }
     }
 
+    @Test
+    public void checkPositiveEffector() {
+
+        List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.PositiveEffector");
+
+        if (!inconsistencies.isEmpty()) {
+            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+            fail(message);
+        }
+    }
+
     //  private String getMessageWithReasonsForInconsistency(ConsistencyCommandMontiArc cmd) {
     //    StringBuffer buf = new StringBuffer();
     //    for (InconsistencyItem item : cmd.getResult()) {

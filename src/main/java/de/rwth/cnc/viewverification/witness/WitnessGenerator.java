@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.viewverification.witness;
@@ -23,20 +21,27 @@ import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewSy
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
 import de.rwth.cnc.model.*;
 import de.rwth.cnc.viewverification.EmbeddedMontiViewLoader;
+import de.rwth.cnc.viewverification.VerificationHelper;
 import de.rwth.cnc.viewverification.inconsistency.*;
 
+import java.io.StringReader;
 import java.nio.file.Path;
+import java.util.Scanner;
+import java.util.Stack;
 
 public class WitnessGenerator {
 
-  public static void generateWitnessesForInconsistencyData(InconsistenciesData id) {
+  public static CnCView generateWitnessesForInconsistencyData(InconsistenciesData id) {
     CnCArchitecture model = id.getModel();
     CnCView view = id.getView();
     int fileId = 0;
 
+    CnCView witness = null;
+
     for (InconsistencyMissingComponent missingCmp : id.getMissingComponents()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForMissingComponent(model, view, missingCmp));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "missingComponent", "missingComponent" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForMissingComponent(model, view, missingCmp, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "missingComponent", "MissingComponent" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
@@ -45,8 +50,9 @@ public class WitnessGenerator {
 
     fileId = 0;
     for (InconsistencyInterfaceMismatch im : id.getInterfaceMismatches()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForInterfaceMismatch(model, view, im));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "interfaceMismatch", "interfaceMismatch" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForInterfaceMismatch(model, view, im, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "", "InterfaceMismatch" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
@@ -55,8 +61,9 @@ public class WitnessGenerator {
 
     fileId = 0;
     for (InconsistencyHierarchyMismatch hm : id.getHierarchyMismatches()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForHierarchyMismatch(model, view, hm));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "hierarchyMismatch", "hierarchyMismatch" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForHierarchyMismatch(model, view, hm, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "", "HierarchyMismatch" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
@@ -65,8 +72,9 @@ public class WitnessGenerator {
 
     fileId = 0;
     for (InconsistencyMissingConnection mc : id.getMissingConnections()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForMissingConnection(model, view, mc));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "missingConnection", "missingConnection" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForMissingConnection(model, view, mc, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "", "MissingConnection" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
@@ -75,8 +83,9 @@ public class WitnessGenerator {
 
     fileId = 0;
     for (InconsistencyMissingEffector me : id.getMissingEffectors()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForMissingEffector(model, view, me));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "missingEffector", "missingEffector" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForMissingEffector(model, view, me, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "", "MissingEffector" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
@@ -85,8 +94,9 @@ public class WitnessGenerator {
 
     fileId = 0;
     for (InconsistencyNotAtomic na : id.getNotAtomicMismatches()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForNotAtomicMismatch(model, view, na));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "notAtomic", "notAtomic" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForNotAtomicMismatch(model, view, na, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "", "NotAtomic" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
@@ -95,19 +105,23 @@ public class WitnessGenerator {
 
     fileId = 0;
     for (InconsistencyIFCViolation iv : id.getIFCViolations()) {
-      String text = getViewText(GenerateInconsistencyView.getViewForIFCViolation(model, view, iv));
-      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "ifcViolation", "ifcViolation" + Integer.toString(fileId));
+      witness = GenerateInconsistencyView.getViewForIFCViolation(model, view, iv, Integer.toString(fileId));
+      String text = getViewText(witness);
+      Path filePath = WitnessGeneratorHelper.getWitnessFilePath(false, view, "", "IFCViolation" + Integer.toString(fileId));
       fileId++;
       WitnessGeneratorHelper.writeStringToFile(filePath, text);
 
       iv.setJustificationFileName(filePath.toAbsolutePath().toString());
     }
+    return witness;
   }
 
-  public static void generateWitnessForConsistency(CnCArchitecture model, CnCView view) {
-    String text = getViewText(GeneratePositiveWitnessView.getViewForPositiveWitness(model, view));
-    Path filePath = WitnessGeneratorHelper.getWitnessFilePath(true, view, "", model.getName());
+  public static CnCView generateWitnessForConsistency(CnCArchitecture model, CnCView view) {
+    CnCView witness = GeneratePositiveWitnessView.getViewForPositiveWitness(model, view);
+    String text = getViewText(witness);
+    Path filePath = WitnessGeneratorHelper.getPositiveWitnessFilePath(model, view);
     WitnessGeneratorHelper.writeStringToFile(filePath, text);
+    return witness;
   }
 
   private static String getViewText(CnCView view) {
@@ -115,7 +129,59 @@ public class WitnessGenerator {
     //String viewText = SymbolPrinter.printComponent(component);
     ViewSymbol viewSym = EmbeddedMontiViewLoader.convertToEMVView(view);
     String viewText = view.getComment() + "\n\n" + SymbolPrinter.printView(viewSym);
+
+    //fix missing instances:
+    viewText = fixMissingInstances(viewText);
+
     return viewText;
+  }
+
+  // adds instance C c; after every } that is not the view or top component
+  // does not ignore multiline or inline comments! /* */
+  private static String fixMissingInstances(String viewText) {
+
+    StringBuilder builder = new StringBuilder();
+    Scanner scanner = new Scanner(viewText);
+
+    int currentNesting = 0;
+    Stack<String> currentComponentStack = new Stack<>();
+    while (scanner.hasNextLine()) {
+      String line = scanner.nextLine();
+
+      builder.append(line).append("\n");
+      if (!line.trim().startsWith("//")) {
+        if (line.contains(" component ")) {
+          String[] lineSplit = line.trim().split(" ");
+          //assert lineSplit.length < 4 : "badly formatted line: " + line;
+          //assert lineSplit.length > 2 : "badly formatted line: " + line;
+          if (lineSplit.length > 4 || lineSplit.length < 2) {
+          }
+          else
+            currentComponentStack.push(lineSplit[1]);
+        }
+
+        int open = (int) line.chars().filter(ch -> ch == '{').count();
+        int close = (int) line.chars().filter(ch -> ch == '}').count();
+        assert close < 2 : "badly formatted line: " + line;
+        currentNesting += open;
+        currentNesting -= close;
+        if (close > 0 && currentNesting >= 2) {
+          String leadingWhiteSpace = line;
+          // trim trailing w/s
+          leadingWhiteSpace = leadingWhiteSpace.replaceAll("\\s+$", "");
+          // remove all encloses w/s
+          leadingWhiteSpace = leadingWhiteSpace.replaceAll("[^\\s]\\s[^\\s]", "");
+          // remove all non w/s characters
+          leadingWhiteSpace = leadingWhiteSpace.replaceAll("[^\\s]", "");
+          assert leadingWhiteSpace.chars().allMatch(Character::isWhitespace) : "Contains whitespace: " + leadingWhiteSpace;
+
+          //instance C c;\n
+          String currentComponent = currentComponentStack.pop();
+          builder.append(leadingWhiteSpace + "instance ").append(currentComponent).append(" ").append(VerificationHelper.uncapitalize(currentComponent)).append(";").append(("\n"));
+        }
+      }
+    }
+    return builder.toString();
   }
 
 }

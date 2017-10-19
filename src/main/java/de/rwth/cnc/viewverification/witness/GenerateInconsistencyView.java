@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.viewverification.witness;
@@ -28,21 +26,23 @@ import de.rwth.cnc.viewverification.inconsistency.*;
 
 public class GenerateInconsistencyView {
 
-  public static CnCView getViewForMissingComponent(CnCArchitecture system, CnCView view, InconsistencyMissingComponent cmpName) {
+  public static CnCView getViewForMissingComponent(CnCArchitecture system, CnCView view, InconsistencyMissingComponent cmpName, String appendix) {
 
     CnCView witnessView = new CnCView();
 
-    witnessView.setName("MissingComponent");
+    witnessView.setName("MissingComponent" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForMissingComponent(system.getName(), view.getName(), cmpName));
+    witnessView.setPackageName(view.getPackageName());
 
     return witnessView;
   }
 
-  public static CnCView getViewForHierarchyMismatch(CnCArchitecture system, CnCView view, InconsistencyHierarchyMismatch hierarchyMismatch) {
+  public static CnCView getViewForHierarchyMismatch(CnCArchitecture system, CnCView view, InconsistencyHierarchyMismatch hierarchyMismatch, String appendix) {
 
     CnCView witnessView = new CnCView();
-    witnessView.setName("HierarchyMismatch");
+    witnessView.setName("HierarchyMismatch" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForHierarchyMismatch(system.getName(), view.getName(), hierarchyMismatch));
+    witnessView.setPackageName(view.getPackageName());
 
     String cmp1 = hierarchyMismatch.getComponentChild();
     String cmp2 = hierarchyMismatch.getComponentParent();
@@ -70,16 +70,18 @@ public class GenerateInconsistencyView {
     return witnessView;
   }
 
-  public static CnCView getViewForInterfaceMismatch(CnCArchitecture system, CnCView view, InconsistencyInterfaceMismatch interfaceMismatch) {
+  public static CnCView getViewForInterfaceMismatch(CnCArchitecture system, CnCView view, InconsistencyInterfaceMismatch interfaceMismatch, String appendix) {
 
     CnCView witnessView = new CnCView();
 
-    witnessView.setName("InterfaceMismatch");
+    witnessView.setName("InterfaceMismatch" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForInterfaceMismatch(system.getName(), view.getName(), interfaceMismatch));
+    witnessView.setPackageName(view.getPackageName());
 
     Component sysCmp = system.getComponent(interfaceMismatch.getComponentName());
     Component viewCmp = new Component();
     viewCmp.setName(sysCmp.getName());
+    viewCmp.setComponentType(sysCmp.getComponentType());
 
     if (interfaceMismatch.getMismatchKind().equals(InconsistencyInterfaceMismatchKind.NO_MATCH)) {
       for (Port port : sysCmp.getPorts()) {
@@ -92,17 +94,18 @@ public class GenerateInconsistencyView {
     }
 
     witnessView.addComponent(viewCmp);
-    witnessView.addTopLevelComponentName(viewCmp.getName());
+    witnessView.addTopLevelComponentName(viewCmp.getName(), true);
 
     return witnessView;
   }
 
-  public static CnCView getViewForMissingConnection(CnCArchitecture arch, CnCView view, InconsistencyMissingConnection missingConnection) {
+  public static CnCView getViewForMissingConnection(CnCArchitecture arch, CnCView view, InconsistencyMissingConnection missingConnection, String appendix) {
 
     CnCView witnessView = new CnCView();
 
-    witnessView.setName("MissingConnection");
+    witnessView.setName("MissingConnection" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForMissingConnection(arch.getName(), view.getName(), missingConnection));
+    witnessView.setPackageName(view.getPackageName());
 
     String srcCmpName = missingConnection.getComponentSource();
     String tgtCmpName = missingConnection.getComponentTarget();
@@ -148,17 +151,23 @@ public class GenerateInconsistencyView {
    * @param missingConnection
    * @return
    */
-  public static CnCView getViewForMissingEffector(CnCArchitecture arch, CnCView view, InconsistencyMissingEffector missingConnection) {
+  public static CnCView getViewForMissingEffector(CnCArchitecture arch, CnCView view, InconsistencyMissingEffector missingConnection, String appendix) {
 
     CnCView witnessView = new CnCView();
 
-    witnessView.setName("MissingEffector");
+    witnessView.setName("MissingEffector" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForMissingEffector(arch.getName(), view.getName(), missingConnection));
+    witnessView.setPackageName(view.getPackageName());
 
     String srcCmpName = missingConnection.getComponentSource();
     String tgtCmpName = missingConnection.getComponentTarget();
     // compute reachable components (to determine top level component)
-    Set<String> cmpsInView = arch.getReachableComponents(srcCmpName, true);
+    Set<String> cmpsInView;
+    if (missingConnection.getPortSource() != null)
+      cmpsInView = arch.getReachableComponents(srcCmpName, missingConnection.getPortSource(), true);
+    else
+      cmpsInView = arch.getReachableComponents(srcCmpName, true);
+
     cmpsInView.add(srcCmpName);
     cmpsInView.add(tgtCmpName);
 
@@ -183,18 +192,28 @@ public class GenerateInconsistencyView {
     topLevelCmp.add(parentCmpName);
     witnessView.setTopLevelComponentNames(topLevelCmp);
 
-    for (Port p : arch.getComponent(srcCmpName).getPorts()) {
+    if (missingConnection.getPortSource() != null) {
+      Port p = arch.getComponent(srcCmpName).getPort(missingConnection.getPortSource());
       witnessView.getComponent(srcCmpName).addPort(p.clone());
-      WitnessGeneratorHelper.addConnectorTargets(srcCmpName + "." + p.getName(), arch, witnessView);
+      WitnessGeneratorHelper.addEffectorTargets(srcCmpName + "." + p.getName(), arch, witnessView);
     }
+    else
+      for (Port p : arch.getComponent(srcCmpName).getPorts()) {
+        witnessView.getComponent(srcCmpName).addPort(p.clone());
+        WitnessGeneratorHelper.addEffectorTargets(srcCmpName + "." + p.getName(), arch, witnessView);
+      }
+
+      if(missingConnection.getPortTarget() != null)
+        witnessView.getComponent(tgtCmpName).getPorts().add(arch.getComponent(tgtCmpName).getPort(missingConnection.getPortTarget()).clone());
 
     return witnessView;
   }
 
-  public static CnCView getViewForNotAtomicMismatch(CnCArchitecture arch, CnCView view, InconsistencyNotAtomic inconsistency) {
+  public static CnCView getViewForNotAtomicMismatch(CnCArchitecture arch, CnCView view, InconsistencyNotAtomic inconsistency, String appendix) {
     CnCView witnessView = new CnCView();
-    witnessView.setName("NotAtomic");
+    witnessView.setName("NotAtomic" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForNotAtomicMismatch(arch.getName(), view.getName(), inconsistency));
+    witnessView.setPackageName(view.getPackageName());
 
     String component = inconsistency.getComponentName();
     Component cmp = new Component();
@@ -217,10 +236,11 @@ public class GenerateInconsistencyView {
     return witnessView;
   }
 
-  public static CnCView getViewForIFCViolation(CnCArchitecture arch, CnCView view, InconsistencyIFCViolation inconsistency) {
+  public static CnCView getViewForIFCViolation(CnCArchitecture arch, CnCView view, InconsistencyIFCViolation inconsistency, String appendix) {
     CnCView witnessView = new CnCView();
-    witnessView.setName("Interface-CompletenessViolation");
+    witnessView.setName("IFCViolation" + appendix);
     witnessView.setComment("// " + GenerateInconsistencyDesc.getDescForIFCViolation(arch.getName(), view.getName(), inconsistency));
+    witnessView.setPackageName(view.getPackageName());
 
     String component = inconsistency.getComponentName();
     Component cmp = new Component();

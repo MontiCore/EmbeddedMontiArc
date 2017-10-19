@@ -1,20 +1,18 @@
 /**
  * ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.rwth.cnc.model;
@@ -27,19 +25,19 @@ public class Connection implements Cloneable {
   protected String receiverPort = null;
 
   public boolean isComponentToComponent() {
-    return (sender != null & receiver != null & (senderPort == null || senderPort.length() < 1) & (receiverPort == null || receiverPort.length() < 1));
+    return (sender != null & receiver != null & (senderPort == null || senderPort.length() < 1 || senderPort.startsWith("$")) & (receiverPort == null || receiverPort.length() < 1 || receiverPort.startsWith("$")));
   }
 
   public boolean isComponentToPort() {
-    return (sender != null & receiver != null & (senderPort == null || senderPort.length() < 1) & receiverPort != null);
+    return (sender != null & receiver != null & (senderPort == null || senderPort.length() < 1 || senderPort.startsWith("$")) & receiverPort != null);
   }
 
   public boolean isPortToComponent() {
-    return (sender != null & receiver != null & senderPort != null & (receiverPort == null || receiverPort.length() < 1));
+    return (sender != null & receiver != null & senderPort != null & (receiverPort == null || receiverPort.length() < 1)|| receiverPort.startsWith("$"));
   }
 
   public boolean isPortToPort() {
-    return (sender != null & receiver != null & (senderPort != null && senderPort.length() > 0) & (receiverPort != null && receiverPort.length() > 0));
+    return (sender != null & receiver != null & (senderPort != null && senderPort.length() > 0 && !senderPort.startsWith("$")) & (receiverPort != null && receiverPort.length() > 0) && !receiverPort.startsWith("$"));
   }
 
   public String getSender() {
@@ -84,6 +82,8 @@ public class Connection implements Cloneable {
     assert sender != null;
     if (senderPort == null)
       return sender;
+    if (sender == "")
+      return senderPort;
     return sender + "." + senderPort;
   }
 
@@ -91,6 +91,8 @@ public class Connection implements Cloneable {
     assert receiver != null;
     if (receiverPort == null)
       return receiver;
+    if (receiver == "")
+      return receiverPort;
     return receiver + "." + receiverPort;
   }
 
@@ -108,4 +110,5 @@ public class Connection implements Cloneable {
   public String toString() {
     return sender + "." + senderPort + " -> " + receiver + "." + receiverPort + ";";
   }
+
 }
