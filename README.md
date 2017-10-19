@@ -1,4 +1,4 @@
-  [![Maintainability](https://api.codeclimate.com/v1/badges/307a8911b5895523b3c5/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EmbeddedMontiArcMath/maintainability)
+  [![Maintainability](https://api.codeclimate.com/v1/badges/cb1d2c40a5d6ef2b1d64/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/ViewVerification/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/ViewVerification.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/ViewVerification)
 
 # ViewVerification
