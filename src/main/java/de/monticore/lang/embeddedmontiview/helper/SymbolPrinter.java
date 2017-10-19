@@ -115,17 +115,7 @@ public class SymbolPrinter {
     else {
       ip.print("out ");
     }
-    if (port.getTypeReference().isPresent()) {
-      if (!port.getTypeReference().get().getName().equals("SIUnitRangesType")) {
-        ip.print(port.getTypeReference().get().getName());
-        ip.print(printTypeParameters(port.getTypeReference().get().getActualTypeArguments()));
-      }
-      else {
-        ip.print(((SIUnitRangesSymbol) port.getTypeReference().get().getReferencedSymbol()).getRange(0).toString());
-      }
-    }
-    else
-      ip.print("\"?\"");
+    ip.print(port.getTypeName());
     ip.print(" ");
     ip.print(port.getName());
 

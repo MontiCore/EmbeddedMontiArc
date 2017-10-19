@@ -20,6 +20,7 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
+import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.montiarc.tagging._symboltable.TaggingSymbol;
 import de.monticore.symboltable.CommonScope;
@@ -97,7 +98,13 @@ public class PortSymbol extends TaggingSymbol implements ElementInstance {
   public String getTypeName() {
     if (isTypeAnonymous())
       return "?";
-    return getTypeReference().get().getName();
+
+    if (!getTypeReference().get().getName().equals("SIUnitRangesType")) {
+      return (getTypeReference().get().getName());
+    }
+    else {
+      return (((SIUnitRangesSymbol) getTypeReference().get().getReferencedSymbol()).getRange(0).toString());
+    }
   }
 
   /**
