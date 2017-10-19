@@ -3,7 +3,6 @@ package customerAcceptanceTests;
 view UnitModelViewNegative1 {
     component UnitModel {
         ports 
-            in (-100 m/s:100 m/s) acceleration,     //not m/S^2 anymore
-            out (-oo km/h : oo km/h) velocity;
+            in (-100 m/s:100 m/s) acceleration;     //not m/S^2 anymore
     }
 }

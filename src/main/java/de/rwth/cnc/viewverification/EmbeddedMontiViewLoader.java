@@ -27,6 +27,7 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
+import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.symboltable.*;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
@@ -555,6 +556,10 @@ public class EmbeddedMontiViewLoader {
       p.setDirection(ps.isIncoming() ? Direction.IN : Direction.OUT);
       p.setName(ps.getName());
       p.setType(ps.getTypeName());
+      if (!ps.getTypeName().equals("SIUnitRangesType"))
+        p.setType(ps.getTypeName());
+      else
+        p.setType(((SIUnitRangesSymbol) ps.getTypeReference().get().getReferencedSymbol()).getRange(0).toString());
       p.setTypeReference(ps.getTypeReference());
       p.setComponent(cmp);
       cmp.addPort(p);

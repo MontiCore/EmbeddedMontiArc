@@ -30,6 +30,7 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
@@ -95,7 +96,10 @@ public class EmbeddedMontiArcLoader {
       Port p = new Port();
       p.setDirection(ps.isIncoming() ? Direction.IN : Direction.OUT);
       p.setName(ps.getName());
-      p.setType(ps.getTypeReference().getName());
+      if (!ps.getTypeReference().getName().equals("SIUnitRangesType"))
+        p.setType(ps.getTypeReference().getName());
+      else
+        p.setType(((SIUnitRangesSymbol) ps.getTypeReference().getReferencedSymbol()).getRange(0).toString());
       p.setTypeReference(Optional.of(ps.getTypeReference()));
       p.setComponent(cmp);
       assert !p.getName().contains(".") : "Portname is wrong!";

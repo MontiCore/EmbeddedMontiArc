@@ -9,7 +9,7 @@ component AC {
 	
 	component ACB {
 		// (0:1) has the type "SIUnitRangesType"
-		ports in SIUnitRangesType in1; 
+		ports in (0:1) in1; 
 	}
 	instance ACB acb;
 	

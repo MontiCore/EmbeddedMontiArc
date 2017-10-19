@@ -1,27 +1,32 @@
 package de.rwth.cnc.viewverification.commands;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewSymbol;
+import de.rwth.cnc.LogConfig;
 import de.rwth.cnc.viewverification.EmbeddedMontiViewLoader;
+import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class CustomerAcceptanceTests {
+public class CustomerAcceptanceTest {
 
   final String TESTDIR = "src/test/resources/evalInput_edited/";
   final String TESTDIRCA = "src/test/resources/";
 
-  @Test
-  public void checkPositiveEffectorPumpingStation() {
-    TestHelper.checkModelViewWitnessResult(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.PositiveEffector", TESTDIR, "pumpStationExample.Witness_PositiveEffector");
+  @BeforeClass
+  public static void init(){
+    LogConfig.init();
   }
 
   @Test
-  public void checkAssertEquals() {
-    final String folder1 = "src/test/resources/customerAcceptanceTests/assertEqualTest/witness1/";
-    final String folder2 = "src/test/resources/customerAcceptanceTests/assertEqualTest/witness2/";
-    ViewSymbol v1 = EmbeddedMontiViewLoader.loadViewSymbol(folder1, "pumpStationExample.AssertEqualsTest");
-    ViewSymbol v2 = EmbeddedMontiViewLoader.loadViewSymbol(folder2, "pumpStationExample.AssertEqualsTest");
-    TestHelper.assertEquality(v1, v2);
+  public void checkPositiveEffectorPumpingStation() {
+    TestHelper.checkModelViewWitnessResult(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.PositiveEffector", TESTDIR, "pumpStationExample.Witness_PositiveEffector");
   }
 
   @Test
@@ -69,30 +74,25 @@ public class CustomerAcceptanceTests {
     TestHelper.checkModelViewWitnessResult(TESTDIRCA, "customerAcceptanceTests.ConnectorTestModel", TESTDIRCA, "customerAcceptanceTests.ConnectorTestView4", TESTDIRCA, "customerAcceptanceTests.Witness_ConnectorTestView4");
   }
 
-  @Ignore
   @Test
   public void checkUnitsPositive() {
-    // currently not possible as the type is always translated as "SIUnitRangesType"
     TestHelper.checkModelViewWitnessResult(TESTDIRCA, "customerAcceptanceTests.UnitModel", TESTDIRCA, "customerAcceptanceTests.UnitModelViewPositive"
         ,TESTDIRCA, "customerAcceptanceTests.Witness_UnitModelViewPositive");
-
-    // however, this currently works since both, the witness and the expected witness translate the type to SIUnitRangesType
-    //therefore, remove the following assert when fixed!
-    assert false;
   }
 
-  @Ignore
+
   @Test
-  public void checkUnitsNegative_type() {
-    //currently not possible as the type is always translated as "SIUnitRangesType"
+  public void checkUnitsNegative_type() throws IOException {
     TestHelper.checkModelViewWitnessResult(TESTDIRCA, "customerAcceptanceTests.UnitModel", TESTDIRCA, "customerAcceptanceTests.UnitModelViewNegative1"
         ,TESTDIRCA, "customerAcceptanceTests.Witness_UnitModelViewNegative1");
+    String content = FileUtils.readFileToString(new File("target\\generated-witnesses\\negative\\UnitModelViewNegative1\\customerAcceptanceTests\\InterfaceMismatch0.emv".replace('\\','/')));
+    assertTrue(content.length() > 20);
+    assertFalse(content.contains("SIUnitRangesType"));
   }
 
-  @Ignore
+
   @Test
   public void checkUnitsNegative_range() {
-    //currently not possible as the type is always translated as "SIUnitRangesType"
     TestHelper.checkModelViewWitnessResult(TESTDIRCA, "customerAcceptanceTests.UnitModel", TESTDIRCA, "customerAcceptanceTests.UnitModelViewNegative2"
         ,TESTDIRCA, "customerAcceptanceTests.Witness_UnitModelViewNegative2");
   }

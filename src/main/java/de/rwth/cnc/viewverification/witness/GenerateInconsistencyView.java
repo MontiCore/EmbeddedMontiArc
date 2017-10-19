@@ -89,7 +89,7 @@ public class GenerateInconsistencyView {
       }
     }
     else {
-      Port p = sysCmp.getPort(interfaceMismatch.getPortName());
+      Port p = view.getComponent(sysCmp.getName()).getPort(interfaceMismatch.getPortName());
       viewCmp.addPort(p.clone());
     }
 

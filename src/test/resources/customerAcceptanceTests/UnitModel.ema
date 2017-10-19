@@ -1,6 +1,6 @@
 package customerAcceptanceTests;
 
 component UnitModel {
-	ports in (-100 m/s^2:100 m/s^2) acceleration,
+	ports in (-100 m/s:100 m/s) acceleration,
             out (-oo km/h : oo km/h) velocity;
 }

@@ -27,7 +27,7 @@ import de.rwth.cnc.viewverification.inconsistency.InconsistencyItem;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class SimpleTests {
+public class SimpleTest {
 
   private static final String TESTDIR = "src/test/resources/";
 
