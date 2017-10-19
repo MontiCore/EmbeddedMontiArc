@@ -90,7 +90,7 @@ public class EffectorSymbol extends TaggingSymbol {
 
     // (1) try to load Component.Port or ExpandedComponentInstance.Port
     String fullSource = Joiners.DOT.join(this.getPackageName(), this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
-    Optional<PortSymbol> port = this.getEnclosingScope().<PortSymbol>resolve(fullSource, PortSymbol.KIND);
+    Optional<PortSymbol> port = this.getEnclosingScope().<PortSymbol>resolve(name, PortSymbol.KIND);
     if (port.isPresent()) {
       return port.get();
     }
