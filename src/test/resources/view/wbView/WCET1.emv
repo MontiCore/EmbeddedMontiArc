@@ -1,0 +1,12 @@
+package view.wbView;
+
+view WCET1 {
+    component WeatherBalloonSensors {
+        ports
+            in Boolean controlSignalsIn,
+            out Boolean dataSaveInternalOut,
+            out Boolean dataAntennaOut;
+
+        effect controlSignalsIn -> dataSaveInternalOut;
+    }
+}
