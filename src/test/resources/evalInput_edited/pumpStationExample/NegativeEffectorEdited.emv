@@ -1,0 +1,11 @@
+package pumpStationExample;
+
+view NegativeEffectorEdited {
+    component SensorReadingEdited {
+        ports 
+            in ? $inPort,
+            out boolean unused;
+    }
+    
+    effect SensorReadingEdited.$inPort -> SensorReadingEdited.unused;
+}

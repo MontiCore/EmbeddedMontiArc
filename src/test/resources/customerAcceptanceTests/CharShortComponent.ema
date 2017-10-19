@@ -1,0 +1,7 @@
+package customerAcceptanceTests;
+
+component CharShortComponent {
+    ports 
+        //in short port1,
+        out char port2;
+}

@@ -1,5 +1,7 @@
 package de.rwth.cnc.viewverification.commands;
 
+import static javolution.testing.TestContext.assertEquals;
+
 import javax.swing.text.View;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -123,7 +125,7 @@ public class TestHelper {
 
     assert cmpSymInnerExpectedList.equals(cmpSymInnerWitnessList) : "Inner components differ!";
     assert cmpSymSubExpectedList.equals(cmpSymSubWitnessList) : "Sub components differ!";
-    assert portSymExpectedList.equals(portSymWitnessList) : "Ports differ!";
+    assertEquals(portSymExpectedList, portSymWitnessList);
     assert conSymExpectedList.equals(conSymWitnessList) : "Connectors differ!";
     assert effSymExpectedList.equals(effSymWitnessList) : "Effectors differ!";
 

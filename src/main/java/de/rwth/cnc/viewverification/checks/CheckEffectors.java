@@ -60,7 +60,7 @@ public class CheckEffectors extends Checker {
     cmpsToCheck.retainAll(system.getComponentNames());
 
     for (Effector eff : view.getEffectors()) {
-      if (system.getComponentNames().contains(eff.getSender()) && system.getComponentNames().contains(eff.getReceiver())) {
+      if ((system.getComponentNames().contains(eff.getSender()) && system.getComponentNames().contains(eff.getReceiver()))) {
         checkEffector(eff);
       }
     }
@@ -72,11 +72,19 @@ public class CheckEffectors extends Checker {
     boolean connectorChainFound = false;
 
     if (eff.isComponentToComponent()) {
+      Port possiblePort = view.getComponent(eff.getSender()).getPort(eff.getSenderPort());
+
       for (Port p : system.getComponent(eff.getSender()).getPorts()) {
         // check for all outgoing ports
         String senderPort = eff.getSender() + "." + p.getName();
         if (system.isEffected(senderPort, eff.getReceiver())) {
-          connectorChainFound = true;
+          if(possiblePort != null && possiblePort.isTextualAnonymous()) {
+            if (!possiblePort.getName().equals(p.getName()))
+              if (p.getDirection() == possiblePort.getDirection())
+                connectorChainFound = true;
+          }
+          else
+            connectorChainFound = true;
         }
       }
     }
@@ -87,12 +95,20 @@ public class CheckEffectors extends Checker {
       }
     }
     else if (eff.isComponentToPort()) {
+      Port possiblePort = view.getComponent(eff.getSender()).getPort(eff.getSenderPort());
+
       for (Port p : system.getComponent(eff.getSender()).getPorts()) {
         // check for all outgoing ports
         String senderPort = eff.getSender() + "." + p.getName();
         String receiverPort = eff.getReceiver() + "." + eff.getReceiverPort();
         if (system.isEffected(senderPort, receiverPort)) {
-          connectorChainFound = true;
+          if(possiblePort != null && possiblePort.isTextualAnonymous()) {
+            if (!possiblePort.getName().equals(p.getName()))
+              if (p.getDirection() == possiblePort.getDirection())
+                connectorChainFound = true;
+          }
+          else
+            connectorChainFound = true;
         }
       }
     }

@@ -163,7 +163,7 @@ public class GenerateInconsistencyView {
     String tgtCmpName = missingConnection.getComponentTarget();
     // compute reachable components (to determine top level component)
     Set<String> cmpsInView;
-    if (missingConnection.getPortSource() != null)
+    if (missingConnection.getPortSource() != null && !missingConnection.getPortSource().startsWith("$"))
       cmpsInView = arch.getReachableComponents(srcCmpName, missingConnection.getPortSource(), true);
     else
       cmpsInView = arch.getReachableComponents(srcCmpName, true);
@@ -192,7 +192,7 @@ public class GenerateInconsistencyView {
     topLevelCmp.add(parentCmpName);
     witnessView.setTopLevelComponentNames(topLevelCmp);
 
-    if (missingConnection.getPortSource() != null) {
+    if (missingConnection.getPortSource() != null && !missingConnection.getPortSource().startsWith("$")) {
       Port p = arch.getComponent(srcCmpName).getPort(missingConnection.getPortSource());
       witnessView.getComponent(srcCmpName).addPort(p.clone());
       WitnessGeneratorHelper.addEffectorTargets(srcCmpName + "." + p.getName(), arch, witnessView);
@@ -200,10 +200,14 @@ public class GenerateInconsistencyView {
     else
       for (Port p : arch.getComponent(srcCmpName).getPorts()) {
         witnessView.getComponent(srcCmpName).addPort(p.clone());
+        if (p.getName().equals("unused")) {
+          int a = 1;
+        }
         WitnessGeneratorHelper.addEffectorTargets(srcCmpName + "." + p.getName(), arch, witnessView);
       }
 
-      if(missingConnection.getPortTarget() != null)
+    if (!missingConnection.getComponentSource().equals(missingConnection.getComponentTarget()))
+      if (missingConnection.getPortTarget() != null && !missingConnection.getPortTarget().startsWith("$"))
         witnessView.getComponent(tgtCmpName).getPorts().add(arch.getComponent(tgtCmpName).getPort(missingConnection.getPortTarget()).clone());
 
     return witnessView;
