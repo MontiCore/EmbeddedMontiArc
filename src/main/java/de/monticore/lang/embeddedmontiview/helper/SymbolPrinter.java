@@ -22,6 +22,7 @@ package de.monticore.lang.embeddedmontiview.helper;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.montiarc.tagging._symboltable.IsTaggable;
+import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
@@ -115,8 +116,13 @@ public class SymbolPrinter {
       ip.print("out ");
     }
     if (port.getTypeReference().isPresent()) {
-      ip.print(port.getTypeReference().get().getName());
-      ip.print(printTypeParameters(port.getTypeReference().get().getActualTypeArguments()));
+      if (!port.getTypeReference().get().getName().equals("SIUnitRangesType")) {
+        ip.print(port.getTypeReference().get().getName());
+        ip.print(printTypeParameters(port.getTypeReference().get().getActualTypeArguments()));
+      }
+      else {
+        ip.print(((SIUnitRangesSymbol) port.getTypeReference().get().getReferencedSymbol()).getRange(0).toString());
+      }
     }
     else
       ip.print("\"?\"");
@@ -340,7 +346,7 @@ public class SymbolPrinter {
         cmp.getImports().stream().forEachOrdered(a -> ip.println("import " + a.getStatement() + (a.isStar() ? ".*" : "") + ";"));
       }
     }
-    ip.print("component /*instance*/ " + inst.getName());
+    ip.print("instance " + inst.getName());
 
     ip.println(" {");
     printTags(inst, ip);
