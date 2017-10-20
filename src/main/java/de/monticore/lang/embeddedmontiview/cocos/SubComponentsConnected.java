@@ -21,10 +21,10 @@ package de.monticore.lang.embeddedmontiview.cocos;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._cocos.EmbeddedMontiViewASTComponentCoCo;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewConnectorSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -42,24 +42,24 @@ import java.util.stream.Collectors;
 public class SubComponentsConnected
     implements EmbeddedMontiViewASTComponentCoCo {
 
-  private Collection<String> getNames(Collection<PortSymbol> ports) {
+  private Collection<String> getNames(Collection<ViewPortSymbol> ports) {
     return ports.stream().map(p -> p.getName()).collect(Collectors.toList());
   }
 
-  private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
+  private Collection<String> getSourceNames(Collection<ViewConnectorSymbol> connectors) {
     return connectors.stream().map(c -> c.getSource()).collect(Collectors.toList());
   }
 
-  private Collection<String> getTargetNames(Collection<ConnectorSymbol> connectors) {
+  private Collection<String> getTargetNames(Collection<ViewConnectorSymbol> connectors) {
     return connectors.stream().map(c -> c.getTarget()).collect(Collectors.toList());
   }
 
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol entry = (ComponentSymbol) node.getSymbol().get();
+    ViewComponentSymbol entry = (ViewComponentSymbol) node.getSymbol().get();
     // Implemented on the symTab as it takes auto-instantiation into account which is not reflected
     // in the AST.
-    for (ComponentInstanceSymbol sub : entry.getSubComponents()) {
+    for (ViewComponentInstanceSymbol sub : entry.getSubComponents()) {
       // ------- IN PORTS -------
       // in ports must be connected
       // outer.in->sub.in

@@ -55,12 +55,12 @@ public class EmbeddedMontiViewLanguage extends EmbeddedMontiViewLanguageTOP
   protected void initResolvingFilters() {
     super.initResolvingFilters();
     // is done in generated TOP-language addResolver(new
-    // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
-    addResolver(new CommonResolvingFilter<>(ComponentInstanceSymbol.KIND));
-    addResolver(new CommonResolvingFilter<>(PortSymbol.KIND));
-    addResolvingFilter(CommonResolvingFilter.create(PortArraySymbol.KIND));
-    addResolver(new EMAConnectorResolvingFilter<>(ConnectorSymbol.KIND));
-    addResolver(new EMAConnectorResolvingFilter<>(EffectorSymbol.KIND));
+    // CommonResolvingFilter<ViewComponentSymbol>(ViewComponentSymbol.class, ViewComponentSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(ViewComponentInstanceSymbol.KIND));
+    addResolver(new CommonResolvingFilter<>(ViewPortSymbol.KIND));
+    addResolvingFilter(CommonResolvingFilter.create(ViewPortArraySymbol.KIND));
+    addResolver(new EMAConnectorResolvingFilter<>(ViewConnectorSymbol.KIND));
+    addResolver(new EMAConnectorResolvingFilter<>(ViewEffectorSymbol.KIND));
     addResolver(new CommonResolvingFilter<>(ExpandedComponentInstanceSymbol.KIND));
     addResolver(new CommonResolvingFilter<>(SIUnitSymbol.KIND));
     addResolver(new CommonResolvingFilter<>(SIUnitRangesSymbol.KIND));

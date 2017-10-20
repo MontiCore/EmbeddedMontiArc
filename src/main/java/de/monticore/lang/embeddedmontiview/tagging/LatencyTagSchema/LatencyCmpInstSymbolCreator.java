@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ConnectorSymbol;
 import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTTag;

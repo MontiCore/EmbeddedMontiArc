@@ -26,34 +26,34 @@ import java.util.Optional;
 /**
  * Created by Michael von Wenckstern on 23.05.2016.
  */
-public class ConnectorBuilder {
+public class ViewConnectorBuilder {
   protected Optional<String> source = Optional.empty();
   protected Optional<String> target = Optional.empty();
   //  protected Optional<ConstantPortSymbol> portSymbol = Optional.empty();
 
-  public static ConnectorSymbol clone(ConnectorSymbol con) {
-    return new ConnectorBuilder().setSource(con.getSource()).
+  public static ViewConnectorSymbol clone(ViewConnectorSymbol con) {
+    return new ViewConnectorBuilder().setSource(con.getSource()).
         setTarget(con.getTarget()).build();
   }
 
-  public ConnectorBuilder setSource(String source) {
+  public ViewConnectorBuilder setSource(String source) {
     this.source = Optional.of(source);
     return this;
   }
 
-  public ConnectorBuilder setTarget(String target) {
+  public ViewConnectorBuilder setTarget(String target) {
     this.target = Optional.of(target);
     return this;
   }
 
-  //  public ConnectorBuilder setConstantPortSymbol(ConstantPortSymbol portSymbol) {
+  //  public ViewConnectorBuilder setConstantPortSymbol(ConstantPortSymbol portSymbol) {
   //    this.portSymbol = Optional.of(portSymbol);
   //    return this;
   //  }
 
-  public ConnectorSymbol build() {
+  public ViewConnectorSymbol build() {
     if (source.isPresent() && target.isPresent()) {
-      ConnectorSymbol con = new ConnectorSymbol(this.target.get());
+      ViewConnectorSymbol con = new ViewConnectorSymbol(this.target.get());
       con.setSource(this.source.get());
       con.setTarget(this.target.get());
       //	  if(portSymbol.orElse(null) != null) {

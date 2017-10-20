@@ -22,7 +22,7 @@
 
 package de.monticore.lang.embeddedmontiview.tagging.LatencyTagSchema;
 
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewPortSymbol;
 import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTTag;
@@ -137,16 +137,16 @@ public class LatencyViewPortSymbolCreator implements TagSymbolCreator {
     return ast.get();
   }
 
-  protected PortSymbol checkKind(Collection<Symbol> symbols) {
-    PortSymbol ret = null;
+  protected ViewPortSymbol checkKind(Collection<Symbol> symbols) {
+    ViewPortSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(PortSymbol.KIND)) {
+      if (symbol.getKind().isSame(ViewPortSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (PortSymbol)symbol;
+        ret = (ViewPortSymbol)symbol;
       }
     }
     if (ret == null) {

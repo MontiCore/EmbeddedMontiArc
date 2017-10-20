@@ -21,8 +21,8 @@ package de.monticore.lang.embeddedmontiview.cocos;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._cocos.EmbeddedMontiViewASTComponentCoCo;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentSymbol;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -42,9 +42,9 @@ public class ComponentInstanceNamesUnique
    */
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol comp = (ComponentSymbol) node.getSymbol().get();
+    ViewComponentSymbol comp = (ViewComponentSymbol) node.getSymbol().get();
     List<String> names = new ArrayList<>();
-    for (ComponentInstanceSymbol subComp : comp.getSubComponents()) {
+    for (ViewComponentInstanceSymbol subComp : comp.getSubComponents()) {
 
       if (names.contains(subComp.getFullName())) {
 

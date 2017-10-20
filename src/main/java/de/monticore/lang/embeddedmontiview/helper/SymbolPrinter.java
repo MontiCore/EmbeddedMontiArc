@@ -22,7 +22,6 @@ package de.monticore.lang.embeddedmontiview.helper;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.montiarc.tagging._symboltable.IsTaggable;
-import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
@@ -108,7 +107,7 @@ public class SymbolPrinter {
     return "<" + arg.stream().map(a -> printFormalTypeParameters(a)).collect(Collectors.joining(",")) + ">";
   }
 
-  public static void printPort(PortSymbol port, IndentPrinter ip) {
+  public static void printPort(ViewPortSymbol port, IndentPrinter ip) {
     if (port.isIncoming()) {
       ip.print("in ");
     }
@@ -122,13 +121,13 @@ public class SymbolPrinter {
     printTags(port, ip);
   }
 
-  public static String printPort(PortSymbol port) {
+  public static String printPort(ViewPortSymbol port) {
     IndentPrinter ip = new IndentPrinter();
     printPort(port, ip);
     return ip.getContent();
   }
 
-  public static void printConnector(ConnectorSymbol con, IndentPrinter ip) {
+  public static void printConnector(ViewConnectorSymbol con, IndentPrinter ip) {
     ip.print(con.getSource());
     ip.print(" -> ");
     ip.print(con.getTarget());
@@ -136,13 +135,13 @@ public class SymbolPrinter {
     printTags(con, ip);
   }
 
-  public static String printConnector(ConnectorSymbol con) {
+  public static String printConnector(ViewConnectorSymbol con) {
     IndentPrinter ip = new IndentPrinter();
     printConnector(con, ip);
     return ip.getContent();
   }
 
-  public static void printEffector(EffectorSymbol con, IndentPrinter ip) {
+  public static void printEffector(ViewEffectorSymbol con, IndentPrinter ip) {
     ip.print(con.getSource());
     ip.print(" -> ");
     ip.print(con.getTarget());
@@ -150,7 +149,7 @@ public class SymbolPrinter {
     printTags(con, ip);
   }
 
-  public static String printEffector(EffectorSymbol con) {
+  public static String printEffector(ViewEffectorSymbol con) {
     IndentPrinter ip = new IndentPrinter();
     printEffector(con, ip);
     return ip.getContent();
@@ -162,7 +161,7 @@ public class SymbolPrinter {
     return "(" + config.stream().map(a -> a.getValue()).collect(Collectors.joining(",")) + ")";
   }
 
-  public static void printComponentInstance(ComponentInstanceSymbol inst, IndentPrinter ip) {
+  public static void printComponentInstance(ViewComponentInstanceSymbol inst, IndentPrinter ip) {
     ip.print(inst.getComponentType().getName());
     ip.print(printTypeParameters(inst.getComponentType().getActualTypeArguments()));
     ip.print(printConfigArguments(inst.getConfigArguments()));
@@ -170,19 +169,19 @@ public class SymbolPrinter {
     ip.print(inst.getName());
   }
 
-  public static String printComponentInstance(ComponentInstanceSymbol inst) {
+  public static String printComponentInstance(ViewComponentInstanceSymbol inst) {
     IndentPrinter ip = new IndentPrinter();
     printComponentInstance(inst, ip);
     return ip.getContent();
   }
 
-  public static void printPorts(Collection<PortSymbol> ports, IndentPrinter ip) {
+  public static void printPorts(Collection<ViewPortSymbol> ports, IndentPrinter ip) {
     if (!ports.isEmpty()) {
       ip.println("ports");
       ip.indent();
       int i = 0;
       int s = ports.size();
-      for (PortSymbol p : ports) {
+      for (ViewPortSymbol p : ports) {
         printPort(p, ip);
         if (i == s - 1) {
           ip.println(";");
@@ -196,7 +195,7 @@ public class SymbolPrinter {
     }
   }
 
-  public static void printComponent(ComponentSymbol cmp, IndentPrinter ip, boolean skipPackageImport) {
+  public static void printComponent(ViewComponentSymbol cmp, IndentPrinter ip, boolean skipPackageImport) {
     if (!skipPackageImport) {
       if (cmp.getPackageName() != null && !cmp.getPackageName().isEmpty()) {
         ip.print("package ");
@@ -248,7 +247,7 @@ public class SymbolPrinter {
     ip.println("}");
   }
 
-  public static String printComponent(ComponentSymbol cmp) {
+  public static String printComponent(ViewComponentSymbol cmp) {
     IndentPrinter ip = new IndentPrinter();
     printComponent(cmp, ip, false);
     return ip.getContent();
@@ -326,7 +325,7 @@ public class SymbolPrinter {
 
   public static void printExpandedComponentInstance(ExpandedComponentInstanceSymbol inst, IndentPrinter ip, boolean skipPackageImport) {
     if (!skipPackageImport) {
-      ComponentSymbol cmp = inst.getComponentType().getReferencedSymbol();
+      ViewComponentSymbol cmp = inst.getComponentType().getReferencedSymbol();
       if (cmp.getPackageName() != null && !cmp.getPackageName().isEmpty()) {
         ip.print("package ");
         ip.print(cmp.getPackageName());

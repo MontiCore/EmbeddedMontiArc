@@ -35,37 +35,37 @@ public class SimpleConnectorSourceExists
     implements EmbeddedMontiViewASTComponentCoCo {
 
   /**
-   * TODO: either check why ConnectorSymbol has no proper value for sourcePosition, or reimplement
+   * TODO: either check why ViewConnectorSymbol has no proper value for sourcePosition, or reimplement
    * using
    *
    * @see EmbeddedMontiViewASTComponentCoCo#check(ASTComponent)
    */
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol symbol = (ComponentSymbol) node.getSymbol().orElse(null);
+    ViewComponentSymbol symbol = (ViewComponentSymbol) node.getSymbol().orElse(null);
 
     if (null == symbol) {
       Log.error(String.format("0x9AF6C ASTComponent node \"%s\" has no symbol. Did you forget to " + "run the SymbolTableCreator before checking cocos?", node.getName()));
       return;
     }
 
-    for (ComponentInstanceSymbol instanceSymbol : symbol.getSubComponents()) {
-      for (ConnectorSymbol connectorSymbol : instanceSymbol.getSimpleConnectors()) {
+    for (ViewComponentInstanceSymbol instanceSymbol : symbol.getSubComponents()) {
+      for (ViewConnectorSymbol viewConnectorSymbol : instanceSymbol.getSimpleConnectors()) {
 
-        ComponentSymbolReference typeReference = instanceSymbol.getComponentType();
+        ViewComponentSymbolReference typeReference = instanceSymbol.getComponentType();
 
         if (!typeReference.existsReferencedSymbol()) {
           Log.error(String.format("0xBEA8B The component type \"%s\" can't be resolved.", typeReference.getFullName()));
           return;
         }
 
-        ComponentSymbol sourceComponent = typeReference.getReferencedSymbol();
-        String sourcePort = connectorSymbol.getSource();
+        ViewComponentSymbol sourceComponent = typeReference.getReferencedSymbol();
+        String sourcePort = viewConnectorSymbol.getSource();
 
-        Optional<PortSymbol> outgoingPort = sourceComponent.getOutgoingPort(sourcePort);
+        Optional<ViewPortSymbol> outgoingPort = sourceComponent.getOutgoingPort(sourcePort);
 
         if (!outgoingPort.isPresent()) {
-          Log.error(String.format("0xF4D71 Out port \"%s\" is not present in component \"%s\".", sourcePort, sourceComponent.getName()), connectorSymbol.getSourcePosition());
+          Log.error(String.format("0xF4D71 Out port \"%s\" is not present in component \"%s\".", sourcePort, sourceComponent.getName()), viewConnectorSymbol.getSourcePosition());
         }
       }
     }

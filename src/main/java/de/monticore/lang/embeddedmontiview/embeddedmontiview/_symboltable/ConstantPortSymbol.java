@@ -56,7 +56,7 @@
 // *
 // * @author Sascha Schneiders
 // */
-//public class ConstantPortSymbol extends PortSymbol {
+//public class ConstantPortSymbol extends ViewPortSymbol {
 //    EMAConstantValue constantValue;
 //
 //    /**

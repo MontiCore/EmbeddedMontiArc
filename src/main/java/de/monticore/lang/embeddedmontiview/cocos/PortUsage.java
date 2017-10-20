@@ -21,9 +21,9 @@ package de.monticore.lang.embeddedmontiview.cocos;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._cocos.EmbeddedMontiViewASTComponentCoCo;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewConnectorSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -39,21 +39,21 @@ import java.util.stream.Collectors;
  */
 public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
 
-  private Collection<String> getNames(Collection<PortSymbol> ports) {
+  private Collection<String> getNames(Collection<ViewPortSymbol> ports) {
     return ports.stream().map(p -> p.getName()).collect(Collectors.toList());
   }
 
-  private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
+  private Collection<String> getSourceNames(Collection<ViewConnectorSymbol> connectors) {
     return connectors.stream().map(c -> c.getSource()).collect(Collectors.toList());
   }
 
-  private Collection<String> getTargetNames(Collection<ConnectorSymbol> connectors) {
+  private Collection<String> getTargetNames(Collection<ViewConnectorSymbol> connectors) {
     return connectors.stream().map(c -> c.getTarget()).collect(Collectors.toList());
   }
 
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol entry = (ComponentSymbol) node.getSymbol().get();
+    ViewComponentSymbol entry = (ViewComponentSymbol) node.getSymbol().get();
 
     // %%%%%%%%%%%%%%%% CV5 %%%%%%%%%%%%%%%%
     if (entry.isDecomposed()) {
@@ -69,7 +69,7 @@ public class PortUsage implements EmbeddedMontiViewASTComponentCoCo {
       if (entry.isInnerComponent()) {
         // ports not connected by the inner component itself might be connected from the parent
         // component or any of the parent's subcomponents' simple connectors
-        ComponentSymbol componentUsingSubComp = (ComponentSymbol) entry.getEnclosingScope().getSpanningSymbol().get();
+        ViewComponentSymbol componentUsingSubComp = (ViewComponentSymbol) entry.getEnclosingScope().getSpanningSymbol().get();
         connectorSources.addAll(getSourceNames(componentUsingSubComp.getConnectors()));
       }
 

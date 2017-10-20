@@ -73,7 +73,7 @@ public class EmbeddedMontiViewSymbolTableCreator
   private String compilationUnitPackage = "";
   private EmbeddedMontiArcExpandedComponentInstanceSymbolCreator instanceSymbolCreator = new EmbeddedMontiArcExpandedComponentInstanceSymbolCreator();
   // extra stack of components that is used to determine which components are inner components.
-  private Stack<ComponentSymbol> componentStack = new Stack<>();
+  private Stack<ViewComponentSymbol> componentStack = new Stack<>();
   private ViewSymbol currentView = null;
   private List<ImportStatement> currentImports = new ArrayList<>();
   private JavaSymbolFactory jSymbolFactory = new JavaSymbolFactory();
@@ -183,9 +183,9 @@ public class EmbeddedMontiViewSymbolTableCreator
   }
 
   /**
-   * creates the PortSymbols that belong to a PortArraySymbol
+   * creates the PortSymbols that belong to a ViewPortArraySymbol
    */
-  private void portCreationIntLiteralPresent(ASTPort node, PortArraySymbol pas, String name, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
+  private void portCreationIntLiteralPresent(ASTPort node, ViewPortArraySymbol pas, String name, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
     //int num = node.getIntLiteral().get().getValue();
     Log.debug(node.toString(), "ASTPort");
     int num = 0;
@@ -198,7 +198,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     pas.setDimension(num);
     for (int i = 1; i <= num; ++i) {
       String nameWithArray = name + "[" + Integer.toString(i) + "]";
-      PortSymbol sym = new PortSymbol(nameWithArray);
+      ViewPortSymbol sym = new ViewPortSymbol(nameWithArray);
 
       Log.debug(nameWithArray, "nameWithArray");
 
@@ -214,18 +214,18 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  private void portCreation(ASTPort node, PortArraySymbol pas, String name, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
+  private void portCreation(ASTPort node, ViewPortArraySymbol pas, String name, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
     if (node.getUnitNumberResolution().isPresent()) {
       portCreationIntLiteralPresent(node, pas, name, typeRef);
     }
     else {
-      // create PortSymbol with same content as PortArraySymbol
+      // create ViewPortSymbol with same content as ViewPortArraySymbol
       createPort(node, name, node.isIncoming(), pas.getStereotype(), typeRef);
     }
   }
 
   public void createPort(String name, boolean isIncoming, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
-    PortSymbol ps = new PortSymbol(name);
+    ViewPortSymbol ps = new ViewPortSymbol(name);
 
     ps.setTypeReference(typeRef);
     ps.setDirection(isIncoming);
@@ -236,7 +236,7 @@ public class EmbeddedMontiViewSymbolTableCreator
   }
 
   public void createPort(ASTPort node, String name, boolean isIncoming, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
-    PortSymbol ps = new PortSymbol(name);
+    ViewPortSymbol ps = new ViewPortSymbol(name);
 
     ps.setTypeReference(typeRef);
     ps.setDirection(isIncoming);
@@ -284,7 +284,7 @@ public class EmbeddedMontiViewSymbolTableCreator
       name = node.getName().orElse(StringTransformations.uncapitalize(typeName.toString()));
     }
 
-    PortArraySymbol pas = new PortArraySymbol(name, nameTO);
+    ViewPortArraySymbol pas = new ViewPortArraySymbol(name, nameTO);
     pas.setTypeReference(typeRef);
     pas.setDirection(node.isIncoming());
 
@@ -426,7 +426,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     int counter = 0;
 
     while (present) {
-      present = curScope.resolve(portName + "[" + (counter + 1) + "]", PortSymbol.KIND).isPresent();
+      present = curScope.resolve(portName + "[" + (counter + 1) + "]", ViewPortSymbol.KIND).isPresent();
       if (present)
         ++counter;
       else {
@@ -437,11 +437,11 @@ public class EmbeddedMontiViewSymbolTableCreator
       //TODO
       present = true;
       Log.debug("compInstanceName: " + compName, "Resolving");
-      ComponentInstanceSymbol symbol = curScope.<ComponentInstanceSymbol>resolve(compName, ComponentInstanceSymbol.KIND).get();
-      for (PortSymbol portSymbol : symbol.getComponentType().getAllPorts()) {
+      ViewComponentInstanceSymbol symbol = curScope.<ViewComponentInstanceSymbol>resolve(compName, ViewComponentInstanceSymbol.KIND).get();
+      for (ViewPortSymbol viewPortSymbol : symbol.getComponentType().getAllPorts()) {
 
-        Log.debug(portSymbol.toString(), "PortInfo");
-        if (portSymbol.getNameWithoutArrayBracketPart().startsWith(portName)) {
+        Log.debug(viewPortSymbol.toString(), "PortInfo");
+        if (viewPortSymbol.getNameWithoutArrayBracketPart().startsWith(portName)) {
           ++counter;
         }
       }
@@ -457,7 +457,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     int counter = 0;
     Log.debug("" + componentName, "RESOLVING");
     while (present) {
-      present = curScope.resolve(componentName + "[" + (counter + 1) + "]", ComponentInstanceSymbol.KIND).isPresent();
+      present = curScope.resolve(componentName + "[" + (counter + 1) + "]", ViewComponentInstanceSymbol.KIND).isPresent();
       if (present)
         ++counter;
     }
@@ -477,7 +477,7 @@ public class EmbeddedMontiViewSymbolTableCreator
         Log.debug("" + targetName, "target");
         Log.debug("" + sourceName, "source");
 
-        ConnectorSymbol sym = new ConnectorSymbol(sourceName + targetName);
+        ViewConnectorSymbol sym = new ViewConnectorSymbol(sourceName + targetName);
         sym.setSource(sourceName);
         sym.setTarget(targetName);
         Log.debug(sym.getTarget(), "TARGETNAME SET TO");
@@ -511,7 +511,7 @@ public class EmbeddedMontiViewSymbolTableCreator
         Log.debug("" + targetName, "target");
         Log.debug("" + sourceName, "source");
 
-        EffectorSymbol sym = new EffectorSymbol(sourceName  + targetName);
+        ViewEffectorSymbol sym = new ViewEffectorSymbol(sourceName  + targetName);
         sym.setSource(sourceName);
         sym.setTarget(targetName);
         Log.debug(sym.getTarget(), "TARGETNAME SET TO");
@@ -570,7 +570,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     return -1;
   }
 
-  public void doSubComponentInstanceResolution(ASTSubComponentInstance node, ComponentSymbolReference componentSymbolReference) {
+  public void doSubComponentInstanceResolution(ASTSubComponentInstance node, ViewComponentSymbolReference componentSymbolReference) {
     if (node.getUnitNumberResolution().isPresent()) {
       ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution().get();
       ASTUnitNumber toSet = null;
@@ -593,7 +593,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  public void setActualResolutionDeclaration(ASTSubComponent node, ComponentSymbolReference componentSymbolReference) {
+  public void setActualResolutionDeclaration(ASTSubComponent node, ViewComponentSymbolReference componentSymbolReference) {
     int size = handleSizeResolution(node);
     if (size > 0 && componentSymbolReference.getResolutionDeclarationSymbols().size() > 0) {
       if (componentSymbolReference.getResolutionDeclarationSymbols().get(0).getASTResolution() instanceof ASTUnitNumberResolution) {
@@ -616,7 +616,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     // String refCompPackage = Names.getQualifier(referencedCompName);
     String simpleCompName = Names.getSimpleName(referencedCompName);
 
-    ComponentSymbolReference componentTypeReference = new ComponentSymbolReference(referencedCompName, currentScope().get(), this);
+    ViewComponentSymbolReference componentTypeReference = new ViewComponentSymbolReference(referencedCompName, currentScope().get(), this);
 
     //set actual Resolution values
     setActualResolutionDeclaration(node, componentTypeReference);
@@ -672,8 +672,8 @@ public class EmbeddedMontiViewSymbolTableCreator
    * Creates the instance and adds it to the symTab.
    */
 
-  private void createInstance(String name, ASTNode node, ComponentSymbolReference componentTypeReference, List<ValueSymbol<TypeReference<TypeSymbol>>> configArguments) {
-    ComponentInstanceSymbol instance = new ComponentInstanceSymbol(name, componentTypeReference);
+  private void createInstance(String name, ASTNode node, ViewComponentSymbolReference componentTypeReference, List<ValueSymbol<TypeReference<TypeSymbol>>> configArguments) {
+    ViewComponentInstanceSymbol instance = new ViewComponentInstanceSymbol(name, componentTypeReference);
     configArguments.forEach(v -> instance.addConfigArgument(v));
     // create a subscope for the instance
     addToScopeAndLinkWithNode(instance, node);
@@ -692,7 +692,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  private void handleResolutionDeclaration(ComponentSymbol typeSymbol, Optional<ASTTypeParameters> optionalTypeParameters, Scope currentScope, ASTComponent node) {
+  private void handleResolutionDeclaration(ViewComponentSymbol typeSymbol, Optional<ASTTypeParameters> optionalTypeParameters, Scope currentScope, ASTComponent node) {
     if (optionalTypeParameters.isPresent()) {
       ASTTypeParameters astTypeParameters = optionalTypeParameters.get();
       for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters.getTypeVariableDeclarations()) {
@@ -734,7 +734,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
     String componentPackageName = compilationUnitPackage;
 
-    ComponentSymbol component = new ComponentSymbol(componentName);
+    ViewComponentSymbol component = new ViewComponentSymbol(componentName);
     component.setImports(currentImports);
 
     if (!componentStack.isEmpty()) {
@@ -763,7 +763,7 @@ public class EmbeddedMontiViewSymbolTableCreator
       ASTReferenceType superCompRef = node.getHead().getSuperComponent().get();
       String superCompName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(superCompRef);
 
-      ComponentSymbolReference ref = new ComponentSymbolReference(superCompName, currentScope().get());
+      ViewComponentSymbolReference ref = new ViewComponentSymbolReference(superCompName, currentScope().get());
       ref.setAccessModifier(BasicAccessModifier.PUBLIC);
       // actual type arguments
       addTypeArgumentsToTypeSymbol(ref, superCompRef);
@@ -789,7 +789,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
     // TODO this is a hack to avoid loading one component symbol twice
     // --> must be changed in future
-    Collection<Symbol> c = getGlobalScope(currentScope().get()).resolveDownMany(component.getFullName(), ComponentSymbol.KIND);
+    Collection<Symbol> c = getGlobalScope(currentScope().get()).resolveDownMany(component.getFullName(), ViewComponentSymbol.KIND);
     if (c.size() > 1) {
       aboartVisitComponent = true;
       component.getEnclosingScope().getAsMutableScope().removeSubScope(component.getSpannedScope().getAsMutableScope());
@@ -805,8 +805,8 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  private void setParametersOfComponent(final ComponentSymbol componentSymbol, final ASTComponentHead astMethod) {
-    Log.debug(componentSymbol.toString(), "ComponentPreParam");
+  private void setParametersOfComponent(final ViewComponentSymbol viewComponentSymbol, final ASTComponentHead astMethod) {
+    Log.debug(viewComponentSymbol.toString(), "ComponentPreParam");
     Log.debug(astMethod.toString(), "ASTComponentHead");
     for (ASTParameter astParameter : astMethod.getParameters()) {
       final String paramName = astParameter.getName();
@@ -819,12 +819,12 @@ public class EmbeddedMontiViewSymbolTableCreator
       addTypeArgumentsToTypeSymbol(paramTypeSymbol, astParameter.getType());
 
       final JFieldSymbol parameterSymbol = jSymbolFactory.createFormalParameterSymbol(paramName, (JavaTypeSymbolReference) paramTypeSymbol);
-      componentSymbol.addConfigParameter(parameterSymbol);
+      viewComponentSymbol.addConfigParameter(parameterSymbol);
     }
-    Log.debug(componentSymbol.toString(), "ComponentPostParam");
+    Log.debug(viewComponentSymbol.toString(), "ComponentPostParam");
   }
 
-  private boolean needsInstanceCreation(ASTComponent node, ComponentSymbol symbol) {
+  private boolean needsInstanceCreation(ASTComponent node, ViewComponentSymbol symbol) {
     boolean instanceNameGiven = node.getInstanceName().isPresent();
     boolean autoCreationPossible = symbol.getFormalTypeParameters().size() == 0;
 
@@ -833,7 +833,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
   @Override
   public void endVisit(ASTComponent node) {
-    ComponentSymbol component = componentStack.pop();
+    ViewComponentSymbol component = componentStack.pop();
 
     removeCurrentScope();
 
@@ -842,7 +842,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
     if (component.isInnerComponent()) {
       String referencedComponentTypeName = component.getFullName();
-      ComponentSymbolReference refEntry = new ComponentSymbolReference(referencedComponentTypeName, component.getSpannedScope());
+      ViewComponentSymbolReference refEntry = new ViewComponentSymbolReference(referencedComponentTypeName, component.getSpannedScope());
       refEntry.setReferencedComponent(Optional.of(component));
 
       if (needsInstanceCreation(node, component)) {
@@ -853,7 +853,7 @@ public class EmbeddedMontiViewSymbolTableCreator
           setActualTypeArguments(refEntry, node.getActualTypeArgument().get().getTypeArguments());
         }
 
-        ComponentInstanceSymbol instanceSymbol = new ComponentInstanceSymbol(instanceName, refEntry);
+        ViewComponentInstanceSymbol instanceSymbol = new ViewComponentInstanceSymbol(instanceName, refEntry);
         Log.debug("Created component instance " + instanceSymbol.getName() + " referencing component type " + referencedComponentTypeName, EmbeddedMontiViewSymbolTableCreator.class.getSimpleName());
 
         addToScope(instanceSymbol);
@@ -862,7 +862,7 @@ public class EmbeddedMontiViewSymbolTableCreator
       // collect inner components that do not have generic types or a
       // configuration
       if (component.getFormalTypeParameters().isEmpty() && component.getConfigParameters().isEmpty() && !node.getInstanceName().isPresent()) {
-        // Pair<ComponentSymbol, ASTComponent> p = new Pair<>(owningComponent, node);
+        // Pair<ViewComponentSymbol, ASTComponent> p = new Pair<>(owningComponent, node);
         // TODO store as inner component?
         // innerComponents.put(component, p);
       }
@@ -909,7 +909,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference.toString());
   }
 
-  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, ComponentSymbolReference typeReference) {
+  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, ViewComponentSymbolReference typeReference) {
     addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference.toString());
   }
 
@@ -970,7 +970,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     actualTypeArguments.add(new ActualTypeArgument(typeArgumentSymbolReference));
   }
 
-  private void setActualTypeArguments(ComponentSymbolReference typeReference, List<ASTTypeArgument> astTypeArguments) {
+  private void setActualTypeArguments(ViewComponentSymbolReference typeReference, List<ASTTypeArgument> astTypeArguments) {
     List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
     for (ASTTypeArgument astTypeArgument : astTypeArguments) {
       addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference);
@@ -980,7 +980,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
   // TODO references to component symbols should not differ from JavaTypeSymbolReference?
   @Deprecated
-  private void addTypeArgumentsToTypeSymbol(ComponentSymbolReference typeReference, ASTType astType) {
+  private void addTypeArgumentsToTypeSymbol(ViewComponentSymbolReference typeReference, ASTType astType) {
     if (astType instanceof ASTSimpleReferenceType) {
       ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
       if (!astSimpleReferenceType.getTypeArguments().isPresent()) {

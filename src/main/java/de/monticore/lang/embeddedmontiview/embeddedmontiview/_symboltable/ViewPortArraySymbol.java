@@ -28,22 +28,21 @@ import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Symboltable entry for port arrays
  */
-public class PortArraySymbol extends PortSymbol {
+public class ViewPortArraySymbol extends ViewPortSymbol {
   public static final PortArraySymbolKind KIND = PortArraySymbolKind.INSTANCE;
 
   protected Optional<String> nameSizeDependsOn;
 
-  public PortArraySymbol(String name, String nameSizeDependsOn) {
+  public ViewPortArraySymbol(String name, String nameSizeDependsOn) {
     super(name, KIND);
     this.nameSizeDependsOn = Optional.ofNullable(nameSizeDependsOn);
-    Log.debug(getFullName(), "PortArraySymbol ");
+    Log.debug(getFullName(), "ViewPortArraySymbol ");
     Log.debug(this.nameSizeDependsOn.orElse(null), "set NameSizeDependsOn to:");
   }
 
@@ -61,8 +60,8 @@ public class PortArraySymbol extends PortSymbol {
     this.dimension = dimension;
   }
 
-  public List<? extends PortSymbol> getConcretePortSymbols() {
-    return getEnclosingScope().<PortSymbol>resolveLocally(PortSymbol.KIND).stream().filter(s -> s.getName().startsWith(this.getName())).collect(Collectors.toList());
+  public List<? extends ViewPortSymbol> getConcretePortSymbols() {
+    return getEnclosingScope().<ViewPortSymbol>resolveLocally(ViewPortSymbol.KIND).stream().filter(s -> s.getName().startsWith(this.getName())).collect(Collectors.toList());
   }
 
   /**
@@ -71,16 +70,16 @@ public class PortArraySymbol extends PortSymbol {
    * @param index
    * @return
    */
-  public Optional<PortSymbol> getPortSymbolWithIndex(int index) {
-    for (PortSymbol portSymbol : getConcretePortSymbols()) {
-      if (portSymbol.getName().contains("[" + index + "]")) {
-        return Optional.of(portSymbol);
+  public Optional<ViewPortSymbol> getPortSymbolWithIndex(int index) {
+    for (ViewPortSymbol viewPortSymbol : getConcretePortSymbols()) {
+      if (viewPortSymbol.getName().contains("[" + index + "]")) {
+        return Optional.of(viewPortSymbol);
       }
     }
     return Optional.ofNullable(null);
   }
 
-  public void recreatePortArray(ResolutionDeclarationSymbol resDeclSym, EmbeddedMontiViewSymbolTableCreator emastc, ComponentSymbol componentSymbol) {
+  public void recreatePortArray(ResolutionDeclarationSymbol resDeclSym, EmbeddedMontiViewSymbolTableCreator emastc, ViewComponentSymbol viewComponentSymbol) {
     Log.debug(getName(), "recreate");
 
     if (getNameSizeDependsOn().isPresent() && getNameSizeDependsOn().get().equals(resDeclSym.getNameToResolve())) {
@@ -88,9 +87,9 @@ public class PortArraySymbol extends PortSymbol {
       if (resDeclSym.getASTResolution() instanceof ASTUnitNumberResolution) {
         size = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getNumber().get().intValue();
       }
-      List<? extends PortSymbol> portSymbols = getConcretePortSymbols();
+      List<? extends ViewPortSymbol> portSymbols = getConcretePortSymbols();
 
-      PortSymbol firstPort = getPortSymbolWithIndex(1).get();
+      ViewPortSymbol firstPort = getPortSymbolWithIndex(1).get();
 
       int oldSize = portSymbols.size();
       if (size == 0) {
@@ -103,7 +102,7 @@ public class PortArraySymbol extends PortSymbol {
       for (int i = 0; i <= size; ++i) {
         if (oldSize < i) {
           //Log.debug();
-          createPortSymbolForArrayIndex(componentSymbol, (ASTPort) firstPort.getAstNode().get(), this.getName() + "[" + i + "]", firstPort.getStereotype(), firstPort.getTypeReference(), emastc);
+          createPortSymbolForArrayIndex(viewComponentSymbol, (ASTPort) firstPort.getAstNode().get(), this.getName() + "[" + i + "]", firstPort.getStereotype(), firstPort.getTypeReference(), emastc);
         }
       }
       for (int i = size + 1; i <= oldSize; ++i) {
@@ -116,8 +115,8 @@ public class PortArraySymbol extends PortSymbol {
     }
   }
 
-  private void createPortSymbolForArrayIndex(ComponentSymbol componentSymbol, ASTPort node, String name, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef, EmbeddedMontiViewSymbolTableCreator emastc) {
-    PortSymbol ps = new PortSymbol(name);
+  private void createPortSymbolForArrayIndex(ViewComponentSymbol viewComponentSymbol, ASTPort node, String name, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef, EmbeddedMontiViewSymbolTableCreator emastc) {
+    ViewPortSymbol ps = new ViewPortSymbol(name);
 
     ps.setTypeReference(typeRef);
     ps.setDirection(node.isIncoming());
@@ -128,7 +127,7 @@ public class PortArraySymbol extends PortSymbol {
 
     emastc.addToScopeAndLinkWithNode(ps, node);
 
-    Log.debug(name + " " + componentSymbol.getAllIncomingPorts().size(), "Added PortSymbol From PortArray:");
+    Log.debug(name + " " + viewComponentSymbol.getAllIncomingPorts().size(), "Added ViewPortSymbol From PortArray:");
   }
 
   public static class PortArraySymbolKind implements SymbolKind {

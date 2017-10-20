@@ -30,7 +30,7 @@ public class EMAPortBuilder {
   protected Optional<String> name = Optional.empty();
   protected Optional<JTypeReference<? extends JTypeSymbol>> typeReference = Optional.empty();
 
-  public static PortSymbol clone(PortSymbol port) {
+  public static ViewPortSymbol clone(ViewPortSymbol port) {
     return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming()).setTypeReference(port.getTypeReference()).build();
   }
 
@@ -49,9 +49,9 @@ public class EMAPortBuilder {
     return this;
   }
 
-  public PortSymbol build() {
+  public ViewPortSymbol build() {
     if (name.isPresent() && incoming.isPresent()) {
-      PortSymbol p = new PortSymbol(this.name.get());
+      ViewPortSymbol p = new ViewPortSymbol(this.name.get());
       p.setDirection(this.incoming.get());
       p.setTypeReference(this.typeReference);
       return p;

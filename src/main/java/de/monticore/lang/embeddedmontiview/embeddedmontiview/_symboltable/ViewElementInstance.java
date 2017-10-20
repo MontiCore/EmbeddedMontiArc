@@ -28,7 +28,7 @@ import java.util.Collection;
 /**
  * Created by kt on 27.02.2017.
  */
-public interface ElementInstance {
+public interface ViewElementInstance {
 
     public Collection<TagSymbol> getTags();
     public <T extends TagSymbol> Collection<T> getTags(final TagKind tagKind);

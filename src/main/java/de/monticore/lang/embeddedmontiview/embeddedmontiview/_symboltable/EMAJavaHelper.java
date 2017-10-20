@@ -22,7 +22,6 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 import de.monticore.java.symboltable.JavaSymbolFactory;
 import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.java.symboltable.JavaTypeSymbolReference;
-import de.monticore.lang.monticar.resolution._ast.ASTResolutionDeclaration;
 import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ImportStatement;
@@ -63,8 +62,8 @@ public class EMAJavaHelper
    * @return JavaTypeSymbol list to be added to the scope
    */
   // TODO see JavaSymbolTableCreator.addTypeParameters(...),
-  // see ComponentSymbol addFormalTypeParameters etc.
-  protected static List<JTypeSymbol> addTypeParametersToType(ComponentSymbol typeSymbol, Optional<ASTTypeParameters> optionalTypeParameters, Scope currentScope) {
+  // see ViewComponentSymbol addFormalTypeParameters etc.
+  protected static List<JTypeSymbol> addTypeParametersToType(ViewComponentSymbol typeSymbol, Optional<ASTTypeParameters> optionalTypeParameters, Scope currentScope) {
     if (optionalTypeParameters.isPresent()) {
       ASTTypeParameters astTypeParameters = optionalTypeParameters.get();
       for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters.getTypeVariableDeclarations()) {
@@ -99,7 +98,7 @@ public class EMAJavaHelper
     return typeSymbol.getFormalTypeParameters();
   }
 
-  private static void addFormalTypeParameter(String typeVariableName, ASTTypeVariableDeclaration astTypeParameter, Scope currentScope, ComponentSymbol typeSymbol) {
+  private static void addFormalTypeParameter(String typeVariableName, ASTTypeVariableDeclaration astTypeParameter, Scope currentScope, ViewComponentSymbol typeSymbol) {
     JavaTypeSymbol javaTypeVariableSymbol = jSymbolFactory.createTypeVariable(typeVariableName);
     // TODO implement
     // // init type parameter

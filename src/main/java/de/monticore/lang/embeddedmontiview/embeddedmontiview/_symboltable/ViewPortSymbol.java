@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 /**
  * Symboltable entry for ports.
  */
-public class PortSymbol extends TaggingSymbol implements ElementInstance {
+public class ViewPortSymbol extends TaggingSymbol implements ViewElementInstance {
   public static final EmbeddedPortKind KIND = EmbeddedPortKind.INSTANCE;
 
   private final Map<String, Optional<String>> stereotype = new HashMap<>();
@@ -55,11 +55,11 @@ public class PortSymbol extends TaggingSymbol implements ElementInstance {
 
   private MutableScope locallyDefinedStreams = new CommonScope();
 
-  public PortSymbol(String name) {
+  public ViewPortSymbol(String name) {
     super(name, KIND);
   }
 
-  protected PortSymbol(String name, SymbolKind kind) {
+  protected ViewPortSymbol(String name, SymbolKind kind) {
     super(name, kind);
   }
 
@@ -130,14 +130,14 @@ public class PortSymbol extends TaggingSymbol implements ElementInstance {
    * @return is optional, b/c a connector can belong to a component symbol or to
    * an expanded component instance symbol
    */
-  public Optional<ComponentSymbol> getComponent() {
+  public Optional<ViewComponentSymbol> getComponent() {
     if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
       return Optional.empty();
     }
-    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ComponentSymbol)) {
+    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ViewComponentSymbol)) {
       return Optional.empty();
     }
-    return Optional.of((ComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+    return Optional.of((ViewComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get());
   }
 
   /**

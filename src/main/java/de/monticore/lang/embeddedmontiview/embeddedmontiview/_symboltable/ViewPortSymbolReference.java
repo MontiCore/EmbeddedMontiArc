@@ -29,15 +29,15 @@ import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
 
 /**
- * Represents a reference of {@link PortSymbol}.
+ * Represents a reference of {@link ViewPortSymbol}.
  */
-public class PortSymbolReference extends PortSymbol
-    implements SymbolReference<PortSymbol> {
-  protected final SymbolReference<PortSymbol> reference;
+public class ViewPortSymbolReference extends ViewPortSymbol
+    implements SymbolReference<ViewPortSymbol> {
+  protected final SymbolReference<ViewPortSymbol> reference;
 
-  public PortSymbolReference(final String name, final Scope definingScopeOfReference) {
+  public ViewPortSymbolReference(final String name, final Scope definingScopeOfReference) {
     super(name);
-    reference = new CommonSymbolReference<>(name, PortSymbol.KIND, definingScopeOfReference);
+    reference = new CommonSymbolReference<>(name, ViewPortSymbol.KIND, definingScopeOfReference);
   }
 
   /*
@@ -45,7 +45,7 @@ public class PortSymbolReference extends PortSymbol
    */
 
   @Override
-  public PortSymbol getReferencedSymbol() {
+  public ViewPortSymbol getReferencedSymbol() {
     return reference.getReferencedSymbol();
   }
 

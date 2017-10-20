@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ConnectorSymbol;
 import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTTag;
@@ -139,20 +138,20 @@ public class LatencyCmpSymbolCreator implements TagSymbolCreator {
     return ast.get();
   }
 
-  protected ComponentSymbol checkKind(Collection<Symbol> symbols) {
-    ComponentSymbol ret = null;
+  protected ViewComponentSymbol checkKind(Collection<Symbol> symbols) {
+    ViewComponentSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(ComponentSymbol.KIND)) {
+      if (symbol.getKind().isSame(ViewComponentSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (ComponentSymbol)symbol;
+        ret = (ViewComponentSymbol)symbol;
       }
     }
     if (ret == null) {
-      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'ComponentSymbol.KIND'.",
+      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'ViewComponentSymbol.KIND'.",
           symbols.stream().map(s -> "'" + s.getKind().toString() + "'").collect(Collectors.joining(", "))));
       return null;
     }

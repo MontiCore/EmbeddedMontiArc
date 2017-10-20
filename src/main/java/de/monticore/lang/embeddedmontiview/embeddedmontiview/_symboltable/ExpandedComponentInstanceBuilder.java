@@ -35,10 +35,10 @@ import java.util.stream.Collectors;
  */
 public class ExpandedComponentInstanceBuilder {
   protected Optional<String> name = Optional.empty();
-  protected Optional<ComponentSymbolReference> symbolReference = Optional.empty();
-  protected List<PortSymbol> ports = new ArrayList<>();
+  protected Optional<ViewComponentSymbolReference> symbolReference = Optional.empty();
+  protected List<ViewPortSymbol> ports = new ArrayList<>();
   protected List<ExpandedComponentInstanceSymbol> subComponents = new ArrayList<>();
-  protected List<ConnectorSymbol> connectors = new ArrayList<>();
+  protected List<ViewConnectorSymbol> connectors = new ArrayList<>();
   protected Set<ResolvingFilter> resolvingFilters = new LinkedHashSet<>();
   //             FormalTypeParameter, ActualTypeArgument (is the binding of formal parameters
   protected Map<JTypeSymbol, ActualTypeArgument> actualTypeArguments = new LinkedHashMap<>();
@@ -55,7 +55,7 @@ public class ExpandedComponentInstanceBuilder {
     return new ExpandedComponentInstanceBuilder().setName(inst.getName()).setSymbolReference(inst.getComponentType())
         //.addPorts(inst.getPorts().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
         .addPorts(inst.getPorts()) // is cloned in build method
-        .addConnectors(inst.getConnectors().stream().map(c -> ConnectorBuilder.clone(c)).collect(Collectors.toList())).addSubComponents(inst.getSubComponents().stream().map(s -> ExpandedComponentInstanceBuilder.clone(s)).collect(Collectors.toList())).build();
+        .addConnectors(inst.getConnectors().stream().map(c -> ViewConnectorBuilder.clone(c)).collect(Collectors.toList())).addSubComponents(inst.getSubComponents().stream().map(s -> ExpandedComponentInstanceBuilder.clone(s)).collect(Collectors.toList())).build();
   }
 
   public ExpandedComponentInstanceBuilder addResolvingFilter(ResolvingFilter filter) {
@@ -75,24 +75,24 @@ public class ExpandedComponentInstanceBuilder {
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder setSymbolReference(ComponentSymbolReference symbolReference) {
+  public ExpandedComponentInstanceBuilder setSymbolReference(ViewComponentSymbolReference symbolReference) {
     this.symbolReference = Optional.of(symbolReference);
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addPort(PortSymbol port) {
+  public ExpandedComponentInstanceBuilder addPort(ViewPortSymbol port) {
     this.ports.add(port);
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addPorts(PortSymbol... ports) {
-    for (PortSymbol p : ports) {
+  public ExpandedComponentInstanceBuilder addPorts(ViewPortSymbol... ports) {
+    for (ViewPortSymbol p : ports) {
       this.addPort(p);
     }
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addPorts(Collection<PortSymbol> ports) {
+  public ExpandedComponentInstanceBuilder addPorts(Collection<ViewPortSymbol> ports) {
     ports.stream().forEachOrdered(p -> this.addPort(p));
     return this;
   }
@@ -116,7 +116,7 @@ public class ExpandedComponentInstanceBuilder {
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports) {
+  public ExpandedComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<ViewPortSymbol> ports) {
     List<String> existingPortNames = this.ports.stream().map(p -> p.getName()).collect(Collectors.toList());
     this.addPorts(ports.stream().filter(p -> !existingPortNames.contains(p.getName())).collect(Collectors.toList()));
     return this;
@@ -125,10 +125,10 @@ public class ExpandedComponentInstanceBuilder {
   /**
    * adds ports if they do not exist and replace generics of ports
    */
-  public ExpandedComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports, List<JTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
-    List<PortSymbol> pList = ports.stream().collect(Collectors.toList());
+  public ExpandedComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<ViewPortSymbol> ports, List<JTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
+    List<ViewPortSymbol> pList = ports.stream().collect(Collectors.toList());
     createMap(formalTypeParameters, actualTypeArguments).forEach((k, v) -> ports.stream().filter(p -> p.getTypeReference().get().getReferencedSymbol().getName().equals(k.getName())).forEachOrdered(p -> {
-      PortSymbol pCloned = EMAPortBuilder.clone(p);
+      ViewPortSymbol pCloned = EMAPortBuilder.clone(p);
       pCloned.setTypeReference(Optional.of((JTypeReference<? extends JTypeSymbol>) v.getType()));
       Collections.replaceAll(pList, p, pCloned);
     }));
@@ -167,19 +167,19 @@ public class ExpandedComponentInstanceBuilder {
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addConnector(ConnectorSymbol connector) {
+  public ExpandedComponentInstanceBuilder addConnector(ViewConnectorSymbol connector) {
     this.connectors.add(connector);
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addConnectors(ConnectorSymbol... connectors) {
-    for (ConnectorSymbol c : connectors) {
+  public ExpandedComponentInstanceBuilder addConnectors(ViewConnectorSymbol... connectors) {
+    for (ViewConnectorSymbol c : connectors) {
       this.addConnector(c);
     }
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addConnectors(Collection<ConnectorSymbol> connectors) {
+  public ExpandedComponentInstanceBuilder addConnectors(Collection<ViewConnectorSymbol> connectors) {
     connectors.stream().forEachOrdered(c -> this.addConnector(c));
     return this;
   }
@@ -226,7 +226,7 @@ public class ExpandedComponentInstanceBuilder {
       resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
       ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.clone(p))); // must be cloned since we change it if it has generics
-      connectors.stream().forEachOrdered(c -> scope.add(ConnectorBuilder.clone(c)));
+      connectors.stream().forEachOrdered(c -> scope.add(ViewConnectorBuilder.clone(c)));
       subComponents.stream().forEachOrdered(s -> scope.add(s));
 
       sym.setActualTypeArguments(actualTypeArguments.values().stream().collect(Collectors.toList()));
@@ -238,7 +238,7 @@ public class ExpandedComponentInstanceBuilder {
     throw new Error("not all parameters have been set before to build the expanded component instance symbol");
   }
 
-  public ExpandedComponentInstanceBuilder addConnectorIfNameDoesNotExists(ConnectorSymbol connector) {
+  public ExpandedComponentInstanceBuilder addConnectorIfNameDoesNotExists(ViewConnectorSymbol connector) {
     List<String> existingConnectorSources = this.connectors.stream().map(c -> c.getSource()).collect(Collectors.toList());
     List<String> existingConnectorTargets = this.connectors.stream().map(c -> c.getTarget()).collect(Collectors.toList());
     if (!existingConnectorSources.contains(connector.getSource()) && !existingConnectorTargets.contains(connector.getTarget())) {
@@ -247,7 +247,7 @@ public class ExpandedComponentInstanceBuilder {
     return this;
   }
 
-  public ExpandedComponentInstanceBuilder addConnectorsIfNameDoesNotExists(Collection<ConnectorSymbol> connectors) {
+  public ExpandedComponentInstanceBuilder addConnectorsIfNameDoesNotExists(Collection<ViewConnectorSymbol> connectors) {
     connectors.stream().forEach(this::addConnectorIfNameDoesNotExists);
     return this;
   }

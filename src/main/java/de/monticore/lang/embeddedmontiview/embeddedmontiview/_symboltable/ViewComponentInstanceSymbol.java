@@ -34,11 +34,11 @@ import java.util.List;
  *
  * @author Robert Heim
  */
-public class ComponentInstanceSymbol extends TaggingScopeSpanningSymbol {
+public class ViewComponentInstanceSymbol extends TaggingScopeSpanningSymbol {
 
   public static final EMAComponentInstanceKind KIND = EMAComponentInstanceKind.INSTANCE;
 
-  private final ComponentSymbolReference componentType;
+  private final ViewComponentSymbolReference componentType;
 
   /**
    * List of configuration arguments.
@@ -48,12 +48,12 @@ public class ComponentInstanceSymbol extends TaggingScopeSpanningSymbol {
   private String value = "";
 
   /**
-   * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol
+   * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ViewComponentInstanceSymbol
    *
    * @param name
    * @param componentType the referenced component definition
    */
-  public ComponentInstanceSymbol(String name, ComponentSymbolReference componentType) {
+  public ViewComponentInstanceSymbol(String name, ViewComponentSymbolReference componentType) {
     super(name, KIND);
     this.componentType = componentType;
 
@@ -62,15 +62,15 @@ public class ComponentInstanceSymbol extends TaggingScopeSpanningSymbol {
   /**
    * @return componentType
    */
-  public ComponentSymbolReference getComponentType() {
+  public ViewComponentSymbolReference getComponentType() {
     return this.componentType;
   }
 
   /**
    * @return connectors of this component
    */
-  public Collection<ConnectorSymbol> getSimpleConnectors() {
-    return getSpannedScope().<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+  public Collection<ViewConnectorSymbol> getSimpleConnectors() {
+    return getSpannedScope().<ViewConnectorSymbol>resolveLocally(ViewConnectorSymbol.KIND);
   }
 
   public String getValue() {

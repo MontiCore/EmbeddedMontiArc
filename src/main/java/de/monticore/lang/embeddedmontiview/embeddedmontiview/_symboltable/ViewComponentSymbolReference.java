@@ -38,17 +38,17 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Represents a reference of {@link ComponentSymbol}.
+ * Represents a reference of {@link ViewComponentSymbol}.
  */
-public class ComponentSymbolReference extends ComponentSymbol
-    implements SymbolReference<ComponentSymbol> {
+public class ViewComponentSymbolReference extends ViewComponentSymbol
+    implements SymbolReference<ViewComponentSymbol> {
 
-  protected final SymbolReference<ComponentSymbol> reference;
+  protected final SymbolReference<ViewComponentSymbol> reference;
   private List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
 
-  public ComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
+  public ViewComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
     super(name);
-    reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
+    reference = new CommonSymbolReference<>(name, ViewComponentSymbol.KIND, definingScopeOfReference);
     if (existsReferencedSymbol()) {
       setReferencedComponent(Optional.of(getReferencedSymbol()));
 
@@ -56,9 +56,9 @@ public class ComponentSymbolReference extends ComponentSymbol
 
   }
 
-  public ComponentSymbolReference(final String name, final Scope definingScopeOfReference, EmbeddedMontiViewSymbolTableCreator emastc) {
+  public ViewComponentSymbolReference(final String name, final Scope definingScopeOfReference, EmbeddedMontiViewSymbolTableCreator emastc) {
     super(name);
-    reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
+    reference = new CommonSymbolReference<>(name, ViewComponentSymbol.KIND, definingScopeOfReference);
     if (existsReferencedSymbol()) {
       Log.debug("Loading resolution declarationSymbols", "info");
       setReferencedComponent(Optional.of(getReferencedSymbol()));
@@ -78,14 +78,14 @@ public class ComponentSymbolReference extends ComponentSymbol
     for (ResolutionDeclarationSymbol resDeclSym : getResolutionDeclarationSymbols()) {
       Log.debug("" + ((ASTUnitNumberResolution) getResolutionDeclarationSymbols().get(count).getASTResolution()).getNumber().get().intValue(), "resolus:");
       String lastNameStart = "";
-      for (PortSymbol portSymbol : getIncomingPorts()) {
-        Log.debug(portSymbol.getName(), "Found Port:");
-        if (!portSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
-          lastNameStart = portSymbol.getNameWithoutArrayBracketPart();
+      for (ViewPortSymbol viewPortSymbol : getIncomingPorts()) {
+        Log.debug(viewPortSymbol.getName(), "Found Port:");
+        if (!viewPortSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
+          lastNameStart = viewPortSymbol.getNameWithoutArrayBracketPart();
           Log.debug(lastNameStart, "Found PortArray:");
-          Log.debug(portSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
-          PortArraySymbol portArraySymbol = portSymbol.getEnclosingScope().<PortArraySymbol>resolve(lastNameStart, PortArraySymbol.KIND).get();
-          portArraySymbol.recreatePortArray(resDeclSym, emastc, this);
+          Log.debug(viewPortSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
+          ViewPortArraySymbol viewPortArraySymbol = viewPortSymbol.getEnclosingScope().<ViewPortArraySymbol>resolve(lastNameStart, ViewPortArraySymbol.KIND).get();
+          viewPortArraySymbol.recreatePortArray(resDeclSym, emastc, this);
         }
       }
     }
@@ -107,13 +107,13 @@ public class ComponentSymbolReference extends ComponentSymbol
     return this.actualTypeArguments.size() > 0;
   }
 
-  // no overridden methods of ComponentSymbol as the ComponentSymbol itself checks whether it is a
+  // no overridden methods of ViewComponentSymbol as the ViewComponentSymbol itself checks whether it is a
   // reference or not.
   
   /* Methods of SymbolReference interface */
 
   @Override
-  public ComponentSymbol getReferencedSymbol() {
+  public ViewComponentSymbol getReferencedSymbol() {
     return reference.getReferencedSymbol();
   }
 

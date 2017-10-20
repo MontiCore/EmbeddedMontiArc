@@ -44,16 +44,16 @@ public class EmbeddedMontiArcModelNameCalculator
   public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
     final Set<String> calculatedModelNames = new LinkedHashSet<>();
 
-    if (ComponentSymbol.KIND.isKindOf(kind)) {
+    if (ViewComponentSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponent(name));
     }
-    else if (PortSymbol.KIND.isKindOf(kind) || PortArraySymbol.KIND.isKindOf(kind)) {
+    else if (ViewPortSymbol.KIND.isKindOf(kind) || ViewPortArraySymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForPort(name));
     }
-    else if (ConnectorSymbol.KIND.isKindOf(kind)) {
+    else if (ViewConnectorSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForConnector(name));
     }
-    else if (ComponentInstanceSymbol.KIND.isKindOf(kind)) {
+    else if (ViewComponentInstanceSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponentInstance(name));
     }
     else if (ExpandedComponentInstanceSymbol.KIND.isKindOf(kind)) {

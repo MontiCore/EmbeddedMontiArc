@@ -19,11 +19,9 @@
  */
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.LinkedHashSet;
@@ -36,7 +34,7 @@ import java.util.Set;
  */
 public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
 
-  protected LinkedHashSet<ComponentSymbol> topComponents = new LinkedHashSet<>();
+  protected LinkedHashSet<ViewComponentSymbol> topComponents = new LinkedHashSet<>();
 
   public EmbeddedMontiArcExpandedComponentInstanceSymbolCreator() {
   }
@@ -49,13 +47,13 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
     return s;
   }
 
-  protected ExpandedComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters) {
+  protected ExpandedComponentInstanceBuilder createInstance(ViewComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters) {
     // TODO resolve generics and parameters
     //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
-    ExpandedComponentInstanceBuilder builder = ExpandedComponentInstanceSymbol.builder().setSymbolReference(new ComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope())).addPorts(cmp.getPorts()).addConnectors(cmp.getConnectors());
+    ExpandedComponentInstanceBuilder builder = ExpandedComponentInstanceSymbol.builder().setSymbolReference(new ViewComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope())).addPorts(cmp.getPorts()).addConnectors(cmp.getConnectors());
 
     // add sub components
-    for (ComponentInstanceSymbol inst : cmp.getSubComponents()) {
+    for (ViewComponentInstanceSymbol inst : cmp.getSubComponents()) {
       //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
       Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
       builder.addSubComponent(createInstance(inst.getComponentType(), filters).setName(inst.getName()).addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(), inst.getComponentType().getActualTypeArguments()).addResolvingFilters(filters).build());
@@ -63,7 +61,7 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
     }
 
     // add inherited ports and sub components
-    for (ComponentSymbol superCmp = cmp; superCmp.getSuperComponent().isPresent(); superCmp = superCmp.getSuperComponent().get()) {
+    for (ViewComponentSymbol superCmp = cmp; superCmp.getSuperComponent().isPresent(); superCmp = superCmp.getSuperComponent().get()) {
 
       if (superCmp.getSuperComponent().get().getFormalTypeParameters().size() != superCmp.getSuperComponent().get().getActualTypeArguments().size()) {
         Log.error(String.format("Super component '%s' definition has %d generic parameters, but its" + "instantiation has %d binds generic parameters", superCmp.getFullName(), superCmp.getSuperComponent().get().getFormalTypeParameters().size(), superCmp.getSuperComponent().get().getActualTypeArguments().size()));
@@ -93,7 +91,7 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
                         .addConnectors(view.getConnectors());
 
         // add sub components
-        for (ComponentInstanceSymbol inst : view.getSubComponents()) {
+        for (ViewComponentInstanceSymbol inst : view.getSubComponents()) {
             //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
             builder.addSubComponent(

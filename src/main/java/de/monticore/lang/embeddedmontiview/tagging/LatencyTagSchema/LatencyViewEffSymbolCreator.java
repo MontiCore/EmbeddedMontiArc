@@ -22,7 +22,7 @@
 
 package de.monticore.lang.embeddedmontiview.tagging.LatencyTagSchema;
 
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EffectorSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewEffectorSymbol;
 import de.monticore.lang.montiarc.tagging._ast.*;
 import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
 import de.monticore.lang.montiarc.tagging.helper.NumericLiteral;
@@ -134,16 +134,16 @@ public class LatencyViewEffSymbolCreator implements TagSymbolCreator {
     return ast.get();
   }
 
-  protected EffectorSymbol checkKind(Collection<Symbol> symbols) {
-    EffectorSymbol ret = null;
+  protected ViewEffectorSymbol checkKind(Collection<Symbol> symbols) {
+    ViewEffectorSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(EffectorSymbol.KIND)) {
+      if (symbol.getKind().isSame(ViewEffectorSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (EffectorSymbol)symbol;
+        ret = (ViewEffectorSymbol)symbol;
       }
     }
     if (ret == null) {

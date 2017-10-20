@@ -21,8 +21,8 @@ package de.monticore.lang.embeddedmontiview.cocos;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._cocos.EmbeddedMontiViewASTComponentCoCo;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -41,15 +41,15 @@ public class ComponentWithTypeParametersHasInstance
    */
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol componentSymbol = (ComponentSymbol) node.getSymbol().get();
+    ViewComponentSymbol viewComponentSymbol = (ViewComponentSymbol) node.getSymbol().get();
 
-    Collection<ComponentInstanceSymbol> subComponents = componentSymbol.getSubComponents();
+    Collection<ViewComponentInstanceSymbol> subComponents = viewComponentSymbol.getSubComponents();
 
-    Set<ComponentSymbol> instantiatedInnerComponents = subComponents.stream().map(instanceSymbol -> instanceSymbol.getComponentType().getReferencedSymbol()).filter(symbol -> symbol.hasFormalTypeParameters()).collect(Collectors.toSet());
+    Set<ViewComponentSymbol> instantiatedInnerComponents = subComponents.stream().map(instanceSymbol -> instanceSymbol.getComponentType().getReferencedSymbol()).filter(symbol -> symbol.hasFormalTypeParameters()).collect(Collectors.toSet());
 
-    List<ComponentSymbol> notInstantiatedInnerComponents = componentSymbol.getInnerComponents().stream().filter(symbol -> symbol.hasFormalTypeParameters()).filter(innerComponent -> !instantiatedInnerComponents.contains(innerComponent)).collect(Collectors.toList());
+    List<ViewComponentSymbol> notInstantiatedInnerComponents = viewComponentSymbol.getInnerComponents().stream().filter(symbol -> symbol.hasFormalTypeParameters()).filter(innerComponent -> !instantiatedInnerComponents.contains(innerComponent)).collect(Collectors.toList());
 
-    for (ComponentSymbol notInstantiatedInnerComponent : notInstantiatedInnerComponents) {
+    for (ViewComponentSymbol notInstantiatedInnerComponent : notInstantiatedInnerComponents) {
       Log.error(String.format("0x79C00 Inner component \"%s\" must have an instance defining its formal type parameters.", notInstantiatedInnerComponent.getName()), notInstantiatedInnerComponent.getSourcePosition());
     }
   }

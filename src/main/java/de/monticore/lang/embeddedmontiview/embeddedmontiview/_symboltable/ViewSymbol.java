@@ -19,20 +19,14 @@
  */
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
-import com.google.common.collect.ImmutableList;
-import de.monticore.lang.embeddedmontiview.EmbeddedMontiArcConstants;
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
-import de.monticore.lang.embeddedmontiview.helper.Timing;
 import de.monticore.lang.montiarc.tagging._symboltable.TaggingScopeSpanningSymbol;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.JFieldSymbol;
 import de.monticore.symboltable.types.JTypeSymbol;
-import de.se_rwth.commons.logging.Log;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,9 +52,9 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
    * @param target target of the connector to get
    * @return a connector with the given target, absent optional, if it does not exist
    */
-  public Optional<ConnectorSymbol> getConnector(String target) {
+  public Optional<ViewConnectorSymbol> getConnector(String target) {
     // no check for reference required
-    for (ConnectorSymbol con : getConnectors()) {
+    for (ViewConnectorSymbol con : getConnectors()) {
       if (con.getTarget().equals(target)) {
         return Optional.of(con);
       }
@@ -71,9 +65,9 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
   /**
    * @return connectors of this view
    */
-  public Collection<ConnectorSymbol> getConnectors() {
+  public Collection<ViewConnectorSymbol> getConnectors() {
     Scope scope = this.getSpannedScope();
-    Collection<ConnectorSymbol> c = scope.<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+    Collection<ViewConnectorSymbol> c = scope.<ViewConnectorSymbol>resolveLocally(ViewConnectorSymbol.KIND);
 
     return c.stream().sorted((o1, o2) -> o1.getSourcePosition().compareTo(o2.getSourcePosition())).collect(Collectors.toList());
   }
@@ -82,7 +76,7 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
    * @param visibility visibility
    * @return connectors with the given visibility
    */
-  public Collection<ConnectorSymbol> getConnectors(AccessModifier visibility) {
+  public Collection<ViewConnectorSymbol> getConnectors(AccessModifier visibility) {
     // no check for reference required
     return getConnectors().stream().filter(c -> c.getAccessModifier().includes(visibility)).collect(Collectors.toList());
   }
@@ -114,9 +108,9 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
    * @param target target of the connector to get
    * @return a connector with the given target, absent optional, if it does not exist
    */
-  public Optional<EffectorSymbol> getEffector(String target) {
+  public Optional<ViewEffectorSymbol> getEffector(String target) {
     // no check for reference required
-    for (EffectorSymbol con : getEffectors()) {
+    for (ViewEffectorSymbol con : getEffectors()) {
       if (con.getTarget().equals(target)) {
         return Optional.of(con);
       }
@@ -127,10 +121,10 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
   /**
    * @return effectors of this component
    */
-  public Collection<EffectorSymbol> getEffectors() {
+  public Collection<ViewEffectorSymbol> getEffectors() {
 
     Scope scope = this.getSpannedScope();
-    Collection<EffectorSymbol> c = scope.<EffectorSymbol>resolveLocally(EffectorSymbol.KIND);
+    Collection<ViewEffectorSymbol> c = scope.<ViewEffectorSymbol>resolveLocally(ViewEffectorSymbol.KIND);
 
     return c.stream().sorted((o1, o2) -> o1.getSourcePosition().compareTo(o2.getSourcePosition())).collect(Collectors.toList());
   }
@@ -139,7 +133,7 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
    * @param visibility visibility
    * @return effectors with the given visibility
    */
-  public Collection<EffectorSymbol> getEffectors(AccessModifier visibility) {
+  public Collection<ViewEffectorSymbol> getEffectors(AccessModifier visibility) {
     // no check for reference required
     return getEffectors().stream().filter(c -> c.getAccessModifier().includes(visibility)).collect(Collectors.toList());
   }
@@ -170,15 +164,15 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
   /**
    * @return innerComponents
    */
-  public Collection<ComponentSymbol> getInnerComponents() {
-    return this.getSpannedScope().<ComponentSymbol>resolveLocally(ComponentSymbol.KIND);
+  public Collection<ViewComponentSymbol> getInnerComponents() {
+    return this.getSpannedScope().<ViewComponentSymbol>resolveLocally(ViewComponentSymbol.KIND);
   }
 
   /**
    * @param name inner component name
    * @return inner component with the given name, empty Optional, if it does not exist
    */
-  public Optional<ComponentSymbol> getInnerComponent(String name) {
+  public Optional<ViewComponentSymbol> getInnerComponent(String name) {
     // no check for reference required
     return getInnerComponents().stream().filter(c -> c.getName().equals(name)).findFirst();
   }
@@ -187,7 +181,7 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
    * @param visibility visibility
    * @return inner components with the given visibility
    */
-  public Collection<ComponentSymbol> getInnerComponents(AccessModifier visibility) {
+  public Collection<ViewComponentSymbol> getInnerComponents(AccessModifier visibility) {
     // no check for reference require
     return getInnerComponents().stream().filter(s -> s.getAccessModifier().includes(visibility)).collect(Collectors.toList());
   }
@@ -216,15 +210,15 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
   /**
    * @return subComponents
    */
-  public Collection<ComponentInstanceSymbol> getSubComponents() {
-    return this.getSpannedScope().resolveLocally(ComponentInstanceSymbol.KIND);
+  public Collection<ViewComponentInstanceSymbol> getSubComponents() {
+    return this.getSpannedScope().resolveLocally(ViewComponentInstanceSymbol.KIND);
   }
 
   /**
    * @param name subcomponent instance name
    * @return subcomponent with the given name, empty optional, if it does not exist
    */
-  public Optional<ComponentInstanceSymbol> getSubComponent(String name) {
+  public Optional<ViewComponentInstanceSymbol> getSubComponent(String name) {
     // no check for reference required
     return getSubComponents().stream().filter(p -> p.getName().equals(name)).findFirst();
   }
@@ -233,7 +227,7 @@ public class ViewSymbol extends TaggingScopeSpanningSymbol {
    * @param visibility visibility
    * @return subcomponents with the given visibility
    */
-  public Collection<ComponentInstanceSymbol> getSubComponents(AccessModifier visibility) {
+  public Collection<ViewComponentInstanceSymbol> getSubComponents(AccessModifier visibility) {
     // no check for reference required
     return getSubComponents().stream().filter(s -> s.getAccessModifier().includes(visibility)).collect(Collectors.toList());
   }

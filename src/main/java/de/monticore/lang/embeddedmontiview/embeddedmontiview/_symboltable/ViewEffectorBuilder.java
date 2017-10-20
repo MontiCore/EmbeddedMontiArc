@@ -23,29 +23,29 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
 
-public class EffectorBuilder {
+public class ViewEffectorBuilder {
   protected Optional<String> source = Optional.empty();
   protected Optional<String> target = Optional.empty();
   //  protected Optional<ConstantPortSymbol> portSymbol = Optional.empty();
 
-  public static EffectorSymbol clone(EffectorSymbol con) {
-    return new EffectorBuilder().setSource(con.getSource()).
+  public static ViewEffectorSymbol clone(ViewEffectorSymbol con) {
+    return new ViewEffectorBuilder().setSource(con.getSource()).
         setTarget(con.getTarget()).build();
   }
 
-  public EffectorBuilder setSource(String source) {
+  public ViewEffectorBuilder setSource(String source) {
     this.source = Optional.of(source);
     return this;
   }
 
-  public EffectorBuilder setTarget(String target) {
+  public ViewEffectorBuilder setTarget(String target) {
     this.target = Optional.of(target);
     return this;
   }
 
-  public EffectorSymbol build() {
+  public ViewEffectorSymbol build() {
     if (source.isPresent() && target.isPresent()) {
-      EffectorSymbol con = new EffectorSymbol(this.target.get());
+      ViewEffectorSymbol con = new ViewEffectorSymbol(this.target.get());
       con.setSource(this.source.get());
       con.setTarget(this.target.get());
       return con;

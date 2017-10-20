@@ -23,7 +23,6 @@ import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
@@ -39,10 +38,10 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testSymtab_Effector() {
         Scope s = createSymTab("view.wbView.WCET1", resourcePath);
 
-        Optional<EffectorSymbol> oEff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", EffectorSymbol.KIND);
+        Optional<ViewEffectorSymbol> oEff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", ViewEffectorSymbol.KIND);
         assertTrue(oEff.isPresent());
 
-        EffectorSymbol eff = oEff.get();
+        ViewEffectorSymbol eff = oEff.get();
         assertTrue(eff.getSourcePort() != null);
         assertTrue(eff.getTargetPort() != null);
 
@@ -54,10 +53,10 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testSymtab_Component() {
         Scope s = createSymTab("view.wbView.WCET1", resourcePath);
 
-        Optional<ComponentSymbol> oCmp = s.resolve("view.wbView.WCET1.WeatherBalloonSensors", ComponentSymbol.KIND);
+        Optional<ViewComponentSymbol> oCmp = s.resolve("view.wbView.WCET1.WeatherBalloonSensors", ViewComponentSymbol.KIND);
         assertTrue(oCmp.isPresent());
 
-        ComponentSymbol cmp = oCmp.get();
+        ViewComponentSymbol cmp = oCmp.get();
         assertTrue(!cmp.getAllIncomingPorts().isEmpty());
         assertTrue(!cmp.getAllOutgoingPorts().isEmpty());
         assertTrue(cmp.hasEffectors("controlSignalsIn"));
@@ -80,10 +79,10 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testSymtab_Port(){
         Scope s = createSymTab("view.wbView.WCET1", resourcePath);
 
-        Optional<PortSymbol> oPort = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIn", PortSymbol.KIND);
+        Optional<ViewPortSymbol> oPort = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIn", ViewPortSymbol.KIND);
         assertTrue(oPort.isPresent());
 
-        PortSymbol port = oPort.get();
+        ViewPortSymbol port = oPort.get();
         assertTrue(port.isIncoming());
         assertTrue(!port.isOutgoing());
     }
@@ -92,10 +91,10 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testSymtab_Connector(){
         Scope s = createSymTab("view.wbView.WCET2", resourcePath);
 
-        Optional<ConnectorSymbol> oConn = s.resolve("view.wbView.WCET2.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", ConnectorSymbol.KIND);
+        Optional<ViewConnectorSymbol> oConn = s.resolve("view.wbView.WCET2.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", ViewConnectorSymbol.KIND);
         assertTrue(oConn.isPresent());
 
-        ConnectorSymbol conn = oConn.get();
+        ViewConnectorSymbol conn = oConn.get();
         assertTrue(conn.getSource().equals("controlSignalsIn"));
         assertTrue(conn.getTarget().equals("dataSaveInternalOut"));
         assertTrue(conn.getSourcePort().getName().equals("controlSignalsIn"));
@@ -106,11 +105,11 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testSymtab_ComponentInstance() {
         Scope s = createSymTab("view.wbView.WCET2", resourcePath);
 
-        Optional<ComponentInstanceSymbol> oCmpInst = s.resolve("view.wbView.WCET2.wbSens", ComponentInstanceSymbol.KIND);
+        Optional<ViewComponentInstanceSymbol> oCmpInst = s.resolve("view.wbView.WCET2.wbSens", ViewComponentInstanceSymbol.KIND);
         assertTrue(oCmpInst.isPresent());
 
-        ComponentInstanceSymbol cmpInst = oCmpInst.get();
-        ComponentSymbolReference type = cmpInst.getComponentType();
+        ViewComponentInstanceSymbol cmpInst = oCmpInst.get();
+        ViewComponentSymbolReference type = cmpInst.getComponentType();
         assertTrue(type.getName().equals("WeatherBalloonSensors"));
     }
 }

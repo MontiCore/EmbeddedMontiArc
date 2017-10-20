@@ -19,7 +19,7 @@
  */
 package de.monticore.lang.embeddedmontiview;
 
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EffectorSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewEffectorSymbol;
 import de.monticore.lang.embeddedmontiview.tagging.LatencyTagSchema.LatencyViewEffSymbol;
 import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
 import de.monticore.symboltable.Scope;
@@ -40,7 +40,7 @@ public class TaggingTest extends AbstractSymtabTest {
     public void testTags_Effector() {
         Scope s = createSymTab( "view.wbView.WCET1", resourcePath);
 
-        Optional<EffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", EffectorSymbol.KIND);
+        Optional<ViewEffectorSymbol> eff = s.resolve("view.wbView.WCET1.WeatherBalloonSensors.controlSignalsIndataSaveInternalOut", ViewEffectorSymbol.KIND);
         assertTrue(eff.isPresent());
 
         Collection tag = eff.get().getTags((TagKind) LatencyViewEffSymbol.KIND);

@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
-public class EffectorSymbol extends TaggingSymbol {
+public class ViewEffectorSymbol extends TaggingSymbol {
 
   public static final EMAEffectorKind KIND = EMAEffectorKind.INSTANCE;
 
@@ -54,12 +54,12 @@ public class EffectorSymbol extends TaggingSymbol {
   /**
    * use {@link #builder()}
    */
-  protected EffectorSymbol(String name) {
+  protected ViewEffectorSymbol(String name) {
     super(name, KIND);
   }
 
-  public static EffectorBuilder builder() {
-    return new EffectorBuilder();
+  public static ViewEffectorBuilder builder() {
+    return new ViewEffectorBuilder();
   }
 
   /**
@@ -78,7 +78,7 @@ public class EffectorSymbol extends TaggingSymbol {
     this.source = source;
   }
 
-  protected PortSymbol getPort(String name) {
+  protected ViewPortSymbol getPort(String name) {
     if (this.getEnclosingScope() == null) {
       Log.warn("Effector does not belong to a component, cannot resolve port");
       return null;
@@ -90,16 +90,16 @@ public class EffectorSymbol extends TaggingSymbol {
 
     // (1) try to load Component.Port or ExpandedComponentInstance.Port
     String fullSource = Joiners.DOT.join(this.getPackageName(), this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
-    Optional<PortSymbol> port = this.getEnclosingScope().<PortSymbol>resolve(name, PortSymbol.KIND);
+    Optional<ViewPortSymbol> port = this.getEnclosingScope().<ViewPortSymbol>resolve(name, ViewPortSymbol.KIND);
     if (port.isPresent()) {
       return port.get();
     }
 
-    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ComponentSymbol)) {
+    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ViewComponentSymbol)) {
       Log.warn("Effector is not embedded in component symbol, cannot resolve port");
       return null;
     }
-    ComponentSymbol cmp = (ComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get();
+    ViewComponentSymbol cmp = (ViewComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get();
 
     // (2) try to load Component.instance.Port
     Iterator<String> parts = Splitters.DOT.split(name).iterator();
@@ -116,14 +116,14 @@ public class EffectorSymbol extends TaggingSymbol {
     }
     String instancePort = parts.next();
     Log.debug("" + instancePort, "instancePort");
-    Optional<ComponentInstanceSymbol> inst = cmp.getSpannedScope().<ComponentInstanceSymbol>resolve(instance, ComponentInstanceSymbol.KIND);
+    Optional<ViewComponentInstanceSymbol> inst = cmp.getSpannedScope().<ViewComponentInstanceSymbol>resolve(instance, ViewComponentInstanceSymbol.KIND);
     if (!inst.isPresent()) {
       Log.warn(String.format("Could not find instance %s in component %s, cannot resolve port", instance, cmp.getFullName()));
       return null;
     }
-    port = inst.get().getComponentType().getReferencedSymbol().getSpannedScope().resolve(instancePort, PortSymbol.KIND);
+    port = inst.get().getComponentType().getReferencedSymbol().getSpannedScope().resolve(instancePort, ViewPortSymbol.KIND);
       /*
-      PortSymbol portCS=getEnclosingScope().<PortSymbol>resolve(name,PortSymbol.KIND).get();
+      ViewPortSymbol portCS=getEnclosingScope().<ViewPortSymbol>resolve(name,ViewPortSymbol.KIND).get();
     Log.debug(""+portCS.getName()+" "+portCS.getFullName(),"resolved");
 */
     if (port.isPresent()) {
@@ -137,7 +137,7 @@ public class EffectorSymbol extends TaggingSymbol {
    * does not return Optional, since every effector has a port
    * if the model is well-formed
    */
-  public PortSymbol getSourcePort() {
+  public ViewPortSymbol getSourcePort() {
     return getPort(this.getSource());
   }
 
@@ -145,7 +145,7 @@ public class EffectorSymbol extends TaggingSymbol {
    * does not return Optional, since every effector has a port
    * if the model is well-formed
    */
-  public PortSymbol getTargetPort() {
+  public ViewPortSymbol getTargetPort() {
     return getPort(this.getTarget());
   }
 
@@ -157,14 +157,14 @@ public class EffectorSymbol extends TaggingSymbol {
    * @return is optional, b/c a effector can belong to a component symbol or to
    * an expanded component instance symbol
    */
-  public Optional<ComponentSymbol> getComponent() {
+  public Optional<ViewComponentSymbol> getComponent() {
     if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
       return Optional.empty();
     }
-    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ComponentSymbol)) {
+    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ViewComponentSymbol)) {
       return Optional.empty();
     }
-    return Optional.of((ComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+    return Optional.of((ViewComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get());
   }
 
   /**

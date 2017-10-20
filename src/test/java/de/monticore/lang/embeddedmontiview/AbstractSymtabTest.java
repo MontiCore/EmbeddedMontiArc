@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiview;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.java.lang.JavaDSLLanguage;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentSymbol;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EmbeddedMontiViewLanguage;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewSymbol;
 import de.monticore.lang.embeddedmontiview.tagging.LatencyTagSchema.LatencyTagSchema;
@@ -66,9 +66,9 @@ public class AbstractSymtabTest {
   }
 
   private static void resolveViewInstances(Scope scope) {
-    Collection<ComponentSymbol> instances = scope.resolveLocally(de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol.KIND);
+    Collection<ViewComponentSymbol> instances = scope.resolveLocally(ViewComponentSymbol.KIND);
 
-    for(de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol instance : instances) {
+    for(ViewComponentSymbol instance : instances) {
       resolveViewComponentInstances(instance.getSpannedScope());
     }
   }

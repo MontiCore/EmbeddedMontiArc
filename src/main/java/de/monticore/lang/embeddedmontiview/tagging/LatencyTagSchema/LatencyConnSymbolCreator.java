@@ -26,8 +26,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ConnectorSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewConnectorSymbol;
 import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTTag;
@@ -139,16 +138,16 @@ public class LatencyConnSymbolCreator implements TagSymbolCreator {
     return ast.get();
   }
 
-  protected ConnectorSymbol checkKind(Collection<Symbol> symbols) {
-    ConnectorSymbol ret = null;
+  protected ViewConnectorSymbol checkKind(Collection<Symbol> symbols) {
+    ViewConnectorSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(ConnectorSymbol.KIND)) {
+      if (symbol.getKind().isSame(ViewConnectorSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (ConnectorSymbol)symbol;
+        ret = (ViewConnectorSymbol)symbol;
       }
     }
     if (ret == null) {
