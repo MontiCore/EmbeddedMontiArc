@@ -83,7 +83,7 @@ import java.util.stream.Collectors;
  *         This class is the basic class for instances so that you can resolve them using the
  *         standard symbol table mechanism
  */
-public class ExpandedComponentInstanceSymbol
+public class ViewExpandedComponentInstanceSymbol
     extends TaggingScopeSpanningSymbol implements ViewElementInstance {
 
   public static final EMAExpandedComponentInstanceKind KIND = new EMAExpandedComponentInstanceKind();
@@ -94,13 +94,13 @@ public class ExpandedComponentInstanceSymbol
   /**
    * use {@link #builder()}
    */
-  protected ExpandedComponentInstanceSymbol(String name, ViewComponentSymbolReference type) {
+  protected ViewExpandedComponentInstanceSymbol(String name, ViewComponentSymbolReference type) {
     super(name, KIND);
     this.type = type;
   }
 
-  public static ExpandedComponentInstanceBuilder builder() {
-    return new ExpandedComponentInstanceBuilder();
+  public static ViewExpandedComponentInstanceBuilder builder() {
+    return new ViewExpandedComponentInstanceBuilder();
   }
 
   /**
@@ -124,7 +124,7 @@ public class ExpandedComponentInstanceSymbol
   }
 
   /**
-   * ExpandedComponentInstanceSymbol::getPorts() may return different
+   * ViewExpandedComponentInstanceSymbol::getPorts() may return different
    * results than ViewComponentSymbol::getPorts()
    * "MontiArc provides a structural inheritance mechanism that allows to define a component as
    * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
@@ -158,7 +158,7 @@ public class ExpandedComponentInstanceSymbol
   }
 
   /**
-   * ExpandedComponentInstanceSymbol::getSubComponents() may return different
+   * ViewExpandedComponentInstanceSymbol::getSubComponents() may return different
    * results than the union of ViewComponentSymbol::getSubComponents() and
    * ViewComponentSymbol::getInnerComponents.
    * "MontiArc provides a structural inheritance mechanism that allows to define a component as
@@ -166,16 +166,16 @@ public class ExpandedComponentInstanceSymbol
    * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
    * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
    */
-  public Collection<ExpandedComponentInstanceSymbol> getSubComponents() {
-    return getSpannedScope().<ExpandedComponentInstanceSymbol>resolveLocally(ExpandedComponentInstanceSymbol.KIND);
+  public Collection<ViewExpandedComponentInstanceSymbol> getSubComponents() {
+    return getSpannedScope().<ViewExpandedComponentInstanceSymbol>resolveLocally(ViewExpandedComponentInstanceSymbol.KIND);
   }
 
-  public Optional<ExpandedComponentInstanceSymbol> getSubComponent(String name) {
-    return getSpannedScope().<ExpandedComponentInstanceSymbol>resolveLocally(name, ExpandedComponentInstanceSymbol.KIND);
+  public Optional<ViewExpandedComponentInstanceSymbol> getSubComponent(String name) {
+    return getSpannedScope().<ViewExpandedComponentInstanceSymbol>resolveLocally(name, ViewExpandedComponentInstanceSymbol.KIND);
   }
 
   /**
-   * ExpandedComponentInstanceSymbol::getPorts() may return different
+   * ViewExpandedComponentInstanceSymbol::getPorts() may return different
    * results than ViewComponentSymbol::getPorts()
    * "MontiArc provides a structural inheritance mechanism that allows to define a component as
    * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the

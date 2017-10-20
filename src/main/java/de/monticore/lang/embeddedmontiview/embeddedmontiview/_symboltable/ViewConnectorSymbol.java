@@ -201,14 +201,14 @@ public class ViewConnectorSymbol extends TaggingSymbol implements ViewElementIns
    * @return is optional, b/c a connector can belong to a component symbol or to
    * an expanded component instance symbol
    */
-  public Optional<ExpandedComponentInstanceSymbol> getComponentInstance() {
+  public Optional<ViewExpandedComponentInstanceSymbol> getComponentInstance() {
     if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
       return Optional.empty();
     }
-    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ExpandedComponentInstanceSymbol)) {
+    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ViewExpandedComponentInstanceSymbol)) {
       return Optional.empty();
     }
-    return Optional.of((ExpandedComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+    return Optional.of((ViewExpandedComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
   }
 
   /**

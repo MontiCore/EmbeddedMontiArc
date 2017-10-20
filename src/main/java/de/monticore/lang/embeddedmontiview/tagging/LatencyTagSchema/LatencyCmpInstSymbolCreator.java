@@ -138,20 +138,20 @@ public class LatencyCmpInstSymbolCreator implements TagSymbolCreator {
     return ast.get();
   }
 
-  protected ExpandedComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
-    ExpandedComponentInstanceSymbol ret = null;
+  protected ViewExpandedComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
+    ViewExpandedComponentInstanceSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(ExpandedComponentInstanceSymbol.KIND)) {
+      if (symbol.getKind().isSame(ViewExpandedComponentInstanceSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (ExpandedComponentInstanceSymbol)symbol;
+        ret = (ViewExpandedComponentInstanceSymbol)symbol;
       }
     }
     if (ret == null) {
-      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'ExpandedComponentInstanceSymbol.KIND'.",
+      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'ViewExpandedComponentInstanceSymbol.KIND'.",
           symbols.stream().map(s -> "'" + s.getKind().toString() + "'").collect(Collectors.joining(", "))));
       return null;
     }

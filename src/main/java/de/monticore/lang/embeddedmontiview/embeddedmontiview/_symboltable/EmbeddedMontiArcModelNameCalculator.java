@@ -56,7 +56,7 @@ public class EmbeddedMontiArcModelNameCalculator
     else if (ViewComponentInstanceSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponentInstance(name));
     }
-    else if (ExpandedComponentInstanceSymbol.KIND.isKindOf(kind)) {
+    else if (ViewExpandedComponentInstanceSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForExpandedComponentInstance(name));
     }
 

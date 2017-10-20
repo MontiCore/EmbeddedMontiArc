@@ -323,7 +323,7 @@ public class SymbolPrinter {
     }
   }
 
-  public static void printExpandedComponentInstance(ExpandedComponentInstanceSymbol inst, IndentPrinter ip, boolean skipPackageImport) {
+  public static void printExpandedComponentInstance(ViewExpandedComponentInstanceSymbol inst, IndentPrinter ip, boolean skipPackageImport) {
     if (!skipPackageImport) {
       ViewComponentSymbol cmp = inst.getComponentType().getReferencedSymbol();
       if (cmp.getPackageName() != null && !cmp.getPackageName().isEmpty()) {
@@ -362,7 +362,7 @@ public class SymbolPrinter {
     ip.println("}");
   }
 
-  public static String printExpandedComponentInstance(ExpandedComponentInstanceSymbol inst) {
+  public static String printExpandedComponentInstance(ViewExpandedComponentInstanceSymbol inst) {
     IndentPrinter ip = new IndentPrinter();
     printExpandedComponentInstance(inst, ip, false);
     return ip.getContent();

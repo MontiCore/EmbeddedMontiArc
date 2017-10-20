@@ -47,10 +47,10 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
     return s;
   }
 
-  protected ExpandedComponentInstanceBuilder createInstance(ViewComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters) {
+  protected ViewExpandedComponentInstanceBuilder createInstance(ViewComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters) {
     // TODO resolve generics and parameters
     //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
-    ExpandedComponentInstanceBuilder builder = ExpandedComponentInstanceSymbol.builder().setSymbolReference(new ViewComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope())).addPorts(cmp.getPorts()).addConnectors(cmp.getConnectors());
+    ViewExpandedComponentInstanceBuilder builder = ViewExpandedComponentInstanceSymbol.builder().setSymbolReference(new ViewComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope())).addPorts(cmp.getPorts()).addConnectors(cmp.getConnectors());
 
     // add sub components
     for (ViewComponentInstanceSymbol inst : cmp.getSubComponents()) {
@@ -81,11 +81,11 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
     return builder;
   }
 /*
-    protected ExpandedComponentInstanceBuilder createInstance(ViewSymbol view, final Set<ResolvingFilter<? extends Symbol>> filters) {
+    protected ViewExpandedComponentInstanceBuilder createInstance(ViewSymbol view, final Set<ResolvingFilter<? extends Symbol>> filters) {
         // TODO resolve generics and parameters
         //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
-        ExpandedComponentInstanceBuilder builder =
-                ExpandedComponentInstanceSymbol.builder()
+        ViewExpandedComponentInstanceBuilder builder =
+                ViewExpandedComponentInstanceSymbol.builder()
                         .setSymbolReference(new ViewSymbolReference(view.getName(),
                                 view.getEnclosingScope()))
                         .addConnectors(view.getConnectors());
