@@ -1,5 +1,0 @@
-component Distribute{
-	ports in (-oo m : oo m) value,
-
-		  out (-oo m : oo m) normalDistVal;
-}
