@@ -1,0 +1,6 @@
+package controller;
+
+struct PIDTupleAggregation{
+		PIDTuple PIDTuples[3];
+		Q(-oo : 0.001 : oo) fitness;	
+}
