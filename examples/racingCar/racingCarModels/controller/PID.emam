@@ -2,8 +2,8 @@ package controller;
 
 component PID{
 	ports 
-		in Q( -oo : 0.001 : oo) error;
-		in PIDTuple tuple;
+		in Q( -oo : 0.001 : oo) error,
+		in PIDTuple tuple,
 		
 		out Q( -oo : 0.0001 : oo) output;
 		
