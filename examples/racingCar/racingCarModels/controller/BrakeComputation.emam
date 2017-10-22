@@ -1,4 +1,3 @@
-package controller;
 component getBrake{
 	ports 
 		in Q(0 m/s : 0.001 m/s : 75 m/s) maxSpeed[20],
@@ -16,7 +15,7 @@ component getBrake{
 			brakePedal = 0;
 			Z(0:1:19) segNumber = 0;
 			Q(0: 0.001: 5625) speedSqr = currSpeed*currSpeed;
-			Q(0: 0.001: oo) maxLookAheadDist = speedSqr/(2*2*segments[segNumber].frictionCoefficient*9.81);
+			Q(0: 0.001: oo) maxLookAheadDist = speedSqr/(2*seg.frictionCoefficient*9.81);
 			Q(0: 0.001: 5625) lookaheadDist = segments[segNumber].distToSegEnd;
 			Q(0 m/s : 0.001 m/s : 75 m/s ) maxSpeedSeg = maxSpeed[0];
 				
@@ -33,7 +32,7 @@ component getBrake{
 						}
 					}
 					segNumber = segNumber + 1;
-					lookaheadDist = lookaheadDist + segments[segNumber].length;
+					lookaheadDist = lookaheadDist + roadInfo[segNumber].length;
 				}
 			}
 		}

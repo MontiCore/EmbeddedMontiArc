@@ -8,6 +8,6 @@ component Subtract{
 		out Q(-oo : 0.001 : oo) errorVal;
 	
 	implementation Math{
-		errorVal = target - mesuredVal;
+		errorVal = targetVal - mesuredVal;
 	}
 }

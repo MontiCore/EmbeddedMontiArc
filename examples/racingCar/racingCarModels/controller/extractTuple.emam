@@ -1,16 +1,12 @@
 package controller;
-import PIDTuple;
-import PIDTupleAggregation;
 
-component ExtractTuple(Z(0:1:2) index){
-
+component ExtractTuple<Z(0:1:2) index>{
 	ports
 	   in PIDTupleAggregation tupleAgg,
 
 	   out PIDTuple tuple;
 
 	implementation Math{
-
 		tuple = tupleAgg.PIDTuples[index];
 	}
 }

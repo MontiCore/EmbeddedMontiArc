@@ -1,4 +1,5 @@
 package evolution;
+
 import PIDTupleAggregation;
 
 component EvaluateTuple{
@@ -10,10 +11,8 @@ component EvaluateTuple{
 	out Z(0:1:19) updatedTupleIndex;
 
 	implementation Math{
-		population[tupleIndex].fitness = -mserror;
+		population.[tupleIndex].fitness = -mserror;
 		updatedTupleIndex = tupleIndex + 1;
 		updatedPopulation = population;
 	}
-	
-
 }

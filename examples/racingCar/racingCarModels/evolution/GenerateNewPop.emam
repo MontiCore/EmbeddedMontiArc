@@ -1,6 +1,8 @@
 package evolution;
+
 import PIDTupleAggregation;
 import tournamentSelection;
+import arithCrossOver;
 import Mutation;
 
 component GenerateNewPop{

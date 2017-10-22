@@ -1,6 +1,7 @@
 package controller;
 
-component SteerScale{	
+component SteerScale{
+	
 	ports
 		in Q(-oo : 0.0001 : oo) unscaledSteering,
 		

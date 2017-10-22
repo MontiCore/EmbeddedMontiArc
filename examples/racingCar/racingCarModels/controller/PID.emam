@@ -1,5 +1,4 @@
 package controller;
-import PIDTuple;
 
 component PID{
 	ports 
@@ -12,8 +11,8 @@ component PID{
 	
 		static Z(0:1:oo) time_prev = now()-1;
 		static Q(-oo :0.001 : oo) int_error = 1;
-		static windup_guard = 10;
-		static prev_error = 0;
+		static Q(-oo :0.001 : oo) windup_guard = 10;
+		static Q(-oo :0.001 : oo) prev_error = 0;
 		
 		Z(0:1:oo) time_now = now();
 		Z(1: 1 : oo) time_diff = time_now - time_prev;

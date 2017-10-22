@@ -1,8 +1,9 @@
 package evolution;
+
 import PIDTupleAggregation;
 
 function PIDTupleAggregation tupleOut = arithCrossOver(PIDTupleAggregation father, PIDTupleAggregation mother)
-	Q(0 : 0.0001 : 1) p = rand();
+	Q(0 : 0.0001 : 1) = rand();
 	PIDTupleAggregation tuple;
 	tuple.fitness = 0;
 	tuple.PIDTuples[0].P = p*father.PIDTuples[0].P + (1-p)*mother.PIDTuples[0].P;

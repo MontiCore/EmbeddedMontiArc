@@ -1,5 +1,6 @@
 package preProcessing;
 
+import Point;
 
 component AssemblePoint{
 	ports
@@ -13,7 +14,4 @@ component AssemblePoint{
 		point.y = Y;
 
 	}	
-
-
-
 }
