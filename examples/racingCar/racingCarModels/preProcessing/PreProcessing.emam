@@ -29,11 +29,11 @@ in Q(-45° : 0.001° : 45°) perfectSteering,
 			out Z(0 : 1 : 300) currLap,
 			
 			instance Lowpassfilter posXFilter<0.1>;
-			instance Lowpassfilter posYFilterdistorted
+			instance Lowpassfilter posYFilterdistorted;
 			instance Lowpassfilter targetXFilter<0.1>;
 			instance Lowpassfilter targetYFilter<0.1>;
 			instance Lowpassfilter carYawFilter<0.1>;
-			instance Lowpassfilter currVelocityFilter<0.3>
+			instance Lowpassfilter currVelocityFilter<0.3>;
 			instance Lowpassfilter gasPedalFilter<0.3>;
 			instance Lowpassfilter steeringFilter<0.3>;
 

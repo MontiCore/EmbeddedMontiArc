@@ -1,4 +1,7 @@
 package evolution;
+import PIDTupleAggregation;
+import tournamentSelection;
+import Mutation;
 
 component GenerateNewPop{
 	in PIDTupleAggregation oldPop[20],

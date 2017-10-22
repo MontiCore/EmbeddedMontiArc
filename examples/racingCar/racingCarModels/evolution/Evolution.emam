@@ -1,6 +1,10 @@
 package evolution;
+import PIDTupleAggregation;
+import MSE;
+import EvaluateTuple;
+import GenerateNewPop;
 
-component Evolution(PIDTupleAggregation population[20]{
+component Evolution<PIDTupleAggregation population[20]>{
 	in Z(1:1:300) lap,
 	in Q(0 : 0.001 : oo) errors,
 
@@ -34,3 +38,4 @@ component Evolution(PIDTupleAggregation population[20]{
 			lap = prevLap;
 		}
 	}
+}

@@ -1,7 +1,9 @@
 package controller;
+import carInfo;
+
 component GearComputation{
 	ports 
-		in (0 m/s : 75 m/s) currSpeed,
+		in (0 m/s : 0.001 m/s : 75 m/s) currSpeed,
 		in carInfo carSpecs,
 		in (-1 : 1 : 6 ) currGear,
 
@@ -14,8 +16,8 @@ component GearComputation{
 		if(omega*carSpecs.wheelRadius < currSpeed){
 			gear = currGear+1;
 		}else{
-			Q(-oo:oo) gear_down = carSpecs.gearRatio[currGear + carSpecs.gearOffset-1];
-			Q(-oo:oo) omega = carSpecs.engineRpmRedLine/gear_down;
+			Q(-oo: 0.001 : oo) gear_down = carSpecs.gearRatio[currGear + carSpecs.gearOffset-1];
+			Q(-oo: 0.001 : oo) omega = carSpecs.engineRpmRedLine/gear_down;
 			if (currGear > 1 && omega*carSpecs.wheelRadius > currSpeed){
 				gear = currGear-1;
 			}else{

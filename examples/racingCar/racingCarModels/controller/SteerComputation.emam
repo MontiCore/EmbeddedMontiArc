@@ -1,4 +1,6 @@
 package controller;
+import Point;
+
 component SteerComputation{
 	ports 
 		in Point targetPoint,

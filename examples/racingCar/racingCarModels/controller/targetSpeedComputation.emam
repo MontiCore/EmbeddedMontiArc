@@ -1,5 +1,7 @@
 package controller;
-component TargetSpeedComputation( Z(0:1:19) lookaheadDist){
+
+
+component TargetSpeedComputation< Z(0:1:19) lookaheadDist>{
 	ports 
 		in Q(0 m/s : 0.001 m/s : 75 m/s) maxSpeed[20],
 		in Q(0 m/s : 0.001 m/s : 75 m/s) allowedSpeed,
@@ -7,12 +9,11 @@ component TargetSpeedComputation( Z(0:1:19) lookaheadDist){
 		out Q(0 m/s : 0.001 m/s : 75 m/s)  desiredSpeed;
 
 	implementation Math{
-		Q(0 m/s : 0.001 m/s : 75 m/s) minSpeed = 75 m/s;
 		for i in Z(0 : 1 :  lookaheadDist){ 
-			if (allowedSpeed(trackSegs[i] < minSpeed){
-				minSpeed = allowedSpeed(trackSegs[i]);
+			if (maxSpeed[i] < allowedSpeed){
+				allowedSpeed = maxSpeed[i];
 			}
 		}
-		desiredSpeed = minSpeed;
+		desiredSpeed = allowedSpeed;
 	}
 }
