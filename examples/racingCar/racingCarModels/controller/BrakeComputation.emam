@@ -1,3 +1,7 @@
+package controller;
+
+import roadInfo;
+
 component getBrake{
 	ports 
 		in Q(0 m/s : 0.001 m/s : 75 m/s) maxSpeed[20],

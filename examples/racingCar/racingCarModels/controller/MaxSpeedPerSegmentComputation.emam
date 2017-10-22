@@ -1,4 +1,7 @@
 package controller;
+
+import roadInfo;
+
 component MaxSpeedPerSegmentComputation{
 	ports
 		in roadInfo segments[20],

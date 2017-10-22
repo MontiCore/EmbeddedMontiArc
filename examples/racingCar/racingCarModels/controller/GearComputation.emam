@@ -1,4 +1,7 @@
 package controller;
+
+import carInfo;
+
 component GearComputation{
 	ports 
 		in (0 m/s : 75 m/s) currSpeed,
