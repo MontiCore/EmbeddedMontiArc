@@ -227,6 +227,7 @@ public class ViewVerificator {
         EMANFPVerificator verificator = new EMANFPVerificator();
         Boolean res = verificator.verificateNFP(Paths.get(parentDir), modelCmp, viewCmp, nfpOcl, Paths.get(target));
         ViewVerificator.nfpWitnessMap = verificator.getWitnessMap();
+        verificator.printWitnessMap(target,modelCmp,nfpOcl);
 
         return res;
     }
