@@ -45,4 +45,4 @@
 
 
 Link to analysing all Test files in the project:
-https://embeddedmontiarc.github.io/reporting/report/reportEWT.html
+[CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1)
