@@ -1,4 +1,4 @@
-<a href="https://codeclimate.com/github/MontiSim/commons/maintainability"><img src="https://api.codeclimate.com/v1/badges/1fee5e810477b6a2a432/maintainability" /></a>
+<a href="https://codeclimate.com/github/MontiSim/commons/maintainability"><img src="https://api.codeclimate.com/v1/badges/1fee5e810477b6a2a432/maintainability" /></a>   [![Build Status](https://travis-ci.org/MontiSim/commons.svg?branch=master)](https://travis-ci.org/MontiSim/commons)   [![Coverage Status](https://coveralls.io/repos/github/MontiSim/commons/badge.svg?branch=master)](https://coveralls.io/github/MontiSim/commons?branch=master)
 
 # Commons
 This repository includes the interfaces and general functionality for the other repositories.
