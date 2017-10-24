@@ -1,0 +1,10 @@
+package tagDef.caseStudy;
+
+import tagDef.CnCExt;
+
+ocl connectedPortsHaveSameType {
+
+  context Con con inv:
+    con.src.type == con.tgt.type;
+
+}

@@ -10,12 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EffectorSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.PortSymbol;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewSymbol;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
 import de.rwth.cnc.model.CnCArchitecture;
 import de.rwth.cnc.model.CnCView;
 import de.rwth.cnc.model.Component;
@@ -132,17 +127,17 @@ public class TestHelper {
     System.out.println("Witnesses are equal!");
   }
 
-  private static void fillLists(Collection<ComponentSymbol> csCollection, List<String> cmpSymInnerList, List<String> cmpSymSubList, List<String> portSymList, List<String> conSymList, List<String> effSymList) {
-    for (ComponentSymbol cs : csCollection) {
+  private static void fillLists(Collection<ViewComponentSymbol> csCollection, List<String> cmpSymInnerList, List<String> cmpSymSubList, List<String> portSymList, List<String> conSymList, List<String> effSymList) {
+    for (ViewComponentSymbol cs : csCollection) {
       cmpSymInnerList.add(cs.getFullName());
-      for (PortSymbol p : cs.getPorts()) {
+      for (ViewPortSymbol p : cs.getPorts()) {
         portSymList.add((p.isIncoming() ? "in " : "out ") + p.getFullName() + ":" + p.getTypeName());
       }
-      for (ConnectorSymbol conSym : cs.getConnectors()) {
+      for (ViewConnectorSymbol conSym : cs.getConnectors()) {
         String connectorString = getConnEffString(conSym, cs.getFullName());
         conSymList.add(connectorString);
       }
-      for (EffectorSymbol effSym : cs.getEffectors()) {
+      for (ViewEffectorSymbol effSym : cs.getEffectors()) {
         String effectorString = getConnEffString(effSym, cs.getFullName());
         effSymList.add(effectorString);
       }
@@ -150,15 +145,15 @@ public class TestHelper {
     }
   }
 
-  private static String getConnEffString(ConnectorSymbol conSym, String componentFullName) {
+  private static String getConnEffString(ViewConnectorSymbol conSym, String componentFullName) {
     return getConnEffInternal(componentFullName, conSym.getSourcePort(), conSym.getSource(), conSym.getTargetPort(), conSym.getTarget());
   }
 
-  private static String getConnEffString(EffectorSymbol effSym, String componentFullName) {
+  private static String getConnEffString(ViewEffectorSymbol effSym, String componentFullName) {
     return getConnEffInternal(componentFullName, effSym.getSourcePort(), effSym.getSource(), effSym.getTargetPort(), effSym.getTarget());
   }
 
-  private static String getConnEffInternal(String componentFullName, PortSymbol sourcePort, String symSource, PortSymbol targetPort, String symTarget) {
+  private static String getConnEffInternal(String componentFullName, ViewPortSymbol sourcePort, String symSource, ViewPortSymbol targetPort, String symTarget) {
     String start;
     if (sourcePort == null) {
       if (!componentFullName.equals(""))
@@ -181,17 +176,17 @@ public class TestHelper {
     return start + " -> " + end;
   }
 
-  private static void recurseSubComponents(Collection<ComponentInstanceSymbol> cisCollection, List<String> cmpSymSubList, List<String> portSymList, List<String> conSymList, List<String> effSymList) {
-    for (ComponentInstanceSymbol cis : cisCollection) {
+  private static void recurseSubComponents(Collection<ViewComponentInstanceSymbol> cisCollection, List<String> cmpSymSubList, List<String> portSymList, List<String> conSymList, List<String> effSymList) {
+    for (ViewComponentInstanceSymbol cis : cisCollection) {
       cmpSymSubList.add(cis.getFullName());
-      for (PortSymbol p : cis.getComponentType().getPorts()) {
+      for (ViewPortSymbol p : cis.getComponentType().getPorts()) {
         portSymList.add((p.isIncoming() ? "in " : "out ") + p.getFullName() + ":" + p.getTypeName());
       }
-      for (ConnectorSymbol conSym : cis.getComponentType().getConnectors()) {
+      for (ViewConnectorSymbol conSym : cis.getComponentType().getConnectors()) {
         String connectorString = getConnEffString(conSym, cis.getComponentType().getFullName());
         conSymList.add(connectorString);
       }
-      for (EffectorSymbol effSym : cis.getComponentType().getEffectors()) {
+      for (ViewEffectorSymbol effSym : cis.getComponentType().getEffectors()) {
         String effectorString = getConnEffString(effSym, cis.getComponentType().getFullName());
         effSymList.add(effectorString);
       }

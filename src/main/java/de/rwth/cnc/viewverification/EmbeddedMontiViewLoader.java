@@ -36,9 +36,9 @@ import de.rwth.cnc.model.*;
 
 public class EmbeddedMontiViewLoader {
 
-  private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter = CommonResolvingFilter.create(ComponentSymbol.KIND);
-  private static final ResolvingFilter<ComponentSymbol> connectorResolvingFilter = CommonResolvingFilter.create(ConnectorSymbol.KIND);
-  private static final ResolvingFilter<ComponentSymbol> effectorResolvingFilter = CommonResolvingFilter.create(EffectorSymbol.KIND);
+  private static final ResolvingFilter<ViewComponentSymbol> componentResolvingFilter = CommonResolvingFilter.create(ViewComponentSymbol.KIND);
+  private static final ResolvingFilter<ViewComponentSymbol> connectorResolvingFilter = CommonResolvingFilter.create(ViewConnectorSymbol.KIND);
+  private static final ResolvingFilter<ViewComponentSymbol> effectorResolvingFilter = CommonResolvingFilter.create(ViewEffectorSymbol.KIND);
 
   public static ViewSymbol convertToEMVView(final CnCView view) {
     ViewSymbol viewSymbol = new ViewSymbol(view.getName());
@@ -52,7 +52,7 @@ public class EmbeddedMontiViewLoader {
       if (topComp == null)
         topComp = view.getComponent(VerificationHelper.uncapitalize(topLevelCmpName));
       assert topComp != null;
-      ComponentSymbol topCompSymb = createComponentSymbol(view, topComp, topLevelCmpName, usedConnections);
+      ViewComponentSymbol topCompSymb = createViewComponentSymbol(view, topComp, topLevelCmpName, usedConnections);
       //EMAComponentBuilder.addInnerComponent(viewSymbol, topCompSymb);
 
       if (!viewSymbol.getSpannedScope().getResolvingFilters().contains(componentResolvingFilter)) {
@@ -63,14 +63,14 @@ public class EmbeddedMontiViewLoader {
 
     for (Connection con : view.getConnections()) {
       if (!usedConnections.contains(con.toString().toUpperCase())) {
-        ConnectorSymbol conSym = createConnectorSymbol(con);
+        ViewConnectorSymbol conSym = createViewConnectorSymbol(con);
         addConnectorToView(viewSymbol, conSym);
       }
     }
 
     for (Effector eff : view.getEffectors()) {
       if (!usedConnections.contains(eff.toString().toUpperCase())) {
-        EffectorSymbol effSym = createEffectorSymbol(eff);
+        ViewEffectorSymbol effSym = createViewEffectorSymbol(eff);
         addEffectorToView(viewSymbol, effSym);
       }
     }
@@ -78,63 +78,63 @@ public class EmbeddedMontiViewLoader {
     return viewSymbol;
   }
 
-  private static void addConnectorToView(ViewSymbol viewSymbol, ConnectorSymbol conSymbol) {
+  private static void addConnectorToView(ViewSymbol viewSymbol, ViewConnectorSymbol conSymbol) {
     if (!viewSymbol.getSpannedScope().getResolvingFilters().contains(connectorResolvingFilter)) {
       ((MutableScope) viewSymbol.getSpannedScope()).addResolver(connectorResolvingFilter);
     }
     ((MutableScope) viewSymbol.getSpannedScope()).add(conSymbol);
   }
 
-  private static void addEffectorToView(ViewSymbol viewSymbol, EffectorSymbol effSymbol) {
+  private static void addEffectorToView(ViewSymbol viewSymbol, ViewEffectorSymbol effSymbol) {
     if (!viewSymbol.getSpannedScope().getResolvingFilters().contains(effectorResolvingFilter)) {
       ((MutableScope) viewSymbol.getSpannedScope()).addResolver(effectorResolvingFilter);
     }
     ((MutableScope) viewSymbol.getSpannedScope()).add(effSymbol);
   }
 
-  private static ComponentSymbol createComponentSymbol(final CnCView view, final Component cmp, List<String> usedConnections) {
-    return createComponentSymbol(view, cmp, VerificationHelper.capitalize(cmp.getName()), usedConnections);
+  private static ViewComponentSymbol createViewComponentSymbol(final CnCView view, final Component cmp, List<String> usedConnections) {
+    return createViewComponentSymbol(view, cmp, VerificationHelper.capitalize(cmp.getName()), usedConnections);
   }
 
-  private static ComponentSymbol createComponentSymbol(final CnCView view_p, final Component cmp, String name, List<String> usedConnections) {
+  private static ViewComponentSymbol createViewComponentSymbol(final CnCView view_p, final Component cmp, String name, List<String> usedConnections) {
     CnCView view = view_p.clone();
-    ComponentSymbol componentSymbol = new ComponentSymbol(name);
-    componentSymbol.setMarkedAtomic(cmp.isMarkedAtomic());
-    componentSymbol.setIsInterfaceComplete(cmp.isMarkedInterfaceComplete());
+    ViewComponentSymbol ViewComponentSymbol = new ViewComponentSymbol(name);
+    ViewComponentSymbol.setMarkedAtomic(cmp.isMarkedAtomic());
+    ViewComponentSymbol.setIsInterfaceComplete(cmp.isMarkedInterfaceComplete());
 
     for (String cName : cmp.getContainedComponents()) {
       view.renameCmp(cName, VerificationHelper.capitalize(cName));
       Component c = view.getComponent(VerificationHelper.capitalize(cName));
-      ComponentSymbol innerComponent = createComponentSymbol(view, c, usedConnections);
-      EMAComponentBuilder.addInnerComponent(componentSymbol, innerComponent);
-      innerComponent.setEnclosingScope((MutableScope) componentSymbol.getSpannedScope());
+      ViewComponentSymbol innerComponent = createViewComponentSymbol(view, c, usedConnections);
+      EMAComponentBuilder.addInnerComponent(ViewComponentSymbol, innerComponent);
+      innerComponent.setEnclosingScope((MutableScope) ViewComponentSymbol.getSpannedScope());
     }
 
     for (Port p : cmp.getPorts()) {
-      PortSymbol pSymbol = new PortSymbol(p.getName());
+      ViewPortSymbol pSymbol = new ViewPortSymbol(p.getName());
       pSymbol.setTypeReference(p.getTypeReference());
       pSymbol.setDirection(p.isIncoming());
-      pSymbol.setEnclosingScope(componentSymbol.getSpannedScope().getAsMutableScope());
-      EMAComponentBuilder.addPort(componentSymbol, pSymbol);
+      pSymbol.setEnclosingScope(ViewComponentSymbol.getSpannedScope().getAsMutableScope());
+      EMAComponentBuilder.addPort(ViewComponentSymbol, pSymbol);
     }
 
     for (Connection connection : view.getConnections()) {
       if (usedConnections.contains(connection.toString().toUpperCase()))
         continue;
 
-      handleAddingConnectors(connection, cmp, componentSymbol, usedConnections);
+      handleAddingConnectors(connection, cmp, ViewComponentSymbol, usedConnections);
     }
 
     for (Effector effect : view.getEffectors()) {
       if (usedConnections.contains(effect.toString().toUpperCase()))
         continue;
 
-      handleAddingEffectors(effect, cmp, componentSymbol, usedConnections);
+      handleAddingEffectors(effect, cmp, ViewComponentSymbol, usedConnections);
     }
-    return componentSymbol;
+    return ViewComponentSymbol;
   }
 
-  private static void handleAddingConnectors(final Connection connection, final Component cmp, ComponentSymbol componentSymbol, List<String> usedConnections) {
+  private static void handleAddingConnectors(final Connection connection, final Component cmp, ViewComponentSymbol ViewComponentSymbol, List<String> usedConnections) {
     Connection con = connection.clone();
     if (con.getSender().equals(con.getReceiver()) && (con.getSender().equals(VerificationHelper.capitalize(cmp.getName())) || con.getSender().equals(VerificationHelper.uncapitalize(cmp.getName())))) {
       //inside of this component. sender = receiver = cmp
@@ -142,32 +142,30 @@ public class EmbeddedMontiViewLoader {
       con.setSender("");
       con.setReceiver("");
 
-      ConnectorSymbol conB = createConnectorSymbol(con);
-      EMAComponentBuilder.addConnector(componentSymbol, conB);
-    }
-    else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(con.getSender()))) {
+      ViewConnectorSymbol conB = createViewConnectorSymbol(con);
+      EMAComponentBuilder.addConnector(ViewComponentSymbol, conB);
+    } else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(con.getSender()))) {
       usedConnections.add(connection.toString().toUpperCase());
       con.setSender(VerificationHelper.uncapitalize(con.getSender()));
       if (!cmp.getName().equals(con.getReceiver()))
         con.setReceiver(VerificationHelper.uncapitalize(con.getReceiver()));
       else
         con.setReceiver("");
-      ConnectorSymbol conB = createConnectorSymbol(con);
-      EMAComponentBuilder.addConnector(componentSymbol, conB);
-    }
-    else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(con.getReceiver()))) {
+      ViewConnectorSymbol conB = createViewConnectorSymbol(con);
+      EMAComponentBuilder.addConnector(ViewComponentSymbol, conB);
+    } else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(con.getReceiver()))) {
       usedConnections.add(connection.toString().toUpperCase());
       con.setReceiver(VerificationHelper.uncapitalize(con.getReceiver()));
       if (!cmp.getName().equals(con.getSender()))
         con.setSender(VerificationHelper.uncapitalize(con.getSender()));
       else
         con.setSender("");
-      ConnectorSymbol conB = createConnectorSymbol(con);
-      EMAComponentBuilder.addConnector(componentSymbol, conB);
+      ViewConnectorSymbol conB = createViewConnectorSymbol(con);
+      EMAComponentBuilder.addConnector(ViewComponentSymbol, conB);
     }
   }
 
-  private static void handleAddingEffectors(final Effector effect, final Component cmp, ComponentSymbol componentSymbol, List<String> usedConnections) {
+  private static void handleAddingEffectors(final Effector effect, final Component cmp, ViewComponentSymbol ViewComponentSymbol, List<String> usedConnections) {
     Effector eff = effect.clone();
     if (eff.getSender().equals(eff.getReceiver()) && (eff.getSender().equals(VerificationHelper.capitalize(cmp.getName())) || eff.getSender().equals(VerificationHelper.uncapitalize(cmp.getName())))) {
       //inside of this component. sender = receiver = cmp
@@ -175,41 +173,39 @@ public class EmbeddedMontiViewLoader {
       eff.setSender("");
       eff.setReceiver("");
 
-      EffectorSymbol effB = createEffectorSymbol(eff);
-      EMAComponentBuilder.addEffector(componentSymbol, effB);
-    }
-    else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(eff.getSender()))) {
+      ViewEffectorSymbol effB = createViewEffectorSymbol(eff);
+      EMAComponentBuilder.addEffector(ViewComponentSymbol, effB);
+    } else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(eff.getSender()))) {
       usedConnections.add(effect.toString().toUpperCase());
       eff.setSender(VerificationHelper.uncapitalize(eff.getSender()));
       if (!cmp.getName().equals(eff.getReceiver()))
         eff.setReceiver(VerificationHelper.uncapitalize(eff.getReceiver()));
       else
         eff.setReceiver("");
-      EffectorSymbol effB = createEffectorSymbol(eff);
-      EMAComponentBuilder.addEffector(componentSymbol, effB);
-    }
-    else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(eff.getReceiver()))) {
+      ViewEffectorSymbol effB = createViewEffectorSymbol(eff);
+      EMAComponentBuilder.addEffector(ViewComponentSymbol, effB);
+    } else if (cmp.getContainedComponents().contains(VerificationHelper.uncapitalize(eff.getReceiver()))) {
       usedConnections.add(effect.toString().toUpperCase());
       eff.setReceiver(VerificationHelper.uncapitalize(eff.getReceiver()));
       if (!cmp.getName().equals(eff.getSender()))
         eff.setSender(VerificationHelper.uncapitalize(eff.getSender()));
       else
         eff.setSender("");
-      EffectorSymbol effB = createEffectorSymbol(eff);
-      EMAComponentBuilder.addEffector(componentSymbol, effB);
+      ViewEffectorSymbol effB = createViewEffectorSymbol(eff);
+      EMAComponentBuilder.addEffector(ViewComponentSymbol, effB);
     }
 
   }
 
-  private static ConnectorSymbol createConnectorSymbol(Connection con) {
-    ConnectorBuilder conB = new ConnectorBuilder();
+  private static ViewConnectorSymbol createViewConnectorSymbol(Connection con) {
+    ViewConnectorBuilder conB = new ViewConnectorBuilder();
     conB.setSource(con.getFullSender());
     conB.setTarget(con.getFullReceiver());
     return conB.build();
   }
 
-  private static EffectorSymbol createEffectorSymbol(Effector eff) {
-    EffectorBuilder effB = new EffectorBuilder();
+  private static ViewEffectorSymbol createViewEffectorSymbol(Effector eff) {
+    ViewEffectorBuilder effB = new ViewEffectorBuilder();
     effB.setSource(eff.getFullSender());
     effB.setTarget(eff.getFullReceiver());
     return effB.build();
@@ -255,18 +251,18 @@ public class EmbeddedMontiViewLoader {
   }
 
   private static void extractTopLevelComponents(CnCView cncView, ViewSymbol viewSymbol) {
-    //    Collection<ComponentInstanceSymbol> ciscol = viewSymbol.getSubComponents();
-    Collection<ComponentSymbol> cscol = viewSymbol.getInnerComponents();
+    //    Collection<ViewComponentInstanceSymbol> ciscol = viewSymbol.getSubComponents();
+    Collection<ViewComponentSymbol> cscol = viewSymbol.getInnerComponents();
 
     List<String> topComponentNames = new LinkedList<>();
     //    List<String> alreadyUsedComponents = new LinkedList<>();
 
-    //    for (ComponentInstanceSymbol cis : ciscol) {
+    //    for (ViewComponentInstanceSymbol cis : ciscol) {
     //      topComponentNames.add(cis.getName());
     //      alreadyUsedComponents.add(cis.getComponentType().getReferencedSymbol().getName());
     //    }
 
-    for (ComponentSymbol cs : cscol) {
+    for (ViewComponentSymbol cs : cscol) {
       //      if (!alreadyUsedComponents.contains(cs.getName()))
       topComponentNames.add(cs.getName());
       assert Character.isUpperCase(cs.getName().charAt(0));
@@ -274,7 +270,7 @@ public class EmbeddedMontiViewLoader {
     }
 
     cncView.setTopLevelComponentNames(topComponentNames);
-    //    for (ComponentSymbol cs : viewSymbol.getInnerComponents()) {
+    //    for (ViewComponentSymbol cs : viewSymbol.getInnerComponents()) {
     //      if (!alreadyUsedComponents.contains(cs.getName())) {
     //        assert Character.isUpperCase(cs.getName().charAt(0));
     //        extractComponent(cncView, cs, cs.getName());
@@ -283,21 +279,21 @@ public class EmbeddedMontiViewLoader {
     //    }
   }
 
-  private static void extractSubComponentsRecursively(CnCView cncView, ComponentSymbol cmpSymbol) {
-    for (ComponentInstanceSymbol cis : cmpSymbol.getSubComponents()) {
+  private static void extractSubComponentsRecursively(CnCView cncView, ViewComponentSymbol cmpSymbol) {
+    for (ViewComponentInstanceSymbol cis : cmpSymbol.getSubComponents()) {
       extractComponent(cncView, cis.getComponentType().getReferencedSymbol(), cis.getName());
       extractSubComponentsRecursively(cncView, cis.getComponentType().getReferencedSymbol());
     }
   }
 
   private static void extractSubComponentsOfTopComponentsRecursively(CnCView cncView, ViewSymbol viewSymbol) {
-    for (ComponentSymbol cs : viewSymbol.getInnerComponents()) {
+    for (ViewComponentSymbol cs : viewSymbol.getInnerComponents()) {
       extractSubComponentsOfTopComponentsRecursively(cncView, cs);
     }
   }
 
-  private static void extractSubComponentsOfTopComponentsRecursively(CnCView cncView, ComponentSymbol cmpSymbol) {
-    for (ComponentInstanceSymbol cis : cmpSymbol.getSubComponents()) {
+  private static void extractSubComponentsOfTopComponentsRecursively(CnCView cncView, ViewComponentSymbol cmpSymbol) {
+    for (ViewComponentInstanceSymbol cis : cmpSymbol.getSubComponents()) {
       extractComponent(cncView, cis.getComponentType().getReferencedSymbol(), cis.getName());
       extractSubComponentsRecursively(cncView, cis.getComponentType().getReferencedSymbol());
     }
@@ -305,23 +301,45 @@ public class EmbeddedMontiViewLoader {
 
   private static void extractConnectionsRecursively(CnCView cncView, ViewSymbol viewSymbol) {
     //(1) get connectors
-    for (ConnectorSymbol connectorSymbol : viewSymbol.getConnectors()) {
+    getConnectors(viewSymbol, cncView);
+
+    //(2) get effectors
+    getEffectors(viewSymbol, cncView);
+
+
+    //(3) recurse
+    for (ViewComponentSymbol cSymbol : viewSymbol.getInnerComponents()) {
+      extractConnectionsRecursively(cncView, cSymbol);
+    }
+  }
+
+  private static void extractConnectionsRecursively(CnCView cncView, ViewComponentSymbol viewComponentSymbol) {
+    getConnectors(viewComponentSymbol, cncView);
+    getEffectors(viewComponentSymbol, cncView);
+
+    //(3) recurse
+    for (ViewComponentSymbol cSymbol : viewComponentSymbol.getInnerComponents()) {
+      extractConnectionsRecursively(cncView, cSymbol);
+    }
+  }
+
+  private static void getConnectors(ViewSymbol viewSymbol, CnCView cncView) {
+    for (ViewConnectorSymbol viewConnectorSymbol : viewSymbol.getConnectors()) {
       Connection con = new Connection();
 
-      //sps = sourceportsymbol
-      PortSymbol sps = connectorSymbol.getSourcePort();
-      PortSymbol tps = connectorSymbol.getTargetPort();
+      //sps = sourceViewPortSymbol
+      ViewPortSymbol sps = viewConnectorSymbol.getSourcePort();
+      ViewPortSymbol tps = viewConnectorSymbol.getTargetPort();
       //spc = sourceportcomponent
       String spc = null, tpc = null;
       //sp  = sourceport
       String sp = null, tp = null;
 
       if (sps != null) {
-        spc = connectorSymbol.getSourcePort().getComponent().get().getName();
-        sp = connectorSymbol.getSourcePort().getName();
-      }
-      else {
-        spc = connectorSymbol.getSource();
+        spc = viewConnectorSymbol.getSourcePort().getComponent().get().getName();
+        sp = viewConnectorSymbol.getSourcePort().getName();
+      } else {
+        spc = viewConnectorSymbol.getSource();
         sp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -335,11 +353,10 @@ public class EmbeddedMontiViewLoader {
       }
 
       if (tps != null) {
-        tpc = connectorSymbol.getTargetPort().getComponent().get().getName();
-        tp = connectorSymbol.getTargetPort().getName();
-      }
-      else {
-        tpc = connectorSymbol.getTarget();
+        tpc = viewConnectorSymbol.getTargetPort().getComponent().get().getName();
+        tp = viewConnectorSymbol.getTargetPort().getName();
+      } else {
+        tpc = viewConnectorSymbol.getTarget();
         tp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -359,24 +376,25 @@ public class EmbeddedMontiViewLoader {
 
       cncView.addConnection(con);
     }
-    //(2) get effectors
-    for (EffectorSymbol effectorSymbol : viewSymbol.getEffectors()) {
+  }
+
+  private static void getEffectors(ViewSymbol viewSymbol, CnCView cncView) {
+    for (ViewEffectorSymbol ViewEffectorSymbol : viewSymbol.getEffectors()) {
       Effector eff = new Effector();
 
-      //sps = sourceportsymbol
-      PortSymbol sps = effectorSymbol.getSourcePort();
-      PortSymbol tps = effectorSymbol.getTargetPort();
+      //sps = sourceViewPortSymbol
+      ViewPortSymbol sps = ViewEffectorSymbol.getSourcePort();
+      ViewPortSymbol tps = ViewEffectorSymbol.getTargetPort();
       //spc = sourceportcomponent
       String spc = null, tpc = null;
       //sp  = sourceport
       String sp = null, tp = null;
 
       if (sps != null) {
-        spc = effectorSymbol.getSourcePort().getComponent().get().getName();
-        sp = effectorSymbol.getSourcePort().getName();
-      }
-      else {
-        spc = effectorSymbol.getSource();
+        spc = ViewEffectorSymbol.getSourcePort().getComponent().get().getName();
+        sp = ViewEffectorSymbol.getSourcePort().getName();
+      } else {
+        spc = ViewEffectorSymbol.getSource();
         sp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -390,11 +408,10 @@ public class EmbeddedMontiViewLoader {
       }
 
       if (tps != null) {
-        tpc = effectorSymbol.getTargetPort().getComponent().get().getName();
-        tp = effectorSymbol.getTargetPort().getName();
-      }
-      else {
-        tpc = effectorSymbol.getTarget();
+        tpc = ViewEffectorSymbol.getTargetPort().getComponent().get().getName();
+        tp = ViewEffectorSymbol.getTargetPort().getName();
+      } else {
+        tpc = ViewEffectorSymbol.getTarget();
         tp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -407,6 +424,7 @@ public class EmbeddedMontiViewLoader {
         }
       }
 
+      // TODO: Debug for WCET.emv effector (controlSignalsIn.null -> dataSaveInternalOut.null)
       eff.setSender(spc);
       eff.setSenderPort(sp);
       eff.setReceiver(tpc);
@@ -414,32 +432,28 @@ public class EmbeddedMontiViewLoader {
 
       cncView.addEffector(eff);
     }
-    //(3) recurse
-    for (ComponentSymbol cSymbol : viewSymbol.getInnerComponents()) {
-      extractConnectionsRecursively(cncView, cSymbol);
-    }
   }
 
-  private static void extractConnectionsRecursively(CnCView cncView, ComponentSymbol componentSymbol) {
+  private static void getConnectors(ViewComponentSymbol viewComponentSymbol, CnCView cncView) {
     //(1) get connectors
-    for (ConnectorSymbol connectorSymbol : componentSymbol.getConnectors()) {
+    for (ViewConnectorSymbol viewConnectorSymbol : viewComponentSymbol.getConnectors()) {
       Connection con = new Connection();
 
-      //sps = sourceportsymbol
-      PortSymbol sps = connectorSymbol.getSourcePort();
-      PortSymbol tps = connectorSymbol.getTargetPort();
+      //sps = sourceViewPortSymbol
+      ViewPortSymbol sps = viewConnectorSymbol.getSourcePort();
+      ViewPortSymbol tps = viewConnectorSymbol.getTargetPort();
       //spc = sourceportcomponent
       String spc = null, tpc = null;
       //sp  = sourceport
       String sp = null, tp = null;
 
 //      if (sps != null) {
-//        spc = connectorSymbol.getSourcePort().getComponent().get().getName();
-//        sp = connectorSymbol.getSourcePort().getName();
+//        spc = ViewConnectorSymbol.getSourcePort().getComponent().get().getName();
+//        sp = ViewConnectorSymbol.getSourcePort().getName();
 //      }
 //      else
-        {
-        spc = connectorSymbol.getSource();
+      {
+        spc = viewConnectorSymbol.getSource();
         sp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -453,12 +467,12 @@ public class EmbeddedMontiViewLoader {
       }
 
 //      if (tps != null) {
-//        tpc = connectorSymbol.getTargetPort().getComponent().get().getName();
-//        tp = connectorSymbol.getTargetPort().getName();
+//        tpc = ViewConnectorSymbol.getTargetPort().getComponent().get().getName();
+//        tp = ViewConnectorSymbol.getTargetPort().getName();
 //      }
 //      else
-        {
-        tpc = connectorSymbol.getTarget();
+      {
+        tpc = viewConnectorSymbol.getTarget();
         tp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -478,25 +492,28 @@ public class EmbeddedMontiViewLoader {
 
       cncView.addConnection(con);
     }
+  }
+
+  private static void getEffectors(ViewComponentSymbol viewComponentSymbol, CnCView cncView) {
     //(2) get effectors
-    for (EffectorSymbol effectorSymbol : componentSymbol.getEffectors()) {
+    for (ViewEffectorSymbol ViewEffectorSymbol : viewComponentSymbol.getEffectors()) {
       Effector eff = new Effector();
 
-      //sps = sourceportsymbol
-      PortSymbol sps = effectorSymbol.getSourcePort();
-      PortSymbol tps = effectorSymbol.getTargetPort();
+      //sps = sourceViewPortSymbol
+      ViewPortSymbol sps = ViewEffectorSymbol.getSourcePort();
+      ViewPortSymbol tps = ViewEffectorSymbol.getTargetPort();
       //spc = sourceportcomponent
       String spc = null, tpc = null;
       //sp  = sourceport
       String sp = null, tp = null;
 
 //      if (sps != null) {
-//        spc = effectorSymbol.getSourcePort().getComponent().get().getName();
-//        sp = effectorSymbol.getSourcePort().getName();
+//        spc = ViewEffectorSymbol.getSourcePort().getComponent().get().getName();
+//        sp = ViewEffectorSymbol.getSourcePort().getName();
 //      }
 //      else
-        {
-        spc = effectorSymbol.getSource();
+      {
+        spc = ViewEffectorSymbol.getSource();
         sp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -510,12 +527,12 @@ public class EmbeddedMontiViewLoader {
       }
 
 //      if (tps != null) {
-//        tpc = effectorSymbol.getTargetPort().getComponent().get().getName();
-//        tp = effectorSymbol.getTargetPort().getName();
+//        tpc = ViewEffectorSymbol.getTargetPort().getComponent().get().getName();
+//        tp = ViewEffectorSymbol.getTargetPort().getName();
 //      }
 //      else
-        {
-        tpc = effectorSymbol.getTarget();
+      {
+        tpc = ViewEffectorSymbol.getTarget();
         tp = null;
 
         //fix some unknown error where getSourcePort()/Target doesnt give the port back
@@ -535,23 +552,19 @@ public class EmbeddedMontiViewLoader {
 
       cncView.addEffector(eff);
     }
-    //(3) recurse
-    for (ComponentSymbol cSymbol : componentSymbol.getInnerComponents()) {
-      extractConnectionsRecursively(cncView, cSymbol);
-    }
   }
 
-  private static void extractComponent(CnCView view, ComponentSymbol cmpSymbol, String name) {
+  private static void extractComponent(CnCView view, ViewComponentSymbol cmpSymbol, String name) {
     Component cmp = new Component();
     cmp.setName(name);
     cmp.setComponentType(cmpSymbol.getName());
     //add all directly contained component names
-    //    for (ComponentSymbol cs : cmpSymbol.getInnerComponents()) {
-    for (ComponentInstanceSymbol cs : cmpSymbol.getSubComponents()) {
+    //    for (ViewComponentSymbol cs : cmpSymbol.getInnerComponents()) {
+    for (ViewComponentInstanceSymbol cs : cmpSymbol.getSubComponents()) {
       cmp.addContainedComponent(cs.getName());
     }
     //add the ports of the component
-    for (PortSymbol ps : cmpSymbol.getPorts()) {
+    for (ViewPortSymbol ps : cmpSymbol.getPorts()) {
       Port p = new Port();
       p.setDirection(ps.isIncoming() ? Direction.IN : Direction.OUT);
       p.setName(ps.getName());

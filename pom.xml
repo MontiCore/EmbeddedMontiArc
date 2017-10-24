@@ -24,7 +24,7 @@
   
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>view-verification</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   
   
   <properties>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiview</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
+      <version>0.0.3-SNAPSHOT</version>
     </dependency>
     
     <dependency>
@@ -261,8 +261,18 @@
   <version>${logback.version}</version>
   <scope>test</scope>
 </dependency>
+      <dependency>
+          <groupId>de.monticore.tool</groupId>
+          <artifactId>ocl_ema2java</artifactId>
+          <version>4.0.2</version>
+      </dependency>
+    <dependency>
+      <groupId>de.monticore.tool</groupId>
+      <artifactId>ocl_ema2java</artifactId>
+      <version>4.0.2</version>
+    </dependency>
 
-</dependencies>
+  </dependencies>
 
 <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
