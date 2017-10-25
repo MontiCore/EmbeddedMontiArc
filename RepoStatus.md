@@ -43,7 +43,7 @@
    [![Maintainability](https://api.codeclimate.com/v1/badges/d5ab3adafbdf394aef68/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EMAM2Cpp/maintainability)
     [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMAM2Cpp.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMAM2Cpp)
 - **Struct**
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e7ca567378052f786d8d/test_coverage)](https://codeclimate.com/github/EmbeddedMontiArc/Struct/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e7ca567378052f786d8d/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/Struct/maintainability)
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/Struct.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Struct)
 - **EMA2Kotlin**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMA2Kotlin.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMA2Kotlin)
