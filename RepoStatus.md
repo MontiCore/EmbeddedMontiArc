@@ -48,6 +48,7 @@
 - **EMA2Kotlin**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMA2Kotlin.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMA2Kotlin)
 - **EMAM2Python**
+[![Maintainability](https://api.codeclimate.com/v1/badges/7d0f1a2508ead035c875/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EMAM2PythonROS/maintainability)
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMAM2PythonROS.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMAM2PythonROS)
 
 Link to analysing all Test files in the project:
