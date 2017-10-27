@@ -62,6 +62,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/Struct/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/Struct?branch=master)
 - **EMA2Kotlin**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMA2Kotlin.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMA2Kotlin)
+[![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/EMA2Kotlin/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/EMA2Kotlin?branch=master)
 - **EMAM2Python**
 [![Maintainability](https://api.codeclimate.com/v1/badges/7d0f1a2508ead035c875/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EMAM2PythonROS/maintainability)
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMAM2PythonROS.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMAM2PythonROS)
