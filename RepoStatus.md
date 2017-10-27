@@ -55,6 +55,7 @@
  - **EMAM2Cpp**
    [![Maintainability](https://api.codeclimate.com/v1/badges/d5ab3adafbdf394aef68/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EMAM2Cpp/maintainability)
     [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMAM2Cpp.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMAM2Cpp)
+    [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/EMAM2Cpp/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/EMAM2Cpp?branch=master)
 - **Struct**
 [![Maintainability](https://api.codeclimate.com/v1/badges/e7ca567378052f786d8d/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/Struct/maintainability)
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/Struct.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Struct)
