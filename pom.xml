@@ -128,15 +128,6 @@
 
     </dependencies>
 
-
-    <!-- == BUILD INFRASTRUCTURE ============================================
-
-    <ciManagement>
-      <system>Jenkins CI</system>
-      <url>http://ci.se.rwth-aachen.de/view/montiarc/</url>
-    </ciManagement>
-    -->
-
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
