@@ -43,6 +43,7 @@
 - **RewriteConf**
   [![Maintainability](https://api.codeclimate.com/v1/badges/d99a7593e52659f22d41/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/RewriteConf/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/RewriteConf.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/RewriteConf)
+  [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/RewriteConf/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/RewriteConf?branch=master)
 - **ViewVerification**
   [![Maintainability](https://api.codeclimate.com/v1/badges/cb1d2c40a5d6ef2b1d64/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/ViewVerification/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/ViewVerification.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/ViewVerification)
