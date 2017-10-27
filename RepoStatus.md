@@ -35,6 +35,7 @@
 - **OCL2Java**
   [![Maintainability](https://api.codeclimate.com/v1/badges/c08bbbb2602876328c66/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/OCL2Java/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/OCL2Java.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/OCL2Java)
+  [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/OCL2Java/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/OCL2Java?branch=master)
 - **OCL_EMA2Java**
   [![Maintainability](https://api.codeclimate.com/v1/badges/fb2dbd6a81d1295abd97/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/OCL_EMA2Java/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/OCL_EMA2Java.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/OCL_EMA2Java)
