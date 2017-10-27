@@ -311,10 +311,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
-                    <workingDirectory>${project.parent.basedir}</workingDirectory>
-                    <includes>
-                        <include>${include.tests}</include>
-                    </includes>
                 </configuration>
             </plugin>
             <plugin>
