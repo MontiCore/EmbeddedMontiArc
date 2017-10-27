@@ -16,7 +16,6 @@ public class BluePrint {
     protected List<Variable> variables = new ArrayList<>();
     protected List<Method> methods = new ArrayList<>();
     protected List<Variable> genericsVariableList = new ArrayList<>();
-    protected List<ConstantMatrix> constantMatrices = new ArrayList();
     MathInformationRegister mathInformationRegister = new MathInformationRegister(this);
     protected String name;
     protected String packageName;
@@ -116,18 +115,6 @@ public class BluePrint {
 
     public void setGenerator(Generator generator) {
         this.generator = generator;
-    }
-
-    public List<ConstantMatrix> getConstantMatrices() {
-        return constantMatrices;
-    }
-
-    public void setConstantMatrices(List<ConstantMatrix> constantMatrices) {
-        this.constantMatrices = constantMatrices;
-    }
-
-    public void addConstantMatrix(ConstantMatrix constantMatrix) {
-        this.constantMatrices.add(constantMatrix);
     }
 
     public MathCommandRegister getMathCommandRegister() {
