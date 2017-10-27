@@ -27,6 +27,7 @@
 - **NumberUnit**
   [![Maintainability](https://api.codeclimate.com/v1/badges/d197cb9534b46949da84/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/NumberUnit/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/NumberUnit.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/NumberUnit)
+  [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/NumberUnit/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/NumberUnit?branch=master)
 - **OCL**
   [![Maintainability](https://api.codeclimate.com/v1/badges/7f8f42df0538b9b4f8ec/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/OCL/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/OCL.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/OCL)
