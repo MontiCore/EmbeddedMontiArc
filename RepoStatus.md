@@ -51,6 +51,7 @@
 - **languagescommon**
   [![Maintainability](https://api.codeclimate.com/v1/badges/be4c42e7395245800619/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/languagescommon/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/languagescommon.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/languagescommon)
+  [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/languagescommon/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/languagescommon?branch=master)
  - **EMAM2Cpp**
    [![Maintainability](https://api.codeclimate.com/v1/badges/d5ab3adafbdf394aef68/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/EMAM2Cpp/maintainability)
     [![Build Status](https://travis-ci.org/EmbeddedMontiArc/EMAM2Cpp.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EMAM2Cpp)
