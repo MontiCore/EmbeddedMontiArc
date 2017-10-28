@@ -28,7 +28,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>struct</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>1.0.0-beta</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
