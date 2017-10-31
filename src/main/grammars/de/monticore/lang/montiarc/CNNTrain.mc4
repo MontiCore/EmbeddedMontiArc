@@ -1,0 +1,21 @@
+package de.monticore.lang.montiarc;
+
+grammar CNNTrain extends de.monticore.common.Common {
+
+    TrainingConfiguration = "training" name:Name "{" (assignments:ParameterAssignment)+ "}";
+    ParameterAssignment = lhs:TrainingParameter "=" rhs:Rhs;
+    enum TrainingParameter = DATA:"data"
+                           | LABELS:"labels"
+                           | EPOCHS:"epochs"
+                           | BATCHSIZE:"batch_size"
+                           | OPTIMIZER:"optimizer"
+                           | LEARNINGRATE:"learning_rate";
+
+
+
+    Rhs = stringVal:String
+        | intVal:Num_Int
+        | doubleVal:Num_Double
+        | refOrBool:Name;
+
+}
