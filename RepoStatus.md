@@ -69,6 +69,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/EMAM2PythonROS/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/EMAM2PythonROS?branch=master)
 - **CNNTrainLang**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/CNNTrainLang.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/CNNTrainLang)
+- **CNNArchLang**
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/CNNArchLang.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/CNNArchLang)
 
 Link to analysing all Test files in the project:
 [CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1)
