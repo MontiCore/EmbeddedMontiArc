@@ -18,28 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._ast;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import java.util.List;
+public class TrainingConfigurationSymbol extends de.monticore.symboltable.CommonScopeSpanningSymbol {
 
-public class ASTConfiguration extends ASTConfigurationTOP {
+    public static final TrainingConfigurationKind KIND = new TrainingConfigurationKind();
 
-    public ASTConfiguration() {
+
+    public TrainingConfigurationSymbol(String name) {
+        super(name, KIND);
     }
 
-    public ASTConfiguration(String name, List<ASTParameterAssignment> assignments) {
-        super(name, assignments);
-    }
-
-    public ASTRhs get(String lhsName) {
-        ASTRhs rhs = null;
-        lhsName = lhsName.replace("_", "");
-        for (ASTParameterAssignment assignment : getAssignments()) {
-            String assignmentLhs = assignment.getLhs().name();
-            if (assignmentLhs.equalsIgnoreCase(lhsName)) {
-                rhs =  assignment.getRhs();
-            }
-        }
-        return rhs;
-    }
 }
