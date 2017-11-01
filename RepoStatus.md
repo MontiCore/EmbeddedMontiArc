@@ -71,6 +71,8 @@
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/CNNTrainLang.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/CNNTrainLang)
 - **CNNArchLang**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/CNNArchLang.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/CNNArchLang)
+- **Reporting**
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/reporting.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/reporting)
 
 Link to analysing all Test files in the project:
 [CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1)
