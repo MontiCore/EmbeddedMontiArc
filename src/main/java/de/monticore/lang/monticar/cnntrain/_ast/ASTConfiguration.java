@@ -18,31 +18,28 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain._ast;
 
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.SymbolTableCreator;
+import java.util.List;
 
-import java.util.Optional;
+public class ASTConfiguration extends ASTConfigurationTOP {
 
-public class CNNTrainLanguage extends CNNTrainLanguageTOP {
-
-    public static final String FILE_ENDING = "cnnt";
-
-    public CNNTrainLanguage() {
-        super("CNNTrain Language", FILE_ENDING);
+    public ASTConfiguration() {
     }
 
-    @Override
-    protected CNNTrainModelLoader provideModelLoader() {
-        return new CNNTrainModelLoader(this);
+    public ASTConfiguration(String name, List<ASTParameterAssignment> assignments) {
+        super(name, assignments);
     }
 
-    @Override
-    protected void initResolvingFilters() {
-        super.initResolvingFilters();
-        setModelNameCalculator(new CNNTrainModelNameCalculator());
+    public ASTRhs get(String lhsName) {
+        ASTRhs rhs = null;
+        lhsName = lhsName.replace("_", "");
+        for (ASTParameterAssignment assignment : getAssignments()) {
+            String assignmentLhs = assignment.getLhs().name();
+            if (assignmentLhs.equalsIgnoreCase(lhsName)) {
+                rhs =  assignment.getRhs();
+            }
+        }
+        return rhs;
     }
-
 }

@@ -2,7 +2,9 @@ package de.monticore.lang.monticar;
 
 grammar CNNTrain extends de.monticore.common.Common {
 
-    TrainingConfiguration = "training" name:Name "{" (assignments:ParameterAssignment)+ "}";
+    symbol scope Configuration = "training" name:Name&
+                                 "{" (assignments:ParameterAssignment)+ "}";
+
     ParameterAssignment = lhs:TrainingParameter "=" rhs:Rhs;
     enum TrainingParameter = DATA:"data"
                            | LABELS:"labels"
