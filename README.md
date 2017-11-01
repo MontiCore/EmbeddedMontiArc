@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/reporting.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/reporting)
+
+Reporting
+========
+
 Link to analysing all Test files in the project:
 [CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1)
 
