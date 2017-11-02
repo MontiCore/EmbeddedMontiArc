@@ -70,7 +70,7 @@ grammar Ranges extends de.monticore.lang.monticar.Types2, siunit.monticoresiunit
     interface RangeType extends PrintType;
     ast Range= method public String printType(){return "RangeType";};
     Range implements PrintType, TypeArgument=
-       (["Z"] | ["Q"] | ["C"])? "("?
+       (["N"] | ["Z"] | ["Q"] | ["C"])? "("?
            (startInf:TUnitInf | start:UnitNumber)
            (":" (step:UnitNumber| ["f"] | ["d"] ))?
            ":" (endInf:TUnitInf | end:UnitNumber) ")"?
