@@ -34,7 +34,7 @@ import java.nio.file.Paths;
  * @author Robert Heim
  */
 public class AbstractSymtab {
-    protected static Scope createSymTab(String... modelPath) {
+    public static Scope createSymTab(String... modelPath) {
         ConstantPortSymbol.resetLastID();
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();

@@ -42,6 +42,7 @@ public class TypeConverter {
         return "";
     }
 
+    @Deprecated
     public static boolean isNonPrimitiveVariableTypeName(String typeName) {
         return nonPrimitiveVariableTypes.contains(typeName);
     }
@@ -103,7 +104,7 @@ public class TypeConverter {
             if (isVectorDimension(dimensionElements.get(0)))
                 variableType = new VariableType("CommonRowVectorType", "RowVector", "octave/oct");
             else if (isVectorDimension(dimensionElements.get(1))) {
-                variableType = new VariableType("CommonColumnVectorType", "ColumnVector", "octave/oct");;
+                variableType = new VariableType("CommonColumnVectorType", "ColumnVector", "octave/oct");
             }else{
                 variableType = new VariableType("CommonMatrixType", "Matrix", "octave/oct");
 

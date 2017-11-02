@@ -37,7 +37,6 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
                 result += " " + ExecuteMethodGenerator.generateExecuteCode(mathMatrixArithmeticExpressionSymbol.getRightExpression(), includeStrings);
         }
         /*result += ")"*/
-        ;
 
         return result;
     }
