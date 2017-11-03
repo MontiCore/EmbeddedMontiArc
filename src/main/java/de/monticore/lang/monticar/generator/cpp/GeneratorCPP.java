@@ -221,17 +221,17 @@ public class GeneratorCPP implements Generator {
     public static void main(String[] args) {
         Scope symtab;
         if (args.length >= 3)
-            symtab = AbstractSymtab.createSymTab(args[3]);
+            symtab = AbstractSymtab.createSymTab(args[2]);
         else
             symtab = AbstractSymtab.createSymTab("");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve(args[1], ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve(args[0], ExpandedComponentInstanceSymbol.KIND).orElse(null);
         if (componentSymbol == null) {
-            System.out.println("resources contains no model instance called " + args[1]);
+            System.out.println("resources contains no model instance called " + args[0]);
         }
         GeneratorCPP generatorCPP = new GeneratorCPP();
         if (args.length >= 2)
-            generatorCPP.setGenerationTargetPath(args[2]);
+            generatorCPP.setGenerationTargetPath(args[1]);
         else
             generatorCPP.setGenerationTargetPath("./generated-sources-cpp");
         try {
