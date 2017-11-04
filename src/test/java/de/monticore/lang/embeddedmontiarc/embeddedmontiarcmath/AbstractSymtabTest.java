@@ -20,17 +20,16 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
-import java.nio.file.Paths;
-
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
+import de.monticore.lang.embeddedmontiarc.Utils;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+
+import java.nio.file.Paths;
 
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
@@ -38,15 +37,14 @@ public class AbstractSymtabTest {
 
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
 
-        // TODO should we use JavaDSLLanguage or add the resolvers in MALang?
-        fam.addModelingLanguage(new JavaDSLLanguage());
         fam.addModelingLanguage(new StreamLanguage());
         // add default Types which are needed because monticore has integrated "java logic" deep inside
-        final ModelPath mp = new ModelPath(Paths.get("src/main/resources/defaultTypes"));
+        final ModelPath mp = new ModelPath();
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));
         }
         GlobalScope scope = new GlobalScope(mp, fam);
+        Utils.addBuiltInTypes(scope);
 
         LogConfig.init();
         return scope;
