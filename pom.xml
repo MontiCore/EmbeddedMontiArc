@@ -18,7 +18,7 @@
     <monticore.version>4.5.3-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-	<SIUnit.version>0.0.4-SNAPSHOT</SIUnit.version>
+	<SIUnit.version>0.1.0-t175pS4HuUyNcrh</SIUnit.version>
 	<Common-MontiCar.version>0.1.0-t175pS4HuUyNcrh</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.1.0-t175pS4HuUyNcrh</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.1.0-t175pS4HuUyNcrh</Embedded-MontiArc-Behaviour.version>
@@ -91,13 +91,13 @@
 
 	<dependency>
 		<groupId>de.monticore.lang</groupId>
-		<artifactId>SIUnit</artifactId>
+		<artifactId>NumberUnit</artifactId>
 		<version>${SIUnit.version}</version>
 	</dependency>
 
 	<dependency>
 		<groupId>de.monticore.lang</groupId>
-		<artifactId>SIUnit</artifactId>
+		<artifactId>NumberUnit</artifactId>
 		<version>${SIUnit.version}</version>
 		<classifier>${grammars.classifier}</classifier>
 		<scope>provided</scope>
