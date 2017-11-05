@@ -336,10 +336,13 @@ grammar Types2 extends de.monticore.lang.monticar.Literals2, siunit.monticoresiu
 
 
 
+    ast ElementType = method public Optional<String> getName() {
+      return Optional.of("ElementType");
+    };
     // since Q(1 : 7) would conflict with with vector expression, we need to define
     // it as token, and then parse the token later on
     // this due to the fact that MC4 does not support island grammars such as Antlr4
-    ElementType implements Type, TypeArgument= TElementType |
+    ElementType implements Type, TypeArgument, Resolution = TElementType |
                  [isWholeNumberNumber:"Z"] |
                  [isRational:"Q"] |
                  [isComplex:"C"] |
