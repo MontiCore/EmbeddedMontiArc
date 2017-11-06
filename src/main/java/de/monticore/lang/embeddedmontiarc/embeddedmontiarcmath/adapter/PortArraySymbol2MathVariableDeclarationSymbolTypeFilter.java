@@ -20,11 +20,10 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter;
 
-import de.monticore.java.symboltable.JavaTypeSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
+import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 
@@ -46,7 +45,7 @@ public class PortArraySymbol2MathVariableDeclarationSymbolTypeFilter
         if (((PortArraySymbol) adaptee).getTypeReference().getReferencedSymbol() instanceof SIUnitRangesSymbol)
             return new PortArraySymbol2MathVariableDeclarationSymbol((PortArraySymbol) adaptee, (SIUnitRangesSymbol) ((PortArraySymbol) adaptee).getTypeReference().getReferencedSymbol());
         else {
-            JavaTypeSymbol jTypeSymbol = (JavaTypeSymbol) ((PortArraySymbol) adaptee).getTypeReference().getReferencedSymbol();
+            MontiCarTypeSymbol jTypeSymbol = (MontiCarTypeSymbol) ((PortArraySymbol) adaptee).getTypeReference().getReferencedSymbol();
             System.out.println("Adaption of: " + jTypeSymbol.toString());
             return new PortArraySymbol2MathVariableDeclarationSymbol((PortArraySymbol) adaptee);
         }
