@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.si._symboltable;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ranges._ast.ASTRanges;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.symboltable.types.references.JTypeReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * @author Sascha Schneiders
  */
-public class SIUnitRangesSymbolReference extends SIUnitRangesSymbol implements JTypeReference<SIUnitRangesSymbol> {
+public class SIUnitRangesSymbolReference extends SIUnitRangesSymbol implements MCTypeReference<SIUnitRangesSymbol> {
 
     protected int dimension = 0;
 

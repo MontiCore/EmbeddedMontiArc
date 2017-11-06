@@ -20,19 +20,17 @@
  */
 package de.monticore.lang.monticar.types2._symboltable;
 
-import de.monticore.lang.monticar.si._symboltable.SIUnitSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.symboltable.types.references.JTypeReference;
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 
 import java.util.List;
 
 /**
  * @author Sascha
  */
-public class UnitNumberResolutionSymbolReference extends UnitNumberResolutionSymbol implements JTypeReference<UnitNumberResolutionSymbol> {
+public class UnitNumberResolutionSymbolReference extends UnitNumberResolutionSymbol implements MCTypeReference<UnitNumberResolutionSymbol> {
     protected int dimension = 0;
 
     public UnitNumberResolutionSymbolReference(final String name, ASTUnitNumberResolution astUnitNumber) {

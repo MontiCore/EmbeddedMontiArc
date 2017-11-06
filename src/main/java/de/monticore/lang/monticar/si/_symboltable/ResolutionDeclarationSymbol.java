@@ -44,9 +44,4 @@ public class ResolutionDeclarationSymbol extends CommonSymbol {
     public String getNameToResolve() {
         return this.nameToResolve;
     }
-
-    //Methods below are required as this is a JTypeSymbol
-    //TODO change methods if they are actually needed when dealing with ResolutionDeclarationSymbol
-
-
 }

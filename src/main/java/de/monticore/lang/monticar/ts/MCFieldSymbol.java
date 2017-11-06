@@ -18,17 +18,34 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts;/*
+ * Copyright (c) 2015 RWTH Aachen. All rights reserved.
+ *
+ * http://www.se-rwth.de/
+ */
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.symboltable.Symbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 
 /**
- * @author Sascha Schneiders
+ * @author Pedram Mir Seyed Nazari
+ *
  */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public interface MCFieldSymbol extends Symbol {
 
-    protected SIUnitRangesSymbolKind(){
+    MCAttributeSymbolKind KIND = new MCAttributeSymbolKind();
 
-    }
+    MCTypeReference<? extends MCTypeSymbol> getType();
+
+    boolean isStatic();
+
+    boolean isFinal();
+
+    boolean isParameter();
+
+    boolean isPrivate();
+
+    boolean isProtected();
+
+    boolean isPublic();
 }

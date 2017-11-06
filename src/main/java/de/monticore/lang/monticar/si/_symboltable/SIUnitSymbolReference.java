@@ -21,17 +21,16 @@
 package de.monticore.lang.monticar.si._symboltable;
 
 
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.symboltable.types.references.JTypeReference;
+import siunit.monticoresiunit.si._ast.ASTUnitNumber;
 
 import java.util.List;
-
-import siunit.monticoresiunit.si._ast.*;
 /**
  * @author Sascha Schneiders
  */
-public class SIUnitSymbolReference extends SIUnitSymbol implements JTypeReference<SIUnitSymbol> {
+public class SIUnitSymbolReference extends SIUnitSymbol implements MCTypeReference<SIUnitSymbol> {
     protected int dimension = 0;
 
     public SIUnitSymbolReference(final String name, ASTUnitNumber astUnitNumber) {

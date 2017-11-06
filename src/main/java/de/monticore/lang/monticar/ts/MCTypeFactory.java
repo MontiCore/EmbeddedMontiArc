@@ -18,17 +18,8 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
-
-/**
- * @author Sascha Schneiders
- */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
-
-    protected SIUnitRangesSymbolKind(){
-
-    }
+public interface MCTypeFactory<U extends CommonMCTypeSymbol<?, ?, ?, ?>> {
+    U createTypeVariable(String var1);
 }

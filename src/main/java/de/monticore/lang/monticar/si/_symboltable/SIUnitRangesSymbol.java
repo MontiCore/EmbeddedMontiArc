@@ -21,12 +21,12 @@
 package de.monticore.lang.monticar.si._symboltable;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.ts.MCMethodSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.types.JFieldSymbol;
-import de.monticore.symboltable.types.JMethodSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.Optional;
 /**
  * @author Sascha Schneiders
  */
-public class SIUnitRangesSymbol extends CommonSymbol implements JTypeSymbol {
+public class SIUnitRangesSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final SIUnitRangesSymbolKind KIND = SIUnitRangesSymbolKind.INSTANCE;
 
     protected List<ASTRange> ranges = new ArrayList<ASTRange>();
@@ -60,7 +60,7 @@ public class SIUnitRangesSymbol extends CommonSymbol implements JTypeSymbol {
         return ranges.size();
     }
 
-    //Methods below are required as SIUnitRangesSymbol is a JTypeSymbol so
+    //Methods below are required as SIUnitRangesSymbol is a MCTypeSymbol so
     //the already existing Port Type functionality is consistent
     //TODO change methods if they are actually needed when dealing with SIUnitRangesSymbol
 
@@ -70,57 +70,57 @@ public class SIUnitRangesSymbol extends CommonSymbol implements JTypeSymbol {
     }
 
     @Override
-    public List<? extends JTypeSymbol> getFormalTypeParameters() {
+    public List<? extends MCTypeSymbol> getFormalTypeParameters() {
         return null;
     }
 
     @Override
-    public Optional<? extends JTypeReference<? extends JTypeSymbol>> getSuperClass() {
+    public Optional<? extends MCTypeReference<? extends MCTypeSymbol>> getSuperClass() {
         return null;
     }
 
     @Override
-    public List<? extends JTypeReference<? extends JTypeSymbol>> getInterfaces() {
+    public List<? extends MCTypeReference<? extends MCTypeSymbol>> getInterfaces() {
         return null;
     }
 
     @Override
-    public List<? extends JTypeReference<? extends JTypeSymbol>> getSuperTypes() {
+    public List<? extends MCTypeReference<? extends MCTypeSymbol>> getSuperTypes() {
         return null;
     }
 
     @Override
-    public List<? extends JFieldSymbol> getFields() {
+    public List<? extends MCFieldSymbol> getFields() {
         return null;
     }
 
     @Override
-    public Optional<? extends JFieldSymbol> getField(String s) {
+    public Optional<? extends MCFieldSymbol> getField(String s) {
         return null;
     }
 
     @Override
-    public List<? extends JMethodSymbol> getMethods() {
+    public List<? extends MCMethodSymbol> getMethods() {
         return null;
     }
 
     @Override
-    public Optional<? extends JMethodSymbol> getMethod(String s) {
+    public Optional<? extends MCMethodSymbol> getMethod(String s) {
         return null;
     }
 
     @Override
-    public List<? extends JMethodSymbol> getConstructors() {
+    public List<? extends MCMethodSymbol> getConstructors() {
         return null;
     }
 
     @Override
-    public List<? extends JTypeSymbol> getInnerTypes() {
+    public List<? extends MCTypeSymbol> getInnerTypes() {
         return null;
     }
 
     @Override
-    public Optional<? extends JTypeSymbol> getInnerType(String s) {
+    public Optional<? extends MCTypeSymbol> getInnerType(String s) {
         return null;
     }
 

@@ -18,17 +18,41 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.symboltable.ScopeSpanningSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+
+import java.util.List;
 
 /**
- * @author Sascha Schneiders
+ * @author Pedram Mir Seyed Nazari
  */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public interface MCMethodSymbol extends ScopeSpanningSymbol {
 
-    protected SIUnitRangesSymbolKind(){
+    MCMethodSymbolKind KIND = new MCMethodSymbolKind();
 
-    }
+    MCTypeReference<? extends MCTypeSymbol> getReturnType();
+
+    List<? extends MCFieldSymbol> getParameters();
+
+    List<? extends MCTypeSymbol> getFormalTypeParameters();
+
+    List<? extends MCTypeReference<? extends MCTypeSymbol>> getExceptions();
+
+    boolean isAbstract();
+
+    boolean isStatic();
+
+    boolean isConstructor();
+
+    boolean isFinal();
+
+    boolean isEllipsisParameterMethod();
+
+    boolean isPrivate();
+
+    boolean isProtected();
+
+    boolean isPublic();
 }

@@ -18,17 +18,23 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts.references;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.types.references.CommonTypeReference;
 
 /**
- * @author Sascha Schneiders
+ * Default implementation of {@link MCTypeReference}.
+ *
+ * @author Pedram Mir Seyed Nazari
  */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public class CommonMCTypeReference<T extends MCTypeSymbol> extends CommonTypeReference<T> implements MCTypeReference<T> {
 
-    protected SIUnitRangesSymbolKind(){
+    public CommonMCTypeReference(String referencedSymbolName, SymbolKind referencedSymbolKind,
+                                 Scope definingScopeOfReference) {
 
+        super(referencedSymbolName, referencedSymbolKind, definingScopeOfReference);
     }
 }
