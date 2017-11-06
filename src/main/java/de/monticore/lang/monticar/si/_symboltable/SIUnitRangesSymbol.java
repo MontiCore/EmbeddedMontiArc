@@ -21,8 +21,6 @@
 package de.monticore.lang.monticar.si._symboltable;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ts.MCFieldSymbol;
-import de.monticore.lang.monticar.ts.MCMethodSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
@@ -30,6 +28,7 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,113 +59,24 @@ public class SIUnitRangesSymbol extends CommonSymbol implements MCTypeSymbol {
         return ranges.size();
     }
 
-    //Methods below are required as SIUnitRangesSymbol is a MCTypeSymbol so
-    //the already existing Port Type functionality is consistent
-    //TODO change methods if they are actually needed when dealing with SIUnitRangesSymbol
-
-    @Override
-    public boolean isGeneric() {
-        return false;
-    }
-
     @Override
     public List<? extends MCTypeSymbol> getFormalTypeParameters() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public Optional<? extends MCTypeReference<? extends MCTypeSymbol>> getSuperClass() {
-        return null;
+        return Optional.empty();
     }
 
     @Override
     public List<? extends MCTypeReference<? extends MCTypeSymbol>> getInterfaces() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override
     public List<? extends MCTypeReference<? extends MCTypeSymbol>> getSuperTypes() {
-        return null;
-    }
-
-    @Override
-    public List<? extends MCFieldSymbol> getFields() {
-        return null;
-    }
-
-    @Override
-    public Optional<? extends MCFieldSymbol> getField(String s) {
-        return null;
-    }
-
-    @Override
-    public List<? extends MCMethodSymbol> getMethods() {
-        return null;
-    }
-
-    @Override
-    public Optional<? extends MCMethodSymbol> getMethod(String s) {
-        return null;
-    }
-
-    @Override
-    public List<? extends MCMethodSymbol> getConstructors() {
-        return null;
-    }
-
-    @Override
-    public List<? extends MCTypeSymbol> getInnerTypes() {
-        return null;
-    }
-
-    @Override
-    public Optional<? extends MCTypeSymbol> getInnerType(String s) {
-        return null;
-    }
-
-    @Override
-    public boolean isAbstract() {
-        return false;
-    }
-
-    @Override
-    public boolean isFinal() {
-        return false;
-    }
-
-    @Override
-    public boolean isInterface() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnum() {
-        return false;
-    }
-
-    @Override
-    public boolean isClass() {
-        return true;
-    }
-
-    @Override
-    public boolean isInnerType() {
-        return false;
-    }
-
-    @Override
-    public boolean isPrivate() {
-        return false;
-    }
-
-    @Override
-    public boolean isProtected() {
-        return false;
-    }
-
-    @Override
-    public boolean isPublic() {
-        return false;
+        return Collections.emptyList();
     }
 
     @Override
