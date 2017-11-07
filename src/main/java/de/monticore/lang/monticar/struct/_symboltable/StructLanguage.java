@@ -21,9 +21,7 @@
 package de.monticore.lang.monticar.struct._symboltable;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 public class StructLanguage extends StructLanguageTOP {
 
@@ -36,11 +34,5 @@ public class StructLanguage extends StructLanguageTOP {
     @Override
     protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
         return new StructModelLoader(this);
-    }
-
-    @Override
-    protected void initResolvingFilters() {
-        super.initResolvingFilters();
-        addResolvingFilter(new CommonResolvingFilter<MontiCarTypeSymbol>(MontiCarTypeSymbol.KIND));
     }
 }

@@ -25,8 +25,8 @@ import de.monticore.lang.monticar.struct._ast.ASTStructFieldDefinition;
 import de.monticore.lang.monticar.struct._cocos.StructCoCoChecker;
 import de.monticore.lang.monticar.struct.coco.DefaultStructCoCoChecker;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.lang.monticar.types2._ast.ASTArrayType;
 import de.monticore.lang.monticar.types2._ast.ASTComplexReferenceType;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
@@ -76,7 +76,7 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
         structFieldDefinition.setType(type);
     }
 
-    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
+    public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
         if (astType instanceof ASTElementType) {
             ASTElementType t = (ASTElementType) astType;
             String name = null;
@@ -95,7 +95,7 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
             if (name == null) {
                 throw new UnsupportedOperationException("ElementType " + t + " is not supported");
             }
-            return new MontiCarTypeSymbolReference(name, scope, 0);
+            return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
         }
         if (astType instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType t = (ASTSimpleReferenceType) astType;
@@ -103,7 +103,7 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
                 throw new UnsupportedOperationException("struct may not have type arguments");
             }
             String name = Names.getQualifiedName(t.getNames());
-            return new MontiCarTypeSymbolReference(name, scope, 0);
+            return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
         }
         if (astType instanceof ASTComplexReferenceType) {
             ASTComplexReferenceType t = (ASTComplexReferenceType) astType;
