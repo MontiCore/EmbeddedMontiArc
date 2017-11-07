@@ -1,0 +1,88 @@
+/* 
+ * advanced weather language v0.1
+ * @author Deniz Schmidt
+*/
+grammar Weather {
+  //token PosNumber = ('1'..'9')('0'..'9')* : int;
+  token PosFloat = (('0'..'9')+ "." ('0'..'9')+) : float;
+  token AngleDegree = ('0.0'..'360.0'):PosFloat;
+
+  //takes float in °celsius or °fahrenheit OR float in [0,oo) in Kelvin
+  Temperature = "temperature" ((temp:float ("°C"|"°F")) | (temp:PosFloat "K"));
+  
+  //in relative air humidity as % OR float in [0,1]
+  Humidity = "humidity" hum:(((1..100):PosFloat "%") | (0.0..1.0):PosFloat);
+  
+  //takes float in [0, oo)
+  //in Pascal or bar
+  Pressure = "pressure" pres:PosFloat ("Pa"|"bar");
+  
+  //https://en.wikipedia.org/wiki/Beaufort_scale
+  //takes float in [0, oo)
+  //in knots, meter/second, km/hour / miles per h
+  Windstrength = "windstrength" windstr:PosFloat ("kn"|"m/s"|"km/h"|"mph");
+  
+  //see windrose
+  //takes float in [0,360]
+  //in angle degree
+  Winddirection = "winddirection" winddir:AngleDegree "°";
+  
+  //https://en.wikipedia.org/wiki/Precipitation_types
+  Precipitationtype = "precipitation_type" ("drizzle"|
+                                            "rain"|
+                                            "freezing drizzle"|
+                                            "freezing rain"|
+                                            "snain"|
+                                            "snow"|
+                                            "snow grains"|
+                                            "ice pellets"|"sleet"|
+                                            "hail"|
+                                            "snow pellets"|"graupel"|
+                                            "ice crystals");
+  
+  //takes float in [0,oo) in liter/square meter or millimeter
+  Precipitationamount = "precipitation_amount" precAmount:PosFloat (("l/m^2"|"l/m²")|"mm");
+  
+  Clouding = "clouding" ("cirrostratus"|
+                         "altostratus"
+                         "stratus"|
+                         "nimbostratus"|
+                         "noctilucent"|
+                         "polar stratospheric"|
+                         "cirrus"|
+                         "cirrocumulus"|
+                         "altocumulus"|
+                         "stratocumulus"|
+                         "cumulus humilis"|
+                         "cumulus mediocris"|
+                         "cumulus congestus"|
+                         "cumulonimbus"|
+                         "none");
+                         
+  //takes float in [0,oo) in centi-,meter,kilometer OR keyword unlimited
+  Sight = "sight" ((sight:PosFloat ("cm"|"m"|"km")) | "unlimited");
+  
+  WeatherPhenomena = ("weather_phenomena" ("fog"|
+                                           "rope tornado"|
+                                           "cone tornado"|
+                                           "wedge tornado"|
+                                           "multi-vortex tornado"|
+                                           "landspout"|
+                                           "waterspout"|
+                                           "gustnado"|
+                                           "dust devil"|
+                                           "steam devil"|
+                                           "thunderstorm"))*;
+                                    
+  OpticalPhenomena = ("optical_phenomena" ("rainbow"|
+                                           "northern lights"|
+                                           "circumzenithal arc"|
+                                           "zodiacal light"|
+                                           "crepuscular rays"|
+                                           "mirage"|
+                                           "fog bow"))*;
+                                           
+  ArtificialPhenomena = ("artificial_phenomena" ("contrails"|
+                                                 "smog"|
+                                                 "rocket exhaust trailsd"))*;
+}

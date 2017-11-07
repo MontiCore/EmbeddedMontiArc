@@ -1,0 +1,43 @@
+/*
+ * Simulation-Settings language v0.1
+ * @author Deniz Schmidt
+*/
+//todo: extends paths
+grammar Simulation {
+  token PosNumber = ('1'..'9')('0'..'9')* : int;
+  token PosFloat = (('0'..'9')+ "." ('0'..'9')+) : float;
+  token Float = "-"? PosFloat; //das ist doch doof
+
+  //SimulationRunCount = "sim_runs" count:PosNumber; //hm
+  
+  SimulationLoopFrequency = "sim_frequency"  freq:PosNumber "ms";
+  SimulationDuration = "sim_duration" dur:PosFloat ("ms"|"s"|"m"|"h");
+  SynchronousSimulation = "sim_synchronous" ("true"|"false"):boolean;
+  
+  //todo external weather;
+ 
+  Time = "time" (((0..86400000):PosNumber "ms")|
+                 ((0..86400):PosNumber "s")|
+                 ((0..1440):PosNumber "m")|
+                 ((0..23):PosNumber "h")|
+                 ((0..23):PosNumber ":" (0..59):PosNumber) |
+                 ((0..23):PosNumber ":" (0..59):PosNumber ":" (0..59):PosNumber)|
+                 ((0..23):PosNumber ":" (0..59):PosNumber ":" (0..59):PosNumber ":" (0..999):PosNumber)
+                );
+  
+  Map = "map" map:STRING ".osm";
+  
+  Pedestrians = "(" startX:Float "," startY:Float ")" 
+                "->" 
+                "(" endX:Float "," endY:Float "," endZ:Float ")"
+                )*;
+              
+  PedestrianDensity = "pedestrian_density" density:PosFloat;
+  
+  Vehicles = ( vehicle:Name 
+              (("(" startX:Float "," startY:Float "," startRot:Float ")" //missing Name at 'float' error
+              "->" 
+              "(" endX:Float "," endY:Float "," endZ:Float ")") |
+              (("random") (avoid:Path)? (amount:PosNumber)?)
+              )*;
+}
