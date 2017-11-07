@@ -8,7 +8,6 @@ package de.monticore.lang.monticar.generator.order.simulator;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.Utils;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -55,7 +54,7 @@ public class AbstractSymtab {
         }
         LogConfig.init();//TODO comment for debug output
         GlobalScope scope = new GlobalScope(mp, fam);
-        Utils.addBuiltInTypes(scope);
+        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
         return scope;
     }
 }
