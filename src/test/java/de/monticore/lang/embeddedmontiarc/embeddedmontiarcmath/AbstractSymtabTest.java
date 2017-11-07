@@ -23,7 +23,6 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.Utils;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.symboltable.GlobalScope;
@@ -44,7 +43,7 @@ public class AbstractSymtabTest {
             mp.addEntry(Paths.get(m));
         }
         GlobalScope scope = new GlobalScope(mp, fam);
-        Utils.addBuiltInTypes(scope);
+        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
         LogConfig.init();
         return scope;
