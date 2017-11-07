@@ -28,7 +28,8 @@ public class MontiCarFieldSymbol extends CommonMCFieldSymbol<MontiCarTypeSymbolR
     public static final MontiCarFieldSymbolKind KIND = new MontiCarFieldSymbolKind();
 
     public MontiCarFieldSymbol(String name, MCAttributeSymbolKind kind, MontiCarTypeSymbolReference type) {
-        super(name, kind, type);
+        super(name, kind);
+        setType(type);
     }
 
     public static class MontiCarFieldSymbolKind extends MCAttributeSymbolKind {

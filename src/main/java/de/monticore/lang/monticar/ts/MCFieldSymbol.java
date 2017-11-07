@@ -37,15 +37,5 @@ public interface MCFieldSymbol extends Symbol {
 
     MCTypeReference<? extends MCTypeSymbol> getType();
 
-    boolean isStatic();
-
-    boolean isFinal();
-
     boolean isParameter();
-
-    boolean isPrivate();
-
-    boolean isProtected();
-
-    boolean isPublic();
 }

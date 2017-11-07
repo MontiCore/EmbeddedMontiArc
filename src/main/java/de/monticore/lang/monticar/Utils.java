@@ -18,41 +18,33 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.ts;
+package de.monticore.lang.monticar;
 
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
+import de.monticore.symboltable.MutableScope;
 
-import java.util.List;
+public final class Utils {
 
-/**
- * @author Pedram Mir Seyed Nazari
- */
-public interface MCMethodSymbol extends ScopeSpanningSymbol {
+    private Utils() {
+    }
 
-    MCMethodSymbolKind KIND = new MCMethodSymbolKind();
-
-    MCTypeReference<? extends MCTypeSymbol> getReturnType();
-
-    List<? extends MCFieldSymbol> getParameters();
-
-    List<? extends MCTypeSymbol> getFormalTypeParameters();
-
-    List<? extends MCTypeReference<? extends MCTypeSymbol>> getExceptions();
-
-    boolean isAbstract();
-
-    boolean isStatic();
-
-    boolean isConstructor();
-
-    boolean isFinal();
-
-    boolean isEllipsisParameterMethod();
-
-    boolean isPrivate();
-
-    boolean isProtected();
-
-    boolean isPublic();
+    public static void addBuiltInTypes(MutableScope scope) {
+        String[] builtInTypes = new String[]{
+                "Q",
+                "B",
+                "C",
+                "Z",
+                "RangesType",
+                "RangeType",
+                "UnitNumberResolution",
+                "UnitNumberTypeArgument",
+                "AssignmentType",
+                "CommonMatrixType"
+        };
+        for (String typeName : builtInTypes) {
+            MontiCarTypeSymbol s = new MontiCarTypeSymbol(typeName);
+            s.setPackageName("java.lang");
+            scope.add(s);
+        }
+    }
 }

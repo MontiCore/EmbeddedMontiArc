@@ -20,9 +20,8 @@
  */
 package de.monticore.lang.monticar.ts;
 
-import de.monticore.symboltable.CommonSymbol;
-import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.CommonSymbol;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -31,13 +30,14 @@ public abstract class CommonMCFieldSymbol<T extends MCTypeReference<? extends MC
 
     private T type;
 
-    private boolean isFinal;
-    private boolean isStatic;
     private boolean isParameter = false;
 
-    public CommonMCFieldSymbol(String name, MCAttributeSymbolKind kind, T type) {
+    public CommonMCFieldSymbol(String name) {
+        this(name, MCFieldSymbol.KIND);
+    }
+
+    public CommonMCFieldSymbol(String name, MCAttributeSymbolKind kind) {
         super(name, kind);
-        this.type = type;
     }
 
     @Override
@@ -49,24 +49,6 @@ public abstract class CommonMCFieldSymbol<T extends MCTypeReference<? extends MC
         this.type = type;
     }
 
-    @Override
-    public boolean isStatic() {
-        return isStatic;
-    }
-
-    public void setStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-    }
-
-    public void setFinal(boolean isFinal) {
-        this.isFinal = isFinal;
-    }
-
-    @Override
-    public boolean isFinal() {
-        return isFinal;
-    }
-
     public void setParameter(boolean isParameter) {
         this.isParameter = isParameter;
     }
@@ -74,32 +56,5 @@ public abstract class CommonMCFieldSymbol<T extends MCTypeReference<? extends MC
     @Override
     public boolean isParameter() {
         return isParameter;
-    }
-
-    public void setPrivate() {
-        setAccessModifier(BasicAccessModifier.PRIVATE);
-    }
-
-    public void setProtected() {
-        setAccessModifier(BasicAccessModifier.PROTECTED);
-    }
-
-    public void setPublic() {
-        setAccessModifier(BasicAccessModifier.PUBLIC);
-    }
-
-    @Override
-    public boolean isPrivate() {
-        return getAccessModifier().equals(BasicAccessModifier.PRIVATE);
-    }
-
-    @Override
-    public boolean isProtected() {
-        return getAccessModifier().equals(BasicAccessModifier.PROTECTED);
-    }
-
-    @Override
-    public boolean isPublic() {
-        return getAccessModifier().equals(BasicAccessModifier.PUBLIC);
     }
 }
