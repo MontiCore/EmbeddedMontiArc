@@ -23,45 +23,12 @@ package de.monticore.lang.monticar.ts;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MontiCarFieldSymbol extends CommonMCFieldSymbol<MontiCarTypeSymbolReference> {
 
     public static final MontiCarFieldSymbolKind KIND = new MontiCarFieldSymbolKind();
 
-    final List<MontiCarTypeSymbolReference> annotations = new ArrayList<>();
-
-    private boolean isVolatile = false;
-
-    private boolean isTransient = false;
-
     public MontiCarFieldSymbol(String name, MCAttributeSymbolKind kind, MontiCarTypeSymbolReference type) {
         super(name, kind, type);
-    }
-
-    public void addAnnotation(MontiCarTypeSymbolReference annotation) {
-        annotations.add(annotation);
-    }
-
-    public List<MontiCarTypeSymbolReference> getAnnotations() {
-        return annotations;
-    }
-
-    public boolean isVolatile() {
-        return this.isVolatile;
-    }
-
-    public void setVolatile(boolean isVolatile) {
-        this.isVolatile = isVolatile;
-    }
-
-    public boolean isTransient() {
-        return this.isTransient;
-    }
-
-    public void setTransient(boolean isTransient) {
-        this.isTransient = isTransient;
     }
 
     public static class MontiCarFieldSymbolKind extends MCAttributeSymbolKind {

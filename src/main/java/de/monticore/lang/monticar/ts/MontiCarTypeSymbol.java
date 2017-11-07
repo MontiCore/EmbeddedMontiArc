@@ -24,11 +24,8 @@ import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.symboltable.SymbolKind;
 
 public class MontiCarTypeSymbol extends CommonMCTypeSymbol<MontiCarTypeSymbol, MontiCarTypeSymbolReference> {
+
     public static final MontiCarTypeSymbolKind KIND = new MontiCarTypeSymbolKind();
-
-    private boolean isStatic;
-
-    private boolean isTypeVariable;
 
     public MontiCarTypeSymbol(String name) {
         this(name, MontiCarTypeSymbol.KIND);
@@ -36,22 +33,6 @@ public class MontiCarTypeSymbol extends CommonMCTypeSymbol<MontiCarTypeSymbol, M
 
     protected MontiCarTypeSymbol(String name, MCTypeSymbolKind typeKind) {
         super(name, typeKind);
-    }
-
-    public boolean isStatic() {
-        return this.isStatic;
-    }
-
-    public void setStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-    }
-
-    public boolean isTypeVariable() {
-        return this.isTypeVariable;
-    }
-
-    public void setTypeVariable(boolean isTypeVariable) {
-        this.isTypeVariable = isTypeVariable;
     }
 
     public static class MontiCarTypeSymbolKind extends MCTypeSymbolKind {

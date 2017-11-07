@@ -38,7 +38,6 @@ public class MontiCarSymbolFactory implements MCTypeFactory<MontiCarTypeSymbol> 
         // type variable init
         // TODO do these serve the same purpose? if yes type variable is redundant
         typeVariableSymbol.setFormalTypeParameter(true);
-        typeVariableSymbol.setTypeVariable(true);
         return typeVariableSymbol;
     }
 }
