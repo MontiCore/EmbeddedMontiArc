@@ -20,37 +20,22 @@
  */
 package de.monticore.lang.monticar.ts;
 
-import com.google.common.collect.ImmutableList;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MontiCarTypeSymbol extends
-        CommonMCTypeSymbol<MontiCarTypeSymbol, MontiCarFieldSymbol, MontiCarMethodSymbol, MontiCarTypeSymbolReference> {
+public class MontiCarTypeSymbol extends CommonMCTypeSymbol<MontiCarTypeSymbol, MontiCarTypeSymbolReference> {
     public static final MontiCarTypeSymbolKind KIND = new MontiCarTypeSymbolKind();
 
     private boolean isStatic;
 
-    private boolean isStrictfp;
-
-    private boolean isAnnotation;
-
     private boolean isTypeVariable;
 
-    private List<MontiCarTypeSymbolReference> annotations = new ArrayList<>();
-
-    protected MontiCarTypeSymbol(
-            String name,
-            MCTypeSymbolKind typeKind,
-            MCAttributeSymbolKind attributeKind,
-            MCMethodSymbolKind methodKind) {
-        super(name, typeKind, attributeKind, methodKind);
+    public MontiCarTypeSymbol(String name) {
+        this(name, MontiCarTypeSymbol.KIND);
     }
 
-    public MontiCarTypeSymbol(String name) {
-        this(name, MontiCarTypeSymbol.KIND, MontiCarFieldSymbol.KIND, MontiCarMethodSymbol.KIND);
+    protected MontiCarTypeSymbol(String name, MCTypeSymbolKind typeKind) {
+        super(name, typeKind);
     }
 
     public boolean isStatic() {
@@ -61,36 +46,12 @@ public class MontiCarTypeSymbol extends
         this.isStatic = isStatic;
     }
 
-    public boolean isStrictfp() {
-        return this.isStrictfp;
-    }
-
-    public void setStrictfp(boolean isStrictfp) {
-        this.isStrictfp = isStrictfp;
-    }
-
-    public boolean isAnnotation() {
-        return this.isAnnotation;
-    }
-
-    public void setAnnotation(boolean isAnnotation) {
-        this.isAnnotation = isAnnotation;
-    }
-
     public boolean isTypeVariable() {
         return this.isTypeVariable;
     }
 
     public void setTypeVariable(boolean isTypeVariable) {
         this.isTypeVariable = isTypeVariable;
-    }
-
-    public void addAnnotation(MontiCarTypeSymbolReference annotation) {
-        annotations.add(annotation);
-    }
-
-    public List<MontiCarTypeSymbolReference> getAnnotations() {
-        return ImmutableList.copyOf(annotations);
     }
 
     public static class MontiCarTypeSymbolKind extends MCTypeSymbolKind {

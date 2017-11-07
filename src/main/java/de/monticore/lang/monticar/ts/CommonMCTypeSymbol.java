@@ -35,31 +35,22 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * @param <T>
- * @param <S>
  * @author Pedram Mir Seyed Nazari
  */
-public abstract class CommonMCTypeSymbol<T extends MCTypeSymbol, S extends MCFieldSymbol, U extends MCMethodSymbol, V extends MCTypeReference<T>>
+public abstract class CommonMCTypeSymbol<T extends MCTypeSymbol, V extends MCTypeReference<T>>
         extends CommonScopeSpanningSymbol implements MCTypeSymbol {
-
-    private final MCAttributeSymbolKind attributeKind;
-    private final MCMethodSymbolKind methodKind;
 
     private V superClass;
     private final List<V> interfaces = new ArrayList<>();
 
     private boolean isFormalTypeParameter = false;
 
-    protected CommonMCTypeSymbol(String name, MCTypeSymbolKind typeKind,
-                                 MCAttributeSymbolKind attributeKind, MCMethodSymbolKind methodKind) {
-        super(name, typeKind);
-
-        this.attributeKind = attributeKind;
-        this.methodKind = methodKind;
+    protected CommonMCTypeSymbol(String name) {
+        this(name, MCTypeSymbol.KIND);
     }
 
-    protected CommonMCTypeSymbol(String name) {
-        this(name, MCTypeSymbol.KIND, MCFieldSymbol.KIND, MCMethodSymbol.KIND);
+    protected CommonMCTypeSymbol(String name, MCTypeSymbolKind typeKind) {
+        super(name, typeKind);
     }
 
     @Override
