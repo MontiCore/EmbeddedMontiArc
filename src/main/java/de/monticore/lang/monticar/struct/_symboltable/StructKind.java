@@ -20,27 +20,23 @@
  */
 package de.monticore.lang.monticar.struct._symboltable;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.symboltable.SymbolKind;
 
-public class StructLanguage extends StructLanguageTOP {
+public class StructKind extends MontiCarTypeSymbol.MontiCarTypeSymbolKind {
 
-    public static final String FILE_ENDING = "struct";
+    private static final String NAME = StructKind.class.getCanonicalName();
 
-    public StructLanguage() {
-        super("C-Like Structures Definition Language", FILE_ENDING);
+    protected StructKind() {
     }
 
     @Override
-    protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
-        return new StructModelLoader(this);
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    protected void initResolvingFilters() {
-        super.initResolvingFilters();
-        addResolvingFilter(new CommonResolvingFilter<MontiCarTypeSymbol>(MontiCarTypeSymbol.KIND));
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || super.isKindOf(kind);
     }
 }

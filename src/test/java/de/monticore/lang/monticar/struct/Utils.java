@@ -28,7 +28,7 @@ import de.monticore.symboltable.Scope;
 
 import java.nio.file.Paths;
 
-public class Utils {
+public final class Utils {
     private Utils() {
         // utility class -- do not instantiate
     }
@@ -42,6 +42,8 @@ public class Utils {
                 mp.addEntry(Paths.get(m));
             }
         }
-        return new GlobalScope(mp, fam);
+        GlobalScope scope = new GlobalScope(mp, fam);
+        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
+        return scope;
     }
 }

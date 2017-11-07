@@ -24,11 +24,19 @@ import de.monticore.lang.monticar.struct._ast.ASTStructCompilationUnit;
 import de.monticore.lang.monticar.struct._ast.ASTStructFieldDefinition;
 import de.monticore.lang.monticar.struct._cocos.StructCoCoChecker;
 import de.monticore.lang.monticar.struct.coco.DefaultStructCoCoChecker;
-import de.monticore.lang.monticar.struct.model.type.StructFieldTypeInfo;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
+import de.monticore.lang.monticar.types2._ast.ASTArrayType;
+import de.monticore.lang.monticar.types2._ast.ASTComplexReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 
 import java.util.Deque;
@@ -36,6 +44,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
+
     private final StructCoCoChecker coCoChecker = DefaultStructCoCoChecker.create();
 
     public StructSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
@@ -63,7 +72,53 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
 
     @Override
     protected void initialize_StructFieldDefinition(StructFieldDefinitionSymbol structFieldDefinition, ASTStructFieldDefinition ast) {
-        StructFieldTypeInfo typeInfo = StructFieldTypeInfo.tryRepresentASTType(ast.getType(), currentScope().orElse(null));
-        structFieldDefinition.setTypeInfo(typeInfo);
+        MCTypeReference<? extends MCTypeSymbol> type = getType(ast.getType(), currentScope().orElse(null));
+        structFieldDefinition.setType(type);
+    }
+
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
+        if (astType instanceof ASTElementType) {
+            ASTElementType t = (ASTElementType) astType;
+            String name = null;
+            if (t.isIsBoolean()) {
+                name = "B";
+            }
+            if (t.isIsRational()) {
+                name = "Q";
+            }
+            if (t.isIsComplex()) {
+                name = "C";
+            }
+            if (t.isIsWholeNumberNumber()) {
+                name = "Z";
+            }
+            if (name == null) {
+                throw new UnsupportedOperationException("ElementType " + t + " is not supported");
+            }
+            return new MontiCarTypeSymbolReference(name, scope, 0);
+        }
+        if (astType instanceof ASTSimpleReferenceType) {
+            ASTSimpleReferenceType t = (ASTSimpleReferenceType) astType;
+            if (t.typeArgumentsIsPresent()) {
+                throw new UnsupportedOperationException("struct may not have type arguments");
+            }
+            String name = Names.getQualifiedName(t.getNames());
+            return new MontiCarTypeSymbolReference(name, scope, 0);
+        }
+        if (astType instanceof ASTComplexReferenceType) {
+            ASTComplexReferenceType t = (ASTComplexReferenceType) astType;
+            List<ASTSimpleReferenceType> srt = t.getSimpleReferenceTypes();
+            if (srt.size() != 1) {
+                throw new UnsupportedOperationException("nested structs are not allowed");
+            }
+            return getType(srt.get(0), scope);
+        }
+        if (astType instanceof ASTArrayType) {
+            ASTArrayType t = (ASTArrayType) astType;
+            MCTypeReference<? extends MCTypeSymbol> type = getType(t.getComponentType(), scope);
+            type.setDimension(t.getDimensions());
+            return type;
+        }
+        throw new UnsupportedOperationException("type " + astType + " is not supported");
     }
 }
