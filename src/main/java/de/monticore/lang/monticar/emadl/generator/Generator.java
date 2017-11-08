@@ -22,7 +22,6 @@ package de.monticore.lang.monticar.emadl.generator;
 
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-import de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
@@ -32,13 +31,12 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 

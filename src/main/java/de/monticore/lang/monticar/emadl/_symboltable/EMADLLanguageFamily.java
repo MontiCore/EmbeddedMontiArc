@@ -21,17 +21,6 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.ModelingLanguageFamily;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
-import de.monticore.lang.math.math._symboltable.MathLanguage;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
-import de.monticore.lang.monticar.types2._symboltable.Types2Language;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.SymbolTableCreator;
-import de.monticore.types.types._symboltable.TypesLanguage;
-
-import java.util.Optional;
 
 public class EMADLLanguageFamily extends ModelingLanguageFamily {
 

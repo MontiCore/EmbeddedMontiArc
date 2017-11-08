@@ -24,7 +24,6 @@ import de.monticore.lang.monticar.cnnarch._ast.ASTArgumentRhs;
 import de.monticore.lang.monticar.cnnarch._ast.ASTTuple;
 import de.monticore.lang.monticar.cnntrain._ast.ASTParameterRhs;
 import de.se_rwth.commons.Joiners;
-import de.se_rwth.commons.logging.Log;
 import siunit.monticoresiunit.si._ast.ASTNumber;
 
 import java.util.LinkedList;

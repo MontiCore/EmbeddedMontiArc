@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.emadl._ast;
 
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitKind;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.se_rwth.commons.logging.Log;
 

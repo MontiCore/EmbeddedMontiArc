@@ -20,11 +20,8 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._visitor.EmbeddedMontiArcInheritanceVisitor;
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._ast.*;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchInheritanceVisitor;
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
@@ -34,7 +31,8 @@ import de.monticore.lang.monticar.emadl._ast.*;
 import de.monticore.lang.monticar.emadl._visitor.EMADLInheritanceVisitor;
 import de.monticore.symboltable.GlobalScope;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TemplateData implements EMADLInheritanceVisitor,
                                      CNNArchInheritanceVisitor,

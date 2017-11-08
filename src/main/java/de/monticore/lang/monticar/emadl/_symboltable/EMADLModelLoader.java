@@ -20,7 +20,10 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.symboltable.*;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 

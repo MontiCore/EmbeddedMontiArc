@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
 import de.monticore.symboltable.SymbolKind;
 
 import java.util.LinkedHashSet;

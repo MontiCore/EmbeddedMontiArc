@@ -21,12 +21,7 @@
 package de.monticore.lang.monticar.emadl._ast;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbolReference;
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitKind;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbolReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
