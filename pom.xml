@@ -44,6 +44,8 @@
 	<Common-MontiCar.version>0.0.3-SNAPSHOT</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.3-SNAPSHOT</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.3-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+    <Math.version>0.0.3-SNAPSHOT-REWORK</Math.version>
+
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -166,6 +168,21 @@
       <classifier>${grammars.classifier}</classifier>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>math</artifactId>
+      <version>${Math.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>math</artifactId>
+      <version>${Math.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
 
 
     <!-- .. Test Libraries ............................................... -->

@@ -18,15 +18,12 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain._cocos;
 
-public class TrainingConfigurationSymbol extends de.monticore.symboltable.CommonScopeSpanningSymbol {
+public class CNNTrainCocos {
 
-    public static final TrainingConfigurationKind KIND = new TrainingConfigurationKind();
-
-
-    public TrainingConfigurationSymbol(String name) {
-        super(name, KIND);
+    public static CNNTrainCoCoChecker createChecker() {
+        return new CNNTrainCoCoChecker();
     }
 
 }

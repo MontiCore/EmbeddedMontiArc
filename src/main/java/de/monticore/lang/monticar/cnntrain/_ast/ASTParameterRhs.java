@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.cnntrain._ast;
 
+import siunit.monticoresiunit.si._ast.ASTNumber;
+
 import java.util.Optional;
 
 public class ASTParameterRhs extends ASTParameterRhsTOP {
@@ -29,8 +31,8 @@ public class ASTParameterRhs extends ASTParameterRhsTOP {
     public ASTParameterRhs() {
     }
 
-    public ASTParameterRhs(String stringVal, String intVal, String doubleVal, String refOrBool) {
-        super(stringVal, intVal, doubleVal, refOrBool);
+    public ASTParameterRhs(String stringVal, ASTNumber number, String refOrBool) {
+        super(stringVal, number, refOrBool);
     }
 
     @Override

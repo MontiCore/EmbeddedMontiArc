@@ -1,11 +1,10 @@
 package de.monticore.lang.monticar;
 
-grammar CNNTrain extends de.monticore.common.Common {
+grammar CNNTrain extends de.monticore.lang.math.Math {
 
-    CNNTrainCompilationUnit = TrainingConfiguration;
+    symbol scope CNNTrainCompilationUnit = "training" name:Name& "{" TrainingConfiguration "}";
 
-    symbol scope TrainingConfiguration = "training" name:Name& "{"
-                                         (assignments:ParameterAssignment)+ "}";
+    TrainingConfiguration = (assignments:ParameterAssignment)+;
 
     ParameterAssignment = lhs:TrainingParameter "=" rhs:ParameterRhs;
     enum TrainingParameter = DATA:"data"
@@ -18,8 +17,7 @@ grammar CNNTrain extends de.monticore.common.Common {
 
 
     ParameterRhs = stringVal:String
-        | intVal:Num_Int
-        | doubleVal:Num_Double
-        | refOrBool:Name;
+                 | number:Number
+                 | refOrBool:Name;
 
 }

@@ -51,7 +51,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void visit(final ASTCNNTrainCompilationUnit compilationUnit) {
-        Log.debug("Building Symboltable for Script: " + compilationUnit.getTrainingConfiguration().getName(),
+        Log.debug("Building Symboltable for Script: " + compilationUnit.getName(),
                 CNNTrainSymbolTableCreator.class.getSimpleName());
 
         List<ImportStatement> imports = new ArrayList<>();
@@ -62,14 +62,12 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                 imports);
 
         putOnStack(artifactScope);
-    }
 
-    public void visit(final ASTTrainingConfiguration trainingConfiguration) {
-        TrainingConfigurationSymbol configSymbol = new TrainingConfigurationSymbol(
-                trainingConfiguration.getName()
+        CNNTrainCompilationUnitSymbol compilationUnitSymbol = new CNNTrainCompilationUnitSymbol(
+                compilationUnit.getName()
         );
 
-        addToScopeAndLinkWithNode(configSymbol, trainingConfiguration);
+        addToScopeAndLinkWithNode(compilationUnitSymbol, compilationUnit);
     }
 
     public void endVisit(final ASTTrainingConfiguration trainingConfiguration) {

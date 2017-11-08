@@ -27,8 +27,8 @@ public class ASTTrainingConfiguration extends ASTTrainingConfigurationTOP {
     public ASTTrainingConfiguration() {
     }
 
-    public ASTTrainingConfiguration(String name, List<ASTParameterAssignment> assignments) {
-        super(name, assignments);
+    public ASTTrainingConfiguration(List<ASTParameterAssignment> assignments) {
+        super(assignments);
     }
 
     public ASTParameterRhs get(String lhsName) {
