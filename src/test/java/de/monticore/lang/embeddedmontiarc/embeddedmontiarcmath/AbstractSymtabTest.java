@@ -25,6 +25,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 
@@ -37,7 +38,7 @@ public class AbstractSymtabTest {
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
 
         fam.addModelingLanguage(new StreamLanguage());
-        // add default Types which are needed because monticore has integrated "java logic" deep inside
+        fam.addModelingLanguage(new StructLanguage());
         final ModelPath mp = new ModelPath();
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));
