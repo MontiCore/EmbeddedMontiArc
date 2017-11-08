@@ -1,0 +1,34 @@
+package de.monticore.lang.monticar;
+
+grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
+                      de.monticore.lang.monticar.CNNArch,
+                      de.monticore.lang.monticar.CNNTrain {
+
+    EMADLCompilationUnit = EMACompilationUnit;
+
+    BehaviorEmbedding = Option* ArchitectureEmbedding TrainingEmbedding;
+
+    BehaviorName = "DeepLearning";
+
+
+
+    ArchitectureEmbedding = "architecture" "="
+                            inputSymbolName:Name "-->"
+                            architectureSymbolName:Name
+                            "-->" outputSymbolName:Name;
+
+    TrainingEmbedding = "training" "="
+                        trainConfigSymbolName:Name;
+
+
+    interface Option;
+    ast Option = method public String getName(){}
+                 method public Enum getValue(){};
+
+    ContextOption implements Option = name:"context" "=" value:Context;
+    TargetOption implements Option = name:"target" "=" value:Target;
+    enum Context = CPU:"cpu" | GPU:"gpu";
+    enum Target = CPLUSPLUS:"c++" | PYTHON:"python";
+
+
+}
