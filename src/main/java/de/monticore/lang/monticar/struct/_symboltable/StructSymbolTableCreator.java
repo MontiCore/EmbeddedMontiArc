@@ -76,25 +76,29 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
         structFieldDefinition.setType(type);
     }
 
-    public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
-        if (astType instanceof ASTElementType) {
-            ASTElementType t = (ASTElementType) astType;
-            String name = null;
-            if (t.isIsBoolean()) {
+    private static String getTypeName(ASTElementType elementType){
+            String name=null;
+            if (elementType.isIsBoolean()) {
                 name = "B";
             }
-            if (t.isIsRational()) {
+            if (elementType.isIsRational()) {
                 name = "Q";
             }
-            if (t.isIsComplex()) {
+            if (elementType.isIsComplex()) {
                 name = "C";
             }
-            if (t.isIsWholeNumberNumber()) {
+            if (elementType.isIsWholeNumberNumber()) {
                 name = "Z";
-            }
+            }  
             if (name == null) {
-                throw new UnsupportedOperationException("ElementType " + t + " is not supported");
+                throw new UnsupportedOperationException("ElementType " + elementType + " is not supported");
             }
+        return name;
+    }
+    
+    public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
+        if (astType instanceof ASTElementType) {
+            String name = getTypeName((ASTElementType) astType);
             return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
         }
         if (astType instanceof ASTSimpleReferenceType) {
