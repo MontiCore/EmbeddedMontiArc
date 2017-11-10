@@ -25,8 +25,18 @@ public enum PhysicalObjectType {
      */
     PHYSICAL_OBJECT_TYPE_TREE,
 
+    
+    PHYSICAL_OBJECT_TYPE_STREETLANTERN,
+
+    PHYSICAL_OBJECT_TYPE_ROADWORKSIGN,
+
+    PHYSICAL_OBJECT_TYPE_HOUSE,
+    
+    
+    
     /**
      * Type for network cell base station
      */
+    
     PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION,
 }
