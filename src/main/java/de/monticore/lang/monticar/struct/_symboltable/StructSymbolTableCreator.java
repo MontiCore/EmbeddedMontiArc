@@ -77,51 +77,64 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
     }
 
     private static String getTypeName(ASTElementType elementType){
-            String name=null;
-            if (elementType.isIsBoolean()) {
-                name = "B";
-            }
-            if (elementType.isIsRational()) {
-                name = "Q";
-            }
-            if (elementType.isIsComplex()) {
-                name = "C";
-            }
-            if (elementType.isIsWholeNumberNumber()) {
-                name = "Z";
-            }  
-            if (name == null) {
-                throw new UnsupportedOperationException("ElementType " + elementType + " is not supported");
-            }
+        String name=null;
+        if (elementType.isIsBoolean()) {
+            name = "B";
+        }
+        if (elementType.isIsRational()) {
+            name = "Q";
+        }
+        if (elementType.isIsComplex()) {
+            name = "C";
+        }
+        if (elementType.isIsWholeNumberNumber()) {
+            name = "Z";
+        }  
+        if (name == null) {
+            throw new UnsupportedOperationException("ElementType " + elementType + " is not supported");
+        }
         return name;
     }
     
-    public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
-        if (astType instanceof ASTElementType) {
-            String name = getTypeName((ASTElementType) astType);
-            return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTElementType elementType, Scope scope){
+        String name = getTypeName(elementType);
+        return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTSimpleReferenceType astType, Scope scope){
+        if (astType.typeArgumentsIsPresent()) {
+            throw new UnsupportedOperationException("struct may not have type arguments");
         }
-        if (astType instanceof ASTSimpleReferenceType) {
-            ASTSimpleReferenceType t = (ASTSimpleReferenceType) astType;
-            if (t.typeArgumentsIsPresent()) {
-                throw new UnsupportedOperationException("struct may not have type arguments");
-            }
-            String name = Names.getQualifiedName(t.getNames());
-            return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
-        }
-        if (astType instanceof ASTComplexReferenceType) {
-            ASTComplexReferenceType t = (ASTComplexReferenceType) astType;
-            List<ASTSimpleReferenceType> srt = t.getSimpleReferenceTypes();
+        String name = Names.getQualifiedName(astType.getNames());
+        return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTComplexReferenceType astType, Scope scope){
+        List<ASTSimpleReferenceType> srt = astType.getSimpleReferenceTypes();
             if (srt.size() != 1) {
                 throw new UnsupportedOperationException("nested structs are not allowed");
             }
             return getType(srt.get(0), scope);
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTArrayType astType, Scope scope){
+        MCTypeReference<? extends MCTypeSymbol> type = getType(astType.getComponentType(), scope);
+        type.setDimension(astType.getDimensions());
+        return type;
+    }
+    
+    public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
+        if (astType instanceof ASTElementType) {
+            return getType((ASTElementType) astType,scope);
+        }
+        if (astType instanceof ASTSimpleReferenceType) {
+            return getType((ASTSimpleReferenceType) astType, scope);    
+        }
+        if (astType instanceof ASTComplexReferenceType) {
+            return getType((ASTComplexReferenceType) astType, scope);
         }
         if (astType instanceof ASTArrayType) {
-            ASTArrayType t = (ASTArrayType) astType;
-            MCTypeReference<? extends MCTypeSymbol> type = getType(t.getComponentType(), scope);
-            type.setDimension(t.getDimensions());
-            return type;
+            return getType((ASTArrayType) astType, scope);
         }
         throw new UnsupportedOperationException("type " + astType + " is not supported");
     }
