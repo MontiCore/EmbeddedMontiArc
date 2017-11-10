@@ -18,17 +18,35 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
+import de.monticore.symboltable.SymbolKind;
 
-/**
- * @author Sascha Schneiders
- */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public class MontiCarFieldSymbol extends CommonMCFieldSymbol<MontiCarTypeSymbolReference> {
 
-    protected SIUnitRangesSymbolKind(){
+    public static final MontiCarFieldSymbolKind KIND = new MontiCarFieldSymbolKind();
 
+    public MontiCarFieldSymbol(String name, MCAttributeSymbolKind kind, MontiCarTypeSymbolReference type) {
+        super(name, kind);
+        setType(type);
+    }
+
+    public static class MontiCarFieldSymbolKind extends MCAttributeSymbolKind {
+
+        private static final String NAME = MontiCarFieldSymbolKind.class.getCanonicalName();
+
+        protected MontiCarFieldSymbolKind() {
+        }
+
+        @Override
+        public String getName() {
+            return NAME;
+        }
+
+        @Override
+        public boolean isKindOf(SymbolKind kind) {
+            return NAME.equals(kind.getName()) || super.isKindOf(kind);
+        }
     }
 }

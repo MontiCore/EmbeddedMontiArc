@@ -21,22 +21,21 @@
 package de.monticore.lang.monticar.si._symboltable;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.types.JFieldSymbol;
-import de.monticore.symboltable.types.JMethodSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * @author Sascha Schneiders
  */
-public class SIUnitRangesSymbol extends CommonSymbol implements JTypeSymbol {
+public class SIUnitRangesSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final SIUnitRangesSymbolKind KIND = SIUnitRangesSymbolKind.INSTANCE;
 
     protected List<ASTRange> ranges = new ArrayList<ASTRange>();
@@ -60,113 +59,24 @@ public class SIUnitRangesSymbol extends CommonSymbol implements JTypeSymbol {
         return ranges.size();
     }
 
-    //Methods below are required as SIUnitRangesSymbol is a JTypeSymbol so
-    //the already existing Port Type functionality is consistent
-    //TODO change methods if they are actually needed when dealing with SIUnitRangesSymbol
-
     @Override
-    public boolean isGeneric() {
-        return false;
+    public List<? extends MCTypeSymbol> getFormalTypeParameters() {
+        return Collections.emptyList();
     }
 
     @Override
-    public List<? extends JTypeSymbol> getFormalTypeParameters() {
-        return null;
+    public Optional<? extends MCTypeReference<? extends MCTypeSymbol>> getSuperClass() {
+        return Optional.empty();
     }
 
     @Override
-    public Optional<? extends JTypeReference<? extends JTypeSymbol>> getSuperClass() {
-        return null;
+    public List<? extends MCTypeReference<? extends MCTypeSymbol>> getInterfaces() {
+        return Collections.emptyList();
     }
 
     @Override
-    public List<? extends JTypeReference<? extends JTypeSymbol>> getInterfaces() {
-        return null;
-    }
-
-    @Override
-    public List<? extends JTypeReference<? extends JTypeSymbol>> getSuperTypes() {
-        return null;
-    }
-
-    @Override
-    public List<? extends JFieldSymbol> getFields() {
-        return null;
-    }
-
-    @Override
-    public Optional<? extends JFieldSymbol> getField(String s) {
-        return null;
-    }
-
-    @Override
-    public List<? extends JMethodSymbol> getMethods() {
-        return null;
-    }
-
-    @Override
-    public Optional<? extends JMethodSymbol> getMethod(String s) {
-        return null;
-    }
-
-    @Override
-    public List<? extends JMethodSymbol> getConstructors() {
-        return null;
-    }
-
-    @Override
-    public List<? extends JTypeSymbol> getInnerTypes() {
-        return null;
-    }
-
-    @Override
-    public Optional<? extends JTypeSymbol> getInnerType(String s) {
-        return null;
-    }
-
-    @Override
-    public boolean isAbstract() {
-        return false;
-    }
-
-    @Override
-    public boolean isFinal() {
-        return false;
-    }
-
-    @Override
-    public boolean isInterface() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnum() {
-        return false;
-    }
-
-    @Override
-    public boolean isClass() {
-        return true;
-    }
-
-    @Override
-    public boolean isInnerType() {
-        return false;
-    }
-
-    @Override
-    public boolean isPrivate() {
-        return false;
-    }
-
-    @Override
-    public boolean isProtected() {
-        return false;
-    }
-
-    @Override
-    public boolean isPublic() {
-        return false;
+    public List<? extends MCTypeReference<? extends MCTypeSymbol>> getSuperTypes() {
+        return Collections.emptyList();
     }
 
     @Override

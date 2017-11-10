@@ -18,17 +18,33 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
+import de.monticore.symboltable.MutableScope;
 
-/**
- * @author Sascha Schneiders
- */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public final class Utils {
 
-    protected SIUnitRangesSymbolKind(){
+    private Utils() {
+    }
 
+    public static void addBuiltInTypes(MutableScope scope) {
+        String[] builtInTypes = new String[]{
+                "Q",
+                "B",
+                "C",
+                "Z",
+                "RangesType",
+                "RangeType",
+                "UnitNumberResolution",
+                "UnitNumberTypeArgument",
+                "AssignmentType",
+                "CommonMatrixType"
+        };
+        for (String typeName : builtInTypes) {
+            MontiCarTypeSymbol s = new MontiCarTypeSymbol(typeName);
+            s.setPackageName("java.lang");
+            scope.add(s);
+        }
     }
 }

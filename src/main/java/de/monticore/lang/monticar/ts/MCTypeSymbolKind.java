@@ -18,17 +18,28 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.types.TypeSymbolKind;
 
 /**
- * @author Sascha Schneiders
+ * @author Pedram Mir Seyed Nazari
  */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public class MCTypeSymbolKind extends TypeSymbolKind {
 
-    protected SIUnitRangesSymbolKind(){
+    private static final String NAME = MCTypeSymbolKind.class.getName();
 
+    protected MCTypeSymbolKind() {
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || super.isKindOf(kind);
     }
 }

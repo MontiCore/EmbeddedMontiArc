@@ -20,12 +20,12 @@
  */
 package de.monticore.lang.monticar.si._symboltable;
 
-import de.monticore.symboltable.types.JTypeSymbolKind;
+import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
 
 /**
  * Created by Sascha on 14.05.2017.
  */
-public class ResolutionDeclarationSymbolKind extends JTypeSymbolKind {
+public class ResolutionDeclarationSymbolKind extends MCTypeSymbolKind {
     public static final ResolutionDeclarationSymbolKind INSTANCE = new ResolutionDeclarationSymbolKind();
 
     public ResolutionDeclarationSymbolKind() {

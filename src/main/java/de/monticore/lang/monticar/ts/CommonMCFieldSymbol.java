@@ -18,17 +18,43 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.CommonSymbol;
 
 /**
- * @author Sascha Schneiders
+ * @author Pedram Mir Seyed Nazari
  */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public abstract class CommonMCFieldSymbol<T extends MCTypeReference<? extends MCTypeSymbol>> extends CommonSymbol implements MCFieldSymbol {
 
-    protected SIUnitRangesSymbolKind(){
+    private T type;
 
+    private boolean isParameter = false;
+
+    public CommonMCFieldSymbol(String name) {
+        this(name, MCFieldSymbol.KIND);
+    }
+
+    public CommonMCFieldSymbol(String name, MCAttributeSymbolKind kind) {
+        super(name, kind);
+    }
+
+    @Override
+    public T getType() {
+        return type;
+    }
+
+    public void setType(T type) {
+        this.type = type;
+    }
+
+    public void setParameter(boolean isParameter) {
+        this.isParameter = isParameter;
+    }
+
+    @Override
+    public boolean isParameter() {
+        return isParameter;
     }
 }

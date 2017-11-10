@@ -18,17 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.si._symboltable;
+package de.monticore.lang.monticar.ts.references;
 
-import de.monticore.lang.monticar.ts.MCTypeSymbolKind;
+import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
+import de.monticore.symboltable.Scope;
 
-/**
- * @author Sascha Schneiders
- */
-public class SIUnitRangesSymbolKind extends MCTypeSymbolKind {
-    public static final SIUnitRangesSymbolKind INSTANCE = new SIUnitRangesSymbolKind();
+public class MontiCarTypeSymbolReference extends CommonMCTypeReference<MontiCarTypeSymbol> implements MCTypeReference<MontiCarTypeSymbol> {
 
-    protected SIUnitRangesSymbolKind(){
-
+    public MontiCarTypeSymbolReference(String name, Scope definingScopeOfReference, int arrayDimension) {
+        super(name, MontiCarTypeSymbol.KIND, definingScopeOfReference);
+        setDimension(arrayDimension);
     }
 }
