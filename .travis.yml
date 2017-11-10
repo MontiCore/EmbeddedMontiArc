@@ -1,8 +1,5 @@
-install:
-- rm -r -f "$HOME/.m2/repository"
-- git clone "https://github.com/EmbeddedMontiArc/external-dependencies" "$HOME/.m2/repository"
-
 script:
+- git checkout ${TRAVIS_BRANCH}
 - mvn clean install cobertura:cobertura org.eluder.coveralls:coveralls-maven-plugin:report --settings "settings.xml"
 after_success:
 - mvn deploy --debug --settings "./settings.xml"
