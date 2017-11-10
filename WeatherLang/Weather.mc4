@@ -1,5 +1,5 @@
 /* 
- * advanced weather language v0.11
+ * advanced weather language v0.12
  * @author Deniz Schmidt
 */
 grammar Weather {
@@ -21,7 +21,7 @@ grammar Weather {
   
   //https://en.wikipedia.org/wiki/Beaufort_scale
   //takes float in [0, oo)
-  //in knots, meter/second, km/hour / miles per h
+  //in knots, meter/second, km/hour or miles/hour
   Windstrength = "windstrength" windstr:PosFloat ("kn"|"m/s"|"km/h"|"mph");
   
   //see windrose
@@ -30,7 +30,8 @@ grammar Weather {
   Winddirection = "winddirection" winddir:AngleDegree "°";
   
   //https://en.wikipedia.org/wiki/Precipitation_types
-  Precipitationtype = "precipitation_type" ("drizzle"|
+  Precipitationtype = "precipitation_type" ("none"|
+                                            "drizzle"|
                                             "rain"|
                                             "freezing drizzle"|
                                             "freezing rain"|
@@ -74,7 +75,9 @@ grammar Weather {
                                            "gustnado"|
                                            "dust devil"|
                                            "steam devil"|
-                                           "thunderstorm"))*;
+                                           "thunderstorm") 
+                    ("(" posX:float posY:float ")")? 
+                    )*;
                                     
   OpticalPhenomena = ("optical_phenomena" ("rainbow"|
                                            "northern lights"|
