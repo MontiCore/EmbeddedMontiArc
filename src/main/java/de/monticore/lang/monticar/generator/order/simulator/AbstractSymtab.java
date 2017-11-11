@@ -7,7 +7,6 @@ package de.monticore.lang.monticar.generator.order.simulator;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
@@ -20,12 +19,10 @@ import de.monticore.lang.monticar.generator.order.nfp.TagInitTagSchema.TagInitTa
 import de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema.TagMinMaxTagSchema;
 import de.monticore.lang.monticar.generator.order.nfp.TagTableTagSchema.TagTableTagSchema;
 import de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema.TagThresholdTagSchema;
-import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -51,21 +48,13 @@ public class AbstractSymtab {
 
         fam.addModelingLanguage(montiArcLanguage);
         fam.addModelingLanguage(new StreamUnitsLanguage());
-        // TODO should we use JavaDSLLanguage or add the resolvers in MALang?
-        fam.addModelingLanguage(new JavaDSLLanguage());
-        // TODO how to add java default types?
-        Path argument;
-        if (AbstractSymtab.class.getClassLoader().getResource("").getPath().contains(":")) {
-            argument = Paths.get(AbstractSymtab.class.getClassLoader().getResource("").getPath().substring(1));
-        } else {
-            argument = Paths.get(AbstractSymtab.class.getClassLoader().getResource("").getPath());
-        }
-        final ModelPath mp = new ModelPath(Paths.get(argument + "/../../src/main/resources/defaultTypes"));
+        final ModelPath mp = new ModelPath();
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));
         }
         LogConfig.init();//TODO comment for debug output
         GlobalScope scope = new GlobalScope(mp, fam);
+        de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
         return scope;
     }
 }

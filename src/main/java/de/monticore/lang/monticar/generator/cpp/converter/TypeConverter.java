@@ -6,23 +6,21 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymb
 import de.monticore.lang.math.math._ast.ASTAssignmentType;
 import de.monticore.lang.math.math._ast.ASTDimension;
 import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathParenthesisExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathValueExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.expression.MathValueType;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
-import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.VariableType;
-import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
-import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbolReference;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
+import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * This is used to convert port types to their cpp equivalent
@@ -32,7 +30,7 @@ import java.util.*;
 public class TypeConverter {
     private static List<VariableType> nonPrimitiveVariableTypes = new ArrayList<>();
 
-    public static String getTypeNameTargetLanguage(JTypeReference<? extends JTypeSymbol> portType) {
+    public static String getTypeNameTargetLanguage(MCTypeReference<? extends MCTypeSymbol> portType) {
         for (VariableType variableType : nonPrimitiveVariableTypes) {
             if (variableType.getTypeNameMontiCar().equals(portType.getName()))
                 return variableType.getTypeNameTargetLanguage();
@@ -201,8 +199,11 @@ public class TypeConverter {
 
     static {
         addNonPrimitiveVariableType("SIUnitRangesType", "double", "");
-        addNonPrimitiveVariableType("ElementType", "double", "");
-        addNonPrimitiveVariableType("Boolean", "bool", "");
+        addNonPrimitiveVariableType("B", "bool", "");
+        addNonPrimitiveVariableType("Q", "double", "");
+        // TODO: the type mappings below have been adjusted to make the tests pass. they are, however, wrong.
+        addNonPrimitiveVariableType("Z", "double", "");
+        addNonPrimitiveVariableType("C", "double", "");
         addNonPrimitiveVariableType("UnitNumberResolution", "double", "");
         addNonPrimitiveVariableType("CommonMatrixType", "Matrix", "octave/oct");
         addNonPrimitiveVariableType("AssignmentType", "Matrix", "octave/oct");

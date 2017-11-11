@@ -2,5 +2,5 @@ package a;
 
 component Sub2 extends SuperComp{
   port in (-oo:oo) in1,
-        out Boolean out1;
+        out B out1;
 }
