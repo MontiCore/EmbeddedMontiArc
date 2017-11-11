@@ -3,7 +3,7 @@
 - **visualisation** 
   [![Maintainability](https://api.codeclimate.com/v1/badges/61384df055df4f50c231/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/visualisation/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/visualisation.svg?branch=visualization)](https://travis-ci.org/EmbeddedMontiArc/visualisation)
-  [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/visualisation/badge.svg?branch=visualization)](https://coveralls.io/github/EmbeddedMontiArc/visualisation?branch=visualization)
+  [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/visualisation/badge.svg?branch=visualization&service=github)](https://coveralls.io/github/EmbeddedMontiArc/visualisation?branch=visualization)
 - **MontiMath**
   [![Maintainability](https://api.codeclimate.com/v1/badges/a5e16222c01e400e39a7/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/MontiMath/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/MontiMath.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/MontiMath)
