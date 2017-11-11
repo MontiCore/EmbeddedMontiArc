@@ -22,9 +22,7 @@ package de.monticore.lang.monticar.struct._symboltable.validation;
 
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
-import de.monticore.lang.monticar.struct.model.type.StructFieldTypeInfo;
-import de.monticore.lang.monticar.struct.model.type.StructReferenceFieldType;
-import de.monticore.lang.monticar.struct.model.type.VectorStructFieldType;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.references.FailedLoadingSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -54,32 +52,18 @@ public class AllStructReferencesAreRecursivelyResolvableChecker implements Symbo
         visitedStructs.add(structFullName);
         Collection<StructFieldDefinitionSymbol> fieldDefinitions = symbol.getStructFieldDefinitions();
         for (StructFieldDefinitionSymbol f : fieldDefinitions) {
-            StructFieldTypeInfo fieldTypeInfo = f.getTypeInfo();
-            if (fieldTypeInfo instanceof StructReferenceFieldType) {
-                if (!checkReferenceFieldType((StructReferenceFieldType) fieldTypeInfo)) {
-                    return false;
-                }
-            } else if (fieldTypeInfo instanceof VectorStructFieldType) {
-                StructFieldTypeInfo typeOfElements = ((VectorStructFieldType) fieldTypeInfo).getTypeOfElements();
-                if (typeOfElements instanceof StructReferenceFieldType) {
-                    if (!checkReferenceFieldType((StructReferenceFieldType) typeOfElements)) {
-                        return false;
-                    }
-                }
+            MCTypeSymbol s;
+            try {
+                s = f.getType().getReferencedSymbol();
+            } catch (FailedLoadingSymbol e) {
+                Log.error(e.getMessage());
+                return false;
+            }
+            if (s instanceof StructSymbol && !isValid((StructSymbol) s)) {
+                return false;
             }
         }
         visitedStructs.remove(structFullName);
         return true;
-    }
-
-    private boolean checkReferenceFieldType(StructReferenceFieldType referenceFieldType) {
-        StructSymbol referencedStruct;
-        try {
-            referencedStruct = referenceFieldType.getReference().getReferencedSymbol();
-        } catch (FailedLoadingSymbol e) {
-            Log.error(e.getMessage());
-            return false;
-        }
-        return referencedStruct != null && isValid(referencedStruct);
     }
 }

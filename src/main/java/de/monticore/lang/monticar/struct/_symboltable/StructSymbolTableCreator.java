@@ -24,11 +24,19 @@ import de.monticore.lang.monticar.struct._ast.ASTStructCompilationUnit;
 import de.monticore.lang.monticar.struct._ast.ASTStructFieldDefinition;
 import de.monticore.lang.monticar.struct._cocos.StructCoCoChecker;
 import de.monticore.lang.monticar.struct.coco.DefaultStructCoCoChecker;
-import de.monticore.lang.monticar.struct.model.type.StructFieldTypeInfo;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.types2._ast.ASTArrayType;
+import de.monticore.lang.monticar.types2._ast.ASTComplexReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 
 import java.util.Deque;
@@ -36,6 +44,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
+
     private final StructCoCoChecker coCoChecker = DefaultStructCoCoChecker.create();
 
     public StructSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
@@ -63,7 +72,73 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
 
     @Override
     protected void initialize_StructFieldDefinition(StructFieldDefinitionSymbol structFieldDefinition, ASTStructFieldDefinition ast) {
-        StructFieldTypeInfo typeInfo = StructFieldTypeInfo.tryRepresentASTType(ast.getType(), currentScope().orElse(null));
-        structFieldDefinition.setTypeInfo(typeInfo);
+        MCTypeReference<? extends MCTypeSymbol> type = getType(ast.getType(), currentScope().orElse(null));
+        structFieldDefinition.setType(type);
+    }
+
+    private static String getTypeName(ASTElementType elementType){
+        String name=null;
+        if (elementType.isIsBoolean()) {
+            name = "B";
+        }
+        if (elementType.isIsRational()) {
+            name = "Q";
+        }
+        if (elementType.isIsComplex()) {
+            name = "C";
+        }
+        if (elementType.isIsWholeNumberNumber()) {
+            name = "Z";
+        }  
+        if (name == null) {
+            throw new UnsupportedOperationException("ElementType " + elementType + " is not supported");
+        }
+        return name;
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTElementType elementType, Scope scope){
+        String name = getTypeName(elementType);
+        return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTSimpleReferenceType astType, Scope scope){
+        if (astType.typeArgumentsIsPresent()) {
+            throw new UnsupportedOperationException("struct may not have type arguments");
+        }
+        String name = Names.getQualifiedName(astType.getNames());
+        return new CommonMCTypeReference<>(name, MCTypeSymbol.KIND, scope);
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTComplexReferenceType astType, Scope scope){
+        List<ASTSimpleReferenceType> srt = astType.getSimpleReferenceTypes();
+            if (srt.size() != 1) {
+                throw new UnsupportedOperationException("nested structs are not allowed");
+            }
+            return getType(srt.get(0), scope);
+    }
+    
+    private static MCTypeReference<? extends MCTypeSymbol> getType(ASTArrayType astType, Scope scope){
+        MCTypeReference<? extends MCTypeSymbol> type = getType(astType.getComponentType(), scope);
+        type.setDimension(astType.getDimensions());
+        return type;
+    }
+    
+    public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
+        MCTypeReference<? extends MCTypeSymbol> type = null;
+        if (astType instanceof ASTElementType) {
+            type = getType((ASTElementType) astType,scope);
+        }
+        if (astType instanceof ASTSimpleReferenceType) {
+            type = getType((ASTSimpleReferenceType) astType, scope);    
+        }
+        if (astType instanceof ASTComplexReferenceType) {
+            type = getType((ASTComplexReferenceType) astType, scope);
+        }
+        if (astType instanceof ASTArrayType) {
+            type = getType((ASTArrayType) astType, scope);
+        }
+        if(type == null)
+            throw new UnsupportedOperationException("type " + astType + " is not supported");
+        return type;
     }
 }

@@ -24,6 +24,7 @@ import de.monticore.ast.ASTNode;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 
 public class StructLanguage extends StructLanguageTOP {
+
     public static final String FILE_ENDING = "struct";
 
     public StructLanguage() {
