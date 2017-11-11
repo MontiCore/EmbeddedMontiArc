@@ -124,18 +124,21 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
     }
     
     public static MCTypeReference<? extends MCTypeSymbol> getType(ASTType astType, Scope scope) {
+        MCTypeReference<? extends MCTypeSymbol> type = null;
         if (astType instanceof ASTElementType) {
-            return getType((ASTElementType) astType,scope);
+            type = getType((ASTElementType) astType,scope);
         }
         if (astType instanceof ASTSimpleReferenceType) {
-            return getType((ASTSimpleReferenceType) astType, scope);    
+            type = getType((ASTSimpleReferenceType) astType, scope);    
         }
         if (astType instanceof ASTComplexReferenceType) {
-            return getType((ASTComplexReferenceType) astType, scope);
+            type = getType((ASTComplexReferenceType) astType, scope);
         }
         if (astType instanceof ASTArrayType) {
-            return getType((ASTArrayType) astType, scope);
+            type = getType((ASTArrayType) astType, scope);
         }
-        throw new UnsupportedOperationException("type " + astType + " is not supported");
+        if(type == null)
+            throw new UnsupportedOperationException("type " + astType + " is not supported");
+        return type;
     }
 }
