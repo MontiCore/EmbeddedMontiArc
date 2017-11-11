@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang</groupId>
   <artifactId>math</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -41,7 +41,7 @@
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.4-SNAPSHOT</SIUnit.version>
-	<Common-MontiCar.version>0.0.3</Common-MontiCar.version>
+	<Common-MontiCar.version>0.0.4</Common-MontiCar.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
