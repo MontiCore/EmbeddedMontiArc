@@ -1,2 +1,4 @@
 # website
-Repo for website: embeddedmontiarc.com
+Repo for websites: 
+* [embeddedmontiarc.com](http://embeddedmontiarc.com)
+* [embeddedmontiarc.de](http://embeddedmontiarc.de)
