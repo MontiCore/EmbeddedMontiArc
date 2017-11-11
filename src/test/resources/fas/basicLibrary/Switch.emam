@@ -1,10 +1,10 @@
 package basicLibrary;
 
 
-component Switch<T=Boolean> { // if no generic is given, then default type Boolean is taken
+component Switch<T=B> { // if no generic is given, then default type B is taken
 	port 
 		in T in1, //if
-	    in Boolean cond, // condition
+	    in B cond, // condition
 		in T in3, //else
 		out T out1;
 
