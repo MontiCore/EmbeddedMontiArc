@@ -1,0 +1,4 @@
+Configuration MissingParameter2{
+    epochs = 5
+    batch_size = 100
+}

@@ -18,13 +18,34 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain;
 
-public class CNNTrainCocos {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-    public static CNNTrainCoCoChecker createChecker() {
-        return new CNNTrainCoCoChecker()
-                .addCoCo(new DuplicatedParameterCheck());
+import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
+import de.monticore.symboltable.Scope;
+import org.junit.Ignore;
+import org.junit.Test;
+
+
+public class SymtabTest extends AbstractSymtabTest {
+
+    @Test
+    public void testParsing() throws Exception {
+        CNNTrainParser parser = new CNNTrainParser();
+        assertTrue(parser.parse("src/test/resources/SimpleConfig1.cnnt").isPresent());
     }
 
+    @Test
+    public void testAlexnet(){
+        Scope symTab = createSymTab("src/test/resources");
+        CNNTrainCompilationUnitSymbol a = symTab.<CNNTrainCompilationUnitSymbol>resolve(
+                "SimpleConfig2",
+                CNNTrainCompilationUnitSymbol.KIND).orElse(null);
+        assertNotNull(a);
+
+    }
 }

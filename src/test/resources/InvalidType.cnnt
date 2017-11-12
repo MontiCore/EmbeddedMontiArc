@@ -1,0 +1,7 @@
+Configuration InvalidType{
+     data=1
+     epochs = 5.1
+     batch_size = 100.5
+     optimizer = 2
+     learning_rate = "2"
+ }

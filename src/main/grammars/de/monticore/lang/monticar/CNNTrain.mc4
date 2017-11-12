@@ -2,9 +2,9 @@ package de.monticore.lang.monticar;
 
 grammar CNNTrain extends de.monticore.lang.math.Math {
 
-    symbol scope CNNTrainCompilationUnit = "training" name:Name& "{" TrainingConfiguration "}";
+    symbol scope CNNTrainCompilationUnit = "Configuration" name:Name& "{" TrainingConfiguration "}";
 
-    TrainingConfiguration = (assignments:ParameterAssignment)+;
+    TrainingConfiguration = (assignments:ParameterAssignment)*;
 
     ParameterAssignment = lhs:TrainingParameter "=" rhs:ParameterRhs;
     enum TrainingParameter = DATA:"data"
@@ -13,8 +13,8 @@ grammar CNNTrain extends de.monticore.lang.math.Math {
                            | BATCHSIZE:"batch_size"
                            | OPTIMIZER:"optimizer"
                            | LEARNINGRATE:"learning_rate";
-
-
+                           //eval_metric
+                           //validation_split
 
     ParameterRhs = stringVal:String
                  | number:Number

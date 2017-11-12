@@ -1,0 +1,7 @@
+Configuration SimpleConfig1{
+     data="./data/mnist_train"
+     epochs = 5
+     batch_size = 100
+     optimizer = "adamsd"
+     learning_rate = 0.001
+ }

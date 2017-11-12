@@ -20,11 +20,27 @@
  */
 package de.monticore.lang.monticar.cnntrain._cocos;
 
-public class CNNTrainCocos {
+import de.monticore.lang.monticar.cnntrain._ast.ASTParameterAssignment;
+import de.monticore.lang.monticar.cnntrain._ast.ASTTrainingConfiguration;
+import de.se_rwth.commons.logging.Log;
 
-    public static CNNTrainCoCoChecker createChecker() {
-        return new CNNTrainCoCoChecker()
-                .addCoCo(new DuplicatedParameterCheck());
+import java.util.HashSet;
+import java.util.Set;
+
+public class DuplicatedParameterCheck implements CNNTrainASTTrainingConfigurationCoCo {
+
+    @Override
+    public void check(ASTTrainingConfiguration node) {
+        Set<Enum> set = new HashSet<>();
+        for (ASTParameterAssignment assignment : node.getAssignments()) {
+            if (set.contains(assignment.getLhs())) {
+                Log.error("0x03201 Multiple assignments of the same parameter are not allowed",
+                        assignment.get_SourcePositionStart());
+            }
+            else {
+                set.add(assignment.getLhs());
+            }
+        }
     }
 
 }
