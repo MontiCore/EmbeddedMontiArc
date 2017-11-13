@@ -69,8 +69,10 @@
 [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/EMAM2PythonROS/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/EMAM2PythonROS?branch=master)
 - **CNNTrainLang**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/CNNTrainLang.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/CNNTrainLang)
+[![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/CNNTrainLang/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/CNNTrainLang?branch=master)
 - **CNNArchLang**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/CNNArchLang.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/CNNArchLang)
+[![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/CNNArchLang/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/CNNArchLang?branch=master)
 - **Reporting**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/reporting.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/reporting)
 
