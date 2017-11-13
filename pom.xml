@@ -311,8 +311,8 @@
                 <configuration>
                     <header>${project.baseUri}/src/license/se/license.txt</header>
                     <properties>
-                        <owner>Thomas Timmermanns</owner>
-                        <email>thomas.timmermanns@rwth-aachen.de</email>
+                        <owner>Michael von Wenckstern</owner>
+                        <email>vonwenckstern@se-rwth.de</email>
                     </properties>
                     <excludes>
                         <exclude>**/README</exclude>
