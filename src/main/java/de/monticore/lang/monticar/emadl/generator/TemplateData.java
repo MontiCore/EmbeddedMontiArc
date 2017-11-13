@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.emadl.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._visitor.EmbeddedMontiArcInheritanceVisitor;
+import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._ast.*;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchInheritanceVisitor;
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;

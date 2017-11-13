@@ -21,6 +21,8 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.ModelingLanguageFamily;
+import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 
 public class EMADLLanguageFamily extends ModelingLanguageFamily {
 
@@ -30,7 +32,9 @@ public class EMADLLanguageFamily extends ModelingLanguageFamily {
     public EMADLLanguageFamily() {
         addModelingLanguage(EMADL_LANGUAGE);
         addModelingLanguage(EMADLLanguage.ARCHITECTURE_LANGUAGE);
-        addModelingLanguage(EMADLLanguage.TRAINING_LANGUAGE);
-        addModelingLanguage(EMADLLanguage.HOST_LANGUAGE);
+        addModelingLanguage(EMADLLanguage.TRAINING_LANGUAGE);;
+
+        addModelingLanguage(new StreamLanguage());
+        addModelingLanguage(new StructLanguage());
     }
 }

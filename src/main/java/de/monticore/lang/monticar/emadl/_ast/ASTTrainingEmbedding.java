@@ -44,7 +44,7 @@ public class ASTTrainingEmbedding extends ASTTrainingEmbeddingTOP{
                 trainConfigSymbol = optSymbol.get();
             }
             else {
-                Log.error("Neural network training configuration with name " + getTrainConfigSymbolName() + " could not be found in the model path.");
+                Log.error("0x04125q Neural network training configuration with name " + getTrainConfigSymbolName() + " could not be found in the model path.");
             }
         }
         return trainConfigSymbol;

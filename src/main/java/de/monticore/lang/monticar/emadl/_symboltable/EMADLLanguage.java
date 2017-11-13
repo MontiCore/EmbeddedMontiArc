@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableSet;
 import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
 import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
@@ -57,8 +59,8 @@ public class EMADLLanguage extends EmbeddingModelingLanguage implements TagableM
     public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
         List<ResolvingFilter<? extends Symbol>> ret =
                 new ArrayList<>(super.getResolvingFilters());
-        //ret.add(new ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter());
-        //ret.add(new PortArraySymbol2MathVariableDeclarationSymbolTypeFilter());
+        ret.add(new ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter());
+        ret.add(new PortArraySymbol2MathVariableDeclarationSymbolTypeFilter());
         //ret.add(new PortSymbol2MathVariableDeclarationTypeFilter());
         return ret;
     }

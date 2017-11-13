@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAExpandedComponentInstanceKind;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
@@ -43,6 +44,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
 
     private EmbeddedMontiArcSymbolTableCreator emaSTC;
     private Scope componentScope;
+    
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
@@ -123,7 +125,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     }
 
     @Override
-    public void visit(ASTArchitectureEmbedding node) {
+    public void endVisit(ASTArchitectureEmbedding node) {
         node.setEnclosingScope(componentScope);
     }
 

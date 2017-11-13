@@ -1,0 +1,12 @@
+component Alexnet(Z(1:oo) heigth, Z(1:oo) width, Z(1:oo) channels, Z(1:oo) num_classes) {
+    ports in Z(0:oo)^{heigth, width, channels} image,
+         out Q(0:1) predictions[num_classes];
+
+    implementation DeepLearning {
+
+        context = gpu
+        architecture = image --> Alexnet --> predictions
+        training = SimpleConfig
+
+    }
+}

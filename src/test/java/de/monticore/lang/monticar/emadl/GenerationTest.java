@@ -18,13 +18,35 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl._cocos;
+package de.monticore.lang.monticar.emadl;
 
-public class EMADLCocos {
+import de.monticore.lang.monticar.emadl.generator.Generator;
+import freemarker.template.TemplateException;
+import org.junit.Test;
 
-    public static EMADLCoCoChecker createChecker() {
-        return new EMADLCoCoChecker()
-                .addCoCo(new ArchitectureCheck())
-                .addCoCo(new TrainingCheck());
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class GenerationTest {
+
+    private void generate(String qualifiedName) throws IOException, TemplateException{
+        Path modelPath = Paths.get("src/test/resources/");
+        Generator gen =  new Generator();
+        gen.generate(modelPath, qualifiedName);
+    }
+
+    @Test
+    public void testPythonGeneration() throws IOException, TemplateException {
+        generate("AlexnetFixedParameters");
+    }
+
+    @Test
+    public void testCPPGeneration() throws IOException, TemplateException {
+        generate("TargetCPP");
     }
 }

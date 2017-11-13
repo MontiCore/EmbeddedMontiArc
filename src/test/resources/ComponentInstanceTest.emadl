@@ -1,0 +1,10 @@
+component ComponentInstanceTest {
+    ports in Z(0:255)^{128, 128, 3} image,
+         out Q(0:1) predictions[10];
+
+    instance Alexnet(128,128,3,10) al;
+
+    connect image -> al.image;
+    connect predictions[:] -> al.predictions[:];
+
+}

@@ -20,11 +20,16 @@
  */
 package de.monticore.lang.monticar.emadl._cocos;
 
-public class EMADLCocos {
+import de.monticore.lang.monticar.emadl._ast.ASTArchitectureEmbedding;
+import de.monticore.lang.monticar.emadl._ast.ASTTrainingEmbedding;
 
-    public static EMADLCoCoChecker createChecker() {
-        return new EMADLCoCoChecker()
-                .addCoCo(new ArchitectureCheck())
-                .addCoCo(new TrainingCheck());
+public class ArchitectureCheck implements EMADLASTArchitectureEmbeddingCoCo {
+
+    @Override
+    public void check(ASTArchitectureEmbedding node) {
+        node.getArchitectureSymbol();
+        node.getInputSymbol();
+        node.getOutputSymbol();
     }
+
 }

@@ -66,8 +66,8 @@ public interface ASTPrinter {
             return null;
         }
 
-        if (rhs.getStringVal().isPresent()) {
-            return rhs.getStringVal().get();
+        if (rhs.getType().isPresent()) {
+            return rhs.getType().get().getName().get();
         }
         else if(rhs.getNumber().isPresent()) {
             return toString(rhs.getNumber().get());

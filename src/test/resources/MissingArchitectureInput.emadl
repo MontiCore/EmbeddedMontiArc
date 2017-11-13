@@ -1,0 +1,10 @@
+component MissingArchitectureInput {
+    ports out Q(0:1) output;
+
+    implementation DeepLearning {
+
+        architecture = SimpleNetwork --> output
+        training = SimpleConfig
+
+    }
+}

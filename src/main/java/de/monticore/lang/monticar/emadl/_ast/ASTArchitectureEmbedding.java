@@ -21,6 +21,9 @@
 package de.monticore.lang.monticar.emadl._ast;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbol;
+import de.monticore.lang.math.math._symboltable.MathVariableDeclarationKind;
+import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -49,7 +52,7 @@ public class ASTArchitectureEmbedding extends ASTArchitectureEmbeddingTOP {
                 architectureSymbol = optSymbol.get();
             }
             else {
-                Log.error("Neural network architecture with name " + getArchitectureSymbolName() + " could not be found in the model path.");
+                Log.error("0x04124 Neural network architecture with name " + getArchitectureSymbolName() + " could not be found in the model path.");
             }
         }
         return architectureSymbol;
@@ -62,7 +65,7 @@ public class ASTArchitectureEmbedding extends ASTArchitectureEmbeddingTOP {
                 inputSymbol = optSymbol.get();
             }
             else {
-                Log.error("Network input port variable " + getInputSymbolName() + " does not exist.");
+                Log.error("0x04122 Network input port variable " + getInputSymbolName() + " does not exist.");
             }
         }
         return inputSymbol;
@@ -75,7 +78,7 @@ public class ASTArchitectureEmbedding extends ASTArchitectureEmbeddingTOP {
                 outputSymbol = optSymbol.get();
             }
             else {
-                Log.error("Network output port variable " + getOutputSymbolName() + " does not exist.");
+                Log.error("0x04123 Network output port variable " + getOutputSymbolName() + " does not exist.");
             }
         }
         return outputSymbol;
