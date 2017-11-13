@@ -1,14 +1,14 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.montiarc.stream._symboltable.NamedStreamSymbol;
-import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
-import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.Generator;
+import de.monticore.lang.monticar.generator.Helper;
+import de.monticore.lang.monticar.generator.MathCommandRegister;
+import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
+import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,6 +16,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,23 @@ public class GeneratorCPP implements Generator {
 
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
+    }
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        Path resolvingPath = Paths.get(args[0]);
+        String fullName = args[1];
+        String outputPath = args[2];
+
+        SymTabCreator symTabCreator = new SymTabCreator(resolvingPath);
+        Scope symtab = symTabCreator.createSymTab();
+        Resolver resolver = new Resolver(symtab);
+
+        ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(fullName)
+                .orElseThrow(() -> new IllegalArgumentException("Argument must include the full component name"));
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath(outputPath);
+        generatorCPP.generateFiles(componentSymbol, symtab);
     }
 
     public String generateString(ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
@@ -126,7 +146,7 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    public File generateFile(FileContent fileContent) throws IOException {
+    public File generateFile(FileContent fileContent) throws IOException{
         File f = new File(getGenerationTargetPath() + fileContent.getFileName());
         Log.info(f.getName(), "FileCreation:");
         if (!f.exists()) {
@@ -211,35 +231,4 @@ public class GeneratorCPP implements Generator {
     public void setUseMPIDefinitionFix(boolean useFix) {
         this.MPIDefinitionFix = useFix;
     }
-
-    /**
-     * first argument is the name of the expandedcomponentinstance symbol to convert
-     * second argument is the target path
-     * third argument is the source folder for the model files
-     * @param args
-     */
-    public static void main(String[] args) {
-        Scope symtab;
-        if (args.length >= 3)
-            symtab = AbstractSymtab.createSymTab(args[3]);
-        else
-            symtab = AbstractSymtab.createSymTab("");
-
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve(args[1], ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        if (componentSymbol == null) {
-            System.out.println("resources contains no model instance called " + args[1]);
-        }
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        if (args.length >= 2)
-            generatorCPP.setGenerationTargetPath(args[2]);
-        else
-            generatorCPP.setGenerationTargetPath("./generated-sources-cpp");
-        try {
-            generatorCPP.generateFiles(componentSymbol, symtab);
-            System.out.println("Generated Files in " + generatorCPP.getGenerationTargetPath());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
 }

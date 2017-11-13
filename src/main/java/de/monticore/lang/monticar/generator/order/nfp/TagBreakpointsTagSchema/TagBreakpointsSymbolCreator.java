@@ -1,6 +1,5 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema;
 
-import com.sun.org.apache.xalan.internal.xsltc.util.IntegerArray;
 import de.monticore.lang.montiarc.montiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
 import de.monticore.lang.montiarc.tagging._ast.ASTScope;
