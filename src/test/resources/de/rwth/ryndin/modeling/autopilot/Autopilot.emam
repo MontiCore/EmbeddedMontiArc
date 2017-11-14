@@ -29,7 +29,17 @@ component Autopilot {
     out Q (-0.775 : 0.001 : 0.775) steering,
     out Q (0.0 : 0.001 : 3.0) brakes;
 
-  connect 1.5 -> engine;
-  connect 0.0 -> steering;
-  connect 0.0 -> brakes;
+  implementation Math {
+    if addNodes_length > 0 {
+      Q sumLat = 0.0;
+      for i = 1 : addNodes_length
+        sumLat = sumLat + addNodes_gpsLat(1,i);
+      end
+      engine = 1.0 / abs(sumLat);
+    } else {
+      engine = 1.5;
+    } end
+    steering = 0.0;
+    brakes = 0.0;
+  }
 }
