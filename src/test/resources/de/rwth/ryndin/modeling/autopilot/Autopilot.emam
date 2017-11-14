@@ -1,0 +1,35 @@
+package de.rwth.ryndin.modeling.autopilot;
+
+component Autopilot {
+  port
+    in Q (0.0 s : 0.001 s : 1.0 s) timeIncrement,
+    in Q (0.0 m/s : 0.01 m/s : oo m/s) currentVelocity,
+    in Q currentGpsLat,
+    in Q currentGpsLon,
+    in Q compass,
+    in Q (0.0 : 0.001 : 2.5) currentEngine,
+    in Q (-0.775 : 0.001 : 0.775) currentSteering,
+    in Q (0.0 : 0.001 : 3.0) currentBrakes,
+    in Z (-1 : oo) goalNodeId,
+    in Z (0 : 10000) addNodes_length,
+    in Z (0 : oo) ^ {1,10000} addNodes_id,
+    in Q ^ {1,10000} addNodes_gpsLat,
+    in Q ^ {1,10000} addNodes_gpsLon,
+    in Z (0 : 10000) removeNodes_length,
+    in Z (0 : oo) ^ {1,10000} removeNodes_id,
+    in Z (0 : 10000) addOrUpdateEdges_length,
+    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_fromNodeId,
+    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_toNodeId,
+    in Q (0 : oo) ^ {1,10000} addOrUpdateEdges_cost,
+    in Z (0 : 10000) removeEdges_length,
+    in Z (0 : oo) ^ {1,10000} removeEdges_fromNodeId,
+    in Z (0 : oo) ^ {1,10000} removeEdges_toNodeId,
+
+    out Q (0.0 : 0.001 : 2.5) engine,
+    out Q (-0.775 : 0.001 : 0.775) steering,
+    out Q (0.0 : 0.001 : 3.0) brakes;
+
+  connect 1.5 -> engine;
+  connect 0.0 -> steering;
+  connect 0.0 -> brakes;
+}

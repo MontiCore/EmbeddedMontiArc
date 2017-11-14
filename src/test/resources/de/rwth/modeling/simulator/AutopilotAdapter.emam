@@ -1,0 +1,80 @@
+package de.rwth.modeling.simulator;
+
+// do not change this component
+// it is here for reference only
+// it represents an interface to the simulator
+// make sure the actual Autopilot component
+// has exactly the same input and output ports
+component AutopilotAdapter {
+  port
+    // length of simulation time frame
+    // e.g. when simulation frequency is 200 Hz
+    // this value will be equal to 5ms
+    in Q (0.0 s : 0.001 s : 1.0 s) timeIncrement,
+
+    // current velocity
+    in Q (0.0 m/s : 0.01 m/s : oo m/s) currentVelocity,
+
+    // current GPS position
+    in Q currentGpsLat,
+    in Q currentGpsLon,
+
+    // orientation angle (also sometimes called yaw angle)
+    // it is measured from from the positive Y axis direction
+    // to the actual vehicle's direction counter-clockwise
+    // Example 1: vehicle has direction (-1.0; 0.0)
+    // compass = 0.25 * PI (positive)
+    // Example 2: vehicle has direction (1.0; 0.0) i.e. it is directed along the X axis
+    // compass = -0.5 * PI (negative)
+    in Q compass,
+
+    // current engine actuation
+    in Q (0.0 : 0.001 : 2.5) currentEngine,
+
+    // current steering actuation
+    // negative value: left turn
+    // positive value: right turn
+    in Q (-0.775 : 0.001 : 0.775) currentSteering,
+
+    // current brakes actuation
+    in Q (0.0 : 0.001 : 3.0) currentBrakes,
+
+    // ID of the destination node
+    // or -1 if the previously provided value
+    // should be used
+    // typically it is set once on the first call
+    // and then always -1 is passed
+    // although, if new value is passed again
+    // it means that the destination has changed
+    // and the route needs to be recalculated
+    in Z (-1 : oo) goalNodeId,
+
+    // add new nodes to the map
+    in Z (0 : 10000) addNodes_length,
+    in Z (0 : oo) ^ {1,10000}  addNodes_id,
+    in Q ^ {1,10000} addNodes_gpsLat,
+    in Q ^ {1,10000} addNodes_gpsLon,
+
+    // remove nodes
+    in Z (0 : 10000) removeNodes_length,
+    // ids of the nodes to be removed
+    in Z (0 : oo) ^ {1,10000} removeNodes_id,
+
+    // note: edges below are directed
+    // add/update edges
+    in Z (0 : 10000) addOrUpdateEdges_length,
+    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_fromNodeId,
+    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_toNodeId,
+    // cost (i.e. abstract length) of the edge
+    in Q (0 : oo) ^ {1,10000} addOrUpdateEdges_cost,
+
+    // remove edges
+    in Z (0 : 10000) removeEdges_length,
+    in Z (0 : oo) ^ {1,10000} removeEdges_fromNodeId,
+    in Z (0 : oo) ^ {1,10000} removeEdges_toNodeId,
+
+    // output actuation commands
+    out Q (0.0 : 0.001 : 2.5) engine,
+    out Q (-0.775 : 0.001 : 0.775) steering,
+    out Q (0.0 : 0.001 : 3.0) brakes;
+}
