@@ -75,6 +75,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/CNNArchLang/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/CNNArchLang?branch=master)
 - **Reporting**
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/reporting.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/reporting)
+- **Tagging**
+[![Maintainability](https://api.codeclimate.com/v1/badges/d44a163c9690d9f90ac0/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/Tagging/maintainability)
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/Tagging.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Tagging)
+[![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/Tagging/badge.svg?branch=master&service=github)](https://coveralls.io/github/EmbeddedMontiArc/Tagging?branch=master)
+- **tagging-examples**
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/Tagging-Examples.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Tagging-Examples)
 
 Link to analysing all Test files in the project:
 [CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1)
