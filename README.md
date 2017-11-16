@@ -1,3 +1,4 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/d44a163c9690d9f90ac0/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/Tagging/maintainability)
 [![Build Status](https://travis-ci.org/EmbeddedMontiArc/Tagging.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Tagging)
 [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/Tagging/badge.svg?branch=master&service=github)](https://coveralls.io/github/EmbeddedMontiArc/Tagging?branch=master)
 
