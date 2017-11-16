@@ -1,2 +1,5 @@
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/Tagging.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Tagging)
+[![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/Tagging/badge.svg?branch=master&service=github)](https://coveralls.io/github/EmbeddedMontiArc/Tagging?branch=master)
+
 # Tagging
 Project allow Tagging of all languages via symbol table
