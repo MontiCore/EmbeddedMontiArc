@@ -1,7 +1,5 @@
 package de.monticore.lang.tagging._symboltable;
 
-import static de.monticore.lang.tagging._symboltable.TagableModelingLanguage.TAG_FILE_ENDING;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -37,6 +35,7 @@ import org.apache.commons.io.FileUtils;
  * Created by MichaelvonWenckstern on 16.11.2017.
  */
 public class TaggingResolver implements Scope {
+  public static final String TAG_FILE_ENDING = "tag";
   public static TaggingResolver currentTaggingResolver; // will be set by symbol table creator
 
   private Collection<String> modelPaths;
