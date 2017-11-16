@@ -310,5 +310,15 @@
 	</plugin>
     </plugins>
   </build>
-
+  <distributionManagement>
+    <repository>
+      <id>internal.repo</id>
+      <name>Temporary Staging Repository</name>
+      <url>file://${project.build.directory}/external-dependencies</url>
+    </repository>
+    <snapshotRepository>
+      <id>internal.repo</id>
+      <url>file://${project.build.directory}/external-dependencies</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
