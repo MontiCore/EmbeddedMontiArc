@@ -29,5 +29,6 @@ import de.monticore.symboltable.Scope;
  * @author Michael von Wenckstern
  */
 public interface TagSymbolCreator {
-  void create(ASTTaggingUnit unit, Scope gs);
+  void create(ASTTaggingUnit unit, TaggingResolver tagging);
 }
+
