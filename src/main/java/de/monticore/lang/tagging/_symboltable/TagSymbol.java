@@ -2,8 +2,7 @@ package de.monticore.lang.tagging._symboltable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import de.monticore.lang.montiarc.helper.IndentPrinter;
+import java.util.stream.Collectors;
 
 /**
  * Symboltable entry for tag.
@@ -48,9 +47,14 @@ public class TagSymbol extends de.monticore.symboltable.CommonSymbol {
 
   @Override
   public String toString() {
-    return IndentPrinter.groups("{0}: ", "{1:'{':',':'}'}")
-        .<String, ArrayList<Object>>params(KIND.getName(), values)
-        .toString();
+    StringBuilder sb = new StringBuilder();
+    sb.append(KIND.getName());
+    if (!values.isEmpty()) {
+      sb.append("{")
+          .append(values.stream().map(v -> v.toString()).collect(Collectors.joining(";")))
+          .append("}");
+    }
+    return sb.toString();
   }
 
   @Override

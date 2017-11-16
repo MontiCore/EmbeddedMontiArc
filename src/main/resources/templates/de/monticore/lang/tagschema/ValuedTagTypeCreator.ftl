@@ -7,31 +7,31 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ${importSymbols};
-import de.monticore.lang.montiarc.montiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTTag;
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.montiarc._symboltable.ConnectorSymbol;
+import de.monticore.lang.tagging._ast.ASTNameScope;
+import de.monticore.lang.tagging._ast.ASTScope;
+import de.monticore.lang.tagging._ast.ASTTag;
+import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
-import de.monticore.lang.montiarc.tagvalue._parser.TagValueParser;
+import de.monticore.lang.tagvalue._parser.TagValueParser;
   <#if isUnit>
 import javax.measure.quantity.${dataType};
 import javax.measure.unit.Unit;
-import de.monticore.lang.montiarc.tagging.helper.NumericLiteral;
-import de.monticore.lang.montiarc.tagvalue._ast.ASTUnitTagValue;
+import de.monticore.lang.tagging.helper.NumericLiteral;
+import de.monticore.lang.tagvalue._ast.ASTUnitTagValue;
   <#elseif dataType = "String">
-import de.monticore.lang.montiarc.tagvalue._ast.ASTStringTagValue;
+import de.monticore.lang.tagvalue._ast.ASTStringTagValue;
   <#elseif dataType = "Boolean">
-import de.monticore.lang.montiarc.tagvalue._ast.ASTBooleanTagValue;
+import de.monticore.lang.tagvalue._ast.ASTBooleanTagValue;
   <#else>
-import de.monticore.lang.montiarc.tagging.helper.NumericLiteral;
-import de.monticore.lang.montiarc.tagvalue._ast.ASTNumericTagValue;
+import de.monticore.lang.tagging.helper.NumericLiteral;
+import de.monticore.lang.tagvalue._ast.ASTNumericTagValue;
   </#if>
 
 /**

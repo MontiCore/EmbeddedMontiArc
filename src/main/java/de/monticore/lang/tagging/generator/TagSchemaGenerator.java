@@ -98,7 +98,7 @@ public class TagSchemaGenerator extends GeneratorEngine {
   }
 
   public void generateTagSchema(ASTTagSchemaUnit tagSchemaUnit, String packageName, List<String> tagTypeNames) {
-    generate("templates.de.monticore.lang.montiarc.tagschema.TagSchema",
+    generate("templates.de.monticore.lang.tagschema.TagSchema",
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), tagSchemaUnit.getName() + ".java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), tagTypeNames);
   }
@@ -134,13 +134,13 @@ public class TagSchemaGenerator extends GeneratorEngine {
       }
     }
     Log.errorIfNull(dataType, "Not supported data type in generator");
-    generate("templates.de.monticore.lang.montiarc.tagschema.ValuedTagType",
+    generate("templates.de.monticore.lang.tagschema.ValuedTagType",
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), valuedTagType.getName() + "Symbol.java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), valuedTagType.getName(), dataType, isUnit);
-    String importSymbols = "de.monticore.lang.montiarc.montiarc._symboltable.*";
+    String importSymbols = "de.monticore.lang.montiarc._symboltable.*";
     String scopeSymbol = valuedTagType.getScope().get().getScopeIdentifiers().get(0).getScopeName();
     String nameScopeType = Log.errorIfNull(symbolScopeMap.get(scopeSymbol), String.format("For the scope symbol '%s' is no scope type defined.", scopeSymbol));
-    generate("templates.de.monticore.lang.montiarc.tagschema.ValuedTagTypeCreator",
+    generate("templates.de.monticore.lang.tagschema.ValuedTagTypeCreator",
         Paths.get(createPackagePath(packageName).toString(),tagSchemaUnit.getName(),  valuedTagType.getName() + "SymbolCreator.java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), valuedTagType.getName(), importSymbols, scopeSymbol + "Symbol", nameScopeType, dataType, isUnit);
   }
@@ -156,13 +156,13 @@ public class TagSchemaGenerator extends GeneratorEngine {
 
   protected void generateSimpleTagType(ASTSimpleTagType simpleTagType, ASTTagSchemaUnit tagSchemaUnit,
       String packageName, Map<String, String> symbolScopeMap) {
-    generate("templates.de.monticore.lang.montiarc.tagschema.SimpleTagType",
+    generate("templates.de.monticore.lang.tagschema.SimpleTagType",
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), simpleTagType.getName() + "Symbol.java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), simpleTagType.getName());
-    String importSymbols = "de.monticore.lang.montiarc.montiarc._symboltable.*";
+    String importSymbols = "de.monticore.lang.montiarc._symboltable.*";
     String scopeSymbol = simpleTagType.getScope().get().getScopeIdentifiers().get(0).getScopeName();
     String nameScopeType = Log.errorIfNull(symbolScopeMap.get(scopeSymbol), String.format("For the scope symbol '%s' is no scope type defined.", scopeSymbol));
-    generate("templates.de.monticore.lang.montiarc.tagschema.SimpleTagTypeCreator",
+    generate("templates.de.monticore.lang.tagschema.SimpleTagTypeCreator",
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), simpleTagType.getName() + "SymbolCreator.java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), simpleTagType.getName(), importSymbols, scopeSymbol + "Symbol", nameScopeType);
   }

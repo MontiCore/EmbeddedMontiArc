@@ -7,11 +7,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import ${importSymbols};
-import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTTag;
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._ast.ASTNameScope;
+import de.monticore.lang.tagging._ast.ASTScope;
+import de.monticore.lang.tagging._ast.ASTTag;
+import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;

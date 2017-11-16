@@ -1,4 +1,4 @@
-package de.monticore.lang.montiarc.tagschema._ast;
+package de.monticore.lang.tagschema._ast;
 
 /**
  * Created by MichaelvonWenckstern on 28.06.2016.

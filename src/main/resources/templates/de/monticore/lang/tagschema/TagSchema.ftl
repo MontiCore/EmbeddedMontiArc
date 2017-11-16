@@ -3,7 +3,7 @@ ${tc.signature("packageName", "schemaName", "tagTypeNames")}
 package ${packageName}.${schemaName};
 
 import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**

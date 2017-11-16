@@ -7,7 +7,7 @@ package de.monticore.lang;
  */
 grammar Tagging extends de.monticore.common.Common {
 
-  TaggingUnit@! =
+  TaggingUnit =
     ("package" package:(Name& || ".")+ ";")? 
     (ImportStatement)*
     "conforms" "to" (QualifiedName || ",")+ ";"
@@ -23,7 +23,7 @@ grammar Tagging extends de.monticore.common.Common {
 //	interface TagElement;
 	
   Tag = "tag" (Scope || ",")+ "with" TagElement+;
-  TagElement = Name (TagValue | ";");
+  symbol TagElement = Name (TagValue | ";");
 
  fragment token WSS = (' ' | '\t' | '\r' | '\n');
 

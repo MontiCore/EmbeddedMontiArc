@@ -2,8 +2,8 @@ ${tc.signature("packageName", "schemaName", "tagTypeName")}
 
 package ${packageName}.${schemaName};
 
-import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbol;
+import de.monticore.lang.tagging._symboltable.TagKind;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
 
 /**
  * Created by SimpleTagType.ftl

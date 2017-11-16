@@ -5,14 +5,14 @@ package ${packageName}.${schemaName};
 import java.util.Optional;
 
 import ${importSymbols};
-import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTTag;
-import de.monticore.lang.montiarc.tagging._ast.ASTTagElement;
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._ast.ASTTargetElement;
-import de.monticore.lang.montiarc.tagging._ast.ASTValuedTag;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._ast.ASTNameScope;
+import de.monticore.lang.tagging._ast.ASTScope;
+import de.monticore.lang.tagging._ast.ASTTag;
+import de.monticore.lang.tagging._ast.ASTTagElement;
+import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._ast.ASTTargetElement;
+import de.monticore.lang.tagging._ast.ASTValuedTag;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
 import de.monticore.literals.literals._ast.ASTDoubleLiteral;
 import de.monticore.literals.literals._ast.ASTFloatLiteral;
 import de.monticore.literals.literals._ast.ASTIntLiteral;
@@ -26,14 +26,14 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
   <#if isUnit>
-import de.monticore.lang.montiarc.unit.*;
-import de.monticore.lang.montiarc.tagging._ast.ASTUnitTagValue;
+import de.monticore.lang.unit.*;
+import de.monticore.lang.tagging._ast.ASTUnitTagValue;
   <#elseif dataType = "String">
-import de.monticore.lang.montiarc.tagging._ast.ASTStringTagValue;
+import de.monticore.lang.tagging._ast.ASTStringTagValue;
   <#elseif dataType = "Boolean">
-import de.monticore.lang.montiarc.tagging._ast.ASTBooleanTagValue;
+import de.monticore.lang.tagging._ast.ASTBooleanTagValue;
   <#else>
-import de.monticore.lang.montiarc.tagging._ast.ASTNumericTagValue;
+import de.monticore.lang.tagging._ast.ASTNumericTagValue;
   </#if>
 
 /**

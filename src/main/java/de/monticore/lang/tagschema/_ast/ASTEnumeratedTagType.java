@@ -1,4 +1,4 @@
-package de.monticore.lang.montiarc.tagschema._ast;
+package de.monticore.lang.tagschema._ast;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

@@ -7,7 +7,7 @@ package de.monticore.lang;
  */
 grammar TagSchema extends de.monticore.common.Common {
 
-  TagSchemaUnit@! =
+  TagSchemaUnit =
     ("package" package:(Name& || ".")+ ";")? 
     (ImportStatement)*
     "tagschema" Name "{" TagType+ "}";
@@ -55,7 +55,7 @@ grammar TagSchema extends de.monticore.common.Common {
 	
 	Scope = "for" (ScopeIdentifier || ",")+;
 	
-	SimpleTagType implements TagType  = ("private")? "tagtype" Name Scope? ";" ;
+	symbol SimpleTagType implements TagType  = ("private")? "tagtype" Name Scope? ";" ;
 
 	// modification form ML's tagging language (replaced String by Name --> is more to Java feeling)
 	EnumeratedTagType  implements TagType  = ("private")? "tagtype" name:Name ":" enumText:Enum Scope? ";" ;

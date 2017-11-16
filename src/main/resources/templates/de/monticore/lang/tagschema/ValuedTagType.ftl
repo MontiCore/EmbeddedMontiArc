@@ -2,8 +2,8 @@ ${tc.signature("packageName", "schemaName", "tagTypeName", "dataType", "isUnit")
 
 package ${packageName}.${schemaName};
 
-import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbol;
+import de.monticore.lang.tagging._symboltable.TagKind;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
 
   <#if isUnit>
 import org.jscience.physics.amount.Amount;

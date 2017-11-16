@@ -3,11 +3,10 @@
  *
  * http://www.se-rwth.de/
  */
-package de.monticore.lang.montiarc.generator;
+package de.monticore.lang.tagging.generator;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import de.se_rwth.commons.configuration.Configuration;
