@@ -29,7 +29,7 @@
   
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiview</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.5</version>
   
   <!-- == PROJECT DEPENDENCIES ============================================= -->
   
