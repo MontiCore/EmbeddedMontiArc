@@ -39,6 +39,7 @@
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
         <SIUnit.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</SIUnit.version>
         <Common-MontiCar.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Common-MontiCar.version>
+        <enumlang.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</enumlang.version>
         <!-- .. Libraries .................................................. -->
         <junit.version>4.12</junit.version>
         <logback.version>1.1.2</logback.version>
@@ -118,6 +119,12 @@
             <version>${Common-MontiCar.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>enum</artifactId>
+            <version>${enumlang.version}</version>
         </dependency>
 
         <!-- .. Test Libraries ............................................... -->
