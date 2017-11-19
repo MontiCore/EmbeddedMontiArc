@@ -1,5 +1,12 @@
 package de.monticore.lang.monticar.generator.order;
 
+import de.ma2cfg.helper.Names;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,24 +18,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.ma2cfg.helper.Names;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
-
 /*
  *
  *  @author ernst
  *
  */
 public class ImplementExecutionOrder {
+    private static Map<ExpandedComponentInstanceSymbol, ExecutionOrder> component2ExecutionOrder = new HashMap<>();
     private static Map<ExpandedComponentInstanceSymbol, Collection<PortSymbol>> dependencies = new HashMap<>();
     private static int s = 0;
     private static int b = 0;
+
+    public static Map<ExpandedComponentInstanceSymbol, ExecutionOrder> getComponent2ExecutionOrder() {
+        return component2ExecutionOrder;
+    }
 
     /**
      * This function initializes the execution order process. This means the dependencies map will cleared,
@@ -128,10 +131,10 @@ public class ImplementExecutionOrder {
             // Constant, Memory or Delay
             if ((subInst.getSubComponents().isEmpty() && subInst.getIncomingPorts().isEmpty()
                     || !subInst.getComponentType().getConfigParameters().isEmpty())
-                    && subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()) {
+                    && !isContainsExecutionOrder(subInst)) {
                 ExecutionOrder e = new NonVirtualBlock(s, b);
                 Log.info(e.toString(), "Adding tag:");
-                subInst.addTag(new TagExecutionOrderSymbol(e));
+                addExecutionOrder(subInst, e);
                 b += 1;
                 Log.info(subInst.toString(), "Instance after Tagging:");
                 Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
@@ -169,11 +172,11 @@ public class ImplementExecutionOrder {
 
         //tag components that are newly independent from ports
         for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
-            if (subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
+            if (!isContainsExecutionOrder(subInst)
                     && subInst.getSubComponents().isEmpty()
                     && dependencies.get(subInst).isEmpty()) {
                 tagExOrderBranch(subInst, inst);
-            } else if (subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
+            } else if (!isContainsExecutionOrder(subInst)
                     && !subInst.getSubComponents().isEmpty()) {
                 tagExOrder(subInst);
             }
@@ -186,11 +189,11 @@ public class ImplementExecutionOrder {
      * connected to this component's outputs
      */
     private static ExpandedComponentInstanceSymbol tagExOrderBranch(ExpandedComponentInstanceSymbol subInst, ExpandedComponentInstanceSymbol inst) {
-        if ((subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
+        if ((!isContainsExecutionOrder(subInst)
                 && subInst.getSubComponents().isEmpty()
                 && dependencies.get(subInst) != null && dependencies.get(subInst).isEmpty())) {
             ExecutionOrder e = new NonVirtualBlock(s, b);
-            subInst.addTag(new TagExecutionOrderSymbol(e));
+            addExecutionOrder(subInst, e);
             b += 1;
             Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
                     .filter(c -> subInst.getOutgoingPorts().contains(connectorSourcePort(inst, c)))
@@ -314,10 +317,9 @@ public class ImplementExecutionOrder {
     private static Map<ExecutionOrder, ExpandedComponentInstanceSymbol> exOrderRecursion(Map<ExecutionOrder,
             ExpandedComponentInstanceSymbol> exOrder, ExpandedComponentInstanceSymbol inst) {
         for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
-            Log.info(subInst.getTags(TagExecutionOrderSymbol.KIND).size() + "", "Amount of ExecutionOrder Tags");
-            if (subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).size() == 1) {
-                exOrder.put(subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND)
-                        .iterator().next().getExecutionOrder(), subInst);
+            ExecutionOrder execOrder = component2ExecutionOrder.get(subInst);
+            if (execOrder != null) {
+                exOrder.put(execOrder, subInst);
             } else {
                 exOrderRecursion(exOrder, subInst);
             }
@@ -403,5 +405,13 @@ public class ImplementExecutionOrder {
         Log.info("False target: " + c.getTarget() + " in: " + c.getEnclosingScope().getName().get(), "ImplementExecutionOrder");
         Log.error("0xAC013 No target have been set for the connector symbol");
         return null;
+    }
+
+    private static void addExecutionOrder(ExpandedComponentInstanceSymbol compInst, ExecutionOrder execOrder) {
+        component2ExecutionOrder.put(compInst, execOrder);
+    }
+
+    private static boolean isContainsExecutionOrder(ExpandedComponentInstanceSymbol compInst) {
+        return component2ExecutionOrder.containsKey(compInst);
     }
 }

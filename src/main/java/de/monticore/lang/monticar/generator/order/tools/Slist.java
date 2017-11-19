@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.generator.order.tools;
 
 import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.order.ExecutionOrder;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
-import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.Scope;
@@ -77,8 +77,7 @@ public class Slist extends AbstractSymtab {
     public static void printComponentBlockOrder(List<ExpandedComponentInstanceSymbol> exOrder, IndentPrinter ip) {
         for (ExpandedComponentInstanceSymbol order : exOrder) {
             ip.indent();
-            ip.print(order.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND)
-                    .iterator().next().getExecutionOrder());
+            ip.print(ImplementExecutionOrder.getComponent2ExecutionOrder().get(order));
             ip.print("    ");
             ip.print("'" + order.getFullName() + "' (");
             ip.print(order.getComponentType().getName() + ", ");
@@ -94,12 +93,10 @@ public class Slist extends AbstractSymtab {
     // Counts how much NonVirtualBlocks are in the component
     public static int getNonVirtualBlockSize(ExpandedComponentInstanceSymbol inst) {
         for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
-            if (subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
-                    && !subInst.getSubComponents().isEmpty()) {
+            ExecutionOrder execOrder = ImplementExecutionOrder.getComponent2ExecutionOrder().get(subInst);
+            if (execOrder == null && !subInst.getSubComponents().isEmpty()) {
                 getNonVirtualBlockSize(subInst);
-            }
-            if (!subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
-                    && subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).size() == 1) {
+            } else {
                 nonVirtualBlockSize++;
             }
         }
