@@ -172,9 +172,10 @@ public class ImplementExecutionOrder {
 
         //tag components that are newly independent from ports
         for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
+            Collection<PortSymbol> deps = dependencies.get(subInst);
             if (!isContainsExecutionOrder(subInst)
                     && subInst.getSubComponents().isEmpty()
-                    && dependencies.get(subInst).isEmpty()) {
+                    && (deps == null || deps.isEmpty())) {
                 tagExOrderBranch(subInst, inst);
             } else if (!isContainsExecutionOrder(subInst)
                     && !subInst.getSubComponents().isEmpty()) {
