@@ -30,8 +30,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArray
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.math.math._symboltable.MathLanguage;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;
@@ -42,14 +40,13 @@ import java.util.*;
 /**
  * Created by MichaelvonWenckstern on 02.02.2017.
  */
-public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage implements TagableModelingLanguage {
+public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage{
     public static final String FILE_ENDING = "emam";
     public static final ModelingLanguage HOST_LANGUAGE =
             new EmbeddedMontiArcLanguage();
     public static final ModelingLanguage EMBEDDED_LANGUAGE =
             new MathLanguage();
 
-    protected LinkedHashSet<TagSymbolCreator> tagSymbolCreators = new LinkedHashSet<>();
 
     public EmbeddedMontiArcMathLanguage() {
         super("Embedded MontiArc Math Language", FILE_ENDING,
@@ -80,14 +77,6 @@ public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage impl
     public Optional<EmbeddedMontiArcMathSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope enclosingScope) {
         return Optional.of(new EmbeddedMontiArcMathSymbolTableCreator(
                 resolvingConfiguration, enclosingScope));
-    }
-
-    public void addTagSymbolCreator(TagSymbolCreator tagSymbolCreator) {
-        this.tagSymbolCreators.add(tagSymbolCreator);
-    }
-
-    public ImmutableSet<TagSymbolCreator> getTagSymbolCreators() {
-        return ImmutableSet.copyOf(this.tagSymbolCreators);
     }
 
 }
