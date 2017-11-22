@@ -20,12 +20,14 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
+import com.google.common.collect.ImmutableSet;
 import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.ModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.math.math._symboltable.MathLanguage;
 import de.monticore.symboltable.MutableScope;
@@ -38,12 +40,13 @@ import java.util.*;
 /**
  * Created by MichaelvonWenckstern on 02.02.2017.
  */
-public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage {
+public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage{
     public static final String FILE_ENDING = "emam";
     public static final ModelingLanguage HOST_LANGUAGE =
             new EmbeddedMontiArcLanguage();
     public static final ModelingLanguage EMBEDDED_LANGUAGE =
             new MathLanguage();
+
 
     public EmbeddedMontiArcMathLanguage() {
         super("Embedded MontiArc Math Language", FILE_ENDING,
@@ -75,4 +78,5 @@ public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage {
         return Optional.of(new EmbeddedMontiArcMathSymbolTableCreator(
                 resolvingConfiguration, enclosingScope));
     }
+
 }
