@@ -1,12 +1,12 @@
 /* 
- * advanced weather language v0.12
+ * advanced weather language v0.2
  * @author Deniz Schmidt
 */
 
 grammar Weather extends SI{
   token Numb = ('0'|('1'..'9')+ ('0'..'9')*);
   
-  /*
+  /* for testing purposes
   symbol scope Weather = "weather" Name "{" 
         Temperature? 
         Humidity? 
