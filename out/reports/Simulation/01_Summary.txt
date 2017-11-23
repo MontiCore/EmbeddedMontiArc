@@ -11,7 +11,7 @@ used handwritten templates:              0
 unused handwritten templates:            0
 max template depth:                      4
 max AST depth:                           7
-AST node instances:                      332
+AST node instances:                      334
 AST node types:                          15
 AST node visits:                         3923
 variables:                               9

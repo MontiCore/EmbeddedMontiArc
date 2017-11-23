@@ -27,17 +27,17 @@ objectdiagram Simulation_ST {
             };
             enclosingScope = @Simulation!ArtifactScope;
             subScopes = [// *size: 28
-              @PosNumber!Scope: CommonScope{
-                name = "PosNumber";
+              @PosNum!Scope: CommonScope{
+                name = "PosNum";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @PosNumber!Symbol(29,2): MCProdSymbol {
-                  name = "PosNumber";
+                spanningSymbol = @PosNum!Symbol(29,2): MCProdSymbol {
+                  name = "PosNum";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @PosNumber!LexProd(29,2);
-                  spannedScope = @PosNumber!Scope;
+                  astNode = @PosNum!LexProd(29,2);
+                  spannedScope = @PosNum!Scope;
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
                 };
@@ -1275,12 +1275,12 @@ objectdiagram Simulation_ST {
                 name = "Time";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @Time!Symbol(67,2): MCProdSymbol {
+                spanningSymbol = @Time!Symbol(68,2): MCProdSymbol {
                   name = "Time";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @Time!ClassProd(67,2);
+                  astNode = @Time!ClassProd(68,2);
                   spannedScope = @Time!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1291,12 +1291,12 @@ objectdiagram Simulation_ST {
                     name = "time";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @time!Symbol(67,9): MCProdComponentSymbol {
+                    spanningSymbol = @time!Symbol(68,9): MCProdComponentSymbol {
                       name = "time";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @time!Terminal(67,9);
+                      astNode = @time!Terminal(68,9);
                       spannedScope = @time!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1307,12 +1307,12 @@ objectdiagram Simulation_ST {
                     name = "UnitNumber";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @UnitNumber!Symbol(67,17): MCProdComponentSymbol {
+                    spanningSymbol = @UnitNumber!Symbol(68,17): MCProdComponentSymbol {
                       name = "UnitNumber";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(67,17);
+                      astNode = @UnitNumber!NonTerminal(68,17);
                       spannedScope = @UnitNumber!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1323,12 +1323,12 @@ objectdiagram Simulation_ST {
                     name = "timeHours";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @timeHours!Symbol(70,18): MCProdComponentSymbol {
+                    spanningSymbol = @timeHours!Symbol(71,18): MCProdComponentSymbol {
                       name = "timeHours";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(70,18);
+                      astNode = @PosNum!NonTerminal(71,18);
                       spannedScope = @timeHours!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1339,12 +1339,12 @@ objectdiagram Simulation_ST {
                     name = ":";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @:!Symbol(70,90): MCProdComponentSymbol {
+                    spanningSymbol = @:!Symbol(71,81): MCProdComponentSymbol {
                       name = ":";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @COLON!Terminal(70,90);
+                      astNode = @COLON!Terminal(71,81);
                       spannedScope = @:!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1355,12 +1355,12 @@ objectdiagram Simulation_ST {
                     name = "timeMinutes";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @timeMinutes!Symbol(70,42): MCProdComponentSymbol {
+                    spanningSymbol = @timeMinutes!Symbol(71,39): MCProdComponentSymbol {
                       name = "timeMinutes";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(70,42);
+                      astNode = @PosNum!NonTerminal(71,39);
                       spannedScope = @timeMinutes!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1371,12 +1371,12 @@ objectdiagram Simulation_ST {
                     name = "timeSeconds";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @timeSeconds!Symbol(70,68): MCProdComponentSymbol {
+                    spanningSymbol = @timeSeconds!Symbol(71,62): MCProdComponentSymbol {
                       name = "timeSeconds";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(70,68);
+                      astNode = @PosNum!NonTerminal(71,62);
                       spannedScope = @timeSeconds!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1387,12 +1387,12 @@ objectdiagram Simulation_ST {
                     name = "timeMilliseconds";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @timeMilliseconds!Symbol(70,94): MCProdComponentSymbol {
+                    spanningSymbol = @timeMilliseconds!Symbol(71,85): MCProdComponentSymbol {
                       name = "timeMilliseconds";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(70,94);
+                      astNode = @PosNum!NonTerminal(71,85);
                       spannedScope = @timeMilliseconds!Scope;
                       enclosingScope = @Time!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1404,12 +1404,12 @@ objectdiagram Simulation_ST {
                 name = "MapPath";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MapPath!Symbol(73,2): MCProdSymbol {
+                spanningSymbol = @MapPath!Symbol(75,2): MCProdSymbol {
                   name = "MapPath";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MapPath!ClassProd(73,2);
+                  astNode = @MapPath!ClassProd(75,2);
                   spannedScope = @MapPath!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1420,12 +1420,12 @@ objectdiagram Simulation_ST {
                     name = "map_path";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @map_path!Symbol(73,12): MCProdComponentSymbol {
+                    spanningSymbol = @map_path!Symbol(75,12): MCProdComponentSymbol {
                       name = "map_path";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @map_path!Terminal(73,12);
+                      astNode = @map_path!Terminal(75,12);
                       spannedScope = @map_path!Scope;
                       enclosingScope = @MapPath!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1436,12 +1436,12 @@ objectdiagram Simulation_ST {
                     name = "mapPath";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @mapPath!Symbol(73,23): MCProdComponentSymbol {
+                    spanningSymbol = @mapPath!Symbol(75,23): MCProdComponentSymbol {
                       name = "mapPath";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @Name!NonTerminal(73,23);
+                      astNode = @Name!NonTerminal(75,23);
                       spannedScope = @mapPath!Scope;
                       enclosingScope = @MapPath!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1453,12 +1453,12 @@ objectdiagram Simulation_ST {
                 name = "MapName";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MapName!Symbol(74,2): MCProdSymbol {
+                spanningSymbol = @MapName!Symbol(76,2): MCProdSymbol {
                   name = "MapName";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MapName!ClassProd(74,2);
+                  astNode = @MapName!ClassProd(76,2);
                   spannedScope = @MapName!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1469,12 +1469,12 @@ objectdiagram Simulation_ST {
                     name = "map_name";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @map_name!Symbol(74,12): MCProdComponentSymbol {
+                    spanningSymbol = @map_name!Symbol(76,12): MCProdComponentSymbol {
                       name = "map_name";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @map_name!Terminal(74,12);
+                      astNode = @map_name!Terminal(76,12);
                       spannedScope = @map_name!Scope;
                       enclosingScope = @MapName!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1485,12 +1485,12 @@ objectdiagram Simulation_ST {
                     name = "mapName";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @mapName!Symbol(74,23): MCProdComponentSymbol {
+                    spanningSymbol = @mapName!Symbol(76,23): MCProdComponentSymbol {
                       name = "mapName";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @Name!NonTerminal(74,23);
+                      astNode = @Name!NonTerminal(76,23);
                       spannedScope = @mapName!Scope;
                       enclosingScope = @MapName!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1501,12 +1501,12 @@ objectdiagram Simulation_ST {
                     name = ".osm";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @.osm!Symbol(74,36): MCProdComponentSymbol {
+                    spanningSymbol = @.osm!Symbol(76,36): MCProdComponentSymbol {
                       name = ".osm";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @_osm!Terminal(74,36);
+                      astNode = @_osm!Terminal(76,36);
                       spannedScope = @.osm!Scope;
                       enclosingScope = @MapName!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1518,12 +1518,12 @@ objectdiagram Simulation_ST {
                 name = "MapHeight";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MapHeight!Symbol(76,2): MCProdSymbol {
+                spanningSymbol = @MapHeight!Symbol(78,2): MCProdSymbol {
                   name = "MapHeight";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MapHeight!ClassProd(76,2);
+                  astNode = @MapHeight!ClassProd(78,2);
                   spannedScope = @MapHeight!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1534,12 +1534,12 @@ objectdiagram Simulation_ST {
                     name = "map_height";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @map_height!Symbol(76,14): MCProdComponentSymbol {
+                    spanningSymbol = @map_height!Symbol(78,14): MCProdComponentSymbol {
                       name = "map_height";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @map_height!Terminal(76,14);
+                      astNode = @map_height!Terminal(78,14);
                       spannedScope = @map_height!Scope;
                       enclosingScope = @MapHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1550,12 +1550,12 @@ objectdiagram Simulation_ST {
                     name = "flat";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @flat!Symbol(76,28): MCProdComponentSymbol {
+                    spanningSymbol = @flat!Symbol(78,28): MCProdComponentSymbol {
                       name = "flat";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @flat!Terminal(76,28);
+                      astNode = @flat!Terminal(78,28);
                       spannedScope = @flat!Scope;
                       enclosingScope = @MapHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1566,12 +1566,12 @@ objectdiagram Simulation_ST {
                     name = "random";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @random!Symbol(76,35): MCProdComponentSymbol {
+                    spanningSymbol = @random!Symbol(78,35): MCProdComponentSymbol {
                       name = "random";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @random!Terminal(76,35);
+                      astNode = @random!Terminal(78,35);
                       spannedScope = @random!Scope(!2);
                       enclosingScope = @MapHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1582,12 +1582,12 @@ objectdiagram Simulation_ST {
                     name = "heightMap";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @heightMap!Symbol(76,45): MCProdComponentSymbol {
+                    spanningSymbol = @heightMap!Symbol(78,45): MCProdComponentSymbol {
                       name = "heightMap";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @Name!NonTerminal(76,45);
+                      astNode = @Name!NonTerminal(78,45);
                       spannedScope = @heightMap!Scope;
                       enclosingScope = @MapHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1598,12 +1598,12 @@ objectdiagram Simulation_ST {
                     name = ".hm";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @.hm!Symbol(76,60): MCProdComponentSymbol {
+                    spanningSymbol = @.hm!Symbol(78,60): MCProdComponentSymbol {
                       name = ".hm";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @POINThm!Terminal(76,60);
+                      astNode = @POINThm!Terminal(78,60);
                       spannedScope = @.hm!Scope;
                       enclosingScope = @MapHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1615,12 +1615,12 @@ objectdiagram Simulation_ST {
                 name = "MapOverlap";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MapOverlap!Symbol(78,2): MCProdSymbol {
+                spanningSymbol = @MapOverlap!Symbol(80,2): MCProdSymbol {
                   name = "MapOverlap";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MapOverlap!ClassProd(78,2);
+                  astNode = @MapOverlap!ClassProd(80,2);
                   spannedScope = @MapOverlap!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1631,12 +1631,12 @@ objectdiagram Simulation_ST {
                     name = "map_overlap";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @map_overlap!Symbol(78,15): MCProdComponentSymbol {
+                    spanningSymbol = @map_overlap!Symbol(80,15): MCProdComponentSymbol {
                       name = "map_overlap";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @map_overlap!Terminal(78,15);
+                      astNode = @map_overlap!Terminal(80,15);
                       spannedScope = @map_overlap!Scope;
                       enclosingScope = @MapOverlap!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1647,12 +1647,12 @@ objectdiagram Simulation_ST {
                     name = "mapOverlap";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @mapOverlap!Symbol(78,29): MCProdComponentSymbol {
+                    spanningSymbol = @mapOverlap!Symbol(80,29): MCProdComponentSymbol {
                       name = "mapOverlap";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(78,29);
+                      astNode = @PosNum!NonTerminal(80,29);
                       spannedScope = @mapOverlap!Scope;
                       enclosingScope = @MapOverlap!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1664,12 +1664,12 @@ objectdiagram Simulation_ST {
                 name = "MapSectorWidth";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MapSectorWidth!Symbol(79,2): MCProdSymbol {
+                spanningSymbol = @MapSectorWidth!Symbol(81,2): MCProdSymbol {
                   name = "MapSectorWidth";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MapSectorWidth!ClassProd(79,2);
+                  astNode = @MapSectorWidth!ClassProd(81,2);
                   spannedScope = @MapSectorWidth!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1680,12 +1680,12 @@ objectdiagram Simulation_ST {
                     name = "map_sector_width";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @map_sector_width!Symbol(79,19): MCProdComponentSymbol {
+                    spanningSymbol = @map_sector_width!Symbol(81,19): MCProdComponentSymbol {
                       name = "map_sector_width";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @map_sector_width!Terminal(79,19);
+                      astNode = @map_sector_width!Terminal(81,19);
                       spannedScope = @map_sector_width!Scope;
                       enclosingScope = @MapSectorWidth!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1696,12 +1696,12 @@ objectdiagram Simulation_ST {
                     name = "sectorWidth";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @sectorWidth!Symbol(79,38): MCProdComponentSymbol {
+                    spanningSymbol = @sectorWidth!Symbol(81,38): MCProdComponentSymbol {
                       name = "sectorWidth";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(79,38);
+                      astNode = @PosNum!NonTerminal(81,38);
                       spannedScope = @sectorWidth!Scope;
                       enclosingScope = @MapSectorWidth!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1713,12 +1713,12 @@ objectdiagram Simulation_ST {
                 name = "MapSectorHeight";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MapSectorHeight!Symbol(80,2): MCProdSymbol {
+                spanningSymbol = @MapSectorHeight!Symbol(82,2): MCProdSymbol {
                   name = "MapSectorHeight";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MapSectorHeight!ClassProd(80,2);
+                  astNode = @MapSectorHeight!ClassProd(82,2);
                   spannedScope = @MapSectorHeight!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1729,12 +1729,12 @@ objectdiagram Simulation_ST {
                     name = "map_sector_height";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @map_sector_height!Symbol(80,20): MCProdComponentSymbol {
+                    spanningSymbol = @map_sector_height!Symbol(82,20): MCProdComponentSymbol {
                       name = "map_sector_height";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @map_sector_height!Terminal(80,20);
+                      astNode = @map_sector_height!Terminal(82,20);
                       spannedScope = @map_sector_height!Scope;
                       enclosingScope = @MapSectorHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1745,12 +1745,12 @@ objectdiagram Simulation_ST {
                     name = "sectorHeight";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @sectorHeight!Symbol(80,40): MCProdComponentSymbol {
+                    spanningSymbol = @sectorHeight!Symbol(82,40): MCProdComponentSymbol {
                       name = "sectorHeight";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(80,40);
+                      astNode = @PosNum!NonTerminal(82,40);
                       spannedScope = @sectorHeight!Scope;
                       enclosingScope = @MapSectorHeight!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1762,12 +1762,12 @@ objectdiagram Simulation_ST {
                 name = "MaxSectorUsers";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @MaxSectorUsers!Symbol(81,2): MCProdSymbol {
+                spanningSymbol = @MaxSectorUsers!Symbol(83,2): MCProdSymbol {
                   name = "MaxSectorUsers";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @MaxSectorUsers!ClassProd(81,2);
+                  astNode = @MaxSectorUsers!ClassProd(83,2);
                   spannedScope = @MaxSectorUsers!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1778,12 +1778,12 @@ objectdiagram Simulation_ST {
                     name = "max_sector_users";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @max_sector_users!Symbol(81,19): MCProdComponentSymbol {
+                    spanningSymbol = @max_sector_users!Symbol(83,19): MCProdComponentSymbol {
                       name = "max_sector_users";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @max_sector_users!Terminal(81,19);
+                      astNode = @max_sector_users!Terminal(83,19);
                       spannedScope = @max_sector_users!Scope;
                       enclosingScope = @MaxSectorUsers!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1794,12 +1794,12 @@ objectdiagram Simulation_ST {
                     name = "maxSectorUsers";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @maxSectorUsers!Symbol(81,38): MCProdComponentSymbol {
+                    spanningSymbol = @maxSectorUsers!Symbol(83,38): MCProdComponentSymbol {
                       name = "maxSectorUsers";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(81,38);
+                      astNode = @PosNum!NonTerminal(83,38);
                       spannedScope = @maxSectorUsers!Scope;
                       enclosingScope = @MaxSectorUsers!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1811,12 +1811,12 @@ objectdiagram Simulation_ST {
                 name = "Timeout";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @Timeout!Symbol(83,2): MCProdSymbol {
+                spanningSymbol = @Timeout!Symbol(85,2): MCProdSymbol {
                   name = "Timeout";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @Timeout!ClassProd(83,2);
+                  astNode = @Timeout!ClassProd(85,2);
                   spannedScope = @Timeout!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1827,12 +1827,12 @@ objectdiagram Simulation_ST {
                     name = "timeout";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @timeout!Symbol(83,22): MCProdComponentSymbol {
+                    spanningSymbol = @timeout!Symbol(85,22): MCProdComponentSymbol {
                       name = "timeout";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(83,22);
+                      astNode = @UnitNumber!NonTerminal(85,22);
                       spannedScope = @timeout!Scope;
                       enclosingScope = @Timeout!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1844,12 +1844,12 @@ objectdiagram Simulation_ST {
                 name = "Pedestrians";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @Pedestrians!Symbol(87,2): MCProdSymbol {
+                spanningSymbol = @Pedestrians!Symbol(89,2): MCProdSymbol {
                   name = "Pedestrians";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @Pedestrians!ClassProd(87,2);
+                  astNode = @Pedestrians!ClassProd(89,2);
                   spannedScope = @Pedestrians!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -1860,12 +1860,12 @@ objectdiagram Simulation_ST {
                     name = "<p>";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @<p>!Symbol(87,17): MCProdComponentSymbol {
+                    spanningSymbol = @<p>!Symbol(89,17): MCProdComponentSymbol {
                       name = "<p>";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @LTpGT!Terminal(87,17);
+                      astNode = @LTpGT!Terminal(89,17);
                       spannedScope = @<p>!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1876,12 +1876,12 @@ objectdiagram Simulation_ST {
                     name = "(";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @(!Symbol(90,16): MCProdComponentSymbol {
+                    spanningSymbol = @(!Symbol(92,16): MCProdComponentSymbol {
                       name = "(";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @LPAREN!Terminal(90,16);
+                      astNode = @LPAREN!Terminal(92,16);
                       spannedScope = @(!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1892,12 +1892,12 @@ objectdiagram Simulation_ST {
                     name = "startX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startX!Symbol(88,20): MCProdComponentSymbol {
+                    spanningSymbol = @startX!Symbol(90,20): MCProdComponentSymbol {
                       name = "startX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(88,20);
+                      astNode = @UnitNumber!NonTerminal(90,20);
                       spannedScope = @startX!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1908,12 +1908,12 @@ objectdiagram Simulation_ST {
                     name = ",";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @,!Symbol(90,56): MCProdComponentSymbol {
+                    spanningSymbol = @,!Symbol(92,56): MCProdComponentSymbol {
                       name = ",";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @COMMA!Terminal(90,56);
+                      astNode = @COMMA!Terminal(92,56);
                       spannedScope = @,!Scope(!2);
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1924,12 +1924,12 @@ objectdiagram Simulation_ST {
                     name = "startY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startY!Symbol(88,42): MCProdComponentSymbol {
+                    spanningSymbol = @startY!Symbol(90,42): MCProdComponentSymbol {
                       name = "startY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(88,42);
+                      astNode = @UnitNumber!NonTerminal(90,42);
                       spannedScope = @startY!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1940,12 +1940,12 @@ objectdiagram Simulation_ST {
                     name = ")";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @)!Symbol(90,76): MCProdComponentSymbol {
+                    spanningSymbol = @)!Symbol(92,76): MCProdComponentSymbol {
                       name = ")";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @RPAREN!Terminal(90,76);
+                      astNode = @RPAREN!Terminal(92,76);
                       spannedScope = @)!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1956,12 +1956,12 @@ objectdiagram Simulation_ST {
                     name = "->";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @->!Symbol(89,16): MCProdComponentSymbol {
+                    spanningSymbol = @->!Symbol(91,16): MCProdComponentSymbol {
                       name = "->";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @MINUSGT!Terminal(89,16);
+                      astNode = @MINUSGT!Terminal(91,16);
                       spannedScope = @->!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1972,12 +1972,12 @@ objectdiagram Simulation_ST {
                     name = "endX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @endX!Symbol(90,20): MCProdComponentSymbol {
+                    spanningSymbol = @endX!Symbol(92,20): MCProdComponentSymbol {
                       name = "endX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(90,20);
+                      astNode = @UnitNumber!NonTerminal(92,20);
                       spannedScope = @endX!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -1988,12 +1988,12 @@ objectdiagram Simulation_ST {
                     name = "endY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @endY!Symbol(90,40): MCProdComponentSymbol {
+                    spanningSymbol = @endY!Symbol(92,40): MCProdComponentSymbol {
                       name = "endY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(90,40);
+                      astNode = @UnitNumber!NonTerminal(92,40);
                       spannedScope = @endY!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2004,12 +2004,12 @@ objectdiagram Simulation_ST {
                     name = "endZ";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @endZ!Symbol(90,60): MCProdComponentSymbol {
+                    spanningSymbol = @endZ!Symbol(92,60): MCProdComponentSymbol {
                       name = "endZ";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(90,60);
+                      astNode = @UnitNumber!NonTerminal(92,60);
                       spannedScope = @endZ!Scope;
                       enclosingScope = @Pedestrians!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2021,12 +2021,12 @@ objectdiagram Simulation_ST {
                 name = "PedestrianDensity";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @PedestrianDensity!Symbol(93,2): MCProdSymbol {
+                spanningSymbol = @PedestrianDensity!Symbol(95,2): MCProdSymbol {
                   name = "PedestrianDensity";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @PedestrianDensity!ClassProd(93,2);
+                  astNode = @PedestrianDensity!ClassProd(95,2);
                   spannedScope = @PedestrianDensity!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -2037,12 +2037,12 @@ objectdiagram Simulation_ST {
                     name = "pedestrian_density";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @pedestrian_density!Symbol(93,22): MCProdComponentSymbol {
+                    spanningSymbol = @pedestrian_density!Symbol(95,22): MCProdComponentSymbol {
                       name = "pedestrian_density";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @pedestrian_density!Terminal(93,22);
+                      astNode = @pedestrian_density!Terminal(95,22);
                       spannedScope = @pedestrian_density!Scope;
                       enclosingScope = @PedestrianDensity!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2053,12 +2053,12 @@ objectdiagram Simulation_ST {
                     name = "pedestrianDensity";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @pedestrianDensity!Symbol(93,43): MCProdComponentSymbol {
+                    spanningSymbol = @pedestrianDensity!Symbol(95,43): MCProdComponentSymbol {
                       name = "pedestrianDensity";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(93,43);
+                      astNode = @UnitNumber!NonTerminal(95,43);
                       spannedScope = @pedestrianDensity!Scope;
                       enclosingScope = @PedestrianDensity!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2070,12 +2070,12 @@ objectdiagram Simulation_ST {
                 name = "Vehicles";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @Vehicles!Symbol(95,2): MCProdSymbol {
+                spanningSymbol = @Vehicles!Symbol(97,2): MCProdSymbol {
                   name = "Vehicles";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @Vehicles!ClassProd(95,2);
+                  astNode = @Vehicles!ClassProd(97,2);
                   spannedScope = @Vehicles!Scope(!2);
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -2086,12 +2086,12 @@ objectdiagram Simulation_ST {
                     name = "explicitVehicles";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @explicitVehicles!Symbol(95,14): MCProdComponentSymbol {
+                    spanningSymbol = @explicitVehicles!Symbol(97,14): MCProdComponentSymbol {
                       name = "explicitVehicles";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @ExplicitVehicle!NonTerminal(95,14);
+                      astNode = @ExplicitVehicle!NonTerminal(97,14);
                       spannedScope = @explicitVehicles!Scope;
                       enclosingScope = @Vehicles!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2102,12 +2102,12 @@ objectdiagram Simulation_ST {
                     name = "pathedVehicles";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @pathedVehicles!Symbol(95,32): MCProdComponentSymbol {
+                    spanningSymbol = @pathedVehicles!Symbol(97,32): MCProdComponentSymbol {
                       name = "pathedVehicles";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PathedVehicle!NonTerminal(95,32);
+                      astNode = @PathedVehicle!NonTerminal(97,32);
                       spannedScope = @pathedVehicles!Scope;
                       enclosingScope = @Vehicles!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2118,12 +2118,12 @@ objectdiagram Simulation_ST {
                     name = "randomVehicles";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @randomVehicles!Symbol(95,48): MCProdComponentSymbol {
+                    spanningSymbol = @randomVehicles!Symbol(97,48): MCProdComponentSymbol {
                       name = "randomVehicles";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @RandomVehicle!NonTerminal(95,48);
+                      astNode = @RandomVehicle!NonTerminal(97,48);
                       spannedScope = @randomVehicles!Scope;
                       enclosingScope = @Vehicles!Scope(!2);
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2135,12 +2135,12 @@ objectdiagram Simulation_ST {
                 name = "ExplicitVehicle";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @ExplicitVehicle!Symbol(98,2): MCProdSymbol {
+                spanningSymbol = @ExplicitVehicle!Symbol(100,2): MCProdSymbol {
                   name = "ExplicitVehicle";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @ExplicitVehicle!ClassProd(98,2);
+                  astNode = @ExplicitVehicle!ClassProd(100,2);
                   spannedScope = @ExplicitVehicle!Scope;
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -2151,12 +2151,12 @@ objectdiagram Simulation_ST {
                     name = "vehicle";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @vehicle!Symbol(98,20): MCProdComponentSymbol {
+                    spanningSymbol = @vehicle!Symbol(100,20): MCProdComponentSymbol {
                       name = "vehicle";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @Name!NonTerminal(98,20);
+                      astNode = @Name!NonTerminal(100,20);
                       spannedScope = @vehicle!Scope;
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2167,12 +2167,12 @@ objectdiagram Simulation_ST {
                     name = "(";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @(!Symbol(101,14): MCProdComponentSymbol {
+                    spanningSymbol = @(!Symbol(103,14): MCProdComponentSymbol {
                       name = "(";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @LPAREN!Terminal(101,14);
+                      astNode = @LPAREN!Terminal(103,14);
                       spannedScope = @(!Scope(!2);
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2183,12 +2183,12 @@ objectdiagram Simulation_ST {
                     name = "startX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startX!Symbol(99,19): MCProdComponentSymbol {
+                    spanningSymbol = @startX!Symbol(101,19): MCProdComponentSymbol {
                       name = "startX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(99,19);
+                      astNode = @UnitNumber!NonTerminal(101,19);
                       spannedScope = @startX!Scope(!2);
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2199,12 +2199,12 @@ objectdiagram Simulation_ST {
                     name = ",";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @,!Symbol(101,56): MCProdComponentSymbol {
+                    spanningSymbol = @,!Symbol(103,56): MCProdComponentSymbol {
                       name = ",";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @COMMA!Terminal(101,56);
+                      astNode = @COMMA!Terminal(103,56);
                       spannedScope = @,!Scope(!3);
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2215,12 +2215,12 @@ objectdiagram Simulation_ST {
                     name = "startY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startY!Symbol(99,41): MCProdComponentSymbol {
+                    spanningSymbol = @startY!Symbol(101,41): MCProdComponentSymbol {
                       name = "startY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(99,41);
+                      astNode = @UnitNumber!NonTerminal(101,41);
                       spannedScope = @startY!Scope(!2);
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2231,12 +2231,12 @@ objectdiagram Simulation_ST {
                     name = "startRot";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startRot!Symbol(99,63): MCProdComponentSymbol {
+                    spanningSymbol = @startRot!Symbol(101,63): MCProdComponentSymbol {
                       name = "startRot";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(99,63);
+                      astNode = @UnitNumber!NonTerminal(101,63);
                       spannedScope = @startRot!Scope;
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2247,12 +2247,12 @@ objectdiagram Simulation_ST {
                     name = ")";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @)!Symbol(101,77): MCProdComponentSymbol {
+                    spanningSymbol = @)!Symbol(103,77): MCProdComponentSymbol {
                       name = ")";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @RPAREN!Terminal(101,77);
+                      astNode = @RPAREN!Terminal(103,77);
                       spannedScope = @)!Scope(!2);
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2263,12 +2263,12 @@ objectdiagram Simulation_ST {
                     name = "->";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @->!Symbol(100,14): MCProdComponentSymbol {
+                    spanningSymbol = @->!Symbol(102,14): MCProdComponentSymbol {
                       name = "->";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @MINUSGT!Terminal(100,14);
+                      astNode = @MINUSGT!Terminal(102,14);
                       spannedScope = @->!Scope(!2);
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2279,12 +2279,12 @@ objectdiagram Simulation_ST {
                     name = "destX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destX!Symbol(101,18): MCProdComponentSymbol {
+                    spanningSymbol = @destX!Symbol(103,18): MCProdComponentSymbol {
                       name = "destX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(101,18);
+                      astNode = @UnitNumber!NonTerminal(103,18);
                       spannedScope = @destX!Scope;
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2295,12 +2295,12 @@ objectdiagram Simulation_ST {
                     name = "destY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destY!Symbol(101,39): MCProdComponentSymbol {
+                    spanningSymbol = @destY!Symbol(103,39): MCProdComponentSymbol {
                       name = "destY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(101,39);
+                      astNode = @UnitNumber!NonTerminal(103,39);
                       spannedScope = @destY!Scope;
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2311,12 +2311,12 @@ objectdiagram Simulation_ST {
                     name = "destZ";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destZ!Symbol(101,60): MCProdComponentSymbol {
+                    spanningSymbol = @destZ!Symbol(103,60): MCProdComponentSymbol {
                       name = "destZ";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(101,60);
+                      astNode = @UnitNumber!NonTerminal(103,60);
                       spannedScope = @destZ!Scope;
                       enclosingScope = @ExplicitVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2328,12 +2328,12 @@ objectdiagram Simulation_ST {
                 name = "PathedVehicle";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @PathedVehicle!Symbol(105,2): MCProdSymbol {
+                spanningSymbol = @PathedVehicle!Symbol(107,2): MCProdSymbol {
                   name = "PathedVehicle";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @PathedVehicle!ClassProd(105,2);
+                  astNode = @PathedVehicle!ClassProd(107,2);
                   spannedScope = @PathedVehicle!Scope;
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
@@ -2344,12 +2344,12 @@ objectdiagram Simulation_ST {
                     name = "<v>";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @<v>!Symbol(105,18): MCProdComponentSymbol {
+                    spanningSymbol = @<v>!Symbol(107,18): MCProdComponentSymbol {
                       name = "<v>";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @LTvGT!Terminal(105,18);
+                      astNode = @LTvGT!Terminal(107,18);
                       spannedScope = @<v>!Scope;
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2360,12 +2360,12 @@ objectdiagram Simulation_ST {
                     name = "(";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @(!Symbol(108,18): MCProdComponentSymbol {
+                    spanningSymbol = @(!Symbol(110,18): MCProdComponentSymbol {
                       name = "(";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @LPAREN!Terminal(108,18);
+                      astNode = @LPAREN!Terminal(110,18);
                       spannedScope = @(!Scope(!3);
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2376,12 +2376,12 @@ objectdiagram Simulation_ST {
                     name = "spawnX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @spawnX!Symbol(106,22): MCProdComponentSymbol {
+                    spanningSymbol = @spawnX!Symbol(108,22): MCProdComponentSymbol {
                       name = "spawnX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(106,22);
+                      astNode = @UnitNumber!NonTerminal(108,22);
                       spannedScope = @spawnX!Scope;
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2392,12 +2392,12 @@ objectdiagram Simulation_ST {
                     name = ",";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @,!Symbol(108,60): MCProdComponentSymbol {
+                    spanningSymbol = @,!Symbol(110,60): MCProdComponentSymbol {
                       name = ",";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @COMMA!Terminal(108,60);
+                      astNode = @COMMA!Terminal(110,60);
                       spannedScope = @,!Scope(!4);
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2408,12 +2408,12 @@ objectdiagram Simulation_ST {
                     name = "spawnY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @spawnY!Symbol(106,44): MCProdComponentSymbol {
+                    spanningSymbol = @spawnY!Symbol(108,44): MCProdComponentSymbol {
                       name = "spawnY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(106,44);
+                      astNode = @UnitNumber!NonTerminal(108,44);
                       spannedScope = @spawnY!Scope;
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2424,12 +2424,12 @@ objectdiagram Simulation_ST {
                     name = "spawnRadius";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @spawnRadius!Symbol(106,66): MCProdComponentSymbol {
+                    spanningSymbol = @spawnRadius!Symbol(108,66): MCProdComponentSymbol {
                       name = "spawnRadius";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(106,66);
+                      astNode = @UnitNumber!NonTerminal(108,66);
                       spannedScope = @spawnRadius!Scope;
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2440,12 +2440,12 @@ objectdiagram Simulation_ST {
                     name = ")";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @)!Symbol(108,86): MCProdComponentSymbol {
+                    spanningSymbol = @)!Symbol(110,86): MCProdComponentSymbol {
                       name = ")";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @RPAREN!Terminal(108,86);
+                      astNode = @RPAREN!Terminal(110,86);
                       spannedScope = @)!Scope(!3);
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2456,12 +2456,12 @@ objectdiagram Simulation_ST {
                     name = "->";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @->!Symbol(107,18): MCProdComponentSymbol {
+                    spanningSymbol = @->!Symbol(109,18): MCProdComponentSymbol {
                       name = "->";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @MINUSGT!Terminal(107,18);
+                      astNode = @MINUSGT!Terminal(109,18);
                       spannedScope = @->!Scope(!3);
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2472,12 +2472,12 @@ objectdiagram Simulation_ST {
                     name = "destX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destX!Symbol(108,22): MCProdComponentSymbol {
+                    spanningSymbol = @destX!Symbol(110,22): MCProdComponentSymbol {
                       name = "destX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(108,22);
+                      astNode = @UnitNumber!NonTerminal(110,22);
                       spannedScope = @destX!Scope(!2);
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2488,12 +2488,12 @@ objectdiagram Simulation_ST {
                     name = "destY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destY!Symbol(108,43): MCProdComponentSymbol {
+                    spanningSymbol = @destY!Symbol(110,43): MCProdComponentSymbol {
                       name = "destY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(108,43);
+                      astNode = @UnitNumber!NonTerminal(110,43);
                       spannedScope = @destY!Scope(!2);
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2504,12 +2504,12 @@ objectdiagram Simulation_ST {
                     name = "destRadius";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destRadius!Symbol(108,64): MCProdComponentSymbol {
+                    spanningSymbol = @destRadius!Symbol(110,64): MCProdComponentSymbol {
                       name = "destRadius";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(108,64);
+                      astNode = @UnitNumber!NonTerminal(110,64);
                       spannedScope = @destRadius!Scope;
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2520,12 +2520,12 @@ objectdiagram Simulation_ST {
                     name = "amount";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @amount!Symbol(109,19): MCProdComponentSymbol {
+                    spanningSymbol = @amount!Symbol(111,19): MCProdComponentSymbol {
                       name = "amount";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(109,19);
+                      astNode = @PosNum!NonTerminal(111,19);
                       spannedScope = @amount!Scope;
                       enclosingScope = @PathedVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2537,28 +2537,28 @@ objectdiagram Simulation_ST {
                 name = "RandomVehicle";
                 isShadowingScope = true;
                 exportsSymbols = true;
-                spanningSymbol = @RandomVehicle!Symbol(112,2): MCProdSymbol {
+                spanningSymbol = @RandomVehicle!Symbol(114,2): MCProdSymbol {
                   name = "RandomVehicle";
                   KIND = :MCProdKind{
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
-                  astNode = @RandomVehicle!ClassProd(112,2);
+                  astNode = @RandomVehicle!ClassProd(114,2);
                   spannedScope = @RandomVehicle!Scope;
                   enclosingScope = @Simulation!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
                 };
                 enclosingScope = @Simulation!Scope;
-                subScopes = [// *size: 7
+                subScopes = [// *size: 9
                   @<v>!Scope(!2): CommonScope{
                     name = "<v>";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @<v>!Symbol(112,18): MCProdComponentSymbol {
+                    spanningSymbol = @<v>!Symbol(114,18): MCProdComponentSymbol {
                       name = "<v>";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @LTvGT!Terminal(112,18);
+                      astNode = @LTvGT!Terminal(114,18);
                       spannedScope = @<v>!Scope(!2);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2569,13 +2569,29 @@ objectdiagram Simulation_ST {
                     name = "amount";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @amount!Symbol(112,24): MCProdComponentSymbol {
+                    spanningSymbol = @amount!Symbol(114,24): MCProdComponentSymbol {
                       name = "amount";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @PosNumber!NonTerminal(112,24);
+                      astNode = @PosNum!NonTerminal(114,24);
                       spannedScope = @amount!Scope(!2);
+                      enclosingScope = @RandomVehicle!Scope;
+                      accessModifier = :AllInclusionAccessModifier{};
+                    };
+                    enclosingScope = @RandomVehicle!Scope;
+                  },
+                  @(!Scope(!4): CommonScope{
+                    name = "(";
+                    isShadowingScope = true;
+                    exportsSymbols = true;
+                    spanningSymbol = @(!Symbol(114,39): MCProdComponentSymbol {
+                      name = "(";
+                      KIND = :MCProdComponentKind{
+                        name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
+                      };
+                      astNode = @LPAREN!Terminal(114,39);
+                      spannedScope = @(!Scope(!4);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
                     };
@@ -2585,12 +2601,12 @@ objectdiagram Simulation_ST {
                     name = "startX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startX!Symbol(112,42): MCProdComponentSymbol {
+                    spanningSymbol = @startX!Symbol(114,43): MCProdComponentSymbol {
                       name = "startX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(112,42);
+                      astNode = @UnitNumber!NonTerminal(114,43);
                       spannedScope = @startX!Scope(!3);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2601,12 +2617,12 @@ objectdiagram Simulation_ST {
                     name = ",";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @,!Symbol(112,103): MCProdComponentSymbol {
+                    spanningSymbol = @,!Symbol(114,104): MCProdComponentSymbol {
                       name = ",";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @COMMA!Terminal(112,103);
+                      astNode = @COMMA!Terminal(114,104);
                       spannedScope = @,!Scope(!5);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2617,12 +2633,12 @@ objectdiagram Simulation_ST {
                     name = "startY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @startY!Symbol(112,64): MCProdComponentSymbol {
+                    spanningSymbol = @startY!Symbol(114,65): MCProdComponentSymbol {
                       name = "startY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(112,64);
+                      astNode = @UnitNumber!NonTerminal(114,65);
                       spannedScope = @startY!Scope(!3);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2633,12 +2649,12 @@ objectdiagram Simulation_ST {
                     name = "destX";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destX!Symbol(112,86): MCProdComponentSymbol {
+                    spanningSymbol = @destX!Symbol(114,87): MCProdComponentSymbol {
                       name = "destX";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(112,86);
+                      astNode = @UnitNumber!NonTerminal(114,87);
                       spannedScope = @destX!Scope(!3);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
@@ -2649,13 +2665,29 @@ objectdiagram Simulation_ST {
                     name = "destY";
                     isShadowingScope = true;
                     exportsSymbols = true;
-                    spanningSymbol = @destY!Symbol(112,107): MCProdComponentSymbol {
+                    spanningSymbol = @destY!Symbol(114,108): MCProdComponentSymbol {
                       name = "destY";
                       KIND = :MCProdComponentKind{
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
-                      astNode = @UnitNumber!NonTerminal(112,107);
+                      astNode = @UnitNumber!NonTerminal(114,108);
                       spannedScope = @destY!Scope(!3);
+                      enclosingScope = @RandomVehicle!Scope;
+                      accessModifier = :AllInclusionAccessModifier{};
+                    };
+                    enclosingScope = @RandomVehicle!Scope;
+                  },
+                  @)!Scope(!4): CommonScope{
+                    name = ")";
+                    isShadowingScope = true;
+                    exportsSymbols = true;
+                    spanningSymbol = @)!Symbol(114,125): MCProdComponentSymbol {
+                      name = ")";
+                      KIND = :MCProdComponentKind{
+                        name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
+                      };
+                      astNode = @RPAREN!Terminal(114,125);
+                      spannedScope = @)!Scope(!4);
                       enclosingScope = @RandomVehicle!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
                     };
@@ -3816,7 +3848,7 @@ objectdiagram Simulation_ST {
                     };
                     enclosingScope = @WeatherPhenomena!Scope;
                   },
-                  @(!Scope(!4): CommonScope{
+                  @(!Scope(!5): CommonScope{
                     name = "(";
                     isShadowingScope = true;
                     exportsSymbols = true;
@@ -3826,7 +3858,7 @@ objectdiagram Simulation_ST {
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
                       astNode = @LPAREN!Terminal(84,21);
-                      spannedScope = @(!Scope(!4);
+                      spannedScope = @(!Scope(!5);
                       enclosingScope = @WeatherPhenomena!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
                     };
@@ -3864,7 +3896,7 @@ objectdiagram Simulation_ST {
                     };
                     enclosingScope = @WeatherPhenomena!Scope;
                   },
-                  @)!Scope(!4): CommonScope{
+                  @)!Scope(!5): CommonScope{
                     name = ")";
                     isShadowingScope = true;
                     exportsSymbols = true;
@@ -3874,7 +3906,7 @@ objectdiagram Simulation_ST {
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
                       astNode = @RPAREN!Terminal(84,49);
-                      spannedScope = @)!Scope(!4);
+                      spannedScope = @)!Scope(!5);
                       enclosingScope = @WeatherPhenomena!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
                     };
@@ -4359,7 +4391,7 @@ objectdiagram Simulation_ST {
                     };
                     enclosingScope = @TComplexNumber!Scope;
                   },
-                  @PosNumber!Scope(!2): CommonScope{
+                  @PosNumber!Scope: CommonScope{
                     name = "PosNumber";
                     isShadowingScope = true;
                     exportsSymbols = true;
@@ -4369,7 +4401,7 @@ objectdiagram Simulation_ST {
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
                       astNode = @PosNumber!LexNonTerminal(70,43);
-                      spannedScope = @PosNumber!Scope(!2);
+                      spannedScope = @PosNumber!Scope;
                       enclosingScope = @TComplexNumber!Scope;
                       accessModifier = :AllInclusionAccessModifier{};
                     };
@@ -4392,7 +4424,7 @@ objectdiagram Simulation_ST {
                 };
                 enclosingScope = @SI!Scope;
                 subScopes = [// *size: 1
-                  @PosNumber!Scope(!3): CommonScope{
+                  @PosNumber!Scope(!2): CommonScope{
                     name = "PosNumber";
                     isShadowingScope = true;
                     exportsSymbols = true;
@@ -4402,14 +4434,14 @@ objectdiagram Simulation_ST {
                         name = "de.monticore.grammar.symboltable.MCProdComponentSymbol$MCProdComponentKind";
                       };
                       astNode = @PosNumber!LexNonTerminal(73,10);
-                      spannedScope = @PosNumber!Scope(!3);
+                      spannedScope = @PosNumber!Scope(!2);
                       enclosingScope = @RealNumber!Scope(!3);
                       accessModifier = :AllInclusionAccessModifier{};
                     };
                     enclosingScope = @RealNumber!Scope(!3);
                   }];
               },
-              @PosNumber!Scope(!4): CommonScope{
+              @PosNumber!Scope(!3): CommonScope{
                 name = "PosNumber";
                 isShadowingScope = true;
                 exportsSymbols = true;
@@ -4419,7 +4451,7 @@ objectdiagram Simulation_ST {
                     name = "de.monticore.grammar.symboltable.MCProdSymbol$MCProdKind";
                   };
                   astNode = @PosNumber!LexProd(75,2);
-                  spannedScope = @PosNumber!Scope(!4);
+                  spannedScope = @PosNumber!Scope(!3);
                   enclosingScope = @SI!Scope;
                   accessModifier = :AllInclusionAccessModifier{};
                 };
@@ -4436,10 +4468,10 @@ objectdiagram Simulation_ST {
                       };
                       astNode = @PosInt!LexNonTerminal(77,6);
                       spannedScope = @PosInt!Scope;
-                      enclosingScope = @PosNumber!Scope(!4);
+                      enclosingScope = @PosNumber!Scope(!3);
                       accessModifier = :AllInclusionAccessModifier{};
                     };
-                    enclosingScope = @PosNumber!Scope(!4);
+                    enclosingScope = @PosNumber!Scope(!3);
                   },
                   @Space!Scope(!5): CommonScope{
                     name = "Space";
@@ -4452,10 +4484,10 @@ objectdiagram Simulation_ST {
                       };
                       astNode = @Space!LexNonTerminal(76,24);
                       spannedScope = @Space!Scope(!5);
-                      enclosingScope = @PosNumber!Scope(!4);
+                      enclosingScope = @PosNumber!Scope(!3);
                       accessModifier = :AllInclusionAccessModifier{};
                     };
-                    enclosingScope = @PosNumber!Scope(!4);
+                    enclosingScope = @PosNumber!Scope(!3);
                   }];
               },
               @PosInt!Scope(!2): CommonScope{

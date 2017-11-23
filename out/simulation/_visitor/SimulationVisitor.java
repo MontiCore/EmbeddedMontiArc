@@ -46,7 +46,7 @@ public interface SimulationVisitor  extends weather._visitor.WeatherVisitor, si.
    * @see SimulationDelegatorVisitor 
    */
   default public void setRealThis(SimulationVisitor realThis) {
-    throw new UnsupportedOperationException("0xA7011_645 The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.");
+    throw new UnsupportedOperationException("0xA7011_309 The setter for realThis is not implemented. You might want to implement a wrapper class to allow setting/getting realThis.");
   }
 
   /**

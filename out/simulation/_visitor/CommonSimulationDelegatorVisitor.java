@@ -22,7 +22,7 @@ public class CommonSimulationDelegatorVisitor  implements SimulationInheritanceV
   public void setRealThis(SimulationVisitor realThis) {
     if (this.realThis != realThis) {
       if (!(realThis instanceof CommonSimulationDelegatorVisitor)) {
-          Log.error("0xA7111_645 realThis of CommonSimulationDelegatorVisitor must be SimulationDelegatorVisitor itself.");
+          Log.error("0xA7111_309 realThis of CommonSimulationDelegatorVisitor must be SimulationDelegatorVisitor itself.");
       }
       this.realThis = (CommonSimulationDelegatorVisitor) realThis;
       // register the known delegates to the realThis (and therby also set their new realThis)

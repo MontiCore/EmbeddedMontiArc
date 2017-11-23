@@ -21,7 +21,7 @@
 1x        55x      MCGrammar
 89x       0x       NonTerminal
 2x        0x       SymbolDefinition
-80x       0x       Terminal
+82x       0x       Terminal
 ======================================== Types of Nodes (With Source Pos)
 #Objects  #Visits  Nonterminal-Name
 61x       0x       Alt
@@ -41,7 +41,7 @@
 1x        55x      MCGrammar
 89x       0x       NonTerminal
 2x        0x       SymbolDefinition
-80x       0x       Terminal
+82x       0x       Terminal
 ======================================== Types of Nodes (No Source Pos)
 #Objects  #Visits  Nonterminal-Name
 0x        168x     CDAttribute

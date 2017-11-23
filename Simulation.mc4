@@ -26,7 +26,7 @@ grammar Simulation extends Weather, SI {
   "}";  
   
   //Übergangslösung
-  token PosNumber = ('1'..'9')('0'..'9')*;
+  token PosNum = ('1'..'9')('0'..'9')*;
   //das ist doch für ranges als eingabe?
   token TElementType =
       ('Z' | 'Q' | 'C') Space*
@@ -35,7 +35,7 @@ grammar Simulation extends Weather, SI {
             Space* (TUnitNumber | TUnitInf) Space*
         ')';
 
-  //SimulationRunCount = "sim_runs" count:PosNumber; //hm
+  //SimulationRunCount = "sim_runs" count:PosNum; //hm
   
   SimulationRenderFrequency = "sim_render_frequency"  simRenderFreq:UnitNumber;
   SimulationLoopFrequency = "sim_loop_frequency"  simLoopFreq:UnitNumber;
@@ -66,21 +66,21 @@ grammar Simulation extends Weather, SI {
  
   //mc mag keine :
   Time = "time" (UnitNumber|
-                 (timeHours:PosNumber ":" timeMinutes:PosNumber) |
-                 (timeHours:PosNumber ":" timeMinutes:PosNumber ":" timeSeconds:PosNumber)|
-                 (timeHours:PosNumber ":" timeMinutes:PosNumber ":" timeSeconds:PosNumber ":" timeMilliseconds:PosNumber)
+                 (timeHours:PosNum ":" timeMinutes:PosNum) |
+                 (timeHours:PosNum ":" timeMinutes:PosNum ":" timeSeconds:PosNum)|
+                 (timeHours:PosNum ":" timeMinutes:PosNum ":" timeSeconds:PosNum ":" timeMilliseconds:PosNum)
                 );
   
-  //MC mag keine :
+  //Name enthält keine :, mapPath braucht Strings, wie zu definieren?
   MapPath = "map_path" mapPath:Name;
   MapName = "map_name" mapName:Name ".osm";
   
   MapHeight = "map_height" ("flat"|"random"|(heightMap:Name ".hm"));
   
-  MapOverlap = "map_overlap" mapOverlap:PosNumber;
-  MapSectorWidth = "map_sector_width" sectorWidth:PosNumber;
-  MapSectorHeight = "map_sector_height" sectorHeight:PosNumber;
-  MaxSectorUsers = "max_sector_users" maxSectorUsers:PosNumber;
+  MapOverlap = "map_overlap" mapOverlap:PosNum;
+  MapSectorWidth = "map_sector_width" sectorWidth:PosNum;
+  MapSectorHeight = "map_sector_height" sectorHeight:PosNum;
+  MaxSectorUsers = "max_sector_users" maxSectorUsers:PosNum;
   
   Timeout = "timeout" timeout:UnitNumber;
   
@@ -108,8 +108,8 @@ grammar Simulation extends Weather, SI {
                   "(" spawnX:UnitNumber "," spawnY:UnitNumber "," spawnRadius:UnitNumber ")"
                   "->"
                   "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")" 
-                  (amount:PosNumber)?;
+                  (amount:PosNum)?;
   
   //completely random vehicle spawns and destinations with optional avoidance of path
-  RandomVehicle = "<v>" amount:PosNumber (startX:UnitNumber "," startY:UnitNumber "," destX:UnitNumber "," destY:UnitNumber)?;
+  RandomVehicle = "<v>" amount:PosNum ("(" startX:UnitNumber "," startY:UnitNumber "," destX:UnitNumber "," destY:UnitNumber ")")?;
 }

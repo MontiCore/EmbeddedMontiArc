@@ -157,6 +157,11 @@ private String convertNumb(Token t)  {
     return t.getText();
 }
 
+  // convert function for PosNum
+private String convertPosNum(Token t)  {
+    return t.getText();
+}
+
   // convert function for TElementType
 private String convertTElementType(Token t)  {
     return t.getText();
@@ -1520,7 +1525,7 @@ setActiveASTNode(_aNode);
   |
   (
   
-  (tmp1=PosNumber{_aNode.setTimeHours(convertPosNumber($tmp1));}
+  (tmp1=PosNum{_aNode.setTimeHours(convertPosNum($tmp1));}
 
   ) 
   
@@ -1528,7 +1533,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal :'
 (COLON)// End of 'ASTTerminal'
 
-  (tmp2=PosNumber{_aNode.setTimeMinutes(convertPosNumber($tmp2));}
+  (tmp2=PosNum{_aNode.setTimeMinutes(convertPosNum($tmp2));}
 
   ) 
   
@@ -1537,7 +1542,7 @@ setActiveASTNode(_aNode);
   |
   (
   
-  (tmp3=PosNumber{_aNode.setTimeHours(convertPosNumber($tmp3));}
+  (tmp3=PosNum{_aNode.setTimeHours(convertPosNum($tmp3));}
 
   ) 
   
@@ -1545,7 +1550,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal :'
 (COLON)// End of 'ASTTerminal'
 
-  (tmp4=PosNumber{_aNode.setTimeMinutes(convertPosNumber($tmp4));}
+  (tmp4=PosNum{_aNode.setTimeMinutes(convertPosNum($tmp4));}
 
   ) 
   
@@ -1553,7 +1558,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal :'
 (COLON)// End of 'ASTTerminal'
 
-  (tmp5=PosNumber{_aNode.setTimeSeconds(convertPosNumber($tmp5));}
+  (tmp5=PosNum{_aNode.setTimeSeconds(convertPosNum($tmp5));}
 
   ) 
   
@@ -1562,7 +1567,7 @@ setActiveASTNode(_aNode);
   |
   (
   
-  (tmp6=PosNumber{_aNode.setTimeHours(convertPosNumber($tmp6));}
+  (tmp6=PosNum{_aNode.setTimeHours(convertPosNum($tmp6));}
 
   ) 
   
@@ -1570,7 +1575,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal :'
 (COLON)// End of 'ASTTerminal'
 
-  (tmp7=PosNumber{_aNode.setTimeMinutes(convertPosNumber($tmp7));}
+  (tmp7=PosNum{_aNode.setTimeMinutes(convertPosNum($tmp7));}
 
   ) 
   
@@ -1578,7 +1583,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal :'
 (COLON)// End of 'ASTTerminal'
 
-  (tmp8=PosNumber{_aNode.setTimeSeconds(convertPosNumber($tmp8));}
+  (tmp8=PosNum{_aNode.setTimeSeconds(convertPosNum($tmp8));}
 
   ) 
   
@@ -1586,7 +1591,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal :'
 (COLON)// End of 'ASTTerminal'
 
-  (tmp9=PosNumber{_aNode.setTimeMilliseconds(convertPosNumber($tmp9));}
+  (tmp9=PosNum{_aNode.setTimeMilliseconds(convertPosNum($tmp9));}
 
   ) 
   
@@ -1740,7 +1745,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal map_overlap'
 ('map_overlap')// End of 'ASTTerminal'
 
-  (tmp0=PosNumber{_aNode.setMapOverlap(convertPosNumber($tmp0));}
+  (tmp0=PosNum{_aNode.setMapOverlap(convertPosNum($tmp0));}
 
   ) 
   
@@ -1771,7 +1776,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal map_sector_width'
 ('map_sector_width')// End of 'ASTTerminal'
 
-  (tmp0=PosNumber{_aNode.setSectorWidth(convertPosNumber($tmp0));}
+  (tmp0=PosNum{_aNode.setSectorWidth(convertPosNum($tmp0));}
 
   ) 
   
@@ -1802,7 +1807,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal map_sector_height'
 ('map_sector_height')// End of 'ASTTerminal'
 
-  (tmp0=PosNumber{_aNode.setSectorHeight(convertPosNumber($tmp0));}
+  (tmp0=PosNum{_aNode.setSectorHeight(convertPosNum($tmp0));}
 
   ) 
   
@@ -1833,7 +1838,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal max_sector_users'
 ('max_sector_users')// End of 'ASTTerminal'
 
-  (tmp0=PosNumber{_aNode.setMaxSectorUsers(convertPosNumber($tmp0));}
+  (tmp0=PosNum{_aNode.setMaxSectorUsers(convertPosNum($tmp0));}
 
   ) 
   
@@ -2159,7 +2164,7 @@ setActiveASTNode(_aNode);
 
   (
   
-  (tmp6=PosNumber{_aNode.setAmount(convertPosNumber($tmp6));}
+  (tmp6=PosNum{_aNode.setAmount(convertPosNum($tmp6));}
 
   ) 
   
@@ -2192,12 +2197,16 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal <v>'
 ('<v>')// End of 'ASTTerminal'
 
-  (tmp0=PosNumber{_aNode.setAmount(convertPosNumber($tmp0));}
+  (tmp0=PosNum{_aNode.setAmount(convertPosNum($tmp0));}
 
   ) 
   
   (
   
+  
+ // Start of 'ASTTerminal ('
+(LPAREN)// End of 'ASTTerminal'
+
    tmp1=unitNumber{_aNode.setStartX(_localctx.tmp1.ret);}  
   
   
@@ -2218,6 +2227,10 @@ setActiveASTNode(_aNode);
 
    tmp4=unitNumber{_aNode.setDestY(_localctx.tmp4.ret);}  
   
+  
+ // Start of 'ASTTerminal )'
+(RPAREN)// End of 'ASTTerminal'
+
   
 )?
   ;
@@ -2281,54 +2294,21 @@ setActiveASTNode(_aNode);
  
 // Lexer rules 
   
- // Start of 'ASTLexProd PosNumber'
-fragment PosNumber 
+ // Start of 'ASTLexProd PosNum'
+PosNum 
   
 :
   
   (
   
-   PosInt 
-  (
-   Space 
-  )
-*
-  '/' 
-  (
-   Space 
-  )
-*
-   PosInt 
+  '1'..'9'  
   )
 
-  |
-  (
-  
-   PosInt 
-  (
-  
-  '.' 
   (
   
   '0'..'9'  
   )
-+
-  )
-?
-  )
-
-  |
-  '0' 
-  (
-  
-  '.' 
-  (
-  
-  '0'..'9'  
-  )
-+
-  )
-?
+*
   ;// End of 'ASTLexProd'
 
   
@@ -2565,6 +2545,57 @@ fragment RealNumber
   )
 ?
    PosNumber 
+  ;// End of 'ASTLexProd'
+
+  
+ // Start of 'ASTLexProd PosNumber'
+fragment PosNumber 
+  
+:
+  
+  (
+  
+   PosInt 
+  (
+   Space 
+  )
+*
+  '/' 
+  (
+   Space 
+  )
+*
+   PosInt 
+  )
+
+  |
+  (
+  
+   PosInt 
+  (
+  
+  '.' 
+  (
+  
+  '0'..'9'  
+  )
++
+  )
+?
+  )
+
+  |
+  '0' 
+  (
+  
+  '.' 
+  (
+  
+  '0'..'9'  
+  )
++
+  )
+?
   ;// End of 'ASTLexProd'
 
   
