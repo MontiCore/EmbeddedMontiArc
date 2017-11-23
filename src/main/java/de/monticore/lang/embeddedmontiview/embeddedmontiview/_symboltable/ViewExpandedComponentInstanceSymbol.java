@@ -20,7 +20,7 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingScopeSpanningSymbol;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 
 import java.util.ArrayList;
@@ -84,7 +84,7 @@ import java.util.stream.Collectors;
  *         standard symbol table mechanism
  */
 public class ViewExpandedComponentInstanceSymbol
-    extends TaggingScopeSpanningSymbol implements ViewElementInstance {
+    extends CommonScopeSpanningSymbol {
 
   public static final EMAExpandedComponentInstanceKind KIND = new EMAExpandedComponentInstanceKind();
 

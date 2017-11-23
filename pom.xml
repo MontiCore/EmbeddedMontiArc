@@ -164,25 +164,25 @@
       <scope>provided</scope>
     </dependency>
     
-    <dependency>
-      <groupId>montiarc.languages</groupId>
-      <artifactId>tagging</artifactId>
-      <version>${languages.version}</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>tagging</artifactId>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
     
-    <dependency>
-      <groupId>montiarc.languages</groupId>
-      <artifactId>montiarc-fe</artifactId>
-      <version>${languages.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>montiarc.languages</groupId>
-      <artifactId>montiarc-fe</artifactId>
-      <classifier>${grammars.classifier}</classifier>
-      <version>${languages.version}</version>
-    </dependency>
-    
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>montiarc-fe</artifactId>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>montiarc-fe</artifactId>-->
+      <!--<classifier>${grammars.classifier}</classifier>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>javaDSL</artifactId>

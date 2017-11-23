@@ -22,9 +22,7 @@
 
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
-public class EMAExpandedComponentInstanceKind
-    extends de.monticore.lang.montiarc.montiarc._symboltable.ExpandedComponentInstanceKind
-    implements de.monticore.symboltable.SymbolKind {
+public class EMAExpandedComponentInstanceKind implements de.monticore.symboltable.SymbolKind {
 
   public static final EMAExpandedComponentInstanceKind INSTANCE = new EMAExpandedComponentInstanceKind();
 

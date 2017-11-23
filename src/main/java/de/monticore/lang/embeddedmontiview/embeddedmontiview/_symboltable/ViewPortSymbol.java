@@ -22,10 +22,7 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingSymbol;
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.references.JTypeReference;
 
@@ -36,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Symboltable entry for ports.
  */
-public class ViewPortSymbol extends TaggingSymbol implements ViewElementInstance {
+public class ViewPortSymbol extends CommonSymbol implements Symbol {
   public static final EmbeddedPortKind KIND = EmbeddedPortKind.INSTANCE;
 
   private final Map<String, Optional<String>> stereotype = new HashMap<>();

@@ -21,8 +21,8 @@ package de.monticore.lang.embeddedmontiview.helper;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
 import de.monticore.lang.monticar.ValueSymbol;
-import de.monticore.lang.montiarc.tagging._symboltable.IsTaggable;
 import de.monticore.prettyprint.IndentPrinter;
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
@@ -309,18 +309,19 @@ public class SymbolPrinter {
     ip.println("}");
   }
 
-  public static void printTags(IsTaggable hasTags, IndentPrinter ip) {
-    if (!hasTags.getTags().isEmpty()) {
-      ip.println("/* tags: ");
-      ip.indent();
-      ip.indent();
-      ip.print(hasTags.getTags().stream().map(t -> t.toString()).
-          collect(Collectors.joining("\n")));
-      ip.print("  */");
-      ip.unindent();
-      ip.unindent();
-      ip.println();
-    }
+  public static void printTags(Symbol hasTags, IndentPrinter ip) {
+//  TODO: needs to be changed so that this method can be overwritten --> remove static
+//    if (!hasTags.getTags().isEmpty()) {
+//      ip.println("/* tags: ");
+//      ip.indent();
+//      ip.indent();
+//      ip.print(hasTags.getTags().stream().map(t -> t.toString()).
+//          collect(Collectors.joining("\n")));
+//      ip.print("  */");
+//      ip.unindent();
+//      ip.unindent();
+//      ip.println();
+//    }
   }
 
   public static void printExpandedComponentInstance(ViewExpandedComponentInstanceSymbol inst, IndentPrinter ip, boolean skipPackageImport) {

@@ -22,9 +22,9 @@
 
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
-import de.monticore.lang.montiarc.montiarc._symboltable.PortKind;
+import de.monticore.symboltable.SymbolKind;
 
-public class EmbeddedPortKind extends PortKind {
+public class EmbeddedPortKind implements SymbolKind {
 
   public static final EmbeddedPortKind INSTANCE = new EmbeddedPortKind();
 

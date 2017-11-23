@@ -20,7 +20,7 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingScopeSpanningSymbol;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -38,7 +38,7 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
  *
  * @author Robert Heim
  */
-public class ViewSymbol extends TaggingScopeSpanningSymbol {
+public class ViewSymbol extends CommonScopeSpanningSymbol {
 
   public static final ViewKind KIND = new ViewKind();
 

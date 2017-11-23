@@ -23,8 +23,8 @@ import com.google.common.collect.ImmutableList;
 import de.monticore.lang.embeddedmontiview.EmbeddedMontiArcConstants;
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
 import de.monticore.lang.embeddedmontiview.helper.Timing;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingScopeSpanningSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -44,7 +44,7 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
  *
  * @author Robert Heim
  */
-public class ViewComponentSymbol extends TaggingScopeSpanningSymbol {
+public class ViewComponentSymbol extends CommonScopeSpanningSymbol {
 
   public static final ComponentKind KIND = new ComponentKind();
   private final List<EMAAComponentImplementationSymbol> implementations = new ArrayList<>();

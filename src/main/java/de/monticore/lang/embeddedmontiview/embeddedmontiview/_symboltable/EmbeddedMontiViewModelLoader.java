@@ -22,8 +22,6 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTEMVCompilationUnit;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EmbeddedMontiViewModelLoaderTOP;
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._parser.TaggingParser;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.Joiners;
@@ -39,7 +37,6 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EmbeddedMontiViewLanguage.TAG_FILE_ENDING;
 
 /**
  * Created by Michael von Wenckstern on 30.05.2016.
@@ -69,59 +66,8 @@ public class EmbeddedMontiViewModelLoader
 
     for (ASTEMVCompilationUnit ast : asts) {
       createSymbolTableFromAST(ast, qualifiedModelName, enclosingScope, ResolvingConfiguration);
-
-      // load tags of ast
-      for (ASTTaggingUnit unit : loadTags(ast.getPackage(), modelPath)) {
-        this.getModelingLanguage().getTagSymbolCreators().stream().forEachOrdered(tc -> tc.create(unit, enclosingScope));
-      }
     }
 
     return asts;
-  }
-
-  protected Collection<ASTTaggingUnit> loadTags(final List<String> packageName, final ModelPath modelPath) {
-    // TODO use File.separator instead of "\\" or "/"
-    String qualifiedModelName = Joiners.DOT.join(packageName);
-    checkArgument(!isNullOrEmpty(qualifiedModelName));
-
-    final Collection<ASTTaggingUnit> foundModels = new ArrayList<>();
-    for (Path mp : getEntriesFromModelPath(modelPath)) {
-      for (String pN : packageName) {
-        final Path completePath = Paths.get(mp.toString(), pN);
-        final File f = completePath.toFile();
-        if (f != null && f.isDirectory()) {
-          List<String> tagFiles = Arrays.stream(f.listFiles()).filter(s -> s.isFile()).map(s -> s.getPath()).filter(s -> s.endsWith(TAG_FILE_ENDING)).collect(Collectors.toList());
-
-          tagFiles.stream().forEachOrdered(t -> {
-            final TaggingParser parser = new TaggingParser();
-            Optional<ASTTaggingUnit> ast = Optional.empty();
-            try {
-              ast = parser.parse(t);
-            }
-            catch (IOException e) {
-              Log.error("could not open file " + t, e);
-            }
-            if (ast.isPresent()) {
-              if (!completePath.endsWith(ast.get().getPackage().stream().collect(Collectors.joining(File.separator)))) {
-                Path p = Paths.get(t);
-                String expectedPackage = mp.toUri().relativize(p.toUri()).getPath();
-                if (p.getParent() != null) {
-                  expectedPackage = mp.toUri().relativize(p.getParent().toUri()).getPath();
-                }
-                expectedPackage = expectedPackage.replace(File.separator, ".").replace("/", ".");
-                if (expectedPackage.endsWith(".")) {
-                  expectedPackage = expectedPackage.substring(0, expectedPackage.length() - 1);
-                }
-                Log.error(String.format("0xAC050 package name in '%s' is wrong. package name is '%s' but should be '%s'", t, Joiners.DOT.join(ast.get().getPackage()), expectedPackage));
-              }
-              else {
-                foundModels.add(ast.get());
-              }
-            }
-          });
-        }
-      }
-    }
-    return foundModels;
   }
 }
