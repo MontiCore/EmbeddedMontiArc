@@ -1,0 +1,107 @@
+========================================================== Used Templates
+#Calls:   Template Name
+1x        ASTConstantsClass.ftl
+1x        ASTNodeBase.ftl
+5x        Accept.ftl
+5x        AstBuilder.ftl
+8x        AstBuilderAttributeSetter.ftl
+5x        AstClass.ftl
+5x        AstEImports.ftl
+1x        AstEnum.ftl
+2x        AstInterface.ftl
+1x        AstNodeFactory.ftl
+5x        AstSuperInterfaces.ftl
+5x        AstSuperTypes.ftl
+13x       Attribute.ftl
+8x        BuilderAttribute.ftl
+5x        BuilderConstructorParametersDeclaration.ftl
+3x        Class.ftl
+5x        ClassContent.ftl
+166x      ClassMethod.ftl
+1x        CoCoChecker.ftl
+7x        CoCoInterface.ftl
+1x        CommonDelegatorVisitor.ftl
+8x        Constant.ftl
+10x       Constructor.ftl
+5x        ConstructorAttributesSetter.ftl
+5x        ConstructorParametersDeclaration.ftl
+5x        Create.ftl
+1x        CreatePackageContents.ftl
+5x        CreateWithParams.ftl
+5x        DeepCloneWithParameters.ftl
+5x        DeepEqualsWithComments.ftl
+5x        DeepEqualsWithOrder.ftl
+1x        DiagramVisitor.ftl
+5x        DoCreate.ftl
+5x        DoCreateWithParams.ftl
+5x        EGet.ftl
+5x        EIsSet.ftl
+1x        EPackage.ftl
+1x        EPackageImpl.ftl
+5x        ESet.ftl
+10x       EStructuralFeature.ftl
+5x        EToString.ftl
+5x        EUnset.ftl
+5x        EmptyMethodBody.ftl
+5x        EqualAttributes.ftl
+5x        EqualsWithComments.ftl
+149x      ErrorIfNull.ftl
+8x        Get.ftl
+5x        GetChildren.ftl
+1x        InheritanceVisitor.ftl
+1x        InitializePackageContents.ftl
+1x        LexerMember.ftl
+1x        MCParser.ftl
+5x        MCParserMethods.ftl
+1x        ModelLoader.ftl
+1x        ModelingLanguage.ftl
+5x        ParametersDeclaration.ftl
+1x        ParentAwareVisitor.ftl
+1x        Parser.ftl
+1x        ParserHeader.ftl
+5x        RemoveChild.ftl
+8x        Set.ftl
+1x        SimpleVisitor.ftl
+========================================================== Unused Templates
+ast/AstExtendedInterfaces.ftl
+ast/AstImports.ftl
+ast/AstInterfaceContent.ftl
+ast/AstNodeFactory.ftl
+ast/Interface.ftl
+ast/additionalmethods/AcceptSuper.ftl
+ast/additionalmethods/GetReferencedSymbol.ftl
+ast/additionalmethods/Set.ftl
+ast/factorymethods/CreateDelegate.ftl
+ast/factorymethods/CreateWithParamsDelegate.ftl
+ast_emf/EConstantsEnum.ftl
+ast_emf/EFactory.ftl
+de/monticore/generating/templateengine/freemarker/Aliases.ftl
+symboltable/ModelNameCalculator.ftl
+symboltable/ResolvingFilter.ftl
+symboltable/Scope.ftl
+symboltable/ScopeSpanningSymbol.ftl
+symboltable/Symbol.ftl
+symboltable/SymbolInterface.ftl
+symboltable/SymbolKind.ftl
+symboltable/SymbolReference.ftl
+symboltable/SymbolTableCreator.ftl
+symboltable/symbols/KindConstantDeclaration.ftl
+symboltable/symboltablecreators/EndVisitMethod.ftl
+symboltable/symboltablecreators/InitializeSymbol.ftl
+symboltable/symboltablecreators/ScopeMethods.ftl
+symboltable/symboltablecreators/ScopeSpanningSymbolMethods.ftl
+symboltable/symboltablecreators/SetEnclosingScopeOfNodes.ftl
+symboltable/symboltablecreators/SymbolMethods.ftl
+types/TypeResolver.ftl
+========================================================== Used USTemplates
+#Calls:   Template Name
+========================================================== Unused USTemplates
+========================================================== Explanation
+Used Templates: the list of standard template being used.
+Used USTemplates: the list of user specifc templates being used.
+- #Executions: how often the template was called/included
+Unused Templates: the list of templates which have not been executed
+Unused USTemplates: the list of user specifc templates which
+                    have not been executed.
+All lists are sorted
+(EOF)

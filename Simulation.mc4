@@ -1,0 +1,115 @@
+/*
+ * Simulation-Settings language v0.2
+ * @author Deniz Schmidt
+*/
+
+grammar Simulation extends Weather, SI {
+  
+  symbol scope Simulation = "sim" Name "{"
+    SimulationRenderFrequency?
+    SimulationLoopFrequency?
+    SimulationDuration?
+    SimulationType?
+    Weather?
+    Time?
+    MapPath?
+    MapName
+    MapHeight?
+    MapOverlap?
+    MapSectorWidth?
+    MapSectorHeight?
+    MaxSectorUsers?
+    Timeout?
+    Pedestrians?
+    PedestrianDensity?
+    Vehicles?
+  "}";  
+  
+  //Übergangslösung
+  token PosNumber = ('1'..'9')('0'..'9')*;
+  //das ist doch für ranges als eingabe?
+  token TElementType =
+      ('Z' | 'Q' | 'C') Space*
+        '(' Space* (TUnitNumber | TUnitInf) Space* ':'
+            (Space* TUnitNumber Space* ':')?
+            Space* (TUnitNumber | TUnitInf) Space*
+        ')';
+
+  //SimulationRunCount = "sim_runs" count:PosNumber; //hm
+  
+  SimulationRenderFrequency = "sim_render_frequency"  simRenderFreq:UnitNumber;
+  SimulationLoopFrequency = "sim_loop_frequency"  simLoopFreq:UnitNumber;
+  SimulationDuration = "sim_duration" simDuration:UnitNumber;
+  SimulationType = "sim_type" ("fixed"|"real-time"|"max-fps");
+  
+  //SynchronousSimulation = "sim_synchronous" ("true"|"false");
+  
+  WeatherObj = "{" Temperature "," 
+                   Clouding "," 
+                   Sight "," 
+                   Precipitationtype
+                   ("," Humidity)?
+                   ("," Pressure)?
+                   ("," Windstrength)?
+                   ("," Winddirection)?
+                   ("," Precipitationamount)?
+                   ("," WeatherPhenomena)*
+                   ("," OpticalPhenomena)*
+                   ("," ArtificialPhenomena)*
+               "}";
+  
+  Weather = "weather" (FixedWeather | SequenceWeather | RandomWeather | Forecast);
+  FixedWeather = "fixed" fixedWeatherObj:WeatherObj;
+  SequenceWeather = "sequence" (randomWeatherObj:WeatherObj)* (sequenceDuration:UnitNumber)?;
+  RandomWeather = "random" randomDuration:UnitNumber;
+  Forecast = "forecast" forecastWeatherObj:WeatherObj forecastDuration:UnitNumber; //+matrix13x13; 
+ 
+  //mc mag keine :
+  Time = "time" (UnitNumber|
+                 (timeHours:PosNumber ":" timeMinutes:PosNumber) |
+                 (timeHours:PosNumber ":" timeMinutes:PosNumber ":" timeSeconds:PosNumber)|
+                 (timeHours:PosNumber ":" timeMinutes:PosNumber ":" timeSeconds:PosNumber ":" timeMilliseconds:PosNumber)
+                );
+  
+  //MC mag keine :
+  MapPath = "map_path" mapPath:Name;
+  MapName = "map_name" mapName:Name ".osm";
+  
+  MapHeight = "map_height" ("flat"|"random"|(heightMap:Name ".hm"));
+  
+  MapOverlap = "map_overlap" mapOverlap:PosNumber;
+  MapSectorWidth = "map_sector_width" sectorWidth:PosNumber;
+  MapSectorHeight = "map_sector_height" sectorHeight:PosNumber;
+  MaxSectorUsers = "max_sector_users" maxSectorUsers:PosNumber;
+  
+  Timeout = "timeout" timeout:UnitNumber;
+  
+  //Scenario
+  
+  Pedestrians = ("<p>"
+                "(" startX:UnitNumber "," startY:UnitNumber ")" 
+                "->" 
+                "(" endX:UnitNumber "," endY:UnitNumber "," endZ:UnitNumber ")"
+                )*;
+              
+  PedestrianDensity = "pedestrian_density" pedestrianDensity:UnitNumber;
+  
+  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle)*;
+  
+  //defined vehicle moving from start to destination pos
+  ExplicitVehicle = vehicle:Name 
+              ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")" //missing Name at 'UnitNumber' error
+              "->" 
+              "(" destX:UnitNumber "," destY:UnitNumber "," destZ:UnitNumber ")"
+              );
+              
+  //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
+  PathedVehicle = "<v>"
+                  "(" spawnX:UnitNumber "," spawnY:UnitNumber "," spawnRadius:UnitNumber ")"
+                  "->"
+                  "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")" 
+                  (amount:PosNumber)?;
+  
+  //completely random vehicle spawns and destinations with optional avoidance of path
+  RandomVehicle = "<v>" amount:PosNumber (startX:UnitNumber "," startY:UnitNumber "," destX:UnitNumber "," destY:UnitNumber)?;
+}

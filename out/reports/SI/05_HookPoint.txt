@@ -1,0 +1,835 @@
+========================================================== Hookpoints
+Op    Type HP-/AHP Info
+call  EHP  HP:"JavaCopyright"
+set   ATHP AstInterfaceContent.ftl            @!CDInterface
+           ASTNodeBase.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0)
+           Create.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!2)
+           DoCreate.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!3)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!3)
+           CreateWithParams.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!4)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!4)
+           DoCreateWithParams.ftl
+set   ATHP ErrorIfNull.ftl                    @!CDMethod(1,0!3)
+           ErrorIfNull.ftl
+set   ATHP ErrorIfNull.ftl                    @!CDMethod(1,0!4)
+           ErrorIfNull.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!5)
+           Create.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!6)
+           DoCreate.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!7)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!7)
+           CreateWithParams.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!8)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!8)
+           DoCreateWithParams.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!9)
+           Create.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!10)
+           DoCreate.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!11)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!11)
+           CreateWithParams.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!12)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!12)
+           DoCreateWithParams.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!13)
+           Create.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!14)
+           DoCreate.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!15)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!15)
+           CreateWithParams.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!16)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!16)
+           DoCreateWithParams.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!17)
+           Create.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!18)
+           DoCreate.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!19)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!19)
+           CreateWithParams.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDMethod(1,0!20)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!20)
+           DoCreateWithParams.ftl
+set   ATHP ClassContent.ftl                   @!CDClass
+           AstNodeFactory.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDConstructor
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDConstructor
+           ConstructorAttributesSetter.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDClass(1,0)
+           BuilderConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!21)
+           Accept.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!22)
+           DeepEqualsWithOrder.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!23)
+           "return deepEquals(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!24)
+           DeepEqualsWithComments.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!25)
+           "return deepEqualsWithComments(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!26)
+           EqualAttributes.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!27)
+           EqualsWithComments.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!28)
+           GetChildren.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!29)
+           RemoveChild.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!30)
+           "return new Builder(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!31)
+           "return deepClone(_construct()); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!32)
+           DeepCloneWithParameters.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!33)
+           "return new ASTNumber(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!34)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!35)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!36)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!37)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!38)
+           Set.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!38)
+           ""
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!39)
+           " return complexNumber.isPresent(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!40)
+           Set.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!40)
+           ""
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!41)
+           " return floatPointUnitNumber.isPresent(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!42)
+           Set.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!42)
+           ""
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!43)
+           " return hexUnitNumber.isPresent(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!44)
+           Set.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!44)
+           ""
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!45)
+           " return unitNumber.isPresent(); "
+set   ATHP AstImports.ftl                     @!CDClass(!2)
+           AstEImports.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDConstructor(!2)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDConstructor(!2)
+           ConstructorAttributesSetter.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDClass(1,0!2)
+           BuilderConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!46)
+           Accept.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!47)
+           DeepEqualsWithOrder.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!48)
+           "return deepEquals(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!49)
+           DeepEqualsWithComments.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!50)
+           "return deepEqualsWithComments(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!51)
+           EqualAttributes.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!52)
+           EqualsWithComments.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!53)
+           GetChildren.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!54)
+           RemoveChild.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!55)
+           "return new Builder(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!56)
+           "return deepClone(_construct()); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!57)
+           DeepCloneWithParameters.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!58)
+           "return new ASTFloatPointUnitNumber(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!59)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!60)
+           Set.ftl
+set   ATHP AstImports.ftl                     @!CDClass(!3)
+           AstEImports.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDConstructor(!3)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDConstructor(!3)
+           ConstructorAttributesSetter.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDClass(1,0!3)
+           BuilderConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!61)
+           Accept.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!62)
+           DeepEqualsWithOrder.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!63)
+           "return deepEquals(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!64)
+           DeepEqualsWithComments.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!65)
+           "return deepEqualsWithComments(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!66)
+           EqualAttributes.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!67)
+           EqualsWithComments.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!68)
+           GetChildren.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!69)
+           RemoveChild.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!70)
+           "return new Builder(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!71)
+           "return deepClone(_construct()); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!72)
+           DeepCloneWithParameters.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!73)
+           "return new ASTHexUnitNumber(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!74)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!75)
+           Set.ftl
+set   ATHP AstImports.ftl                     @!CDClass(!4)
+           AstEImports.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDConstructor(!4)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDConstructor(!4)
+           ConstructorAttributesSetter.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDClass(1,0!4)
+           BuilderConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!76)
+           Accept.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!77)
+           DeepEqualsWithOrder.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!78)
+           "return deepEquals(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!79)
+           DeepEqualsWithComments.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!80)
+           "return deepEqualsWithComments(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!81)
+           EqualAttributes.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!82)
+           EqualsWithComments.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!83)
+           GetChildren.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!84)
+           RemoveChild.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!85)
+           "return new Builder(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!86)
+           "return deepClone(_construct()); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!87)
+           DeepCloneWithParameters.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!88)
+           "return new ASTUnitNumber(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!89)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!90)
+           Set.ftl
+set   ATHP AstImports.ftl                     @!CDClass(!5)
+           AstEImports.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDConstructor(!5)
+           ConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDConstructor(!5)
+           ConstructorAttributesSetter.ftl
+set   ATHP ParametersDeclaration.ftl          @!CDClass(1,0!5)
+           BuilderConstructorParametersDeclaration.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!91)
+           Accept.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!92)
+           DeepEqualsWithOrder.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!93)
+           "return deepEquals(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!94)
+           DeepEqualsWithComments.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!95)
+           "return deepEqualsWithComments(o, true); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!96)
+           EqualAttributes.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!97)
+           EqualsWithComments.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!98)
+           GetChildren.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!99)
+           RemoveChild.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!100)
+           "return new Builder(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!101)
+           "return deepClone(_construct()); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!102)
+           DeepCloneWithParameters.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!103)
+           "return new ASTComplexNumber(); "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!104)
+           Get.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!105)
+           Set.ftl
+set   ATHP AstImports.ftl                     @!CDClass(!6)
+           AstEImports.ftl
+set   ATHP ClassContent.ftl                   @!CDClass(1,0!6)
+           ASTConstantsClass.ftl
+set   ATHP AstInterfaceContent.ftl            @!CDInterface(!2)
+           EPackage.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!106)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(0);"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!107)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(1);"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!108)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(2);"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!109)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(3);"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!110)
+           "return (EAttribute)floatPointUnitNumberEClass.getEStructuralFeat[...]"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!111)
+           "return (EAttribute)hexUnitNumberEClass.getEStructuralFeatures().[...]"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!112)
+           "return (EAttribute)unitNumberEClass.getEStructuralFeatures().get(0);"
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!113)
+           "return (EAttribute)complexNumberEClass.getEStructuralFeatures().[...]"
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!114)
+           CreatePackageContents.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!115)
+           InitializePackageContents.ftl
+set   ATHP ClassContent.ftl                   @!CDClass(!7)
+           EPackageImpl.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!116)
+           " return toString(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!117)
+           " return toString(); "
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!118)
+           " return intValue; "
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!119)
+           EGet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!120)
+           ESet.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!120)
+           ""
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!121)
+           EUnset.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!122)
+           EIsSet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!123)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!124)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!125)
+           EToString.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!126)
+           "return SIPackage.Literals.ASTNumber;"
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!127)
+           EGet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!128)
+           ESet.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!128)
+           ""
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!129)
+           EUnset.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!130)
+           EIsSet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!131)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!132)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!133)
+           EToString.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!134)
+           "return SIPackage.Literals.ASTFloatPointUnitNumber;"
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!135)
+           EGet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!136)
+           ESet.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!136)
+           ""
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!137)
+           EUnset.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!138)
+           EIsSet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!139)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!140)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!141)
+           EToString.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!142)
+           "return SIPackage.Literals.ASTHexUnitNumber;"
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!143)
+           EGet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!144)
+           ESet.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!144)
+           ""
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!145)
+           EUnset.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!146)
+           EIsSet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!147)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!148)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!149)
+           EToString.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!150)
+           "return SIPackage.Literals.ASTUnitNumber;"
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!151)
+           EGet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!152)
+           ESet.ftl
+set   ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!152)
+           ""
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!153)
+           EUnset.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!154)
+           EIsSet.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!155)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!156)
+           EStructuralFeature.ftl
+set   ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!157)
+           EToString.ftl
+set   ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!158)
+           "return SIPackage.Literals.ASTComplexNumber;"
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"JavaCopyright"
+call  ATHP AstImports.ftl                     @!CDClass(!2)
+           AstEImports.ftl
+call  ATHP ParametersDeclaration.ftl          @!CDConstructor
+           ConstructorParametersDeclaration.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDConstructor
+           ConstructorAttributesSetter.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!21)
+           Accept.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!22)
+           DeepEqualsWithOrder.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!23)
+           "return deepEquals(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!24)
+           DeepEqualsWithComments.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!25)
+           "return deepEqualsWithComments(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!26)
+           EqualAttributes.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!27)
+           EqualsWithComments.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!28)
+           GetChildren.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!29)
+           RemoveChild.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!30)
+           "return new Builder(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!31)
+           "return deepClone(_construct()); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!32)
+           DeepCloneWithParameters.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!33)
+           "return new ASTNumber(); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!34)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!35)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!36)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!37)
+           Get.ftl
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!38)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!38)
+           Set.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!39)
+           " return complexNumber.isPresent(); "
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!40)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!40)
+           Set.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!41)
+           " return floatPointUnitNumber.isPresent(); "
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!42)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!42)
+           Set.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!43)
+           " return hexUnitNumber.isPresent(); "
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!44)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!44)
+           Set.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!45)
+           " return unitNumber.isPresent(); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!119)
+           EGet.ftl
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!120)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!120)
+           ESet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!121)
+           EUnset.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!122)
+           EIsSet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!123)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!124)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!125)
+           EToString.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!126)
+           "return SIPackage.Literals.ASTNumber;"
+call  ATHP ParametersDeclaration.ftl          @!CDClass(1,0)
+           BuilderConstructorParametersDeclaration.ftl
+call  ATHP AstImports.ftl                     @!CDClass(!3)
+           AstEImports.ftl
+call  ATHP ParametersDeclaration.ftl          @!CDConstructor(!2)
+           ConstructorParametersDeclaration.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDConstructor(!2)
+           ConstructorAttributesSetter.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!46)
+           Accept.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!47)
+           DeepEqualsWithOrder.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!48)
+           "return deepEquals(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!49)
+           DeepEqualsWithComments.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!50)
+           "return deepEqualsWithComments(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!51)
+           EqualAttributes.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!52)
+           EqualsWithComments.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!53)
+           GetChildren.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!54)
+           RemoveChild.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!55)
+           "return new Builder(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!56)
+           "return deepClone(_construct()); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!57)
+           DeepCloneWithParameters.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!58)
+           "return new ASTFloatPointUnitNumber(); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!59)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!60)
+           Set.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!127)
+           EGet.ftl
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!128)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!128)
+           ESet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!129)
+           EUnset.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!130)
+           EIsSet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!131)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!132)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!133)
+           EToString.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!134)
+           "return SIPackage.Literals.ASTFloatPointUnitNumber;"
+call  ATHP ParametersDeclaration.ftl          @!CDClass(1,0!2)
+           BuilderConstructorParametersDeclaration.ftl
+call  ATHP AstImports.ftl                     @!CDClass(!4)
+           AstEImports.ftl
+call  ATHP ParametersDeclaration.ftl          @!CDConstructor(!3)
+           ConstructorParametersDeclaration.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDConstructor(!3)
+           ConstructorAttributesSetter.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!61)
+           Accept.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!62)
+           DeepEqualsWithOrder.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!63)
+           "return deepEquals(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!64)
+           DeepEqualsWithComments.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!65)
+           "return deepEqualsWithComments(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!66)
+           EqualAttributes.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!67)
+           EqualsWithComments.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!68)
+           GetChildren.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!69)
+           RemoveChild.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!70)
+           "return new Builder(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!71)
+           "return deepClone(_construct()); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!72)
+           DeepCloneWithParameters.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!73)
+           "return new ASTHexUnitNumber(); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!74)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!75)
+           Set.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!135)
+           EGet.ftl
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!136)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!136)
+           ESet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!137)
+           EUnset.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!138)
+           EIsSet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!139)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!140)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!141)
+           EToString.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!142)
+           "return SIPackage.Literals.ASTHexUnitNumber;"
+call  ATHP ParametersDeclaration.ftl          @!CDClass(1,0!3)
+           BuilderConstructorParametersDeclaration.ftl
+call  ATHP AstImports.ftl                     @!CDClass(!5)
+           AstEImports.ftl
+call  ATHP ParametersDeclaration.ftl          @!CDConstructor(!4)
+           ConstructorParametersDeclaration.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDConstructor(!4)
+           ConstructorAttributesSetter.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!76)
+           Accept.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!77)
+           DeepEqualsWithOrder.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!78)
+           "return deepEquals(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!79)
+           DeepEqualsWithComments.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!80)
+           "return deepEqualsWithComments(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!81)
+           EqualAttributes.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!82)
+           EqualsWithComments.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!83)
+           GetChildren.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!84)
+           RemoveChild.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!85)
+           "return new Builder(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!86)
+           "return deepClone(_construct()); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!87)
+           DeepCloneWithParameters.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!88)
+           "return new ASTUnitNumber(); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!89)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!90)
+           Set.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!143)
+           EGet.ftl
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!144)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!144)
+           ESet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!145)
+           EUnset.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!146)
+           EIsSet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!147)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!148)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!149)
+           EToString.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!150)
+           "return SIPackage.Literals.ASTUnitNumber;"
+call  ATHP ParametersDeclaration.ftl          @!CDClass(1,0!4)
+           BuilderConstructorParametersDeclaration.ftl
+call  ATHP AstImports.ftl                     @!CDClass(!6)
+           AstEImports.ftl
+call  ATHP ParametersDeclaration.ftl          @!CDConstructor(!5)
+           ConstructorParametersDeclaration.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDConstructor(!5)
+           ConstructorAttributesSetter.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!91)
+           Accept.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!92)
+           DeepEqualsWithOrder.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!93)
+           "return deepEquals(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!94)
+           DeepEqualsWithComments.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!95)
+           "return deepEqualsWithComments(o, true); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!96)
+           EqualAttributes.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!97)
+           EqualsWithComments.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!98)
+           GetChildren.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!99)
+           RemoveChild.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!100)
+           "return new Builder(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!101)
+           "return deepClone(_construct()); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!102)
+           DeepCloneWithParameters.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!103)
+           "return new ASTComplexNumber(); "
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!104)
+           Get.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!105)
+           Set.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!151)
+           EGet.ftl
+call  ASHP ErrorIfNull.ftl                    @!CDMethod(1,0!152)
+           ""
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!152)
+           ESet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!153)
+           EUnset.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!154)
+           EIsSet.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!155)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!156)
+           EStructuralFeature.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!157)
+           EToString.ftl
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!158)
+           "return SIPackage.Literals.ASTComplexNumber;"
+call  ATHP ParametersDeclaration.ftl          @!CDClass(1,0!5)
+           BuilderConstructorParametersDeclaration.ftl
+call  ATHP ClassContent.ftl                   @!CDClass
+           AstNodeFactory.ftl
+call  EHP  HP:"JavaCopyright"
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0)
+           Create.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!2)
+           DoCreate.ftl
+call  ATHP ErrorIfNull.ftl                    @!CDMethod(1,0!3)
+           ErrorIfNull.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!3)
+           CreateWithParams.ftl
+call  ATHP ErrorIfNull.ftl                    @!CDMethod(1,0!4)
+           ErrorIfNull.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!4)
+           DoCreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!5)
+           Create.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!6)
+           DoCreate.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!7)
+           CreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!8)
+           DoCreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!9)
+           Create.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!10)
+           DoCreate.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!11)
+           CreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!12)
+           DoCreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!13)
+           Create.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!14)
+           DoCreate.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!15)
+           CreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!16)
+           DoCreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!17)
+           Create.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!18)
+           DoCreate.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!19)
+           CreateWithParams.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!20)
+           DoCreateWithParams.ftl
+call  ATHP ClassContent.ftl                   @!CDClass(1,0!6)
+           ASTConstantsClass.ftl
+call  ATHP ClassContent.ftl                   @!CDClass(!7)
+           EPackageImpl.ftl
+call  EHP  HP:"JavaCopyright"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!106)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(0);"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!107)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(1);"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!108)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(2);"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!109)
+           "return (EReference)numberEClass.getEStructuralFeatures().get(3);"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!110)
+           "return (EAttribute)floatPointUnitNumberEClass.getEStructuralFeat[...]"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!111)
+           "return (EAttribute)hexUnitNumberEClass.getEStructuralFeatures().[...]"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!112)
+           "return (EAttribute)unitNumberEClass.getEStructuralFeatures().get(0);"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!113)
+           "return (EAttribute)complexNumberEClass.getEStructuralFeatures().[...]"
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!114)
+           CreatePackageContents.ftl
+call  ATHP EmptyMethodBody.ftl                @!CDMethod(1,0!115)
+           InitializePackageContents.ftl
+call  EHP  HP:"InterfaceContent:addComment"
+call  EHP  HP:"<Block>?InterfaceContent:addImports"
+call  ATHP AstInterfaceContent.ftl            @!CDInterface
+           ASTNodeBase.ftl
+call  EHP  HP:"InterfaceContent:addComment"
+call  EHP  HP:"<Block>?InterfaceContent:addImports"
+call  ATHP AstInterfaceContent.ftl            @!CDInterface(!2)
+           EPackage.ftl
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"EnumContent:addComment"
+call  EHP  HP:"<Block>?EnumContent:addImports"
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!116)
+           " return toString(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!117)
+           " return toString(); "
+call  ASHP EmptyMethodBody.ftl                @!CDMethod(1,0!118)
+           " return intValue; "
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"JavaCopyright"
+call  EHP  HP:"JavaCopyright"
+========================================================== Explanation
+The events are the following:
+  - set         hook point assignment
+  - setr        template replacement by hook points
+  - setb        assignment of hook points that are called before the template 
+  - seta        assignment of hook points that are called after the template 
+  - call        hook point execution
+  - callr       execution of hook points that replaced a template
+  - callb       execution of hook points that are called before the template
+  - calla       execution of hook points that are called after the template
+Hookpoints: 
+  - SHP         StringHookPoint
+  - THP         TemplateHookPoint
+  - CHP         CodeHookPoint
+  - EHP         EmptyHookPoint = HookPoint is null
+  - ASHP        AST StringHookPoint
+  - ATHP        AST TemplateHookPoint
+  - ACHP        AST CodeHookPoint
+(EOF)

@@ -1,0 +1,16 @@
+sim FullExample {
+  sim_render_frequency 60
+  sim_loop_frequency 60ms
+  sim_duration 4h
+  sim_type max-fps
+  weather fixed {temperature 290K,clouding none,sight unlimited,precipitation_type none}
+  time 6h
+  map_path Maps
+  map_name HorsterDreieck.osm
+  map_height flat
+  map_overlap 10
+  map_sector_width 100
+  map_sector_height 100
+  max_sector_users 1234
+  timeout 12h
+}

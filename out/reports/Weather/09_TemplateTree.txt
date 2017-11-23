@@ -1,0 +1,1643 @@
+========================================================== Protocol
+OP set value (key, value): 
+OP set value (key, value): 
++--Parser.ftl
+|  +--ParserHeader.ftl
+|  +--LexerMember.ftl
+OP set value (key, value): 
++--MCParser.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+|  +--MCParserMethods.ftl
+OP set value (key, value): 
+OP set value (key, value): 
+OP set value (key, value): 
++--ModelingLanguage.ftl
++--ModelLoader.ftl
+OP set value (key, value): 
+OP set value (key, value): 
+OP set value (key, value): 
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTTemperature(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTTemperature;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTHumidity(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTHumidity;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTPressure(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTPressure;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTWindstrength(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTWindstrength;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTWinddirection(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTWinddirection;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTPrecipitationtype(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTPrecipitationtype;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--ParametersDeclaration.ftl
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTPrecipitationamount(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTPrecipitationamount;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTClouding(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTClouding;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--ParametersDeclaration.ftl
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTSight(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: " return weatherSight.isPresent(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTSight;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Attribute.ftl
+|  +--Attribute.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--Constructor.ftl
+|  |  +--ATHP: ConstructorParametersDeclaration.ftl
+|  |  +--ConstructorParametersDeclaration.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: ConstructorAttributesSetter.ftl
+|  |  +--ConstructorAttributesSetter.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTWeatherPhenomena(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Get.ftl
+|  |  +--Get.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: " return posX.isPresent(); "
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: Set.ftl
+|  |  +--Set.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: " return posY.isPresent(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTWeatherPhenomena;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--BuilderAttribute.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--ATHP: BuilderConstructorParametersDeclaration.ftl
+|  |  +--BuilderConstructorParametersDeclaration.ftl
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
+|  |  +--AstBuilderAttributeSetter.ftl
+|  |  |  +--inst: TypesHelper
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTOpticalPhenomena(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTOpticalPhenomena;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--ParametersDeclaration.ftl
++--AstClass.ftl
+|  +--ATHP: AstEImports.ftl
+|  +--AstEImports.ftl
+|  +--AstSuperTypes.ftl
+|  |  +--AstSuperInterfaces.ftl
+|  +--Constructor.ftl
+|  |  +--ParametersDeclaration.ftl
+|  |  +--EmptyMethodBody.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: Accept.ftl
+|  |  +--Accept.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: AcceptSuper.ftl
+|  |  +--AcceptSuper.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithOrder.ftl
+|  |  +--DeepEqualsWithOrder.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEquals(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepEqualsWithComments.ftl
+|  |  +--DeepEqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepEqualsWithComments(o, true); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualAttributes.ftl
+|  |  +--EqualAttributes.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EqualsWithComments.ftl
+|  |  +--EqualsWithComments.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: GetChildren.ftl
+|  |  +--GetChildren.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: RemoveChild.ftl
+|  |  +--RemoveChild.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new Builder(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return deepClone(_construct()); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: DeepCloneWithParameters.ftl
+|  |  +--DeepCloneWithParameters.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return new ASTArtificialPhenomena(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EGet.ftl
+|  |  +--EGet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ASHP: ""
+|  |  +--ATHP: ESet.ftl
+|  |  +--ESet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EUnset.ftl
+|  |  +--EUnset.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EIsSet.ftl
+|  |  +--EIsSet.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EStructuralFeature.ftl
+|  |  +--EStructuralFeature.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ATHP: EToString.ftl
+|  |  +--EToString.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: "return WeatherPackage.Literals.ASTArtificialPhenomena;"
+|  +--ClassContent.ftl
+|  +--AstBuilder.ftl
+|  |  +--ParametersDeclaration.ftl
++--Class.ftl
+|  +--ATHP: AstNodeFactory.ftl
+|  +--AstNodeFactory.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--Attribute.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ATHP: ErrorIfNull.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ATHP: ErrorIfNull.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ATHP: ErrorIfNull.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateWithParams.ftl
+|  |  |  +--CreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ATHP: ErrorIfNull.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreateWithParams.ftl
+|  |  |  +--DoCreateWithParams.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: Create.ftl
+|  |  |  +--Create.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: DoCreate.ftl
+|  |  |  +--DoCreate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateDelegate.ftl
+|  |  |  +--CreateDelegate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ASHP: ""
+|  |  |  +--ATHP: CreateWithParamsDelegate.ftl
+|  |  |  +--CreateWithParamsDelegate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateDelegate.ftl
+|  |  |  +--CreateDelegate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateDelegate.ftl
+|  |  |  +--CreateDelegate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateDelegate.ftl
+|  |  |  +--CreateDelegate.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreateDelegate.ftl
+|  |  |  +--CreateDelegate.ftl
++--Class.ftl
+|  +--ATHP: ASTConstantsClass.ftl
+|  +--ASTConstantsClass.ftl
++--Class.ftl
+|  +--ATHP: EPackageImpl.ftl
+|  +--EPackageImpl.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)temperatureEClass.getEStructuralFeatures().ge[...]"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)humidityEClass.getEStructuralFeatures().get(0);"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)pressureEClass.getEStructuralFeatures().get(0);"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)windstrengthEClass.getEStructuralFeatures().g[...]"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)winddirectionEClass.getEStructuralFeatures().[...]"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)precipitationamountEClass.getEStructuralFeatu[...]"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EReference)sightEClass.getEStructuralFeatures().get(0);"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EAttribute)weatherPhenomenaEClass.getEStructuralFeatures[...]"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ASHP: "return (EAttribute)weatherPhenomenaEClass.getEStructuralFeatures[...]"
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: CreatePackageContents.ftl
+|  |  |  +--CreatePackageContents.ftl
+|  |  +--ClassMethod.ftl
+|  |  |  +--ErrorIfNull.ftl
+|  |  |  +--ATHP: InitializePackageContents.ftl
+|  |  |  +--InitializePackageContents.ftl
++--AstInterface.ftl
+|  +--ATHP: ASTNodeBase.ftl
+|  +--ASTNodeBase.ftl
++--AstInterface.ftl
+|  +--ATHP: EPackage.ftl
+|  +--EPackage.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--Constant.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
+|  |  +--ClassMethod.ftl
++--AstEnum.ftl
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: " return toString(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: " return toString(); "
+|  +--ClassMethod.ftl
+|  |  +--ErrorIfNull.ftl
+|  |  +--ASHP: " return intValue; "
+OP set value (key, value): 
++--SimpleVisitor.ftl
++--InheritanceVisitor.ftl
++--ParentAwareVisitor.ftl
++--CommonDelegatorVisitor.ftl
+OP set value (key, value): 
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoInterface.ftl
++--CoCoChecker.ftl
+OP set value (key, value): 
++--DiagramVisitor.ftl
+========================================================== Explanation
+Tree structure for template calls.
+Short forms:
+  +--      template call
+  +--SHP   StringHookPoint call
+  +--CHP   CodeHookPoint call
+  +--ASHP  AST StringHookPoint call
+  +--ATHP  AST TemplateHookPoint call
+  +--ACHP  AST CodeHookPoint call
+  +inst    instantiation of java class
+(EOF)

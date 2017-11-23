@@ -1,0 +1,66 @@
+========================================================== Generated Files
+Filename                                AST-Node
+SIAntlr.g4                              @SI!MCGrammar(23,0)
+                                        Parser.ftl
+SIParser.java                           @SI!MCGrammar(23,0)
+                                        MCParser.ftl
+SILanguage.java                         @SI!MCGrammar(23,0)
+                                        ModelingLanguage.ftl
+SIModelLoader.java                      @SI!MCGrammar(23,0)
+                                        ModelLoader.ftl
+ASTNumber.java                          @!CDClass(!2)
+                                        AstClass.ftl
+ASTFloatPointUnitNumber.java            @!CDClass(!3)
+                                        AstClass.ftl
+ASTHexUnitNumber.java                   @!CDClass(!4)
+                                        AstClass.ftl
+ASTUnitNumber.java                      @!CDClass(!5)
+                                        AstClass.ftl
+ASTComplexNumber.java                   @!CDClass(!6)
+                                        AstClass.ftl
+SINodeFactory.java                      @!CDClass
+                                        Class.ftl
+ASTConstantsSI.java                     @!CDClass(1,0!6)
+                                        Class.ftl
+SIPackageImpl.java                      @!CDClass(!7)
+                                        Class.ftl
+ASTSINode.java                          @!CDInterface
+                                        AstInterface.ftl
+SIPackage.java                          @!CDInterface(!2)
+                                        AstInterface.ftl
+SILiterals.java                         @!CDEnum
+                                        AstEnum.ftl
+SIVisitor.java                          @!CDCompilationUnit
+                                        SimpleVisitor.ftl
+SIInheritanceVisitor.java               @!CDCompilationUnit
+                                        InheritanceVisitor.ftl
+SIParentAwareVisitor.java               @!CDCompilationUnit
+                                        ParentAwareVisitor.ftl
+CommonSIDelegatorVisitor.java           @!CDCompilationUnit
+                                        CommonDelegatorVisitor.ftl
+SIASTNumberCoCo.java                    @!CDClass(!2)
+                                        CoCoInterface.ftl
+SIASTFloatPointUnitNumberCoCo.java      @!CDClass(!3)
+                                        CoCoInterface.ftl
+SIASTHexUnitNumberCoCo.java             @!CDClass(!4)
+                                        CoCoInterface.ftl
+SIASTUnitNumberCoCo.java                @!CDClass(!5)
+                                        CoCoInterface.ftl
+SIASTComplexNumberCoCo.java             @!CDClass(!6)
+                                        CoCoInterface.ftl
+SIASTSINodeCoCo.java                    @!CDInterface
+                                        CoCoInterface.ftl
+SISIPackageCoCo.java                    @!CDInterface(!2)
+                                        CoCoInterface.ftl
+SICoCoChecker.java                      @!CDCompilationUnit
+                                        CoCoChecker.ftl
+SI2OD.java                              @!CDCompilationUnit
+                                        DiagramVisitor.ftl
+========================================================== Explanation
+Generated Files: the list of generated files in the order they are generated.
+Each file knows:
+- Template       responsible for the file creation
+- AST            Node which is passed to the template as ast variable
+- Model Position If the ast node is created as a direct result of parsing a model,
+                 the position of the model element is reported in the form <Line, Column>
+(EOF)

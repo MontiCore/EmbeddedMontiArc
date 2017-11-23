@@ -1,0 +1,171 @@
+import Weather;
+import SI;
+
+classdiagram Simulation{
+
+  public interface ASTSimulationNode;
+
+  public class ASTSimulation{
+    protected String name;
+    protected Optional<ASTSimulationRenderFrequency> simulationRenderFrequency;
+    protected Optional<ASTSimulationLoopFrequency> simulationLoopFrequency;
+    protected Optional<ASTSimulationDuration> simulationDuration;
+    protected Optional<ASTSimulationType> simulationType;
+    protected Optional<ASTWeather> weather;
+    protected Optional<ASTTime> time;
+    protected Optional<ASTMapPath> mapPath;
+    protected ASTMapName mapName;
+    protected Optional<ASTMapHeight> mapHeight;
+    protected Optional<ASTMapOverlap> mapOverlap;
+    protected Optional<ASTMapSectorWidth> mapSectorWidth;
+    protected Optional<ASTMapSectorHeight> mapSectorHeight;
+    protected Optional<ASTMaxSectorUsers> maxSectorUsers;
+    protected Optional<ASTTimeout> timeout;
+    protected Optional<ASTPedestrians> pedestrians;
+    protected Optional<ASTPedestrianDensity> pedestrianDensity;
+    protected Optional<ASTVehicles> vehicles;
+  }
+
+  public class ASTSimulationRenderFrequency{
+    protected SI.ASTUnitNumber simRenderFreq;
+  }
+
+  public class ASTSimulationLoopFrequency{
+    protected SI.ASTUnitNumber simLoopFreq;
+  }
+
+  public class ASTSimulationDuration{
+    protected SI.ASTUnitNumber simDuration;
+  }
+
+  public class ASTSimulationType;
+
+  public class ASTWeatherObj{
+    protected Weather.ASTTemperature temperature;
+    protected Weather.ASTClouding clouding;
+    protected Weather.ASTSight sight;
+    protected Weather.ASTPrecipitationtype precipitationtype;
+    protected Optional<Weather.ASTHumidity> humidity;
+    protected Optional<Weather.ASTPressure> pressure;
+    protected Optional<Weather.ASTWindstrength> windstrength;
+    protected Optional<Weather.ASTWinddirection> winddirection;
+    protected Optional<Weather.ASTPrecipitationamount> precipitationamount;
+    protected List<Weather.ASTWeatherPhenomena> weatherPhenomenas;
+    protected List<Weather.ASTOpticalPhenomena> opticalPhenomenas;
+    protected List<Weather.ASTArtificialPhenomena> artificialPhenomenas;
+  }
+
+  public class ASTWeather{
+    protected Optional<ASTFixedWeather> fixedWeather;
+    protected Optional<ASTSequenceWeather> sequenceWeather;
+    protected Optional<ASTRandomWeather> randomWeather;
+    protected Optional<ASTForecast> forecast;
+  }
+
+  public class ASTFixedWeather{
+    protected ASTWeatherObj fixedWeatherObj;
+  }
+
+  public class ASTSequenceWeather{
+    protected List<ASTWeatherObj> randomWeatherObj;
+    protected Optional<SI.ASTUnitNumber> sequenceDuration;
+  }
+
+  public class ASTRandomWeather{
+    protected SI.ASTUnitNumber randomDuration;
+  }
+
+  public class ASTForecast{
+    protected ASTWeatherObj forecastWeatherObj;
+    protected SI.ASTUnitNumber forecastDuration;
+  }
+
+  public class ASTTime{
+    protected Optional<SI.ASTUnitNumber> unitNumber;
+    protected Optional<String> timeHours;
+    protected Optional<String> timeMinutes;
+    protected Optional<String> timeSeconds;
+    protected Optional<String> timeMilliseconds;
+  }
+
+  public class ASTMapPath{
+    protected String mapPath;
+  }
+
+  public class ASTMapName{
+    protected String mapName;
+  }
+
+  public class ASTMapHeight{
+    protected Optional<String> heightMap;
+  }
+
+  public class ASTMapOverlap{
+    protected String mapOverlap;
+  }
+
+  public class ASTMapSectorWidth{
+    protected String sectorWidth;
+  }
+
+  public class ASTMapSectorHeight{
+    protected String sectorHeight;
+  }
+
+  public class ASTMaxSectorUsers{
+    protected String maxSectorUsers;
+  }
+
+  public class ASTTimeout{
+    protected SI.ASTUnitNumber timeout;
+  }
+
+  public class ASTPedestrians{
+    protected List<SI.ASTUnitNumber> startX;
+    protected List<SI.ASTUnitNumber> startY;
+    protected List<SI.ASTUnitNumber> endX;
+    protected List<SI.ASTUnitNumber> endY;
+    protected List<SI.ASTUnitNumber> endZ;
+  }
+
+  public class ASTPedestrianDensity{
+    protected SI.ASTUnitNumber pedestrianDensity;
+  }
+
+  public class ASTVehicles{
+    protected List<ASTExplicitVehicle> explicitVehicles;
+    protected List<ASTPathedVehicle> pathedVehicles;
+    protected List<ASTRandomVehicle> randomVehicles;
+  }
+
+  public class ASTExplicitVehicle{
+    protected String vehicle;
+    protected SI.ASTUnitNumber startX;
+    protected SI.ASTUnitNumber startY;
+    protected SI.ASTUnitNumber startRot;
+    protected SI.ASTUnitNumber destX;
+    protected SI.ASTUnitNumber destY;
+    protected SI.ASTUnitNumber destZ;
+  }
+
+  public class ASTPathedVehicle{
+    protected SI.ASTUnitNumber spawnX;
+    protected SI.ASTUnitNumber spawnY;
+    protected SI.ASTUnitNumber spawnRadius;
+    protected SI.ASTUnitNumber destX;
+    protected SI.ASTUnitNumber destY;
+    protected SI.ASTUnitNumber destRadius;
+    protected Optional<String> amount;
+  }
+
+  public class ASTRandomVehicle{
+    protected String amount;
+    protected Optional<SI.ASTUnitNumber> startX;
+    protected Optional<SI.ASTUnitNumber> startY;
+    protected Optional<SI.ASTUnitNumber> destX;
+    protected Optional<SI.ASTUnitNumber> destY;
+  }
+
+  enum SimulationLiterals;
+
+}

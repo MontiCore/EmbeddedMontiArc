@@ -1,0 +1,14 @@
+2017-11-20 10:04:16 [DEBUG] MAIN --------------------------------
+2017-11-20 10:04:16 [DEBUG] MAIN MontiCore
+2017-11-20 10:04:16 [DEBUG] MAIN  - eating your models since 2005
+2017-11-20 10:04:16 [DEBUG] MAIN --------------------------------
+2017-11-20 10:04:16 [DEBUG] MAIN Grammar argument    : [Simulation.mc4]
+2017-11-20 10:04:16 [DEBUG] MAIN Grammar files       : [C:\Users\Delta2-PC\Desktop\Uni\SimLang\Simulation.mc4]
+2017-11-20 10:04:16 [DEBUG] MAIN Modelpath           : [file:/C:/Users/Delta2-PC/Desktop/Uni/SimLang/monticore-cli.jar, file:/C:/Users/Delta2-PC/Desktop/Uni/SimLang/out/]
+2017-11-20 10:04:16 [DEBUG] MAIN Output dir          : out
+2017-11-20 10:04:16 [DEBUG] MAIN Handcoded argument  : []
+2017-11-20 10:04:16 [DEBUG] MAIN Handcoded files     : [empty iterable path]
+2017-11-20 10:04:16 [DEBUG] d.s.commons.logging.Log Switching logging component from de.se_rwth.commons.logging.Slf4jLog to de.monticore.generating.templateengine.reporting.Reporting
+2017-11-20 10:04:16 [DEBUG] d.m.i.IncrementalChecker The input file C:\Users\Delta2-PC\Desktop\Uni\SimLang\Simulation.mc4 has changed.
+2017-11-20 10:04:16 [INFO]  d.m.i.IncrementalChecker Changes detected for C:\Users\Delta2-PC\Desktop\Uni\SimLang\Simulation.mc4. Regenerating...
+2017-11-20 10:04:17 [ERROR] ROOT Simulation.mc4:<8,15>: no viable alternative at input '(1'

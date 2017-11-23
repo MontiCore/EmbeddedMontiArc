@@ -1,0 +1,30 @@
+classdiagram SI{
+
+  public interface ASTSINode;
+
+  public class ASTNumber{
+    protected Optional<ASTFloatPointUnitNumber> floatPointUnitNumber;
+    protected Optional<ASTHexUnitNumber> hexUnitNumber;
+    protected Optional<ASTComplexNumber> complexNumber;
+    protected Optional<ASTUnitNumber> unitNumber;
+  }
+
+  public class ASTFloatPointUnitNumber{
+    protected String tFloatPointUnitNumber;
+  }
+
+  public class ASTHexUnitNumber{
+    protected String tHexUnitNumber;
+  }
+
+  public class ASTUnitNumber{
+    protected String tUnitNumber;
+  }
+
+  public class ASTComplexNumber{
+    protected String tComplexNumber;
+  }
+
+  enum SILiterals;
+
+}
