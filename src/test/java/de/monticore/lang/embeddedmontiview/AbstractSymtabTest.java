@@ -20,7 +20,7 @@ package de.monticore.lang.embeddedmontiview; /**
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.java.lang.JavaDSLLanguage;
+//import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.EmbeddedMontiViewLanguage;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewComponentSymbol;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewExpandedComponentInstanceSymbol;
@@ -44,7 +44,7 @@ public class AbstractSymtabTest {
 
     fam.addModelingLanguage(montiViewLanguage);
     // TODO should we use JavaDSLLanguage or add the resolvers in MALang?
-    fam.addModelingLanguage(new JavaDSLLanguage());
+//    fam.addModelingLanguage(new JavaDSLLanguage());
 
     // TODO how to add java default types?
     final ModelPath mp = new ModelPath(Paths.get("src/main/resources/defaultTypes"));

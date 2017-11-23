@@ -20,12 +20,12 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
-import de.monticore.symboltable.types.JFieldSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -189,14 +189,14 @@ public class ViewSymbol extends CommonScopeSpanningSymbol {
   /**
    * @param formalTypeParameter generic type parameter to add
    */
-  public void addFormalTypeParameter(JTypeSymbol formalTypeParameter) {
+  public void addFormalTypeParameter(MCTypeSymbol formalTypeParameter) {
     checkArgument(formalTypeParameter.isFormalTypeParameter());
     getMutableSpannedScope().add(formalTypeParameter);
   }
 
-  public List<JTypeSymbol> getFormalTypeParameters() {
-    final Collection<JTypeSymbol> resolvedTypes = this.getSpannedScope().resolveLocally(JTypeSymbol.KIND);
-    return resolvedTypes.stream().filter(JTypeSymbol::isFormalTypeParameter).collect(Collectors.toList());
+  public List<MCTypeSymbol> getFormalTypeParameters() {
+    final Collection<MCTypeSymbol> resolvedTypes = this.getSpannedScope().resolveLocally(MCTypeSymbol.KIND);
+    return resolvedTypes.stream().filter(MCTypeSymbol::isFormalTypeParameter).collect(Collectors.toList());
   }
 
   public boolean hasFormalTypeParameters() {
@@ -235,9 +235,9 @@ public class ViewSymbol extends CommonScopeSpanningSymbol {
   /**
    * @return configParameters
    */
-  public List<JFieldSymbol> getConfigParameters() {
-    final Collection<JFieldSymbol> resolvedAttributes = getMutableSpannedScope().resolveLocally(JFieldSymbol.KIND);
-    final List<JFieldSymbol> parameters = sortSymbolsByPosition(resolvedAttributes.stream().filter(JFieldSymbol::isParameter).collect(Collectors.toList()));
+  public List<MCFieldSymbol> getConfigParameters() {
+    final Collection<MCFieldSymbol> resolvedAttributes = getMutableSpannedScope().resolveLocally(MCFieldSymbol.KIND);
+    final List<MCFieldSymbol> parameters = sortSymbolsByPosition(resolvedAttributes.stream().filter(MCFieldSymbol::isParameter).collect(Collectors.toList()));
     return parameters;
   }
 
@@ -245,7 +245,7 @@ public class ViewSymbol extends CommonScopeSpanningSymbol {
    * @return List of configuration parameters that are to be set during instantiation with the given
    * visibility
    */
-  public Collection<JFieldSymbol> getConfigParameters(AccessModifier visibility) {
+  public Collection<MCFieldSymbol> getConfigParameters(AccessModifier visibility) {
     // no need to check for reference, as getParameres() does so.
     return getConfigParameters().stream().filter(s -> s.getAccessModifier().includes(visibility)).collect(Collectors.toList());
   }

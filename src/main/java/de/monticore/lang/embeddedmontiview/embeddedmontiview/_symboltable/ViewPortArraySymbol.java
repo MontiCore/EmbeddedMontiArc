@@ -21,10 +21,10 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.ASTPort;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.*;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
@@ -115,7 +115,7 @@ public class ViewPortArraySymbol extends ViewPortSymbol {
     }
   }
 
-  private void createPortSymbolForArrayIndex(ViewComponentSymbol viewComponentSymbol, ASTPort node, String name, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef, EmbeddedMontiViewSymbolTableCreator emastc) {
+  private void createPortSymbolForArrayIndex(ViewComponentSymbol viewComponentSymbol, ASTPort node, String name, Map<String, Optional<String>> stereoType, Optional<MCTypeReference<? extends MCTypeSymbol>> typeRef, EmbeddedMontiViewSymbolTableCreator emastc) {
     ViewPortSymbol ps = new ViewPortSymbol(name);
 
     ps.setTypeReference(typeRef);

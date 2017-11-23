@@ -21,14 +21,14 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import java.util.Optional;
 
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 public class EMAPortBuilder {
   protected Optional<Boolean> incoming = Optional.empty();
   protected Optional<String> name = Optional.empty();
-  protected Optional<JTypeReference<? extends JTypeSymbol>> typeReference = Optional.empty();
+  protected Optional<MCTypeReference<? extends MCTypeSymbol>> typeReference = Optional.empty();
 
   public static ViewPortSymbol clone(ViewPortSymbol port) {
     return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming()).setTypeReference(port.getTypeReference()).build();
@@ -44,7 +44,7 @@ public class EMAPortBuilder {
     return this;
   }
 
-  public EMAPortBuilder setTypeReference(Optional<JTypeReference<? extends JTypeSymbol>> typeReference) {
+  public EMAPortBuilder setTypeReference(Optional<MCTypeReference<? extends MCTypeSymbol>> typeReference) {
     this.typeReference = typeReference;
     return this;
   }
@@ -60,7 +60,7 @@ public class EMAPortBuilder {
     throw new Error("not all parameters have been set before to build the port symbol");
   }
 
-  //    public ConstantPortSymbol buildConstantPort(JTypeReference typeReference) {
+  //    public ConstantPortSymbol buildConstantPort(MCTypeReference typeReference) {
   //        if (typeReference == null) {
   //            Log.error("not all parameters have been set before to build the port symbol");
   //            throw new Error("not all parameters have been set before to build the port symbol");

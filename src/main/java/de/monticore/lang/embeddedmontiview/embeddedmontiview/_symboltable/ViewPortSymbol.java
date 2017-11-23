@@ -22,9 +22,9 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.*;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -48,7 +48,7 @@ public class ViewPortSymbol extends CommonSymbol implements Symbol {
    */
   private boolean incoming;
 
-  private Optional<JTypeReference<? extends JTypeSymbol>> typeReference;
+  private Optional<MCTypeReference<? extends MCTypeSymbol>> typeReference;
 
   private MutableScope locallyDefinedStreams = new CommonScope();
 
@@ -88,7 +88,7 @@ public class ViewPortSymbol extends CommonSymbol implements Symbol {
   /**
    * @return typeReference reference to the type from this port
    */
-  public Optional<JTypeReference<? extends JTypeSymbol>> getTypeReference() {
+  public Optional<MCTypeReference<? extends MCTypeSymbol>> getTypeReference() {
     return this.typeReference;
   }
 
@@ -107,7 +107,7 @@ public class ViewPortSymbol extends CommonSymbol implements Symbol {
   /**
    * @param typeReference Optional of the reference to the type from this port
    */
-  public void setTypeReference(Optional<JTypeReference<? extends JTypeSymbol>> typeReference) {
+  public void setTypeReference(Optional<MCTypeReference<? extends MCTypeSymbol>> typeReference) {
     this.typeReference = typeReference;
   }
 

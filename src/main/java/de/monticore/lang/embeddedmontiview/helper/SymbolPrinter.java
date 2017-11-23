@@ -21,12 +21,12 @@ package de.monticore.lang.embeddedmontiview.helper;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
 import de.monticore.lang.monticar.ValueSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.symboltable.types.references.JTypeReference;
 import de.monticore.symboltable.types.references.TypeReference;
 
 import java.util.Collection;
@@ -63,8 +63,8 @@ public class SymbolPrinter {
   }
 
   protected static String printArrayDimensions(ActualTypeArgument a) {
-    if (a.getType() instanceof JTypeReference) {
-      int dim = ((JTypeReference) a.getType()).getDimension();
+    if (a.getType() instanceof MCTypeReference) {
+      int dim = ((MCTypeReference) a.getType()).getDimension();
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < dim; i++) {
         sb.append("[]");
@@ -84,7 +84,7 @@ public class SymbolPrinter {
   /**
    * help function for nested type arguments such as List<NewType<String, List<String>>>
    */
-  public static String printFormalTypeParameters(JTypeSymbol arg) {
+  public static String printFormalTypeParameters(MCTypeSymbol arg) {
     String ret = arg.getName();
 
     if (!arg.getSuperTypes().isEmpty()) {
@@ -101,7 +101,7 @@ public class SymbolPrinter {
   /**
    * @return string representation of the type parameters associated with this port.
    */
-  public static String printFormalTypeParameters(List<JTypeSymbol> arg) {
+  public static String printFormalTypeParameters(List<MCTypeSymbol> arg) {
     if (arg.isEmpty())
       return "";
     return "<" + arg.stream().map(a -> printFormalTypeParameters(a)).collect(Collectors.joining(",")) + ">";

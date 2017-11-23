@@ -22,14 +22,14 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._symboltable.UnitNumberResolutionSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitSymbol;
 import de.monticore.modelloader.ModelingLanguageModelLoader;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.monticore.symboltable.types.JFieldSymbol;
 import de.monticore.symboltable.types.JMethodSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
 
 import java.util.LinkedHashSet;
 
@@ -59,8 +59,8 @@ public class EmbeddedMontiViewLanguage extends EmbeddedMontiViewLanguageTOP {
     addResolvingFilter(new CommonResolvingFilter<>(ViewExpandedComponentInstanceSymbol.KIND));
     addResolvingFilter(new CommonResolvingFilter<>(SIUnitSymbol.KIND));
     addResolvingFilter(new CommonResolvingFilter<>(SIUnitRangesSymbol.KIND));
-    addResolvingFilter(new CommonResolvingFilter<>(JTypeSymbol.KIND));
-    addResolvingFilter(new CommonResolvingFilter<>(JFieldSymbol.KIND));
+    addResolvingFilter(new CommonResolvingFilter<>(MCTypeSymbol.KIND));
+    addResolvingFilter(new CommonResolvingFilter<>(MCFieldSymbol.KIND));
     addResolvingFilter(new CommonResolvingFilter<>(JMethodSymbol.KIND));
     addResolvingFilter(CommonResolvingFilter.create(ResolutionDeclarationSymbol.KIND));
     addResolvingFilter(CommonResolvingFilter.create(UnitNumberResolutionSymbol.KIND));

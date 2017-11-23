@@ -19,10 +19,10 @@
  */
 package de.monticore.lang.embeddedmontiview.helper;
 
-import de.monticore.java.symboltable.JavaTypeSymbolReference;
-import de.monticore.symboltable.types.JTypeSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.symboltable.types.references.JTypeReference;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,9 +35,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @author ahaber, Robert Heim
  */
 public class TypeCompatibilityChecker {
-  private static int getPositionInFormalTypeParameters(List<JTypeSymbol> formalTypeParameters, JTypeReference<? extends JTypeSymbol> searchedFormalTypeParameter) {
+  private static int getPositionInFormalTypeParameters(List<MCTypeSymbol> formalTypeParameters, MCTypeReference<? extends MCTypeSymbol> searchedFormalTypeParameter) {
     int positionInFormal = 0;
-    for (JTypeSymbol formalTypeParameter : formalTypeParameters) {
+    for (MCTypeSymbol formalTypeParameter : formalTypeParameters) {
       if (formalTypeParameter.getName().equals(searchedFormalTypeParameter.getName())) {
         break;
       }
@@ -65,7 +65,7 @@ public class TypeCompatibilityChecker {
    * @param targetTypeArguments
    * @return
    */
-  public static boolean doTypesMatch(JTypeReference<? extends JTypeSymbol> sourceType, List<JTypeSymbol> sourceTypeFormalTypeParameters, List<JTypeReference<? extends JTypeSymbol>> sourceTypeArguments, JTypeReference<? extends JTypeSymbol> targetType, List<JTypeSymbol> targetTypeFormalTypeParameters, List<JTypeReference<? extends JTypeSymbol>> targetTypeArguments) {
+  public static boolean doTypesMatch(MCTypeReference<? extends MCTypeSymbol> sourceType, List<MCTypeSymbol> sourceTypeFormalTypeParameters, List<MCTypeReference<? extends MCTypeSymbol>> sourceTypeArguments, MCTypeReference<? extends MCTypeSymbol> targetType, List<MCTypeSymbol> targetTypeFormalTypeParameters, List<MCTypeReference<? extends MCTypeSymbol>> targetTypeArguments) {
 
     // TODO reuse Java type checker?
 
@@ -89,9 +89,9 @@ public class TypeCompatibilityChecker {
       List<ActualTypeArgument> sourceParams = sourceType.getActualTypeArguments();
       List<ActualTypeArgument> targetParams = targetType.getActualTypeArguments();
       for (int i = 0; i < sourceParams.size(); i++) {
-        JTypeReference<? extends JTypeSymbol> sourceTypesCurrentTypeArgument = (JTypeReference<?>) sourceParams.get(i).getType();
-        JTypeReference<? extends JTypeSymbol> targetTypesCurrentTypeArgument = (JTypeReference<?>) targetParams.get(i).getType();
-        if (!doTypesMatch(sourceTypesCurrentTypeArgument, sourceTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), sourceTypesCurrentTypeArgument.getActualTypeArguments().stream().map(a -> (JTypeReference<?>) a.getType()).collect(Collectors.toList()), targetTypesCurrentTypeArgument, targetTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), targetTypesCurrentTypeArgument.getActualTypeArguments().stream().map(a -> (JTypeReference<?>) a.getType()).collect(Collectors.toList()))) {
+        MCTypeReference<? extends MCTypeSymbol> sourceTypesCurrentTypeArgument = (MCTypeReference<?>) sourceParams.get(i).getType();
+        MCTypeReference<? extends MCTypeSymbol> targetTypesCurrentTypeArgument = (MCTypeReference<?>) targetParams.get(i).getType();
+        if (!doTypesMatch(sourceTypesCurrentTypeArgument, sourceTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (MCTypeSymbol) p).collect(Collectors.toList()), sourceTypesCurrentTypeArgument.getActualTypeArguments().stream().map(a -> (MCTypeReference<?>) a.getType()).collect(Collectors.toList()), targetTypesCurrentTypeArgument, targetTypesCurrentTypeArgument.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (MCTypeSymbol) p).collect(Collectors.toList()), targetTypesCurrentTypeArgument.getActualTypeArguments().stream().map(a -> (MCTypeReference<?>) a.getType()).collect(Collectors.toList()))) {
           result = false;
           break;
         }
@@ -100,12 +100,12 @@ public class TypeCompatibilityChecker {
     else if (!sourceType.getReferencedSymbol().getFullName().equals(targetType.getReferencedSymbol().getFullName())) {
       // check, if superclass from sourceType is compatible with targetType
       if (sourceType.getReferencedSymbol().getSuperClass().isPresent()) {
-        JTypeReference<? extends JTypeSymbol> parent = sourceType.getReferencedSymbol().getSuperClass().get();
-        result = doTypesMatch(parent, parent.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), parent.getActualTypeArguments().stream().map(a -> (JavaTypeSymbolReference) a.getType()).collect(Collectors.toList()), targetType, targetTypeFormalTypeParameters, targetTypeArguments);
+        MCTypeReference<? extends MCTypeSymbol> parent = sourceType.getReferencedSymbol().getSuperClass().get();
+        result = doTypesMatch(parent, parent.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (MCTypeSymbol) p).collect(Collectors.toList()), parent.getActualTypeArguments().stream().map(a -> (MontiCarTypeSymbolReference) a.getType()).collect(Collectors.toList()), targetType, targetTypeFormalTypeParameters, targetTypeArguments);
       }
       if (!result && !sourceType.getReferencedSymbol().getInterfaces().isEmpty()) {
-        for (JTypeReference<? extends JTypeSymbol> interf : sourceType.getReferencedSymbol().getInterfaces()) {
-          result = doTypesMatch(interf, interf.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (JTypeSymbol) p).collect(Collectors.toList()), interf.getActualTypeArguments().stream().map(a -> (JavaTypeSymbolReference) a.getType()).collect(Collectors.toList()), targetType, targetTypeFormalTypeParameters, targetTypeArguments);
+        for (MCTypeReference<? extends MCTypeSymbol> interf : sourceType.getReferencedSymbol().getInterfaces()) {
+          result = doTypesMatch(interf, interf.getReferencedSymbol().getFormalTypeParameters().stream().map(p -> (MCTypeSymbol) p).collect(Collectors.toList()), interf.getActualTypeArguments().stream().map(a -> (MontiCarTypeSymbolReference) a.getType()).collect(Collectors.toList()), targetType, targetTypeFormalTypeParameters, targetTypeArguments);
           if (result) {
             break;
           }
