@@ -51,9 +51,10 @@ public class MathNumberExpressionSymbol extends MathValueExpressionSymbol {
         String result = "";
         if (value.getImagNumber().isPresent())
             return value.toString();
-        result += value.getRealNumber().getDividend().toString();
-        if (!value.getRealNumber().getDivisor().equals(1)) {
-            result += "/" + value.getRealNumber().getDivisor();
+        if (value.getRealNumber().getDivisor().intValue() == 1) {
+            result += value.getRealNumber().getDividend().intValue();
+        } else {
+            result += value.getRealNumber().doubleValue();
         }
         return result;
     }
