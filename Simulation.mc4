@@ -1,49 +1,45 @@
 /*
- * Simulation-Settings language v0.2
+ * Simulation-Settings language v0.22
  * @author Deniz Schmidt
 */
 
 grammar Simulation extends Weather, SI {
   
   symbol scope Simulation = "sim" Name "{"
-    SimulationRenderFrequency?
-    SimulationLoopFrequency?
-    SimulationDuration?
-    SimulationType?
-    Weather?
-    Time?
-    MapPath?
-    MapName
-    MapHeight?
-    MapOverlap?
-    MapSectorWidth?
-    MapSectorHeight?
-    MaxSectorUsers?
-    Timeout?
-    Pedestrians?
-    PedestrianDensity?
-    Vehicles?
+    (SimulationRenderFrequency|
+    SimulationLoopFrequency|
+    SimulationDuration|
+    SimulationType|
+    Weather|
+    Time|
+    MapPath|
+    MapName|
+    MapHeight|
+    MapOverlap|
+    MapSectorWidth|
+    MapSectorHeight|
+    MaxSectorUsers|
+    Timeout|
+    Pedestrians|
+    PedestrianDensity|
+    Vehicles)*
   "}";  
   
-  //Übergangslösung
+  //Temporary solution?
   token PosNum = ('1'..'9')('0'..'9')*;
-  //das ist doch für ranges als eingabe?
-  token TElementType =
-      ('Z' | 'Q' | 'C') Space*
-        '(' Space* (TUnitNumber | TUnitInf) Space* ':'
-            (Space* TUnitNumber Space* ':')?
-            Space* (TUnitNumber | TUnitInf) Space*
-        ')';
 
-  //SimulationRunCount = "sim_runs" count:PosNum; //hm
+  /* Stuff that's there, but not needed
+  SimulationRunCount = "sim_runs" count:PosNum; //hm
+  SynchronousSimulation = "sim_synchronous" ("true"|"false");
+  //+screenshot settings
+  */
   
   SimulationRenderFrequency = "sim_render_frequency"  simRenderFreq:UnitNumber;
   SimulationLoopFrequency = "sim_loop_frequency"  simLoopFreq:UnitNumber;
   SimulationDuration = "sim_duration" simDuration:UnitNumber;
   SimulationType = "sim_type" ("fixed"|"real-time"|"max-fps");
   
-  //SynchronousSimulation = "sim_synchronous" ("true"|"false");
-  
+  //Also apply kleenee style?
   WeatherObj = "{" Temperature "," 
                    Clouding "," 
                    Sight "," 
@@ -64,14 +60,13 @@ grammar Simulation extends Weather, SI {
   RandomWeather = "random" randomDuration:UnitNumber;
   Forecast = "forecast" forecastWeatherObj:WeatherObj forecastDuration:UnitNumber; //+matrix13x13; 
  
-  //mc mag keine :
   Time = "time" (UnitNumber|
                  (timeHours:PosNum ":" timeMinutes:PosNum) |
                  (timeHours:PosNum ":" timeMinutes:PosNum ":" timeSeconds:PosNum)|
                  (timeHours:PosNum ":" timeMinutes:PosNum ":" timeSeconds:PosNum ":" timeMilliseconds:PosNum)
                 );
   
-  //Name enthält keine :, mapPath braucht Strings, wie zu definieren?
+  
   MapPath = "map_path" mapPath:Name;
   MapName = "map_name" mapName:Name ".osm";
   
@@ -89,23 +84,23 @@ grammar Simulation extends Weather, SI {
   Pedestrians = ("<p>"
                 "(" startX:UnitNumber "," startY:UnitNumber ")" 
                 "->" 
-                "(" endX:UnitNumber "," endY:UnitNumber "," endZ:UnitNumber ")"
-                )*;
+                "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
+                );
               
   PedestrianDensity = "pedestrian_density" pedestrianDensity:UnitNumber;
   
-  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle)*;
+  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle);
   
   //defined vehicle moving from start to destination pos
   ExplicitVehicle = vehicle:Name 
               ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")" //missing Name at 'UnitNumber' error
               "->" 
-              "(" destX:UnitNumber "," destY:UnitNumber "," destZ:UnitNumber ")"
+              "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
               );
               
   //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
   PathedVehicle = "<v>"
-                  "(" spawnX:UnitNumber "," spawnY:UnitNumber "," spawnRadius:UnitNumber ")"
+                  "(" startX:UnitNumber "," startY:UnitNumber "," spawnRadius:UnitNumber ")"
                   "->"
                   "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")" 
                   (amount:PosNum)?;
