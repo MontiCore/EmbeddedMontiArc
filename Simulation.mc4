@@ -58,7 +58,7 @@ grammar Simulation extends Weather, SI {
   FixedWeather = "fixed" fixedWeatherObj:WeatherObj;
   SequenceWeather = "sequence" (randomWeatherObj:WeatherObj)* (sequenceDuration:UnitNumber)?;
   RandomWeather = "random" randomDuration:UnitNumber;
-  Forecast = "forecast" forecastWeatherObj:WeatherObj forecastDuration:UnitNumber; //+matrix13x13; 
+  Forecast = "forecast" forecastWeatherObj:WeatherObj forecastDuration:UnitNumber; //todo: additional automaton input for markov chains 
  
   Time = "time" (UnitNumber|
                  (timeHours:PosNum ":" timeMinutes:PosNum) |
@@ -93,7 +93,7 @@ grammar Simulation extends Weather, SI {
   
   //defined vehicle moving from start to destination pos
   ExplicitVehicle = vehicle:Name 
-              ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")" //missing Name at 'UnitNumber' error
+              ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")"
               "->" 
               "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
               );
