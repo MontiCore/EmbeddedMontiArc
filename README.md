@@ -271,6 +271,14 @@ internal unit conversions.
 
 > Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max`
 
+> Example for `for` and `while`-loops and `if`-condition are missing.
+
+https://de.mathworks.com/help/matlab/ref/if.html
+
+https://de.mathworks.com/help/matlab/ref/for.html
+
+https://de.mathworks.com/help/matlab/ref/while.html
+
 internal unit conversions.  
 
 EmbeddedMontiArcMath (Sascha)
