@@ -18,9 +18,7 @@
  * *******************************************************************************
  */
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
-
-import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbol;
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 
 import java.util.Collection;
@@ -30,8 +28,8 @@ import java.util.Collection;
  */
 public interface ViewElementInstance {
 
-    public Collection<TagSymbol> getTags();
-    public <T extends TagSymbol> Collection<T> getTags(final TagKind tagKind);
+    public Collection<CommonSymbol> getTags();
+    public <T extends CommonSymbol> Collection<T> getTags(final CommonSymbol tagKind);
     public String getName();
     public Scope getEnclosingScope() ;
 }

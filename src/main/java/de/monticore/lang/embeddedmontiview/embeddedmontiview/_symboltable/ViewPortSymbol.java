@@ -22,12 +22,9 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingSymbol;
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.SymbolKind;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.*;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -36,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * Symboltable entry for ports.
  */
-public class ViewPortSymbol extends TaggingSymbol implements ViewElementInstance {
+public class ViewPortSymbol extends CommonSymbol implements Symbol {
   public static final EmbeddedPortKind KIND = EmbeddedPortKind.INSTANCE;
 
   private final Map<String, Optional<String>> stereotype = new HashMap<>();
@@ -51,7 +48,7 @@ public class ViewPortSymbol extends TaggingSymbol implements ViewElementInstance
    */
   private boolean incoming;
 
-  private Optional<JTypeReference<? extends JTypeSymbol>> typeReference;
+  private Optional<MCTypeReference<? extends MCTypeSymbol>> typeReference;
 
   private MutableScope locallyDefinedStreams = new CommonScope();
 
@@ -91,7 +88,7 @@ public class ViewPortSymbol extends TaggingSymbol implements ViewElementInstance
   /**
    * @return typeReference reference to the type from this port
    */
-  public Optional<JTypeReference<? extends JTypeSymbol>> getTypeReference() {
+  public Optional<MCTypeReference<? extends MCTypeSymbol>> getTypeReference() {
     return this.typeReference;
   }
 
@@ -110,7 +107,7 @@ public class ViewPortSymbol extends TaggingSymbol implements ViewElementInstance
   /**
    * @param typeReference Optional of the reference to the type from this port
    */
-  public void setTypeReference(Optional<JTypeReference<? extends JTypeSymbol>> typeReference) {
+  public void setTypeReference(Optional<MCTypeReference<? extends MCTypeSymbol>> typeReference) {
     this.typeReference = typeReference;
   }
 

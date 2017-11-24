@@ -20,8 +20,8 @@
 package de.monticore.lang.embeddedmontiview.helper;
 
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.ViewPortSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
-import de.monticore.symboltable.types.references.JTypeReference;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class PortCompatibilityChecker {
    * @param targetTypeArguments            analog to source, but for the target port.
    * @return
    */
-  public static boolean doPortTypesMatch(ViewPortSymbol sourcePort, List<JTypeSymbol> sourceFormalTypeParameters, List<JTypeReference<? extends JTypeSymbol>> sourceTypeArguments, ViewPortSymbol targetPort, List<JTypeSymbol> targetTypeFormalTypeParameters, List<JTypeReference<? extends JTypeSymbol>> targetTypeArguments) {
+  public static boolean doPortTypesMatch(ViewPortSymbol sourcePort, List<MCTypeSymbol> sourceFormalTypeParameters, List<MCTypeReference<? extends MCTypeSymbol>> sourceTypeArguments, ViewPortSymbol targetPort, List<MCTypeSymbol> targetTypeFormalTypeParameters, List<MCTypeReference<? extends MCTypeSymbol>> targetTypeArguments) {
     checkNotNull(sourcePort);
     checkNotNull(targetPort);
     //this might not work, but it should not be relevant for views since autoconnect is not used afaik

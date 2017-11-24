@@ -47,7 +47,7 @@
     <languages.version>4.0.1-SNAPSHOT</languages.version>
     <SIUnit.version>0.0.4-SNAPSHOT</SIUnit.version>
     
-    <Common-MontiCar.version>0.0.3</Common-MontiCar.version>
+    <Common-MontiCar.version>0.0.4</Common-MontiCar.version>
     
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -164,30 +164,30 @@
       <scope>provided</scope>
     </dependency>
     
-    <dependency>
-      <groupId>montiarc.languages</groupId>
-      <artifactId>tagging</artifactId>
-      <version>${languages.version}</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>tagging</artifactId>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
     
-    <dependency>
-      <groupId>montiarc.languages</groupId>
-      <artifactId>montiarc-fe</artifactId>
-      <version>${languages.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>montiarc.languages</groupId>
-      <artifactId>montiarc-fe</artifactId>
-      <classifier>${grammars.classifier}</classifier>
-      <version>${languages.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>javaDSL</artifactId>
-      <version>${javadsl.version}</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>montiarc-fe</artifactId>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>montiarc-fe</artifactId>-->
+      <!--<classifier>${grammars.classifier}</classifier>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>de.monticore</groupId>-->
+      <!--<artifactId>javaDSL</artifactId>-->
+      <!--<version>${javadsl.version}</version>-->
+    <!--</dependency>-->
     
     <!-- .. Test Libraries ............................................... -->
     <dependency>

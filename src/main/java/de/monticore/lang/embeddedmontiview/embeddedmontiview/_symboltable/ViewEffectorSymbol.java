@@ -20,7 +20,7 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingSymbol;
+import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 
-public class ViewEffectorSymbol extends TaggingSymbol {
+public class ViewEffectorSymbol extends CommonSymbol {
 
   public static final EMAEffectorKind KIND = EMAEffectorKind.INSTANCE;
 

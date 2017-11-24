@@ -21,36 +21,53 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.ast.ASTNode;
 //import de.monticore.common.common._ast.ASTStereoValue;
-import de.monticore.java.symboltable.JavaSymbolFactory;
-import de.monticore.java.symboltable.JavaTypeSymbolReference;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview._ast.*;
+import de.monticore.lang.embeddedmontiview.embeddedmontiview.types.TypesHelper;
 import de.monticore.lang.embeddedmontiview.embeddedmontiview.types.TypesPrinter;
 import de.monticore.lang.embeddedmontiview.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiview.helper.Timing;
 import de.monticore.lang.monticar.ValueSymbol;
+import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
 import de.monticore.lang.monticar.common2._ast.ASTStereoValue;
+import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ranges._ast.ASTRanges;
+import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.resolution._ast.ASTResolutionDeclaration;
 import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbolReference;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbolReference;
-import de.monticore.symboltable.*;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;
+import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
+import de.monticore.lang.monticar.types2._ast.ASTComplexArrayType;
+import de.monticore.lang.monticar.types2._ast.ASTComplexReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTImportStatement;
+import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.lang.monticar.types2._ast.ASTTypeNameResolutionDeclaration;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration;
+import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
+import de.monticore.lang.monticar.types2._ast.ASTWildcardType;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
-import de.monticore.symboltable.types.JFieldSymbol;
-import de.monticore.symboltable.types.JTypeSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.symboltable.types.references.CommonJTypeReference;
-import de.monticore.symboltable.types.references.JTypeReference;
 import de.monticore.symboltable.types.references.TypeReference;
-//import de.monticore.types.TypesHelper;
-import de.monticore.lang.embeddedmontiview.embeddedmontiview.types.TypesHelper;
-//import de.monticore.types.types._ast.*;
-import de.monticore.lang.monticar.types2._ast.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -76,7 +93,7 @@ public class EmbeddedMontiViewSymbolTableCreator
   private Stack<ViewComponentSymbol> componentStack = new Stack<>();
   private ViewSymbol currentView = null;
   private List<ImportStatement> currentImports = new ArrayList<>();
-  private JavaSymbolFactory jSymbolFactory = new JavaSymbolFactory();
+  private MontiCarSymbolFactory jSymbolFactory = new MontiCarSymbolFactory();
 
   protected boolean aboartVisitComponent = false;
 
@@ -128,7 +145,7 @@ public class EmbeddedMontiViewSymbolTableCreator
   /**
    * handles typeref creation of an SIUnitRangeType from ASTRange
    */
-  private JTypeReference<? extends JTypeSymbol> initTypeRefASTRange(ASTPort node, StringBuilder typeName, ASTRange astType) {
+  private MCTypeReference<? extends MCTypeSymbol> initTypeRefASTRange(ASTPort node, StringBuilder typeName, ASTRange astType) {
     typeName.append("SIUnitRangesType");
     Log.debug(astType.toString(), "Type:");
     Log.debug(typeName.toString(), "TypeName:");
@@ -140,7 +157,7 @@ public class EmbeddedMontiViewSymbolTableCreator
   /**
    * handles typeref creation of an SIUnitRangesType from ASTRanges
    */
-  private JTypeReference<? extends JTypeSymbol> initTypeRefASTRanges(ASTPort node, StringBuilder typeName, ASTRanges astType) {
+  private MCTypeReference<? extends MCTypeSymbol> initTypeRefASTRanges(ASTPort node, StringBuilder typeName, ASTRanges astType) {
     typeName.append("SIUnitRangesType");
     Log.debug(astType.toString(), "Type:");
     Log.debug(typeName.toString(), "TypeName:");
@@ -152,12 +169,12 @@ public class EmbeddedMontiViewSymbolTableCreator
   /**
    * handles typeref creation of a GeneralType
    */
-  private JTypeReference<? extends JTypeSymbol> initTypeRefGeneralType(ASTPort node, StringBuilder typeName, ASTType astType) {
-    JTypeReference<? extends JTypeSymbol> typeRef = null;
+  private MCTypeReference<? extends MCTypeSymbol> initTypeRefGeneralType(ASTPort node, StringBuilder typeName, ASTType astType) {
+    MCTypeReference<? extends MCTypeSymbol> typeRef = null;
     typeName.append(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(astType));
     //Log.debug(astType.toString(),"TYPE:");
     //Log.debug(typeName,"TYPEName:");
-    typeRef = new CommonJTypeReference<JTypeSymbol>(typeName.toString(), JTypeSymbol.KIND, currentScope().get());
+    typeRef = new CommonMCTypeReference<MCTypeSymbol>(typeName.toString(), MCTypeSymbol.KIND, currentScope().get());
     typeRef.setDimension(TypesHelper.getArrayDimensionIfArrayOrZero(astType));
     addTypeArgumentsToTypeSymbol(typeRef, astType);
     return typeRef;
@@ -171,7 +188,7 @@ public class EmbeddedMontiViewSymbolTableCreator
    * @param astType
    * @return
    */
-  private JTypeReference<? extends JTypeSymbol> initTypeRef(ASTPort node, StringBuilder typeName, ASTType astType) {
+  private MCTypeReference<? extends MCTypeSymbol> initTypeRef(ASTPort node, StringBuilder typeName, ASTType astType) {
     if (node.getType().get() instanceof ASTRange) {
       return initTypeRefASTRange(node, typeName, (ASTRange) astType);
     }
@@ -185,7 +202,7 @@ public class EmbeddedMontiViewSymbolTableCreator
   /**
    * creates the PortSymbols that belong to a ViewPortArraySymbol
    */
-  private void portCreationIntLiteralPresent(ASTPort node, ViewPortArraySymbol pas, String name, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
+  private void portCreationIntLiteralPresent(ASTPort node, ViewPortArraySymbol pas, String name, Optional<MCTypeReference<? extends MCTypeSymbol>> typeRef) {
     //int num = node.getIntLiteral().get().getValue();
     Log.debug(node.toString(), "ASTPort");
     int num = 0;
@@ -214,7 +231,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  private void portCreation(ASTPort node, ViewPortArraySymbol pas, String name, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
+  private void portCreation(ASTPort node, ViewPortArraySymbol pas, String name, Optional<MCTypeReference<? extends MCTypeSymbol>> typeRef) {
     if (node.getUnitNumberResolution().isPresent()) {
       portCreationIntLiteralPresent(node, pas, name, typeRef);
     }
@@ -224,7 +241,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  public void createPort(String name, boolean isIncoming, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
+  public void createPort(String name, boolean isIncoming, Map<String, Optional<String>> stereoType, Optional<MCTypeReference<? extends MCTypeSymbol>> typeRef) {
     ViewPortSymbol ps = new ViewPortSymbol(name);
 
     ps.setTypeReference(typeRef);
@@ -235,7 +252,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     addToScope(ps);
   }
 
-  public void createPort(ASTPort node, String name, boolean isIncoming, Map<String, Optional<String>> stereoType, Optional<JTypeReference<? extends JTypeSymbol>> typeRef) {
+  public void createPort(ASTPort node, String name, boolean isIncoming, Map<String, Optional<String>> stereoType, Optional<MCTypeReference<? extends MCTypeSymbol>> typeRef) {
     ViewPortSymbol ps = new ViewPortSymbol(name);
 
     ps.setTypeReference(typeRef);
@@ -261,7 +278,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
     String nameTO = doPortResolution(node);
     String name = "";
-    Optional<JTypeReference<? extends JTypeSymbol>> typeRef;
+    Optional<MCTypeReference<? extends MCTypeSymbol>> typeRef;
     StringBuilder typeName = new StringBuilder();
 
     if (node.getType().isPresent()) {
@@ -814,11 +831,11 @@ public class EmbeddedMontiViewSymbolTableCreator
       int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astParameter.getType());
 
       //TODO enable if needed and remove line below
-      JTypeReference<? extends JTypeSymbol> paramTypeSymbol = new JavaTypeSymbolReference(TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(astParameter.getType()), currentScope().get(), dimension);
+      MCTypeReference<? extends MCTypeSymbol> paramTypeSymbol = new MontiCarTypeSymbolReference(TypesPrinter.printTypeWithoutTypeArgumentsAndDimension(astParameter.getType()), currentScope().get(), dimension);
 
       addTypeArgumentsToTypeSymbol(paramTypeSymbol, astParameter.getType());
 
-      final JFieldSymbol parameterSymbol = jSymbolFactory.createFormalParameterSymbol(paramName, (JavaTypeSymbolReference) paramTypeSymbol);
+      final MCFieldSymbol parameterSymbol = jSymbolFactory.createFormalParameterSymbol(paramName, (MontiCarTypeSymbolReference) paramTypeSymbol);
       viewComponentSymbol.addConfigParameter(parameterSymbol);
     }
     Log.debug(viewComponentSymbol.toString(), "ComponentPostParam");
@@ -876,7 +893,7 @@ public class EmbeddedMontiViewSymbolTableCreator
 
   // TODO remove after GV's refactoring of such methodology to mc4/types.
   @Deprecated
-  private void addTypeArgumentsToTypeSymbol(JTypeReference<? extends JTypeSymbol> typeReference, ASTType astType) {
+  private void addTypeArgumentsToTypeSymbol(MCTypeReference<? extends MCTypeSymbol> typeReference, ASTType astType) {
     if (astType instanceof ASTSimpleReferenceType) {
       ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
       if (!astSimpleReferenceType.getTypeArguments().isPresent()) {
@@ -905,7 +922,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     }
   }
 
-  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, JTypeReference<? extends JTypeSymbol> typeReference) {
+  private void addActualTypeArguments(ASTTypeArgument astTypeArgument, List<ActualTypeArgument> actualTypeArguments, MCTypeReference<? extends MCTypeSymbol> typeReference) {
     addActualTypeArguments(astTypeArgument, actualTypeArguments, typeReference.toString());
   }
 
@@ -938,7 +955,7 @@ public class EmbeddedMontiViewSymbolTableCreator
       ASTType typeBound = lowerBound ? astWildcardType.getLowerBound().get() : astWildcardType.getUpperBound().get();
 
       int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
-      JTypeReference<? extends JTypeSymbol> typeBoundSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound), currentScope().get(), dimension);
+      MCTypeReference<? extends MCTypeSymbol> typeBoundSymbolReference = new MontiCarTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound), currentScope().get(), dimension);
       // TODO string representation?
       // typeBoundSymbolReference.setStringRepresentation(ArcTypePrinter
       // .printWildcardType(astWildcardType));
@@ -959,7 +976,7 @@ public class EmbeddedMontiViewSymbolTableCreator
     // Examples: Set<Integer>, Set<Set<?>>, Set<java.lang.String>
     ASTType astTypeNoBound = (ASTType) astTypeArgument;
     int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astTypeNoBound);
-    JTypeReference<? extends JTypeSymbol> typeArgumentSymbolReference = new JavaTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(astTypeNoBound), currentScope().get(), dimension);
+    MCTypeReference<? extends MCTypeSymbol> typeArgumentSymbolReference = new MontiCarTypeSymbolReference(ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(astTypeNoBound), currentScope().get(), dimension);
 
     // TODO string representation?
     // typeArgumentSymbolReference.setStringRepresentation(TypesPrinter

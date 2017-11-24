@@ -21,6 +21,7 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingInfo;
 
@@ -30,7 +31,7 @@ import java.util.*;
  * Created by MichaelvonWenckstern on 02.09.2016.
  */
 public class EMAConnectorResolvingFilter<S extends Symbol>
-    extends de.monticore.lang.montiarc.montiarc._symboltable.MAConnectorResolvingFilter<S> {
+    extends CommonResolvingFilter<S> {
 
   public EMAConnectorResolvingFilter(SymbolKind targetKind) {
     super(targetKind);

@@ -21,7 +21,7 @@ package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.embeddedmontiview.helper.SymbolPrinter;
-import de.monticore.lang.montiarc.tagging._symboltable.TaggingScopeSpanningSymbol;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
 
@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author Robert Heim
  */
-public class ViewComponentInstanceSymbol extends TaggingScopeSpanningSymbol {
+public class ViewComponentInstanceSymbol extends CommonScopeSpanningSymbol {
 
   public static final EMAComponentInstanceKind KIND = EMAComponentInstanceKind.INSTANCE;
 
