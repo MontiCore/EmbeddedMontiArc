@@ -22,7 +22,7 @@ component AutopilotAdapter {
     // orientation angle (also sometimes called yaw angle)
     // it is measured from from the positive Y axis direction
     // to the actual vehicle's direction counter-clockwise
-    // Example 1: vehicle has direction (-1.0; 0.0)
+    // Example 1: vehicle has direction (-1.0; -1.0)
     // compass = 0.25 * PI (positive)
     // Example 2: vehicle has direction (1.0; 0.0) i.e. it is directed along the X axis
     // compass = -0.5 * PI (negative)
