@@ -16,7 +16,7 @@ matOut=Matrix(n,n);
 }
 void execute()
 {
-matOut = mat1*2/1 ;
+matOut = mat1*2;
 }
 
 };

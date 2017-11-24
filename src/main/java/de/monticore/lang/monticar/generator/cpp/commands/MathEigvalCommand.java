@@ -10,12 +10,15 @@ import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
+import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Currently works with symmetric matrices in ArmadilloBackend
+ *
  * @author Sascha Schneiders
  */
 public class MathEigvalCommand extends MathCommand {
@@ -25,6 +28,15 @@ public class MathEigvalCommand extends MathCommand {
 
     @Override
     public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+        String backendName = MathConverter.curBackend.getBackendName();
+        if (backendName.equals("OctaveBackend")) {
+            convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
+        } else if (backendName.equals("ArmadilloBackend")) {
+            convertUsingArmadilloBackend(mathExpressionSymbol, bluePrint);
+        }
+    }
+
+    public void convertUsingOctaveBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
 
         mathMatrixNameExpressionSymbol.setNameToAccess("");
@@ -42,6 +54,25 @@ public class MathEigvalCommand extends MathCommand {
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         ((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
 
+    }
+
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+        MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
+
+        mathMatrixNameExpressionSymbol.setNameToAccess("");
+
+
+        String valueListString = "";
+        for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+        valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
+        //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
+        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
+        MathStringExpression stringExpression = new MathStringExpression("HelperA::getEigenValues("+valueListString+")");
+        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
+
+        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
+        ((BluePrintCPP) bluePrint).addAdditionalIncludeString("HelperA");
 
     }
 }

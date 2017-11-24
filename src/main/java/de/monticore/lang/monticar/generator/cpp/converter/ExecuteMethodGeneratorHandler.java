@@ -77,11 +77,12 @@ public class ExecuteMethodGeneratorHandler {
 
             ComponentConverter.currentBluePrint.addVariable(var);
         } else {
-            result += generateExecuteCode(mathValueSymbol.getType(), includeStrings);
-            result += " " + mathValueSymbol.getName();
+            String type = generateExecuteCode(mathValueSymbol.getType(), includeStrings);
+            result += type + " " + mathValueSymbol.getName();
             if (mathValueSymbol.getValue() != null) {
                 result += " = " + ExecuteMethodGenerator.generateExecuteCode(mathValueSymbol.getValue(), includeStrings);
-            }
+            } else if (mathValueSymbol.getValue() == null)
+                result += addInitializationString(mathValueSymbol, type, includeStrings);
             result += ";\n";
         }
         ComponentConverter.currentBluePrint.getMathInformationRegister().addVariable(mathValueSymbol);
@@ -89,12 +90,26 @@ public class ExecuteMethodGeneratorHandler {
         return result;
     }
 
+    public static String addInitializationString(MathValueSymbol mathValueSymbol, String typeString, List<String> includeStrings) {
+        String result = "";
+        List<MathExpressionSymbol> dims = mathValueSymbol.getType().getDimensions();
+        if (dims.size() == 2) {
+            MathExpressionSymbol rows = dims.get(0);
+            MathExpressionSymbol cols = dims.get(1);
+
+            if (typeString.equals(MathConverter.curBackend.getMatrixTypeName())) {
+                result = "=" + MathConverter.curBackend.getMatrixTypeName() + "(" + ExecuteMethodGenerator.
+                        generateExecuteCode(rows, includeStrings) + "," + ExecuteMethodGenerator.
+                        generateExecuteCode(cols, includeStrings) + ")";
+            }
+        }
+        return result;
+    }
 
     public static String generateExecuteCode(MathValueSymbol mathValueSymbol, List<String> includeStrings) {
         String result = "";
-
-        result += generateExecuteCode(mathValueSymbol.getType(), includeStrings);
-        result += " " + mathValueSymbol.getName();
+        String type = generateExecuteCode(mathValueSymbol.getType(), includeStrings);
+        result += type + " " + mathValueSymbol.getName();
         if (mathValueSymbol.getValue() != null) {
             result += " = " + ExecuteMethodGenerator.generateExecuteCode(mathValueSymbol.getValue(), includeStrings);
             result += ";\n";
@@ -111,11 +126,11 @@ public class ExecuteMethodGeneratorHandler {
             else if (mathValueType.getDimensions().size() == 2) {
                 Log.info("Dim1:" + mathValueType.getDimensions().get(0).getTextualRepresentation() + "Dim2: " + mathValueType.getDimensions().get(1).getTextualRepresentation(), "DIMS:");
                 if (mathValueType.getDimensions().get(0).getTextualRepresentation().equals("1")) {
-                    return "RowVector";
+                    return MathConverter.curBackend.getRowVectorTypeName();
                 } else if (mathValueType.getDimensions().get(1).getTextualRepresentation().equals("1")) {
-                    return "ColumnVector";
+                    return MathConverter.curBackend.getColumnVectorTypeName();
                 }
-                return "Matrix";//TODO improve in future
+                return MathConverter.curBackend.getMatrixTypeName();//TODO improve in future
             } else {
                 Log.error("0xGEEXCOMAVAT Type conversion Case not handled!");
             }
@@ -132,7 +147,7 @@ public class ExecuteMethodGeneratorHandler {
 
 
     public static String generateExecuteCode(MathNumberExpressionSymbol mathNumberExpressionSymbol, List<String> includeStrings) {
-        return mathNumberExpressionSymbol.getValue().toString();
+        return mathNumberExpressionSymbol.getTextualRepresentation();
     }
 
     public static String generateExecuteCode(MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol, List<String> includeStrings) {
@@ -191,8 +206,8 @@ public class ExecuteMethodGeneratorHandler {
             List<MathExpressionSymbol> list = new ArrayList<MathExpressionSymbol>();
             list.add(mathExpressionSymbol.getLeftExpression());
             list.add(mathExpressionSymbol.getRightExpression());
-            String valueListString = "(" + OctaveHelper.getOctaveValueListString(list) + ")";
-            return OctaveHelper.getCallBuiltInFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), "Fmpower", valueListString, false, 1);
+            String valueListString = "(" + OctaveHelper.getOctaveValueListString(list, ";") + ")";
+            return MathConverter.curBackend.getPowerOfString(mathExpressionSymbol, valueListString, ";");
         } else {
             result += /*"("+*/  ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getLeftExpression(), includeStrings) + mathExpressionSymbol.getMathOperator();
 

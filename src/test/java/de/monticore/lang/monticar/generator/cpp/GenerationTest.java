@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
@@ -39,7 +40,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Ignore
     @Test
     public void testBasicConstantAssignment() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -50,7 +51,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testBasicPorts() {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPorts", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -78,14 +79,14 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, symtab));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, symtab));
 
     }
 
     @Test
     public void testBasicPortsConstantConnector() {
         ConstantPortSymbol.resetLastID();
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPortsConstantConnector", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -106,7 +107,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 "void init()\n" +
                 "{\n" +
                 "this->CONSTANTPORT1 = false;\n" +
-                "this->CONSTANTPORT2 = 1/1;\n" +
+                "this->CONSTANTPORT2 = 1;\n" +
                 "}\n" +
                 "void execute()\n" +
                 "{\n" +
@@ -115,14 +116,14 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, symtab));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, symtab));
 
     }
 
 
     @Test
     public void testPortsMath() {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPortsMath", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -145,25 +146,25 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "void execute()\n" +
                 "{\n" +
-                "if((counter < 0/1 )){\n" +
-                "result = 0/1 ;\n" +
+                "if((counter < 0)){\n" +
+                "result = 0;\n" +
                 "}\n" +
-                "else if((counter < 100/1 )){\n" +
+                "else if((counter < 100)){\n" +
                 "result = counter;\n" +
                 "}\n" +
                 "else {\n" +
-                "result = 100/1 ;\n" +
+                "result = 100;\n" +
                 "}\n" +
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, symtab));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, symtab));
 
     }
 
     @Test
     public void testPortsLoop() {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPortsLoop", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -186,20 +187,20 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "void execute()\n" +
                 "{\n" +
-                "for( auto i=1/1 ;i<=8/1 ;i+=1/1 ){\n" +
+                "for( auto i=1;i<=8;i+=1){\n" +
                 "result = result+counter;\n" +
                 "}\n" +
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, symtab));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, symtab));
 
     }
 
     @Ignore
     @Test
     public void testSimulatorSpeedLimitChecker() {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulator.speedLimitChecker", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -231,14 +232,14 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, symtab));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, symtab));
 
     }
 
     @Ignore
     @Test
     public void testSimulatorBrakeController() {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulator.BrakeController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -266,22 +267,22 @@ public class GenerationTest extends AbstractSymtabTest {
                 "void execute()\n" +
                 "{\n" +
                 "if (speedLimitChecker1.speedLimitSurpassed){\n" +
-                "(brakeForce = 1/2 );\n" +
+                "(brakeForce = 0.5);\n" +
                 "}\n" +
                 "else{\n" +
-                "(brakeForce = 0/1 );\n" +
+                "(brakeForce = 0);\n" +
                 "}\n" +
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, mathSymbol));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, mathSymbol));
 
     }
 
     @Ignore
     @Test
     public void testSimulatorSteerController() {
-        Scope symtab = createSymTab("src/test/resources/simulator");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("steerController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -307,13 +308,13 @@ public class GenerationTest extends AbstractSymtabTest {
                 "}\n" +
                 "\n" +
                 "};\n" +
-                "#endif\n", generatorCPP.generateString(componentSymbol, mathSymbol));
+                "#endif\n", generatorCPP.generateString(symtab, componentSymbol, mathSymbol));
 
     }
 
     @Test
-    public void testBasicGenericInstance() throws Exception{
-        Scope symtab = createSymTab("src/test/resources");
+    public void testBasicGenericInstance() throws Exception {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicGenericInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -330,7 +331,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testBasicGenericArrayInstance() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicGenericArrayInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -343,7 +344,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testMatrixModifierInstancing() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.matrixModifier", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -354,7 +355,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testMathUnitInstancing() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -365,7 +366,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testObjectDetectorInstancing() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -376,7 +377,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testParameterInstancing() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.lookUpInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -387,7 +388,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testDoubleAccess() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.doubleAccess", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -400,7 +401,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testSimulatorMainController() throws IOException {
         ConstantPortSymbol.resetLastID();
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulator.mainController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -415,7 +416,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testBasicPrecision1() throws IOException {
         ConstantPortSymbol.resetLastID();
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPrecisionTest1", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -429,7 +430,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMathUnitBothOptimizations() throws IOException {
         ThreadingOptimizer.resetID();
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -446,7 +447,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Ignore
     @Test
     public void testForLoopIf() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.forLoopIfInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);

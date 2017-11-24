@@ -16,9 +16,13 @@ import de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema.TagMinM
 import de.monticore.lang.monticar.generator.order.nfp.TagTableTagSchema.TagTableTagSchema;
 import de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema.TagThresholdTagSchema;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SymTabCreator {
 
@@ -28,6 +32,15 @@ public class SymTabCreator {
         this.modelPaths = modelPaths;
     }
 
+    public TaggingResolver createSymTabAndTaggingResolver() {
+        Scope symtab = createSymTab();
+
+        List<String> list = new ArrayList();
+        //TODO maybe add other modelpaths too?
+        TaggingResolver taggingResolver = new TaggingResolver(symtab, list);
+        return taggingResolver;
+    }
+
     public Scope createSymTab() {
         ConstantPortSymbol.resetLastID();
         MathConverter.resetIDs();
@@ -35,7 +48,6 @@ public class SymTabCreator {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         EmbeddedMontiArcMathLanguage montiArcLanguage = new EmbeddedMontiArcMathLanguage();
 
-        registerDefaultTags(montiArcLanguage);
 
         fam.addModelingLanguage(montiArcLanguage);
         fam.addModelingLanguage(new StreamUnitsLanguage());
@@ -46,14 +58,14 @@ public class SymTabCreator {
         return new GlobalScope(mp, fam);
     }
 
-    private void registerDefaultTags(EmbeddedMontiArcMathLanguage montiArcLanguage) {
-        TagMinMaxTagSchema.registerTagTypes(montiArcLanguage);
-        TagTableTagSchema.registerTagTypes(montiArcLanguage);
-        TagBreakpointsTagSchema.registerTagTypes(montiArcLanguage);
-        TagExecutionOrderTagSchema.registerTagTypes(montiArcLanguage);
-        TagInitTagSchema.registerTagTypes(montiArcLanguage);
-        TagThresholdTagSchema.registerTagTypes(montiArcLanguage);
-        TagDelayTagSchema.registerTagTypes(montiArcLanguage);
+    private void registerDefaultTags(TaggingResolver tagginResolver) {
+        TagMinMaxTagSchema.registerTagTypes(tagginResolver);
+        TagTableTagSchema.registerTagTypes(tagginResolver);
+        TagBreakpointsTagSchema.registerTagTypes(tagginResolver);
+        TagExecutionOrderTagSchema.registerTagTypes(tagginResolver);
+        TagInitTagSchema.registerTagTypes(tagginResolver);
+        TagThresholdTagSchema.registerTagTypes(tagginResolver);
+        TagDelayTagSchema.registerTagTypes(tagginResolver);
     }
 
 }

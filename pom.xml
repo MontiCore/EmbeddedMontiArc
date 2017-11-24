@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-generator</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -20,10 +20,11 @@
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.7</SIUnit.version>
 	<Common-MontiCar.version>0.0.4</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.4</Embedded-MontiArc.version>
-	<Embedded-MontiArc-Behaviour.version>0.0.4</Embedded-MontiArc-Behaviour.version>
+	<Embedded-MontiArc.version>0.0.5</Embedded-MontiArc.version>
+	<Embedded-MontiArc-Behaviour.version>0.0.5</Embedded-MontiArc-Behaviour.version>
         <Math.version>0.0.4</Math.version>
-	<Embedded-MontiArc-Math.version>0.0.4</Embedded-MontiArc-Math.version>
+	<Embedded-MontiArc-Math.version>0.0.5</Embedded-MontiArc-Math.version>
+    <tagging.version>0.0.1</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -50,6 +51,11 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>Tagging</artifactId>
+      <version>${tagging.version}</version>
+    </dependency>
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>

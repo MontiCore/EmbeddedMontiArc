@@ -3,15 +3,18 @@ package de.monticore.lang.monticar.generator.order.tools;
 import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
+import de.monticore.lang.monticar.generator.order.NonVirtualBlock;
 import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.Scope;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -52,33 +55,33 @@ public class Slist extends AbstractSymtab {
             modelPath = modelPath.substring(0, modelPath.length() - 1);
             br.close();
 
-            Scope symTab = createSymTab(modelPath);
+            TaggingResolver symTab = createSymTabAndTaggingResolver(modelPath);
             ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
                     Names.getExpandedComponentInstanceSymbolName(componentName),
                     ExpandedComponentInstanceSymbol.KIND).orElse(null);
-            System.out.println(execute(inst));
+            System.out.println(execute(symTab, inst));
         }
     }
 
     // creates an indent printer and prints the first line of slist.
     // After this printComponentBlockOrder will be executed to print all components
-    public static String execute(ExpandedComponentInstanceSymbol inst) {
+    public static String execute(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
         IndentPrinter ip = new IndentPrinter();
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(inst);
-        getNonVirtualBlockSize(inst);
+        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(taggingResolver, inst);
+        getNonVirtualBlockSize(taggingResolver, inst);
 
         ip.println("---- Sorted list for '" + inst.getName() + "' [" + nonVirtualBlockSize +
                 " nonvirtual block(s), directfeed=" + getDirectFeedSize(inst) + "]");
-        printComponentBlockOrder(exOrder, ip);
+        printComponentBlockOrder(taggingResolver, exOrder, ip);
         return ip.getContent();
     }
 
     // This method prints every component
-    public static void printComponentBlockOrder(List<ExpandedComponentInstanceSymbol> exOrder, IndentPrinter ip) {
+    public static void printComponentBlockOrder(TaggingResolver taggingResolver, List<ExpandedComponentInstanceSymbol> exOrder, IndentPrinter ip) {
         for (ExpandedComponentInstanceSymbol order : exOrder) {
             ip.indent();
-            ip.print(order.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND)
-                    .iterator().next().getExecutionOrder());
+            ip.print(((TagExecutionOrderSymbol) taggingResolver.getTags(order, TagExecutionOrderSymbol.KIND)
+                    .iterator().next()).getExecutionOrder());
             ip.print("    ");
             ip.print("'" + order.getFullName() + "' (");
             ip.print(order.getComponentType().getName() + ", ");
@@ -92,14 +95,14 @@ public class Slist extends AbstractSymtab {
     }
 
     // Counts how much NonVirtualBlocks are in the component
-    public static int getNonVirtualBlockSize(ExpandedComponentInstanceSymbol inst) {
+    public static int getNonVirtualBlockSize(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
         for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
-            if (subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
+            if (taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
                     && !subInst.getSubComponents().isEmpty()) {
-                getNonVirtualBlockSize(subInst);
+                getNonVirtualBlockSize(taggingResolver, subInst);
             }
-            if (!subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).isEmpty()
-                    && subInst.<TagExecutionOrderSymbol>getTags(TagExecutionOrderSymbol.KIND).size() == 1) {
+            if (!taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
+                    && taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).size() == 1) {
                 nonVirtualBlockSize++;
             }
         }

@@ -37,7 +37,7 @@ double CONSTANTPORT1;
 simulator_mainController_steerController1 steerController1;
 void init()
 {
-this->CONSTANTPORT1 = 7/2;
+this->CONSTANTPORT1 = 3.5;
 steerController1.init();
 }
 void execute()

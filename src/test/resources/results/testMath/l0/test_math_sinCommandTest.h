@@ -13,7 +13,7 @@ void init()
 }
 void execute()
 {
-double a = (Helper::getDoubleFromOctaveListFirstResult(Fsin(Helper::convertToOctaveValueList(1/2 ),1)));
+double a = (Helper::getDoubleFromOctaveListFirstResult(Fsin(Helper::convertToOctaveValueList(0.5),1)));
 }
 
 };

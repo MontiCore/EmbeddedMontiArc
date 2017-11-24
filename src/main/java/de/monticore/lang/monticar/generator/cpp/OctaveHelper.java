@@ -29,7 +29,7 @@ public class OctaveHelper {
         return fileContent;
     }
 
-    public static String getOctaveValueListString(List<MathExpressionSymbol> expressionSymbolList) {
+    public static String getOctaveValueListString(List<MathExpressionSymbol> expressionSymbolList, String separator) {
         String valueListString = "";
         int counter = 0;
         for (MathExpressionSymbol symbol : expressionSymbolList) {
@@ -37,9 +37,14 @@ public class OctaveHelper {
             valueListString += ExecuteMethodGenerator.generateExecuteCode(symbol, new ArrayList<String>());
             ++counter;
             if (counter < expressionSymbolList.size())
-                valueListString += ",";
+                valueListString += separator;
         }
         return valueListString;
+    }
+
+    public static String getOctaveValueListString(List<MathExpressionSymbol> expressionSymbolList) {
+        return getOctaveValueListString(expressionSymbolList, ",");
+
     }
 
     public static String getCallBuiltInFunctionFirstResult(MathExpressionSymbol mathExpressionSymbol, String functionName, String valueListString, boolean useBraces, int argsOut) {
@@ -93,7 +98,7 @@ public class OctaveHelper {
         result += functionName;
         result += "(Helper::convertToOctaveValueList";
         result += valueListString;
-        result+=","+argsOut;
+        result += "," + argsOut;
         result += "))";
         // result += ",\"" + functionName + "\")";
         return result;

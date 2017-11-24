@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -15,14 +16,14 @@ import java.util.Map;
  * @author Sascha Schneiders
  */
 public class ExecutionOrderFixer {
-    public static void fixExecutionOrder(BluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {
+    public static void fixExecutionOrder(TaggingResolver taggingResolver, BluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {
         Method method = bluePrintCPP.getMethod("execute").get();
         Map<String, List<Instruction>> map = new HashMap<>();
 
         List<ExpandedComponentInstanceSymbol> threadableSubComponents = bluePrintCPP.getOriginalSymbol().getIndependentSubComponents();
         List<Instruction> otherInstructions = computeOtherInstructions(map, method);
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(bluePrintCPP.getOriginalSymbol());
-        List<Instruction> newList=getExecutionOrderInstructionsList(exOrder, map, bluePrintCPP, threadableSubComponents);
+        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(taggingResolver, bluePrintCPP.getOriginalSymbol());
+        List<Instruction> newList = getExecutionOrderInstructionsList(exOrder, map, bluePrintCPP, threadableSubComponents);
         fixSlistExecutionOrder(bluePrintCPP.getOriginalSymbol(), newList, bluePrintCPP, threadableSubComponents, generatorCPP);
         List<TargetCodeInstruction> joinInstructions = new ArrayList<>();
 

@@ -2,13 +2,11 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.Generator;
-import de.monticore.lang.monticar.generator.Helper;
-import de.monticore.lang.monticar.generator.MathCommandRegister;
+import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -37,6 +35,15 @@ public class GeneratorCPP implements Generator {
 
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
+        useOctaveBackend();
+    }
+
+    public void useArmadilloBackend() {
+        MathConverter.curBackend = new ArmadilloBackend();
+    }
+
+    public void useOctaveBackend() {
+        MathConverter.curBackend = new OctaveBackend();
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
@@ -45,7 +52,7 @@ public class GeneratorCPP implements Generator {
         String outputPath = args[2];
 
         SymTabCreator symTabCreator = new SymTabCreator(resolvingPath);
-        Scope symtab = symTabCreator.createSymTab();
+        TaggingResolver symtab = symTabCreator.createSymTabAndTaggingResolver();
         Resolver resolver = new Resolver(symtab);
 
         ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(fullName)
@@ -53,13 +60,13 @@ public class GeneratorCPP implements Generator {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath(outputPath);
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
 
-    public String generateString(ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
 
-        return generateString(componentInstanceSymbol, mathSymbol);
+        return generateString(taggingResolver, componentInstanceSymbol, mathSymbol);
     }
 
     @Override
@@ -73,7 +80,7 @@ public class GeneratorCPP implements Generator {
     }
 
     @Override
-    public String generateString(ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
+    public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
         LanguageUnitCPP languageUnitCPP = new LanguageUnitCPP();
         languageUnitCPP.setGeneratorCPP(this);
         languageUnitCPP.addSymbolToConvert(componentSymbol);
@@ -88,14 +95,14 @@ public class GeneratorCPP implements Generator {
             }
         }
 
-        String result = languageUnitCPP.getGeneratedHeader(bluePrintCPP);
+        String result = languageUnitCPP.getGeneratedHeader(taggingResolver, bluePrintCPP);
         return result;
     }
 
     public static List<FileContent> currentFileContentList = null;
 
     @Override
-    public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         List<FileContent> fileContents = new ArrayList<>();
         if (componentInstanceSymbol.getFullName().equals("simulator.mainController")) {
             setGenerateSimulatorInterface(true);
@@ -103,7 +110,7 @@ public class GeneratorCPP implements Generator {
             //setGenerateMainClass(true);
         }
         currentFileContentList = fileContents;
-        fileContents.add(new FileContent(generateString(componentInstanceSymbol, symtab), componentInstanceSymbol));
+        fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
         String lastNameWithoutArrayPart = "";
         for (ExpandedComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
             //fileContents.add(new FileContent(generateString(instanceSymbol, symtab), instanceSymbol));
@@ -117,11 +124,13 @@ public class GeneratorCPP implements Generator {
             }
             if (generateComponentInstance) {
 
-                fileContents.addAll(generateStrings(instanceSymbol, symtab));
+                fileContents.addAll(generateStrings(taggingResolver, instanceSymbol, symtab));
             }
         }
-
-        fileContents.add(OctaveHelper.getOctaveHelperFileContent());
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+            fileContents.add(OctaveHelper.getOctaveHelperFileContent());
+        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
+            fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
 
         if (shouldGenerateMainClass()) {
             //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
@@ -132,8 +141,9 @@ public class GeneratorCPP implements Generator {
         return fileContents;
     }
 
-    public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(componentSymbol, symtab);
+    public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol,
+                                    Scope symtab) throws IOException {
+        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         //System.out.println(fileContents);
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
@@ -146,7 +156,12 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    public File generateFile(FileContent fileContent) throws IOException{
+    public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol,
+                                    TaggingResolver taggingResolver) throws IOException {
+        return generateFiles(taggingResolver, componentSymbol, taggingResolver);
+    }
+
+    public File generateFile(FileContent fileContent) throws IOException {
         File f = new File(getGenerationTargetPath() + fileContent.getFileName());
         Log.info(f.getName(), "FileCreation:");
         if (!f.exists()) {

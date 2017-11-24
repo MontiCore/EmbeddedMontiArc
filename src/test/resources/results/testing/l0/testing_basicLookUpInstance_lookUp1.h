@@ -5,7 +5,6 @@
 #endif
 #include "octave/oct.h"
 class testing_basicLookUpInstance_lookUp1{
-const int n = 4;
 public:
 RowVector lookuptable;
 double in1;

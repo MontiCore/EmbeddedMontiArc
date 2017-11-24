@@ -138,7 +138,7 @@ public class MathFunctionFixer {
 
     public static void fixMathFunctions(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getLeftExpression(), bluePrintCPP);
-        if (mathExpressionSymbol.getLeftExpression() != null)
+        if (mathExpressionSymbol.getRightExpression() != null)
             fixMathFunctions(mathExpressionSymbol.getRightExpression(), bluePrintCPP);
     }
 
@@ -156,6 +156,7 @@ public class MathFunctionFixer {
         } else {
             MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(mathExpressionSymbol.getNameToAccess());
             if (mathCommand != null) {
+                if(MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
                 bluePrintCPP.addAdditionalIncludeString("Helper");
                 mathCommand.convert(mathExpressionSymbol, bluePrintCPP);
             }
@@ -262,7 +263,7 @@ public class MathFunctionFixer {
     public static boolean fixForLoopAccess(String nameToAccess, Variable variable, BluePrintCPP bluePrintCPP) {
         MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(nameToAccess);
         if (mathCommand == null) {
-            if (variable != null && variable.getVariableType() != null && variable.getVariableType().getTypeNameTargetLanguage() != null && variable.getVariableType().getTypeNameTargetLanguage().equals("Matrix")) {
+            if (variable != null && variable.getVariableType() != null && variable.getVariableType().getTypeNameTargetLanguage() != null && variable.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
                 return true;
             }
         }

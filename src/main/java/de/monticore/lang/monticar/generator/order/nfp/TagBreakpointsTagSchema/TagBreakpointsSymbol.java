@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema;
 
-import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbol;
+import de.monticore.lang.tagging._symboltable.TagKind;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

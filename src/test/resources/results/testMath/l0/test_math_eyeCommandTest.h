@@ -13,7 +13,7 @@ void init()
 }
 void execute()
 {
-Matrix a = (Helper::getMatrixFromOctaveListFirstResult(Feye(Helper::convertToOctaveValueList(2/1 , 2/1 ),1)));
+Matrix a = (Helper::getMatrixFromOctaveListFirstResult(Feye(Helper::convertToOctaveValueList(2, 2),1)));
 }
 
 };

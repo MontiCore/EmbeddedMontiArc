@@ -1,0 +1,8 @@
+package test.math;
+
+component TransposeTest{
+    implementation Math{
+        Q^{3,2} a = zeros(3,2);
+        Q^{2,3} b = a';
+    }
+}

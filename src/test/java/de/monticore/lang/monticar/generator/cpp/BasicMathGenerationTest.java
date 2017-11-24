@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testRowVectorMathSectionTest() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.rowVectorMathSectionTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -32,7 +33,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testColumnVectorMathSectionTest() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.columnVectorMathSectionTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -45,7 +46,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testStaticVariableMathSectionTest() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.staticMathSectionVariableTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -58,7 +59,7 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testMatrixConstantVariableMathSectionTest() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.matrixConstantVariableMathSectionTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);

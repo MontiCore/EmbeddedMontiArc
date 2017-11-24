@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema;
 
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 
@@ -10,7 +11,7 @@ import de.se_rwth.commons.Joiners;
  */
 public class TagExecutionOrderSymbolCreator implements TagSymbolCreator {
 
-  public void create(ASTTaggingUnit unit, Scope gs) {
+  public void create(ASTTaggingUnit unit, TaggingResolver gs) {
     if (unit.getQualifiedNames().stream()
         .map(q -> q.toString())
         .filter(n -> n.endsWith("TagExecutionOrderTagSchema"))

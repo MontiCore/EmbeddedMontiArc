@@ -1,33 +1,28 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema;
 
 import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TagElementResolvingFilter;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 public class TagBreakpointsTagSchema {
 
-  protected static TagBreakpointsTagSchema instance = null;
+    protected static TagBreakpointsTagSchema instance = null;
 
-  protected TagBreakpointsTagSchema() {}
-
-  protected static TagBreakpointsTagSchema getInstance() {
-    if (instance == null) {
-      instance = new TagBreakpointsTagSchema();
+    protected TagBreakpointsTagSchema() {
     }
-    return instance;
-  }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new TagBreakpointsSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TagBreakpointsSymbol.KIND));
+    protected static TagBreakpointsTagSchema getInstance() {
+        if (instance == null) {
+            instance = new TagBreakpointsTagSchema();
+        }
+        return instance;
     }
-  }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
-  }
+
+    public static void registerTagTypes(TaggingResolver taggingResolver) {
+        taggingResolver.addTagSymbolCreator((TagSymbolCreator) new TagBreakpointsSymbolCreator());
+        taggingResolver.addTagSymbolResolvingFilter(TagElementResolvingFilter.create(TagBreakpointsSymbol.KIND));
+    }
 }

@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagInitTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.lang.tagging._symboltable.TagElementResolvingFilter;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 public class TagInitTagSchema {
 
@@ -16,18 +16,8 @@ public class TagInitTagSchema {
     }
     return instance;
   }
-
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new TagInitSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TagInitSymbol.KIND));
+    public static void registerTagTypes(TaggingResolver taggingResolver) {
+        taggingResolver.addTagSymbolCreator((TagSymbolCreator) new TagInitSymbolCreator());
+        taggingResolver.addTagSymbolResolvingFilter(TagElementResolvingFilter.create(TagInitSymbol.KIND));
     }
-  }
-
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
-  }
 }

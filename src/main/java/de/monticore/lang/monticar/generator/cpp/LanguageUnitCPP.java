@@ -23,8 +23,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -79,8 +81,8 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
     }
 
-    public String getGeneratedHeader(BluePrintCPP bluePrint) {
-        ExecutionOrderFixer.fixExecutionOrder(bluePrint, (GeneratorCPP) bluePrint.getGenerator());
+    public String getGeneratedHeader(TaggingResolver taggingResolver, BluePrintCPP bluePrint) {
+        ExecutionOrderFixer.fixExecutionOrder(taggingResolver, bluePrint, (GeneratorCPP) bluePrint.getGenerator());
         String resultString = "";
         //guard defines
         resultString += "#ifndef " + bluePrint.getName().toUpperCase() + "\n";
@@ -93,8 +95,13 @@ public class LanguageUnitCPP extends LanguageUnit {
         List<String> alreadyGeneratedIncludes = new ArrayList<>();
         //includes
         //add default include
-        resultString += "#include \"octave/oct.h\"\n";
-        alreadyGeneratedIncludes.add("octave/oct");
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
+            resultString += "#include \"octave/oct.h\"\n";
+            alreadyGeneratedIncludes.add("octave/oct");
+        } else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+            resultString += "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + ".h\"\n";
+            alreadyGeneratedIncludes.add(MathConverter.curBackend.getIncludeHeaderName());
+        }
         for (Variable v : bluePrint.getVariables()) {
             //TODO remove multiple same includes
             if (v.hasInclude()) {
@@ -111,7 +118,15 @@ public class LanguageUnitCPP extends LanguageUnit {
         for (String include : includeStrings) {
             resultString += include;
         }
-
+        if (generatorCPP.useThreadingOptimizations()) {
+            //if(MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+            //resultString+="#include \"mingw.thread.h\"\n";
+            //else if(MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
+            resultString += "#include <thread>\n";
+        }
+        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+            resultString += "using namespace arma;\n";
+        }
 
         //class definition start
         resultString += "class " + bluePrint.getName() + "{\n";
