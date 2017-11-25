@@ -24,7 +24,7 @@
 	<Embedded-MontiArc-Behaviour.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Embedded-MontiArc-Behaviour.version>
     <Math.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Math.version>
 	<Embedded-MontiArc-Math.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Embedded-MontiArc-Math.version>
-    <tagging.version>0.0.1</tagging.version>
+    <tagging.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
