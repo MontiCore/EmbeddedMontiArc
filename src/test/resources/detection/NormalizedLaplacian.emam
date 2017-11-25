@@ -12,7 +12,7 @@ component NormalizedLaplacian<N1 n = 1>{
                 nLaplacian(i,j) = W(i,j) / (sqrt(degree(i,i)) * sqrt(degree(j,j)));
             end
         end*/
-        nLaplacian = degree^-0.5 * W * degree^-0.5;
+        nLaplacian = sqrtm(inv(degree)) * W * sqrtm(inv(degree));
 
     }
 }

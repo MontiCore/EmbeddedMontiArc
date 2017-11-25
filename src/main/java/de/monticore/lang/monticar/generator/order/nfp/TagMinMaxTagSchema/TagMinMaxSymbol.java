@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema;
 
-import de.monticore.lang.montiarc.tagging._symboltable.TagKind;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbol;
+import de.monticore.lang.tagging._symboltable.TagKind;
+import de.monticore.lang.tagging._symboltable.TagSymbol;
 
 /**
  * Created by ernst on 13.07.2016.

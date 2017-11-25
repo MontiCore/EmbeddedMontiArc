@@ -57,8 +57,12 @@ public class BluePrintCPP extends BluePrint {
                 Log.info(resolutionDeclarationSymbol.getNameToResolve(), "ResDecl:");
                 ASTSubComponent subComponent = componentSymbol.getInstanceInformation().get().getASTSubComponent();
                 int number = InstanceInformation.getInstanceNumberFromASTSubComponent(subComponent, index);
+                //if(resolutionDeclarationSymbol.getNameToResolve().equals("targetEigenvectors")){
+                Log.info(subComponent.toString(), "InfoKK:");
+                //}
                 if (number == -1) {
-                    Log.info(subComponent.toString(), "No number added");
+                    Log.info(subComponent.toString(), "No number added for" + resolutionDeclarationSymbol.getNameToResolve());
+                    ++index;
                     break;
                 }
                 fixSubComponentInstanceNumbers(componentSymbol, resolutionDeclarationSymbol.getNameToResolve(), number, index);

@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.montiarc.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.streamunits._ast.ASTComponentStreamUnits;
 import de.monticore.lang.monticar.streamunits._ast.ASTNamedStreamUnits;
 import de.monticore.lang.monticar.streamunits._ast.ASTPrecisionNumber;
@@ -37,14 +38,14 @@ public class TestConverter {
                         if (streamInstruction.getStreamValue().isPresent() && streamInstruction.getStreamValue().get().getPrecisionNumber().isPresent()) {
                             ASTPrecisionNumber precisionNumber = streamInstruction.getStreamValue().get().getPrecisionNumber().get();
                             if (precisionNumber.getPrecision().isPresent()) {
-                                fileContentString += "if(testInstance." + portName + ">" + "(" + precisionNumber.getUnitNumber().getNumber().get() + "-" + precisionNumber.getPrecision().get().getUnitNumber().getNumber().get() + ")";
-                                fileContentString += "&& testInstance." + portName + "<" + "(" + precisionNumber.getUnitNumber().getNumber().get() + "+" + precisionNumber.getPrecision().get().getUnitNumber().getNumber().get() + ")";
+                                fileContentString += "if(testInstance." + portName + ">" + "(" + MathConverter.getConvertedUnitNumber(precisionNumber.getUnitNumber()) + "-" + MathConverter.getConvertedUnitNumber(precisionNumber.getPrecision().get().getUnitNumber()) + ")";
+                                fileContentString += "&& testInstance." + portName + "<" + "(" + MathConverter.getConvertedUnitNumber(precisionNumber.getUnitNumber()) + "+" + MathConverter.getConvertedUnitNumber(precisionNumber.getPrecision().get().getUnitNumber()) + ")";
                                 fileContentString += "){";
                                 fileContentString += "printf(\"Mismatch at executionStep " + executionCounter + "\");\n";
                                 fileContentString += "octave_quit();\n";
                                 fileContentString += "}\n";
                             } else {
-                                fileContentString += "if(testInstance." + portName + "!=" + precisionNumber.getUnitNumber().getNumber().get() + "){";
+                                fileContentString += "if(testInstance." + portName + "!=" + MathConverter.getConvertedUnitNumber(precisionNumber.getUnitNumber()) + "){";
                                 fileContentString += "printf(\"Mismatch at executionStep " + executionCounter + "\");\n";
                                 fileContentString += "octave_quit();\n";
                                 fileContentString += "}\n";
@@ -67,14 +68,17 @@ public class TestConverter {
         String fileContentString = "";
         fileContentString += "#ifndef M_PI\n" +
                 "#define M_PI 3.14159265358979323846\n" +
-                "#endif\n" +
-                "#include \"Helper.h\"\n";
+                "#endif\n" + "#include \"" + MathConverter.curBackend.getIncludeHeaderName() + ".h\"\n";
 
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
+            fileContentString += "#include \"Helper.h\"\n";
+        }
         ASTComponentStreamUnits ast = (ASTComponentStreamUnits) symbol.getAstNode().get();
         fileContentString += "#include \"" + GeneralHelperMethods.getTargetLanguageComponentName(symbol.getPackageName() + "." + Character.toLowerCase(ast.getComponentName().charAt(0)) + ast.getComponentName().substring(1)) + ".h\"\n";
         fileContentString += "int main(int argc, char** argv)\n" +
                 "{\n";
-        fileContentString += "Helper::init();\n";
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+            fileContentString += "Helper::init();\n";
         fileContentString += "";
         fileContentString += GeneralHelperMethods.getTargetLanguageComponentName(symbol.getPackageName() + "." + Character.toLowerCase(ast.getComponentName().charAt(0)) + ast.getComponentName().substring(1));
         fileContentString += " testInstance;\n";
@@ -89,8 +93,8 @@ public class TestConverter {
             if (astNamedStreamUnit.getStream().getStreamInstructions().size() > 0) {
                 ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructions().get(executionCounter);
                 if (streamInstruction.getStreamValue().isPresent() && streamInstruction.getStreamValue().get().getPrecisionNumber().isPresent())
-                    fileContentString += "testInstance." + portName + "=" + streamInstruction.
-                            getStreamValue().get().getPrecisionNumber().get().getUnitNumber().getNumber().get() + ";";
+                    fileContentString += "testInstance." + portName + "=" + MathConverter.getConvertedUnitNumber(streamInstruction.
+                            getStreamValue().get().getPrecisionNumber().get().getUnitNumber()) + ";";
             }
         }
         return fileContentString;

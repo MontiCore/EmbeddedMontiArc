@@ -12,17 +12,17 @@ void init()
 }
 void execute()
 {
-for( auto i=1/1 ;i<=8/1 ;i+=1/1 ){
+for( auto i=1;i<=8;i+=1){
 result = result+counter;
 }
-if((counter < 0/1 )){
-result = 0/1 ;
+if((counter < 0)){
+result = 0;
 }
-else if((counter < 100/1 )){
+else if((counter < 100)){
 result = counter;
 }
 else {
-result = 100/1 ;
+result = 100;
 }
 }
 

@@ -45,6 +45,7 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
         registerMathCommand(new MathOnesCommand());
         registerMathCommand(new MathZerosCommand());
         registerMathCommand(new MathDetCommand());
-        //registerMathCommand(new MathKMeansIDXCommand());
+        registerMathCommand(new MathKMeansCommand());
+        registerMathCommand(new MathSqrtmCommand());
     }
 }

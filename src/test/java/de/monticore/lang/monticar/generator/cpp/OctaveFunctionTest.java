@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._symboltable.NamedStreamUnitsSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
 
     public void testMathCommand(String namePart) throws IOException {
         MathConverter.resetIDs();
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab= createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math." + namePart + "CommandTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -37,7 +38,7 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
 
     public void testMathCommandStream(String namePart, String streamName) throws IOException {
         MathConverter.resetIDs();
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab= createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math." + namePart + "CommandTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
@@ -50,14 +51,14 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
         Log.info(streamName, "Resolving:");
         assertNotNull(streamSymbol);
         if (streamSymbol != null) {
-            generatorCPP.generateFile(TestConverter.generateMainTestFile(streamSymbol, componentSymbol));
+            files.add(generatorCPP.generateFile(TestConverter.generateMainTestFile(streamSymbol, componentSymbol)));
         }
         testFilesAreEqual(files, restPath);
     }
 
     @Test
     public void testAbsCommand() throws IOException {
-        /*Scope symtab = createSymTab("src/test/resources");
+        /*TaggingResolver symtab= createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.absCommandTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);

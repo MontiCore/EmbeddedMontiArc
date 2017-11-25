@@ -1,14 +1,15 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema;
 
-import de.monticore.lang.montiarc.montiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTTag;
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
-import de.monticore.lang.montiarc.tagging.helper.NumericLiteral;
-import de.monticore.lang.montiarc.tagvalue._ast.ASTNumericTagValue;
-import de.monticore.lang.montiarc.tagvalue._parser.TagValueParser;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.tagging._ast.ASTNameScope;
+import de.monticore.lang.tagging._ast.ASTScope;
+import de.monticore.lang.tagging._ast.ASTTag;
+import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.lang.tagging.helper.NumericLiteral;
+import de.monticore.lang.tagvalue._ast.ASTNumericTagValue;
+import de.monticore.lang.tagvalue._parser.TagValueParser;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
@@ -33,7 +34,7 @@ public class TagThresholdSymbolCreator implements TagSymbolCreator {
     return s;
   }
 
-  public void create(ASTTaggingUnit unit, Scope gs) {
+  public void create(ASTTaggingUnit unit, TaggingResolver gs) {
     if (unit.getQualifiedNames().stream()
         .map(q -> q.toString())
         .filter(n -> n.endsWith("TagThresholdTagSchema"))
@@ -64,7 +65,7 @@ public class TagThresholdSymbolCreator implements TagSymbolCreator {
                   .filter(s -> !s.isEmpty())
                   .map(this::checkKind)
                   .filter(s -> s != null)
-                  .forEachOrdered(s -> s.addTag(new TagThresholdSymbol(v.doubleValue()))));
+                  .forEachOrdered(s -> gs.addTag(s, new TagThresholdSymbol(v.doubleValue()))));
     }
   }
 

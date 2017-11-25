@@ -1,14 +1,15 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema;
 
-import de.monticore.lang.montiarc.montiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.montiarc.tagging._ast.ASTNameScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTScope;
-import de.monticore.lang.montiarc.tagging._ast.ASTTag;
-import de.monticore.lang.montiarc.tagging._ast.ASTTaggingUnit;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
-import de.monticore.lang.montiarc.tagging.helper.NumericLiteral;
-import de.monticore.lang.montiarc.tagvalue._ast.ASTNumericTagValue;
-import de.monticore.lang.montiarc.tagvalue._parser.TagValueParser;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.tagging._ast.ASTNameScope;
+import de.monticore.lang.tagging._ast.ASTScope;
+import de.monticore.lang.tagging._ast.ASTTag;
+import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.lang.tagging.helper.NumericLiteral;
+import de.monticore.lang.tagvalue._ast.ASTNumericTagValue;
+import de.monticore.lang.tagvalue._parser.TagValueParser;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
@@ -33,7 +34,7 @@ public class TagBreakpointsSymbolCreator implements TagSymbolCreator {
         return s;
     }
 
-    public void create(ASTTaggingUnit unit, Scope gs) {
+    public void create(ASTTaggingUnit unit, TaggingResolver gs) {
         if (unit.getQualifiedNames().stream()
                 .map(q -> q.toString())
                 .filter(n -> n.endsWith("TagBreakpointsTagSchema"))
@@ -51,7 +52,7 @@ public class TagBreakpointsSymbolCreator implements TagSymbolCreator {
         handleTagElements(unit, gs, rootCmp);
     }
 
-    protected void handleTagElements(ASTTaggingUnit unit, Scope gs, String rootCmp) {
+    protected void handleTagElements(ASTTaggingUnit unit, TaggingResolver gs, String rootCmp) {
         for (ASTTag element : unit.getTagBody().getTags()) {
             element.getTagElements().stream()
                     .filter(t -> t.getName().equals("TagBreakpoints"))
@@ -68,7 +69,7 @@ public class TagBreakpointsSymbolCreator implements TagSymbolCreator {
                                     .filter(s -> !s.isEmpty())
                                     .map(this::checkKind)
                                     .filter(s -> s != null)
-                                    .forEachOrdered(s -> s.addTag(new TagBreakpointsSymbol(v.toArray(new Double[v.size()])))));
+                                    .forEachOrdered(s -> gs.addTag(s, new TagBreakpointsSymbol(v.toArray(new Double[v.size()])))));
         }
     }
 

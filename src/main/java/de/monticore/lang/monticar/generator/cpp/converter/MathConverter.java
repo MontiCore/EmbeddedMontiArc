@@ -3,21 +3,20 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.generator.MathCommand;
-import de.monticore.lang.monticar.generator.TargetCodeInstruction;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
-import de.se_rwth.commons.logging.Log;
 
-import java.lang.reflect.Type;
+import de.se_rwth.commons.logging.Log;
+import siunit.monticoresiunit.si._ast.ASTUnitNumber;
 
 /**
  * @author Sascha Schneiders
  */
 public class MathConverter {
+
+    public static MathBackend curBackend = new OctaveBackend();
 
     public static Variable getVariableFromBluePrint(MathMatrixNameExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         return getVariableFromBluePrint(mathExpressionSymbol.getNameToAccess(), bluePrintCPP);
@@ -78,13 +77,14 @@ public class MathConverter {
             ++column;
         }
         String firstPart = matrixName + " = " + typeName;
-        if (typeName.equals("RowVector")) {
+        if (typeName.equals(curBackend.getRowVectorTypeName())) {
             firstPart += "(" + mathExpressionSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size() + ");\n";
-        } else if (typeName.equals("ColumnVector")) {
+        } else if (typeName.equals(curBackend.getColumnVectorTypeName())) {
             firstPart += "(" + mathExpressionSymbol.getVectors().size() + ");\n";
-        } else if (typeName.equals("Matrix")) {
+        } else if (typeName.equals(curBackend.getMatrixTypeName())) {
 
-            firstPart += "(" + mathExpressionSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size() + "," + mathExpressionSymbol.getVectors().size() + ");\n";
+            firstPart += curBackend.getMatrixInitString(mathExpressionSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size(),
+                    mathExpressionSymbol.getVectors().size());
         }
         return firstPart + result;
     }
@@ -101,15 +101,25 @@ public class MathConverter {
     }
 
     public static String getMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=Matrix(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
 
     public static String getRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v, bluePrint) + "= RowVector(" + v.getDimensionalInformation().get(1) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
     }
 
     public static String getColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v, bluePrint) + "= ColumnVector(" + v.getDimensionalInformation().get(0) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
     }
 
+    public static String getConvertedUnitNumber(ASTUnitNumber unitNumber) {
+        if(!unitNumber.getNumber().isPresent()){
+            Log.error("Number should be present");
+        }
+        if (unitNumber.getNumber().get().getDivisor().intValue() == 1) {
+            return "" + unitNumber.getNumber().get().getDividend().intValue();
+        } else {
+            return "" + unitNumber.getNumber().get().doubleValue();
+        }
+    }
 }

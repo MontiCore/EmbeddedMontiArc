@@ -19,7 +19,7 @@ matOut=Matrix(10,200);
 }
 void execute()
 {
-matOut = mat1.row(1/1 -1)*mat2.column(1/1 -1)*mat3.row(1/1 -1);
+matOut = mat1.row(1-1)*mat2.column(1-1)*mat3.row(1-1);
 }
 
 };

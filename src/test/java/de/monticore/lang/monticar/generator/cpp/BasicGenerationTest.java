@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
@@ -19,7 +20,7 @@ public class BasicGenerationTest  extends AbstractSymtabTest {
 
     @Test
     public void testBasicLookUpInstanceGeneration() throws IOException {
-        Scope symtab = createSymTab("src/test/resources");
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.basicLookUpInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);

@@ -30,15 +30,6 @@ import java.util.Optional;
 public class TypeConverter {
     private static List<VariableType> nonPrimitiveVariableTypes = new ArrayList<>();
 
-    public static String getTypeNameTargetLanguage(MCTypeReference<? extends MCTypeSymbol> portType) {
-        for (VariableType variableType : nonPrimitiveVariableTypes) {
-            if (variableType.getTypeNameMontiCar().equals(portType.getName()))
-                return variableType.getTypeNameTargetLanguage();
-        }
-        Log.info(portType.getName(), "Unknown Type:");
-        Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
-        return "";
-    }
 
     @Deprecated
     public static boolean isNonPrimitiveVariableTypeName(String typeName) {
@@ -60,24 +51,40 @@ public class TypeConverter {
             }
             return "double";
         } else if (mathValueType.getDimensions().size() == 2) {
-            return "Matrix";
+            return MathConverter.curBackend.getMatrixTypeName();
         }
         Log.error("TypeConverter Case not handled!");
         return null;
     }
 
-    public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar) {
+    private static Optional<VariableType> getVariableTypeForMontiCarTypeNameOctave(String typeNameMontiCar) {
         for (VariableType variableType : nonPrimitiveVariableTypes) {
-            if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar))
+            if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 return Optional.of(variableType);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar) {
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+            return getVariableTypeForMontiCarTypeNameOctave(typeNameMontiCar);
+        else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+            if (typeNameMontiCar.equals("CommonMatrixType")) {
+                return Optional.of(new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+            } else if (typeNameMontiCar.equals("AssignmentType")) {
+                return Optional.of(new VariableType("AssignmentType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName()));
+            } else {
+                return getVariableTypeForMontiCarTypeNameOctave(typeNameMontiCar);
+            }
         }
         Log.info(typeNameMontiCar, "Unknown Type:");
         //Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
         return Optional.empty();
     }
 
-    public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, ASTType astType) {
-        for (VariableType variableType : nonPrimitiveVariableTypes) {
+    private static Optional<VariableType> getVariableTypeForMontiCarTypeNameOctave(String typeNameMontiCar, Variable variable, ASTType astType) {
+        for (VariableType variableType : nonPrimitiveVariableTypes)
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
                     ASTCommonMatrixType astCommonMatrixType = (ASTCommonMatrixType) astType;
@@ -89,6 +96,27 @@ public class TypeConverter {
                 }
                 return Optional.of(variableType);
             }
+        return Optional.empty();
+    }
+
+    public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, ASTType astType) {
+        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend")) {
+            return getVariableTypeForMontiCarTypeNameOctave(typeNameMontiCar, variable, astType);
+        } else if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+            Optional<VariableType> variableType;
+            if (typeNameMontiCar.equals("CommonMatrixType")) {
+                ASTCommonMatrixType astCommonMatrixType = (ASTCommonMatrixType) astType;
+                handleCommonMatrixType(variable, astCommonMatrixType);
+                variableType = Optional.ofNullable(getRealVariableType(astCommonMatrixType));
+            } else if (typeNameMontiCar.equals("AssignmentType")) {//TODO Add MatrixProperties to MathInformation
+                variableType = Optional.of(new VariableType(typeNameMontiCar, MathConverter.curBackend.getMatrixTypeName(),
+                        MathConverter.curBackend.getIncludeHeaderName()));
+                ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
+                handleAssignmentType(variable, astAssignmentType);
+            } else {
+                variableType = getVariableTypeForMontiCarTypeNameOctave(typeNameMontiCar, variable, astType);
+            }
+            return variableType;
         }
         Log.info(typeNameMontiCar, "Unknown Type:");
         //Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
@@ -100,15 +128,15 @@ public class TypeConverter {
         List<ASTCommonDimensionElement> dimensionElements = astCommonMatrixType.getCommonDimension().getCommonDimensionElements();
         if (dimensionElements.size() == 2) {
             if (isVectorDimension(dimensionElements.get(0)))
-                variableType = new VariableType("CommonRowVectorType", "RowVector", "octave/oct");
+                variableType = new VariableType("CommonRowVectorType", MathConverter.curBackend.getRowVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
             else if (isVectorDimension(dimensionElements.get(1))) {
-                variableType = new VariableType("CommonColumnVectorType", "ColumnVector", "octave/oct");
-            }else{
-                variableType = new VariableType("CommonMatrixType", "Matrix", "octave/oct");
+                variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            } else {
+                variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
 
             }
-        }else{
-            variableType = new VariableType("CommonMatrixType", "Matrix", "octave/oct");
+        } else {
+            variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         }
 
         return variableType;
@@ -122,8 +150,14 @@ public class TypeConverter {
         for (VariableType variableType : nonPrimitiveVariableTypes) {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
+                    if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+                        variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                    }
                     handleCommonMatrixType(variable, portSymbol);
                 } else if (typeNameMontiCar.equals("AssignmentType")) {
+                    if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
+                        variableType = new VariableType("AssignmentType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                    }
                     handleAssignmentType(variable, portSymbol);
                 }
                 return Optional.of(variableType);
@@ -181,19 +215,19 @@ public class TypeConverter {
     public static String getTypeName(MathMatrixArithmeticValueSymbol mathExpressionSymbol) {
         if (mathExpressionSymbol.getVectors().size() > 1) {
             if (mathExpressionSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size() > 1)
-                return "Matrix";
+                return MathConverter.curBackend.getMatrixTypeName();
             else {
-                return "ColumnVector";
+                return MathConverter.curBackend.getColumnVectorTypeName();
             }
         } else {
-            return "RowVector";
+            return MathConverter.curBackend.getRowVectorTypeName();
         }
     }
 
     public static VariableType getVariableTypeForTargetLanguageTypeName(String targetLanguageTypeName) {
         VariableType type = new VariableType();
         type.setTypeNameTargetLanguage(targetLanguageTypeName);
-        type.setIncludeName("octave/oct");
+        type.setIncludeName(MathConverter.curBackend.getIncludeHeaderName());
         return type;
     }
 

@@ -1,36 +1,25 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.lang.tagging._symboltable.TagElementResolvingFilter;
+import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 public class TagExecutionOrderTagSchema {
 
-  protected static TagExecutionOrderTagSchema instance = null;
+    protected static TagExecutionOrderTagSchema instance = null;
 
-  protected TagExecutionOrderTagSchema() {}
-
-  protected static TagExecutionOrderTagSchema getInstance() {
-    if (instance == null) {
-      instance = new TagExecutionOrderTagSchema();
+    protected TagExecutionOrderTagSchema() {
     }
-    return instance;
-  }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new TagExecutionOrderSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TagExecutionOrderSymbol.KIND));
-    }else{
-      Log.error("Not taggable");
+    protected static TagExecutionOrderTagSchema getInstance() {
+        if (instance == null) {
+            instance = new TagExecutionOrderTagSchema();
+        }
+        return instance;
     }
-  }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
-  }
+    public static void registerTagTypes(TaggingResolver taggingResolver) {
+        taggingResolver.addTagSymbolCreator((TagSymbolCreator) new TagExecutionOrderSymbolCreator());
+        taggingResolver.addTagSymbolResolvingFilter(TagElementResolvingFilter.create(TagExecutionOrderSymbol.KIND));
+    }
 }

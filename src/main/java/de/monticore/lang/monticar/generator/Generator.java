@@ -19,11 +19,9 @@
 
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 
 import java.io.File;
@@ -41,18 +39,18 @@ public interface Generator {
 
     void setGenerationTargetPath(String newPath);
 
-    String generateString(ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol);
+    String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol);
 
     /**
      * This method should generate the source for the ExpandedComponentInstanceSymbol and
      * add MathStatementsSymbols, accordingly. Does also do this for all of its subcomponents.
      */
-    List<FileContent> generateStrings(ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab);
+    List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab);
 
     /**
      * This methods writes the resulting code for the ExpandedComponentInstance and its subcomponents to the corresponding files
      */
-    List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException;
+    List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException;
 
     boolean useAlgebraicOptimizations();
 

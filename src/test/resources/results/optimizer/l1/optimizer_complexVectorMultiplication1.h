@@ -19,9 +19,9 @@ matOut=Matrix(10,200);
 }
 void execute()
 {
-ColumnVector a = mat1.column(1/1 -1);
-RowVector b = mat2.row(1/1 -1);
-ColumnVector c = mat3.column(1/1 -1);
+ColumnVector a = mat1.column(1-1);
+RowVector b = mat2.row(1-1);
+ColumnVector c = mat3.column(1-1);
 matOut = a*(b*c);
 }
 

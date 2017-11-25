@@ -29,6 +29,9 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
             result += "\"ldivide\"";
             includeStrings.add("Helper");
         */
+        } else if (mathMatrixArithmeticExpressionSymbol.getMathOperator().equals("\'")) {
+            result += ExecuteMethodGenerator.generateExecuteCode(mathMatrixArithmeticExpressionSymbol.getLeftExpression(), includeStrings);
+            result += "." + MathConverter.curBackend.getTransposeCommand() + "()";
         } else {
 
             result += /*"(" +*/ ExecuteMethodGenerator.generateExecuteCode(mathMatrixArithmeticExpressionSymbol.getLeftExpression(), includeStrings) + " " + mathMatrixArithmeticExpressionSymbol.getMathOperator();
@@ -50,17 +53,18 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
 
     public static String generateExecuteCodeMatrixEEDivide(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
         String valueListString = calculateValueListString(mathExpressionSymbol);
-        return OctaveHelper.getCallOctaveFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), "ldivide", valueListString, false);
+        return MathConverter.curBackend.getDivisionEEString(mathExpressionSymbol, valueListString);
     }
 
     public static String generateExecuteCodeMatrixEEPowerOf(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
         String valueListString = calculateValueListString(mathExpressionSymbol);
-        return OctaveHelper.getCallOctaveFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), "power", valueListString, false);
+        return MathConverter.curBackend.getPowerOfEEString(mathExpressionSymbol, valueListString);
     }
 
     public static String generateExecuteCodeMatrixPowerOfOperator(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
         String valueListString = calculateValueListString(mathExpressionSymbol);
-        return OctaveHelper.getCallBuiltInFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), "Fmpower", valueListString, false, 1);
+
+        return MathConverter.curBackend.getPowerOfString(mathExpressionSymbol, valueListString);
     }
 
     public static String generateExecuteCode(MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, List<String> includeStrings, boolean setMinusOne) {
@@ -79,16 +83,16 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         String result = "";
         if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().size() == 2) {
             if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(0).isDoubleDot()) {
-                result += ".column";
+                result += "." + MathConverter.curBackend.getColumnAccessCommandName();
             } else if (mathMatrixAccessOperatorSymbol.getMathMatrixAccessSymbols().get(1).isDoubleDot()) {
-                result += ".row";
+                result += "." + MathConverter.curBackend.getRowAccessCommandName();
             }
         }
         return result;
     }
 
     public static boolean isColumnString(String matrixExtractionPart) {
-        return matrixExtractionPart.equals(".column");
+        return matrixExtractionPart.equals("." + MathConverter.curBackend.getColumnAccessCommandName());
     }
 
     public static boolean isRowString(String matrixExtractionPart) {

@@ -13,6 +13,6 @@ component KMeansClustering<N1 n=1, N1 amountVectors=1, N1 maximumClusters=1>{
                 UMatrix(i,:) = vectors(i,:) ./ amount;
             end
 
-        clusters = kmeansidx(UMatrix, maximumClusters);
+        clusters = kmeans(UMatrix, maximumClusters);
     }
 }

@@ -13,7 +13,7 @@ void init()
 }
 void execute()
 {
-Matrix a = (Helper::getMatrixFromOctaveListFirstResult(Fones(Helper::convertToOctaveValueList(3/1 , 3/1 ),1)));
+Matrix a = (Helper::getMatrixFromOctaveListFirstResult(Fones(Helper::convertToOctaveValueList(3, 3),1)));
 }
 
 };

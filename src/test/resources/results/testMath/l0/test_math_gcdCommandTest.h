@@ -13,7 +13,7 @@ void init()
 }
 void execute()
 {
-RowVector a = (Helper::getDoubleFromOctaveListFirstResult(Fgcd(Helper::convertToOctaveValueList(10/1 , 8/1 ),1)));
+RowVector a = (Helper::getDoubleFromOctaveListFirstResult(Fgcd(Helper::convertToOctaveValueList(10, 8),1)));
 }
 
 };

@@ -1,33 +1,24 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.lang.tagging._symboltable.TagElementResolvingFilter;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 public class TagMinMaxTagSchema {
 
-  protected static TagMinMaxTagSchema instance = null;
+    protected static TagMinMaxTagSchema instance = null;
 
-  protected TagMinMaxTagSchema() {}
-
-  protected static TagMinMaxTagSchema getInstance() {
-    if (instance == null) {
-      instance = new TagMinMaxTagSchema();
+    protected TagMinMaxTagSchema() {
     }
-    return instance;
-  }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new TagMinMaxSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TagMinMaxSymbol.KIND));
+    protected static TagMinMaxTagSchema getInstance() {
+        if (instance == null) {
+            instance = new TagMinMaxTagSchema();
+        }
+        return instance;
     }
-  }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
-  }
+    public static void registerTagTypes(TaggingResolver taggingResolver) {
+        taggingResolver.addTagSymbolCreator( new TagMinMaxSymbolCreator());
+        taggingResolver.addTagSymbolResolvingFilter(TagElementResolvingFilter.create(TagMinMaxSymbol.KIND));
+    }
 }

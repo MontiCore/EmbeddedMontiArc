@@ -64,9 +64,7 @@ public class ComponentConverterMethodGeneration {
             List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
             MathOptimizer.currentBluePrint = bluePrint;
             int counter = 0;
-            if (generatorCPP.useThreadingOptimizations()) {
-                bluePrint.addAdditionalIncludeString("mingw.thread");
-            }
+
             for (MathExpressionSymbol mathExpressionSymbol : mathStatementsSymbol.getMathExpressionSymbols()) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
                     List<MathExpressionSymbol> precedingExpressions = new ArrayList<>();

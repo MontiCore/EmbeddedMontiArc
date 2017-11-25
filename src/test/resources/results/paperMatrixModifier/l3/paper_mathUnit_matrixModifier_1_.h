@@ -4,7 +4,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "octave/oct.h"
-#include "mingw.thread.h"
+#include <thread>
 class paper_mathUnit_matrixModifier_1_{
 public:
 Matrix mat1;
