@@ -20,12 +20,18 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Sascha Schneiders
  */
 public class GeneratorCPP implements Generator {
+
+    private Path modelsDirPath;
+    private boolean isGenerateTests = false;
+    private final List<BluePrintCPP> bluePrints = new ArrayList<>();
+
     protected String generationTargetPath = "./target/generated-sources-cpp/";
 
     protected boolean algebraicOptimizations = false;
@@ -53,6 +59,7 @@ public class GeneratorCPP implements Generator {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath(outputPath);
+        generatorCPP.setModelsDirPath(resolvingPath);
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
 
@@ -86,6 +93,10 @@ public class GeneratorCPP implements Generator {
             if (bluePrint.getOriginalSymbol().equals(componentSymbol)) {
                 bluePrintCPP = (BluePrintCPP) bluePrint;
             }
+        }
+
+        if (bluePrintCPP != null) {
+            bluePrints.add(bluePrintCPP);
         }
 
         String result = languageUnitCPP.getGeneratedHeader(bluePrintCPP);
@@ -134,6 +145,10 @@ public class GeneratorCPP implements Generator {
 
     public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(componentSymbol, symtab);
+        if (isGenerateTests()) {
+            TestsGeneratorCPP g = new TestsGeneratorCPP(this);
+            fileContents.addAll(g.generateStreamTests(symtab));
+        }
         //System.out.println(fileContents);
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
@@ -230,5 +245,25 @@ public class GeneratorCPP implements Generator {
 
     public void setUseMPIDefinitionFix(boolean useFix) {
         this.MPIDefinitionFix = useFix;
+    }
+
+    public Path getModelsDirPath() {
+        return modelsDirPath;
+    }
+
+    public void setModelsDirPath(Path modelsDirPath) {
+        this.modelsDirPath = modelsDirPath;
+    }
+
+    public boolean isGenerateTests() {
+        return isGenerateTests;
+    }
+
+    public void setGenerateTests(boolean generateTests) {
+        isGenerateTests = generateTests;
+    }
+
+    public List<BluePrintCPP> getBluePrints() {
+        return Collections.unmodifiableList(bluePrints);
     }
 }
