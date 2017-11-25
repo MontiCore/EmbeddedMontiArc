@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.symboltable.Scope;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
 import java.io.File;
@@ -20,8 +20,8 @@ public class TestsGenTest extends AbstractSymtabTest {
 
     @Test
     public void testMySuperAwesomeComponent1() throws IOException {
-        Scope symtab = createSymTab(MODELS_DIR_PATH.toString());
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve(
+        TaggingResolver symTab = createSymTabAndTaggingResolver(MODELS_DIR_PATH.toString());
+        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
                 "testing.subpackage1.mySuperAwesomeComponent1",
                 ExpandedComponentInstanceSymbol.KIND
         ).orElse(null);
@@ -30,7 +30,7 @@ public class TestsGenTest extends AbstractSymtabTest {
         generatorCPP.setModelsDirPath(MODELS_DIR_PATH);
         generatorCPP.setGenerateTests(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MySuperAwesomeComponent1/");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symTab, componentSymbol, symTab);
         assertEquals(15, files.size());
     }
 }

@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
-import de.monticore.symboltable.Scope;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -68,8 +68,8 @@ public final class GeneratorCppCli {
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
         SymTabCreator symTabCreator = new SymTabCreator(modelsDirPath);
-        Scope symtab = symTabCreator.createSymTab();
-        Resolver resolver = new Resolver(symtab);
+        TaggingResolver symTab = symTabCreator.createSymTabAndTaggingResolver();
+        Resolver resolver = new Resolver(symTab);
         ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(rootModelName).orElse(null);
         if (componentSymbol == null) {
             Log.error("could not resolve component " + rootModelName);
@@ -81,7 +81,7 @@ public final class GeneratorCppCli {
         g.setGenerationTargetPath(outputPath);
         g.setGenerateTests(cliArgs.hasOption(OPTION_FLAG_TESTS.getOpt()));
         try {
-            g.generateFiles(componentSymbol, symtab);
+            g.generateFiles(symTab, componentSymbol, symTab);
         } catch (IOException e) {
             Log.error("error during generation", e);
             System.exit(1);
