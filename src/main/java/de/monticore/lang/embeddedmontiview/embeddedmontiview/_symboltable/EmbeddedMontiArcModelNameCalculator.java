@@ -38,7 +38,7 @@ import java.util.*;
  * @author Robert Heim, Michael von Wenckstern
  */
 public class EmbeddedMontiArcModelNameCalculator
-    extends de.monticore.lang.montiarc.montiarc._symboltable.MontiArcModelNameCalculator {
+    extends de.monticore.CommonModelNameCalculator {
 
   @Override
   public Set<String> calculateModelNames(final String name, final SymbolKind kind) {

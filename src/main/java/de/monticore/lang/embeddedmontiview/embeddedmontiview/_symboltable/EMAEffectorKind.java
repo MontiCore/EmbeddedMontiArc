@@ -23,7 +23,6 @@
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
 public class EMAEffectorKind
-    extends de.monticore.lang.montiarc.montiarc._symboltable.EffectorKind
     implements de.monticore.symboltable.SymbolKind {
 
   public static final EMAEffectorKind INSTANCE = new EMAEffectorKind();

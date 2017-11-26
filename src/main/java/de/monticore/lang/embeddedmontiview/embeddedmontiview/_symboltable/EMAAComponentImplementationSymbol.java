@@ -19,13 +19,14 @@
  */
 package de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable;
 
+import de.monticore.symboltable.CommonSymbol;
+
 /**
  * TODO Do we really need this?
  *
  * @author Robert Heim
  */
-public abstract class EMAAComponentImplementationSymbol
-    extends de.monticore.lang.montiarc.montiarc._symboltable.AComponentImplementationSymbol {
+public abstract class EMAAComponentImplementationSymbol extends CommonSymbol {
 
   public static final EMAAComponentImplementationKind KIND = EMAAComponentImplementationKind.INSTANCE;
 
@@ -35,7 +36,7 @@ public abstract class EMAAComponentImplementationSymbol
    * @param name
    */
   public EMAAComponentImplementationSymbol(String name) {
-    super(name);
+    super(name, KIND);
   }
 
 }
