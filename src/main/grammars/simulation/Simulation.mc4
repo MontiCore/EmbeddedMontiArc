@@ -1,0 +1,110 @@
+/*
+ * Simulation-Settings language v0.22
+ * @author Deniz Schmidt
+*/
+
+grammar Simulation extends Weather, SI {
+  
+  symbol scope Simulation = "sim" Name "{"
+    (SimulationRenderFrequency|
+    SimulationLoopFrequency|
+    SimulationDuration|
+    SimulationType|
+    Weather|
+    Time|
+    MapPath|
+    MapName|
+    MapHeight|
+    MapOverlap|
+    MapSectorWidth|
+    MapSectorHeight|
+    MaxSectorUsers|
+    Timeout|
+    Pedestrians|
+    PedestrianDensity|
+    Vehicles)*
+  "}";  
+  
+  //Temporary solution?
+  token PosNum = ('1'..'9')('0'..'9')*;
+
+  /* Stuff that's there, but not needed
+  SimulationRunCount = "sim_runs" count:PosNum; //hm
+  SynchronousSimulation = "sim_synchronous" ("true"|"false");
+  //+screenshot settings
+  */
+  
+  SimulationRenderFrequency = "sim_render_frequency"  simRenderFreq:UnitNumber;
+  SimulationLoopFrequency = "sim_loop_frequency"  simLoopFreq:UnitNumber;
+  SimulationDuration = "sim_duration" simDuration:UnitNumber;
+  SimulationType = "sim_type" ("fixed"|"real-time"|"max-fps");
+  
+  //Also apply kleenee style?
+  WeatherObj = "{" Temperature "," 
+                   Clouding "," 
+                   Sight "," 
+                   Precipitationtype
+                   ("," Humidity)?
+                   ("," Pressure)?
+                   ("," Windstrength)?
+                   ("," Winddirection)?
+                   ("," Precipitationamount)?
+                   ("," WeatherPhenomena)*
+                   ("," OpticalPhenomena)*
+                   ("," ArtificialPhenomena)*
+               "}";
+  
+  Weather = "weather" (FixedWeather | SequenceWeather | RandomWeather | Forecast);
+  FixedWeather = "fixed" fixedWeatherObj:WeatherObj;
+  SequenceWeather = "sequence" (randomWeatherObj:WeatherObj)* (sequenceDuration:UnitNumber)?;
+  RandomWeather = "random" randomDuration:UnitNumber;
+  Forecast = "forecast" forecastWeatherObj:WeatherObj forecastDuration:UnitNumber; //todo: additional automaton input for markov chains 
+ 
+  Time = "time" (UnitNumber|
+                 (timeHours:PosNum ":" timeMinutes:PosNum) |
+                 (timeHours:PosNum ":" timeMinutes:PosNum ":" timeSeconds:PosNum)|
+                 (timeHours:PosNum ":" timeMinutes:PosNum ":" timeSeconds:PosNum ":" timeMilliseconds:PosNum)
+                );
+  
+  
+  MapPath = "map_path" mapPath:Name;
+  MapName = "map_name" mapName:Name ".osm";
+  
+  MapHeight = "map_height" ("flat"|"random"|(heightMap:Name ".hm"));
+  
+  MapOverlap = "map_overlap" mapOverlap:PosNum;
+  MapSectorWidth = "map_sector_width" sectorWidth:PosNum;
+  MapSectorHeight = "map_sector_height" sectorHeight:PosNum;
+  MaxSectorUsers = "max_sector_users" maxSectorUsers:PosNum;
+  
+  Timeout = "timeout" timeout:UnitNumber;
+  
+  //Scenario
+  
+  Pedestrians = ("<p>"
+                "(" startX:UnitNumber "," startY:UnitNumber ")" 
+                "->" 
+                "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
+                );
+              
+  PedestrianDensity = "pedestrian_density" pedestrianDensity:UnitNumber;
+  
+  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle);
+  
+  //defined vehicle moving from start to destination pos
+  ExplicitVehicle = vehicle:Name 
+              ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")"
+              "->" 
+              "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
+              );
+              
+  //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
+  PathedVehicle = "<v>"
+                  "(" startX:UnitNumber "," startY:UnitNumber "," spawnRadius:UnitNumber ")"
+                  "->"
+                  "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")" 
+                  (amount:PosNum)?;
+  
+  //completely random vehicle spawns and destinations with optional avoidance of path
+  RandomVehicle = "<v>" amount:PosNum ("(" startX:UnitNumber "," startY:UnitNumber "," destX:UnitNumber "," destY:UnitNumber ")")?;
+}
