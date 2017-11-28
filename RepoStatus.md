@@ -27,10 +27,10 @@
 
 - **SimLang**
   [![Maintainability](https://api.codeclimate.com/v1/badges/61384df055df4f50c231/maintainability)](https://codeclimate.com/github/MontiSim/SimLang/maintainability)
-  [![Build Status](https://travis-ci.org/MontiSim/SimLang.svg?branch=master)](https://travis-ci.org/SimLang/application)
+  [![Build Status](https://travis-ci.org/MontiSim/SimLang.svg?branch=master)](https://travis-ci.org/MontiSim/SimLang)
   [![Coverage Status](https://coveralls.io/repos/github/MontiSim/SimLang/badge.svg?branch=master&service=github)](https://coveralls.io/github/MontiSim/SimLang?branch=master)
 
 -- **CarLang**
   [![Maintainability](https://api.codeclimate.com/v1/badges/61384df055df4f50c231/maintainability)](https://codeclimate.com/github/MontiSim/CarLang/maintainability)
-  [![Build Status](https://travis-ci.org/MontiSim/CarLang.svg?branch=master)](https://travis-ci.org/CarLang/application)
+  [![Build Status](https://travis-ci.org/MontiSim/CarLang.svg?branch=master)](https://travis-ci.org/MontiSim/CarLang)
   [![Coverage Status](https://coveralls.io/repos/github/MontiSim/CarLang/badge.svg?branch=master&service=github)](https://coveralls.io/github/MontiSim/CarLang?branch=master)
