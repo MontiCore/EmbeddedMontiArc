@@ -19,3 +19,8 @@
   [![Maintainability](https://api.codeclimate.com/v1/badges/61384df055df4f50c231/maintainability)](https://codeclimate.com/github/MontiSim/controller/maintainability)
   [![Build Status](https://travis-ci.org/MontiSim/controller.svg?branch=master)](https://travis-ci.org/MontiSim/controller)
   [![Coverage Status](https://coveralls.io/repos/github/MontiSim/controller/badge.svg?branch=master&service=github)](https://coveralls.io/github/MontiSim/controller?branch=master)
+
+- **application**
+  [![Maintainability](https://api.codeclimate.com/v1/badges/61384df055df4f50c231/maintainability)](https://codeclimate.com/github/MontiSim/application/maintainability)
+  [![Build Status](https://travis-ci.org/MontiSim/application.svg?branch=master)](https://travis-ci.org/MontiSim/application)
+  [![Coverage Status](https://coveralls.io/repos/github/MontiSim/application/badge.svg?branch=master&service=github)](https://coveralls.io/github/MontiSim/application?branch=master)
