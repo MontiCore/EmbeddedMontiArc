@@ -13,26 +13,29 @@ component Autopilot {
     in Q (0.0 : 0.001 : 2.5) currentEngine,
     in Q (-0.775 : 0.001 : 0.775) currentSteering,
     in Q (0.0 : 0.001 : 3.0) currentBrakes,
-    in Z (-1 : oo) goalNodeId,
+    in Z (-1 : 9999) goalNodeId,
     in Z (0 : 10000) addNodes_length,
-    in Z (0 : oo) ^ {1,10000} addNodes_id,
+    in Z (0 : 9999) ^ {1,10000} addNodes_id,
     in Q ^ {1,10000} addNodes_gpsLat, // Von allen knoten
     in Q ^ {1,10000} addNodes_gpsLon,
     in Z (0 : 10000) removeNodes_length,
-    in Z (0 : oo) ^ {1,10000} removeNodes_id,   // begrenzung wegen buffer overflow
+    in Z (0 : 9999) ^ {1,10000} removeNodes_id,   // begrenzung wegen buffer overflow
     in Z (0 : 10000) addOrUpdateEdges_length,
-    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_fromNodeId,
-    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_toNodeId,
+    in Z (0 : 9999) ^ {1,10000} addOrUpdateEdges_fromNodeId,
+    in Z (0 : 9999) ^ {1,10000} addOrUpdateEdges_toNodeId,
     in Q (0 : oo) ^ {1,10000} addOrUpdateEdges_cost,
     in Z (0 : 10000) removeEdges_length,
-    in Z (0 : oo) ^ {1,10000} removeEdges_fromNodeId,
-    in Z (0 : oo) ^ {1,10000} removeEdges_toNodeId,
+    in Z (0 : 9999) ^ {1,10000} removeEdges_fromNodeId,
+    in Z (0 : 9999) ^ {1,10000} removeEdges_toNodeId,
 
     out Q (0.0 : 0.001 : 2.5) engine,
     out Q (-0.775 : 0.001 : 0.775) steering,
     out Q (0.0 : 0.001 : 3.0) brakes;
 
-    instance PID veloPid ;
+    instance PID veloPid;
+
+    // causes stream tests to be generated
+    instance Tests;
 
     connect 5 -> veloPid.desiredVel;
     connect currentVelocity -> veloPid.currentVel;

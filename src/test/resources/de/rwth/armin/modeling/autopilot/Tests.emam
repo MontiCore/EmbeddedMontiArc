@@ -1,0 +1,9 @@
+package de.rwth.armin.modeling.autopilot;
+
+import de.rwth.armin.modeling.autopilot.navigation.test.*;
+
+component Tests {
+  port in B in1, out B out1;
+
+  instance NavigatorWrapper1;
+}

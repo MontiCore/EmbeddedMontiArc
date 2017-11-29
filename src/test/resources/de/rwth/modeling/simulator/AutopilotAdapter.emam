@@ -51,27 +51,27 @@ component AutopilotAdapter {
 
     // add new nodes to the map
     in Z (0 : 10000) addNodes_length,
-    in Z (0 : oo) ^ {1,10000}  addNodes_id,
+    in Z (0 : 9999) ^ {1,10000}  addNodes_id,
     in Q ^ {1,10000} addNodes_gpsLat,
     in Q ^ {1,10000} addNodes_gpsLon,
 
     // remove nodes
     in Z (0 : 10000) removeNodes_length,
     // ids of the nodes to be removed
-    in Z (0 : oo) ^ {1,10000} removeNodes_id,
+    in Z (0 : 9999) ^ {1,10000} removeNodes_id,
 
     // note: edges below are directed
     // add/update edges
     in Z (0 : 10000) addOrUpdateEdges_length,
-    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_fromNodeId,
-    in Z (0 : oo) ^ {1,10000} addOrUpdateEdges_toNodeId,
+    in Z (0 : 9999) ^ {1,10000} addOrUpdateEdges_fromNodeId,
+    in Z (0 : 9999) ^ {1,10000} addOrUpdateEdges_toNodeId,
     // cost (i.e. abstract length) of the edge
     in Q (0 : oo) ^ {1,10000} addOrUpdateEdges_cost,
 
     // remove edges
     in Z (0 : 10000) removeEdges_length,
-    in Z (0 : oo) ^ {1,10000} removeEdges_fromNodeId,
-    in Z (0 : oo) ^ {1,10000} removeEdges_toNodeId,
+    in Z (0 : 9999) ^ {1,10000} removeEdges_fromNodeId,
+    in Z (0 : 9999) ^ {1,10000} removeEdges_toNodeId,
 
     // output actuation commands
     out Q (0.0 : 0.001 : 2.5) engine,

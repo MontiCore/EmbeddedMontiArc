@@ -1,0 +1,47 @@
+package de.rwth.armin.modeling.autopilot.navigation.test;
+
+component ComposeInputs1 {
+  port
+    in Q (0 : oo) e01,
+    in Q (0 : oo) e02,
+    in Q (0 : oo) e12,
+    in Q (0 : oo) e13,
+    in Q (0 : oo) e23,
+    in Q (0 : oo) e24,
+    in Q (0 : oo) e34,
+    in Q (0 : oo) e35,
+    in Q (0 : oo) e45,
+
+    out Q currentGpsLat,
+    out Q currentGpsLon,
+    out Z (0 : 9999) goalNodeId,
+    out Z (0 : 10000) addNodes_length,
+    out Z (0 : 9999) ^ {1,10000} addNodes_id,
+    out Q ^ {1,10000} addNodes_gpsLat,
+    out Q ^ {1,10000} addNodes_gpsLon,
+    out Z (0 : 10000) removeNodes_length,
+    out Z (0 : 9999) ^ {1,10000} removeNodes_id,
+    out Z (0 : 10000) addOrUpdateEdges_length,
+    out Z (0 : 9999) ^ {1,10000} addOrUpdateEdges_fromNodeId,
+    out Z (0 : 9999) ^ {1,10000} addOrUpdateEdges_toNodeId,
+    out Q (0 : 9999) ^ {1,10000} addOrUpdateEdges_cost,
+    out Z (0 : 10000) removeEdges_length,
+    out Z (0 : 9999) ^ {1,10000} removeEdges_fromNodeId,
+    out Z (0 : 9999) ^ {1,10000} removeEdges_toNodeId;
+
+  implementation Math {
+    currentGpsLat = 0.0;
+    currentGpsLon = 0.0;
+    goalNodeId = 5;
+    addNodes_length = 6;
+    addNodes_id = [0 1 2 3 4 5 6];
+    addNodes_gpsLat = [0 10 20 30 40 50 60];
+    addNodes_gpsLon = [0 10 20 30 40 50 60];
+    removeNodes_length = 0;
+    addOrUpdateEdges_length = 9;
+    addOrUpdateEdges_fromNodeId = [ 0   0   1   1   2   2   3   3   4   1   2   2   3   3   4   4   5   5 ];
+    addOrUpdateEdges_toNodeId   = [ 1   2   2   3   3   4   4   5   5   0   0   1   1   2   2   3   3   4 ];
+    addOrUpdateEdges_cost       = [e01 e02 e12 e13 e23 e24 e34 e35 e45 e01 e02 e12 e13 e23 e24 e34 e35 e45];
+    removeEdges_length = 0;
+  }
+}
