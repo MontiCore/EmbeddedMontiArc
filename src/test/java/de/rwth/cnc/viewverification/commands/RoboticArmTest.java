@@ -44,7 +44,7 @@ public class RoboticArmTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.ASDependence");
 
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }
@@ -55,7 +55,7 @@ public class RoboticArmTest {
     public void BodySensorIn() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.BodySensorIn");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should not satisfy View.");
         }
@@ -66,7 +66,7 @@ public class RoboticArmTest {
     public void BodySensorOut() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.BodySensorOut");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should not satisfy View.");
         }
@@ -77,7 +77,7 @@ public class RoboticArmTest {
     public void RJFunction() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.RJFunction");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }
@@ -89,7 +89,7 @@ public class RoboticArmTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.
                 verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.OldDesign");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should not satisfy View.");
         }
@@ -100,7 +100,7 @@ public class RoboticArmTest {
     public void OldDesignExternalCylinder() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.OldDesignExternalCylinder");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }
@@ -111,7 +111,7 @@ public class RoboticArmTest {
     public void SensorAmplifierView() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.SensorAmplifierView");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should not satisfy View.");
         }
@@ -122,7 +122,7 @@ public class RoboticArmTest {
     public void SensorConnections() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.SensorConnections");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }
@@ -133,7 +133,7 @@ public class RoboticArmTest {
     public void SensorConnectionsInterfaceComplete() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.SensorConnectionsInterfaceComplete");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }
@@ -144,7 +144,7 @@ public class RoboticArmTest {
     public void SensorHasAmplifier() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.SensorHasAmplifier");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }
@@ -155,7 +155,7 @@ public class RoboticArmTest {
     public void RJStructure() {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "robotArmExample.RotationalJoint", TESTDIR, "robotArmExample.RJStructure");
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         if (inconsistencies.isEmpty()) {
             fail("Architecture should satisfy View.");
         }

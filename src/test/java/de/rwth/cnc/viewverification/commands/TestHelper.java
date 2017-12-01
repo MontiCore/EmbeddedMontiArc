@@ -81,7 +81,7 @@ public class TestHelper {
     assert expectedWitness.getAstNode().isPresent();
     assert witness.getAstNode().isPresent();
     assert expectedWitness.getAstNode().get().deepEquals(witness.getAstNode().get()) : "deepequals failed";
-    System.out.println("\nSuccessful deepequals");
+//    System.out.println("\nSuccessful deepequals");
   }
 
   public static void assertEquality(ViewSymbol witness, ViewSymbol expectedWitness) {

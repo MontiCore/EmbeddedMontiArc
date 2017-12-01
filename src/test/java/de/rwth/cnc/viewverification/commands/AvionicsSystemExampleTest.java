@@ -44,7 +44,7 @@ public class AvionicsSystemExampleTest {
         //Is this test intended to not satisfy the view?
         //The fail description is wrong, if it is so.
         if (inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
                 fail("Architecture does not satisfy View.");
         }
     }
@@ -54,7 +54,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.ControlFlowInSystem");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture should satisfy View.");
         }
     }
@@ -64,7 +64,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.DisplayAndManager");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture should satisfy View.");
         }
     }
@@ -74,7 +74,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.FlightManagerAndDirector");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture should satisfy View.");
         }
     }
@@ -84,7 +84,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.FlightSystemStructure");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture should satisfy View.");
         }
     }
@@ -94,7 +94,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.PilotAndPageContentManager");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture should satisfy View.");
         }
     }
@@ -104,7 +104,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.PilotDisplayManagerIndependentOfPilotDisplay");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture should satisfy View.");
         }
     }
@@ -114,7 +114,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.PilotDisplayManagerInsidePilotDisplay");
 
         if (inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture does not satisfy View.");
         }
     }
@@ -124,7 +124,7 @@ public class AvionicsSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "avionicsSystemExample.Flight_System", TESTDIR, "avionicsSystemExample.PilotDisplayManagerPortsReversed");
 
         if (inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail("Architecture does not satisfy View.");
         }
     }

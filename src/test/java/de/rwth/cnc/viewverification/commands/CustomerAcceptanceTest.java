@@ -64,7 +64,7 @@ public class CustomerAcceptanceTest {
   @Test
   public void checkCharShortDiff() {
     de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol cs = EmbeddedMontiArcLoader.loadComponentSymbol(TESTDIRCA, "customerAcceptanceTests.CharShortComponent");
-    System.out.println(cs.toString());
+//    System.out.println(cs.toString());
     Collection<PortSymbol> collection = cs.getPorts();
     for (PortSymbol ps : collection) {
       ps.getTypeReference().getName();

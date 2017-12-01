@@ -45,7 +45,7 @@ public class PumpingSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.ASPumpingSystem");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail(message);
         }
     }
@@ -97,7 +97,7 @@ public class PumpingSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.PumpStationStructure");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail(message);
         }
     }
@@ -108,7 +108,7 @@ public class PumpingSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.PumpingSystemStructure");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail(message);
         }
     }
@@ -119,7 +119,7 @@ public class PumpingSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.SimulationInput");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail(message);
         }
     }
@@ -150,7 +150,7 @@ public class PumpingSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.UserButton");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail(message);
         }
     }
@@ -161,7 +161,7 @@ public class PumpingSystemExampleTest {
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(TESTDIR, "pumpStationExample.PumpStation", TESTDIR, "pumpStationExample.PositiveEffector");
 
         if (!inconsistencies.isEmpty()) {
-            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//            inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
             fail(message);
         }
     }

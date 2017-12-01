@@ -42,14 +42,14 @@ public class OCLVerificationTest {
         assertTrue(!witnesses.isEmpty());
 
         EMANFPWitness singleWitness = witnesses.get("controlSignalsIndataSaveInternalOutweatherBalloonSensors");
-        System.out.println(singleWitness);
+//        System.out.println(singleWitness);
     }
 
     @Test
     public void verifyViewAndOCLTest(){
         List<InconsistencyItem> inconsistencies = ViewVerificator.verify(nfpDir, "model.weatherBalloon.WeatherBalloonSensors", nfpDir, "view.wbView.WCET1", "tagDef.semantic.WCET", target);
 
-        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
+//        inconsistencies.forEach(c -> System.out.println(c.getJustificationDescription()));
         assert inconsistencies.isEmpty() : "There should not be inconsistencies!";
     }
 }
