@@ -1,10 +1,10 @@
 script:
 #- rm -rf "projects"
-#- bash ./gitPullSimple.sh
-- if [ "${TRAVIS_BRANCH}" == "master" ]; then mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings "./settings.xml"; fi
+- bash ./gitPullSimple.sh
+- mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings "./settings.xml"
 after_success:
 - if [ "${TRAVIS_BRANCH}" == "master" ]; then mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --debug --settings "./settings.xml"; fi
-#- java -jar target/reporting-0.0.3-SNAPSHOT-REWORK-jar-with-dependencies.jar projects report/data -tt true -tc true
+- java -jar target/reporting-0.0.3-SNAPSHOT-REWORK-jar-with-dependencies.jar projects report/data -tt true -tc true
 deploy:
   provider: pages
   skip_cleanup: true
