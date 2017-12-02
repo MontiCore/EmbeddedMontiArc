@@ -30,4 +30,15 @@ public class BasicGenerationTest  extends AbstractSymtabTest {
         String restPath = "testing/l0/";
         testFilesAreEqual(files, restPath);
     }
+
+    @Test
+    public void testSampleModel() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.model", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/l0");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+    }
 }
