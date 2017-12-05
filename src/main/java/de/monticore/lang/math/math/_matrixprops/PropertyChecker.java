@@ -1,69 +1,34 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+/**
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
+package de.monticore.lang.math.math._matrixprops;
 
-package de.monticore.lang.math.math._cocos;
-
-
-import de.monticore.lang.math.math._ast.ASTMathAssignmentDeclarationExpression;
-import de.monticore.lang.math.math._matrixprops.MatrixProperties;
-import de.monticore.lang.math.math._matrixprops.PrologHandler;
 import de.monticore.lang.math.math._symboltable.JSValue;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
-import de.se_rwth.commons.logging.Log;
-
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created by Philipp Goerick on 07.09.2017.
- *
- * Matrix Properties Coco
- */
-
-public class MatrixPropsCheck extends AbstChecker implements MathASTMathAssignmentDeclarationExpressionCoCo {
-    @Override
-    public void check(ASTMathAssignmentDeclarationExpression assignment) {
-        if (!assignment.getType().getMatrixProperty().isEmpty()) {
-            MathExpressionSymbol value = ((MathExpressionSymbol)assignment.getMathExpression().getSymbol().get());
-            List<String> expProps = assignment.getType().getMatrixProperty();
-            ArrayList<MatrixProperties> props = new ArrayList<>();
-
-            if (assignment.getMathAssignmentOperator().getOperator().get().equals("=")) {
-                if (value.isValueExpression()) props = ((MathMatrixArithmeticValueSymbol)value).getMatrixProperties();
-
-                if (value.isArithmeticExpression()) {
-                    props = checkProps((MathArithmeticExpressionSymbol)value);
-                }
-
-                ArrayList<String> props_String = new ArrayList<>();
-                for (int i = 0; i < props.size(); i++) props_String.add(props.get(i).toString());
-
-                if (!props_String.containsAll(expProps)) Log.error("Matrix does not fullfill given properties");
-                else assignment.getType().setMatrixProperty(props_String);
-            }
-        }
-    }
-
-    private ArrayList<MatrixProperties> checkProps(MathArithmeticExpressionSymbol exp){
+public class PropertyChecker {
+    public static ArrayList<MatrixProperties> checkProps(MathArithmeticExpressionSymbol exp){
         PrologHandler plh = new PrologHandler();
 
         MathExpressionSymbol leftExpression = exp.getLeftExpression();
@@ -99,14 +64,58 @@ public class MatrixPropsCheck extends AbstChecker implements MathASTMathAssignme
 
         ArrayList<MatrixProperties> props2 = getProps(rightExpression);
         if (props2.isEmpty())
-           lookForScalar(((MathNumberExpressionSymbol)rightExpression), "m2", plh);
+            lookForScalar(((MathNumberExpressionSymbol)rightExpression), "m2", plh);
 
         addPrologClauses(plh,props2,"m2");
 
         return askSolutions(plh, op, true);
     }
 
-    private ArrayList<MatrixProperties> askSolutions(PrologHandler plh, String op, boolean binary){
+    public static void changeAssignmentProps(MathAssignmentExpressionSymbol assignmentExpressionSymbol, Symbol assigned){
+        if (((MathValueSymbol)assigned).isValueExpression()){
+            MathExpressionSymbol expressionSymbol = assignmentExpressionSymbol.getExpressionSymbol();
+            ArrayList<MatrixProperties> props = new ArrayList<>();
+
+            while (expressionSymbol.isParenthesisExpression())
+                ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
+
+
+            MathArithmeticExpressionSymbol arithmeticExpressionSymbol = new MathArithmeticExpressionSymbol();
+            arithmeticExpressionSymbol.setLeftExpression(((MathExpressionSymbol)assigned));
+            arithmeticExpressionSymbol.setRightExpression(expressionSymbol);
+            switch (assignmentExpressionSymbol.getAssignmentOperator().getOperator()) {
+                case "=":{
+                    if (expressionSymbol instanceof MathArithmeticExpressionSymbol)
+                        props = checkProps(((MathArithmeticExpressionSymbol) expressionSymbol));
+                    else if (expressionSymbol instanceof MathMatrixArithmeticValueSymbol)
+                        props = ((MathMatrixArithmeticValueSymbol) expressionSymbol).getMatrixProperties();
+                    break;
+                }
+                case "+=": {
+                    arithmeticExpressionSymbol.setMathOperator("+");
+                    props = checkProps(arithmeticExpressionSymbol);
+                    break;
+                }
+                case "-=": {
+                    arithmeticExpressionSymbol.setMathOperator("-");
+                    props = checkProps(arithmeticExpressionSymbol);
+                    break;
+                }
+                case "*=": {
+                    arithmeticExpressionSymbol.setMathOperator("*");
+                    props = checkProps(arithmeticExpressionSymbol);
+                    break;
+                }
+            }
+
+            ArrayList<String> props_String = new ArrayList<>();
+            for (int i = 0; i < props.size(); i++) props_String.add(props.get(i).toString());
+
+            ((MathValueSymbol) assigned).getType().setProperties(props_String);
+        }
+    }
+
+    private static ArrayList<MatrixProperties> askSolutions(PrologHandler plh, String op, boolean binary){
         ArrayList<MatrixProperties> res = new ArrayList<>();
 
         String query;
@@ -177,7 +186,7 @@ public class MatrixPropsCheck extends AbstChecker implements MathASTMathAssignme
         return res;
     }
 
-    private void lookForScalar(MathNumberExpressionSymbol num, String matrix, PrologHandler plh){
+    private static void lookForScalar(MathNumberExpressionSymbol num, String matrix, PrologHandler plh){
         float f = 1;
         JSValue value = num.getValue();
         f = (value.getRealNumber().floatValue()) % f;
@@ -190,15 +199,17 @@ public class MatrixPropsCheck extends AbstChecker implements MathASTMathAssignme
         }
     }
 
-    private ArrayList<MatrixProperties> getProps(MathExpressionSymbol sym){
+    private static ArrayList<MatrixProperties> getProps(MathExpressionSymbol sym){
         if(sym instanceof MathMatrixArithmeticValueSymbol)
             return ((MathMatrixArithmeticValueSymbol) sym).getMatrixProperties();
         if (sym.isArithmeticExpression())
             return checkProps((MathArithmeticExpressionSymbol)sym);
+        if (sym instanceof MathValueSymbol)
+            return ((MathValueSymbol) sym).getMatrixProperties();
         return new ArrayList<>();
     }
 
-    private void addPrologClauses(PrologHandler plh, ArrayList<MatrixProperties> props, String matrix){
+    private static void addPrologClauses(PrologHandler plh, ArrayList<MatrixProperties> props, String matrix){
         for (int j = 0; j < props.size(); j++) {
             String str = props.get(j).toString();
             str = str + "(" + matrix + ")";
@@ -206,7 +217,7 @@ public class MatrixPropsCheck extends AbstChecker implements MathASTMathAssignme
         }
     }
 
-    private MathExpressionSymbol resolveSymbol(MathNameExpressionSymbol exp){
+    private static MathExpressionSymbol resolveSymbol(MathNameExpressionSymbol exp){
         String name = exp.getNameToResolveValue();
         SymbolKind kind = exp.getKind();
         Symbol symbol = exp.getEnclosingScope().resolve(name, kind).get();

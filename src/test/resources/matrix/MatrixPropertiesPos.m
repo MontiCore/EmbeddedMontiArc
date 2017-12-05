@@ -1,27 +1,29 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+/**
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
 
 package matrix;
 
 script MatrixPropertiesPos
 
-//right assignments
+//right declarations
 herm square Q^{3,3} a1 = [2 1 0;1 2 0;0 0 2];
 diag square Q^{3,3} a2 = [2+1 0 0;0 2/3 0;0 0 2*2];
 skewHerm Q^{3,3} a3 = [0 1 0;-1 0 -3;0 3 0];
@@ -41,5 +43,13 @@ square Q^{3,3} c7 = a1 + a2;
 //diag Q^{3,3} c8 = a2';
 psd Q^{3,3} c9 = a7 + a7;
 psd Q^{3,3} c10 = a1 + a7;
+
+//right assignments
+c1 += c2;
+c2 = c1;
+c2 = c2 + c1;
+c2 = [2 1 0;1 2 0;0 0 2];
+c6 -= a6 + a2;
+c7 *= c7;
 
 end

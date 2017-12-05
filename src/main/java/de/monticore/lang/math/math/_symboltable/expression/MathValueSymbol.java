@@ -20,6 +20,11 @@
  */
 package de.monticore.lang.math.math._symboltable.expression;
 
+import de.monticore.lang.math.math._matrixprops.MatrixProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Symbol represents a MathValueSymbol which consists of a type and a mathexpression that determines its value.
  *
@@ -29,6 +34,7 @@ public class MathValueSymbol extends MathValueExpressionSymbol {
 
     protected MathValueType type;
     protected MathExpressionSymbol value;
+    protected ArrayList<MatrixProperties> matrixProperties;
 
     public MathValueSymbol(String name) {
         super(name);
@@ -48,6 +54,14 @@ public class MathValueSymbol extends MathValueExpressionSymbol {
 
     public void setValue(MathExpressionSymbol value) {
         this.value = value;
+    }
+
+    public ArrayList<MatrixProperties> getMatrixProperties() {
+        return matrixProperties;
+    }
+
+    public void setMatrixProperties(ArrayList<MatrixProperties> matrixProperties) {
+        this.matrixProperties = matrixProperties;
     }
 
     @Override
