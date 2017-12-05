@@ -26,7 +26,8 @@ package de.monticore.lang.math.math._cocos;
 public class MathCocos {
 
     public static MathCoCoChecker createChecker() {
-        return new MathCoCoChecker();
+        return new MathCoCoChecker()
+                .addCoCo(new MatrixPropsCheck());
                     //.addCoCo(new DimensionEquals())
                     //.addCoCo(new ArithmeticMatrixExpressionCheck())
                     //.addCoCo(new MatrixUnitCheck())

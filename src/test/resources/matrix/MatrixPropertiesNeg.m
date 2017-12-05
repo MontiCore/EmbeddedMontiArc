@@ -17,30 +17,35 @@
  * ******************************************************************************
  */
 
-package symtab;
+package matrix;
 
-script SymtabTest
+script MatrixPropertiesNeg
 
-Q a = 2+7*5+4%3;
-Q^{2,2} m1 = [23, 44; 22, 222] + [ 1, 2; 3,4] * [3,4;5,6] - [7,8;9,10].*[22,1;2,3];
-Q b = -7;
-Q c = 9;
-Q d = b + c;
-Q h = 2 km + 7 m * 3 m ^ 3; // unit error
-Q e = 7 + d * b;
-//Q^{2,2} m2 = [1,2;3*2+4,4];
-Q f = e * b + c * m2(2,1);
-Q(0 : 10 km^2) g = 2 km + (7 m * 3 m) ^ 3; // unit error
-Q(1 mm : 1 cm : 10 km)^{1,3} i1 = [ 2 mm, 3 cm,4 km ]; // i is reserved for complex numbers
-Q(0 : 10 km)^{3,1} j = [ 2 mm; 3 cm;4 km ];
-Q^{2,3} k = ( [1,1;1,1;1,1]+ [1,1;1,1;1,1] ) ';
-Q^{2,2} l = [1,2;3,4]^4;
-Q^{4} vec = 2:2:8;
-Q^{3,3} matrix1 = [1 2 3;4 5 6;7 8 9];
-Q^{2,3} matrix2 = matrix1(1:2,:);
-Q^{3} matrix3 = matrix1(3, :);
-Q(0 : 10 km)^{1,3} i2 = [ 2 mm, 3 cm,4 km ];
-Q(0 : 10 km)^{3,1} j2 = [ 2 mm; 3 cm;4 km ];
-B bool = j2 == i2'; // true if j is equals i transpose
+//right assignments
+herm square Q^{3,3} a1 = [2 1 0;1 2 0;0 0 2];
+diag square Q^{3,3} a2 = [2+1 0 0;0 2/3 0;0 0 2*2];
+skewHerm Q^{3,3} a3 = [0 1 0;-1 0 -3;0 3 0];
+norm Q^{3,3} a4 = [1 1 0;0 1 1;1 0 1];
+square Q^{3,3} a5 = [9 -3 7;5 2 -6;-3/4 2 6];
+diag Q^{3,3} a6 = [0 0 0;0 0 0;0 0 0];
+psd Q^{3,3} a7 = [2 -1,0;-1 2 -1;0 -1 2];
+
+//wrong assignments
+diag Q^{3,3} b1 = [2 0 0;0 2 0;0 1 2];
+herm Q^{3,3} b2 = [2 1 0;-2 2 0;0 0 2];
+skewHerm Q^{3,3} b3 = [2 1 0;1 2 0;0 0 2];
+norm Q^{3,3} b4 = [2 1 4;-1 2 1/2;11 3 2];
+square Q^{3,2} b5 = [2 0;0 2;0 0];
+square Q^{2,3} b6 = [2 0 0; 2 0 0];
+
+//wrong operations
+herm Q^{3,3} d1 = a1 * a1;
+herm Q^{3,3} d2 = a1 / a1;
+diag Q^{3,3} d3 = a1 + a2;
+norm Q^{3,3} d4 = a4 * a4;
+norm Q^{3,3} d5 = a4 + a4;
+norm Q^{3,3} d6 = a4^(-1);
+//psd Q^{3,3} d7 = a7';
+
 
 end
