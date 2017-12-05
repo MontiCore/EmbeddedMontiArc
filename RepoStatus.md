@@ -1,4 +1,5 @@
 # Repository Status
+
 | Project | Code Quality | Build Status | Test Coverage |
 |---------|--------------|--------------|---------------|
  | visualisation |   [![Maintainability](https://api.codeclimate.com/v1/badges/61384df055df4f50c231/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/visualisation/maintainability) | [![Build Status](https://travis-ci.org/EmbeddedMontiArc/visualisation.svg?branch=visualization)](https://travis-ci.org/EmbeddedMontiArc/visualisation) | [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/visualisation/badge.svg?branch=visualization&service=github)](https://coveralls.io/github/EmbeddedMontiArc/visualisation?branch=visualization) | 
@@ -25,4 +26,4 @@
  | tagging-examples | - | [![Build Status](https://travis-ci.org/EmbeddedMontiArc/Tagging-Examples.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/Tagging-Examples) | - |
 
 Link to analysing all Test files in the project:
-[CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1) | 
+[CheckTestNames](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html?sorts[NameEndsWithTest]=1)
