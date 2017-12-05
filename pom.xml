@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -41,10 +41,10 @@
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	  <SIUnit.version>0.0.7</SIUnit.version>
-	  <Common-MontiCar.version>0.0.4</Common-MontiCar.version>
-	  <Embedded-MontiArc.version>0.0.5</Embedded-MontiArc.version>
-	  <Embedded-MontiArc-Behaviour.version>0.0.5</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.4</Math.version>
+	  <Common-MontiCar.version>0.0.6-SNAPSHOT</Common-MontiCar.version>
+	  <Embedded-MontiArc.version>0.0.6-SNAPSHOT</Embedded-MontiArc.version>
+	  <Embedded-MontiArc-Behaviour.version>0.0.6-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+    <Math.version>0.0.6-SNAPSHOT</Math.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
