@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.ranges._ast;
 
+import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
@@ -33,7 +34,7 @@ import siunit.monticoresiunit.si._ast.*;
  * @author Michael von Wenckstern, Sascha Schneiders
  */
 public class ASTRange extends ASTRangeTOP {
-    public ASTRange(String startInf, ASTUnitNumber start, ASTUnitNumber step, String endInf, ASTUnitNumber end, boolean z, boolean q, boolean c, boolean d, boolean f) {
+    public ASTRange(String startInf, ASTUnitNumberResolution start, ASTUnitNumberResolution step, String endInf, ASTUnitNumberResolution end, boolean z, boolean q, boolean c, boolean d, boolean f) {
         super(startInf, start, step, endInf, end, z, q, c, d, f);
         fixUnits();
     }
@@ -72,15 +73,15 @@ public class ASTRange extends ASTRangeTOP {
         this.endInf = Optional.of(infStr);
     }
 
-    public void setStartValue(ASTUnitNumber start) {
+    public void setStartValue(ASTUnitNumberResolution start) {
         this.start = Optional.of(start);
     }
 
-    public void setStepValue(ASTUnitNumber step) {
+    public void setStepValue(ASTUnitNumberResolution step) {
         this.step = Optional.of(step);
     }
 
-    public void setEndValue(ASTUnitNumber end) {
+    public void setEndValue(ASTUnitNumberResolution end) {
         this.end = Optional.of(end);
     }
 

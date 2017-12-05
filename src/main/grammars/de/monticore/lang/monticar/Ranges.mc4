@@ -71,9 +71,9 @@ grammar Ranges extends de.monticore.lang.monticar.Types2, siunit.monticoresiunit
     ast Range= method public String printType(){return "RangeType";};
     Range implements PrintType, TypeArgument=
        (["Z"] | ["Q"] | ["C"])? "("?
-           (startInf:TUnitInf | start:UnitNumber)
-           (":" (step:UnitNumber| ["f"] | ["d"] ))?
-           ":" (endInf:TUnitInf | end:UnitNumber) ")"?
+           (startInf:TUnitInf | start:UnitNumberResolution)
+           (":" (step:UnitNumberResolution| ["f"] | ["d"] ))?
+           ":" (endInf:TUnitInf | end:UnitNumberResolution) ")"?
        ;
     ast NaturalNumbersOneRange= method public String printType(){return "RangeType";};
     ast NaturalNumbersZeroRange= method public String printType(){return "RangeType";};
