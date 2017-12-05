@@ -16,3 +16,4 @@ Code Snippets
 * zip all model files: `zip -R models '*.m' '*.ema' '*.emam'`
 * calculate hash of the zip file: `md5 models.zip`
 * rename the zip file to the model, upload it to the reporting and add a coloumn with links to the new zip file and the file to open 
+* https://circleci.com/gh/:owner/:repo.png?circle-token=:circle-toke
