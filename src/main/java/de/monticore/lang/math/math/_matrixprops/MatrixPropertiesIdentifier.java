@@ -21,11 +21,10 @@
 package de.monticore.lang.math.math._matrixprops;
 
 import de.monticore.lang.math.math._symboltable.JSValue;
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathNumberExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
+import de.monticore.symboltable.Symbol;
 import org.apache.commons.math4.complex.Complex;
 import org.apache.commons.math4.complex.ComplexField;
 import org.apache.commons.math4.linear.*;
@@ -52,145 +51,25 @@ public class MatrixPropertiesIdentifier {
             for (int j = 0; j < c[0].length; j++) {
                 MathMatrixAccessOperatorSymbol innerVector = symbol.getVectors().get(i);
                 if(innerVector.getMathMatrixAccessSymbol(j).isPresent()) {
-                    if (innerVector.getMathMatrixAccessSymbol(j).get().isValueExpression()) {
-                        JSValue value = ((MathNumberExpressionSymbol) innerVector.getMathMatrixAccessSymbol(j).get().getAssignedMathExpressionSymbol()).getValue();
-                        if (value.getImagNumber().isPresent()) {
-                            c[i][j] = new Complex(value.getRealNumber().doubleValue(), value.getImagNumber().get().doubleValue());
-                        } else {
-                            c[i][j] = new Complex((value.getRealNumber().doubleValue()));
-                        }
-                    }
-                    /*else if(innerVector.getMathMatrixAccessSymbol(j).get().isArithmeticExpression()) {
-                        MathArithmeticExpressionSymbol exp = ((MathArithmeticExpressionSymbol)innerVector.getMathMatrixAccessSymbol(j).get());
-                        if (exp.getMathOperator().equals("+") || exp.getMathOperator().equals("-")) {
-                            Complex valueRight = castToComplex(exp.getRightExpression());
-                            c[i][j] = dissolveDashMathExpression(exp, valueRight);
-                        }else{
-                            c[i][j] = dissolveDotMathExpression(exp);
-                        }
-                    }*/
-                    else c[i][j] = new Complex(0);
-                }else c[i][j] = new Complex(0);
+                    MathExpressionSymbol expression = innerVector.getMathMatrixAccessSymbol(j).get();
+                    c[i][j] = dissolveMathExpression(expression);
+                }
+                else c[i][j] = new Complex(0);
             }
         }
         this.matrix = new Array2DRowFieldMatrix<>(ComplexField.getInstance(), c);
         props = new ArrayList<>();
     }
 
-    private Complex dissolveDotMathExpression(MathArithmeticExpressionSymbol exp) {
-        Complex valueRight = castToComplex(exp.getRightExpression());
-        if (exp.getLeftExpression().isArithmeticExpression()) {
-            if (((MathArithmeticExpressionSymbol) exp.getLeftExpression()).getMathOperator().equals("+") ||
-                    ((MathArithmeticExpressionSymbol) exp.getLeftExpression()).getMathOperator().equals("-")) {
-                Complex val = castToComplex(((MathArithmeticExpressionSymbol) exp.getLeftExpression()).getRightExpression());
 
-                switch (exp.getMathOperator()) {
-                    case "*": {
-                        val = val.multiply(valueRight);
-                    }
-                    case "/": {
-                        val = val.divide(valueRight);
-                    }
-                    case "^": {
-                        val = val.pow(valueRight);
-                    }
-                }
-                return dissolveDashMathExpression(((MathArithmeticExpressionSymbol)exp.getLeftExpression()), val);
-            }
-
-            switch (exp.getMathOperator()) {
-                case "*": {
-                    return dissolveDotMathExpression(((MathArithmeticExpressionSymbol) exp.getLeftExpression()))
-                            .multiply(valueRight);
-                }
-                case "/": {
-                    return dissolveDotMathExpression(((MathArithmeticExpressionSymbol) exp.getLeftExpression()))
-                            .divide(valueRight);
-                }
-                case "^": {
-                    return dissolveDotMathExpression(((MathArithmeticExpressionSymbol) exp.getLeftExpression()))
-                            .pow(valueRight);
-                }
-                default: {
-                    return valueRight;
-                }
-            }
-        }
-
-        Complex valueLeft = castToComplex(exp.getLeftExpression());
-        switch (exp.getMathOperator()) {
-            case "*": {
-                return valueLeft.multiply(valueRight);
-            }
-            case "/": {
-                return valueLeft.divide(valueRight);
-            }
-            case "^": {
-                return valueLeft.pow(valueRight);
-            }
-            default: {
-                return valueLeft;
-            }
-        }
-    }
-
-    private Complex dissolveDashMathExpression(MathArithmeticExpressionSymbol exp, Complex valueRight){
-        if (exp.getLeftExpression().isArithmeticExpression()) {
-            if (((MathArithmeticExpressionSymbol) exp.getLeftExpression()).getMathOperator().equals("+") ||
-                    ((MathArithmeticExpressionSymbol) exp.getLeftExpression()).getMathOperator().equals("-")) {
-                Complex newRight = castToComplex(((MathArithmeticExpressionSymbol)
-                        exp.getLeftExpression()).getRightExpression());
-                switch (exp.getMathOperator()){
-                    case "+": {
-                    return dissolveDashMathExpression(((MathArithmeticExpressionSymbol)exp.getLeftExpression()),
-                            newRight.add(valueRight));
-                    }
-                    case "-": {
-                        return dissolveDashMathExpression(((MathArithmeticExpressionSymbol)exp.getLeftExpression()),
-                                newRight.subtract(valueRight));
-                    }
-                }
-            }
-            else{
-                switch (exp.getMathOperator()) {
-                    case "+": {
-                        return dissolveDotMathExpression(((MathArithmeticExpressionSymbol)exp.getLeftExpression()))
-                                .add(valueRight);
-                    }
-                    case "-": {
-                        return (dissolveDotMathExpression(((MathArithmeticExpressionSymbol)exp.getLeftExpression())))
-                                .subtract(valueRight);
-                    }
-                }
-            }
-        }
-        switch (exp.getMathOperator()) {
-            case "+": {
-                return castToComplex(exp.getLeftExpression()).add(valueRight);
-            }
-            case "-": {
-                return castToComplex(exp.getLeftExpression()).subtract(valueRight);
-            }
-            default:{
-                return valueRight;
-            }
-        }
-    }
-
-    private Complex castToComplex(MathExpressionSymbol sym){
-        JSValue Value = ((MathNumberExpressionSymbol)sym).getValue();
-        if (Value.getImagNumber().isPresent()) {
-            return new Complex(Value.getRealNumber().doubleValue(), Value.getImagNumber().get().doubleValue());
-        } else {
-            return new Complex(Value.getRealNumber().doubleValue());
-        }
-    }
 
     /**
      * Identify the matrix properties
      * @return matrix element that astMatrix has properties of
      */
     public ArrayList<MatrixProperties> identifyMatrixProperties(){
+        if (checkPositive(matrix)) props.add(MatrixProperties.Positive);
+        else if (checkNegative(matrix)) props.add(MatrixProperties.Negative);
         if(matrix.isSquare()) {
             props.add(MatrixProperties.Square);
             if (identifyNonSingularMatrix()) props.add(MatrixProperties.Invertible);
@@ -334,7 +213,6 @@ public class MatrixPropertiesIdentifier {
 
     }
 
-
     /**
      * Check if matrix is non-singular(invertible) by checking if the determinant is not equal to zero
      * @return true if invertible, else false
@@ -372,5 +250,112 @@ public class MatrixPropertiesIdentifier {
         return value;
     }
 
+    /**
+     * Check if matrix has only positive values
+     * @param m the matrix to check
+     * return true if all values are positive, false else
+     */
+    private boolean checkPositive(Array2DRowFieldMatrix<Complex> m){
+        for (int i = 0; i < m.getRowDimension(); i++) {
+            for (int j = 0; j < m.getColumnDimension(); j++) {
+                if (m.getEntry(i,j).getReal() < 0) return false;
+                if (!(m.getEntry(i,j).getImaginary() == 0)) return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if matrix has only negative values
+     * @param m the matrix to check
+     * return true if all values are negative, false else
+     */
+    private boolean checkNegative(Array2DRowFieldMatrix<Complex> m){
+        for (int i = 0; i < m.getRowDimension(); i++) {
+            for (int j = 0; j < m.getColumnDimension(); j++) {
+                if (m.getEntry(i,j).getReal() > 0) return false;
+                if (!(m.getEntry(i,j).getImaginary() == 0)) return false;
+            }
+        }
+        return true;
+    }
+
+
+    //Helper methods for obtaining complex values
+
+    private Complex dissolveMathExpression(MathExpressionSymbol exp){
+        if (exp.isParenthesisExpression())
+            exp = ((MathParenthesisExpressionSymbol)exp).getMathExpressionSymbol();
+
+        if (exp.isValueExpression()) {
+            if (((MathValueExpressionSymbol) exp).isNameExpression())
+                exp = resolveName((MathNameExpressionSymbol) exp);
+            if (exp.isValueExpression())
+                return castToComplex((MathNumberExpressionSymbol) exp);
+            else return dissolveMathExpression(exp);
+        }
+
+        Complex value1 = dissolveChildExpression(((MathArithmeticExpressionSymbol)exp).getLeftExpression());
+        Complex value2 = dissolveChildExpression(((MathArithmeticExpressionSymbol)exp).getRightExpression());
+
+        switch (((MathArithmeticExpressionSymbol)exp).getMathOperator()) {
+            case "+": {
+                return value1.add(value2);
+            }
+            case "-": {
+                return value1.subtract(value2);
+            }
+            case "*": {
+                return value1.multiply(value2);
+            }
+            case "/": {
+                return value1.divide(value2);
+            }
+            case "^": {
+                return value1.pow(value2);
+            }
+            default: {
+                return value1;
+            }
+        }
+    }
+
+    private Complex castToComplex(MathNumberExpressionSymbol sym){
+        JSValue Value = sym.getValue();
+        if (Value.getImagNumber().isPresent()) {
+            return new Complex(Value.getRealNumber().doubleValue(), Value.getImagNumber().get().doubleValue());
+        } else {
+            return new Complex(Value.getRealNumber().doubleValue());
+        }
+    }
+
+    private Complex dissolveChildExpression(MathExpressionSymbol expressionSymbol){
+        if (expressionSymbol.isParenthesisExpression())
+            expressionSymbol = ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
+
+        if (expressionSymbol.isValueExpression()) {
+            if (((MathValueExpressionSymbol) expressionSymbol).isNameExpression()) {
+                expressionSymbol = resolveName((MathNameExpressionSymbol)expressionSymbol);
+            }
+
+            if (expressionSymbol.isParenthesisExpression())
+                expressionSymbol = ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
+
+            if (((MathValueExpressionSymbol)expressionSymbol).isNumberExpression())
+                return castToComplex((MathNumberExpressionSymbol)expressionSymbol);
+            else if (expressionSymbol.isArithmeticExpression())
+                return dissolveMathExpression(expressionSymbol);
+
+        }else if (expressionSymbol.isArithmeticExpression())
+            return dissolveMathExpression(expressionSymbol);
+
+        return new Complex(0);
+    }
+
+    private MathExpressionSymbol resolveName(MathNameExpressionSymbol expressionSymbol){
+        Symbol symbol = expressionSymbol.getEnclosingScope()
+                .resolve( expressionSymbol.getNameToResolveValue(), expressionSymbol.getKind()).get();
+        return ((MathValueSymbol)symbol).getValue();
+    }
 }
 

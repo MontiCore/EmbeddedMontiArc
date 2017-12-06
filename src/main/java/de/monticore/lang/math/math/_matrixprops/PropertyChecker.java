@@ -71,50 +71,6 @@ public class PropertyChecker {
         return askSolutions(plh, op, true);
     }
 
-    public static void changeAssignmentProps(MathAssignmentExpressionSymbol assignmentExpressionSymbol, Symbol assigned){
-        if (((MathValueSymbol)assigned).isValueExpression()){
-            MathExpressionSymbol expressionSymbol = assignmentExpressionSymbol.getExpressionSymbol();
-            ArrayList<MatrixProperties> props = new ArrayList<>();
-
-            while (expressionSymbol.isParenthesisExpression())
-                ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
-
-
-            MathArithmeticExpressionSymbol arithmeticExpressionSymbol = new MathArithmeticExpressionSymbol();
-            arithmeticExpressionSymbol.setLeftExpression(((MathExpressionSymbol)assigned));
-            arithmeticExpressionSymbol.setRightExpression(expressionSymbol);
-            switch (assignmentExpressionSymbol.getAssignmentOperator().getOperator()) {
-                case "=":{
-                    if (expressionSymbol instanceof MathArithmeticExpressionSymbol)
-                        props = checkProps(((MathArithmeticExpressionSymbol) expressionSymbol));
-                    else if (expressionSymbol instanceof MathMatrixArithmeticValueSymbol)
-                        props = ((MathMatrixArithmeticValueSymbol) expressionSymbol).getMatrixProperties();
-                    break;
-                }
-                case "+=": {
-                    arithmeticExpressionSymbol.setMathOperator("+");
-                    props = checkProps(arithmeticExpressionSymbol);
-                    break;
-                }
-                case "-=": {
-                    arithmeticExpressionSymbol.setMathOperator("-");
-                    props = checkProps(arithmeticExpressionSymbol);
-                    break;
-                }
-                case "*=": {
-                    arithmeticExpressionSymbol.setMathOperator("*");
-                    props = checkProps(arithmeticExpressionSymbol);
-                    break;
-                }
-            }
-
-            ArrayList<String> props_String = new ArrayList<>();
-            for (int i = 0; i < props.size(); i++) props_String.add(props.get(i).toString());
-
-            ((MathValueSymbol) assigned).getType().setProperties(props_String);
-        }
-    }
-
     private static ArrayList<MatrixProperties> askSolutions(PrologHandler plh, String op, boolean binary){
         ArrayList<MatrixProperties> res = new ArrayList<>();
 
@@ -181,6 +137,28 @@ public class PropertyChecker {
         if (sol.contains("yes.")){
             res.add(MatrixProperties.NegDef);
         }
+
+        if (binary) query = "pos(m1,m2,'" + op + "').";
+        else query = "pos(m1,'" + op + "').";
+        sol = plh.getSolution(query);
+        if (sol.contains("yes.")){
+            res.add(MatrixProperties.Positive);
+        }
+
+        if (binary) query = "neg(m1,m2,'" + op + "').";
+        else query = "neg(m1,'" + op + "').";
+        sol = plh.getSolution(query);
+        if (sol.contains("yes.")){
+            res.add(MatrixProperties.Negative);
+        }
+
+        if (binary) query = "inv(m1,m2,'" + op + "').";
+        else query = "inv(m1,'" + op + "').";
+        sol = plh.getSolution(query);
+        if (sol.contains("yes.")){
+            res.add(MatrixProperties.Invertible);
+        }
+
         plh.removeClauses();
 
         return res;

@@ -28,6 +28,10 @@ psd(X,Y,' * '):- psd(X), scal+(Y).
 psd(X,Y,' * '):- psd(X), int+(Y).
 psd(X,Y,' * '):- psd(Y), scal+(X).
 psd(X,Y,' * '):- psd(Y), int+(X).
+psd(X,Y,' + '):- diag(X), pos(X), diag(Y), pos(Y).
+psd(X,Y,' - '):- diag(X), pos(X), diag(Y), neg(Y).
+psd(X,Y,' * '):- diag(X), pos(X), diag(Y), pos(Y).
+psd(X,Y,' * '):- diag(X), neg(X), diag(Y), neg(Y).
 
 %pd(m1,m2,op).
 pd(X,Y,' + '):- pd(X), pd(Y).
@@ -44,6 +48,10 @@ nsd(X,Y,' * '):- nsd(X), scal+(Y).
 nsd(X,Y,' * '):- nsd(X), int+(Y).
 nsd(X,Y,' * '):- nsd(Y), scal+(X).
 nsd(X,Y,' * '):- nsd(Y), int+(X).
+nsd(X,Y,' + '):- diag(X), neg(X), diag(Y), neg(Y).
+nsd(X,Y,' - '):- diag(X), neg(X), diag(Y), pos(Y).
+nsd(X,Y,' * '):- diag(X), neg(X), diag(Y), pos(Y).
+nsd(X,Y,' * '):- diag(X), pos(X), diag(Y), neg(Y).
 
 %nd(m1,m2,op).
 nd(X,Y,' + '):- nd(X), nd(Y).
@@ -86,7 +94,28 @@ square(X,'inv'):- square(X), inv(X).
 square(X,Y,' ^ '):- square(X), int(Y).
 square(X,'trans'):- square(X).
 
+%inv(m1,m2,op).
+inv(X,Y,' + '):- diag(X), pos(X), diag(Y), pos(Y).
+inv(X,Y,' + '):- diag(X), neg(X), diag(Y), neg(Y).
+inv(X,Y,' - '):- diag(X), pos(X), diag(Y), neg(Y).
+inv(X,Y,' - '):- diag(X), neg(X), diag(Y), pos(Y).
+inv(X,Y,' * '):- diag(X), pos(X), diag(Y), pos(Y).
+inv(X,Y,' * '):- diag(X), pos(X), diag(Y), neg(Y).
+inv(X,Y,' * '):- diag(X), neg(X), diag(Y), pos(Y).
+inv(X,Y,' * '):- diag(X), neg(X), diag(Y), neg(Y).
+inv(X,'inv'):- square(X), inv(X).
+
+%pos(m1,m2,op).
+pos(X,Y,' + '):- pos(X), pos(Y).
+pos(X,Y,' - '):- pos(X), neg(Y).
+
+%pos(m1,m2,op).
+neg(X,Y,' + '):- neg(X), neg(Y).
+neg(X,Y,' - '):- neg(X), neg(Y).
+
 %conclusions
 square(X):- norm(X).
 norm(X):- diag(X); herm(X); skewHerm(X).
 herm(X):- pd(X); psd(X); nsd(X); nd(X); indef(X).
+psd(X):- pd(X).
+nsd(X):- nd(X).

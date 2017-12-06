@@ -43,6 +43,7 @@ square Q^{3,3} c7 = a1 + a2;
 //diag Q^{3,3} c8 = a2';
 psd Q^{3,3} c9 = a7 + a7;
 psd Q^{3,3} c10 = a1 + a7;
+psd Q^{3,3} c11 = a2 * a2;
 
 //right assignments
 c1 += c2;

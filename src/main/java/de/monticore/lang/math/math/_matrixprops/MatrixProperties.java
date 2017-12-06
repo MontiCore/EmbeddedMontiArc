@@ -28,7 +28,7 @@ package de.monticore.lang.math.math._matrixprops;
  */
 
 public enum MatrixProperties {
-    Diag, Herm, Indef, NegDef, NegSemDef, Norm, PosDef, PosSemDef, SkewHerm, Square, Invertible;
+    Diag, Herm, Indef, NegDef, NegSemDef, Norm, PosDef, PosSemDef, SkewHerm, Square, Invertible, Positive, Negative;
 
     /**
      * convert the enum type based properties to a string
@@ -70,6 +70,12 @@ public enum MatrixProperties {
             }
             case Invertible:{
                 return "inv";
+            }
+            case Positive:{
+                return "pos";
+            }
+            case Negative:{
+                return "neg";
             }
             default:{
                 return "noProps";

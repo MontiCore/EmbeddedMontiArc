@@ -169,7 +169,6 @@ public class MatrixPropertiesTest extends MathSymbolTableCreatorTest {
         ArrayList<MatrixProperties> properties = symbol.getMatrixProperties();
         assertTrue(m7.getValue() instanceof MathMatrixArithmeticValueSymbol);
         assertFalse(properties.contains(MatrixProperties.Square));
-        assertTrue(properties.isEmpty());
     }
 
 }
