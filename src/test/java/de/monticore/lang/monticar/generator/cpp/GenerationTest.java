@@ -1,36 +1,22 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
-import org.eclipse.osgi.framework.adaptor.FilePath;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import de.monticore.lang.math.math._symboltable.*;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Sascha Schneiders
@@ -456,5 +442,20 @@ public class GenerationTest extends AbstractSymtabTest {
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testing/";
         testFilesAreEqual(files, restPath);
+    }
+
+    @Test
+    @Ignore
+    public void testMyComponent2() throws IOException {
+        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
+                "testing.subpackage2.myComponent2",
+                ExpandedComponentInstanceSymbol.KIND
+        ).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
+        Assert.assertEquals(2, files.size());
     }
 }
