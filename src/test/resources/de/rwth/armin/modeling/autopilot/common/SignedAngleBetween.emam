@@ -1,0 +1,17 @@
+package de.rwth.armin.modeling.autopilot.common;
+
+component SignedAngleBetween {
+  port
+    in Q v1x,
+    in Q v1y,
+    in Q v2x,
+    in Q v2y,
+    out Q angle;
+
+  implementation Math {
+    // de.rwth.ryndin.modelling.autopilot.component.common.SignedAngleBetweenImplementation
+    Q angle1 = atan2(v1y, v1x);
+    Q angle2 = atan2(v2y, v2x);
+    angle = 0.0;
+  }
+}

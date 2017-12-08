@@ -1,0 +1,14 @@
+package de.rwth.armin.modeling.autopilot.motion;
+
+component CalculatePidError {
+  port
+    in Q (0.5 m/s : 0.01 m/s : 5.0 m/s) velocityDifferenceThresholdForErrorLeap,
+    in Q (0.0 m/s : 0.01 m/s : oo) currentVelocity,
+    in Q (0.0 m/s : 0.01 m/s : 13.0 m/s) desiredVelocity,
+    out Q error;
+
+  implementation Math {
+    // de.rwth.ryndin.modelling.autopilot.component.motion.CalculatePidErrorImplementation
+    error = 0.0;
+  }
+}

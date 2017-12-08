@@ -1,0 +1,18 @@
+package de.rwth.armin.modeling.autopilot.common;
+
+component PID {
+  port
+    in Q paramP,
+    in Q paramI,
+    in Q paramD,
+    in Q paramDecayCoefficient,
+    in Q error,
+    out Q control;
+
+  implementation Math {
+    // de.rwth.ryndin.modelling.autopilot.component.common.PIDImplementation
+    static B isPrevErrorSpecified = false;
+    static Q prevError = 0.0;
+    control = 0.0;
+  }
+}

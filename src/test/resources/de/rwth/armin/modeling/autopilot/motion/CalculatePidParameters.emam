@@ -1,0 +1,19 @@
+package de.rwth.armin.modeling.autopilot.motion;
+
+component CalculatePidParameters {
+  port
+    in Q currentVelocity,
+    in Q desiredVelocity,
+    out Q paramP,
+    out Q paramI,
+    out Q paramD,
+    out Q paramDecayCoefficient;
+
+  implementation Math {
+    // de.rwth.ryndin.modelling.autopilot.component.motion.CalculatePidParametersImplementation
+    paramP = 0.0;
+    paramI = 0.0;
+    paramD = 0.0;
+    paramDecayCoefficient = 0.0;
+  }
+}

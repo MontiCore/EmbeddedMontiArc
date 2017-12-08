@@ -1,0 +1,18 @@
+package de.rwth.armin.modeling.autopilot.motion;
+
+component SteeringAngleCorrection {
+  port
+    in Q maxSteeringAngle,
+    in Q signedDistanceToTrajectory,
+    out Q steeringAngleCorrection;
+
+  implementation Math {
+    Q d = abs(signedDistanceToTrajectory);
+    if d <= 0.01 {
+      steeringAngleCorrection = 0.0;
+    } else {
+      // de.rwth.ryndin.modelling.autopilot.component.motion.SteeringAngleCorrectionImplementation
+      steeringAngleCorrection = 0.0;
+    } end
+  }
+}
