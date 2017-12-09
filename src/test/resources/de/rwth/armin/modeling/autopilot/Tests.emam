@@ -1,10 +1,8 @@
 package de.rwth.armin.modeling.autopilot;
 
-import de.rwth.armin.modeling.autopilot.common.*;
-import de.rwth.armin.modeling.autopilot.motion.*;
-
 component Tests {
   port in B in1, out B out1;
 
-  instance MotionPlanning motionPlanning;
+  instance de.rwth.armin.modeling.autopilot.common.Tests t1;
+  instance de.rwth.armin.modeling.autopilot.motion.Tests t2;
 }
