@@ -10,9 +10,16 @@ component PID {
     out Q control;
 
   implementation Math {
-    // de.rwth.ryndin.modelling.autopilot.component.common.PIDImplementation
     static B isPrevErrorSpecified = false;
     static Q prevError = 0.0;
-    control = 0.0;
+    static Q acc = 0.0;
+    acc = paramDecayCoefficient * acc + error;
+    Q drv = 0;
+    if isPrevErrorSpecified {
+      drv = error - prevError;
+    } end
+    control = paramP * error + paramI * acc + paramD * drv;
+    prevError = error;
+    isPrevErrorSpecified = true;
   }
 }
