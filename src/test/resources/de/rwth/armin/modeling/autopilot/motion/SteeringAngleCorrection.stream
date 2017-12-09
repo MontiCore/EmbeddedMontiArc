@@ -1,0 +1,7 @@
+package de.rwth.armin.modeling.autopilot.motion;
+
+stream SteeringAngleCorrection for SteeringAngleCorrection {
+  maxSteeringAngle:           0.785         tick 0.785           tick 0.785           tick 0.785           tick 0.785           ;
+  signedDistanceToTrajectory: 0.0           tick 0.05            tick 2.5             tick 5.0             tick 15.5            ;
+  steeringAngleCorrection:    0.0 +/- 0.001 tick 0.007 +/- 0.001 tick 0.017 +/- 0.001 tick 0.039 +/- 0.001 tick 0.039 +/- 0.001 ;
+}
