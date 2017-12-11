@@ -49,14 +49,14 @@ public class GeneratorTest {
         testInitialization();
         Executable in = (Executable) Generator.getInstanceOfGeneratedClass("Initialization");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
-        System.out.println("B : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
-        System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 1)}
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("B : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 1)}
                 , {Rational.valueOf(1, 1), Rational.valueOf(1, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("D : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 2)}
+        // System.out.println("D : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 2)}
                 , {Rational.valueOf(1, 3), Rational.valueOf(1, 4)}}) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Actual Output:");
         in.execute();
     }
 
@@ -73,14 +73,14 @@ public class GeneratorTest {
         testAssignments();
         Executable a = Generator.getInstanceOfGeneratedClass("Assignments");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
-        System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 2)}
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 2)}
                 , {Rational.valueOf(1, 3), Rational.valueOf(1, 4)}}) + " Unit : " + Unit.ONE);
-        System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 2)}
+        // System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(1, 2)}
                 , {Rational.valueOf(1, 3), Rational.valueOf(1, 4)}}) + " Unit : " + Unit.ONE);
-        System.out.println("D : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("D : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         a.execute();
     }
 
@@ -97,14 +97,14 @@ public class GeneratorTest {
         testMathExpressions();
         Executable m = Generator.getInstanceOfGeneratedClass("MathExpressions");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + Rational.valueOf(3, 1) + " Unit : " + Unit.ONE);
-        System.out.println("B : " + Rational.valueOf(6, 1) + " Unit : " + Unit.ONE);
-        System.out.println("C : " + Rational.valueOf(441, 1) + " Unit : " + Unit.ONE);
-        System.out.println("D : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(42, 1), Rational.valueOf(42, 1)}
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + Rational.valueOf(3, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("B : " + Rational.valueOf(6, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("C : " + Rational.valueOf(441, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("D : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(42, 1), Rational.valueOf(42, 1)}
                 , {Rational.valueOf(42, 1), Rational.valueOf(42, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("E : " + Rational.valueOf(4, 1) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("E : " + Rational.valueOf(4, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         m.execute();
     }
 
@@ -121,14 +121,14 @@ public class GeneratorTest {
         testUnits();
         Executable u = Generator.getInstanceOfGeneratedClass("Units");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + Rational.valueOf(5, 1) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("B : " + Rational.valueOf(1, 1) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(2, 1)}}) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("F : " + Rational.valueOf(2, 1) + " Unit : " + Unit.valueOf("m*s"));
-        System.out.println("D : " + Rational.valueOf(1, 1) + " Unit : " + Unit.valueOf("m^2"));
-        System.out.println("E : " + Rational.valueOf(441, 1) + " Unit : " + Unit.valueOf("m^4"));
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + Rational.valueOf(5, 1) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("B : " + Rational.valueOf(1, 1) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(2, 1)}}) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("F : " + Rational.valueOf(2, 1) + " Unit : " + Unit.valueOf("m*s"));
+        // System.out.println("D : " + Rational.valueOf(1, 1) + " Unit : " + Unit.valueOf("m^2"));
+        // System.out.println("E : " + Rational.valueOf(441, 1) + " Unit : " + Unit.valueOf("m^4"));
+        // System.out.println("Actual Output:");
         u.execute();
     }
 
@@ -145,14 +145,14 @@ public class GeneratorTest {
         testUnits2();
         Executable u = Generator.getInstanceOfGeneratedClass("Units2");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(2, 1)}}) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1)}, {Rational.valueOf(2, 1)}}) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(5, 1)}}) + " Unit : " + Unit.valueOf("m^2"));
-        System.out.println("D : " + Rational.valueOf(2, 1) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("E : " + Rational.valueOf(5, 1) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("F : " + Rational.valueOf(13, 1) + " Unit : " + Unit.valueOf("m^2"));
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(2, 1)}}) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1)}, {Rational.valueOf(2, 1)}}) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(5, 1)}}) + " Unit : " + Unit.valueOf("m^2"));
+        // System.out.println("D : " + Rational.valueOf(2, 1) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("E : " + Rational.valueOf(5, 1) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("F : " + Rational.valueOf(13, 1) + " Unit : " + Unit.valueOf("m^2"));
+        // System.out.println("Actual Output:");
         u.execute();
     }
 
@@ -169,15 +169,15 @@ public class GeneratorTest {
         testMatrixWithMathExpressions();
         Executable matrixWithMathExpression = Generator.getInstanceOfGeneratedClass("MatrixWithMathExpression");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("B : " + Rational.valueOf(5, 1) + " Unit : " + Unit.ONE);
-        System.out.println("C : " + Rational.valueOf(3, 1) + " Unit : " + Unit.ONE);
-        System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(2, 1), Rational.valueOf(160, 25)},
+        // System.out.println("Expected Output:");
+        // System.out.println("B : " + Rational.valueOf(5, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("C : " + Rational.valueOf(3, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(2, 1), Rational.valueOf(160, 25)},
                 {Rational.valueOf(-160, 25), Rational.valueOf(-94, 25)}}) + " Unit : " + Unit.ONE);
-        System.out.println("D : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(2, 1), Rational.valueOf(8, 1)},
+        // System.out.println("D : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(2, 1), Rational.valueOf(8, 1)},
                 {Rational.valueOf(4, 1), Rational.valueOf(10, 1)},
                 {Rational.valueOf(6, 1), Rational.valueOf(12, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Actual Output:");
         matrixWithMathExpression.execute();
     }
 
@@ -194,10 +194,10 @@ public class GeneratorTest {
         testPowerWise();
         Executable pw = Generator.getInstanceOfGeneratedClass("PowerWise");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(4, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(49, 1), Rational.valueOf(100, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(4, 1)}}) + " Unit : " + Unit.ONE);
+        // System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(49, 1), Rational.valueOf(100, 1)}}) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         pw.execute();
     }
 
@@ -214,10 +214,10 @@ public class GeneratorTest {
         testTimeWise();
         Executable tw = Generator.getInstanceOfGeneratedClass("TimeWise");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(2, 1), Rational.valueOf(4, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(20, 1), Rational.valueOf(36, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(2, 1), Rational.valueOf(4, 1)}}) + " Unit : " + Unit.ONE);
+        // System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(20, 1), Rational.valueOf(36, 1)}}) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         tw.execute();
     }
 
@@ -234,11 +234,11 @@ public class GeneratorTest {
         testSolEqu();
         Executable se = Generator.getInstanceOfGeneratedClass("SolEqu");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(3, 11)}, {Rational.valueOf(1, 11)}, {Rational.valueOf(7, 22)}}) + " Unit : " + Unit.ONE);
-        System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(3, 11)}, {Rational.valueOf(1, 11)}, {Rational.valueOf(7, 22)}}) + " Unit : " + Unit.ONE);
-        System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(3, 11)}, {Rational.valueOf(1, 11)}, {Rational.valueOf(7, 22)}}) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(3, 11)}, {Rational.valueOf(1, 11)}, {Rational.valueOf(7, 22)}}) + " Unit : " + Unit.ONE);
+        // System.out.println("B : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(3, 11)}, {Rational.valueOf(1, 11)}, {Rational.valueOf(7, 22)}}) + " Unit : " + Unit.ONE);
+        // System.out.println("C : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(3, 11)}, {Rational.valueOf(1, 11)}, {Rational.valueOf(7, 22)}}) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("Actual Output:");
         se.execute();
     }
 
@@ -255,9 +255,9 @@ public class GeneratorTest {
         testForLoop();
         Executable fl = Generator.getInstanceOfGeneratedClass("ForLoop");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("sum : " + Rational.valueOf(3840, 1) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("sum : " + Rational.valueOf(3840, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         fl.execute();
     }
 
@@ -274,13 +274,13 @@ public class GeneratorTest {
         testForLoop2();
         Executable fl2 = Generator.getInstanceOfGeneratedClass("ForLoop2");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("c : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(3, 1),
+        // System.out.println("Expected Output:");
+        // System.out.println("c : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(3, 1),
                 Rational.valueOf(5, 1), Rational.valueOf(7, 1), Rational.valueOf(9, 1)}}) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("x : " + Rational.valueOf(5, 1) + " Unit : " + Unit.ONE);
-        System.out.println("y : " + Rational.valueOf(625, 1) + " Unit : " + Unit.valueOf("m^2"));
-        System.out.println("z : " + Rational.valueOf(125, 1) + " Unit : " + Unit.valueOf("m"));
-        System.out.println("Actual Output:");
+        // System.out.println("x : " + Rational.valueOf(5, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("y : " + Rational.valueOf(625, 1) + " Unit : " + Unit.valueOf("m^2"));
+        // System.out.println("z : " + Rational.valueOf(125, 1) + " Unit : " + Unit.valueOf("m"));
+        // System.out.println("Actual Output:");
         fl2.execute();
     }
 
@@ -297,12 +297,12 @@ public class GeneratorTest {
         testForLoop3();
         Executable fl3 = Generator.getInstanceOfGeneratedClass("ForLoop3");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(2, 1), Rational.valueOf(3, 1)},
+        // System.out.println("Expected Output:");
+        // System.out.println("A : " + DenseMatrix.valueOf(new Rational[][]{{Rational.valueOf(1, 1), Rational.valueOf(2, 1), Rational.valueOf(3, 1)},
                 {Rational.valueOf(4, 1), Rational.valueOf(5, 1), Rational.valueOf(6, 1)},
                 {Rational.valueOf(7, 1), Rational.valueOf(8, 1), Rational.valueOf(9, 1)}}) + " Unit : " + Unit.ONE);
-        System.out.println("C : " + Rational.valueOf(45, 1) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("C : " + Rational.valueOf(45, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         fl3.execute();
     }
 
@@ -319,10 +319,10 @@ public class GeneratorTest {
         testIf();
         Executable if1 = Generator.getInstanceOfGeneratedClass("If");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("cond : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
-        System.out.println("result : " + Rational.valueOf(0, 1) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("cond : " + Rational.valueOf(2, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("result : " + Rational.valueOf(0, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         if1.execute();
     }
 
@@ -339,10 +339,10 @@ public class GeneratorTest {
         testIf2();
         Executable if2 = Generator.getInstanceOfGeneratedClass("If2");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("cond : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
-        System.out.println("result : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("cond : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("result : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("Actual Output:");
         if2.execute();
     }
 
@@ -359,12 +359,12 @@ public class GeneratorTest {
         testIf3();
         Executable if3 = Generator.getInstanceOfGeneratedClass("If3");
         //expected output
-        System.out.println("Expected Output:");
-        System.out.println("cond1 : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
-        System.out.println("cond2 : " + Rational.valueOf(-1, 1) + " Unit : " + Unit.ONE);
-        System.out.println("result : " + Rational.valueOf(-1, 1) + " Unit : " + Unit.ONE);
-        System.out.println("bool : " + false);
-        System.out.println("Actual Output:");
+        // System.out.println("Expected Output:");
+        // System.out.println("cond1 : " + Rational.valueOf(1, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("cond2 : " + Rational.valueOf(-1, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("result : " + Rational.valueOf(-1, 1) + " Unit : " + Unit.ONE);
+        // System.out.println("bool : " + false);
+        // System.out.println("Actual Output:");
         if3.execute();
     }*/
 

@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.math.math._symboltable;
 
+import de.monticore.lang.math.math.LogConfig;
 import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
@@ -33,6 +34,7 @@ public class MathLanguage extends MathLanguageTOP{
 
     public MathLanguage() {
         super("Math Language", FILE_ENDING);
+        LogConfig.init();
     }
 
     @Override
