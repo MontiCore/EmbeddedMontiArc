@@ -74,7 +74,7 @@ public class ReparseTest {
         try {
             g.generate(model, fileName);
         } catch (IOException e) {
-            System.out.println("Error: file " + fileName + " does not exist");
+            // System.out.println("Error: file " + fileName + " does not exist");
         }
     }
 
