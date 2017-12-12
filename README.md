@@ -1,6 +1,6 @@
   [![Maintainability](https://api.codeclimate.com/v1/badges/cb1d2c40a5d6ef2b1d64/maintainability)](https://codeclimate.com/github/EmbeddedMontiArc/ViewVerification/maintainability)
   [![Build Status](https://travis-ci.org/EmbeddedMontiArc/ViewVerification.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/ViewVerification)
-  [![Build Status](https://circleci.com/gh/EmbeddedMontiArc/ViewVerification.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/ViewVerification)
+  [![Build Status](https://circleci.com/gh/EmbeddedMontiArc/ViewVerification/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/CNNTrainLang/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/ViewVerification/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/ViewVerification?branch=master)
 # ViewVerification
 
