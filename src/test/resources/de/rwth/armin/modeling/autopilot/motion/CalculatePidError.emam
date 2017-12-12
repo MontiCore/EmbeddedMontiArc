@@ -9,6 +9,25 @@ component CalculatePidError {
 
   implementation Math {
     // de.rwth.ryndin.modelling.autopilot.component.motion.CalculatePidErrorImplementation
-    error = 0.0;
+    // TODO: Is the NaN Check necessary ? 
+    
+    if desiredVelocity < 0.001 {
+       error = -100.0;
+    } 
+    
+    elseif (currentVelocity - desiredVelocity) > velocityDifferenceThresholdForErrorLeap {
+        // dv is treated as zero in order to increase error and force vehicle to decelerate better
+        error = -currentVelocity;
+    }
+    
+    elseif (desiredVelocity - currentVelocity) > velocityDifferenceThresholdForErrorLeap {
+        // increase error to force vehicle to accelerate more rapidly
+        error = desiredVelocity;
+    }
+    else {
+        error = desiredVelocity - currentVelocity ;
+    }
+    end
+   
   }
 }
