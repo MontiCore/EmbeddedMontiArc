@@ -11,3 +11,8 @@ struct MyStruct1 {
   MyOtherStruct1 someField3;
 }
 ```
+
+Some constraints:
+* one model file -- one struct
+* no generics (just as in the good ol' C :smiley:)
+* struct references may not form a cycle
