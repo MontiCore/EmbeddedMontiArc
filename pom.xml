@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-generator</artifactId>
-  <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+  <version>0.0.4</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -24,7 +24,7 @@
 	<Embedded-MontiArc-Behaviour.version>0.0.7</Embedded-MontiArc-Behaviour.version>
     <Math.version>0.0.7</Math.version>
 	<Embedded-MontiArc-Math.version>0.0.7</Embedded-MontiArc-Math.version>
-    <tagging.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</tagging.version>
+    <tagging.version>0.0.1</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
