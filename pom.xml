@@ -22,7 +22,7 @@
 	<Common-MontiCar.version>0.0.7</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.7</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.7</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Math.version>
+    <Math.version>0.0.7</Math.version>
 	<Embedded-MontiArc-Math.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Embedded-MontiArc-Math.version>
     <tagging.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</tagging.version>
     <!-- .. Libraries .................................................. -->
