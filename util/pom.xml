@@ -8,13 +8,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+        <version>1.0.1</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>util</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+    <version>1.0.1</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>

@@ -8,13 +8,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+        <version>1.0.1</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>network</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+    <version>1.0.1</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>util</artifactId>
-            <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+            <version>1.0.1</version>
         </dependency>
 
         <!-- Network has dependency to commons -->
@@ -37,7 +37,7 @@
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>vehicle</artifactId>
-            <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+            <version>1.0.1</version>
         </dependency>
 
     </dependencies>
