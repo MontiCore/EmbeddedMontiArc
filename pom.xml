@@ -44,7 +44,7 @@
 	<Common-MontiCar.version>0.0.7</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.7</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.7</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</Math.version>
+    <Math.version>0.0.7</Math.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
