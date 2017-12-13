@@ -30,7 +30,7 @@
         <dependency>
             <groupId>montisim</groupId>
             <artifactId>commons</artifactId>
-            <version>0.1.1-fGWiGhVOHEqxe9fiCfQF6Q</version>
+            <version>1.0.1</version>
         </dependency>
 
     </dependencies>
