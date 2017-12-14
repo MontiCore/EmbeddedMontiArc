@@ -12,6 +12,10 @@ public enum BusEntry {
     // Navigation                                                               *
     //***************************************************************************
     NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE("NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE"),
+    // x coordinates of the planned trajectory, List<Double>
+    PLANNED_TRAJECTORY_X("PLANNED_TRAJECTORY_X"),
+    // y coordinates of the planned trajectory, List<Double>
+    PLANNED_TRAJECTORY_Y("PLANNED_TRAJECTORY_Y"),
     //***************************************************************************
     // Constants                                                                *
     //***************************************************************************
