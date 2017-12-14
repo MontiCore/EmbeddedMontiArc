@@ -2,7 +2,7 @@ package montiarc;
 
 import montiarc.atomic.*;
 
-<<Type = "SubSystem">> component Constant_velocity {
+component Constant_velocity {
 	port
 		in (0km/h : 250km/h) velocity,
 		in Double time,

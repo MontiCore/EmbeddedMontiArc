@@ -4,7 +4,7 @@ import visualization.basics.Constant;
 import visualization.basics.Less;
 import visualization.basics.SwitchB;
 
-<<Type = "SubSystem">> component ConstantVelocity {
+component ConstantVelocity {
 	port
 		in (0km/h : 250km/h) velocity,
 		in Double time,
