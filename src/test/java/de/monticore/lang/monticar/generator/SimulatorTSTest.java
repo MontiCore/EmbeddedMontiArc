@@ -1,5 +1,7 @@
 package de.monticore.lang.monticar.generator;
 
+import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Assert;
 import org.junit.Test;
 import java.nio.file.*;
@@ -7,16 +9,13 @@ import de.monticore.lang.monticar.generator.cpp.resolver.ResolverFactory;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 
-public class SimulatorTSTest {
+public class SimulatorTSTest extends AbstractSymtab{
     @Test
     public void resolveModel() {
-        Path modelPath = Paths.get("src/test/resources/simulator-ts");
-
-        ResolverFactory resolverFactory = new ResolverFactory(modelPath);
-        Resolver resolver = resolverFactory.get();
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts");
 
         ExpandedComponentInstanceSymbol instanceSymbol =
-                resolver.getExpandedComponentInstanceSymbol("montiarc.Constant_velocity").orElse(null);
+                symtab.<ExpandedComponentInstanceSymbol>resolve("montiarc.constant_velocity",ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
     }

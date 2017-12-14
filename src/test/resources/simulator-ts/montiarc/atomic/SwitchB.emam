@@ -3,7 +3,17 @@ package montiarc.atomic;
 component SwitchB<T> {
     port
         in T in1,
-        in Boolean cond,
+        in B cond,
         in T in3,
         out T out1;
+
+    implementation Math{
+        if cond{
+            out1 = in1;
+        }
+        else {
+            out1 = in2;
+        }
+        end
+    }
 }
