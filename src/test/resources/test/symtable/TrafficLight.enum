@@ -1,0 +1,5 @@
+package test.symtable;
+
+enum TrafficLight {
+  RED | YELLOW | GREEN
+}

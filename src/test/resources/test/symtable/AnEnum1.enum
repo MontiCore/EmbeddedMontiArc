@@ -1,0 +1,5 @@
+package test.symtable;
+
+enum AnEnum1 {
+  A_CONSTANT_1 |  A_CONSTANT_2 |  A_CONSTANT_3
+}

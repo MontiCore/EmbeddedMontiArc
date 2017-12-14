@@ -1,0 +1,5 @@
+package test.parser;
+
+enum Enum2 {
+  VALUE
+}

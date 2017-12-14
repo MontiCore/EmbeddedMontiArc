@@ -1,0 +1,5 @@
+package test.coco.invalid;
+
+enum notCapitalizedEnum {
+  V1 |  V2
+}
