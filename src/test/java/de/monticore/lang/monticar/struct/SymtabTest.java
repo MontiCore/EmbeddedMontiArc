@@ -20,8 +20,11 @@
  */
 package de.monticore.lang.monticar.struct;
 
+import de.monticore.lang.monticar.enumlang._symboltable.EnumConstantDeclarationSymbol;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumDeclarationSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.references.FailedLoadingSymbol;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
@@ -130,5 +133,20 @@ public class SymtabTest {
             }
             Assert.fail();
         }
+    }
+
+    @Test
+    public void testMyStructWithEnum() {
+        StructSymbol struct = symTab.<StructSymbol>resolve("test.symtable.MyStructWithEnum", StructSymbol.KIND).orElse(null);
+        Assert.assertNotNull(struct);
+        ArrayList<StructFieldDefinitionSymbol> fields = new ArrayList<>(struct.getStructFieldDefinitions());
+        Assert.assertEquals(3, fields.size());
+        StructFieldDefinitionSymbol f3 = fields.get(2);
+        Assert.assertEquals("f3", f3.getName());
+        MCTypeSymbol typeSymbol = f3.getType().getReferencedSymbol();
+        Assert.assertTrue(typeSymbol instanceof EnumDeclarationSymbol);
+        EnumDeclarationSymbol enumDecl = (EnumDeclarationSymbol) typeSymbol;
+        ArrayList<EnumConstantDeclarationSymbol> enumConstants = new ArrayList<>(enumDecl.getEnumConstants());
+        Assert.assertEquals(5, enumConstants.size());
     }
 }
