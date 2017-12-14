@@ -1,0 +1,66 @@
+package de.rwth.armin.modeling.autopilot.behavior;
+
+import de.rwth.armin.modeling.autopilot.common.*;
+
+// trims the planned path
+// such that the first segment
+// is the closest to the current vehicle's position
+component TrimPath {
+  port
+    in  Q (-oo m : 0.01 m : oo m)                current_position_x,
+    in  Q (-oo m : 0.01 m : oo m)                current_position_y,
+    in  Z (0 : 100)                              planned_trajectory_length,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      planned_trajectory_x,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      planned_trajectory_y,
+    out Z (0 : 100)                              trimmed_trajectory_length,
+    out Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmed_trajectory_x,
+    out Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmed_trajectory_y;
+
+  implementation Math {
+    trimmed_trajectory_length = 0;
+    if planned_trajectory_length == 1 {
+      trimmed_trajectory_length = 1;
+      trimmed_trajectory_x(1,1) = planned_trajectory_x(1,1);
+      trimmed_trajectory_y(1,1) = planned_trajectory_y(1,1);
+    } elseif planned_trajectory_length > 1 {
+      Q closestSegmentIndex = -1;
+      Q closestSegmentDistance = -1;
+      //Q last_segment_index = planned_trajectory_length-1;
+      for i = 1:planned_trajectory_length
+        Q p1x = planned_trajectory_x(1,i);
+        Q p1y = planned_trajectory_y(1,i);
+        Q p2x = planned_trajectory_x(1,i+1);
+        Q p2y = planned_trajectory_y(1,i+1);
+        // projection
+        Q vx = current_position_x - p1x;
+        Q vy = current_position_y - p1y;
+        Q v12x = p2x - p1x;
+        Q v12y = p2y - p1y;
+        Q k = ( vx*v12x + vy*v12y ) / ( v12x*v12x + v12y*v12y );
+        Q projection_x = p1x + k * v12x;
+        Q projection_y = p1y + k * v12y;
+        //B cond1 = (p1x-projection_x) * (p2x-projection_x) <= 0 && (p1y-projection_y) * (p2y-projection_y) <= 0;
+        Q cond1 = (p1x-projection_x) * (p2x-projection_x) <= 0 && (p1y-projection_y) * (p2y-projection_y) <= 0;
+        if cond1 {
+          Q d_proj = sqrt( (current_position_x-projection_x)^2 + (current_position_y-projection_y)^2 );
+          if closestSegmentDistance < 0 || d_proj < closestSegmentDistance {
+            closestSegmentIndex = i;
+            closestSegmentDistance = d_proj;
+            trimmed_trajectory_x(1,1) = projection_x;
+            trimmed_trajectory_y(1,1) = projection_y;
+          } end
+        } else {
+          Q d1 = sqrt( (current_position_x-p1x)^2 + (current_position_y-p1y)^2 );
+          Q d2 = sqrt( (current_position_x-p2x)^2 + (current_position_y-p2y)^2 );
+          Q d_min = min(d1,d2);
+          if closestSegmentDistance < 0 || d_min < closestSegmentDistance {
+            closestSegmentIndex = i;
+            closestSegmentDistance = d_min;
+            trimmed_trajectory_x(1,1) = projection_x;
+            trimmed_trajectory_y(1,1) = projection_y;
+          } end
+        } end
+      end
+    } end
+  }
+}
