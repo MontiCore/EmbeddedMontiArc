@@ -37,6 +37,7 @@
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
     <shade.plugin>2.4.3</shade.plugin>
+    <emam2cpp.version>0.0.3-SNAPSHOT</emam2cpp.version>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
@@ -215,6 +216,12 @@
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
       <version>${jscience.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>embedded-montiarc-math-generator</artifactId>
+      <version>${emam2cpp.version}</version>
     </dependency>
   
   </dependencies>
