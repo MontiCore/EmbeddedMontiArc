@@ -8,8 +8,6 @@ import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.MathCommandRegister;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
-import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -18,9 +16,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,24 +50,6 @@ public class GeneratorCPP implements Generator {
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
-    }
-
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        Path resolvingPath = Paths.get(args[0]);
-        String fullName = args[1];
-        String outputPath = args[2];
-
-        SymTabCreator symTabCreator = new SymTabCreator(resolvingPath);
-        TaggingResolver symtab = symTabCreator.createSymTabAndTaggingResolver();
-        Resolver resolver = new Resolver(symtab);
-
-        ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(fullName)
-                .orElseThrow(() -> new IllegalArgumentException("Argument must include the full component name"));
-
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath(outputPath);
-        generatorCPP.setModelsDirPath(resolvingPath);
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
 
     public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {

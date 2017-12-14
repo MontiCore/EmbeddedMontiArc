@@ -3,6 +3,8 @@ package de.monticore.lang.monticar.generator.cpp.viewmodel.check;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Objects;
+
 public final class RangeOutputPortCheck extends ViewModelBase implements IOutputPortCheck {
 
     private String lowerBound;
@@ -31,10 +33,7 @@ public final class RangeOutputPortCheck extends ViewModelBase implements IOutput
         }
         if (o instanceof RangeOutputPortCheck) {
             RangeOutputPortCheck that = (RangeOutputPortCheck) o;
-            if (lowerBound != null ? !lowerBound.equals(that.lowerBound) : that.lowerBound != null) {
-                return false;
-            }
-            return upperBound != null ? upperBound.equals(that.upperBound) : that.upperBound == null;
+            return equalsTo(that);
         }
         return false;
     }
@@ -52,6 +51,10 @@ public final class RangeOutputPortCheck extends ViewModelBase implements IOutput
                 "lowerBound='" + lowerBound + '\'' +
                 ", upperBound='" + upperBound + '\'' +
                 '}';
+    }
+
+    private boolean equalsTo(RangeOutputPortCheck that) {
+        return Objects.equals(lowerBound, that.lowerBound) && Objects.equals(upperBound, that.upperBound);
     }
 
     public static RangeOutputPortCheck from(double lowerBound, double upperBound) {
