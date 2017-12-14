@@ -1,5 +1,7 @@
 package de.rwth.armin.modeling.autopilot;
 
+import de.rwth.armin.modeling.autopilot.common.*;
+import de.rwth.armin.modeling.autopilot.behavior.*;
 import de.rwth.armin.modeling.autopilot.motion.*;
 
 component Autopilot {
@@ -48,24 +50,29 @@ component Autopilot {
     out Q (-0.785 : 0.001 : 0.785)               steering,
     out Q (0.0 : 0.001 : 3.0)                    brakes;
 
-    //instance PID veloPid;
+    instance Compass2CurrentDirection c2cd;
+    instance BehaviorGeneration behaviorGeneration;
+    instance MotionPlanning motionPlanning;
 
-    // causes stream tests to be generated
-    instance Tests;
+    connect compass                                          ->      c2cd.compass;
 
-    //connect 5 -> veloPid.desiredVel;
-    //connect currentVelocity -> veloPid.currentVel;
+    connect x                                                ->      behaviorGeneration.current_position_x;
+    connect y                                                ->      behaviorGeneration.current_position_y;
+    connect trajectory_length                                ->      behaviorGeneration.planned_trajectory_length;
+    connect trajectory_x                                     ->      behaviorGeneration.planned_trajectory_x;
+    connect trajectory_y                                     ->      behaviorGeneration.planned_trajectory_y;
+    connect c2cd.current_direction_x                         ->      behaviorGeneration.current_direction_x;
+    connect c2cd.current_direction_x                         ->      behaviorGeneration.current_direction_x;
 
-    //connect  veloPid.engineVal -> engine;
-    //connect  veloPid.breakesVal -> brakes;
-    //connect  timeIncrement -> veloPid.timeInc;
+    connect currentVelocity                                  ->      motionPlanning.currentVelocity;
+    connect c2cd.current_direction_x                         ->      motionPlanning.currentDirectionX;
+    connect c2cd.current_direction_x                         ->      motionPlanning.currentDirectionY;
+    connect behaviorGeneration.desired_direction_x           ->      motionPlanning.desiredDirectionX;
+    connect behaviorGeneration.desired_direction_y           ->      motionPlanning.desiredDirectionY;
+    connect behaviorGeneration.signedDistanceToTrajectory    ->      motionPlanning.signedDistanceToTrajectory;
+    connect behaviorGeneration.desiredVelocity               ->      motionPlanning.desiredVelocity;
 
-    //connect 0.0 -> steering;
-
-// alle 5ms aufgerufen
-  implementation Math {
-    engine = 2.5;
-    steering = 0.0;
-    brakes = 0.0;
-  }
+    connect motionPlanning.engine                            ->      engine;
+    connect motionPlanning.steering                          ->      steering;
+    connect motionPlanning.brakes                            ->      brakes;
 }

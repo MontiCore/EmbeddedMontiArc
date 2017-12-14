@@ -1,0 +1,19 @@
+package de.rwth.armin.modeling.autopilot.behavior;
+
+component BehaviorGeneration {
+  port
+    in  Q (-oo m : 0.01 m : oo m)                current_position_x,
+    in  Q (-oo m : 0.01 m : oo m)                current_position_y,
+
+    in  Q (-oo m : 0.01 m : oo m)                current_direction_x,
+    in  Q (-oo m : 0.01 m : oo m)                current_direction_y,
+
+    in  Z (0 : 100)                              planned_trajectory_length,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      planned_trajectory_x,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      planned_trajectory_y,
+
+    out Q (-oo m : 0.01 m : oo m)                desired_direction_x,
+    out Q (-oo m : 0.01 m : oo m)                desired_direction_y,
+    out Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory,
+    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        desiredVelocity;
+}

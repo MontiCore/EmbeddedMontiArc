@@ -5,6 +5,8 @@ import de.rwth.armin.modeling.autopilot.common.*;
 // trims the planned path
 // such that the first segment
 // is the closest to the current vehicle's position
+// and the first point is the projection
+// of the current position to the planned path
 component TrimPath {
   port
     in  Q (-oo m : 0.01 m : oo m)                current_position_x,
