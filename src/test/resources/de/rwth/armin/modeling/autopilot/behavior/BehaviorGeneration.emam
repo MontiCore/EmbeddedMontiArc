@@ -2,18 +2,40 @@ package de.rwth.armin.modeling.autopilot.behavior;
 
 component BehaviorGeneration {
   port
-    in  Q (-oo m : 0.01 m : oo m)                current_position_x,
-    in  Q (-oo m : 0.01 m : oo m)                current_position_y,
+    in  Q (-oo m : 0.01 m : oo m)                    current_position_x,
+    in  Q (-oo m : 0.01 m : oo m)                    current_position_y,
 
-    in  Q (-oo m : 0.01 m : oo m)                current_direction_x,
-    in  Q (-oo m : 0.01 m : oo m)                current_direction_y,
+    in  Q (-oo m : 0.01 m : oo m)                    current_direction_x,
+    in  Q (-oo m : 0.01 m : oo m)                    current_direction_y,
 
-    in  Z (0 : 100)                              planned_trajectory_length,
-    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      planned_trajectory_x,
-    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      planned_trajectory_y,
+    in  Z (0 : 100)                                  planned_trajectory_length,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}          planned_trajectory_x,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}          planned_trajectory_y,
 
-    out Q (-oo m : 0.01 m : oo m)                desired_direction_x,
-    out Q (-oo m : 0.01 m : oo m)                desired_direction_y,
-    out Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory,
-    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        desiredVelocity;
+    out Q (-oo m : 0.01 m : oo m)                    desired_direction_x,
+    out Q (-oo m : 0.01 m : oo m)                    desired_direction_y,
+    out Q (-oo m : 0.01 m : oo m)                    signedDistanceToTrajectory,
+    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)            desiredVelocity;
+
+  instance TrimPath tp;
+  instance CalculateMotionCommands cmc;
+
+  connect current_position_x                ->       tp.current_position_x;
+  connect current_position_y                ->       tp.current_position_y;
+  connect planned_trajectory_length         ->       tp.planned_trajectory_length;
+  connect planned_trajectory_x              ->       tp.planned_trajectory_x;
+  connect planned_trajectory_y              ->       tp.planned_trajectory_y;
+
+  connect current_position_x                ->       cmc.current_position_x;
+  connect current_position_y                ->       cmc.current_position_y;
+  connect current_direction_x               ->       cmc.current_direction_x;
+  connect current_direction_y               ->       cmc.current_direction_y;
+  connect tp.trimmed_trajectory_length      ->       cmc.trimmed_trajectory_length;
+  connect tp.trimmed_trajectory_x           ->       cmc.trimmed_trajectory_x;
+  connect tp.trimmed_trajectory_y           ->       cmc.trimmed_trajectory_y;
+
+  connect cdv.desired_direction_x           ->       desired_direction_x;
+  connect cdv.desired_direction_y           ->       desired_direction_y;
+  connect cdv.signedDistanceToTrajectory    ->       signedDistanceToTrajectory;
+  connect cdv.desiredVelocity               ->       desiredVelocity;
 }
