@@ -1,0 +1,32 @@
+package montiarc;
+
+import montiarc.atomic.*;
+
+component Constant_velocity {
+	port
+		in (0km/h : 250km/h) velocity,
+		in (-oo:oo) time, // this is shit!, it must be (0s:1ms:00 s)
+		out (-2m/s^2:2m/s^2) acceleration,
+		out (-180°:180°) steering;
+
+
+	instance Less<N1> relationalOperator;
+	instance SwitchB<N1> switchBlock;
+
+	connect 0 /*Constant3*/-> steering;
+	connect switchBlock.out1 -> acceleration;
+	connect relationalOperator.out1 -> switchBlock.cond;
+	connect 2/*Constant2*/ -> switchBlock.in1; // this should give you a CoCo error
+	connect 0/*Constant1*/ -> switchBlock.in3; // this too (because 0 will be propagated to acceleration, but acceleration is not unit-less)
+	connect time -> relationalOperator.in1;
+	connect 1/*Constant*/ -> relationalOperator.in2;
+
+	/*
+	implementation Math {
+	  B cond = time < 1s;
+	  acceleration = cond ? 0 m/s^2 : 2 m/s^2;
+
+	  steering = 0°;
+	}
+	*/
+}
