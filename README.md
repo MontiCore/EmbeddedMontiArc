@@ -336,6 +336,14 @@ visible to the Math Language. If you are interested in how the language adaption
 MontiCore Language Workbench documentation.  
 * How ports of EmbeddedMontiArc are adapted to matrices into Math language?  
 
+Examples (Ievgen)
+--------
+* How to create a good component atomic component?
+    * we do not use `And` or `Or` or `Not` as atomic components, since we can use this directly in the Math implementation
+    * in the Math part: 
+          * max. 3 operations per line (`y=!(u1 || (u2 && u3))`)
+          * max. 5 lines in the Math part
+
 EmbeddedMontiView (Fabian)
 ----
 * What is the difference between EmbeddedMontiArc and EmbeddedMontiView?
