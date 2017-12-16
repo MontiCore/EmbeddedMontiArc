@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-generator</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -19,11 +19,11 @@
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.7</SIUnit.version>
-	<Common-MontiCar.version>0.0.4</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.5</Embedded-MontiArc.version>
-	<Embedded-MontiArc-Behaviour.version>0.0.5</Embedded-MontiArc-Behaviour.version>
-        <Math.version>0.0.4</Math.version>
-	<Embedded-MontiArc-Math.version>0.0.5</Embedded-MontiArc-Math.version>
+	<Common-MontiCar.version>0.0.7</Common-MontiCar.version>
+	<Embedded-MontiArc.version>0.0.7</Embedded-MontiArc.version>
+	<Embedded-MontiArc-Behaviour.version>0.0.7</Embedded-MontiArc-Behaviour.version>
+    <Math.version>0.0.7</Math.version>
+	<Embedded-MontiArc-Math.version>0.0.7</Embedded-MontiArc-Math.version>
     <tagging.version>0.0.1</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -187,6 +187,18 @@
       <groupId>montiarc.verification</groupId>
       <artifactId>montiarc-execution-order</artifactId>
       <version>4.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.23</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.4</version>
     </dependency>
 
     <!-- .. Test Libraries ............................................... -->

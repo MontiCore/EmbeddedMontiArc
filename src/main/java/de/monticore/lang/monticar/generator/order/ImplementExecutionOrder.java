@@ -1,5 +1,14 @@
 package de.monticore.lang.monticar.generator.order;
 
+import de.ma2cfg.helper.Names;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,16 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import de.ma2cfg.helper.Names;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
-import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.logging.Log;
 
 /*
  *
@@ -173,7 +172,7 @@ public class ImplementExecutionOrder {
         for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
             if (taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
                     && subInst.getSubComponents().isEmpty()
-                    && dependencies.get(subInst).isEmpty()) {
+                    && (!dependencies.containsKey(subInst) || dependencies.get(subInst).isEmpty())) {
                 tagExOrderBranch(taggingResolver, subInst, inst);
             } else if (taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
                     && !subInst.getSubComponents().isEmpty()) {

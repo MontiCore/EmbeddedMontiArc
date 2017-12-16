@@ -2,10 +2,12 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.Generator;
+import de.monticore.lang.monticar.generator.Helper;
+import de.monticore.lang.monticar.generator.MathCommandRegister;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
-import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -14,16 +16,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Sascha Schneiders
  */
 public class GeneratorCPP implements Generator {
+
+    private Path modelsDirPath;
+    private boolean isGenerateTests = false;
+    private final List<BluePrintCPP> bluePrints = new ArrayList<>();
+
     protected String generationTargetPath = "./target/generated-sources-cpp/";
 
     protected boolean algebraicOptimizations = false;
@@ -44,23 +50,6 @@ public class GeneratorCPP implements Generator {
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
-    }
-
-    public static void main(String[] args) throws IOException, URISyntaxException {
-        Path resolvingPath = Paths.get(args[0]);
-        String fullName = args[1];
-        String outputPath = args[2];
-
-        SymTabCreator symTabCreator = new SymTabCreator(resolvingPath);
-        TaggingResolver symtab = symTabCreator.createSymTabAndTaggingResolver();
-        Resolver resolver = new Resolver(symtab);
-
-        ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(fullName)
-                .orElseThrow(() -> new IllegalArgumentException("Argument must include the full component name"));
-
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath(outputPath);
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
 
     public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
@@ -93,6 +82,10 @@ public class GeneratorCPP implements Generator {
             if (bluePrint.getOriginalSymbol().equals(componentSymbol)) {
                 bluePrintCPP = (BluePrintCPP) bluePrint;
             }
+        }
+
+        if (bluePrintCPP != null) {
+            bluePrints.add(bluePrintCPP);
         }
 
         String result = languageUnitCPP.getGeneratedHeader(taggingResolver, bluePrintCPP);
@@ -144,6 +137,10 @@ public class GeneratorCPP implements Generator {
     public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol,
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+        if (isGenerateTests()) {
+            TestsGeneratorCPP g = new TestsGeneratorCPP(this);
+            fileContents.addAll(g.generateStreamTests(symtab));
+        }
         //System.out.println(fileContents);
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
@@ -245,5 +242,25 @@ public class GeneratorCPP implements Generator {
 
     public void setUseMPIDefinitionFix(boolean useFix) {
         this.MPIDefinitionFix = useFix;
+    }
+
+    public Path getModelsDirPath() {
+        return modelsDirPath;
+    }
+
+    public void setModelsDirPath(Path modelsDirPath) {
+        this.modelsDirPath = modelsDirPath;
+    }
+
+    public boolean isGenerateTests() {
+        return isGenerateTests;
+    }
+
+    public void setGenerateTests(boolean generateTests) {
+        isGenerateTests = generateTests;
+    }
+
+    public List<BluePrintCPP> getBluePrints() {
+        return Collections.unmodifiableList(bluePrints);
     }
 }
