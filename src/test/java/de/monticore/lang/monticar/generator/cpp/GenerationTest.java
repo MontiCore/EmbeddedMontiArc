@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -445,7 +446,6 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/11")
     public void testMyComponent2() throws IOException {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
         ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
@@ -456,7 +456,12 @@ public class GenerationTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/MyComponent2");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
-        Assert.assertEquals(2, files.size());
+        Assert.assertFalse(files.isEmpty());
+        checkFilesAreEqual(
+                files,
+                Paths.get("./target/generated-sources-cpp/testing/MyComponent2"),
+                "testing/MyComponent2/"
+        );
     }
 
     @Test

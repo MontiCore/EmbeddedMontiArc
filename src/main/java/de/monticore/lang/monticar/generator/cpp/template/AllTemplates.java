@@ -1,6 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp.template;
 
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.EnumViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.StructViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.TestsMainEntryViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 import de.se_rwth.commons.logging.Log;
@@ -16,6 +18,8 @@ public final class AllTemplates {
 
     private static final Template COMPONENT_STREAM_TEST;
     private static final Template TESTS_MAIN_ENTRY;
+    private static final Template STRUCT;
+    private static final Template ENUM;
 
     static {
         Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
@@ -26,6 +30,8 @@ public final class AllTemplates {
         try {
             COMPONENT_STREAM_TEST = conf.getTemplate("/test/ComponentStreamTest.ftl");
             TESTS_MAIN_ENTRY = conf.getTemplate("/test/TestsMainEntry.ftl");
+            STRUCT = conf.getTemplate("/type/Struct.ftl");
+            ENUM = conf.getTemplate("/type/Enum.ftl");
         } catch (IOException e) {
             String msg = "could not load templates";
             Log.error(msg, e);
@@ -42,6 +48,14 @@ public final class AllTemplates {
 
     public static String generateMainEntry(TestsMainEntryViewModel viewModel) {
         return generate(TESTS_MAIN_ENTRY, viewModel);
+    }
+
+    public static String generateStruct(StructViewModel viewModel) {
+        return generate(STRUCT, viewModel);
+    }
+
+    public static String generateEnum(EnumViewModel viewModel) {
+        return generate(ENUM, viewModel);
     }
 
     private static String generate(Template template, ViewModelBase viewModelBase) {

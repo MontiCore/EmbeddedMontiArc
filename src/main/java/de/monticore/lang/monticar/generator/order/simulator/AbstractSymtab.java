@@ -10,6 +10,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
@@ -20,6 +21,7 @@ import de.monticore.lang.monticar.generator.order.nfp.TagMinMaxTagSchema.TagMinM
 import de.monticore.lang.monticar.generator.order.nfp.TagTableTagSchema.TagTableTagSchema;
 import de.monticore.lang.monticar.generator.order.nfp.TagThresholdTagSchema.TagThresholdTagSchema;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
@@ -55,6 +57,8 @@ public class AbstractSymtab {
 
         fam.addModelingLanguage(montiArcLanguage);
         fam.addModelingLanguage(new StreamUnitsLanguage());
+        fam.addModelingLanguage(new StructLanguage());
+        fam.addModelingLanguage(new EnumLangLanguage());
         final ModelPath mp = new ModelPath();
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));
