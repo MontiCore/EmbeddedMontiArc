@@ -7,7 +7,6 @@ component DoorStatus {
 
     implementation Math {
 
-        B test = velocity < 1 km/h
-        status = test;
+        status = velocity < 1 km/h;
     }
 }
