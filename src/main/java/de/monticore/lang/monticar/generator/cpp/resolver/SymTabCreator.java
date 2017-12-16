@@ -2,7 +2,6 @@ package de.monticore.lang.monticar.generator.cpp.resolver;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
@@ -51,7 +50,6 @@ public class SymTabCreator {
 
         fam.addModelingLanguage(montiArcLanguage);
         fam.addModelingLanguage(new StreamUnitsLanguage());
-        fam.addModelingLanguage(new JavaDSLLanguage());
 
         ModelPath mp = new ModelPath(modelPaths);
         LogConfig.init();
