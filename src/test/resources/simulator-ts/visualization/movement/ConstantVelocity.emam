@@ -1,27 +1,21 @@
 package visualization.movement;
 
-import visualization.basics.Constant;
-import visualization.basics.Less;
-import visualization.basics.SwitchB;
-
 component ConstantVelocity {
 	port
 		in (0km/h : 250km/h) velocity,
-		in Double time,
+		in (0s:1000s) time,
 		out (-2m/s^2:2m/s^2) acceleration;
 
-	instance Constant<Double>(1) constant;
-	instance Constant<Double>(0) constant1;
-    instance Constant<Double>(2) constant2; //accelerates with 2 m/s²
-	instance Less<Double> relationalOperator;
-	instance SwitchB<Double> switchBlock;
+	implementation Math {
 
+        B cond = time < 1s;
 
-    // accelerates 1 second and after that stop accelerating
-	connect switchBlock.out1 -> acceleration;
-	connect relationalOperator.out1 -> switchBlock.cond;
-	connect constant2.out1 -> switchBlock.in1;
-	connect constant1.out1 -> switchBlock.in3;
-	connect time -> relationalOperator.in1;
-	connect constant.out1 -> relationalOperator.in2;
+    	if cond {
+    	    acceleration = 0 m/s^2;
+    	}
+    	else{
+    	    acceleration = 2 m/s^2;
+    	}
+    	end
+    }
 }

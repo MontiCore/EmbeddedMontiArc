@@ -1,12 +1,13 @@
 package visualization.lights;
 
-component LightTimer {
+component BrakeLightsControl {
     port
         in (0s:1000s) time,
         out B status;
 
     implementation Math {
 
+        // Turn brake lights on after 1 second
         status = time > 1s;
     }
 }
