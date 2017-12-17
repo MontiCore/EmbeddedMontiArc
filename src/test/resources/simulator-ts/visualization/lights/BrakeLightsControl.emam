@@ -1,4 +1,4 @@
-package visualization.lights;
+package lights;
 
 component BrakeLightsControl {
     port

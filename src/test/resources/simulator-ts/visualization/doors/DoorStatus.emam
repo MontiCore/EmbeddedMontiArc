@@ -1,4 +1,4 @@
-package visualization.doors;
+package doors;
 
 component DoorStatus {
     port

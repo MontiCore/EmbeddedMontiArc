@@ -1,10 +1,9 @@
-package visualization.main;
+package main;
 
-import visualization.basics.*;
-import visualization.doors.*;
-import visualization.lights.*;
-import visualization.movement.*;
-import visualization.feature.*;
+import doors.*;
+import lights.*;
+import movement.*;
+import feature.*;
 
 component SDCS {
     port

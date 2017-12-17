@@ -1,4 +1,4 @@
-package visualization.movement;
+package movement;
 
 component SteeringControl {
     port
@@ -13,14 +13,14 @@ component SteeringControl {
 
     implementation Math {
 
-            (0m:2m) threshold = 0.1m;
-            (-2m:0m) thresholdN = -0.1m;
+            Q(0m:2m) threshold = 0.1m;
+            Q(-2m:0m) thresholdN = -0.1m;
 
             B comp1 = (((fl-fr) > threshold) && ((slf-slb) > threshold)) && ((srb-srf) > threshold);
             B comp2 = (((fl-fr) < thresholdN) && ((slf-slb) < thresholdN)) && ((srb-srf) < thresholdN);
             B comp3 = (slf<slb) && (srf<srb);
 
-            (0°:-1°) resComp3 = 0°;
+            Q(0°:-1°) resComp3 = 0°;
             if comp3 {
 
                 resComp3 = -1°;
@@ -31,7 +31,7 @@ component SteeringControl {
             }
             end
 
-            (5°:-1°) resComp2 = 0°;
+            Q(5°:-1°) resComp2 = 0°;
             if comp2 {
 
                 resComp2 = 5°;
