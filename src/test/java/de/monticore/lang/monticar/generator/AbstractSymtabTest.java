@@ -6,6 +6,7 @@
 package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import org.junit.Assert;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,12 @@ public class AbstractSymtabTest extends AbstractSymtab {
     }
 
     public static boolean areBothFilesEqual(File file1, File file2) {
-        if (!file1.exists() || !file2.exists()) {
+        if (!file1.exists()) {
+            Assert.fail("file does not exist: " + file1.getAbsolutePath());
+            return false;
+        }
+        if (!file2.exists()) {
+            Assert.fail("file does not exist: " + file2.getAbsolutePath());
             return false;
         }
         List<String> lines1;
@@ -39,18 +45,31 @@ public class AbstractSymtabTest extends AbstractSymtab {
             lines2 = Files.readAllLines(file2.toPath());
         } catch (IOException e) {
             e.printStackTrace();
+            Assert.fail("IO error: " + e.getMessage());
             return false;
         }
         lines1 = discardEmptyLines(lines1);
         lines2 = discardEmptyLines(lines2);
         if (lines1.size() != lines2.size()) {
+            Assert.fail(
+                    "files have different number of lines: "
+                            + file1.getAbsolutePath()
+                            + " has " + lines1
+                            + " lines and " + file2.getAbsolutePath() + " has " + lines2 + " lines"
+            );
             return false;
         }
         int len = lines1.size();
         for (int i = 0; i < len; i++) {
-            if (!lines1.get(i).equals(lines2.get(i))) {
-                return false;
-            }
+            String l1 = lines1.get(i);
+            String l2 = lines2.get(i);
+            Assert.assertEquals("files differ in " + i + " line: "
+                            + file1.getAbsolutePath()
+                            + " has " + l1
+                            + " and " + file2.getAbsolutePath() + " has " + l2,
+                    l1,
+                    l2
+            );
         }
         return true;
     }
