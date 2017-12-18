@@ -25,12 +25,12 @@ import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Symbol;
-import org.apache.commons.math4.complex.Complex;
-import org.apache.commons.math4.complex.ComplexField;
-import org.apache.commons.math4.linear.*;
-import org.apache.commons.math4.linear.Array2DRowRealMatrix;
-import org.apache.commons.math4.linear.EigenDecomposition;
-import org.apache.commons.math4.linear.RealMatrix;
+import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.complex.ComplexField;
+import org.apache.commons.math3.linear.*;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
 
