@@ -18,18 +18,20 @@ public class FileUtils {
    * {@code IOException}
    */
   public static void delete(Path path) {
-    try (Stream<Path> fileStream = Files.walk(path)) {
-      fileStream
-          .sorted(Comparator.reverseOrder())
-          .forEach(p -> {
-            try {
-              Files.delete(p);
-            } catch (IOException e) {
-              throw new UncheckedIOException(e);
-            }
-          });
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
+    if (Files.exists(path)) {
+      try (Stream<Path> fileStream = Files.walk(path)) {
+        fileStream
+            .sorted(Comparator.reverseOrder())
+            .forEach(p -> {
+              try {
+                Files.delete(p);
+              } catch (IOException e) {
+                throw new UncheckedIOException(e);
+              }
+            });
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
     }
   }
 

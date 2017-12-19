@@ -19,6 +19,7 @@ class FileUtilsTest {
   private static final Path NON_EMPTY_DIR = BASE_PATH.resolve("dir");
   private static final Path DIR_IN_NON_EMPTY_DIR = NON_EMPTY_DIR.resolve("another_dir");
   private static final Path FILE_IN_NON_EMPTY_DIR = DIR_IN_NON_EMPTY_DIR.resolve("file.txt");
+  private static final Path NON_EXISTING_DIR = BASE_PATH.resolve("dir");
 
   @AfterEach
   void cleanUp() throws IOException {
@@ -75,6 +76,16 @@ class FileUtilsTest {
     void shouldDeleteDirectory() {
       FileUtils.delete(NON_EMPTY_DIR);
       assertThat(NON_EMPTY_DIR).doesNotExist();
+    }
+  }
+
+  @Nested
+  class WhenNonExistingDirectory {
+
+    @Test
+    void shouldNotDeleteAnything() {
+      assertThat(NON_EMPTY_DIR).doesNotExist();
+      FileUtils.delete(NON_EXISTING_DIR);
     }
   }
 
