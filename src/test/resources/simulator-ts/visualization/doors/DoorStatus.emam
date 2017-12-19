@@ -1,0 +1,12 @@
+package doors;
+
+component DoorStatus {
+    port
+        in (0km/h:250km/h) velocity,
+        out B status;
+
+    implementation Math {
+
+        status = velocity < 1 km/h;
+    }
+}
