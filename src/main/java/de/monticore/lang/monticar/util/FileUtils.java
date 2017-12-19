@@ -18,6 +18,10 @@ public class FileUtils {
    * {@code IOException}
    */
   public static void delete(Path path) {
+    delete(path, 2);
+  }
+
+  private static void delete(Path path, int attempts) {
     if (Files.exists(path)) {
       try (Stream<Path> fileStream = Files.walk(path)) {
         fileStream
@@ -26,7 +30,16 @@ public class FileUtils {
               try {
                 Files.delete(p);
               } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                if (attempts > 0) {
+                  //Windows may be just slow, so try again
+                  try {
+                    Thread.sleep(200);
+                  } catch (InterruptedException ignored) {
+                  }
+                  delete(path, attempts - 1);
+                } else {
+                  throw new UncheckedIOException(e);
+                }
               }
             });
       } catch (IOException e) {
