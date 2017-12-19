@@ -1,7 +1,5 @@
 package de.monticore.lang.monticar.resolver;
 
-import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
-import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
 import java.nio.file.Path;
 
 public class ResolverFactory {
