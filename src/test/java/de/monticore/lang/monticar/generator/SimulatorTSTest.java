@@ -26,7 +26,6 @@ public class SimulatorTSTest extends AbstractSymtab{
         Assert.assertNotNull(instanceSymbol);
     }
 
-    //@Ignore
     @Test
     public void resolveModelGameOverTrigger() {
 
@@ -63,7 +62,6 @@ public class SimulatorTSTest extends AbstractSymtab{
         Assert.assertNotNull(instanceSymbol);
     }
 
-    //@Ignore
     @Test
     public void resolveModel() {
 
@@ -82,7 +80,6 @@ public class SimulatorTSTest extends AbstractSymtab{
         Assert.assertNotNull(instanceSymbol);
     }
 
-    //@Ignore
     @Test
     public void resolveModelsSteeringControl() {
 
