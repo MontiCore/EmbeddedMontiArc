@@ -153,9 +153,11 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 Log.error("Case not handled!");
             }*/
             symbol.setNameOfMathValue(astMathMatrixNameExpression.getName().get());
+            //System.out.println(astMathMatrixNameExpression.getMathMatrixAccessExpression().get().toString());
             symbol.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get());
         }
         symbol.setAssignmentOperator(MathAssignmentOperator.convert(assignmentExpression.getMathAssignmentOperator()));
+        //System.out.println(assignmentExpression.getMathExpression().toString());
         symbol.setExpressionSymbol((MathExpressionSymbol) assignmentExpression.getMathExpression().getSymbol().get());
 
         addToScopeAndLinkWithNode(symbol, assignmentExpression);
@@ -466,6 +468,26 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astMathCompareGreaterEqualThanExpression);
     }
 
+
+    public void endVisit(final ASTMathBooleanOrExpression astMathBooleanOrExpression){
+        MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
+
+        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathBooleanOrExpression.
+                getMathExpressions().get(0), astMathBooleanOrExpression.
+                getMathExpressions().get(1), "||");
+
+        addToScopeAndLinkWithNode(symbol, astMathBooleanOrExpression);
+    }
+
+    public void endVisit(final ASTMathBooleanAndExpression astMathBooleanAndExpression){
+        MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
+
+        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathBooleanAndExpression.
+                getMathExpressions().get(0), astMathBooleanAndExpression.
+                getMathExpressions().get(1), "&&");
+
+        addToScopeAndLinkWithNode(symbol, astMathBooleanAndExpression);
+    }
 
     public void endVisit(final ASTMathCompareGreaterThanExpression astMathCompareGreaterThanExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
