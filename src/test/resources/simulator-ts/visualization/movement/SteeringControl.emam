@@ -16,9 +16,9 @@ component SteeringControl {
             Q(0m:2m) threshold = 0.1m;
             Q(-2m:0m) thresholdN = -0.1m;
 
-            //B comp1 = (((fl-fr) > threshold) && ((slf-slb) > threshold)) && ((srb-srf) > threshold);
-            //B comp2 = (((fl-fr) < thresholdN) && ((slf-slb) < thresholdN)) && ((srb-srf) < thresholdN);
-            //B comp3 = (slf<slb) && (srf<srb);
+            B comp1 = (((fl-fr) > threshold) && ((slf-slb) > threshold)) && ((srb-srf) > threshold);
+            B comp2 = (((fl-fr) < thresholdN) && ((slf-slb) < thresholdN)) && ((srb-srf) < thresholdN);
+            B comp3 = (slf<slb) && (srf<srb);
 
             Q(0°:-1°) resComp3 = 0°;
             if comp3 {
