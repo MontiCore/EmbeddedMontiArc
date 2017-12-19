@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.emscripten;
 
-import static de.monticore.lang.monticar.contract.Precondition.requiresNotBlank;
+import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotBlank;
 
 /**
  * This class represents a command line option with boolean values of the type
