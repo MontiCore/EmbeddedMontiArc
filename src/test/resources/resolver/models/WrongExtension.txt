@@ -1,0 +1,12 @@
+package models;
+
+component WrongExtension {
+  ports
+    in (-oo:oo) in1,
+    in (-oo:oo) in2,
+    out (-oo:oo) out1;
+
+  implementation Math {
+    out1 = in1 + in2;
+  }
+}
