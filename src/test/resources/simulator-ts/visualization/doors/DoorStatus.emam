@@ -3,7 +3,7 @@ package doors;
 component DoorStatus {
     port
         in (0km/h:250km/h) velocity,
-        out (0:1) status;
+        out B status;
 
     implementation Math {
 

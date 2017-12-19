@@ -3,7 +3,7 @@ package movement;
 component ConstantVelocity {
 	port
 		in (0km/h : 250km/h) velocity,
-		in (0s : 1000s) time,
+		in (0s : oos) time,
 		out (-2 m/s^2 : 2 m/s^2) acceleration;
 
 	implementation Math {

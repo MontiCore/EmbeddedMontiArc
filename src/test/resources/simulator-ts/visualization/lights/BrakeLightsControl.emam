@@ -2,7 +2,7 @@ package lights;
 
 component BrakeLightsControl {
     port
-        in (0s:1000s) time,
+        in (0s:oos) time,
         out B status;
 
     implementation Math {

@@ -7,7 +7,7 @@ import feature.*;
 
 component SDCS {
     port
-        in (0s:1000s) time,
+        in (0s:oos) time,
 
         // Distances of the sensors to the track
         in (0m:2m) fl, // frontleft
