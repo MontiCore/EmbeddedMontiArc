@@ -35,8 +35,8 @@ public class ASTElementType extends ASTElementTypeTOP {
 
     public  ASTElementType (String tElementType,
         boolean isBoolean, boolean isComplex, boolean isRational,
-                               boolean isWholeNumber) {
-        super(tElementType, isBoolean, isComplex, isRational, isWholeNumber);
+                               boolean isWholeNumber, boolean isNaturalNumber) {
+        super(tElementType, isBoolean, isComplex, isRational, isWholeNumber, isNaturalNumber);
     }
 
     public ASTElementType() {
