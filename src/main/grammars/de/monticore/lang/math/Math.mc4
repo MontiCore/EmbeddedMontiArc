@@ -47,7 +47,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
 
     MathForLoopHead = Name& "=" MathExpression;
 
-    MathDeclarationExpression implements MathExpression = type:AssignmentType Name& ";";
+    MathDeclarationExpression implements MathExpression = type:AssignmentType Name ";";
 
     MathAssignmentDeclarationExpression implements MathExpression = type:AssignmentType Name& MathAssignmentOperator MathExpression ";";
 
@@ -55,15 +55,26 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
 
     MathAssignmentOperator = operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
 
-    MathConditionalExpression implements MathExpression = MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
     MathConditionalExpressionShort implements MathExpression = MathExpression /*MathBooleanExpression*/ "?" trueCase:MathExpression+ ":" falseCase:MathExpression+;
 
-    MathIfExpression  = "if" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
+    /**
+    Syntax is without "{"
+    if expression
+        statements
+    elseif expression
+        statements
+    else
+        statements
+    end
+    see https://de.mathworks.com/help/matlab/ref/if.html
+    */
+    MathConditionalExpression implements MathExpression = "if" MathIfExpression MathElseIfExpression* MathElseExpression? "end";
+    MathIfExpression  = condition:MathExpression body:MathExpression+;
 
-    MathElseIfExpression = "elseif" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
+    MathElseIfExpression = "elseif" condition:MathExpression body:MathExpression+  ;
 
-    MathElseExpression = "else" "{" body:MathExpression* "}";
+    MathElseExpression = "else" body:MathExpression+ ;
 
     Dimension = "^" "{" (MathArithmeticExpression || ",")+ "}";
 
@@ -215,7 +226,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     //ast MatrixType= method public String printType(){return "MatrixType";};
     MatrixType = ElementType Dimension;
 
-    Dimension = "^" "{" (ArithmeticExpression || ",")+ "}";
+    Dimension = "^" ("{" (ArithmeticExpression || ",")+ "}") | ArithmeticExpression;
 
 	//TODO Refactor grammar to make ast look better and profit from left recursion possible in the new monticore versions
     MathExpression implements Expression= ArithmeticExpression
