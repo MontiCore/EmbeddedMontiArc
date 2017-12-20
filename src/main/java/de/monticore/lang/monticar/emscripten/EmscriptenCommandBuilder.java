@@ -113,7 +113,8 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     list.add(emscripten.toString());
     list.add(file.toString());
     if (outputFile != null) {
-      list.add("-o " + outputFile);
+      list.add("-o");
+      list.add(outputFile);
     }
     includes.stream().map(path -> "-I\"" + path.toString() + "\"").forEach(list::add);
     options.stream().map(Option::toString).forEach(s -> {
