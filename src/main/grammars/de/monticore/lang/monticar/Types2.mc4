@@ -346,10 +346,11 @@ grammar Types2 extends de.monticore.lang.monticar.Literals2, siunit.monticoresiu
                  [isWholeNumberNumber:"Z"] |
                  [isRational:"Q"] |
                  [isComplex:"C"] |
-                 [isBoolean:"B"];
+                 [isBoolean:"B"] |
+                 [isNatural:"N"];
 
     token TElementType =
-      ('Z' | 'Q' | 'C') Space*
+      ('Z' | 'Q' | 'C' | 'N') Space*
         '(' Space* (TUnitNumber | TUnitInf) Space* ':'
             (Space* TUnitNumber Space* ':')?
             Space* (TUnitNumber | TUnitInf) Space*
