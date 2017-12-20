@@ -1,7 +1,5 @@
 package de.monticore.lang.monticar.util;
 
-import static de.monticore.lang.monticar.contract.FilePrecondition.requiresFile;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -18,7 +16,7 @@ public class TextFile {
   private final Path path;
 
   public TextFile(Path path) {
-    this.path = requiresFile(path);
+    this.path = path;
   }
 
   public Path getPath() {

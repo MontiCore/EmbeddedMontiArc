@@ -1,9 +1,7 @@
 package de.monticore.lang.monticar.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Nested;
@@ -17,16 +15,6 @@ class TextFileTest {
       .get("src/test/resources/files/not_empty.txt");
   private static final Path MULTIPLE_LINES_TEXT_FILE = Paths
       .get("src/test/resources/files/multiple_lines.txt");
-
-  @Nested
-  class ShouldThrowExceptionAtInitialization {
-
-    @Test
-    void whenDirectoryInsteadOfFile() {
-      assertThatExceptionOfType(PreconditionViolationException.class)
-          .isThrownBy(() -> new TextFile(SOME_DIRECTORY));
-    }
-  }
 
   @Nested
   class Read {
