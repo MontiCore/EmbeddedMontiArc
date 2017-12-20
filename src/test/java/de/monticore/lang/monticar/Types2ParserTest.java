@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
+import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._parser.Types2Parser;
 import org.junit.Test;
@@ -35,6 +36,7 @@ public class Types2ParserTest {
   @Test
   public void testDegreeElementType() throws IOException {
     Types2Parser parser = new Types2Parser();
+    parser.setParserTarget(MCConcreteParser.ParserExecution.EOF);
     ASTElementType ast = parser.parseString_ElementType("Q(-90°:90°)").orElse(null);
     assertNotNull(ast);
   }
