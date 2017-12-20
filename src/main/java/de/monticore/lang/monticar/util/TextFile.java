@@ -37,6 +37,7 @@ public class TextFile {
   /**
    * Writes a supplied string to a text file. If the file already exists, it deletes the content
    * of the original file and then writes the string into it.
+   * If the file or any of its parent folders does not exist, this method will try to create them.
    *
    * @param text string to write to the text file
    * @throws UncheckedIOException whenever the underlying write operations throw a checked
