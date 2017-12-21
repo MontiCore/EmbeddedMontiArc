@@ -5,12 +5,14 @@ In order to do so it utilizes TNumberUnits from SI and the Weather language.
 
 SimLang files must end with .sim.
 
-##Syntax help:
+## Syntax help
+```
 "" terms are keywords.
 | denotes choices.
 []-parenthesised terms are variable input.
 ()? are optional inputs.
 Uppercase terms relate to another rule.
+```
 
 **See FullExample.sim for a concrete example of each rule.**
 
@@ -128,8 +130,10 @@ Default:
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 Default:
+```
 
 # Weather Rules
+```
 ### WEATHEROBJ:: "{" RULE1 RULE2 ... "}"
 
 ### "temperature" [Number]("K"|"°C°|"°F")
