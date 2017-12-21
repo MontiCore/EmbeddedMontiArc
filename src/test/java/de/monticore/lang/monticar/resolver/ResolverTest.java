@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,9 @@ class ResolverTest {
 
   private static Resolver resolver;
 
-  @BeforeAll
-  static void setUp() {
+  //  @BeforeAll
+  @BeforeEach
+  void setUp() {
     SymTabCreator symTabCreator = new SymTabCreator(RESOLVE_PATH);
     resolver = new Resolver(symTabCreator.createSymTab());
   }
