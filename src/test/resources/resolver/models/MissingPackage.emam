@@ -1,4 +1,4 @@
-component CorrectModel {
+component MissingPackage {
   ports
     in (-oo:oo) in1,
     in (-oo:oo) in2,
