@@ -30,203 +30,39 @@ import java.util.ArrayList;
 public class PropertyChecker {
     public static ArrayList<MatrixProperties> checkProps(MathArithmeticExpressionSymbol exp){
         PrologHandler plh = new PrologHandler();
-        MathExpressionSymbol leftExpression = getLeftMathExpressionSymbol(exp);
-        MathExpressionSymbol rightExpression = getRightMathExpressionSymbol(exp);
+        MathExpressionSymbol leftExpression = getChildMathExpressionSymbol(exp.getLeftExpression());
+        MathExpressionSymbol rightExpression = getChildMathExpressionSymbol(exp.getRightExpression());
         ArrayList<MatrixProperties> props1 = getProps(leftExpression);
         if (props1.isEmpty())
             lookForScalar(((MathNumberExpressionSymbol)leftExpression), "m1", plh);
-        String op;
-        if (rightExpression.isValueExpression()) {
-            if (exp.getMathOperator().equals("^") &&
-                    ((MathNumberExpressionSymbol) rightExpression).getValue().getRealNumber().doubleValue() == -1) {
-                op = "inv";
-                addPrologClauses(plh,props1,"m1");
-                return askSolutions(plh, op, false);
-            } else op = " " + exp.getMathOperator() + " ";
-        } else op = " " + exp.getMathOperator() + " ";
+        String op = "inv";
+        if (getPropertiesOfInv(exp, plh, rightExpression, props1, op)) return AskSolution.askSolutions(plh, op, false);
+        op = " " + exp.getMathOperator() + " ";
         addPrologClauses(plh,props1,"m1");
         ArrayList<MatrixProperties> props2 = getProps(rightExpression);
         if (props2.isEmpty())
             lookForScalar(((MathNumberExpressionSymbol)rightExpression), "m2", plh);
         addPrologClauses(plh,props2,"m2");
-        return askSolutions(plh, op, true);
+        return AskSolution.askSolutions(plh, op, true);
     }
 
-    private static MathExpressionSymbol getRightMathExpressionSymbol(MathArithmeticExpressionSymbol exp) {
-        MathExpressionSymbol rightExpression = exp.getRightExpression();
-        if (rightExpression instanceof MathNameExpressionSymbol)
-            rightExpression = resolveSymbol(((MathNameExpressionSymbol) rightExpression));
-        while (rightExpression.isParenthesisExpression())
-            rightExpression = ((MathParenthesisExpressionSymbol)rightExpression).getMathExpressionSymbol();
-        return rightExpression;
-    }
-
-    private static MathExpressionSymbol getLeftMathExpressionSymbol(MathArithmeticExpressionSymbol exp) {
-        MathExpressionSymbol leftExpression = exp.getLeftExpression();
-        if (leftExpression instanceof MathNameExpressionSymbol)
-            leftExpression = resolveSymbol(((MathNameExpressionSymbol) leftExpression));
-        while (leftExpression.isParenthesisExpression())
-            leftExpression = ((MathParenthesisExpressionSymbol)leftExpression).getMathExpressionSymbol();
-        return leftExpression;
-    }
-
-    private static ArrayList<MatrixProperties> askSolutions(PrologHandler plh, String op, boolean binary){
-        ArrayList<MatrixProperties> res = new ArrayList<>();
-        squareProperty(plh, op, binary, res);
-        normalProperty(plh, op, binary, res);
-        diagProperty(plh, op, binary, res);
-        hermProperty(plh, op, binary, res);
-        skewHermProperty(plh, op, binary, res);
-        psdProperty(plh, op, binary, res);
-        pdProperty(plh, op, binary, res);
-        nsdProperty(plh, op, binary, res);
-        ndProperty(plh, op, binary, res);
-        posProperty(plh, op, binary, res);
-        negProperty(plh, op, binary, res);
-        invProperty(plh, op, binary, res);
-        plh.removeClauses();
-        return res;
-    }
-
-    private static void invProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "inv(m1,m2,'" + op + "').";
-        else query = "inv(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Invertible);
+    private static boolean getPropertiesOfInv(MathArithmeticExpressionSymbol exp, PrologHandler plh, MathExpressionSymbol rightExpression, ArrayList<MatrixProperties> props1, String op) {
+        if (rightExpression.isValueExpression()) {
+            if (exp.getMathOperator().equals("^") &&
+                    ((MathNumberExpressionSymbol) rightExpression).getValue().getRealNumber().doubleValue() == -1) {
+                addPrologClauses(plh,props1,"m1");
+                return true;
+            }
         }
+        return false;
     }
 
-    private static void negProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "neg(m1,m2,'" + op + "').";
-        else query = "neg(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Negative);
-        }
-    }
-
-    private static void posProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "pos(m1,m2,'" + op + "').";
-        else query = "pos(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Positive);
-        }
-    }
-
-    private static void ndProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "nd(m1,m2,'" + op + "').";
-        else query = "nd(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.NegDef);
-        }
-    }
-
-    private static void nsdProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "nsd(m1,m2,'" + op + "').";
-        else query = "nsd(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.NegSemDef);
-        }
-    }
-
-    private static void pdProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "pd(m1,m2,'" + op + "').";
-        else query = "pd(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.PosDef);
-        }
-    }
-
-    private static void psdProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "psd(m1,m2,'" + op + "').";
-        else query = "psd(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.PosSemDef);
-        }
-    }
-
-    private static void skewHermProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "skewHerm(m1,m2,'" + op + "').";
-        else query = "skewHerm(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.SkewHerm);
-        }
-    }
-
-    private static void hermProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "herm(m1,m2,'" + op + "').";
-        else query = "herm(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Herm);
-        }
-    }
-
-    private static void diagProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-
-        if (binary) query = "diag(m1,m2,'" + op + "').";
-        else query = "diag(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Diag);
-        }
-    }
-
-    private static void normalProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        ArrayList<String> sol;
-        String query;
-        if (binary) query = "norm(m1,m2,'" + op + "').";
-        else query = "norm(m1,'" + op + "').";
-        sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Norm);
-        }
-    }
-
-    private static void squareProperty(PrologHandler plh, String op, boolean binary, ArrayList<MatrixProperties> res) {
-        String query;
-        if (binary) query = "square(m1,m2,'" + op + "').";
-        else query = "square(m1,'" + op + "').";
-        ArrayList<String> sol = plh.getSolution(query);
-        if (sol.contains("yes.")){
-            res.add(MatrixProperties.Square);
-        }
+    private static MathExpressionSymbol getChildMathExpressionSymbol(MathExpressionSymbol exp) {
+        if (exp instanceof MathNameExpressionSymbol)
+            exp = resolveSymbol(((MathNameExpressionSymbol) exp));
+        while (exp.isParenthesisExpression())
+            exp = ((MathParenthesisExpressionSymbol)exp).getMathExpressionSymbol();
+        return exp;
     }
 
     private static void lookForScalar(MathNumberExpressionSymbol num, String matrix, PrologHandler plh){

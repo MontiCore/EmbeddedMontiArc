@@ -37,49 +37,51 @@ public enum MatrixProperties {
      */
     @Override
     public String toString() {
+        String res;
         switch(this) {
             case Diag:{
-                return "diag";
-            }
+                res = "diag";
+            break; }
             case Herm:{
-                return "herm";
-            }
+                res = "herm";
+            break;}
             case Norm:{
-                return "norm";
-            }
+                res = "norm";
+            break;}
             case Indef:{
-                return "indef";
-            }
+                res = "indef";
+            break;}
             case NegDef:{
-                return "nd";
-            }
+                res = "nd";
+            break;}
             case PosDef:{
-                return "pd";
-            }
+                res = "pd";
+            break;}
             case Square:{
-                return "square";
-            }
+                res = "square";
+            break;}
             case SkewHerm:{
-                return "skewHerm";
-            }
+                res = "skewHerm";
+            break;}
             case NegSemDef:{
-                return "nsd";
-            }
+                res = "nsd";
+            break;}
             case PosSemDef:{
-                return "psd";
-            }
+                res = "psd";
+            break;}
             case Invertible:{
-                return "inv";
-            }
+                res = "inv";
+            break;}
             case Positive:{
-                return "pos";
-            }
+                res = "pos";
+            break;}
             case Negative:{
-                return "neg";
-            }
+                res = "neg";
+            break;}
             default:{
-                return "noProps";
+                res = "noProps";
             }
         }
+        return res;
     }
 }
