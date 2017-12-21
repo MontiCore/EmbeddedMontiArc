@@ -70,23 +70,26 @@ public class MatrixPropertiesIdentifier {
     public ArrayList<MatrixProperties> identifyMatrixProperties(){
         if (checkPositive(matrix)) props.add(MatrixProperties.Positive);
         else if (checkNegative(matrix)) props.add(MatrixProperties.Negative);
-        if(matrix.isSquare()) {
-            props.add(MatrixProperties.Square);
-            if (identifyNonSingularMatrix()) props.add(MatrixProperties.Invertible);
-
-            if (identifyNormalMatrix()) {
-                props.add(MatrixProperties.Norm);
-                if (identifyDiagMatrix()) props.add(MatrixProperties.Diag);
-
-                if (identifyHermitianMatrix()) {
-                    props.add(MatrixProperties.Herm);
-                    identifyDefMatrix();
-                }
-
-                if (identifySkewHermitianMatrix()) props.add(MatrixProperties.SkewHerm);
-            }
-        }
+        if(matrix.isSquare()) squareMatrix();
         return props;
+    }
+
+    private void squareMatrix() {
+        props.add(MatrixProperties.Square);
+        if (identifyNonSingularMatrix()) props.add(MatrixProperties.Invertible);
+        if (identifyNormalMatrix()) NormMatrix();
+    }
+
+    private void NormMatrix() {
+        props.add(MatrixProperties.Norm);
+        if (identifyDiagMatrix()) props.add(MatrixProperties.Diag);
+        if (identifyHermitianMatrix()) hermMatrix();
+        if (identifySkewHermitianMatrix()) props.add(MatrixProperties.SkewHerm);
+    }
+
+    private void hermMatrix() {
+        props.add(MatrixProperties.Herm);
+        identifyDefMatrix();
     }
 
     /**
@@ -95,13 +98,23 @@ public class MatrixPropertiesIdentifier {
      */
     private boolean identifyDiagMatrix(){
         for (int i = 0; i < matrix.getRowDimension(); i++){
-            for (int j = 0; j < matrix.getColumnDimension(); j++) {
-                if(i != j){
-                    if(!(matrix.getEntry(i,j).equals(Complex.ZERO))) return false;
-                }
-            }
+            if (checkColumnDiag(i)) return false;
         }
         return true;
+    }
+
+    private boolean checkColumnDiag(int i) {
+        for (int j = 0; j < matrix.getColumnDimension(); j++) {
+            if(i != j){
+                if (checkEntryDiag(i, j)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkEntryDiag(int i, int j) {
+        if(!(matrix.getEntry(i,j).equals(Complex.ZERO))) return true;
+        return false;
     }
 
     /**
@@ -125,32 +138,48 @@ public class MatrixPropertiesIdentifier {
      */
     private boolean identifyHermitianMatrix(){
         for (int i = 0; i < matrix.getRowDimension(); i++) {
-            for (int j = i; j < matrix.getColumnDimension(); j++){
-                if (i == j) {
-                    if(matrix.getEntry(i,j).getImaginary() != 0) return false;
-                }
-                else {
-                    if (matrix.getEntry(i,j).getImaginary() != 0 - matrix.getEntry(j,i).getImaginary()
-                            || matrix.getEntry(i,j).getReal() != matrix.getEntry(j,i).getReal()) return false;
-                }
-            }
+            if (checkColumnHerm(i, true)) return false;
         }
         return true;
     }
 
+    private boolean checkColumnHerm(int i, boolean herm) {
+        for (int j = i; j < matrix.getColumnDimension(); j++){
+            if (herm){
+                if (checkEntryHerm(i, j)) return true;
+            }
+            else if (checkEntrySkewHerm(i, j)) return true;
+        }
+        return false;
+    }
+
+    private boolean checkEntryHerm(int i, int j) {
+        if (i == j) {
+            if(matrix.getEntry(i,j).getImaginary() != 0) return true;
+        }
+        else {
+            if (matrix.getEntry(i,j).getImaginary() != 0 - matrix.getEntry(j,i).getImaginary()
+                    || matrix.getEntry(i,j).getReal() != matrix.getEntry(j,i).getReal()) return true;
+        }
+        return false;
+    }
+
     private boolean identifySkewHermitianMatrix(){
         for (int i = 0; i < matrix.getRowDimension(); i++) {
-            for (int j = i; j < matrix.getColumnDimension(); j++){
-                if (i == j) {
-                    if(matrix.getEntry(i,j).getReal() != 0) return false;
-                }
-                else {
-                    if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()
-                            || matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return false;
-                }
-            }
+            if (checkColumnHerm(i, false)) return false;
         }
         return true;
+    }
+
+    private boolean checkEntrySkewHerm(int i, int j) {
+        if (i == j) {
+            if(matrix.getEntry(i,j).getReal() != 0) return true;
+        }
+        else {
+            if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()
+                    || matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return true;
+        }
+        return false;
     }
 
 
@@ -160,38 +189,32 @@ public class MatrixPropertiesIdentifier {
      */
 
     private void identifyDefMatrix(){
-        double[][] d= new double[matrix.getRowDimension()][matrix.getColumnDimension()];
-        for (int i = 0; i < d.length; i++) {
-            for (int j = 0; j < d[0].length; j++) {
-                d[i][j] = matrix.getEntry(i,j).getReal();
-            }
-        }
-
+        double[][] d = getDoubleMatrix();
         RealMatrix matrix = new Array2DRowRealMatrix(d);
         EigenDecomposition e = new EigenDecomposition(matrix);
+        if (checkIndef(e)) return;
+        checkPosDef(e);
+        if (checkPosSemDef(e)) return;
+        checkNegDef(e);
+        if (checkNegSemDef(e)) return;
+        props.add(MatrixProperties.Indef);
+    }
 
-        if (e.hasComplexEigenvalues()){
-            props.add(MatrixProperties.Indef);
-            return;
-        }
-
-        boolean flag = true;
-        for (double v: e.getRealEigenvalues()) {
-            if(v <= 0) flag = false;
-        }
-        if(flag) {
-            props.add(MatrixProperties.PosDef);
-        }
-
+    private boolean checkNegSemDef(EigenDecomposition e) {
+        boolean flag;
         flag = true;
         for (double v: e.getRealEigenvalues()) {
-            if(v < 0) flag = false;
+            if(v > 0) flag = false;
         }
         if(flag) {
-            props.add(MatrixProperties.PosSemDef);
-            return;
+            props.add(MatrixProperties.NegSemDef);
+            return true;
         }
+        return false;
+    }
 
+    private void checkNegDef(EigenDecomposition e) {
+        boolean flag;
         flag = true;
         for (double v: e.getRealEigenvalues()) {
             if(v >= 0) flag = false;
@@ -199,18 +222,47 @@ public class MatrixPropertiesIdentifier {
         if(flag) {
             props.add(MatrixProperties.NegDef);
         }
+    }
 
+    private boolean checkPosSemDef(EigenDecomposition e) {
+        boolean flag;
         flag = true;
         for (double v: e.getRealEigenvalues()) {
-            if(v > 0) flag = false;
+            if(v < 0) flag = false;
         }
         if(flag) {
-            props.add(MatrixProperties.NegSemDef);
-            return;
+            props.add(MatrixProperties.PosSemDef);
+            return true;
         }
+        return false;
+    }
 
-        props.add(MatrixProperties.Indef);
+    private boolean checkIndef(EigenDecomposition e) {
+        if (e.hasComplexEigenvalues()){
+            props.add(MatrixProperties.Indef);
+            return true;
+        }
+        return false;
+    }
 
+    private void checkPosDef(EigenDecomposition e) {
+        boolean flag = true;
+        for (double v: e.getRealEigenvalues()) {
+            if(v <= 0) flag = false;
+        }
+        if(flag) {
+            props.add(MatrixProperties.PosDef);
+        }
+    }
+
+    private double[][] getDoubleMatrix() {
+        double[][] d= new double[matrix.getRowDimension()][matrix.getColumnDimension()];
+        for (int i = 0; i < d.length; i++) {
+            for (int j = 0; j < d[0].length; j++) {
+                d[i][j] = matrix.getEntry(i,j).getReal();
+            }
+        }
+        return d;
     }
 
     /**
@@ -228,26 +280,42 @@ public class MatrixPropertiesIdentifier {
      */
     private Complex getDeterminant(Array2DRowFieldMatrix<Complex> m){
         if (m.getRowDimension() == 1) return m.getEntry(0,0);
+        Complex value = getValue(m);
+        return value;
+    }
 
+    private Complex getValue(Array2DRowFieldMatrix<Complex> m) {
         Complex value = new Complex(0);
         for (int i = 0; i < m.getRowDimension(); i++) {
             Complex sign = new Complex(Math.pow(-1,i));
             Array2DRowFieldMatrix<Complex> m_sub = new Array2DRowFieldMatrix<>(ComplexField.getInstance(), m.getRowDimension() - 1, m.getColumnDimension() - 1);
-            for (int j = 0; j < m.getRowDimension(); j++) {
-                if (j < i){
-                    for (int k = 0; k < m.getColumnDimension()-1; k++) {
-                        m_sub.setEntry(j,k,m.getEntry(j,k+1));
-                    }
-                }
-                else if (j > i){
-                    for (int k = 0; k < m.getColumnDimension()-1; k++) {
-                        m_sub.setEntry(j-1,k,m.getEntry(j,k+1));
-                    }
-                }
-            }
+            goThroughRow(m, i, m_sub);
             value = value.add(sign.multiply(m.getEntry(i,0).multiply(getDeterminant(m_sub))));
         }
         return value;
+    }
+
+    private void goThroughRow(Array2DRowFieldMatrix<Complex> m, int i, Array2DRowFieldMatrix<Complex> m_sub) {
+        for (int j = 0; j < m.getRowDimension(); j++) {
+            if (j < i){
+                lowerEntry(m, m_sub, j);
+            }
+            else if (j > i){
+                upperEntry(m, m_sub, j);
+            }
+        }
+    }
+
+    private void upperEntry(Array2DRowFieldMatrix<Complex> m, Array2DRowFieldMatrix<Complex> m_sub, int j) {
+        for (int k = 0; k < m.getColumnDimension()-1; k++) {
+            m_sub.setEntry(j-1,k,m.getEntry(j,k+1));
+        }
+    }
+
+    private void lowerEntry(Array2DRowFieldMatrix<Complex> m, Array2DRowFieldMatrix<Complex> m_sub, int j) {
+        for (int k = 0; k < m.getColumnDimension()-1; k++) {
+            m_sub.setEntry(j,k,m.getEntry(j,k+1));
+        }
     }
 
     /**
@@ -257,12 +325,20 @@ public class MatrixPropertiesIdentifier {
      */
     private boolean checkPositive(Array2DRowFieldMatrix<Complex> m){
         for (int i = 0; i < m.getRowDimension(); i++) {
-            for (int j = 0; j < m.getColumnDimension(); j++) {
-                if (m.getEntry(i,j).getReal() < 0) return false;
-                if (!(m.getEntry(i,j).getImaginary() == 0)) return false;
-            }
+            if (checkColumnPosNeg(m, i, true)) return false;
         }
         return true;
+    }
+
+    private boolean checkColumnPosNeg(Array2DRowFieldMatrix<Complex> m, int i, boolean pos) {
+        for (int j = 0; j < m.getColumnDimension(); j++) {
+            if (pos){
+                if (m.getEntry(i,j).getReal() < 0) return true;
+            }
+            else if (m.getEntry(i,j).getReal() > 0) return true;
+            if (!(m.getEntry(i,j).getImaginary() == 0)) return true;
+        }
+        return false;
     }
 
     /**
@@ -272,14 +348,10 @@ public class MatrixPropertiesIdentifier {
      */
     private boolean checkNegative(Array2DRowFieldMatrix<Complex> m){
         for (int i = 0; i < m.getRowDimension(); i++) {
-            for (int j = 0; j < m.getColumnDimension(); j++) {
-                if (m.getEntry(i,j).getReal() > 0) return false;
-                if (!(m.getEntry(i,j).getImaginary() == 0)) return false;
-            }
+            if (checkColumnPosNeg(m, i, false)) return false;
         }
         return true;
     }
-
 
     //Helper methods for obtaining complex values
 
@@ -298,26 +370,31 @@ public class MatrixPropertiesIdentifier {
         Complex value1 = dissolveChildExpression(((MathArithmeticExpressionSymbol)exp).getLeftExpression());
         Complex value2 = dissolveChildExpression(((MathArithmeticExpressionSymbol)exp).getRightExpression());
 
-        switch (((MathArithmeticExpressionSymbol)exp).getMathOperator()) {
+        return getResult((MathArithmeticExpressionSymbol) exp, value1, value2);
+    }
+
+    private Complex getResult(MathArithmeticExpressionSymbol exp, Complex value1, Complex value2) {
+        Complex res;
+        switch (exp.getMathOperator()) {
             case "+": {
-                return value1.add(value2);
-            }
+                res = value1.add(value2);
+                break; }
             case "-": {
-                return value1.subtract(value2);
-            }
+                res = value1.subtract(value2);
+                break; }
             case "*": {
-                return value1.multiply(value2);
-            }
+                res = value1.multiply(value2);
+                break; }
             case "/": {
-                return value1.divide(value2);
-            }
+                res = value1.divide(value2);
+                break; }
             case "^": {
-                return value1.pow(value2);
-            }
+                res = value1.pow(value2);
+                break; }
             default: {
-                return value1;
-            }
-        }
+                res = value1;
+            } }
+        return res;
     }
 
     private Complex castToComplex(MathNumberExpressionSymbol sym){
@@ -334,22 +411,26 @@ public class MatrixPropertiesIdentifier {
             expressionSymbol = ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
 
         if (expressionSymbol.isValueExpression()) {
-            if (((MathValueExpressionSymbol) expressionSymbol).isNameExpression()) {
-                expressionSymbol = resolveName((MathNameExpressionSymbol)expressionSymbol);
-            }
-
-            if (expressionSymbol.isParenthesisExpression())
-                expressionSymbol = ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
-
-            if (((MathValueExpressionSymbol)expressionSymbol).isNumberExpression())
-                return castToComplex((MathNumberExpressionSymbol)expressionSymbol);
-            else if (expressionSymbol.isArithmeticExpression())
-                return dissolveMathExpression(expressionSymbol);
+            if (((MathValueExpressionSymbol) expressionSymbol).isNameExpression())
+                expressionSymbol = resolveName((MathNameExpressionSymbol) expressionSymbol);
+            Complex childExpressionSymbol = getComplex(expressionSymbol);
+            if (childExpressionSymbol != null) return childExpressionSymbol;
 
         }else if (expressionSymbol.isArithmeticExpression())
             return dissolveMathExpression(expressionSymbol);
 
         return new Complex(0);
+    }
+
+    private Complex getComplex(MathExpressionSymbol expressionSymbol) {
+        if (expressionSymbol.isParenthesisExpression())
+            expressionSymbol = ((MathParenthesisExpressionSymbol)expressionSymbol).getMathExpressionSymbol();
+
+        if (((MathValueExpressionSymbol)expressionSymbol).isNumberExpression())
+            return castToComplex((MathNumberExpressionSymbol)expressionSymbol);
+        else if (expressionSymbol.isArithmeticExpression())
+            return dissolveMathExpression(expressionSymbol);
+        return null;
     }
 
     private MathExpressionSymbol resolveName(MathNameExpressionSymbol expressionSymbol){

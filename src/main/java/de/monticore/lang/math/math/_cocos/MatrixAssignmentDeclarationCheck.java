@@ -42,28 +42,31 @@ public class MatrixAssignmentDeclarationCheck extends AbstChecker implements Mat
     @Override
     public void check(ASTMathAssignmentDeclarationExpression assignment) {
         if (!assignment.getType().getMatrixProperty().isEmpty()) {
-            MathExpressionSymbol value = ((MathExpressionSymbol)assignment.getMathExpression().getSymbol().get());
-            List<String> expProps = assignment.getType().getMatrixProperty();
-            ArrayList<MatrixProperties> props = new ArrayList<>();
+            checkMatrixOperation(assignment);
+        }
+    }
 
-            if (assignment.getMathAssignmentOperator().getOperator().get().equals("=")) {
-                if (value.isValueExpression()) props = ((MathMatrixArithmeticValueSymbol)value).getMatrixProperties();
+    private void checkMatrixOperation(ASTMathAssignmentDeclarationExpression assignment) {
+        MathExpressionSymbol value = ((MathExpressionSymbol)assignment.getMathExpression().getSymbol().get());
+        List<String> expProps = assignment.getType().getMatrixProperty();
+        ArrayList<MatrixProperties> props = new ArrayList<>();
+        if (assignment.getMathAssignmentOperator().getOperator().get().equals("=")) {
+            if (value.isValueExpression()) props = ((MathMatrixArithmeticValueSymbol)value).getMatrixProperties();
+            if (value.isArithmeticExpression())
+                props = PropertyChecker.checkProps((MathArithmeticExpressionSymbol) value);
+            compareArrays(assignment, expProps, props);
+        }
+    }
 
-                if (value.isArithmeticExpression()) {
-                    props = PropertyChecker.checkProps((MathArithmeticExpressionSymbol)value);
-                }
-
-                ArrayList<String> props_String = new ArrayList<>();
-                for (int i = 0; i < props.size(); i++) props_String.add(props.get(i).toString());
-
-                if (!props_String.containsAll(expProps))
-                    Log.error("Matrix does not fullfill given properties");
-                else{
-                    Symbol symbol = assignment.getEnclosingScope().get()
-                            .resolve(assignment.getName(), new MathExpressionSymbolKind()).get();
-                    ((MathValueSymbol)symbol).setMatrixProperties(props);
-                }
-            }
+    private void compareArrays(ASTMathAssignmentDeclarationExpression assignment, List<String> expProps, ArrayList<MatrixProperties> props) {
+        ArrayList<String> props_String = new ArrayList<>();
+        for (int i = 0; i < props.size(); i++) props_String.add(props.get(i).toString());
+        if (!props_String.containsAll(expProps))
+            Log.error("Matrix does not fullfill given properties");
+        else{
+            Symbol symbol = assignment.getEnclosingScope().get()
+                    .resolve(assignment.getName(), new MathExpressionSymbolKind()).get();
+            ((MathValueSymbol)symbol).setMatrixProperties(props);
         }
     }
 }
