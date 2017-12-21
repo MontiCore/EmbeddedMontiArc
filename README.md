@@ -15,6 +15,7 @@ Uppercase terms relate to another rule.
 **See FullExample.sim for a concrete example of each rule.**
 
 # Simulation Rules
+```
 "sim" [name] "{"
   [RULE1]
   [RULE2]
@@ -231,3 +232,4 @@ Default:
 Creates an instance of the given phenomena.
 Definable arbitrarily often.
 Default: 
+```
