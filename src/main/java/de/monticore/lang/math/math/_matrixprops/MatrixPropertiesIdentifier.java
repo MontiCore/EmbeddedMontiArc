@@ -86,9 +86,14 @@ public class MatrixPropertiesIdentifier {
 
     private boolean checkColumnDiag(int i) {
         for (int j = 0; j < matrix.getColumnDimension(); j++) {
-            if(i != j){
-                if (checkEntryDiag(i, j)) return true;
-            }
+            if (diagCondition(i, j)) return true;
+        }
+        return false;
+    }
+
+    private boolean diagCondition(int i, int j) {
+        if(i != j){
+            if (checkEntryDiag(i, j)) return true;
         }
         return false;
     }
@@ -126,11 +131,16 @@ public class MatrixPropertiesIdentifier {
 
     private boolean checkColumnHerm(int i, boolean herm) {
         for (int j = i; j < matrix.getColumnDimension(); j++){
-            if (herm){
-                if (checkEntryHerm(i, j)) return true;
-            }
-            else if (checkEntrySkewHerm(i, j)) return true;
+            if (hermCondition(i, herm, j)) return true;
         }
+        return false;
+    }
+
+    private boolean hermCondition(int i, boolean herm, int j) {
+        if (herm){
+            if (checkEntryHerm(i, j)) return true;
+        }
+        else if (checkEntrySkewHerm(i, j)) return true;
         return false;
     }
 
@@ -139,8 +149,8 @@ public class MatrixPropertiesIdentifier {
             if(matrix.getEntry(i,j).getImaginary() != 0) return true;
         }
         else {
-            if (matrix.getEntry(i,j).getImaginary() != 0 - matrix.getEntry(j,i).getImaginary()
-                    || matrix.getEntry(i,j).getReal() != matrix.getEntry(j,i).getReal()) return true;
+            if (matrix.getEntry(i,j).getImaginary() != 0 - matrix.getEntry(j,i).getImaginary()) return true;
+            if (matrix.getEntry(i,j).getReal() != matrix.getEntry(j,i).getReal()) return true;
         }
         return false;
     }
@@ -157,8 +167,8 @@ public class MatrixPropertiesIdentifier {
             if(matrix.getEntry(i,j).getReal() != 0) return true;
         }
         else {
-            if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()
-                    || matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return true;
+            if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()) return true;
+            if (matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return true;
         }
         return false;
     }
@@ -185,12 +195,17 @@ public class MatrixPropertiesIdentifier {
 
     private boolean checkColumnPosNeg(Array2DRowFieldMatrix<Complex> m, int i, boolean pos) {
         for (int j = 0; j < m.getColumnDimension(); j++) {
-            if (pos){
-                if (m.getEntry(i,j).getReal() < 0) return true;
-            }
-            else if (m.getEntry(i,j).getReal() > 0) return true;
-            if (!(m.getEntry(i,j).getImaginary() == 0)) return true;
+            if (posCondition(m, i, pos, j)) return true;
         }
+        return false;
+    }
+
+    private boolean posCondition(Array2DRowFieldMatrix<Complex> m, int i, boolean pos, int j) {
+        if (pos){
+            if (m.getEntry(i,j).getReal() < 0) return true;
+        }
+        else if (m.getEntry(i,j).getReal() > 0) return true;
+        if (!(m.getEntry(i,j).getImaginary() == 0)) return true;
         return false;
     }
 

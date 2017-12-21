@@ -14,15 +14,19 @@ public class ConstructComplexMatrix {
         Complex[][] c = new Complex[symbol.getVectors().size()][symbol.getVectors().get(0).getMathMatrixAccessSymbols().size()];
         for (int i = 0; i < c.length; i++) {
             for (int j = 0; j < c[0].length; j++) {
-                MathMatrixAccessOperatorSymbol innerVector = symbol.getVectors().get(i);
-                if(innerVector.getMathMatrixAccessSymbol(j).isPresent()) {
-                    MathExpressionSymbol expression = innerVector.getMathMatrixAccessSymbol(j).get();
-                    c[i][j] = dissolveMathExpression(expression);
-                }
-                else c[i][j] = new Complex(0);
+                getValue(symbol, c, i, j);
             }
         }
         return new Array2DRowFieldMatrix<>(ComplexField.getInstance(), c);
+    }
+
+    private static void getValue(MathMatrixArithmeticValueSymbol symbol, Complex[][] c, int i, int j) {
+        MathMatrixAccessOperatorSymbol innerVector = symbol.getVectors().get(i);
+        if(innerVector.getMathMatrixAccessSymbol(j).isPresent()) {
+            MathExpressionSymbol expression = innerVector.getMathMatrixAccessSymbol(j).get();
+            c[i][j] = dissolveMathExpression(expression);
+        }
+        else c[i][j] = new Complex(0);
     }
 
     private static Complex dissolveMathExpression(MathExpressionSymbol exp){

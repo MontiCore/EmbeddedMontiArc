@@ -14,17 +14,18 @@ public class IdentifyDefiniteHelper {
         double[][] d = getDoubleMatrix(m);
         RealMatrix matrix = new Array2DRowRealMatrix(d);
         EigenDecomposition e = new EigenDecomposition(matrix);
+        boolean flag = true;
         if (e.hasComplexEigenvalues()){
             props.add(MatrixProperties.Indef);
             return props;
         }
-        props = checkPosDef(e, props);
-        if(checkPosSemDef(e)){
+        props = checkPosDef(e, props, flag);
+        if(checkPosSemDef(e, flag)){
             props.add(MatrixProperties.PosSemDef);
             return props;
         }
-        props = checkNegDef(e,props);
-        if (checkNegSemDef(e)){
+        props = checkNegDef(e,props, flag);
+        if (checkNegSemDef(e, flag)){
             props.add(MatrixProperties.NegSemDef);
             return props;
         }
@@ -32,9 +33,7 @@ public class IdentifyDefiniteHelper {
         return props;
     }
 
-    private static boolean checkNegSemDef(EigenDecomposition e) {
-        boolean flag;
-        flag = true;
+    private static boolean checkNegSemDef(EigenDecomposition e, boolean flag) {
         for (double v: e.getRealEigenvalues()) {
             if(v > 0) flag = false;
         }
@@ -42,9 +41,7 @@ public class IdentifyDefiniteHelper {
         return false;
     }
 
-    private static ArrayList<MatrixProperties> checkNegDef(EigenDecomposition e, ArrayList<MatrixProperties> props) {
-        boolean flag;
-        flag = true;
+    private static ArrayList<MatrixProperties> checkNegDef(EigenDecomposition e, ArrayList<MatrixProperties> props, boolean flag) {
         for (double v: e.getRealEigenvalues()) {
             if(v >= 0) flag = false;
         }
@@ -54,9 +51,7 @@ public class IdentifyDefiniteHelper {
         return props;
     }
 
-    private static boolean checkPosSemDef(EigenDecomposition e) {
-        boolean flag;
-        flag = true;
+    private static boolean checkPosSemDef(EigenDecomposition e, boolean flag) {
         for (double v: e.getRealEigenvalues()) {
             if(v < 0) flag = false;
         }
@@ -64,8 +59,7 @@ public class IdentifyDefiniteHelper {
         return false;
     }
 
-    private static ArrayList<MatrixProperties> checkPosDef(EigenDecomposition e, ArrayList<MatrixProperties> props) {
-        boolean flag = true;
+    private static ArrayList<MatrixProperties> checkPosDef(EigenDecomposition e, ArrayList<MatrixProperties> props, boolean flag) {
         for (double v: e.getRealEigenvalues()) {
             if(v <= 0) flag = false;
         }
