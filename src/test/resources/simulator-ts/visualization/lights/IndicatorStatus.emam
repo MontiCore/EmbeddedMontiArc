@@ -1,0 +1,12 @@
+package lights;
+
+component IndicatorStatus {
+    port
+        in (0s:oos) time,
+        out B status;
+
+    implementation Math {
+
+        status = (time % 2s) < 1s;
+    }
+}
