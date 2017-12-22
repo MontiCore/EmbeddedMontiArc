@@ -36,14 +36,18 @@ public class PropertyChecker {
         if (props1.isEmpty())
             lookForScalar(((MathNumberExpressionSymbol)leftExpression), "m1", plh);
         String op = "inv";
-        if (getPropertiesOfInv(exp, plh, rightExpression, props1, op)) return AskSolution.askSolutions(plh, op, false);
+        if (getPropertiesOfInv(exp, plh, rightExpression, props1, op)){
+            AskSolution sol = new AskSolution(plh,op,false);
+            return sol.askSolutions();
+        }
         op = " " + exp.getMathOperator() + " ";
         addPrologClauses(plh,props1,"m1");
         ArrayList<MatrixProperties> props2 = getProps(rightExpression);
         if (props2.isEmpty())
             lookForScalar(((MathNumberExpressionSymbol)rightExpression), "m2", plh);
         addPrologClauses(plh,props2,"m2");
-        return AskSolution.askSolutions(plh, op, true);
+        AskSolution sol = new AskSolution(plh,op, true);
+        return sol.askSolutions();
     }
 
     private static boolean getPropertiesOfInv(MathArithmeticExpressionSymbol exp, PrologHandler plh, MathExpressionSymbol rightExpression, ArrayList<MatrixProperties> props1, String op) {

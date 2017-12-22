@@ -64,8 +64,8 @@ public class MatrixPropertiesIdentifier {
     private void NormMatrix() {
         props.add(MatrixProperties.Norm);
         if (identifyDiagMatrix()) props.add(MatrixProperties.Diag);
-        if (identifyHermitianMatrix()) hermMatrix();
-        if (identifySkewHermitianMatrix()) props.add(MatrixProperties.SkewHerm);
+        if (identifyHermitianMatrix(true)) hermMatrix();
+        if (identifyHermitianMatrix(false)) props.add(MatrixProperties.SkewHerm);
     }
 
     private void hermMatrix() {
@@ -122,9 +122,9 @@ public class MatrixPropertiesIdentifier {
      * check if matrix is hermitian
      * @return true if hermitian, else false
      */
-    private boolean identifyHermitianMatrix(){
+    private boolean identifyHermitianMatrix(boolean herm){
         for (int i = 0; i < matrix.getRowDimension(); i++) {
-            if (checkColumnHerm(i, true)) return false;
+            if (checkColumnHerm(i, herm)) return false;
         }
         return true;
     }
@@ -137,40 +137,27 @@ public class MatrixPropertiesIdentifier {
     }
 
     private boolean hermCondition(int i, boolean herm, int j) {
-        if (herm){
-            if (checkEntryHerm(i, j)) return true;
-        }
-        else if (checkEntrySkewHerm(i, j)) return true;
+        if (checkEntryHerm(i, j, herm)) return true;
         return false;
     }
 
-    private boolean checkEntryHerm(int i, int j) {
+    private boolean checkEntryHerm(int i, int j, boolean herm) {
         if (i == j) {
-            if(matrix.getEntry(i,j).getImaginary() != 0) return true;
-        }
-        else {
-            if (matrix.getEntry(i,j).getImaginary() != 0 - matrix.getEntry(j,i).getImaginary()) return true;
-            if (matrix.getEntry(i,j).getReal() != matrix.getEntry(j,i).getReal()) return true;
-        }
-        return false;
-    }
-
-    private boolean identifySkewHermitianMatrix(){
-        for (int i = 0; i < matrix.getRowDimension(); i++) {
-            if (checkColumnHerm(i, false)) return false;
-        }
-        return true;
-    }
-
-    private boolean checkEntrySkewHerm(int i, int j) {
-        if (i == j) {
-            if(matrix.getEntry(i,j).getReal() != 0) return true;
-        }
-        else {
-            if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()) return true;
-            if (matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return true;
-        }
-        return false;
+            if(herm) {
+                if (matrix.getEntry(i, j).getImaginary() != 0) return true;
+            }else
+                if(matrix.getEntry(i,j).getReal() != 0) return true;
+            }
+            else {
+                if(herm) {
+                    if (matrix.getEntry(i, j).getImaginary() != 0 - matrix.getEntry(j, i).getImaginary()) return true;
+                    if (matrix.getEntry(i, j).getReal() != matrix.getEntry(j, i).getReal()) return true;
+                }else{
+                    if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()) return true;
+                    if (matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return true;
+                }
+            }
+            return false;
     }
 
     /**
@@ -221,4 +208,3 @@ public class MatrixPropertiesIdentifier {
         return true;
     }
 }
-
