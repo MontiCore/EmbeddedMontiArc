@@ -49,8 +49,8 @@ public class MatrixPropertiesIdentifier {
      * @return matrix element that astMatrix has properties of
      */
     public ArrayList<MatrixProperties> identifyMatrixProperties(){
-        if (checkPositive(matrix)) props.add(MatrixProperties.Positive);
-        else if (checkNegative(matrix)) props.add(MatrixProperties.Negative);
+        if (checkPositive(true)) props.add(MatrixProperties.Positive);
+        else if (checkPositive(false)) props.add(MatrixProperties.Negative);
         if(matrix.isSquare()) squareMatrix();
         return props;
     }
@@ -108,7 +108,7 @@ public class MatrixPropertiesIdentifier {
      * @return true if normal, else false
      */
     private boolean identifyNormalMatrix() {
-        FieldMatrix<Complex> conjugate_transpose = matrix.createMatrix(matrix.getRowDimension(),matrix.getColumnDimension());
+        FieldMatrix<Complex> conjugate_transpose = matrix.createMatrix(matrix.getRowDimension(), matrix.getColumnDimension());
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             for (int j = 0; j < matrix.getColumnDimension(); j++) {
                 Complex value = matrix.getEntry(i,j).conjugate();
@@ -142,22 +142,23 @@ public class MatrixPropertiesIdentifier {
     }
 
     private boolean checkEntryHerm(int i, int j, boolean herm) {
+        double real1 = matrix.getEntry(i, j).getReal();
+        double img1 = matrix.getEntry(i, j).getImaginary();
+        double real2 = matrix.getEntry(j, i).getReal();
+        double img2 = matrix.getEntry(j, i).getImaginary();
+        boolean res = false;
         if (i == j) {
-            if(herm) {
-                if (matrix.getEntry(i, j).getImaginary() != 0) return true;
-            }else
-                if(matrix.getEntry(i,j).getReal() != 0) return true;
+            if (herm) {
+                if (img1 != 0) res = true;
+            } else if (real1 != 0) res = true;
+        } else {
+            if (herm) {
+                if (img1 != 0 - img2 || real1 != real2) res = true;
+            } else {
+                if (real1 != 0 - real2 || img1 != img2) res = true;
             }
-            else {
-                if(herm) {
-                    if (matrix.getEntry(i, j).getImaginary() != 0 - matrix.getEntry(j, i).getImaginary()) return true;
-                    if (matrix.getEntry(i, j).getReal() != matrix.getEntry(j, i).getReal()) return true;
-                }else{
-                    if (matrix.getEntry(i,j).getReal() != 0 - matrix.getEntry(j,i).getReal()) return true;
-                    if (matrix.getEntry(i,j).getImaginary() != matrix.getEntry(j,i).getImaginary()) return true;
-                }
-            }
-            return false;
+        }
+        return res;
     }
 
     /**
@@ -170,41 +171,29 @@ public class MatrixPropertiesIdentifier {
 
     /**
      * Check if matrix has only positive values
-     * @param m the matrix to check
+     * @param pos if positive or negative should be checked
      * return true if all values are positive, false else
      */
-    private boolean checkPositive(Array2DRowFieldMatrix<Complex> m){
-        for (int i = 0; i < m.getRowDimension(); i++) {
-            if (checkColumnPosNeg(m, i, true)) return false;
+    private boolean checkPositive(boolean pos){
+        for (int i = 0; i < matrix.getRowDimension(); i++) {
+            if (checkColumnPosNeg(i, pos)) return false;
         }
         return true;
     }
 
-    private boolean checkColumnPosNeg(Array2DRowFieldMatrix<Complex> m, int i, boolean pos) {
-        for (int j = 0; j < m.getColumnDimension(); j++) {
-            if (posCondition(m, i, pos, j)) return true;
+    private boolean checkColumnPosNeg(int i, boolean pos) {
+        for (int j = 0; j < matrix.getColumnDimension(); j++) {
+            if (posCondition(i, pos, j)) return true;
         }
         return false;
     }
 
-    private boolean posCondition(Array2DRowFieldMatrix<Complex> m, int i, boolean pos, int j) {
+    private boolean posCondition(int i, boolean pos, int j) {
         if (pos){
-            if (m.getEntry(i,j).getReal() < 0) return true;
+            if (matrix.getEntry(i,j).getReal() < 0) return true;
         }
-        else if (m.getEntry(i,j).getReal() > 0) return true;
-        if (!(m.getEntry(i,j).getImaginary() == 0)) return true;
+        else if (matrix.getEntry(i,j).getReal() > 0) return true;
+        if (!(matrix.getEntry(i,j).getImaginary() == 0)) return true;
         return false;
-    }
-
-    /**
-     * Check if matrix has only negative values
-     * @param m the matrix to check
-     * return true if all values are negative, false else
-     */
-    private boolean checkNegative(Array2DRowFieldMatrix<Complex> m){
-        for (int i = 0; i < m.getRowDimension(); i++) {
-            if (checkColumnPosNeg(m, i, false)) return false;
-        }
-        return true;
     }
 }
