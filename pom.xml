@@ -49,7 +49,7 @@
 	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>4.5.4-SNAPSHOT</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -202,11 +202,14 @@
           </execution>
         </executions>
       </plugin>
-      <!-- MontiCore Generation -->
       <plugin>
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
         <version>${monticore.plugin}</version>
+        <configuration>
+          <skip>false</skip>
+          <script>script.groovy</script>
+        </configuration>
         <executions>
           <execution>
             <goals>

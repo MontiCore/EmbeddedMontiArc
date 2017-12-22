@@ -19,7 +19,7 @@
 
 package de.monticore.lang.math;
 
-grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.SI,de.monticore.lang.monticar.MCExpressions {
+grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.SI, de.monticore.lang.monticar.MCExpressions {
     MathCompilationUnit =
       ("package" package:(Name& || ".")+ ";")?
       (ImportStatement)* // to import later on other scripts/functions
@@ -27,9 +27,11 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
 
     // here the script name is concretely given (in contrast to Matlab), b/c otherwise we would get
     // trouble when embedding this language into another one (due to the name-based nature of the MontiCore 4 symboltable)
-    symbol scope MathScript = "script" Name& MathStatements "end";
+    symbol scope MathScript = 
+    	"script" Name& MathStatements "end";
 
-    MathStatements = MathExpression+;
+    MathStatements = 
+    	MathExpression+;
 
     interface MathExpression extends Expression;
     interface MathArithmeticExpression extends MathExpression;
@@ -39,186 +41,255 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     interface MathBooleanExpression extends MathExpression;
 
     //general MathExpressions
-    MathParenthesisExpression implements MathArithmeticMatrixExpression, MathArithmeticExpression, MathExpression, Expression = "(" MathExpression ")";
+    MathParenthesisExpression implements MathArithmeticMatrixExpression, MathArithmeticExpression, MathExpression, Expression = 
+    	"(" MathExpression ")";
 
-    MathPreMinusExpression implements MathArithmeticMatrixExpression, MathArithmeticExpression, MathExpression, Expression = "-" MathExpression;
+    MathPreMinusExpression implements MathArithmeticMatrixExpression, MathArithmeticExpression, MathExpression, Expression = 
+    	"-" MathExpression;
 
-    MathForLoopExpression implements MathExpression = "for" head:MathForLoopHead body:MathExpression* "end";
+    MathForLoopExpression implements MathExpression = 
+    	"for" head:MathForLoopHead body:MathExpression* "end";
 
-    MathForLoopHead = Name& "=" MathExpression;
+    MathForLoopHead = 
+    	Name& "=" MathExpression;
 
-    MathDeclarationExpression implements MathExpression = type:AssignmentType Name& ";";
+    MathDeclarationExpression implements MathExpression = 
+    	type:AssignmentType Name& ";";
 
-    MathAssignmentDeclarationExpression implements MathExpression = type:AssignmentType Name& MathAssignmentOperator MathExpression ";";
+    MathAssignmentDeclarationExpression implements MathExpression = 
+    	type:AssignmentType Name& MathAssignmentOperator MathExpression ";";
 
-    MathAssignmentExpression implements MathExpression = (Name&|MathMatrixNameExpression|DottedName) MathAssignmentOperator MathExpression ";";
+    MathAssignmentExpression implements MathExpression = 
+    	(Name&|MathMatrixNameExpression|DottedName) MathAssignmentOperator MathExpression ";";
 
-    MathAssignmentOperator = operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
+    MathAssignmentOperator = 
+    	operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
 
-    MathConditionalExpression implements MathExpression = MathIfExpression MathElseIfExpression* MathElseExpression? "end";
+    MathConditionalExpression implements MathExpression = 
+    	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
-    MathConditionalExpressionShort implements MathExpression = MathExpression /*MathBooleanExpression*/ "?" trueCase:MathExpression+ ":" falseCase:MathExpression+;
+    MathConditionalExpressionShort implements MathExpression = 
+    	MathExpression /*MathBooleanExpression*/ "?" trueCase:MathExpression+ ":" falseCase:MathExpression+;
 
-    MathIfExpression  = "if" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
+    MathIfExpression  = 
+    	"if" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
 
-    MathElseIfExpression = "elseif" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
+    MathElseIfExpression = 
+    	"elseif" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
 
-    MathElseExpression = "else" "{" body:MathExpression* "}";
+    MathElseExpression = 
+    	"else" "{" body:MathExpression* "}";
 
-    Dimension = "^" "{" (MathArithmeticExpression || ",")+ "}";
+    Dimension = 
+    	"^" "{" (MathArithmeticExpression || ",")+ "}";
 
     //Expression for number/variable name
-    MathNumberExpression implements MathValueExpression, MathExpression, Expression  = Number;
+    
+    MathNumberExpression implements MathValueExpression, MathExpression, Expression  = 
+    	Number;
 
-    MathNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = Name&;
+    MathNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = 
+    	Name&;
 
-    MathDottedNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = Name "." Name;
+    MathDottedNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = 
+    	Name "." Name;
 
-    MathMatrixNameExpression implements MathArithmeticMatrixExpression, MathValueMatrixExpression, MathExpression, Expression  = Name& "(" MathMatrixAccessExpression ")" | Name& "(" EndOperator ")";
+    MathMatrixNameExpression implements MathArithmeticMatrixExpression, MathValueMatrixExpression, MathExpression, Expression  = 
+    	Name& "(" MathMatrixAccessExpression ")" | Name& "(" EndOperator ")";
 
-    MathMatrixElementAccessExpression implements MathValueExpression, MathArithmeticExpression, Expression = MathMatrixNameExpression;
+    MathMatrixElementAccessExpression implements MathValueExpression, MathArithmeticExpression, Expression = 
+    	MathMatrixNameExpression;
 
-    MathMatrixValueExplicitExpression implements MathValueMatrixExpression, Expression = "[" (MathMatrixAccessExpression || ";")* "]" | MathVectorExpression;
+    MathMatrixValueExplicitExpression implements MathValueMatrixExpression, Expression = 
+    	"[" (MathMatrixAccessExpression || ";")* "]" | MathVectorExpression;
 
-    MathMatrixAccessExpression = ("," | MathMatrixAccess)+;
-    MathMatrixAccess = doubleDot:":" | MathArithmeticExpression;
+    MathMatrixAccessExpression = 
+    	("," | MathMatrixAccess)+;
+    	
+    MathMatrixAccess = 
+    	doubleDot:":" | MathArithmeticExpression;
+    	
     //Matrix = "[" (MathMatrixAccessExpression || ";")* "]" | MathVectorExpression;
     //MatrixName = Name& "(" MathMatrixAccessExpression ")" | Name& "(" EndOperator ")";
 
-
-    MathVectorExpression = MathArithmeticExpression ":" MathArithmeticExpression (":" MathArithmeticExpression)?;
+    MathVectorExpression = 
+    	MathArithmeticExpression ":" MathArithmeticExpression (":" MathArithmeticExpression)?;
 
     //TODO convert to new stuff
     //supports only 2D matrices
-    EndOperator = ":" "," endVecRight:MathVectorExpression | endVecLeft:MathVectorExpression ","  ":" |
-    endVecLeft:MathVectorExpression "," endVecRight:MathVectorExpression | endVec:MathVectorExpression;
-
-
-
-
+    EndOperator = 
+    	  (":" "," endVecRight:MathVectorExpression)
+    	| (endVecLeft:MathVectorExpression ","  ":")
+    	| (endVecLeft:MathVectorExpression "," endVecRight:MathVectorExpression)
+    	| endVec:MathVectorExpression;
 
     //Arithmetic expressions for numbers
 
-    MathArithmeticValueExpression implements MathArithmeticExpression, MathExpression, Expression  = MathValueExpression;
+    MathArithmeticValueExpression implements MathArithmeticExpression, MathExpression, Expression  = 
+    	MathValueExpression;
 
-    MathArithmeticPowerOfExpression implements MathArithmeticExpression<1>, MathExpression<1>, Expression<1>  = MathArithmeticExpression "^" MathArithmeticExpression;
+    MathArithmeticPowerOfExpression implements MathArithmeticExpression<1>, MathExpression<1>, Expression<1>  = 
+    	MathArithmeticExpression "^" MathArithmeticExpression;
 
-    MathArithmeticMultiplicationExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticExpression "*" MathArithmeticExpression;
+    MathArithmeticMultiplicationExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticExpression "*" MathArithmeticExpression;
 
-    MathArithmeticDivisionExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticExpression "/" MathArithmeticExpression;
+    MathArithmeticDivisionExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticExpression "/" MathArithmeticExpression;
 
-    MathArithmeticAdditionExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = MathArithmeticExpression "+" MathArithmeticExpression;
+    MathArithmeticAdditionExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = 
+    	MathArithmeticExpression "+" MathArithmeticExpression;
 
-    MathArithmeticSubtractionExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = MathArithmeticExpression "-" MathArithmeticExpression;
+    MathArithmeticSubtractionExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = 
+    	MathArithmeticExpression "-" MathArithmeticExpression;
 
+    MathArithmeticModuloExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticExpression "%" MathArithmeticExpression;
 
-    MathArithmeticModuloExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticExpression "%" MathArithmeticExpression;
+    MathArithmeticIncreaseByOneExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = 
+    	MathArithmeticExpression "+" "+";
 
-
-    MathArithmeticIncreaseByOneExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = MathArithmeticExpression "+" "+";
-
-    MathArithmeticDecreaseByOneExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = MathArithmeticExpression "-" "-";
+    MathArithmeticDecreaseByOneExpression implements MathArithmeticExpression<900>, MathExpression<900>, Expression<900>  = 
+    	MathArithmeticExpression "-" "-";
 
     //Arithmetic expressions for matrices
 
-    MathMatrixArithmeticMatrixValueExpression implements MathArithmeticMatrixExpression, MathExpression, Expression  = MathValueMatrixExpression;
+    MathMatrixArithmeticMatrixValueExpression implements MathArithmeticMatrixExpression, MathExpression, Expression  = 
+    	MathValueMatrixExpression;
 
-    MathArithmeticMatrixPowerOfExpression implements MathArithmeticMatrixExpression<1>, MathExpression<1>, Expression<1>  = MathArithmeticMatrixExpression "^" MathValueExpression;
+    MathArithmeticMatrixPowerOfExpression implements MathArithmeticMatrixExpression<1>, MathExpression<1>, Expression<1>  = 
+    	MathArithmeticMatrixExpression "^" MathValueExpression;
 
-    MathArithmeticMatrixMultiplicationExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticMatrixExpression "*" MathArithmeticMatrixExpression ;
+    MathArithmeticMatrixMultiplicationExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticMatrixExpression "*" MathArithmeticMatrixExpression ;
 
-    MathArithmeticMatrixDivisionExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticMatrixExpression "/" MathArithmeticMatrixExpression;
+    MathArithmeticMatrixDivisionExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticMatrixExpression "/" MathArithmeticMatrixExpression;
 
-    MathArithmeticMatrixAdditionExpression implements MathArithmeticMatrixExpression<900>, MathExpression<900>, Expression<900>  = MathArithmeticMatrixExpression "+" MathArithmeticMatrixExpression ;
+    MathArithmeticMatrixAdditionExpression implements MathArithmeticMatrixExpression<900>, MathExpression<900>, Expression<900>  = 
+    	MathArithmeticMatrixExpression "+" MathArithmeticMatrixExpression ;
 
-    MathArithmeticMatrixSubtractionExpression implements MathArithmeticMatrixExpression<900>, MathExpression<900>, Expression<900>  = MathArithmeticMatrixExpression "-" MathArithmeticMatrixExpression ;
+    MathArithmeticMatrixSubtractionExpression implements MathArithmeticMatrixExpression<900>, MathExpression<900>, Expression<900>  = 
+    	MathArithmeticMatrixExpression "-" MathArithmeticMatrixExpression ;
 
+    MathArithmeticMatrixTransposeExpression implements MathArithmeticMatrixExpression, MathExpression, Expression  = 
+    	MathArithmeticMatrixExpression "\'";
 
-    MathArithmeticMatrixTransposeExpression implements MathArithmeticMatrixExpression, MathExpression, Expression  = MathArithmeticMatrixExpression "\'";
+    MathArithmeticMatrixSolutionExpression implements MathArithmeticMatrixExpression, MathExpression, Expression = 
+    	MathArithmeticMatrixExpression "\\\\" MathArithmeticMatrixExpression;
 
+    MathArithmeticMatrixEEPowerOfExpression implements MathArithmeticMatrixExpression<1>, MathExpression<1>, Expression<1>  = 
+    	MathArithmeticMatrixExpression ".^" MathArithmeticExpression;
 
-    MathArithmeticMatrixSolutionExpression implements MathArithmeticMatrixExpression, MathExpression, Expression = MathArithmeticMatrixExpression "\\\\" MathArithmeticMatrixExpression;
+    MathArithmeticMatrixEEMultiplicationExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticMatrixExpression "." "*" MathArithmeticMatrixExpression;
 
-    MathArithmeticMatrixEEPowerOfExpression implements MathArithmeticMatrixExpression<1>, MathExpression<1>, Expression<1>  = MathArithmeticMatrixExpression ".^" MathArithmeticExpression;
-
-    MathArithmeticMatrixEEMultiplicationExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticMatrixExpression "." "*" MathArithmeticMatrixExpression;
-
-    MathArithmeticMatrixEEDivisionExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticMatrixExpression "./" MathArithmeticMatrixExpression;
+    MathArithmeticMatrixEEDivisionExpression implements MathArithmeticMatrixExpression<10>, MathExpression<10>, Expression<10>  = 
+    	MathArithmeticMatrixExpression "./" MathArithmeticMatrixExpression;
 
     //Boolean expressions
-    MathTrueExpression implements MathBooleanExpression, MathExpression, Expression  = "true";
-    MathFalseExpression implements MathBooleanExpression, MathExpression, Expression  = "false";
+    MathTrueExpression implements MathBooleanExpression, MathExpression, Expression  = 
+    	"true";
+    MathFalseExpression implements MathBooleanExpression, MathExpression, Expression  = 
+    	"false";
 
-    MathBooleanOrExpression implements MathBooleanExpression, MathExpression, Expression  = MathExpression "||" MathExpression;
+    MathBooleanOrExpression implements MathBooleanExpression, MathExpression, Expression  = 
+    	MathExpression "||" MathExpression;
 
-    MathBooleanAndExpression implements MathBooleanExpression, MathExpression, Expression  = MathExpression "&&" MathExpression;
+    MathBooleanAndExpression implements MathBooleanExpression, MathExpression, Expression  = 
+    	MathExpression "&&" MathExpression;
 
     //Compare expressions
-    MathCompareEqualExpression implements MathExpression, Expression  = MathExpression "==" MathExpression;
+    MathCompareEqualExpression implements MathExpression, Expression  = 
+    	MathExpression "==" MathExpression;
 
-    MathCompareNotEqualExpression implements MathExpression, Expression  = MathExpression "!=" MathExpression;
+    MathCompareNotEqualExpression implements MathExpression, Expression  = 
+    	MathExpression "!=" MathExpression;
 
-    MathCompareSmallerThanExpression implements MathExpression, Expression = MathExpression "<" MathExpression;
+    MathCompareSmallerThanExpression implements MathExpression, Expression = 
+    	MathExpression "<" MathExpression;
 
-    MathCompareSmallerEqualThanExpression implements MathExpression, Expression = MathExpression "<=" MathExpression;
+    MathCompareSmallerEqualThanExpression implements MathExpression, Expression = 
+    	MathExpression "<=" MathExpression;
 
-    MathCompareGreaterThanExpression implements MathExpression, Expression = MathExpression ">" MathExpression;
+    MathCompareGreaterThanExpression implements MathExpression, Expression = 
+    	MathExpression ">" MathExpression;
 
-    MathCompareGreaterEqualThanExpression implements MathExpression, Expression = MathExpression ">=" MathExpression;
+    MathCompareGreaterEqualThanExpression implements MathExpression, Expression = 
+    	MathExpression ">=" MathExpression;
 
 
     //new types and general stuff
      /* Like this in grammar Common2
-     ast CommonMatrixType= method public String printType(){return "CommonMatrixType";};
-     CommonMatrixType implements PrintType, Type = ElementType CommonDimension;
+     ast CommonMatrixType = method public String printType(){return "CommonMatrixType";};
+     
+     CommonMatrixType implements PrintType, Type = 
+     	ElementType CommonDimension;
 
-     CommonDimension = "^" "{" (CommonDimensionElement || ",")+ "}";
-     CommonDimensionElement = Name& | UnitNumber;
+     CommonDimension = 
+     	"^" "{" (CommonDimensionElement || ",")+ "}";
+     	
+     CommonDimensionElement = 
+     	Name& | UnitNumber;
      */
-    ast AssignmentType= method public String printType(){return "AssignmentType";};
-    AssignmentType implements PrintType = matrixProperty:Name* (ElementType dim:Dimension? | CommonMatrixType );
+    ast AssignmentType = method public String printType(){return "AssignmentType";};
+    AssignmentType implements PrintType = 
+    	matrixProperty:Name* (ElementType dim:Dimension? | CommonMatrixType );
 
-    MatrixType = ElementType Dimension;
+    MatrixType = 
+    	ElementType Dimension;
 
-    DottedName = Name "." Name;
+    DottedName = 
+    	Name "." Name;
 
 
 /* old grammar
     MathStatements = MathStatement+;
+    
     MathStatement = ConditionalStatement
                   | Assignment
                   | forStatement:ForStatement2
                   | MathExpression;
+                  
     DottedName = Name "." Name;
+    
     symbol Assignment = type:AssignmentType name:Name& (assignmentOp:"=" MathExpression)? ";"
-                 | (Name&|MatrixName|DottedName)
-                        (assignmentOp:"=" | assignmentOp:"+=" | assignmentOp:"-=" | assignmentOp:"*=" | assignmentOp:"/=")
-                        MathExpression ";"
+                 | (Name& | MatrixName | DottedName)
+                   (assignmentOp:"=" | assignmentOp:"+=" | assignmentOp:"-=" | assignmentOp:"*=" | assignmentOp:"/=")
+                    MathExpression ";"
                  ;
 
+    ConditionalStatement = 
+    	IfStatement2 (ElseIfStatement2)* (ElseStatement2)? "end" | BooleanExpression "?" (m1:MathStatement)+ ":" (m2:MathStatement)+;
 
-        ConditionalStatement = IfStatement2 (ElseIfStatement2)* (ElseStatement2)? "end" | BooleanExpression "?" (m1:MathStatement)+ ":" (m2:MathStatement)+;
+    IfStatement2 = 
+    	"if"  BooleanExpression "{" (MathStatement)+ "}";
+    	
+    ElseIfStatement2 = 
+    	"elseif"  BooleanExpression "{" (MathStatement)+ "}";
+    	
+    ElseStatement2 = 
+    	"else" "{"(MathStatement)+ "}";
 
-        IfStatement2 = "if"  BooleanExpression "{" (MathStatement)+ "}";
-        ElseIfStatement2 = "elseif"  BooleanExpression "{" (MathStatement)+ "}";
-        ElseStatement2 = "else" "{"(MathStatement)+ "}";
+    ForStatement2 = 
+    	"for" forAssignment:ForAssignment2 (MathStatement)+ "end";
 
-    ForStatement2 = "for" forAssignment:ForAssignment2
-                        (MathStatement)+
-                   "end";
-
-    ForAssignment2 = name:Name& "=" MathExpression;
+    ForAssignment2 = 
+    	name:Name& "=" MathExpression;
 
     ast AssignmentType= method public String printType(){return "AssignmentType";};
-    AssignmentType implements PrintType = matrixProperty:Name* ElementType dim:Dimension?;
+    AssignmentType implements PrintType = 
+    	matrixProperty:Name* ElementType dim:Dimension?;
 
     //ast MatrixType= method public String printType(){return "MatrixType";};
-    MatrixType = ElementType Dimension;
+    MatrixType = 
+    	ElementType Dimension;
 
-    Dimension = "^" "{" (ArithmeticExpression || ",")+ "}";
+    Dimension = 
+    	"^" "{" (ArithmeticExpression || ",")+ "}";
 
 	//TODO Refactor grammar to make ast look better and profit from left recursion possible in the new monticore versions
-    MathExpression implements Expression= ArithmeticExpression
+    MathExpression implements Expression = ArithmeticExpression
                    | ArithmeticMatrixExpression
                    | BooleanExpression;
 
@@ -290,7 +361,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     LogicalParenthesisExpression = "(" BooleanExpression ")"
                                      | ArithmeticExpression;
 
-    Matrix= "[" (VectorInner || ";")* "]" | Vector;
+    Matrix = "[" (VectorInner || ";")* "]" | Vector;
     MatrixName = Name& "(" VectorInner ")" | Name& "(" Endoperator ")";
 
     //supports only 2D matrices
