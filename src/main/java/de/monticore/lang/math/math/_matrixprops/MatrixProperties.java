@@ -21,6 +21,8 @@
 package de.monticore.lang.math.math._matrixprops;
 
 
+import java.util.HashMap;
+
 /**
  * Created by Philipp Goerick on 02.09.2017.
  *
@@ -30,6 +32,24 @@ package de.monticore.lang.math.math._matrixprops;
 public enum MatrixProperties {
     Diag, Herm, Indef, NegDef, NegSemDef, Norm, PosDef, PosSemDef, SkewHerm, Square, Invertible, Positive, Negative;
 
+    private static HashMap<MatrixProperties,String> hashMap;
+    static {
+        hashMap = new HashMap();
+        hashMap.put(Positive,"pos");
+        hashMap.put(Negative,"neg");
+        hashMap.put(Square,"square");
+        hashMap.put(Norm,"norm");
+        hashMap.put(Diag,"diag");
+        hashMap.put(Herm,"herm");
+        hashMap.put(SkewHerm,"skewHerm");
+        hashMap.put(PosDef,"pd");
+        hashMap.put(PosSemDef,"psd");
+        hashMap.put(NegDef,"nd");
+        hashMap.put(NegSemDef,"nsd");
+        hashMap.put(Indef,"indef");
+        hashMap.put(Invertible,"inv");
+    }
+
     /**
      * convert the enum type based properties to a string
      *
@@ -37,51 +57,6 @@ public enum MatrixProperties {
      */
     @Override
     public String toString() {
-        String res;
-        switch(this) {
-            case Diag:{
-                res = "diag";
-            break; }
-            case Herm:{
-                res = "herm";
-            break;}
-            case Norm:{
-                res = "norm";
-            break;}
-            case Indef:{
-                res = "indef";
-            break;}
-            case NegDef:{
-                res = "nd";
-            break;}
-            case PosDef:{
-                res = "pd";
-            break;}
-            case Square:{
-                res = "square";
-            break;}
-            case SkewHerm:{
-                res = "skewHerm";
-            break;}
-            case NegSemDef:{
-                res = "nsd";
-            break;}
-            case PosSemDef:{
-                res = "psd";
-            break;}
-            case Invertible:{
-                res = "inv";
-            break;}
-            case Positive:{
-                res = "pos";
-            break;}
-            case Negative:{
-                res = "neg";
-            break;}
-            default:{
-                res = "noProps";
-            }
-        }
-        return res;
+        return hashMap.get(this);
     }
 }
