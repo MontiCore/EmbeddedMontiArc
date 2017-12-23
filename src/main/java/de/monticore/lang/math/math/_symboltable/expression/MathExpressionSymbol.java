@@ -107,9 +107,22 @@ public abstract class MathExpressionSymbol extends CommonSymbol implements Textu
         this.id = id;
     }
 
-    public MathExpressionSymbol getRealMathExpressionSymbol(){
+    public MathExpressionSymbol getRealMathExpressionSymbol() {
         return this;
     }
 
-    public MathExpressionSymbol getAssignedMathExpressionSymbol(){return this;}
+    public MathExpressionSymbol getAssignedMathExpressionSymbol() {
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        boolean result = false;
+        if (object == null)
+            result = false;
+        else if (object instanceof MathExpressionSymbol) {
+            result = this.getTextualRepresentation().equals(((MathExpressionSymbol) object).getTextualRepresentation());
+        }
+        return result;
+    }
 }

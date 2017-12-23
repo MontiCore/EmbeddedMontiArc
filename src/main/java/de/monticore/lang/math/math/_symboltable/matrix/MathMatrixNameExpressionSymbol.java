@@ -77,4 +77,6 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
     public boolean isMatrixNameExpression() {
         return true;
     }
+
+
 }
