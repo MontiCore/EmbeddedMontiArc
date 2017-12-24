@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang</groupId>
   <artifactId>math</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.7.1</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
