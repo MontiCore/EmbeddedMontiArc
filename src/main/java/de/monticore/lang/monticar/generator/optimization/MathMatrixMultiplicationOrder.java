@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.optimization;
 
+import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
@@ -20,7 +21,9 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
 
     @Override
     public void optimize(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
-        if (mathExpressionSymbol.isMatrixExpression()) {
+        if (mathExpressionSymbol == null) {
+
+        } else if (mathExpressionSymbol.isMatrixExpression()) {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else if (mathExpressionSymbol.isAssignmentExpression()) {
             optimize((MathAssignmentExpressionSymbol) mathExpressionSymbol, precedingExpressions);
@@ -41,6 +44,11 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
             Log.error("Optimizer Case not handled!");
         }
+    }
+
+    @Override
+    public void optimize(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions, MathStatementsSymbol mathStatementsSymbol) {
+        optimize(mathExpressionSymbol, precedingExpressions);
     }
 
     public void optimize(MathNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {

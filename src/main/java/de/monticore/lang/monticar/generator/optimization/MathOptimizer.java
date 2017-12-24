@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.optimization;
 
+import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
@@ -21,10 +22,14 @@ public class MathOptimizer {
         optimizationRules.add(mathOptimizationRule);
     }
 
-    public static MathExpressionSymbol applyOptimizations(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+    public static MathExpressionSymbol applyOptimizations(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions, MathStatementsSymbol mathStatementsSymbol) {
         MathExpressionSymbol currentMathExpressionSymbol = mathExpressionSymbol;
+        if (mathStatementsSymbol == null) {
+            Log.error("MathStatementsSymbol is null but should not be at this point!");
+        }
+        MathExpressionSymbol lastMathExpressionSymbol = null;
         for (MathOptimizationRule mathOptimizationRule : optimizationRules) {
-            mathOptimizationRule.optimize(currentMathExpressionSymbol, precedingExpressions);
+            mathOptimizationRule.optimize(currentMathExpressionSymbol, precedingExpressions, mathStatementsSymbol);
         }
         return currentMathExpressionSymbol;
     }
@@ -70,7 +75,10 @@ public class MathOptimizer {
         MathExpressionSymbol currentAssignment = mathNameExpressionSymbol;
 
         for (MathExpressionSymbol expressionSymbol : precedingExpressionSymbols) {
-            if (expressionSymbol.isAssignmentDeclarationExpression()) {
+            if(expressionSymbol==null){
+
+            }
+            else if (expressionSymbol.isAssignmentDeclarationExpression()) {
                 MathValueSymbol mathValueSymbol = (MathValueSymbol) expressionSymbol;
                 if (mathValueSymbol.getName().equals(mathNameExpressionSymbol.getNameToResolveValue())) {
                     currentAssignment = getCurrentAssignment(mathValueSymbol.getValue(), precedingExpressionSymbols);
@@ -223,6 +231,7 @@ public class MathOptimizer {
     static {
         addOptimizationRule(new MathMultiplicationAddition());
         addOptimizationRule(new MathMatrixMultiplicationOrder());
+        addOptimizationRule(new MathAssignmentPartResultReuse());
     }
 
 

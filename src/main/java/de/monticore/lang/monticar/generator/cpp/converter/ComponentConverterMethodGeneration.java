@@ -23,6 +23,8 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class ComponentConverterMethodGeneration {
+    public static int currentGenerationIndex = 0;
+
     public static void generateExecuteMethod(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("execute", "void");
 
@@ -60,25 +62,45 @@ public class ComponentConverterMethodGeneration {
             }
         }
         if (mathStatementsSymbol != null) {
-            // add math implementation instructions to method
-            List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
-            MathOptimizer.currentBluePrint = bluePrint;
-            int counter = 0;
+            handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        }
+        bluePrint.addMethod(method);
+    }
 
-            for (MathExpressionSymbol mathExpressionSymbol : mathStatementsSymbol.getMathExpressionSymbols()) {
+    private static void handleMathStatementGeneration(Method method, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+        // add math implementation instructions to method
+        List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
+        MathOptimizer.currentBluePrint = bluePrint;
+        int counter = 0;
+
+        List<MathExpressionSymbol> visitedMathExpressionSymbol = new ArrayList<>();
+        int lastIndex = 0;
+        for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
+            MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
+            if (!visitedMathExpressionSymbol.contains(mathExpressionSymbol)) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
                     List<MathExpressionSymbol> precedingExpressions = new ArrayList<>();
                     for (int i = 0; i < counter; ++i)
                         precedingExpressions.add(mathStatementsSymbol.getMathExpressionSymbols().get(i));
-                    newMathExpressionSymbols.add(MathOptimizer.applyOptimizations(mathExpressionSymbol, precedingExpressions));
+                    if (mathExpressionSymbol != visitedMathExpressionSymbol)
+                        newMathExpressionSymbols.add(MathOptimizer.applyOptimizations(mathExpressionSymbol, precedingExpressions, mathStatementsSymbol));
                     ++counter;
                 }
                 MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
                 String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
                 TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
                 method.addInstruction(instruction);
+                if (lastIndex == currentGenerationIndex - 1) {
+                    //Log.error("ad");
+                    Instruction lastInstruction = method.getInstructions().get(currentGenerationIndex);
+                    method.getInstructions().remove(currentGenerationIndex);
+                    method.addInstruction(lastInstruction);
+                }
+                visitedMathExpressionSymbol.add(mathExpressionSymbol);
+                System.out.println("lastIndex: "+lastIndex+" current: "+currentGenerationIndex);
+                lastIndex = currentGenerationIndex;
             }
+
         }
-        bluePrint.addMethod(method);
     }
 }

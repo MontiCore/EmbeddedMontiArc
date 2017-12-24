@@ -307,4 +307,16 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l1");
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
+
+    @Test
+    public void testMathAssignmentOptimization1() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+    }
 }
