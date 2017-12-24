@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/MontiSim/SimLang/badge.svg?branch=master)](https://coveralls.io/github/MontiSim/SimLang?branch=master)
+
 # SimLang
 
 SimLang is a DSL for describing settings of vehicle simulations.
