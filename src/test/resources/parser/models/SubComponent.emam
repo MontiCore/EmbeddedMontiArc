@@ -1,0 +1,6 @@
+package models;
+
+component SubComponent extends SuperComp{
+  port in (-oo:oo) in1,
+        out B out1;
+}
