@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-behaviour</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.8</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -42,7 +42,7 @@
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.7</SIUnit.version>
 	<Common-MontiCar.version>0.0.7</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.7</Embedded-MontiArc.version>
+	<Embedded-MontiArc.version>0.0.8</Embedded-MontiArc.version>
 	
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
