@@ -25,6 +25,7 @@ import de.monticore.lang.math.math._ast.ASTMathAssignmentDeclarationExpression;
 import de.monticore.lang.math.math._matrixprops.MatrixProperties;
 import de.monticore.lang.math.math._matrixprops.PropertyChecker;
 import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
@@ -52,8 +53,8 @@ public class MatrixAssignmentDeclarationCheck extends AbstChecker implements Mat
         ArrayList<MatrixProperties> props = new ArrayList<>();
         if (assignment.getMathAssignmentOperator().getOperator().get().equals("=")) {
             if (value.isValueExpression()) props = ((MathMatrixArithmeticValueSymbol)value).getMatrixProperties();
-            if (value.isArithmeticExpression())
-                props = PropertyChecker.checkProps((MathArithmeticExpressionSymbol) value);
+            if (value.isArithmeticExpression() || value instanceof MathMatrixArithmeticExpressionSymbol)
+                props = PropertyChecker.checkProps((IArithmeticExpression) value);
             compareArrays(assignment, expProps, props);
         }
     }

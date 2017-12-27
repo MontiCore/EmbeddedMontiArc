@@ -22,25 +22,26 @@ package de.monticore.lang.math.math._matrixprops;
 
 import de.monticore.lang.math.math._symboltable.JSValue;
 import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 import java.util.ArrayList;
 
 public class PropertyChecker {
-    public static ArrayList<MatrixProperties> checkProps(MathArithmeticExpressionSymbol exp){
+    public static ArrayList<MatrixProperties> checkProps(IArithmeticExpression expressionSymbol){
         PrologHandler plh = new PrologHandler();
-        MathExpressionSymbol leftExpression = getChildMathExpressionSymbol(exp.getLeftExpression());
-        MathExpressionSymbol rightExpression = getChildMathExpressionSymbol(exp.getRightExpression());
+        MathExpressionSymbol leftExpression = getChildMathExpressionSymbol(expressionSymbol.getLeftExpression());
+        MathExpressionSymbol rightExpression = getChildMathExpressionSymbol(expressionSymbol.getRightExpression());
         ArrayList<MatrixProperties> props1 = getProps(leftExpression);
         if (props1.isEmpty())
             lookForScalar(((MathNumberExpressionSymbol)leftExpression), "m1", plh);
         String op = "inv";
-        if (getPropertiesOfInv(exp, plh, rightExpression, props1, op)){
+        if (getPropertiesOfInv(expressionSymbol, plh, rightExpression, props1, op)){
             AskSolution sol = new AskSolution(plh,op,false);
             return sol.askSolutions();
         }
-        op = " " + exp.getMathOperator() + " ";
+        op = " " + expressionSymbol.getOperator() + " ";
         addPrologClauses(plh,props1,"m1");
         ArrayList<MatrixProperties> props2 = getProps(rightExpression);
         if (props2.isEmpty())
@@ -50,9 +51,9 @@ public class PropertyChecker {
         return sol.askSolutions();
     }
 
-    private static boolean getPropertiesOfInv(MathArithmeticExpressionSymbol exp, PrologHandler plh, MathExpressionSymbol rightExpression, ArrayList<MatrixProperties> props1, String op) {
+    private static boolean getPropertiesOfInv(IArithmeticExpression exp, PrologHandler plh, MathExpressionSymbol rightExpression, ArrayList<MatrixProperties> props1, String op) {
         if (rightExpression.isValueExpression()) {
-            if (exp.getMathOperator().equals("^") &&
+            if (exp.getOperator().equals("^") &&
                     ((MathNumberExpressionSymbol) rightExpression).getValue().getRealNumber().doubleValue() == -1) {
                 addPrologClauses(plh,props1,"m1");
                 return true;
@@ -88,8 +89,8 @@ public class PropertyChecker {
     private static ArrayList<MatrixProperties> getProps(MathExpressionSymbol sym){
         if(sym instanceof MathMatrixArithmeticValueSymbol)
             return ((MathMatrixArithmeticValueSymbol) sym).getMatrixProperties();
-        if (sym.isArithmeticExpression())
-            return checkProps((MathArithmeticExpressionSymbol)sym);
+        if (sym.isArithmeticExpression() || sym instanceof MathMatrixArithmeticExpressionSymbol)
+            return checkProps((IArithmeticExpression) sym);
         if (sym instanceof MathValueSymbol)
             return ((MathValueSymbol) sym).getMatrixProperties();
         return new ArrayList<>();

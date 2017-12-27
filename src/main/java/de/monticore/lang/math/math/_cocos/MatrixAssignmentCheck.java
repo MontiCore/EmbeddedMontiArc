@@ -81,8 +81,8 @@ public class MatrixAssignmentCheck extends AbstChecker implements MathASTMathAss
     }
 
     private ArrayList<MatrixProperties> solveEquation(ASTMathAssignmentExpression assignment, MathExpressionSymbol expressionSymbol, ArrayList<MatrixProperties> props) {
-        if (expressionSymbol instanceof MathArithmeticExpressionSymbol)
-            props = PropertyChecker.checkProps(((MathArithmeticExpressionSymbol) expressionSymbol));
+        if (expressionSymbol instanceof IArithmeticExpression)
+            props = PropertyChecker.checkProps(((IArithmeticExpression) expressionSymbol));
         else if (expressionSymbol instanceof MathMatrixArithmeticValueSymbol)
             props = ((MathMatrixArithmeticValueSymbol) expressionSymbol).getMatrixProperties();
         else if (expressionSymbol instanceof MathNameExpressionSymbol){
