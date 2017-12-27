@@ -75,7 +75,9 @@ public class ComponentConverterMethodGeneration {
 
         List<MathExpressionSymbol> visitedMathExpressionSymbol = new ArrayList<>();
         int lastIndex = 0;
+        boolean swapNextInstructions = false;
         for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
+            int beginIndex = currentGenerationIndex;
             MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
             if (!visitedMathExpressionSymbol.contains(mathExpressionSymbol)) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
@@ -90,16 +92,18 @@ public class ComponentConverterMethodGeneration {
                 String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
                 TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
                 method.addInstruction(instruction);
-                if (lastIndex == currentGenerationIndex - 1) {
-                    //Log.error("ad");
-                    Instruction lastInstruction = method.getInstructions().get(currentGenerationIndex);
-                    method.getInstructions().remove(currentGenerationIndex);
-                    method.addInstruction(lastInstruction);
-                }
                 visitedMathExpressionSymbol.add(mathExpressionSymbol);
-                System.out.println("lastIndex: "+lastIndex+" current: "+currentGenerationIndex);
+                System.out.println("lastIndex: " + lastIndex + " current: " + currentGenerationIndex);
                 lastIndex = currentGenerationIndex;
             }
+            if (swapNextInstructions) {
+                swapNextInstructions = false;
+                //Log.error("ad");
+                Instruction lastInstruction = method.getInstructions().get(currentGenerationIndex);
+                method.getInstructions().remove(currentGenerationIndex);
+                method.addInstruction(lastInstruction);
+            }
+            if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
 
         }
     }

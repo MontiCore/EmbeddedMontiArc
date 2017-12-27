@@ -3,8 +3,11 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.math.math._ast.ASTAssignmentType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
+import de.monticore.lang.monticar.types2._ast.ASTType;
 
 /**
  * @author Sascha Schneiders
@@ -48,7 +51,13 @@ public class PortConverter {
 
         String typeNameMontiCar = portSymbol.getTypeReference().getName();
 
-
+        if (portSymbol.getTypeReference().getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
+            MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
+            ASTType astType = typeSymbolReference.getAstType();
+            ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
+            //if (astAssignmentType.getMatrixProperty().size() > 0) Log.error(astType.toString());
+            variable.addProperties(astAssignmentType.getMatrixProperty());
+        }
         if (portSymbol.isIncoming())
 
         {
@@ -82,7 +91,6 @@ public class PortConverter {
 
         return variable;
     }
-
 
 
     public static String getPortNameWithoutArrayBracketPart(String name) {

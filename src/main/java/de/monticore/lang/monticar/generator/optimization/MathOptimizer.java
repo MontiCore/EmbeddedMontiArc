@@ -231,6 +231,7 @@ public class MathOptimizer {
     static {
         addOptimizationRule(new MathMultiplicationAddition());
         addOptimizationRule(new MathMatrixMultiplicationOrder());
+        addOptimizationRule(new MathDiagonalMatrixInversionOptimization());
         addOptimizationRule(new MathAssignmentPartResultReuse());
     }
 

@@ -86,6 +86,13 @@ public class ArmadilloHelperSource {
             "cx_mat result=sqrtmat(A);\n" +
             "return real(result);\n" +
             "}\n" +
+            "static mat invertDiagMatrix(mat A){\n" +
+            "for(int i=0;i<A.n_rows;++i){\n" +
+            "    double curVal = A(i,i);\n" +
+            "    A(i,i) = 1/curVal;\n" +
+            "}\n" +
+            "return A;\n" +
+            "}\n" +
             "};\n" +
             "#endif\n";
 }

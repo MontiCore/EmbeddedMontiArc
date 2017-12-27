@@ -309,7 +309,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testMathAssignmentOptimization1() throws IOException{
+    public void testMathAssignmentOptimization1Octave() throws IOException{
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -317,6 +317,19 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+    }
+
+    @Test
+    public void testMathAssignmentOptimization1Armadillo() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/optimizer/l1");
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
 }

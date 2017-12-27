@@ -22,7 +22,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
     MathStatementsSymbol currentMathStatementsSymbol = null;
     List<MathExpressionSymbol> encounteredSymbolInstances = new ArrayList<>();
     Map<MathExpressionSymbol, String> symbolMap = new HashMap();
-    int currentId;
+    int currentId = 0;
     MathExpressionSymbol startMathExpressionSymbol = null;
 
     @Override
@@ -45,7 +45,6 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
         currentMathStatementsSymbol = mathStatementsSymbol;
         encounteredSymbolInstances.clear();
         symbolMap.clear();
-        currentId = 0;
         startMathExpressionSymbol = mathExpressionSymbol;
         optimize(mathExpressionSymbol, precedingExpressions);
     }
@@ -72,7 +71,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
             System.out.println("Found Same Symbol");
             String name = "";
             if (!symbolMap.containsKey(mathExpressionSymbol)) {
-                symbolMap.put(mathExpressionSymbol, name = getReplacementName(currentId));
+                symbolMap.put(mathExpressionSymbol, name = getReplacementName(currentId++));
             } else {
                 name = symbolMap.get(mathExpressionSymbol);
             }
