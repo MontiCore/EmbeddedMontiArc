@@ -176,7 +176,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
      CommonDimensionElement = Name& | UnitNumber;
      */
     ast AssignmentType= method public String printType(){return "AssignmentType";};
-    AssignmentType implements PrintType = matrixProperty:Name* (ElementType dim:Dimension? | CommonMatrixType );
+    AssignmentType implements PrintType, Type = matrixProperty:Name* (ElementType dim:Dimension? | CommonMatrixType );
 
     MatrixType = ElementType Dimension;
 

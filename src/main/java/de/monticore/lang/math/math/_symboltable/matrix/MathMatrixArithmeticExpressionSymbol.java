@@ -71,7 +71,14 @@ public class MathMatrixArithmeticExpressionSymbol extends MathMatrixExpressionSy
 
     @Override
     public String getTextualRepresentation() {
-        return leftExpression.getTextualRepresentation() + mathOperator + rightExpression.getTextualRepresentation();
+        String result = "";
+        if (leftExpression != null)
+            result += leftExpression.getTextualRepresentation();
+        result += mathOperator;
+        if (rightExpression != null)
+            result += rightExpression.getTextualRepresentation();
+
+        return result;
     }
 
     @Override

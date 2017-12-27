@@ -63,4 +63,9 @@ public class MathMatrixAccessSymbol extends MathMatrixExpressionSymbol {
     public boolean isDoubleDot() {
         return !mathExpressionSymbol.isPresent();
     }
+
+    @Override
+    public boolean isMatrixAccessExpression() {
+        return true;
+    }
 }
