@@ -32,7 +32,7 @@ public class EmbeddedMontiArcMathCoCos {
         return new EmbeddedMontiArcMathCoCoChecker()
                 //.addCoCo(new UniqueConstraint())
                 .addCoCo(new UniquePorts())
-                .addCoCo(new ComponentInstanceNamesUnique())
+                //.addCoCo(new ComponentInstanceNamesUnique())
                 //.addCoCo(new PortUsage())
                 .addCoCo(new SubComponentsConnected())
                 .addCoCo(new PackageLowerCase())
