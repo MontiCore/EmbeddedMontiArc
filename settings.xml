@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+
+
      ******************************************************************************
      MontiCAR Modeling Family, www.se-rwth.de
      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
      All rights reserved.
+
      This project is free software; you can redistribute it and/or
      modify it under the terms of the GNU Lesser General Public
      License as published by the Free Software Foundation; either
@@ -12,9 +15,11 @@
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
      Lesser General Public License for more details.
+
      You should have received a copy of the GNU Lesser General Public
      License along with this project. If not, see <http://www.gnu.org/licenses/>.
     *******************************************************************************
+
 -->
 <!--
  | This is the configuration file for Maven. It can be specified at two levels:
@@ -76,10 +81,10 @@
         <!-- pluginGroup
          | Specifies a further group identifier to use for plugin lookup.
         <pluginGroup>com.your.plugins</pluginGroup>
+        -->
 
         <pluginGroup>org.mortbay.jetty</pluginGroup>
         <pluginGroup>de.topobyte</pluginGroup>
-        -->
     </pluginGroups>
 
     <!-- proxies
@@ -165,15 +170,22 @@
          -->
 
         <mirror>
-            <id>github</id>
-            <mirrorOf>*</mirrorOf>
-            <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
+            <id>github1</id>
+            <mirrorOf>github1</mirrorOf>
+            <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
         </mirror>
         <mirror>
-            <id>maven-central</id>
-            <mirrorOf>central</mirrorOf>
-            <url>http://central.maven.org/maven2/</url>
+            <id>github2</id>
+            <mirrorOf>github2</mirrorOf>
+            <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
         </mirror>
+        <!--
+        <mirror>
+          <id>topobyte</id>
+          <mirrorOf>external:*</mirrorOf>
+          <url>http://http://mvn.topobyte.de/</url>
+        </mirror>
+        -->
     </mirrors>
 
     <!-- profiles
@@ -262,49 +274,132 @@
 
         <profile>
             <id>github</id>
-            <!-- enable snapshots for the built in central repo to direct -->
-            <!-- all requests to nexus via the mirror -->
             <repositories>
                 <repository>
-                    <id>central</id>
-                    <url>http://central</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
-                </repository>
-                <repository>
-                    <id>eclipse</id>
-                    <url>https://repo.eclipse.org/content/groups/releases/</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
-                </repository>
-                <repository>
-                    <id>maven-central</id>
+                    <id>github1</id>
+                    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
                     </snapshots>
-                    <url>http://central.maven.org/maven2/</url>
+                </repository>
+                <repository>
+                    <id>github2</id>
+                    <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>eclipse</id>
+                    <url>https://repo.eclipse.org/content/groups/releases/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>jcenter</id>
+                    <url>https://jcenter.bintray.com/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>topobyte</id>
+                    <url>http://mvn.topobyte.de/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </repository>
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
-                    <id>maven-central</id>
-                    <url>http://central.maven.org/maven2/</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
+                    <id>github1</id>
+                    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>github2</id>
+                    <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </pluginRepository>
                 <pluginRepository>
                     <id>eclipse</id>
                     <url>https://repo.eclipse.org/content/groups/releases/</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>jcenter</id>
+                    <url>https://jcenter.bintray.com/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>topobyte</id>
+                    <url>http://mvn.topobyte.de/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
     </profiles>
-
 
 
     <!-- activeProfiles
