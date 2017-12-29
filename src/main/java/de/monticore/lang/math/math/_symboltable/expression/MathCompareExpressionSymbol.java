@@ -68,7 +68,7 @@ public class MathCompareExpressionSymbol extends MathExpressionSymbol implements
 
     @Override
     public String getTextualRepresentation() {
-        return leftExpression + compareOperator + rightExpression;
+        return leftExpression.getTextualRepresentation() + compareOperator + rightExpression.getTextualRepresentation();
     }
 
     @Override
