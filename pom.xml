@@ -30,18 +30,18 @@
 
   <groupId>de.monticore.lang</groupId>
   <artifactId>math</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.8-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.3-SNAPSHOT</monticore.version>
+    <monticore.version>4.5.3</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
-    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-	<SIUnit.version>0.0.4-SNAPSHOT</SIUnit.version>
-	<Common-MontiCar.version>0.0.7</Common-MontiCar.version>
+    <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
+	<Common-MontiCar.version>0.0.8-SNAPSHOT</Common-MontiCar.version>
+    <SIUnit.version>0.0.8-SNAPSHOT</SIUnit.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -107,21 +107,6 @@
       <version>${se-commons.version}</version>
     </dependency>
 
-	<dependency>
-		<groupId>de.monticore.lang</groupId>
-		<artifactId>SIUnit</artifactId>
-		<version>${SIUnit.version}</version>
-	</dependency>
-
-	<dependency>
-		<groupId>de.monticore.lang</groupId>
-		<artifactId>SIUnit</artifactId>
-		<version>${SIUnit.version}</version>
-		<classifier>${grammars.classifier}</classifier>
-		<scope>provided</scope>
-	</dependency>
-	
-	
 	<dependency>
 		<groupId>de.monticore.lang.monticar</groupId>
 		<artifactId>common-monticar</artifactId>
@@ -207,6 +192,10 @@
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
         <version>${monticore.plugin}</version>
+        <configuration>
+          <skip>false</skip>
+          <script>de/monticore/monticore_noemf.groovy</script>
+        </configuration>
         <executions>
           <execution>
             <goals>
