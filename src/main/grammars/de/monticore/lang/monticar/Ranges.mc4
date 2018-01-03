@@ -46,7 +46,7 @@ package de.monticore.lang.monticar;
  * Grammar does not use Literals, since we do not want to have 6
  * different ASTs for numbers
  */
-grammar Ranges extends de.monticore.lang.monticar.Types2, siunit.monticoresiunit.SI, de.monticore.lang.monticar.MCExpressions  {
+grammar Ranges extends de.monticore.lang.monticar.Types2, de.monticore.lang.NumberUnit, de.monticore.lang.monticar.MCExpressions  {
 
     /**
      * steering in the range from 0° to 10° has a resolution of 0.05° and

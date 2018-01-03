@@ -28,7 +28,7 @@ package de.monticore.lang.monticar;
  * @author Martin Schindler
 */
 
-grammar Literals2 extends de.monticore.lexicals.Lexicals, siunit.monticoresiunit.SI {
+grammar Literals2 extends de.monticore.lexicals.Lexicals, de.monticore.lang.NumberUnit {
 
   /*========================================================================*/
   /*======================= AST DEFINITIONS ================================*/

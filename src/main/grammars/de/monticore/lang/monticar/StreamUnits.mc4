@@ -22,7 +22,7 @@ package de.monticore.lang.monticar;
 /**
  * Grammar for common elements that should be imported from somewhere else in future.
  */
-grammar StreamUnits extends siunit.monticoresiunit.SI, de.monticore.lang.monticar.Literals2{
+grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Literals2{
 
   StreamUnitsCompilationUnit =
     ("package" package:(Name& || ".")+ ";")?

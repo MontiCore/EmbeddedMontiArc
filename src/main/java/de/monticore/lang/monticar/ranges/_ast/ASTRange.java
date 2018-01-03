@@ -28,7 +28,7 @@ import javax.measure.unit.Unit;
 import java.util.List;
 import java.util.Optional;
 
-import siunit.monticoresiunit.si._ast.*;
+import de.monticore.lang.numberunit._ast.*;
 
 /**
  * @author Michael von Wenckstern, Sascha Schneiders

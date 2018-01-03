@@ -25,7 +25,7 @@ import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 import org.jscience.mathematics.number.Rational;
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 import javax.measure.unit.Unit;
 import java.util.Collections;

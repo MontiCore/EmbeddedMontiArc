@@ -35,7 +35,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import siunit.monticoresiunit.si._ast.*;
+import de.monticore.lang.numberunit._ast.*;
 
 public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreatorTOP {
 

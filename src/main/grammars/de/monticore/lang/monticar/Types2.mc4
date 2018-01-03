@@ -28,7 +28,7 @@ package de.monticore.lang.monticar;
  *
  * @author Martin Schindler
 */
-grammar Types2 extends de.monticore.lang.monticar.Literals2, siunit.monticoresiunit.SI, de.monticore.lang.monticar.Resolution {
+grammar Types2 extends de.monticore.lang.monticar.Literals2, de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Resolution {
 
 
 

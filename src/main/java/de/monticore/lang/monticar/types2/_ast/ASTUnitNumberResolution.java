@@ -28,7 +28,7 @@ import javax.measure.unit.Unit;
 import java.util.List;
 import java.util.Optional;
 
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 /**
  * Created by Sascha on 01.06.2017.
@@ -38,20 +38,20 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
         super();
     }
 
-    public ASTUnitNumberResolution(String name, siunit.monticoresiunit.si._ast.ASTUnitNumber unitNumber) {
+    public ASTUnitNumberResolution(String name, de.monticore.lang.numberunit._ast.ASTUnitNumber unitNumber) {
         super(name, unitNumber);
     }
 
     public void setNumber(Rational number) {
         if (!getUnitNumber().isPresent()) {
-            setUnitNumber(new siunit.monticoresiunit.si._ast.ASTUnitNumber(number, Unit.ONE));
+            setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(number, Unit.ONE));
         }
         getUnitNumber().get().setNumber(number);
     }
 
     public void setUnit(Unit unit) {
         if (!getUnitNumber().isPresent()) {
-            setUnitNumber(new siunit.monticoresiunit.si._ast.ASTUnitNumber(Rational.ZERO, unit));
+            setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(Rational.ZERO, unit));
         }
         getUnitNumber().get().setUnit(unit);
     }

@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.streamunits._ast;
 
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 /**
  * @author Sascha Schneiders
