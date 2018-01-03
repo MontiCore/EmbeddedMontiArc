@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>common-monticar</artifactId>
-  <version>0.0.7</version>
+  <version>0.0.8-SNAPSHOT</version>
 
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
@@ -41,7 +41,7 @@
     <monticore.version>4.5.3-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-  	<SIUnit.version>0.0.7</SIUnit.version>
+  	<SIUnit.version>0.0.8-SNAPSHOT</SIUnit.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -196,6 +196,10 @@
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
         <version>${monticore.plugin}</version>
+        <configuration>
+          <skip>false</skip>
+          <script>de/monticore/monticore_noemf.groovy</script>
+        </configuration>
         <executions>
           <execution>
             <goals>
