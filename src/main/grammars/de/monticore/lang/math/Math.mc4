@@ -19,7 +19,7 @@
 
 package de.monticore.lang.math;
 
-grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.SI,de.monticore.lang.monticar.MCExpressions {
+grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monticar.MCExpressions {
     MathCompilationUnit =
       ("package" package:(Name& || ".")+ ";")?
       (ImportStatement)* // to import later on other scripts/functions

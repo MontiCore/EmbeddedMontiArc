@@ -37,11 +37,11 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.3</monticore.version>
+    <monticore.version>4.5.4-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-	<Common-MontiCar.version>0.0.8-SNAPSHOT</Common-MontiCar.version>
-    <SIUnit.version>0.0.8-SNAPSHOT</SIUnit.version>
+	<Common-MontiCar.version>0.0.9-SNAPSHOT</Common-MontiCar.version>
+    <SIUnit.version>0.0.9-SNAPSHOT</SIUnit.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
