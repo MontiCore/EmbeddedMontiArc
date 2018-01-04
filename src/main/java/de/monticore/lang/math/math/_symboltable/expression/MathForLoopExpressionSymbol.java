@@ -56,7 +56,16 @@ public class MathForLoopExpressionSymbol extends MathExpressionSymbol {
 
     @Override
     public String getTextualRepresentation() {
-        return "for(" + forLoopHead.getNameLoopVariable() + "=" + forLoopHead.getMathExpression().getTextualRepresentation() + ")";
+        String result = "";
+        result += "for(" + forLoopHead.getNameLoopVariable() + "=" + forLoopHead.getMathExpression().getTextualRepresentation() + ")";
+        result += "{\n";
+
+        for (MathExpressionSymbol bodyExpr : forLoopBody) {
+            result += bodyExpr.getTextualRepresentation() + ";\n";
+        }
+        result += "}\n";
+
+        return result;
     }
 
     @Override

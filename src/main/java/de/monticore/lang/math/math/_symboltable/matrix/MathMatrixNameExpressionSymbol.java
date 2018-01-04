@@ -22,6 +22,7 @@ package de.monticore.lang.math.math._symboltable.matrix;
 
 import de.monticore.lang.math.math._ast.ASTMathMatrixNameExpression;
 import de.monticore.lang.math.math._symboltable.expression.IMathNamedExpression;
+import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
 
 /**
  * @author Sascha Schneiders
@@ -70,11 +71,23 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
 
     @Override
     public String getTextualRepresentation() {
-        return astMathMatrixNameExpression.toString();
+        String result = "";
+        result += nameToAccess;
+        result += "(";
+        if (astMathMatrixNameExpression.getMathMatrixAccessExpression().isPresent())
+            result += ((MathExpressionSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get()).getTextualRepresentation();
+        else if (astMathMatrixNameExpression.getEndOperator().isPresent()) {
+            result += astMathMatrixNameExpression.getEndOperator().get().getSymbol();
+        }
+        result += ")";
+
+        return result;
     }
 
     @Override
     public boolean isMatrixNameExpression() {
         return true;
     }
+
+
 }

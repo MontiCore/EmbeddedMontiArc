@@ -26,6 +26,7 @@ import de.monticore.lang.math.math._ast.ASTMathExpression;
 import de.monticore.lang.math.math._ast.ASTMathStatements;
 import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.symboltable.CommonSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +46,6 @@ public class MathStatementsSymbol extends CommonSymbol {
     }
 
 
-    public ASTMathStatements getAstMathStatements() {
-        return astMathStatements;
-    }
-
-    public void setAstMathStatements(ASTMathStatements astMathStatements) {
-        this.astMathStatements = astMathStatements;
-    }
-
     public List<MathExpressionSymbol> getMathExpressionSymbols() {
         if (mathExpressionSymbols == null) {
             mathExpressionSymbols = new ArrayList<>();
@@ -61,5 +54,32 @@ public class MathStatementsSymbol extends CommonSymbol {
             }
         }
         return mathExpressionSymbols;
+    }
+
+    public void addMathExpressionBefore(MathExpressionSymbol mathExpressionToAdd,
+                                        MathExpressionSymbol referenceMathExpression) {
+        for (int i = 0; i < mathExpressionSymbols.size(); ++i) {
+            MathExpressionSymbol curExpression = mathExpressionSymbols.get(i);
+            if (referenceMathExpression.equals(curExpression)) {
+                mathExpressionSymbols.add(i, mathExpressionToAdd);
+                Log.debug(mathExpressionToAdd.getTextualRepresentation(),"addMathExpressionBefore:");
+                return;
+            }
+        }
+    }
+
+    public void addMathExpressionAfter(MathExpressionSymbol mathExpressionToAdd,
+                                       MathExpressionSymbol referenceMathExpression) {
+        for (int i = 0; i < mathExpressionSymbols.size(); ++i) {
+            MathExpressionSymbol curExpression = mathExpressionSymbols.get(i);
+            if (referenceMathExpression.equals(curExpression)) {
+                mathExpressionSymbols.add(i + 1, mathExpressionToAdd);
+                return;
+            }
+        }
+    }
+
+    public void replaceMathExpression(MathExpressionSymbol newMathExpression, MathExpressionSymbol oldMathExpressionSymbol) {
+        MathExpressionReplacer.replaceMathExpression(this, newMathExpression, oldMathExpressionSymbol);
     }
 }
