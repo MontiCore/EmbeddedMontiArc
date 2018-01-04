@@ -38,7 +38,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-import siunit.monticoresiunit.si._ast.*;
+import de.monticore.lang.numberunit._ast.*;
 
 public class MathSymbolTableCreatorTest {
 

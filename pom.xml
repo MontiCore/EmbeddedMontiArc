@@ -102,6 +102,20 @@
     </dependency>
 
     <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>NumberUnit</artifactId>
+      <version>${SIUnit.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>NumberUnit</artifactId>
+      <version>${SIUnit.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-groovy</artifactId>
       <version>${se-commons.version}</version>

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import siunit.monticoresiunit.si._ast.*;
+import de.monticore.lang.numberunit._ast.*;
 
 /**
  * Created by michaelvonwenckstern on 11.02.17.
