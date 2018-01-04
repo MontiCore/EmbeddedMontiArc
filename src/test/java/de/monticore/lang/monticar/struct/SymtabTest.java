@@ -32,6 +32,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class SymtabTest {
         Assert.assertEquals("B", f1.getType().getReferencedSymbol().getFullName());
     }
 
+    @Ignore
     @Test
     public void testNonExistentReferences() {
         StructSymbol struct = symTab.<StructSymbol>resolve("test.symtable.ErrNonExistentReferences", StructSymbol.KIND).orElse(null);

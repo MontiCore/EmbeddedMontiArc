@@ -26,6 +26,7 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AllStructReferencesAreRecursivelyResolvableCheckerTest {
@@ -83,6 +84,7 @@ public class AllStructReferencesAreRecursivelyResolvableCheckerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testNonExistentReferences() {
         String[] structsWithNonExistentReferences = new String[]{
