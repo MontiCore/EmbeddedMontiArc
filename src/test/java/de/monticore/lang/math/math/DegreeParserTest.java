@@ -46,26 +46,11 @@ public class DegreeParserTest {
     ASTElementType ast = parser.parseString_ElementType("Q(-90°:90°)").orElse(null);
     assertNotNull(ast);
   }
-  
-  @Test
-  public void testAssignmentType() throws IOException {
-    MathParser parser = new MathParser();
-    parser.setParserTarget(MCConcreteParser.ParserExecution.EOF);
-    ASTAssignmentType ast = parser.parseString_AssignmentType("Q(-90°:90°)^2 x").orElse(null);
-    assertNotNull(ast);
-  }
-
-  @Test
-  public void testMathStatement() throws IOException {
-    MathParser parser = new MathParser();
-    ASTMathStatements ast = parser.parseString_MathStatements("Q(-90°:90°)^2 x;").orElse(null);
-    assertNotNull(ast);
-  }
 
   @Test
   public void testMathDeclarationExpression() throws IOException {
     MathParser parser = new MathParser();
-    ASTMathDeclarationExpression ast = parser.parseString_MathDeclarationExpression("Q(-90°:90°)^2 x;").orElse(null);
+    ASTMathDeclarationExpression ast = parser.parseString_MathDeclarationExpression("Q(-90°:90°)^{2} x;").orElse(null);
     assertNotNull(ast);
   }
 }

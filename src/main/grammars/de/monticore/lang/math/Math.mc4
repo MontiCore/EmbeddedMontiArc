@@ -76,7 +76,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monti
 
     MathElseExpression = "else" body:MathExpression+ ;
 
-    Dimension = "^" "{" (MathArithmeticExpression || ",")+ "}";
+    Dimension = "^" ("{" (MathArithmeticExpression || ",")+ "}" | MathArithmeticExpression);
 
     //Expression for number/variable name
     MathNumberExpression implements MathValueExpression, MathExpression, Expression  = Number;
@@ -210,9 +210,9 @@ grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monti
 
         ConditionalStatement = IfStatement2 (ElseIfStatement2)* (ElseStatement2)? "end" | BooleanExpression "?" (m1:MathStatement)+ ":" (m2:MathStatement)+;
 
-        IfStatement2 = "if"  BooleanExpression "{" (MathStatement)+ "}";
-        ElseIfStatement2 = "elseif"  BooleanExpression "{" (MathStatement)+ "}";
-        ElseStatement2 = "else" "{"(MathStatement)+ "}";
+        IfStatement2 = "if"  BooleanExpression  (MathStatement)+ ;
+        ElseIfStatement2 = "elseif"  BooleanExpression  (MathStatement)+ ;
+        ElseStatement2 = "else" (MathStatement)+ ;
 
     ForStatement2 = "for" forAssignment:ForAssignment2
                         (MathStatement)+

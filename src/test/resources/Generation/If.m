@@ -23,15 +23,11 @@ script If
     Q cond = 2;
     Q result = 0;
 
-    if cond == 1 {
+    if cond == 1
       result = 1;
-    }
-    elseif cond == 0 {
+    elseif cond == 0
       result = -1;
-    }
-    else {
+    else
       result = 0;
-    }
     end
-
 end

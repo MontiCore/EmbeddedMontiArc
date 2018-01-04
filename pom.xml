@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang</groupId>
   <artifactId>math</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.10-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -40,8 +40,8 @@
     <monticore.version>4.5.4-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-	<Common-MontiCar.version>0.0.9-SNAPSHOT</Common-MontiCar.version>
-    <SIUnit.version>0.0.9-SNAPSHOT</SIUnit.version>
+	<Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
+    <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -68,6 +68,13 @@
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.7.1</version>
+    </dependency>
+
     <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
@@ -201,6 +208,7 @@
           </execution>
         </executions>
       </plugin>
+
       <!-- MontiCore Generation -->
       <plugin>
         <groupId>de.monticore.mojo</groupId>
@@ -210,6 +218,19 @@
           <skip>false</skip>
           <script>de/monticore/monticore_noemf.groovy</script>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>4.7.1</version>
+          </dependency>
+          <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+          <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.1</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <goals>
