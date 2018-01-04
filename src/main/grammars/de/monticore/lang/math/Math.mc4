@@ -19,7 +19,7 @@
 
 package de.monticore.lang.math;
 
-grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.SI,de.monticore.lang.monticar.MCExpressions {
+grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monticar.MCExpressions {
     MathCompilationUnit =
       ("package" package:(Name& || ".")+ ";")?
       (ImportStatement)* // to import later on other scripts/functions
@@ -47,7 +47,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
 
     MathForLoopHead = Name& "=" MathExpression;
 
-    MathDeclarationExpression implements MathExpression = type:AssignmentType Name& ";";
+    MathDeclarationExpression implements MathExpression = type:AssignmentType Name ";";
 
     MathAssignmentDeclarationExpression implements MathExpression = type:AssignmentType Name& MathAssignmentOperator MathExpression ";";
 
@@ -55,17 +55,28 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
 
     MathAssignmentOperator = operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
 
-    MathConditionalExpression implements MathExpression = MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
     MathConditionalExpressionShort implements MathExpression = MathExpression /*MathBooleanExpression*/ "?" trueCase:MathExpression+ ":" falseCase:MathExpression+;
 
-    MathIfExpression  = "if" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
+    /**
+    Syntax is without "{"
+    if expression
+        statements
+    elseif expression
+        statements
+    else
+        statements
+    end
+    see https://de.mathworks.com/help/matlab/ref/if.html
+    */
+    MathConditionalExpression implements MathExpression = "if" MathIfExpression MathElseIfExpression* MathElseExpression? "end";
+    MathIfExpression  = condition:MathExpression body:MathExpression+;
 
-    MathElseIfExpression = "elseif" /*condition:MathBooleanExpression*/ condition:MathExpression "{" body:MathExpression* "}" ;
+    MathElseIfExpression = "elseif" condition:MathExpression body:MathExpression+  ;
 
-    MathElseExpression = "else" "{" body:MathExpression* "}";
+    MathElseExpression = "else" body:MathExpression+ ;
 
-    Dimension = "^" "{" (MathArithmeticExpression || ",")+ "}";
+    Dimension = "^" ("{" (MathArithmeticExpression || ",")+ "}" | MathArithmeticExpression);
 
     //Expression for number/variable name
     MathNumberExpression implements MathValueExpression, MathExpression, Expression  = Number;
@@ -199,9 +210,9 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
 
         ConditionalStatement = IfStatement2 (ElseIfStatement2)* (ElseStatement2)? "end" | BooleanExpression "?" (m1:MathStatement)+ ":" (m2:MathStatement)+;
 
-        IfStatement2 = "if"  BooleanExpression "{" (MathStatement)+ "}";
-        ElseIfStatement2 = "elseif"  BooleanExpression "{" (MathStatement)+ "}";
-        ElseStatement2 = "else" "{"(MathStatement)+ "}";
+        IfStatement2 = "if"  BooleanExpression  (MathStatement)+ ;
+        ElseIfStatement2 = "elseif"  BooleanExpression  (MathStatement)+ ;
+        ElseStatement2 = "else" (MathStatement)+ ;
 
     ForStatement2 = "for" forAssignment:ForAssignment2
                         (MathStatement)+
@@ -215,7 +226,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     //ast MatrixType= method public String printType(){return "MatrixType";};
     MatrixType = ElementType Dimension;
 
-    Dimension = "^" "{" (ArithmeticExpression || ",")+ "}";
+    Dimension = "^" ("{" (ArithmeticExpression || ",")+ "}") | ArithmeticExpression;
 
 	//TODO Refactor grammar to make ast look better and profit from left recursion possible in the new monticore versions
     MathExpression implements Expression= ArithmeticExpression
