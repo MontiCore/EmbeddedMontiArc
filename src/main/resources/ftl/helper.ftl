@@ -1,24 +1,24 @@
 <#macro matrix_to_array>
-  val matrixToArray(Mat matrix) {
-      val result = val::array();
-      uword rows = matrix.nrows;
-      uword cols = matrix.ncols;
-      for (int i = 0; i < cols; i++) {
-          val v = val::array();
-          result.set(i, v);
-          for (int j = 0; j < rows; j++) {
-              v.set(j, matrix(i, j));
-          }
+  val matrixToArray(mat matrix) {
+    val result = val::array();
+    uword rows = matrix.n_rows;
+    uword cols = matrix.n_cols;
+    for (int i = 0; i < rows; i++) {
+      val v = val::array();
+      result.set(i, v);
+      for (int j = 0; j < cols; j++) {
+        v.set(j, matrix(i, j));
       }
-      return result;
+    }
+    return result;
   }
 </#macro>
 
 <#macro array_to_matrix>
-  void copyArrayInMatrix(Mat matrix, val array2d) {
-    for (int i = 0; i < sizeof(array2d); i++) {
-      for (int j = 0; j < sizeof(array2d}.get(i)); j++) {
-        matrix(i, j) = array2d.get(i).get(j);
+  void copyArrayInMatrix(mat &matrix, val array2d) {
+    for (int i = 0; i < array2d["length"].as<int>(); i++) {
+      for (int j = 0; j < ((array2d[i])["length"]).as<int>(); j++) {
+        matrix(i, j) = array2d[i][j].as<double>();
       }
     }
   }

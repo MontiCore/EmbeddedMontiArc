@@ -1,19 +1,27 @@
-<#macro simple methodName parameterType parameterName objectName variableName>
-  void ${methodName} (${parameterType} ${parameterName}) {
-  ${objectName}->${variableName} = ${parameterName};
+<#macro simple methodName parameterName objectName variableName variableType>
+  void ${methodName}(val ${parameterName}) {
+  ${objectName}->${variableName} = ${parameterName}.as<${variableType}>();
   }
 </#macro>
 
-<#macro matrix methodName parameterType parameterName objectName variableName>
-  void ${methodName} (${parameterType} ${parameterName}) {
+<#macro array methodName parameterName objectName variableName variableType>
+  void ${methodName}(val ${parameterName}) {
+    for (int i = 0; i < ${parameterName}["length"].as<int>(); i++) {
+  ${objectName}->${variableName}[i] = ${parameterName}[i].as<${variableType}>();
+    }
+  }
+</#macro>
+
+<#macro matrix methodName parameterName objectName variableName>
+  void ${methodName}(val ${parameterName}) {
     copyArrayInMatrix(${objectName}->${variableName}, ${parameterName});
   }
 </#macro>
 
-<#macro matrix_array methodName parameterType parameterName objectName variableName>
-  void ${methodName} (${parameterType} ${parameterName}) {
-    for (int i = 0; i < sizeof(${parameterName}); i++) {
-      copyArrayInMatrix(${objectName}->${variableName}.get(i), ${parameterName}.get(i));
+<#macro matrix_array methodName parameterName objectName variableName>
+  void ${methodName}(val ${parameterName}) {
+    for (int i = 0; i < ${parameterName}["length"].as<int>(); i++) {
+    copyArrayInMatrix(${objectName}->${variableName}[i], ${parameterName}[i]);
     }
   }
 </#macro>
