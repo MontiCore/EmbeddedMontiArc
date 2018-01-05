@@ -129,6 +129,7 @@
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
           <includes>
+            <include>**/*Test.java</include>
             <include>**/*IT.java</include>
             <include>**/*AT.java</include>
           </includes>
