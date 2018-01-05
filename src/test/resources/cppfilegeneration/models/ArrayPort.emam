@@ -1,0 +1,9 @@
+package models;
+
+component ArrayPort {
+  ports
+    in B in1[4],
+    out B out1[4];
+
+  connect in1[:] -> out1[:];
+}
