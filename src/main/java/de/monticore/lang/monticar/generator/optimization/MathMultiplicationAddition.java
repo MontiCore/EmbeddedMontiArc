@@ -19,10 +19,9 @@ public class MathMultiplicationAddition implements MathOptimizationRule {
 
     @Override
     public void optimize(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
-        if (mathExpressionSymbol == null){
+        if (mathExpressionSymbol == null) {
 
-        }
-        else if (mathExpressionSymbol.isMatrixExpression()) {
+        } else if (mathExpressionSymbol.isMatrixExpression()) {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else if (mathExpressionSymbol.isAssignmentExpression()) {
             optimize((MathAssignmentExpressionSymbol) mathExpressionSymbol, precedingExpressions);
@@ -39,9 +38,18 @@ public class MathMultiplicationAddition implements MathOptimizationRule {
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNumberExpression()) {
                 //optimize((MathNumberExpressionSymbol)mathExpressionSymbol,precedingExpressions);
             }
+        } else if (mathExpressionSymbol.isForLoopExpression()) {
+            optimize((MathForLoopExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
             Log.error("Optimizer Case not handled!");
+        }
+    }
+
+    public void optimize(MathForLoopExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+        //TODO enable head optimization
+        for (MathExpressionSymbol subExp : mathExpressionSymbol.getForLoopBody()) {
+            optimize(subExp, precedingExpressions);
         }
     }
 

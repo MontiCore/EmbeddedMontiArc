@@ -91,7 +91,65 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector/l0");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+    }
+
+    @Test
+    public void testAllObjectDetectorInstances() throws IOException{
+        for(int i=1;i<=9;++i){
+            testObjectDetectorInstancingL0(i);
+            testObjectDetectorInstancingL1(i);
+            testObjectDetectorInstancingL2(i);
+            testObjectDetectorInstancingL3(i);
+        }
+    }
+
+    private void testObjectDetectorInstancingL0(int number) throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l0");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+    }
+
+    private void testObjectDetectorInstancingL1(int number) throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l1");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+    }
+
+    private void testObjectDetectorInstancingL2(int number) throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l2");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+    }
+
+
+    private void testObjectDetectorInstancingL3(int number) throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l3");
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
 }

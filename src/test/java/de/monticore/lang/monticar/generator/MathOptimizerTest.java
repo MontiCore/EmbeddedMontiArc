@@ -5,6 +5,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -308,6 +309,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
 
+    @Ignore
     @Test
     public void testMathAssignmentOptimization1Octave() throws IOException{
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");

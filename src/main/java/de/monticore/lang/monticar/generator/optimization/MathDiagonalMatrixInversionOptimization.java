@@ -79,8 +79,9 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
                 String name = getMatrixName((MathMatrixAccessSymbol) mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().get().getMathMatrixAccesss().get(0).getSymbol().get());//TODO handle all possible cases
                 invertsDiagonalMatrix = ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable(name).getProperties().contains("diag");
             }
-            if (invertsDiagonalMatrix)
+            if (invertsDiagonalMatrix) {
                 mathExpressionSymbol.setNameToAccess("invdiag");
+            }
             Log.debug("Found inv and replaced with invdiag", "optimizeMathMatrixNameExp");
         }
         if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {

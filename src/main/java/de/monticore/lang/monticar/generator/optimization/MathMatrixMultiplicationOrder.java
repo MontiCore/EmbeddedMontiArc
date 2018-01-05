@@ -40,9 +40,18 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNumberExpression()) {
                 //optimize((MathNumberExpressionSymbol)mathExpressionSymbol,precedingExpressions);
             }
+        } else if (mathExpressionSymbol.isForLoopExpression()) {
+            optimize((MathForLoopExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
             Log.error("Optimizer Case not handled!");
+        }
+    }
+
+    public void optimize(MathForLoopExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+        //TODO enable head optimization later
+        for (MathExpressionSymbol subExp : mathExpressionSymbol.getForLoopBody()) {
+            optimize(subExp, precedingExpressions);
         }
     }
 
@@ -85,6 +94,11 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
             Log.error("Optimizer Case not handled!");
 
         }
+    }
+
+    public void optimize(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+        optimize(mathExpressionSymbol.getLeftExpression(), precedingExpressions);
+        optimize(mathExpressionSymbol.getRightExpression(), precedingExpressions);
     }
 
     public void optimize(MathMatrixNameExpressionSymbol matrixNameExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {

@@ -12,10 +12,8 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,6 +132,7 @@ public class GeneratorCPP implements Generator {
         return fileContents;
     }
 
+    //TODO add incremental generation based on described concept
     public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol,
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
@@ -161,15 +160,26 @@ public class GeneratorCPP implements Generator {
     public File generateFile(FileContent fileContent) throws IOException {
         File f = new File(getGenerationTargetPath() + fileContent.getFileName());
         Log.info(f.getName(), "FileCreation:");
+        boolean contentEqual = false;
+        //Actually slower than just saving and overwriting the file
+        /*if (f.exists()) {
+            String storedFileContent = new String(Files.readAllBytes(f.toPath()));
+            if (storedFileContent.equals(fileContent.getFileContent())) {
+                contentEqual = true;
+            }
+        } else*/
         if (!f.exists()) {
             f.getParentFile().mkdirs();
             if (!f.createNewFile()) {
                 Log.error("File could not be created");
             }
         }
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(f));
-        bufferedWriter.write(fileContent.getFileContent(), 0, fileContent.getFileContent().length());
-        bufferedWriter.close();
+
+        if (!contentEqual) {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(f));
+            bufferedWriter.write(fileContent.getFileContent(), 0, fileContent.getFileContent().length());
+            bufferedWriter.close();
+        }
         return f;
     }
 

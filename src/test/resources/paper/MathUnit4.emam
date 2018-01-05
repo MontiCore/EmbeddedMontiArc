@@ -1,0 +1,20 @@
+package paper;
+
+component MathUnit4{
+    ports in Q(-oo:oo)^{1000,200} mat1[4],
+          in Q(-oo:oo)^{1000,200} mat2[4],
+          in Q(-oo:oo)^{200,10} mat3[4],
+          in Q(-oo:oo)^{10,100} mat4[4],
+          in Q factor[4],
+          out Q(-oo:oo)^{1000,100} matOut1[4];
+
+    instance MatrixModifier matrixModifier[4];
+    connect mat1[:]-> matrixModifier[:].mat1;
+    connect mat2[:]-> matrixModifier[:].mat2;
+    connect mat3[:]-> matrixModifier[:].mat3;
+    connect mat4[:]-> matrixModifier[:].mat4;
+    connect factor[:]-> matrixModifier[:].factor;
+    connect matrixModifier[:].matOut -> matOut1[:];
+
+
+}

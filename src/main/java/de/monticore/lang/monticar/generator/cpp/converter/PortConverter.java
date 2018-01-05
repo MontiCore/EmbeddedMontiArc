@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Sascha Schneiders
@@ -54,9 +55,11 @@ public class PortConverter {
         if (portSymbol.getTypeReference().getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
             MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
             ASTType astType = typeSymbolReference.getAstType();
-            ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
-            //if (astAssignmentType.getMatrixProperty().size() > 0) Log.error(astType.toString());
-            variable.addProperties(astAssignmentType.getMatrixProperty());
+            if (astType instanceof ASTAssignmentType) {
+                ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
+                //if (astAssignmentType.getMatrixProperty().size() > 0) Log.error(astType.toString());
+                variable.addProperties(astAssignmentType.getMatrixProperty());
+            }
         }
         if (portSymbol.isIncoming())
 
