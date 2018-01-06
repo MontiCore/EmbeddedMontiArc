@@ -113,7 +113,9 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l0");
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/detectionObjectDetector"+number+"/l0/";
+        testFilesAreEqual(files, restPath);
     }
 
     private void testObjectDetectorInstancingL1(int number) throws IOException {
@@ -125,7 +127,9 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l1");
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/detectionObjectDetector"+number+"/l1/";
+        testFilesAreEqual(files, restPath);
     }
 
     private void testObjectDetectorInstancingL2(int number) throws IOException {
@@ -137,7 +141,9 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l2");
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/detectionObjectDetector"+number+"/l2/";
+        testFilesAreEqual(files, restPath);
     }
 
 
@@ -150,6 +156,8 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l3");
-        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/detectionObjectDetector"+number+"/l3/";
+        testFilesAreEqual(files, restPath);
     }
 }
