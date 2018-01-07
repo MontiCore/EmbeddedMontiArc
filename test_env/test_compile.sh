@@ -1,1 +1,2 @@
-./emsdk-portable/emcc module.cpp -std=c++11 -larmadillo --bind -s WASM=1 -o module.html -O0 -s LINKABLE=1 -s EXPORT_ALL=1 -s ALLOW_MEMORY_GROWTH=1
+source ./emsdk-portable/emsdk_env.sh
+./emsdk-portable/emscripten/1.37.27/emcc module.cpp -std=c++11 -larmadillo --bind -s WASM=1 -o module.html -O0 -s LINKABLE=1 -s EXPORT_ALL=1 -s ALLOW_MEMORY_GROWTH=1
