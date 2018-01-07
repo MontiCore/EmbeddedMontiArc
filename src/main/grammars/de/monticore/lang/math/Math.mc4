@@ -38,6 +38,12 @@ grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monti
     interface MathValueMatrixExpression extends MathExpression;
     interface MathBooleanExpression extends MathExpression;
 
+    MathConditionalExpression implements MathExpression = "if" MathIfExpression MathElseIfExpression* MathElseExpression? "end";
+    MathIfExpression  = condition:MathExpression body:MathExpression+;
+
+    MathElseIfExpression = "elseif" condition:MathExpression body:MathExpression+  ;
+
+    MathElseExpression = "else" body:MathExpression+ ;
     //general MathExpressions
     MathParenthesisExpression implements MathArithmeticMatrixExpression, MathArithmeticExpression, MathExpression, Expression = "(" MathExpression ")";
 
@@ -59,6 +65,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monti
     MathConditionalExpressionShort implements MathExpression = MathExpression /*MathBooleanExpression*/ "?" trueCase:MathExpression+ ":" falseCase:MathExpression+;
 
     /**
+    Something in MontiCore does not work as expected when using it without "{" "}"
     Syntax is without "{"
     if expression
         statements
@@ -69,19 +76,14 @@ grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monti
     end
     see https://de.mathworks.com/help/matlab/ref/if.html
     */
-    MathConditionalExpression implements MathExpression = "if" MathIfExpression MathElseIfExpression* MathElseExpression? "end";
-    MathIfExpression  = condition:MathExpression body:MathExpression+;
 
-    MathElseIfExpression = "elseif" condition:MathExpression body:MathExpression+  ;
-
-    MathElseExpression = "else" body:MathExpression+ ;
 
     Dimension = "^" ("{" (MathArithmeticExpression || ",")+ "}" | MathArithmeticExpression);
 
     //Expression for number/variable name
     MathNumberExpression implements MathValueExpression, MathExpression, Expression  = Number;
 
-    MathNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = Name&;
+    MathNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = Name;
 
     MathDottedNameExpression implements MathArithmeticMatrixExpression, MathValueExpression, MathExpression, Expression  = Name "." Name;
 
