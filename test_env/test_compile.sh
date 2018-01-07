@@ -1,1 +1,1 @@
-emscripten -std=c++11 -larmadillo module.cpp --bind -s WASM=1 -o module.html -O0 -s LINKABLE=1 -s EXPORT_ALL=1 -s ALLOW_MEMORY_GROWTH=1
+docker exec -it emscripten -std=c++11 -larmadillo module.cpp --bind -s WASM=1 -o module.html -O0 -s LINKABLE=1 -s EXPORT_ALL=1 -s ALLOW_MEMORY_GROWTH=1
