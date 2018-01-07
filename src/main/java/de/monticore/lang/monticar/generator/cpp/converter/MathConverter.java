@@ -8,8 +8,8 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
 
 /**
  * @author Sascha Schneiders

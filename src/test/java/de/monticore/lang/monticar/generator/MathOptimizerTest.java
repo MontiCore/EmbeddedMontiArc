@@ -2,9 +2,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
 import org.junit.Ignore;
 import org.junit.Test;
 
