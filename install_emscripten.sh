@@ -5,5 +5,4 @@ cd emsdk-portable
 emsdk update
 emsdk install latest
 emsdk activate latest
-pwd
-ls -al
+source ./emsdk_env.sh

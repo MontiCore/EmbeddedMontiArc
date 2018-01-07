@@ -1,1 +1,1 @@
-docker exec -it emscripten module.cpp -std=c++11 -larmadillo --bind -s WASM=1 -o module.html -O0 -s LINKABLE=1 -s EXPORT_ALL=1 -s ALLOW_MEMORY_GROWTH=1
+./emsdk-portable/emcc module.cpp -std=c++11 -larmadillo --bind -s WASM=1 -o module.html -O0 -s LINKABLE=1 -s EXPORT_ALL=1 -s ALLOW_MEMORY_GROWTH=1
