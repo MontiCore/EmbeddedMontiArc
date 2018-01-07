@@ -8,6 +8,7 @@ services:
 before_install:
   - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
   - ./install_armadillo.sh
+  - ./test_env/test_compile.sh
 
 script:
 #- mvn clean install jacoco:report org.eluder.coveralls:coveralls-maven-plugin:report --settings "settings.xml"
