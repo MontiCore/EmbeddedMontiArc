@@ -1,0 +1,4 @@
+package a.bc.d.efghi.j;
+
+component PackageHierarchy {
+}

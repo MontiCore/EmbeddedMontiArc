@@ -1,0 +1,6 @@
+//package abc;
+package models;
+
+//component Comment { }
+component ModelWithLineComment {
+}

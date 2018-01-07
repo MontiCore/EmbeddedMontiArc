@@ -7,13 +7,24 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-public class ModelNameParser {
+public class ModelParser {
 
   private EmbeddedMontiArcMathParser parser;
 
-  public ModelNameParser(EmbeddedMontiArcMathParser parser) {
+  public ModelParser(EmbeddedMontiArcMathParser parser) {
     this.parser = parser;
+  }
+
+  public String parsePackage(String model) {
+    try {
+      ASTEMAMCompilationUnit ast = parse(model);
+      return ast.getEMACompilationUnit().getPackage().stream().collect(Collectors.joining("."));
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public String parseModelName(String model) {
