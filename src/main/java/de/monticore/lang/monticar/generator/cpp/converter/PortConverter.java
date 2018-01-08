@@ -10,6 +10,8 @@ import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
+import javax.sound.sampled.Port;
+
 /**
  * @author Sascha Schneiders
  */
@@ -46,46 +48,14 @@ public class PortConverter {
         if (variable != null&&variable.isArray())
             return variable;
 */
-
         Variable variable = new Variable();
         String name = "";
 
         String typeNameMontiCar = portSymbol.getTypeReference().getName();
 
-        if (portSymbol.getTypeReference().getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
-            MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
-            ASTType astType = typeSymbolReference.getAstType();
-            if (astType instanceof ASTAssignmentType) {
-                ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
-                //if (astAssignmentType.getMatrixProperty().size() > 0) Log.error(astType.toString());
-                variable.addProperties(astAssignmentType.getMatrixProperty());
-            }
-        }
-        if (portSymbol.isIncoming())
-
-        {
-            variable.setInputVariable(true);
-        } else
-
-        {
-            variable.setInputVariable(false);
-        }
-
-        if (portSymbol.isConstant())
-
-        {
-            //name += "Constant" + ++counterConstantPorts;
-            name += connectName;
-            variable.setIsConstantVariable(true);
-            variable.setConstantValue(((ConstantPortSymbol) portSymbol).getConstantValue().getValueAsString());
-
-            // Log.error("0xCOPOSHNOBECRASAAVA Constant Port should not be created as a variable");
-        } else
-
-        {
-            //Log.info(portSymbol.getName(),"PORTNAME:");
-            name += connectName;
-        }
+        addVariableProperties(portSymbol, variable);
+        handlePortDirection(portSymbol, variable);
+        name += handlePortName(portSymbol, variable, connectName);
 
         variable.setName(name);
         variable.setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(typeNameMontiCar, variable, portSymbol).get());
@@ -95,6 +65,42 @@ public class PortConverter {
         return variable;
     }
 
+    private static void handlePortDirection(PortSymbol portSymbol, Variable variable) {
+        if (portSymbol.isIncoming()) {
+            variable.setInputVariable(true);
+        } else {
+            variable.setInputVariable(false);
+        }
+
+    }
+
+    private static String handlePortName(PortSymbol portSymbol, Variable variable, String connectName) {
+        String name = "";
+        if (portSymbol.isConstant()) {
+            //name += "Constant" + ++counterConstantPorts;
+            name += connectName;
+            variable.setIsConstantVariable(true);
+            variable.setConstantValue(((ConstantPortSymbol) portSymbol).getConstantValue().getValueAsString());
+
+            // Log.error("0xCOPOSHNOBECRASAAVA Constant Port should not be created as a variable");
+        } else {
+            //Log.info(portSymbol.getName(),"PORTNAME:");
+            name += connectName;
+        }
+        return name;
+    }
+
+    private static void addVariableProperties(PortSymbol portSymbol, Variable variable) {
+        if (portSymbol.getTypeReference().getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
+            MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
+            ASTType astType = typeSymbolReference.getAstType();
+            if (astType instanceof ASTAssignmentType) {
+                ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
+                //if (astAssignmentType.getMatrixProperty().size() > 0) Log.error(astType.toString());
+                variable.addProperties(astAssignmentType.getMatrixProperty());
+            }
+        }
+    }
 
     public static String getPortNameWithoutArrayBracketPart(String name) {
         String nameWithOutArrayBracketPart = name;

@@ -21,7 +21,7 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
     @Override
     public void optimize(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (mathExpressionSymbol == null) {
-
+            //Do nothing
         } else if (mathExpressionSymbol.isAssignmentExpression()) {
             optimize((MathAssignmentExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else if (mathExpressionSymbol.isMatrixExpression()) {
@@ -72,13 +72,7 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
     public void optimize(MathMatrixNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (mathExpressionSymbol.getNameToAccess().equals("inv")) {
             //ComponentConverter.currentBluePrint.getMathInformationRegister().isDiagonalMatrix()
-            boolean invertsDiagonalMatrix = false;
-            if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {
-                //optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
-                //Log.error(ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable("degree").getProperties().toString());
-                String name = getMatrixName((MathMatrixAccessSymbol) mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().get().getMathMatrixAccesss().get(0).getSymbol().get());//TODO handle all possible cases
-                invertsDiagonalMatrix = ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable(name).getProperties().contains("diag");
-            }
+            boolean invertsDiagonalMatrix = invertsDiagonalMatrix();
             if (invertsDiagonalMatrix) {
                 mathExpressionSymbol.setNameToAccess("invdiag");
             }
@@ -88,6 +82,17 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
             optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
         } else if (mathExpressionSymbol.getAstMathMatrixNameExpression().getEndOperator().isPresent())
             Log.debug("Not handled: EndOperator", "optimizeMathMatrixNameExpr");
+    }
+
+    private boolean invertsDiagonalMatrix(MathMatrixNameExpressionSymbol mathExpressionSymbol) {
+        boolean invertsDiagonalMatrix = false;
+        if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {
+            //optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
+            //Log.error(ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable("degree").getProperties().toString());
+            String name = getMatrixName((MathMatrixAccessSymbol) mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().get().getMathMatrixAccesss().get(0).getSymbol().get());//TODO handle all possible cases
+            invertsDiagonalMatrix = ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable(name).getProperties().contains("diag");
+        }
+        return invertsDiagonalMatrix;
     }
 
     public void optimize(MathMatrixAccessOperatorSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
