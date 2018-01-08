@@ -29,6 +29,7 @@ public class Variable {
     Optional<String> constantValue = Optional.empty();
     List<String> additionalInformation = new ArrayList<>();
     List<String> dimensionalInformation = new ArrayList<>();
+    List<String> properties = new ArrayList<>();
     Optional<String> customTypeName = Optional.empty();
 
     public Variable() {
@@ -204,6 +205,18 @@ public class Variable {
 
     public boolean isParameterVariable() {
         return parameterVariable;
+    }
+
+    public List<String> getProperties() {
+        return properties;
+    }
+
+    public void addProperties(List<String> properties) {
+        this.properties.addAll(properties);
+    }
+
+    public void addProperty(String property) {
+        this.properties.add(property);
     }
 
     public void setIsParameterVariable(boolean parameterVariable) {

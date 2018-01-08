@@ -22,9 +22,9 @@ import de.monticore.lang.monticar.streamunits._ast.ASTStreamValue;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._symboltable.NamedStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._visitor.StreamUnitsVisitor;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
 
 import java.io.InputStream;
 import java.util.ArrayList;

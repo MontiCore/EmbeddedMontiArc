@@ -9,11 +9,11 @@ component Switch<T=B> { // if no generic is given, then default type B is taken
 		out T out1;
 
 	implementation Math{
-	    if cond {
+	    if cond
 	        out1=in1;
-	    }else{
+	    else
 	        out1=in3;
-	    }
+
 	    end
 	}
 }

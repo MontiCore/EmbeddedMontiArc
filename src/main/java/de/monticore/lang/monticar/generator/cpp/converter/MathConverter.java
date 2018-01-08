@@ -8,8 +8,8 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
 
 /**
  * @author Sascha Schneiders
@@ -64,11 +64,12 @@ public class MathConverter {
     public static String getInstructionStringConstantVectorExpression(MathMatrixArithmeticValueSymbol mathExpressionSymbol, String matrixName, String typeName) {
         String result = "";
         int column = 0;
+
         for (MathMatrixAccessOperatorSymbol symbol : mathExpressionSymbol.getVectors()) {
-            System.out.println(symbol.getTextualRepresentation());
+            Log.debug(symbol.getTextualRepresentation(), "Symbol:");
             int row = 0;
             for (MathMatrixAccessSymbol symbolAccess : symbol.getMathMatrixAccessSymbols()) {
-                System.out.println(symbolAccess.getTextualRepresentation());
+                Log.debug("symbolAccess: " + symbolAccess.getTextualRepresentation(), "MathConverter");
                 result += matrixName + "(" + column + "," + row + ") = ";
                 result += symbolAccess.getTextualRepresentation();
                 result += ";\n";
@@ -83,8 +84,8 @@ public class MathConverter {
             firstPart += "(" + mathExpressionSymbol.getVectors().size() + ");\n";
         } else if (typeName.equals(curBackend.getMatrixTypeName())) {
 
-            firstPart += curBackend.getMatrixInitString(mathExpressionSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size(),
-                    mathExpressionSymbol.getVectors().size());
+            firstPart += curBackend.getMatrixInitString(mathExpressionSymbol.getVectors().size(),
+                    mathExpressionSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size());
         }
         return firstPart + result;
     }
@@ -113,7 +114,7 @@ public class MathConverter {
     }
 
     public static String getConvertedUnitNumber(ASTUnitNumber unitNumber) {
-        if(!unitNumber.getNumber().isPresent()){
+        if (!unitNumber.getNumber().isPresent()) {
             Log.error("Number should be present");
         }
         if (unitNumber.getNumber().get().getDivisor().intValue() == 1) {

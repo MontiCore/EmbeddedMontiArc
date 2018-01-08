@@ -148,6 +148,7 @@ public class MathInformationRegister {
         for (MathExpressionSymbol dimension : mathValueSymbol.getType().getDimensions())
             var.addDimensionalInformation(dimension.getTextualRepresentation());
         this.variables.add(var);
+        var.addProperties(mathValueSymbol.getType().getProperties());
     }
 
     public Variable getVariable(String name) {
