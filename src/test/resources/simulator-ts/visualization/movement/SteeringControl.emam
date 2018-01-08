@@ -21,35 +21,35 @@ component SteeringControl {
             B comp3 = (slf<slb) && (srf<srb);
 
             Q(0°:-1°) resComp3 = 0°;
-            if comp3 {
+            if comp3
 
                 resComp3 = -1°;
-            }
-            else {
+
+            else
 
                 resComp3 = 0°;
-            }
+
             end
 
             Q(5°:-1°) resComp2 = 0°;
-            if comp2 {
+            if comp2
 
                 resComp2 = 5°;
-            }
-            else {
+
+            else
 
                 resComp2 = resComp3;
-            }
+
             end
 
-            if comp1 {
+            if comp1
 
                 steering = -5°;
-            }
-            else {
+
+            else
 
                 steering = resComp2;
-            }
+
             end
 
         }

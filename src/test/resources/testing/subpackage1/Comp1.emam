@@ -11,11 +11,11 @@ component Comp1 {
         out Q (0.0 : 0.1 : 100.0) out3;
 
     implementation Math {
-        if in1 == 0 {
+        if in1 == 0
             out1 = 1;
-        } else {
+         else
             out1 = 0;
-        } end
+         end
         out2 = -in2;
         out3 = 100.0 - in3;
     }

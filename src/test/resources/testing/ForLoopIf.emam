@@ -8,15 +8,15 @@ for i = 1:1:8
      result = result + counter;
 end
 
-if counter < 0{
+if counter < 0
     result = 0;
-}
-elseif counter < 100{
+
+elseif counter < 100
     result = counter;
-}
-else{
+
+else
     result = 100;
-}
+
 end
 }
 }

@@ -10,12 +10,12 @@ component ConstantVelocity {
 
         B cond = time < 1s;
 
-    	if cond {
+    	if cond
     	    acceleration = 0 m/s^2;
-    	}
-    	else{
+
+    	else
     	    acceleration = 2 m/s^2;
-    	}
+
     	end
     }
 }

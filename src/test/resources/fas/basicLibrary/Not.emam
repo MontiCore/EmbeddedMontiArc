@@ -6,10 +6,10 @@ component Not<T> {
 		out T out1;
 
 	implementation Math{
-	    if in1==0 {
+	    if in1==0
 	        out1=1;
-	    }else{
+	    else
 	        out1=0;
-	    } end
+	     end
 	}
 }
