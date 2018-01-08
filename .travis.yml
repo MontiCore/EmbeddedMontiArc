@@ -6,7 +6,7 @@ services:
   - docker
 
 before_install:
-  - ./install_emscripten.sh
+  - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
   - ./install_armadillo.sh
   - ./test_env/test_compile.sh
 
