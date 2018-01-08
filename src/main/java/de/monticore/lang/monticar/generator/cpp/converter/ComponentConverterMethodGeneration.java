@@ -67,44 +67,52 @@ public class ComponentConverterMethodGeneration {
         bluePrint.addMethod(method);
     }
 
+    private static List<MathExpressionSymbol> visitedMathExpressionSymbols = new ArrayList<>();
+
     private static void handleMathStatementGeneration(Method method, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         // add math implementation instructions to method
         List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
         MathOptimizer.currentBluePrint = bluePrint;
         int counter = 0;
-
-        List<MathExpressionSymbol> visitedMathExpressionSymbol = new ArrayList<>();
-        int lastIndex = 0;
+        visitedMathExpressionSymbols.clear();
+        //int lastIndex = 0;
         boolean swapNextInstructions = false;
         for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
             int beginIndex = currentGenerationIndex;
             MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
-            if (!visitedMathExpressionSymbol.contains(mathExpressionSymbol)) {
+            if (!visitedMathExpressionSymbols.contains(mathExpressionSymbol)) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
                     List<MathExpressionSymbol> precedingExpressions = new ArrayList<>();
                     for (int i = 0; i < counter; ++i)
                         precedingExpressions.add(mathStatementsSymbol.getMathExpressionSymbols().get(i));
-                    if (mathExpressionSymbol != visitedMathExpressionSymbol)
+                    if (mathExpressionSymbol != visitedMathExpressionSymbols)
                         newMathExpressionSymbols.add(MathOptimizer.applyOptimizations(mathExpressionSymbol, precedingExpressions, mathStatementsSymbol));
                     ++counter;
                 }
-                MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
-                String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
-                TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
-                method.addInstruction(instruction);
-                visitedMathExpressionSymbol.add(mathExpressionSymbol);
-                Log.debug("lastIndex: " + lastIndex + " current: " + currentGenerationIndex,"ComponentConverterMethodGeneration");
-                lastIndex = currentGenerationIndex;
+                generateInstruction(method, mathExpressionSymbol, bluePrint, includeStrings);
+                //lastIndex = currentGenerationIndex;
             }
-            if (swapNextInstructions) {
-                swapNextInstructions = false;
-                //Log.error("ad");
-                Instruction lastInstruction = method.getInstructions().get(currentGenerationIndex);
-                method.getInstructions().remove(currentGenerationIndex);
-                method.addInstruction(lastInstruction);
-            }
-            if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
-
+            handleInstructionReOrdering(swapNextInstructions, method, beginIndex);
         }
+    }
+
+    private static void generateInstruction(Method method, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
+        MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
+        String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
+        TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
+        method.addInstruction(instruction);
+        visitedMathExpressionSymbols.add(mathExpressionSymbol);
+        //Log.debug("lastIndex: " + lastIndex + " current: " + currentGenerationIndex, "ComponentConverterMethodGeneration");
+    }
+
+    private static void handleInstructionReOrdering(boolean swapNextInstructions, Method method, int beginIndex) {
+        if (swapNextInstructions) {
+            swapNextInstructions = false;
+            //Log.error("ad");
+            Instruction lastInstruction = method.getInstructions().get(currentGenerationIndex);
+            method.getInstructions().remove(currentGenerationIndex);
+            method.addInstruction(lastInstruction);
+        }
+        if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
     }
 }
