@@ -68,6 +68,7 @@ public class ComponentConverterMethodGeneration {
     }
 
     private static List<MathExpressionSymbol> visitedMathExpressionSymbols = new ArrayList<>();
+    private static boolean swapNextInstructions = false;
 
     private static void handleMathStatementGeneration(Method method, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         // add math implementation instructions to method
@@ -76,7 +77,6 @@ public class ComponentConverterMethodGeneration {
         int counter = 0;
         visitedMathExpressionSymbols.clear();
         //int lastIndex = 0;
-        boolean swapNextInstructions = false;
         for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
             int beginIndex = currentGenerationIndex;
             MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
@@ -92,7 +92,7 @@ public class ComponentConverterMethodGeneration {
                 generateInstruction(method, mathExpressionSymbol, bluePrint, includeStrings);
                 //lastIndex = currentGenerationIndex;
             }
-            handleInstructionReOrdering(swapNextInstructions, method, beginIndex);
+            handleInstructionReOrdering(method, beginIndex);
         }
     }
 
@@ -105,7 +105,7 @@ public class ComponentConverterMethodGeneration {
         //Log.debug("lastIndex: " + lastIndex + " current: " + currentGenerationIndex, "ComponentConverterMethodGeneration");
     }
 
-    private static void handleInstructionReOrdering(boolean swapNextInstructions, Method method, int beginIndex) {
+    private static void handleInstructionReOrdering(Method method, int beginIndex) {
         if (swapNextInstructions) {
             swapNextInstructions = false;
             //Log.error("ad");
