@@ -29,11 +29,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     // here the script name is concretely given (in contrast to Matlab), b/c otherwise we would get
     // trouble when embedding this language into another one (due to the name-based nature of the MontiCore 4 symboltable)
     symbol scope MathScript = 
-    	"script" Name MathStatements "end";
-    	
-	// list of MathExpressions of every kind
-    MathStatements = 
-    	MathExpression+;
+    	"script" Name MathExpression+ "end";
 
     interface MathExpression extends Expression;
     interface MathArithmeticExpression extends MathExpression;
@@ -108,13 +104,12 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     MathMatrixAccess = 
     	doubleDot:":" | MathArithmeticExpression;
     	
-    MathVectorExpression implements Expression<> = 
+    MathVectorExpression implements MathExpression<> = 
     	MathArithmeticExpression ":" MathArithmeticExpression (":" MathArithmeticExpression)?;
 
     EndOperator = 
     	  (":" "," endVecRight:MathVectorExpression)
-    	| (endVecLeft:MathVectorExpression ","  ":")
-    	| (endVecLeft:MathVectorExpression "," endVecRight:MathVectorExpression)
+    	| (endVecLeft:MathVectorExpression ","  (":" | endVecRight:MathVectorExpression)
     	| endVec:MathVectorExpression;
     	
    	//Arithmetic expressions for numbers
@@ -192,7 +187,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, siunit.monticoresiunit.
     	
     ast AssignmentType = method public String printType(){return "AssignmentType";};
     AssignmentType implements PrintType = 
-    	matrixProperty:Name* (ElementType dim:Dimension? | CommonMatrixType );
+    	matrixProperty:Name* ElementType dim:Dimension?;
 
     MatrixType = 
     	ElementType Dimension;
