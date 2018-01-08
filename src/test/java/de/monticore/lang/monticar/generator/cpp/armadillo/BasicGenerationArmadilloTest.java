@@ -19,6 +19,36 @@ import static org.junit.Assert.assertNotNull;
  */
 public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
 
+
+    @Test
+    public void testBasicConstantAssignment() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testConstantAssignment");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/testConstantAssignment/";
+        testFilesAreEqual(files, restPath);
+    }
+
+
+    @Test
+    public void testBasicConstantAssignment2() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment2", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testConstantAssignment2");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/testConstantAssignment2/";
+        testFilesAreEqual(files, restPath);
+    }
+
     @Test
     public void testMathUnitOptimizations() throws IOException {
         ThreadingOptimizer.resetID();
@@ -96,8 +126,8 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testAllObjectDetectorInstances() throws IOException{
-        for(int i=1;i<=9;++i){
+    public void testAllObjectDetectorInstances() throws IOException {
+        for (int i = 1; i <= 9; ++i) {
             testObjectDetectorInstancingL0(i);
             testObjectDetectorInstancingL1(i);
             testObjectDetectorInstancingL2(i);
@@ -108,41 +138,41 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     private void testObjectDetectorInstancingL0(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l0");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        String restPath = "armadillo/detectionObjectDetector"+number+"/l0/";
+        String restPath = "armadillo/detectionObjectDetector" + number + "/l0/";
         testFilesAreEqual(files, restPath);
     }
 
     private void testObjectDetectorInstancingL1(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l1");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l1");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        String restPath = "armadillo/detectionObjectDetector"+number+"/l1/";
+        String restPath = "armadillo/detectionObjectDetector" + number + "/l1/";
         testFilesAreEqual(files, restPath);
     }
 
     private void testObjectDetectorInstancingL2(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l2");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l2");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        String restPath = "armadillo/detectionObjectDetector"+number+"/l2/";
+        String restPath = "armadillo/detectionObjectDetector" + number + "/l2/";
         testFilesAreEqual(files, restPath);
     }
 
@@ -150,14 +180,14 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     private void testObjectDetectorInstancingL3(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector"+number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector"+number+"/l3");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l3");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        String restPath = "armadillo/detectionObjectDetector"+number+"/l3/";
+        String restPath = "armadillo/detectionObjectDetector" + number + "/l3/";
         testFilesAreEqual(files, restPath);
     }
 }
