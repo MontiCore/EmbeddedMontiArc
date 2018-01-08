@@ -2,9 +2,8 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -305,6 +304,32 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l1");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+    }
+
+    @Ignore
+    @Test
+    public void testMathAssignmentOptimization1Octave() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+    }
+
+    @Test
+    public void testMathAssignmentOptimization1Armadillo() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/optimizer/l1");
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
 }

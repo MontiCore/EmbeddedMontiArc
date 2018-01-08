@@ -1,16 +1,14 @@
 package de.monticore.lang.monticar.generator.cpp;
 
+
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.montiarc.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.streamunits._ast.ASTComponentStreamUnits;
 import de.monticore.lang.monticar.streamunits._ast.ASTNamedStreamUnits;
 import de.monticore.lang.monticar.streamunits._ast.ASTPrecisionNumber;
 import de.monticore.lang.monticar.streamunits._ast.ASTStreamInstruction;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
-import de.monticore.lang.monticar.streamunits._symboltable.NamedStreamUnitsSymbol;
 
 /**
  * @author Sascha Schneiders

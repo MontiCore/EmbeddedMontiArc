@@ -23,7 +23,9 @@ public class ExecuteMethodGenerator {
         /*if (mathExpressionSymbol.isAssignmentDeclarationExpression()) {
             return generateExecuteCode((MathValueSymbol) mathExpressionSymbol, includeStrings);
         } */
-        if (mathExpressionSymbol.isAssignmentExpression()) {
+        if (mathExpressionSymbol == null) {
+
+        } else if (mathExpressionSymbol.isAssignmentExpression()) {
             result = ExecuteMethodGeneratorHandler.generateExecuteCode((MathAssignmentExpressionSymbol) mathExpressionSymbol, includeStrings);
         } else if (mathExpressionSymbol.isCompareExpression()) {
             result = ExecuteMethodGeneratorHandler.generateExecuteCode((MathCompareExpressionSymbol) mathExpressionSymbol, includeStrings);

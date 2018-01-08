@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.optimization;
 
+import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
@@ -15,9 +16,12 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class MathMultiplicationAddition implements MathOptimizationRule {
+
     @Override
     public void optimize(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
-        if (mathExpressionSymbol.isMatrixExpression()) {
+        if (mathExpressionSymbol == null) {
+
+        } else if (mathExpressionSymbol.isMatrixExpression()) {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else if (mathExpressionSymbol.isAssignmentExpression()) {
             optimize((MathAssignmentExpressionSymbol) mathExpressionSymbol, precedingExpressions);
@@ -34,10 +38,24 @@ public class MathMultiplicationAddition implements MathOptimizationRule {
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNumberExpression()) {
                 //optimize((MathNumberExpressionSymbol)mathExpressionSymbol,precedingExpressions);
             }
+        } else if (mathExpressionSymbol.isForLoopExpression()) {
+            optimize((MathForLoopExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
             Log.error("Optimizer Case not handled!");
         }
+    }
+
+    public void optimize(MathForLoopExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+        //TODO enable head optimization
+        for (MathExpressionSymbol subExp : mathExpressionSymbol.getForLoopBody()) {
+            optimize(subExp, precedingExpressions);
+        }
+    }
+
+    @Override
+    public void optimize(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions, MathStatementsSymbol mathStatementsSymbol) {
+        optimize(mathExpressionSymbol, precedingExpressions);
     }
 
     public void optimize(MathNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {

@@ -1,0 +1,18 @@
+package detection;
+import SpectralClusterer;
+
+component ObjectDetector3{
+    ports in Q(0:255)^{2500, 3} imgFront,
+          in Q(0:255)^{2500, 3} imgBack,
+          in Q(0:255)^{2500, 3} imgLeft,
+          out Q(-oo:oo)^{2500, 1} clusters[3];
+
+    instance SpectralClusterer<2500, 4, 4> spectralClusterer[3];
+
+    connect  imgFront -> spectralClusterer[1].imgMatrix;
+    connect  imgBack -> spectralClusterer[2].imgMatrix;
+    connect  imgLeft -> spectralClusterer[3].imgMatrix;
+    connect spectralClusterer[:].clusters -> clusters[:];
+
+
+}

@@ -6,6 +6,7 @@
 package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 
 import java.io.File;
@@ -23,8 +24,8 @@ public class AbstractSymtabTest extends AbstractSymtab {
     public static void testFilesAreEqual(List<File> files, String restPath) {
         for (File f : files) {
             File fileTarget = new File("./src/test/resources/results/" + restPath + f.getName());
-            System.out.println("" + fileTarget.exists() + "Exists:");
-            System.out.println(f.getName() + " " + fileTarget.getName() + "Comparing:");
+            Log.debug("" + fileTarget.exists(), "Exists");
+            Log.debug(f.getName() + " " + fileTarget.getName(), "Comparing");
             assertTrue(areBothFilesEqual(f, fileTarget));
         }
     }

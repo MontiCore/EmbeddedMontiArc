@@ -23,6 +23,7 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
         registerMathCommand(new MathEigvecCommand());
         registerMathCommand(new MathGcdCommand());
         registerMathCommand(new MathInvCommand());
+        registerMathCommand(new MathInvDiagCommand());
         registerMathCommand(new MathAbsCommand());
         registerMathCommand(new MathAcosCommand());
         registerMathCommand(new MathAcoshCommand());

@@ -8,8 +8,8 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
-import siunit.monticoresiunit.si._ast.ASTUnitNumber;
 
 /**
  * @author Sascha Schneiders
@@ -65,10 +65,10 @@ public class MathConverter {
         String result = "";
         int column = 0;
         for (MathMatrixAccessOperatorSymbol symbol : mathExpressionSymbol.getVectors()) {
-            System.out.println(symbol.getTextualRepresentation());
+            Log.debug(symbol.getTextualRepresentation(),"Symbol:");
             int row = 0;
             for (MathMatrixAccessSymbol symbolAccess : symbol.getMathMatrixAccessSymbols()) {
-                System.out.println(symbolAccess.getTextualRepresentation());
+                Log.debug("symbolAccess: "+symbolAccess.getTextualRepresentation(),"MathConverter");
                 result += matrixName + "(" + column + "," + row + ") = ";
                 result += symbolAccess.getTextualRepresentation();
                 result += ";\n";

@@ -23,6 +23,8 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class ComponentConverterMethodGeneration {
+    public static int currentGenerationIndex = 0;
+
     public static void generateExecuteMethod(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("execute", "void");
 
@@ -60,25 +62,57 @@ public class ComponentConverterMethodGeneration {
             }
         }
         if (mathStatementsSymbol != null) {
-            // add math implementation instructions to method
-            List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
-            MathOptimizer.currentBluePrint = bluePrint;
-            int counter = 0;
+            handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        }
+        bluePrint.addMethod(method);
+    }
 
-            for (MathExpressionSymbol mathExpressionSymbol : mathStatementsSymbol.getMathExpressionSymbols()) {
+    private static List<MathExpressionSymbol> visitedMathExpressionSymbols = new ArrayList<>();
+    private static boolean swapNextInstructions = false;
+
+    private static void handleMathStatementGeneration(Method method, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+        // add math implementation instructions to method
+        List<MathExpressionSymbol> newMathExpressionSymbols = new ArrayList<>();
+        MathOptimizer.currentBluePrint = bluePrint;
+        int counter = 0;
+        visitedMathExpressionSymbols.clear();
+        //int lastIndex = 0;
+        for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
+            int beginIndex = currentGenerationIndex;
+            MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
+            if (!visitedMathExpressionSymbols.contains(mathExpressionSymbol)) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
                     List<MathExpressionSymbol> precedingExpressions = new ArrayList<>();
                     for (int i = 0; i < counter; ++i)
                         precedingExpressions.add(mathStatementsSymbol.getMathExpressionSymbols().get(i));
-                    newMathExpressionSymbols.add(MathOptimizer.applyOptimizations(mathExpressionSymbol, precedingExpressions));
+                    if (mathExpressionSymbol != visitedMathExpressionSymbols)
+                        newMathExpressionSymbols.add(MathOptimizer.applyOptimizations(mathExpressionSymbol, precedingExpressions, mathStatementsSymbol));
                     ++counter;
                 }
-                MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
-                String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
-                TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
-                method.addInstruction(instruction);
+                generateInstruction(method, mathExpressionSymbol, bluePrint, includeStrings);
+                //lastIndex = currentGenerationIndex;
             }
+            handleInstructionReOrdering(method, beginIndex);
         }
-        bluePrint.addMethod(method);
+    }
+
+    private static void generateInstruction(Method method, MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrint, List<String> includeStrings/*, int lastIndex*/) {
+        MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrint);
+        String result = ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, includeStrings);
+        TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
+        method.addInstruction(instruction);
+        visitedMathExpressionSymbols.add(mathExpressionSymbol);
+        //Log.debug("lastIndex: " + lastIndex + " current: " + currentGenerationIndex, "ComponentConverterMethodGeneration");
+    }
+
+    private static void handleInstructionReOrdering(Method method, int beginIndex) {
+        if (swapNextInstructions) {
+            swapNextInstructions = false;
+            //Log.error("ad");
+            Instruction lastInstruction = method.getInstructions().get(currentGenerationIndex);
+            method.getInstructions().remove(currentGenerationIndex);
+            method.addInstruction(lastInstruction);
+        }
+        if (beginIndex != currentGenerationIndex) swapNextInstructions = true;
     }
 }
