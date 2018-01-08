@@ -9,6 +9,7 @@ import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSym
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverterMethodGeneration;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
         } else if (mathExpressionSymbol.isMatrixExpression()) {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            System.out.println("Symbol not handled: " + mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation());
+            Log.debug(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "Symbol not handled");
         }
     }
 
@@ -62,13 +63,13 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
         if (mathExpressionSymbol.isMatrixNameExpression()) {
             optimize((MathMatrixNameExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            System.out.println("Symbol not handled: " + mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation());
+            Log.debug(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "Symbol not handled");
         }
     }
 
     public void optimize(MathMatrixNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (encounteredSymbolInstances.contains(mathExpressionSymbol)) {
-            System.out.println("Found Same Symbol");
+            Log.debug("Found Same Symbol", "MathAssignmentPartResuktReuses");
             String name = "";
             if (!symbolMap.containsKey(mathExpressionSymbol)) {
                 symbolMap.put(mathExpressionSymbol, name = getReplacementName(currentId++));
@@ -81,7 +82,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
             --ComponentConverterMethodGeneration.currentGenerationIndex;
         } else {
             encounteredSymbolInstances.add(mathExpressionSymbol);
-            System.out.println("Added " + mathExpressionSymbol.getTextualRepresentation() + " to encounterSymbolInstances");
+            Log.debug("Added " + mathExpressionSymbol.getTextualRepresentation() + " to encounterSymbolInstances", "MathAssignmentPartResultReuse");
             optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
         }
     }

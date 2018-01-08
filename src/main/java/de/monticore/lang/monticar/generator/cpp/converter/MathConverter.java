@@ -65,10 +65,10 @@ public class MathConverter {
         String result = "";
         int column = 0;
         for (MathMatrixAccessOperatorSymbol symbol : mathExpressionSymbol.getVectors()) {
-            System.out.println(symbol.getTextualRepresentation());
+            Log.debug(symbol.getTextualRepresentation(),"Symbol:");
             int row = 0;
             for (MathMatrixAccessSymbol symbolAccess : symbol.getMathMatrixAccessSymbols()) {
-                System.out.println(symbolAccess.getTextualRepresentation());
+                Log.debug("symbolAccess: "+symbolAccess.getTextualRepresentation(),"MathConverter");
                 result += matrixName + "(" + column + "," + row + ") = ";
                 result += symbolAccess.getTextualRepresentation();
                 result += ";\n";

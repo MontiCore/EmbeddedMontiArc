@@ -93,7 +93,7 @@ public class ComponentConverterMethodGeneration {
                 TargetCodeMathInstruction instruction = new TargetCodeMathInstruction(result, mathExpressionSymbol);
                 method.addInstruction(instruction);
                 visitedMathExpressionSymbol.add(mathExpressionSymbol);
-                System.out.println("lastIndex: " + lastIndex + " current: " + currentGenerationIndex);
+                Log.debug("lastIndex: " + lastIndex + " current: " + currentGenerationIndex,"ComponentConverterMethodGeneration");
                 lastIndex = currentGenerationIndex;
             }
             if (swapNextInstructions) {

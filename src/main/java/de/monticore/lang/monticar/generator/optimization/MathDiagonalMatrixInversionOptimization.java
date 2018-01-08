@@ -72,7 +72,7 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
     public void optimize(MathMatrixNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (mathExpressionSymbol.getNameToAccess().equals("inv")) {
             //ComponentConverter.currentBluePrint.getMathInformationRegister().isDiagonalMatrix()
-            boolean invertsDiagonalMatrix = invertsDiagonalMatrix();
+            boolean invertsDiagonalMatrix = invertsDiagonalMatrix(mathExpressionSymbol);
             if (invertsDiagonalMatrix) {
                 mathExpressionSymbol.setNameToAccess("invdiag");
             }
