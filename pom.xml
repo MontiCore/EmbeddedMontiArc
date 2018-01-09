@@ -37,7 +37,7 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.4-SNAPSHOT</monticore.version>
+    <monticore.version>4.5.5-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.4-SNAPSHOT</SIUnit.version>
@@ -49,7 +49,7 @@
 	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.4-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>4.5.5-SNAPSHOT</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -107,34 +107,6 @@
       <version>${se-commons.version}</version>
     </dependency>
 
-	<dependency>
-		<groupId>de.monticore.lang</groupId>
-		<artifactId>SIUnit</artifactId>
-		<version>${SIUnit.version}</version>
-	</dependency>
-
-	<dependency>
-		<groupId>de.monticore.lang</groupId>
-		<artifactId>SIUnit</artifactId>
-		<version>${SIUnit.version}</version>
-		<classifier>${grammars.classifier}</classifier>
-		<scope>provided</scope>
-	</dependency>
-	
-	
-	<dependency>
-		<groupId>de.monticore.lang.monticar</groupId>
-		<artifactId>common-monticar</artifactId>
-		<version>${Common-MontiCar.version}</version>
-	</dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>common-monticar</artifactId>
-      <version>${Common-MontiCar.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
     <!-- .. Test Libraries ............................................... -->
     <dependency>
       <groupId>junit</groupId>
