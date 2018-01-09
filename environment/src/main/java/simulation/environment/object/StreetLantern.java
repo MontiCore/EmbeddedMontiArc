@@ -52,6 +52,14 @@ public class StreetLantern implements SimulationLoopExecutable, PhysicalObject {
      *
      * @param position Position of the object
      */
+
+    @Override
+    public void setError(boolean error) {
+        Log.warning("StreetLantern: setError - error: " + error + ", Tree at start: " + this);
+        this.error = error;
+        Log.warning("StreetLantern: setError - error: " + error + ", Tree at end: " + this);
+    }
+
     public void setPosition(RealVector position) {
         this.position = position.copy();
     }
