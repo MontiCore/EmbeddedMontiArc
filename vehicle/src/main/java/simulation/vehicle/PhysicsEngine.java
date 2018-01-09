@@ -2,6 +2,7 @@ package simulation.vehicle;
 
 
 import commons.simulation.PhysicalObject;
+import commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
@@ -23,7 +24,6 @@ import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEER
  * Physics calculations for simulation
  */
 public class PhysicsEngine{
-
     /** Average earth gravity in m/s^2 or N/kg */
     public static final double GRAVITY_EARTH = -9.81;
     /** Average air density in kg/m^3 */
