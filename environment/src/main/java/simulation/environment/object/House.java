@@ -56,6 +56,12 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
         this.position = position.copy();
     }
 
+    @Override
+    public void setError(boolean error) {
+        Log.warning("House: setError - error: " + error + ", Tree at start: " + this);
+        this.error = error;
+        Log.warning("House: setError - error: " + error + ", Tree at end: " + this);
+    }
     /**
      * Function that sets the z rotation of the object
      *
