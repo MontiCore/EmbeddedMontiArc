@@ -37,6 +37,7 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
     /** Rotation Z of the object */
     private double rotationZ;
 
+    private boolean error = false;
     /**
      * Constructor for a tree that is standing at its position
      * Initial position at origin
@@ -47,11 +48,9 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
         rotationZ = 0.0;
     }
 
-    /**
-     * Function that sets the position of the object
-     *
-     * @param position Position of the object
-     */
+    public boolean getError() {
+        return this.error;
+    }
 
     @Override
     public void setError(boolean error) {
@@ -59,6 +58,12 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
         this.error = error;
         Log.warning("RoadWorkSign: setError - error: " + error + ", Tree at end: " + this);
     }
+
+    /**
+     * Function that sets the position of the object
+     *
+     * @param position Position of the object
+     */
     public void setPosition(RealVector position) {
         this.position = position.copy();
     }
@@ -77,6 +82,7 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
      *
      * @return Type of the object
      */
+
     @Override
     public PhysicalObjectType getPhysicalObjectType() {
         return PhysicalObjectType.PHYSICAL_OBJECT_TYPE_ROADWORKSIGN;

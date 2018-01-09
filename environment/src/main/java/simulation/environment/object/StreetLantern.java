@@ -37,6 +37,7 @@ public class StreetLantern implements SimulationLoopExecutable, PhysicalObject {
     /** Rotation Z of the object */
     private double rotationZ;
 
+    private boolean error;
     /**
      * Constructor for a tree that is standing at its position
      * Initial position at origin
@@ -47,11 +48,9 @@ public class StreetLantern implements SimulationLoopExecutable, PhysicalObject {
         rotationZ = 0.0;
     }
 
-    /**
-     * Function that sets the position of the object
-     *
-     * @param position Position of the object
-     */
+    public boolean getError() {
+        return this.error;
+    }
 
     @Override
     public void setError(boolean error) {
@@ -60,6 +59,11 @@ public class StreetLantern implements SimulationLoopExecutable, PhysicalObject {
         Log.warning("StreetLantern: setError - error: " + error + ", Tree at end: " + this);
     }
 
+    /**
+     * Function that sets the position of the object
+     *
+     * @param position Position of the object
+     */
     public void setPosition(RealVector position) {
         this.position = position.copy();
     }

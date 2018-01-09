@@ -37,6 +37,7 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
     /** Rotation Z of the object */
     private double rotationZ;
 
+    private boolean error;
     /**
      * Constructor for a tree that is standing at its position
      * Initial position at origin
@@ -192,6 +193,10 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
         Log.warning("House: setCollision - collision: " + collision + ", House at end: " + this);
     }
 
+    public boolean getError()
+    {
+        return this.error;
+    }
     /**
      * Returns the unique ID of the object. Valid IDs are positive numbers.
      * @return Unique ID
