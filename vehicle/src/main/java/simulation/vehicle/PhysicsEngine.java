@@ -52,7 +52,7 @@ public class PhysicsEngine{
                 object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_2||
                 object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_3||
                 object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_4||
-                object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5))) {
+                object.getPhysicalObjectType()==PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5)) {
 
             // Check objects for collisions
             for (PhysicalObject physicalObject : physicalObjects) {
