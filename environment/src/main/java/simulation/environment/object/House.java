@@ -37,6 +37,7 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
     /** Rotation Z of the object */
     private double rotationZ;
 
+    private boolean error;
     /**
      * Constructor for a tree that is standing at its position
      * Initial position at origin
@@ -56,6 +57,12 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
         this.position = position.copy();
     }
 
+    @Override
+    public void setError(boolean error) {
+        Log.warning("House: setError - error: " + error + ", Tree at start: " + this);
+        this.error = error;
+        Log.warning("House: setError - error: " + error + ", Tree at end: " + this);
+    }
     /**
      * Function that sets the z rotation of the object
      *
@@ -186,6 +193,10 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
         Log.warning("House: setCollision - collision: " + collision + ", House at end: " + this);
     }
 
+    public boolean getError()
+    {
+        return this.error;
+    }
     /**
      * Returns the unique ID of the object. Valid IDs are positive numbers.
      * @return Unique ID
