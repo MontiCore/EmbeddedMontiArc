@@ -20,11 +20,11 @@ component TrimPath {
 
   implementation Math {
     trimmed_trajectory_length = 0;
-    if planned_trajectory_length == 1 {
+    if planned_trajectory_length == 1
       trimmed_trajectory_length = 1;
       trimmed_trajectory_x(1,1) = planned_trajectory_x(1,1);
       trimmed_trajectory_y(1,1) = planned_trajectory_y(1,1);
-    } elseif planned_trajectory_length > 1 {
+    elseif planned_trajectory_length > 1
       Q closestSegmentIndex = -1;
       Q closestSegmentDistance = -1;
       //Q last_segment_index = planned_trajectory_length-1;
@@ -43,26 +43,26 @@ component TrimPath {
         Q projection_y = p1y + k * v12y;
         //B cond1 = (p1x-projection_x) * (p2x-projection_x) <= 0 && (p1y-projection_y) * (p2y-projection_y) <= 0;
         Q cond1 = (p1x-projection_x) * (p2x-projection_x) <= 0 && (p1y-projection_y) * (p2y-projection_y) <= 0;
-        if cond1 {
+        if cond1
           Q d_proj = sqrt( (current_position_x-projection_x)^2 + (current_position_y-projection_y)^2 );
-          if closestSegmentDistance < 0 || d_proj < closestSegmentDistance {
+          if closestSegmentDistance < 0 || d_proj < closestSegmentDistance
             closestSegmentIndex = i;
             closestSegmentDistance = d_proj;
             trimmed_trajectory_x(1,1) = projection_x;
             trimmed_trajectory_y(1,1) = projection_y;
-          } end
-        } else {
+          end
+        else
           Q d1 = sqrt( (current_position_x-p1x)^2 + (current_position_y-p1y)^2 );
           Q d2 = sqrt( (current_position_x-p2x)^2 + (current_position_y-p2y)^2 );
           Q d_min = min(d1,d2);
-          if closestSegmentDistance < 0 || d_min < closestSegmentDistance {
+          if closestSegmentDistance < 0 || d_min < closestSegmentDistance
             closestSegmentIndex = i;
             closestSegmentDistance = d_min;
             trimmed_trajectory_x(1,1) = projection_x;
             trimmed_trajectory_y(1,1) = projection_y;
-          } end
-        } end
+          end
+        end
       end
-    } end
+    end
   }
 }

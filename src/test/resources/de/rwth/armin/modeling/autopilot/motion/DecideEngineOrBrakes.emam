@@ -12,12 +12,10 @@ component DecideEngineOrBrakes {
     engine = 0.0;
     brakes = 0.0;
     
-    if error > 0.0{
+    if error > 0.0
       engine = controlSignal;
-    }
-    else{
+    else
       brakes = controlSignal;
-    }
     end
   }
 }

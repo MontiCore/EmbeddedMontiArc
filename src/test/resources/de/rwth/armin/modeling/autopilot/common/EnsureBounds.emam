@@ -8,12 +8,12 @@ component EnsureBounds {
     out Q output;
 
   implementation Math {
-    if input < lowerBound {
+    if input < lowerBound
       output = lowerBound;
-    } elseif input > upperBound {
+    elseif input > upperBound
       output = upperBound;
-    } else {
+    else
       output = input;
-    } end
+    end
   }
 }

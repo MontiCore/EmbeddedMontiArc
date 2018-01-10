@@ -8,12 +8,11 @@ component SteeringAngleCorrection {
 
   implementation Math {
     static Q EPSILON = 0.01;
-    Q d = abs(signedDistanceToTrajectory);
-    if d <= EPSILON {
+    B cond1 = abs(signedDistanceToTrajectory) <= EPSILON;
+    if cond1
       steeringAngleCorrection = 0.0;
-    } else {
-      // de.rwth.ryndin.modelling.autopilot.component.motion.SteeringAngleCorrectionImplementation
+    else
       steeringAngleCorrection = 0.0;
-    } end
+    end
   }
 }

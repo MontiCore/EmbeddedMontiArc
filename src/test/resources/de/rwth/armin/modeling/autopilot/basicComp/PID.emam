@@ -14,17 +14,15 @@ port
      static Q totalTime = 0.0;
      totalTime = totalTime + timeInc;
 
-     if totalTime > 100 {
+     if totalTime > 100
        engineVal = 0.0;
        breakesVal = 2.5;
-     } elseif diff > 0 {
+     elseif diff > 0
         engineVal = 2.5;
         breakesVal = 0.0;
-     }
-     else {
+     else
         engineVal = 0.0;
         breakesVal = 2.5;
-     }
      end
  }
 

@@ -15,9 +15,9 @@ component PID {
     static Q acc = 0.0;
     acc = paramDecayCoefficient * acc + error;
     Q drv = 0;
-    if isPrevErrorSpecified {
+    if isPrevErrorSpecified
       drv = error - prevError;
-    } end
+    end
     control = paramP * error + paramI * acc + paramD * drv;
     prevError = error;
     isPrevErrorSpecified = true;

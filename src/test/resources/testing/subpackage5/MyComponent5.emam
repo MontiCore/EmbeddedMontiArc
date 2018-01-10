@@ -7,10 +7,10 @@ component MyComponent5 {
 
     implementation Math {
       Q THRESHOLD = 20.0;
-      if (in1 > THRESHOLD) {
+      if in1 > THRESHOLD
         out1 = in1 - THRESHOLD;
-      } else {
+      else
         out1 = 0.0;
-      } end
+      end
     }
 }

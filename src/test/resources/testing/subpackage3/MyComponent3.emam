@@ -6,10 +6,10 @@ component MyComponent3 {
       out Q (0.0 : 0.1 : 100.0) out1;
 
     implementation Math {
-      if (in1 >= 20.0) && (in1 <= 70.0) {
+      if (in1 >= 20.0) && (in1 <= 70.0)
         out1 = 0.5 * in1;
-      } else {
+      else
         out1 = 0.75 * in1;
-      } end
+      end
     }
 }

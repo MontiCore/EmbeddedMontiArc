@@ -20,27 +20,21 @@ component CalculatePidParameters {
     static Q P_FOR_MIN_VELOCITY = 1.76703;
     static Q P_FOR_MAX_VELOCITY = 3.29578;
     
-    if currentVelocity < desiredVelocity {
+    if currentVelocity < desiredVelocity
       static Q v = currentVelocity;
-    }
-    
-    elseif desiredVelocity < currentVelocity {
+    elseif desiredVelocity < currentVelocity
       static Q v = desiredVelocity;
-    }
     end
     
-    if v < MIN_VELOCITY {
+    if v < MIN_VELOCITY
       paramP = P_FOR_MIN_VELOCITY;
-    } 
     
-    elseif v > MAX_VELOCITY {
+    elseif v > MAX_VELOCITY
       paramP = P_FOR_MAX_VELOCITY;
-    }
     
-    else{
+    else
       static Q diff = v - MIN_VELOCITY;
       paramP = P_FOR_MIN_VELOCITY + (P_FOR_MAX_VELOCITY - P_FOR_MIN_VELOCITY) * diff / (MAX_VELOCITY - MIN_VELOCITY);
-    }
     end
   }
 }

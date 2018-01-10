@@ -26,7 +26,7 @@ component CalculateMotionCommands {
     desired_direction_y = 0.0;
     signedDistanceToTrajectory = 0.0;
     desiredVelocity = 0.0;
-    if trimmed_trajectory_length > 0 {
+    if trimmed_trajectory_length > 0
       // assumption: 1st point of trajectory is the projection of current vehicle's position on trajectory
       Q p1x = trimmed_trajectory_x(1,1);
       Q p1y = trimmed_trajectory_y(1,1);
@@ -34,12 +34,12 @@ component CalculateMotionCommands {
       Q is_vehicle_went_off_trajectory = dist_to_trajectory > TOO_FAR_FROM_TRAJECTORY_THRESHOLD;
       Q is_only_one_position_specified = trimmed_trajectory_length == 1;
       Q is_drive_to_first_position = is_vehicle_went_off_trajectory || is_only_one_position_specified;
-      if is_drive_to_first_position {
+      if is_drive_to_first_position
         desired_direction_x = p1x - current_position_x;
         desired_direction_y = p1y - current_position_y;
         signedDistanceToTrajectory = 0.0;
         desiredVelocity = 0.0; // TODO calc. as function of dist_to_trajectory
-      } else {
+      else
         // vehicle is on track AND there is at least two points in trajectory
         // TODO calc. signedDistanceToTrajectory
         // using current position and first trajectory segment
@@ -52,7 +52,7 @@ component CalculateMotionCommands {
         Q interp_p2y = trimmed_trajectory_y(1,1);
         Q interp_p3x = trimmed_trajectory_x(1,2);
         Q interp_p3y = trimmed_trajectory_y(1,2);
-        if trimmed_trajectory_length > 2 {
+        if trimmed_trajectory_length > 2
           // if there is at least 3 points
           // then do not use the projection point
           // but use 2nd and 3rd trajectory points instead
@@ -60,7 +60,7 @@ component CalculateMotionCommands {
           Q interp_p2y = trimmed_trajectory_y(1,2);
           Q interp_p3x = trimmed_trajectory_x(1,3);
           Q interp_p3y = trimmed_trajectory_y(1,3);
-        } end
+        end
         // Bezier interpolation (only the 1st intermediate point is taken)
         // de.rwth.ryndin.modelling.autopilot.geometry.Interpolation
         Q t = 1.0 / (NUMBER_OF_INTERMEDIATE_INTERPOLATED_POINTS+1.0);
@@ -80,7 +80,7 @@ component CalculateMotionCommands {
         // example:
         // de.rwth.ryndin.modelling.autopilot.component.behavior.Distance2VelocityFunction
         // or use something similar
-      } end
-    } end
+      end
+    end
   }
 }
