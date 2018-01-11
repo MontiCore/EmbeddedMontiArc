@@ -39,7 +39,7 @@ import java.util.List;
  * Matrix Properties Coco
  */
 
-public class MatrixAssignmentDeclarationCheck extends AbstChecker implements MathASTMathAssignmentDeclarationExpressionCoCo {
+public class MatrixAssignmentDeclarationCheck implements MathASTMathAssignmentDeclarationExpressionCoCo {
     @Override
     public void check(ASTMathAssignmentDeclarationExpression assignment) {
         if (!assignment.getType().getMatrixProperty().isEmpty()) {
