@@ -22,13 +22,12 @@ package de.monticore.lang.math.math._symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.math.math._ast.*;
+import de.monticore.lang.math.math._matrixprops.MatrixPropertiesIdentifier;
+import de.monticore.lang.math.math._matrixprops.PropertyChecker;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.types2._ast.ASTImportStatement;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.*;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -310,6 +309,8 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 symbol.addMathMatrixAccessSymbol((MathMatrixAccessOperatorSymbol) astMathMatrixAccessExpression.getSymbol().get());
             }
 
+            MatrixPropertiesIdentifier identifier = new MatrixPropertiesIdentifier(symbol);
+            symbol.setMatrixProperties(identifier.identifyMatrixProperties());
             addToScopeAndLinkWithNode(symbol, astMathMatrixValueExplicitExpression);
         }
     }

@@ -18,21 +18,42 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.math.math._cocos;
+package de.monticore.lang.math.math;
+
+import de.monticore.lang.math.math._cocos.MathCoCoChecker;
+import de.monticore.lang.math.math._cocos.MathCocos;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * creates the abstract math coco checker and add all specific checkers
+ * Created by Philipp Goerick on 26.09.2017.
  */
-public class MathCocos {
 
-    public static MathCoCoChecker createChecker() {
-        return new MathCoCoChecker()
-                .addCoCo(new MatrixAssignmentDeclarationCheck())
-                .addCoCo(new MatrixAssignmentCheck());
-                    //.addCoCo(new DimensionEquals())
-                    //.addCoCo(new ArithmeticMatrixExpressionCheck())
-                    //.addCoCo(new MatrixUnitCheck())
-                    //.addCoCo(new ArithmeticExpressionCheck())
-                    //.addCoCo(new RangeCheck());
+public class MatPropsPosAssignmentTest extends AbstractMathChecker {
+
+    @Override
+    protected MathCoCoChecker getChecker() {
+        return MathCocos.createChecker();
     }
+    @BeforeClass
+    public static void init() {
+        Log.enableFailQuick(false);
+    }
+
+    @Before
+    public void setUp() {
+        Log.getFindings().clear();
+    }
+
+    private static String MODEL_PATH_INVALID = "src/test/resources/matrix/";
+
+    @Test
+    public void assignmentTest(){
+        String modelName = "MatrixPropertiesPos.m";
+        testModelNoErrors(MODEL_PATH_INVALID + modelName);
+    }
+
 }
+

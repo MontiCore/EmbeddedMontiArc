@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.math.math._symboltable.matrix;
 
+import de.monticore.lang.math.math._matrixprops.MatrixProperties;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,8 @@ import java.util.List;
 public class MathMatrixArithmeticValueSymbol extends MathMatrixExpressionSymbol {
 
     protected List<MathMatrixAccessOperatorSymbol> vectors = new ArrayList<>();
+
+    protected ArrayList<MatrixProperties> matrixProperties = new ArrayList<>();
 
     public MathMatrixArithmeticValueSymbol() {
 
@@ -45,6 +49,10 @@ public class MathMatrixArithmeticValueSymbol extends MathMatrixExpressionSymbol 
     public void addMathMatrixAccessSymbol(MathMatrixAccessOperatorSymbol vector) {
         vectors.add(vector);
     }
+
+    public void setMatrixProperties(ArrayList<MatrixProperties> matrixProperties) { this.matrixProperties = matrixProperties; }
+
+    public ArrayList<MatrixProperties> getMatrixProperties() { return matrixProperties; }
 
     @Override
     public String getTextualRepresentation() {

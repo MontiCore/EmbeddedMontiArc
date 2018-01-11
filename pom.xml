@@ -87,6 +87,18 @@
       <version>${guava.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>it.unibo.alice.tuprolog</groupId>
+      <artifactId>tuprolog</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+
     <!-- MontiCore Dependencies -->
     <dependency>
       <groupId>de.monticore</groupId>
