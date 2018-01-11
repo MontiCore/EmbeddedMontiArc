@@ -108,7 +108,7 @@ public class LogicalExpression  implements MathValue{
         }else if(operands.size() == 2){
             return toStringTwoOperand();
         }else{
-            System.out.print("unknown amount of operands");
+            // System.out.print("unknown amount of operands");
 
             return null;
         }
