@@ -1,6 +1,6 @@
 package test.coco.valid;
 
-struct K1 {
+struct W1 {
   Z f1;
   Z f2;
   test.coco.valid.K1 f3;

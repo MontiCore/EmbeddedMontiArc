@@ -121,9 +121,9 @@ public class SymtabTest {
                 "test.symtable.ErrAmbiguousReference2.err"
         };
         for (String fieldFullName : fieldsHavingAmbigousReference) {
-            StructFieldDefinitionSymbol field = symTab.<StructFieldDefinitionSymbol>resolve(fieldFullName, StructFieldDefinitionSymbol.KIND).orElse(null);
-            Assert.assertNotNull(field);
             try {
+                StructFieldDefinitionSymbol field = symTab.<StructFieldDefinitionSymbol>resolve(fieldFullName, StructFieldDefinitionSymbol.KIND).orElse(null);
+                Assert.assertNotNull(field);
                 field.getType().getReferencedSymbol();
             } catch (ResolvedSeveralEntriesException e) {
                 continue;
