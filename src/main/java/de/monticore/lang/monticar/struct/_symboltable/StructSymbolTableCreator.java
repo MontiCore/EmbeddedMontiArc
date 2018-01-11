@@ -57,7 +57,6 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
 
     @Override
     public void visit(ASTStructCompilationUnit node) {
-        coCoChecker.checkAll(node);
         String packageQualifiedName = Names.getQualifiedName(node.getPackage());
         List<ImportStatement> imports = node.getImportStatements()
                 .stream()
@@ -68,6 +67,11 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
                 .collect(Collectors.toList());
         ArtifactScope artifactScope = new ArtifactScope(packageQualifiedName, imports);
         putOnStack(artifactScope);
+    }
+
+    @Override
+    public void endVisit(ASTStructCompilationUnit node) {
+        coCoChecker.checkAll(node);
     }
 
     @Override

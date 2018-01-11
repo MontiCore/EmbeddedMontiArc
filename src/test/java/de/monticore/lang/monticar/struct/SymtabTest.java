@@ -26,13 +26,11 @@ import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbo
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.references.FailedLoadingSymbol;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -103,19 +101,16 @@ public class SymtabTest {
         Assert.assertEquals("B", f1.getType().getReferencedSymbol().getFullName());
     }
 
-    @Ignore
     @Test
     public void testNonExistentReferences() {
+        Log.enableFailQuick(false);
         StructSymbol struct = symTab.<StructSymbol>resolve("test.symtable.ErrNonExistentReferences", StructSymbol.KIND).orElse(null);
         Assert.assertNotNull(struct);
-        List<StructFieldDefinitionSymbol> fields = new ArrayList<>(struct.getStructFieldDefinitions());
+        List<StructFieldDefinitionSymbol> fields = new ArrayList<StructFieldDefinitionSymbol>(struct.getStructFieldDefinitions());
         for (StructFieldDefinitionSymbol f : fields) {
-            try {
-                f.getType().getReferencedSymbol();
-            } catch (FailedLoadingSymbol e) {
-                continue;
-            }
-            Assert.fail();
+            f.getType().getReferencedSymbol();
+            Assert.assertTrue(Log.getErrorCount() > 0);
+            Log.getFindings().clear();
         }
     }
 
@@ -126,9 +121,9 @@ public class SymtabTest {
                 "test.symtable.ErrAmbiguousReference2.err"
         };
         for (String fieldFullName : fieldsHavingAmbigousReference) {
-            StructFieldDefinitionSymbol field = symTab.<StructFieldDefinitionSymbol>resolve(fieldFullName, StructFieldDefinitionSymbol.KIND).orElse(null);
-            Assert.assertNotNull(field);
             try {
+                StructFieldDefinitionSymbol field = symTab.<StructFieldDefinitionSymbol>resolve(fieldFullName, StructFieldDefinitionSymbol.KIND).orElse(null);
+                Assert.assertNotNull(field);
                 field.getType().getReferencedSymbol();
             } catch (ResolvedSeveralEntriesException e) {
                 continue;
