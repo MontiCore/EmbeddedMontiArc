@@ -10,7 +10,7 @@ component PID {
     out Q control;
 
   implementation Math {
-    static B isPrevErrorSpecified = false;
+    static B isPrevErrorSpecified = 0;
     static Q prevError = 0.0;
     static Q acc = 0.0;
     acc = paramDecayCoefficient * acc + error;
@@ -20,6 +20,6 @@ component PID {
     end
     control = paramP * error + paramI * acc + paramD * drv;
     prevError = error;
-    isPrevErrorSpecified = true;
+    isPrevErrorSpecified = 0;
   }
 }
