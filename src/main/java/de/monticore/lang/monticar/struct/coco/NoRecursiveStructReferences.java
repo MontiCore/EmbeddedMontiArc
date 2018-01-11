@@ -27,7 +27,6 @@ import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,24 +45,26 @@ public class NoRecursiveStructReferences implements StructASTStructCoCo {
 
     private void checkStruct(StructSymbol symbol) {
         String structFullName = symbol.getFullName();
-        boolean isCycle = visitedStructs.contains(structFullName);
+        boolean isCycle = !visitedStructs.add(structFullName);
         if (isCycle) {
-            StringBuilder message = new StringBuilder("The following structures form a cycle by referencing:");
-            for (String s : visitedStructs) {
-                message.append(NEW_LINE);
-                message.append(s);
-            }
-            Log.error(message.toString(), symbol.getSourcePosition());
+            logCycle(symbol);
             return;
         }
-        visitedStructs.add(structFullName);
-        Collection<StructFieldDefinitionSymbol> fieldDefinitions = symbol.getStructFieldDefinitions();
-        for (StructFieldDefinitionSymbol f : fieldDefinitions) {
+        for (StructFieldDefinitionSymbol f : symbol.getStructFieldDefinitions()) {
             MCTypeSymbol s = f.getType().getReferencedSymbol();
             if (s instanceof StructSymbol) {
                 checkStruct((StructSymbol) s);
             }
         }
         visitedStructs.remove(structFullName);
+    }
+
+    private void logCycle(StructSymbol symbol) {
+        StringBuilder message = new StringBuilder("The following structures form a cycle by referencing:");
+        for (String s : visitedStructs) {
+            message.append(NEW_LINE);
+            message.append(s);
+        }
+        Log.error(message.toString(), symbol.getSourcePosition());
     }
 }
