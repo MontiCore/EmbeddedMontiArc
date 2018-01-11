@@ -103,10 +103,10 @@ public class SymtabTest {
 
     @Test
     public void testNonExistentReferences() {
+        Log.enableFailQuick(false);
         StructSymbol struct = symTab.<StructSymbol>resolve("test.symtable.ErrNonExistentReferences", StructSymbol.KIND).orElse(null);
         Assert.assertNotNull(struct);
         List<StructFieldDefinitionSymbol> fields = new ArrayList<StructFieldDefinitionSymbol>(struct.getStructFieldDefinitions());
-        Log.enableFailQuick(false);
         for (StructFieldDefinitionSymbol f : fields) {
             f.getType().getReferencedSymbol();
             Assert.assertTrue(Log.getErrorCount() > 0);
