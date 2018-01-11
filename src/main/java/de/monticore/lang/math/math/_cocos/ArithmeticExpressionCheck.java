@@ -38,8 +38,8 @@
 // *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
 // * *******************************************************************************
 // */
-//package de.monticore.lang.math.math._cocos;
-//
+package de.monticore.lang.math.math._cocos;
+
 //import de.monticore.lang.math.math._symboltable.MathExpression;
 ////import de.monticore.lang.math.math._ast.ASTArithmeticExpression;
 //import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;

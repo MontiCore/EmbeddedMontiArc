@@ -68,13 +68,12 @@ Q^{1,3} e1 = a1(1,:);
 
 
 for n = 1:2
-    if n < 2{
+    if n < 2
         d1 = 1;
-    }elseif n < 3{
+    elseif n < 3
         d1 = 1;
-    }else{
+    else
         d1 = 2;
-    }
     end
 end
 

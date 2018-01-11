@@ -38,7 +38,7 @@ import java.util.List;
  * Matrix Properties Coco
  */
 
-public class MatrixAssignmentCheck extends AbstChecker implements MathASTMathAssignmentExpressionCoCo {
+public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoCo {
     @Override
     public void check(ASTMathAssignmentExpression assignment) {
         Symbol symbol = assignment.getEnclosingScope().get()
