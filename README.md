@@ -679,3 +679,143 @@ ocl myOCLFile {
 
 
 * How to describe Extra-Functional property semantics in OCL/P?
+
+Struct DSL (Alex)
+----
+* What is it?
+
+The [Struct](https://github.com/EmbeddedMontiArc/Struct) is a DSL (Domain Specific Language) for describing C-like structures:
+```
+package geometry;
+
+struct Position {
+  Q (-oo m : oo m) x;
+  Q (-oo m : oo m) y;
+}
+```
+A structure is basically a group of related pieces of data combined together into a single entity (struct). Pretty much like in C programming language.
+
+* Why would I use it?
+
+Because it makes sence to group related pieces of data into a single struct. Consider the following component:
+```
+package geometry;
+
+component CenterOfSegment {
+  port
+    in  Q (-oo m : oo m) p1x,
+    in  Q (-oo m : oo m) p1y,
+    in  Q (-oo m : oo m) p2x,
+    in  Q (-oo m : oo m) p2y,
+    out Q (-oo m : oo m) cx,
+    out Q (-oo m : oo m) cy;
+
+  implementation Math {
+    cx = 0.5 * (p1x + p2x);
+    cy = 0.5 * (p1y + p2y);
+  }
+}
+```
+Since `p1x` and `p1y` represent a point of a segment it would be nice to combine them into a single entity (`Position`) and then use a single component's port to refer to this point. The same applies to `p2x` and `p2y`:
+```
+package geometry;
+
+component CenterOfSegment {
+  port
+    in  Position p1,
+    in  Position p2,
+    out Position center;
+
+  implementation Math {
+    center.x = 0.5 * (p1.x + p2.x);
+    center.y = 0.5 * (p1.y + p2.y);
+  }
+}
+```
+
+* How do I use it?
+
+    * Create a file with `struct` extension and describe your data in there (e.g. `Position.struct`).
+    * Import your struct in the `emam` file where your component resides (e.g. `MyComponent1.emam`):
+        ```
+        package modeling;
+
+        import geometry.Position;
+
+        component MyComponent1 {
+            // component's declaration
+        }
+        ```
+    * Use it as a port's type in your component:
+        ```
+        package modeling;
+
+        import geometry.Position;
+
+        component MyComponent1 {
+            port
+              in Position in1,
+              out Position out1;
+
+            implementation Math {
+                out1.x = 2 * in1.x;
+                out1.y = 2 * in1.y;
+            }
+        }
+        ```
+
+* Some limitations:
+    * Generics are not supported. E.g. the following declaration is not valid:
+        ```
+        package example;
+
+        struct Pair<T> {
+            T first;
+            T second;
+        }
+        ```  
+    * Struct references must not form a cycle. E.g. the following struct declarations are illegal:
+        ```
+        package example;
+
+        struct S1 {
+            Q f1;
+            S2 f2;
+        }
+        ```
+        ```
+        package example;
+
+        struct S2 {
+            Q f1;
+            S1 f2;
+        }
+        ```
+    * Nested structs are not supported. E.g. the following declaration is not valid:
+        ```
+        package example;
+
+        struct S1 {
+            Q f1;
+            B f2;
+
+            struct Nested {
+                Q field1;
+                B field2;
+            }
+        }
+        ```
+    * There must be one struct per file. E.g. the following declarations are not permitted in one file:
+        ```
+        package example;
+
+        struct S1 {
+            Q f1;
+            B f2;
+        }
+
+        struct S2 {
+            Q x;
+            Q y;
+        }
+        ```
