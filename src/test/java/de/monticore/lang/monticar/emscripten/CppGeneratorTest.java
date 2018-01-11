@@ -39,7 +39,7 @@ class CppGeneratorTest {
 
   private static final Pattern VARIABLE_NAME_PATTERN = Pattern
       .compile("^[a-zA-Z_$][a-zA-Z_$0-9]*$");
-  private static final int CODEPOINT_UPPERCASE_A = 65;
+  private static final int CODEPOINT_LOWERCASE_A = 97;
   private static final int CODEPOINT_LOWERCASE_Z = 122;
 
   private static final String NOT_ARRAY_PORT_NAME = "inport";
@@ -82,7 +82,7 @@ class CppGeneratorTest {
 
       @Test
       void withArrayName() {
-        qt().forAll(strings().betweenCodePoints(CODEPOINT_UPPERCASE_A, CODEPOINT_LOWERCASE_Z)
+        qt().forAll(strings().betweenCodePoints(CODEPOINT_LOWERCASE_A, CODEPOINT_LOWERCASE_Z)
                 .ofLengthBetween(1, 10)
             , integers().allPositive())
             .assuming((s, i) -> isValidVariableName(s))
@@ -103,7 +103,7 @@ class CppGeneratorTest {
 
       @Test
       void withNotArrayVariableName() {
-        qt().forAll(strings().betweenCodePoints(CODEPOINT_UPPERCASE_A, CODEPOINT_LOWERCASE_Z)
+        qt().forAll(strings().betweenCodePoints(CODEPOINT_LOWERCASE_A, CODEPOINT_LOWERCASE_Z)
             .ofLengthBetween(1, 10))
             .assuming(s -> isValidVariableName(s))
             .check(s -> !CppGenerator.isArray(s));
@@ -129,7 +129,7 @@ class CppGeneratorTest {
 
       @Test
       void withValidPortName() {
-        qt().forAll(strings().betweenCodePoints(CODEPOINT_UPPERCASE_A, CODEPOINT_LOWERCASE_Z)
+        qt().forAll(strings().betweenCodePoints(CODEPOINT_LOWERCASE_A, CODEPOINT_LOWERCASE_Z)
                 .ofLengthBetween(1, 10)
             , integers().allPositive())
             .assuming((s, i) -> isValidVariableName(s))

@@ -23,20 +23,21 @@ class CppGeneratorIT {
   private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
   private static final String CPP_TEMPLATE = "cpp.ftl";
 
-  private static final Path RESOLVING_BASE_DIR = Paths.get("src/test/resources/cppfilegeneration");
+  private static final Path RESOLVING_BASE_DIR = Paths
+      .get("src/integration-test/resources/cppfilegeneration");
   private static final String MODEL_WITH_MATRIX_FULL_NAME = "models.matrixPort";
   private static final String MODEL_WITH_MATRIX_ARRAY_FULL_NAME = "models.matrixArrayPort";
   private static final String MODEL_WITH_SCALAR_FULL_NAME = "models.scalarPort";
   private static final String MODEL_WITH_ARRAY_FULL_NAME = "models.arrayPort";
 
-  private static final Path CPP_FILE_MATRIX = Paths
-      .get("src/test/resources/cppfilegeneration/expected/models_matrixPort.cpp");
-  private static final Path CPP_FILE_MATRIX_ARRAY = Paths
-      .get("src/test/resources/cppfilegeneration/expected/models_matrixArrayPort.cpp");
-  private static final Path CPP_FILE_SCALAR = Paths
-      .get("src/test/resources/cppfilegeneration/expected/models_scalarPort.cpp");
-  private static final Path CPP_FILE_ARRAY = Paths
-      .get("src/test/resources/cppfilegeneration/expected/models_arrayPort.cpp");
+  private static final Path CPP_FILE_MATRIX = RESOLVING_BASE_DIR
+      .resolve("expected/models_matrixPort.cpp");
+  private static final Path CPP_FILE_MATRIX_ARRAY = RESOLVING_BASE_DIR
+      .resolve("expected/models_matrixArrayPort.cpp");
+  private static final Path CPP_FILE_SCALAR = RESOLVING_BASE_DIR
+      .resolve("expected/models_scalarPort.cpp");
+  private static final Path CPP_FILE_ARRAY = RESOLVING_BASE_DIR
+      .resolve("expected/models_arrayPort.cpp");
 
   private CppGenerator generator;
   private Resolver resolver;
@@ -44,6 +45,7 @@ class CppGeneratorIT {
 
   @BeforeEach
   void setUp() throws IOException {
+    System.out.println("Integration Test");
     TemplateFactory templateFactory = new TemplateFactory(TEMPLATE_DIR);
     Template template = templateFactory.getTemplate(CPP_TEMPLATE);
     writer = new StringWriter();

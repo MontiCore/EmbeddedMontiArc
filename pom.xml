@@ -33,6 +33,16 @@
 
     <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
     <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
+    <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
+    <maven.build.helper.version>3.0.0</maven.build.helper.version>
+
+    <skip.unit.tests>true</skip.unit.tests>
+    <skip.integration.tests>true</skip.integration.tests>
+    <skip.acceptance.tests>true</skip.acceptance.tests>
+    <integration.tests.sources>src/integration-test/java</integration.tests.sources>
+    <integration.tests.resources>src/integration-test/resources</integration.tests.resources>
+    <acceptance.tests.sources>src/acceptance-test/java</acceptance.tests.sources>
+    <acceptance.tests.resources>src/acceptance-test/resources</acceptance.tests.resources>
   </properties>
 
   <dependencies>
@@ -40,6 +50,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <version>${spring.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -61,27 +77,6 @@
       <artifactId>junit-jupiter-params</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>
-
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-      <exclusions>
-        <exclusion>
-          <!-- Defined below -->
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-      </exclusions>
-      <!--<scope>test</scope>-->
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
@@ -124,14 +119,15 @@
           <target>${java.version}</target>
         </configuration>
       </plugin>
+
+      <!-- Unit Tests -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.plugin.version}</version>
         <configuration>
+          <skipTests>${skip.unit.tests}</skipTests>
           <includes>
             <include>**/*Test.java</include>
-            <include>**/*IT.java</include>
-            <include>**/*AT.java</include>
           </includes>
         </configuration>
         <dependencies>
@@ -147,6 +143,58 @@
           </dependency>
         </dependencies>
       </plugin>
+
+      <!-- Integration / Acceptance Tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven.failsafe.plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>${junit.platform.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.engine.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <!-- Integration Tests -->
+          <execution>
+            <id>integration-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <skipITs>${skip.integration.tests}</skipITs>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+          <!-- Acceptance Tests -->
+          <execution>
+            <id>acceptance-test</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <skipITs>${skip.acceptance.tests}</skipITs>
+              <includes>
+                <include>**/*AT.java</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
@@ -167,6 +215,95 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <build.profile.id>dev</build.profile.id>
+        <skip.unit.tests>false</skip.unit.tests>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>integration-test</id>
+      <properties>
+        <build.profile.id>integration-test</build.profile.id>
+        <skip.integration.tests>false</skip.integration.tests>
+      </properties>
+      <!-- Source and resource directories for Integration Tests -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${maven.build.helper.version}</version>
+            <executions>
+              <execution>
+                <id>add-integration-test-sources</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${integration.tests.sources}</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+        <testResources>
+          <testResource>
+            <directory>${integration.tests.resources}</directory>
+            <filtering>true</filtering>
+          </testResource>
+        </testResources>
+      </build>
+    </profile>
+
+    <profile>
+      <id>acceptance-test</id>
+      <properties>
+        <build.profile.id>acceptance-test</build.profile.id>
+        <skip.acceptance.tests>false</skip.acceptance.tests>
+      </properties>
+      <!-- Source and resource directories for Acceptance Tests -->
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${maven.build.helper.version}</version>
+            <executions>
+              <execution>
+                <id>add-acceptance-test-sources</id>
+                <phase>generate-test-sources</phase>
+                <goals>
+                  <goal>add-test-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${acceptance.tests.sources}</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+        <testResources>
+          <testResource>
+            <directory>${acceptance.tests.resources}</directory>
+            <filtering>true</filtering>
+          </testResource>
+        </testResources>
+      </build>
+    </profile>
+  </profiles>
 
   <!--<distributionManagement>
     <repository>
