@@ -1,3 +1,7 @@
+<a href="https://codeclimate.com/github/MontiSim/SimLang/maintainability"><img src="https://api.codeclimate.com/v1/badges/dc74fd9002ab989462b0/maintainability" /></a>
+<a href="https://codeclimate.com/github/MontiSim/SimLang/test_coverage"><img src="https://api.codeclimate.com/v1/badges/dc74fd9002ab989462b0/test_coverage" /></a>
+[![Coverage Status](https://coveralls.io/repos/github/MontiSim/SimLang/badge.svg?branch=master)](https://coveralls.io/github/MontiSim/SimLang?branch=master)
+
 # SimLang
 
 SimLang is a DSL for describing settings of vehicle simulations.
@@ -5,16 +9,19 @@ In order to do so it utilizes TNumberUnits from SI and the Weather language.
 
 SimLang files must end with .sim.
 
-##Syntax help:
+## Syntax help
+```
 "" terms are keywords.
 | denotes choices.
 []-parenthesised terms are variable input.
 ()? are optional inputs.
 Uppercase terms relate to another rule.
+```
 
 **See FullExample.sim for a concrete example of each rule.**
 
 # Simulation Rules
+```
 "sim" [name] "{"
   [RULE1]
   [RULE2]
@@ -127,8 +134,10 @@ Default:
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 Default:
+```
 
 # Weather Rules
+```
 ### WEATHEROBJ:: "{" RULE1 RULE2 ... "}"
 
 ### "temperature" [Number]("K"|"°C°|"°F")
@@ -231,3 +240,4 @@ Default:
 Creates an instance of the given phenomena.
 Definable arbitrarily often.
 Default: 
+```
