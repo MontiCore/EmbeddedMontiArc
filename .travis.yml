@@ -5,6 +5,9 @@ sudo: required
 services:
   - docker
 
+script:
+  - mvn clean install --settings "settings.xml"
+
 stages:
   - build
   - test
