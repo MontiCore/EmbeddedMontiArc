@@ -43,9 +43,10 @@ script SteeringAngleCalculator
 
      //calculate base steering angle
      Q globalOrientation = orientation*(M_PI/180);
-     if (globalOrientation > M_PI){
+
+     if globalOrientation > M_PI
          globalOrientation -= 2 * M_PI;
-     }end
+     end
 
      Q orientedDistance = distance;
      Q angleTowardsTrajectory = atan(orientedDistance / 2);
@@ -57,11 +58,11 @@ script SteeringAngleCalculator
      Q cosineAngle = v2 / sqrt(v1 * v1 + v2 * v2);
      Q angle = acos(cosineAngle);
 
-     if (v1 > 0){
+     if (v1 > 0)
          orientationOfTrajectory = -angle;
-     }else{
+     else
          orientationOfTrajectory = angle;
-     }end
+     end
      Q angleTrajectoryAndCarDirection = orientationOfTrajectory - globalOrientation;
 
      //the resulting angle is the angle needed to steer the car parallel to the trajectory
@@ -69,20 +70,20 @@ script SteeringAngleCalculator
      Q finalAngle = angleTrajectoryAndCarDirection + angleTowardsTrajectory;
 
      //correct angle
-     if (finalAngle > M_PI){
+     if (finalAngle > M_PI)
          finalAngle -= 2 * M_PI;
-     }elseif (finalAngle < -M_PI){
+     elseif (finalAngle < -M_PI)
           finalAngle += 2 * M_PI;
-     }end
+     end
 
      newSteeringAngle = finalAngle*(180/M_PI);
 
      //correct angle depending on car
         angle = newSteeringAngle;
-        if angle < minSteeringAngle{
+        if angle < minSteeringAngle
             angle = minSteeringAngle;
-        }elseif angle > maxSteeringAngle{
+        elseif angle > maxSteeringAngle
             angle = maxSteeringAngle;
-        }end
+        end
         newSteeringAngle = -angle;
 end

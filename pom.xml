@@ -69,6 +69,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.7.1</version>
+    </dependency>
+
+    <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
       <version>${se-commons.version}</version>
@@ -186,6 +192,19 @@
           <skip>false</skip>
           <script>script.groovy</script>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4</artifactId>
+            <version>4.7.1</version>
+          </dependency>
+          <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+          <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.1</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <goals>

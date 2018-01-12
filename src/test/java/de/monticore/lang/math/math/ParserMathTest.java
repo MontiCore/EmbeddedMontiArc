@@ -65,6 +65,12 @@ public class ParserMathTest {
         test("m");
     }
 
+    @Test
+    public void testFor2() throws IOException {
+        MathParser parser = new MathParser();
+        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/Generation/ForLoop2.m");
+    }
+
     private void test(String fileEnding) throws IOException {
         ParseTest parserTest = new ParseTest("." + fileEnding);
         Files.walkFileTree(Paths.get("src/test/resources/"), parserTest);

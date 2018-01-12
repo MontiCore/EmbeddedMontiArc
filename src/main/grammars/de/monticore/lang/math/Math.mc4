@@ -63,20 +63,17 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         Name "(" MathMatrixAccessExpression ")";
 
 //Boolean expressions
-    MathTrueExpression implements Expression<10> =
+    MathTrueExpression implements Expression<30> =
     	"true";
-    MathFalseExpression implements Expression<10> =
+    MathFalseExpression implements Expression<30> =
     	"false";
 
 //for loop
-    MathForLoopExpression implements Expression<10> =
-    	"for" head:MathForLoopHead (MathForLoopBody)* "end";
-
-    MathForLoopBody =
-        (Expression | MathVectorExpression) ;
+    MathForLoopExpression implements Expression<40> =
+    	"for" head:MathForLoopHead body:Expression+ "end";
 
     MathForLoopHead =
-    	Name "=" (Name | MathVectorExpression) ;
+    	Name "=" Expression;
 
 //if  and else conditions
     MathConditionalExpression implements Expression<40> =
@@ -86,34 +83,37 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
 
     MathIfExpression  implements Expression<40> =
-    	"if" condition:Expression "{" body:Expression* "}" ;
+    	"if" condition:Expression body:Expression* ;
 
     MathElseIfExpression implements Expression<40> =
-    	"elseif" condition:Expression "{" body:Expression* "}" ;
+    	"elseif" condition:Expression body:Expression* ;
 
     MathElseExpression implements Expression<40> =
-    	"else" "{" body:Expression* "}";
+    	"else" body:Expression* ;
 
 //Assignments
      AssignmentType =
         matrixProperty:Name* ElementType dim:Dimension?;
 
+// R^2 for vector or R^{3,4} for Matrix
      Dimension =
-         	"^" "{" (Expression || ",")+ "}";
+         	"^" ("{" (Expression || ",")+ "}" | Expression);
 
      MathDeclarationExpression implements Expression<50> =
-        type:AssignmentType Name ";";
+        type:AssignmentType Name;
 
      MathAssignmentDeclarationExpression implements Expression<50> =
-        type:AssignmentType Name MathAssignmentOperator (Expression | MathVectorExpression) ";";
+        type:AssignmentType Name MathAssignmentOperator (Expression);
 
      MathAssignmentExpression implements Expression<50> =
-        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression | MathVectorExpression) ";";
+        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression);
 
      MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
 
- //Element Types WholeNumberNumber="Z" Rational:"Q" Complex:"C" Boolean:"B" Natural:"N"
+     Statement implements Expression<5> = Expression ";" ; // to not write down every time ";"?
+
+//Element Types WholeNumberNumber="Z" Rational:"Q" Complex:"C" Boolean:"B" Natural:"N"
      ElementType implements Type, TypeArgument =
              ZQCBN |
              Ranges;
@@ -129,7 +129,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     NumberExpression implements Expression<10> =
         NumberWithUnit;
 
-    NameExpression implements Expression<30> =
+    NameExpression implements Expression<20> =
         Name;
 
  }

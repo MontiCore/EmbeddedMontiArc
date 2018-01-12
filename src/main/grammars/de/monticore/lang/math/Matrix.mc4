@@ -11,7 +11,6 @@ grammar Matrix extends de.monticore.ExpressionsBasis  {
     MathMatrixAccess =
     	doubleDot:":" | Expression;
 
-    MathVectorExpression =
+    MathVectorExpression  implements Expression<99>   =
     	Expression ":" Expression (":" Expression)?;
-
 }
