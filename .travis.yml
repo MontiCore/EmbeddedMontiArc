@@ -18,19 +18,18 @@ jobs:
   include:
     - stage: build
       script:
-        - mvn clean test-compile jacoco:report --settings "settings.xml"
+        - mvn clean test-compile --settings "settings.xml"
     - stage: test
       script:
-        - mvn test jacoco:report --settings "settings.xml"
+        - mvn test jacoco:report coveralls:report --settings "settings.xml"
     - stage: integration-test
       script:
         - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
         - ./install_armadillo.sh
-        - mvn verify -P integration-test jacoco:report --settings "settings.xml"
+        - mvn verify -P integration-test jacoco:report coveralls:report --settings "settings.xml"
     - stage: acceptance-test
       script:
-        - mvn verify -P acceptance-test jacoco:report --settings "settings.xml"
+        - mvn verify -P acceptance-test jacoco:report coveralls:report --settings "settings.xml"
 
 after_success:
-  - mvn coveralls:report --settings "settings.xml"
 #- mvn deploy --settings "./settings.xml"
