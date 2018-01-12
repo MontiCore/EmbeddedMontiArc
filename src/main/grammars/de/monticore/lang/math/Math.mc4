@@ -20,81 +20,19 @@
 package de.monticore.lang.math;
 
 grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions , de.monticore.CommonExpressions,
-        de.monticore.common.Common {
+        de.monticore.common.Common, de.monticore.lang.math.Matrix {
 
     MathCompilationUnit =
-      ("package" package:(Name || ".")+ ";")?
-      (ImportStatement)* // to import later on other scripts/functions
-      MathScript;
+        ("package" QualifiedName ";")?
+        (ImportStatement)* // to import later on other scripts/functions
+        MathScript;
 
-    symbol scope MathScript = 
-    	"script" Name Expression+ "end";
+      symbol scope MathScript =
+        "script" Name Expression+ "end";
 
-    MathForLoopExpression implements Expression<10> = 
-    	"for" head:MathForLoopHead body:Expression* "end";
+    //Arithmetic expressions for matrices
 
-    MathForLoopHead = 
-    	Name "=" Expression;
-
-    MathDeclarationExpression implements Expression<20> = 
-    	type:AssignmentType Name ";";
-
-    MathAssignmentDeclarationExpression implements Expression<110> =
-    	type:AssignmentType Name MathAssignmentOperator Expression ";";
-
-    MathAssignmentExpression implements Expression<99> = 
-    	(Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator Expression ";";
-    	
-    MathAssignmentOperator = 
-    	operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
-
-    MathConditionalExpression implements Expression<99> = 
-    	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
-
-    MathConditionalExpressionShort implements Expression<99> = 
-    	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
-
-    MathIfExpression  implements Expression<99> = 
-    	"if" condition:Expression "{" body:Expression* "}" ;
-
-    MathElseIfExpression implements Expression<99> = 
-    	"elseif" condition:Expression "{" body:Expression* "}" ;
-
-    MathElseExpression implements Expression<99> = 
-    	"else" "{" body:Expression* "}";
-
-    Dimension = 
-    	"^" "{" (Expression || ",")+ "}";
-
-    //Expression the structure of a matrix
-    
-    MathDottedNameExpression implements Expression<99> = 
-    	Name "." Name;
-
-    MathMatrixNameExpression implements Expression<99> = 
-    	Name "(" (MathMatrixAccessExpression | EndOperator) ")";
-
-    // copied content of MathVectorExpression here due to bug https://sselab.de/lab2/private/trac/MontiCore/ticket/2072
-    MathMatrixValueExplicitExpression implements Expression<1000> =
-    	("[" (MathMatrixAccessExpression || ";")* "]") | ("[" MathVectorExpression "]") ;
-
-    MathMatrixAccessExpression =
-    	MathMatrixAccess (","? MathMatrixAccess)*; // MathMatrixAccess (("," | " ") MathMatrixAccess)*; but space is MC's default seperator and can be skipped
-    	
-    MathMatrixAccess = 
-    	doubleDot:":" | Expression;
-    	
-    MathVectorExpression =
-    	Expression ":" Expression (":" Expression)?;
-
-    EndOperator = 
-    	(":" "," endVecRight:MathVectorExpression)
-    	| endVecLeft:MathVectorExpression ","  (":" | endVecRight:MathVectorExpression)
-    	| endVec:MathVectorExpression;
-
-   //Arithmetic expressions for matrices
-    	
-    MathArithmeticMatrixLeftDivideExpression implements Expression<280> = 
+    MathArithmeticMatrixLeftDivideExpression implements Expression<160> =
     	Expression "\\" Expression;
 
     MathArithmeticMatrixTransposeExpression implements Expression<270> =
@@ -106,51 +44,92 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathArithmeticMatrixSolutionExpression implements Expression<260> =
     	Expression "\\\\" Expression;
 
-    MathArithmeticMatrixEEPowExpression implements Expression<290> = 
+    MathArithmeticMatrixEEPowExpression implements Expression<290> =
     	Expression ".^" Expression;
 
-    MathArithmeticMatrixEEMultExpression implements Expression<280> = 
+    MathArithmeticMatrixEEMultExpression implements Expression<280> =
     	Expression "." "*" Expression;
 
-    MathArithmeticMatrixEERightDivideExpression implements Expression<280> = 
+    MathArithmeticMatrixEERightDivideExpression implements Expression<250> =
     	Expression "./" Expression;
-    	
-    MathArithmeticMatrixEELeftDivideExpression implements Expression<280> = 
+
+    MathArithmeticMatrixEELeftDivideExpression implements Expression<250> =
     	Expression ".\\" Expression;
-    	
-   //Boolean expressions
-    MathTrueExpression implements Expression<99> =
+
+    MathDottedNameExpression implements Expression<100> =
+        Name "." Name;
+
+    MathMatrixNameExpression implements Expression<100> =
+        Name "(" MathMatrixAccessExpression ")";
+
+//Boolean expressions
+    MathTrueExpression implements Expression<10> =
     	"true";
-    MathFalseExpression implements Expression<99> = 
+    MathFalseExpression implements Expression<10> =
     	"false";
 
-    AssignmentType =
-    	matrixProperty:Name* ElementType dim:Dimension?;
+//for loop
+    MathForLoopExpression implements Expression<10> =
+    	"for" head:MathForLoopHead (MathForLoopBody)* "end";
 
-    MatrixType = 
-    	ElementType Dimension;
+    MathForLoopBody =
+        (Expression | MathVectorExpression) ;
 
-    ElementType implements Type, TypeArgument =
-        ZQCBN |
-        Ranges;
+    MathForLoopHead =
+    	Name "=" (Name | MathVectorExpression) ;
+
+//if  and else conditions
+    MathConditionalExpression implements Expression<40> =
+    	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
+
+    MathConditionalExpressionShort implements Expression<40> =
+    	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
+
+    MathIfExpression  implements Expression<40> =
+    	"if" condition:Expression "{" body:Expression* "}" ;
+
+    MathElseIfExpression implements Expression<40> =
+    	"elseif" condition:Expression "{" body:Expression* "}" ;
+
+    MathElseExpression implements Expression<40> =
+    	"else" "{" body:Expression* "}";
+
+//Assignments
+     AssignmentType =
+        matrixProperty:Name* ElementType dim:Dimension?;
+
+     Dimension =
+         	"^" "{" (Expression || ",")+ "}";
+
+     MathDeclarationExpression implements Expression<50> =
+        type:AssignmentType Name ";";
+
+     MathAssignmentDeclarationExpression implements Expression<50> =
+        type:AssignmentType Name MathAssignmentOperator (Expression | MathVectorExpression) ";";
+
+     MathAssignmentExpression implements Expression<50> =
+        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression | MathVectorExpression) ";";
+
+     MathAssignmentOperator =
+        operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
+
+ //Element Types WholeNumberNumber="Z" Rational:"Q" Complex:"C" Boolean:"B" Natural:"N"
+     ElementType implements Type, TypeArgument =
+             ZQCBN |
+             Ranges;
 
      Ranges = ZQCBN ("(" min:Expression ":" max:Expression ")" |
                      "(" min:Expression ":" step:Expression ":" max:Expression ")")
-              Dimension
-     ;
+          ;
 
-     NumberExpression implements Expression<100000> =
-       NumberWithUnit;
+     ZQCBN = { _input.LT(1).getText().matches("Z|Q|C|B|N") }?
+              Name ;
 
+//Expression for all Numbers with units
+    NumberExpression implements Expression<10> =
+        NumberWithUnit;
 
-    ZQCBN = { _input.LT(1).getText().matches("Z|Q|C|B|N") }?
-         Name ;
+    NameExpression implements Expression<30> =
+        Name;
 
-
-
-      /*               [isWholeNumberNumber:"Z"] |
-                     [isRational:"Q"] |
-                     [isComplex:"C"] |
-                     [isBoolean:"B"] |
-                     [isNatural:"N"]; */
-}
+ }

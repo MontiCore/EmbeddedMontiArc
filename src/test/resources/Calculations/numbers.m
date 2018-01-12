@@ -19,13 +19,8 @@
 
 package calculations;
 
-script add1
-    [1,2] + [3,4]
-    [(1+2),4]
-    [1,2,4;5,6,7]
-    [1,2]./[2,3]
-    [1,2].'
-    [1+2*4;8]
-    A(1,0)
-    false
+script numbers
+    1mm
+    5cm
+    1000A + 600J
 end

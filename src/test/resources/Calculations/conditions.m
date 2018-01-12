@@ -19,13 +19,13 @@
 
 package calculations;
 
-script add1
-    [1,2] + [3,4]
-    [(1+2),4]
-    [1,2,4;5,6,7]
-    [1,2]./[2,3]
-    [1,2].'
-    [1+2*4;8]
-    A(1,0)
-    false
+script conditions
+     if r == c{
+        A(r,c) = 2;
+      }elseif abs(r-c) == 1{
+        A(r+2,c*3) = -1;
+       }else{
+        A(r, c) = 0;
+        }
+     end
 end
