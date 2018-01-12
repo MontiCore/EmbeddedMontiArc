@@ -33,7 +33,8 @@ jobs:
         - mvn verify -P integration-test jacoco:report coveralls:report --settings "settings.xml"
     - stage: acceptance-test
       script:
-        - mvn verify -P acceptance-test jacoco:report coveralls:report --settings "settings.xml"
+        - true
+        #- mvn verify -P acceptance-test jacoco:report coveralls:report --settings "settings.xml"
 
 after_success:
 #- mvn deploy --settings "./settings.xml"
