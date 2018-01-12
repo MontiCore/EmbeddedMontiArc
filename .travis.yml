@@ -1,13 +1,8 @@
 language: java
 
-sudo: required
-
 cache:
   directories:
     - $HOME/.m2/repository
-
-services:
-  - docker
 
 script: true
 install: true
@@ -27,6 +22,9 @@ jobs:
       script:
         - mvn test jacoco:report coveralls:report --settings "settings.xml"
     - stage: integration-test
+      sudo: required
+      services:
+        - docker
       script:
         - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
         - ./install_armadillo.sh
