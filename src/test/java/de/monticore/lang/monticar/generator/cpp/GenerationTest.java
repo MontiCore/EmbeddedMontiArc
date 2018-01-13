@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -462,37 +461,13 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testMyComponent2() throws IOException {
-        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
-        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.subpackage2.myComponent2",
-                ExpandedComponentInstanceSymbol.KIND
-        ).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/MyComponent2");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
-        Assert.assertFalse(files.isEmpty());
-        checkFilesAreEqual(
-                files,
-                Paths.get("./target/generated-sources-cpp/testing/MyComponent2"),
-                "testing/MyComponent2/"
-        );
+        cppCodeForMyComponentXCanBeGenerated(2);
     }
 
     @Test
     @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/13")
     public void cppCodeForMyComponent3CanBeGenerated() throws IOException {
-        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
-        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.subpackage3.myComponent3",
-                ExpandedComponentInstanceSymbol.KIND
-        ).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/MyComponent3");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
-        Assert.assertNotNull(files);
-        Assert.assertFalse(files.isEmpty());
+        cppCodeForMyComponentXCanBeGenerated(3);
     }
 
     @Test
@@ -528,30 +503,32 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void cppCodeForMyComponent5CanBeGenerated() throws IOException {
-        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
-        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.subpackage5.myComponent5",
-                ExpandedComponentInstanceSymbol.KIND
-        ).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/MyComponent5");
-        List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
-        Assert.assertNotNull(files);
-        Assert.assertFalse(files.isEmpty());
+        cppCodeForMyComponentXCanBeGenerated(5);
     }
 
     @Test
     @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/27")
     public void cppCodeForMyComponent6CanBeGenerated() throws IOException {
+        cppCodeForMyComponentXCanBeGenerated(6);
+    }
+
+    @Test
+    @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/28")
+    public void cppCodeForMyComponent7CanBeGenerated() throws IOException {
+        cppCodeForMyComponentXCanBeGenerated(7);
+    }
+
+    private void cppCodeForMyComponentXCanBeGenerated(int x) throws IOException {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
         ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.subpackage6.myComponent6",
+                String.format("testing.subpackage%1$s.myComponent%1$s", x),
                 ExpandedComponentInstanceSymbol.KIND
         ).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/MyComponent6");
+        generatorCPP.setGenerationTargetPath(
+                String.format("./target/generated-sources-cpp/testing/MyComponent%s", x)
+        );
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
         Assert.assertNotNull(files);
         Assert.assertFalse(files.isEmpty());
