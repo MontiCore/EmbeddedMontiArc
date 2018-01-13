@@ -2,27 +2,23 @@ package de.rwth.armin.modeling.autopilot.motion;
 
 component CalculatePidError {
   port
-    in Q (0.5 m/s : 0.01 m/s : 5.0 m/s) velocityDifferenceThresholdForErrorLeap,
     in Q (0.0 m/s : 0.01 m/s : oo) currentVelocity,
     in Q (0.0 m/s : 0.01 m/s : 13.0 m/s) desiredVelocity,
     out Q error;
 
   implementation Math {
-    // de.rwth.ryndin.modelling.autopilot.component.motion.CalculatePidErrorImplementation
-    // TODO: Is the NaN Check necessary ? 
-    
-    if desiredVelocity < 0.001
+    // TODO convert into parameter when parameters start working (bug #28)
+    static Q V_THRESHOLD_FOR_ERROR_LEAP = 1.5;
+    if (desiredVelocity <= 0.01)
        error = -100.0;
-
-    elseif (currentVelocity - desiredVelocity) > velocityDifferenceThresholdForErrorLeap
+    elseif ((currentVelocity - desiredVelocity) > V_THRESHOLD_FOR_ERROR_LEAP)
         // dv is treated as zero in order to increase error and force vehicle to decelerate better
         error = -currentVelocity;
-    elseif (desiredVelocity - currentVelocity) > velocityDifferenceThresholdForErrorLeap
+    elseif ((desiredVelocity - currentVelocity) > V_THRESHOLD_FOR_ERROR_LEAP)
         // increase error to force vehicle to accelerate more rapidly
         error = desiredVelocity;
     else
-        error = desiredVelocity - currentVelocity ;
+        error = desiredVelocity - currentVelocity;
     end
-   
   }
 }

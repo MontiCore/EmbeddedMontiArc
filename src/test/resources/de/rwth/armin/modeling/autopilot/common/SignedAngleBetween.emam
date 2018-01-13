@@ -15,7 +15,7 @@ component SignedAngleBetween {
       angle = 0.0;
     else
       Q norm2 = sqrt( v2x*v2x + v2y*v2y );
-      if norm2 <= EPSILON
+      if (norm2 <= EPSILON)
         angle = 0.0;
       else
         Q angle1 = -atan2(v1y, v1x);
@@ -24,7 +24,7 @@ component SignedAngleBetween {
         Q v2xr = v2x * c - v2y * s;
         Q v2yr = v2x * s + v2y * c;
         Q angle2 = -atan2(v2yr, v2xr);
-        if abs(abs(angle2) - M_PI) <= EPSILON
+        if (abs( abs(angle2) - M_PI ) <= EPSILON)
           angle = -M_PI;
         else
           angle = angle2;

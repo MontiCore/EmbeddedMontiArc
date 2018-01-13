@@ -34,8 +34,8 @@ component BehaviorGeneration {
   connect tp.trimmed_trajectory_x           ->       cmc.trimmed_trajectory_x;
   connect tp.trimmed_trajectory_y           ->       cmc.trimmed_trajectory_y;
 
-  connect cdv.desired_direction_x           ->       desired_direction_x;
-  connect cdv.desired_direction_y           ->       desired_direction_y;
-  connect cdv.signedDistanceToTrajectory    ->       signedDistanceToTrajectory;
-  connect cdv.desiredVelocity               ->       desiredVelocity;
+  connect cmc.desired_direction_x           ->       desired_direction_x;
+  connect cmc.desired_direction_y           ->       desired_direction_y;
+  connect cmc.signedDistanceToTrajectory    ->       signedDistanceToTrajectory;
+  connect cmc.desiredVelocity               ->       desiredVelocity;
 }

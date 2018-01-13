@@ -8,10 +8,8 @@ component DecideEngineOrBrakes {
     out Q brakes;
 
   implementation Math {
-    // de.rwth.ryndin.modelling.autopilot.component.motion.DecideEngineOrBrakesImplementation
     engine = 0.0;
     brakes = 0.0;
-    
     if error > 0.0
       engine = controlSignal;
     else

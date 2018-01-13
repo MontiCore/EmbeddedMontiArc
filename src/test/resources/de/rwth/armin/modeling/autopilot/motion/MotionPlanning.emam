@@ -30,7 +30,6 @@ component MotionPlanning {
   connect desiredDirectionX -> keepDirection.desiredDirectionX;
   connect desiredDirectionY -> keepDirection.desiredDirectionY;
   connect keepDirection.steeringAngle -> sum1.t1;
-  connect 0.785 -> sac.maxSteeringAngle;
   connect signedDistanceToTrajectory -> sac.signedDistanceToTrajectory;
   connect sac.steeringAngleCorrection -> sum1.t2;
 

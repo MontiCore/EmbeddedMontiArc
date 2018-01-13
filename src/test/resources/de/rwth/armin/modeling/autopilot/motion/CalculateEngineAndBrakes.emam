@@ -18,7 +18,6 @@ component CalculateEngineAndBrakes {
   connect currentVelocity -> pidParams.currentVelocity;
   connect desiredVelocity -> pidParams.desiredVelocity;
 
-  connect 1.5 -> pidError.velocityDifferenceThresholdForErrorLeap;
   connect currentVelocity -> pidError.currentVelocity;
   connect desiredVelocity -> pidError.desiredVelocity;
 
