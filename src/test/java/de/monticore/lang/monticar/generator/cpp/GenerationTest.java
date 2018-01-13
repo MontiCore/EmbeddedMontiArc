@@ -465,7 +465,6 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/13")
     public void cppCodeForMyComponent3CanBeGenerated() throws IOException {
         cppCodeForMyComponentXCanBeGenerated(3);
     }
