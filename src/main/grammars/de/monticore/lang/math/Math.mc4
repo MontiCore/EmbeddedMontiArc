@@ -82,13 +82,13 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathConditionalExpressionShort implements Expression<40> =
     	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
 
-    MathIfExpression  implements Expression<40> =
+    MathIfExpression  implements Expression<45> =
     	"if" condition:Expression body:Expression* ;
 
-    MathElseIfExpression implements Expression<40> =
+    MathElseIfExpression implements Expression<45> =
     	"elseif" condition:Expression body:Expression* ;
 
-    MathElseExpression implements Expression<40> =
+    MathElseExpression implements Expression<45> =
     	"else" body:Expression* ;
 
 //Assignments
@@ -129,7 +129,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     NumberExpression implements Expression<10> =
         NumberWithUnit;
 
-    NameExpression implements Expression<20> =
+    NameExpression implements Expression<30> =
         Name;
 
  }
