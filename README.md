@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/MontiSim/SimLang.svg?branch=master)](https://travis-ci.org/MontiSim/SimLang)
 <a href="https://codeclimate.com/github/MontiSim/SimLang/maintainability"><img src="https://api.codeclimate.com/v1/badges/dc74fd9002ab989462b0/maintainability" /></a>
 <a href="https://codeclimate.com/github/MontiSim/SimLang/test_coverage"><img src="https://api.codeclimate.com/v1/badges/dc74fd9002ab989462b0/test_coverage" /></a>
 [![Coverage Status](https://coveralls.io/repos/github/MontiSim/SimLang/badge.svg?branch=master)](https://coveralls.io/github/MontiSim/SimLang?branch=master)
