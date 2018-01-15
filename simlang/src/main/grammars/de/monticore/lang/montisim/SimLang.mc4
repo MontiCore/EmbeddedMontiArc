@@ -4,7 +4,7 @@
 */
 package de.monticore.lang.montisim;
 
-grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2 { //todo packaging
+grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2, de.monticore.lang.monticar.Ranges  {
   SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation; 
   
   symbol scope Simulation = "sim" Name "{"
@@ -34,7 +34,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   //VariableList = (MathNameExpression ("," MathNameExpression)*);
   //Lambda = "(" "lambda" VariableList "->" MathArithmeticExpression ")";
   Lambda = "(" "lambda" ")"; //temp
-  Range = "(" "range" ")"; //temp
+  //Range = "(" "range" ")"; //temp
   
   /* Stuff that's there, but not needed
   SimulationRunCount = "sim_runs" count:TUnitNumber; //hm
@@ -76,12 +76,12 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   
   MapHeight = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ";";
   
-  MapOverlap = "map_overlap" mapOverlap:TUnitNumber ";";
-  MapSectorWidth = "map_sector_width" sectorWidth:TUnitNumber ";";
-  MapSectorHeight = "map_sector_height" sectorHeight:TUnitNumber ";";
-  MaxSectorUsers = "max_sector_users" maxSectorUsers:TUnitNumber ";";
+  MapOverlap = "map_overlap" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
+  MapSectorWidth = "map_sector_width" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
+  MapSectorHeight = "map_sector_height" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
+  MaxSectorUsers = "max_sector_users" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
   
-  Timeout = "timeout" timeout:TUnitNumber ";";
+  Timeout = "timeout" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
   
   Gravity = "gravity" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
   
@@ -93,7 +93,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
                 "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
                 ) ";";
               
-  PedestrianDensity = "pedestrian_density" pedestrianDensity:TUnitNumber ";";
+  PedestrianDensity = "pedestrian_density" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
   
   Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ";";
   
@@ -119,9 +119,9 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   // Communication Configuration
   //
   Channel = (["fixed"]|["bound"]) "channel" channelName:Name "{" (Transferrate|Latency|Outage|Area)* "}" ";";
-  Transferrate = "transferrate" transferrate:TUnitNumber ";";
-  Latency = "latency" latency:TUnitNumber ";";
-  Outage = "outage" outage:TUnitNumber (["%"])? ";";
+  Transferrate = "transferrate" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
+  Latency = "latency" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
+  Outage = "outage" (TUnitNumber | Range | TUnitNumberList | Lambda) (["%"])? ";";
   Area = "area" (["global"]|(Coordinate (Coordinate|radius:TUnitNumber))) ";";
   Coordinate = "(" posX:TUnitNumber "," posY:TUnitNumber ")";
 }
