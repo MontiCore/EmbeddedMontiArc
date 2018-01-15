@@ -1,21 +1,20 @@
 /**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * <p>
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 
@@ -61,7 +60,7 @@ public class MathSymbolTableCreatorTest {
         Log.info(symTab.toString(), "SCOPE:");
         assertNotNull(j);
 
-        Log.info(j.getTextualRepresentation(),"Result:");
+        Log.info(j.getTextualRepresentation(), "Result:");
         /*assertEquals(2, j.getDimensions().size());
         assertEquals(3, (int) j.getDimensions().get(0));
         assertEquals(1, (int) j.getDimensions().get(1));
@@ -73,7 +72,8 @@ public class MathSymbolTableCreatorTest {
         assertTrue(j.getRange().getEnd().isPresent());
         assertEquals(new ASTUnitNumber(Rational.valueOf(10, 1), Unit.valueOf("km")),
                 j.getRange().getEnd().get());
-    */}
+    */
+    }
 
     /**
      * test to check mathexpressions
@@ -103,7 +103,8 @@ public class MathSymbolTableCreatorTest {
         assertTrue(((MathExpression) (((MathExpression) ((MathExpression) mathSymbol1.getValue()).getOperands().get(1).getValue()).getOperands().get(1).getValue())).getOperands().get(0).getValue() instanceof JSValue);
         assertTrue(((MathExpression) (((MathExpression) ((MathExpression) mathSymbol1.getValue()).getOperands().get(1).getValue()).getOperands().get(1).getValue())).getOperands().get(1).getValue() instanceof JSValue);
         assertEquals(((MathExpression) (((MathExpression) ((MathExpression) mathSymbol1.getValue()).getOperands().get(1).getValue()).getOperands().get(1).getValue())).getOp(), Operator.Mod);
-    */}
+    */
+    }
 
     /**
      * test to check the dims, mathexpressions and values of a matrix
@@ -132,7 +133,8 @@ public class MathSymbolTableCreatorTest {
         assertEquals(((JSValue) ((JSMatrix) ((MathExpression) mathSymbol1.getValue()).getOperands().get(0).getValue()).getElement(0, 1)).getRealNumber(), Rational.valueOf(44, 1));
         assertEquals(((JSValue) ((JSMatrix) ((MathExpression) mathSymbol1.getValue()).getOperands().get(0).getValue()).getElement(1, 0)).getRealNumber(), Rational.valueOf(22, 1));
         assertEquals(((JSValue) ((JSMatrix) ((MathExpression) mathSymbol1.getValue()).getOperands().get(0).getValue()).getElement(1, 1)).getRealNumber(), Rational.valueOf(222, 1));
-    */}
+    */
+    }
 
     /**
      * test some declarations/definitions
@@ -185,7 +187,8 @@ public class MathSymbolTableCreatorTest {
         // checks the value and unit for the virst expression
         assertEquals(((JSValue) ((MathExpression) mathSymbol1.getValue()).getOperands().get(0).getValue()).getRealNumber(), Rational.valueOf(2000, 1));
         assertEquals(((JSValue) ((MathExpression) mathSymbol1.getValue()).getOperands().get(0).getValue()).getUnit(), Unit.valueOf("m"));
-    */}
+    */
+    }
 
     /**
      * checks the symtab for a complex matrix
@@ -200,19 +203,19 @@ public class MathSymbolTableCreatorTest {
         assertNotNull(matrix);
         //check the matrix dimensions
         assertEquals(2, matrix.getType().getDimensions().size());
-        assertEquals("2",  matrix.getType().getDimensions().get(0).getTextualRepresentation());
-        assertEquals("2",  matrix.getType().getDimensions().get(1).getTextualRepresentation());
+        assertEquals("2", matrix.getType().getDimensions().get(0).getTextualRepresentation());
+        assertEquals("2", matrix.getType().getDimensions().get(1).getTextualRepresentation());
         //checks the value matrix(0,0) = 3+5i
         assertTrue(matrix.getValue().isMatrixExpression());
-        MathMatrixExpressionSymbol matrixExpressionSymbol= (MathMatrixExpressionSymbol) matrix.getValue();
+        MathMatrixExpressionSymbol matrixExpressionSymbol = (MathMatrixExpressionSymbol) matrix.getValue();
         assertTrue(matrixExpressionSymbol.isValueExpression());
-        MathMatrixArithmeticValueSymbol matrixValueExp= (MathMatrixArithmeticValueSymbol) matrixExpressionSymbol;
-        assertEquals(2,matrixValueExp.getVectors().size());
-        assertEquals(2,matrixValueExp.getVectors().get(0).getMathMatrixAccessSymbols().size());
-        assertEquals(2,matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().size());
-        MathExpressionSymbol expressionSymbol=matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().get(0).getMathExpressionSymbol().get();
+        MathMatrixArithmeticValueSymbol matrixValueExp = (MathMatrixArithmeticValueSymbol) matrixExpressionSymbol;
+        assertEquals(2, matrixValueExp.getVectors().size());
+        assertEquals(2, matrixValueExp.getVectors().get(0).getMathMatrixAccessSymbols().size());
+        assertEquals(2, matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().size());
+        MathExpressionSymbol expressionSymbol = matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().get(0).getMathExpressionSymbol().get();
         assertTrue(expressionSymbol.isValueExpression());
-        MathNumberExpressionSymbol value= (MathNumberExpressionSymbol) expressionSymbol;
+        MathNumberExpressionSymbol value = (MathNumberExpressionSymbol) expressionSymbol;
         assertTrue(value.getValue().isComplex());
         // assertTrue(( matrix.getValue()).getElement(0, 0) instanceof JSValue);
         /*assertEquals(((JSValue) ((JSMatrix) matrix.getValue()).getElement(0, 0)).getRealNumber(), Rational.valueOf(3, 1));
@@ -237,20 +240,31 @@ public class MathSymbolTableCreatorTest {
         assertTrue(((LogicalExpression) matrix.getValue()).getOperands().get(1).getValue() instanceof MathExpression);
         //checks i'
         assertEquals(((MathExpression) ((LogicalExpression) matrix.getValue()).getOperands().get(1).getValue()).getOp(), Operator.Trans);
-    */}
-
-    @Test
-    public void testComplexAssignmentTest(){
-        Scope symTab = createSymTab("src/test/resources");
-        final MathValueSymbol complexNumber= symTab.<MathValueSymbol>resolve
-                ("symtab.ComplexAssignmentTest.A", MathValueSymbol.KIND).orElse(null);
-        assertNotNull(complexNumber);
-        System.out.println(complexNumber.getValue().getTextualRepresentation());
-        System.out.println(complexNumber.getTextualRepresentation());
-        System.out.println(complexNumber.getType().getTextualRepresentation());
-        assertTrue(complexNumber.getType().isComplexType());
+    */
     }
 
+    @Test
+    public void testComplexAssignmentTest() {
+        Scope symTab = createSymTab("src/test/resources");
+        final MathValueSymbol complexNumber = symTab.<MathValueSymbol>resolve
+                ("symtab.ComplexAssignmentTest.A", MathValueSymbol.KIND).orElse(null);
+        assertNotNull(complexNumber);
+        assertTrue(complexNumber.getType().isComplexType());
+        assertEquals(true, complexNumber.getValue() instanceof MathNumberExpressionSymbol);
+        MathNumberExpressionSymbol numberExpressionSymbol = (MathNumberExpressionSymbol) complexNumber.getValue();
+        testJSValue(numberExpressionSymbol.getValue(), "3/1", "4/1");
+    }
+
+    public static void testJSValue(JSValue jsValue, String realPart, String complexPart) {
+        testJSValue(jsValue, realPart);
+        assertTrue(jsValue.getImagNumber().isPresent());
+        assertEquals(complexPart, jsValue.getImagNumber().get().toString());
+    }
+
+    public static void testJSValue(JSValue jsValue, String realPart) {
+        assertTrue(jsValue.isComplex());
+        assertEquals(realPart, jsValue.getRealNumber().toString());
+    }
 
     protected static Scope createSymTab(String... modelPath) {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
