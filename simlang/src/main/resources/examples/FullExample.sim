@@ -1,0 +1,48 @@
+sim FullExample {
+  sim_render_frequency 60ms
+  sim_loop_frequency 60ms
+  sim_duration 4h
+  sim_type maxfps
+  weather fixed {temperature 290°C
+                 humidity 22.0%
+                 pressure 100Pa
+                 windstrength 2km/h
+                 //winddirection 38.0°
+                 precipitation_type snow
+                 precipitation_amount 5mm
+                 clouding stratus
+                 sight unlimited
+                 }
+  time 1:22:33:444
+  map_path Maps
+  map_name HorsterDreieck.osm
+  map_height flat
+  map_overlap 10
+  map_sector_width 100
+  map_sector_height 100
+  max_sector_users 1234
+  timeout 12h
+  gravity 12m/s^2
+  
+  <p>(10.0,10.0)->(20.0,20.0,0.0)
+  pedestrian_density 2.0
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0)
+  <v>(123.0,-94.0,200.0)->(1024.0,960.0,200.0)
+  <v> 1000
+  <v> 1234 (-150.0,-150.0,500.0,600.0)
+  
+  fixed channel LTE {
+    transferrate 20 Mbit/s
+    latency 10ms
+    outage 0.001
+    area global
+  }
+  
+  bound channel ICE {
+    transferrate 2bit/s
+    latency 1s
+    outage 99%
+    area (10,10) 30
+  }
+}

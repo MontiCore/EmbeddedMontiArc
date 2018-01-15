@@ -1,0 +1,127 @@
+/*
+ * Simulation-Settings language v0.311
+ * @author Deniz Schmidt
+*/
+package de.monticore.lang.montisim;
+
+grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2 { //todo packaging
+  SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation; 
+  
+  symbol scope Simulation = "sim" Name "{"
+    (SimulationRenderFrequency|
+    SimulationLoopFrequency|
+    SimulationDuration|
+    SimulationType|
+    Weather|
+    Time|
+    MapPath|
+    MapName|
+    MapHeight|
+    MapOverlap|
+    MapSectorWidth|
+    MapSectorHeight|
+    MaxSectorUsers|
+    Timeout|
+    Gravity|
+    Pedestrians|
+    PedestrianDensity|
+    Vehicles|
+    Channel)* 
+  "}";  
+  
+  TUnitNumberList = "[" TUnitNumber ("," TUnitNumber)* "]";
+  
+  //VariableList = (MathNameExpression ("," MathNameExpression)*);
+  //Lambda = "(" "lambda" VariableList "->" MathArithmeticExpression ")";
+  Lambda = "(" "lambda" ")"; //temp
+  Range = "(" "range" ")"; //temp
+  
+  /* Stuff that's there, but not needed
+  SimulationRunCount = "sim_runs" count:TUnitNumber; //hm
+  SynchronousSimulation = "sim_synchronous" (["true"]|["false"]);
+  //+screenshot settings
+  */
+  
+  SimulationRenderFrequency = "sim_render_frequency"  simRenderFreq:TUnitNumber ";";
+  SimulationLoopFrequency = "sim_loop_frequency"  simLoopFreq:TUnitNumber ";";
+  SimulationDuration = "sim_duration" simDuration:TUnitNumber ";";
+  SimulationType = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ";";
+  
+  
+  WeatherObj = "{" (Temperature| 
+                   Clouding|
+                   Sight| 
+                   Precipitationtype|
+                   Humidity|
+                   Pressure|
+                   Windstrength|
+                   Winddirection|
+                   Precipitationamount|
+                   WeatherPhenomena|
+                   OpticalPhenomena|
+                   ArtificialPhenomena)* "}";
+  
+  Weather = "weather" (FixedWeather | SequenceWeather | RandomWeather | Forecast) ";";
+  FixedWeather = ["fixed"] fixWeatherObj:WeatherObj;
+  SequenceWeather = ["sequence"] (seqWeatherObj:WeatherObj)* (sequenceDuration:TUnitNumber)?;
+  RandomWeather = ["random"] randomDuration:TUnitNumber;
+  Forecast = ["forecast"] forWeatherObj:WeatherObj forDuration:TUnitNumber; //todo: additional automaton input for markov chains 
+ 
+ 
+  Time = "time" timeHours:TUnitNumber ":" timeMinutes:TUnitNumber 
+              (":" timeSeconds:TUnitNumber (":" timeMilliseconds:TUnitNumber)?)? ";";
+  
+  MapPath = "map_path" mapPath:Name ";";
+  MapName = "map_name" mapName:Name "." fileFormat:Name ";";
+  
+  MapHeight = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ";";
+  
+  MapOverlap = "map_overlap" mapOverlap:TUnitNumber ";";
+  MapSectorWidth = "map_sector_width" sectorWidth:TUnitNumber ";";
+  MapSectorHeight = "map_sector_height" sectorHeight:TUnitNumber ";";
+  MaxSectorUsers = "max_sector_users" maxSectorUsers:TUnitNumber ";";
+  
+  Timeout = "timeout" timeout:TUnitNumber ";";
+  
+  Gravity = "gravity" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
+  
+  //Scenario
+  
+  Pedestrians = ("<p>"
+                "(" startX:TUnitNumber "," startY:TUnitNumber ")" 
+                "->" 
+                "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
+                ) ";";
+              
+  PedestrianDensity = "pedestrian_density" pedestrianDensity:TUnitNumber ";";
+  
+  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ";";
+  
+  //defined vehicle moving from start to destination pos
+  ExplicitVehicle = vehicle:Name 
+              ("(" startX:TUnitNumber "," startY:TUnitNumber "," startRot:TUnitNumber ")"
+              "->" 
+              "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
+              );
+              
+  //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
+  PathedVehicle = "<v>"
+                  "(" startX:TUnitNumber "," startY:TUnitNumber "," spawnRadius:TUnitNumber ")"
+                  "->"
+                  "(" destX:TUnitNumber "," destY:TUnitNumber "," destRadius:TUnitNumber ")" 
+                  (amount:TUnitNumber)?;
+  
+  //completely random vehicle spawns and destinations with optional avoidance of path
+  RandomVehicle = "<v>" amount:TUnitNumber ("(" startX:TUnitNumber "," startY:TUnitNumber "," destX:TUnitNumber "," destY:TUnitNumber ")")?;
+  
+  
+  //
+  // Communication Configuration
+  //
+  Channel = (["fixed"]|["bound"]) "channel" channelName:Name "{" (Transferrate|Latency|Outage|Area)* "}" ";";
+  Transferrate = "transferrate" transferrate:TUnitNumber ";";
+  Latency = "latency" latency:TUnitNumber ";";
+  Outage = "outage" outage:TUnitNumber (["%"])? ";";
+  Area = "area" (["global"]|(Coordinate (Coordinate|radius:TUnitNumber))) ";";
+  Coordinate = "(" posX:TUnitNumber "," posY:TUnitNumber ")";
+}

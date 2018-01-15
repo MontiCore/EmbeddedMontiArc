@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>SimLang</artifactId>
+    <groupId>montisim</groupId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    
+    <modules>
+        <module>weather</module>
+        <module>simlang</module>
+    </modules>
+    
+    <properties>
+    <!-- .. SE-Libraries .................................................. -->
+    <monticore.version>4.5.3</monticore.version>
+    <se-commons.version>1.7.7</se-commons.version>
+    <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
+
+    <!-- .. Libraries .................................................. -->
+    <guava.version>18.0</guava.version>
+    <junit.version>4.12</junit.version>
+    <logback.version>1.1.2</logback.version>
+	<jscience.version>4.3.1</jscience.version>
+  <antlr.version>4.7.1</antlr.version>
+
+    <!-- .. Plugins ....................................................... -->
+    <monticore.plugin>4.5.3</monticore.plugin>
+    <assembly.plugin>2.5.4</assembly.plugin>
+    <compiler.plugin>3.3</compiler.plugin>
+    <source.plugin>2.4</source.plugin>
+    <shade.plugin>2.4.3</shade.plugin>
+    <surefire.version>2.20.1</surefire.version>
+
+    <!-- Classifiers -->
+    <grammars.classifier>grammars</grammars.classifier>
+    <cli.classifier>cli</cli.classifier>
+
+    <!-- .. Misc .......................................................... -->
+    <java.version>1.8</java.version>
+    <grammars.classifier>grammars</grammars.classifier>
+
+    <!-- ..Languages....................................................... -->
+	  <commonlang.version>0.0.3-SNAPSHOT</commonlang.version>
+    <SIUnit.version>0.0.11-SNAPSHOT</SIUnit.version>
+
+        <!-- Set file encoding -->
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-logging</artifactId>
+      <version>${se-commons.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
+    <!-- MontiCore Dependencies -->
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <version>${monticore.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <version>${monticore.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-groovy</artifactId>
+      <version>${se-commons.version}</version>
+    </dependency>
+
+    <!-- .. Test Libraries ............................................... -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback.version}</version>
+    </dependency>
+  
+    <dependency>
+      <groupId>org.jscience</groupId>
+      <artifactId>jscience</artifactId>
+      <version>${jscience.version}</version>
+    </dependency>
+
+    <!-- .. Languages .................................................... -->
+    
+	  <dependency>
+		  <groupId>de.monticore.lang</groupId>
+		  <artifactId>NumberUnit</artifactId>
+		  <version>${SIUnit.version}</version>
+	  </dependency>
+
+  	<dependency>
+	  	<groupId>de.monticore.lang</groupId>
+		  <artifactId>NumberUnit</artifactId>
+		  <version>${SIUnit.version}</version>
+		  <classifier>${grammars.classifier}</classifier>
+		  <scope>provided</scope>
+	  </dependency>
+    
+    <!-- .. asdf ...-->
+    <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-runtime</artifactId>
+        <version>${antlr.version}</version>
+      </dependency>
+
+    
+    </dependencies>
+
+    <build>
+        <plugins>
+      <!-- Maven Surefire -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
+        </plugin>
+
+      <!-- MontiCore Generation -->
+      <plugin>
+        <groupId>de.monticore.mojo</groupId>
+        <artifactId>monticore-maven-plugin</artifactId>
+        <version>${monticore.plugin}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Other Configuration -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${compiler.plugin}</version>
+        <configuration>
+          <useIncrementalCompilation>true</useIncrementalCompilation>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      
+
+      <!-- Source Jar Configuration -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${source.plugin}</version>
+        <executions>
+          <execution>
+            <id>create source jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+            <configuration>
+              <excludeResources>false</excludeResources>
+              <includes>
+                <include>**/*.java</include>
+                <include>**/*.ftl</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+</plugins>
+    </build>
+  <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/external-dependencies</url>
+        </repository>
+        <snapshotRepository>
+            <id>internal.repo</id>
+            <url>file://${project.build.directory}/external-dependencies</url>
+        </snapshotRepository>
+</distributionManagement>
+    
+</project>
