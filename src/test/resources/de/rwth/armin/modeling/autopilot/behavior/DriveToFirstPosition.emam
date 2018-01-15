@@ -1,0 +1,39 @@
+package de.rwth.armin.modeling.autopilot.behavior;
+
+component DriveToFirstPosition {
+  port
+    in  B                                        isDriveToFirstPosition,
+    in  Q (-oo m : 0.01 m : oo m)                currentPositionX,
+    in  Q (-oo m : 0.01 m : oo m)                currentPositionY,
+
+    in  Z (0 : 100)                              trimmedTrajectoryLength,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryX,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryY,
+
+    out Q (-oo m : 0.01 m : oo m)                desired_direction_x,
+    out Q (-oo m : 0.01 m : oo m)                desired_direction_y,
+    out Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory,
+    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        minVelocity,
+    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        maxVelocity,
+    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        distance;
+
+  implementation Math {
+    desired_direction_x = 0.0;
+    desired_direction_y = 0.0;
+    signedDistanceToTrajectory = 0.0;
+    minVelocity = 0.0;
+    maxVelocity = 13.0;
+    distance = 0.0;
+    if (isDriveToFirstPosition) && (trimmedTrajectoryLength > 0)
+      Q nextX = trimmedTrajectoryX(1,1);
+      Q nextY = trimmedTrajectoryY(1,1);
+      desired_direction_x = nextX - currentPositionX;
+      desired_direction_y = nextY - currentPositionY;
+      Q sqr_dist = desired_direction_x * desired_direction_x + desired_direction_y * desired_direction_y;
+      distance = sqrt( sqr_dist );
+      if (trimmedTrajectoryLength > 1)
+        minVelocity = 1.0;
+      end
+    end
+  }
+}

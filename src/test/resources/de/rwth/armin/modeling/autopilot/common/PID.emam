@@ -20,6 +20,6 @@ component PID {
     end
     control = paramP * error + paramI * acc + paramD * drv;
     prevError = error;
-    isPrevErrorSpecified = 0;
+    isPrevErrorSpecified = 1;
   }
 }

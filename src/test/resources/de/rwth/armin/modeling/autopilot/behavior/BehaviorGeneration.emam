@@ -2,15 +2,15 @@ package de.rwth.armin.modeling.autopilot.behavior;
 
 component BehaviorGeneration {
   port
-    in  Q (-oo m : 0.01 m : oo m)                    current_position_x,
-    in  Q (-oo m : 0.01 m : oo m)                    current_position_y,
+    in  Q (-oo m : 0.01 m : oo m)                    currentPositionX,
+    in  Q (-oo m : 0.01 m : oo m)                    currentPositionY,
 
     in  Q (-oo m : 0.01 m : oo m)                    current_direction_x,
     in  Q (-oo m : 0.01 m : oo m)                    current_direction_y,
 
-    in  Z (0 : 100)                                  planned_trajectory_length,
-    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}          planned_trajectory_x,
-    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}          planned_trajectory_y,
+    in  Z (0 : 100)                                  plannedTrajectoryLength,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}          plannedTrajectoryX,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}          plannedTrajectoryY,
 
     out Q (-oo m : 0.01 m : oo m)                    desired_direction_x,
     out Q (-oo m : 0.01 m : oo m)                    desired_direction_y,
@@ -20,19 +20,19 @@ component BehaviorGeneration {
   instance TrimPath tp;
   instance CalculateMotionCommands cmc;
 
-  connect current_position_x                ->       tp.current_position_x;
-  connect current_position_y                ->       tp.current_position_y;
-  connect planned_trajectory_length         ->       tp.planned_trajectory_length;
-  connect planned_trajectory_x              ->       tp.planned_trajectory_x;
-  connect planned_trajectory_y              ->       tp.planned_trajectory_y;
+  connect currentPositionX                  ->       tp.currentPositionX;
+  connect currentPositionY                  ->       tp.currentPositionY;
+  connect plannedTrajectoryLength           ->       tp.plannedTrajectoryLength;
+  connect plannedTrajectoryX                ->       tp.plannedTrajectoryX;
+  connect plannedTrajectoryY                ->       tp.plannedTrajectoryY;
 
-  connect current_position_x                ->       cmc.current_position_x;
-  connect current_position_y                ->       cmc.current_position_y;
+  connect currentPositionX                  ->       cmc.currentPositionX;
+  connect currentPositionY                  ->       cmc.currentPositionY;
   connect current_direction_x               ->       cmc.current_direction_x;
   connect current_direction_y               ->       cmc.current_direction_y;
-  connect tp.trimmed_trajectory_length      ->       cmc.trimmed_trajectory_length;
-  connect tp.trimmed_trajectory_x           ->       cmc.trimmed_trajectory_x;
-  connect tp.trimmed_trajectory_y           ->       cmc.trimmed_trajectory_y;
+  connect tp.trimmedTrajectoryLength        ->       cmc.trimmedTrajectoryLength;
+  connect tp.trimmedTrajectoryX             ->       cmc.trimmedTrajectoryX;
+  connect tp.trimmedTrajectoryY             ->       cmc.trimmedTrajectoryY;
 
   connect cmc.desired_direction_x           ->       desired_direction_x;
   connect cmc.desired_direction_y           ->       desired_direction_y;

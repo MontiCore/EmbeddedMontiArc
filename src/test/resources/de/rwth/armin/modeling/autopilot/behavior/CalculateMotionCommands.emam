@@ -2,85 +2,68 @@ package de.rwth.armin.modeling.autopilot.behavior;
 
 component CalculateMotionCommands {
   port
-    in  Q (-oo m : 0.01 m : oo m)                current_position_x,
-    in  Q (-oo m : 0.01 m : oo m)                current_position_y,
+    in  Q (-oo m : 0.01 m : oo m)                currentPositionX,
+    in  Q (-oo m : 0.01 m : oo m)                currentPositionY,
 
     in  Q (-oo m : 0.01 m : oo m)                current_direction_x,
     in  Q (-oo m : 0.01 m : oo m)                current_direction_y,
 
-    in  Z (0 : 100)                              trimmed_trajectory_length,
-    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmed_trajectory_x,
-    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmed_trajectory_y,
+    in  Z (0 : 100)                              trimmedTrajectoryLength,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryX,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryY,
 
     out Q (-oo m : 0.01 m : oo m)                desired_direction_x,
     out Q (-oo m : 0.01 m : oo m)                desired_direction_y,
     out Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory,
     out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        desiredVelocity;
 
-  implementation Math {
-    // maybe it can be moved to parameter later
-    Q TOO_FAR_FROM_TRAJECTORY_THRESHOLD = 3.0;
-    Q NUMBER_OF_INTERMEDIATE_INTERPOLATED_POINTS = 10.0;
-    Q TURN_ANGLE_THRESHOLD = 10.0 * M_PI / 180.0; // 10 degrees in radians
-    desired_direction_x = 0.0;
-    desired_direction_y = 0.0;
-    signedDistanceToTrajectory = 0.0;
-    desiredVelocity = 0.0;
-    if trimmed_trajectory_length > 0
-      // assumption: 1st point of trajectory is the projection of current vehicle's position on trajectory
-      Q p1x = trimmed_trajectory_x(1,1);
-      Q p1y = trimmed_trajectory_y(1,1);
-      Q dist_to_trajectory = sqrt( (p1x - current_position_x) ^ 2 + (p1y - current_position_y) ^ 2 );
-      Q is_vehicle_went_off_trajectory = dist_to_trajectory > TOO_FAR_FROM_TRAJECTORY_THRESHOLD;
-      Q is_only_one_position_specified = trimmed_trajectory_length == 1;
-      Q is_drive_to_first_position = is_vehicle_went_off_trajectory || is_only_one_position_specified;
-      if is_drive_to_first_position
-        desired_direction_x = p1x - current_position_x;
-        desired_direction_y = p1y - current_position_y;
-        signedDistanceToTrajectory = 0.0;
-        desiredVelocity = 0.0; // TODO calc. as function of dist_to_trajectory
-      else
-        // vehicle is on track AND there is at least two points in trajectory
-        // TODO calc. signedDistanceToTrajectory
-        // using current position and first trajectory segment
-        // see de.rwth.ryndin.modelling.autopilot.component.common.CalculateSignedDistanceToLineImplementation
-        Q signedDistanceToTrajectory = 0.0;
-        // points for interpolation
-        Q interp_p1x = current_position_x;
-        Q interp_p1y = current_position_y;
-        Q interp_p2x = trimmed_trajectory_x(1,1);
-        Q interp_p2y = trimmed_trajectory_y(1,1);
-        Q interp_p3x = trimmed_trajectory_x(1,2);
-        Q interp_p3y = trimmed_trajectory_y(1,2);
-        if trimmed_trajectory_length > 2
-          // if there is at least 3 points
-          // then do not use the projection point
-          // but use 2nd and 3rd trajectory points instead
-          Q interp_p2x = trimmed_trajectory_x(1,2);
-          Q interp_p2y = trimmed_trajectory_y(1,2);
-          Q interp_p3x = trimmed_trajectory_x(1,3);
-          Q interp_p3y = trimmed_trajectory_y(1,3);
-        end
-        // Bezier interpolation (only the 1st intermediate point is taken)
-        // de.rwth.ryndin.modelling.autopilot.geometry.Interpolation
-        Q t = 1.0 / (NUMBER_OF_INTERMEDIATE_INTERPOLATED_POINTS+1.0);
-        Q a = 1.0 - t;
-        Q b = t;
-        Q k1 = a * a;
-        Q k2 = 2 * a * b;
-        Q k3 = b * b;
-        Q next_x = k1 * interp_p1x + k2 * interp_p2x + k3 * interp_p3x;
-        Q next_y = k1 * interp_p1y + k2 * interp_p2y + k3 * interp_p3y;
-        desired_direction_x = next_x - current_position_x;
-        desired_direction_y = next_y - current_position_y;
-        // TODO go along the trajectory
-        // and calculate the distance d_turn to the next turn.
-        // if angle >= TURN_ANGLE_THRESHOLD then two segments form a turn
-        // then calc. desiredVelocity as function of d_turn
-        // example:
-        // de.rwth.ryndin.modelling.autopilot.component.behavior.Distance2VelocityFunction
-        // or use something similar
-      end
-    end
-  }
+  instance IsDriveToFirstPosition                isDriveToFirstPosition;
+  instance DriveToFirstPosition                  driveToFirstPosition;
+  instance Distance2Velocity                     d2v1;
+  instance FollowTrajectory                      followTrajectory;
+  instance Distance2Velocity                     d2v2;
+  instance Selector                              selector;
+
+  connect currentPositionX                                               ->     isDriveToFirstPosition.currentPositionX;
+  connect currentPositionY                                               ->     isDriveToFirstPosition.currentPositionY;
+  connect trimmedTrajectoryLength                                        ->     isDriveToFirstPosition.trimmedTrajectoryLength;
+  connect trimmedTrajectoryX                                             ->     isDriveToFirstPosition.trimmedTrajectoryX;
+  connect trimmedTrajectoryY                                             ->     isDriveToFirstPosition.trimmedTrajectoryY;
+
+  connect isDriveToFirstPosition.result                                  ->     driveToFirstPosition.isDriveToFirstPosition;
+  connect currentPositionX                                               ->     driveToFirstPosition.currentPositionX;
+  connect currentPositionY                                               ->     driveToFirstPosition.currentPositionY;
+  connect trimmedTrajectoryLength                                        ->     driveToFirstPosition.trimmedTrajectoryLength;
+  connect trimmedTrajectoryX                                             ->     driveToFirstPosition.trimmedTrajectoryX;
+  connect trimmedTrajectoryY                                             ->     driveToFirstPosition.trimmedTrajectoryY;
+                                                                         
+  connect driveToFirstPosition.distance                                  ->     d2v1.distance;
+  connect driveToFirstPosition.minVelocity                               ->     d2v1.minVelocity;
+  connect driveToFirstPosition.maxVelocity                               ->     d2v1.maxVelocity;
+                                                                         
+  connect isDriveToFirstPosition.result                                  ->     followTrajectory.isDriveToFirstPosition;
+  connect currentPositionX                                               ->     followTrajectory.currentPositionX;
+  connect currentPositionY                                               ->     followTrajectory.currentPositionY;
+  connect trimmedTrajectoryLength                                        ->     followTrajectory.trimmedTrajectoryLength;
+  connect trimmedTrajectoryX                                             ->     followTrajectory.trimmedTrajectoryX;
+  connect trimmedTrajectoryY                                             ->     followTrajectory.trimmedTrajectoryY;
+
+  connect followTrajectory.distance                                      ->     d2v2.distance;
+  connect followTrajectory.minVelocity                                   ->     d2v2.minVelocity;
+  connect followTrajectory.maxVelocity                                   ->     d2v2.maxVelocity;
+
+  connect isDriveToFirstPosition.result                                  ->     selector.isDriveToFirstPosition;
+  connect driveToFirstPosition.desired_direction_x                       ->     selector.desiredDirectionX1;
+  connect driveToFirstPosition.desired_direction_y                       ->     selector.desiredDirectionY1;
+  connect driveToFirstPosition.signedDistanceToTrajectory                ->     selector.signedDistanceToTrajectory1;
+  connect d2v1.velocity                                                  ->     selector.desiredVelocity1;
+  connect followTrajectory.desired_direction_x                           ->     selector.desiredDirectionX2;
+  connect followTrajectory.desired_direction_y                           ->     selector.desiredDirectionY2;
+  connect followTrajectory.signedDistanceToTrajectory                    ->     selector.signedDistanceToTrajectory2;
+  connect d2v2.velocity                                                  ->     selector.desiredVelocity2;
+
+  connect selector.desiredDirectionX                                     ->     desired_direction_x;
+  connect selector.desiredDirectionY                                     ->     desired_direction_y;
+  connect selector.signedDistanceToTrajectory                            ->     signedDistanceToTrajectory;
+  connect selector.desiredVelocity                                       ->     desiredVelocity;
 }

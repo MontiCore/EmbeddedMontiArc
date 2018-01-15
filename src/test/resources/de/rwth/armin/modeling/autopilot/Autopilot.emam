@@ -56,11 +56,11 @@ component Autopilot {
 
     connect compass                                          ->      c2cd.compass;
 
-    connect x                                                ->      behaviorGeneration.current_position_x;
-    connect y                                                ->      behaviorGeneration.current_position_y;
-    connect trajectory_length                                ->      behaviorGeneration.planned_trajectory_length;
-    connect trajectory_x                                     ->      behaviorGeneration.planned_trajectory_x;
-    connect trajectory_y                                     ->      behaviorGeneration.planned_trajectory_y;
+    connect x                                                ->      behaviorGeneration.currentPositionX;
+    connect y                                                ->      behaviorGeneration.currentPositionY;
+    connect trajectory_length                                ->      behaviorGeneration.plannedTrajectoryLength;
+    connect trajectory_x                                     ->      behaviorGeneration.plannedTrajectoryX;
+    connect trajectory_y                                     ->      behaviorGeneration.plannedTrajectoryY;
     connect c2cd.current_direction_x                         ->      behaviorGeneration.current_direction_x;
     connect c2cd.current_direction_x                         ->      behaviorGeneration.current_direction_x;
 

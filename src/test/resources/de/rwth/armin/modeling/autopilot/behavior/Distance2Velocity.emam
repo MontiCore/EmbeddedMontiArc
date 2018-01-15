@@ -1,0 +1,30 @@
+package de.rwth.armin.modeling.autopilot.behavior;
+
+import de.rwth.armin.modeling.autopilot.common.*;
+
+component Distance2Velocity {
+  port
+    in  Q (0.0 m : 0.01 m : oo m)               distance,
+    in  Q (0.0 m/s : 0.01 m/s : 13.0 m/s)       minVelocity,
+    in  Q (0.0 m/s : 0.01 m/s : 13.0 m/s)       maxVelocity,
+    out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)       velocity;
+
+  implementation Math {
+    // exponent
+    static Q D1 = 1.0;
+    static Q V1 = 1.0;
+    static Q D2 = 100.0;
+    static Q V2 = 13.0;
+    static Q COEF_K = log( (V1 / V2) ) / (D2 - D1);
+    Q v = 0.0;
+    if distance > D1
+      v = V1 * exp(   -COEF_K * (distance - D1)   );
+    end
+    if (v < minVelocity)
+      v = minVelocity;
+    elseif (v > maxVelocity)
+      v = maxVelocity;
+    end
+    velocity = v;
+  }
+}
