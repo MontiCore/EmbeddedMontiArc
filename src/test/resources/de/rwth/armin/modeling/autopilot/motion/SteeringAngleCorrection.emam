@@ -8,7 +8,7 @@ component SteeringAngleCorrection {
   implementation Math {
     // TODO convert into parameter when parameters start working (bug #28)
     static Q MAX_STEERING_ANGLE = 0.785;
-    static Q EPSILON = 0.05;
+    static Q EPSILON = 0.01;
     // exponent params
     static Q X1 = 0.1;
     static Q Y1 = 0.01 * MAX_STEERING_ANGLE;
