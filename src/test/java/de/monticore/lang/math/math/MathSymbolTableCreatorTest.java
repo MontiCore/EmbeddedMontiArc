@@ -213,10 +213,18 @@ public class MathSymbolTableCreatorTest {
         assertEquals(2, matrixValueExp.getVectors().size());
         assertEquals(2, matrixValueExp.getVectors().get(0).getMathMatrixAccessSymbols().size());
         assertEquals(2, matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().size());
-        MathExpressionSymbol expressionSymbol = matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().get(0).getMathExpressionSymbol().get();
+        MathExpressionSymbol expressionSymbol = matrixValueExp.getVectors().get(0).getMathMatrixAccessSymbols().get(0).getMathExpressionSymbol().get();
         assertTrue(expressionSymbol.isValueExpression());
         MathNumberExpressionSymbol value = (MathNumberExpressionSymbol) expressionSymbol;
-        assertTrue(value.getValue().isComplex());
+        testJSValue(value.getValue(), "3/1", "5/1");
+        value = (MathNumberExpressionSymbol) matrixValueExp.getVectors().get(0).getMathMatrixAccessSymbols().get(1).getMathExpressionSymbol().get();
+        testJSValue(value.getValue(), "-6/1", "-5/1");
+        value = (MathNumberExpressionSymbol) matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().get(0).getMathExpressionSymbol().get();
+        testJSValue(value.getValue(), "-3/1", "2/1");
+        value = (MathNumberExpressionSymbol) matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().get(1).getMathExpressionSymbol().get();
+        testJSValue(value.getValue(), "3/1", "-8/1");
+
+
         // assertTrue(( matrix.getValue()).getElement(0, 0) instanceof JSValue);
         /*assertEquals(((JSValue) ((JSMatrix) matrix.getValue()).getElement(0, 0)).getRealNumber(), Rational.valueOf(3, 1));
         assertEquals(((JSValue) ((JSMatrix) matrix.getValue()).getElement(0, 0)).getImagNumber().get(), Rational.valueOf(5, 1));
