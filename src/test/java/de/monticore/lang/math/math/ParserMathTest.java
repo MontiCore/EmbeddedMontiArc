@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.math.math._ast.ASTMathCompilationUnit;
-import de.monticore.lang.math.math._parser.MathParser;
+import de.monticore.lang.math._ast.ASTMathCompilationUnit;
+import de.monticore.lang.math._parser.MathParser;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import org.junit.BeforeClass;

@@ -17,13 +17,15 @@
  * ******************************************************************************
  */
 
-package de.monticore.lang.math;
+
+/// NOTE: all vectors are row vectors to be compatible to Matlab and Octave
+package de.monticore.lang;
 
 grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions , de.monticore.CommonExpressions,
-        de.monticore.common.Common, de.monticore.lang.math.Matrix {
+        de.monticore.common.Common, de.monticore.lang.Matrix {
 
     MathCompilationUnit =
-        ("package" QualifiedName ";")?
+        ("package" package:QualifiedName ";")?
         (ImportStatement)* // to import later on other scripts/functions
         MathScript;
 
@@ -97,7 +99,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
 // R^2 for vector or R^{3,4} for Matrix
      Dimension =
-         	"^" ("{" (Expression || ",")+ "}" | Expression);
+         	"^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
 
      MathDeclarationExpression implements Expression<50> =
         type:AssignmentType Name;

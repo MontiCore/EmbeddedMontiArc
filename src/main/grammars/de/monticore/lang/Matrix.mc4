@@ -1,6 +1,6 @@
-package de.monticore.lang.math;
+package de.monticore.lang;
 
-grammar Matrix extends de.monticore.ExpressionsBasis  {
+component grammar Matrix extends de.monticore.ExpressionsBasis  {
    MathMatrixValueExplicitExpression implements Expression<1000> =
       "[" (MathMatrixAccessExpression || ";")* "]"
     ;
