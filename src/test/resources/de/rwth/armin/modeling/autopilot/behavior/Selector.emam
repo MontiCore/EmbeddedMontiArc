@@ -2,13 +2,11 @@ package de.rwth.armin.modeling.autopilot.behavior;
 
 component Selector {
   port
-    in  B                                     isDriveToFirstPosition,
-
+    in  B                                        isDriveToFirstPosition,
     in  Q (-oo m : 0.01 m : oo m)                desiredDirectionX1,
     in  Q (-oo m : 0.01 m : oo m)                desiredDirectionY1,
     in  Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory1,
     in  Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        desiredVelocity1,
-
     in  Q (-oo m : 0.01 m : oo m)                desiredDirectionX2,
     in  Q (-oo m : 0.01 m : oo m)                desiredDirectionY2,
     in  Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory2,
@@ -20,7 +18,7 @@ component Selector {
     out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        desiredVelocity;
 
   implementation Math {
-    if isDriveToFirstPosition
+    if (isDriveToFirstPosition)
       desiredDirectionX = desiredDirectionX1;
       desiredDirectionY = desiredDirectionY1;
       signedDistanceToTrajectory = signedDistanceToTrajectory1;

@@ -16,10 +16,8 @@ component IsDriveToFirstPosition {
     Q TOO_FAR_FROM_TRAJECTORY_THRESHOLD = 3.0;
     result = 1;
     if trimmedTrajectoryLength > 0
-      Q p1x = trimmedTrajectoryX(1,1);
-      Q p1y = trimmedTrajectoryY(1,1);
-      Q dx = p1x - currentPositionX;
-      Q dy = p1y - currentPositionY;
+      Q dx = trimmedTrajectoryX(1,1) - currentPositionX;
+      Q dy = trimmedTrajectoryY(1,1) - currentPositionY;
       Q sqr_dist = dx*dx + dy*dy;
       Q dist_to_trajectory = sqrt( sqr_dist );
       Q is_vehicle_went_off_trajectory = dist_to_trajectory > TOO_FAR_FROM_TRAJECTORY_THRESHOLD;

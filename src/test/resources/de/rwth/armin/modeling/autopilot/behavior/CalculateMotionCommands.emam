@@ -5,15 +5,15 @@ component CalculateMotionCommands {
     in  Q (-oo m : 0.01 m : oo m)                currentPositionX,
     in  Q (-oo m : 0.01 m : oo m)                currentPositionY,
 
-    in  Q (-oo m : 0.01 m : oo m)                current_direction_x,
-    in  Q (-oo m : 0.01 m : oo m)                current_direction_y,
+    in  Q (-oo m : 0.01 m : oo m)                currentDirectionX,
+    in  Q (-oo m : 0.01 m : oo m)                currentDirectionY,
 
     in  Z (0 : 100)                              trimmedTrajectoryLength,
     in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryX,
     in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryY,
 
-    out Q (-oo m : 0.01 m : oo m)                desired_direction_x,
-    out Q (-oo m : 0.01 m : oo m)                desired_direction_y,
+    out Q (-oo m : 0.01 m : oo m)                desiredDirectionX,
+    out Q (-oo m : 0.01 m : oo m)                desiredDirectionY,
     out Q (-oo m : 0.01 m : oo m)                signedDistanceToTrajectory,
     out Q (0.0 m/s : 0.01 m/s : 13.0 m/s)        desiredVelocity;
 
@@ -53,17 +53,17 @@ component CalculateMotionCommands {
   connect followTrajectory.maxVelocity                                   ->     d2v2.maxVelocity;
 
   connect isDriveToFirstPosition.result                                  ->     selector.isDriveToFirstPosition;
-  connect driveToFirstPosition.desired_direction_x                       ->     selector.desiredDirectionX1;
-  connect driveToFirstPosition.desired_direction_y                       ->     selector.desiredDirectionY1;
+  connect driveToFirstPosition.desiredDirectionX                         ->     selector.desiredDirectionX1;
+  connect driveToFirstPosition.desiredDirectionY                         ->     selector.desiredDirectionY1;
   connect driveToFirstPosition.signedDistanceToTrajectory                ->     selector.signedDistanceToTrajectory1;
   connect d2v1.velocity                                                  ->     selector.desiredVelocity1;
-  connect followTrajectory.desired_direction_x                           ->     selector.desiredDirectionX2;
-  connect followTrajectory.desired_direction_y                           ->     selector.desiredDirectionY2;
+  connect followTrajectory.desiredDirectionX                             ->     selector.desiredDirectionX2;
+  connect followTrajectory.desiredDirectionY                             ->     selector.desiredDirectionY2;
   connect followTrajectory.signedDistanceToTrajectory                    ->     selector.signedDistanceToTrajectory2;
   connect d2v2.velocity                                                  ->     selector.desiredVelocity2;
 
-  connect selector.desiredDirectionX                                     ->     desired_direction_x;
-  connect selector.desiredDirectionY                                     ->     desired_direction_y;
+  connect selector.desiredDirectionX                                     ->     desiredDirectionX;
+  connect selector.desiredDirectionY                                     ->     desiredDirectionY;
   connect selector.signedDistanceToTrajectory                            ->     signedDistanceToTrajectory;
   connect selector.desiredVelocity                                       ->     desiredVelocity;
 }

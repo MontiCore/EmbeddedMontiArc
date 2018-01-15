@@ -50,9 +50,9 @@ component Autopilot {
     out Q (-0.785 : 0.001 : 0.785)               steering,
     out Q (0.0 : 0.001 : 3.0)                    brakes;
 
-    instance Compass2CurrentDirection c2cd;
-    instance BehaviorGeneration behaviorGeneration;
-    instance MotionPlanning motionPlanning;
+    instance Compass2CurrentDirection            c2cd;
+    instance BehaviorGeneration                  behaviorGeneration;
+    instance MotionPlanning                      motionPlanning;
 
     connect compass                                          ->      c2cd.compass;
 
@@ -61,14 +61,14 @@ component Autopilot {
     connect trajectory_length                                ->      behaviorGeneration.plannedTrajectoryLength;
     connect trajectory_x                                     ->      behaviorGeneration.plannedTrajectoryX;
     connect trajectory_y                                     ->      behaviorGeneration.plannedTrajectoryY;
-    connect c2cd.current_direction_x                         ->      behaviorGeneration.current_direction_x;
-    connect c2cd.current_direction_x                         ->      behaviorGeneration.current_direction_x;
+    connect c2cd.currentDirectionX                           ->      behaviorGeneration.currentDirectionX;
+    connect c2cd.currentDirectionY                           ->      behaviorGeneration.currentDirectionY;
 
     connect currentVelocity                                  ->      motionPlanning.currentVelocity;
-    connect c2cd.current_direction_x                         ->      motionPlanning.currentDirectionX;
-    connect c2cd.current_direction_x                         ->      motionPlanning.currentDirectionY;
-    connect behaviorGeneration.desired_direction_x           ->      motionPlanning.desiredDirectionX;
-    connect behaviorGeneration.desired_direction_y           ->      motionPlanning.desiredDirectionY;
+    connect c2cd.currentDirectionX                           ->      motionPlanning.currentDirectionX;
+    connect c2cd.currentDirectionY                           ->      motionPlanning.currentDirectionY;
+    connect behaviorGeneration.desiredDirectionX             ->      motionPlanning.desiredDirectionX;
+    connect behaviorGeneration.desiredDirectionY             ->      motionPlanning.desiredDirectionY;
     connect behaviorGeneration.signedDistanceToTrajectory    ->      motionPlanning.signedDistanceToTrajectory;
     connect behaviorGeneration.desiredVelocity               ->      motionPlanning.desiredVelocity;
 

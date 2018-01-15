@@ -6,7 +6,7 @@ import de.rwth.armin.modeling.autopilot.common.*;
 // such that the first segment
 // is the closest to the current vehicle's position
 // and the first point is the projection
-// of the current position to the planned path
+// of the current position onto the planned path
 component TrimPath {
   port
     in  Q (-oo m : 0.01 m : oo m)                currentPositionX,
@@ -14,6 +14,7 @@ component TrimPath {
     in  Z (0 : 100)                              plannedTrajectoryLength,
     in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      plannedTrajectoryX,
     in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      plannedTrajectoryY,
+
     out Z (0 : 100)                              trimmedTrajectoryLength,
     out Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryX,
     out Q (-oo m : 0.01 m : oo m) ^ {1,100}      trimmedTrajectoryY;
@@ -26,7 +27,7 @@ component TrimPath {
       trimmedTrajectoryY(1,1) = plannedTrajectoryY(1,1);
     elseif plannedTrajectoryLength > 1
       Q closestSegmentIndex = -1;
-      Q closestSegmentDistance = -1;
+      Q closestSegmentDistance = -1.0;
       Q lastSegmentIndex = plannedTrajectoryLength - 1;
       for i = 1:lastSegmentIndex
         Q p1x = plannedTrajectoryX(1,i);
@@ -41,8 +42,10 @@ component TrimPath {
         Q k = ( vx*v12x + vy*v12y ) / ( v12x*v12x + v12y*v12y );
         Q projection_x = p1x + k * v12x;
         Q projection_y = p1y + k * v12y;
-        if ((p1x-projection_x) * (p2x-projection_x) <= 0) && ((p1y-projection_y) * (p2y-projection_y) <= 0)
-          Q d_proj = sqrt( (currentPositionX-projection_x)^2 + (currentPositionY-projection_y)^2 );
+        Q is_projection_on_segment = ((p1x-projection_x) * (p2x-projection_x) <= 0) && ((p1y-projection_y) * (p2y-projection_y) <= 0);
+        if (is_projection_on_segment)
+          Q d_proj_sqr = (currentPositionX-projection_x)*(currentPositionX-projection_x) + (currentPositionY-projection_y)*(currentPositionY-projection_y);
+          Q d_proj = sqrt( d_proj_sqr );
           if (closestSegmentDistance < 0) || (d_proj < closestSegmentDistance)
             closestSegmentIndex = i;
             closestSegmentDistance = d_proj;
@@ -50,8 +53,10 @@ component TrimPath {
             trimmedTrajectoryY(1,1) = projection_y;
           end
         else
-          Q d1 = sqrt( (currentPositionX-p1x)^2 + (currentPositionY-p1y)^2 );
-          Q d2 = sqrt( (currentPositionX-p2x)^2 + (currentPositionY-p2y)^2 );
+          Q d1_sqr = (currentPositionX-p1x)*(currentPositionX-p1x) + (currentPositionY-p1y)*(currentPositionY-p1y);
+          Q d1 = sqrt( d1_sqr );
+          Q d2_sqr = (currentPositionX-p2x)*(currentPositionX-p2x) + (currentPositionY-p2y)*(currentPositionY-p2y);
+          Q d2 = sqrt( d2_sqr );
           Q d_min = min(d1,d2);
           if (closestSegmentDistance < 0) || (d_min < closestSegmentDistance)
             closestSegmentIndex = i;
