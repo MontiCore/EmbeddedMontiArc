@@ -25,7 +25,11 @@ package de.monticore.lang.math.math;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.math.math._symboltable.*;
+import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -186,9 +190,8 @@ public class MathSymbolTableCreatorTest {
     /**
      * checks the symtab for a complex matrix
      */
-    @Ignore
     @Test
-    public void test5() {
+    public void testComplexMatrix() {
         Scope symTab = createSymTab("src/test/resources");
 
         //C(0:10)^{2,2} matrix = [3+5i -6-5i; -3+2i 3-8i];
@@ -196,12 +199,23 @@ public class MathSymbolTableCreatorTest {
                 ("matrix.ComplexNumber.matrix", MathValueSymbol.KIND).orElse(null);
         assertNotNull(matrix);
         //check the matrix dimensions
-        /*assertEquals(2, matrix.getDimensions().size());
-        assertEquals(2, (int) matrix.getDimensions().get(0));
-        assertEquals(2, (int) matrix.getDimensions().get(1));
+        assertEquals(2, matrix.getType().getDimensions().size());
+        assertEquals("2",  matrix.getType().getDimensions().get(0).getTextualRepresentation());
+        assertEquals("2",  matrix.getType().getDimensions().get(1).getTextualRepresentation());
         //checks the value matrix(0,0) = 3+5i
-        assertTrue(((JSMatrix) matrix.getValue()).getElement(0, 0) instanceof JSValue);
-        assertEquals(((JSValue) ((JSMatrix) matrix.getValue()).getElement(0, 0)).getRealNumber(), Rational.valueOf(3, 1));
+        assertTrue(matrix.getValue().isMatrixExpression());
+        MathMatrixExpressionSymbol matrixExpressionSymbol= (MathMatrixExpressionSymbol) matrix.getValue();
+        assertTrue(matrixExpressionSymbol.isValueExpression());
+        MathMatrixArithmeticValueSymbol matrixValueExp= (MathMatrixArithmeticValueSymbol) matrixExpressionSymbol;
+        assertEquals(2,matrixValueExp.getVectors().size());
+        assertEquals(2,matrixValueExp.getVectors().get(0).getMathMatrixAccessSymbols().size());
+        assertEquals(2,matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().size());
+        MathExpressionSymbol expressionSymbol=matrixValueExp.getVectors().get(1).getMathMatrixAccessSymbols().get(0).getMathExpressionSymbol().get();
+        assertTrue(expressionSymbol.isValueExpression());
+        MathNumberExpressionSymbol value= (MathNumberExpressionSymbol) expressionSymbol;
+        assertTrue(value.getValue().isComplex());
+        // assertTrue(( matrix.getValue()).getElement(0, 0) instanceof JSValue);
+        /*assertEquals(((JSValue) ((JSMatrix) matrix.getValue()).getElement(0, 0)).getRealNumber(), Rational.valueOf(3, 1));
         assertEquals(((JSValue) ((JSMatrix) matrix.getValue()).getElement(0, 0)).getImagNumber().get(), Rational.valueOf(5, 1));
 */
     }
@@ -224,6 +238,19 @@ public class MathSymbolTableCreatorTest {
         //checks i'
         assertEquals(((MathExpression) ((LogicalExpression) matrix.getValue()).getOperands().get(1).getValue()).getOp(), Operator.Trans);
     */}
+
+    @Test
+    public void testComplexAssignmentTest(){
+        Scope symTab = createSymTab("src/test/resources");
+        final MathValueSymbol complexNumber= symTab.<MathValueSymbol>resolve
+                ("symtab.ComplexAssignmentTest.A", MathValueSymbol.KIND).orElse(null);
+        assertNotNull(complexNumber);
+        System.out.println(complexNumber.getValue().getTextualRepresentation());
+        System.out.println(complexNumber.getTextualRepresentation());
+        System.out.println(complexNumber.getType().getTextualRepresentation());
+        assertTrue(complexNumber.getType().isComplexType());
+    }
+
 
     protected static Scope createSymTab(String... modelPath) {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();

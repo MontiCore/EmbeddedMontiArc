@@ -161,6 +161,10 @@ public class JSValue implements MathValue {
         this.realNumber = number;
     }
 
+    public boolean isComplex() {
+        return imagNumber.isPresent();
+    }
+
     /**
      * check if the unit is incompatible
      *

@@ -165,16 +165,22 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathNumberExpression astMathNumberExpression) {
         MathNumberExpressionSymbol symbol = new MathNumberExpressionSymbol();
         JSValue jsValue = new JSValue();
-        if (astMathNumberExpression.getNumber().getUnitNumber().get().getNumber().isPresent())
-            jsValue.setRealNumber(astMathNumberExpression.getNumber().getUnitNumber().get().getNumber().get());
-        if (astMathNumberExpression.getNumber().getUnitNumber().get().getUnit().isPresent())
-            jsValue.setUnit(astMathNumberExpression.getNumber().getUnitNumber().get().getUnit().get());
+        if (astMathNumberExpression.getNumber().unitNumberIsPresent()) {
+            handleUnitNumber(astMathNumberExpression, jsValue);
+        }
         if (astMathNumberExpression.getNumber().complexNumberIsPresent()) {
             jsValue.setRealNumber(astMathNumberExpression.getNumber().getComplexNumber().get().getReal());
             jsValue.setImagNumber(astMathNumberExpression.getNumber().getComplexNumber().get().getImg());
         }
         symbol.setValue(jsValue);
         addToScopeAndLinkWithNode(symbol, astMathNumberExpression);
+    }
+
+    private void handleUnitNumber(ASTMathNumberExpression astMathNumberExpression, JSValue jsValue) {
+        if (astMathNumberExpression.getNumber().getUnitNumber().get().getNumber().isPresent())
+            jsValue.setRealNumber(astMathNumberExpression.getNumber().getUnitNumber().get().getNumber().get());
+        if (astMathNumberExpression.getNumber().getUnitNumber().get().getUnit().isPresent())
+            jsValue.setUnit(astMathNumberExpression.getNumber().getUnitNumber().get().getUnit().get());
     }
 
     public void endVisit(final ASTMathNameExpression astMathNameExpression) {
@@ -470,7 +476,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
 
-    public void endVisit(final ASTMathBooleanOrExpression astMathBooleanOrExpression){
+    public void endVisit(final ASTMathBooleanOrExpression astMathBooleanOrExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathBooleanOrExpression.
@@ -480,7 +486,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astMathBooleanOrExpression);
     }
 
-    public void endVisit(final ASTMathBooleanAndExpression astMathBooleanAndExpression){
+    public void endVisit(final ASTMathBooleanAndExpression astMathBooleanAndExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathBooleanAndExpression.
