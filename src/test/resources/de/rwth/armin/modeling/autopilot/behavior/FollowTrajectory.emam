@@ -20,7 +20,7 @@ component FollowTrajectory {
     // change to params later
     static Q NUMBER_OF_INTERMEDIATE_INTERPOLATION_POINTS = 10.0;
     static Q TURN_ANGLE_THRESHOLD = 10.0 * M_PI / 180.0; // 10 degrees
-    static Q EPSILON = 0.000001;
+    static Q EPSILON = 0.00001;
     desiredDirectionX = 0.0;
     desiredDirectionY = 0.0;
     signedDistanceToTrajectory = 0.0;
@@ -39,9 +39,9 @@ component FollowTrajectory {
       Q v12x = p2x - p1x;
       Q v12y = p2y - p1y;
       Q v12_sqr_norm = v12x*v12x + v12y*v12y;
-      if (v12_sqr_norm > EPSILON)
+      Q v12_norm = sqrt(v12_sqr_norm);
+      if (v12_norm > EPSILON)
         // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line#Line_defined_by_two_points
-        Q v12_norm = sqrt(v12_sqr_norm);
         signedDistanceToTrajectory = -(v12y*currentPositionX - v12x*currentPositionY + p2x*p1y - p1x*p2y) / v12_norm;
       end
       // DESIRED DIRECTION
@@ -86,10 +86,13 @@ component FollowTrajectory {
             Q vect1y = pt2y - pt1y;
             Q vect2x = pt3x - pt2x;
             Q vect2y = pt3y - pt2y;
+            Q alpha = 0.0;
             Q vect1_norm = sqrt( vect1x*vect1x + vect1y*vect1y );
             Q vect2_norm = sqrt( vect2x*vect2x + vect2y*vect2y );
-            Q cos_alpha = (vect1x*vect2x + vect1y*vect2y) / vect1_norm / vect2_norm;
-            Q alpha = acos(cos_alpha);
+            if ((vect1_norm > EPSILON) && (vect2_norm > EPSILON))
+              Q cos_alpha = (vect1x*vect2x + vect1y*vect2y) / vect1_norm / vect2_norm;
+              alpha = acos(cos_alpha);
+            end
             if (alpha > TURN_ANGLE_THRESHOLD)
               is_go_on = 0;
             else
