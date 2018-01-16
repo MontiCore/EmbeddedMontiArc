@@ -14,7 +14,7 @@ public class NoMultipleSimulationEntries implements SimLangASTSimulationCoCo {
   
   @Override
   public void check(ASTSimulation sim) {
-    System.out.println("[CoCo] NoMultiplesimlangEntries...");
+    System.out.println("[CoCo] NoMultipleSimlulationEntries...");
     List<simlang._ast.ASTSimulationRenderFrequency> simRenderFreq = sim.getSimulationRenderFrequencys();
     List<simlang._ast.ASTSimulationLoopFrequency> simLoopFreq = sim.getSimulationLoopFrequencys();
     List<simlang._ast.ASTSimulationDuration> simDuration = sim.getSimulationDurations();
@@ -47,10 +47,10 @@ public class NoMultipleSimulationEntries implements SimLangASTSimulationCoCo {
        timeout.size() > 1 |
        pedestrianDensity.size() > 1
     ) {
-      Log.error("Semantic Error: A simlang attribute was defined more than once.");
+      Log.error("Semantic Error: A simulation attribute was defined more than once.");
     }
     
-    System.out.println("[Done] NoMultiplesimlangEntries");
+    System.out.println("[Done] NoMultipleSimulationEntries");
   }
   
 }
