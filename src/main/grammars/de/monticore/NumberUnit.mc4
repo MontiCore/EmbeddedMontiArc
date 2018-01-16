@@ -13,10 +13,10 @@ package de.monticore;
  *
  ***************************************************************************************/
 
-grammar NumberUnit extends /*de.monticore.MCLiterals*/ de.monticore.literals.Literals {
+grammar NumberUnit extends de.monticore.literals.Literals {
    NumberWithUnit =
-      num:NumberWithInf un:Unit? |
-      cn:ComplexNumber
+      cn:ComplexNumber |
+      num:NumberWithInf un:Unit?
    ;
 
    NumberWithInf =

@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.math.math;
 
+import static de.monticore.lang.math.math.PrintAST.printAST;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -52,12 +53,11 @@ public class ParserMathTest {
     
     // see bug: https://sselab.de/lab2/private/trac/MontiCore/ticket/2084
     private static List<String> expectedParseErrorModels = Arrays.asList(
-            "src/test/resources/Calculations/conditions.m",
-            "src/test/resources/Calculations/example2.m",
+            /*"src/test/resources/Calculations/example2.m",
             "src/test/resources/Calculations/SteeringAngleCalculator.m",
             "src/test/resources/forif/example1.m",
             "src/test/resources/Generation/ForLoop2.m",
-            "src/test/resources/Generation/If3.m",
+            "src/test/resources/Generation/If3.m",*/
             "src/test/resources/symtab/InvalidRange.m")
             .stream().map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());
@@ -74,11 +74,12 @@ public class ParserMathTest {
         test("m");
     }
 
-    @Ignore("test for sselab ticket: https://sselab.de/lab2/private/trac/MontiCore/ticket/2084")
+    //@Ignore("test for sselab ticket: https://sselab.de/lab2/private/trac/MontiCore/ticket/2084")
     @Test
     public void testFor2() throws IOException {
         MathParser parser = new MathParser();
-        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/Generation/ForLoop2.m");
+        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/Calculations/conditions.m");
+        System.out.println(printAST(streamCompilationUnit.get()));
     }
 
     private void test(String fileEnding) throws IOException {

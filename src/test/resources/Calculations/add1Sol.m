@@ -20,7 +20,8 @@
 package calculations;
 
 script add1Sol
-    Rational[2,2] A = [1 2 ;5 4 ] ;
+    Rational[2,2]
+    A = [1 2 ;5 4 ] ;
     Rational[3,3] B = [30 36 42 ;66 81 96 ;102 126 150 ] ;
     [4 6 ]
     [17 9 ;33 6 ]

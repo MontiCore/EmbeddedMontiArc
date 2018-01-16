@@ -20,7 +20,8 @@
  */
 package de.monticore.lang.math._symboltable;
 
-import de.monticore.assignmentexpressions._ast.ASTAssignmentExpression;
+import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationExpression;
 import de.monticore.lang.math._ast.ASTMathCompilationUnit;
@@ -52,11 +53,6 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         super(resolvingConfig, scopeStack);
     }
 
-    /**
-     * create the scope for the whole math program {@link ASTMathScript}
-     *
-     * @param compilationUnit consists of mathstatements and loading appropriate packages
-     */
     @Override
     public void visit(final ASTMathCompilationUnit compilationUnit) {
         Log.debug("Building Symboltable for Script: " + compilationUnit.getMathScript().getName(),
@@ -83,47 +79,103 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
     public void visit(ASTMathAssignmentDeclarationExpression node) {
-        createMatrixsymbol(node.getName(), node.getType(), node.get_SourcePositionStart());
+        createMatrixSymbol(node.getName(), node.getType(), node.get_SourcePositionStart());
     }
 
     @Override
     public void visit(ASTMathDeclarationExpression node) {
-        createMatrixsymbol(node.getName(), node.getType(), node.get_SourcePositionStart());
+        createMatrixSymbol(node.getName(), node.getType(), node.get_SourcePositionStart());
 
     }
 
-    protected void createMatrixsymbol(String name, ASTAssignmentType type, SourcePosition pos) {
+    protected void createMatrixSymbol(String name, ASTAssignmentType type, SourcePosition pos) {
         MatrixSymbol sym = new MatrixSymbol(name);
+
+        //Creating the Dimensions
         if (type.dimIsPresent()) {
             if (type.getDim().vecDimIsPresent()) {
+                Optional<ASTNumberWithUnit> number = evaluate(type.getDim().getVecDim()); // evaluate(type.getDim().getVecDim());
                 // calculate dim
-                Optional<ASTNumberWithUnit> number = evaluate(type.getDim().getVecDim());
-                if (!number.isPresent()) {
-                    Log.error("0xMATH10: Could not evaluate dimension for Math Variable Decleration", pos);
-                }
-                if (!number.get().getUnit().isCompatible(Unit.ONE)) { // dimensionless
-                    Log.error("0xMATH11: A dimension is a natural number therefore has no unit", pos);
-                }
-                if (!number.get().getNumber().isPresent()) {
-                    Log.error("0xMATH12: dimension is not allowed to be plus or minus infinity or to be a complex number", pos);
-                }
-                double n = number.get().getNumber().get();
-                double n2 = Math.round(n);
-                if (Math.abs(n2 - n) > 0.000001) { // computer does not work correctly on double
-                    Log.error("0xMATH13: dimension is not a integer number", pos);
-                }
-                int i = (int)n2;
-                if (i < 1) {
-                    Log.error("0xMath14: dimension must be greater or equals to one", pos);
-                }
-                sym.setCol(i);
+                sym.setCol(testDimension(number, pos));
                 sym.setRow(1); // have a row vector
+            } else {
+                if (type.getDim().getMatrixDim().size() > 2) {
+                    Log.error("0xMATH15: Dimension can just contains maximal two numbers", pos);
+                }
+                if (type.getDim().getMatrixDim().isEmpty()) {
+                    Log.error("0xMATH16: Dimension cannot be empty", pos);
+                }
+                Optional<ASTNumberWithUnit> numberCol = evaluate(type.getDim().getMatrixDim(0)); // evaluate(type.getDim().getMatrixDim(0));
+                // calculate dim
+                sym.setCol(testDimension(numberCol, pos));
+
+                Optional<ASTNumberWithUnit> numberRow = evaluate(type.getDim().getMatrixDim(1)); // evaluate(type.getDim().getMatrixDim(1));
+                // calculate dim
+                sym.setCol(testDimension(numberRow, pos));
+
             }
-        }
-        else {
+        }else {
             // default like `Z` which is the same as `Z^{1,1}`
             sym.setRow(1);
             sym.setCol(1);
         }
+
+        //Creating the Min Max and Steps
+        //ElementType with ranges
+        if (type.getElementType().rangesIsPresent()) {
+
+            Optional<ASTNumberWithUnit> numberMin = evaluate(type.getElementType().getRanges().getMin());
+            sym.setMin(testElementType(numberMin, pos));
+            Optional<ASTNumberWithUnit> numberMax = evaluate(type.getElementType().getRanges().getMax());
+            sym.setMin(testElementType(numberMax, pos));
+            if (testElementType(numberMin, pos).get() > testElementType(numberMax, pos).get()) {
+                Log.error("0xMATH17: Min cannot be bigger than Max", pos);
+            }
+
+            if (type.getElementType().getRanges().stepIsPresent()) {
+                Optional<ASTNumberWithUnit> numberStep = evaluate(type.getElementType().getRanges().getStep());
+                sym.setMin(testElementType(numberStep, pos));
+                if (testElementType(numberMax, pos).get() - testElementType(numberMin, pos).get() < testElementType(numberStep, pos).get()) {
+                    Log.error("0xMATH19: The Steps cannot be bigger than the difference between Min and Max", pos);
+                }
+            }
+        }
+    }
+
+
+    public static Optional<Double> testElementType(Optional<ASTNumberWithUnit> number, SourcePosition pos) {
+        if (!number.isPresent()) {
+            Log.error("0xMATH20: Could not evaluate Ranges for Math Variable Decleration", pos);
+        }
+        else if (!number.get().getNumber().isPresent()) {
+            Log.error("0xMATH18: Min, Max and Steps are not allowed to be plus or minus infinity or to be a complex number", pos);
+        } else {
+            Optional<Double> d = number.get().getNumber();
+            return d;
+        }
+        return null;
+    }
+
+
+    public static int testDimension(Optional<ASTNumberWithUnit> number, SourcePosition pos) {
+        if (!number.isPresent()) {
+            Log.error("0xMATH10: Could not evaluate dimension for Math Variable Decleration", pos);
+        } else if (!number.get().getUnit().isCompatible(Unit.ONE)) { // dimensionless
+            Log.error("0xMATH11: A dimension is a natural number therefore has no unit", pos);
+        } else if (!number.get().getNumber().isPresent()) {
+            Log.error("0xMATH12: dimension is not allowed to be plus or minus infinity or to be a complex number", pos);
+        } else {
+            double n = number.get().getNumber().get();
+            double n2 = Math.round(n);
+            if (Math.abs(n2 - n) > 0.000001) { // computer does not work correctly on double
+                Log.error("0xMATH13: dimension is not a integer number", pos);
+            }
+            int i = (int) n2;
+            if (i < 1) {
+                Log.error("0xMATH14: dimension must be greater or equals to one", pos);
+            }
+            return i;
+        }
+        return -1;
     }
 }

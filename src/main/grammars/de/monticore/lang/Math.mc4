@@ -30,7 +30,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         MathScript;
 
       symbol scope MathScript =
-        "script" Name Expression+ "end";
+        "script" Name (Expression)+ "end";
 
     //Arithmetic expressions for matrices
 
@@ -58,16 +58,16 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathArithmeticMatrixEELeftDivideExpression implements Expression<250> =
     	Expression ".\\" Expression;
 
-    MathDottedNameExpression implements Expression<100> =
+    MathDottedNameExpression implements Expression<300> =
         Name "." Name;
 
-    MathMatrixNameExpression implements Expression<100> =
+    MathMatrixNameExpression implements Expression<300> =
         Name "(" MathMatrixAccessExpression ")";
 
 //Boolean expressions
-    MathTrueExpression implements Expression<30> =
+    MathTrueExpression implements Expression<240> =
     	"true";
-    MathFalseExpression implements Expression<30> =
+    MathFalseExpression implements Expression<240> =
     	"false";
 
 //for loop
@@ -84,14 +84,14 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathConditionalExpressionShort implements Expression<40> =
     	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
 
-    MathIfExpression  implements Expression<45> =
-    	"if" condition:Expression body:Expression* ;
+    MathIfExpression =
+    	"if" condition:Expression body:Expression+ ;
 
-    MathElseIfExpression implements Expression<45> =
-    	"elseif" condition:Expression body:Expression* ;
+    MathElseIfExpression =
+    	"elseif" condition:Expression body:Expression+ ;
 
-    MathElseExpression implements Expression<45> =
-    	"else" body:Expression* ;
+    MathElseExpression    =
+    	"else" body:Expression+ ;
 
 //Assignments
      AssignmentType =
@@ -101,37 +101,37 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
      Dimension =
          	"^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
 
-     MathDeclarationExpression implements Expression<50> =
+     MathDeclarationExpression implements Expression<320> =
         type:AssignmentType Name;
 
-     MathAssignmentDeclarationExpression implements Expression<50> =
+     MathAssignmentDeclarationExpression implements Expression<320> =
         type:AssignmentType Name MathAssignmentOperator (Expression);
 
-     MathAssignmentExpression implements Expression<50> =
+     MathAssignmentExpression implements Expression<230> =
         (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression);
 
      MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
-
-     Statement implements Expression<5> = Expression ";" ; // to not write down every time ";"?
 
 //Element Types WholeNumberNumber="Z" Rational:"Q" Complex:"C" Boolean:"B" Natural:"N"
      ElementType implements Type, TypeArgument =
              ZQCBN |
              Ranges;
 
-     Ranges = ZQCBN ("(" min:Expression ":" max:Expression ")" |
-                     "(" min:Expression ":" step:Expression ":" max:Expression ")")
+     Ranges = ZQCBN ("(" min:Expression ":" step:Expression ":" max:Expression ")" |
+                     "(" min:Expression ":" max:Expression ")")
           ;
 
      ZQCBN = { _input.LT(1).getText().matches("Z|Q|C|B|N") }?
               Name ;
 
 //Expression for all Numbers with units
-    NumberExpression implements Expression<10> =
+    NumberExpression implements Expression<291> =
         NumberWithUnit;
 
-    NameExpression implements Expression<30> =
+    NameExpression implements Expression<295> =
         Name;
+
+    Statement implements Expression<5> = Expression ";" ; // to not write down every time ";"?
 
  }
