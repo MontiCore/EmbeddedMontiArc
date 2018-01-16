@@ -66,6 +66,16 @@ component TrimPath {
           end
         end
       end
+      if closestSegmentIndex > -1
+        Q currentFree = 2; // 1st point is always the projection
+        Q start = closestSegmentIndex + 1;
+        for i = start:plannedTrajectoryLength
+          trimmedTrajectoryX(1,currentFree) = plannedTrajectoryX(1,i);
+          trimmedTrajectoryY(1,currentFree) = plannedTrajectoryY(1,i);
+          currentFree += 1;
+        end
+        trimmedTrajectoryLength = currentFree - 1;
+      end
     end
   }
 }
