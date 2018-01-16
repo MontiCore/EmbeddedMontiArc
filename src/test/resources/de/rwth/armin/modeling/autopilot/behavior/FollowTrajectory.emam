@@ -18,9 +18,10 @@ component FollowTrajectory {
 
   implementation Math {
     // change to params later
-    static Q NUMBER_OF_INTERMEDIATE_INTERPOLATION_POINTS = 10.0;
+    static Q BEZIER_COEF = 0.5;
     static Q TURN_ANGLE_THRESHOLD = 10.0 * M_PI / 180.0; // 10 degrees
     static Q EPSILON = 0.00001;
+    static Q REACHED_POSITION_THRESHOLD = 5.0;
     desiredDirectionX = 0.0;
     desiredDirectionY = 0.0;
     signedDistanceToTrajectory = 0.0;
@@ -45,37 +46,63 @@ component FollowTrajectory {
         signedDistanceToTrajectory = -(v12y*currentPositionX - v12x*currentPositionY + p2x*p1y - p1x*p2y) / v12_norm;
       end
       // DESIRED DIRECTION
-      Q interp_p1x = currentPositionX;
-      Q interp_p1y = currentPositionY;
-      Q interp_p2x = p1x;
-      Q interp_p2y = p1y;
-      Q interp_p3x = p2x;
-      Q interp_p3y = p2y;
+      Q nextX = currentPositionX;
+      Q nextY = currentPositionY;
       if (trimmedTrajectoryLength >= 3)
-        Q interp_p2x = p2x;
-        Q interp_p2y = p2y;
+        Q interp_p1x = trimmedTrajectoryX(1,1);
+        Q interp_p1y = trimmedTrajectoryY(1,1);
+        Q interp_p2x = trimmedTrajectoryX(1,2);
+        Q interp_p2y = trimmedTrajectoryY(1,2);
         Q interp_p3x = trimmedTrajectoryX(1,3);
         Q interp_p3y = trimmedTrajectoryY(1,3);
+        // Bezier interpolation
+        Q t = BEZIER_COEF; // higher value => closer to p3
+        Q a = 1.0 - t;
+        Q b = t;
+        Q k1 = a * a;
+        Q k2 = 2 * a * b;
+        Q k3 = b * b;
+        nextX = k1 * interp_p1x + k2 * interp_p2x + k3 * interp_p3x;
+        nextY = k1 * interp_p1y + k2 * interp_p2y + k3 * interp_p3y;
+        Q dist_to_next_sqr = (nextX-currentPositionX)*(nextX-currentPositionX) + (nextY-currentPositionY)*(nextY-currentPositionY);
+        Q dist_to_next = sqrt(dist_to_next_sqr);
+        if (dist_to_next <= REACHED_POSITION_THRESHOLD)
+          // interpolated point is too close, another point needs to be found
+          Q is_go_on_1 = 1;
+          for j = 2:trimmedTrajectoryLength
+            if (is_go_on_1)
+              Q point_x = trimmedTrajectoryX(1,j);
+              Q point_y = trimmedTrajectoryY(1,j);
+              Q dist_to_point_sqr = (point_x-currentPositionX)*(point_x-currentPositionX) + (point_y-currentPositionY)*(point_y-currentPositionY);
+              Q dist_to_point = sqrt(dist_to_point_sqr);
+              if (dist_to_point > REACHED_POSITION_THRESHOLD)
+                nextX = point_x;
+                nextY = point_y;
+                is_go_on_1 = 0;
+              end
+            end
+          end
+          if (is_go_on_1)
+            // all points are too close
+            nextX = trimmedTrajectoryX(1,trimmedTrajectoryLength);
+            nextY = trimmedTrajectoryY(1,trimmedTrajectoryLength);
+          end
+        end
+      else
+        // only 2 points left
+        nextX = p2x;
+        nextY = p2y;
       end
-      // Bezier interpolation
-      Q t = 1.0 / (NUMBER_OF_INTERMEDIATE_INTERPOLATION_POINTS + 1.0);
-      Q a = 1.0 - t;
-      Q b = t;
-      Q k1 = a * a;
-      Q k2 = 2 * a * b;
-      Q k3 = b * b;
-      Q nextX = k1 * interp_p1x + k2 * interp_p2x + k3 * interp_p3x;
-      Q nextY = k1 * interp_p1y + k2 * interp_p2y + k3 * interp_p3y;
       desiredDirectionX = nextX - currentPositionX;
       desiredDirectionY = nextY - currentPositionY;
       // DISTANCE
       Q dist = sqrt( (p2x-p1x)*(p2x-p1x) + (p2y-p1y)*(p2y-p1y) );
       if (trimmedTrajectoryLength >= 3)
         minVelocity = 2.0;
-        Q is_go_on = 1;
+        Q is_go_on_2 = 1;
         Q lastIndex = trimmedTrajectoryLength - 2;
         for i = 1:lastIndex
-          if (is_go_on)
+          if (is_go_on_2)
             Q pt1x = trimmedTrajectoryX(1,i);
             Q pt1y = trimmedTrajectoryY(1,i);
             Q pt2x = trimmedTrajectoryX(1,i+1);
@@ -94,7 +121,7 @@ component FollowTrajectory {
               alpha = acos(cos_alpha);
             end
             if (alpha > TURN_ANGLE_THRESHOLD)
-              is_go_on = 0;
+              is_go_on_2 = 0;
             else
               dist += vect2_norm;
             end
