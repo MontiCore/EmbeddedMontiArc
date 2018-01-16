@@ -30,7 +30,7 @@ component FollowTrajectory {
     if (isDriveToFirstPosition)
       Q doNothing;
     elseif (trimmedTrajectoryLength >= 2)
-      maxVelocity = 13.0;
+      maxVelocity = 5.0;
       // SIGNED DISTANCE
       Q p1x = trimmedTrajectoryX(1,1);
       Q p1y = trimmedTrajectoryY(1,1);
