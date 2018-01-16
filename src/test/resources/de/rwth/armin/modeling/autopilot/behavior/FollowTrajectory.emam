@@ -71,7 +71,7 @@ component FollowTrajectory {
       // DISTANCE
       Q dist = sqrt( (p2x-p1x)*(p2x-p1x) + (p2y-p1y)*(p2y-p1y) );
       if (trimmedTrajectoryLength >= 3)
-        minVelocity = 1.0;
+        minVelocity = 2.0;
         Q is_go_on = 1;
         Q lastIndex = trimmedTrajectoryLength - 2;
         for i = 1:lastIndex

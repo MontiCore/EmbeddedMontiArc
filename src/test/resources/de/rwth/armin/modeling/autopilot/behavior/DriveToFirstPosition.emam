@@ -31,7 +31,7 @@ component DriveToFirstPosition {
       Q sqr_dist = desiredDirectionX * desiredDirectionX + desiredDirectionY * desiredDirectionY;
       distance = sqrt( sqr_dist );
       if (trimmedTrajectoryLength >= 2)
-        minVelocity = 1.0;
+        minVelocity = 2.0;
       end
     end
   }
