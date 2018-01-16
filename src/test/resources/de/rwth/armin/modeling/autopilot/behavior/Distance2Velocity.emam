@@ -14,8 +14,8 @@ component Distance2Velocity {
     // exponent
     static Q D1 = 1.0 m;
     static Q V1 = 1.0 m/s;
-    static Q D2 = 10.0 m;
-    static Q V2 = 5.0 m/s;
+    static Q D2 = 15.0 m;
+    static Q V2 = 7.0 m/s;
     static Q COEF_K = log( (V1 / V2) ) / (D2 - D1);
     Q v = 0.0;
     if (distance < D1)

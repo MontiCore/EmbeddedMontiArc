@@ -18,7 +18,7 @@ component FollowTrajectory {
 
   implementation Math {
     // change to params later
-    static Q BEZIER_COEF = 0.5;
+    static Q BEZIER_COEF = 0.1;
     static Q TURN_ANGLE_THRESHOLD = 10.0 * M_PI / 180.0; // 10 degrees
     static Q EPSILON = 0.00001;
     static Q REACHED_POSITION_THRESHOLD = 5.0;
@@ -31,7 +31,7 @@ component FollowTrajectory {
     if (isDriveToFirstPosition)
       Q doNothing;
     elseif (trimmedTrajectoryLength >= 2)
-      maxVelocity = 5.0;
+      maxVelocity = 7.0;
       // SIGNED DISTANCE
       Q p1x = trimmedTrajectoryX(1,1);
       Q p1y = trimmedTrajectoryY(1,1);
@@ -98,7 +98,7 @@ component FollowTrajectory {
       // DISTANCE
       Q dist = sqrt( (p2x-p1x)*(p2x-p1x) + (p2y-p1y)*(p2y-p1y) );
       if (trimmedTrajectoryLength >= 3)
-        minVelocity = 2.0;
+        minVelocity = 3.0;
         Q is_go_on_2 = 1;
         Q lastIndex = trimmedTrajectoryLength - 2;
         for i = 1:lastIndex

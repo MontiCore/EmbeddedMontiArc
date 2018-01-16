@@ -25,13 +25,13 @@ component DriveToFirstPosition {
     maxVelocity = 0.0;
     distance = 0.0;
     if (isDriveToFirstPosition) && (trimmedTrajectoryLength >= 1)
-      maxVelocity = 5.0;
+      maxVelocity = 7.0;
       desiredDirectionX = trimmedTrajectoryX(1,1) - currentPositionX;
       desiredDirectionY = trimmedTrajectoryY(1,1) - currentPositionY;
       Q sqr_dist = desiredDirectionX * desiredDirectionX + desiredDirectionY * desiredDirectionY;
       distance = sqrt( sqr_dist );
       if (trimmedTrajectoryLength >= 2)
-        minVelocity = 2.0;
+        minVelocity = 3.0;
       end
     end
   }
