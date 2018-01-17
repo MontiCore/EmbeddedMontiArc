@@ -24,8 +24,8 @@ Uppercase terms relate to another rule.
 # Simulation Rules
 ```
 "sim" [name] "{"
-  [RULE1]
-  [RULE2]
+  RULE1 ";"
+  RULE2 ";"
   ...
 "}"
 
@@ -54,9 +54,9 @@ Default: fixed 30
 
 ### weather (FIXED|SEQUENCE|RANDOM|~~FORECAST~~)
 #### FIXED:: "fixed" [WEATHEROBJ]
-#### SEQUENCE:: "sequence" [WEATHEROBJ]+ (duration:[Number > 0]("ms"|"s"|"m"|"h"))?
-#### RANDOM:: "random" duration:[Number > 0][ms|s|m|h]
-#### ~~FORECAST:: "forecast" [WEATHEROBJ] (duration) (automaton)~~ *Not implemented yet*
+#### SEQUENCE:: "sequence" [WEATHEROBJ]+ [duration:Number > 0]("ms"|"s"|"m"|"h"))?
+#### RANDOM:: "random" [duration:Number > 0][ms|s|m|h]
+#### ~~FORECAST:: "forecast" [WEATHEROBJ] [duration] (automaton)~~ *Not implemented yet*
 Sets the weather behavior and settings. See the weather section below.
 Definable once.
 Default: fixed {}
@@ -71,12 +71,12 @@ Sets the relative path to where the map files are stored.
 Definable once.
 Default: Maps
 
-### "map_name" [name]".osm"
-Sets the map to be used.
+### "map_name" [name]
+Sets the map to be used. Accepted fileformats: .osm
 Definable once.
 Default:
 
-### "map_height" ("flat"|"random"|(heightMap)".hm")
+### "map_height" ("flat"|"random"|(heightMap))
 Sets the mode of the maps height generation.
 Definable once.
 Default: flat
@@ -135,8 +135,29 @@ Default:
 Creates completely random vehicle spawns and destinations with optional avoidance of a given path.
 Definable arbitrarily often.
 Default:
-```
 
+### ("fixed"|"bound") "channel" [name] "{"
+  CHANNEL_RULE1 ";"
+  CHANNEL_RULE2 ";"
+"}"
+Create a communication-channel existing in the simulation. See Communication Configuration for rules.
+Definable arbitrarily often, but channel names must be unique.
+Default:
+```
+# Communication/Channel Rules
+```
+### "transferrate" [Number > 0]
+Defines the transferrate of this channel.
+
+### "latency" [Number > 0]
+Defines the latency of this channel.
+
+### "outage" [Number 0:1 | Number 0:100 "%"]
+Defines the probabilty of an outage of this channel.
+
+### "area" ("global"| [Coordinate] ([Coordinate]|[radius]))
+Defines the channels area of effect. Either global or defineable in a rectangle or circle.
+```
 # Weather Rules
 ```
 ### WEATHEROBJ:: "{" RULE1 RULE2 ... "}"
