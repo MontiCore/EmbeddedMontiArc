@@ -78,7 +78,7 @@ public class ParserMathTest {
     @Test
     public void testFor2() throws IOException {
         MathParser parser = new MathParser();
-        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/Calculations/conditions.m");
+        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/forif/example1.m");
         System.out.println(printAST(streamCompilationUnit.get()));
     }
 

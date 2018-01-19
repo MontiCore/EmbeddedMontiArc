@@ -20,12 +20,11 @@
  */
 package de.monticore.lang.math._symboltable;
 
-import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
-import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationExpression;
 import de.monticore.lang.math._ast.ASTMathCompilationUnit;
 import de.monticore.lang.math._ast.ASTMathDeclarationExpression;
+import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
@@ -78,6 +77,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         putOnStack(artifactScope);
     }
 
+    @Override
     public void visit(ASTMathAssignmentDeclarationExpression node) {
         createMatrixSymbol(node.getName(), node.getType(), node.get_SourcePositionStart());
     }
@@ -114,7 +114,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 sym.setCol(testDimension(numberRow, pos));
 
             }
-        }else {
+        } else {
             // default like `Z` which is the same as `Z^{1,1}`
             sym.setRow(1);
             sym.setCol(1);
@@ -146,8 +146,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public static Optional<Double> testElementType(Optional<ASTNumberWithUnit> number, SourcePosition pos) {
         if (!number.isPresent()) {
             Log.error("0xMATH20: Could not evaluate Ranges for Math Variable Decleration", pos);
-        }
-        else if (!number.get().getNumber().isPresent()) {
+        } else if (!number.get().getNumber().isPresent()) {
             Log.error("0xMATH18: Min, Max and Steps are not allowed to be plus or minus infinity or to be a complex number", pos);
         } else {
             Optional<Double> d = number.get().getNumber();
@@ -174,6 +173,47 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
             if (i < 1) {
                 Log.error("0xMATH14: dimension must be greater or equals to one", pos);
             }
+            return i;
+        }
+        return -1;
+    }
+
+    protected void createVectorSymbol(String name, ASTMathVectorExpression ast, SourcePosition pos) {
+        VectorSymbol sym = new VectorSymbol(name);
+        Optional<ASTNumberWithUnit> start = evaluate(ast.getStart());
+        Optional<ASTNumberWithUnit> end = evaluate(ast.getEnd());
+        if (ast.isStepsPresent()) {
+            Optional<ASTNumberWithUnit> step = evaluate(ast.getSteps());
+            if (step.get().getNum().isNegNumberPresent()) {
+                Log.error("0xMATH34: Steps cannot be negative", pos);
+            } else if (step.get().getNumber().isPresent()) {
+                Log.error("0xMATH31: Number is not allowed to be Infinite or Complex", pos);
+            }
+            double n = step.get().getNumber().get();
+            double n2 = Math.round(n);
+            if (Math.abs(n2 - n) > 0.000001) { // computer does not work correctly on double
+                Log.error("0xMATH32: step is not a integer number", pos);
+            }else{
+                Integer stepint = step.get().getNumber().get().intValue();
+            }
+
+        }
+        sym.setStart(testVector(start, pos));
+        sym.setEnd(testVector(end, pos));
+    }
+
+    public static int testVector(Optional<ASTNumberWithUnit> number, SourcePosition pos) {
+        if (!number.isPresent()) {
+            Log.error("0xMATH30: Could not evaluate vector without any Number", pos);
+        } else if (number.get().getNumber().get().isInfinite() | number.get().isComplexNumber()) {
+            Log.error("0xMATH31: Number is not allowed to be Infinite or Complex", pos);
+        } else {
+            double n = number.get().getNumber().get();
+            double n2 = Math.round(n);
+            if (Math.abs(n2 - n) > 0.000001) { // computer does not work correctly on double
+                Log.error("0xMATH32: start or end is not a integer number", pos);
+            }
+            int i = (int) n2;
             return i;
         }
         return -1;

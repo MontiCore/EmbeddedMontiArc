@@ -30,12 +30,12 @@ public class MatrixSymbol extends CommonSymbol {
     public static final MatrixSymbolKind KIND = new MatrixSymbolKind();
 
     // number like `2` is dimension 1x1
-    int row = 1;
-    int col = 1;
-    Optional<Double> minDimension = Optional.empty();
-    Optional<Double> maxDimension = Optional.empty();
-    Optional<Double> stepDimension = Optional.empty();
-    boolean isComplex = false;
+    private int row = 1;
+    private int col = 1;
+    private Optional<Double> minDimension = Optional.empty();
+    private Optional<Double> maxDimension = Optional.empty();
+    private Optional<Double> stepDimension = Optional.empty();
+    private boolean isComplex = false;
 
     public MatrixSymbol(String name) {
         super(name, KIND);

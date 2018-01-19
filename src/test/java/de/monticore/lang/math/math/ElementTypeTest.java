@@ -38,14 +38,4 @@ public class ElementTypeTest {
         createSymbolTableOnInputAndExpectErrorCode("script S Q(1:20:10) a; end", "0xMATH19");
     }
 
-//    @Test
-//    public void testElementTypeComplex() throws Exception {
-//        createSymbolTableOnInputAndExpectErrorCode("script S Q(1+3i : 5+4i) a; end", "0xMATH18");
-//    }
-//
-//    @Test
-//    public void testElementTypeInfinity() throws Exception {
-//        createSymbolTableOnInputAndExpectErrorCode("script S Q(1:oo) a; end", "0xMATH18");
-//    }
-
 }
