@@ -88,6 +88,19 @@ public class WorldModel implements World{
     public static VisualisationEnvironmentContainer prepareWorldMap(ParserSettings pSettings) throws Exception {
     	return new WorldModel(pSettings).getContainer();
     }
+    
+    /** 
+     * Builds controller-container only. 
+     *  
+     * Singleton instance is not initialized. 
+     *  
+     * @param visContainer - pre-built VisualisationEnvironmentContainer 
+     * @param wSettings - weather settings 
+     * @return ControllerContainer 
+     */ 
+    public static ControllerContainer prepareControllerContainer(VisualisationEnvironmentContainer visContainer, WeatherSettings wSettings) { 
+      return new WorldModel(visContainer, wSettings).getControllerMap(); 
+    }
 
     private VisualisationEnvironmentContainer visualisationContainer;
 
