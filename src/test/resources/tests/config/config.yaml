@@ -1,44 +1,16 @@
 - !de.monticar.lang.monticar.generator.python.RosTag
-  component: ba.Delay
+  component: tests.a.compA
   subscriber:
     - !de.monticar.lang.monticar.generator.python.RosInterface
       ports:
-        in1: posX
-        in2: posY
+        rosIn: posX
+        noRosIn: posY
       topic: test
-      type: CarMessage
-    - !de.monticar.lang.monticar.generator.python.RosInterface
-      ports:
-        seconds: v1
-        minutes: v2
-      topic: testa
-      type: TimeMessage
+      type: automated_driving_msgs/CarMessage
   publisher:
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
-          in1: posX
-          in2: posY
+          rosOut: posX
+          noRosOut: posY
         topic: test
-        type: CarMessage
-      - !de.monticar.lang.monticar.generator.python.RosInterface
-        ports:
-          seconds: v1
-          minutes: v2
-        topic: testa
-        type: TimeMessage
-
-- !de.monticar.lang.monticar.generator.python.RosTag
-  component: another
-  publisher:
-    - !de.monticar.lang.monticar.generator.python.RosInterface
-      ports:
-        in1: posX
-        in2: posY
-      topic: test
-      type: CarMessage
-    - !de.monticar.lang.monticar.generator.python.RosInterface
-      ports:
-        seconds: v1
-        minutes: v2
-      topic: testa
-      type: TimeMessage
+        type: automated_driving_msgs/CarMessage
