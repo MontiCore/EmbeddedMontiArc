@@ -18,32 +18,18 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
-import de.monticore.lang.monticar.cnntrain._symboltable.TrainingConfigurationSymbol;
-import de.monticore.symboltable.Scope;
-import org.junit.Test;
+public class NameValueSymbol extends ValueSymbol {
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+    public static final NameValueKind KIND = new NameValueKind();
 
-
-public class SymtabTest extends AbstractSymtabTest {
-
-    @Test
-    public void testParsing() throws Exception {
-        CNNTrainParser parser = new CNNTrainParser();
-        assertTrue(parser.parse("src/test/resources/SimpleConfig1.cnnt").isPresent());
+    public NameValueSymbol(String name) {
+        super(name, KIND);
     }
 
-    @Test
-    public void testAlexnet(){
-        Scope symTab = createSymTab("src/test/resources");
-        TrainingConfigurationSymbol a = symTab.<TrainingConfigurationSymbol>resolve(
-                "SimpleConfig2",
-                TrainingConfigurationSymbol.KIND).orElse(null);
-        assertNotNull(a);
-
+    @Override
+    public String getValue() {
+        return getName();
     }
 }

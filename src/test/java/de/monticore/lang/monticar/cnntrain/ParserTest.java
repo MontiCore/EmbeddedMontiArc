@@ -41,7 +41,9 @@ import static org.junit.Assert.assertTrue;
 public class ParserTest {
     public static final boolean ENABLE_FAIL_QUICK = false;
     private static List<String> expectedParseErrorModels = Arrays.asList(
-            "src/test/resources/WrongParameterName.cnnt")
+            "src/test/resources/WrongParameterName.cnnt",
+            "src/test/resources/InvalidType.cnnt",
+            "src/test/resources/InvalidOptimizer.cnnt")
 
             .stream().map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());

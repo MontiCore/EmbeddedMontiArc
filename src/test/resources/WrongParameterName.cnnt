@@ -1,7 +1,6 @@
-Configuration WrongParameterName{
-     data="./data/mnist_train"
-     epochs = 5
-     batch_size = 100
-     optmizer = "adam"
-     learning_rate = 0.001
+configuration WrongParameterName{
+     train_data:"./data/mnist_train"
+     num_epoch : 5
+     batch_size : 100
+     optmizer : adam
  }

@@ -18,32 +18,31 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain;
+package de.monticore.lang.monticar.cnntrain._cocos;
 
-import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
-import de.monticore.lang.monticar.cnntrain._symboltable.TrainingConfigurationSymbol;
-import de.monticore.symboltable.Scope;
-import org.junit.Test;
+import de.monticore.lang.monticar.cnntrain._ast.ASTPathValue;
+import de.se_rwth.commons.logging.Log;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+public class CheckValidPath implements CNNTrainASTPathValueCoCo {
 
-public class SymtabTest extends AbstractSymtabTest {
+    @Override
+    public void check(ASTPathValue node) {
+        try{
+            Path path = Paths.get(node.getPath().getValue().replaceAll("\"", ""));
 
-    @Test
-    public void testParsing() throws Exception {
-        CNNTrainParser parser = new CNNTrainParser();
-        assertTrue(parser.parse("src/test/resources/SimpleConfig1.cnnt").isPresent());
+            /*if (!Files.exists(path)){
+                Log.error("0xC8855 File with path '" + node.getPath().getValue() + "' does not exist."
+                        , node.get_SourcePositionStart());
+            }*/
+        }
+        catch (InvalidPathException e){
+            Log.error("0xC8556 Invalid path. " + e.getMessage());
+        }
     }
 
-    @Test
-    public void testAlexnet(){
-        Scope symTab = createSymTab("src/test/resources");
-        TrainingConfigurationSymbol a = symTab.<TrainingConfigurationSymbol>resolve(
-                "SimpleConfig2",
-                TrainingConfigurationSymbol.KIND).orElse(null);
-        assertNotNull(a);
-
-    }
 }

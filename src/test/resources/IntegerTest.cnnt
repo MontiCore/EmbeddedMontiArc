@@ -1,6 +1,6 @@
-configuration SimpleConfig1{
+configuration IntegerTest{
      train_data:"./data/mnist_train"
-     num_epoch : 5
+     num_epoch : 5.1
      batch_size : 100
      optimizer : adam{
          learning_rate : 0.001

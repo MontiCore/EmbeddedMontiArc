@@ -1,8 +1,9 @@
-Configuration DataReferenceTest{
-    data=inputData
-    labels=labelData
-    epochs = 5
-    batch_size = 100
-    optimizer = "adam"
-    learning_rate = 0.001
+configuration DataReferenceTest{
+    train_data:inputData
+    train_label:labelData
+    num_epoch : 5
+    batch_size : 100
+    optimizer : adam{
+        learning_rate : 0.001
+    }
 }

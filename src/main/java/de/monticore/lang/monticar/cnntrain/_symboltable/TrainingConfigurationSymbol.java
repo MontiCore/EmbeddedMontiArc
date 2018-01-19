@@ -18,32 +18,29 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
-import de.monticore.lang.monticar.cnntrain._symboltable.TrainingConfigurationSymbol;
-import de.monticore.symboltable.Scope;
-import org.junit.Test;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+public class TrainingConfigurationSymbol extends TrainingConfigurationSymbolTOP {
 
+    private Map<String, EntrySymbol> entryMap = new HashMap<>();
 
-public class SymtabTest extends AbstractSymtabTest {
-
-    @Test
-    public void testParsing() throws Exception {
-        CNNTrainParser parser = new CNNTrainParser();
-        assertTrue(parser.parse("src/test/resources/SimpleConfig1.cnnt").isPresent());
+    public TrainingConfigurationSymbol(String name) {
+        super(name);
     }
 
-    @Test
-    public void testAlexnet(){
-        Scope symTab = createSymTab("src/test/resources");
-        TrainingConfigurationSymbol a = symTab.<TrainingConfigurationSymbol>resolve(
-                "SimpleConfig2",
-                TrainingConfigurationSymbol.KIND).orElse(null);
-        assertNotNull(a);
+    public Map<String, EntrySymbol> getEntryMap() {
+        return entryMap;
+    }
 
+    public Collection<EntrySymbol> getEntries(){
+        return getEntryMap().values();
+    }
+
+    public EntrySymbol getEntry(String name){
+        return getEntryMap().get(name);
     }
 }

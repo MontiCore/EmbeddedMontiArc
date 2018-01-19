@@ -20,38 +20,30 @@
  */
 package de.monticore.lang.monticar.cnntrain.cocos;
 
-import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-import org.junit.Ignore;
+import de.monticore.lang.monticar.cnntrain._cocos.*;
 import org.junit.Test;
 
 import java.io.IOException;
-
-import static org.junit.Assert.assertTrue;
 
 public class AllCoCoTest extends AbstractCoCoTest{
     String baseDir="src/test/resources";
     @Test
     public void testCoCosSimulator() throws IOException {
-        testModel("SimpleConfig1");
-        testModel("SimpleConfig2");
-        testModel("DataReferenceTest");
+        checkValid("","SimpleConfig1");
+        checkValid("","SimpleConfig2");
+        checkValid("","DataReferenceTest");
+        checkValid("","FullConfig");
+        checkValid("","FullConfig2");
 
-        testInvalidModel("DuplicatedParameter",1,"x03201");
-        /*testInvalidModel("InvalidDataPath",1,"x03203");
-        testInvalidModel("InvalidOptimizer",1,"x0320B");
-        testInvalidModel("InvalidType",5,"x03208");
-        testInvalidModel("MissingParameter1",2,"x03205");
-        testInvalidModel("MissingParameter2",1,"x03205");*/
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckEntryRepetition()),
+                getAstNode("", "DuplicatedParameter"),
+                new ExpectedErrorInfo(1, "xC8853"));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckInteger()),
+                getAstNode("", "IntegerTest"),
+                new ExpectedErrorInfo(1, "xC8851"));
+        /*checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckValidPath()),
+                getAstNode("", "InvalidPath"),
+                new ExpectedErrorInfo(1, "xC8856"));*/
 
-
-    }
-
-    private void testModel(String modelName) {
-        checkValid("",modelName);
-    }
-
-    private void testInvalidModel(String modelName, int numExpectedFindings, String... expectedErrorCodes) {
-        ExpectedErrorInfo errorInfo = new ExpectedErrorInfo(numExpectedFindings, expectedErrorCodes);
-        checkInvalid(CNNTrainCocos.createChecker(), getAstNode("", modelName), errorInfo);
     }
 }

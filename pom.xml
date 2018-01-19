@@ -30,19 +30,18 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-train</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. SE-Libraries .................................................. -->
-        <monticore.version>4.5.3-SNAPSHOT</monticore.version>
+        <monticore.version>4.5.4-SNAPSHOT</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
-        <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-        <SIUnit.version>0.0.6-SNAPSHOT</SIUnit.version>
-        <Common-MontiCar.version>0.0.3-SNAPSHOT</Common-MontiCar.version>
-        <Math.version>0.0.3-SNAPSHOT-REWORK</Math.version>
+        <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
+        <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
+        <Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -70,6 +69,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.1</version>
+        </dependency>
+
         <dependency>
             <groupId>de.se_rwth.commons</groupId>
             <artifactId>se-commons-logging</artifactId>
@@ -134,20 +139,6 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>common-monticar</artifactId>
             <version>${Common-MontiCar.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math</artifactId>
-            <version>${Math.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math</artifactId>
-            <version>${Math.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
@@ -231,6 +222,23 @@
                 <groupId>de.monticore.mojo</groupId>
                 <artifactId>monticore-maven-plugin</artifactId>
                 <version>${monticore.plugin}</version>
+                <configuration>
+                    <skip>false</skip>
+                    <script>de/monticore/monticore_noemf.groovy</script>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4</artifactId>
+                        <version>4.7.1</version>
+                    </dependency>
+                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4-runtime</artifactId>
+                        <version>4.7.1</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <goals>

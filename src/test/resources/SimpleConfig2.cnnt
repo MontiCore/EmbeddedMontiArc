@@ -1,8 +1,9 @@
-Configuration SimpleConfig2{
-    data="./data/mnist_train"
-    labels="./data/mnist_labels"
-    epochs = 5
-    batch_size = 100
-    optimizer = "sgd"
-    learning_rate = 0.1
+configuration SimpleConfig2{
+    train_data:"./data/mnist_train"
+    train_label:"./data/mnist_labels"
+    num_epoch:5
+    batch_size:100
+    optimizer:sgd{
+        learning_rate:0.1
+    }
 }

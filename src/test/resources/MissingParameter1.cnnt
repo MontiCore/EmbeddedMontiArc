@@ -1,3 +1,3 @@
-Configuration MissingParameter1{
-    data="./data/mnist_train"
+configuration MissingParameter1{
+    train_data:"./data/mnist_train"
 }

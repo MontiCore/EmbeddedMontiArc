@@ -18,29 +18,36 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTParameterAssignment;
-import de.monticore.lang.monticar.cnntrain._ast.ASTTrainingConfiguration;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.SymbolKind;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
 
-public class DuplicatedParameterCheck implements CNNTrainASTTrainingConfigurationCoCo {
+public class ValueSymbol extends CommonSymbol {
 
-    @Override
-    public void check(ASTTrainingConfiguration node) {
-        Set<Enum> set = new HashSet<>();
-        for (ASTParameterAssignment assignment : node.getAssignments()) {
-            if (set.contains(assignment.getLhs())) {
-                Log.error("0x03201 Multiple assignments of the same parameter are not allowed",
-                        assignment.get_SourcePositionStart());
-            }
-            else {
-                set.add(assignment.getLhs());
-            }
-        }
+    public static final ValueKind KIND = new ValueKind();
+
+    private Object value;
+
+    public ValueSymbol() {
+        super("", KIND);
     }
 
+    public ValueSymbol(String name, SymbolKind kind) {
+        super(name, kind);
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public String toString(){
+        return getValue().toString();
+    }
 }

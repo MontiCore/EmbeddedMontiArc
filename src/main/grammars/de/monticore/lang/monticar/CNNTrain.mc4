@@ -1,23 +1,97 @@
 package de.monticore.lang.monticar;
 
-grammar CNNTrain extends de.monticore.lang.math.Math {
+grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.NumberUnit{
 
-    symbol scope CNNTrainCompilationUnit = "Configuration" name:Name& "{" TrainingConfiguration "}";
+    CNNTrainCompilationUnit = TrainingConfiguration;
+    symbol scope TrainingConfiguration = "configuration" name:Name& "{" entries:ConfigEntry* "}";
 
-    TrainingConfiguration = (assignments:ParameterAssignment)*;
+    interface Entry;
+    ast Entry = method String getName(){}
+                method ASTConfigValue getValue(){};
+    interface ConfigValue;
+    interface ConfigEntry extends Entry;
 
-    ParameterAssignment = lhs:TrainingParameter "=" rhs:ParameterRhs;
-    enum TrainingParameter = DATA:"data"
-                           | LABELS:"labels"
-                           | EPOCHS:"epochs"
-                           | BATCHSIZE:"batch_size"
-                           | OPTIMIZER:"optimizer"
-                           | LEARNINGRATE:"learning_rate";
-                           //eval_metric
-                           //validation_split
+    ContextEntry implements ConfigEntry = name:"context" ":" value:ContextValue;
+    ModelPathEntry implements ConfigEntry = name:"model_path" ":" value:PathValue;
+    TrainDataEntry implements ConfigEntry = name:"train_data" ":" value:DataValue;
+    TrainLabelEntry implements ConfigEntry = name:"train_label" ":" value:DataValue;
+    TestDataEntry implements ConfigEntry = name:"test_data" ":" value:DataValue;
+    TestLabelEntry implements ConfigEntry = name:"test_label" ":" value:DataValue;
+    LoadingModeEntry implements ConfigEntry = name:"loading_mode" ":" value:LoadingModeValue;
+    OptimizerEntry implements ConfigEntry = name:"optimizer" ":" value:OptimizerValue;
+    ValidationSplitEntry implements ConfigEntry = name:"validation_split" ":" value:NumberValue;
+    EvalMetricEntry implements ConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
+    NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
+    BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
+    CheckpointEntry implements ConfigEntry = name:"checkpoint" ":" value:IntegerValue;
 
-    ParameterRhs = stringVal:String
-                 | number:Number
-                 | refOrBool:Name;
+    PathValue implements ConfigValue = path:StringLiteral;
+    ContextValue implements ConfigValue = (GPU:"gpu" | CPU:"cpu");
+    EvalMetricValue implements ConfigValue =(accuracy:"accuracy"
+                                           | crossEntropy:"ce"
+                                           | f1:"f1"
+                                           | mae:"mae"
+                                           | mse:"mse"
+                                           | rmse:"rmse"
+                                           | topKAccuracy:"top_k_accuracy");
+    LRPolicyValue implements ConfigValue =(fixed:"fixed"
+                                         | step:"step"
+                                         | exp:"exp"
+                                         | inv:"inv"
+                                         | poly:"poly"
+                                         | sigmoid:"sigmoid");
+    LoadingModeValue implements ConfigValue =(loadOnly:"load_only"
+                                            | loadAndTrain:"load_and_train"
+                                            | overwrite:"overwrite"
+                                            | noLoad:"no_load");
+    DataValue implements ConfigValue = (DataVariable | PathValue);
+    DataVariable = Name&;
+    IntegerValue implements ConfigValue = Number;
+    NumberValue implements ConfigValue = Number;
+    BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
+
+    interface OptimizerValue extends ConfigValue;
+    //ast OptimizerValue = method java.util.List<? extends ASTEntry> getParams(){}
+    //                     method String getName(){};
+
+    interface SGDEntry extends Entry;
+    SGDOptimizer implements OptimizerValue = name:"sgd" ("{" params:SGDEntry* "}")?;
+
+    interface AdamEntry extends Entry;
+    AdamOptimizer implements OptimizerValue = name:"adam" ("{" params:AdamEntry* "}")?;
+
+    interface RmsPropEntry extends Entry;
+    RmsPropOptimizer implements OptimizerValue = name:"rmsprop" ("{" params:RmsPropEntry* "}")?;
+
+    interface AdaGradEntry extends Entry;
+    AdaGradOptimizer implements OptimizerValue = name:"adagrad" ("{" params:AdaGradEntry* "}")?;
+
+    //DCASGD, SGLD, Ftrl, Adamax
+
+    NesterovOptimizer implements OptimizerValue = name:"nag" ("{" params:SGDEntry* "}")?;
+
+    interface AdaDeltaEntry extends Entry;
+    AdaDeltaOptimizer implements OptimizerValue = name:"adadelta" ("{" params:AdaDeltaEntry* "}")?;
+
+    interface GeneralOptimizerEntry extends SGDEntry,AdamEntry,RmsPropEntry,AdaGradEntry,AdaDeltaEntry;
+
+    LearningRateEntry implements GeneralOptimizerEntry = name:"learning_rate" ":" value:NumberValue;
+    WeightDecayEntry implements GeneralOptimizerEntry = name:"weight_decay" ":" value:NumberValue;
+    LRDecayEntry implements GeneralOptimizerEntry = name:"learning_rate_decay" ":" value:NumberValue;
+    LRPolicyEntry implements GeneralOptimizerEntry = name:"learning_rate_policy" ":" value:LRPolicyValue;
+    RescaleGradEntry implements GeneralOptimizerEntry = name:"rescale_grad" ":" value:NumberValue;
+    ClipGradEntry implements GeneralOptimizerEntry = name:"clip_gradient" ":" value:NumberValue;
+    StepSizeEntry implements GeneralOptimizerEntry = name:"step_size" ":" value:IntegerValue;
+
+
+    MomentumEntry implements SGDEntry = name:"momentum" ":" value:NumberValue;
+    Beta1Entry implements AdamEntry = name:"beta1" ":" value:NumberValue;
+    Beta2Entry implements AdamEntry = name:"beta2" ":" value:NumberValue;
+    EpsilonEntry implements AdamEntry,AdaGradEntry,RmsPropEntry,AdaDeltaEntry = name:"epsilon" ":" value:NumberValue;
+    Gamma1Entry implements RmsPropEntry = name:"gamma1" ":" value:NumberValue;
+    Gamma2Entry implements RmsPropEntry = name:"gamma2" ":" value:NumberValue;
+    CenteredEntry implements RmsPropEntry = name:"centered" ":" value:BooleanValue;
+    ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
+    RhoEntry implements AdaDeltaEntry = name:"rho" ":" value:NumberValue;
 
 }

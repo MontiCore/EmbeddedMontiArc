@@ -20,11 +20,8 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.SymbolTableCreator;
-
-import java.util.Optional;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 public class CNNTrainLanguage extends CNNTrainLanguageTOP {
 
@@ -42,6 +39,9 @@ public class CNNTrainLanguage extends CNNTrainLanguageTOP {
     @Override
     protected void initResolvingFilters() {
         super.initResolvingFilters();
+        addResolvingFilter(new CommonResolvingFilter<Symbol>(EntrySymbol.KIND));
+        addResolvingFilter(new CommonResolvingFilter<Symbol>(NameValueSymbol.KIND));
+        addResolvingFilter(new CommonResolvingFilter<Symbol>(ValueSymbol.KIND));
         setModelNameCalculator(new CNNTrainModelNameCalculator());
     }
 

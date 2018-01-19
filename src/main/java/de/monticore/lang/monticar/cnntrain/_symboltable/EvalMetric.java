@@ -18,28 +18,49 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._ast;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import java.util.List;
-
-public class ASTTrainingConfiguration extends ASTTrainingConfigurationTOP {
-
-    public ASTTrainingConfiguration() {
-    }
-
-    public ASTTrainingConfiguration(List<ASTParameterAssignment> assignments) {
-        super(assignments);
-    }
-
-    public ASTParameterRhs get(String lhsName) {
-        ASTParameterRhs rhs = null;
-        lhsName = lhsName.replace("_", "");
-        for (ASTParameterAssignment assignment : getAssignments()) {
-            String assignmentLhs = assignment.getLhs().name();
-            if (assignmentLhs.equalsIgnoreCase(lhsName)) {
-                rhs =  assignment.getRhs();
-            }
+public enum EvalMetric {
+    ACCURACY{
+        @Override
+        public String toString() {
+            return "accuracy";
         }
-        return rhs;
+    },
+    CROSS_ENTROPY{
+        @Override
+        public String toString() {
+            return "crossEntropy";
+        }
+    },
+    F1{
+        @Override
+        public String toString() {
+            return "f1";
+        }
+    },
+    MAE{
+        @Override
+        public String toString() {
+            return "mae";
+        }
+    },
+    MSE{
+        @Override
+        public String toString() {
+            return "mse";
+        }
+    },
+    RMSE{
+        @Override
+        public String toString() {
+            return "rmse";
+        }
+    },
+    TOP_K_ACCURACY{
+        @Override
+        public String toString() {
+            return "topKAccuracy";
+        }
     }
 }

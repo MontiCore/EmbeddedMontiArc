@@ -24,7 +24,7 @@ import de.monticore.lang.monticar.cnntrain.AbstractSymtabTest;
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.TrainingConfigurationSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -48,8 +48,8 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
     protected static ASTCNNTrainNode getAstNode(String modelPath, String model) {
 
         Scope symTab = createSymTab(MODEL_PATH + modelPath);
-        CNNTrainCompilationUnitSymbol comp = symTab.<CNNTrainCompilationUnitSymbol> resolve(
-                model, CNNTrainCompilationUnitSymbol.KIND).orElse(null);
+        TrainingConfigurationSymbol comp = symTab.<TrainingConfigurationSymbol> resolve(
+                model, TrainingConfigurationSymbol.KIND).orElse(null);
         assertNotNull("Could not resolve model " + model, comp);
 
         return (ASTCNNTrainNode) comp.getAstNode().get();

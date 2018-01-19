@@ -1,8 +1,7 @@
-Configuration DuplicatedParameter{
-     data="./data/mnist_train"
-     epochs = 5
-     batch_size = 100
-     optimizer = "adam"
-     learning_rate = 0.001
-     batch_size = 100
+configuration DuplicatedParameter{
+     train_data:"./data/mnist_train"
+     num_epoch : 5
+     batch_size : 100
+     optimizer : adam
+     batch_size : 100
  }

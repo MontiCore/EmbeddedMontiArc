@@ -18,51 +18,29 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._ast;
+package de.monticore.lang.monticar.cnntrain._cocos;
 
-import siunit.monticoresiunit.si._ast.ASTNumber;
+import de.monticore.lang.monticar.cnntrain._ast.ASTIntegerValue;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.se_rwth.commons.logging.Log;
+import org.jscience.mathematics.number.Rational;
 
 import java.util.Optional;
 
-public class ASTParameterRhs extends ASTParameterRhsTOP {
-
-    private boolean containsBoolean;
-
-    public ASTParameterRhs() {
-    }
-
-    public ASTParameterRhs(String stringVal, ASTNumber number, String refOrBool) {
-        super(stringVal, number, refOrBool);
-    }
+public class CheckInteger implements CNNTrainASTIntegerValueCoCo {
 
     @Override
-    public void setRefOrBool(String refOrBool) {
-        if (refOrBool.equalsIgnoreCase("true")
-                || refOrBool.equalsIgnoreCase("false")){
-            containsBoolean = true;
-            super.setRefOrBool(refOrBool.toLowerCase());
+    public void check(ASTIntegerValue node) {
+        Optional<ASTUnitNumber> unitNumber = node.getNumber().getUnitNumber();
+        if (unitNumber.isPresent()){
+            Rational number = unitNumber.get().getNumber().get();
+            if (number.getDivisor().intValue() != 1){
+                Log.error("0xC8851 Value has to be an integer."
+                        , node.get_SourcePositionStart());
+            }
         }
         else {
-            containsBoolean = false;
-            super.setRefOrBool(refOrBool);
-        }
-    }
-
-    public Optional<String> getRef(){
-        if (containsBoolean) {
-            return Optional.empty();
-        }
-        else {
-            return getRefOrBool();
-        }
-    }
-
-    public Optional<String> getBooleanVal(){
-        if (containsBoolean) {
-            return getRefOrBool();
-        }
-        else {
-            return Optional.empty();
+            throw new IllegalStateException("integer check");
         }
     }
 
