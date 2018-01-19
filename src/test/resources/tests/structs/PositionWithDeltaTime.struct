@@ -1,0 +1,6 @@
+package tests.structs;
+
+struct PositionWithDeltaTime{
+  Q(0:ooms) deltaTime;
+  Position position;
+}
