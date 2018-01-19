@@ -60,14 +60,14 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
         // imports
         List<ImportStatement> imports = new ArrayList<>();
-        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatements()) {
+        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatementList()) {
             String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportList());
             ImportStatement importStatement = new ImportStatement(qualifiedImport,
                     astImportStatement.isStar());
             imports.add(importStatement);
         }
         String package2 = "";
-        if (compilationUnit.r__packageIsPresent()) {
+        if (compilationUnit.isR__packagePresent()) {
             package2 = Names.getQualifiedName(compilationUnit.getPackage().getParts());
         }
         ArtifactScope artifactScope = new ArtifactScope(
@@ -92,17 +92,17 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         MatrixSymbol sym = new MatrixSymbol(name);
 
         //Creating the Dimensions
-        if (type.dimIsPresent()) {
-            if (type.getDim().vecDimIsPresent()) {
+        if (type.isDimPresent()) {
+            if (type.getDim().isVecDimPresent()) {
                 Optional<ASTNumberWithUnit> number = evaluate(type.getDim().getVecDim()); // evaluate(type.getDim().getVecDim());
                 // calculate dim
                 sym.setCol(testDimension(number, pos));
                 sym.setRow(1); // have a row vector
             } else {
-                if (type.getDim().getMatrixDim().size() > 2) {
+                if (type.getDim().getMatrixDimList().size() > 2) {
                     Log.error("0xMATH15: Dimension can just contains maximal two numbers", pos);
                 }
-                if (type.getDim().getMatrixDim().isEmpty()) {
+                if (type.getDim().getMatrixDimList().isEmpty()) {
                     Log.error("0xMATH16: Dimension cannot be empty", pos);
                 }
                 Optional<ASTNumberWithUnit> numberCol = evaluate(type.getDim().getMatrixDim(0)); // evaluate(type.getDim().getMatrixDim(0));
@@ -122,7 +122,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
         //Creating the Min Max and Steps
         //ElementType with ranges
-        if (type.getElementType().rangesIsPresent()) {
+        if (type.getElementType().isRangesPresent()) {
 
             Optional<ASTNumberWithUnit> numberMin = evaluate(type.getElementType().getRanges().getMin());
             sym.setMin(testElementType(numberMin, pos));
@@ -132,7 +132,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 Log.error("0xMATH17: Min cannot be bigger than Max", pos);
             }
 
-            if (type.getElementType().getRanges().stepIsPresent()) {
+            if (type.getElementType().getRanges().isStepPresent()) {
                 Optional<ASTNumberWithUnit> numberStep = evaluate(type.getElementType().getRanges().getStep());
                 sym.setMin(testElementType(numberStep, pos));
                 if (testElementType(numberMax, pos).get() - testElementType(numberMin, pos).get() < testElementType(numberStep, pos).get()) {

@@ -75,7 +75,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	"for" head:MathForLoopHead body:Expression+ "end";
 
     MathForLoopHead =
-    	Name "=" Expression;
+    	Name "=" (NameExpression | Expression);
 
 //if  and else conditions
     MathConditionalExpression implements Expression<40> =

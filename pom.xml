@@ -91,20 +91,20 @@
       <groupId>de.monticore</groupId>
       <artifactId>monticore-runtime</artifactId>
       <!-- <version>${monticore.version}</version> -->
-      <version>4.5.5-20180110.184627-11</version>
+      <version>${monticore.version}</version>
     </dependency>
 
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
-      <version>4.5.5-20180110.184626-11</version>
+      <version>${monticore.version}</version>
       <!-- <version>${monticore.version}</version> -->
     </dependency>
 
     <dependency>
       <groupId>de.monticore</groupId>
       <artifactId>monticore-grammar</artifactId>
-      <version>4.5.5-20180110.184626-11</version>
+      <version>${monticore.version}</version>
       <!-- <version>${monticore.version}</version> -->
       <classifier>${grammars.classifier}</classifier>
       <scope>provided</scope>
@@ -187,7 +187,7 @@
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
         <!-- <version>${monticore.plugin}</version> -->
-        <version>4.5.5-20180110.184629-11</version>
+        <version>${monticore.plugin}</version>
         <configuration>
           <skip>false</skip>
           <script>script.groovy</script>

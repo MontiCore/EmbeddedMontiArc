@@ -32,22 +32,22 @@ public class MatrixSymbol extends CommonSymbol {
     // number like `2` is dimension 1x1
     int row = 1;
     int col = 1;
-    Optional<Double> min = Optional.empty();
-    Optional<Double> max = Optional.empty();
-    Optional<Double> step = Optional.empty();
+    Optional<Double> minDimension = Optional.empty();
+    Optional<Double> maxDimension = Optional.empty();
+    Optional<Double> stepDimension = Optional.empty();
     boolean isComplex = false;
 
     public MatrixSymbol(String name) {
         super(name, KIND);
     }
 
-    public MatrixSymbol(String name, int row, int col, Optional<Double> min, Optional<Double> max, Optional<Double> step, boolean isComplex) {
+    public MatrixSymbol(String name, int row, int col, Optional<Double> minDimension, Optional<Double> maxDimension, Optional<Double> stepDimension, boolean isComplex) {
         this(name);
         this.row = row;
         this.col = col;
-        this.min = min;
-        this.max = max;
-        this.step = step;
+        this.minDimension = minDimension;
+        this.maxDimension = maxDimension;
+        this.stepDimension = stepDimension;
         this.isComplex = isComplex;
     }
 
@@ -68,27 +68,27 @@ public class MatrixSymbol extends CommonSymbol {
     }
 
     public Optional<Double> getMin() {
-        return min;
+        return minDimension;
     }
 
     public void setMin(Optional<Double> min) {
-        this.min = min;
+        this.minDimension = minDimension;
     }
 
     public Optional<Double> getMax() {
-        return max;
+        return maxDimension;
     }
 
     public void setMax(Optional<Double> max) {
-        this.max = max;
+        this.maxDimension = maxDimension;
     }
 
     public Optional<Double> getStep() {
-        return step;
+        return stepDimension;
     }
 
     public void setStep(Optional<Double> step) {
-        this.step = step;
+        this.stepDimension = stepDimension;
     }
 
     public boolean isComplex() {
@@ -98,7 +98,6 @@ public class MatrixSymbol extends CommonSymbol {
     public void setComplex(boolean complex) {
         isComplex = complex;
     }
-
 
     public static class MatrixSymbolKind implements SymbolKind {
 

@@ -22,30 +22,11 @@ package de.monticore.lang.math.math;
 
 import org.junit.Test;
 
-import static de.monticore.lang.math.math.SymbolTableTestHelper.createSymbolTableOnInputAndExpectErrorCode;
-
-
-
-public class ElementTypeTest {
+public class ASTTest {
 
     @Test
-    public void testElementTypeMinBiggerThanMax() throws Exception {
-        createSymbolTableOnInputAndExpectErrorCode("script S Q(8:4) a; end", "0xMATH17");
-    }
+    public void ASTComplexTest(){
 
-    @Test
-    public void testElementTypeTooBigSteps() throws Exception {
-        createSymbolTableOnInputAndExpectErrorCode("script S Q(1:20:10) a; end", "0xMATH19");
     }
-
-//    @Test
-//    public void testElementTypeComplex() throws Exception {
-//        createSymbolTableOnInputAndExpectErrorCode("script S Q(1+3i : 5+4i) a; end", "0xMATH18");
-//    }
-//
-//    @Test
-//    public void testElementTypeInfinity() throws Exception {
-//        createSymbolTableOnInputAndExpectErrorCode("script S Q(1:oo) a; end", "0xMATH18");
-//    }
 
 }

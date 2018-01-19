@@ -27,8 +27,8 @@ script ForLoop2
 
   for i = c
    for j = c
-     y+=j*i
-     z += c(x+0)
+     y+=j*i ;
+     z += c(x+0);
     end
    x+=1;
   end

@@ -59,7 +59,7 @@ script SteeringAngleCalculator
      Q angle = acos(cosineAngle);
 
      if (v1 > 0)
-         orientationOfTrajectory = -angle;
+         orientationOfTrajectory = -1 * angle;
      else
          orientationOfTrajectory = angle;
      end
@@ -72,7 +72,7 @@ script SteeringAngleCalculator
      //correct angle
      if (finalAngle > M_PI)
          finalAngle -= 2 * M_PI;
-     elseif (finalAngle < -M_PI)
+     elseif (finalAngle < -1 * M_PI)
           finalAngle += 2 * M_PI;
      end
 
@@ -85,5 +85,5 @@ script SteeringAngleCalculator
         elseif angle > maxSteeringAngle
             angle = maxSteeringAngle;
         end
-        newSteeringAngle = -angle;
+        newSteeringAngle = -1 *angle;
 end

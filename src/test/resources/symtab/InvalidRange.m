@@ -36,7 +36,7 @@ Q(-5:-3) c = 2;
 
 // 3
 // with MathValueReference
-Q(-4:3) d = 3;
+Q(-4:3) d = 1 ^ 2;
 Q(0:10) e = d ^ 2;
 
 // with multiplied ranges

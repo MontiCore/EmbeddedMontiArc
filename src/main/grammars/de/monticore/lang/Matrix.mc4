@@ -12,5 +12,5 @@ component grammar Matrix extends de.monticore.ExpressionsBasis  {
     	doubleDot:":" | Expression;
 
     MathVectorExpression  implements Expression<210>   =
-    	Expression ":" Expression (":" Expression)?;
+    	start:Expression ":" ( steps:Expression ":")? end:Expression ;
 }
