@@ -28,7 +28,7 @@ grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.lang.mont
     ("package" package:(Name& || ".")+ ";")?
     ComponentStreamUnits;
 
-  symbol scope ComponentStreamUnits = "stream" Name "for" componentName:Name  "{"
+  symbol scope ComponentStreamUnits = "stream" Name "for" componentName:Name /*typeParams:TypeParameters?*/  "{"
     NamedStreamUnits+
   "}";
 
