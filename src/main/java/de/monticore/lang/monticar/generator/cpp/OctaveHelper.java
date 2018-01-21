@@ -1,6 +1,10 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.MathParenthesisExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.MathValueExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
@@ -8,7 +12,6 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
-import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -153,7 +156,8 @@ public class OctaveHelper {
             return "Double";
         else if (mathExpressionSymbol.isNameExpression()) {
             Variable variable = ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable(((MathNameExpressionSymbol) mathExpressionSymbol).getNameToResolveValue());
-            return variable.getVariableType().getTypeNameTargetLanguage();
+            String typeName = variable.getVariableType().getTypeNameTargetLanguage();
+            return typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
         } else {
             Log.error("OctaveHelper Case not handled!");
         }

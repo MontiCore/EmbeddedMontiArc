@@ -12,6 +12,7 @@ import org.junit.Assert;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,14 @@ public class AbstractSymtabTest extends AbstractSymtab {
             File fileTarget = new File("./src/test/resources/results/" + restPath + f.getName());
             Log.debug("" + fileTarget.exists(), "Exists");
             Log.debug(f.getName() + " " + fileTarget.getName(), "Comparing");
+            assertTrue(areBothFilesEqual(f, fileTarget));
+        }
+    }
+
+    public static void checkFilesAreEqual(List<File> generatedFiles, Path generatedFilesBasePath, String resultsPath) {
+        for (File f : generatedFiles) {
+            Path relativePath = generatedFilesBasePath.relativize(f.toPath());
+            File fileTarget = new File("./src/test/resources/results/" + resultsPath + relativePath.toString());
             assertTrue(areBothFilesEqual(f, fileTarget));
         }
     }
