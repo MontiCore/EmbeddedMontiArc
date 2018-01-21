@@ -11,10 +11,10 @@ component ComplexMatrixRightMultiplicationAddition2{
         Q^{200,1000} a = mat1;
         Q^{200,1000} b = mat1;
         Q^{200,1000} c = a;
-        Q^{200,1000} d = b;
+        Q^{200,1000} matd = b;
 
 
-        matOut = mat2 * c + mat4 * d;
+        matOut = mat2 * c + mat4 * matd;
     }
 
 }

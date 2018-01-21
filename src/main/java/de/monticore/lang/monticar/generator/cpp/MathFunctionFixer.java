@@ -17,7 +17,9 @@ import de.se_rwth.commons.logging.Log;
 public class MathFunctionFixer {
     public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         boolean notHandled = true;
-        if (mathExpressionSymbol.isAssignmentExpression()) {
+        if (mathExpressionSymbol == null) {
+            notHandled = false;
+        } else if (mathExpressionSymbol.isAssignmentExpression()) {
             fixMathFunctions((MathAssignmentExpressionSymbol) mathExpressionSymbol, bluePrintCPP);
             notHandled = false;
         } else if (mathExpressionSymbol.isMatrixExpression()) {
@@ -156,8 +158,8 @@ public class MathFunctionFixer {
         } else {
             MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(mathExpressionSymbol.getNameToAccess());
             if (mathCommand != null) {
-                if(MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
-                bluePrintCPP.addAdditionalIncludeString("Helper");
+                if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+                    bluePrintCPP.addAdditionalIncludeString("Helper");
                 mathCommand.convert(mathExpressionSymbol, bluePrintCPP);
             }
             if (fixForLoopAccess(mathExpressionSymbol, variable, bluePrintCPP)) {

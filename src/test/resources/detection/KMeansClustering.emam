@@ -9,7 +9,7 @@ component KMeansClustering<N1 n=1, N1 amountVectors=1, N1 maximumClusters=1>{
             Q^{n,amountVectors} UMatrix;
             for i=1:size(vectors,1)
                 Q^{1,amountVectors} target= vectors(i,:) .^ 2;
-                Q amount = sqrt(sum(target ));
+                Q amount = sqrt(sum(target));
                 UMatrix(i,:) = vectors(i,:) ./ amount;
             end
 

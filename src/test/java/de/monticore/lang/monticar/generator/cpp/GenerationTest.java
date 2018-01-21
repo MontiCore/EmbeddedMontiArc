@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
  */
 public class GenerationTest extends AbstractSymtabTest {
 
-    @Ignore
+
     @Test
     public void testBasicConstantAssignment() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
@@ -46,7 +46,22 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testConstantAssignment");
-        generatorCPP.generateFiles(componentSymbol, symtab);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "testConstantAssignment/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
+    public void testBasicConstantAssignment2() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment2", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testConstantAssignment2");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "testConstantAssignment2/";
+        testFilesAreEqual(files, restPath);
     }
 
     @Test

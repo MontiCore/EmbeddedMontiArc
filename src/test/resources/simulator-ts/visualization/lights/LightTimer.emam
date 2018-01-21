@@ -1,0 +1,12 @@
+package lights;
+
+component LightTimer {
+    port
+        in (0s:oos) time,
+        out B status;
+
+    implementation Math {
+
+        status = time > 1s;
+    }
+}

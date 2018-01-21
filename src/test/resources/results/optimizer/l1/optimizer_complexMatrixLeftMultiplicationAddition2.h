@@ -23,7 +23,7 @@ void execute()
 Matrix a = mat1;
 Matrix b = mat1;
 Matrix c = a;
-Matrix d = b;
+Matrix matd = b;
 matOut = mat1*(mat2+mat4);
 }
 

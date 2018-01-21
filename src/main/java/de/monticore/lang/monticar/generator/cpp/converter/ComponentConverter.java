@@ -66,7 +66,7 @@ public class ComponentConverter {
     public static void addVariables(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint) {
         //add parameters as variables
         for (EMAVariable variable : componentSymbol.getParameters()) {
-            System.out.println("EMAVAR: " + variable.getName() + " " + variable.getType().toString());
+            Log.debug("EMAVAR: " + variable.getName() + " " + variable.getType().toString(), "ComponentConverter");
             Variable var = new Variable();
             var.setName(variable.getName());
             var.setTypeNameMontiCar(variable.getType());
@@ -106,7 +106,7 @@ public class ComponentConverter {
         for (ExpandedComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
             String parameterString = "";
             for (ASTExpression var : subComponent.getArguments()) {
-                System.out.println(var.toString());
+                Log.debug(var.toString(),"ComponentConverter");
                 parameterString += getExpressionParameterConversion(var);
             }
             String result = "";
