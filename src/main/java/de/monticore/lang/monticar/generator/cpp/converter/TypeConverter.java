@@ -152,6 +152,25 @@ public class TypeConverter {
     }
 
     public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
+        Optional<VariableType> getDefaultType = getNonPrimitiveVariableType(typeNameMontiCar, variable, portSymbol);
+        if (getDefaultType.isPresent())
+            return getDefaultType;
+        MCTypeSymbol s = portSymbol.getTypeReference().getReferencedSymbol();
+        String fullName = s.getFullName();
+        if (typeNameMontiCar != null && (typeNameMontiCar.equals(s.getName()) || typeNameMontiCar.equals(fullName))) {
+            String cppName = Utils.getIncludeName(s);
+            String includeName = TypesGeneratorCPP.TYPES_DIRECTORY_NAME + "/" + cppName;
+            typeSymbols.add(s);
+            VariableType vt = new VariableType(fullName, cppName, includeName);
+            addNonPrimitiveVariableType(vt);
+            return Optional.of(vt);
+        }
+        Log.info(typeNameMontiCar, "Unknown Type:");
+        //Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
+        return Optional.empty();
+    }
+
+    public static Optional<VariableType> getNonPrimitiveVariableType(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
         for (VariableType variableType : nonPrimitiveVariableTypes) {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
@@ -168,19 +187,6 @@ public class TypeConverter {
                 return Optional.of(variableType);
             }
         }
-        MCTypeSymbol s = portSymbol.getTypeReference().getReferencedSymbol();
-        String name = s.getName();
-        String fullName = s.getFullName();
-        if (typeNameMontiCar != null && (typeNameMontiCar.equals(name) || typeNameMontiCar.equals(fullName))) {
-            String cppName = Utils.getIncludeName(s);
-            String includeName = TypesGeneratorCPP.TYPES_DIRECTORY_NAME + "/" + cppName;
-            typeSymbols.add(s);
-            VariableType vt = new VariableType(fullName, cppName, includeName);
-            addNonPrimitiveVariableType(vt);
-            return Optional.of(vt);
-        }
-        Log.info(typeNameMontiCar, "Unknown Type:");
-        //Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
         return Optional.empty();
     }
 

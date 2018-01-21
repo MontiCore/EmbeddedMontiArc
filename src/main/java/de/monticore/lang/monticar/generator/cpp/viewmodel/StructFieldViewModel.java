@@ -41,22 +41,26 @@ public class StructFieldViewModel extends ViewModelBase {
         vm.setName(s.getName());
         MCTypeSymbol ts = s.getType().getReferencedSymbol();
         String fullName = ts.getFullName();
-        if ("Q".equals(fullName)) {
-            vm.setType("double");
-            vm.setInitializer("0.0");
-        } else if ("B".equals(fullName)) {
-            vm.setType("bool");
-            vm.setInitializer("false");
-        } else if ("Z".equals(fullName)) {
-            vm.setType("int");
-            vm.setInitializer("0");
-        } else if (ts instanceof StructSymbol) {
-            vm.setType(Utils.getIncludeName(ts));
-        } else if (ts instanceof EnumDeclarationSymbol) {
-            vm.setType(Utils.getIncludeName(ts));
-        } else {
-            Log.error("unknown type: " + ts.getFullName());
-        }
+        handleCases(vm, fullName, ts);
         return vm;
+    }
+
+    public static void handleCases(StructFieldViewModel viewModel, String fullName, MCTypeSymbol typeSymbol) {
+        if ("Q".equals(fullName)) {
+            viewModel.setType("double");
+            viewModel.setInitializer("0.0");
+        } else if ("B".equals(fullName)) {
+            viewModel.setType("bool");
+            viewModel.setInitializer("false");
+        } else if ("Z".equals(fullName)) {
+            viewModel.setType("int");
+            viewModel.setInitializer("0");
+        } else if (typeSymbol instanceof StructSymbol) {
+            viewModel.setType(Utils.getIncludeName(typeSymbol));
+        } else if (typeSymbol instanceof EnumDeclarationSymbol) {
+            viewModel.setType(Utils.getIncludeName(typeSymbol));
+        } else {
+            Log.error("unknown type: " + typeSymbol.getFullName());
+        }
     }
 }
