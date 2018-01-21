@@ -9,7 +9,7 @@ import de.monticore.symboltable.Scope;
 import java.util.HashMap;
 
 //TODO: better exceptions
-public class yamlHelper {
+public class YamlHelper {
 
     private static HashMap<String, RosTopic> uniqueTopics = new HashMap<>();
 

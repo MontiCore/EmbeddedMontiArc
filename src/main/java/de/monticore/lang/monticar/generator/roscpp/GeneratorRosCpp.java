@@ -64,7 +64,6 @@ public class GeneratorRosCpp {
         List<FileContent> fileContents = new ArrayList<>();
 
         fileContents.add(generateRosCompUnit(symbol));
-        fileContents.add(generateHelperStub(symbol));
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath(generationTargetPath);
@@ -75,34 +74,6 @@ public class GeneratorRosCpp {
         fileContents.forEach(fc -> fc.setFileContent(fc.getFileContent().replace("armadillo.h", "armadillo")));
 
         return fileContents;
-    }
-
-    private FileContent generateHelperStub(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        FileContent helperFileContent = new FileContent();
-        helperFileContent.setFileName("MsgPortHelper.h");
-        StringBuilder builder = new StringBuilder();
-
-        LanguageUnitRosCppHelper languageUnitRosCppHelper = new LanguageUnitRosCppHelper();
-        languageUnitRosCppHelper.addSymbolToConvert(componentInstanceSymbol);
-        languageUnitRosCppHelper.generateBluePrints();
-        //TODO: unsafe
-        BluePrint currentBluePrint = languageUnitRosCppHelper.getBluePrints().get(0);
-        builder.append("#pragma once\n");
-        //imports
-        Set<String> importStringSet = new HashSet<>();
-        //make sure imports are only defined once in this helper
-        DataHelper.getTopics().forEach(t -> importStringSet.add("<" + t.getImportString() + ".h>"));
-        importStringSet.forEach(i -> builder.append("#include " + i + "\n"));
-
-        //class
-        builder.append("class MsgPortHelper{\n\tpublic:\n");
-
-        currentBluePrint.getMethods().forEach(method -> builder.append(printMethod(method)));
-
-        builder.append("};");
-
-        helperFileContent.setFileContent(builder.toString());
-        return helperFileContent;
     }
 
     private FileContent generateRosCompUnit(ExpandedComponentInstanceSymbol componentSymbol) {

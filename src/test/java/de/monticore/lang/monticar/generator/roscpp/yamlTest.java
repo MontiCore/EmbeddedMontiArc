@@ -27,7 +27,7 @@ public class yamlTest extends AbstractSymtabTest {
         List<RosTag> tags = reader.readYAML("src/test/resources/tests/config/config.yaml");
         assertTrue(tags.size() == 1);
 
-        yamlHelper.rosTagToDataHelper(symtab, tags.get(0));
+        YamlHelper.rosTagToDataHelper(symtab, tags.get(0));
 
         generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
 
