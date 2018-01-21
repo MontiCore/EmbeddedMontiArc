@@ -8,6 +8,8 @@ import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.MathCommandRegister;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -16,6 +18,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +43,7 @@ public class GeneratorCPP implements Generator {
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
         useOctaveBackend();
+        TypeConverter.clearTypeSymbols();
     }
 
     public void useArmadilloBackend() {
@@ -136,6 +140,7 @@ public class GeneratorCPP implements Generator {
     public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol,
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+        fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
         if (isGenerateTests()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
             fileContents.addAll(g.generateStreamTests(symtab));
@@ -272,5 +277,10 @@ public class GeneratorCPP implements Generator {
 
     public List<BluePrintCPP> getBluePrints() {
         return Collections.unmodifiableList(bluePrints);
+    }
+
+    private static List<FileContent> generateTypes(Collection<MCTypeSymbol> typeSymbols) {
+        TypesGeneratorCPP tg = new TypesGeneratorCPP();
+        return tg.generateTypes(typeSymbols);
     }
 }

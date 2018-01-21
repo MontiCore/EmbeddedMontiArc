@@ -6,11 +6,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymb
 import de.monticore.lang.math.math._ast.ASTAssignmentType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.types2._ast.ASTType;
-import de.se_rwth.commons.logging.Log;
-
-import javax.sound.sampled.Port;
 
 /**
  * @author Sascha Schneiders
@@ -91,7 +90,8 @@ public class PortConverter {
     }
 
     private static void addVariableProperties(PortSymbol portSymbol, Variable variable) {
-        if (portSymbol.getTypeReference().getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
+        MCTypeReference<? extends MCTypeSymbol> typeRef = portSymbol.getTypeReference();
+        if (typeRef.existsReferencedSymbol() && typeRef.getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
             MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
             ASTType astType = typeSymbolReference.getAstType();
             if (astType instanceof ASTAssignmentType) {

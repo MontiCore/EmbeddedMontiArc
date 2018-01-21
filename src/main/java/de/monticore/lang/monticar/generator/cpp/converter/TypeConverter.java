@@ -13,14 +13,18 @@ import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.VariableType;
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
+import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * This is used to convert port types to their cpp equivalent
@@ -29,12 +33,8 @@ import java.util.Optional;
  */
 public class TypeConverter {
     private static List<VariableType> nonPrimitiveVariableTypes = new ArrayList<>();
+    private static Set<MCTypeSymbol> typeSymbols = new HashSet<>();
 
-
-    @Deprecated
-    public static boolean isNonPrimitiveVariableTypeName(String typeName) {
-        return nonPrimitiveVariableTypes.contains(typeName);
-    }
 
     public static void addNonPrimitiveVariableType(String typeNameMontiCar, String typeNameTargetLanguage, String includeName) {
         nonPrimitiveVariableTypes.add(new VariableType(typeNameMontiCar, typeNameTargetLanguage, includeName));
@@ -147,6 +147,25 @@ public class TypeConverter {
     }
 
     public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
+        Optional<VariableType> getDefaultType = getNonPrimitiveVariableType(typeNameMontiCar, variable, portSymbol);
+        if (getDefaultType.isPresent())
+            return getDefaultType;
+        MCTypeSymbol s = portSymbol.getTypeReference().getReferencedSymbol();
+        String fullName = s.getFullName();
+        if (typeNameMontiCar != null && (typeNameMontiCar.equals(s.getName()) || typeNameMontiCar.equals(fullName))) {
+            String cppName = Utils.getIncludeName(s);
+            String includeName = TypesGeneratorCPP.TYPES_DIRECTORY_NAME + "/" + cppName;
+            typeSymbols.add(s);
+            VariableType vt = new VariableType(fullName, cppName, includeName);
+            addNonPrimitiveVariableType(vt);
+            return Optional.of(vt);
+        }
+        Log.info(typeNameMontiCar, "Unknown Type:");
+        //Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
+        return Optional.empty();
+    }
+
+    public static Optional<VariableType> getNonPrimitiveVariableType(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
         for (VariableType variableType : nonPrimitiveVariableTypes) {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
@@ -163,8 +182,6 @@ public class TypeConverter {
                 return Optional.of(variableType);
             }
         }
-        Log.info(typeNameMontiCar, "Unknown Type:");
-        //Log.error("0xUNPOTYFOBYGE Unknown Port Type found by generator");
         return Optional.empty();
     }
 
@@ -229,6 +246,14 @@ public class TypeConverter {
         type.setTypeNameTargetLanguage(targetLanguageTypeName);
         type.setIncludeName(MathConverter.curBackend.getIncludeHeaderName());
         return type;
+    }
+
+    public static void clearTypeSymbols() {
+        typeSymbols = new HashSet<>();
+    }
+
+    public static Set<MCTypeSymbol> getTypeSymbols() {
+        return Collections.unmodifiableSet(typeSymbols);
     }
 
     static {

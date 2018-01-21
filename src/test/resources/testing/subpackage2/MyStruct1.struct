@@ -1,0 +1,7 @@
+package testing.subpackage2;
+
+struct MyStruct1 {
+    Q f1;
+    B f2;
+    MyStruct2 f3;
+}

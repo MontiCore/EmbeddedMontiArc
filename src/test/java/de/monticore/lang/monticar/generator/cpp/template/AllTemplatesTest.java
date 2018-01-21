@@ -1,7 +1,10 @@
 package de.monticore.lang.monticar.generator.cpp.template;
 
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.EnumViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.StreamViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.StructFieldViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.StructViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.TestsMainEntryViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.check.BooleanOutputPortCheck;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.check.ComponentCheckViewModel;
@@ -12,6 +15,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class AllTemplatesTest {
 
@@ -94,6 +98,80 @@ public class AllTemplatesTest {
                 "REQUIRE( component.out5 <= 0.0 );",
                 "REQUIRE_FALSE( component.out1 );",
                 "#endif",
+        };
+        for (String f : expectedFragments) {
+            Assert.assertTrue("fragment " + f + " was expected", result.contains(f));
+        }
+    }
+
+    @Test
+    public void testGenerateEnum() {
+        EnumViewModel vm = new EnumViewModel();
+        vm.setIncludeName("de_project_modeling_autopilot_TestEnum");
+        vm.setConstants(Arrays.asList(
+                "UNO", "DOS", "TRES"
+        ));
+        String result = AllTemplates.generateEnum(vm);
+        Assert.assertNotNull(result);
+        String[] expectedFragments = new String[]{
+                "#ifndef DE_PROJECT_MODELING_AUTOPILOT_TESTENUM",
+                "#define DE_PROJECT_MODELING_AUTOPILOT_TESTENUM",
+                "#endif",
+                "enum de_project_modeling_autopilot_TestEnum {",
+                "UNO",
+                "DOS",
+                "TRES"
+        };
+        for (String f : expectedFragments) {
+            Assert.assertTrue("fragment " + f + " was expected", result.contains(f));
+        }
+    }
+
+    @Test
+    public void testGenerateStruct() {
+        StructViewModel vm = new StructViewModel();
+        vm.setIncludeName("de_project_modeling_autopilot_TestStruct1");
+        vm.setAdditionalIncludes(new HashSet<>(Arrays.asList(
+                "de_project_modeling_autopilot_TestEnum1",
+                "de_project_modeling_autopilot_TestStruct2"
+        )));
+        vm.setFields(new ArrayList<>());
+        StructFieldViewModel f1 = new StructFieldViewModel();
+        f1.setName("field1");
+        f1.setType("double");
+        f1.setInitializer("0.0");
+        vm.getFields().add(f1);
+        StructFieldViewModel f2 = new StructFieldViewModel();
+        f2.setName("field2");
+        f2.setType("bool");
+        f2.setInitializer("false");
+        vm.getFields().add(f2);
+        StructFieldViewModel f3 = new StructFieldViewModel();
+        f3.setName("field3");
+        f3.setType("int");
+        f3.setInitializer("0");
+        vm.getFields().add(f3);
+        StructFieldViewModel f4 = new StructFieldViewModel();
+        f4.setName("field4");
+        f4.setType("de_project_modeling_autopilot_TestEnum1");
+        vm.getFields().add(f4);
+        StructFieldViewModel f5 = new StructFieldViewModel();
+        f5.setName("field5");
+        f5.setType("de_project_modeling_autopilot_TestStruct2");
+        vm.getFields().add(f5);
+        String result = AllTemplates.generateStruct(vm);
+        Assert.assertNotNull(result);
+        String[] expectedFragments = new String[]{
+                "#ifndef DE_PROJECT_MODELING_AUTOPILOT_TESTSTRUCT1",
+                "#define DE_PROJECT_MODELING_AUTOPILOT_TESTSTRUCT1",
+                "#endif",
+                "include \"de_project_modeling_autopilot_TestEnum1.h\"",
+                "include \"de_project_modeling_autopilot_TestStruct2.h\"",
+                "struct de_project_modeling_autopilot_TestStruct1 {",
+                "double field1 = 0.0;",
+                "bool field2 = false;",
+                "de_project_modeling_autopilot_TestEnum1 field4;",
+                "de_project_modeling_autopilot_TestStruct2 field5;"
         };
         for (String f : expectedFragments) {
             Assert.assertTrue("fragment " + f + " was expected", result.contains(f));
