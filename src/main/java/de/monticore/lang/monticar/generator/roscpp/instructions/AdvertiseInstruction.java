@@ -10,4 +10,11 @@ public class AdvertiseInstruction extends TargetCodeInstruction {
     public AdvertiseInstruction(Variable publisher, RosTopic rosTopic) {
         this.instruction = publisher.getNameTargetLanguageFormat() + " = node_handle.advertise<" + rosTopic.getFullRosType() + ">(\"" + rosTopic.getName() + "\"," + MSG_QUEUE_SIZE + ");";
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof AdvertiseInstruction)) return false;
+
+        return getTargetLanguageInstruction().equals(((AdvertiseInstruction) other).getTargetLanguageInstruction());
+    }
 }
