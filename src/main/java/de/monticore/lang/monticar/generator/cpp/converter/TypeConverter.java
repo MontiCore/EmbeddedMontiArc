@@ -36,11 +36,6 @@ public class TypeConverter {
     private static Set<MCTypeSymbol> typeSymbols = new HashSet<>();
 
 
-    @Deprecated
-    public static boolean isNonPrimitiveVariableTypeName(String typeName) {
-        return nonPrimitiveVariableTypes.contains(typeName);
-    }
-
     public static void addNonPrimitiveVariableType(String typeNameMontiCar, String typeNameTargetLanguage, String includeName) {
         nonPrimitiveVariableTypes.add(new VariableType(typeNameMontiCar, typeNameTargetLanguage, includeName));
     }

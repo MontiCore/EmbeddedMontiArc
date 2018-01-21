@@ -46,21 +46,42 @@ public class StructFieldViewModel extends ViewModelBase {
     }
 
     public static void handleCases(StructFieldViewModel viewModel, String fullName, MCTypeSymbol typeSymbol) {
-        if ("Q".equals(fullName)) {
-            viewModel.setType("double");
-            viewModel.setInitializer("0.0");
-        } else if ("B".equals(fullName)) {
-            viewModel.setType("bool");
-            viewModel.setInitializer("false");
-        } else if ("Z".equals(fullName)) {
-            viewModel.setType("int");
-            viewModel.setInitializer("0");
-        } else if (typeSymbol instanceof StructSymbol) {
-            viewModel.setType(Utils.getIncludeName(typeSymbol));
-        } else if (typeSymbol instanceof EnumDeclarationSymbol) {
-            viewModel.setType(Utils.getIncludeName(typeSymbol));
+        if (handleDefaultTypeCases(viewModel, fullName)) {
+            //handled if true
+        } else if (handleSpecialTypeCases(viewModel, typeSymbol)) {
+            //handled if true
         } else {
             Log.error("unknown type: " + typeSymbol.getFullName());
         }
+    }
+
+    public static boolean handleDefaultTypeCases(StructFieldViewModel viewModel, String fullName) {
+        boolean handled = false;
+        if ("Q".equals(fullName)) {
+            viewModel.setType("double");
+            viewModel.setInitializer("0.0");
+            handled = true;
+        } else if ("B".equals(fullName)) {
+            viewModel.setType("bool");
+            viewModel.setInitializer("false");
+            handled = true;
+        } else if ("Z".equals(fullName)) {
+            viewModel.setType("int");
+            viewModel.setInitializer("0");
+            handled = true;
+        }
+        return handled;
+    }
+
+    public static boolean handleSpecialTypeCases(StructFieldViewModel viewModel, MCTypeSymbol typeSymbol) {
+        boolean handled = false;
+        if (typeSymbol instanceof StructSymbol) {
+            viewModel.setType(Utils.getIncludeName(typeSymbol));
+            handled = true;
+        } else if (typeSymbol instanceof EnumDeclarationSymbol) {
+            viewModel.setType(Utils.getIncludeName(typeSymbol));
+            handled = true;
+        }
+        return handled;
     }
 }
