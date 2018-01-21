@@ -74,8 +74,7 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
 
         for (PortSymbol portSymbol : DataHelper.getPorts()) {
             if (portSymbol.isIncoming()) {
-                Variable subscriber = DataHelper.getTopicFromPort(portSymbol).orElse(null).getSubscriber().orElse(null);
-                Instruction tmpInstruction = new SubscribeInstruction(classname, portSymbol, DataHelper.getTopicFromPort(portSymbol).orElse(null));
+                Instruction tmpInstruction = new SubscribeInstruction(classname, DataHelper.getTopicFromPort(portSymbol).orElse(null));
                 if (!subInstructions.contains(tmpInstruction)) subInstructions.add(tmpInstruction);
             } else {
                 Variable publisher = DataHelper.getTopicFromPort(portSymbol).orElse(null).getPublisher().orElse(null);

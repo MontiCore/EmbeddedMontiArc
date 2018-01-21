@@ -1,25 +1,10 @@
 package de.monticore.lang.monticar.generator.roscpp.instructions;
 
-import de.monticore.lang.monticar.generator.Instruction;
+import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 
-public class ExecuteComponentInstruction implements Instruction {
-    @Override
-    public String getTargetLanguageInstruction() {
-        return "component.execute();";
-    }
+public class ExecuteComponentInstruction extends TargetCodeInstruction {
 
-    @Override
-    public boolean isConnectInstruction() {
-        return false;
-    }
-
-    @Override
-    public boolean isTargetCodeInstruction() {
-        return true;
-    }
-
-    @Override
-    public boolean isExecuteInstruction() {
-        return false;
+    public ExecuteComponentInstruction() {
+        this.instruction = "component.execute();";
     }
 }
