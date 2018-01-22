@@ -111,7 +111,6 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
                 field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Publisher");
                 rosTopic.setPublisher(field);
                 currBluePrint.addVariable(field);
-                break;
             }
         }
 
