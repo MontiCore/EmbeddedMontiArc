@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 //TODO arrays
 //TODO:implements Generator
@@ -118,9 +116,10 @@ public class GeneratorRosCpp {
         builder.append("#include \"" + componentSymbol.getFullName().replace(".", "_") + ".h\"\n");
 
         //Add each import exactly once
-        Set uniqueImportStringSet = new HashSet();
-        DataHelper.getTopics().forEach(t -> uniqueImportStringSet.add("<" + t.getImportString() + ".h>"));
-        uniqueImportStringSet.forEach(i -> builder.append("#include " + i + "\n"));
+        DataHelper.getTopics().stream()
+                .map(t -> "#include <" + t.getImportString() + ".h>\n")
+                .distinct()
+                .forEach(builder::append);
 
         String classname = currentBluePrint.getName();
 
