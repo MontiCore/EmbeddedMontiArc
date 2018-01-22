@@ -14,6 +14,7 @@ public class YamlHelper {
     private static HashMap<String, RosTopic> uniqueTopics = new HashMap<>();
 
     public static void rosTagToDataHelper(Scope symtab, RosTag rosTag) {
+        DataHelper.reset();
         uniqueTopics.clear();
         ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve(rosTag.component, ExpandedComponentInstanceSymbol.KIND)
                 .orElseThrow(() -> new RuntimeException("Component " + rosTag.component + " could not be found!"));

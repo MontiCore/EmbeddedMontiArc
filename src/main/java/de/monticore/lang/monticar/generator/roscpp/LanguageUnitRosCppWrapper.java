@@ -85,7 +85,6 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         pubInstructions.forEach(constructorMethod::addInstruction);
         subInstructions.forEach(constructorMethod::addInstruction);
 
-
         currentBluePrint.addMethod(constructorMethod);
     }
 
@@ -100,9 +99,9 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         //subscribers and publishers
 
         for (RosTopic rosTopic : DataHelper.getTopics()) {
-            for (PortSymbol portSymbol : DataHelper.getPortsFromTopic(rosTopic)) {
+            for (PortSymbol portSymbol : rosTopic.getPorts()) {
                 if (portSymbol.isIncoming()) {
-                    //Generate Subscriber
+                    //Generate Subscriber once per topic if needed
                     Variable field = new Variable();
                     field.setTypeNameTargetLanguage("ros::Subscriber");
                     field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Subscriber");
@@ -112,9 +111,9 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
                 }
             }
 
-            for (PortSymbol portSymbol : DataHelper.getPortsFromTopic(rosTopic)) {
+            for (PortSymbol portSymbol : rosTopic.getPorts()) {
                 if (portSymbol.isOutgoing()) {
-                    //Generate Publisher
+                    //Generate Publisher once per topic if needed
                     Variable field = new Variable();
                     field.setTypeNameTargetLanguage("ros::Publisher");
                     field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Publisher");
@@ -149,14 +148,10 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
             tmpParam.setTypeNameTargetLanguage("const " + rosTopic.getFullRosType() + "::ConstPtr&");
             method.addParameter(tmpParam);
 
-            DataHelper.getPortsFromTopic(rosTopic).stream()
+            rosTopic.getPorts().stream()
                     .filter(PortSymbol::isIncoming)
                     .forEachOrdered(portSymbol -> {
-                        if (DataHelper.getMsgFieldFromPort(portSymbol).isPresent()) {
                             method.addInstruction(new SetPortInstruction(portSymbol, DataHelper.getMsgFieldFromPort(portSymbol).orElse(null)));
-                        } else {
-                            method.addInstruction(new ConnectMsgToPortInstruction(portSymbol, MethodHelper.getMsgPortConverterMethod(portSymbol, rosTopic)));
-                        }
                     });
 
             if (method.getInstructions().size() > 0) {

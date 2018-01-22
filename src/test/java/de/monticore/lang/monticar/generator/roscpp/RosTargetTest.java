@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 public class RosTargetTest extends AbstractSymtabTest {
 
     @Test
+    @Ignore
     public void rosTargetTest() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 

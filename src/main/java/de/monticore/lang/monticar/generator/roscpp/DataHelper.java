@@ -6,24 +6,17 @@ import java.util.*;
 
 
 public class DataHelper {
+    private static final Set<RosTopic> topics = new HashSet<>();
     private static final Map<PortSymbol, RosTopic> portToTopic = new HashMap<>();
-    //TODO: replace with RosTopic.ports
-    private static final Map<RosTopic, Set<PortSymbol>> topicToPorts = new HashMap<>();
     private static final Map<PortSymbol, String> portToMsgField = new HashMap<>();
-
-    public static Set<PortSymbol> getPortsFromTopic(RosTopic rosTopic) {
-        if (topicToPorts.containsKey(rosTopic)) {
-            return topicToPorts.get(rosTopic);
-        } else {
-            return new HashSet<>();
-        }
-    }
 
     public static Optional<RosTopic> getTopicFromPort(PortSymbol portSymbol) {
         return Optional.ofNullable(portToTopic.get(portSymbol));
     }
 
     public static void addPortToTopic(PortSymbol portSymbol, RosTopic rosTopic, String msgField) {
+        if (!topics.contains(rosTopic))
+            topics.add(rosTopic);
         //only one topic per port
         if (!getTopicFromPort(portSymbol).isPresent()) {
             portToTopic.put(portSymbol, rosTopic);
@@ -38,15 +31,7 @@ public class DataHelper {
         }
 
         //only add new ports to topics
-        if (!getPortsFromTopic(rosTopic).contains(portSymbol)) {
-            //create new set if needed
-            if (topicToPorts.get(rosTopic) == null) {
-                HashSet<PortSymbol> tmpSet = new HashSet<>();
-                tmpSet.add(portSymbol);
-                topicToPorts.put(rosTopic, tmpSet);
-            } else {
-                topicToPorts.get(rosTopic).add(portSymbol);
-            }
+        if (!rosTopic.getPorts().contains(portSymbol)) {
             rosTopic.addPort(portSymbol);
         }
 
@@ -54,7 +39,7 @@ public class DataHelper {
     }
 
     public static Set<RosTopic> getTopics() {
-        return topicToPorts.keySet();
+        return topics;
     }
 
     public static Set<PortSymbol> getPorts() {
@@ -63,5 +48,11 @@ public class DataHelper {
 
     public static Optional<String> getMsgFieldFromPort(PortSymbol portSymbol) {
         return Optional.ofNullable(portToMsgField.get(portSymbol));
+    }
+
+    public static void reset() {
+        portToTopic.clear();
+        portToMsgField.clear();
+        topics.clear();
     }
 }
