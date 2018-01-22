@@ -112,7 +112,6 @@ public class GeneratorRosCpp {
         //TODO: add to blueprint
         builder.append("#pragma once\n");
         builder.append("#include <ros/ros.h>\n");
-        builder.append("#include \"MsgPortHelper.h\"\n");
         builder.append("#include \"" + componentSymbol.getFullName().replace(".", "_") + ".h\"\n");
 
         //Add each import exactly once
