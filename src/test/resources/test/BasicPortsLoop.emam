@@ -1,0 +1,13 @@
+package test;
+
+component BasicPortsLoop{
+    ports in (-oo:1:oo) counter,
+          out (-oo:oo) result;
+
+    implementation Math{
+            for i = 1:1:8
+                result = result + counter;
+
+            end
+    }
+}

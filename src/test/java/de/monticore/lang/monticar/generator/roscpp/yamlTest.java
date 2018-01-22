@@ -18,7 +18,6 @@ public class yamlTest extends AbstractSymtabTest {
         TagReader<RosTag> reader = new TagReader<>();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-
         ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
@@ -33,4 +32,23 @@ public class yamlTest extends AbstractSymtabTest {
 
     }
 
+    @Test
+    public void arrayPortTest() throws IOException {
+        TagReader<RosTag> reader = new TagReader<>();
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/testRos/");
+
+        List<RosTag> tags = reader.readYAML("src/test/resources/tests/config/config.yaml");
+        assertTrue(tags.size() == 1);
+
+        YamlHelper.rosTagToDataHelper(symtab, tags.get(0));
+
+        generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
+
+
+    }
 }
