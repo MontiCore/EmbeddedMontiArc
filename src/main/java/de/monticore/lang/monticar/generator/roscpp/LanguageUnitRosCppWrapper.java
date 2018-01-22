@@ -41,20 +41,18 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
     }
 
     private void generatePublishMethods(BluePrint currentBluePrint) {
-        DataHelper.getTopics().stream().filter(t -> !t.getOutgoingPorts().isEmpty())
+        DataHelper.getTopics().stream()
+                .filter(t -> !t.getOutgoingPorts().isEmpty())
                 .forEach(t -> {
                     Method method = new Method("publish" + t.getTargetLanguageName(), "void");
                     method.addInstruction(new CreateTmpMsgInstruction(t));
 
                     t.getOutgoingPorts().forEach(
                             p -> method.addInstruction(new SetMsgFieldInstruction(p, DataHelper.getMsgFieldFromPort(p).orElse(null))));
+
                     method.addInstruction(new PublishInstruction(t));
-
                     t.setPublishMethod(method);
-
-
                     currentBluePrint.addMethod(method);
-
                 });
     }
 
@@ -96,7 +94,6 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         currBluePrint.addVariable(componentField);
 
         //subscribers and publishers
-
         for (RosTopic rosTopic : DataHelper.getTopics()) {
             boolean hasInPort = rosTopic.getPorts().stream()
                     .anyMatch(PortSymbol::isIncoming);

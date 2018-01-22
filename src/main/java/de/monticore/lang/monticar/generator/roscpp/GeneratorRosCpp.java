@@ -107,14 +107,14 @@ public class GeneratorRosCpp {
         //TODO: unsave, does not work with multiple
         BluePrint currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
 
-        //imports
+        //includes
         StringBuilder builder = new StringBuilder();
         //TODO: add to blueprint
         builder.append("#pragma once\n");
         builder.append("#include <ros/ros.h>\n");
         builder.append("#include \"" + componentSymbol.getFullName().replace(".", "_") + ".h\"\n");
 
-        //Add each import exactly once
+        //Add each msg include exactly once
         DataHelper.getTopics().stream()
                 .map(t -> "#include <" + t.getImportString() + ".h>\n")
                 .distinct()
