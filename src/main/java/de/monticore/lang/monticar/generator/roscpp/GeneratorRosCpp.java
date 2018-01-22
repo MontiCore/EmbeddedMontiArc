@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
@@ -126,43 +127,15 @@ public class GeneratorRosCpp {
         //class
         builder.append("class " + classname + "{\n");
 
-        currentBluePrint.getVariables().forEach(v -> builder.append("\t" + printVariable(v) + "\n"));
+        currentBluePrint.getVariables().forEach(v -> builder.append("\t" + PrinterHelper.printVariable(v) + "\n"));
         builder.append("\n");
         //TODO: give each method own access modifier
         builder.append("public:\n");
-        currentBluePrint.getMethods().forEach(m -> builder.append(printMethod(m) + "\n"));
+        currentBluePrint.getMethods().forEach(m -> builder.append(PrinterHelper.printMethod(m) + "\n"));
         builder.append("};");
 
         res.setFileContent(builder.toString());
         return res;
     }
 
-    private String printVariable(Variable v) {
-        return v.getVariableType().getTypeNameTargetLanguage() + " " +
-                v.getNameTargetLanguageFormat() + ";";
-    }
-
-    private String printMethod(Method method) {
-        String res = method.getReturnTypeName() + " " + method.getName() + "(";
-        res = res.trim();
-        res = "\t" + res;
-        for (Variable param : method.getParameters()) {
-            res += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
-            res += ", ";
-        }
-        //remove last ", "
-        if (method.getParameters().size() > 0)
-            res = res.substring(0, res.length() - 2);
-        res += ")";
-        if (method.getInstructions().size() == 0) {
-            res += ";\n";
-        } else {
-            res += "{\n";
-            for (Instruction instr : method.getInstructions()) {
-                res += "\t\t" + instr.getTargetLanguageInstruction() + "\n";
-            }
-            res += "\t}\n";
-        }
-        return res;
-    }
 }
