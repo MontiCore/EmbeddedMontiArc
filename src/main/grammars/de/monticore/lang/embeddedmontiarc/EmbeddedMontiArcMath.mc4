@@ -25,7 +25,13 @@ grammar EmbeddedMontiArcMath extends de.monticore.lang.embeddedmontiarc.Embedded
 
 
 
-    BehaviorEmbedding = MathStatements;
+    BehaviorEmbedding =  MathStatements;
 
     BehaviorName = "Math";
+
+    token NEWLINETOKEN =
+             ('\r' '\n' |
+             '\r' |
+             '\n' ):
+           ;
 }

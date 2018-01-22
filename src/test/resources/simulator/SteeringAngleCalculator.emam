@@ -26,6 +26,7 @@ component SteeringAngleCalculator{
 
      //calculate base steering angle
      Q globalOrientation = orientation*(M_PI/180);
+
      if (globalOrientation > M_PI)
          globalOrientation -= 2 * M_PI;
      end

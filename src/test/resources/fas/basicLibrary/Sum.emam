@@ -10,6 +10,6 @@ component Sum<T,N1 n=2> {
 	    for i=2:n
 	        outVal=outVal+in1(i);
 	    end
-	    out=outVal;
+	    out1=outVal;
 	}
 }
