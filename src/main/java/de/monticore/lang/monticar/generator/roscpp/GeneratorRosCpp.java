@@ -21,6 +21,12 @@ import java.util.Set;
 public class GeneratorRosCpp {
 
     private String generationTargetPath;
+    private boolean generateCpp = true;
+    private GeneratorCPP generatorCPP;
+
+    public void setGenerateCpp(boolean generateCpp) {
+        this.generateCpp = generateCpp;
+    }
 
     public String getGenerationTargetPath() {
         return generationTargetPath;
@@ -65,16 +71,33 @@ public class GeneratorRosCpp {
 
         fileContents.add(generateRosCompUnit(symbol));
 
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath(generationTargetPath);
-        generatorCPP.useArmadilloBackend();
-        fileContents.addAll(generatorCPP.generateStrings((TaggingResolver) scope, symbol, scope));
+        if (generateCpp) {
+            fileContents.addAll(generateCppStrings(scope, symbol));
+        }
 
+        return fileContents;
+    }
+
+    public void setGeneratorCPP(GeneratorCPP generatorCPP) {
+        this.generatorCPP = generatorCPP;
+    }
+
+    private List<FileContent> generateCppStrings(Scope scope, ExpandedComponentInstanceSymbol symbol) {
+        //If user does not specify otherwise init with useful defaults
+        if (generatorCPP == null) {
+            generatorCPP = new GeneratorCPP();
+            generatorCPP.useArmadilloBackend();
+        }
+        //TODO: let user specify 2 different paths?
+        generatorCPP.setGenerationTargetPath(generationTargetPath);
+        List<FileContent> fileContents = new ArrayList<>();
+        fileContents.addAll(generatorCPP.generateStrings((TaggingResolver) scope, symbol, scope));
         //TODO: dirty fix of import
         fileContents.forEach(fc -> fc.setFileContent(fc.getFileContent().replace("armadillo.h", "armadillo")));
 
         return fileContents;
     }
+
 
     private FileContent generateRosCompUnit(ExpandedComponentInstanceSymbol componentSymbol) {
         FileContent res = new FileContent();
