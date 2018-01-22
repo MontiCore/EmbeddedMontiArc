@@ -62,6 +62,20 @@ public class ExecuteMethodGenerator {
         return result;
     }
 
+    /**
+     * Returns correct string for generation of matrix/array access
+     *
+     * @return
+     */
+    public static String getCorrectAccessString(String nameOfMathValue, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, List<String> includeStrings) {
+        String result = "";
+        if (ComponentConverterMethodGeneration.currentComponentSymbol.getPort(nameOfMathValue + "[1]").isPresent()) {
+            result += ExecuteMethodGeneratorMatrixExpressionHandler.generateExecuteCode(mathMatrixAccessOperatorSymbol, includeStrings, true).replaceAll("\\(", "\\[").replaceAll("\\)", "\\]") + " ";
+        } else {
+            result += ExecuteMethodGeneratorMatrixExpressionHandler.generateExecuteCode(mathMatrixAccessOperatorSymbol, includeStrings, true) + " ";
+        }
+        return result;
+    }
 
 /*
     public static String generateExecuteCodeFixForLoopAccess(MathMatrixAccessSymbol mathMatrixAccessSymbol, List<String> includeStrings) {

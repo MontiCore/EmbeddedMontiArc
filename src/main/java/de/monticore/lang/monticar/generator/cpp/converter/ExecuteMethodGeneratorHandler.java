@@ -1,9 +1,11 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
@@ -157,7 +159,7 @@ public class ExecuteMethodGeneratorHandler {
             if (MathFunctionFixer.fixForLoopAccess(mathAssignmentExpressionSymbol.getNameOfMathValue(), ComponentConverter.currentBluePrint)) {
 
                 String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
-                result += ExecuteMethodGeneratorMatrixExpressionHandler.generateExecuteCode(mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings, true) + " ";
+                result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
                 result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
                 result += ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
 
@@ -170,7 +172,7 @@ public class ExecuteMethodGeneratorHandler {
                 }
             }*/
             String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
-            result += ExecuteMethodGeneratorMatrixExpressionHandler.generateExecuteCode(mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings) + " ";
+            result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
             result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
             result += ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
 

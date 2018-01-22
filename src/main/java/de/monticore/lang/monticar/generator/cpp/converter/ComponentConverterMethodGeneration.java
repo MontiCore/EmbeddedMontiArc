@@ -24,10 +24,11 @@ import java.util.List;
  */
 public class ComponentConverterMethodGeneration {
     public static int currentGenerationIndex = 0;
+    public static ExpandedComponentInstanceSymbol currentComponentSymbol = null;
 
     public static void generateExecuteMethod(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("execute", "void");
-
+        currentComponentSymbol = componentSymbol;
         for (ConnectorSymbol connector : componentSymbol.getConnectors()) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
