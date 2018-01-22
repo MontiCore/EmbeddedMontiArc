@@ -3,7 +3,6 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,7 +12,6 @@ import static org.junit.Assert.assertNotNull;
 public class RosTargetTest extends AbstractSymtabTest {
 
     @Test
-    @Ignore
     public void rosTargetTest() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
@@ -31,11 +29,13 @@ public class RosTargetTest extends AbstractSymtabTest {
         PortSymbol portRosOut = componentSymbol.getOutgoingPort("rosOut").orElse(null);
         RosTopic echoTopic = new RosTopic("/echo", "StampedFloat64", "automated_driving_msgs/StampedFloat64");
 
-        DataHelper.addPortToTopic(portRosIn, groundTruthTopic, null);
+        DataHelper.addPortToTopic(portRosIn, groundTruthTopic, "test");
         DataHelper.addPortToTopic(portRosOut, echoTopic, "test2");
 
 
         generatorRosCpp.generateFiles(componentSymbol, symtab);
+
+        //TODO: compare result
     }
 
 }

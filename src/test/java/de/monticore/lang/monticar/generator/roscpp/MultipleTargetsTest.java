@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
+import com.google.common.collect.Lists;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -7,11 +8,10 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MultipleTargetsTest extends AbstractSymtabTest {
@@ -29,12 +29,9 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-        String[] positiveFileNames = {"tests_a_compA.h", "tests_a_compA_RosWrapper.h"};
+        List<String> positiveFileNames = Lists.newArrayList("tests_a_compA.h", "tests_a_compA_RosWrapper.h");
 
-        Arrays.stream(positiveFileNames).forEach(positiveFileName -> {
-            assertTrue(fileNames.contains(positiveFileName));
-        });
-
+        fileNames.containsAll(positiveFileNames);
     }
 
     @Test
@@ -51,17 +48,11 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-        String[] positiveFileNames = {"tests_a_compA_RosWrapper.h"};
-        String[] negativeFileNames = {"tests_a_compA.h"};
+        List<String> positiveFileNames = Lists.newArrayList("tests_a_compA_RosWrapper.h");
+        List<String> negativeFileNames = Lists.newArrayList("tests_a_compA.h");
 
-
-        Arrays.stream(positiveFileNames).forEach(positiveFileName -> {
-            assertTrue(fileNames.contains(positiveFileName));
-        });
-
-        Arrays.stream(negativeFileNames).forEach(negativeFileName -> {
-            assertFalse(fileNames.contains(negativeFileName));
-        });
+        assertTrue(fileNames.containsAll(positiveFileNames));
+        assertTrue(Collections.disjoint(fileNames, negativeFileNames));
 
     }
 
@@ -78,17 +69,12 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-        String[] positiveFileNames = {"tests_a_compA.h", "tests_a_compA_RosWrapper.h", "HelperA.h"};
-        String[] negativeFileNames = {"Helper.h"}; //Octave helper, standard is armadillo
+        List<String> positiveFileNames = Lists.newArrayList("tests_a_compA.h", "tests_a_compA_RosWrapper.h", "HelperA.h");
+        List<String> negativeFileNames = Lists.newArrayList("Helper.h"); //Octave helper, standard is armadillo
 
+        assertTrue(fileNames.containsAll(positiveFileNames));
+        assertTrue(Collections.disjoint(fileNames, negativeFileNames));
 
-        Arrays.stream(positiveFileNames).forEach(positiveFileName -> {
-            assertTrue(fileNames.contains(positiveFileName));
-        });
-
-        Arrays.stream(negativeFileNames).forEach(negativeFileName -> {
-            assertFalse(fileNames.contains(negativeFileName));
-        });
     }
 
     @Test
@@ -109,16 +95,11 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-        String[] positiveFileNames = {"tests_a_compA.h", "tests_a_compA_RosWrapper.h", "Helper.h"};
-        String[] negativeFileNames = {"HelperA.h"}; //Armadillo helper
+        List<String> positiveFileNames = Lists.newArrayList("tests_a_compA.h", "tests_a_compA_RosWrapper.h", "Helper.h");
+        List<String> negativeFileNames = Lists.newArrayList("HelperA.h"); //Armadillo helper
 
-        Arrays.stream(positiveFileNames).forEach(positiveFileName -> {
-            assertTrue(fileNames.contains(positiveFileName));
-        });
-
-        Arrays.stream(negativeFileNames).forEach(negativeFileName -> {
-            assertFalse(fileNames.contains(negativeFileName));
-        });
+        assertTrue(fileNames.containsAll(positiveFileNames));
+        assertTrue(Collections.disjoint(fileNames, negativeFileNames));
 
     }
 
