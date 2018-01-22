@@ -117,22 +117,16 @@ public class GeneratorRosCpp {
         builder.append("#include \"MsgPortHelper.h\"\n");
         builder.append("#include \"" + componentSymbol.getFullName().replace(".", "_") + ".h\"\n");
 
-        Set importStringSet = new HashSet();
-        DataHelper.getTopics().forEach(t -> importStringSet.add("<" + t.getImportString() + ".h>"));
-        importStringSet.forEach(i -> builder.append("#include " + i + "\n"));
+        //Add each import exactly once
+        Set uniqueImportStringSet = new HashSet();
+        DataHelper.getTopics().forEach(t -> uniqueImportStringSet.add("<" + t.getImportString() + ".h>"));
+        uniqueImportStringSet.forEach(i -> builder.append("#include " + i + "\n"));
 
         String classname = currentBluePrint.getName();
 
         res.setFileName(classname + ".h");
         //class
-        builder.append("class " + classname + "{\n");
-
-        currentBluePrint.getVariables().forEach(v -> builder.append("\t" + PrinterHelper.printVariable(v) + "\n"));
-        builder.append("\n");
-        //TODO: give each method own access modifier
-        builder.append("public:\n");
-        currentBluePrint.getMethods().forEach(m -> builder.append(PrinterHelper.printMethod(m) + "\n"));
-        builder.append("};");
+        builder.append(PrinterHelper.printClass(currentBluePrint));
 
         res.setFileContent(builder.toString());
         return res;

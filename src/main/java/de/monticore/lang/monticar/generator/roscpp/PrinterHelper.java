@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
+import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
@@ -32,5 +33,19 @@ public class PrinterHelper {
             res += "\t}\n";
         }
         return res;
+    }
+
+    public static String printClass(BluePrint bluePrint) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("class " + bluePrint.getName() + "{\n");
+
+        bluePrint.getVariables().forEach(v -> builder.append("\t" + PrinterHelper.printVariable(v) + "\n"));
+        builder.append("\n");
+        //TODO: give each method own access modifier
+        builder.append("public:\n");
+        bluePrint.getMethods().forEach(m -> builder.append(PrinterHelper.printMethod(m) + "\n"));
+        builder.append("};");
+
+        return builder.toString();
     }
 }
