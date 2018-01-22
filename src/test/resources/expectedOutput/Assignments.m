@@ -21,7 +21,7 @@ package expectedOutput;
 
 script Assignments
     Q A = 2;
-    Q^{2,2} B = [1,2;3,4];
-    Q^{2,2} C = [1,2;3,4];
+    Q^{2,2} Bmat = [1,2;3,4];
+    Q^{2,2} Cmat = [1,2;3,4];
     Q D = 2;
 end
