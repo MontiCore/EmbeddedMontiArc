@@ -3,14 +3,15 @@ package de.monticore.lang.monticar.generator.roscpp;
 import com.google.common.collect.Lists;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticar.lang.monticar.generator.python.TagReader;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
@@ -19,21 +20,37 @@ import static org.junit.Assert.assertTrue;
 public class YamlTest extends AbstractSymtabTest {
 
     @Test
-    public void parseYamlTest() throws IOException {
+    public void convertYamlTest() throws IOException {
+        //Setup
         TagReader<RosTag> reader = new TagReader<>();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-
-        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
-        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/testRos/");
-
+        //Execute
         List<RosTag> tags = reader.readYAML("src/test/resources/config/config.yaml");
-        assertTrue(tags.size() == 1);
-
         YamlHelper.rosTagToDataHelper(symtab, tags.get(0));
 
-        generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
+        //Check
+        assertTrue(tags.size() == 1);
+
+        Set<RosTopic> topics = DataHelper.getTopics();
+        assertTrue(topics.size() == 2);
+
+        HashMap<String, RosTopic> topicNameToTopic = new HashMap<>();
+        DataHelper.getTopics().stream().forEach(t -> topicNameToTopic.put(t.getName(), t));
+
+        assertTrue(topicNameToTopic.containsKey("test"));
+        assertTrue(topicNameToTopic.containsKey("test2"));
+
+        RosTopic topicTest = topicNameToTopic.get("test");
+        RosTopic topicTest2 = topicNameToTopic.get("test2");
+
+        assertTrue(topicTest.getRosType().equals("CarMessage"));
+        assertTrue(topicTest2.getRosType().equals("StampedFloat64"));
+
+        assertTrue(topicTest.getImportString().equals("automated_driving_msgs/CarMessage"));
+        assertTrue(topicTest2.getImportString().equals("automated_driving_msgs/StampedFloat64"));
+
+        //TODO: incomplete
 
     }
 
