@@ -10,6 +10,8 @@ import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
 import de.monticore.symboltable.Symbol;
 
+import java.util.Optional;
+
 public class LanguageUnitRosCppWrapper extends LanguageUnit {
 
     @Override
@@ -96,41 +98,44 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         //subscribers and publishers
 
         for (RosTopic rosTopic : DataHelper.getTopics()) {
-            for (PortSymbol portSymbol : rosTopic.getPorts()) {
-                if (portSymbol.isIncoming()) {
-                    //Generate Subscriber once per topic if needed
-                    Variable field = new Variable();
-                    field.setTypeNameTargetLanguage("ros::Subscriber");
-                    field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Subscriber");
-                    rosTopic.setSubscriber(field);
-                    currBluePrint.addVariable(field);
-                    break;
-                }
+            boolean hasInPort = rosTopic.getPorts().stream()
+                    .anyMatch(PortSymbol::isIncoming);
+
+            boolean hasOutPort = rosTopic.getPorts().stream()
+                    .anyMatch(PortSymbol::isOutgoing);
+
+            //Generate Subscriber once per topic if needed
+            if (hasInPort) {
+                Variable field = new Variable();
+                field.setTypeNameTargetLanguage("ros::Subscriber");
+                field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Subscriber");
+                rosTopic.setSubscriber(field);
+                currBluePrint.addVariable(field);
             }
 
-            for (PortSymbol portSymbol : rosTopic.getPorts()) {
-                if (portSymbol.isOutgoing()) {
-                    //Generate Publisher once per topic if needed
-                    Variable field = new Variable();
-                    field.setTypeNameTargetLanguage("ros::Publisher");
-                    field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Publisher");
-                    rosTopic.setPublisher(field);
-                    currBluePrint.addVariable(field);
-                    break;
-                }
+            //Generate Publisher once per topic if needed
+            if (hasOutPort) {
+                Variable field = new Variable();
+                field.setTypeNameTargetLanguage("ros::Publisher");
+                field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Publisher");
+                rosTopic.setPublisher(field);
+                currBluePrint.addVariable(field);
+                break;
             }
-
         }
 
     }
+
 
     private void generateTick(BluePrint currentBluePrint) {
         Method tickMethod = new Method("tick", "void");
         tickMethod.addInstruction(new ExecuteComponentInstruction());
 
-        DataHelper.getTopics().stream().filter(t -> t.getPublisher().isPresent())
-                .forEach(t -> {
-                    tickMethod.addInstruction(new CallPublishInstruction(t.getPublishMethod().orElse(null)));
+        DataHelper.getTopics().stream()
+                .map(RosTopic::getPublishMethod)
+                .filter(Optional::isPresent)
+                .forEach(optionalMethod -> {
+                    tickMethod.addInstruction(new CallPublishInstruction(optionalMethod.get()));
                 });
 
         currentBluePrint.addMethod(tickMethod);
@@ -148,7 +153,7 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
             rosTopic.getPorts().stream()
                     .filter(PortSymbol::isIncoming)
                     .forEachOrdered(portSymbol -> {
-                            method.addInstruction(new SetPortInstruction(portSymbol, DataHelper.getMsgFieldFromPort(portSymbol).orElse(null)));
+                        method.addInstruction(new SetPortInstruction(portSymbol, DataHelper.getMsgFieldFromPort(portSymbol).orElse(null)));
                     });
 
             if (method.getInstructions().size() > 0) {
