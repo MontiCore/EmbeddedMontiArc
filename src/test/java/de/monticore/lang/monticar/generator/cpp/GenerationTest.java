@@ -485,6 +485,21 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testDemuxTest() throws IOException {
+        TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
+                "testing.demuxTest",
+                ExpandedComponentInstanceSymbol.KIND
+        ).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
+        String restPath = "testing/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
     @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/14")
     public void cppCodeForMyComponent4v2CanBeGenerated() throws IOException {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");

@@ -8,7 +8,7 @@ component Or<T,N1 n=2> {
 	implementation Math{
 	    T outVal=in1(1);
 	    for i=1:n
-	        outVal=or(outVal,in(i));
+	        outVal=or(outVal,in1(i));
 	    end
 	    out1=outVal;
 	}
