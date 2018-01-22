@@ -95,14 +95,8 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
 
         //subscribers and publishers
         for (RosTopic rosTopic : DataHelper.getTopics()) {
-            boolean hasInPort = rosTopic.getPorts().stream()
-                    .anyMatch(PortSymbol::isIncoming);
-
-            boolean hasOutPort = rosTopic.getPorts().stream()
-                    .anyMatch(PortSymbol::isOutgoing);
-
             //Generate Subscriber once per topic if needed
-            if (hasInPort) {
+            if (!rosTopic.getIncommingPorts().isEmpty()) {
                 Variable field = new Variable();
                 field.setTypeNameTargetLanguage("ros::Subscriber");
                 field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Subscriber");
@@ -111,7 +105,7 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
             }
 
             //Generate Publisher once per topic if needed
-            if (hasOutPort) {
+            if (!rosTopic.getOutgoingPorts().isEmpty()) {
                 Variable field = new Variable();
                 field.setTypeNameTargetLanguage("ros::Publisher");
                 field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Publisher");
