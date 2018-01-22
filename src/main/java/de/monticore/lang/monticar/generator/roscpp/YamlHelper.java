@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 //TODO: better exceptions
 public class YamlHelper {
@@ -26,28 +27,38 @@ public class YamlHelper {
                 .orElseThrow(() -> new RuntimeException("Component " + rosTag.component + " could not be found!"));
 
         for (RosInterface sub : rosTag.subscriber) {
-            for (String portName : sub.ports.keySet()) {
-                PortSymbol currentPort = componentInstanceSymbol.getPort(portName)
-                        .orElseThrow(() -> new RuntimeException("Port " + componentInstanceSymbol.getName() + "." + portName + " not found"));
 
-                String msgField = sub.ports.get(portName);
+            //Add each port specified in the subscriber to its topic
+            for (PortSymbol currentPort : resolvePorts(sub.ports.keySet(), componentInstanceSymbol)) {
+                String msgField = sub.ports.get(currentPort.getName());
                 if (currentPort.isOutgoing())
                     throw new RuntimeException("Only incoming ports can be used for subscribers but " + currentPort.getName() + " is outgoing!");
                 DataHelper.addPortToTopic(currentPort, getRosTopicFromRosInterface(sub), msgField);
             }
+
         }
 
         for (RosInterface pub : rosTag.publisher) {
-            for (String portName : pub.ports.keySet()) {
-                PortSymbol currentPort = componentInstanceSymbol.getPort(portName)
-                        .orElseThrow(() -> new RuntimeException("Port " + componentInstanceSymbol.getName() + "." + portName + " not found"));
-                String msgField = pub.ports.get(portName);
+
+            //Add each port specified in the publisher to its topic
+            for (PortSymbol currentPort : resolvePorts(pub.ports.keySet(), componentInstanceSymbol)) {
+                String msgField = pub.ports.get(currentPort.getName());
                 if (currentPort.isIncoming())
                     throw new RuntimeException("Only outgoing ports can be used for publishers but " + currentPort.getName() + " is incoming!");
                 DataHelper.addPortToTopic(currentPort, getRosTopicFromRosInterface(pub), msgField);
             }
+
         }
 
+    }
+
+    private static List<PortSymbol> resolvePorts(Set<String> names, ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        List<PortSymbol> result = new ArrayList<>();
+        names.forEach(name -> {
+            result.add(componentInstanceSymbol.getPort(name)
+                    .orElseThrow(() -> new RuntimeException("Port " + componentInstanceSymbol.getName() + "." + name + " not found")));
+        });
+        return result;
     }
 
     private static RosTopic getRosTopicFromRosInterface(RosInterface rosInterface) {
