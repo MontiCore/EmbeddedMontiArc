@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO arrays
 //TODO:implements Generator
 public class GeneratorRosCpp {
 
