@@ -3,12 +3,12 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.montiarc.montiarc._symboltable.ExpandedComponentInstanceKind;
-import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.LanguageUnit;
+import de.monticore.lang.monticar.generator.Method;
+import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
 import de.monticore.symboltable.Symbol;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LanguageUnitRosCppWrapper extends LanguageUnit {
 
@@ -69,20 +69,18 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         constructorMethod.addParameter(param1);
         constructorMethod.addParameter(param2);
 
-        List<Instruction> subInstructions = new ArrayList<>();
-        List<Instruction> pubInstructions = new ArrayList<>();
+        //add subscribe and advertise instructions
+        DataHelper.getPorts().stream()
+                .filter(PortSymbol::isIncoming)
+                .map(p -> new SubscribeInstruction(classname, DataHelper.getTopicFromPort(p).orElse(null)))
+                .distinct()
+                .forEach(constructorMethod::addInstruction);
 
-        for (PortSymbol portSymbol : DataHelper.getPorts()) {
-            if (portSymbol.isIncoming()) {
-                Instruction tmpInstruction = new SubscribeInstruction(classname, DataHelper.getTopicFromPort(portSymbol).orElse(null));
-                if (!subInstructions.contains(tmpInstruction)) subInstructions.add(tmpInstruction);
-            } else {
-                Instruction tmpInstruction = new AdvertiseInstruction(DataHelper.getTopicFromPort(portSymbol).orElse(null));
-                if (!pubInstructions.contains(tmpInstruction)) pubInstructions.add(tmpInstruction);
-            }
-        }
-        pubInstructions.forEach(constructorMethod::addInstruction);
-        subInstructions.forEach(constructorMethod::addInstruction);
+        DataHelper.getPorts().stream()
+                .filter(PortSymbol::isOutgoing)
+                .map(p -> new AdvertiseInstruction(DataHelper.getTopicFromPort(p).orElse(null)))
+                .distinct()
+                .forEach(constructorMethod::addInstruction);
 
         currentBluePrint.addMethod(constructorMethod);
     }

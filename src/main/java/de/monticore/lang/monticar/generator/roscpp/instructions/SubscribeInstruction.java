@@ -4,6 +4,8 @@ import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.roscpp.RosTopic;
 
+import java.util.Objects;
+
 public class SubscribeInstruction extends TargetCodeInstruction {
     private static final int MSG_QUEUE_SIZE = 5;
 
@@ -22,5 +24,9 @@ public class SubscribeInstruction extends TargetCodeInstruction {
         return getTargetLanguageInstruction().equals(((SubscribeInstruction) other).getTargetLanguageInstruction());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(instruction);
+    }
 
 }
