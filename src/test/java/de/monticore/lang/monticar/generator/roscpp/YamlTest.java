@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import com.google.common.collect.Lists;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticar.lang.monticar.generator.python.TagReader;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -14,8 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class YamlTest extends AbstractSymtabTest {
 
@@ -36,7 +36,7 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(topics.size() == 2);
 
         HashMap<String, RosTopic> topicNameToTopic = new HashMap<>();
-        DataHelper.getTopics().stream().forEach(t -> topicNameToTopic.put(t.getName(), t));
+        topics.forEach(t -> topicNameToTopic.put(t.getName(), t));
 
         assertTrue(topicNameToTopic.containsKey("test"));
         assertTrue(topicNameToTopic.containsKey("test2"));
@@ -50,7 +50,28 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(topicTest.getImportString().equals("automated_driving_msgs/CarMessage"));
         assertTrue(topicTest2.getImportString().equals("automated_driving_msgs/StampedFloat64"));
 
-        //TODO: incomplete
+        HashMap<String, PortSymbol> portNameToPort = new HashMap<>();
+        topics.forEach(t -> t.getPorts().forEach(p -> portNameToPort.put(p.getName(), p)));
+
+        assertTrue(portNameToPort.containsKey("rosIn"));
+        assertTrue(portNameToPort.containsKey("noRosIn"));
+        assertTrue(portNameToPort.containsKey("rosOut"));
+
+        PortSymbol port1 = portNameToPort.get("rosIn");
+        PortSymbol port2 = portNameToPort.get("noRosIn");
+        PortSymbol port3 = portNameToPort.get("rosOut");
+
+        assertTrue(topicTest.getPorts().contains(port1));
+        assertTrue(topicTest.getPorts().contains(port2));
+        assertFalse(topicTest.getPorts().contains(port3));
+
+        assertFalse(topicTest2.getPorts().contains(port1));
+        assertFalse(topicTest2.getPorts().contains(port2));
+        assertTrue(topicTest2.getPorts().contains(port3));
+
+        assertEquals(DataHelper.getMsgFieldFromPort(port1).orElse(null), "posX");
+        assertEquals(DataHelper.getMsgFieldFromPort(port2).orElse(null), "posY");
+        assertEquals(DataHelper.getMsgFieldFromPort(port3).orElse(null), "data");
 
     }
 
