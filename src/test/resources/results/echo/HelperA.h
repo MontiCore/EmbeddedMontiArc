@@ -80,5 +80,12 @@ static mat getSqrtMat(mat A){
 cx_mat result=sqrtmat(A);
 return real(result);
 }
+static mat invertDiagMatrix(mat A){
+for(int i=0;i<A.n_rows;++i){
+    double curVal = A(i,i);
+    A(i,i) = 1/curVal;
+}
+return A;
+}
 };
 #endif
