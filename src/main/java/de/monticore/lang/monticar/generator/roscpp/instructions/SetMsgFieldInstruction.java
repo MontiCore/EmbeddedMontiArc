@@ -7,6 +7,6 @@ import de.monticore.lang.monticar.generator.roscpp.PortNameHelper;
 public class SetMsgFieldInstruction extends TargetCodeInstruction {
 
     public SetMsgFieldInstruction(PortSymbol portSymbol, String msgField) {
-        this.instruction = "tmpMsg." + msgField + " = " + PortNameHelper.getPortNameTargetLanguage(portSymbol) + ";";
+        this.instruction = "tmpMsg." + msgField + " = component." + PortNameHelper.getPortNameTargetLanguage(portSymbol) + ";";
     }
 }

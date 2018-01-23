@@ -9,6 +9,6 @@ public class SetPortInstruction extends TargetCodeInstruction {
     public SetPortInstruction(PortSymbol portSymbol, String msgField) {
         if (portSymbol == null || msgField == null)
             throw new IllegalArgumentException();
-        this.instruction = "component." + PortNameHelper.getPortNameTargetLanguage(portSymbol) + " = msg." + msgField + ";";
+        this.instruction = "component." + PortNameHelper.getPortNameTargetLanguage(portSymbol) + " = msg->" + msgField + ";";
     }
 }
