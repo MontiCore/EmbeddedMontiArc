@@ -1,11 +1,15 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
 
 public class RosTargetTest extends AbstractSymtabTest {
 
@@ -21,4 +25,20 @@ public class RosTargetTest extends AbstractSymtabTest {
 
     }
 
+    @Test
+    public void intersectionTest() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");
+        generatorCPP.useArmadilloBackend();
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("cooperativeDriving.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(component);
+
+        List<File> files = generatorCPP.generateFiles(component, symtab);
+
+
+    }
 }
