@@ -9,9 +9,9 @@ class ba_intersection_intersectionController_deltaTrajectoryComputer{
 const int n = 3;
 const int x = 6;
 const int m = 5;
+public:
 mat trajectoryIn[3];
 mat deltaTrajectoryOut[6];
-public:
 void init()
 {
     for(int i = 0; i < n; ++i){

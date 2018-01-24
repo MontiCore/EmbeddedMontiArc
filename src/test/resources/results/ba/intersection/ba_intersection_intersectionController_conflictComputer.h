@@ -33,7 +33,7 @@ void execute()
                 bool condTime = absDeltaTime <= cutoffTime;
 
                 if(condPos && condTime){
-                    tmp = True;
+                    tmp = true;
                 }
             }
         }

@@ -19,13 +19,13 @@ void init()
 void execute()
 {
     for(sword i = 1;i <= n;++i){
-        stopOut[i-1] = False;
+        stopOut[i-1] = false;
     }
     
     for(sword i = 1;i <= x;++i){
         if(conflictIn[i-1]){
             sword curIndex = indexLookupIn[i-1];
-            stopOut[curIndex-1] = True;
+            stopOut[curIndex-1] = true;
         }
     }
 }
