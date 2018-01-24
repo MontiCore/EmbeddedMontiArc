@@ -3,7 +3,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#include "armadillo.h"
+#include "armadillo"
 #include "ba_intersection_intersectionController_conflictToStopLookup.h"
 #include "ba_intersection_intersectionController_deltaTrajectoryComputer.h"
 #include "ba_intersection_intersectionController_conflictComputer.h"

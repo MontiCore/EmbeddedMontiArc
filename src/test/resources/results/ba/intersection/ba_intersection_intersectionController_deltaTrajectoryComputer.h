@@ -3,7 +3,7 @@
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-#include "armadillo.h"
+#include "armadillo"
 using namespace arma;
 class ba_intersection_intersectionController_deltaTrajectoryComputer{
 const int n = 3;
