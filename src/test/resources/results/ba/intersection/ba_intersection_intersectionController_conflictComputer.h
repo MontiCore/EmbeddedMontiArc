@@ -9,10 +9,10 @@ class ba_intersection_intersectionController_conflictComputer{
 const int x = 6;
 const int m = 5;
 public:
-mat deltaTrajectoryIn[x];
+mat deltaTrajectoryIn[6];
 double cutoffPosition;
 double cutoffTime;
-bool conflictOut[x];
+bool conflictOut[6];
 void init()
 {
     for(int i = 0; i < x;++i){

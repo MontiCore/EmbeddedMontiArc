@@ -8,7 +8,7 @@ using namespace arma;
 class ba_intersection_intersectionController_conflictToStopLookup{
 const int n = 3;
 const int x = 6;
-sword indexLookup[x];
+sword indexLookup[6];
 public:
 void init()
 {

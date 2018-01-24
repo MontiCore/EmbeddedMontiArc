@@ -10,7 +10,7 @@ const int n = 3;
 const int x = 6;
 const int m = 5;
 public:
-sword indexLookupIn[x];
+sword indexLookupIn[6];
 bool conflictIn[6];
 bool stopOut[3];
 void init()
