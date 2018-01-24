@@ -1,6 +1,0 @@
-package cooperativeDriving.intersection;
-
-component IntersectionController{
-    instance ConflictToStopLookup<2> indexLookup;
-
-}

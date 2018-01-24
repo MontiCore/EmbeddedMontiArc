@@ -1,0 +1,23 @@
+package ba.intersection;
+
+component IntersectionController{
+    port in Q^{3,5} trajectoryIn[3];
+    port in Q cutoffPosition;
+    port in Q cutoffTime;
+
+    port out B stop[3];
+
+    instance ConflictToStopLookup<3,6> conflictToStopLookup;
+    instance DeltaTrajectoryComputer<3,6,5> deltaTrajectoryComputer;
+    instance ConflictComputer<x,5> conflictComputer;
+    instance ConflictToStopConverter<3,6,5> conflictToStopConverter;
+
+    connect trajectoryIn[:] -> deltaTrajectoryComputer.trajectoryIn[:];
+    connect deltaTrajectoryComputer.deltaTrajectoryOut[:] -> conflictComputer.deltaTrajectoryIn[:];
+    connect cutoffPosition -> conflictComputer.cutoffPosition;
+    connect cutoffTime -> conflictComputer.cutoffTime;
+    connect conflictComputer.conflictOut[:] -> conflictToStopConverter.conflictIn[:];
+    connect conflictToStopLookup.indexLookup[:] -> conflictToStopConverter.indexLookupIn[:];
+    connect conflictToStopConverter.stopOut[:] ->  stop[:];
+
+}

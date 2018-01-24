@@ -33,11 +33,11 @@ public class RosTargetTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");
         generatorCPP.useArmadilloBackend();
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("cooperativeDriving.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("ba.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(component);
 
-        List<File> files = generatorCPP.generateFiles(component, symtab);
+        //List<File> files = generatorCPP.generateFiles(component, symtab);
 
 
     }

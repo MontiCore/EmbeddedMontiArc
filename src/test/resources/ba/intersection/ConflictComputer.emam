@@ -1,0 +1,33 @@
+package ba.intersection;
+
+//TODO: x = n(n+1)/2
+//TODO: units
+component ConflictComputer<N1 x = 3,N1 m = 5>{
+    port in Q^{3,m} deltaTrajectoryIn[x];
+    port in Q cutoffPosition,in Q cutoffTime;
+    port out B conflictOut[x];
+
+    implementation Math{
+        for i = 1:x
+            B tmp = False;
+            if tmp == False
+                for j = 1:m
+                    Q^{3,m} tmpTrajectory = deltaTrajectoryIn(i);
+                    Q deltaPosSquared = tmpTrajectory(1,j)*tmpTrajectory(1,j) + tmpTrajectory(2,j)*tmpTrajectory(2,j);
+                    Q absDeltaTime = abs(tmpTrajectory(3,j));
+
+                    B condPos = deltaPosSquared <= (cutoffPosition*cutoffPosition);
+                    B condTime = absDeltaTime <= cutoffTime;
+
+                    if condPos && condTime
+                        tmp = True;
+                    end
+                end
+            end
+            conflictOut(i) = tmp;
+        end
+    }
+
+
+
+}
