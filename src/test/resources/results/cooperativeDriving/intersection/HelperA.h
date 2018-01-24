@@ -2,7 +2,7 @@
 #define HELPERA_H
 #define _GLIBCXX_USE_CXX11_ABI 0
 #include <iostream>
-#include "armadillo.h"
+#include "armadillo"
 #include <stdarg.h>
 #include <initializer_list>
 using namespace arma;
