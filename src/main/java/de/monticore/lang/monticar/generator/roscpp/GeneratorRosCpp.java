@@ -13,7 +13,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 //TODO:implements Generator
 public class GeneratorRosCpp {
@@ -114,9 +116,14 @@ public class GeneratorRosCpp {
         builder.append("#include \"" + componentSymbol.getFullName().replace(".", "_") + ".h\"\n");
 
         //Add each msg include exactly once
-        DataHelper.getTopics().stream()
-                .map(t -> "#include <" + t.getImportString() + ".h>\n")
+        Set<ResolvedRosInterface> allInterfaces = new HashSet<>();
+        allInterfaces.addAll(DataHelper.getResolvedRosTag().getPublisherInterfaces());
+        allInterfaces.addAll(DataHelper.getResolvedRosTag().getSubscriberInterfaces());
+
+        allInterfaces.stream()
+                .map(t -> "#include <" + t.getInclude() + ".h>\n")
                 .distinct()
+                .sorted()
                 .forEach(builder::append);
 
         String classname = currentBluePrint.getName();

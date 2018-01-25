@@ -10,9 +10,18 @@ import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
 import de.monticore.symboltable.Symbol;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class LanguageUnitRosCppWrapper extends LanguageUnit {
+
+    private ResolvedRosTag resolvedRosTag;
+
+    public void setResolvedRosTag(ResolvedRosTag resolvedRosTag) {
+        this.resolvedRosTag = resolvedRosTag;
+    }
 
     @Override
     public void generateBluePrints() {
@@ -28,6 +37,8 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
     }
 
     private BluePrint generateWrapperBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
+        resolvedRosTag = DataHelper.getResolvedRosTag();
+
         String name = componentSymbol.getFullName().replace('.', '_') + "_RosWrapper";
         BluePrint currentBluePrint = new BluePrint(name);
 
@@ -42,19 +53,21 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
 
     //TODO: multiple publishers per topic is possible, not generated that way
     private void generatePublishMethods(BluePrint currentBluePrint) {
-        DataHelper.getTopics().stream()
-                .filter(t -> !t.getOutgoingPorts().isEmpty())
-                .forEach(t -> {
-                    Method method = new Method("publish" + t.getTargetLanguageName(), "void");
-                    method.addInstruction(new CreateTmpMsgInstruction(t));
+        final int[] i = {0};
+        resolvedRosTag.getPublisherInterfaces()
+                .forEach(pubInter -> {
+                    Method method = new Method("publish" + i[0], "void");
+                    method.addInstruction(new CreateTmpMsgInstruction(pubInter.getFullRosType()));
 
-                    t.getOutgoingPorts().forEach(
-                            p -> method.addInstruction(new SetMsgFieldInstruction(p, DataHelper.getMsgFieldFromPort(p).orElse(null))));
+                    pubInter.getPorts().forEach(
+                            p -> method.addInstruction(new SetMsgFieldInstruction(p, pubInter.getMsgFieldForPort(p))));
 
-                    method.addInstruction(new PublishInstruction(t));
-                    t.setPublishMethod(method);
+                    method.addInstruction(new PublishInstruction(pubInter.getPublisherField().get()));
+                    pubInter.setPublishMethod(method);
                     currentBluePrint.addMethod(method);
+                    i[0]++;
                 });
+
     }
 
     private void generateConstructor(String classname, BluePrint currentBluePrint) {
@@ -70,16 +83,15 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         constructorMethod.addParameter(param1);
         constructorMethod.addParameter(param2);
 
-        //add subscribe and advertise instructions
-        DataHelper.getPorts().stream()
-                .filter(PortSymbol::isIncoming)
-                .map(p -> new SubscribeInstruction(classname, DataHelper.getTopicFromPort(p).orElse(null)))
+        resolvedRosTag.getSubscriberInterfaces().stream()
+                .filter(inter -> inter.getSubscriberField().isPresent())
+                .map(inter -> new SubscribeInstruction(classname, inter.getSubscriberField().get(), inter.getTopic(), inter.getTargetLanguageName() + "Callback"))
                 .distinct()
                 .forEach(constructorMethod::addInstruction);
 
-        DataHelper.getPorts().stream()
-                .filter(PortSymbol::isOutgoing)
-                .map(p -> new AdvertiseInstruction(DataHelper.getTopicFromPort(p).orElse(null)))
+        resolvedRosTag.getPublisherInterfaces().stream()
+                .filter(inter -> inter.getPublisherField().isPresent())
+                .map(inter -> new AdvertiseInstruction(inter.getPublisherField().get(), inter.getFullRosType(), inter.getTopic()))
                 .distinct()
                 .forEach(constructorMethod::addInstruction);
 
@@ -94,27 +106,35 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         componentField.setTypeNameTargetLanguage(symbol.getFullName().replace(".", "_"));
         currBluePrint.addVariable(componentField);
 
-        //subscribers and publishers
-        for (RosTopic rosTopic : DataHelper.getTopics()) {
-            //Generate Subscriber once per topic if needed
-            if (!rosTopic.getIncommingPorts().isEmpty()) {
-                Variable field = new Variable();
-                field.setTypeNameTargetLanguage("ros::Subscriber");
-                field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Subscriber");
-                rosTopic.setSubscriber(field);
-                currBluePrint.addVariable(field);
-            }
+        Map<String, Variable> uniqueSubFields = new HashMap<>();
+        Map<String, Variable> uniquePubFields = new HashMap<>();
 
-            //Generate Publisher once per topic if needed
-            if (!rosTopic.getOutgoingPorts().isEmpty()) {
-                Variable field = new Variable();
-                field.setTypeNameTargetLanguage("ros::Publisher");
-                field.setName(rosTopic.getTargetLanguageName().toLowerCase() + "Publisher");
-                rosTopic.setPublisher(field);
-                currBluePrint.addVariable(field);
-            }
-        }
+        resolvedRosTag.getSubscriberInterfaces()
+                .forEach(subInter -> {
+                    String name = subInter.getTargetLanguageName().toLowerCase() + "Subscriber";
+                    if (!uniqueSubFields.containsKey(name)) {
+                        Variable field = new Variable();
+                        field.setTypeNameTargetLanguage("ros::Subscriber");
+                        field.setName(name);
+                        uniqueSubFields.put(name, field);
+                    }
+                    subInter.setSubscriberField(uniqueSubFields.get(name));
+                });
 
+        resolvedRosTag.getPublisherInterfaces()
+                .forEach(pubInter -> {
+                    String name = pubInter.getTargetLanguageName().toLowerCase() + "Publisher";
+                    if (!uniquePubFields.containsKey(name)) {
+                        Variable field = new Variable();
+                        field.setTypeNameTargetLanguage("ros::Publisher");
+                        field.setName(name);
+                        uniquePubFields.put(name, field);
+                    }
+                    pubInter.setPublisherField(uniquePubFields.get(name));
+                });
+
+        uniqueSubFields.values().forEach(currBluePrint::addVariable);
+        uniquePubFields.values().forEach(currBluePrint::addVariable);
     }
 
 
@@ -122,37 +142,42 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         Method tickMethod = new Method("tick", "void");
         tickMethod.addInstruction(new ExecuteComponentInstruction());
 
-        DataHelper.getTopics().stream()
-                .map(RosTopic::getPublishMethod)
-                .filter(Optional::isPresent)
-                .forEach(optionalMethod -> {
-                    tickMethod.addInstruction(new CallPublishInstruction(optionalMethod.get()));
-                });
+        resolvedRosTag.getPublisherInterfaces().stream()
+                .map(ResolvedRosInterface::getPublishMethod)
+                .map(Optional::get)
+                .forEach(publishMethod -> tickMethod.addInstruction(new CallPublishInstruction(publishMethod)));
 
         currentBluePrint.addMethod(tickMethod);
     }
 
     private void generateCallbacks(BluePrint currentBluePrint) {
 
-        for (RosTopic rosTopic : DataHelper.getTopics()) {
-            Method method = new Method(rosTopic.getTargetLanguageName() + "Callback", "void");
-            Variable tmpParam = new Variable();
-            tmpParam.setName("msg");
-            tmpParam.setTypeNameTargetLanguage("const " + rosTopic.getFullRosType() + "::ConstPtr&");
-            method.addParameter(tmpParam);
+        Map<String, Method> uniqueMethods = new HashMap<>();
 
-            rosTopic.getPorts().stream()
+        resolvedRosTag.getSubscriberInterfaces().forEach(subInter -> {
+            if (!uniqueMethods.containsKey(subInter.getTargetLanguageName())) {
+                Method method = new Method(subInter.getTargetLanguageName() + "Callback", "void");
+                Variable tmpParam = new Variable();
+                tmpParam.setName("msg");
+                tmpParam.setTypeNameTargetLanguage("const " + subInter.getFullRosType() + "::ConstPtr&");
+                method.addParameter(tmpParam);
+                uniqueMethods.put(subInter.getTargetLanguageName(), method);
+            }
+
+            Method method = uniqueMethods.get(subInter.getTargetLanguageName());
+
+            subInter.getPorts().stream()
                     .filter(PortSymbol::isIncoming)
                     .forEachOrdered(portSymbol -> {
-                        method.addInstruction(new SetPortInstruction(portSymbol, DataHelper.getMsgFieldFromPort(portSymbol).orElse(null)));
+                        method.addInstruction(new SetPortInstruction(portSymbol, subInter.getMsgFieldForPort(portSymbol)));
                     });
 
             if (method.getInstructions().size() > 0) {
-                rosTopic.setCallback(method);
+                //make instructions unique
+                method.setInstructions(method.getInstructions().stream().distinct().collect(Collectors.toList()));
                 currentBluePrint.addMethod(method);
             }
-
-        }
+        });
 
     }
 
