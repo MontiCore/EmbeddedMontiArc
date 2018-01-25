@@ -2,80 +2,59 @@ package de.monticore.lang.monticar.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.monticore.lang.monticar.junit.TemporaryDirectoryExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 class FileUtilsTest {
 
-  private static final Path BASE_PATH = Paths.get("src/test/resources/to_be_deleted");
-  private static final Path FILE = BASE_PATH.resolve("file.txt");
-  private static final Path EMPTY_DIR = BASE_PATH.resolve("empty_dir");
-  private static final Path NON_EMPTY_DIR = BASE_PATH.resolve("dir");
-  private static final Path DIR_IN_NON_EMPTY_DIR = NON_EMPTY_DIR.resolve("another_dir");
-  private static final Path FILE_IN_NON_EMPTY_DIR = DIR_IN_NON_EMPTY_DIR.resolve("file.txt");
-  private static final Path NON_EXISTING_DIR = BASE_PATH.resolve("dir");
-
-  @AfterEach
-  void cleanUp() throws IOException {
-    Files.deleteIfExists(EMPTY_DIR);
-    Files.deleteIfExists(FILE_IN_NON_EMPTY_DIR);
-    Files.deleteIfExists(DIR_IN_NON_EMPTY_DIR);
-    Files.deleteIfExists(NON_EMPTY_DIR);
-    Files.deleteIfExists(FILE);
-    Files.deleteIfExists(BASE_PATH);
-  }
+  private static final String FILE_NAME = "file.txt";
+  private static final String DIR_IN_NON_EMPTY_DIR_NAME = "another_dir";
+  private static final String FILE_IN_NON_EMPTY_DIR_NAME = "file.txt";
+  private static final String NON_EXISTING_DIR_NAME = "dir";
 
   @Nested
   class WhenFile {
 
-    @BeforeEach
-    void setUp() throws IOException {
-      Files.createDirectories(BASE_PATH);
-      Files.write(FILE, "test".getBytes());
-    }
-
     @Test
-    void shouldDeleteDirectory() {
-      FileUtils.delete(FILE);
-      assertThat(FILE).doesNotExist();
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void shouldDeleteDirectory(Path dir) throws IOException {
+      Path file = dir.resolve(FILE_NAME);
+      Files.write(file, "test".getBytes());
+
+      FileUtils.delete(file);
+      assertThat(file).doesNotExist();
     }
   }
 
   @Nested
   class WhenEmptyDirectory {
 
-    @BeforeEach
-    void setUp() throws IOException {
-      Files.createDirectories(EMPTY_DIR);
-    }
-
     @Test
-    void shouldDeleteDirectory() {
-      FileUtils.delete(EMPTY_DIR);
-      assertThat(EMPTY_DIR).doesNotExist();
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void shouldDeleteDirectory(Path emptyDir) {
+      FileUtils.delete(emptyDir);
+      assertThat(emptyDir).doesNotExist();
     }
   }
 
   @Nested
   class WhenNonEmptyDirectory {
 
-    @BeforeEach
-    void setUp() throws IOException {
-      Files.createDirectories(NON_EMPTY_DIR);
-      Files.createDirectories(DIR_IN_NON_EMPTY_DIR);
-      Files.write(FILE_IN_NON_EMPTY_DIR, "test".getBytes());
-    }
-
     @Test
-    void shouldDeleteDirectory() {
-      FileUtils.delete(NON_EMPTY_DIR);
-      assertThat(NON_EMPTY_DIR).doesNotExist();
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void shouldDeleteDirectory(Path nonEmptyDir) throws IOException {
+      Path dirInNonEmptyDir = nonEmptyDir.resolve(DIR_IN_NON_EMPTY_DIR_NAME);
+      Files.createDirectories(dirInNonEmptyDir);
+      Path fileInNonEmptyDir = dirInNonEmptyDir.resolve(FILE_IN_NON_EMPTY_DIR_NAME);
+      Files.write(fileInNonEmptyDir, "test".getBytes());
+
+      FileUtils.delete(nonEmptyDir);
+      assertThat(nonEmptyDir).doesNotExist();
     }
   }
 
@@ -83,9 +62,14 @@ class FileUtilsTest {
   class WhenNonExistingDirectory {
 
     @Test
-    void shouldNotDeleteAnything() {
-      assertThat(NON_EMPTY_DIR).doesNotExist();
-      FileUtils.delete(NON_EXISTING_DIR);
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void shouldNotDeleteAnything(Path dir) {
+      Path nonExistingDir = dir.resolve(NON_EXISTING_DIR_NAME);
+
+      assertThat(nonExistingDir).doesNotExist();
+      FileUtils.delete(nonExistingDir);
+
+      assertThat(dir).isDirectory();
     }
   }
 
