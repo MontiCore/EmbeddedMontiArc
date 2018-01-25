@@ -1,11 +1,11 @@
 package de.monticore.lang.monticar.generator.roscpp.instructions;
 
 import de.monticore.lang.monticar.generator.TargetCodeInstruction;
-import de.monticore.lang.monticar.generator.roscpp.RosTopic;
+import de.monticore.lang.monticar.generator.Variable;
 
 public class PublishInstruction extends TargetCodeInstruction {
 
-    public PublishInstruction(RosTopic rosTopic) {
-        this.instruction = rosTopic.getPublisher().orElse(null).getNameTargetLanguageFormat() + ".publish(tmpMsg);";
+    public PublishInstruction(Variable publisher) {
+        this.instruction = publisher.getNameTargetLanguageFormat() + ".publish(tmpMsg);";
     }
 }

@@ -1,8 +1,8 @@
 #pragma once
 #include <ros/ros.h>
 #include "tests_a_compA.h"
-#include <rosgraph_msgs/Clock.h>
 #include <automated_driving_msgs/StampedFloat64.h>
+#include <rosgraph_msgs/Clock.h>
 class tests_a_compA_RosWrapper{
 	tests_a_compA component;
 	ros::Subscriber _clockSubscriber;
@@ -18,7 +18,7 @@ public:
 		_echoPublisher = node_handle.advertise<automated_driving_msgs::StampedFloat64>("/echo",5);
 	}
 
-	void publish_echo(){
+	void publish0(){
 		automated_driving_msgs::StampedFloat64 tmpMsg;
 		tmpMsg.data = component.rosOut;
 		_echoPublisher.publish(tmpMsg);
@@ -26,7 +26,7 @@ public:
 
 	void tick(){
 		component.execute();
-		publish_echo();
+		publish0();
 	}
 
 };

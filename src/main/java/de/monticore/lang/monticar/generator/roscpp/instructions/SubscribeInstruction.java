@@ -2,18 +2,13 @@ package de.monticore.lang.monticar.generator.roscpp.instructions;
 
 import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.roscpp.RosTopic;
 
 import java.util.Objects;
 
 public class SubscribeInstruction extends TargetCodeInstruction {
     private static final int MSG_QUEUE_SIZE = 5;
 
-    public SubscribeInstruction(String className, RosTopic rosTopic) {
-        String topicName = rosTopic.getName();
-        String callback = rosTopic.getCallback().orElse(null).getName();
-        Variable subscriber = rosTopic.getSubscriber().orElse(null);
-
+    public SubscribeInstruction(String className, Variable subscriber, String topicName, String callback) {
         this.instruction = subscriber.getNameTargetLanguageFormat() + " = node_handle.subscribe(\"" + topicName + "\" ," + MSG_QUEUE_SIZE + ",&" + className + "::" + callback + ", this, ros::TransportHints().tcpNoDelay());";
     }
 
