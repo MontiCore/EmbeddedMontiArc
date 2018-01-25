@@ -51,7 +51,6 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
         return currentBluePrint;
     }
 
-    //TODO: multiple publishers per topic is possible, not generated that way
     private void generatePublishMethods(BluePrint currentBluePrint) {
         final int[] i = {0};
         resolvedRosTag.getPublisherInterfaces()
