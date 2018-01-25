@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -29,15 +28,22 @@ public class RosTargetTest extends AbstractSymtabTest {
     public void intersectionTest() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");
-        generatorCPP.useArmadilloBackend();
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");
+        generatorRosCpp.setGenerateCpp(false);
+
+//        GeneratorCPP generatorCPP = new GeneratorCPP();
+//        generatorCPP.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");
+//        generatorCPP.useArmadilloBackend();
+//
 
         ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("ba.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(component);
 
         //List<File> files = generatorCPP.generateFiles(component, symtab);
+
+        List<File> files = YamlHelper.generateFromFile("src/test/resources/config/intersection.yaml", symtab, generatorRosCpp);
 
 
     }
