@@ -1,6 +1,6 @@
 package ba.intersection;
 
-//TODO: x = n(n+1)/2
+//TODO: x = (n-1)n/2
 //TODO: units
 component ConflictComputer<N1 x = 3,N1 m = 5>{
     port in Q^{3,m} deltaTrajectoryIn[x];
