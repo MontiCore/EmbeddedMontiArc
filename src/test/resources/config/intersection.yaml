@@ -25,21 +25,18 @@
           stopOut[1]: data
         topic: /stop
         type: sim_sample_planning_tool/BoolWithId
-  publisher:
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
           objectIdOut[2]: object_id
           stopOut[2]: data
         topic: /stop
         type: sim_sample_planning_tool/BoolWithId
-  publisher:
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
           objectIdOut[3]: object_id
           stopOut[3]: data
         topic: /stop
         type: sim_sample_planning_tool/BoolWithId
-  publisher:
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
           objectIdOut[4]: object_id
