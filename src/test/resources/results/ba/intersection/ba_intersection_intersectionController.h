@@ -17,7 +17,7 @@ double cutoffPos;
 double cutoffTime;
 
 sword objectIdOut[4];
-bool stop[4];
+bool stopOut[4];
 
 ba_intersection_intersectionController_trajectoryToStop trajectoryToStop;
 ba_intersection_intersectionController_relToAbsTrajectory relToAbsTrajectory;
@@ -50,7 +50,7 @@ for(int i = 0; i < 4; i++){
     trajectoryToStop.trajectoryIn[i] = relToAbsTrajectory.absTrajectoryOut[i];
 }
 for(int i = 0; i < 4; i++){
-    stop[i] = trajectoryToStop.stop[i];
+    stopOut[i] = trajectoryToStop.stop[i];
 }
 trajectoryToStop.execute();
 relToAbsTrajectory.execute();

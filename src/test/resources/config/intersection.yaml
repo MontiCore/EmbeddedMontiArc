@@ -10,7 +10,7 @@
         objectIdIn[3]: objects[2].object_id
         objectIdIn[4]: objects[3].object_id
         #absPositionIn: TODO: converter method?
-        absPositionIn[1]: objects[1].motion_state.pose.pose.position
+        #absPositionIn[1]: objects[1].motion_state.pose.pose.position
         #TODO:...
         #relTrajectoryIn
         #TODO:...
@@ -24,22 +24,22 @@
           objectIdOut[1]: object_id
           stopOut[1]: data
         topic: /stop
-        type: sim_sample_planning_tool/BoolWithId
+        type: sim_intersection/BoolWithId
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
           objectIdOut[2]: object_id
           stopOut[2]: data
         topic: /stop
-        type: sim_sample_planning_tool/BoolWithId
+        type: sim_intersection/BoolWithId
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
           objectIdOut[3]: object_id
           stopOut[3]: data
         topic: /stop
-        type: sim_sample_planning_tool/BoolWithId
+        type: sim_intersection/BoolWithId
       - !de.monticar.lang.monticar.generator.python.RosInterface
         ports:
           objectIdOut[4]: object_id
           stopOut[4]: data
         topic: /stop
-        type: sim_sample_planning_tool/BoolWithId
+        type: sim_intersection/BoolWithId
