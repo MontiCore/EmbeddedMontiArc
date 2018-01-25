@@ -5,6 +5,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Utility class for text files to perform easy read and write operations. There are no checked
@@ -58,8 +59,8 @@ public class TextFile {
    * {@code IOException}
    */
   public String read() {
-    try {
-      return Files.lines(path).collect(Collectors.joining("\n"));
+    try (Stream<String> lines = Files.lines(path)) {
+      return lines.collect(Collectors.joining("\n"));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
