@@ -1,23 +1,30 @@
 package ba.intersection;
 
+import ba.util.RelToAbsTrajectory;
+
 component IntersectionController{
-    port in Q^{3,5} trajectoryIn[3];
-    port in Q cutoffPosition;
+    port in Z objectIdIn[4];
+    port in Q^{3,5} relTrajectoryIn[4];
+    port in Q^{2,1} absPositionIn[4];
+
+    port in Q cutoffPos;
     port in Q cutoffTime;
 
-    port out B stop[3];
+    port out Z objectIdOut[4];
+    port out B stopOut[4];
 
-    instance ConflictToStopLookup<3,6> conflictToStopLookup;
-    instance DeltaTrajectoryComputer<3,6,5> deltaTrajectoryComputer;
-    instance ConflictComputer<x,5> conflictComputer;
-    instance ConflictToStopConverter<3,6,5> conflictToStopConverter;
+    instance TrajectoryToStop<4,6,5> trajectoryToStop;
+    instance RelToAbsTrajectory relToAbsTrajectory;
 
-    connect trajectoryIn[:] -> deltaTrajectoryComputer.trajectoryIn[:];
-    connect deltaTrajectoryComputer.deltaTrajectoryOut[:] -> conflictComputer.deltaTrajectoryIn[:];
-    connect cutoffPosition -> conflictComputer.cutoffPosition;
-    connect cutoffTime -> conflictComputer.cutoffTime;
-    connect conflictComputer.conflictOut[:] -> conflictToStopConverter.conflictIn[:];
-    connect conflictToStopLookup.indexLookup[:] -> conflictToStopConverter.indexLookupIn[:];
-    connect conflictToStopConverter.stopOut[:] ->  stop[:];
+    connect objectIdIn[:] -> objectIdOut[:];
+
+    connect cutoffPos -> trajectoryToStop.cutoffPos;
+    connect cutoffTime -> trajectoryToStop.cutoffTime;
+
+    connect relTrajectoryIn[:] -> relToAbsTrajectory.relTrajectoryIn[:];
+    connect absPositionIn[:] -> relToAbsTrajectory.absPositionIn[:];
+    connect relToAbsTrajectory.absTrajectoryOut[:] -> trajectoryToStop.trajectoryIn[:];
+
+    connect trajectoryToStop.stop[:] -> stopOut[:];
 
 }

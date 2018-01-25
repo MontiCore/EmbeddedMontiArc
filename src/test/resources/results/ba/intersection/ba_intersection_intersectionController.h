@@ -4,54 +4,56 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
-#include "ba_intersection_intersectionController_conflictToStopLookup.h"
-#include "ba_intersection_intersectionController_deltaTrajectoryComputer.h"
-#include "ba_intersection_intersectionController_conflictComputer.h"
-#include "ba_intersection_intersectionController_conflictToStopConverter.h"
+#include "ba_intersection_intersectionController_trajectoryToStop.h"
+#include "ba_intersection_intersectionController_relToAbsTrajectory.h"
 using namespace arma;
 class ba_intersection_intersectionController{
 public:
-mat trajectoryIn[3];
-double cutoffPosition;
+sword objectIdIn[4];
+mat relTrajectoryIn[4];
+colvec absPositionIn[4];
+
+double cutoffPos;
 double cutoffTime;
-bool stop[3];
-ba_intersection_intersectionController_conflictToStopLookup conflictToStopLookup;
-ba_intersection_intersectionController_deltaTrajectoryComputer deltaTrajectoryComputer;
-ba_intersection_intersectionController_conflictComputer conflictComputer;
-ba_intersection_intersectionController_conflictToStopConverter conflictToStopConverter;
+
+sword objectIdOut[4];
+bool stop[4];
+
+ba_intersection_intersectionController_trajectoryToStop trajectoryToStop;
+ba_intersection_intersectionController_relToAbsTrajectory relToAbsTrajectory;
+
 void init()
 {
-for(int i = 0; i < 3; ++i){
-    trajectoryIn[i] = mat(3,5);
+for(int i = 0; i < 4; ++i){
+    relTrajectoryIn[i] = mat(3,5);
 }
-conflictToStopLookup.init();
-deltaTrajectoryComputer.init();
-conflictComputer.init();
-conflictToStopConverter.init();
+for(int i = 0; i < 4; ++i){
+    absPositionIn[i] = colvec(2);
+}
+trajectoryToStop.init();
+relToAbsTrajectory.init();
 }
 void execute()
 {
-for(int i = 0; i < 3; i++){
-    deltaTrajectoryComputer.trajectoryIn[i] = trajectoryIn[i];
+for(int i = 0; i < 4; i++){
+    objectIdOut[i] = objectIdIn[i];
 }
-for(int i = 0; i < 6; i++){
-    conflictComputer.deltaTrajectoryIn[i] = deltaTrajectoryComputer.deltaTrajectoryOut[i];
+trajectoryToStop.cutoffPos = cutoffPos;
+trajectoryToStop.cutoffTime = cutoffTime;
+for(int i = 0; i < 4; i++){
+    relToAbsTrajectory.relTrajectoryIn[i] = relTrajectoryIn[i];
 }
-conflictComputer.cutoffPosition = cutoffPosition;
-conflictComputer.cutoffTime = cutoffTime;
-for(int i = 0; i < 6; i++){
-    conflictToStopConverter.conflictIn[i] = conflictComputer.conflictOut[i];
+for(int i = 0; i < 4; i++){
+    relToAbsTrajectory.absPositionIn[i] = absPositionIn[i];
 }
-for(int i = 0; i < 6; i++){
-    conflictToStopConverter.indexLookupIn[i] = conflictToStopLookup.indexLookup[i];
+for(int i = 0; i < 4; i++){
+    trajectoryToStop.trajectoryIn[i] = relToAbsTrajectory.absTrajectoryOut[i];
 }
-for(int i = 0; i < 3; i++){
-    stop[i] = conflictToStopConverter.stopOut[i];
+for(int i = 0; i < 4; i++){
+    stop[i] = trajectoryToStop.stop[i];
 }
-conflictToStopLookup.execute();
-deltaTrajectoryComputer.execute();
-conflictComputer.execute();
-conflictToStopConverter.execute();
+trajectoryToStop.execute();
+relToAbsTrajectory.execute();
 }
 
 };

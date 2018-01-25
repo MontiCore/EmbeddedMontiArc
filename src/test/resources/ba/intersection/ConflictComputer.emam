@@ -2,29 +2,44 @@ package ba.intersection;
 
 //TODO: x = (n-1)n/2
 //TODO: units
-component ConflictComputer<N1 x = 3,N1 m = 5>{
-    port in Q^{3,m} deltaTrajectoryIn[x];
-    port in Q cutoffPosition,in Q cutoffTime;
+component ConflictComputer<N1 n = 2,N1 x = 3,N1 m = 5>{
+    port in Q^{3,m} trajectoryIn[x];
+    port in Q cutoffPos,in Q cutoffTime;
     port out B conflictOut[x];
 
+    //TODO: horrible runtime O(n²m²)
+    //TODO: split into mutliple components?
+    //TODO: rename loop variables, comments
     implementation Math{
-        for i = 1:x
-            B tmp = False;
-            if tmp == False
-                for j = 1:m
-                    Q^{3,m} tmpTrajectory = deltaTrajectoryIn(i);
-                    Q deltaPosSquared = tmpTrajectory(1,j)*tmpTrajectory(1,j) + tmpTrajectory(2,j)*tmpTrajectory(2,j);
-                    Q absDeltaTime = abs(tmpTrajectory(3,j));
+        Z xi = 1;
 
-                    B condPos = deltaPosSquared <= (cutoffPosition*cutoffPosition);
-                    B condTime = absDeltaTime <= cutoffTime;
+        for ni = 1:n
+        Z minNj = ni + 1;
+        for nj = minNj:n
+            B conflictFlag = False;
+            Q^{3,m} tmpTrajA = trajectoryIn(ni);
+            Q^{3,m} tmpTrajB = trajectoryIn(nj);
 
-                    if condPos && condTime
-                        tmp = True;
-                    end
+            for mi = 1:m
+            Z minMj = mi + 1;
+            for mj = minMj:m
+                Q deltaXSquared = (tmpTrajA(1,mi) - tmpTrajB(1,mj)) * (tmpTrajA(1,mi) - tmpTrajB(1,mj));
+                Q deltaYSquared = (tmpTrajA(2,mi) - tmpTrajB(2,mj)) * (tmpTrajA(2,mi) - tmpTrajB(2,mj));
+                Q deltaTSquared = (tmpTrajA(3,mi) - tmpTrajB(3,mj)) * (tmpTrajA(3,mi) - tmpTrajB(3,mj));
+
+                B condPos = deltaXSquared + deltaYSquared <= cutoffPos * cutoffPos;
+                B condTime = deltaTSquared <= cutoffTime * cutoffTime;
+
+                if condPos && condTime
+                    conflictFlag = True;
+                    //TODO: break
                 end
             end
-            conflictOut(i) = tmp;
+            end
+
+            conflictOut(xi) = conflictFlag;
+            xi = xi + 1;
+        end
         end
     }
 

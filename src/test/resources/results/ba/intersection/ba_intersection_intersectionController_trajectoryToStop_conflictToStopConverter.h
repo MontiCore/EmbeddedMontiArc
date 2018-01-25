@@ -1,11 +1,11 @@
-#ifndef BA_INTERSECTION_INTERSECTIONCONTROLLER_CONFLICTTOSTOPCONVERTER
-#define BA_INTERSECTION_INTERSECTIONCONTROLLER_CONFLICTTOSTOPCONVERTER
+#ifndef BA_INTERSECTION_INTERSECTIONCONTROLLER_TRAJECTORYTOSTOP_CONFLICTTOSTOPCONVERTER
+#define BA_INTERSECTION_INTERSECTIONCONTROLLER_TRAJECTORYTOSTOP_CONFLICTTOSTOPCONVERTER
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
 using namespace arma;
-class ba_intersection_intersectionController_conflictToStopConverter{
+class ba_intersection_intersectionController_trajectoryToStop_conflictToStopConverter{
 const int n = 3;
 const int x = 6;
 const int m = 5;

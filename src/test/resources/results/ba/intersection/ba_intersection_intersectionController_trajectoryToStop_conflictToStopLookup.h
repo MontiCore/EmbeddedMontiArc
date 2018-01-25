@@ -1,11 +1,11 @@
-#ifndef BA_INTERSECTION_INTERSECTIONCONTROLLER_CONFLICTTOSTOPLOOKUP
-#define BA_INTERSECTION_INTERSECTIONCONTROLLER_CONFLICTTOSTOPLOOKUP
+#ifndef BA_INTERSECTION_INTERSECTIONCONTROLLER_TRAJECTORYTOSTOP_CONFLICTTOSTOPLOOKUP
+#define BA_INTERSECTION_INTERSECTIONCONTROLLER_TRAJECTORYTOSTOP_CONFLICTTOSTOPLOOKUP
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo"
 using namespace arma;
-class ba_intersection_intersectionController_conflictToStopLookup{
+class ba_intersection_intersectionController_trajectoryToStop_conflictToStopLookup{
 const int n = 3;
 const int x = 6;
 public:
