@@ -23,7 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class ModelParserTest {
+class EmamModelNameProviderTest {
 
   private static final Path MODEL_PATH = Paths.get("src/test/resources/parser/models");
   private static final Path EMPTY_MODEL = MODEL_PATH.resolve("EmptyModel.emam");
@@ -41,20 +41,20 @@ class ModelParserTest {
     @Nested
     class WhenIOExceptionIsThrown {
 
-      private ModelParser parser;
+      private EmamModelNameProvider parser;
 
       @BeforeEach
       void setUp() throws IOException {
         EmbeddedMontiArcMathParser emaParser = mock(EmbeddedMontiArcMathParser.class);
         when(emaParser.parse(any(Reader.class))).thenThrow(IOException.class);
 
-        parser = new ModelParser(emaParser);
+        parser = new EmamModelNameProvider(emaParser);
       }
 
       @Test
       void shouldThrowUncheckedIOException() {
         assertThatExceptionOfType(UncheckedIOException.class)
-            .isThrownBy(() -> parser.parsePackage(""));
+            .isThrownBy(() -> parser.getPackage(""));
       }
     }
 
@@ -62,17 +62,17 @@ class ModelParserTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class WithEmbeddedMontiArcModel {
 
-      private ModelParser parser;
+      private EmamModelNameProvider parser;
 
       @BeforeEach
       void setUp() {
-        parser = new ModelParser(new EmbeddedMontiArcMathParser());
+        parser = new EmamModelNameProvider(new EmbeddedMontiArcMathParser());
       }
 
       @ParameterizedTest
       @MethodSource("testData")
       void shouldReturnPackage(String model, String name) {
-        assertThat(parser.parsePackage(model)).isEqualTo(name);
+        assertThat(parser.getPackage(model)).isEqualTo(name);
       }
 
       private Stream<Arguments> testData() {
@@ -94,20 +94,20 @@ class ModelParserTest {
     @Nested
     class WhenIOExceptionIsThrown {
 
-      private ModelParser parser;
+      private EmamModelNameProvider parser;
 
       @BeforeEach
       void setUp() throws IOException {
         EmbeddedMontiArcMathParser emaParser = mock(EmbeddedMontiArcMathParser.class);
         when(emaParser.parse(any(Reader.class))).thenThrow(IOException.class);
 
-        parser = new ModelParser(emaParser);
+        parser = new EmamModelNameProvider(emaParser);
       }
 
       @Test
       void shouldThrowUncheckedIOException() {
         assertThatExceptionOfType(UncheckedIOException.class)
-            .isThrownBy(() -> parser.parseModelName(""));
+            .isThrownBy(() -> parser.getName(""));
       }
     }
 
@@ -115,17 +115,17 @@ class ModelParserTest {
     @TestInstance(Lifecycle.PER_CLASS)
     class WithEmbeddedMontiArcModel {
 
-      private ModelParser parser;
+      private EmamModelNameProvider parser;
 
       @BeforeEach
       void setUp() {
-        parser = new ModelParser(new EmbeddedMontiArcMathParser());
+        parser = new EmamModelNameProvider(new EmbeddedMontiArcMathParser());
       }
 
       @ParameterizedTest
       @MethodSource("testData")
       void shouldReturnModelName(String model, String name) {
-        assertThat(parser.parseModelName(model)).isEqualTo(name);
+        assertThat(parser.getName(model)).isEqualTo(name);
       }
 
       private Stream<Arguments> testData() {

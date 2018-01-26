@@ -8,35 +8,39 @@ import static org.mockito.Mockito.when;
 
 import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
 import de.monticore.lang.monticar.junit.TemporaryDirectoryExtension;
-import de.monticore.lang.monticar.util.FileUtils;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-class EMAMStepTest {
+class ModelStepTest {
 
   private static final Path EXPECTED_MODEL_PATH = Paths.get("a/b/c/Model.emam");
   private static final String NULL_STRING = null;
   private static final String PACKAGE_NAME = "a.b.c";
   private static final String MODEL_NAME = "Model";
+  private static final String FILE_EXTENSION = "emam";
   private static final String MODEL_CONTENT = "test";
+
+  private ModelNameProvider modelNameProviderMock() {
+    ModelNameProvider nameProvider = mock(ModelNameProvider.class);
+    when(nameProvider.getPackage(anyString())).thenReturn(PACKAGE_NAME);
+    when(nameProvider.getName(anyString())).thenReturn(MODEL_NAME);
+    when(nameProvider.getFileExtension()).thenReturn(FILE_EXTENSION);
+    when(nameProvider.getFilePath(anyString())).thenCallRealMethod();
+    return nameProvider;
+  }
 
   @Nested
   class Save {
 
-    private ModelParser modelParser;
+    private ModelNameProvider nameProvider;
 
     @BeforeEach
     void setUp() {
-      modelParser = mock(ModelParser.class);
-      when(modelParser.parsePackage(anyString())).thenReturn(PACKAGE_NAME);
-      when(modelParser.parseModelName(anyString())).thenReturn(MODEL_NAME);
+      nameProvider = modelNameProviderMock();
     }
 
     @Nested
@@ -45,7 +49,7 @@ class EMAMStepTest {
       @Test
       @ExtendWith(TemporaryDirectoryExtension.class)
       void shouldThrowPreconditionViolationException(Path basePath) {
-        EMAMStep emamStep = new EMAMStep(basePath, modelParser);
+        ModelStep emamStep = new ModelStep(basePath, nameProvider);
 
         assertThatExceptionOfType(PreconditionViolationException.class)
             .isThrownBy(() -> emamStep.save(NULL_STRING));
@@ -59,7 +63,7 @@ class EMAMStepTest {
       @ExtendWith(TemporaryDirectoryExtension.class)
       void shouldSaveModelCorrespondingToFullName(Path basePath) {
         Path targetPath = basePath.resolve(EXPECTED_MODEL_PATH);
-        EMAMStep emamStep = new EMAMStep(basePath, modelParser);
+        ModelStep emamStep = new ModelStep(basePath, nameProvider);
 
         emamStep.save(MODEL_CONTENT);
 
@@ -69,7 +73,7 @@ class EMAMStepTest {
       @Test
       @ExtendWith(TemporaryDirectoryExtension.class)
       void shouldReturnExpectedModelPath(Path basePath) {
-        EMAMStep emamStep = new EMAMStep(basePath, modelParser);
+        ModelStep emamStep = new ModelStep(basePath, nameProvider);
 
         Path savePath = emamStep.save(MODEL_CONTENT);
 
@@ -79,7 +83,7 @@ class EMAMStepTest {
       @Test
       @ExtendWith(TemporaryDirectoryExtension.class)
       void shouldWriteProvidedContent(Path basePath) {
-        EMAMStep emamStep = new EMAMStep(basePath, modelParser);
+        ModelStep emamStep = new ModelStep(basePath, nameProvider);
 
         Path savePath = emamStep.save(MODEL_CONTENT);
         assertThat(savePath).hasContent(MODEL_CONTENT);
@@ -90,13 +94,11 @@ class EMAMStepTest {
   @Nested
   class GetFile {
 
-    private ModelParser modelParser;
+    private ModelNameProvider nameProvider;
 
     @BeforeEach
     void setUp() {
-      modelParser = mock(ModelParser.class);
-      when(modelParser.parsePackage(anyString())).thenReturn(PACKAGE_NAME);
-      when(modelParser.parseModelName(anyString())).thenReturn(MODEL_NAME);
+      nameProvider = modelNameProviderMock();
     }
 
     @Nested
@@ -105,7 +107,7 @@ class EMAMStepTest {
       @Test
       @ExtendWith(TemporaryDirectoryExtension.class)
       void shouldThrowPreconditionViolationException(Path basePath) {
-        EMAMStep emamStep = new EMAMStep(basePath, modelParser);
+        ModelStep emamStep = new ModelStep(basePath, nameProvider);
 
         assertThatExceptionOfType(PreconditionViolationException.class)
             .isThrownBy(() -> emamStep.getFile(NULL_STRING));
@@ -118,7 +120,7 @@ class EMAMStepTest {
       @Test
       @ExtendWith(TemporaryDirectoryExtension.class)
       void shouldReturnExpectedModelPath(Path basePath) {
-        EMAMStep emamStep = new EMAMStep(basePath, modelParser);
+        ModelStep emamStep = new ModelStep(basePath, nameProvider);
 
         Path filePath = emamStep.getFile(MODEL_CONTENT);
         assertThat(basePath.relativize(filePath)).isEqualTo(EXPECTED_MODEL_PATH);

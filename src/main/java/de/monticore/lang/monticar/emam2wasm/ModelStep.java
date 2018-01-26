@@ -2,9 +2,6 @@ package de.monticore.lang.monticar.emam2wasm;
 
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.resolver.Resolver;
-import de.monticore.lang.monticar.resolver.ResolverFactory;
 import de.monticore.lang.monticar.util.TextFile;
 import java.nio.file.Path;
 
@@ -12,12 +9,10 @@ import java.nio.file.Path;
  * This class offers methods to save EmbeddedMontiArc models with arbitrary packages and names to
  * the correct files in the correct directory hierarchy.
  */
-public class EMAMStep {
-
-  private static final String MODEL_EXTENSION = "emam";
+public class ModelStep {
 
   private final Path emamDir;
-  private final ModelParser modelParser;
+  private final ModelNameProvider nameProvider;
 
   /**
    * Creates a new {@code EMAMStep} object.
@@ -25,16 +20,16 @@ public class EMAMStep {
    * {@code Path} relative to the supplied {@code emamDir}.
    *
    * @param emamDir Base path where models will be saved to
-   * @param modelParser Used to parse the package and name of EmbeddedMontiArc models
+   * @param nameProvider Used to parse the package and name of EmbeddedMontiArc models
    */
-  public EMAMStep(Path emamDir, ModelParser modelParser) {
+  public ModelStep(Path emamDir, ModelNameProvider nameProvider) {
     this.emamDir = requiresNotNull(emamDir);
-    this.modelParser = requiresNotNull(modelParser);
+    this.nameProvider = requiresNotNull(nameProvider);
   }
 
   /**
    * Saves the supplied model in a file relative to {@code emamDir}, specified in
-   * {@link #EMAMStep(Path, ModelParser)}. The location will be {@code emamDir/package/Model.emam}.
+   * {@link #ModelStep(Path, ModelNameProvider)}. The location will be {@code emamDir/package/Model.emam}.
    * Directories for parts of the package are created if they do not yet exist.
    *
    * @param model The model to save
@@ -60,11 +55,6 @@ public class EMAMStep {
   public Path getFile(String model) {
     requiresNotNull(model);
 
-    String packageName = modelParser.parsePackage(model);
-    String packagePathString = packageName.replace('.', '/');
-    Path packagePath = emamDir.resolve(packagePathString);
-
-    String modelName = modelParser.parseModelName(model);
-    return packagePath.resolve(modelName + "." + MODEL_EXTENSION);
+    return emamDir.resolve(nameProvider.getFilePath(model));
   }
 }
