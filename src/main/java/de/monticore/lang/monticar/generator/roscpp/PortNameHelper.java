@@ -17,11 +17,26 @@ public class PortNameHelper {
         if (!portSymbol.isPartOfPortArray())
             throw new IllegalArgumentException("PortSymbol " + portSymbol.getName() + " is not part of an array!");
 
-        String name = portSymbol.getName();
+        return fixName(portSymbol.getName());
+    }
+
+    public static String getFixedMsgFieldName(String name) {
+        if (!(name.contains("[") && name.contains("]"))) {
+            throw new IllegalArgumentException("The MsgField " + name + "is not part of an array!");
+        }
+
+        return fixName(name);
+    }
+
+    private static String fixName(String name) {
         String shortName = name.substring(0, name.lastIndexOf('['));
         String indexString = name.substring(name.lastIndexOf('['), name.lastIndexOf(']')).replace("[", "");
 
         int emamIndex = Integer.parseInt(indexString);
+        if (emamIndex == 0) {
+            throw new IllegalArgumentException("The index of " + name + " is 0 but EMAM indices are 1 based!");
+        }
+
         int cppIndex = emamIndex - 1;
 
         return shortName + "[" + cppIndex + "]";

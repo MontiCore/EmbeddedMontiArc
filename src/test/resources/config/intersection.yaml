@@ -4,11 +4,7 @@
   subscriber:
     - !de.monticar.lang.monticar.generator.python.RosInterface
       ports:
-        #objectIdIn: TODO: make msg index 1 based?
-        objectIdIn[1]: objects[0].object_id
-        objectIdIn[2]: objects[1].object_id
-        objectIdIn[3]: objects[2].object_id
-        objectIdIn[4]: objects[3].object_id
+        objectIdIn[:]: objects[:].object_id
         #absPositionIn: TODO: converter method?
         #absPositionIn[1]: objects[1].motion_state.pose.pose.position
         #TODO:...

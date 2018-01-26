@@ -107,6 +107,37 @@ public class YamlTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void arrayPortColonSyntaxTest() throws IOException {
+        //Setup
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/arraySyntaxGenCpp/");
+        generatorRosCpp.setGenerateCpp(false);
+
+        //Execute
+        List<File> files = YamlHelper.generateFromFile("src/test/resources/config/arrayColonSyntax.yaml", symtab, generatorRosCpp);
+
+        //Check
+        assertTrue(files.size() == 1);
+
+        String fileContent = Files.readAllLines(files.get(0).toPath()).stream()
+                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+                .toString();
+
+        String[] positiveNames = {"val1[0]", "val1[5]", "valOut[0]", "valOut[5]", "posX[0]", "posX[5]"};
+        String[] negativeNames = {"val1[6]", "valOut[6]", "posX[6]"};
+
+        for (String name : positiveNames) {
+            assertTrue(fileContent.contains(name));
+        }
+
+        for (String name : negativeNames) {
+            assertFalse(fileContent.contains(name));
+        }
+    }
+
+    @Test
     public void multipleComponentsTest() throws IOException {
         //Setup
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
