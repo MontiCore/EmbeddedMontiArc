@@ -1,13 +1,16 @@
-package de.monticore.lang.monticar.generator.roscpp;
+package de.monticore.lang.monticar.generator.roscpp.helper;
 
+import com.esotericsoftware.yamlbeans.YamlReader;
 import de.monticar.lang.monticar.generator.python.RosTag;
-import de.monticar.lang.monticar.generator.python.TagReader;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
+import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.antlr.v4.runtime.misc.Pair;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,17 +20,15 @@ import java.util.stream.Stream;
 public class YamlHelper {
 
     public static List<File> generateFromFile(String configFilePath, TaggingResolver symtab, GeneratorRosCpp generatorRosCpp) throws IOException {
-        TagReader<RosTag> reader = new TagReader<>();
-        //TODO: fails silently, rewrite?
-        List<RosTag> rosTags = reader.readYAML(configFilePath);
+        YamlReader reader = new YamlReader(new FileReader(configFilePath));
+        List<RosTag> rosTags = (List<RosTag>) reader.read();
         List<File> result = new ArrayList<>();
 
         for (RosTag rosTag : rosTags) {
             fixPortSyntax(rosTag, symtab);
             fixMsgFieldIndices(rosTag);
             ResolvedRosTag resolvedRosTag = ResolveHelper.resolveRosTag(rosTag, symtab);
-            DataHelper.setCurrentResolvedRosTag(resolvedRosTag);
-            result.addAll(generatorRosCpp.generateFiles(resolvedRosTag.getComponent(), symtab));
+            result.addAll(generatorRosCpp.generateFiles(resolvedRosTag, symtab));
         }
 
         return result;

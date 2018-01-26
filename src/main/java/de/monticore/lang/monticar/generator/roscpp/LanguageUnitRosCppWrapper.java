@@ -2,53 +2,73 @@ package de.monticore.lang.monticar.generator.roscpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.montiarc.montiarc._symboltable.ExpandedComponentInstanceKind;
 import de.monticore.lang.monticar.generator.BluePrint;
-import de.monticore.lang.monticar.generator.LanguageUnit;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
-import de.monticore.symboltable.Symbol;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class LanguageUnitRosCppWrapper extends LanguageUnit {
+public class LanguageUnitRosCppWrapper {
 
+    
+    
     private ResolvedRosTag resolvedRosTag;
+    private List<BluePrintCPP> bluePrints = new ArrayList<>();
 
     public void setResolvedRosTag(ResolvedRosTag resolvedRosTag) {
         this.resolvedRosTag = resolvedRosTag;
     }
 
-    @Override
-    public void generateBluePrints() {
-        if (symbolsToConvert.size() > 1)
-            throw new IllegalArgumentException("DataHelper does not work for multiple symbols yet!");
-
-        for (Symbol s : symbolsToConvert) {
-            if (s.isKindOf(ExpandedComponentInstanceKind.KIND)) {
-                this.bluePrints.add(generateWrapperBluePrint((ExpandedComponentInstanceSymbol) s));
-            }
+    public void generateBluePrints(ResolvedRosTag resolvedRosTag) {
+        if (resolvedRosTag != null && resolvedRosTag.getComponent() != null) {
+            this.setResolvedRosTag(resolvedRosTag);
+            this.bluePrints.add(generateWrapperBluePrint(resolvedRosTag.getComponent()));
+        } else {
+            throw new IllegalArgumentException("resolvedRosTag and resolvedRosTag.component must not be null!");
         }
-
     }
 
-    private BluePrint generateWrapperBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
-        resolvedRosTag = DataHelper.getResolvedRosTag();
+    private BluePrintCPP generateWrapperBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
 
         String name = componentSymbol.getFullName().replace('.', '_') + "_RosWrapper";
-        BluePrint currentBluePrint = new BluePrint(name);
+        BluePrintCPP currentBluePrint = new BluePrintCPP(name);
 
         generateFields(componentSymbol, currentBluePrint);
         generateCallbacks(currentBluePrint);
         generateConstructor(name, currentBluePrint);
         generatePublishMethods(currentBluePrint);
         generateTick(currentBluePrint);
+        generateIncludes(currentBluePrint);
 
         return currentBluePrint;
+    }
+
+    private void generateIncludes(BluePrintCPP currentBluePrint) {
+        currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
+        ExpandedComponentInstanceSymbol componentSymbol = resolvedRosTag.getComponent();
+        currentBluePrint.addAdditionalIncludeString("\"" + componentSymbol.getFullName().replace(".", "_") + ".h\"");
+        //Add each msg include exactly once
+        Set<ResolvedRosInterface> allInterfaces = new HashSet<>();
+        allInterfaces.addAll(resolvedRosTag.getPublisherInterfaces());
+        allInterfaces.addAll(resolvedRosTag.getSubscriberInterfaces());
+
+        allInterfaces.stream()
+                .map(t -> "<" + t.getInclude() + ".h>")
+                .distinct()
+                .sorted()
+                .forEach(currentBluePrint::addAdditionalIncludeString);
+
+        allInterfaces.stream()
+                .flatMap(i -> i.getMsgConverters().stream())
+                .flatMap(conv -> conv.getAdditionalIncludes().stream())
+                .distinct()
+                .sorted()
+                .forEach(currentBluePrint::addAdditionalIncludeString);
+
+
     }
 
     private void generatePublishMethods(BluePrint currentBluePrint) {
@@ -180,4 +200,7 @@ public class LanguageUnitRosCppWrapper extends LanguageUnit {
 
     }
 
+    public List<BluePrintCPP> getBluePrints() {
+        return bluePrints;
+    }
 }

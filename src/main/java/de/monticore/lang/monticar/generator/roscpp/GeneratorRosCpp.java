@@ -1,9 +1,10 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -13,11 +14,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-//TODO:implements Generator
 public class GeneratorRosCpp {
 
     private String generationTargetPath;
@@ -36,8 +34,8 @@ public class GeneratorRosCpp {
         this.generationTargetPath = generationTargetPath;
     }
 
-    public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol, TaggingResolver symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(symtab, componentSymbol);
+    public List<File> generateFiles(ResolvedRosTag resolvedRosTag, TaggingResolver symtab) throws IOException {
+        List<FileContent> fileContents = generateStrings(symtab, resolvedRosTag);
 
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
@@ -66,10 +64,12 @@ public class GeneratorRosCpp {
         return f;
     }
 
-    public List<FileContent> generateStrings(Scope scope, ExpandedComponentInstanceSymbol symbol) {
+    public List<FileContent> generateStrings(Scope scope, ResolvedRosTag resolvedRosTag) {
         List<FileContent> fileContents = new ArrayList<>();
 
-        fileContents.add(generateRosCompUnit(symbol));
+        fileContents.add(generateRosCompUnit(resolvedRosTag));
+
+        ExpandedComponentInstanceSymbol symbol = resolvedRosTag.getComponent();
 
         if (generateCpp) {
             fileContents.addAll(generateCppStrings(scope, symbol));
@@ -99,40 +99,18 @@ public class GeneratorRosCpp {
     }
 
 
-    private FileContent generateRosCompUnit(ExpandedComponentInstanceSymbol componentSymbol) {
+    private FileContent generateRosCompUnit(ResolvedRosTag resolvedRosTag) {
         FileContent res = new FileContent();
 
         LanguageUnitRosCppWrapper languageUnitRosCppWrapper = new LanguageUnitRosCppWrapper();
-        languageUnitRosCppWrapper.addSymbolToConvert(componentSymbol);
-        languageUnitRosCppWrapper.generateBluePrints();
+        languageUnitRosCppWrapper.generateBluePrints(resolvedRosTag);
         //TODO: unsave, does not work with multiple
-        BluePrint currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
-
-        //includes
-        StringBuilder builder = new StringBuilder();
-        //TODO: add to blueprint
-        builder.append("#pragma once\n");
-        builder.append("#include <ros/ros.h>\n");
-        builder.append("#include \"" + componentSymbol.getFullName().replace(".", "_") + ".h\"\n");
-
-        //Add each msg include exactly once
-        Set<ResolvedRosInterface> allInterfaces = new HashSet<>();
-        allInterfaces.addAll(DataHelper.getResolvedRosTag().getPublisherInterfaces());
-        allInterfaces.addAll(DataHelper.getResolvedRosTag().getSubscriberInterfaces());
-
-        allInterfaces.stream()
-                .map(t -> "#include <" + t.getInclude() + ".h>\n")
-                .distinct()
-                .sorted()
-                .forEach(builder::append);
+        BluePrintCPP currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
 
         String classname = currentBluePrint.getName();
-
         res.setFileName(classname + ".h");
-        //class
-        builder.append(PrinterHelper.printClass(currentBluePrint));
 
-        res.setFileContent(builder.toString());
+        res.setFileContent(PrinterHelper.printClass(currentBluePrint));
         return res;
     }
 

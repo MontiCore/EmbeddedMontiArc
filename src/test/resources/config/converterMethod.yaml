@@ -1,0 +1,14 @@
+- !de.monticar.lang.monticar.generator.python.RosTag
+  component: tests.a.compA
+  subscriber:
+    - !de.monticar.lang.monticar.generator.python.RosInterface
+      ports:
+        rosIn: MethodHelper::convertClockToDouble
+      topic: /clock
+      type: rosgraph_msgs/Clock
+  publisher:
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          rosOut: MethodHelper::convertDoubleToStampedFloat64
+        topic: /echo
+        type: automated_driving_msgs/StampedFloat64

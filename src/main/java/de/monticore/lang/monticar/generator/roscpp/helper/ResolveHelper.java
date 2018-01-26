@@ -1,14 +1,15 @@
-package de.monticore.lang.monticar.generator.roscpp;
+package de.monticore.lang.monticar.generator.roscpp.helper;
 
 import de.monticar.lang.monticar.generator.python.RosInterface;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.monticar.generator.roscpp.*;
 import de.monticore.symboltable.Scope;
 
 public class ResolveHelper {
 
-    public static ResolvedRosInterface resolveRosInterface(RosInterface rosInterface, ExpandedComponentInstanceSymbol component) {
+    public static ResolvedRosInterface resolveRosInterface(RosInterface rosInterface, ExpandedComponentInstanceSymbol component, boolean isSubscriber) {
         String includeString = rosInterface.type;
         if (!includeString.contains("/")) {
             throw new IllegalArgumentException("The ROS msg type has to be given in the form package/msgName!");
@@ -19,7 +20,17 @@ public class ResolveHelper {
         rosInterface.ports.keySet().forEach(portName -> {
             PortSymbol tmpPort = component.getPort(portName).
                     orElseThrow(() -> new RuntimeException("Port " + component.getName() + "." + portName + " not found!"));
-            res.addPort(tmpPort, rosInterface.ports.get(portName));
+
+            MsgConverter tmpMsgConverter;
+            if (!rosInterface.ports.get(portName).contains("::")) {
+                tmpMsgConverter = new DirectMsgConverter(rosInterface.ports.get(portName), isSubscriber);
+            } else {
+                String fullMethodName = rosInterface.ports.get(portName);
+                String className = fullMethodName.substring(0, fullMethodName.lastIndexOf("::"));
+                tmpMsgConverter = new MethodMsgConverter(fullMethodName, "\"" + className + ".h\"", isSubscriber);
+            }
+            res.addPort(tmpPort, tmpMsgConverter);
+
         });
         return res;
     }
@@ -31,8 +42,8 @@ public class ResolveHelper {
 
         ResolvedRosTag res = new ResolvedRosTag(componentInstanceSymbol);
 
-        rosTag.publisher.stream().map(p -> resolveRosInterface(p, componentInstanceSymbol)).forEach(res::addPublisherInterface);
-        rosTag.subscriber.stream().map(s -> resolveRosInterface(s, componentInstanceSymbol)).forEach(res::addSubscriberInterface);
+        rosTag.publisher.stream().map(p -> resolveRosInterface(p, componentInstanceSymbol, false)).forEach(res::addPublisherInterface);
+        rosTag.subscriber.stream().map(s -> resolveRosInterface(s, componentInstanceSymbol, true)).forEach(res::addSubscriberInterface);
 
         return res;
     }

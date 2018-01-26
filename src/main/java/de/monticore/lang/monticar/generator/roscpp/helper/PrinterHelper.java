@@ -1,9 +1,9 @@
-package de.monticore.lang.monticar.generator.roscpp;
+package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
 public class PrinterHelper {
     public static String printVariable(Variable v) {
@@ -35,8 +35,15 @@ public class PrinterHelper {
         return res;
     }
 
-    public static String printClass(BluePrint bluePrint) {
+    public static String printClass(BluePrintCPP bluePrint) {
         StringBuilder builder = new StringBuilder();
+
+        builder.append("#pragma once\n");
+
+        bluePrint.getAdditionalIncludeStrings().stream()
+                .sorted()
+                .forEach(inlc -> builder.append("#include " + inlc + "\n"));
+
         builder.append("class " + bluePrint.getName() + "{\n");
 
         bluePrint.getVariables().forEach(v -> builder.append("\t" + PrinterHelper.printVariable(v) + "\n"));

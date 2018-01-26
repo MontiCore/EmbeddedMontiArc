@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import com.google.common.collect.Lists;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticar.lang.monticar.generator.python.TagReader;
+import de.monticore.lang.monticar.generator.roscpp.helper.YamlHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -156,5 +157,23 @@ public class YamlTest extends AbstractSymtabTest {
         List<String> positiveFileList = Lists.newArrayList("tests_a_compA_RosWrapper.h", "test_basicPorts_RosWrapper.h");
 
         assertTrue(fileNames.containsAll(positiveFileList));
+    }
+
+    @Test
+    public void converterMethodTest() throws IOException {
+        //Setup
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/converterMethodGenCpp/");
+        generatorRosCpp.setGenerateCpp(false);
+
+        //Execute
+        List<File> files = YamlHelper.generateFromFile("src/test/resources/config/converterMethod.yaml", symtab, generatorRosCpp);
+
+        //Check
+        assertTrue(files.size() == 1);
+
+        testFilesAreEqual(files, "converterMethod/");
     }
 }
