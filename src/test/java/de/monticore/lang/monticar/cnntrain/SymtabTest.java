@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.cnntrain;
 
 import de.monticore.lang.monticar.cnntrain._parser.CNNTrainParser;
-import de.monticore.lang.monticar.cnntrain._symboltable.TrainingConfigurationSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
@@ -40,9 +40,9 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testAlexnet(){
         Scope symTab = createSymTab("src/test/resources");
-        TrainingConfigurationSymbol a = symTab.<TrainingConfigurationSymbol>resolve(
+        ConfigurationSymbol a = symTab.<ConfigurationSymbol>resolve(
                 "SimpleConfig2",
-                TrainingConfigurationSymbol.KIND).orElse(null);
+                ConfigurationSymbol.KIND).orElse(null);
         assertNotNull(a);
 
     }

@@ -1,4 +1,4 @@
-configuration FullConfig2{
+configuration FullConfig2(trainData, trainLabel){
      train_data:trainData
      train_label:trainLabel
      validation_split:0.9

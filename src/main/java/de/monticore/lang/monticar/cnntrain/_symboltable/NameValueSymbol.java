@@ -23,13 +23,21 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 public class NameValueSymbol extends ValueSymbol {
 
     public static final NameValueKind KIND = new NameValueKind();
+    private ConfigParameterSymbol parameter;
 
     public NameValueSymbol(String name) {
         super(name, KIND);
     }
 
+    public ConfigParameterSymbol getParameter(){
+        if (parameter == null){
+            parameter = (ConfigParameterSymbol) getEnclosingScope().resolve(getName(), ConfigParameterSymbol.KIND).get();
+        }
+        return parameter;
+    }
+
     @Override
-    public String getValue() {
-        return getName();
+    public Object getValue() {
+        return getParameter().getValue();
     }
 }

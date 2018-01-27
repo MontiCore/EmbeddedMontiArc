@@ -20,29 +20,26 @@
  */
 package de.monticore.lang.monticar.cnntrain._cocos;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTPathValue;
+import de.monticore.lang.monticar.cnntrain._ast.ASTVariableReference;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigParameterSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.NameValueSymbol;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Collection;
 
-public class CheckValidPath implements CNNTrainASTPathValueCoCo {
+public class CheckNameValue implements CNNTrainASTVariableReferenceCoCo {
 
     @Override
-    public void check(ASTPathValue node) {
-        try{
-            Path path = Paths.get(node.getPath().getValue().replaceAll("\"", ""));
-
-            /*if (!Files.exists(path)){
-                Log.error("0xC8855 File with path '" + node.getPath().getValue() + "' does not exist."
-                        , node.get_SourcePositionStart());
-            }*/
+    public void check(ASTVariableReference node) {
+        Collection<ConfigParameterSymbol> parameterCollection = node.getEnclosingScope().get().resolveMany(node.getName(), ConfigParameterSymbol.KIND);
+        if (parameterCollection.isEmpty()){
+            Log.error("0" + ErrorCodes.UNKNOWN_VARIABLE_CODE + " Unknown variable with name '" + node.getName() + "'."
+                    , node.get_SourcePositionStart());
         }
-        catch (InvalidPathException e){
-            Log.error("0" + ErrorCodes.INVALID_PATH_CODE +" Invalid path. " + e.getMessage());
+        else if (parameterCollection.size() > 1){
+            Log.error("0" + ErrorCodes.PARAMETER_REPETITION_CODE + " Parameter with name '" + node.getName() + "' is declared multiple times"
+                    , node.get_SourcePositionStart());
         }
     }
 

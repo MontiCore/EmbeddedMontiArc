@@ -18,29 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain.helper;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+public class ErrorCodes {
 
-public class TrainingConfigurationSymbol extends TrainingConfigurationSymbolTOP {
+    public static final String ENTRY_REPETITION_CODE = "xC8853";
+    public static final String NOT_INTEGER_CODE = "xC8851";
+    public static final String UNKNOWN_VARIABLE_CODE = "xC8558";
+    public static final String PARAMETER_REPETITION_CODE = "xC8559";
+    public static final String INVALID_PATH_CODE = "xC8556";
+    public static final String MISSING_PARAMETER_VALUE_CODE = "xC7293";
 
-    private Map<String, EntrySymbol> entryMap = new HashMap<>();
-
-    public TrainingConfigurationSymbol(String name) {
-        super(name);
-    }
-
-    public Map<String, EntrySymbol> getEntryMap() {
-        return entryMap;
-    }
-
-    public Collection<EntrySymbol> getEntries(){
-        return getEntryMap().values();
-    }
-
-    public EntrySymbol getEntry(String name){
-        return getEntryMap().get(name);
-    }
 }

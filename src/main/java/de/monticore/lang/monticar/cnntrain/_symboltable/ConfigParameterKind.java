@@ -20,30 +20,19 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.symboltable.SymbolKind;
 
-public class CNNTrainLanguage extends CNNTrainLanguageTOP {
+public class ConfigParameterKind implements SymbolKind {
 
-    public static final String FILE_ENDING = "cnnt";
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ConfigParameterKind";
 
-    public CNNTrainLanguage() {
-        super("CNNTrain Language", FILE_ENDING);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    protected CNNTrainModelLoader provideModelLoader() {
-        return new CNNTrainModelLoader(this);
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
-
-    @Override
-    protected void initResolvingFilters() {
-        super.initResolvingFilters();
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(EntrySymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(NameValueSymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(ValueSymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(ConfigParameterSymbol.KIND));
-        setModelNameCalculator(new CNNTrainModelNameCalculator());
-    }
-
 }

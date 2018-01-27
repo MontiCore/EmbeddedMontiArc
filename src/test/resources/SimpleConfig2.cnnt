@@ -1,4 +1,4 @@
-configuration SimpleConfig2{
+configuration SimpleConfig2(){
     train_data:"./data/mnist_train"
     train_label:"./data/mnist_labels"
     num_epoch:5

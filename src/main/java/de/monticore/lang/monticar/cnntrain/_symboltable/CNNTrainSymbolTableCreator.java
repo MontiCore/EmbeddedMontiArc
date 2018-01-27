@@ -35,7 +35,7 @@ import java.util.Optional;
 public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     private String compilationUnitPackage = "";
-    private TrainingConfigurationSymbol configuration;
+    private ConfigurationSymbol configuration;
 
 
     public CNNTrainSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
@@ -51,7 +51,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void visit(final ASTCNNTrainCompilationUnit compilationUnit) {
-        Log.debug("Building Symboltable for Script: " + compilationUnit.getTrainingConfiguration().getName(),
+        Log.debug("Building Symboltable for Script: " + compilationUnit.getConfiguration().getName(),
                 CNNTrainSymbolTableCreator.class.getSimpleName());
 
         List<ImportStatement> imports = new ArrayList<>();
@@ -65,14 +65,25 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void visit(final ASTTrainingConfiguration node){
-        configuration = new TrainingConfigurationSymbol(node.getName());
+    public void visit(final ASTConfiguration node){
+        configuration = new ConfigurationSymbol(node.getName());
         addToScopeAndLinkWithNode(configuration , node);
     }
 
     @Override
-    public void endVisit(final ASTTrainingConfiguration trainingConfiguration) {
+    public void endVisit(final ASTConfiguration trainingConfiguration) {
+        List<ConfigParameterSymbol> parameters = new ArrayList<>();
+        for (ASTConfigParameter astParameter : trainingConfiguration.getParameters()){
+            parameters.add((ConfigParameterSymbol) astParameter.getSymbol().get());
+        }
+        configuration.setParameters(parameters);
         removeCurrentScope();
+    }
+
+    @Override
+    public void endVisit(ASTConfigParameter node) {
+        ConfigParameterSymbol parameter = new ConfigParameterSymbol(node.getName());
+        addToScopeAndLinkWithNode(parameter, node);
     }
 
     @Override

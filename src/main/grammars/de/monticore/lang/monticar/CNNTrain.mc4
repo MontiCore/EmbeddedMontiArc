@@ -2,14 +2,21 @@ package de.monticore.lang.monticar;
 
 grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.NumberUnit{
 
-    CNNTrainCompilationUnit = TrainingConfiguration;
-    symbol scope TrainingConfiguration = "configuration" name:Name& "{" entries:ConfigEntry* "}";
+    CNNTrainCompilationUnit = Configuration;
+    symbol scope Configuration = "configuration"
+                                 name:Name&
+                                 ("(" parameters:(ConfigParameter || ",")* ")")? "{"
+                                 entries:ConfigEntry* "}";
+
+    ConfigParameter = Name&;
 
     interface Entry;
     ast Entry = method String getName(){}
                 method ASTConfigValue getValue(){};
     interface ConfigValue;
     interface ConfigEntry extends Entry;
+    interface VariableReference;
+    ast VariableReference = method String getName(){};
 
     ContextEntry implements ConfigEntry = name:"context" ":" value:ContextValue;
     ModelPathEntry implements ConfigEntry = name:"model_path" ":" value:PathValue;
@@ -45,7 +52,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
                                             | overwrite:"overwrite"
                                             | noLoad:"no_load");
     DataValue implements ConfigValue = (DataVariable | PathValue);
-    DataVariable = Name&;
+    DataVariable implements VariableReference = Name&;
     IntegerValue implements ConfigValue = Number;
     NumberValue implements ConfigValue = Number;
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");

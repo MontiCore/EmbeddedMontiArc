@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._ast.ASTIntegerValue;
+import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
@@ -35,7 +36,7 @@ public class CheckInteger implements CNNTrainASTIntegerValueCoCo {
         if (unitNumber.isPresent()){
             Rational number = unitNumber.get().getNumber().get();
             if (number.getDivisor().intValue() != 1){
-                Log.error("0xC8851 Value has to be an integer."
+                Log.error("0" + ErrorCodes.NOT_INTEGER_CODE +" Value has to be an integer."
                         , node.get_SourcePositionStart());
             }
         }

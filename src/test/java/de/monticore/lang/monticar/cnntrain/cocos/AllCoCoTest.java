@@ -29,6 +29,7 @@ public class AllCoCoTest extends AbstractCoCoTest{
     String baseDir="src/test/resources";
     @Test
     public void testCoCosSimulator() throws IOException {
+        //checkValid("", "InvalidName");
         checkValid("","SimpleConfig1");
         checkValid("","SimpleConfig2");
         checkValid("","DataReferenceTest");
@@ -36,14 +37,17 @@ public class AllCoCoTest extends AbstractCoCoTest{
         checkValid("","FullConfig2");
 
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckEntryRepetition()),
-                getAstNode("", "DuplicatedParameter"),
+                getAstNode("", "EntryRepetition"),
                 new ExpectedErrorInfo(1, "xC8853"));
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckInteger()),
                 getAstNode("", "IntegerTest"),
                 new ExpectedErrorInfo(1, "xC8851"));
-        /*checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckValidPath()),
-                getAstNode("", "InvalidPath"),
-                new ExpectedErrorInfo(1, "xC8856"));*/
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckNameValue()),
+                getAstNode("", "InvalidName"),
+                new ExpectedErrorInfo(2, "xC8558"));
+        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckNameValue()),
+                getAstNode("", "ParameterRepetition"),
+                new ExpectedErrorInfo(1, "xC8559"));
 
     }
 }

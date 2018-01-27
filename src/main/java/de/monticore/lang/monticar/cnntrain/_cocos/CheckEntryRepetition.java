@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._ast.ASTEntry;
+import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.HashSet;
@@ -33,7 +34,7 @@ public class CheckEntryRepetition implements CNNTrainASTEntryCoCo {
     @Override
     public void check(ASTEntry node) {
         if (entryNameSet.contains(node.getName())){
-            Log.error("0xC8853 The parameter '" + node.getName() + "' has multiple values. " +
+            Log.error("0" + ErrorCodes.ENTRY_REPETITION_CODE +" The parameter '" + node.getName() + "' has multiple values. " +
                             "Multiple assignments of the same parameter are not allowed",
                     node.get_SourcePositionStart());
         }

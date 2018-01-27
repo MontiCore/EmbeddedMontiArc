@@ -1,4 +1,4 @@
-configuration DataReferenceTest(inputData, labelData){
+configuration ParameterRepetition(inputData, labelData, inputData){
     train_data:inputData
     train_label:labelData
     num_epoch : 5

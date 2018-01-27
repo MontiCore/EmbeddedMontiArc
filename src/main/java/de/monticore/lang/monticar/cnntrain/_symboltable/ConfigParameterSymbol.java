@@ -20,30 +20,36 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.SymbolKind;
 
-public class CNNTrainLanguage extends CNNTrainLanguageTOP {
+import java.util.Optional;
 
-    public static final String FILE_ENDING = "cnnt";
+public class ConfigParameterSymbol extends CommonSymbol {
 
-    public CNNTrainLanguage() {
-        super("CNNTrain Language", FILE_ENDING);
+    public static final ConfigParameterKind KIND = new ConfigParameterKind();
+
+    private ASTType type;
+    private Object value = null;
+
+    public ConfigParameterSymbol(String name) {
+        super(name, KIND);
     }
 
-    @Override
-    protected CNNTrainModelLoader provideModelLoader() {
-        return new CNNTrainModelLoader(this);
+    public ASTType getType() {
+        return type;
     }
 
-    @Override
-    protected void initResolvingFilters() {
-        super.initResolvingFilters();
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(EntrySymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(NameValueSymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(ValueSymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(ConfigParameterSymbol.KIND));
-        setModelNameCalculator(new CNNTrainModelNameCalculator());
+    public void setType(ASTType type) {
+        this.type = type;
     }
 
+    public Optional<Object> getValue(){
+        return Optional.ofNullable(value);
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }
