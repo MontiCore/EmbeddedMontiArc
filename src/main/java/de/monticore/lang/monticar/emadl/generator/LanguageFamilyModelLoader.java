@@ -76,8 +76,8 @@ public class LanguageFamilyModelLoader implements EMADLVisitor {
 
     @Override
     public void visit(ASTBehaviorEmbedding node) {
-        archAst = (ASTCNNArchCompilationUnit) node.getArchitectureEmbedding().getArchitectureSymbol().getAstNode().get();
-        trainAst = (ASTCNNTrainCompilationUnit) node.getTrainingEmbedding().getTrainConfigSymbol().getAstNode().get();
+        /*archAst = (ASTCNNArchCompilationUnit) node.getArchitectureEmbedding().getArchitectureSymbol().getAstNode().get();
+        trainAst = (ASTCNNTrainCompilationUnit) node.getTrainingEmbedding().getTrainConfigSymbol().getAstNode().get();*/
     }
 
 

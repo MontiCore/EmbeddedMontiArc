@@ -18,27 +18,18 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl.cocos;
+package de.monticore.lang.monticar.emadl._cocos;
 
-import de.monticore.lang.monticar.emadl._cocos.CheckArchitectureIO;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
-import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
-import org.junit.Test;
+import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchNode;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchPostResolveCocos;
+import de.monticore.lang.monticar.emadl._ast.ASTArchitectureConstructor;
+import de.monticore.lang.monticar.emadl._symboltable.ArchitectureConstructorSymbol;
 
-import java.io.IOException;
+public class CheckCNNArchPostResolveCocos implements EMADLASTArchitectureConstructorCoCo {
 
-public class AllCoCoTest extends AbstractCoCoTest {
-    String baseDir="src/test/resources";
-
-    @Test
-    public void testCoCosSimulator() throws IOException {
-        checkValid("", "Alexnet");
-
-        checkInvalid(new EMADLCoCoChecker().addCoCo(new CheckArchitectureIO()),
-                new EMADLCoCoChecker(),
-                "", "InvalidIOAndArgs",
-                new ExpectedErrorInfo(2, ErrorCodes.MISSING_IO_CODE, ErrorCodes.UNKNOWN_IO_CODE));
-
+    @Override
+    public void check(ASTArchitectureConstructor node) {
+        ArchitectureConstructorSymbol sym = (ArchitectureConstructorSymbol) node.getSymbol().get();
+        CNNArchPostResolveCocos.createChecker().checkAll((ASTCNNArchNode) sym.getArchitecture().getAstNode().get());
     }
-
 }

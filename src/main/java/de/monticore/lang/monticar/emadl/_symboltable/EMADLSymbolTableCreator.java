@@ -20,14 +20,10 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAExpandedComponentInstanceKind;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcArtifactScope;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainSymbolTableCreator;
-import de.monticore.lang.monticar.emadl._ast.ASTArchitectureEmbedding;
-import de.monticore.lang.monticar.emadl._ast.ASTBehaviorEmbedding;
-import de.monticore.lang.monticar.emadl._ast.ASTTrainingEmbedding;
+import de.monticore.lang.monticar.emadl._ast.*;
 import de.monticore.lang.monticar.emadl._visitor.CommonEMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.symboltable.MutableScope;
@@ -35,7 +31,9 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
         implements EMADLVisitor {
@@ -43,8 +41,10 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private final CommonEMADLDelegatorVisitor visitor = new CommonEMADLDelegatorVisitor();
 
     private EmbeddedMontiArcSymbolTableCreator emaSTC;
-    private Scope componentScope;
-    
+    private ArchitectureConstructorSymbol archConstructor;
+    private ConfigConstructorSymbol configConstructor;
+    String componentName;
+
 
     public EMADLSymbolTableCreator(
             final ResolvingConfiguration resolvingConfig, final MutableScope enclosingScope) {
@@ -61,11 +61,9 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emaSTC = new EmbeddedMontiArcSymbolTableCreator(resolvingConfig, scopeStack);
 
         visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarc__visitor_EmbeddedMontiArcVisitor(emaSTC);
-        visitor.set_de_monticore_lang_monticar_emadl__visitor_EMADLVisitor(this);
         visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarcbehavior__visitor_EmbeddedMontiArcBehaviorVisitor(
                 new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
-        visitor.set_de_monticore_lang_monticar_cnnarch__visitor_CNNArchVisitor(new CNNArchSymbolTableCreator(resolvingConfig, scopeStack));
-        visitor.set_de_monticore_lang_monticar_cnntrain__visitor_CNNTrainVisitor(new CNNTrainSymbolTableCreator(resolvingConfig, scopeStack));
+        visitor.set_de_monticore_lang_monticar_emadl__visitor_EMADLVisitor(this);
     }
 
 /**
@@ -102,37 +100,84 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
-
-    @Override
-    public void visit(de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit ast) {
-        EMADLCompilationUnitSymbol emadlCompilationUnit = create_EMADLCompilationUnit(ast);
-        initialize_EMADLCompilationUnit(emadlCompilationUnit, ast);
-        addToScopeAndLinkWithNode(emadlCompilationUnit, ast);
-    }
-
-    protected EMADLCompilationUnitSymbol create_EMADLCompilationUnit(de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit ast) {
-        return new EMADLCompilationUnitSymbol("");
-    }
-
-    protected void initialize_EMADLCompilationUnit(EMADLCompilationUnitSymbol eMADLCompilationUnit, de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit ast) {
-
+    private EmbeddedMontiArcArtifactScope getArtifactScope(final Scope scope){
+        Scope s = scope;
+        while (!(s instanceof EmbeddedMontiArcArtifactScope)){
+            s = s.getEnclosingScope().get();
+        }
+        return (EmbeddedMontiArcArtifactScope) s;
     }
 
     @Override
-    public void visit(ASTBehaviorEmbedding node) {
-        componentScope = emaSTC.currentScope().get();
-        node.setEnclosingScope(componentScope);
+    public void visit(ASTEMADLCompilationUnit node) {
+        componentName = node.getEMACompilationUnit().getComponent().getName();
     }
 
     @Override
-    public void endVisit(ASTArchitectureEmbedding node) {
-        node.setEnclosingScope(componentScope);
+    public void visit(ASTBehaviorEmbedding ast) {
+        EMADLBehaviorSymbol sym = new EMADLBehaviorSymbol(componentName);
+
+        addToScopeAndLinkWithNode(sym, ast);
     }
 
     @Override
-    public void visit(ASTTrainingEmbedding node) {
-        node.setEnclosingScope(componentScope);
+    public void endVisit(ASTBehaviorEmbedding ast) {
+        EMADLBehaviorSymbol sym = (EMADLBehaviorSymbol) ast.getSymbol().get();
+        sym.setArchitectureConstructor(archConstructor);
+        sym.setConfigConstructor(configConstructor);
+
+        removeCurrentScope();
+
+        //add reference to artifact scope
+        EMADLBehaviorSymbolReference reference = new EMADLBehaviorSymbolReference(componentName, currentScope().get());
+        getArtifactScope(currentScope().get())
+                .add(reference);
     }
 
+    @Override
+    public void visit(ASTArchitectureConstructor node) {
+        archConstructor = new ArchitectureConstructorSymbol(node.getName());
+        addToScopeAndLinkWithNode(archConstructor, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchitectureConstructor node) {
+        archConstructor.setArguments(node.getArguments());
+
+        List<ArchPortSymbol> inputs = new ArrayList<>();
+        for (ASTArchIOPort astPort : node.getInput().getPorts()){
+            inputs.add((ArchPortSymbol) astPort.getSymbol().get());
+        }
+        archConstructor.setInputs(inputs);
+
+        List<ArchPortSymbol> outputs = new ArrayList<>();
+        for (ASTArchIOPort astPort : node.getOutput().getPorts()){
+            outputs.add((ArchPortSymbol) astPort.getSymbol().get());
+        }
+        archConstructor.setOutputs(outputs);
+
+        removeCurrentScope();
+    }
+
+    @Override
+    public void visit(ASTConfigConstructor node) {
+        configConstructor = new ConfigConstructorSymbol(node.getName());
+        addToScopeAndLinkWithNode(configConstructor, node);
+    }
+
+    @Override
+    public void endVisit(ASTConfigConstructor node) {
+        configConstructor.setArguments(node.getArguments());
+
+        removeCurrentScope();
+    }
+
+    public void endVisit(ASTArchIOPort node) {
+        ArchPortSymbol sym = new ArchPortSymbol(node.getName());
+        if (node.getAlias().isPresent()){
+            sym.setAlias(node.getAlias().get());
+        }
+        addToScopeAndLinkWithNode(sym, node);
+    }
 }
 

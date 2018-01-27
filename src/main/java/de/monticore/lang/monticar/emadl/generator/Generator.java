@@ -20,9 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
@@ -86,7 +84,7 @@ public class Generator {
 
         TemplateController tc = new TemplateController(getTemplateData(), getFreemarkerConfig());
         FileWriter writer = getTargetFileWriter(modelPath, qualifiedName);
-        tc.process(writer);
+        /*tc.process(writer);*/
 
     }
 
@@ -105,14 +103,14 @@ public class Generator {
     }
 
     protected void checkModel() {
-        EMADLCocos.createChecker().checkAll(loader.getEmadlAst());
-        CNNArchCocos.createChecker().checkAll(loader.getArchAst());
+        //EMADLCocos.createChecker().checkAll(loader.getEmadlAst());
+        /*CNNArchCocos.createChecker().checkAll(loader.getArchAst());*/
         CNNTrainCocos.createChecker().checkAll(loader.getTrainAst());
     }
 
     protected void createTemplateData() {
         templateData = new TemplateData(loader.getGlobalScope());
-        templateData.handle(loader.getEmadlAst());
+        /*templateData.handle(loader.getEmadlAst());*/
     }
 
     protected String getTargetFileEnding() {
@@ -120,14 +118,14 @@ public class Generator {
             //Log.error("");
         }
         String fileEnding = "";
-        switch(templateData.getTarget()) {
+        /*switch(templateData.getTarget()) {
             case PYTHON:
                 fileEnding = PYTHON_FILE_ENDING;
                 break;
             case CPLUSPLUS:
                 fileEnding = CPP_FILE_ENDING;
                 break;
-        }
+        }*/
         return fileEnding;
     }
 

@@ -22,15 +22,12 @@ package de.monticore.lang.monticar.emadl;
 
 import de.monticore.lang.monticar.emadl.generator.Generator;
 import freemarker.template.TemplateException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class GenerationTest {
 
@@ -40,11 +37,13 @@ public class GenerationTest {
         gen.generate(modelPath, qualifiedName);
     }
 
+    @Ignore
     @Test
     public void testPythonGeneration() throws IOException, TemplateException {
         generate("AlexnetFixedParameters");
     }
 
+    @Ignore
     @Test
     public void testCPPGeneration() throws IOException, TemplateException {
         generate("TargetCPP");

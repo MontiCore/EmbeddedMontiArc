@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class EMADLCompilationUnitKind implements SymbolKind {
+public class EMADLBehaviorKind implements SymbolKind {
 
-    private static final String NAME = "de.monticore.lang.monticar.emadl._symboltable.EMADLCompilationUnitKind";
+    private static final String NAME = "de.monticore.lang.monticar.emadl._symboltable.EMADLBehaviorKind";
 
     @Override
     public String getName() {
@@ -37,4 +37,3 @@ public class EMADLCompilationUnitKind implements SymbolKind {
     }
 
 }
-

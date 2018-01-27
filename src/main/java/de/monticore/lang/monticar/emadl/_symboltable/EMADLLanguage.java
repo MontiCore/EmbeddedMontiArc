@@ -20,25 +20,21 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import com.google.common.collect.ImmutableSet;
 import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
-import de.monticore.lang.montiarc.tagging._symboltable.TagSymbolCreator;
-import de.monticore.lang.montiarc.tagging._symboltable.TagableModelingLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.symboltable.resolving.ResolvingFilter;
 
 import java.util.*;
 
-public class EMADLLanguage extends EmbeddingModelingLanguage implements TagableModelingLanguage {
+public class EMADLLanguage extends EmbeddingModelingLanguage {
 
     public static final String FILE_ENDING = "emadl";
 
@@ -46,8 +42,6 @@ public class EMADLLanguage extends EmbeddingModelingLanguage implements TagableM
     public static final CNNArchLanguage ARCHITECTURE_LANGUAGE = new CNNArchLanguage();
     public static final CNNTrainLanguage TRAINING_LANGUAGE = new CNNTrainLanguage();
 
-
-    protected LinkedHashSet<TagSymbolCreator> tagSymbolCreators = new LinkedHashSet<>();
 
     public EMADLLanguage() {
         super("Embedded MontiArc Deep Learning Language", FILE_ENDING, HOST_LANGUAGE,
@@ -59,9 +53,10 @@ public class EMADLLanguage extends EmbeddingModelingLanguage implements TagableM
     public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
         List<ResolvingFilter<? extends Symbol>> ret =
                 new ArrayList<>(super.getResolvingFilters());
-        ret.add(new ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter());
-        ret.add(new PortArraySymbol2MathVariableDeclarationSymbolTypeFilter());
-        //ret.add(new PortSymbol2MathVariableDeclarationTypeFilter());
+        ret.add(new CommonResolvingFilter<Symbol>(EMADLBehaviorSymbol.KIND));
+        ret.add(new CommonResolvingFilter<Symbol>(ArchitectureConstructorSymbol.KIND));
+        ret.add(new CommonResolvingFilter<Symbol>(ConfigConstructorSymbol.KIND));
+        ret.add(new CommonResolvingFilter<Symbol>(ArchPortSymbol.KIND));
         return ret;
     }
 
@@ -81,14 +76,5 @@ public class EMADLLanguage extends EmbeddingModelingLanguage implements TagableM
         return Optional.of(new EMADLSymbolTableCreator(
                 resolvingConfiguration, enclosingScope));
     }
-
-    public void addTagSymbolCreator(TagSymbolCreator tagSymbolCreator) {
-        this.tagSymbolCreators.add(tagSymbolCreator);
-    }
-
-    public ImmutableSet<TagSymbolCreator> getTagSymbolCreators() {
-        return ImmutableSet.copyOf(this.tagSymbolCreators);
-    }
-
 
 }

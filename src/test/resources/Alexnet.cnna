@@ -1,30 +1,43 @@
-Architecture Alexnet {
-    Convolution(num_filter=96, kernel=(11,11), stride=(4,4))
-    Activation(type=relu)
-    LRN(alpha=0.0001, beta=0.75, knorm=2, nsize=5)
-    Pooling(type=max, kernel=(3, 3), stride=(2,2))
+architecture Alexnet(img_height=224, img_width=224, img_channels=3, classes=10){
+    def input Z(0:255)^{img_height, img_width, img_channels} image
+    def output Q(0:1)^{classes} predictions
 
-    Convolution(num_filter=256, kernel=(5,5), pad=(2,2))
-    Activation(type=relu)
-    LRN(alpha=0.0001, beta=0.75, knorm=2, nsize=5)
-    Pooling(type=max, kernel=(3, 3), stride=(2,2))
+    def split1(i){
+        [i] ->
+        Convolution(kernel=(5,5), channels=128) ->
+        Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
+        MaxPooling(kernel=(3,3), stride=(2,2), padding="no_loss") ->
+        Relu()
+    }
+    def split2(i){
+        [i] ->
+        Convolution(kernel=(3,3), channels=192) ->
+        Relu() ->
+        Convolution(kernel=(3,3), channels=128) ->
+        MaxPooling(kernel=(3,3), stride=(2,2), padding="no_loss") ->
+        Relu()
+    }
+    def fc(){
+        FullyConnected(units=4096) ->
+        Relu() ->
+        Dropout()
+    }
 
-    Convolution(num_filter=384, kernel=(3,3), pad=(1,1))
-    Activation(type=relu)
-
-    Convolution(num_filter=384, kernel=(3,3), pad=(1,1))
-    Activation(type=relu)
-
-    Convolution(num_filter=256, kernel=(3,3), pad=(1,1))
-    Activation(type=relu)
-
-    FullyConnected(units=4096)
-    Activation(type=relu)
-    Dropout(p=0.5)
-
-    FullyConnected(units=4096)
-    Activation(type=relu)
-    Dropout(p=0.5)
-
-    Output(type=softmax)
+    image ->
+    Convolution(kernel=(11,11), channels=96, stride=(4,4), padding="no_loss") ->
+    Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
+    MaxPooling(kernel=(3,3), stride=(2,2), padding="no_loss") ->
+    Relu() ->
+    Split(n=2) ->
+    split1(i=[0|1]) ->
+    Concatenate() ->
+    Convolution(kernel=(3,3), channels=384) ->
+    Relu() ->
+    Split(n=2) ->
+    split2(i=[0|1]) ->
+    Concatenate() ->
+    fc(->=2) ->
+    FullyConnected(units=classes) ->
+    Softmax() ->
+    predictions
 }

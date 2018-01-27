@@ -1,9 +1,0 @@
-component InvalidArchitectureEmbeddingOrder{
-    ports in Q^{4} input,
-         out Q(0:1) output;
-
-    implementation DeepLearning {
-
-        architecture =  input --> output --> SimpleNetwork
-        training = SimpleConfig
-}

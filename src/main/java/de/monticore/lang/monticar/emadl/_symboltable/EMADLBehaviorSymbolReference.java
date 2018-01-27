@@ -20,28 +20,26 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.symboltable.MutableScope;
+import de.monticore.ast.ASTNode;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.references.CommonSymbolReference;
 import de.monticore.symboltable.references.SymbolReference;
 
-public class EMADLCompilationUnitSymbolReference extends EMADLCompilationUnitSymbol implements SymbolReference<EMADLCompilationUnitSymbol> {
-    protected final SymbolReference<EMADLCompilationUnitSymbol> reference;
+import java.util.Optional;
 
-    public EMADLCompilationUnitSymbolReference(final String name, final Scope enclosingScopeOfReference) {
+public class EMADLBehaviorSymbolReference extends EMADLBehaviorSymbol implements SymbolReference<EMADLBehaviorSymbol> {
+
+    protected final SymbolReference<EMADLBehaviorSymbol> reference;
+
+    public EMADLBehaviorSymbolReference(final String name, final Scope enclosingScopeOfReference) {
         super(name);
-        reference = new CommonSymbolReference<>(name, EMADLCompilationUnitSymbol.KIND, enclosingScopeOfReference);
+        reference = new CommonSymbolReference<>(name, EMADLBehaviorSymbol.KIND, enclosingScopeOfReference);
     }
 
-
-    /*
-   * Methods of SymbolReference interface
-   */
-
-
+    //SymbolReference methods
     @Override
-    public EMADLCompilationUnitSymbol getReferencedSymbol() {
+    public EMADLBehaviorSymbol getReferencedSymbol() {
         return reference.getReferencedSymbol();
     }
 
@@ -56,11 +54,7 @@ public class EMADLCompilationUnitSymbolReference extends EMADLCompilationUnitSym
     }
 
 
-    /*
-  * Methods of Symbol interface
-  */
-
-
+    //CommonSymbol methods
     @Override
     public String getName() {
         return getReferencedSymbol().getName();
@@ -69,16 +63,6 @@ public class EMADLCompilationUnitSymbolReference extends EMADLCompilationUnitSym
     @Override
     public String getFullName() {
         return getReferencedSymbol().getFullName();
-    }
-
-    @Override
-    public void setEnclosingScope(MutableScope scope) {
-        getReferencedSymbol().setEnclosingScope(scope);
-    }
-
-    @Override
-    public Scope getEnclosingScope() {
-        return getReferencedSymbol().getEnclosingScope();
     }
 
     @Override
@@ -91,5 +75,41 @@ public class EMADLCompilationUnitSymbolReference extends EMADLCompilationUnitSym
         getReferencedSymbol().setAccessModifier(accessModifier);
     }
 
+    @Override
+    public void setAstNode(ASTNode node) {
+        getReferencedSymbol().setAstNode(node);
+    }
 
+    @Override
+    public Optional<ASTNode> getAstNode() {
+        return getReferencedSymbol().getAstNode();
+    }
+
+
+
+    //EMADLBehaviorSymbol methods
+    @Override
+    public ArchitectureConstructorSymbol getArchitectureConstructor() {
+        return getReferencedSymbol().getArchitectureConstructor();
+    }
+
+    @Override
+    public void setArchitectureConstructor(ArchitectureConstructorSymbol architectureConstructor) {
+        getReferencedSymbol().setArchitectureConstructor(architectureConstructor);
+    }
+
+    @Override
+    public ConfigConstructorSymbol getConfigConstructor() {
+        return getReferencedSymbol().getConfigConstructor();
+    }
+
+    @Override
+    public void setConfigConstructor(ConfigConstructorSymbol configConstructor) {
+        getReferencedSymbol().setConfigConstructor(configConstructor);
+    }
+
+    @Override
+    public void resolve() {
+        getReferencedSymbol().resolve();
+    }
 }

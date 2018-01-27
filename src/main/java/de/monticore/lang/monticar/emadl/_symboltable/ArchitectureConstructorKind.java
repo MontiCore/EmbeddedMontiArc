@@ -18,15 +18,22 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl._cocos;
+package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.lang.monticar.emadl._ast.ASTTrainingEmbedding;
+import de.monticore.symboltable.SymbolKind;
 
-public class TrainingCheck implements EMADLASTTrainingEmbeddingCoCo {
+public class ArchitectureConstructorKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.instance.ArchitectureConstructorKind";
 
     @Override
-    public void check(ASTTrainingEmbedding node) {
-        node.getTrainConfigSymbol();
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 
 }

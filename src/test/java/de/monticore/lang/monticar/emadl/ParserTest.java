@@ -20,7 +20,11 @@
  */
 package de.monticore.lang.monticar.emadl;
 
-import static junit.framework.TestCase.assertTrue;
+import de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit;
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -31,11 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit;
-import de.monticore.lang.monticar.emadl._parser.EMADLParser;
-import de.se_rwth.commons.logging.Log;
-import org.junit.Before;
-import org.junit.Test;
+import static junit.framework.TestCase.assertTrue;
 
 
 public class ParserTest {
@@ -43,13 +43,8 @@ public class ParserTest {
     public static final boolean ENABLE_FAIL_QUICK = false;
     private static List<String> expectedParseErrorModels = Arrays.asList(
             //names of the input port, output port and architecture are not in the correct order
-            "src/test/resources/InvalidArchitectureEmbeddingOrder.emadl",
-
-            "src/test/resources/MissingArchitectureInput.emadl",
-
-            "src/test/resources/MissingArchitectureOutput.emadl",
-
-            "src/test/resources/MissingTrainConfig.emadl")
+            "src/test/resources/MissingIO.emadl"
+            )
 
             .stream().map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());

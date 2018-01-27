@@ -18,27 +18,16 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl.cocos;
+package de.monticore.lang.monticar.emadl.helper;
 
-import de.monticore.lang.monticar.emadl._cocos.CheckArchitectureIO;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
-import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
-import org.junit.Test;
+public class ErrorCodes {
 
-import java.io.IOException;
-
-public class AllCoCoTest extends AbstractCoCoTest {
-    String baseDir="src/test/resources";
-
-    @Test
-    public void testCoCosSimulator() throws IOException {
-        checkValid("", "Alexnet");
-
-        checkInvalid(new EMADLCoCoChecker().addCoCo(new CheckArchitectureIO()),
-                new EMADLCoCoChecker(),
-                "", "InvalidIOAndArgs",
-                new ExpectedErrorInfo(2, ErrorCodes.MISSING_IO_CODE, ErrorCodes.UNKNOWN_IO_CODE));
-
-    }
-
+    public static final String MISSING_IO_CODE = "xA4D89";
+    public static final String UNKNOWN_IO_CODE = "xA4D93";
+    public static final String MISSING_ARGUMENT_CODE = "xA4C42";
+    public static final String UNKNOWN_ARGUMENT_CODE = "xA4C46";
+    public static final String UNKNOWN_ARCHITECTURE_CODE = "xA4C96";
+    public static final String UNKNOWN_CONFIGURATION_CODE = "xA4C17";
+    public static final String UNKNOWN_EMA_PORT_CODE = "xA1D16";
+    public static final String INVALID_PORT_DIRECTION_CODE = "xA2A25";
 }

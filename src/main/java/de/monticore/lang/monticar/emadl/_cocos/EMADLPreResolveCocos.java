@@ -18,17 +18,17 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl._symboltable;
+package de.monticore.lang.monticar.emadl._cocos;
 
-public class EMADLCompilationUnitSymbolEMPTY extends de.monticore.symboltable.CommonSymbol {
+//Cocos which can be checked before the resolve method of the EMADLCompiltationUnitSymbol is called.
+//Includes pre resolve cocos for CNNArch
+public class EMADLPreResolveCocos {
 
-
-
-    public static final EMADLCompilationUnitKind KIND = new EMADLCompilationUnitKind();
-
-
-    public EMADLCompilationUnitSymbolEMPTY(String name) {
-        super(name, KIND);
+    public static EMADLCoCoChecker createChecker(){
+        return new EMADLCoCoChecker()
+                .addCoCo(new CheckCNNArchPreResolveCocos())
+                .addCoCo(new CheckArchitectureArgument())
+                .addCoCo(new CheckConfigArgument())
+                .addCoCo(new CheckArchitectureIO());
     }
-
 }

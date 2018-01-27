@@ -18,27 +18,17 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl.cocos;
+package de.monticore.lang.monticar.emadl._cocos;
 
-import de.monticore.lang.monticar.emadl._cocos.CheckArchitectureIO;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
-import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
-import org.junit.Test;
+//Cocos which have to be checked after the resolve method of the EMADLCompiltationUnitSymbol is called.
+//Includes post resolve cocos for CNNArch and all cocos for CNNTrain
+public class EMADLPostResolveCocos {
 
-import java.io.IOException;
-
-public class AllCoCoTest extends AbstractCoCoTest {
-    String baseDir="src/test/resources";
-
-    @Test
-    public void testCoCosSimulator() throws IOException {
-        checkValid("", "Alexnet");
-
-        checkInvalid(new EMADLCoCoChecker().addCoCo(new CheckArchitectureIO()),
-                new EMADLCoCoChecker(),
-                "", "InvalidIOAndArgs",
-                new ExpectedErrorInfo(2, ErrorCodes.MISSING_IO_CODE, ErrorCodes.UNKNOWN_IO_CODE));
-
+    public static EMADLCoCoChecker createChecker(){
+        return new EMADLCoCoChecker()
+                .addCoCo(new CheckCNNTrainCocos())
+                .addCoCo(new CheckCNNArchPostResolveCocos())
+                .addCoCo(new CheckArchitectureIOShape());
     }
 
 }

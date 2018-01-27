@@ -23,25 +23,18 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
-import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
-import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguageFamily;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
 
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
-        ModelingLanguageFamily fam = new ModelingLanguageFamily();
-        fam.addModelingLanguage(new EMADLLanguage());
-        fam.addModelingLanguage(new CNNArchLanguage());
-        fam.addModelingLanguage(new CNNTrainLanguage());
-        fam.addModelingLanguage(new StreamLanguage());
-        fam.addModelingLanguage(new StructLanguage());
+        ModelingLanguageFamily fam = new EMADLLanguageFamily();
+
+        Log.enableFailQuick(false);
 
         final ModelPath mp = new ModelPath();
         for (String m : modelPath) {

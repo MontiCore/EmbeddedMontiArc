@@ -20,22 +20,12 @@
  */
 package de.monticore.lang.monticar.emadl.helper;
 
-import de.monticore.lang.monticar.cnnarch._ast.ASTArgumentRhs;
-import de.monticore.lang.monticar.cnnarch._ast.ASTTuple;
-import de.monticore.lang.monticar.cnntrain._ast.ASTParameterRhs;
-import de.se_rwth.commons.Joiners;
-import siunit.monticoresiunit.si._ast.ASTNumber;
-
-import java.util.LinkedList;
-import java.util.List;
-
-
 /*
   contains toString functions which translate AST nodes into a String for generation
  */
 public interface ASTPrinter {
 
-    static String toString(ASTNumber number) {
+    /*static String toString(ASTNumber number) {
         if (number.getUnitNumber().isPresent()) {
             return number.getUnitNumber().get().toString();
         } else if (number.getFloatPointUnitNumber().isPresent()) {
@@ -47,9 +37,9 @@ public interface ASTPrinter {
         } else {
             return null;
         }
-    }
+    }*/
 
-    static String toString(ASTTuple tuple) {
+    /*static String toString(ASTTuple tuple) {
         List<String> stringList = new LinkedList<>();
 
         for (ASTNumber number : tuple.getValues()) {
@@ -59,9 +49,9 @@ public interface ASTPrinter {
         String res = Joiners.COMMA.join(stringList);
         res = "(" + res + ")";
         return res;
-    }
+    }*/
 
-    static String toString(ASTArgumentRhs rhs) {
+    /*static String toString(ASTArgumentRhs rhs) {
         if (rhs == null){
             return null;
         }
@@ -102,6 +92,6 @@ public interface ASTPrinter {
         else {
             return rhs.getRef().get();
         }
-    }
+    }*/
 
 }

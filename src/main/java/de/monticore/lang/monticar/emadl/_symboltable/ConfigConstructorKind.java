@@ -20,12 +20,19 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
+import de.monticore.symboltable.SymbolKind;
 
-public class EMADLCompilationUnitResolvingFilter extends CommonResolvingFilter<EMADLCompilationUnitSymbol> {
+public class ConfigConstructorKind implements SymbolKind {
 
-    public EMADLCompilationUnitResolvingFilter() {
-        super(EMADLCompilationUnitSymbol.KIND);
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ConfigConstructorKind";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 }
-

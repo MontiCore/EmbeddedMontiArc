@@ -20,29 +20,35 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
+public class EMADLBehaviorSymbol extends de.monticore.symboltable.CommonScopeSpanningSymbol {
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+    public static final EMADLBehaviorKind KIND = new EMADLBehaviorKind();
 
-public class EMADLModelNameCalculator extends de.monticore.CommonModelNameCalculator {
+    private ArchitectureConstructorSymbol architectureConstructor;
+    private ConfigConstructorSymbol configConstructor;
 
-    @Override
-    public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
-        final Set<String> calculatedModelNames = new LinkedHashSet<>();
-
-        if (EMADLBehaviorSymbol.KIND.isKindOf(kind)){
-            calculatedModelNames.addAll(calculateModelNamesForEMADLBehavior(name));
-        }
-
-
-        return calculatedModelNames;
+    public EMADLBehaviorSymbol(String name) {
+        super(name, KIND);
     }
 
-    protected Set<String> calculateModelNamesForEMADLBehavior(String name) {
-        final Set<String> modelNames = new LinkedHashSet<>();
-        modelNames.add(name);
-        return modelNames;
+    public ArchitectureConstructorSymbol getArchitectureConstructor() {
+        return architectureConstructor;
+    }
+
+    public void setArchitectureConstructor(ArchitectureConstructorSymbol architectureConstructor) {
+        this.architectureConstructor = architectureConstructor;
+    }
+
+    public ConfigConstructorSymbol getConfigConstructor() {
+        return configConstructor;
+    }
+
+    public void setConfigConstructor(ConfigConstructorSymbol configConstructor) {
+        this.configConstructor = configConstructor;
+    }
+
+    public void resolve(){
+        getArchitectureConstructor().resolveArchitecture();
+        getConfigConstructor().resolveConfiguration();
     }
 }
-

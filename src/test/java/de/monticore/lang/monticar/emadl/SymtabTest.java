@@ -20,34 +20,33 @@
  */
 package de.monticore.lang.monticar.emadl;
 
-import static org.junit.Assert.assertEquals;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.emadl._parser.EMADLParser;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLBehaviorSymbol;
+import de.monticore.symboltable.Scope;
+import org.junit.Test;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.monticore.lang.monticar.emadl._parser.EMADLParser;
-import de.monticore.symboltable.Scope;
-import org.junit.Ignore;
-import org.junit.Test;
 
 public class SymtabTest extends AbstractSymtabTest {
 
     @Test
     public void testParsing() throws Exception {
         EMADLParser parser = new EMADLParser();
-        assertTrue(parser.parse("src/test/resources/SimpleComponent.emadl").isPresent());
+        assertTrue(parser.parse("src/test/resources/Alexnet.emadl").isPresent());
     }
 
     @Test
     public void testAlexnet(){
         Scope symTab = createSymTab("src/test/resources");
         ComponentSymbol a = symTab.<ComponentSymbol>resolve("Alexnet", ComponentSymbol.KIND).orElse(null);
-        assertNotNull(a);
-        CNNArchCompilationUnitSymbol archSymbol = (CNNArchCompilationUnitSymbol) a.getSpannedScope().resolve("Alexnet", CNNArchCompilationUnitSymbol.KIND).get();
-        assertNotNull(a);
-        CNNTrainCompilationUnitSymbol configSymbol = (CNNTrainCompilationUnitSymbol) a.getSpannedScope().resolve("SimpleConfig", CNNTrainCompilationUnitSymbol.KIND).get();
+        ExpandedComponentInstanceSymbol c = symTab.<ExpandedComponentInstanceSymbol>resolve("alexnet", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMADLBehaviorSymbol d = symTab.<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
+        EMADLBehaviorSymbol e = a.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
+        EMADLBehaviorSymbol f = c.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
+
         assertNotNull(a);
     }
 

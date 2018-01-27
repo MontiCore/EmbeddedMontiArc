@@ -18,13 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl._symboltable;
+package de.monticore.lang.monticar.emadl._cocos;
 
-public class EMADLCompilationUnitSymbol extends EMADLCompilationUnitSymbolEMPTY {
+import de.monticore.lang.monticar.emadl._ast.ASTArchitectureConstructor;
 
-    public EMADLCompilationUnitSymbol(String name) {
-        super(name);
+public class CheckArchitectureIOShape implements EMADLASTArchitectureConstructorCoCo {
+
+    @Override
+    public void check(ASTArchitectureConstructor node) {
+
     }
-
 
 }

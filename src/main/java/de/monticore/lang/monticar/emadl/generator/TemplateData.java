@@ -21,35 +21,27 @@
 package de.monticore.lang.monticar.emadl.generator;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._visitor.EmbeddedMontiArcInheritanceVisitor;
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
-import de.monticore.lang.monticar.cnnarch._ast.*;
-import de.monticore.lang.monticar.cnnarch._visitor.CNNArchInheritanceVisitor;
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
-import de.monticore.lang.monticar.cnntrain._ast.ASTTrainingConfiguration;
-import de.monticore.lang.monticar.cnntrain._visitor.CNNTrainInheritanceVisitor;
-import de.monticore.lang.monticar.emadl._ast.*;
-import de.monticore.lang.monticar.emadl._visitor.EMADLInheritanceVisitor;
+import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
+import de.monticore.lang.monticar.cnntrain._ast.ASTConfiguration;
+import de.monticore.lang.monticar.emadl._ast.ASTArchitectureEmbedding;
 import de.monticore.symboltable.GlobalScope;
 
-import java.util.LinkedList;
-import java.util.List;
-
-public class TemplateData implements EMADLInheritanceVisitor,
+public class TemplateData /*implements EMADLInheritanceVisitor,
                                      CNNArchInheritanceVisitor,
                                      CNNTrainInheritanceVisitor,
-                                     EmbeddedMontiArcInheritanceVisitor {
+                                     EmbeddedMontiArcInheritanceVisitor*/ {
 
     private GlobalScope globalScope;
 
-    private ASTTrainingConfiguration config;
-    private List<ASTLayer> layers;
+    private ASTConfiguration config;
+    /*private List<ASTLayer> layers;
     private List<ASTMainLayer> mainLayers;
     private ASTContext context;
     private ASTTarget target;
-    private ASTOutputLayer outputLayer;
+    private ASTOutputLayer outputLayer;*/
     private PortArraySymbol inputPort;
     private PortArraySymbol outputPort;
+
 
 
 
@@ -57,28 +49,28 @@ public class TemplateData implements EMADLInheritanceVisitor,
         this.globalScope = globalScope;
     }
 
-    @Override
+    //@Override
     public void handle(ASTArchitectureEmbedding node) {
-        handle((ASTCNNArchCompilationUnit) node.getArchitectureSymbol().getAstNode().get());
+        /*handle((ASTCNNArchCompilationUnit) node.getArchitectureSymbol().getAstNode().get());
         inputPort = node.getInputSymbol();
-        outputPort = node.getOutputSymbol();
+        outputPort = node.getOutputSymbol();*/
     }
 
-    @Override
+    /*@Override
     public void handle(ASTTrainingEmbedding node) {
         handle((ASTCNNTrainCompilationUnit) node.getTrainConfigSymbol().getAstNode().get());
-    }
+    }*/
 
-    @Override
+    //@Override
     public void visit(ASTArchitecture node) {
-        mainLayers = node.getMainLayers();
+        /*mainLayers = node.getMainLayers();
 
         layers = new LinkedList<ASTLayer>();
         layers.addAll(mainLayers);
-        layers.add(node.getOutputLayer());
+        layers.add(node.getOutputLayer());*/
     }
 
-    @Override
+    /*@Override
     public void visit(ASTOutputLayer node) {
         outputLayer = node;
     }
@@ -94,18 +86,18 @@ public class TemplateData implements EMADLInheritanceVisitor,
                 context = (ASTContext) node.getValue();
                 break;
         }
-    }
+    }*/
 
-    @Override
-    public void visit(ASTTrainingConfiguration node) {
+    //@Override
+    public void visit(ASTConfiguration node) {
         config = node;
     }
 
-    public ASTTrainingConfiguration getConfig() {
+    public ASTConfiguration getConfig() {
         return config;
     }
 
-    //returns mainLayers + outputLayer
+    /*//returns mainLayers + outputLayer
     public List<ASTLayer> getLayers() {
         return layers;
     }
@@ -131,7 +123,7 @@ public class TemplateData implements EMADLInheritanceVisitor,
 
     public List<ASTMainLayer> getMainLayers() {
         return mainLayers;
-    }
+    }*/
 
     public PortArraySymbol getInputPort() {
         return inputPort;

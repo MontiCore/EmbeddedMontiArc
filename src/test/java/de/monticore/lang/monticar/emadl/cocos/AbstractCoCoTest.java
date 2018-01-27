@@ -20,15 +20,18 @@
  */
 package de.monticore.lang.monticar.emadl.cocos;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.monticar.emadl.AbstractSymtabTest;
+import de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
+import de.monticore.lang.monticar.emadl._cocos.EMADLPostResolveCocos;
+import de.monticore.lang.monticar.emadl._cocos.EMADLPreResolveCocos;
+import de.monticore.lang.monticar.emadl._symboltable.EMADLBehaviorSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -64,9 +67,10 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
     protected static void runCheckerWithSymTab(String modelPath, String model) {
         Log.getFindings().clear();
 
-        ASTEmbeddedMontiArcNode node = getAstNode(modelPath, model);
-
-        EMADLCocos.createChecker().checkAll(node);
+        runCocoCheck(EMADLPreResolveCocos.createChecker(),
+                EMADLPostResolveCocos.createChecker(),
+                modelPath,
+                model);
     }
 
     /**
@@ -75,7 +79,10 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
      */
     protected static void checkValid(String modelPath, String model) {
         Log.getFindings().clear();
-        EMADLCocos.createChecker().checkAll(getAstNode(modelPath, model));
+        runCocoCheck(EMADLPreResolveCocos.createChecker(),
+                EMADLPostResolveCocos.createChecker(),
+                modelPath,
+                model);
         new ExpectedErrorInfo().checkOnlyExpectedPresent(Log.getFindings());
     }
 
@@ -84,20 +91,41 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
      * the expected errors are present; once only with the given cocos, checking that no additional
      * errors are present.
      */
-    protected static void checkInvalid(EMADLCoCoChecker cocos, ASTEmbeddedMontiArcNode node,
+    protected static void checkInvalid(EMADLCoCoChecker preResolveCocos, EMADLCoCoChecker postResolveCocos,
+                                       String modelPath, String model,
                                        ExpectedErrorInfo expectedErrors) {
 
         // check whether all the expected errors are present when using all cocos
         Log.getFindings().clear();
-        EMADLCocos.createChecker().checkAll(node);
+        runCocoCheck(EMADLPreResolveCocos.createChecker(),
+                EMADLPostResolveCocos.createChecker(),
+                modelPath,
+                model);
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");
 
         // check whether only the expected errors are present when using only the given cocos
         Log.getFindings().clear();
-        cocos.checkAll(node);
+        runCocoCheck(preResolveCocos,
+                postResolveCocos,
+                modelPath,
+                model);
         expectedErrors.checkOnlyExpectedPresent(Log.getFindings(), "Got no findings when checking only "
                 + "the given coco. Did you pass an empty coco checker?");
+    }
+
+    private static void runCocoCheck(EMADLCoCoChecker preResolveCocos, EMADLCoCoChecker postResolveCocos, String modelPath, String model){
+        ASTEmbeddedMontiArcNode node = getAstNode(modelPath, model);
+        preResolveCocos.checkAll(node);
+        if (Log.getFindings().isEmpty() && node.getSymbol().isPresent()){
+            ComponentSymbol component = (ComponentSymbol) node.getSymbol().get();
+            EMADLBehaviorSymbol behaviorSymbol = (EMADLBehaviorSymbol) component.getEnclosingScope()
+                    .resolve(component.getName(), EMADLBehaviorSymbol.KIND).get();
+            behaviorSymbol.resolve();
+            if (Log.getFindings().isEmpty()){
+                postResolveCocos.checkAll(node);
+            }
+        }
     }
 
     protected static class ExpectedErrorInfo {

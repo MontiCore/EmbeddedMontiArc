@@ -20,16 +20,25 @@
  */
 package de.monticore.lang.monticar.emadl._cocos;
 
-import de.monticore.lang.monticar.emadl._ast.ASTArchitectureEmbedding;
-import de.monticore.lang.monticar.emadl._ast.ASTTrainingEmbedding;
+import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
+import de.monticore.lang.monticar.emadl._ast.ASTConfigConstructor;
+import de.monticore.lang.monticar.emadl._symboltable.ConfigConstructorSymbol;
+import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
+import de.se_rwth.commons.logging.Log;
 
-public class ArchitectureCheck implements EMADLASTArchitectureEmbeddingCoCo {
+public class CheckCNNTrainCocos implements EMADLASTConfigConstructorCoCo {
 
     @Override
-    public void check(ASTArchitectureEmbedding node) {
-        node.getArchitectureSymbol();
-        node.getInputSymbol();
-        node.getOutputSymbol();
+    public void check(ASTConfigConstructor node) {
+        ConfigConstructorSymbol sym = (ConfigConstructorSymbol) node.getSymbol().get();
+        if (sym.getConfiguration() != null) {
+            CNNTrainCocos.createChecker().checkAll((ASTCNNTrainNode) sym.getConfiguration().getAstNode().get());
+        }
+        else {
+            Log.error("0" + ErrorCodes.UNKNOWN_CONFIGURATION_CODE + " Unknown configuration: " + node.getName() + ". " +
+                    "The configuration has to be either in the same directory or imported."
+                    , node.get_SourcePositionStart());
+        }
     }
-
 }

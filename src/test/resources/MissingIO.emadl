@@ -1,0 +1,12 @@
+component MissingIO {
+    ports in Z(0:oo)^{224, 224, 3} image,
+         out Q(0:1) predictions[10];
+
+    implementation DeepLearning {
+
+        architecture: Alexnet(img_height=224, img_width=224, img_channels=3, classes=10)
+
+        configuration: SimpleConfig1()
+
+    }
+}

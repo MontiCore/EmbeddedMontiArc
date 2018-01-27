@@ -18,13 +18,23 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl._cocos;
+package de.monticore.lang.monticar.emadl._symboltable;
 
-public class EMADLCocos {
+import de.monticore.symboltable.SymbolKind;
 
-    public static EMADLCoCoChecker createChecker() {
-        return new EMADLCoCoChecker()
-                .addCoCo(new ArchitectureCheck())
-                .addCoCo(new TrainingCheck());
+public class ArchPortKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.instance.ArchPortKind";
+
+    @Override
+    public String getName() {
+        return NAME;
     }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    }
+
 }
+

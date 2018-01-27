@@ -20,20 +20,15 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
-import de.monticore.lang.monticar.cnnarch._ast.ASTArgumentRhs;
+/*import de.monticore.lang.monticar.cnnarch._ast.ASTArgumentRhs;
 import de.monticore.lang.monticar.cnnarch._ast.ASTLayer;
 import de.monticore.lang.monticar.cnnarch._ast.ASTMethod;
 import de.monticore.lang.monticar.cnntrain._ast.ASTParameterRhs;
 import de.monticore.lang.monticar.cnntrain._ast.ASTTrainingConfiguration;
-import de.monticore.lang.monticar.emadl.helper.ASTPrinter;
-import de.se_rwth.commons.logging.Log;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import de.monticore.lang.monticar.emadl.helper.ASTPrinter;*/
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+import freemarker.template.Configuration;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,18 +60,18 @@ public class TemplateController {
         this.freemarkerConfig = freemarkerConfig;
         this.ftlContext = new HashMap<>();
         ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
-        ftlContext.put(TEMPLATE_LAYERS_KEY, data.getLayers());
-        ftlContext.put(TEMPLATE_MAIN_LAYERS_KEY, data.getMainLayers());
+        /*ftlContext.put(TEMPLATE_LAYERS_KEY, data.getLayers());
+        ftlContext.put(TEMPLATE_MAIN_LAYERS_KEY, data.getMainLayers());*/
         ftlContext.put(TEMPLATE_CONF_KEY, data.getConfig());
-        ftlContext.put(TEMPLATE_TARGET_KEY, data.getTarget().name());
+        /*ftlContext.put(TEMPLATE_TARGET_KEY, data.getTarget().name());
         ftlContext.put(TEMPLATE_CONTEXT_KEY, data.getContext());
-        ftlContext.put(TEMPLATE_OUTPUT_LAYER_KEY, data.getOutputLayer());
+        ftlContext.put(TEMPLATE_OUTPUT_LAYER_KEY, data.getOutputLayer());*/
         ftlContext.put(TEMPLATE_INPUT_PORT_KEY, data.getInputPort());
         ftlContext.put(TEMPLATE_OUTPUT_PORT_KEY, data.getOutputPort());
     }
 
 
-    public void process(FileWriter writer) throws IOException, TemplateException {
+    /*public void process(FileWriter writer) throws IOException, TemplateException {
 
         String templateName = "";
         switch (data.getTarget()) {
@@ -153,6 +148,6 @@ public class TemplateController {
             res = layer.getMethod().getName() + data.getLayers().indexOf(layer);
         }
         return res;
-    }
+    }*/
 
 }
