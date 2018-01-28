@@ -2,13 +2,17 @@ package de.monticore.lang.monticar.generator.roscpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.roscpp.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.tagging.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -22,6 +26,7 @@ public class TaggingTest extends AbstractSymtabTest {
         ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
+        //rosIn
         PortSymbol rosIn = component.getPort("rosIn").orElse(null);
         assertNotNull(rosIn);
 
@@ -29,9 +34,37 @@ public class TaggingTest extends AbstractSymtabTest {
         assertTrue(tags.size() == 1);
 
         RosConnectionSymbol tag = (RosConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getTopicName(), "topicName1");
-        assertEquals(tag.getTopicType(), "topicType1");
-        assertEquals(tag.getMsgField(), "msgField1");
+        assertEquals(tag.getTopicName(), "/clock");
+        assertEquals(tag.getTopicType(), "rosgraph_msgs/Clock");
+        assertEquals(tag.getMsgField(), "clock.toSec()");
 
+        //rosOut
+        PortSymbol rosOut = component.getPort("rosOut").orElse(null);
+        assertNotNull(rosOut);
+
+        tags = symtab.getTags(rosOut, RosConnectionSymbol.KIND);
+        assertTrue(tags.size() == 1);
+
+        tag = (RosConnectionSymbol) tags.iterator().next();
+        assertEquals(tag.getTopicName(), "/echo");
+        assertEquals(tag.getTopicType(), "automated_driving_msgs/StampedFloat64");
+        assertEquals(tag.getMsgField(), "data");
+
+    }
+
+    @Test
+    public void testRosConnectionGeneration() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(symtab);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/echoTaggingCompRos/");
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+
+        testFilesAreEqual(files, "echo/");
     }
 }

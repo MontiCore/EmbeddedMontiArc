@@ -9,6 +9,7 @@ import de.monticore.symboltable.Scope;
 
 public class ResolveHelper {
 
+    //TODO: refactor
     public static ResolvedRosInterface resolveRosInterface(RosInterface rosInterface, ExpandedComponentInstanceSymbol component, boolean isSubscriber) {
         String includeString = rosInterface.type;
         if (!includeString.contains("/")) {

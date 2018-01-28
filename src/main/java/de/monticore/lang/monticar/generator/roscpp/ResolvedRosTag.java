@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import java.util.HashSet;
 import java.util.Set;
 
+//TODO: rename: not used as a Tag
 public class ResolvedRosTag {
     private ExpandedComponentInstanceSymbol component;
     private Set<ResolvedRosInterface> subscriberInterfaces = new HashSet<>();
