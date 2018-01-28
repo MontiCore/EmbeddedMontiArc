@@ -28,16 +28,16 @@ import de.monticore.symboltable.CommonSymbol;
 import java.util.List;
 import java.util.Optional;
 
-public class ArchPortSymbol extends CommonSymbol {
+public class ArchPortConnectorSymbol extends CommonSymbol {
 
-    public static final ArchPortKind KIND = new ArchPortKind();
+    public static final ArchPortConnectorKind KIND = new ArchPortConnectorKind();
 
     private String alias = null;
     private PortArraySymbol port = null;
 
     private IODeclarationSymbol ioDeclaration = null;
 
-    public ArchPortSymbol(String name) {
+    public ArchPortConnectorSymbol(String name) {
         super(name, KIND);
         setAlias(name);
     }

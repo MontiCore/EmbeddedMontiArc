@@ -30,4 +30,7 @@ public class ErrorCodes {
     public static final String UNKNOWN_CONFIGURATION_CODE = "xA4C17";
     public static final String UNKNOWN_EMA_PORT_CODE = "xA1D16";
     public static final String INVALID_PORT_DIRECTION_CODE = "xA2A25";
+
+    public static final String INVALID_IO_DIMENSIONS_CODE = "xA2B31";
+    public static final String INVALID_IO_TYPE_CODE = "xA2B38";
 }

@@ -1,0 +1,8 @@
+component Test{
+    ports in Z(0:255)^{224, 224, 3} image,
+         out Q(0:1) predictions[10];
+
+    instance AlexnetParam(224,224,3,10) al;
+    connect image -> al.image;
+    connect al.predictions -> predictions;
+}

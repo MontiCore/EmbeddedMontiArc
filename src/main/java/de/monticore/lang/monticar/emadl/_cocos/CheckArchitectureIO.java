@@ -23,7 +23,7 @@ package de.monticore.lang.monticar.emadl._cocos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
 import de.monticore.lang.monticar.emadl._ast.ASTArchitectureConstructor;
-import de.monticore.lang.monticar.emadl._symboltable.ArchPortSymbol;
+import de.monticore.lang.monticar.emadl._symboltable.ArchPortConnectorSymbol;
 import de.monticore.lang.monticar.emadl._symboltable.ArchitectureConstructorSymbol;
 import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
 import de.se_rwth.commons.Joiners;
@@ -47,12 +47,12 @@ public class CheckArchitectureIO implements EMADLASTArchitectureConstructorCoCo 
             checkIODeclaration(constructor, ioDeclaration);
         }
 
-        for (ArchPortSymbol port : constructor.getInputs()){
+        for (ArchPortConnectorSymbol port : constructor.getInputs()){
             checkIfInputPort(port);
             checkUnknownInput(constructor, port);
         }
 
-        for (ArchPortSymbol port : constructor.getOutputs()){
+        for (ArchPortConnectorSymbol port : constructor.getOutputs()){
             checkIfOutputPort(port);
             checkUnknownOutput(constructor, port);
         }
@@ -75,7 +75,7 @@ public class CheckArchitectureIO implements EMADLASTArchitectureConstructorCoCo 
         }
     }
 
-    private void checkUnknownInput(ArchitectureConstructorSymbol constructor, ArchPortSymbol port){
+    private void checkUnknownInput(ArchitectureConstructorSymbol constructor, ArchPortConnectorSymbol port){
         Optional<IODeclarationSymbol> input = constructor.getArchitecture().getInput(port.getAlias());
         if (!input.isPresent()){
             Log.error("0" + ErrorCodes.UNKNOWN_IO_CODE + " " +
@@ -86,7 +86,7 @@ public class CheckArchitectureIO implements EMADLASTArchitectureConstructorCoCo 
         }
     }
 
-    private void checkUnknownOutput(ArchitectureConstructorSymbol constructor, ArchPortSymbol port){
+    private void checkUnknownOutput(ArchitectureConstructorSymbol constructor, ArchPortConnectorSymbol port){
         Optional<IODeclarationSymbol> output = constructor.getArchitecture().getOutput(port.getAlias());
         if (!output.isPresent()){
             Log.error("0" + ErrorCodes.UNKNOWN_IO_CODE + " " +
@@ -97,7 +97,7 @@ public class CheckArchitectureIO implements EMADLASTArchitectureConstructorCoCo 
         }
     }
 
-    private void checkIfInputPort(ArchPortSymbol port){
+    private void checkIfInputPort(ArchPortConnectorSymbol port){
         Optional<PortArraySymbol> emaPort = port.getPort();
         if (emaPort.isPresent()){
             if (!emaPort.get().isIncoming()){
@@ -111,7 +111,7 @@ public class CheckArchitectureIO implements EMADLASTArchitectureConstructorCoCo 
         }
     }
 
-    private void checkIfOutputPort(ArchPortSymbol port){
+    private void checkIfOutputPort(ArchPortConnectorSymbol port){
         Optional<PortArraySymbol> emaPort = port.getPort();
         if (emaPort.isPresent()){
             if (emaPort.get().isIncoming()){
@@ -125,7 +125,7 @@ public class CheckArchitectureIO implements EMADLASTArchitectureConstructorCoCo 
         }
     }
 
-    private void portResolveError(ArchPortSymbol port){
+    private void portResolveError(ArchPortConnectorSymbol port){
         Log.error("0" + ErrorCodes.UNKNOWN_EMA_PORT_CODE + " " +
                         "Embedded MontiArc Port '" + port.getName() + "' does not exist."
                 , port.getSourcePosition());

@@ -47,6 +47,15 @@ public class SymtabTest extends AbstractSymtabTest {
         EMADLBehaviorSymbol e = a.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
         EMADLBehaviorSymbol f = c.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
 
+        //....getComponentType().getReferencedSymbol().getAstNode()
+        assertNotNull(a);
+    }
+
+    @Test
+    public void test2(){
+        Scope symTab = createSymTab("src/test/resources");
+        ExpandedComponentInstanceSymbol a = symTab.<ExpandedComponentInstanceSymbol>resolve("test", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
         assertNotNull(a);
     }
 

@@ -144,15 +144,15 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     public void endVisit(ASTArchitectureConstructor node) {
         archConstructor.setArguments(node.getArguments());
 
-        List<ArchPortSymbol> inputs = new ArrayList<>();
+        List<ArchPortConnectorSymbol> inputs = new ArrayList<>();
         for (ASTArchIOPort astPort : node.getInput().getPorts()){
-            inputs.add((ArchPortSymbol) astPort.getSymbol().get());
+            inputs.add((ArchPortConnectorSymbol) astPort.getSymbol().get());
         }
         archConstructor.setInputs(inputs);
 
-        List<ArchPortSymbol> outputs = new ArrayList<>();
+        List<ArchPortConnectorSymbol> outputs = new ArrayList<>();
         for (ASTArchIOPort astPort : node.getOutput().getPorts()){
-            outputs.add((ArchPortSymbol) astPort.getSymbol().get());
+            outputs.add((ArchPortConnectorSymbol) astPort.getSymbol().get());
         }
         archConstructor.setOutputs(outputs);
 
@@ -173,7 +173,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     }
 
     public void endVisit(ASTArchIOPort node) {
-        ArchPortSymbol sym = new ArchPortSymbol(node.getName());
+        ArchPortConnectorSymbol sym = new ArchPortConnectorSymbol(node.getName());
         if (node.getAlias().isPresent()){
             sym.setAlias(node.getAlias().get());
         }

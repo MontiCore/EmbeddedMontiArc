@@ -28,7 +28,7 @@ public class EMADLPostResolveCocos {
         return new EMADLCoCoChecker()
                 .addCoCo(new CheckCNNTrainCocos())
                 .addCoCo(new CheckCNNArchPostResolveCocos())
-                .addCoCo(new CheckArchitectureIOShape());
+                .addCoCo(new CheckIOTypeAndDimensions());
     }
 
 }

@@ -35,8 +35,8 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
     public static final ArchitectureConstructorKind KIND = new ArchitectureConstructorKind();
 
     private List<ASTNamedArgument> arguments;
-    private List<ArchPortSymbol> inputs;
-    private List<ArchPortSymbol> outputs;
+    private List<ArchPortConnectorSymbol> inputs;
+    private List<ArchPortConnectorSymbol> outputs;
     private ArchitectureSymbol architecture = null;
 
     public ArchitectureConstructorSymbol(String name) {
@@ -51,19 +51,19 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
         this.arguments = arguments;
     }
 
-    public List<ArchPortSymbol> getInputs() {
+    public List<ArchPortConnectorSymbol> getInputs() {
         return inputs;
     }
 
-    public void setInputs(List<ArchPortSymbol> inputs) {
+    public void setInputs(List<ArchPortConnectorSymbol> inputs) {
         this.inputs = inputs;
     }
 
-    public List<ArchPortSymbol> getOutputs() {
+    public List<ArchPortConnectorSymbol> getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(List<ArchPortSymbol> outputs) {
+    public void setOutputs(List<ArchPortConnectorSymbol> outputs) {
         this.outputs = outputs;
     }
 
@@ -84,7 +84,7 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
 
     public List<String> getInputNames(){
         List<String> names = new ArrayList<>();
-        for (ArchPortSymbol port : getInputs()){
+        for (ArchPortConnectorSymbol port : getInputs()){
             names.add(port.getAlias());
         }
         return names;
@@ -92,7 +92,7 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
 
     public List<String> getOutputNames(){
         List<String> names = new ArrayList<>();
-        for (ArchPortSymbol port : getOutputs()){
+        for (ArchPortConnectorSymbol port : getOutputs()){
             names.add(port.getAlias());
         }
         return names;
@@ -106,10 +106,10 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
     }
 
     private void linkIOPorts() {
-        for (ArchPortSymbol port : getInputs()){
+        for (ArchPortConnectorSymbol port : getInputs()){
             port.linkIODeclaration(getArchitecture());
         }
-        for (ArchPortSymbol port : getOutputs()){
+        for (ArchPortConnectorSymbol port : getOutputs()){
             port.linkIODeclaration(getArchitecture());
         }
     }

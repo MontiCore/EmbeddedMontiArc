@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class ArchPortKind implements SymbolKind {
+public class ArchPortConnectorKind implements SymbolKind {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.instance.ArchPortKind";
+    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.instance.ArchPortConnectorKind";
 
     @Override
     public String getName() {

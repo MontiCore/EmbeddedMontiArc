@@ -1,6 +1,6 @@
-component Alexnet{
-    ports in Z(0:255)^{224, 224, 3} image,
-         out Q(0:1) predictions[10];
+component AlexnetParam(Z(1:oo) height, Z(1:oo) width, Z(1:oo) channels, Z(1:oo) classes){
+    ports in Z(0:255)^{height, width, channels} image,
+         out Q(0:1) predictions[classes];
 
     implementation DeepLearning {
 

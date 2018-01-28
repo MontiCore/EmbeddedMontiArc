@@ -31,4 +31,6 @@ grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavio
 
     Num implements Value = Number;
 
+    //NamedArgument = Name "=" (optValue:Value | reference:Name);
+
 }

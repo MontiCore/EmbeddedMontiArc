@@ -56,7 +56,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         ret.add(new CommonResolvingFilter<Symbol>(EMADLBehaviorSymbol.KIND));
         ret.add(new CommonResolvingFilter<Symbol>(ArchitectureConstructorSymbol.KIND));
         ret.add(new CommonResolvingFilter<Symbol>(ConfigConstructorSymbol.KIND));
-        ret.add(new CommonResolvingFilter<Symbol>(ArchPortSymbol.KIND));
+        ret.add(new CommonResolvingFilter<Symbol>(ArchPortConnectorSymbol.KIND));
         return ret;
     }
 
