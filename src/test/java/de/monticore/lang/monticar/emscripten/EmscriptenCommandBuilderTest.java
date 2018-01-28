@@ -19,12 +19,12 @@ class EmscriptenCommandBuilderTest {
   private static final Option WASM_OPTION = new Option("WASM", true);
   private static final Option LINKABLE_OPTION = new Option("LINKABLE", true);
   private static final Optimization SOME_LEVEL = Optimization.O3;
-  private Path emscripten;
+  private String emscripten;
   private Path file;
 
   @BeforeEach
   void setUp() {
-    emscripten = Paths.get("./emscripten");
+    emscripten = "./emscripten";
     file = Paths.get("model.cpp");
   }
 
@@ -40,7 +40,7 @@ class EmscriptenCommandBuilderTest {
     void whenSimpleCommand() {
       EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder(emscripten, file);
 
-      assertThat(builder.toList()).isEqualTo(listof(emscripten.toString(), "model.cpp"));
+      assertThat(builder.toList()).isEqualTo(listof(emscripten, "model.cpp"));
     }
 
     @Test
@@ -50,7 +50,7 @@ class EmscriptenCommandBuilderTest {
       builder.addOption(WASM_OPTION);
 
       assertThat(builder.toList())
-          .isEqualTo(listof(emscripten.toString(), "model.cpp", "-s", "WASM=1"));
+          .isEqualTo(listof(emscripten, "model.cpp", "-s", "WASM=1"));
     }
 
     @Test
@@ -62,7 +62,7 @@ class EmscriptenCommandBuilderTest {
 
       assertThat(builder.toList())
           .isEqualTo(
-              listof(emscripten.toString(), "model.cpp", "-s", "WASM=1", "-s", "LINKABLE=1"));
+              listof(emscripten, "model.cpp", "-s", "WASM=1", "-s", "LINKABLE=1"));
     }
 
     @Test
@@ -73,7 +73,7 @@ class EmscriptenCommandBuilderTest {
 
       assertThat(builder.toList())
           .isEqualTo(
-              listof(emscripten.toString(), "model.cpp",
+              listof(emscripten, "model.cpp",
                   "-I\"" + INCLUDE_ARMADILLO.toString() + "\""));
     }
 
@@ -86,7 +86,7 @@ class EmscriptenCommandBuilderTest {
 
       assertThat(builder.toList())
           .isEqualTo(
-              listof(emscripten.toString(), "model.cpp",
+              listof(emscripten, "model.cpp",
                   "-I\"" + INCLUDE_ARMADILLO.toString() + "\"",
                   "-I\"" + INCLUDE_BLAS.toString() + "\""));
     }
@@ -97,7 +97,7 @@ class EmscriptenCommandBuilderTest {
 
       builder.setOptimization(SOME_LEVEL);
 
-      assertThat(builder.toList()).isEqualTo(listof(emscripten.toString(), "model.cpp", "-O3"));
+      assertThat(builder.toList()).isEqualTo(listof(emscripten, "model.cpp", "-O3"));
     }
 
     @Test
@@ -107,7 +107,7 @@ class EmscriptenCommandBuilderTest {
       builder.setBind(true);
 
       assertThat(builder.toList())
-          .isEqualTo(listof(emscripten.toString(), "model.cpp", "--bind"));
+          .isEqualTo(listof(emscripten, "model.cpp", "--bind"));
     }
 
     @Test
@@ -120,7 +120,7 @@ class EmscriptenCommandBuilderTest {
       builder.setBind(true);
 
       assertThat(builder.toList())
-          .isEqualTo(listof(emscripten.toString(), "model.cpp",
+          .isEqualTo(listof(emscripten, "model.cpp",
               "-I\"" + INCLUDE_ARMADILLO.toString() + "\"", "-s", "WASM=1", "-O3", "--bind"));
     }
   }
@@ -132,7 +132,7 @@ class EmscriptenCommandBuilderTest {
     void whenSimpleCommand() {
       EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder(emscripten, file);
 
-      assertThat(builder.toString()).isEqualTo(emscripten.toString() + " model.cpp");
+      assertThat(builder.toString()).isEqualTo(emscripten + " model.cpp");
     }
 
     @Test
@@ -141,7 +141,7 @@ class EmscriptenCommandBuilderTest {
 
       builder.addOption(WASM_OPTION);
 
-      assertThat(builder.toString()).isEqualTo(emscripten.toString() + " model.cpp -s WASM=1");
+      assertThat(builder.toString()).isEqualTo(emscripten + " model.cpp -s WASM=1");
     }
 
     @Test
@@ -152,7 +152,7 @@ class EmscriptenCommandBuilderTest {
       builder.addOption(LINKABLE_OPTION);
 
       assertThat(builder.toString())
-          .isEqualTo(emscripten.toString() + " model.cpp -s WASM=1 -s LINKABLE=1");
+          .isEqualTo(emscripten + " model.cpp -s WASM=1 -s LINKABLE=1");
     }
 
     @Test
@@ -163,7 +163,7 @@ class EmscriptenCommandBuilderTest {
 
       assertThat(builder.toString())
           .isEqualTo(
-              emscripten.toString() + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\"");
+              emscripten + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\"");
     }
 
     @Test
@@ -175,7 +175,7 @@ class EmscriptenCommandBuilderTest {
 
       assertThat(builder.toString())
           .isEqualTo(
-              emscripten.toString() + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\" -I\""
+              emscripten + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\" -I\""
                   + INCLUDE_BLAS.toString() + "\"");
     }
 
@@ -185,7 +185,7 @@ class EmscriptenCommandBuilderTest {
 
       builder.setOptimization(SOME_LEVEL);
 
-      assertThat(builder.toString()).isEqualTo(emscripten.toString() + " model.cpp -O3");
+      assertThat(builder.toString()).isEqualTo(emscripten + " model.cpp -O3");
     }
 
     @Test
@@ -194,7 +194,7 @@ class EmscriptenCommandBuilderTest {
 
       builder.setBind(true);
 
-      assertThat(builder.toString()).isEqualTo(emscripten.toString() + " model.cpp --bind");
+      assertThat(builder.toString()).isEqualTo(emscripten + " model.cpp --bind");
     }
 
     @Test
@@ -210,7 +210,7 @@ class EmscriptenCommandBuilderTest {
 
       assertThat(builder.toString())
           .isEqualTo(
-              emscripten.toString() + " model.cpp -o module.js -I\"" + INCLUDE_ARMADILLO.toString()
+              emscripten + " model.cpp -o module.js -I\"" + INCLUDE_ARMADILLO.toString()
                   + "\" -s WASM=1 -O3 --bind -std=c++11");
     }
   }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  */
 public class EmscriptenCommandBuilder implements CommandBuilder {
 
-  private final Path emscripten;
+  private final String emscripten;
   private final Path file;
   private final List<Path> includes = new ArrayList<>();
   private final List<Option> options = new ArrayList<>();
@@ -27,7 +27,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @param emscripten Path pointing to emscripten binary, e.g.
    * @param file main C++ class
    */
-  public EmscriptenCommandBuilder(Path emscripten, Path file) {
+  public EmscriptenCommandBuilder(String emscripten, Path file) {
     this.emscripten = emscripten;
     this.file = file;
   }
@@ -110,7 +110,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   @Override
   public List<String> toList() {
     List<String> list = new ArrayList<>();
-    list.add(emscripten.toString());
+    list.add(emscripten);
     list.add(file.toString());
     if (outputFile != null) {
       list.add("-o");
