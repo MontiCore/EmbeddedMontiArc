@@ -40,38 +40,46 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * like {@code -I"path"}.
    *
    * @param include directory with additional sources to be included during compilation
+   * @return this builder
    */
-  public void include(Path include) {
+  public EmscriptenCommandBuilder include(Path include) {
     includes.add(include);
+    return this;
   }
 
   /**
    * Adds an {@link Option} to the command. The actual command will look like {@code -s option=1}.
    *
    * @param option compile option
+   * @return this builder
    */
-  public void addOption(Option option) {
+  public EmscriptenCommandBuilder addOption(Option option) {
     options.add(option);
+    return this;
   }
 
   /**
    * Sets the optimization level. By default, no optimization is performed.
    *
    * @param level optimization level
+   * @return this builder
    * @see Optimization
    */
-  public void setOptimization(Optimization level) {
+  public EmscriptenCommandBuilder setOptimization(Optimization level) {
     this.optimizationLevel = level;
+    return this;
   }
 
   /**
    * Activates embind by adding {@code --bind} switch.
    *
    * @param bind if {@code true}, activates embind
+   * @return this builder
    * @see <a href="https://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/embind.html">https://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/embind.html</a>
    */
-  public void setBind(boolean bind) {
+  public EmscriptenCommandBuilder setBind(boolean bind) {
     this.bind = bind;
+    return this;
   }
 
   /**
@@ -79,9 +87,11 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * {@code -std="std"}.
    *
    * @param std C/C++ compiler to be used for compilation
+   * @return this builder
    */
-  public void setStd(String std) {
+  public EmscriptenCommandBuilder setStd(String std) {
     this.std = std;
+    return this;
   }
 
   /**
@@ -90,9 +100,11 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * Therefore, the shell has to be opened at the designated target output path.
    *
    * @param outputFile output filename
+   * @return this builder
    */
-  public void setOutput(String outputFile) {
+  public EmscriptenCommandBuilder setOutput(String outputFile) {
     this.outputFile = outputFile;
+    return this;
   }
 
   /**
