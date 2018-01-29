@@ -1,5 +1,8 @@
 package de.monticore.lang.monticar.emscripten;
 
+import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
+import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotEmpty;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +31,8 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @param file main C++ class
    */
   public EmscriptenCommandBuilder(String emscripten, Path file) {
-    this.emscripten = emscripten;
-    this.file = file;
+    this.emscripten = requiresNotEmpty(emscripten);
+    this.file = requiresNotNull(file);
   }
 
   /**

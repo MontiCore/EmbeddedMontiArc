@@ -1,7 +1,9 @@
 package de.monticore.lang.monticar.emscripten;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -19,6 +21,10 @@ class EmscriptenCommandBuilderTest {
   private static final Option WASM_OPTION = new Option("WASM", true);
   private static final Option LINKABLE_OPTION = new Option("LINKABLE", true);
   private static final Optimization SOME_LEVEL = Optimization.O3;
+  private static final String NULL_STRING = null;
+  private static final String EMPTY_STRING = "";
+  private static final Path NULL_PATH = null;
+
   private String emscripten;
   private Path file;
 
@@ -31,6 +37,28 @@ class EmscriptenCommandBuilderTest {
   @SafeVarargs
   private final <T> List<T> listof(T... elements) {
     return Arrays.asList(elements);
+  }
+
+  @Nested
+  class ShouldThrowException {
+
+    @Test
+    void whenInitializedWithNullString() {
+      assertThatExceptionOfType(PreconditionViolationException.class)
+          .isThrownBy(() -> new EmscriptenCommandBuilder(NULL_STRING, file));
+    }
+
+    @Test
+    void whenInitializedWithEmptyString() {
+      assertThatExceptionOfType(PreconditionViolationException.class)
+          .isThrownBy(() -> new EmscriptenCommandBuilder(EMPTY_STRING, file));
+    }
+
+    @Test
+    void whenInitializedWithNullPath() {
+      assertThatExceptionOfType(PreconditionViolationException.class)
+          .isThrownBy(() -> new EmscriptenCommandBuilder(emscripten, NULL_PATH));
+    }
   }
 
   @Nested
