@@ -1,0 +1,32 @@
+* {
+    font-family: Arial;
+}
+.section {
+    width: 100%;
+    padding: 20px;
+    margin: auto;
+}
+#dragDiv {
+    background-color: #ffffcc;
+}
+#browseDiv {
+    background-color: #ccffcc;
+}
+#iframeDiv {
+    background-color: #ffcccc;
+}
+#dropTarget {
+    width: 300px;
+    height: 300px;
+    border-style: dashed;
+    border-width: 5px;
+}
+.dropEnabled {
+    border-color: #999999;
+}
+.dropEnabled:hover {
+    border-color: #ff9933;
+}
+.dropMe {
+    border-color: #99ff99;
+}

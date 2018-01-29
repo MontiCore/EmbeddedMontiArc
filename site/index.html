@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>OCLFiddle</title>
+        <!-- Stylesheets -->
+        <link href="resources/css/index.css" type="text/css" rel="stylesheet"/>
+
+        <!-- Scripts -->
+        <script src="https://cheerpjunstable.leaningtech.com/loader.js"></script>
+        <!--<script src="cheerpj/loader.js"></script>-->
+        <script src="https://ide.embeddedmontiarc.com/static/plugins/se.rwth.api.switch/port.js"></script>
+    </head>
+    <body>
+        <!-- Hidden Information -->
+        <div id="meta-container">
+            <textarea id="ocl" rows="8" cols="50" placeholder="OCL code here">
+
+            </textarea>
+            <textarea id="cd" rows="8" cols="50" placeholder="CD code here">
+
+            </textarea>
+        </div>
+
+        <!-- First Row, Left Column -->
+        <div class="row-one-column">
+            <iframe id="ide-cd" src="https://ide.embeddedmontiarc.com/api/load.html?mountPoint=[EmbeddedMontiArc]/OCL/Demos&hideControls=2,1,1"></iframe>
+        </div>
+
+        <!-- First Row, Right Column -->
+        <div class="row-one-column">
+            <iframe id="uploadImageSite" src="uploadImageSite.html"></iframe>
+        </div>
+
+        <!-- Second Row, Left Column -->
+        <div class="row-two-column left-column">
+            <span class="button-smaller"><img title="Reset" id="button-reset-cd" class="button" src="resources/media/images/Reset.svg"/></span>
+        </div>
+
+        <!-- Second Row, Middle Column -->
+        <div class="row-two-column middle-column">
+            <img id="button-execute" class="button" src="resources/media/images/Execute.svg"/>
+        </div>
+
+        <!-- Second Row, Right Column -->
+        <div class="row-two-column right-column">
+            <span class="button-smaller"><img title="Reset" id="button-reset-ocl" class="button" src="resources/media/images/Reset.svg"/></span>
+        </div>
+
+        <!-- Bottom Row -->
+        <div id="bottom-container">
+            <img id="button-clear" class="button" src="resources/media/images/Trashbin.svg"/>
+            <textarea id="console" rows="8" cols="50" placeholder="Console Tool Output" readonly></textarea>
+        </div>
+
+        <!-- Logos -->
+        <div id="logos-container">
+            <div>
+                <a href="http://www.monticore.org/" target="_blank"><img class="element" src="resources/media/images/MontiCoreLogo.png"></a>
+                <a href="https://www.leaningtech.com/cheerpj/" target="_blank"><img class="element" src="https://github.com/leaningtech/cheerpj-meta/raw/master/media/cheerpj_logo_whitebg.png"></a>
+                <span id="label-credits" class="element button-smaller label">DEVELOPMENT<br/>TEAM</span>
+            </div>
+       </div>
+
+        <!-- Credits -->
+        <div id="credits-overlay">
+            <div id="credits-container">
+                <ul>
+                    <li>
+                        <span class="credits-icon"><img src="https://github.com/ferdinandmehlan.png"/></span>
+                        <span class="credits-text">Ferdinand Mehlan<br/>OCL</span>
+                    </li>
+                    <li>
+                        <span class="credits-icon"><img src="https://github.com/0xJMR.png"/></span>
+                        <span class="credits-text">Jean-Marc Ronck<br/>Online IDE</span>
+                    </li>
+                    <li>
+                        <span class="credits-icon"><img src="https://github.com/vonwenckstern.png"/></span>
+                        <span class="credits-text">Michael von Wenckstern<br/>Coordinator, Fiddle Idea</span>
+                    </li>
+                    <li>
+                        <span class="credits-icon"><img src="https://github.com/rumpe.png"/></span>
+                        <span class="credits-text">Bernhard Rumpe<br/>Owner of the Chair of Software Engineering</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="resources/js/common.js"></script>
+        <script src="resources/js/cd.js"></script>
+        <script src="resources/js/ocl.js"></script>
+        <script src="resources/js/cheerpj.js"></script>
+        <script src="resources/js/credits.js"></script>
+        <script src="resources/js/clear.js"></script>
+    </body>
+</html>
