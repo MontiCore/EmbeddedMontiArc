@@ -46,6 +46,10 @@ public class GeneratorRosCpp {
             files.add(generateFile(fileContent));
         }
 
+        if (generateCpp) {
+            files.addAll(generateCppFiles(symtab, resolvedRosTag.getComponent()));
+        }
+
         return files;
     }
 
@@ -66,15 +70,7 @@ public class GeneratorRosCpp {
 
     public List<FileContent> generateStrings(Scope scope, ResolvedRosTag resolvedRosTag) {
         List<FileContent> fileContents = new ArrayList<>();
-
         fileContents.add(generateRosCompUnit(resolvedRosTag));
-
-        ExpandedComponentInstanceSymbol symbol = resolvedRosTag.getComponent();
-
-        if (generateCpp) {
-            fileContents.addAll(generateCppStrings(scope, symbol));
-        }
-
         return fileContents;
     }
 
@@ -82,7 +78,7 @@ public class GeneratorRosCpp {
         this.generatorCPP = generatorCPP;
     }
 
-    private List<FileContent> generateCppStrings(Scope scope, ExpandedComponentInstanceSymbol symbol) {
+    private List<File> generateCppFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol symbol) throws IOException {
         //If user does not specify otherwise init with useful defaults
         if (generatorCPP == null) {
             generatorCPP = new GeneratorCPP();
@@ -90,14 +86,8 @@ public class GeneratorRosCpp {
         }
         //TODO: let user specify 2 different paths?
         generatorCPP.setGenerationTargetPath(generationTargetPath);
-        List<FileContent> fileContents = new ArrayList<>();
-        fileContents.addAll(generatorCPP.generateStrings((TaggingResolver) scope, symbol, scope));
-        //TODO: dirty fix of import
-        fileContents.forEach(fc -> fc.setFileContent(fc.getFileContent().replace("armadillo.h", "armadillo")));
-
-        return fileContents;
+        return generatorCPP.generateFiles(symbol, taggingResolver);
     }
-
 
     private FileContent generateRosCompUnit(ResolvedRosTag resolvedRosTag) {
         FileContent res = new FileContent();

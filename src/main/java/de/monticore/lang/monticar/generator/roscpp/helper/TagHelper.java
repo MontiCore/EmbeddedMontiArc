@@ -24,6 +24,10 @@ public class TagHelper {
                 .filter(p -> !taggingResolver.getTags(p, RosConnectionSymbol.KIND).isEmpty())
                 .collect(Collectors.toList());
 
+        if (rosPorts.size() == 0) {
+            throw new RuntimeException("No RosConnectionSymbols found for component " + componentInstanceSymbol.getName());
+        }
+
         List<RosConnectionSymbol> rosConnections = rosPorts.stream()
                 .flatMap(p -> taggingResolver.getTags(p, RosConnectionSymbol.KIND).stream())
                 .map(rcs -> (RosConnectionSymbol) rcs)

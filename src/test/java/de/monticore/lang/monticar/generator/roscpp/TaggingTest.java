@@ -67,4 +67,40 @@ public class TaggingTest extends AbstractSymtabTest {
 
         testFilesAreEqual(files, "echo/");
     }
+
+    @Test
+    public void testBasicStruct() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(symtab);
+
+        String targetPath = "./target/generated-sources-roscpp/basicStructCompRos/";
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath(targetPath);
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.basicStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+
+        testFilesAreEqual(files, "basicStruct/", targetPath);
+    }
+
+    @Test
+    public void testNestedStruct() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(symtab);
+
+        String targetPath = "./target/generated-sources-roscpp/nestedStructCompRos/";
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath(targetPath);
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.nestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+
+        testFilesAreEqual(files, "nestedStruct/", targetPath);
+
+
+    }
 }
