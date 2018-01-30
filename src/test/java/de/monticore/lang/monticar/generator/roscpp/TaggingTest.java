@@ -7,6 +7,7 @@ import de.monticore.lang.monticar.generator.roscpp.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.tagging.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -100,6 +101,24 @@ public class TaggingTest extends AbstractSymtabTest {
         List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "nestedStruct/", targetPath);
+    }
+
+    @Ignore
+    @Test
+    public void testArrayStruct() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(symtab);
+
+        String targetPath = "./target/generated-sources-roscpp/arrayStructCompRos/";
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath(targetPath);
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.arrayStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+
+        testFilesAreEqual(files, "arrayStruct/", targetPath);
 
 
     }

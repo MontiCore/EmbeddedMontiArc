@@ -1,5 +1,5 @@
 package tests.structs;
 
 struct Trajectory{
-  PositionWithDeltaTime[5] positionsWithDeltaTime;
+  PositionWithDeltaTime[] positionsWithDeltaTime;
 }
