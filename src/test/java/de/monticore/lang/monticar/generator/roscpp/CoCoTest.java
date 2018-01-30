@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.roscpp.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.tagging.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class CoCoTest extends AbstractSymtabTest {
 
+    @Ignore
     @Test
     public void testRosCppCoCos() {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
