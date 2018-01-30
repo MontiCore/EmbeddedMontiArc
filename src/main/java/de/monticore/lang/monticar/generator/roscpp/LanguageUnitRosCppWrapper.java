@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
@@ -73,12 +74,15 @@ public class LanguageUnitRosCppWrapper {
 
     private void generatePublishMethods(BluePrint currentBluePrint) {
         final int[] i = {0};
-        resolvedRosTag.getPublisherInterfaces()
+        resolvedRosTag.getPublisherInterfaces().stream()
+                .sorted(Comparator.comparing(ResolvedRosInterface::getTargetLanguageName))
                 .forEach(pubInter -> {
                     Method method = new Method("publish" + i[0], "void");
                     method.addInstruction(new CreateTmpMsgInstruction(pubInter.getFullRosType()));
 
-                    pubInter.getPorts().forEach(
+                    pubInter.getPorts().stream()
+                            .sorted(Comparator.comparing(PortSymbol::getName))
+                            .forEach(
                             p -> method.addInstruction(new SetMsgFieldInstruction(p, pubInter.getMsgFieldForPort(p))));
 
                     method.addInstruction(new PublishInstruction(pubInter.getPublisherField().get()));
@@ -106,12 +110,14 @@ public class LanguageUnitRosCppWrapper {
                 .filter(inter -> inter.getSubscriberField().isPresent())
                 .map(inter -> new SubscribeInstruction(classname, inter.getSubscriberField().get(), inter.getTopic(), inter.getTargetLanguageName() + "Callback"))
                 .distinct()
+                .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
                 .forEach(constructorMethod::addInstruction);
 
         resolvedRosTag.getPublisherInterfaces().stream()
                 .filter(inter -> inter.getPublisherField().isPresent())
                 .map(inter -> new AdvertiseInstruction(inter.getPublisherField().get(), inter.getFullRosType(), inter.getTopic()))
                 .distinct()
+                .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
                 .forEach(constructorMethod::addInstruction);
 
         currentBluePrint.addMethod(constructorMethod);
@@ -164,6 +170,7 @@ public class LanguageUnitRosCppWrapper {
         resolvedRosTag.getPublisherInterfaces().stream()
                 .map(ResolvedRosInterface::getPublishMethod)
                 .map(Optional::get)
+                .sorted(Comparator.comparing(Method::getName))
                 .forEach(publishMethod -> tickMethod.addInstruction(new CallPublishInstruction(publishMethod)));
 
         currentBluePrint.addMethod(tickMethod);
@@ -192,8 +199,11 @@ public class LanguageUnitRosCppWrapper {
                     });
 
             if (method.getInstructions().size() > 0) {
-                //make instructions unique
-                method.setInstructions(method.getInstructions().stream().distinct().collect(Collectors.toList()));
+                //make instructions unique and sorted
+                method.setInstructions(method.getInstructions().stream()
+                        .distinct()
+                        .sorted(Comparator.comparing(Instruction::getTargetLanguageInstruction))
+                        .collect(Collectors.toList()));
                 currentBluePrint.addMethod(method);
             }
         });
