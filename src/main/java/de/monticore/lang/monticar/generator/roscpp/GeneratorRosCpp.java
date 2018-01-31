@@ -22,6 +22,13 @@ public class GeneratorRosCpp {
     private boolean generateCpp = true;
     private GeneratorCPP generatorCPP;
 
+    //TODO: as tag?
+    private ExecutionStrategy executionStrategy;
+
+    public void setExecutionStrategy(ExecutionStrategy executionStrategy) {
+        this.executionStrategy = executionStrategy;
+    }
+
     public void setGenerateCpp(boolean generateCpp) {
         this.generateCpp = generateCpp;
     }
@@ -96,6 +103,9 @@ public class GeneratorRosCpp {
         languageUnitRosCppWrapper.generateBluePrints(resolvedRosTag);
         //TODO: unsave, does not work with multiple
         BluePrintCPP currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
+        //TODO pull down into LanguageUnitRosCppWrapper
+        if (executionStrategy != null)
+            executionStrategy.generate(currentBluePrint);
 
         String classname = currentBluePrint.getName();
         res.setFileName(classname + ".h");

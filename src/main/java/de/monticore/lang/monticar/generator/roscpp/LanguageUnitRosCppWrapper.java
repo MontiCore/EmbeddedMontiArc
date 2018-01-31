@@ -171,7 +171,7 @@ public class LanguageUnitRosCppWrapper {
                 .map(ResolvedRosInterface::getPublishMethod)
                 .map(Optional::get)
                 .sorted(Comparator.comparing(Method::getName))
-                .forEach(publishMethod -> tickMethod.addInstruction(new CallPublishInstruction(publishMethod)));
+                .forEach(publishMethod -> tickMethod.addInstruction(new CallMethodInstruction(publishMethod)));
 
         currentBluePrint.addMethod(tickMethod);
     }
