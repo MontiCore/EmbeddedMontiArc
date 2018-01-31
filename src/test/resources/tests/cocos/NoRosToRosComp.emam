@@ -1,6 +1,6 @@
 package tests.cocos;
 
-component RosToRosComp{
+component NoRosToRosComp{
 
     instance SubComp subComp1;
     instance SubComp subComp2;
