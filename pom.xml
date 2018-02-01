@@ -19,11 +19,11 @@
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-	<Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
+	<Common-MontiCar.version>0.0.10b-SNAPSHOT</Common-MontiCar.version>
+	<Embedded-MontiArc.version>0.0.11b-SNAPSHOT</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
     <Math.version>0.0.11-SNAPSHOT</Math.version>
-	<Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
+	<Embedded-MontiArc-Math.version>0.0.11b-SNAPSHOT</Embedded-MontiArc-Math.version>
     <tagging.version>0.0.1</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
