@@ -76,7 +76,9 @@ public class ComponentConverter {
         }
         //add ports as variables to blueprint
         for (PortSymbol port : componentSymbol.getPorts()) {
-            bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+            //Config ports have already been added as Parameters
+            if(!port.isConfig())
+                bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
         }
     }
 

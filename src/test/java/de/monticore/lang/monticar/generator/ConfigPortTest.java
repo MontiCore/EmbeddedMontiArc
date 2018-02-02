@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class ConfigPortTest extends AbstractSymtabTest{
@@ -28,12 +29,15 @@ public class ConfigPortTest extends AbstractSymtabTest{
         PortSymbol configPort = subInst1.getIncomingPort("param1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
+        assertTrue(configPort.isIncoming());
+
+        assertNull(subInst1.getIncomingPort("param2").orElse(null));
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPort/");
         List<File> files = generatorCPP.generateFiles(comp, symtab);
 
-
+        testFilesAreEqual(files,"configPort/");
 
 
     }
