@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
 import de.monticore.lang.monticar.generator.roscpp.tagging.RosConnectionSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,18 @@ public class TagHelper {
 
     public static List<File> generate(GeneratorRosCpp generatorRosCpp, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         List<PortSymbol> rosPorts = componentInstanceSymbol.getPorts().stream()
-                .filter(p -> !taggingResolver.getTags(p, RosConnectionSymbol.KIND).isEmpty())
+                .filter(p -> {
+                            List<RosConnectionSymbol> tags = taggingResolver.getTags(p, RosConnectionSymbol.KIND).stream()
+                                    .map(rcs -> (RosConnectionSymbol) rcs)
+                                    .peek(tagSymbol -> {
+                                        if (!tagSymbol.getMsgField().isPresent()) {
+                                            Log.warn("RosConnectionSymbol without msgField found. Will be filtered out for generation!");
+                                        }
+                                    })
+                                    .filter(tagSymol -> tagSymol.getMsgField().isPresent()).collect(Collectors.toList());
+                            return !tags.isEmpty();
+                        }
+                )
                 .collect(Collectors.toList());
 
         if (rosPorts.size() == 0) {
@@ -34,19 +46,14 @@ public class TagHelper {
                 .collect(Collectors.toList());
         checkConsistency(rosConnections);
 
-        RosTag rosTag = convertToRosTag(taggingResolver, componentInstanceSymbol);
+        RosTag rosTag = convertToRosTag(taggingResolver, componentInstanceSymbol, rosPorts);
         ResolvedRosTag resolvedRosTag = ResolveHelper.resolveRosTag(rosTag, taggingResolver);
 
         return generatorRosCpp.generateFiles(resolvedRosTag, taggingResolver);
     }
 
-    private static RosTag convertToRosTag(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private static RosTag convertToRosTag(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, List<PortSymbol> rosPorts) {
         RosTag res;
-
-        List<PortSymbol> rosPorts = componentInstanceSymbol.getPorts().stream()
-                .filter(p -> !taggingResolver.getTags(p, RosConnectionSymbol.KIND).isEmpty())
-                .collect(Collectors.toList());
-
 
         res = new RosTag();
         res.component = componentInstanceSymbol.getFullName();
@@ -64,7 +71,7 @@ public class TagHelper {
                     RosInterface rosInterface = new RosInterface();
                     rosInterface.type = tags.get(0).getTopicType();
                     rosInterface.topic = tags.get(0).getTopicName();
-                    rosInterface.ports.put(p.getName(), tags.get(0).getMsgField());
+                    rosInterface.ports.put(p.getName(), tags.get(0).getMsgField().get());
 
                     res.subscriber.add(rosInterface);
                 });
@@ -82,7 +89,7 @@ public class TagHelper {
                     RosInterface rosInterface = new RosInterface();
                     rosInterface.type = tags.get(0).getTopicType();
                     rosInterface.topic = tags.get(0).getTopicName();
-                    rosInterface.ports.put(p.getName(), tags.get(0).getMsgField());
+                    rosInterface.ports.put(p.getName(), tags.get(0).getMsgField().get());
 
                     res.publisher.add(rosInterface);
                 });

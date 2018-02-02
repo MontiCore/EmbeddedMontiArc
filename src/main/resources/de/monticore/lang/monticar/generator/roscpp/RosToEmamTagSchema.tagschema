@@ -2,5 +2,5 @@ package de.monticore.lang.monticar.generator.roscpp;
 
 tagschema RosToEmamTagSchema {
 	tagtype RosConnection for Port is {
-	topicName = ${topicName:String}, topicType = ${topicType:String}, include = ${include:String}, msgField = ${msgField:String}};
+	topicName = ${topicName:String}, topicType = ${topicType:String}, include = ${include:String} \(, msgField = ${msgField:String}\)\? };
 }

@@ -19,13 +19,13 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
 
     /**
      * regular expression pattern:
-     * topic = {({name}, {type}), msgField = {msgField}}
+     * topic = {({name}, {type}), \( msgField = {msgField} \)\?}
      * to test the pattern just enter:
-     * \s*\{\s*topic\s*=\s*\(\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*,\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\s*\)\s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)]*)\s*\}\s*
+     * \s*\{\s*topic\s*=\s*\(\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\s*,\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\s*\)\s*(s*,\s*msgField\s*=\s*([a-z|A-Z][a-z|A-Z|1-9|_|\.|::|\(|\)]*)\s*)?\s*\}\s*
      * at http://www.regexplanet.com/advanced/java/index.html
      */
 
-    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*\\(\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*,\\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\\s*\\)\\s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*\\}\\s*");
+    public static final Pattern pattern = Pattern.compile("\\s*\\{\\s*topic\\s*=\\s*\\(\\s*([a-z|A-Z|~|/][0-9|a-z|A-Z|_|/]*)\\s*,\\s*([a-z|A-Z][0-9|a-z|A-Z|_|/]*)\\s*\\)\\s*(s*,\\s*msgField\\s*=\\s*([a-z|A-Z][a-z|A-Z|1-9|_|\\.|::|\\(|\\)]*)\\s*)?\\s*\\}\\s*");
 
     public static Scope getGlobalScope(final Scope scope) {
         Scope s = scope;
@@ -63,9 +63,15 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                                             s.getQualifiedName().toString()), PortSymbol.KIND))
                                     .filter(Optional::isPresent) // if the symbol is not present, does not mean that the symbol
                                     .map(Optional::get)          // is not available at all, maybe it will be loaded later
-                                    .forEachOrdered(s -> tagging.addTag(s,
-                                            new RosConnectionSymbol(m.group(1), m.group(2), m.group(3)
-                                            ))));
+                                    .forEachOrdered(s -> {
+                                        if (m.group(4) != null) {
+                                            tagging.addTag(s,
+                                                    new RosConnectionSymbol(m.group(1), m.group(2), m.group(4)));
+                                        } else {
+                                            tagging.addTag(s,
+                                                    new RosConnectionSymbol(m.group(1), m.group(2)));
+                                        }
+                                    }));
         }
     }
 
