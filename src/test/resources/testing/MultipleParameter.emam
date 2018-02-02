@@ -1,0 +1,5 @@
+package testing;
+
+component MultipleParameter(Q param1, Q param2, Q param3){
+
+}

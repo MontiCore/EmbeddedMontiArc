@@ -546,4 +546,20 @@ public class GenerationTest extends AbstractSymtabTest {
         Assert.assertNotNull(files);
         Assert.assertFalse(files.isEmpty());
     }
+
+    @Test
+    public void testParameterInstance() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("testing.parameterInstance",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(componentInstanceSymbol);
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/Parameter/");
+
+        List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        testFilesAreEqual(files,"testing/Parameter/");
+
+    }
 }
