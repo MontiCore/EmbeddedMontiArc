@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator;
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._ast.ASTPrintType;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
@@ -118,7 +119,10 @@ public class Variable {
             ASTPrintType printType = (ASTPrintType) type;
             setTypeNameMontiCar(printType.printType());
             setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(this.type.getTypeNameMontiCar(), this, type).get());
-
+        } else if (type instanceof ASTElementType) {
+            ASTElementType elementType = (ASTElementType) type;
+            setTypeNameMontiCar(TypeConverter.getTypeNameMontiCar(elementType));
+            setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(this.type.getTypeNameMontiCar(), this, type).get());
         } else {
             Log.info(type.getClass().getName(), "ASTType:");
             Log.error("Case not handled!");

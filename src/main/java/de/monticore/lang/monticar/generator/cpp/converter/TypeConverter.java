@@ -16,6 +16,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
@@ -241,6 +242,23 @@ public class TypeConverter {
         }
     }
 
+    public static String getTypeNameMontiCar(ASTElementType elementType){
+        if(elementType.isIsRational()){
+            return "Q";
+        }else if(elementType.isIsBoolean()){
+            return "B";
+        }else if(elementType.isIsComplex()){
+            return "C";
+        }else if(elementType.isIsWholeNumberNumber()){
+            return "Z";
+        }else if(elementType.isIsNatural()){
+            return "N";
+        } else{
+            Log.error("Case not handled!");
+            return null;
+        }
+    }
+    
     public static VariableType getVariableTypeForTargetLanguageTypeName(String targetLanguageTypeName) {
         VariableType type = new VariableType();
         type.setTypeNameTargetLanguage(targetLanguageTypeName);

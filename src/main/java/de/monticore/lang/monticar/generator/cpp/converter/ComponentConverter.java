@@ -166,6 +166,12 @@ public class ComponentConverter {
                 method.addParameter(v);
             } else
                 method.addInstruction(new TargetCodeInstruction(MathConverter.getColumnVectorInitLine(v, bluePrint)));
+        }else if(v.getVariableType().getTypeNameTargetLanguage().equals("double")){
+            //TODO: check backend for typeNameTargetLanguage?
+            if (v.isParameterVariable()){
+                method.addInstruction(new TargetCodeInstruction("this->" + v.getNameTargetLanguageFormat() + " = " + v.getNameTargetLanguageFormat() +";\n"));
+                method.addParameter(v);
+            }
         }
     }
 
