@@ -105,8 +105,12 @@ public class ComponentConverter {
 
         for (ExpandedComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
             String parameterString = "";
+            int i = 0;
             for (ASTExpression var : subComponent.getArguments()) {
                 Log.debug(var.toString(),"ComponentConverter");
+                if(i > 0)
+                    parameterString += ", ";
+                i++;
                 parameterString += getExpressionParameterConversion(var);
             }
             String result = "";

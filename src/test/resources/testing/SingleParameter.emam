@@ -1,0 +1,5 @@
+package testing;
+
+component SingleParameter(Q param1){
+
+}
