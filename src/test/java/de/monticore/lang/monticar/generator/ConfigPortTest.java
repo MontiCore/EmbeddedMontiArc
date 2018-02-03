@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 public class ConfigPortTest extends AbstractSymtabTest{
 
     @Test
-    public void testConfigPort() throws IOException {
+    public void testConfigPortFromAdaptableParameter() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol comp = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.adaptableParameterInstance",ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -38,7 +38,25 @@ public class ConfigPortTest extends AbstractSymtabTest{
         List<File> files = generatorCPP.generateFiles(comp, symtab);
 
         testFilesAreEqual(files,"configPort/");
+    }
 
+    @Test
+    public void testConfigPortFromKeyword() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol comp = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.configPort",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(comp);
+
+        PortSymbol configPort = comp.getIncomingPort("in1").orElse(null);
+        assertNotNull(configPort);
+        assertTrue(configPort.isConfig());
+        assertTrue(configPort.isIncoming());
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPortFromKeyword/");
+        List<File> files = generatorCPP.generateFiles(comp, symtab);
+
+        testFilesAreEqual(files,"configPortFromKeyword/");
 
     }
 }

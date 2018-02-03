@@ -18,6 +18,8 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Sascha Schneiders
@@ -76,9 +78,16 @@ public class ComponentConverter {
         }
         //add ports as variables to blueprint
         for (PortSymbol port : componentSymbol.getPorts()) {
-            //Config ports have already been added as Parameters
-            if(!port.isConfig())
+            //Config ports might already be added from adaptable Parameters
+            if(!port.isConfig()) {
                 bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+            }else{
+                Set<String> paramNames = componentSymbol.getParameters().stream().map(EMAVariable::getName).collect(Collectors.toSet());
+                if(!paramNames.contains(port.getName())){
+                    //The port was not created by an adaptable parameter with the same name -> add
+                    bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+                }
+            }
         }
     }
 

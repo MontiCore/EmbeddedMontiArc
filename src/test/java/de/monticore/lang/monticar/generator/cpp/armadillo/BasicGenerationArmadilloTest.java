@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -125,6 +126,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
 
+    @Ignore
     @Test
     public void testAllObjectDetectorInstances() throws IOException {
         for (int i = 1; i <= 9; ++i) {
