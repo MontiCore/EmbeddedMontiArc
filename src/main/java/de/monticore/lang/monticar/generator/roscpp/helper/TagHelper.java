@@ -4,9 +4,9 @@ import de.monticar.lang.monticar.generator.python.RosInterface;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
-import de.monticore.lang.monticar.generator.roscpp.tagging.RosConnectionSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
