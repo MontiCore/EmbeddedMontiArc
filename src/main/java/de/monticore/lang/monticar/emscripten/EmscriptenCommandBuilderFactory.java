@@ -202,11 +202,11 @@ public class EmscriptenCommandBuilderFactory {
      * @throws UnsupportedOperationException if a default value was specified
      */
     @Override
-    public void setEmscripten(String emscripten) {
+    public EmscriptenCommandBuilder setEmscripten(String emscripten) {
       if (emscriptenDefault) {
         throw new UnsupportedOperationException("Default parameter cannot be changed.");
       }
-      super.setEmscripten(emscripten);
+      return super.setEmscripten(emscripten);
     }
 
     /**
@@ -216,11 +216,11 @@ public class EmscriptenCommandBuilderFactory {
      * @throws UnsupportedOperationException if a default value was specified
      */
     @Override
-    public void setFile(Path file) {
+    public EmscriptenCommandBuilder setFile(Path file) {
       if (fileDefault) {
         throw new UnsupportedOperationException("Default parameter cannot be changed.");
       }
-      super.setFile(file);
+      return super.setFile(file);
     }
 
     /**

@@ -30,8 +30,9 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    *
    * @param emscripten emscripten command
    */
-  public void setEmscripten(String emscripten) {
+  public EmscriptenCommandBuilder setEmscripten(String emscripten) {
     this.emscripten = emscripten;
+    return this;
   }
 
   /**
@@ -39,8 +40,9 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    *
    * @param file main C++ file
    */
-  public void setFile(Path file) {
+  public EmscriptenCommandBuilder setFile(Path file) {
     this.file = file;
+    return this;
   }
 
   /**
