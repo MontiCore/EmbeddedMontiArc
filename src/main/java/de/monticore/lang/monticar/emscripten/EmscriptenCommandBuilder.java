@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.emscripten;
 
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
-import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotEmpty;
+import static de.monticore.lang.monticar.contract.Precondition.requiresNotNullNoNulls;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -10,12 +10,13 @@ import java.util.stream.Collectors;
 
 /**
  * This class helps building emscripten compile commands. Parameters are typed as much as possible.
- * However, they are by no means complete.
+ * However, they are by no means complete. <p>
+ * At a minimum, it is required to call {@link #setEmscripten(String)} and {@link #setFile(Path)}.
  */
 public class EmscriptenCommandBuilder implements CommandBuilder {
 
-  private final String emscripten;
-  private final Path file;
+  private String emscripten;
+  private Path file;
   private final List<Path> includes = new ArrayList<>();
   private final List<Option> options = new ArrayList<>();
   private Optimization optimizationLevel;
@@ -24,15 +25,22 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   private String outputFile;
 
   /**
-   * Creates a new builder object. Call {@link #toList()} or {@link #toString()} to build the final
-   * command.
+   * Sets the command calling emscripten if invoked from a terminal on the current operating
+   * system.
    *
-   * @param emscripten Path pointing to emscripten binary, e.g.
-   * @param file main C++ class
+   * @param emscripten emscripten command
    */
-  public EmscriptenCommandBuilder(String emscripten, Path file) {
-    this.emscripten = requiresNotEmpty(emscripten);
-    this.file = requiresNotNull(file);
+  public void setEmscripten(String emscripten) {
+    this.emscripten = emscripten;
+  }
+
+  /**
+   * Sets the main C++ file that is to be compiled by emscripten.
+   *
+   * @param file main C++ file
+   */
+  public void setFile(Path file) {
+    this.file = file;
   }
 
   /**
@@ -124,6 +132,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    */
   @Override
   public List<String> toList() {
+    checkParameters();
     List<String> list = new ArrayList<>();
     list.add(emscripten);
     list.add(file.toString());
@@ -146,6 +155,13 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
       list.add("-std=" + std);
     }
     return list;
+  }
+
+  private void checkParameters() {
+    requiresNotNull(emscripten);
+    requiresNotNull(file);
+    requiresNotNullNoNulls(includes);
+    requiresNotNullNoNulls(options);
   }
 
   @Override
