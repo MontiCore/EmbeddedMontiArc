@@ -143,6 +143,16 @@ class EmscriptenCommandBuilderTest {
           .isEqualTo(listof(EMSCRIPTEN, "model.cpp",
               "-I\"" + INCLUDE_ARMADILLO.toString() + "\"", "-s", "WASM=1", "-O3", "--bind"));
     }
+
+    @Test
+    void whenReferenceDirectoryPresent() {
+      builder.setReferenceOutputDir(Paths.get("src"));
+      builder.include(INCLUDE_ARMADILLO);
+
+      assertThat(builder.toList()).isEqualTo(
+          listof(EMSCRIPTEN, Paths.get("../").resolve("model.cpp").toString(),
+              "-I\"" + Paths.get("../").resolve(INCLUDE_ARMADILLO).normalize().toString() + "\""));
+    }
   }
 
   @Nested

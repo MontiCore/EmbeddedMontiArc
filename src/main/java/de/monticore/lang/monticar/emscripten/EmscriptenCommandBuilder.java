@@ -5,6 +5,7 @@ import static de.monticore.lang.monticar.contract.Precondition.requiresNotNullNo
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  */
 public class EmscriptenCommandBuilder implements CommandBuilder {
 
+  private Path referenceDir;
   private String emscripten;
   private Path file;
   private final List<Path> includes = new ArrayList<>();
@@ -23,6 +25,27 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   private boolean bind;
   private String std;
   private String outputFile;
+
+  private static Path relative(Path base, Path other) {
+    return normalize(base).relativize(normalize(other)).normalize();
+  }
+
+  private static Path normalize(Path path) {
+    return path.toAbsolutePath().normalize();
+  }
+
+  /**
+   * Emscripten must be called inside the directory where the output files are supposed to be
+   * placed. The supplied directory will be used to have all paths supplied through other setters
+   * point to the correct path relative to this output directory path.
+   *
+   * @param outputDir directory from which emscripten will be called
+   * @return this builder
+   */
+  public EmscriptenCommandBuilder setReferenceOutputDir(Path outputDir) {
+    this.referenceDir = outputDir;
+    return this;
+  }
 
   /**
    * Sets the command calling emscripten if invoked from a terminal on the current operating
@@ -135,18 +158,13 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   @Override
   public List<String> toList() {
     checkParameters();
+
     List<String> list = new ArrayList<>();
     list.add(emscripten);
-    list.add(file.toString());
-    if (outputFile != null) {
-      list.add("-o");
-      list.add(outputFile);
-    }
-    includes.stream().map(path -> "-I\"" + path.toString() + "\"").forEach(list::add);
-    options.stream().map(Option::toString).forEach(s -> {
-      list.add("-s");
-      list.add(s);
-    });
+    list.add(file());
+    list.addAll(outputFile());
+    list.addAll(includes());
+    list.addAll(options());
     if (optimizationLevel != null) {
       list.add(optimizationLevel.toString());
     }
@@ -159,6 +177,20 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     return list;
   }
 
+  @Override
+  public String toString() {
+    return toList().stream().collect(Collectors.joining(" "));
+  }
+
+  private String file() {
+    return referenceDir != null ? relative(referenceDir, normalize(file)).toString()
+        : file.toString();
+  }
+
+  private List<String> outputFile() {
+    return Arrays.asList(outputFile != null ? new String[]{"-o", outputFile} : new String[]{});
+  }
+
   private void checkParameters() {
     requiresNotNull(emscripten);
     requiresNotNull(file);
@@ -166,8 +198,18 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     requiresNotNullNoNulls(options);
   }
 
-  @Override
-  public String toString() {
-    return toList().stream().collect(Collectors.joining(" "));
+  private List<String> includes() {
+    return includes.stream()
+        .map(path -> referenceDir != null ? relative(referenceDir, normalize(path)) : path)
+        .map(path -> "-I\"" + path.toString() + "\"").collect(Collectors.toList());
+  }
+
+  private List<String> options() {
+    List<String> res = new ArrayList<>();
+    options.stream().map(Option::toString).forEach(s -> {
+      res.add("-s");
+      res.add(s);
+    });
+    return res;
   }
 }
