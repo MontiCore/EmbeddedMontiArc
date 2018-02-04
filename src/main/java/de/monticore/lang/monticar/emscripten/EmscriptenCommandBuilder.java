@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -180,6 +181,33 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   @Override
   public String toString() {
     return toList().stream().collect(Collectors.joining(" "));
+  }
+
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof EmscriptenCommandBuilder)) {
+      return false;
+    }
+    EmscriptenCommandBuilder that = (EmscriptenCommandBuilder) o;
+    return bind == that.bind &&
+        Objects.equals(referenceDir, that.referenceDir) &&
+        Objects.equals(emscripten, that.emscripten) &&
+        Objects.equals(file, that.file) &&
+        Objects.equals(includes, that.includes) &&
+        Objects.equals(options, that.options) &&
+        optimizationLevel == that.optimizationLevel &&
+        Objects.equals(std, that.std) &&
+        Objects.equals(outputFile, that.outputFile);
+  }
+
+  @Override
+  public final int hashCode() {
+    return Objects
+        .hash(referenceDir, emscripten, file, includes, options, optimizationLevel, bind, std,
+            outputFile);
   }
 
   private String file() {

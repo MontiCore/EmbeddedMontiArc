@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,12 @@ class EmscriptenCommandBuilderTest {
   @SafeVarargs
   private final <T> List<T> listof(T... elements) {
     return Arrays.asList(elements);
+  }
+
+  @Test
+  void equalsShouldAdhereToSpecification() {
+    EqualsVerifier.forClass(EmscriptenCommandBuilder.class).suppress(Warning.NONFINAL_FIELDS)
+        .verify();
   }
 
   @Nested
