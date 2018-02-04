@@ -3,10 +3,8 @@ package de.monticore.lang.monticar.emscripten;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,11 +42,6 @@ class EmscriptenCommandBuilderFactoryTest {
       commandBuilder.addOption(OPTION);
     }
 
-    private String[] emscriptenCommandBuilderFieldNames() {
-      return Stream.of(EmscriptenCommandBuilder.class.getDeclaredFields())
-          .map(Field::getName).toArray(String[]::new);
-    }
-
     @Nested
     class ShouldProduceRegularBuilder {
 
@@ -58,8 +51,7 @@ class EmscriptenCommandBuilderFactoryTest {
         EmscriptenCommandBuilder factoryBuiltBuilder = builderFactory.getBuilder();
         EmscriptenCommandBuilder regularBuilder = new EmscriptenCommandBuilder();
 
-        assertThat(factoryBuiltBuilder).isEqualToComparingOnlyGivenFields(regularBuilder,
-            emscriptenCommandBuilderFieldNames());
+        assertThat(factoryBuiltBuilder).isEqualTo(regularBuilder);
       }
 
       @Test
