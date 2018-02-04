@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.emscripten;
 
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
-import static de.monticore.lang.monticar.contract.Precondition.requiresNotNullNoNulls;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -77,7 +76,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @return this builder
    */
   public EmscriptenCommandBuilder include(Path include) {
-    includes.add(include);
+    includes.add(requiresNotNull(include));
     return this;
   }
 
@@ -88,7 +87,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @return this builder
    */
   public EmscriptenCommandBuilder addOption(Option option) {
-    options.add(option);
+    options.add(requiresNotNull(option));
     return this;
   }
 
@@ -180,6 +179,9 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
 
   @Override
   public String toString() {
+    if (emscripten == null || file == null) {
+      return "";
+    }
     return toList().stream().collect(Collectors.joining(" "));
   }
 
@@ -222,8 +224,6 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   private void checkParameters() {
     requiresNotNull(emscripten);
     requiresNotNull(file);
-    requiresNotNullNoNulls(includes);
-    requiresNotNullNoNulls(options);
   }
 
   private List<String> includes() {

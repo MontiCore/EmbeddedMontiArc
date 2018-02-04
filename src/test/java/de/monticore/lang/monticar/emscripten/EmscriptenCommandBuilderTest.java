@@ -25,6 +25,7 @@ class EmscriptenCommandBuilderTest {
   private static final Option WASM_OPTION = new Option("WASM", true);
   private static final Option LINKABLE_OPTION = new Option("LINKABLE", true);
   private static final Optimization SOME_LEVEL = Optimization.O3;
+  private static final String EMPTY_STRING = "";
 
   @SafeVarargs
   private final <T> List<T> listof(T... elements) {
@@ -38,211 +39,247 @@ class EmscriptenCommandBuilderTest {
   }
 
   @Nested
-  class ShouldThrowException {
-
-    @Test
-    void whenEmscriptenAndFileAreNotSet() {
-      EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
-
-      assertThatExceptionOfType(PreconditionViolationException.class)
-          .isThrownBy(builder::toList);
-    }
-
-    @Test
-    void whenEmscriptenIsNotSet() {
-      EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
-      builder.setFile(FILE);
-
-      assertThatExceptionOfType(PreconditionViolationException.class)
-          .isThrownBy(builder::toList);
-    }
-
-    @Test
-    void whenFileIsNotSet() {
-      EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
-      builder.setEmscripten(EMSCRIPTEN);
-
-      assertThatExceptionOfType(PreconditionViolationException.class)
-          .isThrownBy(builder::toList);
-    }
-  }
-
-  @Nested
   class ToList {
 
-    EmscriptenCommandBuilder builder;
+    @Nested
+    class ShouldThrowException {
 
-    @BeforeEach
-    void setUp() {
-      builder = new EmscriptenCommandBuilder();
-      builder.setEmscripten(EMSCRIPTEN);
-      builder.setFile(FILE);
+      @Test
+      void whenEmscriptenAndFileAreNotSet() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(builder::toList);
+      }
+
+      @Test
+      void whenEmscriptenIsNotSet() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+        builder.setFile(FILE);
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(builder::toList);
+      }
+
+      @Test
+      void whenFileIsNotSet() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+        builder.setEmscripten(EMSCRIPTEN);
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(builder::toList);
+      }
     }
 
-    @Test
-    void whenSimpleCommand() {
+    @Nested
+    class ShouldReturnCommandList {
 
-      assertThat(builder.toList()).isEqualTo(listof(EMSCRIPTEN, "model.cpp"));
-    }
+      EmscriptenCommandBuilder builder;
 
-    @Test
-    void whenCommandWithOption() {
-      builder.addOption(WASM_OPTION);
+      @BeforeEach
+      void setUp() {
+        builder = new EmscriptenCommandBuilder();
+        builder.setEmscripten(EMSCRIPTEN);
+        builder.setFile(FILE);
+      }
 
-      assertThat(builder.toList())
-          .isEqualTo(listof(EMSCRIPTEN, "model.cpp", "-s", "WASM=1"));
-    }
+      @Test
+      void whenSimpleCommand() {
 
-    @Test
-    void whenCommandWithMultipleOptions() {
-      builder.addOption(WASM_OPTION);
-      builder.addOption(LINKABLE_OPTION);
+        assertThat(builder.toList()).isEqualTo(listof(EMSCRIPTEN, "model.cpp"));
+      }
 
-      assertThat(builder.toList())
-          .isEqualTo(
-              listof(EMSCRIPTEN, "model.cpp", "-s", "WASM=1", "-s", "LINKABLE=1"));
-    }
+      @Test
+      void whenCommandWithOption() {
+        builder.addOption(WASM_OPTION);
 
-    @Test
-    void whenCommandWithInclude() {
-      builder.include(INCLUDE_ARMADILLO);
+        assertThat(builder.toList())
+            .isEqualTo(listof(EMSCRIPTEN, "model.cpp", "-s", "WASM=1"));
+      }
 
-      assertThat(builder.toList())
-          .isEqualTo(
-              listof(EMSCRIPTEN, "model.cpp",
-                  "-I\"" + INCLUDE_ARMADILLO.toString() + "\""));
-    }
+      @Test
+      void whenCommandWithMultipleOptions() {
+        builder.addOption(WASM_OPTION);
+        builder.addOption(LINKABLE_OPTION);
 
-    @Test
-    void whenCommandWithMultipleIncludes() {
-      builder.include(INCLUDE_ARMADILLO);
-      builder.include(INCLUDE_BLAS);
+        assertThat(builder.toList())
+            .isEqualTo(
+                listof(EMSCRIPTEN, "model.cpp", "-s", "WASM=1", "-s", "LINKABLE=1"));
+      }
 
-      assertThat(builder.toList())
-          .isEqualTo(
-              listof(EMSCRIPTEN, "model.cpp",
-                  "-I\"" + INCLUDE_ARMADILLO.toString() + "\"",
-                  "-I\"" + INCLUDE_BLAS.toString() + "\""));
-    }
+      @Test
+      void whenCommandWithInclude() {
+        builder.include(INCLUDE_ARMADILLO);
 
-    @Test
-    void whenCommandWithOptimization() {
-      builder.setOptimization(SOME_LEVEL);
+        assertThat(builder.toList())
+            .isEqualTo(
+                listof(EMSCRIPTEN, "model.cpp",
+                    "-I\"" + INCLUDE_ARMADILLO.toString() + "\""));
+      }
 
-      assertThat(builder.toList()).isEqualTo(listof(EMSCRIPTEN, "model.cpp", "-O3"));
-    }
+      @Test
+      void whenCommandWithMultipleIncludes() {
+        builder.include(INCLUDE_ARMADILLO);
+        builder.include(INCLUDE_BLAS);
 
-    @Test
-    void whenCommandWithBind() {
-      builder.setBind(true);
+        assertThat(builder.toList())
+            .isEqualTo(
+                listof(EMSCRIPTEN, "model.cpp",
+                    "-I\"" + INCLUDE_ARMADILLO.toString() + "\"",
+                    "-I\"" + INCLUDE_BLAS.toString() + "\""));
+      }
 
-      assertThat(builder.toList())
-          .isEqualTo(listof(EMSCRIPTEN, "model.cpp", "--bind"));
-    }
+      @Test
+      void whenCommandWithOptimization() {
+        builder.setOptimization(SOME_LEVEL);
 
-    @Test
-    void whenFullCommand() {
-      builder.include(INCLUDE_ARMADILLO);
-      builder.addOption(WASM_OPTION);
-      builder.setOptimization(SOME_LEVEL);
-      builder.setBind(true);
+        assertThat(builder.toList()).isEqualTo(listof(EMSCRIPTEN, "model.cpp", "-O3"));
+      }
 
-      assertThat(builder.toList())
-          .isEqualTo(listof(EMSCRIPTEN, "model.cpp",
-              "-I\"" + INCLUDE_ARMADILLO.toString() + "\"", "-s", "WASM=1", "-O3", "--bind"));
-    }
+      @Test
+      void whenCommandWithBind() {
+        builder.setBind(true);
 
-    @Test
-    void whenReferenceDirectoryPresent() {
-      builder.setReferenceOutputDir(Paths.get("src"));
-      builder.include(INCLUDE_ARMADILLO);
+        assertThat(builder.toList())
+            .isEqualTo(listof(EMSCRIPTEN, "model.cpp", "--bind"));
+      }
 
-      assertThat(builder.toList()).isEqualTo(
-          listof(EMSCRIPTEN, Paths.get("../").resolve("model.cpp").toString(),
-              "-I\"" + Paths.get("../").resolve(INCLUDE_ARMADILLO).normalize().toString() + "\""));
+      @Test
+      void whenFullCommand() {
+        builder.include(INCLUDE_ARMADILLO);
+        builder.addOption(WASM_OPTION);
+        builder.setOptimization(SOME_LEVEL);
+        builder.setBind(true);
+
+        assertThat(builder.toList())
+            .isEqualTo(listof(EMSCRIPTEN, "model.cpp",
+                "-I\"" + INCLUDE_ARMADILLO.toString() + "\"", "-s", "WASM=1", "-O3", "--bind"));
+      }
+
+      @Test
+      void whenReferenceDirectoryPresent() {
+        builder.setReferenceOutputDir(Paths.get("src"));
+        builder.include(INCLUDE_ARMADILLO);
+
+        assertThat(builder.toList()).isEqualTo(
+            listof(EMSCRIPTEN, Paths.get("../").resolve("model.cpp").toString(),
+                "-I\"" + Paths.get("../").resolve(INCLUDE_ARMADILLO).normalize().toString()
+                    + "\""));
+      }
     }
   }
 
   @Nested
   class ToString {
 
-    EmscriptenCommandBuilder builder;
+    @Nested
+    class ShouldReturnEmptyString {
 
-    @BeforeEach
-    void setUp() {
-      builder = new EmscriptenCommandBuilder();
-      builder.setEmscripten(EMSCRIPTEN);
-      builder.setFile(FILE);
+      @Test
+      void WhenEmscriptenIsNotSet() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+        builder.setFile(FILE);
+
+        assertThat(builder.toString()).isEqualTo(EMPTY_STRING);
+      }
+
+      @Test
+      void WhenFileIsNotSet() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+        builder.setEmscripten(EMSCRIPTEN);
+
+        assertThat(builder.toString()).isEqualTo(EMPTY_STRING);
+      }
+
+      @Test
+      void WhenEmscriptenAndFileAreNotSet() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThat(builder.toString()).isEqualTo(EMPTY_STRING);
+      }
     }
 
-    @Test
-    void whenSimpleCommand() {
-      assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp");
-    }
+    @Nested
+    class ShouldReturnCommand {
 
-    @Test
-    void whenCommandWithOption() {
-      builder.addOption(WASM_OPTION);
+      EmscriptenCommandBuilder builder;
 
-      assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp -s WASM=1");
-    }
+      @BeforeEach
+      void setUp() {
+        builder = new EmscriptenCommandBuilder();
+        builder.setEmscripten(EMSCRIPTEN);
+        builder.setFile(FILE);
+      }
 
-    @Test
-    void whenCommandWithMultipleOptions() {
-      builder.addOption(WASM_OPTION);
-      builder.addOption(LINKABLE_OPTION);
+      @Test
+      void whenSimpleCommand() {
+        assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp");
+      }
 
-      assertThat(builder.toString())
-          .isEqualTo(EMSCRIPTEN + " model.cpp -s WASM=1 -s LINKABLE=1");
-    }
+      @Test
+      void whenCommandWithOption() {
+        builder.addOption(WASM_OPTION);
 
-    @Test
-    void whenCommandWithInclude() {
-      builder.include(INCLUDE_ARMADILLO);
+        assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp -s WASM=1");
+      }
 
-      assertThat(builder.toString())
-          .isEqualTo(
-              EMSCRIPTEN + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\"");
-    }
+      @Test
+      void whenCommandWithMultipleOptions() {
+        builder.addOption(WASM_OPTION);
+        builder.addOption(LINKABLE_OPTION);
 
-    @Test
-    void whenCommandWithMultipleIncludes() {
-      builder.include(INCLUDE_ARMADILLO);
-      builder.include(INCLUDE_BLAS);
+        assertThat(builder.toString())
+            .isEqualTo(EMSCRIPTEN + " model.cpp -s WASM=1 -s LINKABLE=1");
+      }
 
-      assertThat(builder.toString())
-          .isEqualTo(
-              EMSCRIPTEN + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\" -I\""
-                  + INCLUDE_BLAS.toString() + "\"");
-    }
+      @Test
+      void whenCommandWithInclude() {
+        builder.include(INCLUDE_ARMADILLO);
 
-    @Test
-    void whenCommandWithOptimization() {
-      builder.setOptimization(SOME_LEVEL);
+        assertThat(builder.toString())
+            .isEqualTo(
+                EMSCRIPTEN + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\"");
+      }
 
-      assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp -O3");
-    }
+      @Test
+      void whenCommandWithMultipleIncludes() {
+        builder.include(INCLUDE_ARMADILLO);
+        builder.include(INCLUDE_BLAS);
 
-    @Test
-    void whenCommandWithBind() {
-      builder.setBind(true);
+        assertThat(builder.toString())
+            .isEqualTo(
+                EMSCRIPTEN + " model.cpp -I\"" + INCLUDE_ARMADILLO.toString() + "\" -I\""
+                    + INCLUDE_BLAS.toString() + "\"");
+      }
 
-      assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp --bind");
-    }
+      @Test
+      void whenCommandWithOptimization() {
+        builder.setOptimization(SOME_LEVEL);
 
-    @Test
-    void whenFullCommand() {
-      builder.include(INCLUDE_ARMADILLO);
-      builder.addOption(WASM_OPTION);
-      builder.setOptimization(SOME_LEVEL);
-      builder.setBind(true);
-      builder.setStd("c++11");
-      builder.setOutput("module.js");
+        assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp -O3");
+      }
 
-      assertThat(builder.toString())
-          .isEqualTo(
-              EMSCRIPTEN + " model.cpp -o module.js -I\"" + INCLUDE_ARMADILLO.toString()
-                  + "\" -s WASM=1 -O3 --bind -std=c++11");
+      @Test
+      void whenCommandWithBind() {
+        builder.setBind(true);
+
+        assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp --bind");
+      }
+
+      @Test
+      void whenFullCommand() {
+        builder.include(INCLUDE_ARMADILLO);
+        builder.addOption(WASM_OPTION);
+        builder.setOptimization(SOME_LEVEL);
+        builder.setBind(true);
+        builder.setStd("c++11");
+        builder.setOutput("module.js");
+
+        assertThat(builder.toString())
+            .isEqualTo(
+                EMSCRIPTEN + " model.cpp -o module.js -I\"" + INCLUDE_ARMADILLO.toString()
+                    + "\" -s WASM=1 -O3 --bind -std=c++11");
+      }
     }
   }
 }
