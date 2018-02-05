@@ -6,7 +6,7 @@ before_install:
     -in scripts/github_deploy_key.enc 
     -out scripts/github_deploy_key 
     -d
-  - chmod 600 github_deploy_key
+  - chmod 600 scripts/github_deploy_key
   - eval $(ssh-agent -s)
   - ssh-add scripts/github_deploy_key
 script:
