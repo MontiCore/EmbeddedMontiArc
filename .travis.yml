@@ -3,12 +3,12 @@ before_install:
     openssl aes-256-cbc 
     -K $encrypted_986202362027_key 
     -iv $encrypted_986202362027_iv 
-    -in github_deploy_key.enc 
-    -out github_deploy_key 
+    -in scripts/github_deploy_key.enc 
+    -out scripts/github_deploy_key 
     -d
   - chmod 600 github_deploy_key
   - eval $(ssh-agent -s)
-  - ssh-add github_deploy_key
+  - ssh-add scripts/github_deploy_key
 script:
 - bash ./scripts/gitpull.sh
 - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn

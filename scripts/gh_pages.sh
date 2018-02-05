@@ -20,9 +20,5 @@ git add data.json
 git add dataEWT.json
 git commit -m "Deploy to GitHub Pages: ${SHA}"
 
-chmod 600 github_deploy_key
-eval `ssh-agent -s`
-ssh-add gh-pages_key
-
 # Now that we're all set up, we can push.
 git push $SSH_REPO $TARGET_BRANCH
