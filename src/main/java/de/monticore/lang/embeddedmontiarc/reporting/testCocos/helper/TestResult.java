@@ -1,8 +1,13 @@
 package de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class TestResult {
+    private String modelName = "";
     private String path = "";
     private String type = "";
+    private List<String> errorMessage = new LinkedList<>();
     private int parsed = 0;
     private int resolve = 0;
     private int componentCapitalized = 0;
@@ -214,5 +219,37 @@ public class TestResult {
 
     public void setResolve(int resolve) {
         this.resolve = resolve;
+    }
+
+    public void addErrorMessage(String msg) {
+        this.errorMessage.add(msg);
+    }
+
+    public List<String> getErrorMessages() {
+        return this.errorMessage;
+    }
+
+    public String getErrorMessage() {
+        String msg = "";
+
+        for(String m: errorMessage){
+            String ms = m.replace("\n","<br>")
+                    .replace("\'","&prime;")
+                    .replace("\\", "&bsol;")+ "<br>";
+            if(!ms.contains("[ERROR]") && !ms.contains("[INFO]"))
+                ms = "[ERROR] " + ms;
+            msg += ms;
+        }
+        msg = msg.substring(0, msg.length()-4);
+
+        return msg;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 }

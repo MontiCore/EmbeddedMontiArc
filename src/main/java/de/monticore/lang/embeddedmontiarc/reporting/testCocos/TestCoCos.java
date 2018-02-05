@@ -41,13 +41,14 @@ public class TestCoCos {
                 List<File> files = SearchFiles.searchFiles(projectDir, fileType);
                 Log.enableFailQuick(false);
                 for(File file: files){
-                    GitHubHelper ghh = new GitHubHelper();
-                    String gitHubRoot = ghh.getGitHubRoot(projectDir);
+//                    GitHubHelper ghh = new GitHubHelper();
+//                    String gitHubRoot = ghh.getGitHubRoot(projectDir);
                     CoCoTester ccT = new CoCoTester();
                     TestResult testResult = null;
 
                     testResult = ccT.testCoCos(file.getAbsolutePath());
-                    testResult.setPath(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
+//                    testResult.setPath(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
+                    testResult.setPath(getVFSTag(projectDir, file, null));
 
                     testResults.add(testResult);
                 }
@@ -55,5 +56,13 @@ public class TestCoCos {
         }
 
         return testResults;
+    }
+
+    private String getVFSTag(File project, File file, String urlToZip) {
+        if(urlToZip == null)
+            urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/master/models1a6a7c6e450b6d996a79c701efdd4e69.zip";
+        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
+        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/models&url="
+                + urlToZip + "&openFile=/" + name + "'>" + name + "</a>";
     }
 }

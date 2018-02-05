@@ -1,6 +1,6 @@
 package de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper;
 
-import de.monticore.lang.montiarc.helper.IndentPrinter;
+import de.monticore.lang.monticar.helper.IndentPrinter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -10,7 +10,10 @@ import java.util.List;
 public class TestResultPrinter {
 
     private static String[] names = {
+            "\"ModelName\"",
             "\"Path\"",
+            "\"LogNr\"",
+            "\"LogOutput\"",
             "\"FileType\"",
             "\"Valid\"",
             "\"Parse\"",
@@ -46,6 +49,13 @@ public class TestResultPrinter {
         }
     }
 
+    private static String modelName_hiddenPath(String modelName, String path){
+        path = path.replace("\\","/");
+        return
+                "<div class=\'shortLabel\'>" + modelName + "</div>" +
+                "<div class=\'fullLabel\' style=\'display: none\'>" + path + "</div>";
+    }
+
     public static void printTestResults(List<TestResult> testResults, String path){
         try {
             FileUtils.writeStringToFile(new File(path),
@@ -72,7 +82,10 @@ public class TestResultPrinter {
 
             ip.println("{");
             ip.indent();
-            ip.println(names[i++] + ": \"" + testResult.getPath().replace("\\","/") + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
+            ip.println(names[i++] + ": \"" + modelName_hiddenPath(testResult.getModelName(), testResult.getPath()) + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getType() + "\",");
             ip.println(names[i++] + ": " + tagOf(testResult.isValid()?1:-1) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getParsed()) + ",");

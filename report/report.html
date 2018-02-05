@@ -3,93 +3,105 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DynTable</title>
+  <title>Component CoCos</title>
+  <link href="favicon.ico" type="image/x-icon" rel="icon"/>
   <script src="js/jquery-3.2.1.js"></script>
-  <script src="js/jquery.dynatable.js"></script>
+  <script src="js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js" type="text/javascript"></script>
   <link rel="stylesheet" media="all" href="css/bootstrap-2.3.2.min.css">
-  <link rel="stylesheet" media="all" href="css/application.css">
-  <link rel="stylesheet" media="all" href="css/dynatableORG.css">
-  <link rel="stylesheet" media="all" href="css/dynatable.css">
+  <link rel="stylesheet" media="all" href="css/jquery.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/customTable.css">
 </head>
 <body>
-  <div class="myTableContainer">
-    <table id="my-table" class="table table-bordered responsive-table">
+  <!-- <div class="myTableContainer"> -->
+    <table id="my-table" class="display column-border dataTable" role="grid" style="width: 100%;" width="100%" cellspacing="0">
+    
       <thead>
-        <th data-dynatable-column="Path"><div><span>Path</span></div></th>
-        <th data-dynatable-column="FileType"><div><span>FileType</span></div></th>
-        <th data-dynatable-column="Valid"><div><span>Valid</span></div></th>
-        <th data-dynatable-column="Parse"><div><span>Parse</span></div></th>
-        <th data-dynatable-column="Resolve"><div><span>Resolve Symbol Table</span></div></th>
-        <th data-dynatable-column="ComponentCapitalized"><div><span>Component Capitalized</span></div></th>
-        <th data-dynatable-column="ComponentInstanceNamesUnique"><div><span>Component Instance Names Unique</span></div></th>
-        <th data-dynatable-column="ComponentWithTypeParametersHasInstance"><div><span>Component With Type Parameters Has Instance</span></div></th>
-        <th data-dynatable-column="ConnectorEndPointCorrectlyQualified"><div><span>Connector End Point Correctly Qualified</span></div></th>
-        <th data-dynatable-column="DefaultParametersHaveCorrectOrder"><div><span>Default Parameters Have Correct Order</span></div></th>
-        <th data-dynatable-column="InPortUniqueSender"><div><span>In Port Unique Sender</span></div></th>
-        <th data-dynatable-column="PackageLowerCase"><div><span>Package Lower Case</span></div></th>
-        <th data-dynatable-column="ParameterNamesUnique"><div><span>Parameter Names Unique</span></div></th>
-        <th data-dynatable-column="PortTypeOnlyBooleanOrSIUnit"><div><span>Port Type Only Boolean Or SIUnit</span></div></th>
-        <th data-dynatable-column="PortUsage"><div><span>Port Usage</span></div></th>
-        <th data-dynatable-column="ReferencedSubComponentExists"><div><span>Referenced Sub Component Exists</span></div></th>
-        <th data-dynatable-column="SimpleConnectorSourceExists"><div><span>Simple Connector Source Exists</span></div></th>
-        <th data-dynatable-column="SourceTargetNumberMatch"><div><span>Source Target Number Match</span></div></th>
-        <th data-dynatable-column="SubComponentsConnected"><div><span>Sub Components Connected</span></div></th>
-        <th data-dynatable-column="TopLevelComponentHasNoInstanceName"><div><span>Top Level Component Has No Instance Name</span></div></th>
-        <th data-dynatable-column="TypeParameterNamesUnique"><div><span>Type Parameter Names Unique</span></div></th>
-        <th data-dynatable-column="AtomicComponent"><div><span>Atomic Component</span></div></th>
+        <th class="grow"><div><span>Path</span></div></th>
+        <th>Log&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        <th class="grow"><div><span>FileType</span></div></th>
+        <th class="grow"><div><span>Valid</span></div></th>
+        <th class="grow"><div><span>Parse</span></div></th>
+        <th class="grow">
+          <div class="shortLabel">Resolve</div>
+          <div class="fullLabel" style="display: none">Resolve Symbol Table</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">Capitalized</div>
+          <div class="fullLabel" style="display: none">Component Capitalized</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">UniqueNames</div>
+          <div class="fullLabel" style="display: none">Component Instance Names Unique</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">TypePar</div>
+          <div class="fullLabel" style="display: none">Component With Type Parameters Has Instance</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">EndQualif</div>
+          <div class="fullLabel" style="display: none">Connector End Point Correctly Qualified</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">ParOrder</div>
+          <div class="fullLabel" style="display: none">Default Parameters Have Correct Order</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">PortSender</div>
+          <div class="fullLabel" style="display: none">In Port Unique Sender</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">LowerCase</div>
+          <div class="fullLabel" style="display: none">Package Lower Case</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">ParNames</div>
+          <div class="fullLabel" style="display: none">Parameter Names Unique</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">PortType</div>
+          <div class="fullLabel" style="display: none">Port Type Only Boolean Or SIUnit</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">PortUsage</div>
+          <div class="fullLabel" style="display: none">Port Usage</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">SubCompRef</div>
+          <div class="fullLabel" style="display: none">Referenced Sub Component Exists</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">ConSource</div>
+          <div class="fullLabel" style="display: none">Simple Connector Source Exists</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">SourceTarget</div>
+          <div class="fullLabel" style="display: none">Source Target Number Match</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">SubCompCon</div>
+          <div class="fullLabel" style="display: none">Sub Components Connected</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">TopComp</div>
+          <div class="fullLabel" style="display: none">Top Level Component Has No Instance Name</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">ParNames</div>
+          <div class="fullLabel" style="display: none">Type Parameter Names Unique</div>
+        </th>
+        <th class="grow">
+          <div class="shortLabel">AtomicComp</div>
+          <div class="fullLabel" style="display: none">Atomic Component</div>
+        </th>
       </thead>
       <tbody>
       </tbody>
     </table>
-  <div>
+  <!-- <div> -->
      
-  <script>    
-    function loadJSON(file,callback) {   
-      var xobj = new XMLHttpRequest();
-      xobj.overrideMimeType('application/json');
-      xobj.open('GET', file, true); 
-      xobj.onreadystatechange = function () {
-        if (xobj.readyState == 4 && xobj.status == '200') {
-        // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-          callback(xobj.responseText);
-         }
-      };
-      xobj.send(null);  
-    }
-  
-    loadJSON("data/data.json", createTable);
-    
-    function createTable(data) {
-      data = JSON.parse(data);
-      var table = $('#my-table').dynatable({
-        features: {
-          paginate: false,
-          paginate: false,
-          sort: true,
-          pushState: true,
-          search: true,
-          recordCount: false,
-          perPageSelect: true
-        },
-        writers: {
-          'rank': function(record) {
-            return record['rank'] ? record['rank'].toString() : '-';
-          }, 
-          'us-$': function(record) {
-            return record['us-$'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          }
-        },
-        dataset: {
-          records:
-            data
-        },
-        table: {
-          copyHeaderClass: true
-        }
-      }).data('dynatable');
-    };
-         
-  </script> 
+  <script src="js/fillTable.js"></script>
    
 </body>
 </html>

@@ -3,117 +3,104 @@ package de.monticore.lang.embeddedmontiarc.reporting.testCocos;
 import de.monticore.ModelingLanguage;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.java.lang.JavaDSLLanguage;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.cocos.EmbeddedMontiArcCoCos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEmbeddedMontiArcMathNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.reporting.cocos.AbstractCoCoTest;
+import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.ASTHelper;
+import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.CouldNotResolveException;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.ResolveSymbolException;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
 import de.monticore.lang.math.math._symboltable.MathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 
-
-public class CoCoTester extends AbstractCoCoTest {
-    private static int z = 0;
+public class CoCoTester {
     private static boolean containsErrorCode(String errorCode) {
         return Log.getFindings().stream().map(s -> s.getMsg()).collect(Collectors.joining(" ")).contains(errorCode);
     }
 
-    public void testModel(String modelPath, String name, String fileName) throws ResolveSymbolException {
-        Log.enableFailQuick(false);
-        Log.getFindings().clear(); // clear log
-        ASTEmbeddedMontiArcNode ast = getAstNode(modelPath, name, fileName);
-        EmbeddedMontiArcCoCos.createChecker().checkAll(ast);
-    }
-
-    protected static ASTEmbeddedMontiArcNode getAstNode(String modelPath, String model, String fileName) throws ResolveSymbolException {
-        ModelingLanguage language = null;
-        if(fileName.endsWith(".emam"))
-            language = new EmbeddedMontiArcMathLanguage();
-        else if(fileName.endsWith(".ema"))
-            language = new EmbeddedMontiArcLanguage();
-        else if(fileName.endsWith("m"))
-            language = new MathLanguage();
-        else
-            Log.error("Unknown file type: " + model);
-        Scope symTab = createSymTab(language, modelPath);
-        ComponentSymbol comp = symTab.<ComponentSymbol> resolve(
-                model, ComponentSymbol.KIND).orElse(null);
-        if(comp == null)
-            throw new ResolveSymbolException("Could not resolve model " + model);
-
-        return (ASTEmbeddedMontiArcNode) comp.getAstNode().get();
-    }
-
-    protected static Scope createSymTab(ModelingLanguage language, String... modelPath) {
-        ModelingLanguageFamily fam = new ModelingLanguageFamily();
-        fam.addModelingLanguage(language);
-
-        // TODO should we use JavaDSLLanguage or add the resolvers in MALang?
-        fam.addModelingLanguage(new JavaDSLLanguage());
-        fam.addModelingLanguage(new StreamLanguage());
-        // add default Types which are needed because monticore has integrated "java logic" deep inside
-        final ModelPath mp = new ModelPath(Paths.get("src/main/resources/defaultTypes"));
-        for (String m : modelPath) {
-            mp.addEntry(Paths.get(m));
-        }
-        GlobalScope scope = new GlobalScope(mp, fam);
-
-        LogConfig.init();
-        return scope;
-    }
-
     public TestResult testCoCos(String fileName){
-        z++;
+        Log.enableFailQuick(false);
+        Log.getFindings().clear();
+        TestResult testResult = new TestResult(fileName);
         fileName = fileName.replace("\\","/");
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         ASTEMAMCompilationUnit ast = null;
         try {
+            testResult.addErrorMessage("[INFO] do Parser Test <br>=========================");
+            for(Finding finding: Log.getFindings())
+                testResult.addErrorMessage(finding.getMsg());
             ast = parser.parse(fileName).orElse(null);
+            testResult.addErrorMessage(ast != null?"[INFO] Parser Test success<br>":"[ERROR] Parser Test failed");
         } catch (Exception e) {
-            e.printStackTrace();
+            testResult.addErrorMessage("[ERROR] Parser Test failed");
+            System.out.println("File \"" + fileName + "\" could not be parsed");
         }
         boolean parse = ast != null;
+        if(!parse){
+            for(Finding finding: Log.getFindings()){
+                testResult.addErrorMessage(finding.getMsg());
+            }
+            String FileName = fileName.substring(fileName.replace("\\","/").lastIndexOf("/") + 1, fileName.length());
+            testResult.setModelName(FileName);
+        }
 
-        TestResult testResult = new TestResult(fileName);
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toUpperCase();
         testResult.setType(fileType);
         testResult.setParsed(parse?1:-1);
 
         if(parse) {
 
-            if(z == 248)
-                System.out.println("FEHLER");
-
             String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackage());
             String FileName = fileName.substring(fileName.replace("\\","/").lastIndexOf("/") + 1, fileName.length());
             String modelPath = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
             String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
+            testResult.setModelName(modelName);
+
+            ASTEmbeddedMontiArcNode astToTest = null;
             try {
-                System.out.println("Z: " + z);
-                testModel(modelPath, modelName, fileName);
+                Log.getFindings().clear();
+                testResult.addErrorMessage("[INFO] do Resolve Test<br>=========================");
+                astToTest = ASTHelper.getAstNode(modelPath, modelName);
                 testResult.setResolve(1);
-                //} catch (FailedLoadingSymbol|ResolveSymbolException|NullPointerException e){
-            } catch (Exception e) {
-                e.printStackTrace();
+                testResult.addErrorMessage("[INFO] Resolve Test success<br>");
+            } catch (CouldNotResolveException e) {
+                System.out.println("File \"" + modelName + "\" could not be resolved");
                 testResult.setResolve(-1);
+                testResult.addErrorMessage("[ERROR] Resolve Test failed");
+                for(Finding finding: Log.getFindings())
+                    testResult.addErrorMessage(finding.getMsg());
+
+                return testResult;
+            } catch (Exception e) {
+                System.out.println("File \"" + modelName + "\" ERROR. Something went wrong");
+                testResult.setResolve(-1);
+                testResult.addErrorMessage("[ERROR] Something went wrong");
                 return testResult;
             }
+            testResult.addErrorMessage("[INFO] do CoCo Tests<br>=========================");
+            Log.getFindings().clear();
+            EmbeddedMontiArcMathCoCos.createChecker().checkAll(astToTest);
+            for(Finding finding: Log.getFindings())
+                testResult.addErrorMessage(finding.getMsg());
             boolean componentCapitalized = containsErrorCode("0xAC004");
             boolean componentInstanceNamesUnique = containsErrorCode("0xAC010");
             boolean componentWithTypeParametersHasInstance = containsErrorCode("0x79C00");
