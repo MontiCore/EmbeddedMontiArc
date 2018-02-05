@@ -1,3 +1,4 @@
+cd ..
 if [ ! -d "projects" ]
 then
 mkdir "projects"
