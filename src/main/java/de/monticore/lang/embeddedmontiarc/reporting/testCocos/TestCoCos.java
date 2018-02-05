@@ -61,8 +61,11 @@ public class TestCoCos {
     private String getVFSTag(File project, File file, String urlToZip) {
         if(urlToZip == null)
             urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/master/models1a6a7c6e450b6d996a79c701efdd4e69.zip";
+        else
+            urlToZip = urlToZip.replace("\\","/");
+        String zipName = urlToZip.substring(urlToZip.lastIndexOf("/") + 1, urlToZip.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
-        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/models&url="
+        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" + name + "</a>";
     }
 }
