@@ -5,7 +5,6 @@ mkdir "projects"
 fi
 cd projects
 git clone --depth 1 "https://github.com/EmbeddedMontiArc/EmbeddedMontiArc" "EmbeddedMontiArc"
-git clone --depth 1 "https://github.com/EmbeddedMontiArc/external-dependencies" "external-dependencies"
 git clone --depth 1 "https://github.com/EmbeddedMontiArc/EMAM2Cpp" "EMAM2Cpp"
 git clone --depth 1 "https://github.com/EmbeddedMontiArc/Struct" "Struct"
 git clone --depth 1 "https://github.com/EmbeddedMontiArc/EMA2Kotlin" "EMA2Kotlin"
