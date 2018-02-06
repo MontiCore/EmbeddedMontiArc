@@ -14,6 +14,7 @@ script:
 - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
   -B clean install --settings "./settings.xml"
 after_success:
+- echo "test"
 - ls
 - cd target/
 - ls
