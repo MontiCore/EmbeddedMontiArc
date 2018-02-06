@@ -14,7 +14,7 @@ git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
 
-cd ../report/data
+cd report/data
 
 git add data.json
 git add dataEWT.json
