@@ -13,11 +13,13 @@ SHA=`git rev-parse --verify HEAD`
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
-
+ls
 cd report/data
+ls
+cd ../..
 
-git add data.json
-git add dataEWT.json
+git add report/data/data.json
+git add report/data/dataEWT.json
 git commit -m "Deploy to GitHub Pages: ${SHA}"
 
 # Now that we're all set up, we can push.
