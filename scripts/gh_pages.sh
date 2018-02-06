@@ -13,11 +13,15 @@ SHA=`git rev-parse --verify HEAD`
 git clone $REPO out
 cd out
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
+rm -rf report/data/* || exit 0
+mv ../report/data/data.json report/data/data.json
+mv ../report/data/dataEWT.json report/data/dataEWT.json
+
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 
-git add ../report/data/data.json
-git add ../report/data/dataEWT.json
+git add report/data/data.json
+git add report/data/dataEWT.json
 git commit -m "Deploy to GitHub Pages: ${SHA}"
 
 # Now that we're all set up, we can push.
