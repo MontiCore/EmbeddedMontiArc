@@ -21,6 +21,7 @@ git rm -rf report/data/* || exit 0
 if [ ! -d "report/data" ]
 then
   mkdir report/data
+fi
 mv ../report/data/data.json report/data/data.json
 mv ../report/data/dataEWT.json report/data/dataEWT.json
 
