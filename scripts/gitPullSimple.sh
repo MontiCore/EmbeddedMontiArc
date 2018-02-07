@@ -1,7 +1,7 @@
 # clone EmbeddedMontiArc
 if [ ! -d "EmbeddedMontiArc" ]
 then
-mkdir "EmbeddedMontiArc"
+  mkdir "EmbeddedMontiArc"
 fi
 cd EmbeddedMontiArc
 git clone --depth 1 "https://github.com/EmbeddedMontiArc/EmbeddedMontiArc" "EmbeddedMontiArc"
@@ -33,7 +33,7 @@ cd ..
 # clone MontiSim
 if [ ! -d "MontiSim" ]
 then
-mkdir "MontiSim"
+  mkdir "MontiSim"
 fi
 cd MontiSim
 git clone --depth 1 "https://github.com/MontiSim/CarLang" "CarLang"
