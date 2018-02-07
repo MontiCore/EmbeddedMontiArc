@@ -6,5 +6,5 @@ createZip() {
   md5=`md5sum ${ema} | awk '{ print $1 }'`
   cd ..
   mv "models.zip" "models$md5.zip"
-  return $md5
+  return 0;
 }
