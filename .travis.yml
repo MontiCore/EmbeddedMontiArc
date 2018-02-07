@@ -12,7 +12,7 @@ before_install:
 script:
 - bash ./scripts/gitPullSimple.sh
 - rm *.zip
-- source ./scripts/zipAndModels.sh
+- source ./scripts/zipAndMd5Models.sh
 - createZip EmbeddedMontiArc
 - emaZip="$md5.zip"
 - createZip MontiSim
