@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e # Exit with nonzero exit code if anything fails
 
+emaZip=$1
+msZip=$2
+
 SOURCE_BRANCH="master"
 TARGET_BRANCH="master"
 

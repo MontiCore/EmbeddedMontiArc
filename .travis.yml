@@ -22,7 +22,7 @@ after_success:
 - java -jar target/reporting-0.1-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc report/data -tt true -tc true -zn $emaZip
 - java -jar target/reporting-0.1-SNAPSHOT-jar-with-dependencies.jar MontiSim report/data -tt true -tc true -zn $msZip -m true
 - bash ./scripts/deploy-zip.sh
-- bash ./scripts/deploy-gh_pages.sh
+- bash ./scripts/deploy-gh_pages.sh $emaZip $msZip
 env:
   global:
   - COMMIT_AUTHOR_EMAIL: malte.heithoff@rwth-aachen.de
