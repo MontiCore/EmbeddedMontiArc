@@ -145,6 +145,8 @@ public class Main {
                     break;
                 case "-zn":
                     context.setZipName(args[++i]);
+                    if(context.getZipName().equals(""))
+                        Log.error("Zip name is missing, see -h for help.");
                     break;
                 case "-h":
                 case "-help":
