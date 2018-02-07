@@ -10,13 +10,12 @@ do
   url=$entry
   rep=$(basename $entry)
   rep="${rep%.*}"
-  echo $rep
-  # if [ -d $rep ]
-  # then
-    # cd $rep && git pull && cd ..
-  # elif [ $rep != "external-dependencies" ]
-  # then
-    # git clone "https://github.com/$1/$rep"
-  # fi
+  if [ -d $rep ]
+  then
+    cd $rep && git pull && cd ..
+  elif [ $rep != "external-dependencies" ]
+  then
+    git clone "https://github.com/$1/$rep"
+  fi
 done
 cd ..
