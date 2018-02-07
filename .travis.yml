@@ -10,7 +10,7 @@ before_install:
   - eval $(ssh-agent -s)
   - ssh-add scripts/github_deploy_key
 script:
-- ./scripts/gitPullSimple.sh
+- bash ./scripts/gitPullSimple.sh
 - rm *.zip
 - source ./scripts/zipAndModels.sh
 - createZip EmbeddedMontiArc
@@ -22,8 +22,8 @@ script:
 after_success:
 - java -jar target/reporting-0.1-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc report/data -tt true -tc true -zn $emaZip
 - java -jar target/reporting-0.1-SNAPSHOT-jar-with-dependencies.jar MontiSim report/data -tt true -tc true -zn $msZip -m true
-- ./scripts/deploy-zip.sh
-- ./scripts/deploy-gh_pages.sh
+- bash ./scripts/deploy-zip.sh
+- bash ./scripts/deploy-gh_pages.sh
 env:
   global:
   - COMMIT_AUTHOR_EMAIL: malte.heithoff@rwth-aachen.de
