@@ -10,7 +10,9 @@ before_install:
   - eval $(ssh-agent -s)
   - ssh-add scripts/github_deploy_key
 script:
-- bash ./scripts/gitPullSimple.sh
+#- bash ./scripts/gitPullSimple.sh
+- bash ./scripts/gitpull.sh "EmbeddedMontiArc"
+- bash ./scripts/gitpull.sh "MontiSim"
 - source ./scripts/zipAndMd5Models.sh
 - createZip EmbeddedMontiArc
 - emaZip="models$md5.zip"

@@ -1,15 +1,21 @@
-if [ ! -d "EmbeddedMontiArc" ]
+if [ ! -d "$1" ]
 then
-mkdir "EmbeddedMontiArc"
+  mkdir "$1"
 fi
-cd EmbeddedMontiArc
-count=$(find  -type d -name ".git" | wc -l)
-echo $count
-if [ "$count" -gt 0 ]
-then
-# if repos exist, then pull them
-find -type d -name ".git" -exec sh -c 'cd $0 && cd .. && git pull' {} \;
-else
-# if workspace has been deleted clone
-curl "https://api.github.com/orgs/EmbeddedMontiArc/repos?per_page=200" | grep -e 'git_url*' | cut -d \" -f 4 | xargs -L1 git clone
-fi;
+
+cd $1
+
+for entry in $(curl "https://api.github.com/orgs/$1/repos?per_page=200" | grep -e 'git_url*' | cut -d \" -f 4)
+do
+  url=$entry
+  rep=$(basename $entry)
+  rep="${rep%.*}"
+  if [ -d $rep ]
+  then
+    cd $rep && git pull && cd ..
+  elif [ $rep != "external-dependencies" ]
+  then
+    git clone "https://github.com/$1/$rep"
+  fi
+done
+cd ..
