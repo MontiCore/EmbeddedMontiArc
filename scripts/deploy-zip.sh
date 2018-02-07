@@ -16,8 +16,8 @@ git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 git rm *.zip
 
-mv ../$emaZip $emaZip
-mv ../$msZip $msZip
+mv "../$emaZip" "$emaZip"
+mv "../$msZip" "$msZip"
 
 git add *.zip
 git commit -m "Deploy new Zips: ${SHA}"
