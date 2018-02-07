@@ -4,6 +4,7 @@ set -e # Exit with nonzero exit code if anything fails
 SOURCE_BRANCH="master"
 TARGET_BRANCH="master"
 
+echo "EMAZIP: $emaZip"
 
 # Save some useful information
 REPO=`git config remote.origin.url`
