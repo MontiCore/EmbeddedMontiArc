@@ -12,7 +12,7 @@ SHA=`git rev-parse --verify HEAD`
 
 if [ ! -d "out" ]
 then
-  rmdir -rf out
+  rm -rf out
 fi
 git clone $REPO out
 cd out
