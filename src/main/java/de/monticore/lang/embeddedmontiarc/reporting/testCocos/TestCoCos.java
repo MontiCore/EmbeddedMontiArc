@@ -26,14 +26,14 @@ public class TestCoCos {
         TestCoCos testCoCos = new TestCoCos();
         for(File project: root.listFiles()){
             if(project.isDirectory()){
-                testResults.addAll(testCoCos.testAllCocos(project, "emam", "m"));
+                testResults.addAll(testCoCos.testAllCocos(project, "models1a6a7c6e450b6d996a79c701efdd4e69.zip", "emam", "m"));
             }
         }
 
         TestResultPrinter.printTestResults(testResults, "C:/Praktikum/report/data.json");
     }
 
-    public List<TestResult> testAllCocos(File root, String... fileType){
+    public List<TestResult> testAllCocos(File root, String zipName, String... fileType){
         List<TestResult> testResults = new LinkedList<>();
 
         for(File projectDir: root.listFiles()) {
@@ -48,7 +48,7 @@ public class TestCoCos {
 
                     testResult = ccT.testCoCos(file.getAbsolutePath());
 //                    testResult.setPath(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
-                    testResult.setPath(getVFSTag(projectDir, file, null));
+                    testResult.setPath(getVFSTag(projectDir, file, zipName));
 
                     testResults.add(testResult);
                 }
@@ -58,14 +58,21 @@ public class TestCoCos {
         return testResults;
     }
 
-    private String getVFSTag(File project, File file, String urlToZip) {
-        if(urlToZip == null)
-            urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/master/models1a6a7c6e450b6d996a79c701efdd4e69.zip";
+    private String getVFSTag(File project, File file, String zipName) {
+        String urlToZip;
+        String zipName_;
+        if(zipName == null)
+            zipName_ = "models1a6a7c6e450b6d996a79c701efdd4e69.zip";
         else
-            urlToZip = urlToZip.replace("\\","/");
-        String zipName = urlToZip.substring(urlToZip.lastIndexOf("/") + 1, urlToZip.lastIndexOf("."));
+            zipName_ = zipName;
+
+        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/master/" + zipName_;
+        zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
-        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
-                + urlToZip + "&openFile=/" + name + "'>" + name + "</a>";
+        String displayName = name;
+        if(project.getAbsolutePath().contains("MontiSim"))
+            displayName = "MontiSim/" + displayName;
+        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+                + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
     }
 }

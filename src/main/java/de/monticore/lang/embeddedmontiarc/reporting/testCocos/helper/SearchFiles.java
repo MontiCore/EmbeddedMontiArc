@@ -35,6 +35,9 @@ public class SearchFiles {
             if (file.isDirectory()) {
                 walk(file, fileTypes, result);
             } else {
+                if(file.getName().contains("Autopilot")){
+                    int i = 0;
+                }
                 for(String fileType: fileTypes)
                     if (file.getName().endsWith("." + fileType))
                         result.add(file);

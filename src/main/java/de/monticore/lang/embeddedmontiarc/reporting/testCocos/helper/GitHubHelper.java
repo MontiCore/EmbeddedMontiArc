@@ -42,7 +42,10 @@ public class GitHubHelper {
                         branch = line.substring(line.indexOf("HEAD branch") + "HEAD branch: ".length());
                 }
             } catch (IndexOutOfBoundsException e){
-                url = "https://github.com/EmbeddedMontiArc/" + dir.getName() + "/";
+                if (dir.getAbsolutePath().contains("EmbeddedMontiArc"))
+                    url = "https://github.com/EmbeddedMontiArc/" + dir.getName() + "/";
+                else if (dir.getAbsolutePath().contains("MontiSim"))
+                    url = "https://github.com/MontiSim/" + dir.getName() + "/";
                 branch = "master";
             }
 

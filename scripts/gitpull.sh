@@ -1,8 +1,8 @@
-if [ ! -d "projects" ]
+if [ ! -d "EmbeddedMontiArc" ]
 then
-mkdir "projects"
+mkdir "EmbeddedMontiArc"
 fi
-cd projects
+cd EmbeddedMontiArc
 count=$(find  -type d -name ".git" | wc -l)
 echo $count
 if [ "$count" -gt 0 ]

@@ -51,23 +51,47 @@ public class TestResultPrinter {
 
     private static String modelName_hiddenPath(String modelName, String path){
         path = path.replace("\\","/");
+        String name = modelName;
+        if (path.contains("MontiSim")){
+            name = "MontiSim/" + name;
+        }
         return
-                "<div class=\'shortLabel\'>" + modelName + "</div>" +
+                "<div class=\'shortLabel\'>" + name + "</div>" +
                 "<div class=\'fullLabel\' style=\'display: none\'>" + path + "</div>";
     }
 
     public static void printTestResults(List<TestResult> testResults, String path){
-        try {
-            FileUtils.writeStringToFile(new File(path),
-                    printTestResults(testResults));
-        } catch (IOException e) {
-            e.printStackTrace();
+        printTestResults(testResults, path, false);
+    }
+
+    public static void printTestResults(List<TestResult> testResults, String path, boolean merge){
+        if ( testResults.size() == 0 ) return;
+        if(merge){
+            try {
+                String first = FileUtils.readFileToString(new File(path));
+                first = first.substring(0, first.length()-3);
+                String str = first + ",\n" + printTestResults(testResults, merge);
+                FileUtils.writeStringToFile(new File(path),
+                        str);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        else {
+            try {
+                FileUtils.writeStringToFile(new File(path),
+                        printTestResults(testResults, merge));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    public static String printTestResults(List<TestResult> testResults){
+    public static String printTestResults(List<TestResult> testResults, boolean merge){
         IndentPrinter ip = new IndentPrinter();
-        ip.println("[");
+        if (!merge)
+            ip.println("[");
         ip.indent();
         
         boolean first = true;
@@ -118,16 +142,34 @@ public class TestResultPrinter {
     }
 
     public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path){
+        printTestsEndWithTestResults(results, path, false);
+    }
+
+    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path, boolean merge){
+        if ( results.size() == 0 ) return;
+        if(merge){
+            try {
+                String first = FileUtils.readFileToString(new File(path));
+                first = first.substring(0, first.length()-3);
+                String str = first + ",\n" + printTestsEndWithTestResults(results, merge);
+                FileUtils.writeStringToFile(new File(path),
+                        str);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
-            FileUtils.writeStringToFile(new File(path), printTestsEndWithTestResults(results));
+            FileUtils.writeStringToFile(new File(path), printTestsEndWithTestResults(results, merge));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static String printTestsEndWithTestResults(List<TestsEndWithTestResult> results){
+    public static String printTestsEndWithTestResults(List<TestsEndWithTestResult> results, boolean merge){
         IndentPrinter ip = new IndentPrinter();
-        ip.println("[");
+        if(!merge)
+            ip.println("[");
         ip.indent();
 
         boolean first = true;
