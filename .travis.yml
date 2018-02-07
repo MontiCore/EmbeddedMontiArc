@@ -27,3 +27,5 @@ after_success:
 env:
   global:
   - COMMIT_AUTHOR_EMAIL: malte.heithoff@rwth-aachen.de
+  - emaZip=""
+  - msZip=""
