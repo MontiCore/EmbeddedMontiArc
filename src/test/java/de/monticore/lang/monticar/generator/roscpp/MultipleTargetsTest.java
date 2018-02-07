@@ -15,18 +15,17 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertTrue;
 
 public class MultipleTargetsTest extends AbstractSymtabTest {
-
+    //TODO: will be handled by master generator
     @Test
     public void generateCppTest() throws IOException {
         //Setup
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        ResolvedRosTag resolvedRosTag = new ResolvedRosTag(componentInstanceSymbol);
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/genCpp/");
 
         //Execute
-        List<File> files = generatorRosCpp.generateFiles(resolvedRosTag, symtab);
+        List<File> files = generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
@@ -40,13 +39,12 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
         //Setup
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        ResolvedRosTag resolvedRosTag = new ResolvedRosTag(componentInstanceSymbol);
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/dontGenCpp/");
         generatorRosCpp.setGenerateCpp(false);
 
         //Execute
-        List<File> files = generatorRosCpp.generateFiles(resolvedRosTag, symtab);
+        List<File> files = generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
@@ -63,12 +61,11 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
         //Setup
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        ResolvedRosTag resolvedRosTag = new ResolvedRosTag(componentInstanceSymbol);
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/defaultGenCpp/");
 
         //Execute
-        List<File> files = generatorRosCpp.generateFiles(resolvedRosTag, symtab);
+        List<File> files = generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
@@ -85,7 +82,6 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
         //Setup
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        ResolvedRosTag resolvedRosTag = new ResolvedRosTag(componentInstanceSymbol);
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useOctaveBackend();
@@ -95,7 +91,7 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
         generatorRosCpp.setGeneratorCPP(generatorCPP);
 
         //Execute
-        List<File> files = generatorRosCpp.generateFiles(resolvedRosTag, symtab);
+        List<File> files = generatorRosCpp.generateFiles(componentInstanceSymbol, symtab);
 
         //Check
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
@@ -106,6 +102,5 @@ public class MultipleTargetsTest extends AbstractSymtabTest {
         assertTrue(Collections.disjoint(fileNames, negativeFileNames));
 
     }
-
 
 }

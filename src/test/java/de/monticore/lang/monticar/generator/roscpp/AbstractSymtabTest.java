@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class AbstractSymtabTest extends AbstractSymtab {
 
     public static void testFilesAreEqual(List<File> files, String restPath) {
+        assertTrue(files.size() > 0);
         for (File f : files) {
             File fileTarget = new File("./src/test/resources/results/" + restPath + f.getName());
 //            System.out.println("" + fileTarget.exists() + "Exists:");

@@ -53,8 +53,8 @@ public class YamlTest extends AbstractSymtabTest {
 
         PortSymbol rosIn = portNamesToPort.get("rosIn");
         PortSymbol noRosIn = portNamesToPort.get("noRosIn");
-        assertEquals(subInter.getMsgFieldForPort(rosIn).getConversion(rosIn), "msg->posX");
-        assertEquals(subInter.getMsgFieldForPort(noRosIn).getConversion(noRosIn), "msg->posY");
+        assertEquals(subInter.getMsgFieldForPort(rosIn), "posX");
+        assertEquals(subInter.getMsgFieldForPort(noRosIn), "posY");
 
 
         ResolvedRosInterface pubInter = tag.getPublisherInterfaces().stream().findFirst().get();
@@ -68,7 +68,7 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(portNamesToPort.containsKey("rosOut"));
 
         PortSymbol rosOut = portNamesToPort.get("rosOut");
-        assertEquals(pubInter.getMsgFieldForPort(rosOut).getConversion(rosOut), ".data = component.rosOut");
+        assertEquals(pubInter.getMsgFieldForPort(rosOut), "data");
     }
 
     @Test

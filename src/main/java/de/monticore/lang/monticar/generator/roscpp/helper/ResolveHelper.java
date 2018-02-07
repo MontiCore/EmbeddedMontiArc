@@ -4,7 +4,8 @@ import de.monticar.lang.monticar.generator.python.RosInterface;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.roscpp.*;
+import de.monticore.lang.monticar.generator.roscpp.ResolvedRosInterface;
+import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
 import de.monticore.symboltable.Scope;
 
 public class ResolveHelper {
@@ -22,16 +23,7 @@ public class ResolveHelper {
             PortSymbol tmpPort = component.getPort(portName).
                     orElseThrow(() -> new RuntimeException("Port " + component.getName() + "." + portName + " not found!"));
 
-            MsgConverter tmpMsgConverter;
-            if (!rosInterface.ports.get(portName).contains("::")) {
-                tmpMsgConverter = new DirectMsgConverter(rosInterface.ports.get(portName), isSubscriber);
-            } else {
-                String fullMethodName = rosInterface.ports.get(portName);
-                String className = fullMethodName.substring(0, fullMethodName.lastIndexOf("::"));
-                tmpMsgConverter = new MethodMsgConverter(fullMethodName, "\"" + className + ".h\"", isSubscriber);
-            }
-            res.addPort(tmpPort, tmpMsgConverter);
-
+            res.addPort(tmpPort, rosInterface.ports.get(portName));
         });
         return res;
     }

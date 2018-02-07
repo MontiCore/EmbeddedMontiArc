@@ -20,7 +20,7 @@ public:
 		_echoPublisher = node_handle.advertise<automated_driving_msgs::StampedFloat64>("/echo",5);
 	}
 
-	void publish0(){
+	void publish_echoPublisher(){
 		automated_driving_msgs::StampedFloat64 tmpMsg;
 		tmpMsg.data = component.rosOut;
 		_echoPublisher.publish(tmpMsg);
@@ -28,7 +28,7 @@ public:
 
 	void tick(){
 		component.execute();
-		publish0();
+		publish_echoPublisher();
 	}
 
 	void tickIfNeeded(const rosgraph_msgs::Clock::ConstPtr& clockMsg){

@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.BufferedWriter;
@@ -41,8 +40,8 @@ public class GeneratorRosCpp {
         this.generationTargetPath = generationTargetPath;
     }
 
-    public List<File> generateFiles(ResolvedRosTag resolvedRosTag, TaggingResolver symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(symtab, resolvedRosTag);
+    public List<File> generateFiles(ExpandedComponentInstanceSymbol component, TaggingResolver symtab) throws IOException {
+        List<FileContent> fileContents = generateStrings(component);
 
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
@@ -54,7 +53,7 @@ public class GeneratorRosCpp {
         }
 
         if (generateCpp) {
-            files.addAll(generateCppFiles(symtab, resolvedRosTag.getComponent()));
+            files.addAll(generateCppFiles(symtab, component));
         }
 
         return files;
@@ -75,9 +74,9 @@ public class GeneratorRosCpp {
         return f;
     }
 
-    public List<FileContent> generateStrings(Scope scope, ResolvedRosTag resolvedRosTag) {
+    public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol component) {
         List<FileContent> fileContents = new ArrayList<>();
-        fileContents.add(generateRosCompUnit(resolvedRosTag));
+        fileContents.add(generateRosCompUnit(component));
         return fileContents;
     }
 
@@ -96,11 +95,11 @@ public class GeneratorRosCpp {
         return generatorCPP.generateFiles(symbol, taggingResolver);
     }
 
-    private FileContent generateRosCompUnit(ResolvedRosTag resolvedRosTag) {
+    private FileContent generateRosCompUnit(ExpandedComponentInstanceSymbol component) {
         FileContent res = new FileContent();
 
         LanguageUnitRosCppWrapper languageUnitRosCppWrapper = new LanguageUnitRosCppWrapper();
-        languageUnitRosCppWrapper.generateBluePrints(resolvedRosTag);
+        languageUnitRosCppWrapper.generateBluePrints(component);
         //TODO: unsave, does not work with multiple
         BluePrintCPP currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
         //TODO pull down into LanguageUnitRosCppWrapper
