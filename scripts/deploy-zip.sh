@@ -5,7 +5,7 @@ emaZip=$1
 msZip=$2
 
 SOURCE_BRANCH="master"
-TARGET_BRANCH="master"
+TARGET_BRANCH="gh-pages"
 
 echo "EMAZIP: $emaZip"
 
@@ -20,6 +20,7 @@ then
 fi
 git clone $REPO out
 cd out
+git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 git rm *.zip

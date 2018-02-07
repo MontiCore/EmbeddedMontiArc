@@ -66,7 +66,7 @@ public class TestCoCos {
         else
             zipName_ = zipName;
 
-        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/master/" + zipName_;
+        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName_;
         zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
         String displayName = name;
