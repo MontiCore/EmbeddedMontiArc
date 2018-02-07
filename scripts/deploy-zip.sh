@@ -10,14 +10,18 @@ REPO=`git config remote.origin.url`
 SSH_REPO=${REPO/https:\/\/github.com\//git@github.com:}
 SHA=`git rev-parse --verify HEAD`
 
+if [ ! -d "out" ]
+then
+  rmdir -rf out
+fi
 git clone $REPO out
 cd out
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 git rm *.zip
 
-mv "../$emaZip" "$emaZip"
-mv "../$msZip" "$msZip"
+mv ../$emaZip $emaZip
+mv ../$msZip $msZip
 
 git add *.zip
 git commit -m "Deploy new Zips: ${SHA}"
