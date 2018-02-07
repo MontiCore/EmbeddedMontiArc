@@ -18,4 +18,5 @@ do
     git clone "https://github.com/$1/$rep"
   fi
 done
+echo "test123"
 cd ..
