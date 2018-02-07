@@ -19,7 +19,10 @@ public class GitHubHelper {
     }
 
     public String getHTMLLinkOf(String link, String name){
-        return "<a target=\'_blank\' href=\'" + link + "\'>"+name+"<\\a>";
+        String Name = name;
+        if(link.contains("MontiSim"))
+            Name = "MontiSim/" + Name;
+        return "<a target=\'_blank\' href=\'" + link + "\'>"+Name+"<\\a>";
     }
 
     public String getGitHubRoot(File dir){
