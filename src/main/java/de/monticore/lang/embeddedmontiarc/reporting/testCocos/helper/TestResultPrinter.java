@@ -150,7 +150,7 @@ public class TestResultPrinter {
         if(merge){
             try {
                 String first = FileUtils.readFileToString(new File(path));
-                first = first.substring(0, first.length()-3);
+                first = first.substring(0, first.length()-2);
                 String str = first + ",\n" + printTestsEndWithTestResults(results, merge);
                 FileUtils.writeStringToFile(new File(path),
                         str);
@@ -158,7 +158,7 @@ public class TestResultPrinter {
                 e.printStackTrace();
             }
         }
-
+        else
         try {
             FileUtils.writeStringToFile(new File(path), printTestsEndWithTestResults(results, merge));
         } catch (IOException e) {
