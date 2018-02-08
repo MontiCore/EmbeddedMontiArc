@@ -13,7 +13,7 @@ public class Main {
         ReportContext context = getContext(args);
         if(context.isTestCoCos()){
             TestCoCos tcc = new TestCoCos();
-            List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(),"emam");
+            List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(),"ema", "emam");
             TestResultPrinter.printTestResults(testResults, context.getOutput() + "/data.json", context.isMerge());
         }
         if(context.isTestsEndWithTest()) {

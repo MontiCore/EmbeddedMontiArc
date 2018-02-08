@@ -70,16 +70,16 @@ public class CoCoTester {
         if(parse) {
 
             String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackage());
-            String FileName = fileName.substring(fileName.replace("\\","/").lastIndexOf("/") + 1, fileName.length());
-            String modelPath = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
-            String modelName = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
+            String FileName    = fileName.substring(fileName.replace("\\","/").lastIndexOf("/") + 1, fileName.length());
+            String modelPath   = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
+            String modelName   = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
             testResult.setModelName(modelName);
 
             ASTEmbeddedMontiArcNode astToTest = null;
             try {
                 Log.getFindings().clear();
                 testResult.addErrorMessage("[INFO] do Resolve Test<br>=========================");
-                astToTest = ASTHelper.getAstNode(modelPath, modelName);
+                astToTest = ASTHelper.getAstNode(modelPath, modelName, fileType);
                 testResult.setResolve(1);
                 testResult.addErrorMessage("[INFO] Resolve Test success<br>");
             } catch (CouldNotResolveException e) {
