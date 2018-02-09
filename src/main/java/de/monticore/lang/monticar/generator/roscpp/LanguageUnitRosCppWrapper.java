@@ -127,7 +127,7 @@ public class LanguageUnitRosCppWrapper {
         initMethod.addParameter(compPointer);
 
         initMethod.addInstruction(new TargetCodeInstruction("this->component = comp;"));
-        initMethod.addInstruction(new TargetCodeInstruction("char* tmp = \"\";"));
+        initMethod.addInstruction(new TargetCodeInstruction("char* tmp = strdup(\"\");"));
         initMethod.addInstruction(new TargetCodeInstruction("int i = 0;"));
         initMethod.addInstruction(new TargetCodeInstruction("ros::init(i, &tmp, \"" + classname + "_node\");"));
         initMethod.addInstruction(new TargetCodeInstruction("ros::NodeHandle node_handle = ros::NodeHandle();"));

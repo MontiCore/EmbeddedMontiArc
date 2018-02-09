@@ -17,7 +17,7 @@ public:
 
 	void init(tests_structs_nestedStructComp* comp){
 		this->component = comp;
-		char* tmp = "";
+		char* tmp = strdup("");
 		int i = 0;
 		ros::init(i, &tmp, "tests_structs_nestedStructComp_RosWrapper_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
