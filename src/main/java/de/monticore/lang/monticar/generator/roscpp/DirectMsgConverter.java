@@ -19,7 +19,7 @@ public class DirectMsgConverter implements MsgConverter {
 
     @Override
     public String getConversion(PortSymbol portSymbol) {
-        return !isMsgToPort ? "." + msgField + " = component." + NameHelper.getPortNameTargetLanguage(portSymbol) : "msg->" + msgField;
+        return !isMsgToPort ? "." + msgField + " = component->" + NameHelper.getPortNameTargetLanguage(portSymbol) : "msg->" + msgField;
     }
 
 

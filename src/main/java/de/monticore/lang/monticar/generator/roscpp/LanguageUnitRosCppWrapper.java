@@ -3,10 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
-import de.monticore.lang.monticar.generator.Instruction;
-import de.monticore.lang.monticar.generator.Method;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
@@ -45,6 +42,7 @@ public class LanguageUnitRosCppWrapper {
         generateFields(componentSymbol, rosPorts, currentBluePrint);
         generateCallbacks(rosPorts, currentBluePrint);
         generateConstructor(name, currentBluePrint);
+        generateInit(name, NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName()), currentBluePrint);
         generatePublishMethods(rosPorts, currentBluePrint);
         generateTick(currentBluePrint);
         generateIncludes(componentSymbol, rosPorts, currentBluePrint);
@@ -105,7 +103,8 @@ public class LanguageUnitRosCppWrapper {
 
     private void generateConstructor(String classname, BluePrint currentBluePrint) {
         Method constructorMethod = new Method(classname, "");
-        Variable param1 = new Variable();
+        constructorMethod.addInstruction(new TargetCodeInstruction(""));
+        /*Variable param1 = new Variable();
         param1.setName("node_handle");
         param1.setTypeNameTargetLanguage("ros::NodeHandle");
 
@@ -114,22 +113,41 @@ public class LanguageUnitRosCppWrapper {
         param2.setTypeNameTargetLanguage("ros::NodeHandle");
 
         constructorMethod.addParameter(param1);
-        constructorMethod.addParameter(param2);
+        constructorMethod.addParameter(param2);*/
+
+        currentBluePrint.addMethod(constructorMethod);
+    }
+
+    public void generateInit(String classname, String componentName, BluePrint currentBluePrint) {
+        Method initMethod = new Method("init", "void");
+
+        Variable compPointer = new Variable();
+        compPointer.setTypeNameTargetLanguage(componentName + "*");
+        compPointer.setName("comp");
+        initMethod.addParameter(compPointer);
+
+        initMethod.addInstruction(new TargetCodeInstruction("this->component = comp;"));
+        initMethod.addInstruction(new TargetCodeInstruction("char* tmp = \"\";"));
+        initMethod.addInstruction(new TargetCodeInstruction("int i = 0;"));
+        initMethod.addInstruction(new TargetCodeInstruction("ros::init(i, &tmp, \"" + classname + "_node\");"));
+        initMethod.addInstruction(new TargetCodeInstruction("ros::NodeHandle node_handle = ros::NodeHandle();"));
 
         //subs
         subscribers.keySet().stream()
                 .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName()) + "Callback"))
                 .distinct()
                 .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
-                .forEach(constructorMethod::addInstruction);
+                .forEach(initMethod::addInstruction);
 
         publishers.keySet().stream()
                 .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName()))
                 .distinct()
                 .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
-                .forEach(constructorMethod::addInstruction);
+                .forEach(initMethod::addInstruction);
 
-        currentBluePrint.addMethod(constructorMethod);
+        initMethod.addInstruction(new TargetCodeInstruction("ros::spin();"));
+
+        currentBluePrint.addMethod(initMethod);
     }
 
     private void generateFields(ExpandedComponentInstanceSymbol symbol, List<PortSymbol> rosPorts, BluePrint currBluePrint) {
@@ -137,7 +155,7 @@ public class LanguageUnitRosCppWrapper {
         Variable componentField = new Variable();
         componentField.setName("component");
         //TODO: get from generator
-        componentField.setTypeNameTargetLanguage(symbol.getFullName().replace(".", "_"));
+        componentField.setTypeNameTargetLanguage(symbol.getFullName().replace(".", "_") + "*");
         currBluePrint.addVariable(componentField);
 
         Map<String, Variable> uniqueSubFields = new HashMap<>();
@@ -180,7 +198,6 @@ public class LanguageUnitRosCppWrapper {
 
     private void generateTick(BluePrint currentBluePrint) {
         Method tickMethod = new Method("tick", "void");
-        tickMethod.addInstruction(new ExecuteComponentInstruction());
 
         publishMethods.stream()
                 .sorted(Comparator.comparing(Method::getName))

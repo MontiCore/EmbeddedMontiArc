@@ -26,7 +26,7 @@ public class MethodMsgConverter implements MsgConverter {
 
     @Override
     public String getConversion(PortSymbol portSymbol) {
-        return isMsgToPort ? methodNameWithClass + "(msg)" : " = " + methodNameWithClass + "(component." + (NameHelper.getPortNameTargetLanguage(portSymbol) + ")");
+        return isMsgToPort ? methodNameWithClass + "(msg)" : " = " + methodNameWithClass + "(component->" + (NameHelper.getPortNameTargetLanguage(portSymbol) + ")");
     }
 
     @Override
