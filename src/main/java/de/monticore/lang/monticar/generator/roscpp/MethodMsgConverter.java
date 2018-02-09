@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 
 import com.google.common.collect.Sets;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.roscpp.helper.PortNameHelper;
+import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 
 import java.util.Set;
 
@@ -26,7 +26,7 @@ public class MethodMsgConverter implements MsgConverter {
 
     @Override
     public String getConversion(PortSymbol portSymbol) {
-        return isMsgToPort ? methodNameWithClass + "(msg)" : " = " + methodNameWithClass + "(component." + (PortNameHelper.getPortNameTargetLanguage(portSymbol) + ")");
+        return isMsgToPort ? methodNameWithClass + "(msg)" : " = " + methodNameWithClass + "(component." + (NameHelper.getPortNameTargetLanguage(portSymbol) + ")");
     }
 
     @Override

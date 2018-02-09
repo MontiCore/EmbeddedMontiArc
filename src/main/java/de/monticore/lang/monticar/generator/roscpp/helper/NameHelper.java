@@ -1,8 +1,10 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.se_rwth.commons.logging.Log;
 
-public class PortNameHelper {
+public class NameHelper {
 
     public static String getPortNameTargetLanguage(PortSymbol portSymbol) {
         //TODO: get from cpp generator for consistency?
@@ -41,5 +43,23 @@ public class PortNameHelper {
         int cppIndex = emamIndex - 1;
 
         return shortName + "[" + cppIndex + "]" + rest;
+    }
+
+    public static String getWrapperName(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        return componentInstanceSymbol.getFullName().replace('.', '_') + "_RosWrapper";
+    }
+
+    public static String getComponentNameTargetLanguage(String fullName) {
+        return fullName.replace(".", "_");
+    }
+
+    public static String getPackageOfMsgType(String msgType) {
+        if (!msgType.contains("/")) {
+            Log.error("Msg types must contain package name! " + msgType + " doesn't!");
+            return null;
+        } else {
+            return msgType.split("/")[0];
+        }
+
     }
 }

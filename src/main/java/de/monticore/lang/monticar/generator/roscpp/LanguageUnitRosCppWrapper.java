@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
 import jline.internal.Log;
 
@@ -21,6 +22,12 @@ public class LanguageUnitRosCppWrapper {
     private Map<Variable, RosConnectionSymbol> publishers = new HashMap<>();
     private List<Method> publishMethods = new ArrayList<>();
     private List<MsgConverter> msgConverts = new ArrayList<>();
+    private List<String> additionalPackages = new ArrayList<>();
+
+
+    public List<String> getAdditionalPackages() {
+        return additionalPackages;
+    }
 
     public void generateBluePrints(ExpandedComponentInstanceSymbol component) {
         this.bluePrints.add(generateWrapperBluePrint(component));
@@ -28,7 +35,7 @@ public class LanguageUnitRosCppWrapper {
 
     private BluePrintCPP generateWrapperBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
 
-        String name = componentSymbol.getFullName().replace('.', '_') + "_RosWrapper";
+        String name = NameHelper.getWrapperName(componentSymbol);
         BluePrintCPP currentBluePrint = new BluePrintCPP(name);
 
         List<PortSymbol> rosPorts = componentSymbol.getPorts().stream()
@@ -55,6 +62,7 @@ public class LanguageUnitRosCppWrapper {
                 .map(Optional::get)
                 .map(mws -> (RosConnectionSymbol) mws)
                 .map(RosConnectionSymbol::getTopicType)
+                .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
                 .map(type -> "<" + type + ".h>")
                 .forEach(currentBluePrint::addAdditionalIncludeString);
 

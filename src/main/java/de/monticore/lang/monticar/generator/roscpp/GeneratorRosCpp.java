@@ -20,9 +20,14 @@ public class GeneratorRosCpp {
     private String generationTargetPath;
     private boolean generateCpp = true;
     private GeneratorCPP generatorCPP;
+    private boolean generateCMake = false;
 
     //TODO: as tag?
     private ExecutionStrategy executionStrategy;
+
+    public void setGenerateCMake(boolean generateCMake) {
+        this.generateCMake = generateCMake;
+    }
 
     public void setExecutionStrategy(ExecutionStrategy executionStrategy) {
         this.executionStrategy = executionStrategy;
@@ -76,7 +81,7 @@ public class GeneratorRosCpp {
 
     public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol component) {
         List<FileContent> fileContents = new ArrayList<>();
-        fileContents.add(generateRosCompUnit(component));
+        fileContents.addAll(generateRosAdapter(component));
         return fileContents;
     }
 
@@ -95,8 +100,10 @@ public class GeneratorRosCpp {
         return generatorCPP.generateFiles(symbol, taggingResolver);
     }
 
-    private FileContent generateRosCompUnit(ExpandedComponentInstanceSymbol component) {
-        FileContent res = new FileContent();
+    private List<FileContent> generateRosAdapter(ExpandedComponentInstanceSymbol component) {
+        List<FileContent> res = new ArrayList<>();
+
+        FileContent apdapter = new FileContent();
 
         LanguageUnitRosCppWrapper languageUnitRosCppWrapper = new LanguageUnitRosCppWrapper();
         languageUnitRosCppWrapper.generateBluePrints(component);
@@ -107,9 +114,16 @@ public class GeneratorRosCpp {
             executionStrategy.generate(currentBluePrint);
 
         String classname = currentBluePrint.getName();
-        res.setFileName(classname + ".h");
+        apdapter.setFileName(classname + ".h");
+        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint));
 
-        res.setFileContent(PrinterHelper.printClass(currentBluePrint));
+        if (generateCMake) {
+            LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
+            FileContent cmake = languageUnitRosCMake.generate(component, languageUnitRosCppWrapper.getAdditionalPackages());
+            res.add(cmake);
+        }
+
+        res.add(apdapter);
         return res;
     }
 

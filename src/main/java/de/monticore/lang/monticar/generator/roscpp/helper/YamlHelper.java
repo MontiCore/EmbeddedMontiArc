@@ -97,7 +97,7 @@ public class YamlHelper {
                     inter.ports = new HashMap<>(
                             inter.ports.entrySet().stream()
                                     .collect(Collectors.toMap(Map.Entry::getKey,
-                                            e -> e.getValue().contains("[") && e.getValue().contains("]") ? PortNameHelper.getFixedMsgFieldName(e.getValue()) : e.getValue())));
+                                            e -> e.getValue().contains("[") && e.getValue().contains("]") ? NameHelper.getFixedMsgFieldName(e.getValue()) : e.getValue())));
                 });
     }
 }

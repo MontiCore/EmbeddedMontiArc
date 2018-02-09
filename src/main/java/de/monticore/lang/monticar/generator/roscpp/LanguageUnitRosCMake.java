@@ -1,0 +1,65 @@
+package de.monticore.lang.monticar.generator.roscpp;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class LanguageUnitRosCMake {
+    private String cmakeTemplate =
+            "cmake_minimum_required(VERSION 3.5)\n" +
+                    "project (<name>)\n" +
+                    "\n" +
+                    "<packages>\n" +
+                    "\n" +
+                    "add_library(<name> <name>.h)\n" +
+                    "set_target_properties(<name> PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "target_link_libraries(<name> <compName> <libraries>)\n" +
+                    "target_include_directories(<name> PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} <include_dirs>)\n" +
+                    "\n" +
+                    "export(TARGETS <name> FILE <name>.cmake)";
+
+
+    FileContent generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages) {
+        FileContent res = new FileContent();
+        res.setFileName("CMakeLists.txt");
+
+        List<String> allPackages = new ArrayList<>();
+        allPackages.addAll(additionalPackages);
+        allPackages.add("roscpp");
+
+        List<String> distinctSortedPackages = allPackages.stream()
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+        String compName = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getWrapperName(componentInstanceSymbol);
+        String packages = distinctSortedPackages.stream()
+                .map(p -> "find_package(" + p + " REQUIRED)")
+                .collect(Collectors.joining("\n"));
+
+        String libraries = distinctSortedPackages.stream()
+                .map(p -> "${" + p + "_LIBRARIES}")
+                .collect(Collectors.joining(" "));
+
+        String include_dirs = distinctSortedPackages.stream()
+                .map(p -> "${" + p + "_INCLUDE_DIRS}")
+                .collect(Collectors.joining(" "));
+
+        String content = cmakeTemplate
+                .replace("<name>", name)
+                .replace("<compName>", compName)
+                .replace("<packages>", packages)
+                .replace("<libraries>", libraries)
+                .replace("<include_dirs>", include_dirs);
+
+        res.setFileContent(content);
+        return res;
+    }
+
+
+}
