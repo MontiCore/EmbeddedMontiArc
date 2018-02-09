@@ -27,7 +27,7 @@ if [ ! -d "MontiSim" ]
 then
   mkdir "MontiSim"
 fi
-cd EmbeddedMontiArc
+cd MontiSim
 for repo in "${msRepos[@]}"
 do
   if [ -d $repo ]
