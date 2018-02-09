@@ -22,15 +22,8 @@ public class GeneratorRosCpp {
     private GeneratorCPP generatorCPP;
     private boolean generateCMake = false;
 
-    //TODO: as tag?
-    private ExecutionStrategy executionStrategy;
-
     public void setGenerateCMake(boolean generateCMake) {
         this.generateCMake = generateCMake;
-    }
-
-    public void setExecutionStrategy(ExecutionStrategy executionStrategy) {
-        this.executionStrategy = executionStrategy;
     }
 
     public void setGenerateCpp(boolean generateCpp) {
@@ -109,9 +102,6 @@ public class GeneratorRosCpp {
         languageUnitRosCppWrapper.generateBluePrints(component);
         //TODO: unsave, does not work with multiple
         BluePrintCPP currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
-        //TODO pull down into LanguageUnitRosCppWrapper
-        if (executionStrategy != null)
-            executionStrategy.generate(currentBluePrint);
 
         String classname = currentBluePrint.getName();
         apdapter.setFileName(classname + ".h");
