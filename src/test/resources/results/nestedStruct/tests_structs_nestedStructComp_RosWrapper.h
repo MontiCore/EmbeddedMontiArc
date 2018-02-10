@@ -1,8 +1,9 @@
 #pragma once
+#include "IAdapter.h"
 #include "tests_structs_nestedStructComp.h"
 #include <package/type2.h>
 #include <ros/ros.h>
-class tests_structs_nestedStructComp_RosWrapper{
+class tests_structs_nestedStructComp_RosWrapper: public IAdapter{
 	tests_structs_nestedStructComp* component;
 	ros::Subscriber name2Subscriber;
 

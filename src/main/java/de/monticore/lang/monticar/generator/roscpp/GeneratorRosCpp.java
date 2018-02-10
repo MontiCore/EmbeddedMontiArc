@@ -105,7 +105,7 @@ public class GeneratorRosCpp {
 
         String classname = currentBluePrint.getName();
         apdapter.setFileName(classname + ".h");
-        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint));
+        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter"));
 
         if (generateCMake) {
             LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();

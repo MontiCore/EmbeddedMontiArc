@@ -35,7 +35,7 @@ public class PrinterHelper {
         return res;
     }
 
-    public static String printClass(BluePrintCPP bluePrint) {
+    public static String printClass(BluePrintCPP bluePrint, String extendsString) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("#pragma once\n");
@@ -44,7 +44,11 @@ public class PrinterHelper {
                 .sorted()
                 .forEach(inlc -> builder.append("#include " + inlc + "\n"));
 
-        builder.append("class " + bluePrint.getName() + "{\n");
+        if (extendsString == null || extendsString.equals("")) {
+            builder.append("class " + bluePrint.getName() + "{\n");
+        } else {
+            builder.append("class " + bluePrint.getName() + extendsString + "{\n");
+        }
 
         bluePrint.getVariables().forEach(v -> builder.append("\t" + PrinterHelper.printVariable(v) + "\n"));
         builder.append("\n");

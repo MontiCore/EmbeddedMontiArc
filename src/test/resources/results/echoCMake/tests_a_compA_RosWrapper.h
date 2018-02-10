@@ -1,9 +1,10 @@
 #pragma once
+#include "IAdapter.h"
 #include "tests_a_compA.h"
 #include <automated_driving_msgs/StampedFloat64.h>
 #include <ros/ros.h>
 #include <rosgraph_msgs/Clock.h>
-class tests_a_compA_RosWrapper{
+class tests_a_compA_RosWrapper: public IAdapter{
 	tests_a_compA* component;
 	ros::Subscriber _clockSubscriber;
 	ros::Publisher _echoPublisher;

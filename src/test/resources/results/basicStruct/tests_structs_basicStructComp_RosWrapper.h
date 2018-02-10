@@ -1,8 +1,9 @@
 #pragma once
+#include "IAdapter.h"
 #include "tests_structs_basicStructComp.h"
 #include <package/type1.h>
 #include <ros/ros.h>
-class tests_structs_basicStructComp_RosWrapper{
+class tests_structs_basicStructComp_RosWrapper: public IAdapter{
 	tests_structs_basicStructComp* component;
 	ros::Subscriber name1Subscriber;
 
