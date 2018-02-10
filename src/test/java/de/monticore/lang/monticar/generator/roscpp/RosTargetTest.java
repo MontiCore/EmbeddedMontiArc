@@ -31,7 +31,6 @@ public class RosTargetTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");
-        generatorRosCpp.setGenerateCpp(false);
 
 //        GeneratorCPP generatorCPP = new GeneratorCPP();
 //        generatorCPP.setGenerationTargetPath("./target/generated-sources-roscpp/intersection/");

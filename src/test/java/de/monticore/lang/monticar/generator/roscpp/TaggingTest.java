@@ -95,6 +95,7 @@ public class TaggingTest extends AbstractSymtabTest {
         testFilesAreEqual(files, "echo/");
     }
 
+    @Ignore
     @Test
     public void testBasicStruct() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
@@ -112,6 +113,7 @@ public class TaggingTest extends AbstractSymtabTest {
         testFilesAreEqual(files, "basicStruct/", targetPath);
     }
 
+    @Ignore
     @Test
     public void testNestedStruct() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");

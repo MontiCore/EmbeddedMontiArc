@@ -25,7 +25,6 @@ public class CMakeGenerationTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/echoCMake/");
-        generatorRosCpp.setGenerateCpp(false);
         generatorRosCpp.setGenerateCMake(true);
         List<File> files = TagHelper.generate(generatorRosCpp, taggingResolver, componentInstanceSymbol);
 

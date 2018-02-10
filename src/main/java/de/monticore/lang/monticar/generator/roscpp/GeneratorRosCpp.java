@@ -3,7 +3,6 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -18,16 +17,10 @@ import java.util.List;
 public class GeneratorRosCpp {
 
     private String generationTargetPath;
-    private boolean generateCpp = true;
-    private GeneratorCPP generatorCPP;
     private boolean generateCMake = false;
 
     public void setGenerateCMake(boolean generateCMake) {
         this.generateCMake = generateCMake;
-    }
-
-    public void setGenerateCpp(boolean generateCpp) {
-        this.generateCpp = generateCpp;
     }
 
     public String getGenerationTargetPath() {
@@ -48,10 +41,6 @@ public class GeneratorRosCpp {
         for (FileContent fileContent : fileContents) {
 
             files.add(generateFile(fileContent));
-        }
-
-        if (generateCpp) {
-            files.addAll(generateCppFiles(symtab, component));
         }
 
         return files;
@@ -76,21 +65,6 @@ public class GeneratorRosCpp {
         List<FileContent> fileContents = new ArrayList<>();
         fileContents.addAll(generateRosAdapter(component));
         return fileContents;
-    }
-
-    public void setGeneratorCPP(GeneratorCPP generatorCPP) {
-        this.generatorCPP = generatorCPP;
-    }
-
-    private List<File> generateCppFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol symbol) throws IOException {
-        //If user does not specify otherwise init with useful defaults
-        if (generatorCPP == null) {
-            generatorCPP = new GeneratorCPP();
-            generatorCPP.useArmadilloBackend();
-        }
-        //TODO: let user specify 2 different paths?
-        generatorCPP.setGenerationTargetPath(generationTargetPath);
-        return generatorCPP.generateFiles(symbol, taggingResolver);
     }
 
     private List<FileContent> generateRosAdapter(ExpandedComponentInstanceSymbol component) {

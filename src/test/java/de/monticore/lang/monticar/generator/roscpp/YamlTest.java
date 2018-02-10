@@ -78,7 +78,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/arrayGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/array.yaml", symtab, generatorRosCpp);
@@ -109,7 +108,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/arraySyntaxGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/arrayColonSyntax.yaml", symtab, generatorRosCpp);
@@ -140,7 +138,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/multipleGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/multipleComponents.yaml", symtab, generatorRosCpp);
@@ -161,7 +158,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/converterMethodGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/converterMethod.yaml", symtab, generatorRosCpp);
