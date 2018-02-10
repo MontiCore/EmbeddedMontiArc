@@ -1,0 +1,5 @@
+package tests.structs;
+
+struct Trajectory{
+  PositionWithDeltaTime[] positionsWithDeltaTime;
+}

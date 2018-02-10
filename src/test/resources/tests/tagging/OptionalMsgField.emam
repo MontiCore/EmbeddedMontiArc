@@ -1,0 +1,6 @@
+package tests.tagging;
+
+component OptionalMsgField{
+    port in Q in1;
+    port out Q out1;
+}
