@@ -146,7 +146,7 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(files.size() == 2);
 
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-        List<String> positiveFileList = Lists.newArrayList("tests_a_compA_RosWrapper.h", "test_basicPorts_RosWrapper.h");
+        List<String> positiveFileList = Lists.newArrayList("tests_a_compA_RosAdapter.h", "test_basicPorts_RosAdapter.h");
 
         assertTrue(fileNames.containsAll(positiveFileList));
     }

@@ -3,7 +3,7 @@
 #include "ba_intersection_intersectionController.h"
 #include <automated_driving_msgs/ObjectStateArray.h>
 #include <sim_intersection/BoolWithId.h>
-class ba_intersection_intersectionController_RosWrapper{
+class ba_intersection_intersectionController_RosAdapter{
 	ba_intersection_intersectionController component;
 	ros::Subscriber _sim_objects_ground_truthSubscriber;
 	ros::Publisher _stopPublisher;
@@ -16,8 +16,8 @@ public:
 		component.objectIdIn[1] = msg->objects[1].object_id;
 	}
 
-	ba_intersection_intersectionController_RosWrapper(ros::NodeHandle node_handle, ros::NodeHandle private_node_handle){
-		_sim_objects_ground_truthSubscriber = node_handle.subscribe("/sim/objects_ground_truth" ,5,&ba_intersection_intersectionController_RosWrapper::_sim_objects_ground_truthCallback, this, ros::TransportHints().tcpNoDelay());
+	ba_intersection_intersectionController_RosAdapter(ros::NodeHandle node_handle, ros::NodeHandle private_node_handle){
+		_sim_objects_ground_truthSubscriber = node_handle.subscribe("/sim/objects_ground_truth" ,5,&ba_intersection_intersectionController_RosAdapter::_sim_objects_ground_truthCallback, this, ros::TransportHints().tcpNoDelay());
 		_stopPublisher = node_handle.advertise<sim_intersection::BoolWithId>("/stop",5);
 	}
 

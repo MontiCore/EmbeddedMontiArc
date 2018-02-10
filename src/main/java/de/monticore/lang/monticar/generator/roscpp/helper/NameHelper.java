@@ -45,8 +45,8 @@ public class NameHelper {
         return shortName + "[" + cppIndex + "]" + rest;
     }
 
-    public static String getWrapperName(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.getFullName().replace('.', '_') + "_RosWrapper";
+    public static String getAdapterName(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        return componentInstanceSymbol.getFullName().replace('.', '_') + "_RosAdapter";
     }
 
     public static String getComponentNameTargetLanguage(String fullName) {

@@ -72,10 +72,10 @@ public class GeneratorRosCpp {
 
         FileContent apdapter = new FileContent();
 
-        LanguageUnitRosCppWrapper languageUnitRosCppWrapper = new LanguageUnitRosCppWrapper();
-        languageUnitRosCppWrapper.generateBluePrints(component);
+        LanguageUnitRosCppAdapter languageUnitRosCppAdapter = new LanguageUnitRosCppAdapter();
+        languageUnitRosCppAdapter.generateBluePrints(component);
         //TODO: unsave, does not work with multiple
-        BluePrintCPP currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
+        BluePrintCPP currentBluePrint = languageUnitRosCppAdapter.getBluePrints().get(0);
 
         String classname = currentBluePrint.getName();
         apdapter.setFileName(classname + ".h");
@@ -83,7 +83,7 @@ public class GeneratorRosCpp {
 
         if (generateCMake) {
             LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
-            FileContent cmake = languageUnitRosCMake.generate(component, languageUnitRosCppWrapper.getAdditionalPackages());
+            FileContent cmake = languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages());
             res.add(cmake);
         }
 

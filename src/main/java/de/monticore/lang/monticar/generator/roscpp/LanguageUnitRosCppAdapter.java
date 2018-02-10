@@ -12,7 +12,7 @@ import jline.internal.Log;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LanguageUnitRosCppWrapper {
+public class LanguageUnitRosCppAdapter {
 
     private List<BluePrintCPP> bluePrints = new ArrayList<>();
     private Map<Variable, RosConnectionSymbol> subscribers = new HashMap<>();
@@ -27,12 +27,12 @@ public class LanguageUnitRosCppWrapper {
     }
 
     public void generateBluePrints(ExpandedComponentInstanceSymbol component) {
-        this.bluePrints.add(generateWrapperBluePrint(component));
+        this.bluePrints.add(generateAdapterBluePrint(component));
     }
 
-    private BluePrintCPP generateWrapperBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
+    private BluePrintCPP generateAdapterBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
 
-        String name = NameHelper.getWrapperName(componentSymbol);
+        String name = NameHelper.getAdapterName(componentSymbol);
         BluePrintCPP currentBluePrint = new BluePrintCPP(name);
 
         List<PortSymbol> rosPorts = componentSymbol.getPorts().stream()

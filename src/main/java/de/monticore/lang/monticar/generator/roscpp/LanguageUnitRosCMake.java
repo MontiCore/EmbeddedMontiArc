@@ -37,7 +37,7 @@ public class LanguageUnitRosCMake {
                 .collect(Collectors.toList());
 
         String compName = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
-        String name = NameHelper.getWrapperName(componentInstanceSymbol);
+        String name = NameHelper.getAdapterName(componentInstanceSymbol);
         String packages = distinctSortedPackages.stream()
                 .map(p -> "find_package(" + p + " REQUIRED)")
                 .collect(Collectors.joining("\n"));
