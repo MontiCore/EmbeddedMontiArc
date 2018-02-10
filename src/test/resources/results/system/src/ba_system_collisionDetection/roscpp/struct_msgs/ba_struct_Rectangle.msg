@@ -1,0 +1,4 @@
+struct_msgs/ba_struct_Point pointA
+struct_msgs/ba_struct_Point pointB
+struct_msgs/ba_struct_Point pointC
+struct_msgs/ba_struct_Point pointD

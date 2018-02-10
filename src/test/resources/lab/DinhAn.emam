@@ -1,0 +1,13 @@
+package lab;
+
+component DinhAn{
+    ports in Z loop,
+          out Z out1;
+
+    implementation Math{
+        static Z counter = 0;
+        counter = counter + 1;
+        out1 = (counter + 1) + loop;
+    }
+
+}

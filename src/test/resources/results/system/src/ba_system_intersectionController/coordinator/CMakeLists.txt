@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.5)
+project (Coordinator_ba_system_intersectionController CXX)
+
+set (CMAKE_CXX_STANDARD 11)
+set (THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+add_executable(Coordinator_ba_system_intersectionController Coordinator_ba_system_intersectionController.cpp)
+set_target_properties(Coordinator_ba_system_intersectionController PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(Coordinator_ba_system_intersectionController RosAdapter_ba_system_intersectionController ba_system_intersectionController Threads::Threads)
+target_include_directories(Coordinator_ba_system_intersectionController PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+export(TARGETS Coordinator_ba_system_intersectionController FILE Coordinator_ba_system_intersectionController.cmake)
