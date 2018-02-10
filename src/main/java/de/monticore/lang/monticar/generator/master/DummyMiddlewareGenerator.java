@@ -19,22 +19,22 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
 
         List<File> res = new ArrayList<>();
         res.add(FileHelper.generateFile(generationTargetPath, generateCMake(componentInstanceSymbol)));
-        res.add(FileHelper.generateFile(generationTargetPath, generateWrapper(componentInstanceSymbol)));
+        res.add(FileHelper.generateFile(generationTargetPath, generateAdapter(componentInstanceSymbol)));
         return res;
     }
 
 
-    private String dummyWrapperTemplate = "#pragma once\n" +
+    private String dummyAdapterTemplate = "#pragma once\n" +
             "#include \"${compName}.h\"\n" +
             "#include <thread>\n" +
             "#include <chrono>\n" +
             "#include \"IAdapter.h\"\n" +
             "\n" +
-            "class ${compName}_DummyWrapper: public IAdapter{\n" +
+            "class ${compName}_DummyAdapter: public IAdapter{\n" +
             "\t${compName}* component;\n" +
             "\n" +
             "public:\n" +
-            "\t${compName}_DummyWrapper(){\n" +
+            "\t${compName}_DummyAdapter(){\n" +
             "\n" +
             "\t}\n" +
             "\n" +
@@ -53,13 +53,13 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
             "\t\n" +
             "};";
 
-    private FileContent generateWrapper(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
-        String content = dummyWrapperTemplate
+        String content = dummyAdapterTemplate
                 .replace("${compName}", name);
 
         FileContent res = new FileContent();
-        res.setFileName(name + "_DummyWrapper.h");
+        res.setFileName(name + "_DummyAdapter.h");
         res.setFileContent(content);
         return res;
     }
@@ -72,13 +72,13 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
 
     private String cmakeTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (${compName}_DummyWrapper)\n" +
+                    "project (${compName}_DummyAdapter)\n" +
                     "\n" +
-                    "add_library(${compName}_DummyWrapper ${compName}_DummyWrapper.h)\n" +
-                    "set_target_properties(${compName}_DummyWrapper PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(${compName}_DummyWrapper ${compName})\n" +
-                    "target_include_directories(${compName}_DummyWrapper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "export(TARGETS ${compName}_DummyWrapper FILE ${compName}_DummyWrapper.cmake)";
+                    "add_library(${compName}_DummyAdapter ${compName}_DummyAdapter.h)\n" +
+                    "set_target_properties(${compName}_DummyAdapter PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "target_link_libraries(${compName}_DummyAdapter ${compName})\n" +
+                    "target_include_directories(${compName}_DummyAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "export(TARGETS ${compName}_DummyAdapter FILE ${compName}_DummyAdapter.cmake)";
 
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();

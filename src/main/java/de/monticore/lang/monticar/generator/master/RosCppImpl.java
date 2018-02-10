@@ -15,7 +15,6 @@ public class RosCppImpl implements GeneratorImpl {
     @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
-        generatorRosCpp.setGenerateCpp(false);
         generatorRosCpp.setGenerateCMake(true);
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
         return TagHelper.generate(generatorRosCpp, taggingResolver, componentInstanceSymbol);

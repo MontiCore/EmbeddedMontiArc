@@ -122,7 +122,7 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
 
         //TODO: DIRTY HACK!
         String addAdapters = filesNames.stream()
-                .filter(fn -> fn.matches(name + "\\w*Wrapper\\.h"))
+                .filter(fn -> fn.matches(name + "\\w*Adapter\\.h"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .map(fn -> "  adapters.push_back(new " + fn + "());")
                 .collect(Collectors.joining("\n"));
