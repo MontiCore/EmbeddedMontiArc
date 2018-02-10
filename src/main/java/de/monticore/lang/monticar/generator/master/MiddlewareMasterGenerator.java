@@ -32,16 +32,16 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
         res.setFileName("IAdapter.h");
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
         String iAdapterTemplate = "#pragma once\n" +
-                "#include \"<name>.h\"\n" +
+                "#include \"${compName}.h\"\n" +
                 "\n" +
                 "class IAdapter{\n" +
                 "\tpublic:\n" +
                 "\t\tvirtual ~IAdapter(){}\n" +
-                "\t\tvirtual void init(<name>* comp) = 0;\n" +
+                "\t\tvirtual void init(${compName}* comp) = 0;\n" +
                 "\t\tvirtual void tick() = 0;\n" +
                 "};";
 
-        res.setFileContent(iAdapterTemplate.replace("<name>", name));
+        res.setFileContent(iAdapterTemplate.replace("${compName}", name));
 
         return res;
     }
@@ -55,12 +55,12 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
                     "#include <list>\n" +
                     "#include \"IAdapter.h\"\n" +
                     "\n" +
-                    "<includes>" +
+                    "${includes}" +
                     "\n" +
                     "using namespace std;\n" +
                     "using namespace chrono;\n" +
                     "\n" +
-                    "void startMiddleware(IAdapter& adapter,<name>& comp,atomic<bool>& done){\n" +
+                    "void startMiddleware(IAdapter& adapter,${compName}& comp,atomic<bool>& done){\n" +
                     "  adapter.init(&comp);\n" +
                     "  done = true;\n" +
                     "}\n" +
@@ -68,11 +68,11 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
                     "int main() \n" +
                     "{\n" +
                     "  atomic<bool> done(false);\n" +
-                    "  <name> comp;\n" +
+                    "  ${compName} comp;\n" +
                     "  comp.init();\n" +
                     "\n" +
                     "  list<IAdapter*> adapters;\n" +
-                    "<addAdapters>" +
+                    "${addAdapters}" +
                     "\n" +
                     "  list<thread*> threads;\n" +
                     "  for(auto a : adapters){\n" +
@@ -128,9 +128,9 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
                 .collect(Collectors.joining("\n"));
 
         String content = coordinatorTemplate
-                .replace("<name>", name)
-                .replace("<includes>", includes)
-                .replace("<addAdapters>", addAdapters);
+                .replace("${compName}", name)
+                .replace("${includes}", includes)
+                .replace("${addAdapters}", addAdapters);
 
 
         FileContent res = new FileContent();
@@ -142,16 +142,16 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
 
     private String cmakeListsTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (Coordinator_<name> CXX)\n" +
+                    "project (Coordinator_${compName} CXX)\n" +
                     "\n" +
                     "set (CMAKE_CXX_STANDARD 11)\n" +
                     "\n" +
-                    "add_executable(Coordinator_<name> Coordinator_<name>.cpp)\n" +
-                    "set_target_properties(Coordinator_<name> PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(Coordinator_<name> <targets>)\n" +
-                    "target_include_directories(Coordinator_<name> PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "add_executable(Coordinator_${compName} Coordinator_${compName}.cpp)\n" +
+                    "set_target_properties(Coordinator_${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "target_link_libraries(Coordinator_${compName} ${targets})\n" +
+                    "target_include_directories(Coordinator_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
                     "\n" +
-                    "export(TARGETS Coordinator_<name> FILE Coordinator_<name>.cmake)";
+                    "export(TARGETS Coordinator_${compName} FILE Coordinator_${compName}.cmake)";
 
     private FileContent generateCMakeList(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
         FileContent res = new FileContent();
@@ -165,8 +165,8 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
                 .collect(Collectors.joining(" "));
 
         String content = cmakeListsTemplate
-                .replace("<targets>", targets)
-                .replace("<name>", name);
+                .replace("${targets}", targets)
+                .replace("${compName}", name);
         res.setFileName("CMakeLists.txt");
         res.setFileContent(content);
         return res;

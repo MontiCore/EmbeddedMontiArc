@@ -15,11 +15,11 @@ public class CPPImpl implements GeneratorImpl {
     private String generationTargetPath;
     private String cmakeTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project(<name> LANGUAGES CXX)\n" +
-                    "add_library(<name> <name>.h)\n" +
-                    "target_include_directories(<name> PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "set_target_properties(<name> PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "export(TARGETS <name> FILE <name>.cmake)";
+                    "project(${compName} LANGUAGES CXX)\n" +
+                    "add_library(${compName} ${compName}.h)\n" +
+                    "target_include_directories(${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "set_target_properties(${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "export(TARGETS ${compName} FILE ${compName}.cmake)";
 
     //TODO: make GeneratorCpp implement GeneratorImpl directly!
     @Override
@@ -44,7 +44,7 @@ public class CPPImpl implements GeneratorImpl {
         FileContent cmake = new FileContent();
         cmake.setFileName("CMakeLists.txt");
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
-        cmake.setFileContent(cmakeTemplate.replace("<name>", name));
+        cmake.setFileContent(cmakeTemplate.replace("${compName}", name));
         return cmake;
     }
 }

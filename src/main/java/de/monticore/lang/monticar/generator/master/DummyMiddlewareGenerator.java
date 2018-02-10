@@ -25,16 +25,16 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
 
 
     private String dummyWrapperTemplate = "#pragma once\n" +
-            "#include \"<name>.h\"\n" +
+            "#include \"${compName}.h\"\n" +
             "#include <thread>\n" +
             "#include <chrono>\n" +
             "#include \"IAdapter.h\"\n" +
             "\n" +
-            "class <name>_DummyWrapper: public IAdapter{\n" +
-            "\t<name>* component;\n" +
+            "class ${compName}_DummyWrapper: public IAdapter{\n" +
+            "\t${compName}* component;\n" +
             "\n" +
             "public:\n" +
-            "\t<name>_DummyWrapper(){\n" +
+            "\t${compName}_DummyWrapper(){\n" +
             "\n" +
             "\t}\n" +
             "\n" +
@@ -42,7 +42,7 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
             "\t\tcout << \"Dummy publish data: component.out1 = \"<< component->out1 << endl;\n" +
             "\t}\n" +
             "\t\n" +
-            "\tvoid init(<name>* comp){\n" +
+            "\tvoid init(${compName}* comp){\n" +
             "\t\tthis->component = comp;\n" +
             "\t\twhile(1){\n" +
             "       \t\t    std::this_thread::sleep_for(std::chrono::seconds(1));\n" +
@@ -56,7 +56,7 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
     private FileContent generateWrapper(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = dummyWrapperTemplate
-                .replace("<name>", name);
+                .replace("${compName}", name);
 
         FileContent res = new FileContent();
         res.setFileName(name + "_DummyWrapper.h");
@@ -72,19 +72,19 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
 
     private String cmakeTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (<name>_DummyWrapper)\n" +
+                    "project (${compName}_DummyWrapper)\n" +
                     "\n" +
-                    "add_library(<name>_DummyWrapper <name>_DummyWrapper.h)\n" +
-                    "set_target_properties(<name>_DummyWrapper PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(<name>_DummyWrapper <name>)\n" +
-                    "target_include_directories(<name>_DummyWrapper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "export(TARGETS <name>_DummyWrapper FILE <name>_DummyWrapper.cmake)";
+                    "add_library(${compName}_DummyWrapper ${compName}_DummyWrapper.h)\n" +
+                    "set_target_properties(${compName}_DummyWrapper PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "target_link_libraries(${compName}_DummyWrapper ${compName})\n" +
+                    "target_include_directories(${compName}_DummyWrapper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "export(TARGETS ${compName}_DummyWrapper FILE ${compName}_DummyWrapper.cmake)";
 
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = cmakeTemplate
-                .replace("<name>", name);
+                .replace("${compName}", name);
 
         res.setFileName("CMakeLists.txt");
         res.setFileContent(content);
