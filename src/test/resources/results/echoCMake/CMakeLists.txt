@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.5)
-project (tests_a_compA_RosAdapter)
+project (RosAdapter_tests_a_compA)
 
 find_package(automated_driving_msgs REQUIRED)
 find_package(roscpp REQUIRED)
 find_package(rosgraph_msgs REQUIRED)
 
-add_library(tests_a_compA_RosAdapter tests_a_compA_RosAdapter.h)
-set_target_properties(tests_a_compA_RosAdapter PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(tests_a_compA_RosAdapter tests_a_compA ${automated_driving_msgs_LIBRARIES} ${roscpp_LIBRARIES} ${rosgraph_msgs_LIBRARIES})
-target_include_directories(tests_a_compA_RosAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${automated_driving_msgs_INCLUDE_DIRS} ${roscpp_INCLUDE_DIRS} ${rosgraph_msgs_INCLUDE_DIRS})
+add_library(RosAdapter_tests_a_compA RosAdapter_tests_a_compA.h)
+set_target_properties(RosAdapter_tests_a_compA PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(RosAdapter_tests_a_compA tests_a_compA ${automated_driving_msgs_LIBRARIES} ${roscpp_LIBRARIES} ${rosgraph_msgs_LIBRARIES})
+target_include_directories(RosAdapter_tests_a_compA PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${automated_driving_msgs_INCLUDE_DIRS} ${roscpp_INCLUDE_DIRS} ${rosgraph_msgs_INCLUDE_DIRS})
 
-export(TARGETS tests_a_compA_RosAdapter FILE tests_a_compA_RosAdapter.cmake)
+export(TARGETS RosAdapter_tests_a_compA FILE RosAdapter_tests_a_compA.cmake)

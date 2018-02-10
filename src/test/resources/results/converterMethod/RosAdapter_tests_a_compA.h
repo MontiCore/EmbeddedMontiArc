@@ -5,7 +5,7 @@
 #include <automated_driving_msgs/StampedFloat64.h>
 #include <ros/ros.h>
 #include <rosgraph_msgs/Clock.h>
-class tests_a_compA_RosAdapter: public IAdapter{
+class RosAdapter_tests_a_compA: public IAdapter{
 	tests_a_compA* component;
 	ros::Subscriber _clockSubscriber;
 	ros::Publisher _echoPublisher;
@@ -15,7 +15,7 @@ public:
 		component->rosIn = MethodHelper::convertClockToDouble(msg);
 	}
 
-	tests_a_compA_RosAdapter(){
+	RosAdapter_tests_a_compA(){
 		
 	}
 
@@ -23,9 +23,9 @@ public:
 		this->component = comp;
 		char* tmp = strdup("");
 		int i = 0;
-		ros::init(i, &tmp, "tests_a_compA_RosAdapter_node");
+		ros::init(i, &tmp, "RosAdapter_tests_a_compA_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
-		_clockSubscriber = node_handle.subscribe("/clock" ,5,&tests_a_compA_RosAdapter::_clockCallback, this, ros::TransportHints().tcpNoDelay());
+		_clockSubscriber = node_handle.subscribe("/clock" ,5,&RosAdapter_tests_a_compA::_clockCallback, this, ros::TransportHints().tcpNoDelay());
 		_echoPublisher = node_handle.advertise<automated_driving_msgs::StampedFloat64>("/echo",5);
 		ros::spin();
 	}

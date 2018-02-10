@@ -46,7 +46,7 @@ public class NameHelper {
     }
 
     public static String getAdapterName(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.getFullName().replace('.', '_') + "_RosAdapter";
+        return "RosAdapter_" + componentInstanceSymbol.getFullName().replace('.', '_');
     }
 
     public static String getComponentNameTargetLanguage(String fullName) {
