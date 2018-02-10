@@ -114,15 +114,13 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
                 .map(File::getName)
                 .collect(Collectors.toList());
 
-        //TODO: DIRTY HACK!
         String includes = filesNames.stream()
-                .filter(fn -> fn.matches(name + "\\w*\\.h"))
+                .filter(fn -> fn.matches("(\\w+(Adapter_))?(" + name + "\\.h)"))
                 .map(fn -> "#include \"" + fn + "\"")
                 .collect(Collectors.joining("\n"));
 
-        //TODO: DIRTY HACK!
         String addAdapters = filesNames.stream()
-                .filter(fn -> fn.matches(name + "\\w*Adapter\\.h"))
+                .filter(fn -> fn.matches("\\w+Adapter_" + name + "\\.h"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .map(fn -> "  adapters.push_back(new " + fn + "());")
                 .collect(Collectors.joining("\n"));
@@ -160,7 +158,7 @@ public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
 
         String targets = files.stream()
                 .map(File::getName)
-                .filter(fn -> fn.matches(name + "\\w*\\.h"))
+                .filter(fn -> fn.matches("(\\w+(Adapter_))?(" + name + "\\.h)"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .collect(Collectors.joining(" "));
 

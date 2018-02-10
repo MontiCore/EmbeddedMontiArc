@@ -30,11 +30,11 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
             "#include <chrono>\n" +
             "#include \"IAdapter.h\"\n" +
             "\n" +
-            "class ${compName}_DummyAdapter: public IAdapter{\n" +
+            "class DummyAdapter_${compName}: public IAdapter{\n" +
             "\t${compName}* component;\n" +
             "\n" +
             "public:\n" +
-            "\t${compName}_DummyAdapter(){\n" +
+            "\tDummyAdapter_${compName}(){\n" +
             "\n" +
             "\t}\n" +
             "\n" +
@@ -59,7 +59,7 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
                 .replace("${compName}", name);
 
         FileContent res = new FileContent();
-        res.setFileName(name + "_DummyAdapter.h");
+        res.setFileName("DummyAdapter_" + name + ".h");
         res.setFileContent(content);
         return res;
     }
@@ -72,13 +72,13 @@ public class DummyMiddlewareGenerator implements GeneratorImpl {
 
     private String cmakeTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (${compName}_DummyAdapter)\n" +
+                    "project (DummyAdapter_${compName})\n" +
                     "\n" +
-                    "add_library(${compName}_DummyAdapter ${compName}_DummyAdapter.h)\n" +
-                    "set_target_properties(${compName}_DummyAdapter PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(${compName}_DummyAdapter ${compName})\n" +
-                    "target_include_directories(${compName}_DummyAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "export(TARGETS ${compName}_DummyAdapter FILE ${compName}_DummyAdapter.cmake)";
+                    "add_library(DummyAdapter_${compName} DummyAdapter_${compName}.h)\n" +
+                    "set_target_properties(DummyAdapter_${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "target_link_libraries(DummyAdapter_${compName} ${compName})\n" +
+                    "target_include_directories(DummyAdapter_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "export(TARGETS DummyAdapter_${compName} FILE DummyAdapter_${compName}.cmake)";
 
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
