@@ -73,7 +73,11 @@ public class CoCoTester {
             String FileName    = fileName.substring(fileName.replace("\\","/").lastIndexOf("/") + 1, fileName.length());
             String modelPath   = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
             String modelName   = PackageName + "." + FileName.replace(".emam", "").replace(".ema", "");
+            String qualifiedName = FileName.replace(".emam", "").replace(".ema", "");
+            qualifiedName = PackageName + "." + ("" + qualifiedName.charAt(0)).toLowerCase() + qualifiedName.substring(1, qualifiedName.length());
             testResult.setModelName(modelName);
+            testResult.setModelPath(modelPath);
+            testResult.setQualifiedName(qualifiedName);
 
             ASTEmbeddedMontiArcNode astToTest = null;
             try {

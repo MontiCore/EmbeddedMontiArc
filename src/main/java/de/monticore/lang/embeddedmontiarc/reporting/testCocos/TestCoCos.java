@@ -1,6 +1,5 @@
 package de.monticore.lang.embeddedmontiarc.reporting.testCocos;
 
-import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.GitHubHelper;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.SearchFiles;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResultPrinter;
@@ -47,9 +46,14 @@ public class TestCoCos {
                     TestResult testResult = null;
 
                     testResult = ccT.testCoCos(file.getAbsolutePath());
+                    testResult.setFilePath(file);
+                    testResult.setProjectPath(projectDir);
 //                    testResult.setPath(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
                     testResult.setPath(getVFSTag(projectDir, file, zipName));
-
+                    String relativeProject = projectDir.getName();
+                    testResult.setProject(relativeProject);
+                    testResult.setZipName(zipName);
+                    
                     testResults.add(testResult);
                 }
             }

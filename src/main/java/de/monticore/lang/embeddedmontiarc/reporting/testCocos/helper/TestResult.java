@@ -1,12 +1,21 @@
 package de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 public class TestResult {
+    private File filePath;
+    private File projectPath;
+
+    private String modelPath = "";
+    private String qualifiedName = "";
     private String modelName = "";
     private String path = "";
+    private String project = "";
     private String type = "";
+    private String svgPath = "";
+    private String zipName = "";
     private List<String> errorMessage = new LinkedList<>();
     private int parsed = 0;
     private int resolve = 0;
@@ -34,10 +43,6 @@ public class TestResult {
         this.setPath(path);
     }
 
-    public String getPath() {
-        return path;
-    }
-
     public boolean isValid() {
         return this.getComponentCapitalized() != -1 && this.getComponentInstanceNamesUnique() != -1 && this.getComponentInstanceNamesUnique() != -1 &&
                 this.getConnectorEndPointCorrectlyQualified() != -1 && this.getDefaultParametersHaveCorrectOrder() != -1 &&
@@ -47,6 +52,26 @@ public class TestResult {
                 this.getSubComponentsConnected() != -1 && this.getTopLevelComponentHasNoInstanceName() != -1 &&
                 this.getTypeParameterNamesUnique() != -1 && this.getUniquePorts() != -1 && this.getParsed() != -1 &&
                 this.getResolve() != -1;
+    }
+
+    public String getVFSLink() {
+        String zipName_ = zipName;
+
+        String urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName_;
+        zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
+        String name = getProject() +
+                getModelPath().substring(getModelPath().indexOf(getProject())) +
+                getModelName().replace(".","/") +
+                "." + getType().toLowerCase();
+        String displayName = getModelName();
+        if(modelPath.contains("MontiSim"))
+            displayName = "MontiSim/" + displayName;
+        return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+                + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public String getType() {
@@ -251,5 +276,70 @@ public class TestResult {
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
+    }
+
+    public String getModelPath() {
+        return modelPath;
+    }
+
+    public void setModelPath(String modelPath) {
+        String res = modelPath.replace("\\","/");
+        if ( res.charAt(res.length() - 1) != '/')
+            res = res + "/";
+        this.modelPath = res;
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        String res = project.replace("\\","/");
+        if ( res.charAt(res.length() - 1) != '/')
+            res = res + "/";
+        this.project = res;
+    }
+
+    public String getSvgPath() {
+        if (svgPath.equals(""))
+            return "";
+        else
+            return svgPath.substring("report/".length());
+    }
+
+    public void setSvgPath(String svgPath) {
+        this.svgPath = svgPath.replace("\\","/");
+    }
+
+    public String getZipName() {
+        return zipName;
+    }
+
+    public void setZipName(String zipName) {
+        this.zipName = zipName;
+    }
+
+    public File getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(File filePath) {
+        this.filePath = filePath;
+    }
+
+    public File getProjectPath() {
+        return projectPath;
+    }
+
+    public void setProjectPath(File projectPath) {
+        this.projectPath = projectPath;
     }
 }

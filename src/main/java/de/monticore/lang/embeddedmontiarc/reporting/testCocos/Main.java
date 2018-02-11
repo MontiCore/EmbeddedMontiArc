@@ -1,5 +1,6 @@
 package de.monticore.lang.embeddedmontiarc.reporting.testCocos;
 
+import de.monticore.lang.embeddedmontiarc.reporting.helper.VisualisationHelper;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResultPrinter;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestsEndWithTestResult;
@@ -14,7 +15,8 @@ public class Main {
         if(context.isTestCoCos()){
             TestCoCos tcc = new TestCoCos();
             List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(),"ema", "emam");
-            TestResultPrinter.printTestResults(testResults, context.getOutput() + "/data.json", context.isMerge());
+            VisualisationHelper.generateSVGs(testResults, context.getOutput() + "SVG");
+            TestResultPrinter.printTestResults(testResults, context.getOutput() + "data.json", context.isMerge());
         }
         if(context.isTestsEndWithTest()) {
             TestsEndWithTest tewt = new TestsEndWithTest();
@@ -52,7 +54,10 @@ public class Main {
         }
 
         public void setOutput(String output) {
-            this.output = output;
+            String res = output.replace("\\","/");
+            if ( res.charAt(res.length() - 1) != '/')
+                res = res + "/";
+            this.output = res;
         }
 
         public String getProjectRoot() {

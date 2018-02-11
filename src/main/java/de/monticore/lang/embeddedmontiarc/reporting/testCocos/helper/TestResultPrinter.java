@@ -11,7 +11,8 @@ public class TestResultPrinter {
 
     private static String[] names = {
             "\"ModelName\"",
-            "\"Path\"",
+            "\"Name\"",
+            "\"OnlineIDE\"",
             "\"LogNr\"",
             "\"LogOutput\"",
             "\"FileType\"",
@@ -107,7 +108,8 @@ public class TestResultPrinter {
             ip.println("{");
             ip.indent();
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
-            ip.println(names[i++] + ": \"" + modelName_hiddenPath(testResult.getModelName(), testResult.getPath()) + "\",");
+            ip.println(names[i++] + ": \"" + modelName_hiddenPath(testResult.getModelName(), getVisulisationLink(testResult)) + "\",");
+            ip.println(names[i++] + ": \"" + getVFSTag(testResult) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getType() + "\",");
@@ -139,6 +141,47 @@ public class TestResultPrinter {
         ip.println("]");
 
         return ip.getContent();
+    }
+
+    private static String getVFSTag(TestResult testResult) {
+        String zipName = testResult.getZipName();
+        File file = testResult.getFilePath();
+        File project = testResult.getProjectPath();
+        String urlToZip;
+        String zipName_;
+        if(zipName == null)
+            zipName_ = "models1a6a7c6e450b6d996a79c701efdd4e69.zip";
+        else
+            zipName_ = zipName;
+
+        urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName_;
+        zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
+        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
+        String displayName = name;
+        if(project.getAbsolutePath().contains("MontiSim"))
+            displayName = "MontiSim/" + displayName;
+        return ("<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+                + urlToZip + "&openFile=/" + name + "'>" +
+                "<img border='0' alt='" + displayName + "' src='images/favicon.ico'>" +
+                "</a>").replace("\\","/");
+    }
+
+    private static String getVisulisationLink(TestResult testResult) {
+        File file = testResult.getFilePath();
+        File project = testResult.getProjectPath();
+        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
+        String displayName = name;
+
+        if(project.getAbsolutePath().contains("MontiSim")) {
+            displayName = "MontiSim/" + displayName;
+        }
+        if(testResult.getSvgPath().equals(""))
+            return displayName;
+        else
+            return "<a target='_blank' href='" +
+                        testResult.getSvgPath().replace("\\","/") + ".html'>" +
+                        displayName +
+                    "</a>";
     }
 
     public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path){
