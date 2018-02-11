@@ -17,6 +17,7 @@ public class VisualisationHelper {
         if (!out.exists())
             out.mkdirs();
         for (TestResult tr: testResults) {
+            System.out.println("Generating SVG for file " + tr.getModelName());
             String fileOut = output + tr.getProject();
             generateSVG(tr, fileOut);
         }
