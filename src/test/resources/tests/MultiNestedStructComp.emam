@@ -1,0 +1,6 @@
+package tests;
+import structs.MultiNestedStruct;
+
+component MultiNestedStructComp{
+    port in MultiNestedStruct inMultiNested;
+}

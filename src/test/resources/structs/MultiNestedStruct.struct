@@ -1,0 +1,8 @@
+package structs;
+
+struct MultiNestedStruct{
+    NestedStruct fieldMultiNested1;
+    NestedStruct fieldMultiNested2;
+    BasicStruct fieldNested;
+    Q fieldQ;
+}

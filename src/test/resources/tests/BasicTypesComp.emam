@@ -1,6 +1,6 @@
 package tests;
 
-component BasicTypes{
+component BasicTypesComp{
     ports in Q inQ,
     //      in N inN,
           in Z inZ,

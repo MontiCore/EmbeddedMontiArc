@@ -1,0 +1,9 @@
+package structs;
+
+struct NestedStruct{
+    BasicStruct fieldNested1;
+    BasicStruct fieldNested2;
+    Q fieldQ;
+    B fieldB;
+    Z fieldZ;
+}

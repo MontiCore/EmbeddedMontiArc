@@ -1,0 +1,7 @@
+package tests;
+import structs.BasicStruct;
+
+component BasicStructComp{
+    ports in BasicStruct in1,
+          out BasicStruct out1;
+}
