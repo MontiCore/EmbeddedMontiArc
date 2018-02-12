@@ -15,13 +15,13 @@ import java.util.List;
 
 public class TestsEndWithTest {
 
-    public static void main(String[] args){
-        if(args.length == 0)
+    public static void main(String[] args) {
+        if (args.length == 0)
             Log.error("Please enter a path.");
         String path = args[0];
 
         File root = new File(path);
-        if(!root.exists())
+        if (!root.exists())
             Log.error("Path does not exist");
 
         TestsEndWithTest tewt = new TestsEndWithTest();
@@ -30,23 +30,23 @@ public class TestsEndWithTest {
         TestResultPrinter.printTestsEndWithTestResults(testResults, "C:/Praktikum/report/dataEWT.json");
     }
 
-    public List<TestsEndWithTestResult> testTestsEndWithTest(File projectRoot){
+    public List<TestsEndWithTestResult> testTestsEndWithTest(File projectRoot) {
         List<TestsEndWithTestResult> testResults = new LinkedList<>();
 
         GitHubHelper ghh = new GitHubHelper();
 
-        for(File project: projectRoot.listFiles()) {
+        for (File project : projectRoot.listFiles()) {
             File testDirectory = new File(project.getAbsoluteFile() + "/src/test/java");
-            if(testDirectory.exists()){
+            if (testDirectory.exists()) {
                 String gitHubRoot = ghh.getGitHubRoot(project);
                 List<File> files = SearchFiles.searchFiles(testDirectory, "java");
-                for(File file: files) {
+                for (File file : files) {
                     // Check whether the file contains @Test
                     boolean containsTest = false;
                     try {
                         List<String> lines = Files.readAllLines(Paths.get(file.getAbsolutePath()));
-                        for(String line: lines)
-                            if(line.contains("@Test")){
+                        for (String line : lines)
+                            if (line.contains("@Test")) {
                                 containsTest = true;
                                 break;
                             }
@@ -54,7 +54,7 @@ public class TestsEndWithTest {
                         e.printStackTrace();
                     }
 
-                    if(containsTest) {
+                    if (containsTest) {
                         String htmlTag = ghh.getHTMLTagOf(project, file, gitHubRoot);
                         boolean passed = false;
                         String name = file.getName().substring(0, file.getName().length() - ".java".length());

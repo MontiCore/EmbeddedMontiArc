@@ -30,9 +30,9 @@ public class ASTHelper {
 
     public static Scope createSymTab(String fileType, String... modelPath) {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
-        if ( fileType.equals("EMAM"))
+        if (fileType.equals("EMAM"))
             fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
-        else if ( fileType.equals("EMA"))
+        else if (fileType.equals("EMA"))
             fam.addModelingLanguage(new EmbeddedMontiArcLanguage());
         else
             Log.error("Unknown file type: " + fileType);

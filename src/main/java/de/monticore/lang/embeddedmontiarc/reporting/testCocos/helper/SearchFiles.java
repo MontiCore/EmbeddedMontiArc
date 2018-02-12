@@ -11,22 +11,22 @@ public class SearchFiles {
         File project = new File("C:\\Praktikum\\Neu\\EmbeddedMontiArcMath");
         String fileType = "emam";
         List<File> files = searchFiles(project, fileType);
-        for(File file: files){
+        for (File file : files) {
             System.out.println("File: " + file.getAbsoluteFile());
         }
     }
 
-    public static List<File> searchFiles(File path, String... fileType){
+    public static List<File> searchFiles(File path, String... fileType) {
         SearchFiles tc = new SearchFiles();
         List<File> result = new LinkedList<>();
         Set<String> fileTypes = new HashSet<>();
-        for(String type: fileType)
+        for (String type : fileType)
             fileTypes.add(type);
         tc.walk(path, fileTypes, result);
         return result;
     }
 
-    public void walk( File root, Set<String> fileTypes, List<File> result) {
+    public void walk(File root, Set<String> fileTypes, List<File> result) {
         File[] list = root.listFiles();
 
         if (list == null) return;
@@ -35,10 +35,10 @@ public class SearchFiles {
             if (file.isDirectory()) {
                 walk(file, fileTypes, result);
             } else {
-                if(file.getName().contains("Autopilot")){
+                if (file.getName().contains("Autopilot")) {
                     int i = 0;
                 }
-                for(String fileType: fileTypes)
+                for (String fileType : fileTypes)
                     if (file.getName().endsWith("." + fileType))
                         result.add(file);
             }

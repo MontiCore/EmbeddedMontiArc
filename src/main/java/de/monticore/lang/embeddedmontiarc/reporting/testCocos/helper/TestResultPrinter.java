@@ -35,51 +35,59 @@ public class TestResultPrinter {
             "\"SubComponentsConnected\"",
             "\"TopLevelComponentHasNoInstanceName\"",
             "\"TypeParameterNamesUnique\"",
-            "\"AtomicComponent\""
+            "\"AtomicComponent\"",
+            "\"UniquePorts\""
     };
     private static String tickTag = "\"<img src='images/tick.png'/>\"";
     private static String crossTag = "\"<img src='images/Red_cross_tick.png'/>\"";
     private static String noTag = "\"<img src='images/minus_318-140716.jpg'/>\"";
 
-    private static String tagOf(int i){
-        switch(i){
-            case -1: return crossTag;
-            case 0: return noTag;
-            case 1: return tickTag;
-            default: return noTag;
+    private static String tagOf(int i) {
+        switch (i) {
+            case -1:
+                return crossTag;
+            case 0:
+                return noTag;
+            case 1:
+                return tickTag;
+            default:
+                return noTag;
         }
     }
 
-    private static String modelName_hiddenPath(String modelName, String path){
-        path = path.replace("\\","/");
-        String name = modelName;
-        if (path.contains("MontiSim")){
+    private static String modelName_hiddenPath(String visible, String hidden) {
+        hidden = hidden.replace("\\", "/");
+        String name = visible;
+        if (hidden.contains("MontiSim")) {
             name = "MontiSim/" + name;
         }
+        String otherClasses = "";
+        if (hidden.contains("noSVGhidden"))
+            otherClasses = " noSVGvisible";
+        else if(hidden.contains("sVGhidden"))
+            otherClasses = " sVGvisible";
         return
-                "<div class=\'shortLabel\'>" + name + "</div>" +
-                "<div class=\'fullLabel\' style=\'display: none\'>" + path + "</div>";
+                "<div class=\'shortLabel" + otherClasses + "\'>" + name + "</div>" +
+                        "<div class=\'fullLabel\' style=\'display: none\'>" + hidden + "</div>";
     }
 
-    public static void printTestResults(List<TestResult> testResults, String path){
+    public static void printTestResults(List<TestResult> testResults, String path) {
         printTestResults(testResults, path, false);
     }
 
-    public static void printTestResults(List<TestResult> testResults, String path, boolean merge){
-        if ( testResults.size() == 0 ) return;
-        if(merge){
+    public static void printTestResults(List<TestResult> testResults, String path, boolean merge) {
+        if (testResults.size() == 0) return;
+        if (merge) {
             try {
                 String first = FileUtils.readFileToString(new File(path));
-                first = first.substring(0, first.length()-3);
+                first = first.substring(0, first.length() - 3);
                 String str = first + ",\n" + printTestResults(testResults, merge);
                 FileUtils.writeStringToFile(new File(path),
                         str);
-            }catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        else {
+        } else {
             try {
                 FileUtils.writeStringToFile(new File(path),
                         printTestResults(testResults, merge));
@@ -89,18 +97,18 @@ public class TestResultPrinter {
         }
     }
 
-    public static String printTestResults(List<TestResult> testResults, boolean merge){
+    public static String printTestResults(List<TestResult> testResults, boolean merge) {
         IndentPrinter ip = new IndentPrinter();
         if (!merge)
             ip.println("[");
         ip.indent();
-        
+
         boolean first = true;
-        for (TestResult testResult: testResults) {
-            if(testResult == null) continue;
+        for (TestResult testResult : testResults) {
+            if (testResult == null) continue;
             int i = 0;
-            
-            if(!first)
+
+            if (!first)
                 ip.print(",\n");
             else
                 first = false;
@@ -113,7 +121,7 @@ public class TestResultPrinter {
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getType() + "\",");
-            ip.println(names[i++] + ": " + tagOf(testResult.isValid()?1:-1) + ",");
+            ip.println(names[i++] + ": " + tagOf(testResult.isValid() ? 1 : -1) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getParsed()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getResolve()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getComponentCapitalized()) + ",");
@@ -132,7 +140,8 @@ public class TestResultPrinter {
             ip.println(names[i++] + ": " + tagOf(testResult.getSubComponentsConnected()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getTopLevelComponentHasNoInstanceName()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getTypeParameterNamesUnique()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getAtomicComponent()));
+            ip.println(names[i++] + ": " + tagOf(testResult.getAtomicComponent()) + ",");
+            ip.println(names[i++] + ": " + tagOf(testResult.getUniquePorts()));
             ip.unindent();
             ip.print("}");
         }
@@ -149,7 +158,7 @@ public class TestResultPrinter {
         File project = testResult.getProjectPath();
         String urlToZip;
         String zipName_;
-        if(zipName == null)
+        if (zipName == null)
             zipName_ = "models1a6a7c6e450b6d996a79c701efdd4e69.zip";
         else
             zipName_ = zipName;
@@ -158,12 +167,12 @@ public class TestResultPrinter {
         zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
         String displayName = name;
-        if(project.getAbsolutePath().contains("MontiSim"))
+        if (project.getAbsolutePath().contains("MontiSim"))
             displayName = "MontiSim/" + displayName;
         return ("<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
                 "<img border='0' alt='" + displayName + "' src='images/favicon.ico'>" +
-                "</a>").replace("\\","/");
+                "</a>").replace("\\", "/");
     }
 
     private static String getVisulisationLink(TestResult testResult) {
@@ -172,62 +181,61 @@ public class TestResultPrinter {
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
         String displayName = name;
 
-        if(project.getAbsolutePath().contains("MontiSim")) {
+        if (project.getAbsolutePath().contains("MontiSim")) {
             displayName = "MontiSim/" + displayName;
         }
-        if(testResult.getSvgPath().equals(""))
-            return displayName;
+        if (testResult.getSvgPath().equals(""))
+            return "<div class='noSVGhidden'>" + displayName + "</div>";
         else
-            return "<a target='_blank' href='" +
-                        testResult.getSvgPath().replace("\\","/") + ".html'>" +
-                        displayName +
+            return "<a class='sVGhidden' target='_blank' href='" +
+                    testResult.getSvgPath().replace("\\", "/") + ".html'>" +
+                    displayName +
                     "</a>";
     }
 
-    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path){
+    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path) {
         printTestsEndWithTestResults(results, path, false);
     }
 
-    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path, boolean merge){
-        if ( results.size() == 0 ) return;
-        if(merge){
+    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path, boolean merge) {
+        if (results.size() == 0) return;
+        if (merge) {
             try {
                 String first = FileUtils.readFileToString(new File(path));
-                first = first.substring(0, first.length()-2);
+                first = first.substring(0, first.length() - 2);
                 String str = first + ",\n" + printTestsEndWithTestResults(results, merge);
                 FileUtils.writeStringToFile(new File(path),
                         str);
-            }catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else
-        try {
-            FileUtils.writeStringToFile(new File(path), printTestsEndWithTestResults(results, merge));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } else
+            try {
+                FileUtils.writeStringToFile(new File(path), printTestsEndWithTestResults(results, merge));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
-    public static String printTestsEndWithTestResults(List<TestsEndWithTestResult> results, boolean merge){
+    public static String printTestsEndWithTestResults(List<TestsEndWithTestResult> results, boolean merge) {
         IndentPrinter ip = new IndentPrinter();
-        if(!merge)
+        if (!merge)
             ip.println("[");
         ip.indent();
 
         boolean first = true;
-        for (TestsEndWithTestResult testResult: results) {
-            if(testResult == null /*testResult.isValid()*/) continue;
+        for (TestsEndWithTestResult testResult : results) {
+            if (testResult == null /*testResult.isValid()*/) continue;
 
-            if(!first)
+            if (!first)
                 ip.print(",\n");
             else
                 first = false;
 
             ip.println("{");
             ip.indent();
-            ip.println("\"Path\": \"" + testResult.getPath().replace("\\","/") + "\",");
-            ip.println("\"NameEndsWithTest\": " + tagOf(testResult.endsWithTest()?1:-1));
+            ip.println("\"Path\": \"" + testResult.getPath().replace("\\", "/") + "\",");
+            ip.println("\"NameEndsWithTest\": " + tagOf(testResult.endsWithTest() ? 1 : -1));
             ip.unindent();
             ip.print("}");
         }

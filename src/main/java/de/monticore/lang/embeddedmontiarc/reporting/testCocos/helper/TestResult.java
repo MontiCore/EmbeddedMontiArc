@@ -39,7 +39,7 @@ public class TestResult {
     private int atomicComponent = 0;
 
 
-    public TestResult(String path){
+    public TestResult(String path) {
         this.setPath(path);
     }
 
@@ -61,10 +61,10 @@ public class TestResult {
         zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
         String name = getProject() +
                 getModelPath().substring(getModelPath().indexOf(getProject())) +
-                getModelName().replace(".","/") +
+                getModelName().replace(".", "/") +
                 "." + getType().toLowerCase();
         String displayName = getModelName();
-        if(modelPath.contains("MontiSim"))
+        if (modelPath.contains("MontiSim"))
             displayName = "MontiSim/" + displayName;
         return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
@@ -255,17 +255,25 @@ public class TestResult {
     }
 
     public String getErrorMessage() {
+        if (this.getModelName().contains("Block1")) {
+            int i = 0;
+        }
         String msg = "";
 
-        for(String m: errorMessage){
-            String ms = m.replace("\n","<br>")
-                    .replace("\'","&prime;")
-                    .replace("\\", "&bsol;")+ "<br>";
-            if(!ms.contains("[ERROR]") && !ms.contains("[INFO]"))
-                ms = "[ERROR] " + ms;
-            msg += ms;
+
+        for (String m : errorMessage) {
+            if (m != null) {
+                String ms = m.replace("\r\n", "<br>")
+                        .replace("\n", "<br>")
+                        .replace("\r", "<br>")
+                        .replace("\'", "&prime;")
+                        .replace("\\", "&bsol;") + "<br>";
+                if (!ms.contains("[ERROR]") && !ms.contains("[INFO]"))
+                    ms = "[ERROR] " + ms;
+                msg += ms;
+            }
         }
-        msg = msg.substring(0, msg.length()-4);
+        msg = msg.substring(0, msg.length() - 4);
 
         return msg;
     }
@@ -283,8 +291,8 @@ public class TestResult {
     }
 
     public void setModelPath(String modelPath) {
-        String res = modelPath.replace("\\","/");
-        if ( res.charAt(res.length() - 1) != '/')
+        String res = modelPath.replace("\\", "/");
+        if (res.charAt(res.length() - 1) != '/')
             res = res + "/";
         this.modelPath = res;
     }
@@ -302,8 +310,8 @@ public class TestResult {
     }
 
     public void setProject(String project) {
-        String res = project.replace("\\","/");
-        if ( res.charAt(res.length() - 1) != '/')
+        String res = project.replace("\\", "/");
+        if (res.charAt(res.length() - 1) != '/')
             res = res + "/";
         this.project = res;
     }
@@ -316,7 +324,7 @@ public class TestResult {
     }
 
     public void setSvgPath(String svgPath) {
-        this.svgPath = svgPath.replace("\\","/");
+        this.svgPath = svgPath.replace("\\", "/");
     }
 
     public String getZipName() {

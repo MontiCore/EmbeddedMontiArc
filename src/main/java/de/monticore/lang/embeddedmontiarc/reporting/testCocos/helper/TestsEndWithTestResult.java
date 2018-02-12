@@ -4,7 +4,7 @@ public class TestsEndWithTestResult {
     private String path;
     private boolean endsWithTest;
 
-    public TestsEndWithTestResult(String path, boolean endsWithTest){
+    public TestsEndWithTestResult(String path, boolean endsWithTest) {
         this.path = path;
         this.endsWithTest = endsWithTest;
     }
@@ -13,7 +13,7 @@ public class TestsEndWithTestResult {
         return path;
     }
 
-    public boolean endsWithTest(){
+    public boolean endsWithTest() {
         return endsWithTest;
     }
 }
