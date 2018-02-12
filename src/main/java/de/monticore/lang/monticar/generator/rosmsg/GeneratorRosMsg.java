@@ -59,7 +59,7 @@ public class GeneratorRosMsg {
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
-                .map(sfds -> getInMsgRosType(sfds.getType().getReferencedSymbol()) + " " + sfds.getName() + ";")
+                .map(sfds -> getInMsgRosType(sfds.getType().getReferencedSymbol()) + " " + sfds.getName())
                 .collect(Collectors.joining("\n"));
 
         File f = new File(path + "/" + getTargetName(structSymbol) + ".msg");
@@ -86,7 +86,7 @@ public class GeneratorRosMsg {
             } else if (mcastTypeSymbol.getName().equals("Z")) {
                 return "int32";
             } else if (mcastTypeSymbol.getName().equals("B")) {
-                return "boolean";
+                return "bool";
             } else {
                 Log.error("Case not handled! MCASTTypeSymbol " + mcastTypeSymbol.getName());
             }
