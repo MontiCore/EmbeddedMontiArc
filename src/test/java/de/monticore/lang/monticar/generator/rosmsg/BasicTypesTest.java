@@ -26,9 +26,9 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertNotNull(inZ);
         assertNotNull(inB);
 
-        assertEquals(generatorRosMsg.getRosTopic(inQ.getTypeReference()).getTopicType(),"std_msgs/Float64");
-        assertEquals(generatorRosMsg.getRosTopic(inZ.getTypeReference()).getTopicType(),"std_msgs/Int32");
-        assertEquals(generatorRosMsg.getRosTopic(inB.getTypeReference()).getTopicType(),"std_msgs/Bool");
+        assertEquals(generatorRosMsg.getRosType(inQ.getTypeReference()),"std_msgs/Float64");
+        assertEquals(generatorRosMsg.getRosType(inZ.getTypeReference()),"std_msgs/Int32");
+        assertEquals(generatorRosMsg.getRosType(inB.getTypeReference()),"std_msgs/Bool");
     }
 
 

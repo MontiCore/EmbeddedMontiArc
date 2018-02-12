@@ -1,6 +1,5 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
-import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -26,16 +25,16 @@ public class GeneratorRosMsg {
         return files;
     }
 
-    public RosConnectionSymbol getRosTopic(MCTypeReference<? extends MCTypeSymbol> typeReference){
+    public String getRosType(MCTypeReference<? extends MCTypeSymbol> typeReference){
         MCTypeSymbol type = typeReference.getReferencedSymbol();
         if(type.isKindOf(MCASTTypeSymbol.KIND)){
             MCASTTypeSymbol mcastTypeSymbol = (MCASTTypeSymbol) type;
             if(mcastTypeSymbol.getName().equals("Q")){
-                return new RosConnectionSymbol("","std_msgs/Float64");
+                return "std_msgs/Float64";
             }else if(mcastTypeSymbol.getName().equals("Z")){
-                return new RosConnectionSymbol("","std_msgs/Int32");
+                return "std_msgs/Int32";
             }else if(mcastTypeSymbol.getName().equals("B")){
-                return new RosConnectionSymbol("","std_msgs/Bool");
+                return "std_msgs/Bool";
             }else{
                 Log.error("Case not handled! MCASTTypeSymbol " + mcastTypeSymbol.getName());
             }
