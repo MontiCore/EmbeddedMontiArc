@@ -21,6 +21,8 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.references.CommonSymbolReference;
@@ -109,7 +111,12 @@ public class EMADLBehaviorSymbolReference extends EMADLBehaviorSymbol implements
     }
 
     @Override
-    public void resolve() {
-        getReferencedSymbol().resolve();
+    public ArchitectureSymbol resolveArchitecture() {
+        return getReferencedSymbol().resolveArchitecture();
+    }
+
+    @Override
+    public ConfigurationSymbol resolveConfiguration() {
+        return getReferencedSymbol().resolveConfiguration();
     }
 }

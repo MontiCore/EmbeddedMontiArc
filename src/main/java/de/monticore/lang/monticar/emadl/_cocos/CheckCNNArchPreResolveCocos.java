@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchNode;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchPreResolveCocos;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.emadl._ast.ASTArchitectureConstructor;
 import de.monticore.lang.monticar.emadl._symboltable.ArchitectureConstructorSymbol;
 import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
@@ -33,7 +33,7 @@ public class CheckCNNArchPreResolveCocos implements EMADLASTArchitectureConstruc
     public void check(ASTArchitectureConstructor node) {
         ArchitectureConstructorSymbol sym = (ArchitectureConstructorSymbol) node.getSymbol().get();
         if (sym.getArchitecture() != null) {
-            CNNArchPreResolveCocos.createChecker().checkAll((ASTCNNArchNode) sym.getArchitecture().getAstNode().get());
+            CNNArchCocos.createPreResolveChecker().checkAll((ASTCNNArchNode) sym.getArchitecture().getAstNode().get());
         }
         else {
             Log.error("0" + ErrorCodes.UNKNOWN_ARCHITECTURE_CODE + " Unknown architecture: " + node.getName() + ". " +

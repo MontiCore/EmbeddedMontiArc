@@ -20,5 +20,32 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
+
 public class TemplateConfiguration {
+
+    public static Configuration get(){
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
+        cfg.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        return cfg;
+        /*try{
+            //String path = "/home/thomas/git/EmbeddedMontiArcDL/src/main/resources/templates/";
+            String path = TemplateConfiguration.class.getResource("/templates").getPath();
+            File templateDir = new File(path);
+            //TemplateLoader templateLoader = new FileTemplateLoader(templateDir);
+            Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
+            cfg.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
+            //cfg.setTemplateLoader(templateLoader);
+            cfg.setDefaultEncoding("UTF-8");
+            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            return cfg;
+        }
+        catch(IOException e){
+            Log.error("Template directory could not be found: " + e.getMessage());
+        }
+        throw new IllegalStateException();*/
+    }
 }

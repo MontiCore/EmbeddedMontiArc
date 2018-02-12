@@ -22,12 +22,12 @@ package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.emadl._ast.ASTArchIOPort;
 import de.monticore.lang.monticar.emadl._symboltable.ArchPortConnectorSymbol;
 import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
-import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
@@ -37,7 +37,6 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class CheckIOTypeAndDimensions implements EMADLASTArchIOPortCoCo {
 
@@ -51,7 +50,7 @@ public class CheckIOTypeAndDimensions implements EMADLASTArchIOPortCoCo {
         //check Type
         ASTElementType portType = getType(port);
         ASTElementType archType = getType(ioDeclaration);
-        boolean typesAreEqual = equalType(portType, archType);
+        boolean typesAreEqual = Utils.equals(portType, archType);
         if (!typesAreEqual){
             Log.error("0" + ErrorCodes.INVALID_IO_TYPE_CODE + " Invalid port type. " +
                             "The type of port '" + node.getName() +
@@ -99,15 +98,16 @@ public class CheckIOTypeAndDimensions implements EMADLASTArchIOPortCoCo {
         List<Integer> dimensionList = new ArrayList<>(4);
         ASTType astType = getASTType(port);
 
+        if (port.getDimension() != 1) {
+            dimensionList.add(port.getDimension());
+        }
+
         if (astType instanceof ASTCommonMatrixType){
             ASTCommonMatrixType matrixType = (ASTCommonMatrixType) astType;
             for (ASTCommonDimensionElement element : matrixType.getCommonDimension().getCommonDimensionElements()){
                 int dimension = element.getUnitNumber().get().getNumber().get().getDividend().intValue();
                 dimensionList.add(dimension);
             }
-        }
-        if (port.getDimension() != 1){
-            dimensionList.add(port.getDimension());
         }
 
         return dimensionList;
@@ -128,78 +128,17 @@ public class CheckIOTypeAndDimensions implements EMADLASTArchIOPortCoCo {
 
     private List<Integer> getDimensions(IODeclarationSymbol ioDeclaration){
         List<Integer> dimensionList = new ArrayList<>(4);
-        dimensionList.add(ioDeclaration.getShape().getHeight().get());
-        dimensionList.add(ioDeclaration.getShape().getWidth().get());
-        dimensionList.add(ioDeclaration.getShape().getChannels().get());
-        dimensionList.add(ioDeclaration.getArrayLength());
 
-        //remove leading ones
-        ListIterator<Integer> iterator = dimensionList.listIterator();
-        while (iterator.hasNext()){
-            int element = iterator.next();
-            if (element == 1){
-                iterator.remove();
-            }
-            else {
-                break;
-            }
+        if (ioDeclaration.getArrayLength() != 1){
+            dimensionList.add(ioDeclaration.getArrayLength());
         }
 
-        //remove trailing ones
-        iterator = dimensionList.listIterator(dimensionList.size());
-        while (iterator.hasPrevious()){
-            int element = iterator.previous();
-            if (element == 1){
-                iterator.remove();
-            }
-            else {
-                break;
-            }
-        }
+        dimensionList.addAll(ioDeclaration.getType().getDimensions());
 
         return dimensionList;
     }
 
     private ASTElementType getType(IODeclarationSymbol ioDeclaration){
-        return ioDeclaration.getType();
-    }
-
-
-    private boolean equalType(ASTElementType portType, ASTElementType archType){
-        ASTRange portRange = portType.getRange().get();
-        ASTRange archRange = archType.getRange().get();
-        boolean isEqual = true;
-
-        if (portType.isIsBoolean() ^ archType.isIsBoolean()
-                || portType.isIsNatural() ^ archType.isIsNatural()
-                || portType.isIsRational() ^ archType.isIsRational()
-                || portType.isIsWholeNumberNumber() ^ archType.isIsWholeNumberNumber()
-                || portType.isIsComplex() ^ archType.isIsComplex()){
-            isEqual = false;
-        }
-
-        if (portRange.getStartInf().isPresent() ^ archRange.getStartInf().isPresent()
-                || portRange.getEndInf().isPresent() ^ archRange.getEndInf().isPresent()){
-            isEqual = false;
-        }
-
-        if (isEqual){
-            if (!portRange.getStartValue().equals(archRange.getStartValue())
-                    || !portRange.getEndValue().equals(archRange.getEndValue())){
-                isEqual = false;
-            }
-            if (portRange.getStep().isPresent()){
-                if (archRange.getStep().isPresent()){
-                    if (!portRange.getStepValue().equals(archRange.getStepValue())){
-                        isEqual = false;
-                    }
-                }
-                else {
-                    isEqual = false;
-                }
-            }
-        }
-
-        return isEqual;
+        return ioDeclaration.getType().getElementType();
     }
 }

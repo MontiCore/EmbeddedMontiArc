@@ -47,6 +47,10 @@ public class SymtabTest extends AbstractSymtabTest {
         EMADLBehaviorSymbol e = a.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
         EMADLBehaviorSymbol f = c.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
 
+        /*e.getArchitectureConstructor().resolveArchitecture();
+        ArchitectureSymbol arch = e.getArchitectureConstructor().getArchitecture();
+        String asds = new CNNArchTemplateController(arch).include(arch.getBody());*/
+
         //....getComponentType().getReferencedSymbol().getAstNode()
         assertNotNull(a);
     }

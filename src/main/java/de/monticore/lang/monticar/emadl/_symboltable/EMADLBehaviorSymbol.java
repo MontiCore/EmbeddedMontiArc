@@ -20,6 +20,9 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+
 public class EMADLBehaviorSymbol extends de.monticore.symboltable.CommonScopeSpanningSymbol {
 
     public static final EMADLBehaviorKind KIND = new EMADLBehaviorKind();
@@ -47,8 +50,11 @@ public class EMADLBehaviorSymbol extends de.monticore.symboltable.CommonScopeSpa
         this.configConstructor = configConstructor;
     }
 
-    public void resolve(){
-        getArchitectureConstructor().resolveArchitecture();
-        getConfigConstructor().resolveConfiguration();
+    public ArchitectureSymbol resolveArchitecture(){
+        return getArchitectureConstructor().resolveArchitecture();
+    }
+
+    public ConfigurationSymbol resolveConfiguration(){
+        return getConfigConstructor().resolveConfiguration();
     }
 }

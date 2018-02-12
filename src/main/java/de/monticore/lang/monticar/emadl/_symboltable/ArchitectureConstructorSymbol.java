@@ -78,7 +78,6 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
     }
 
     public void setArchitecture(ArchitectureSymbol architecture) {
-        //todo: this.architecture = architecture.copy();
         this.architecture = architecture;
     }
 
@@ -98,35 +97,38 @@ public class ArchitectureConstructorSymbol extends CommonScopeSpanningSymbol {
         return names;
     }
 
-    public void resolveArchitecture(){
-        setArguments();
-        linkIOPorts();
+    public ArchitectureSymbol resolveArchitecture(){
+        //todo: architecture.copy();
+        ArchitectureSymbol architecture = getArchitecture();
+        setArguments(architecture);
+        linkIOPorts(architecture);
 
-        getArchitecture().resolveOrError();
+        architecture.resolveOrError();
+        return architecture;
     }
 
-    private void linkIOPorts() {
+    private void linkIOPorts(ArchitectureSymbol architecture) {
         for (ArchPortConnectorSymbol port : getInputs()){
-            port.linkIODeclaration(getArchitecture());
+            port.linkIODeclaration(architecture);
         }
         for (ArchPortConnectorSymbol port : getOutputs()){
-            port.linkIODeclaration(getArchitecture());
+            port.linkIODeclaration(architecture);
         }
     }
 
-    private void setArguments(){
+    private void setArguments(ArchitectureSymbol architecture){
         for (ASTNamedArgument argument : getArguments()){
             if (argument.getBooleanValue().isPresent()){
-                getArchitecture().setParameter(argument.getName(), argument.getBooleanValue().get());
+                architecture.setParameter(argument.getName(), argument.getBooleanValue().get());
             }
             else if (argument.getIntValue().isPresent()){
-                getArchitecture().setParameter(argument.getName(), argument.getIntValue().get());
+                architecture.setParameter(argument.getName(), argument.getIntValue().get());
             }
             else if (argument.getDoubleValue().isPresent()){
-                getArchitecture().setParameter(argument.getName(), argument.getDoubleValue().get());
+                architecture.setParameter(argument.getName(), argument.getDoubleValue().get());
             }
             else if (argument.getStringValue().isPresent()){
-                getArchitecture().setParameter(argument.getName(), argument.getStringValue().get());
+                architecture.setParameter(argument.getName(), argument.getStringValue().get());
             }
             else {
                 throw new IllegalStateException("argument value has an unknown type: " + argument.getValue().getClass().getSimpleName());

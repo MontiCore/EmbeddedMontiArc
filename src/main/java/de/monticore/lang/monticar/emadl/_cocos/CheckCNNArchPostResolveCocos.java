@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.monticar.cnnarch._ast.ASTCNNArchNode;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchPostResolveCocos;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.emadl._ast.ASTArchitectureConstructor;
 import de.monticore.lang.monticar.emadl._symboltable.ArchitectureConstructorSymbol;
 
@@ -30,6 +30,6 @@ public class CheckCNNArchPostResolveCocos implements EMADLASTArchitectureConstru
     @Override
     public void check(ASTArchitectureConstructor node) {
         ArchitectureConstructorSymbol sym = (ArchitectureConstructorSymbol) node.getSymbol().get();
-        CNNArchPostResolveCocos.createChecker().checkAll((ASTCNNArchNode) sym.getArchitecture().getAstNode().get());
+        CNNArchCocos.createPostResolveChecker().checkAll((ASTCNNArchNode) sym.getArchitecture().getAstNode().get());
     }
 }

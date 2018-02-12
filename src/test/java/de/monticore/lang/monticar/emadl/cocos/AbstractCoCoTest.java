@@ -20,11 +20,9 @@
  */
 package de.monticore.lang.monticar.emadl.cocos;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.monticar.emadl.AbstractSymtabTest;
-import de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
 import de.monticore.lang.monticar.emadl._cocos.EMADLPostResolveCocos;
 import de.monticore.lang.monticar.emadl._cocos.EMADLPreResolveCocos;
@@ -121,7 +119,8 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
             ComponentSymbol component = (ComponentSymbol) node.getSymbol().get();
             EMADLBehaviorSymbol behaviorSymbol = (EMADLBehaviorSymbol) component.getEnclosingScope()
                     .resolve(component.getName(), EMADLBehaviorSymbol.KIND).get();
-            behaviorSymbol.resolve();
+            behaviorSymbol.getArchitectureConstructor().resolveArchitecture();
+            behaviorSymbol.getConfigConstructor().resolveConfiguration();
             if (Log.getFindings().isEmpty()){
                 postResolveCocos.checkAll(node);
             }

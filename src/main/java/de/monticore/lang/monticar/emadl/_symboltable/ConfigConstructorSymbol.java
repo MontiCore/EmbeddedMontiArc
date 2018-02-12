@@ -21,7 +21,6 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTLiteralValue;
 import de.monticore.lang.monticar.emadl._ast.ASTNamedArgument;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.Symbol;
@@ -59,27 +58,29 @@ public class ConfigConstructorSymbol extends CommonScopeSpanningSymbol {
     }
 
     public void setConfiguration(ConfigurationSymbol configuration) {
-        //todo: this.configuration = configuration.copy();
         this.configuration = configuration;
     }
 
-    public void resolveConfiguration(){
-        setArguments();
+    public ConfigurationSymbol resolveConfiguration(){
+        //todo: configuration.copy();
+        ConfigurationSymbol config = getConfiguration();
+        setArguments(config);
+        return config;
     }
 
-    private void setArguments(){
+    private void setArguments(ConfigurationSymbol configuration){
         for (ASTNamedArgument argument : getArguments()){
             if (argument.getBooleanValue().isPresent()){
-                getConfiguration().setParameter(argument.getName(), argument.getBooleanValue().get());
+                configuration.setParameter(argument.getName(), argument.getBooleanValue().get());
             }
             else if (argument.getIntValue().isPresent()){
-                getConfiguration().setParameter(argument.getName(), argument.getIntValue().get());
+                configuration.setParameter(argument.getName(), argument.getIntValue().get());
             }
             else if (argument.getDoubleValue().isPresent()){
-                getConfiguration().setParameter(argument.getName(), argument.getDoubleValue().get());
+                configuration.setParameter(argument.getName(), argument.getDoubleValue().get());
             }
             else if (argument.getStringValue().isPresent()){
-                getConfiguration().setParameter(argument.getName(), argument.getStringValue().get());
+                configuration.setParameter(argument.getName(), argument.getStringValue().get());
             }
             else {
                 throw new IllegalStateException("argument value has an unknown type: " + argument.getValue().getClass().getSimpleName());
