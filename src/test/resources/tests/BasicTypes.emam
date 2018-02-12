@@ -1,0 +1,8 @@
+package tests;
+
+component BasicTypes{
+    ports in Q inQ,
+    //      in N inN,
+          in Z inZ,
+          in B inB;
+}
