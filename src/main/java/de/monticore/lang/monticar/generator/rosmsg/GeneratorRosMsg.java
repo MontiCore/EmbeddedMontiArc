@@ -118,7 +118,7 @@ public class GeneratorRosMsg {
             }
         }
 
-        if (type.isKindOf(StructSymbol.KIND)) {
+        if (type instanceof StructSymbol) {
             StructSymbol structSymbol = (StructSymbol) type;
             if (packageName == null)
                 Log.error("Target must be set! Use GeneratorRosMsg::setTarget!");
