@@ -266,8 +266,11 @@ public class TestResult {
                 String ms = m.replace("\r\n", "<br>")
                         .replace("\n", "<br>")
                         .replace("\r", "<br>")
+                        .replace("\t", "&#9;")
+                        .replace("\"", "&quot;")
                         .replace("\'", "&prime;")
-                        .replace("\\", "&bsol;") + "<br>";
+                        .replace("\\", "&bsol;")
+                        + "<br>";
                 if (!ms.contains("[ERROR]") && !ms.contains("[INFO]"))
                     ms = "[ERROR] " + ms;
                 msg += ms;
