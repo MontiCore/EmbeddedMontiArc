@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver, String targetPath) throws IOException {
+    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         //Add dummy GeneratorImpl for the subdir
 //        String subdir = "Coordinator_"+NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName()) +"/";
         String subdir = "coordinator/";
         this.add(new GeneratorImpl() {
         }, subdir);
-        List<File> files = super.generate(componentInstanceSymbol, taggingResolver, targetPath);
+        List<File> files = super.generate(componentInstanceSymbol, taggingResolver);
 
-        files.add(FileHelper.generateFile(targetPath + subdir, generateIAdapter(componentInstanceSymbol)));
-        files.add(FileHelper.generateFile(targetPath + subdir, generateCoordinator(componentInstanceSymbol, files)));
-        files.add(FileHelper.generateFile(targetPath + subdir, generateCMakeList(componentInstanceSymbol, files)));
+        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateIAdapter(componentInstanceSymbol)));
+        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCoordinator(componentInstanceSymbol, files)));
+        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCMakeList(componentInstanceSymbol, files)));
         return files;
     }
 

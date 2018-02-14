@@ -14,7 +14,7 @@ import java.util.Objects;
 public class CMakeMasterGenerator extends MasterGenerator {
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver, String targetPath) throws IOException {
+    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         long notInSubfolders = getGeneratorImpls().stream()
                 .map(this::getImplSubfolder)
                 .filter(Objects::isNull)
@@ -25,8 +25,8 @@ public class CMakeMasterGenerator extends MasterGenerator {
             return new ArrayList<>();
         }
 
-        List<File> res = super.generate(componentInstanceSymbol, taggingResolver, targetPath);
-        res.add(generateCMake(targetPath));
+        List<File> res = super.generate(componentInstanceSymbol, taggingResolver);
+        res.add(generateCMake(generationTargetPath));
         return res;
     }
 

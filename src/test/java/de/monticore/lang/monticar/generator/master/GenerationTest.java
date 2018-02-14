@@ -20,10 +20,11 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
 
         MasterGenerator masterGenerator = new MasterGenerator();
+        masterGenerator.setGenerationTargetPath("./target/generated-sources/basicGeneration/");
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver, "./target/generated-sources/basicGeneration/");
+        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -35,10 +36,11 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
 
         MasterGenerator masterGenerator = new CMakeMasterGenerator();
+        masterGenerator.setGenerationTargetPath("./target/generated-sources/CMakeGeneration/");
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver, "./target/generated-sources/CMakeGeneration/");
+        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -50,11 +52,12 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
 
         MasterGenerator masterGenerator = new MiddlewareMasterGenerator();
+        masterGenerator.setGenerationTargetPath("./target/generated-sources/middlewareMasterGenerator/src/");
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
         masterGenerator.add(new DummyMiddlewareGenerator(), "dummy");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver, "./target/generated-sources/middlewareMasterGenerator/src/");
+        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
 
 
     }
