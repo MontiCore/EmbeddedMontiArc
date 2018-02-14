@@ -87,6 +87,11 @@
             <version>0.0.1c-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-rosmsg-generator</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.esotericsoftware.yamlbeans</groupId>

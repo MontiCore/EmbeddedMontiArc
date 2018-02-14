@@ -2,7 +2,6 @@ package de.monticore.lang.monticar.generator.master;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
-import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
@@ -17,7 +16,7 @@ public class RosCppImpl implements GeneratorImpl {
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerateCMake(true);
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
-        return TagHelper.generate(generatorRosCpp, taggingResolver, componentInstanceSymbol);
+        return generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
     }
 
     @Override
