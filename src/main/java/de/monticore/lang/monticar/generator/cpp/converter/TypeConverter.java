@@ -243,20 +243,21 @@ public class TypeConverter {
     }
 
     public static String getTypeNameMontiCar(ASTElementType elementType){
+        String result=null;
         if(elementType.isIsRational()){
-            return "Q";
+            result = "Q";
         }else if(elementType.isIsBoolean()){
-            return "B";
+            result = "B";
         }else if(elementType.isIsComplex()){
-            return "C";
+            result = "C";
         }else if(elementType.isIsWholeNumberNumber()){
-            return "Z";
+            result = "Z";
         }else if(elementType.isIsNatural()){
-            return "N";
+            result = "N";
         } else{
             Log.error("Case not handled!");
-            return null;
         }
+        return result;
     }
     
     public static VariableType getVariableTypeForTargetLanguageTypeName(String targetLanguageTypeName) {
