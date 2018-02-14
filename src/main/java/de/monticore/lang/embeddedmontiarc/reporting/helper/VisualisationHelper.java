@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 public class VisualisationHelper {
 
     private static int timeouts = 0;
-    private static int timeout = 60;
+    private static int timeout = 20;
     private static TimeUnit timeUnit = TimeUnit.SECONDS;
     private static long maxTime = -1;
     private static long maxTimeErrored = 0;
@@ -105,6 +105,7 @@ public class VisualisationHelper {
         is.read(b1, 0, b1.length);
         byte b2[] = new byte[err.available()];
         err.read(b2, 0, b2.length);
+        ps.destroy();
         String inputString = new String(b1);
         String errorString = new String(b2);
         errorString = errorString
@@ -141,6 +142,7 @@ public class VisualisationHelper {
 //        }
 
         if (!checkString.equals("")) {
+            System.out.println("Failed");
             failed = true;
             if (timeNeeded > maxTimeErrored) {
                 maxTimeErrored = timeNeeded;
@@ -152,6 +154,7 @@ public class VisualisationHelper {
                 maxTimeFile = modelPath + modelName;
             }
         }
+
 
         if (timeouted)
             throw new TimeoutException("<br>" + inputString + "<br>" + errorString);
