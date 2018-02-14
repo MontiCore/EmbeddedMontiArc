@@ -171,7 +171,7 @@ public class ComponentConverter {
             } else
                 method.addInstruction(new TargetCodeInstruction(MathConverter.getColumnVectorInitLine(v, bluePrint)));
         }else if(v.getVariableType().getTypeNameTargetLanguage().equals("double")){
-            //TODO: check backend for typeNameTargetLanguage?
+            //TODO: check backend for typeNameTargetLanguage? and handle additional types here
             if (v.isParameterVariable()){
                 method.addInstruction(new TargetCodeInstruction("this->" + v.getNameTargetLanguageFormat() + " = " + v.getNameTargetLanguageFormat() +";\n"));
                 method.addParameter(v);
