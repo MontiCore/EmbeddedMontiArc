@@ -206,6 +206,9 @@ public class LanguageUnitRosCppAdapter {
                 .map(CallMethodInstruction::new)
                 .forEachOrdered(tickMethod::addInstruction);
 
+        if (tickMethod.getInstructions().size() == 0)
+            tickMethod.addInstruction(new TargetCodeInstruction(""));
+
         currentBluePrint.addMethod(tickMethod);
     }
 
