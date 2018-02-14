@@ -61,6 +61,7 @@ public class LanguageUnitRosCppAdapter {
                 .map(Optional::get)
                 .map(mws -> (RosConnectionSymbol) mws)
                 .map(RosConnectionSymbol::getTopicType)
+                .map(Optional::get)
                 .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
                 .map(type -> "<" + type + ".h>")
                 .forEach(currentBluePrint::addAdditionalIncludeString);
@@ -78,7 +79,7 @@ public class LanguageUnitRosCppAdapter {
         publishers.keySet().forEach(var -> {
             Method method = new Method("publish" + var.getNameTargetLanguageFormat(), "void");
             method.addInstruction(new CreateTmpMsgInstruction(getFullRosType(publishers.get(var))));
-            topicToMethod.put(publishers.get(var).getTopicName(), method);
+            topicToMethod.put(publishers.get(var).getTopicName().get(), method);
             publishMethods.add(method);
         });
 
@@ -88,11 +89,11 @@ public class LanguageUnitRosCppAdapter {
                 .forEachOrdered(p -> {
                     RosConnectionSymbol rcs = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
                     SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
-                    topicToMethod.get(rcs.getTopicName()).addInstruction(tmpInstr);
+                    topicToMethod.get(rcs.getTopicName().get()).addInstruction(tmpInstr);
                 });
 
         publishers.keySet().forEach(var -> {
-            Method method = topicToMethod.get(publishers.get(var).getTopicName());
+            Method method = topicToMethod.get(publishers.get(var).getTopicName().get());
             method.addInstruction(new PublishInstruction(var));
             currentBluePrint.addMethod(method);
         });
@@ -135,13 +136,13 @@ public class LanguageUnitRosCppAdapter {
 
         //subs
         subscribers.keySet().stream()
-                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName()) + "Callback"))
+                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback"))
                 .distinct()
                 .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
 
         publishers.keySet().stream()
-                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName()))
+                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get()))
                 .distinct()
                 .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
@@ -167,7 +168,7 @@ public class LanguageUnitRosCppAdapter {
                 .filter(PortSymbol::isIncoming)
                 .map(p -> (RosConnectionSymbol) p.getMiddlewareSymbol().get())
                 .forEach(rosConnectionSymbol -> {
-                    String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName()).toLowerCase() + "Subscriber";
+                    String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Subscriber";
                     if (!uniqueSubFields.containsKey(name)) {
                         Variable field = new Variable();
                         field.setTypeNameTargetLanguage("ros::Subscriber");
@@ -183,7 +184,7 @@ public class LanguageUnitRosCppAdapter {
                 .filter(PortSymbol::isOutgoing)
                 .map(p -> (RosConnectionSymbol) p.getMiddlewareSymbol().get())
                 .forEach(rosConnectionSymbol -> {
-                    String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName()).toLowerCase() + "Publisher";
+                    String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Publisher";
                     if (!uniquePubFields.containsKey(name)) {
                         Variable field = new Variable();
                         field.setTypeNameTargetLanguage("ros::Publisher");
@@ -210,7 +211,7 @@ public class LanguageUnitRosCppAdapter {
 
 
     private String getFullRosType(RosConnectionSymbol rosConnectionSymbol) {
-        return rosConnectionSymbol.getTopicType().replace("/", "::");
+        return rosConnectionSymbol.getTopicType().get().replace("/", "::");
     }
 
     private void generateCallbacks(List<PortSymbol> rosPorts, BluePrint currentBluePrint) {
@@ -222,16 +223,16 @@ public class LanguageUnitRosCppAdapter {
                 .filter(PortSymbol::isIncoming)
                 .forEachOrdered(portSymbol -> {
                     RosConnectionSymbol rosCon = (RosConnectionSymbol) portSymbol.getMiddlewareSymbol().get();
-                    if (!uniqueMethods.containsKey(rosCon.getTopicName())) {
-                        Method method = new Method(getTopicNameTargetLanguage(rosCon.getTopicName()) + "Callback", "void");
+                    if (!uniqueMethods.containsKey(rosCon.getTopicName().get())) {
+                        Method method = new Method(getTopicNameTargetLanguage(rosCon.getTopicName().get()) + "Callback", "void");
                         Variable tmpParam = new Variable();
                         tmpParam.setName("msg");
                         tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::ConstPtr&");
                         method.addParameter(tmpParam);
-                        uniqueMethods.put(rosCon.getTopicName(), method);
+                        uniqueMethods.put(rosCon.getTopicName().get(), method);
                     }
 
-                    Method method = uniqueMethods.get(rosCon.getTopicName());
+                    Method method = uniqueMethods.get(rosCon.getTopicName().get());
 
                     String msgField = rosCon.getMsgField().orElse(null);
 

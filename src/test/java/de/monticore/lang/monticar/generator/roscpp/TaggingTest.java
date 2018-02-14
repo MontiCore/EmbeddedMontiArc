@@ -35,8 +35,8 @@ public class TaggingTest extends AbstractSymtabTest {
         assertTrue(tags.size() == 1);
 
         RosConnectionSymbol tag = (RosConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getTopicName(), "/clock");
-        assertEquals(tag.getTopicType(), "rosgraph_msgs/Clock");
+        assertEquals(tag.getTopicName().get(), "/clock");
+        assertEquals(tag.getTopicType().get(), "rosgraph_msgs/Clock");
         assertEquals(tag.getMsgField().get(), "clock.toSec()");
 
         //rosOut
@@ -47,8 +47,8 @@ public class TaggingTest extends AbstractSymtabTest {
         assertTrue(tags.size() == 1);
 
         tag = (RosConnectionSymbol) tags.iterator().next();
-        assertEquals(tag.getTopicName(), "/echo");
-        assertEquals(tag.getTopicType(), "automated_driving_msgs/StampedFloat64");
+        assertEquals(tag.getTopicName().get(), "/echo");
+        assertEquals(tag.getTopicType().get(), "automated_driving_msgs/StampedFloat64");
         assertEquals(tag.getMsgField().get(), "data");
 
     }
