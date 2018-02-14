@@ -16,7 +16,7 @@ public class Main {
             TestCoCos tcc = new TestCoCos();
             List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
             if (context.isSvg()) {
-                VisualisationHelper.init("C:/Praktikum/rep2/reporting/EmbeddedMontiArc/EMAM2Cpp/src/test/resources/", "testing.componentArray");
+//                VisualisationHelper.init("C:/Praktikum/rep2/reporting/EmbeddedMontiArc/EMAM2Cpp/src/test/resources/", "testing.componentArray");
                 VisualisationHelper.generateSVGs(testResults, context.getOutput() + "SVG");
             }
             TestResultPrinter.printTestResults(testResults, context.getOutput() + "data.json", context.isMerge());
