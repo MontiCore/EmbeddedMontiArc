@@ -78,6 +78,21 @@ public class GeneratorRosMsg {
         return files;
     }
 
+    public RosMsg createMsgForStruct(StructSymbol structSymbol) {
+        RosMsg res = new RosMsg(getFullTargetName(structSymbol));
+        structSymbol.getStructFieldDefinitions().stream()
+                .filter(sfds -> sfds.getType().existsReferencedSymbol())
+                .forEach(sfds -> {
+                    MCTypeSymbol referencedSymbol = sfds.getType().getReferencedSymbol();
+                    if (referencedSymbol instanceof StructSymbol) {
+                        res.addField(new RosField(sfds.getName(), createMsgForStruct((StructSymbol) referencedSymbol)));
+                    } else {
+                        res.addField(new RosField(sfds.getName(), new RosType(getInMsgRosType(referencedSymbol))));
+                    }
+                });
+        return res;
+    }
+
     private String getInMsgRosType(MCTypeSymbol referencedSymbol) {
         if (referencedSymbol.isKindOf(MontiCarTypeSymbol.KIND)) {
             MontiCarTypeSymbol mcastTypeSymbol = (MontiCarTypeSymbol) referencedSymbol;
@@ -103,16 +118,23 @@ public class GeneratorRosMsg {
         Log.error("Case not handled! MCTypeReference " + referencedSymbol);
         return null;
     }
-    public String getRosType(MCTypeReference<? extends MCTypeSymbol> typeReference){
+
+    public RosMsg getRosType(MCTypeReference<? extends MCTypeSymbol> typeReference) {
         MCTypeSymbol type = typeReference.getReferencedSymbol();
         if(type.isKindOf(MCASTTypeSymbol.KIND)){
             MCASTTypeSymbol mcastTypeSymbol = (MCASTTypeSymbol) type;
             if(mcastTypeSymbol.getName().equals("Q")){
-                return "std_msgs/Float64";
+                RosMsg tmpMsg = new RosMsg("std_msgs/Float64");
+                tmpMsg.addField(new RosField("data", new RosType("float64")));
+                return tmpMsg;
             }else if(mcastTypeSymbol.getName().equals("Z")){
-                return "std_msgs/Int32";
+                RosMsg tmpMsg = new RosMsg("std_msgs/Int32");
+                tmpMsg.addField(new RosField("data", new RosType("int32")));
+                return tmpMsg;
             }else if(mcastTypeSymbol.getName().equals("B")){
-                return "std_msgs/Bool";
+                RosMsg tmpMsg = new RosMsg("std_msgs/Bool");
+                tmpMsg.addField(new RosField("data", new RosType("bool")));
+                return tmpMsg;
             }else{
                 Log.error("Case not handled! MCASTTypeSymbol " + mcastTypeSymbol.getName());
             }
@@ -120,10 +142,7 @@ public class GeneratorRosMsg {
 
         if (type instanceof StructSymbol) {
             StructSymbol structSymbol = (StructSymbol) type;
-            if (packageName == null)
-                Log.error("Target must be set! Use GeneratorRosMsg::setTarget!");
-
-            return packageName + "/" + getTargetName(structSymbol);
+            return createMsgForStruct(structSymbol);
         }
         Log.error("Case not handled! MCTypeReference " + typeReference);
         return null;
@@ -133,4 +152,10 @@ public class GeneratorRosMsg {
         return structSymbol.getFullName().replace(".", "_");
     }
 
+    private String getFullTargetName(StructSymbol structSymbol) {
+        if (packageName == null)
+            Log.error("Target must be set! Use GeneratorRosMsg::setTarget!");
+
+        return packageName + "/" + getTargetName(structSymbol);
+    }
 }
