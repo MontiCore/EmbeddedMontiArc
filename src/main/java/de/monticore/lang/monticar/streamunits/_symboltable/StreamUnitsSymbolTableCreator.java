@@ -1,21 +1,20 @@
 /**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * <p>
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 /* generated from model null*/
@@ -33,6 +32,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import de.monticore.lang.numberunit._ast.*;
@@ -80,34 +80,68 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         NamedStreamUnitsSymbol streamSymbol = new NamedStreamUnitsSymbol(node.getName(), id);
         for (ASTStreamInstruction streamInstruction : node.getStream().getStreamInstructions()) {
             if (streamInstruction.getStreamValue().isPresent()) {
-                ASTStreamValue streamValue = streamInstruction.getStreamValue().get();
-                if (streamValue.getPrecisionNumber().isPresent()) {
-                    ASTPrecisionNumber num = streamValue.getPrecisionNumber().get();
-                    if (num.getPrecision().isPresent()) {
-                        streamSymbol.add(num.getUnitNumber(), num.getPrecision().get().getUnitNumber());
-                    } else {
-                        streamSymbol.add(new StreamValuePrecision(num.getUnitNumber()));
-                    }
-
-                } else if (streamValue.getName().isPresent()) {
-                    streamSymbol.add(new StreamValuePrecision(streamValue.getName().get()));
-                } else if (streamValue.getSignedLiteral().isPresent()) {
-                    ASTSignedLiteral signedLiteral = streamInstruction.getStreamValue().get().getSignedLiteral().get();
-                    streamSymbol.add(new StreamValuePrecision(signedLiteral));
-                } else if (streamValue.getDontCare().isPresent()) {
-                    streamSymbol.add(new StreamValuePrecision("-"));
-                }else if(streamValue.getValueAtTick().isPresent()){
-                    ASTValueAtTick valueAtTick=streamValue.getValueAtTick().get();
-                    streamSymbol.add(new StreamValueAtTick(valueAtTick));
-                }
+                streamSymbol.add(handleStreamValue(streamInstruction.getStreamValue().get()));
             } else if (streamInstruction.getStreamCompare().isPresent()) {
                 ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompare().get();
                 streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
                         astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
+            } else if (streamInstruction.getStreamArrayValues().isPresent()) {
+                streamSymbol.add(handleStreamArrayValues(streamInstruction));
             }
-
-
         }
         addToScopeAndLinkWithNode(streamSymbol, node);
+    }
+
+    private IStreamValue handleStreamValue(ASTStreamValue streamValue) {
+        IStreamValue result = null;
+        if (streamValue.getPrecisionNumber().isPresent()) {
+            ASTPrecisionNumber num = streamValue.getPrecisionNumber().get();
+            if (num.getPrecision().isPresent()) {
+                result = new StreamValuePrecision(num.getUnitNumber(), num.getPrecision().get().getUnitNumber());
+            } else {
+                result = (new StreamValuePrecision(num.getUnitNumber()));
+            }
+        } else if (streamValue.getName().isPresent()) {
+            result = (new StreamValuePrecision(streamValue.getName().get()));
+        } else if (streamValue.getSignedLiteral().isPresent()) {
+            ASTSignedLiteral signedLiteral = streamValue.getSignedLiteral().get();
+            result = (new StreamValuePrecision(signedLiteral));
+        } else if (streamValue.getDontCare().isPresent()) {
+            result = (new StreamValuePrecision("-"));
+        } else if (streamValue.getValueAtTick().isPresent()) {
+            ASTValueAtTick valueAtTick = streamValue.getValueAtTick().get();
+            result = (new StreamValueAtTick(valueAtTick));
+        }
+        return result;
+    }
+
+    private StreamValues handleStreamArrayValues(ASTStreamInstruction streamInstruction) {
+        ASTStreamArrayValues streamArrayValues = streamInstruction.getStreamArrayValues().get();
+        StreamValues result = null;
+        if (streamArrayValues.getMatrixPair().isPresent()) {
+            result = handleMatrixPair(streamArrayValues.getMatrixPair().get());
+        } else if (streamArrayValues.getValuePair().isPresent()) {
+            result = new StreamValues(handleValuePair(streamArrayValues.getValuePair().get()));
+        }
+        return result;
+    }
+
+    private StreamValues handleMatrixPair(ASTMatrixPair matrixPair) {
+        //handle all rows
+        StreamValues streamValues = new StreamValues();
+        for (int row = 0; row < matrixPair.getValuePairs().size(); ++row) {
+            streamValues.add(handleValuePair(matrixPair.getValuePairs().get(row)));
+        }
+        return streamValues;
+    }
+
+    private List<IStreamValue> handleValuePair(ASTValuePair valuePair) {
+        List<ASTStreamValue> streamValues = valuePair.getStreamValues();
+        List<IStreamValue> currentList = new ArrayList<>();
+        //handle the elements of each row
+        for (int i = 0; i < streamValues.size(); ++i) {
+            currentList.add(handleStreamValue(streamValues.get(i)));
+        }
+        return currentList;
     }
 }

@@ -61,7 +61,7 @@ public class ParserStreamUnitsTest {
     }
 
     @Test
-    public void testTag() throws RecognitionException, IOException {
+    public void testStreams() throws RecognitionException, IOException {
         test("stream");
     }
 

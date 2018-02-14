@@ -39,37 +39,37 @@ import org.junit.Test;
  * @author Robert Heim
  */
 public class SymtabTest extends AbstractSymtabTest {
-  @BeforeClass
-  public static void setUp() {
-    // ensure an empty log
-    Log.getFindings().clear();
-  }
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+    }
 
-  @Test
-  public void testResolveComponentStreamSymbol() {
-    Scope symTab = createSymTab("src/test/resources/nonunitstreams/streams");
+    @Test
+    public void testResolveComponentStreamSymbol() {
+        Scope symTab = createSymTab("src/test/resources/nonunitstreams/streams");
 
-    ComponentStreamSymbol comp = symTab.<ComponentStreamSymbol>resolve(
-        "basicLibrary.And", ComponentStreamSymbol.KIND).orElse(null);
-    assertNotNull(comp);
-  }
+        ComponentStreamSymbol comp = symTab.<ComponentStreamSymbol>resolve(
+                "basicLibrary.And", ComponentStreamSymbol.KIND).orElse(null);
+        assertNotNull(comp);
+    }
 
-  @Test
-  public void testResolveNamedStreamSymbol() {
-    Scope symTab = createSymTab("src/test/resources/nonunitstreams/streams");
+    @Test
+    public void testResolveNamedStreamSymbol() {
+        Scope symTab = createSymTab("src/test/resources/nonunitstreams/streams");
 
-    NamedStreamSymbol namedStreamSymbol = symTab.<NamedStreamSymbol>resolve(
-        "advancedLibrary.RSFlipFlop.S", NamedStreamSymbol.KIND).orElse(null);
-    assertNotNull(namedStreamSymbol);
-  }
+        NamedStreamSymbol namedStreamSymbol = symTab.<NamedStreamSymbol>resolve(
+                "advancedLibrary.RSFlipFlop.S", NamedStreamSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+    }
 
-  @Ignore("ModelPath#resolveModel does not support loading a collection, which should be done when resolving many")
-  @Test
-  public void testResolveNamedManyStreamSymbol() {
-    Scope symTab = createSymTab("src/test/resources/nonunitstreams/streams", "src/test/resources/nonunitstreams/streams2");
+    @Ignore("ModelPath#resolveModel does not support loading a collection, which should be done when resolving many")
+    @Test
+    public void testResolveNamedManyStreamSymbol() {
+        Scope symTab = createSymTab("src/test/resources/nonunitstreams/streams", "src/test/resources/nonunitstreams/streams2");
 
-    Collection<NamedStreamSymbol> namedStreamSymbols = symTab.<NamedStreamSymbol>resolveMany(
-        "advancedLibrary.RSFlipFlop.S", NamedStreamSymbol.KIND);
-    assertEquals(2, namedStreamSymbols.size());
-  }
+        Collection<NamedStreamSymbol> namedStreamSymbols = symTab.<NamedStreamSymbol>resolveMany(
+                "advancedLibrary.RSFlipFlop.S", NamedStreamSymbol.KIND);
+        assertEquals(2, namedStreamSymbols.size());
+    }
 }

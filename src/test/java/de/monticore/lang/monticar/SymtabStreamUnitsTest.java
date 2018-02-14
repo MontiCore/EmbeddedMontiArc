@@ -1,27 +1,27 @@
 /**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * <p>
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.monticore.lang.monticar;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.streamunits._ast.ASTValueAtTick;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
 import de.monticore.symboltable.GlobalScope;
@@ -33,9 +33,7 @@ import org.junit.Test;
 import java.nio.file.Paths;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Sascha on 16.05.2017.
@@ -137,6 +135,44 @@ public class SymtabStreamUnitsTest {
             assertEquals(">", (instruction.getStreamCompare().get()).getOperator().toString());
         }
 
+
+    }
+
+    @Test
+    public void testResolveMatrixStream() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "emamtest.TestMatrixStream.direction", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(0);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        StreamValues streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("1", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 2).toString());
+
+
+        streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(1);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("1", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 2).toString());
+
+
+        streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("1", streamValues.getStreamValue(0, 2).toString());
 
     }
 
