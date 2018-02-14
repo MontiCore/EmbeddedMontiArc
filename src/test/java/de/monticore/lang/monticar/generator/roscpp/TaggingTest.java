@@ -7,6 +7,7 @@ import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -18,6 +19,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TaggingTest extends AbstractSymtabTest {
+
+    @Before
+    public void initTest() {
+        TagHelper.reset();
+    }
 
     @Test
     public void testRosConnectionParsing() {
@@ -83,6 +89,7 @@ public class TaggingTest extends AbstractSymtabTest {
     public void testRosConnectionGeneration() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         RosToEmamTagSchema.registerTagTypes(symtab);
+
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/echoTaggingCompRos/");
