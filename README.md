@@ -253,21 +253,24 @@ Currently all units will be automatically converted to the SI base units
 See https://en.wikipedia.org/wiki/SI_base_unit for reference  
 An example of numbers with different units that can be added together is presented in the following:  
 ```
-Q(O:5km) bigDistance = 4;
-Q(0:5m) smallDistance = 4;
-Q(0:10000m) sumDistance = bigDistance + smallDistance;
+Q(Okm : 5km) bigDistance = 4 km;
+Q(0m : 5m) smallDistance = 4 m;
+Q(0m : 10000m) sumDistance = bigDistance + smallDistance;
 ```
   
 This results in `sumDistance` containing `4004m`. When changing the example to:
 ```
-Q(O:5km) bigDistance = 4;  
-Q(0:5m) smallDistance = 4;  
-Q(0:10km) sumDistance = bigDistance + smallDistance;
+Q(Om : 5km) bigDistance = 4 km;  
+Q(0m : 5m) smallDistance = 4000 m;  
+Q(0mm : 10km) sumDistance = bigDistance + smallDistance;
 ```
-  
+
+**If a datatype has a unit, e.g. Q(0km : 5km), than also the assigned value must have a unit!**
+
+Note: The compiler removes the units to support blas operations, but in the model all units must be present. The reason is to have better readability such as `distance < 40 mm` is better understandable as `distance < 40` (in Java and C we never know what unit a value represents).
+
 `sumDistance` still contains `4004m` as everything is converted to base units internally, which avoids manually converting  
-units like km to m. Notice that in both cases `smallDistance` stores `4000m`, as it is expected from the just explained  
-internal unit conversions.   
+units like km to m. Notice that in both cases `smallDistance` stores `4000m`.
 
 > Also show an example with `Z`, `N`, `R` and also one where you define the resolution `min:res:max`
 
