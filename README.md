@@ -1,6 +1,10 @@
 # Documentation
 This documentation includes all relevant information about the implemented concepts and the required installation steps for the MontiSim project.
 
+# Demo Server
+- http://137.226.168.10/visualization/
+- works only in the RWTH net!
+
 # Required Software
 - Git
 - Apache Maven
