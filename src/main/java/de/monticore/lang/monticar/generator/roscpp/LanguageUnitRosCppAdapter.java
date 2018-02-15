@@ -106,17 +106,6 @@ public class LanguageUnitRosCppAdapter {
     private void generateConstructor(String classname, BluePrint currentBluePrint) {
         Method constructorMethod = new Method(classname, "");
         constructorMethod.addInstruction(new TargetCodeInstruction(""));
-        /*Variable param1 = new Variable();
-        param1.setName("node_handle");
-        param1.setTypeNameTargetLanguage("ros::NodeHandle");
-
-        Variable param2 = new Variable();
-        param2.setName("private_node_handle");
-        param2.setTypeNameTargetLanguage("ros::NodeHandle");
-
-        constructorMethod.addParameter(param1);
-        constructorMethod.addParameter(param2);*/
-
         currentBluePrint.addMethod(constructorMethod);
     }
 
