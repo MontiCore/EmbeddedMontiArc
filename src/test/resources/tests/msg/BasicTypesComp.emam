@@ -2,7 +2,9 @@ package tests.msg;
 
 component BasicTypesComp{
     ports in Q inQ,
-    //      in N inN,
+          out Q outQ,
           in Z inZ,
-          in B inB;
+          out Z outZ,
+          in B inB,
+          out B outB;
 }
