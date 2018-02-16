@@ -66,6 +66,15 @@ public class Vertex {
     public Long getId() {
         return new Long(id.longValue());
     }
+    
+    /**
+     * Setter for vertex ID
+     * 
+     * @param id
+     */
+    public void setId(long id) {
+		this.id = id;
+	}
 
     /**
      * Getter for the OSM ID of this vertex
