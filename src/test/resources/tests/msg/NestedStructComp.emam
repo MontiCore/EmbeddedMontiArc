@@ -1,0 +1,7 @@
+package tests.msg;
+import tests.structs.NestedStruct;
+
+component NestedStructComp{
+    port in NestedStruct inNested;
+    port out NestedStruct outNested;
+}

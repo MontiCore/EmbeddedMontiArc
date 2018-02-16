@@ -7,7 +7,8 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
-import jline.internal.Log;
+import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
+import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,8 +89,18 @@ public class LanguageUnitRosCppAdapter {
                 .sorted(Comparator.comparing(PortSymbol::getName))
                 .forEachOrdered(p -> {
                     RosConnectionSymbol rcs = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
-                    SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
-                    topicToMethod.get(rcs.getTopicName().get()).addInstruction(tmpInstr);
+                    Method method = topicToMethod.get(rcs.getTopicName().get());
+
+                    if (!rcs.getMsgField().isPresent()) {
+                        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
+                        String packageName = Arrays.stream(rcs.getTopicType().get().split("/")).findFirst().get();
+                        generatorRosMsg.setTarget("", packageName);
+                        RosMsg rosMsg = generatorRosMsg.getRosType(p.getTypeReference());
+                        method.addInstruction(new SetStructMsgInstruction(p, rosMsg));
+                    } else {
+                        SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
+                        method.addInstruction(tmpInstr);
+                    }
                 });
 
         publishers.keySet().forEach(var -> {
@@ -228,10 +239,16 @@ public class LanguageUnitRosCppAdapter {
 
                     String msgField = rosCon.getMsgField().orElse(null);
 
-                    if (msgField == null)
-                        Log.error("msgField of each RosConnectionSymbol needs to be set for generation!");
-
-                    method.addInstruction(new SetPortInstruction(portSymbol, getMsgConverter(msgField, portSymbol.isIncoming())));
+                    if (msgField == null) {
+                        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
+                        //TODO: checks?
+                        String packageName = Arrays.stream(rosCon.getTopicType().get().split("/")).findFirst().get();
+                        generatorRosMsg.setTarget("", packageName);
+                        RosMsg rosMsg = generatorRosMsg.getRosType(portSymbol.getTypeReference());
+                        method.addInstruction(new SetStructPortInstruction(portSymbol, rosMsg));
+                    } else {
+                        method.addInstruction(new SetPortInstruction(portSymbol, getMsgConverter(msgField, portSymbol.isIncoming())));
+                    }
 
                     if (method.getInstructions().size() > 0) {
                         //make instructions unique and sorted
@@ -241,7 +258,6 @@ public class LanguageUnitRosCppAdapter {
                                 .collect(Collectors.toList()));
                         currentBluePrint.addMethod(method);
                     }
-
                 });
 
     }

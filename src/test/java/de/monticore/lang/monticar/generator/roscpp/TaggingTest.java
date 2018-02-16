@@ -8,13 +8,13 @@ import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -96,65 +96,63 @@ public class TaggingTest extends AbstractSymtabTest {
 
         ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
+        TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "echo/");
     }
 
-    @Ignore
     @Test
-    public void testBasicStruct() throws IOException {
+    public void testNoMsgFieldBasicStructComp() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         RosToEmamTagSchema.registerTagTypes(symtab);
 
-        String targetPath = "./target/generated-sources-roscpp/basicStructCompRos/";
-        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
-        generatorRosCpp.setGenerationTargetPath(targetPath);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.basicStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/basicStructComp/");
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.basicStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
+        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
 
-        testFilesAreEqual(files, "basicStruct/", targetPath);
+        testFilesAreEqual(files, "basicStructComp/");
     }
 
-    @Ignore
     @Test
-    public void testNestedStruct() throws IOException {
+    public void testNoMsgFieldNestedStructComp() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         RosToEmamTagSchema.registerTagTypes(symtab);
 
-        String targetPath = "./target/generated-sources-roscpp/nestedStructCompRos/";
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
-        generatorRosCpp.setGenerationTargetPath(targetPath);
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/nestedStructComp/");
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.nestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.nestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
+        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
 
-        testFilesAreEqual(files, "nestedStruct/", targetPath);
+        testFilesAreEqual(files, "nestedStructComp/");
     }
 
-    @Ignore
     @Test
-    public void testArrayStruct() throws IOException {
+    public void testNoMsgFieldMultiNestedStructComp() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         RosToEmamTagSchema.registerTagTypes(symtab);
 
-        String targetPath = "./target/generated-sources-roscpp/arrayStructCompRos/";
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
-        generatorRosCpp.setGenerationTargetPath(targetPath);
+        generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/multiNestedStructComp/");
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.arrayStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.multiNestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
+        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
 
-        testFilesAreEqual(files, "arrayStruct/", targetPath);
-
-
+        testFilesAreEqual(files, "multiNestedStructComp/");
     }
+
 }

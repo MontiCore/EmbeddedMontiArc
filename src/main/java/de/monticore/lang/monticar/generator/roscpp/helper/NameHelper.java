@@ -2,7 +2,11 @@ package de.monticore.lang.monticar.generator.roscpp.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NameHelper {
 
@@ -61,5 +65,20 @@ public class NameHelper {
             return msgType.split("/")[0];
         }
 
+    }
+
+    public static List<String> getAllFieldNames(RosMsg rosMsg) {
+        ArrayList<String> res = new ArrayList<>();
+        rosMsg.getFields().forEach(f -> {
+            if (f.getType() instanceof RosMsg) {
+                List<String> tmpFields = getAllFieldNames(((RosMsg) f.getType()));
+                tmpFields.stream()
+                        .map(tmpF -> f.getName() + "." + tmpF)
+                        .forEach(res::add);
+            } else {
+                res.add(f.getName());
+            }
+        });
+        return res;
     }
 }

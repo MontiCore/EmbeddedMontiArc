@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.roscpp.helper.FormatHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -64,6 +65,7 @@ public class GeneratorRosCpp {
     public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol component) {
         List<FileContent> fileContents = new ArrayList<>();
         fileContents.addAll(generateRosAdapter(component));
+        fileContents.forEach(fc -> fc.setFileContent(FormatHelper.fixIndentation(fc.getFileContent())));
         return fileContents;
     }
 
