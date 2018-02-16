@@ -10,6 +10,9 @@ import java.util.List;
 
 public class NameHelper {
 
+    private NameHelper() {
+    }
+
     public static String getPortNameTargetLanguage(PortSymbol portSymbol) {
         //TODO: get from cpp generator for consistency?
         if (portSymbol.isPartOfPortArray()) {

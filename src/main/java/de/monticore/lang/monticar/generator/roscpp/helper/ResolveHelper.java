@@ -10,6 +10,9 @@ import de.monticore.symboltable.Scope;
 
 public class ResolveHelper {
 
+    private ResolveHelper() {
+    }
+
     //TODO: refactor
     public static ResolvedRosInterface resolveRosInterface(RosInterface rosInterface, ExpandedComponentInstanceSymbol component, boolean isSubscriber) {
         String includeString = rosInterface.type;

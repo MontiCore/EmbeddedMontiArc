@@ -20,6 +20,9 @@ import java.util.stream.Stream;
 //TODO: better exceptions
 public class YamlHelper {
 
+    private YamlHelper() {
+    }
+
     public static List<File> generateFromFile(String configFilePath, TaggingResolver symtab, GeneratorRosCpp generatorRosCpp) throws IOException {
         YamlReader reader = new YamlReader(new FileReader(configFilePath));
         List<RosTag> rosTags = (List<RosTag>) reader.read();

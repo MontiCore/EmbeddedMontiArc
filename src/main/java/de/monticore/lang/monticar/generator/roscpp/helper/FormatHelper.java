@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 public class FormatHelper {
 
+    private FormatHelper() {
+    }
+
     public static String fixIndentation(String lines) {
         return fixIndentation(Arrays.asList(lines.split("\\n"))).stream()
                 .collect(Collectors.joining("\n"));

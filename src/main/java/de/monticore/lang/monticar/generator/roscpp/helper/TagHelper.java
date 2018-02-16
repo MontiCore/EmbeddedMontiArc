@@ -15,6 +15,9 @@ import java.util.*;
 public class TagHelper {
     private static Set<String> allreadyResolved = new HashSet<>();
 
+    private TagHelper() {
+    }
+
     public static Map<PortSymbol, RosConnectionSymbol> resolveTags(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         Map<PortSymbol, RosConnectionSymbol> rosConnectionSymbols = new HashMap<>();
         if (!allreadyResolved.contains(componentInstanceSymbol.getFullName())) {

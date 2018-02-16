@@ -8,6 +8,10 @@ import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import java.util.Comparator;
 
 public class PrinterHelper {
+
+    private PrinterHelper() {
+    }
+
     public static String printVariable(Variable v) {
         return v.getVariableType().getTypeNameTargetLanguage() + " " +
                 v.getNameTargetLanguageFormat() + ";";
