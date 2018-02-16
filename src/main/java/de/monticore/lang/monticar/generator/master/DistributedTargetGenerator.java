@@ -81,9 +81,11 @@ public class DistributedTargetGenerator extends CMakeMasterGenerator {
                     if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance().orElse(null), componentInstanceSymbol)) {
                         //In port of supercomp
                         inferRosConnectionIfPossible(connectorSymbol.getSourcePort(), connectorSymbol.getTargetPort());
+                        generateRosConnectionIfPossible(connectorSymbol);
                     } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance().orElse(null), componentInstanceSymbol)) {
                         //out port of supercomp
                         inferRosConnectionIfPossible(connectorSymbol.getTargetPort(), connectorSymbol.getSourcePort());
+                        generateRosConnectionIfPossible(connectorSymbol);
                     } else {
                         //In between subcomps
                         generateRosConnectionIfPossible(connectorSymbol);
