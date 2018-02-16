@@ -9,22 +9,6 @@ class RosAdapter_tests_msg_nestedStructComp: public IAdapter{
 	ros::Publisher topic4Publisher;
 	
 	public:
-	void topic3Callback(const msgs::tests_structs_NestedStruct::ConstPtr& msg){
-		component->inNested.fieldB = msg->fieldB;
-		component->inNested.fieldNested1.fieldB1 = msg->fieldNested1.fieldB1;
-		component->inNested.fieldNested1.fieldQ1 = msg->fieldNested1.fieldQ1;
-		component->inNested.fieldNested1.fieldQ2 = msg->fieldNested1.fieldQ2;
-		component->inNested.fieldNested1.fieldZ1 = msg->fieldNested1.fieldZ1;
-		component->inNested.fieldNested1.fieldZ2 = msg->fieldNested1.fieldZ2;
-		component->inNested.fieldNested2.fieldB1 = msg->fieldNested2.fieldB1;
-		component->inNested.fieldNested2.fieldQ1 = msg->fieldNested2.fieldQ1;
-		component->inNested.fieldNested2.fieldQ2 = msg->fieldNested2.fieldQ2;
-		component->inNested.fieldNested2.fieldZ1 = msg->fieldNested2.fieldZ1;
-		component->inNested.fieldNested2.fieldZ2 = msg->fieldNested2.fieldZ2;
-		component->inNested.fieldQ = msg->fieldQ;
-		component->inNested.fieldZ = msg->fieldZ;
-	}
-	
 	RosAdapter_tests_msg_nestedStructComp(){
 		
 	}
@@ -60,6 +44,22 @@ class RosAdapter_tests_msg_nestedStructComp: public IAdapter{
 	
 	void tick(){
 		publishtopic4Publisher();
+	}
+	
+	void topic3Callback(const msgs::tests_structs_NestedStruct::ConstPtr& msg){
+		component->inNested.fieldB = msg->fieldB;
+		component->inNested.fieldNested1.fieldB1 = msg->fieldNested1.fieldB1;
+		component->inNested.fieldNested1.fieldQ1 = msg->fieldNested1.fieldQ1;
+		component->inNested.fieldNested1.fieldQ2 = msg->fieldNested1.fieldQ2;
+		component->inNested.fieldNested1.fieldZ1 = msg->fieldNested1.fieldZ1;
+		component->inNested.fieldNested1.fieldZ2 = msg->fieldNested1.fieldZ2;
+		component->inNested.fieldNested2.fieldB1 = msg->fieldNested2.fieldB1;
+		component->inNested.fieldNested2.fieldQ1 = msg->fieldNested2.fieldQ1;
+		component->inNested.fieldNested2.fieldQ2 = msg->fieldNested2.fieldQ2;
+		component->inNested.fieldNested2.fieldZ1 = msg->fieldNested2.fieldZ1;
+		component->inNested.fieldNested2.fieldZ2 = msg->fieldNested2.fieldZ2;
+		component->inNested.fieldQ = msg->fieldQ;
+		component->inNested.fieldZ = msg->fieldZ;
 	}
 	
 };

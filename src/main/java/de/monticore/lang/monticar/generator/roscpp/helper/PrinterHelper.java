@@ -5,6 +5,8 @@ import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 
+import java.util.Comparator;
+
 public class PrinterHelper {
     public static String printVariable(Variable v) {
         return v.getVariableType().getTypeNameTargetLanguage() + " " +
@@ -54,7 +56,9 @@ public class PrinterHelper {
         builder.append("\n");
         //TODO: give each method own access modifier
         builder.append("public:\n");
-        bluePrint.getMethods().forEach(m -> builder.append(PrinterHelper.printMethod(m) + "\n"));
+        bluePrint.getMethods().stream()
+                .sorted(Comparator.comparing(Method::getName))
+                .forEach(m -> builder.append(PrinterHelper.printMethod(m) + "\n"));
         builder.append("};");
 
         return builder.toString();

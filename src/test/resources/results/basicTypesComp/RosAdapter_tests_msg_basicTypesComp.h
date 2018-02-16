@@ -15,18 +15,6 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
 	ros::Publisher topic9Publisher;
 	
 	public:
-	void topic7Callback(const std_msgs::Float64::ConstPtr& msg){
-		component->inQ.data = msg->data;
-	}
-	
-	void topic8Callback(const std_msgs::Int32::ConstPtr& msg){
-		component->inZ.data = msg->data;
-	}
-	
-	void topic9Callback(const std_msgs::Bool::ConstPtr& msg){
-		component->inB.data = msg->data;
-	}
-	
 	RosAdapter_tests_msg_basicTypesComp(){
 		
 	}
@@ -46,10 +34,10 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
 		ros::spin();
 	}
 	
-	void publishtopic9Publisher(){
-		std_msgs::Bool tmpMsg;
-		tmpMsg->data = component->outB.data;
-		topic9Publisher.publish(tmpMsg);
+	void publishtopic7Publisher(){
+		std_msgs::Float64 tmpMsg;
+		tmpMsg->data = component->outQ.data;
+		topic7Publisher.publish(tmpMsg);
 	}
 	
 	void publishtopic8Publisher(){
@@ -58,16 +46,28 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
 		topic8Publisher.publish(tmpMsg);
 	}
 	
-	void publishtopic7Publisher(){
-		std_msgs::Float64 tmpMsg;
-		tmpMsg->data = component->outQ.data;
-		topic7Publisher.publish(tmpMsg);
+	void publishtopic9Publisher(){
+		std_msgs::Bool tmpMsg;
+		tmpMsg->data = component->outB.data;
+		topic9Publisher.publish(tmpMsg);
 	}
 	
 	void tick(){
 		publishtopic7Publisher();
 		publishtopic8Publisher();
 		publishtopic9Publisher();
+	}
+	
+	void topic7Callback(const std_msgs::Float64::ConstPtr& msg){
+		component->inQ.data = msg->data;
+	}
+	
+	void topic8Callback(const std_msgs::Int32::ConstPtr& msg){
+		component->inZ.data = msg->data;
+	}
+	
+	void topic9Callback(const std_msgs::Bool::ConstPtr& msg){
+		component->inB.data = msg->data;
 	}
 	
 };

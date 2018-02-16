@@ -9,16 +9,16 @@ class RosAdapter_tests_a_compA: public IAdapter{
 	tests_a_compA* component;
 	ros::Subscriber _clockSubscriber;
 	ros::Publisher _echoPublisher;
-
-public:
-	void _clockCallback(const rosgraph_msgs::Clock::ConstPtr& msg){
-		component->rosIn = MethodHelper::convertClockToDouble(msg);
-	}
-
+	
+	public:
 	RosAdapter_tests_a_compA(){
 		
 	}
-
+	
+	void _clockCallback(const rosgraph_msgs::Clock::ConstPtr& msg){
+		component->rosIn = MethodHelper::convertClockToDouble(msg);
+	}
+	
 	void init(tests_a_compA* comp){
 		this->component = comp;
 		char* tmp = strdup("");
@@ -29,15 +29,15 @@ public:
 		_echoPublisher = node_handle.advertise<automated_driving_msgs::StampedFloat64>("/echo",5);
 		ros::spin();
 	}
-
+	
 	void publish_echoPublisher(){
 		automated_driving_msgs::StampedFloat64 tmpMsg;
 		tmpMsg = MethodHelper::convertDoubleToStampedFloat64(component->rosOut);
 		_echoPublisher.publish(tmpMsg);
 	}
-
+	
 	void tick(){
 		publish_echoPublisher();
 	}
-
+	
 };

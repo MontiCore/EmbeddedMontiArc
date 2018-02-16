@@ -9,14 +9,6 @@ class RosAdapter_tests_msg_basicStructComp: public IAdapter{
 	ros::Publisher topic2Publisher;
 	
 	public:
-	void topic1Callback(const msgs::tests_structs_BasicStruct::ConstPtr& msg){
-		component->in1.fieldB1 = msg->fieldB1;
-		component->in1.fieldQ1 = msg->fieldQ1;
-		component->in1.fieldQ2 = msg->fieldQ2;
-		component->in1.fieldZ1 = msg->fieldZ1;
-		component->in1.fieldZ2 = msg->fieldZ2;
-	}
-	
 	RosAdapter_tests_msg_basicStructComp(){
 		
 	}
@@ -44,6 +36,14 @@ class RosAdapter_tests_msg_basicStructComp: public IAdapter{
 	
 	void tick(){
 		publishtopic2Publisher();
+	}
+	
+	void topic1Callback(const msgs::tests_structs_BasicStruct::ConstPtr& msg){
+		component->in1.fieldB1 = msg->fieldB1;
+		component->in1.fieldQ1 = msg->fieldQ1;
+		component->in1.fieldQ2 = msg->fieldQ2;
+		component->in1.fieldZ1 = msg->fieldZ1;
+		component->in1.fieldZ2 = msg->fieldZ2;
 	}
 	
 };
