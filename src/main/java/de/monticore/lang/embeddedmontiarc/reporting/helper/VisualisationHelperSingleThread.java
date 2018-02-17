@@ -152,6 +152,7 @@ public class VisualisationHelperSingleThread implements Runnable {
                 .replace("SLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\n", "")
                 .replace("SLF4J: Defaulting to no-operation (NOP) logger implementation\n", "")
                 .replace("SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\n", "")
+                .replace("Picked up _JAVA_OPTIONS: -Xmx2048m -Xms512m","")
         ;
     }
 
