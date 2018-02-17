@@ -1,4 +1,8 @@
-language: java
+language: generic
+addons:
+  apt:
+    packages:
+      - oracle-java8-set-default
 before_install:
   - >-
     openssl aes-256-cbc 
