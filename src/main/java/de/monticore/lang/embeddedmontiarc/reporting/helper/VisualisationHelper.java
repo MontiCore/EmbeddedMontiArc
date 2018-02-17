@@ -149,6 +149,7 @@ public class VisualisationHelper {
                 maxTimeErroredFile = modelPath + modelName;
             }
         } else if (!timeouted){
+            System.out.println("Success");
             if (timeNeeded > maxTime) {
                 maxTime = timeNeeded;
                 maxTimeFile = modelPath + modelName;

@@ -1,6 +1,7 @@
 package de.monticore.lang.embeddedmontiarc.reporting.testCocos;
 
 import de.monticore.lang.embeddedmontiarc.reporting.helper.VisualisationHelper;
+import de.monticore.lang.embeddedmontiarc.reporting.helper.VisualisationHelperMulitThread;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResultPrinter;
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestsEndWithTestResult;
@@ -16,8 +17,8 @@ public class Main {
             TestCoCos tcc = new TestCoCos();
             List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
             if (context.isSvg()) {
-//                VisualisationHelper.init("C:/Praktikum/rep2/reporting/EmbeddedMontiArc/EMAM2Cpp/src/test/resources/", "testing.componentArray");
-                VisualisationHelper.generateSVGs(testResults, context.getOutput() + "SVG");
+                VisualisationHelperMulitThread vHelper = new VisualisationHelperMulitThread();
+                vHelper.generateSVGs(testResults, context.getOutput() + "SVG");
             }
             TestResultPrinter.printTestResults(testResults, context.getOutput() + "data.json", context.isMerge());
         }

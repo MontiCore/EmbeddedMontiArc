@@ -15,10 +15,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.Embe
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.reporting.cocos.AbstractCoCoTest;
-import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.ASTHelper;
-import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.CouldNotResolveException;
-import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.ResolveSymbolException;
-import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
+import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.*;
 import de.monticore.lang.math.math._symboltable.MathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
@@ -52,7 +49,7 @@ public class CoCoTester {
             testResult.addErrorMessage(ast != null ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
         } catch (Exception e) {
             testResult.addErrorMessage("[ERROR] Parser Test failed");
-            System.out.println("File \"" + fileName + "\" could not be parsed");
+            CustomPrinter.println("ERROR. Parser Test failed");
         }
         boolean parse = ast != null;
         if (!parse) {
@@ -87,7 +84,7 @@ public class CoCoTester {
                 testResult.setResolve(1);
                 testResult.addErrorMessage("[INFO] Resolve Test success<br>");
             } catch (CouldNotResolveException e) {
-                System.out.println("File \"" + modelName + "\" could not be resolved");
+                CustomPrinter.println("ERROR. Resolve Test failed");
                 testResult.setResolve(-1);
                 testResult.addErrorMessage("[ERROR] Resolve Test failed");
                 for (Finding finding : Log.getFindings())
@@ -95,7 +92,7 @@ public class CoCoTester {
 
                 return testResult;
             } catch (Exception e) {
-                System.out.println("File \"" + modelName + "\" ERROR. Something went wrong");
+                CustomPrinter.println("ERROR. Something went wrong");
                 testResult.setResolve(-1);
                 testResult.addErrorMessage("[ERROR] Something went wrong");
                 return testResult;
@@ -147,10 +144,14 @@ public class CoCoTester {
             if (fileType.equals("EMAM"))
                 testResult.setAtomicComponent(atomicComponent ? -1 : 1);
 
-            if (testResult.isValid())
+            if (testResult.isValid()) {
                 testResult.addErrorMessage("[INFO] CoCo Test success <br>");
-            else
+                CustomPrinter.println("SUCCESS");
+            }
+            else {
                 testResult.addErrorMessage("[ERROR] CoCo Test failed <br>");
+                CustomPrinter.println("ERROR. CoCo Test failed");
+            }
         }
         return testResult;
     }

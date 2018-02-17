@@ -39,6 +39,8 @@ public class TestResult {
     private int atomicComponent = 0;
 
 
+
+
     public TestResult(String path) {
         this.setPath(path);
     }
@@ -270,6 +272,7 @@ public class TestResult {
                         .replace("\"", "&quot;")
                         .replace("\'", "&prime;")
                         .replace("\\", "&bsol;")
+                        .replace("\0", "")
                         + "<br>";
                 if (!ms.contains("[ERROR]") && !ms.contains("[INFO]"))
                     ms = "[ERROR] " + ms;
