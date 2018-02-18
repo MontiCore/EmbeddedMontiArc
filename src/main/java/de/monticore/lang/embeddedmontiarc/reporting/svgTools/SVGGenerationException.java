@@ -1,4 +1,4 @@
-package de.monticore.lang.embeddedmontiarc.reporting.helper;
+package de.monticore.lang.embeddedmontiarc.reporting.svgTools;
 
 public class SVGGenerationException extends Exception {
     public SVGGenerationException(String message) {

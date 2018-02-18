@@ -1,4 +1,4 @@
-package de.monticore.lang.embeddedmontiarc.reporting.helper;
+package de.monticore.lang.embeddedmontiarc.reporting.svgTools;
 
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
 
@@ -23,7 +23,8 @@ public class VisualisationHelperMulitThread {
             out.mkdirs();
 
         Data data = startThreads(testResults, output);
-        System.out.println("Timeouts: " + data.timeouts + " \twith timeout limit set to: " + timeout);
+        System.out.println("\n<==============SVG-generation==============>");
+        System.out.println("Timeouts: " + data.timeouts + " \twith timeout limit set to: " + timeout + "s");
         System.out.println("Max time needed: " + ((double) data.maxTime) / 1000 + " s");
         System.out.println("Time needed for file: " + data.maxTimeFile);
         System.out.println("Max time needed for errored file: " + ((double) data.maxTimeErrored) / 1000 + " s");

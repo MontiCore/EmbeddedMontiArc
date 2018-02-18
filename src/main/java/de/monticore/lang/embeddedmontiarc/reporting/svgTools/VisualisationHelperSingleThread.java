@@ -1,4 +1,4 @@
-package de.monticore.lang.embeddedmontiarc.reporting.helper;
+package de.monticore.lang.embeddedmontiarc.reporting.svgTools;
 
 import de.monticore.lang.embeddedmontiarc.reporting.testCocos.helper.TestResult;
 
