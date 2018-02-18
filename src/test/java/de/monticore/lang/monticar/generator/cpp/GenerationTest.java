@@ -527,7 +527,6 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    @Ignore("https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/28")
     public void cppCodeForMyComponent7CanBeGenerated() throws IOException {
         cppCodeForMyComponentXCanBeGenerated(7);
     }
@@ -546,5 +545,21 @@ public class GenerationTest extends AbstractSymtabTest {
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
         Assert.assertNotNull(files);
         Assert.assertFalse(files.isEmpty());
+    }
+
+    @Test
+    public void testParameterInstance() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("testing.parameterInstance",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(componentInstanceSymbol);
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/Parameter/");
+
+        List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        testFilesAreEqual(files,"testing/Parameter/");
+
     }
 }

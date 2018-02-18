@@ -105,8 +105,12 @@ public class ComponentConverter {
 
         for (ExpandedComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
             String parameterString = "";
+            int i = 0;
             for (ASTExpression var : subComponent.getArguments()) {
                 Log.debug(var.toString(),"ComponentConverter");
+                if(i > 0)
+                    parameterString += ", ";
+                i++;
                 parameterString += getExpressionParameterConversion(var);
             }
             String result = "";
@@ -166,6 +170,12 @@ public class ComponentConverter {
                 method.addParameter(v);
             } else
                 method.addInstruction(new TargetCodeInstruction(MathConverter.getColumnVectorInitLine(v, bluePrint)));
+        }else if(v.getVariableType().getTypeNameTargetLanguage().equals("double")){
+            //TODO: check backend for typeNameTargetLanguage? and handle additional types here
+            if (v.isParameterVariable()){
+                method.addInstruction(new TargetCodeInstruction("this->" + v.getNameTargetLanguageFormat() + " = " + v.getNameTargetLanguageFormat() +";\n"));
+                method.addParameter(v);
+            }
         }
     }
 
