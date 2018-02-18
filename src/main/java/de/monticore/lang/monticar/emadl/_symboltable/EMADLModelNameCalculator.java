@@ -31,15 +31,14 @@ public class EMADLModelNameCalculator extends de.monticore.CommonModelNameCalcul
     public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
         final Set<String> calculatedModelNames = new LinkedHashSet<>();
 
-        if (EMADLBehaviorSymbol.KIND.isKindOf(kind)){
-            calculatedModelNames.addAll(calculateModelNamesForEMADLBehavior(name));
+        if (EMADLCompilationUnitSymbol.KIND.isKindOf(kind)) {
+            calculatedModelNames.addAll(calculateModelNamesForEMADLCompilationUnit(name));
         }
-
 
         return calculatedModelNames;
     }
 
-    protected Set<String> calculateModelNamesForEMADLBehavior(String name) {
+    protected Set<String> calculateModelNamesForEMADLCompilationUnit(String name) {
         final Set<String> modelNames = new LinkedHashSet<>();
         modelNames.add(name);
         return modelNames;

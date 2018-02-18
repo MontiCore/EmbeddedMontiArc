@@ -1,36 +1,16 @@
 package de.monticore.lang.monticar;
 
 grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
-                      de.monticore.lang.monticar.Common2,
-                      de.monticore.lang.NumberUnit{
-                      //de.monticore.lang.monticar.MCExpressions,
+                      de.monticore.lang.monticar.CNNArch{
 
     EMADLCompilationUnit = EMACompilationUnit;
 
-    BehaviorEmbedding = ArchitectureEmbedding ConfigEmbedding;
+    BehaviorEmbedding = Architecture | MathStatements;
 
-    BehaviorName = "DeepLearning";
+    BehaviorName = name:"CNN" | name:"Math";
 
-    ArchitectureEmbedding = "architecture" ":" ArchitectureConstructor;
-
-    ConfigEmbedding= "configuration" ":" ConfigConstructor;
-
-
-    ArchitectureConstructor = input:ArchIOPorts "->"
-                              Name "(" arguments:(NamedArgument || ",")* ")"
-                              "->" output:ArchIOPorts;
-
-    ArchIOPorts = "{" ports:(ArchIOPort || ",")* "}";
-
-    ArchIOPort = Name ("as" alias:Name)?;
-
-    ConfigConstructor = Name "("
-                            arguments:(NamedArgument || ",")* ")";
-
-    NamedArgument = Name "=" Value;
-
-    Num implements Value = Number;
-
-    //NamedArgument = Name "=" (optValue:Value | reference:Name);
-
+    token NEWLINETOKEN =
+             ('\r' '\n' |
+             '\r' |
+             '\n' ):;
 }

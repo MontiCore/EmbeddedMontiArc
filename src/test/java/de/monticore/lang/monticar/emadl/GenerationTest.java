@@ -37,15 +37,28 @@ public class GenerationTest {
         gen.generate(modelPath, qualifiedName);
     }
 
-    @Ignore
     @Test
-    public void testPythonGeneration() throws IOException, TemplateException {
-        generate("AlexnetFixedParameters");
+    public void testMnistGeneration() throws IOException, TemplateException {
+        generate("mnist.Main");
     }
 
-    @Ignore
     @Test
-    public void testCPPGeneration() throws IOException, TemplateException {
-        generate("TargetCPP");
+    public void testSimulatorGeneration() throws IOException, TemplateException {
+        generate("simulator.MainController");
+    }
+
+    @Test
+    public void testAddGeneration() throws IOException, TemplateException {
+        generate("Add");
+    }
+
+    @Test
+    public void testAlexnetGeneration() throws IOException, TemplateException {
+        generate("Alexnet");
+    }
+
+    @Test
+    public void testResNeXtGeneration() throws IOException, TemplateException {
+        generate("ResNeXt50");
     }
 }

@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -42,11 +42,12 @@
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
         <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
         <Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.0.10-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Behaviour.version>0.0.10-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <CNNArch.version>0.1.1-SNAPSHOT</CNNArch.version>
-        <CNNTrain.version>0.1.1-SNAPSHOT</CNNTrain.version>
-        <Math.version>0.0.10-SNAPSHOT</Math.version>
+        <Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
+        <Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+        <CNNArch.version>0.2.0-SNAPSHOT</CNNArch.version>
+        <Math.version>0.0.11-SNAPSHOT</Math.version>
+        <Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <embedded-montiarc-math-generator>0.0.7-SNAPSHOT</embedded-montiarc-math-generator>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -194,28 +195,26 @@
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-arch</artifactId>
-            <version>${CNNArch.version}</version>
+            <artifactId>embedded-montiarc-math</artifactId>
+            <version>${Embedded-MontiArc-Math.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-generator</artifactId>
+            <version>${embedded-montiarc-math-generator}</version>
         </dependency>
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>cnn-arch</artifactId>
             <version>${CNNArch.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNTrain.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNTrain.version}</version>
+            <artifactId>cnn-arch</artifactId>
+            <version>${CNNArch.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>

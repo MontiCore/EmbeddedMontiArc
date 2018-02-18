@@ -20,9 +20,6 @@
  */
 package de.monticore.lang.monticar.emadl.cocos;
 
-import de.monticore.lang.monticar.emadl._cocos.CheckArchitectureIO;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
-import de.monticore.lang.monticar.emadl.helper.ErrorCodes;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -32,13 +29,23 @@ public class AllCoCoTest extends AbstractCoCoTest {
 
     @Test
     public void testCoCosSimulator() throws IOException {
+        checkValid("", "mnist.Network");
         checkValid("", "Alexnet");
+        checkValid("", "VGG16");
+        checkValid("", "ResNet34");
+        checkValid("", "ResNeXt50");
 
-        checkInvalid(new EMADLCoCoChecker().addCoCo(new CheckArchitectureIO()),
+        checkValid("", "mnist.Main");
+        checkValid("", "simulator.MainController");
+
+        checkValid("", "Add");
+        checkValid("", "simulator.SteeringAngleCalculator");
+
+        /*checkInvalid(new EMADLCoCoChecker().addCoCo(new CheckArchitectureIO()),
                 new EMADLCoCoChecker(),
                 "", "InvalidIOAndArgs",
                 new ExpectedErrorInfo(2, ErrorCodes.MISSING_IO_CODE, ErrorCodes.UNKNOWN_IO_CODE));
-
+*/
     }
 
 }

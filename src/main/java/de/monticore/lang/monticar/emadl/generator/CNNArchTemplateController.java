@@ -132,20 +132,16 @@ public class CNNArchTemplateController {
 
     public List<String> getArchitectureInputs(){
         List<String> list = new ArrayList<>();
-        for (IODeclarationSymbol ioDeclaration : getArchitecture().getInputs()){
-            for (IOLayerSymbol layer : ioDeclaration.getConnectedLayers()){
-                list.add(nameManager.getName(layer));
-            }
+        for (IOLayerSymbol layer : getArchitecture().getInputs()){
+            list.add(nameManager.getName(layer));
         }
         return list;
     }
 
     public List<String> getArchitectureOutputs(){
         List<String> list = new ArrayList<>();
-        for (IODeclarationSymbol ioDeclaration : getArchitecture().getOutputs()){
-            for (IOLayerSymbol layer : ioDeclaration.getConnectedLayers()){
-                list.add(nameManager.getName(layer));
-            }
+        for (IOLayerSymbol layer : getArchitecture().getOutputs()){
+            list.add(nameManager.getName(layer));
         }
         return list;
     }
@@ -230,6 +226,12 @@ public class CNNArchTemplateController {
 
     public void process(Writer writer) throws IOException{
         include("", "Network", writer);
+    }
+
+    public String process(){
+        StringWriter writer = new StringWriter();
+        include("", "Network", writer);
+        return writer.toString();
     }
 
     public String join(Iterable iterable, String separator){

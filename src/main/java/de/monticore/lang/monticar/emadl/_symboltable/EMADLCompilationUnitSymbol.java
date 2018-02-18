@@ -20,20 +20,13 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
+public class EMADLCompilationUnitSymbol extends de.monticore.symboltable.CommonSymbol {
 
-public class EMADLBehaviorKind implements SymbolKind {
+    public static final EMADLCompilationUnitKind KIND = new EMADLCompilationUnitKind();
 
-    private static final String NAME = "de.monticore.lang.monticar.emadl._symboltable.EMADLBehaviorKind";
 
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    public EMADLCompilationUnitSymbol(String name) {
+        super(name, KIND);
     }
 
 }

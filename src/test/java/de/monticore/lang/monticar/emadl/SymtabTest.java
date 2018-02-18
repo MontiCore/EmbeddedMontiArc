@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
-import de.monticore.lang.monticar.emadl._symboltable.EMADLBehaviorSymbol;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
@@ -43,9 +42,6 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         ComponentSymbol a = symTab.<ComponentSymbol>resolve("Alexnet", ComponentSymbol.KIND).orElse(null);
         ExpandedComponentInstanceSymbol c = symTab.<ExpandedComponentInstanceSymbol>resolve("alexnet", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        EMADLBehaviorSymbol d = symTab.<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
-        EMADLBehaviorSymbol e = a.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
-        EMADLBehaviorSymbol f = c.getSpannedScope().<EMADLBehaviorSymbol>resolve("Alexnet", EMADLBehaviorSymbol.KIND).orElse(null);
 
         /*e.getArchitectureConstructor().resolveArchitecture();
         ArchitectureSymbol arch = e.getArchitectureConstructor().getArchitecture();
@@ -58,7 +54,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void test2(){
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol a = symTab.<ExpandedComponentInstanceSymbol>resolve("test", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol a = symTab.<ExpandedComponentInstanceSymbol>resolve("mnist", ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(a);
     }

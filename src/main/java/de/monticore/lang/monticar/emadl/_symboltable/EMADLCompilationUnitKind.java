@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class ArchitectureConstructorKind implements SymbolKind {
+public class EMADLCompilationUnitKind implements SymbolKind {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnnarch._symboltable.instance.ArchitectureConstructorKind";
+    private static final String NAME = "de.monticore.lang.monticar.emadl._symboltable.EMADLCompilationUnitKind";
 
     @Override
     public String getName() {

@@ -1,0 +1,18 @@
+package mnist;
+import Network;
+import CalculateClass;
+
+component Main{
+    ports in Z(0:255)^{3, 224, 224} image,
+         out Z(0:9) digit;
+
+    instance Network net;
+
+    instance CalculateClass outCalc;
+
+    connect image -> net.data;
+    connect net.predictions -> outCalc.probabilities;
+    connect outCalc.digit -> digit;
+
+    }
+}

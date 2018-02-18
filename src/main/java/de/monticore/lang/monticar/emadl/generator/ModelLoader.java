@@ -26,8 +26,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguageFamily;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.GlobalScope;
+import de.se_rwth.commons.Splitters;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public class ModelLoader {
 
@@ -48,14 +50,16 @@ public class ModelLoader {
         return modelPath;
     }
 
-    public ExpandedComponentInstanceSymbol load(String componentName){
+    public ExpandedComponentInstanceSymbol load(String qualifiedName){
+        List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
+        String componentName = splitName.get(splitName.size() - 1);
         String instanceName = componentName.substring(0, 1).toLowerCase() + componentName.substring(1);
-        return load(componentName, instanceName);
+        return load(qualifiedName, instanceName);
     }
 
-    public ExpandedComponentInstanceSymbol load(String componentName, String instanceName){
+    public ExpandedComponentInstanceSymbol load(String qualifiedName, String instanceName){
         ComponentSymbol component = globalScope.<ComponentSymbol> resolve(
-                componentName, ComponentSymbol.KIND).orElse(null);
+                qualifiedName, ComponentSymbol.KIND).orElse(null);
         if (component == null) {
             throw new RuntimeException("EMADL Model loading failed");
         }

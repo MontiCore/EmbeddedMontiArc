@@ -18,21 +18,24 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.emadl._symboltable;
+package de.monticore.lang.monticar.emadl.adapter;
 
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 
-public class ConfigConstructorKind implements SymbolKind {
+public class PortArraySymbol2IODeclarationSymbolTypeFilter extends TransitiveAdaptedResolvingFilter<IODeclarationSymbol> {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ConfigConstructorKind";
-
-    @Override
-    public String getName() {
-        return NAME;
+    public PortArraySymbol2IODeclarationSymbolTypeFilter() {
+        super(PortArraySymbol.KIND,
+                IODeclarationSymbol.class,
+                IODeclarationSymbol.KIND);
     }
 
     @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    public Symbol translate(Symbol adaptee) {
+        assert adaptee instanceof PortArraySymbol;
+        return new PortArraySymbol2IODeclarationSymbol((PortArraySymbol) adaptee);
     }
 }
