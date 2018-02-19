@@ -35,7 +35,7 @@ import java.util.Arrays;
  * @author Robert Heim
  */
 public class AbstractSymtab {
-    protected static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
+    public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);
         TaggingResolver tagging = new TaggingResolver(scope, Arrays.asList(modelPath));
         TagMinMaxTagSchema.registerTagTypes(tagging);
