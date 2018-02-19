@@ -15,15 +15,20 @@ public class Main {
         ReportContext context = getContext(args);
         if (context.isTestCoCos()) {
             TestCoCos tcc = new TestCoCos();
+            System.out.println("\n<================Test CoCos================>\n");
             List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
             if (context.isSvg()) {
+                System.out.println("\n<==============SVG Generation==============>\n");
                 VisualisationHelper.generateSVGs(testResults, context.getOutput() + "SVG");
             }
+            System.out.println("\n<============Write Test Results============>\n");
             TestResultPrinter.printTestResults(testResults, context.getOutput() + "data.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
             TestsEndWithTest tewt = new TestsEndWithTest();
+            System.out.println("\n<================Test Tests================>\n");
             List<TestsEndWithTestResult> testResults = tewt.testTestsEndWithTest(new File(context.getProjectRoot()));
+            System.out.println("\n<============Write Test Results============>\n");
             TestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "/dataEWT.json", context.isMerge());
         }
     }
@@ -31,7 +36,7 @@ public class Main {
     protected static class ReportContext {
         private boolean testsEndWithTest = false;
         private boolean testCoCos = true;
-        private String output = "";
+        private String output = "report/data/";
         private String projectRoot = "";
         private String zipName = "";
         private boolean merge = false;
@@ -99,15 +104,15 @@ public class Main {
 
     private static String help() {
         return
-                "\n\nUsage: reporting projectRoot outputPath [options]\n\n" +
+                "\nUsage: reporting.jar projectRoot [options]\n\n" +
                         "PARAMETERS\n" +
-                        "  projectRoot         Points to the directory with all projects in\n" +
-                        "  outputPath          Points to the directory with the html file in\n" +
+                        "  projectRoot         The directory with all projects in\n" +
                         "OPTIONS\n" +
                         "  -h --help           Prints this help page\n" +
-                        "  -tc  [true/false]   Check CoCos                                 Default: true if not tt\n" +
-                        "                        if this option is true [default] -zn must be set" +
-                        "  -zn  value          The name (containing file ending) of the zip-file with all models in it\n" +
+                        "  -tc  [true/false]   Test CoCos                                  Default: true if !tt\n" +
+                        "                        If this option is true [default] -zn must be set as well\n" +
+                        "  -zn  value          The zip-file with all models in it\n" +
+                        "                        This zip must be hosted on \"github.com/EmbeddedMontiArc/reporting/\"\n" +
                         "  -svg [true/false]   Generate SVG-files (visualisation)          Default: true\n" +
                         "  -tt  [true/false]   Check whether all tests end with \"Test\"   Default: false\n" +
                         "  -m   [true/false]   Merge the output data                       Default: false\n\n";
@@ -116,57 +121,73 @@ public class Main {
     private static ReportContext getContext(String[] args) {
         ReportContext context = new ReportContext();
 
-        if (args.length < 2 || args[0].equals("-h")) {
+        if (args.length < 1 || args[0].equals("-h")) {
             Log.error(help());
             return null;
         }
 
         File projectRoot = new File(args[0]);
-        File outPut = new File(args[1]);
 
         if (!projectRoot.isDirectory() || !projectRoot.exists())
             Log.error("Cannot find dir: " + projectRoot.getAbsolutePath());
-        if (!outPut.isDirectory() || !outPut.exists())
-            Log.error("Cannot find dir: " + outPut.getAbsolutePath());
         context.setProjectRoot(projectRoot.getAbsolutePath());
-        context.setOutput(outPut.getAbsolutePath());
 
         boolean tcSetTrue = false;
-        for (int i = 2; i < args.length; i++) {
+        for (int i = 1; i < args.length; i++) {
             switch (args[i]) {
                 case "-tc":
                     try {
-                        boolean temp = Boolean.parseBoolean(args[++i]);
-                        context.setTestCoCos(temp);
-                        tcSetTrue = temp;
-                    } catch (NumberFormatException e) {
-                        Log.error("Wrong format, see -h for help.");
+                        String c = args[++i];
+                        try {
+                            boolean temp = Boolean.parseBoolean(c);
+                            context.setTestCoCos(temp);
+                            tcSetTrue = temp;
+                        } catch (Exception e) {
+                            Log.error("Could not parse \"" + c + "\", see -h for help.");
+                        }
+                    } catch (Exception e) {
+                        Log.error("Missing argument for option \"tc\", see -h for help.");
                     }
                     break;
                 case "-tt":
                     try {
-                        boolean temp = Boolean.parseBoolean(args[++i]);
-                        context.setTestsEndWithTest(temp);
-                        if (temp && !tcSetTrue)
-                            context.setTestCoCos(false);
-                    } catch (NumberFormatException e) {
-                        Log.error("Wrong format, see -h for help.");
+                        String c = args[++i];
+                        try {
+                            boolean temp = Boolean.parseBoolean(c);
+                            context.setTestsEndWithTest(temp);
+                            if (temp && !tcSetTrue)
+                                context.setTestCoCos(false);
+                        } catch (Exception e) {
+                            Log.error("Could not parse \"" + c + "\", see -h for help.");
+                        }
+                    } catch (Exception e) {
+                        Log.error("Missing argument for option \"tt\", see -h for help.");
                     }
                     break;
                 case "-m":
                     try {
-                        boolean temp = Boolean.parseBoolean(args[++i]);
-                        context.setMerge(temp);
-                    } catch (NumberFormatException e) {
-                        Log.error("Wrong format, see -h for help.");
+                        String c = args[++i];
+                        try {
+                            boolean temp = Boolean.parseBoolean(c);
+                            context.setMerge(temp);
+                        } catch (NumberFormatException e) {
+                            Log.error("Could not parse \"" + c + "\", see -h for help.");
+                        }
+                    } catch (Exception e) {
+                        Log.error("Missing argument for option \"m\", see -h for help.");
                     }
                     break;
                 case "-svg":
                     try {
-                        boolean temp = Boolean.parseBoolean(args[++i]);
-                        context.setSvg(temp);
-                    } catch (NumberFormatException e) {
-                        Log.error("Wrong format, see -h for help.");
+                        String c = args[++i];
+                        try {
+                            boolean temp = Boolean.parseBoolean(c);
+                            context.setSvg(temp);
+                        } catch (NumberFormatException e) {
+                            Log.error("Could not parse \"" + c + "\", see -h for help.");
+                        }
+                    } catch (Exception e) {
+                        Log.error("Missing argument for option \"m\", see -h for help.");
                     }
                     break;
                 case "-zn":

@@ -14,8 +14,6 @@ public class VisualisationHelperMulitThread {
     public void generateSVGs(List<TestResult> testResults, String outputPath) {
         this.threadNumber = 4 * Runtime.getRuntime().availableProcessors();
         String output = outputPath.replace("\\", "/");
-        String current = System.getProperty("user.dir").replace("\\", "/");
-        output = output.substring(current.length() + 1);
         if (output.charAt(output.length() - 1) != '/')
             output = output + "/";
         File out = new File(output);
@@ -23,7 +21,7 @@ public class VisualisationHelperMulitThread {
             out.mkdirs();
 
         Data data = startThreads(testResults, output);
-        System.out.println("\n<==============SVG-generation==============>");
+        System.out.println("\n<========SVG-generation-statistics=========>\n");
         System.out.println("Timeouts: " + data.timeouts + " \twith timeout limit set to: " + timeout + "s");
         System.out.println("Max time needed: " + ((double) data.maxTime) / 1000 + " s");
         System.out.println("Time needed for file: " + data.maxTimeFile);

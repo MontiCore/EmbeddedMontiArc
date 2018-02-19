@@ -50,6 +50,7 @@ public class TestCoCos {
                 testResult.setPath(getVFSTag(projectDir, file, zipName));
                 String relativeProject = projectDir.getName();
                 testResult.setProject(relativeProject);
+                testResult.setRoot(root);
                 testResult.setZipName(zipName);
 
                 testResults.add(testResult);

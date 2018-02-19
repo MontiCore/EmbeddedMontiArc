@@ -7,6 +7,7 @@ import java.util.List;
 public class TestResult {
     private File filePath;
     private File projectPath;
+    private File root;
 
     private String modelPath = "";
     private String qualifiedName = "";
@@ -355,5 +356,13 @@ public class TestResult {
 
     public void setProjectPath(File projectPath) {
         this.projectPath = projectPath;
+    }
+
+    public File getRoot() {
+        return root;
+    }
+
+    public void setRoot(File root) {
+        this.root = root;
     }
 }

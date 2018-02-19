@@ -19,7 +19,33 @@ function createTable(data) {
       "order": [[ 5, "desc" ]],
       "ordering": true,
       "paging" : false,
+      "bInfo": false,
+      "orderFixed": [0, 'asc'],
+      "select": true,
+      "rowGroup": {
+        dataSrc: "Root",
+        startRender: function ( rows, group ) {
+            var valid = rows
+                .data()
+                .pluck('Valid')
+                .reduce( function (a, b) {
+                    if(b==undefined){
+                        return 0;
+                    }
+                    if (b.toLowerCase().indexOf("cross") >= 0){
+                        return a + 0;
+                    } else {
+                        return a + 1;
+                    }
+                }, 0);
+
+            var count = rows.count();
+            return group +' ('+count+')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; valid: ' + valid + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; invalid: ' + (count-valid);
+        },
+        endRender: null
+      },
       "columns": [
+          { "data": "Root", visible: false},
           { 
               "className": 'grow',
               "data": "Name", 
@@ -27,7 +53,7 @@ function createTable(data) {
               sort: "string" 
               
           },
-          { "data": "OnlineIDE", sort:"string", type:"alt-string" },
+          { "data": "OnlineIDE", "orderable": false },
           {
               "className":      'details-control',
               "orderable":      false,
@@ -72,8 +98,8 @@ function format ( d ) {
 }
       
 $(document).ready(function() {
-
   loadJSON("data/data.json", createTable);
+  
    
   // Add event listener for opening and closing details
   $('#my-table tbody').on('click', 'td.details-control', function () {

@@ -10,6 +10,8 @@ import java.util.List;
 public class TestResultPrinter {
 
     private static String[] names = {
+            "\"Root\"",
+            "\"Project\"",
             "\"ModelName\"",
             "\"Name\"",
             "\"OnlineIDE\"",
@@ -58,9 +60,9 @@ public class TestResultPrinter {
     private static String modelName_hiddenPath(String visible, String hidden) {
         hidden = hidden.replace("\\", "/");
         String name = visible;
-        if (hidden.contains("MontiSim")) {
-            name = "MontiSim/" + name;
-        }
+//        if (hidden.contains("MontiSim")) {
+//            name = "MontiSim/" + name;
+//        }
         String otherClasses = "";
         if (hidden.contains("noSVGhidden"))
             otherClasses = " noSVGvisible";
@@ -115,6 +117,8 @@ public class TestResultPrinter {
 
             ip.println("{");
             ip.indent();
+            ip.println(names[i++] + ": \"" + testResult.getRoot().getName() + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getProject()     + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
             ip.println(names[i++] + ": \"" + modelName_hiddenPath(testResult.getModelName(), getVisulisationLink(testResult)) + "\",");
             ip.println(names[i++] + ": \"" + getVFSTag(testResult) + "\",");
@@ -167,8 +171,8 @@ public class TestResultPrinter {
         zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
         String displayName = name;
-        if (project.getAbsolutePath().contains("MontiSim"))
-            displayName = "MontiSim/" + displayName;
+//        if (project.getAbsolutePath().contains("MontiSim"))
+//            displayName = "MontiSim/" + displayName;
         return ("<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
                 "<img border='0' alt='" + displayName + "' src='images/favicon.ico'>" +
@@ -181,9 +185,9 @@ public class TestResultPrinter {
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
         String displayName = name;
 
-        if (project.getAbsolutePath().contains("MontiSim")) {
-            displayName = "MontiSim/" + displayName;
-        }
+//        if (project.getAbsolutePath().contains("MontiSim")) {
+//            displayName = "MontiSim/" + displayName;
+//        }
         if (testResult.getSvgPath().equals(""))
             return "<div class='noSVGhidden'>" + displayName + "</div>";
         else

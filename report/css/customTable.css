@@ -42,12 +42,19 @@ tr.shown td.details-control {
 }
 
 th {
-  background: #006a72;
-  color: #fff;
+  background: #0060B3;
+  color: #eaf1fa;
+}
+
+table.dataTable tr.group td{
+  font-weight:bold;
+  background-color:#779ec9;
+  color: #eaf1fa;
 }
 
 .noSVGvisible {
-  color: #700000;
+  /*color: #700000;*/
+  color: #000;
 }
 
 .sVGvisible {
