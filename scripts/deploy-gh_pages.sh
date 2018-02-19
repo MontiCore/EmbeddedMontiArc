@@ -18,9 +18,9 @@ git clone $REPO out
 cd out
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
 git rm -rf report/* || exit 0
-if [ ! -d "report/data" ]
+if [ ! -d "report" ]
 then
-  mkdir report/data
+  mkdir report
 fi
 mv ../report/* report/
 
