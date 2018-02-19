@@ -52,6 +52,13 @@ table.dataTable tr.group td{
   color: #eaf1fa;
 }
 
+table.dataTable tr.group th{
+  font-weight:bold;
+  background-color:#779ec9;
+  color: #eaf1fa;
+  text-align: left;
+}
+
 .noSVGvisible {
   /*color: #700000;*/
   color: #000;

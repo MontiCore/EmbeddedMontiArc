@@ -17,12 +17,12 @@ fi
 git clone $REPO out
 cd out
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
-git rm -rf report/data/* || exit 0
+git rm -rf report/* || exit 0
 if [ ! -d "report/data" ]
 then
   mkdir report/data
 fi
-mv ../report/data/* report/data/
+mv ../report/* report/
 
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"

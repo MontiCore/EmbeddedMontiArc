@@ -67,8 +67,6 @@ public class TestResult {
                 getModelName().replace(".", "/") +
                 "." + getType().toLowerCase();
         String displayName = getModelName();
-        if (modelPath.contains("MontiSim"))
-            displayName = "MontiSim/" + displayName;
         return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
     }

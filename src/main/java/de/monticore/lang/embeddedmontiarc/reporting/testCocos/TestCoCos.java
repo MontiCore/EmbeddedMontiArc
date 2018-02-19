@@ -74,8 +74,6 @@ public class TestCoCos {
         zipName_ = zipName_.substring(0, zipName_.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
         String displayName = name;
-        if (project.getAbsolutePath().contains("MontiSim"))
-            displayName = "MontiSim/" + displayName;
         return "<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
     }

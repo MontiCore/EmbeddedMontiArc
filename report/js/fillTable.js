@@ -16,6 +16,8 @@ function createTable(data) {
   table = $('#my-table').DataTable( {
       fixedHeader: true,
       "data" : data,
+      "processing": true,
+      "orderCellsTop": true,
       "order": [[ 5, "desc" ]],
       "ordering": true,
       "paging" : false,
@@ -42,7 +44,7 @@ function createTable(data) {
             var count = rows.count();
             return group +' ('+count+')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; valid: ' + valid + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; invalid: ' + (count-valid);
         },
-        endRender: null
+        endRender: null //function( rows, group ) {return group;}
       },
       "columns": [
           { "data": "Root", visible: false},
@@ -96,10 +98,31 @@ function format ( d ) {
         '</tr>'+
     '</table>';
 }
+
+function adjustHeader() {
+  $('#my-table thead tr:eq(1) th').each( function(i) {
+    $(this).text( '' );
+  });
+}
+
+function adjustFloatingHeader(content) {
+  var first = true;
+  $('.fixedHeader-floating thead tr:eq(1) th').each( function(i) {
+    if(first) {
+      first = false;
+      $(this).html( content );
+    } else {
+        $(this).text( '' );
+    }
+  });
+}
       
 $(document).ready(function() {
-  loadJSON("data/data.json", createTable);
+  $('#my-table thead tr').clone(true).appendTo( '#my-table thead' );
+  $('#my-table thead tr:eq(1)').addClass('group');
+  adjustHeader();
   
+  loadJSON("data/data.json", createTable);
    
   // Add event listener for opening and closing details
   $('#my-table tbody').on('click', 'td.details-control', function () {
@@ -117,6 +140,31 @@ $(document).ready(function() {
           tr.addClass('shown');
       }
   } );
+  
+  var lastIndex = -1;
+  $(document).scroll( function() {
+    var currentGroup = "EmbeddedMontiArc";
+    var index = 0;
+    var lastFoundIndex = -1;
+    var lastFound = "";
+    $('#my-table tbody .group td').each(function() {
+      
+      var docViewTop = $(window).scrollTop();
+      var elemTop = $(this).offset().top;
+      var elemBottom = elemTop + $(this).height();
+      
+      if ( elemBottom < docViewTop || elemTop < docViewTop) {
+        lastFound = $(this).html();
+        lastFoundIndex = index;
+      }
+      index++;
+    });
+    
+    if( lastFoundIndex != lastIndex ) {
+      lastIndex = lastFoundIndex;
+      adjustFloatingHeader(lastFound);
+    }
+  });
   
   $('.grow').mouseover( function(){
     $(this).find('.shortLabel').hide();
