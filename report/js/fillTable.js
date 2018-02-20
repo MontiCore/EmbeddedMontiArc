@@ -141,6 +141,7 @@ $(document).ready(function() {
       }
   } );
   
+  var init = false;
   var lastIndex = -1;
   $(document).scroll( function() {
     var currentGroup = "EmbeddedMontiArc";
@@ -160,7 +161,8 @@ $(document).ready(function() {
       index++;
     });
     
-    if( lastFoundIndex != lastIndex ) {
+    if( lastFoundIndex != lastIndex || init == false) {
+      init = true;
       lastIndex = lastFoundIndex;
       adjustFloatingHeader(lastFound);
     }
