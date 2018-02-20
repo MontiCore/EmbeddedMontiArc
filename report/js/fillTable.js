@@ -162,9 +162,15 @@ $(document).ready(function() {
     });
     
     if( lastFoundIndex != lastIndex || init == false) {
-      init = true;
       lastIndex = lastFoundIndex;
-      adjustFloatingHeader(lastFound);
+      if ( $(".mydivclass")[0] ) {
+        adjustFloatingHeader(lastFound);
+        init = true;
+      }
+    }
+    
+    if ( !$(".mydivclass")[0] ) {
+      init = false;
     }
   });
   
