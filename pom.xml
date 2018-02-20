@@ -4,31 +4,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>SimLang</artifactId>
-    <groupId>montisim</groupId>
+    <artifactId>SimulationLanguage</artifactId>
+    <groupId>de.monticore.lang.montisim</groupId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
     
     <modules>
-        <module>weather</module>
-        <module>simlang</module>
+        <module>Weather</module>
+        <module>SimLang</module>
     </modules>
     
     <properties>
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.3</monticore.version>
+    <monticore.version>4.5.3-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
-    <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
+    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
 	<jscience.version>4.3.1</jscience.version>
-  <antlr.version>4.7.1</antlr.version>
+  <antlr.version>4.5.1</antlr.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3</monticore.plugin>
+    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -39,13 +39,10 @@
     <grammars.classifier>grammars</grammars.classifier>
     <cli.classifier>cli</cli.classifier>
 
-    <!-- .. Misc .......................................................... -->
-    <java.version>1.8</java.version>
-    <grammars.classifier>grammars</grammars.classifier>
 
     <!-- ..Languages....................................................... -->
-	  <commonlang.version>0.0.3-SNAPSHOT</commonlang.version>
-    <SIUnit.version>0.0.12-OLDMC</SIUnit.version>
+        <langcommon.version>0.0.10-SNAPSHOT</langcommon.version>
+      <numberunit.version>0.0.12-SIMLANG</numberunit.version>
 
         <!-- Set file encoding -->
         <java.version>1.8</java.version>
@@ -123,19 +120,6 @@
 
     <!-- .. Languages .................................................... -->
     
-	  <dependency>
-		  <groupId>de.monticore.lang</groupId>
-		  <artifactId>NumberUnit</artifactId>
-		  <version>${SIUnit.version}</version>
-	  </dependency>
-
-  	<dependency>
-	  	<groupId>de.monticore.lang</groupId>
-		  <artifactId>NumberUnit</artifactId>
-		  <version>${SIUnit.version}</version>
-		  <classifier>${grammars.classifier}</classifier>
-		  <scope>provided</scope>
-	  </dependency>
     
     <!-- .. asdf ...-->
     <dependency>
@@ -144,7 +128,30 @@
         <version>${antlr.version}</version>
       </dependency>
 
-    
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>NumberUnit</artifactId>
+            <version>${numberunit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>NumberUnit</artifactId>
+            <version>${numberunit.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>common-monticar</artifactId>
+            <version>${langcommon.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>common-monticar</artifactId>
+            <version>${langcommon.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -156,7 +163,7 @@
           <version>${surefire.version}</version>
         </plugin>
 
-      <!-- MontiCore Generation -->
+      <!-- MontiCore Generation
       <plugin>
         <groupId>de.monticore.mojo</groupId>
         <artifactId>monticore-maven-plugin</artifactId>
@@ -168,7 +175,9 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin> -->
+
+
 
       <!-- Other Configuration -->
       <plugin>
