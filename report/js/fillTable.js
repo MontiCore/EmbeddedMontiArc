@@ -163,13 +163,13 @@ $(document).ready(function() {
     
     if( lastFoundIndex != lastIndex || init == false) {
       lastIndex = lastFoundIndex;
-      if ( $(".mydivclass")[0] ) {
+      if ( $('.fixedHeader-floating')[0] ) {
         adjustFloatingHeader(lastFound);
         init = true;
       }
     }
     
-    if ( !$(".mydivclass")[0] ) {
+    if ( !$('.fixedHeader-floating')[0] ) {
       init = false;
     }
   });
