@@ -1,0 +1,90 @@
+/* 
+ * advanced weather language v0.2
+ * @author Deniz Schmidt
+*/
+package de.monticore.lang.montisim;
+
+grammar Weather extends de.monticore.lang.NumberUnit {
+
+  //takes float in °celsius or °fahrenheit OR float in [0,oo) in Kelvin
+  Temperature = "temperature" weatherTemperature:TUnitNumber ";";
+  
+  //in relative air humidity as % OR float in [0,1]
+  Humidity = "humidity" weatherHumidity:TUnitNumber (["%"])? ";";
+  
+  //takes float in [0, oo)
+  //in Pascal or bar
+  Pressure = "pressure" weatherPressure:TUnitNumber ";";
+  
+  //https://en.wikipedia.org/wiki/Beaufort_scale
+  //takes float in [0, oo)
+  //in (knots,) meter/second, km/hour or miles/hour
+  Windstrength = "windstrength" weatherWindstrength:TUnitNumber ";";
+  
+  //see windrose
+  //takes float in [0,360]
+  //in angle degree
+  Winddirection = "winddirection" weatherWinddirection:TUnitNumber ";";
+  
+  //https://en.wikipedia.org/wiki/Precipitation_types
+  Precipitationtype = "precipitation_type" precipitationType:["none"|
+                                            "drizzle"|
+                                            "rain"|
+                                            "freezing drizzle"|
+                                            "freezing rain"|
+                                            "snow rain"|"snain"|
+                                            "snow"|
+                                            "snow_grains"|
+                                            "ice_pellets"|"sleet"|
+                                            "hail"|
+                                            "snow_pellets"|"graupel"|
+                                            "ice_crystals"] ";";
+  
+  //takes float in [0,oo) in liter/square meter or millimeter
+  Precipitationamount = "precipitation_amount" weatherPrecipitationamount:TUnitNumber ";";
+  
+  Clouding = "clouding" cloudingType:["none"|
+                         "cirrostratus"|
+                         "altostratus"|
+                         "stratus"|
+                         "nimbostratus"|
+                         "noctilucent"|
+                         "polar_stratospheric"|
+                         "cirrus"|
+                         "cirrocumulus"|
+                         "altocumulus"|
+                         "stratocumulus"|
+                         "cumulus_humilis"|
+                         "cumulus_mediocris"|
+                         "cumulus_congestus"|
+                         "cumulonimbus"] ";";
+                         
+  //takes float in [0,oo) in centi-,meter,kilometer OR keyword unlimited
+  Sight = "sight" (weatherSight:TUnitNumber | ["unlimited"]) ";";
+  
+  WeatherPhenomena = ("weather_phenomena" phenomenaType:["fog"|
+                                           "rope_tornado"|
+                                           "cone_tornado"|
+                                           "wedge_tornado"|
+                                           "multi-vortex_tornado"|
+                                           "landspout"|
+                                           "waterspout"|
+                                           "gustnado"|
+                                           "dust_devil"|
+                                           "steam_devil"|
+                                           "thunderstorm"]
+                    ("(" (posX:TUnitNumber) "," (posY:TUnitNumber) ")")? 
+                    ) ";";
+                                    
+  OpticalPhenomena = ("optical_phenomena" phenomenaType:["rainbow"|
+                                           "northern_lights"|
+                                           "circumzenithal_arc"|
+                                           "zodiacal_light"|
+                                           "crepuscular_rays"|
+                                           "mirage"|
+                                           "fog_bow"]) ";";
+                                           
+  ArtificialPhenomena = ("artificial_phenomena" phenomenaType:["contrails"|
+                                                 "smog"|
+                                                 "rocket_exhaust_trails"]) ";";
+}
