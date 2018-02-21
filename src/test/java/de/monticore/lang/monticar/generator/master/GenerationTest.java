@@ -4,7 +4,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,11 +11,6 @@ import java.io.IOException;
 import static org.junit.Assert.assertNotNull;
 
 public class GenerationTest extends AbstractSymtabTest {
-
-    @Before
-    public void initTest() {
-        TagHelper.reset();
-    }
 
     @Test
     public void testBasicGeneration() throws IOException {
