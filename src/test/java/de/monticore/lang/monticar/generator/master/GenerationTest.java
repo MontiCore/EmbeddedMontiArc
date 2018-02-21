@@ -22,7 +22,7 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         MasterGenerator masterGenerator = new MasterGenerator();
-        masterGenerator.setGenerationTargetPath("./target/generated-sources/basicGeneration/");
+        masterGenerator.setGenerationTargetPath("./target/generated-sources-emam/basicGeneration/src/");
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
 
@@ -39,7 +39,7 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         MasterGenerator masterGenerator = new CMakeMasterGenerator();
-        masterGenerator.setGenerationTargetPath("./target/generated-sources/CMakeGeneration/");
+        masterGenerator.setGenerationTargetPath("./target/generated-sources-cmake/CMakeGeneration/src/");
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
 
@@ -56,7 +56,7 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         MasterGenerator masterGenerator = new MiddlewareMasterGenerator();
-        masterGenerator.setGenerationTargetPath("./target/generated-sources/middlewareMasterGenerator/src/");
+        masterGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareMasterGenerator/src/");
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
         masterGenerator.add(new DummyMiddlewareGenerator(), "dummy");
@@ -74,7 +74,7 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
 
-        MasterGenerator masterGenerator = new DistributedTargetGenerator("./target/generated-sources/distributed/src/");
+        MasterGenerator masterGenerator = new DistributedTargetGenerator("./target/generated-sources-cmake/distributed/src/");
 
         masterGenerator.add(new CPPImpl(), "cpp");
         masterGenerator.add(new RosCppImpl(), "roscpp");
