@@ -17,12 +17,26 @@ fi
 git clone $REPO out
 cd out
 git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
-git rm -rf report/* || exit 0
+git rm -rf report/css/* || exit 0
+git rm -rf report/data/* || exit 0
+git rm -rf report/images/* || exit 0
+git rm -rf report/js/* || exit 0
+git rm -rf report/report.html || exit 0
+git rm -rf report/reportEWT.html || exit 0
 if [ ! -d "report" ]
 then
   mkdir report
 fi
-mv ../report/* report/
+mkdir report/css
+mv ../report/css/* report/css
+mkdir report/data
+mv ../report/data/* report/data
+mkdir report/images
+mv ../report/images/* report/images
+mkdir report/js
+mv ../report/js/* report/js
+mv ../report/report.html report/report.html
+mv ../report/reportEWT.html report/reportEWT.html
 
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"

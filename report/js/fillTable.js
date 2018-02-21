@@ -18,7 +18,7 @@ function createTable(data) {
       "data" : data,
       "processing": true,
       "orderCellsTop": true,
-      "order": [[ 5, "desc" ]],
+      "aaSorting": [5,'asc'],
       "ordering": true,
       "paging" : false,
       "bInfo": false,
@@ -46,13 +46,13 @@ function createTable(data) {
         },
         endRender: null //function( rows, group ) {return group;}
       },
-      "columns": [
+      "aoColumns": [
           { "data": "Root", visible: false},
           { 
               "className": 'grow',
               "data": "Name", 
-              "width": "200px",
-              sort: "string" 
+              "sType": "growDiv",
+              "bSortable": true
               
           },
           { "data": "OnlineIDE", "orderable": false },
@@ -116,8 +116,23 @@ function adjustFloatingHeader(content) {
     }
   });
 }
+
+function getStringFromGrow(x) {
+  str1 = $(x).find('.noSVGhidden').text().toLowerCase();
+  str2= $(x).find('.sVGhidden').text().toLowerCase();
+  return str1 == "" ? str2 : str1;
+}
       
 $(document).ready(function() {
+  jQuery.fn.dataTableExt.oSort["growDiv-desc"] = function (x, y) {
+    return getStringFromGrow(x) < getStringFromGrow(y);
+  };
+       
+  jQuery.fn.dataTableExt.oSort["growDiv-asc"] = function (x, y) {
+    return getStringFromGrow(x) > getStringFromGrow(y);
+  }    
+
+    
   $('#my-table thead tr').clone(true).appendTo( '#my-table thead' );
   $('#my-table thead tr:eq(1)').addClass('group');
   adjustHeader();
