@@ -1,3 +1,5 @@
+#run from project root!
+#make sure all ros packages have been sourced!
 function quitOnError {
     if [ "$?" -ne 0 ]
     then
@@ -22,5 +24,5 @@ for d in */ ; do
     quitOnError
 done
 
-echo success!
+echo Success!
 exit 0
