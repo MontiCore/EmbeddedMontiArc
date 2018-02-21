@@ -4,7 +4,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,11 +14,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 public class CMakeGenerationTest extends AbstractSymtabTest {
-
-    @Before
-    public void initTest() {
-        TagHelper.reset();
-    }
 
     @Test
     public void testEchoCMake() throws IOException {
@@ -32,7 +26,7 @@ public class CMakeGenerationTest extends AbstractSymtabTest {
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/echoCMake/");
         generatorRosCpp.setGenerateCMake(true);
-        List<File> files = TagHelper.generate(generatorRosCpp, taggingResolver, componentInstanceSymbol);
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, taggingResolver, componentInstanceSymbol);
 
         testFilesAreEqual(files, "echoCMake/");
     }

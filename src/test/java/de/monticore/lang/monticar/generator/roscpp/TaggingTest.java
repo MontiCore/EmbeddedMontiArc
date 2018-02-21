@@ -7,7 +7,6 @@ import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,11 +18,6 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 public class TaggingTest extends AbstractSymtabTest {
-
-    @Before
-    public void initTest() {
-        TagHelper.reset();
-    }
 
     @Test
     public void testRosConnectionParsing() {
@@ -98,7 +92,7 @@ public class TaggingTest extends AbstractSymtabTest {
         assertNotNull(component);
         TagHelper.resolveTags(symtab, component);
 
-        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "echo/");
     }
@@ -116,7 +110,7 @@ public class TaggingTest extends AbstractSymtabTest {
         assertNotNull(component);
         Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
-        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "basicTypesComp/");
 
@@ -135,7 +129,7 @@ public class TaggingTest extends AbstractSymtabTest {
         assertNotNull(component);
         Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
-        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "basicStructComp/");
     }
@@ -152,7 +146,7 @@ public class TaggingTest extends AbstractSymtabTest {
         assertNotNull(component);
         Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
-        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "nestedStructComp/");
     }
@@ -169,7 +163,7 @@ public class TaggingTest extends AbstractSymtabTest {
         assertNotNull(component);
         Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
-        List<File> files = TagHelper.generate(generatorRosCpp, symtab, component);
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "multiNestedStructComp/");
     }
