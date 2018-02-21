@@ -1,12 +1,16 @@
 package de.monticore.lang.monticar.generator.master;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceBuilder;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.se_rwth.commons.logging.Log;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -40,5 +44,41 @@ public class ClusterHelper {
 
         return connectivityInspector.connectedSets();
     }
+
+    public static List<ExpandedComponentInstanceSymbol> getClusterSubcomponents(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        List<Set<ExpandedComponentInstanceSymbol>> clusters = getClusters(componentInstanceSymbol);
+        List<ExpandedComponentInstanceSymbol> res = new ArrayList<>();
+        clusters.forEach(c -> {
+            if (c.size() == 1) {
+                res.add(ExpandedComponentInstanceBuilder.clone(c.iterator().next()));
+            } else {
+                res.add(createECISFromCluster(c));
+            }
+        });
+        return res;
+    }
+
+    private static ExpandedComponentInstanceSymbol createECISFromCluster(Set<ExpandedComponentInstanceSymbol> cluster) {
+        //TODO: implement
+        ExpandedComponentInstanceBuilder res = new ExpandedComponentInstanceBuilder();
+        cluster.forEach(ecis -> {
+            List<PortSymbol> unconnectedPorts = getUnconnectedPortsFromCluster(cluster);
+            unconnectedPorts.forEach(p -> {
+                PortSymbol superPort = EMAPortBuilder.clone(p);
+                res.addPort(superPort);
+
+            });
+
+        });
+
+
+        return res.build();
+    }
+
+    private static List<PortSymbol> getUnconnectedPortsFromCluster(Set<ExpandedComponentInstanceSymbol> cluster) {
+        //TODO: implement
+        return new ArrayList<>();
+    }
+
 
 }
