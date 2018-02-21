@@ -26,14 +26,12 @@ import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 
 public final class TestsGeneratorCPP {
@@ -195,9 +193,10 @@ public final class TestsGeneratorCPP {
     }
 
     private static FileContent getCatchLib() {
-        InputStream resource = TestsGeneratorCPP.class.getResourceAsStream("/vendor/catch.hpp");
-        String body = new Scanner(resource, "UTF-8").useDelimiter("\\A").next();
-        return new FileContent(body, TESTS_DIRECTORY_NAME + "/catch.hpp");
+        return FileUtil.getResourceAsFile(
+                "/vendor/catch.hpp",
+                TESTS_DIRECTORY_NAME + "/catch.hpp"
+        );
     }
 
     private static String getFileName(ComponentStreamTestViewModel viewModel) {

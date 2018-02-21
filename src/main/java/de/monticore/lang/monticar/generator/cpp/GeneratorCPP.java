@@ -9,13 +9,17 @@ import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.MathCommandRegister;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +33,7 @@ public class GeneratorCPP implements Generator {
 
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
+    private boolean isGenerateAutopilotAdapter = false;
     private final List<BluePrintCPP> bluePrints = new ArrayList<>();
 
     protected String generationTargetPath = "./target/generated-sources-cpp/";
@@ -144,6 +149,9 @@ public class GeneratorCPP implements Generator {
         if (isGenerateTests()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
             fileContents.addAll(g.generateStreamTests(symtab));
+        }
+        if (isGenerateAutopilotAdapter()) {
+            fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
         }
         //System.out.println(fileContents);
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
@@ -275,6 +283,14 @@ public class GeneratorCPP implements Generator {
         isGenerateTests = generateTests;
     }
 
+    public boolean isGenerateAutopilotAdapter() {
+        return isGenerateAutopilotAdapter;
+    }
+
+    public void setGenerateAutopilotAdapter(boolean generateAutopilotAdapter) {
+        isGenerateAutopilotAdapter = generateAutopilotAdapter;
+    }
+
     public List<BluePrintCPP> getBluePrints() {
         return Collections.unmodifiableList(bluePrints);
     }
@@ -282,5 +298,19 @@ public class GeneratorCPP implements Generator {
     private static List<FileContent> generateTypes(Collection<MCTypeSymbol> typeSymbols) {
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
         return tg.generateTypes(typeSymbols);
+    }
+
+    private static List<FileContent> getAutopilotAdapterFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+        List<FileContent> result = new ArrayList<>();
+        result.add(FileUtil.getResourceAsFile("/template/autopilotadapter/AutopilotAdapter.h", "AutopilotAdapter.h"));
+        result.add(generateAutopilotAdapter(componentSymbol));
+        return result;
+    }
+
+    private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
+        AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
+        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        String fileContents = AllTemplates.generateAutopilotAdapter(vm);
+        return new FileContent(fileContents, "AutopilotAdapter.cpp");
     }
 }
