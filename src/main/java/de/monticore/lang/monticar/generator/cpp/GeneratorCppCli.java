@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
-import de.monticore.lang.monticar.generator.cpp.resolver.SymTabCreator;
+import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.CommandLine;
@@ -28,37 +28,44 @@ import java.nio.file.Paths;
  */
 public final class GeneratorCppCli {
 
-    private static final Option OPTION_MODELS_PATH = Option.builder("m")
+    public static final Option OPTION_MODELS_PATH = Option.builder("m")
             .longOpt("models-dir")
             .desc("full path to directory with EMAM models e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\src\\main\\emam")
             .hasArg(true)
             .required(true)
             .build();
 
-    private static final Option OPTION_ROOT_MODEL = Option.builder("r")
+    public static final Option OPTION_ROOT_MODEL = Option.builder("r")
             .longOpt("root-model")
             .desc("fully qualified name of the root model e.g. de.rwth.vpupkin.modeling.mySuperAwesomeAutopilotComponent")
             .hasArg(true)
             .required(true)
             .build();
 
-    private static final Option OPTION_OUTPUT_PATH = Option.builder("o")
+    public static final Option OPTION_OUTPUT_PATH = Option.builder("o")
             .longOpt("output-dir")
             .desc("full path to output directory for tests e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\target\\gen-cpp")
             .hasArg(true)
             .required(true)
             .build();
 
-    private static final Option OPTION_FLAG_TESTS = Option.builder("t")
+    public static final Option OPTION_FLAG_TESTS = Option.builder("t")
             .longOpt("flag-generate-tests")
             .desc("optional flag indicating if tests generation is needed")
             .hasArg(false)
             .required(false)
             .build();
 
-    private static final Option OPTION_FLAG_ARMADILLO = Option.builder("a")
+    public static final Option OPTION_FLAG_ARMADILLO = Option.builder("a")
             .longOpt("flag-use-armadillo-backend")
             .desc("optional flag indicating if Armadillo library should be used as backend")
+            .hasArg(false)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
+            .longOpt("flag-generate-autopilot-adapter")
+            .desc("optional flag indicating if autopilot adapter should be generated")
             .hasArg(false)
             .required(false)
             .build();
@@ -82,6 +89,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_OUTPUT_PATH);
         options.addOption(OPTION_FLAG_TESTS);
         options.addOption(OPTION_FLAG_ARMADILLO);
+        options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
         return options;
     }
 
@@ -101,7 +109,7 @@ public final class GeneratorCppCli {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        TaggingResolver symTab = getSymTab(modelsDirPath);
+        TaggingResolver symTab = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString());
         Resolver resolver = new Resolver(symTab);
         ExpandedComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
         if (componentSymbol != null) {
@@ -112,18 +120,14 @@ public final class GeneratorCppCli {
             if (cliArgs.hasOption(OPTION_FLAG_ARMADILLO.getOpt())) {
                 g.useArmadilloBackend();
             }
+            g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
             try {
-                g.generateFiles(symTab, componentSymbol, symTab);
+                g.generateFiles(componentSymbol, symTab);
             } catch (IOException e) {
                 Log.error("error during generation", e);
                 System.exit(1);
             }
         }
-    }
-
-    private static TaggingResolver getSymTab(Path modelsDirPath) {
-        SymTabCreator symTabCreator = new SymTabCreator(modelsDirPath);
-        return symTabCreator.createSymTabAndTaggingResolver();
     }
 
     private static ExpandedComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {

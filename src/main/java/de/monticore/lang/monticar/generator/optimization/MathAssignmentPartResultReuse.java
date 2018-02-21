@@ -23,7 +23,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
     MathStatementsSymbol currentMathStatementsSymbol = null;
     List<MathExpressionSymbol> encounteredSymbolInstances = new ArrayList<>();
     Map<MathExpressionSymbol, String> symbolMap = new HashMap();
-    int currentId = 0;
+    public static int currentId = 0;
     MathExpressionSymbol startMathExpressionSymbol = null;
 
     @Override

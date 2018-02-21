@@ -40,7 +40,8 @@ normalizedLaplacian.execute();
 eigenSolver.matrix = normalizedLaplacian.nLaplacian;
 eigenSolver.execute();
 kMeansClustering.vectors = eigenSolver.eigenvectors;
-kMeansClustering.execute();
+std::thread thread7( [ this ] {this->kMeansClustering.execute();});
+thread7.join();
 clusters = kMeansClustering.clusters;
 }
 

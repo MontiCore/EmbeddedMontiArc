@@ -12,6 +12,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Constant
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.optimization.MathOptimizationRule;
+import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
 import de.monticore.lang.monticar.generator.order.nfp.TagDelayTagSchema.TagDelayTagSchema;
@@ -35,7 +37,7 @@ import java.util.Arrays;
  * @author Robert Heim
  */
 public class AbstractSymtab {
-    protected static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
+    public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);
         TaggingResolver tagging = new TaggingResolver(scope, Arrays.asList(modelPath));
         TagMinMaxTagSchema.registerTagTypes(tagging);
@@ -52,6 +54,7 @@ public class AbstractSymtab {
         ConstantPortSymbol.resetLastID();
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();
+        MathOptimizer.resetIDs();
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         EmbeddedMontiArcMathLanguage montiArcLanguage = new EmbeddedMontiArcMathLanguage();
 
