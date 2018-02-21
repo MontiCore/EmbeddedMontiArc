@@ -21,3 +21,14 @@
 2. [See](https://circleci.com/docs/enterprise/quick-start/) for an explanation of how to setup a project on the CircleCI [site](https://circleci.com/)
 
 Note that for some reason CircleCI does not work with some projects while Travis does work.
+
+# Badges
+[See](https://raw.githubusercontent.com/EmbeddedMontiArc/EMAM2Cpp/master/README.md) for the sample source of a "Readme.md" that can be added to a Github repository. How to obtain the corresponding links for a project for travis is explained [here](https://docs.travis-ci.com/user/status-images/).
+
+For CircleCI see [here](https://circleci.com/docs/1.0/status-badges/) for an explanation.
+
+For Coveralls the badge can be added by replacing `organization` and `projectname` in the following url:
+```
+[![Coverage Status](https://coveralls.io/repos/github/organization/projectname/badge.svg?branch=master)](https://coveralls.io/github/organization/projectname?branch=master)
+
+```
