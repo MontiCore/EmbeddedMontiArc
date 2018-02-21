@@ -20,8 +20,8 @@ nLaplacian=mat(n,n);
 }
 void execute()
 {
-auto _I_3 = (HelperA::getSqrtMat((HelperA::invertDiagMatrix(degree))));
-nLaplacian = _I_3*W*_I_3;
+auto _I_0 = (HelperA::getSqrtMat((HelperA::invertDiagMatrix(degree))));
+nLaplacian = _I_0*W*_I_0;
 }
 
 };

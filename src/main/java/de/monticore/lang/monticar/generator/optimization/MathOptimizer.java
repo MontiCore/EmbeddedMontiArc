@@ -228,6 +228,9 @@ public class MathOptimizer {
         return null;
     }
 
+    public static void resetIDs(){
+        MathAssignmentPartResultReuse.currentId=0;
+    }
     static {
         addOptimizationRule(new MathMultiplicationAddition());
         addOptimizationRule(new MathMatrixMultiplicationOrder());
