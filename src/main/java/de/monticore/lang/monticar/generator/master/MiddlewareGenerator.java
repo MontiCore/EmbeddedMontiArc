@@ -2,6 +2,9 @@ package de.monticore.lang.monticar.generator.master;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.master.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.master.helpers.TemplateHelper;
+import de.monticore.lang.monticar.generator.master.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
@@ -10,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MiddlewareMasterGenerator extends CMakeMasterGenerator {
+public class MiddlewareGenerator extends CMakeGenerator {
 
     @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {

@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.master;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.master.helpers.FileHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -11,17 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class CMakeMasterGenerator extends MasterGenerator {
+public class CMakeGenerator extends StarBridgeGenerator {
 
     @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
-        long notInSubfolders = getGeneratorImpls().stream()
-                .map(this::getImplSubfolder)
+        long notInSubdirs = getGeneratorImpls().stream()
+                .map(this::getImplSubdir)
                 .filter(Objects::isNull)
                 .count();
 
-        if (notInSubfolders > 0) {
-            Log.error("All generators must have subfolders!");
+        if (notInSubdirs > 0) {
+            Log.error("All generators must have subdirs!");
             return new ArrayList<>();
         }
 
@@ -40,8 +41,8 @@ public class CMakeMasterGenerator extends MasterGenerator {
         content.append("set (CMAKE_CXX_STANDARD 11)\n");
 
         getGeneratorImpls().stream()
-                .map(this::getImplSubfolder)
-                .forEach(subfolder -> content.append("add_subdirectory(" + subfolder + ")\n"));
+                .map(this::getImplSubdir)
+                .forEach(subdir -> content.append("add_subdirectory(" + subdir + ")\n"));
 
 
         fileContent.setFileContent(content.toString());

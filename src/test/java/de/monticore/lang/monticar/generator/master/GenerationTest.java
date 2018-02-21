@@ -2,6 +2,9 @@ package de.monticore.lang.monticar.generator.master;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
+import de.monticore.lang.monticar.generator.master.impls.CPPGenImpl;
+import de.monticore.lang.monticar.generator.master.impls.DummyMiddlewareGenImpl;
+import de.monticore.lang.monticar.generator.master.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -21,12 +24,12 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        MasterGenerator masterGenerator = new MasterGenerator();
-        masterGenerator.setGenerationTargetPath("./target/generated-sources-emam/basicGeneration/src/");
-        masterGenerator.add(new CPPImpl(), "cpp");
-        masterGenerator.add(new RosCppImpl(), "roscpp");
+        StarBridgeGenerator starBridgeGenerator = new StarBridgeGenerator();
+        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-emam/basicGeneration/src/");
+        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
+        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
+        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -38,12 +41,12 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        MasterGenerator masterGenerator = new CMakeMasterGenerator();
-        masterGenerator.setGenerationTargetPath("./target/generated-sources-cmake/CMakeGeneration/src/");
-        masterGenerator.add(new CPPImpl(), "cpp");
-        masterGenerator.add(new RosCppImpl(), "roscpp");
+        StarBridgeGenerator starBridgeGenerator = new CMakeGenerator();
+        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/CMakeGeneration/src/");
+        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
+        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
+        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -55,13 +58,13 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        MasterGenerator masterGenerator = new MiddlewareMasterGenerator();
-        masterGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareMasterGenerator/src/");
-        masterGenerator.add(new CPPImpl(), "cpp");
-        masterGenerator.add(new RosCppImpl(), "roscpp");
-        masterGenerator.add(new DummyMiddlewareGenerator(), "dummy");
+        StarBridgeGenerator starBridgeGenerator = new MiddlewareGenerator();
+        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareMasterGenerator/src/");
+        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
+        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
+        starBridgeGenerator.add(new DummyMiddlewareGenImpl(), "dummy");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
+        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -74,11 +77,11 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
 
-        MasterGenerator masterGenerator = new DistributedTargetGenerator("./target/generated-sources-cmake/distributed/src/");
+        StarBridgeGenerator starBridgeGenerator = new DistributedTargetGenerator("./target/generated-sources-cmake/distributed/src/");
 
-        masterGenerator.add(new CPPImpl(), "cpp");
-        masterGenerator.add(new RosCppImpl(), "roscpp");
+        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
+        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        masterGenerator.generate(componentInstanceSymbol, taggingResolver);
+        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 }

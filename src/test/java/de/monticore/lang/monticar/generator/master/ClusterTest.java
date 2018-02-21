@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.master;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
+import de.monticore.lang.monticar.generator.master.helpers.ClusterHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Finding;

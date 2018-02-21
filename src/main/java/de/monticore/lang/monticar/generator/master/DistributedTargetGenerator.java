@@ -5,6 +5,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
+import de.monticore.lang.monticar.generator.master.impls.GeneratorImpl;
+import de.monticore.lang.monticar.generator.master.impls.RosMsgImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -14,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class DistributedTargetGenerator extends CMakeMasterGenerator {
+public class DistributedTargetGenerator extends CMakeGenerator {
     private RosMsgImpl rosMsgImpl;
 
     public DistributedTargetGenerator(String generationTargetPath) {
@@ -48,7 +50,7 @@ public class DistributedTargetGenerator extends CMakeMasterGenerator {
 
         List<File> files = new ArrayList<>();
 
-        CMakeMasterGenerator cmakeListsGenerator = new CMakeMasterGenerator();
+        CMakeGenerator cmakeListsGenerator = new CMakeGenerator();
         cmakeListsGenerator.setGenerationTargetPath(generationTargetPath);
         for (ExpandedComponentInstanceSymbol comp : generatorMap.keySet()) {
             files.addAll(generatorMap.get(comp).generate(comp, taggingResolver));
@@ -62,10 +64,10 @@ public class DistributedTargetGenerator extends CMakeMasterGenerator {
     }
 
     private GeneratorImpl createFullGenerator(String subdir) {
-        MiddlewareMasterGenerator res = new MiddlewareMasterGenerator();
+        MiddlewareGenerator res = new MiddlewareGenerator();
         res.setGenerationTargetPath(generationTargetPath + (subdir.endsWith("/") ? subdir : subdir + "/"));
 
-        this.getGeneratorImpls().forEach(gen -> res.add(gen, this.getImplSubfolder(gen)));
+        this.getGeneratorImpls().forEach(gen -> res.add(gen, this.getImplSubdir(gen)));
 
         return res;
     }

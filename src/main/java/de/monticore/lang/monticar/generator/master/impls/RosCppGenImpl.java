@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.master.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
@@ -8,7 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-public class RosCppImpl implements GeneratorImpl {
+//TODO: make GeneratorRosCpp implement GeneratorImpl
+public class RosCppGenImpl implements GeneratorImpl {
     private String generationTargetPath;
 
     @Override

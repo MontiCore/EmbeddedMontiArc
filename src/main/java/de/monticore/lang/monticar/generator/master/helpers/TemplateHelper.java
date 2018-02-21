@@ -1,7 +1,8 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.master.helpers;
 
 public class TemplateHelper {
-    static String coordinatorTemplate =
+
+    public static String coordinatorTemplate =
             "#include <iostream>\n" +
                     "#include <thread>\n" +
                     "#include <chrono>\n" +
@@ -59,7 +60,8 @@ public class TemplateHelper {
                     "\n" +
                     "  return 0;\n" +
                     "}";
-    static String iAdapterTemplate = "#pragma once\n" +
+
+    public static String iAdapterTemplate = "#pragma once\n" +
             "#include \"${compName}.h\"\n" +
             "\n" +
             "class IAdapter{\n" +
@@ -68,7 +70,8 @@ public class TemplateHelper {
             "\t\tvirtual void init(${compName}* comp) = 0;\n" +
             "\t\tvirtual void tick() = 0;\n" +
             "};";
-    static String cmakeListsTemplate =
+
+    public static String cmakeListsTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
                     "project (Coordinator_${compName} CXX)\n" +
                     "\n" +
@@ -80,4 +83,51 @@ public class TemplateHelper {
                     "target_include_directories(Coordinator_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
                     "\n" +
                     "export(TARGETS Coordinator_${compName} FILE Coordinator_${compName}.cmake)";
+
+    public static String cmakeCppTemplate =
+            "cmake_minimum_required(VERSION 3.5)\n" +
+                    "project(${compName} LANGUAGES CXX)\n" +
+                    "add_library(${compName} ${compName}.h)\n" +
+                    "target_include_directories(${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "set_target_properties(${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "export(TARGETS ${compName} FILE ${compName}.cmake)";
+
+    public static String dummyAdapterTemplate = "#pragma once\n" +
+            "#include \"${compName}.h\"\n" +
+            "#include <thread>\n" +
+            "#include <chrono>\n" +
+            "#include \"IAdapter.h\"\n" +
+            "\n" +
+            "class DummyAdapter_${compName}: public IAdapter{\n" +
+            "\t${compName}* component;\n" +
+            "\n" +
+            "public:\n" +
+            "\tDummyAdapter_${compName}(){\n" +
+            "\n" +
+            "\t}\n" +
+            "\n" +
+            "\tvoid tick(){\n" +
+            "\t\tcout << \"Dummy publish data: component.out1 = \"<< component->out1 << endl;\n" +
+            "\t}\n" +
+            "\t\n" +
+            "\tvoid init(${compName}* comp){\n" +
+            "\t\tthis->component = comp;\n" +
+            "\t\twhile(1){\n" +
+            "       \t\t    std::this_thread::sleep_for(std::chrono::seconds(1));\n" +
+            "\t\t    component->in2 += 1000;\n" +
+            "\t\t}\n" +
+            "\t}\n" +
+            "\n" +
+            "\t\n" +
+            "};";
+
+    public static String dummyCmakeTemplate =
+            "cmake_minimum_required(VERSION 3.5)\n" +
+                    "project (DummyAdapter_${compName})\n" +
+                    "\n" +
+                    "add_library(DummyAdapter_${compName} DummyAdapter_${compName}.h)\n" +
+                    "set_target_properties(DummyAdapter_${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
+                    "target_link_libraries(DummyAdapter_${compName} ${compName})\n" +
+                    "target_include_directories(DummyAdapter_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
+                    "export(TARGETS DummyAdapter_${compName} FILE DummyAdapter_${compName}.cmake)";
 }

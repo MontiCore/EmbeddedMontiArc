@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.master.helpers;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortBuilder;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceBuilder;

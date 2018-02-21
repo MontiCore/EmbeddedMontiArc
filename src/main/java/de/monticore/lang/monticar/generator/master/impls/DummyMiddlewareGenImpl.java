@@ -1,0 +1,56 @@
+package de.monticore.lang.monticar.generator.master.impls;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.master.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.master.helpers.TemplateHelper;
+import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DummyMiddlewareGenImpl implements GeneratorImpl {
+
+    private String generationTargetPath;
+
+    @Override
+    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+
+        List<File> res = new ArrayList<>();
+        res.add(FileHelper.generateFile(generationTargetPath, generateCMake(componentInstanceSymbol)));
+        res.add(FileHelper.generateFile(generationTargetPath, generateAdapter(componentInstanceSymbol)));
+        return res;
+    }
+
+
+    private FileContent generateAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String content = TemplateHelper.dummyAdapterTemplate
+                .replace("${compName}", name);
+
+        FileContent res = new FileContent();
+        res.setFileName("DummyAdapter_" + name + ".h");
+        res.setFileContent(content);
+        return res;
+    }
+
+    @Override
+    public void setGenerationTargetPath(String path) {
+        this.generationTargetPath = path;
+    }
+
+
+    private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        FileContent res = new FileContent();
+        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String content = TemplateHelper.dummyCmakeTemplate
+                .replace("${compName}", name);
+
+        res.setFileName("CMakeLists.txt");
+        res.setFileContent(content);
+        return res;
+    }
+}

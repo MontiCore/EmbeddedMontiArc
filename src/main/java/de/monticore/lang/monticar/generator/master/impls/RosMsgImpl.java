@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.master.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: make GeneratorRosMsg implement GeneratorImpl
 public class RosMsgImpl implements GeneratorImpl {
     private GeneratorRosMsg generatorRosMsg;
     private List<MCTypeReference<? extends MCTypeSymbol>> rosTypesToGenerate = new ArrayList<>();

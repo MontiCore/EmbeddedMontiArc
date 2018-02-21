@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.master.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
