@@ -32,3 +32,5 @@ For Coveralls the badge can be added by replacing `organization` and `projectnam
 [![Coverage Status](https://coveralls.io/repos/github/organization/projectname/badge.svg?branch=master)](https://coveralls.io/github/organization/projectname?branch=master)
 
 ```
+
+Note that it may take some time for some badges to update.
