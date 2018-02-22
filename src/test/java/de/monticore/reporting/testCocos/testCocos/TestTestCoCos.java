@@ -4,6 +4,7 @@ import de.monticore.reporting.testCocos.TestCoCos;
 import de.monticore.reporting.testCocos.helper.TestResult;
 import de.monticore.reporting.testCocos.helper.TestResultPrinter;
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestTestCoCos {
 
+    @Ignore
     @Test
     public void testCoCosTester() throws IOException {
         int modelNumber = 126;
