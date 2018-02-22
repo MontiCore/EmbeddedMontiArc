@@ -1,0 +1,188 @@
+<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+
+<!-- Canvas: bumperBotEmergency -->
+<g transform="translate(16 20)">
+
+    <rect
+        id="12"
+        width="669"
+        height="202"
+        style="fill:white;stroke:black;stroke-width:2;fill-opacity:1.0;stroke-opacity:1.0"/>
+
+    <text
+        x="8"
+        y="20"
+        style="font-weight: bold"
+        font-family="Verdana"
+        font-size="13"
+        fill="black">
+            bumperBotEmergency
+    </text>
+
+</g>
+
+</svg><!-- Component: sensors -->
+<g transform="translate(76 52)">
+    <rect
+        data-name="testManuelSchrick.bumperBotEmergency.sensors"
+        id="14"
+        width="126"
+        height="110"
+        style="fill:white;stroke:black;stroke-width:2;fill-opacity:1.0;stroke-opacity:1.0"
+        onmouseout="this.style.stroke = '#000000'; this.style['stroke-width'] = 2; this.style.cursor='default';"
+            onmouseover="this.style.stroke = '#316FC0'; this.style['stroke-width'] = 5; this.style.cursor='pointer';"
+            onclick="window.open('testManuelSchrick.bumperBotEmergency.sensors.html','_parent',false);parent.openFileInEditor('/bumperBotEmergency/sensors.ema');"
+    />
+
+    <text
+        x="8"
+        y="15"
+        alignment-baseline="middle"
+        style="font-weight: bold"
+        font-family="Verdana"
+        font-size="11"
+        fill="black">
+    sensors
+    </text>
+</g><!-- Component: controller -->
+<g transform="translate(262 52)">
+    <rect
+        data-name="testManuelSchrick.bumperBotEmergency.controller"
+        id="15"
+        width="201"
+        height="150"
+        style="fill:white;stroke:black;stroke-width:2;fill-opacity:1.0;stroke-opacity:1.0"
+        onmouseout="this.style.stroke = '#000000'; this.style['stroke-width'] = 2; this.style.cursor='default';"
+            onmouseover="this.style.stroke = '#316FC0'; this.style['stroke-width'] = 5; this.style.cursor='pointer';"
+            onclick="window.open('testManuelSchrick.bumperBotEmergency.controller.html','_parent',false);parent.openFileInEditor('/bumperBotEmergency/controller.ema');"
+    />
+
+    <text
+        x="8"
+        y="15"
+        alignment-baseline="middle"
+        style="font-weight: bold"
+        font-family="Verdana"
+        font-size="11"
+        fill="black">
+    controller
+    </text>
+</g><!-- Component: actuators -->
+<g transform="translate(523 107)">
+    <rect
+        data-name="testManuelSchrick.bumperBotEmergency.actuators"
+        id="16"
+        width="102"
+        height="95"
+        style="fill:white;stroke:black;stroke-width:2;fill-opacity:1.0;stroke-opacity:1.0"
+        onmouseout="this.style.stroke = '#000000'; this.style['stroke-width'] = 2; this.style.cursor='default';"
+            onmouseover="this.style.stroke = '#316FC0'; this.style['stroke-width'] = 5; this.style.cursor='pointer';"
+            onclick="window.open('testManuelSchrick.bumperBotEmergency.actuators.html','_parent',false);parent.openFileInEditor('/bumperBotEmergency/actuators.ema');"
+    />
+
+    <text
+        x="8"
+        y="15"
+        alignment-baseline="middle"
+        style="font-weight: bold"
+        font-family="Verdana"
+        font-size="11"
+        fill="black">
+    actuators
+    </text>
+</g><defs>
+    <marker id="0,0,0" markerWidth="13" markerHeight="13" refX="5" refY="5" orient="auto">
+            <polyline points="0,2 5,5 0,8" style="fill:none; stroke:rgb(0,0,0);
+                    stroke-width:1" />
+    </marker>
+</defs><line
+    stroke-linecap="square"
+    x1="202"
+    y1="142"
+    x2="254"
+    y2="142"
+    style="stroke:rgb(0, 0,0);
+            stroke-width:2;
+                marker-end: url(#0,0,0)
+            "
+/>
+<line
+    stroke-linecap="square"
+    x1="202"
+    y1="87"
+    x2="254"
+    y2="87"
+    style="stroke:rgb(0, 0,0);
+            stroke-width:2;
+                marker-end: url(#0,0,0)
+            "
+/>
+<line
+    stroke-linecap="square"
+    x1="463"
+    y1="182"
+    x2="515"
+    y2="182"
+    style="stroke:rgb(0, 0,0);
+            stroke-width:2;
+                marker-end: url(#0,0,0)
+            "
+/>
+<line
+    stroke-linecap="square"
+    x1="463"
+    y1="142"
+    x2="515"
+    y2="142"
+    style="stroke:rgb(0, 0,0);
+            stroke-width:2;
+                marker-end: url(#0,0,0)
+            "
+/>
+<defs>
+    <!-- Small box indicating a port -->
+    <rect id="port" x="0" y="0" width="16" height="16"
+          style="fill:white;stroke:rgb(0,0,0);stroke-width:1;fill-opacity:1.0;stroke-opacity:1.0"/>
+</defs><use x="194" y="134" xlink:href="#port" />
+<text text-anchor="end" alignment-baseline="middle" x="191" y="144" transform="rotate(0,191,144)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+bumpPressed
+</text>
+
+<use x="194" y="79" xlink:href="#port" />
+<text text-anchor="end" alignment-baseline="middle" x="191" y="89" transform="rotate(0,191,89)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+emergencyPressed
+</text>
+
+<use x="254" y="134" xlink:href="#port" />
+<text text-anchor="start" alignment-baseline="middle" x="273" y="144" transform="rotate(0,273,144)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+bumpPressed
+</text>
+
+<use x="254" y="79" xlink:href="#port" />
+<text text-anchor="start" alignment-baseline="middle" x="273" y="89" transform="rotate(0,273,89)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+emergencyPressed
+</text>
+
+<use x="455" y="134" xlink:href="#port" />
+<text text-anchor="end" alignment-baseline="middle" x="452" y="144" transform="rotate(0,452,144)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+rightMotorCmd
+</text>
+
+<use x="455" y="174" xlink:href="#port" />
+<text text-anchor="end" alignment-baseline="middle" x="452" y="184" transform="rotate(0,452,184)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+leftMotorCmd
+</text>
+
+<use x="515" y="134" xlink:href="#port" />
+<text text-anchor="start" alignment-baseline="middle" x="534" y="144" transform="rotate(0,534,144)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+rightMotorCmd
+</text>
+
+<use x="515" y="174" xlink:href="#port" />
+<text text-anchor="start" alignment-baseline="middle" x="534" y="184" transform="rotate(0,534,184)" style="font-weight: regular" font-family="Verdana" font-size="9" fill="black">
+leftMotorCmd
+</text>
+
+
+</svg>
