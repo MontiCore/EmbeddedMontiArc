@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class TestTestCoCos {
 
+    @Ignore
     @Test
     public void testCoCosTester() throws IOException {
         int modelNumber = 126;
