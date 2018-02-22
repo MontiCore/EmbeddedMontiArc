@@ -54,7 +54,9 @@ public class TestTestCoCos {
         String comparisonResults = FileUtils.readFileToString(new File(comparisonResultsPath));
         String comparisonResultsMerged = FileUtils.readFileToString(new File(comparisonResultsMergedPath));
 
-        assertEquals("Generated test results not equal", comparisonResults, generatedTestResults);
-        assertEquals("Generated merged test results not equal", comparisonResultsMerged, generatedTestResultsMerged);
+        boolean notMerged = comparisonResults.equals(generatedTestResults);
+        boolean merged = comparisonResultsMerged.equals(generatedTestResultsMerged);
+        assertTrue("Generated test results not equal", notMerged);
+        assertTrue("Generated merged test results not equal", merged);
     }
 }
