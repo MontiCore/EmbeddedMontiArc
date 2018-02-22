@@ -54,6 +54,10 @@ public class TestTestCoCos {
         String comparisonResults = FileUtils.readFileToString(new File(comparisonResultsPath));
         String comparisonResultsMerged = FileUtils.readFileToString(new File(comparisonResultsMergedPath));
 
+        assertTrue("Did not find comparison file", !comparisonResults.equals(""));
+        assertTrue("Did not find comparison_merged file", !comparisonResultsMerged.equals(""));
+        assertTrue("Did not find generated files", !generatedTestResults.equals(""));
+        assertTrue("Did not find generated_merged files", !generatedTestResultsMerged.equals(""));
         boolean notMerged = comparisonResults.equals(generatedTestResults);
         boolean merged = comparisonResultsMerged.equals(generatedTestResultsMerged);
         assertTrue("Generated test results not equal", notMerged);
