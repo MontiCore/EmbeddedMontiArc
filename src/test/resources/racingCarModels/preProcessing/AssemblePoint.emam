@@ -1,0 +1,17 @@
+package preProcessing;
+
+import Point;
+
+component AssemblePoint{
+	ports
+		in Q(-oo:0.001:oo) X,
+		in Q(-oo:0.001:oo) Y,
+
+		out Point point;
+
+	implementation Math{
+		point.x = X;
+		point.y = Y;
+
+	}	
+}

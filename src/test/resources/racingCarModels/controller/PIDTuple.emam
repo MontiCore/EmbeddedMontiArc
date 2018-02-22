@@ -1,0 +1,5 @@
+package controller;
+
+struct PIDTuple{Q(0: 0.001 :20) P;
+		Q(0: 0.001 :20) I;
+		Q(0: 0.001 :20) D;}	

@@ -1,0 +1,51 @@
+package testManuelSchrick.bus;
+
+component NormalBus {
+	ports
+	    in Integer in0,
+		out Integer out0;
+
+    component EmptyA {
+      ports
+        in Integer in1,
+        out Integer out1,
+        out Integer out2,
+        out Integer out3,
+        out Integer out4,
+        out Integer out6,
+        out Integer out5;
+    }
+
+    component EmptyB {
+      ports
+        in Integer in1,
+        out Integer out1;
+    }
+
+    component EmptyC {
+      ports
+        in Integer in1,
+        in Integer in2,
+        in Integer in3,
+        in Integer in4,
+        in Integer in5,
+        in Integer in6,
+        out Integer out1;
+    }
+
+    instance EmptyA emptyA;
+    instance EmptyB emptyB;
+    instance EmptyC emptyC;
+
+    connect emptyA.out1 -> emptyC.in1;
+    connect emptyA.out2 -> emptyC.in2;
+    connect emptyA.out3 -> emptyC.in3;
+    connect emptyA.out4 -> emptyC.in4;
+    connect emptyA.out5 -> emptyC.in5;
+
+    connect emptyA.out6 -> emptyB.in1;
+    connect emptyB.out1 -> emptyC.in6;
+
+    connect in0 -> emptyA.in1;
+    connect emptyC.out1 -> out0;
+}

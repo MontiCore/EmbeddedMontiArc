@@ -1,0 +1,10 @@
+package testing;
+
+component ForLoopIfInstance{
+    ports out Q(-oo:oo) result;
+
+    instance ForLoopIf forLoopIf;
+
+    connect forLoopIf.result -> result;
+
+}

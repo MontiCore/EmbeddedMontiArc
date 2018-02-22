@@ -1,0 +1,123 @@
+package testManuelSchrick;
+
+// Synthesized architecture for ArcV specification
+component BumperBotEmergency {
+
+
+  component Sensors {
+      port
+      out Boolean bumpPressed,
+      out Boolean emergencyPressed;
+
+    component BumpSensor {
+      port
+        out Boolean pressed;
+    }
+    instance BumpSensor bumpSensor;
+
+    component EmergencySwitch {
+      port
+        out Boolean pressed;
+    }
+    instance EmergencySwitch emergencySwitch;
+
+    connect bumpSensor.pressed -> bumpPressed;
+    connect emergencySwitch.pressed -> emergencyPressed;
+  }
+  instance Sensors sensors;
+
+  connect sensors.bumpPressed -> controller.bumpPressed;
+  connect sensors.emergencyPressed -> controller.emergencyPressed;
+
+  component Controller {
+      port
+      in Boolean bumpPressed,
+      in Boolean emergencyPressed,
+      out MotorCmd rightMotorCmd,
+      out MotorCmd leftMotorCmd;
+
+    component BumpControl {
+      port
+          in Boolean bumpPressedX,
+          in TimerSignal timerSig,
+          in TimerSignal timerSig2,
+          out TimerCmd timerCmd,
+        out MotorCmd leftMotorCmd,
+        out MotorCmd rightMotorCmd;
+
+    }
+    instance BumpControl bumpControl;
+
+    component Timer {
+      port
+          out TimerSignal signal,
+          out TimerSignal signal2,
+          in TimerCmd cmd;
+    }
+    instance Timer timer;
+
+    component MotorStop {
+      port
+        out MotorCmd motorCmd;
+    }
+    instance MotorStop motorStop;
+
+    component MotorArbiter {
+      port
+        out MotorCmd rightMotorCmdX,
+        out MotorCmd leftMotorCmdX,
+        in MotorCmd fstAltRightMotorCmd,
+        in MotorCmd fstAltLeftMotorCmd,
+        in MotorCmd sndAltRightMotorCmd,
+        in MotorCmd sndAltLeftMotorCmd,
+        in Boolean selection;
+    }
+    instance MotorArbiter motorArbiter;
+
+    // connections of the bump control
+    connect bumpPressed -> bumpControl.bumpPressedX;
+    connect timer.signal -> bumpControl.timerSig;
+    connect timer.signal2 -> bumpControl.timerSig2;
+
+    connect bumpControl.timerCmd -> timer.cmd;
+
+    // connections of the arbiter
+    connect motorStop.motorCmd -> motorArbiter.fstAltRightMotorCmd;
+    connect motorStop.motorCmd -> motorArbiter.fstAltLeftMotorCmd;
+
+    connect bumpControl.rightMotorCmd -> motorArbiter.sndAltRightMotorCmd;
+    connect bumpControl.leftMotorCmd -> motorArbiter.sndAltLeftMotorCmd;
+
+    connect emergencyPressed -> motorArbiter.selection;
+
+    connect motorArbiter.rightMotorCmdX -> rightMotorCmd;
+    connect motorArbiter.leftMotorCmdX -> leftMotorCmd;
+
+  }
+  instance Controller controller;
+
+  connect controller.leftMotorCmd -> actuators.leftMotorCmd;
+  connect controller.rightMotorCmd -> actuators.rightMotorCmd;
+
+  component Actuators {
+      port
+        in MotorCmd rightMotorCmd,
+      in MotorCmd leftMotorCmd;
+
+    component LeftMotor {
+      port
+        in MotorCmd cmd;
+    }
+    instance LeftMotor leftMotor;
+
+    component RightMotor {
+      port
+        in MotorCmd cmd;
+    }
+    instance RightMotor rightMotor;
+
+    connect rightMotorCmd -> rightMotor.cmd;
+    connect leftMotorCmd -> leftMotor.cmd;
+  }
+  instance Actuators actuators;
+}

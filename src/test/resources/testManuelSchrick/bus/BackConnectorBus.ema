@@ -1,0 +1,55 @@
+package testManuelSchrick.bus;
+
+component BackConnectorBus {
+	ports
+	    in Integer in0,
+		out Integer out0;
+
+    component EmptyA {
+      ports
+        in Integer in1,
+        in Integer in2,
+        in Integer in3,
+        in Integer in4,
+        in Integer in5,
+        in Integer in6,
+        out Integer out1,
+        out Integer out2,
+        out Integer out3,
+        out Integer out4,
+        out Integer out5;
+    }
+
+    component EmptyB {
+      ports
+        in Integer in1,
+        in Integer in2,
+        in Integer in3,
+        in Integer in4,
+        in Integer in5,
+        out Integer out1,
+        out Integer out2,
+        out Integer out3,
+        out Integer out4,
+        out Integer out5,
+        out Integer out6;
+    }
+
+    instance EmptyA emptyA;
+    instance EmptyB emptyB;
+
+    connect emptyA.out1 -> emptyB.in1;
+    connect emptyA.out2 -> emptyB.in2;
+    connect emptyA.out3 -> emptyB.in3;
+    connect emptyA.out4 -> emptyB.in4;
+    connect emptyA.out5 -> emptyB.in5;
+
+    connect emptyB.out1 -> emptyA.in1;
+    connect emptyB.out2 -> emptyA.in2;
+    connect emptyB.out3 -> emptyA.in3;
+    connect emptyB.out4 -> emptyA.in4;
+    connect emptyB.out5 -> emptyA.in5;
+
+    connect in0 -> emptyA.in6;
+    connect emptyB.out6 -> out0;
+}

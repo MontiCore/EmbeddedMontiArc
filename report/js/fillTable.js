@@ -16,6 +16,9 @@ function createTable(data) {
   table = $('#my-table').DataTable( {
       fixedHeader: true,
       "data" : data,
+      "language": {
+        "loadingRecords": "Please wait - loading..."
+      },
       "processing": true,
       "orderCellsTop": true,
       "aaSorting": [5,'asc'],
