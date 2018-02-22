@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -16,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 public class TestTestCoCos {
 
-    @Ignore
     @Test
     public void testCoCosTester() throws IOException {
         int modelNumber = 126;
@@ -60,13 +60,13 @@ public class TestTestCoCos {
         assertTrue("Did not find comparison_merged file", !comparisonResultsMerged.equals(""));
         assertTrue("Did not find generated files", !generatedTestResults.equals(""));
         assertTrue("Did not find generated_merged files", !generatedTestResultsMerged.equals(""));
-        boolean notMerged = removeLineEndings(comparisonResults).equals(removeLineEndings(generatedTestResults));
-        boolean merged = removeLineEndings(comparisonResultsMerged).equals(removeLineEndings(generatedTestResultsMerged));
+        boolean notMerged = defaulting(comparisonResults).equals(defaulting(generatedTestResults));
+        boolean merged = defaulting(comparisonResultsMerged).equals(defaulting(generatedTestResultsMerged));
         assertTrue("Generated test results are not correct", notMerged);
         assertTrue("Generated merged test results are not correct", merged);
     }
 
-    private String removeLineEndings(String str){
-        return str.replace("\r\n", "").replace("\r","").replace("\n","");
+    private String defaulting(String str){
+        return new String(str.getBytes(Charset.defaultCharset()));
     }
 }
