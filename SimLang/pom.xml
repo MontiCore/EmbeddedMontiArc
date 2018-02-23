@@ -22,7 +22,7 @@
 
   <dependencies>
     <!--<dependency>
-      <groupId>montisim-simulation</groupId>
+      <groupId>montisim</groupId>
       <artifactId>environment</artifactId>
       <version>1.0.1</version>
     </dependency>-->
