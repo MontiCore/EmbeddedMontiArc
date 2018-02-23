@@ -13,6 +13,7 @@ Release 1
 
 Credits
 =======
+* Bernhard Rumpe (Organization-Leader and Sponsor of EmbeddedMontiArc)
 * Michael von Wenckstern (Project-Leader: EmbeddedMontiArc-Language and Compiler)
 * Evgeny Kusmenko (Project-Leader: Simulator)
 * Alexander Ryndin (Simulator and Integration of Compiler & Packing first version)
