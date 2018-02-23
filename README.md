@@ -1,6 +1,7 @@
 # EmbeddedMontiArcStudio
 
 **Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.0
+
 **Video for latest release:** https://youtu.be/2CopDQLGCJ8
 
 The aim of this repository is to host the already packed version of EmbeddedMontiArcStudio, a Development Suite for EmbeddedMontiArc. 
