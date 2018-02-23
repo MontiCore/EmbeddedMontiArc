@@ -1,5 +1,7 @@
 # EmbeddedMontiArcStudio
 
+**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.0
+
 The aim of this repository is to host the already packed version of EmbeddedMontiArcStudio, a Development Suite for EmbeddedMontiArc. 
 
 This repo only contains zip-file releases. Please do not push the content of the zip file into the repo, as it is not compliant with the github rules.
