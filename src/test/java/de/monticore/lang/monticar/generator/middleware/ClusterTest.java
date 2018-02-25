@@ -1,8 +1,8 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
-import de.monticore.lang.monticar.generator.master.helpers.ClusterHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Finding;
@@ -60,6 +60,17 @@ public class ClusterTest extends AbstractSymtabTest {
 
         assertTrue(clusters.contains(cluster1));
         assertTrue(clusters.contains(cluster2));
+
+//        List<ExpandedComponentInstanceSymbol> clusterComps = ClusterHelper.getClusterSubcomponents(componentInstanceSymbol);
+//        assertTrue(clusterComps.size() == 2);
+//
+//        ExpandedComponentInstanceSymbol clusterComp1 = clusterComps.get(0);
+//        ExpandedComponentInstanceSymbol clusterComp2 = clusterComps.get(1);
+//
+//        assertTrue(clusterComp1.getPort("rosOut").isPresent());
+
+        //TODO: copy ansatz funktioniert nicht gut: ports müssen hinzugefügt werden(nicht jeder port einer inneren comp ist umbedingt mit der äußeren verbunden)
+
     }
 
     @Test

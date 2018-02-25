@@ -1,10 +1,10 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
-import de.monticore.lang.monticar.generator.master.impls.CPPGenImpl;
-import de.monticore.lang.monticar.generator.master.impls.DummyMiddlewareGenImpl;
-import de.monticore.lang.monticar.generator.master.impls.RosCppGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -50,7 +50,7 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testMiddlewareMasterGenerator() throws IOException {
+    public void testMiddlewareGenerator() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
@@ -59,7 +59,7 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         StarBridgeGenerator starBridgeGenerator = new MiddlewareGenerator();
-        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareMasterGenerator/src/");
+        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareGenerator/src/");
         starBridgeGenerator.add(new CPPGenImpl(), "cpp");
         starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
         starBridgeGenerator.add(new DummyMiddlewareGenImpl(), "dummy");

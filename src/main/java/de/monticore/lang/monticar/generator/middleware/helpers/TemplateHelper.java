@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master.helpers;
+package de.monticore.lang.monticar.generator.middleware.helpers;
 
 public class TemplateHelper {
 

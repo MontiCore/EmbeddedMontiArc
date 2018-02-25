@@ -1,10 +1,10 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.master.helpers.FileHelper;
-import de.monticore.lang.monticar.generator.master.helpers.TemplateHelper;
-import de.monticore.lang.monticar.generator.master.impls.GeneratorImpl;
+import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
+import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 

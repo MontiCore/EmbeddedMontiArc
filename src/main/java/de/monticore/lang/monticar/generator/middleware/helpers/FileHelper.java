@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master.helpers;
+package de.monticore.lang.monticar.generator.middleware.helpers;
 
 import de.monticore.lang.monticar.generator.FileContent;
 import de.se_rwth.commons.logging.Log;

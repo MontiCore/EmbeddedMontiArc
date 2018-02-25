@@ -1,3 +1,3 @@
-# MasterGenerator
+# EMAM2Middleware
 
 TODO

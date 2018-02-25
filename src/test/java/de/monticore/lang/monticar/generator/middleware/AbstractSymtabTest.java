@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master;
+package de.monticore.lang.monticar.generator.middleware;
 /*
  * Copyright (c) 2015 RWTH Aachen. All rights reserved.
  *

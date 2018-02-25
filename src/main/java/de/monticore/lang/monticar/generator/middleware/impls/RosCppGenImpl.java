@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.master.impls;
+package de.monticore.lang.monticar.generator.middleware.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
