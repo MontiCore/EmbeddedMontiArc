@@ -8,6 +8,37 @@ Workaround: Download these branches and build each via 'mvn clean install -U -s 
 * EMAM2RosMsg: https://github.com/EmbeddedMontiArc/EMAM2RosMsg
 * EMAM2RosCpp/RosPort: https://github.com/EmbeddedMontiArc/EMAM2RosCpp/tree/RosPort
 
+or use this script:
+```bash
+#!/bin/bash
+#fail if any of the commands fail
+set -e
+
+git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArc
+git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath
+git clone https://github.com/EmbeddedMontiArc/EMAM2RosMsg
+git clone https://github.com/EmbeddedMontiArc/EMAM2RosCpp
+
+cd EmbeddedMontiArc
+git checkout RosPort
+mvn clean install -U -s settings.xml
+cd -
+
+cd EmbeddedMontiArcMath
+git checkout RosPort
+mvn clean install -U -s settings.xml
+cd -
+
+cd EMAM2RosMsg
+mvn clean install -U -s settings.xml
+cd -
+
+cd EMAM2RosCpp
+git checkout RosPort
+mvn clean install -U -s settings.xml
+cd -
+```
+
 ## Usage
 ### Defining the connection between a component and the middleware
 The connection between middleware and the component is defined as tags on Ports in .tag files.
@@ -29,6 +60,7 @@ Look at GenerationTest::testDistributedTargetGenerator. The component is defined
     * ROS Kinetic(http://wiki.ros.org/kinetic/Installation)
     * CMake(https://cmake.org/)
     * Armadillo( www.arma.sourceforge.net)
+        * Ubuntu package: libarmadillo-dev
         * creating a copy of the library named armadillo.h might be necessary. Ubuntu location: /usr/include/armadillo 
 1. source your ros environment(http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment , 2.)
 1. a) run src/test/resources/TargetCompilation.sh from **this project's** root
