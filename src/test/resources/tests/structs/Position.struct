@@ -1,6 +1,0 @@
-package tests.structs;
-
-struct Position{
-  Q xPosition;
-  Q yPosition;
-}

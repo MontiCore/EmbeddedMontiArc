@@ -1,7 +1,0 @@
-package tests.structs;
-
-import tests.structs.Position;
-
-component BasicStructComp{
-    port in Position posIn;
-}

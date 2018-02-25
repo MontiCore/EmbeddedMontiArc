@@ -1,7 +1,0 @@
-package tests.structs;
-
-import tests.structs.PositionWithDeltaTime;
-
-component NestedStructComp{
-    port in PositionWithDeltaTime posWithDtIn;
-}

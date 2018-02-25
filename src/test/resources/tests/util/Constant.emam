@@ -1,9 +1,0 @@
-package tests.util;
-
-component Constant<T>(T value) {
-	port
-		out T out1;
-    implementation Math{
-        out1=value;
-    }
-}
