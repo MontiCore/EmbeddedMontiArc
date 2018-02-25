@@ -7,16 +7,17 @@ Workaround: Download these branches and build each via 'mvn clean install -U -s 
 * EmbeddedMontiArcMath/RosPort: https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath/tree/RosPort
 * EMAM2RosMsg: https://github.com/EmbeddedMontiArc/EMAM2RosMsg
 * EMAM2RosCpp/RosPort: https://github.com/EmbeddedMontiArc/EMAM2RosCpp/tree/RosPort
+
 or use this script:
 ```bash
 #!/bin/bash
 #fail if any of the commands fail
 set -e
 
-#git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArc
-#git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath
-#git clone https://github.com/EmbeddedMontiArc/EMAM2RosMsg
-#git clone https://github.com/EmbeddedMontiArc/EMAM2RosCpp
+git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArc
+git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath
+git clone https://github.com/EmbeddedMontiArc/EMAM2RosMsg
+git clone https://github.com/EmbeddedMontiArc/EMAM2RosCpp
 
 cd EmbeddedMontiArc
 git checkout RosPort
