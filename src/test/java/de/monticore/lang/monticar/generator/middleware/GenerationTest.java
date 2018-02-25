@@ -52,19 +52,24 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMiddlewareGenerator() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        //register the middleware tag types
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.addComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
-        StarBridgeGenerator starBridgeGenerator = new MiddlewareGenerator();
-        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareGenerator/src/");
-        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
-        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
-        starBridgeGenerator.add(new DummyMiddlewareGenImpl(), "dummy");
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/middlewareGenerator/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+        //generator for a dummy to test support for multiple middleware at the same time
+        middlewareGenerator.add(new DummyMiddlewareGenImpl(), "dummy");
 
-        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test
@@ -77,11 +82,11 @@ public class GenerationTest extends AbstractSymtabTest {
         TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
 
-        StarBridgeGenerator starBridgeGenerator = new DistributedTargetGenerator("./target/generated-sources-cmake/distributed/src/");
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator("./target/generated-sources-cmake/distributed/src/");
 
-        starBridgeGenerator.add(new CPPGenImpl(), "cpp");
-        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
+        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
+        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 }
