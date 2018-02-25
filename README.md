@@ -1,6 +1,6 @@
 # EMAM2Middleware
 
-##Problems
+## Problems
 This generator needs versions of other EMAM libraries that are not yet distributed via Maven.
 Workaround: Download these branches and build each via 'mvn clean install -U -s settings.xml'
 * EmbeddedMontiArc/RosPort: https://github.com/EmbeddedMontiArc/EmbeddedMontiArc/tree/RosPort
@@ -8,8 +8,8 @@ Workaround: Download these branches and build each via 'mvn clean install -U -s 
 * EMAM2RosMsg: https://github.com/EmbeddedMontiArc/EMAM2RosMsg
 * EMAM2RosCpp/RosPort: https://github.com/EmbeddedMontiArc/EMAM2RosCpp/tree/RosPort
 
-##Usage
-###Defining the connection between a component and the middleware
+## Usage
+### Defining the connection between a component and the middleware
 The connection between middleware and the component is defined as tags on Ports in .tag files.
 #### ROS:
 Tags of the type RosConnection can either be simple tags(see Example 3) or define a topic(http://wiki.ros.org/Topics) with name, type and optional msgField(http://wiki.ros.org/msg , 2.)
@@ -18,13 +18,13 @@ Examples:
 1. src/test/resources/tests/a/Echo.tag (TODO: link)
 1. src/test/resources/tests/dist/SimpleDist.tag (TODO: link)
 
-###Use case 1: Creating 1 executable
+### Use case 1: Creating 1 executable
 Look at GenerationTest::testMiddlewareGenerator. The component is defined in src/test/resources/tests/a/AddComp.emam (TODO: link) and the tags for the connection to ros are defined in src/test/resources/tests/a/Add.tag (TODO: link)
 
-###Use case 2: Creating multiple executables for distributed systems
+### Use case 2: Creating multiple executables for distributed systems
 Look at GenerationTest::testDistributedTargetGenerator. The component is defined in src/test/resources/dist/DistComp.emam (TODO: link) and the tags for the connection to ros are defined in src/test/resources/dist/SimpleDist.tag (TODO: link)
 
-###Compile and run the generated Projects
+### Compile and run the generated Projects
 1. install needed software:
     * ROS Kinetic(http://wiki.ros.org/kinetic/Installation)
     * CMake(https://cmake.org/)
