@@ -71,15 +71,17 @@ public class TemplateHelper {
             "\t\tvirtual void tick() = 0;\n" +
             "};";
 
-    public static String cmakeListsTemplate =
+    public static String coordinatorCmakeListsTemplate =
             "cmake_minimum_required(VERSION 3.5)\n" +
                     "project (Coordinator_${compName} CXX)\n" +
                     "\n" +
                     "set (CMAKE_CXX_STANDARD 11)\n" +
+                    "set (THREADS_PREFER_PTHREAD_FLAG ON)\n" +
+                    "find_package(Threads REQUIRED)\n" +
                     "\n" +
                     "add_executable(Coordinator_${compName} Coordinator_${compName}.cpp)\n" +
                     "set_target_properties(Coordinator_${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(Coordinator_${compName} ${targets})\n" +
+                    "target_link_libraries(Coordinator_${compName} ${targets} Threads::Threads)\n" +
                     "target_include_directories(Coordinator_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
                     "\n" +
                     "export(TARGETS Coordinator_${compName} FILE Coordinator_${compName}.cmake)";
