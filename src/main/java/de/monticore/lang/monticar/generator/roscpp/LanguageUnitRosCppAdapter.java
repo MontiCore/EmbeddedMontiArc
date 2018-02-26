@@ -92,10 +92,8 @@ public class LanguageUnitRosCppAdapter {
                     Method method = topicToMethod.get(rcs.getTopicName().get());
 
                     if (!rcs.getMsgField().isPresent()) {
-                        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
                         String packageName = Arrays.stream(rcs.getTopicType().get().split("/")).findFirst().get();
-                        generatorRosMsg.setTarget("", packageName);
-                        RosMsg rosMsg = generatorRosMsg.getRosType(p.getTypeReference());
+                        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, p.getTypeReference());
                         method.addInstruction(new SetStructMsgInstruction(p, rosMsg));
                     } else {
                         SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
@@ -240,11 +238,9 @@ public class LanguageUnitRosCppAdapter {
                     String msgField = rosCon.getMsgField().orElse(null);
 
                     if (msgField == null) {
-                        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
                         //TODO: checks?
                         String packageName = Arrays.stream(rosCon.getTopicType().get().split("/")).findFirst().get();
-                        generatorRosMsg.setTarget("", packageName);
-                        RosMsg rosMsg = generatorRosMsg.getRosType(portSymbol.getTypeReference());
+                        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, portSymbol.getTypeReference());
                         method.addInstruction(new SetStructPortInstruction(portSymbol, rosMsg));
                     } else {
                         method.addInstruction(new SetPortInstruction(portSymbol, getMsgConverter(msgField, portSymbol.isIncoming())));
