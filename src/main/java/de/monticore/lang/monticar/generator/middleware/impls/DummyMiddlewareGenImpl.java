@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DummyMiddlewareGenImpl implements GeneratorImpl {
 
@@ -42,6 +44,15 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
         this.generationTargetPath = path;
     }
 
+    @Override
+    public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        return componentInstanceSymbol.getPorts().stream()
+                .map(PortSymbol::getMiddlewareSymbol)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .filter(mws -> mws.isKindOf(DummyMiddlewareSymbol.KIND))
+                .count() > 0;
+    }
 
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();

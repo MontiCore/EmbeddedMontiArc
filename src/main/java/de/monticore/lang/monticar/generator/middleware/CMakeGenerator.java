@@ -27,11 +27,11 @@ public class CMakeGenerator extends StarBridgeGenerator {
         }
 
         List<File> res = super.generate(componentInstanceSymbol, taggingResolver);
-        res.add(generateCMake(generationTargetPath));
+        res.add(generateCMake(generationTargetPath, componentInstanceSymbol));
         return res;
     }
 
-    private File generateCMake(String targetPath) throws IOException {
+    private File generateCMake(String targetPath, ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
         StringBuilder content = new StringBuilder();
@@ -41,6 +41,7 @@ public class CMakeGenerator extends StarBridgeGenerator {
         content.append("set (CMAKE_CXX_STANDARD 11)\n");
 
         getGeneratorImpls().stream()
+                .filter(gen -> gen.willAccept(componentInstanceSymbol))
                 .map(this::getImplSubdir)
                 .forEach(subdir -> content.append("add_subdirectory(" + subdir + ")\n"));
 

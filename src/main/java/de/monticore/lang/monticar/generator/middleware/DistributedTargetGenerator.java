@@ -19,8 +19,7 @@ import java.util.*;
 public class DistributedTargetGenerator extends CMakeGenerator {
     private RosMsgImpl rosMsgImpl;
 
-    public DistributedTargetGenerator(String generationTargetPath) {
-        setGenerationTargetPath(generationTargetPath);
+    public DistributedTargetGenerator() {
         rosMsgImpl = new RosMsgImpl("rosmsg");
         //this.add(rosMsgImpl,"rosmsg/");
     }
@@ -40,7 +39,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
                 .flatMap(comp -> comp.getPorts().stream())
                 .allMatch(p -> p.getMiddlewareSymbol().isPresent());
 
-        if (allSubsMwOnly) {
+        if (subComps.size() > 0 && allSubsMwOnly) {
             subComps.forEach(comp ->
                     generatorMap.put(comp, createFullGenerator(comp.getFullName().replace(".", "_")))
             );

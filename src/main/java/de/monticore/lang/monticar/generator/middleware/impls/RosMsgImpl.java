@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -43,5 +44,12 @@ public class RosMsgImpl implements GeneratorImpl {
 
     public RosMsg getRosType(MCTypeReference<? extends MCTypeSymbol> typeReference) {
         return generatorRosMsg.getRosType(typeReference);
+    }
+
+    @Override
+    public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        return componentInstanceSymbol.getPorts().stream()
+                .filter(PortSymbol::isRosPort)
+                .count() > 0;
     }
 }

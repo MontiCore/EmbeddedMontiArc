@@ -37,19 +37,21 @@ public class StarBridgeGenerator implements GeneratorImpl {
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> result = new ArrayList<>();
         generatorImpls.forEach((key, value) -> {
-            String fullTargetPath = generationTargetPath;
-            if (value != null)
-                fullTargetPath = fullTargetPath + value;
+            if (key.willAccept(componentInstanceSymbol)) {
+                String fullTargetPath = generationTargetPath;
+                if (value != null)
+                    fullTargetPath = fullTargetPath + value;
 
-            if (!fullTargetPath.endsWith("/"))
-                fullTargetPath = fullTargetPath + "/";
+                if (!fullTargetPath.endsWith("/"))
+                    fullTargetPath = fullTargetPath + "/";
 
-            key.setGenerationTargetPath(fullTargetPath);
+                key.setGenerationTargetPath(fullTargetPath);
 
-            try {
-                result.addAll(key.generate(componentInstanceSymbol, taggingResolver));
-            } catch (IOException e) {
-                Log.error("IOException occurred!", e);
+                try {
+                    result.addAll(key.generate(componentInstanceSymbol, taggingResolver));
+                } catch (IOException e) {
+                    Log.error("IOException occurred!", e);
+                }
             }
         });
 

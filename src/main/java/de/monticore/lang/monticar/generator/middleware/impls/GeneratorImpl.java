@@ -16,4 +16,8 @@ public interface GeneratorImpl {
     default void setGenerationTargetPath(String path) {
 
     }
+
+    default boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        return true;
+    }
 }

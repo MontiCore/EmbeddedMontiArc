@@ -25,7 +25,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
 
         files.add(FileHelper.generateFile(generationTargetPath + subdir, generateIAdapter(componentInstanceSymbol)));
         files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCoordinator(componentInstanceSymbol, files)));
-        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCMakeList(componentInstanceSymbol, files)));
+        files.add(FileHelper.generateFile(generationTargetPath + subdir, generateCoordinatorCMakeList(componentInstanceSymbol, files)));
         return files;
     }
 
@@ -70,7 +70,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
     }
 
 
-    private FileContent generateCMakeList(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
+    private FileContent generateCoordinatorCMakeList(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
         FileContent res = new FileContent();
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
 
@@ -80,7 +80,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .collect(Collectors.joining(" "));
 
-        String content = TemplateHelper.cmakeListsTemplate
+        String content = TemplateHelper.coordinatorCmakeListsTemplate
                 .replace("${targets}", targets)
                 .replace("${compName}", name);
 
