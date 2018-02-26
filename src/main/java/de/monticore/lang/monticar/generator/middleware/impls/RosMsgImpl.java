@@ -43,7 +43,7 @@ public class RosMsgImpl implements GeneratorImpl {
     }
 
     public RosMsg getRosType(MCTypeReference<? extends MCTypeSymbol> typeReference) {
-        return generatorRosMsg.getRosType(typeReference);
+        return GeneratorRosMsg.getRosType(packageName, typeReference);
     }
 
     @Override
