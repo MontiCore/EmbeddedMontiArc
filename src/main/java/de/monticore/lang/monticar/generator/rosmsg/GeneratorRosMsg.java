@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class GeneratorRosMsg {
     private String path;
-    private String packageName;
+    private String currentPackageName;
     private Set<String> alreadyGenerated = new HashSet<>();
 
 
@@ -30,16 +30,16 @@ public class GeneratorRosMsg {
             this.path = path;
         }
 
-        this.packageName = packageName;
+        this.currentPackageName = packageName;
     }
 
     public List<File> generate(MCTypeReference<? extends MCTypeSymbol> typeReference) throws IOException {
         //is typeReference basic type or struct?
-        if (getRosType(typeReference) != null) {
+        if (getRosType(currentPackageName, typeReference) != null) {
             MCTypeSymbol type = typeReference.getReferencedSymbol();
             List<File> res = new ArrayList<>();
             if (type instanceof StructSymbol) {
-                res.addAll(generateStruct((StructSymbol) type));
+                res.addAll(generateStruct(currentPackageName, (StructSymbol) type));
             }
             return res;
         }
@@ -48,7 +48,7 @@ public class GeneratorRosMsg {
         return new ArrayList<>();
     }
 
-    public List<File> generateStruct(StructSymbol structSymbol) throws IOException {
+    public List<File> generateStruct(String packageName, StructSymbol structSymbol) throws IOException {
         if (alreadyGenerated.contains(packageName + "/" + getTargetName(structSymbol))) {
             Log.debug("Struct " + structSymbol + " was already generated!", "structGeneration");
             return new ArrayList<>();
@@ -59,7 +59,7 @@ public class GeneratorRosMsg {
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
-                .map(sfds -> getInMsgRosType(sfds.getType().getReferencedSymbol()) + " " + sfds.getName())
+                .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol()) + " " + sfds.getName())
                 .collect(Collectors.joining("\n"));
 
         File f = new File(path + "/" + getTargetName(structSymbol) + ".msg");
@@ -70,7 +70,7 @@ public class GeneratorRosMsg {
             if (sfds.getType().existsReferencedSymbol()) {
                 if (sfds.getType().getReferencedSymbol() instanceof StructSymbol) {
                     StructSymbol referencedSymbol = (StructSymbol) sfds.getType().getReferencedSymbol();
-                    generateStruct(referencedSymbol);
+                    generateStruct(packageName, referencedSymbol);
                 }
             }
         }
@@ -78,22 +78,22 @@ public class GeneratorRosMsg {
         return files;
     }
 
-    public RosMsg createMsgForStruct(StructSymbol structSymbol) {
-        RosMsg res = new RosMsg(getFullTargetName(structSymbol));
+    public static RosMsg createMsgForStruct(String packageName, StructSymbol structSymbol) {
+        RosMsg res = new RosMsg(getFullTargetName(packageName, structSymbol));
         structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
                 .forEach(sfds -> {
                     MCTypeSymbol referencedSymbol = sfds.getType().getReferencedSymbol();
                     if (referencedSymbol instanceof StructSymbol) {
-                        res.addField(new RosField(sfds.getName(), createMsgForStruct((StructSymbol) referencedSymbol)));
+                        res.addField(new RosField(sfds.getName(), createMsgForStruct(packageName, (StructSymbol) referencedSymbol)));
                     } else {
-                        res.addField(new RosField(sfds.getName(), new RosType(getInMsgRosType(referencedSymbol))));
+                        res.addField(new RosField(sfds.getName(), new RosType(getInMsgRosType(packageName, referencedSymbol))));
                     }
                 });
         return res;
     }
 
-    private String getInMsgRosType(MCTypeSymbol referencedSymbol) {
+    private static String getInMsgRosType(String packageName, MCTypeSymbol referencedSymbol) {
         if (referencedSymbol.isKindOf(MontiCarTypeSymbol.KIND)) {
             MontiCarTypeSymbol mcastTypeSymbol = (MontiCarTypeSymbol) referencedSymbol;
             if (mcastTypeSymbol.getName().equals("Q")) {
@@ -109,9 +109,6 @@ public class GeneratorRosMsg {
 
         if (referencedSymbol instanceof StructSymbol) {
             StructSymbol structSymbol = (StructSymbol) referencedSymbol;
-            if (packageName == null)
-                Log.error("Target must be set! Use GeneratorRosMsg::setTarget!");
-
             return packageName + "/" + getTargetName(structSymbol);
         }
 
@@ -119,7 +116,7 @@ public class GeneratorRosMsg {
         return null;
     }
 
-    public RosMsg getRosType(MCTypeReference<? extends MCTypeSymbol> typeReference) {
+    public static RosMsg getRosType(String packageName, MCTypeReference<? extends MCTypeSymbol> typeReference) {
         MCTypeSymbol type = typeReference.getReferencedSymbol();
         if(type.isKindOf(MCASTTypeSymbol.KIND)){
             MCASTTypeSymbol mcastTypeSymbol = (MCASTTypeSymbol) type;
@@ -142,20 +139,17 @@ public class GeneratorRosMsg {
 
         if (type instanceof StructSymbol) {
             StructSymbol structSymbol = (StructSymbol) type;
-            return createMsgForStruct(structSymbol);
+            return createMsgForStruct(packageName, structSymbol);
         }
         Log.error("Case not handled! MCTypeReference " + typeReference);
         return null;
     }
 
-    private String getTargetName(StructSymbol structSymbol) {
+    private static String getTargetName(StructSymbol structSymbol) {
         return structSymbol.getFullName().replace(".", "_");
     }
 
-    private String getFullTargetName(StructSymbol structSymbol) {
-        if (packageName == null)
-            Log.error("Target must be set! Use GeneratorRosMsg::setTarget!");
-
+    private static String getFullTargetName(String packageName, StructSymbol structSymbol) {
         return packageName + "/" + getTargetName(structSymbol);
     }
 }

@@ -20,8 +20,6 @@ public class BasicTypesTest extends AbstractSymtabTest {
         ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.basicTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
-
         PortSymbol inQ = component.getPort("inQ").orElse(null);
         PortSymbol inZ = component.getPort("inZ").orElse(null);
         PortSymbol inB = component.getPort("inB").orElse(null);
@@ -30,9 +28,10 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertNotNull(inZ);
         assertNotNull(inB);
 
-        RosMsg msgInQ = generatorRosMsg.getRosType(inQ.getTypeReference());
-        RosMsg msgInZ = generatorRosMsg.getRosType(inZ.getTypeReference());
-        RosMsg msgInB = generatorRosMsg.getRosType(inB.getTypeReference());
+        String packageName = "basic";
+        RosMsg msgInQ = GeneratorRosMsg.getRosType(packageName, inQ.getTypeReference());
+        RosMsg msgInZ = GeneratorRosMsg.getRosType(packageName, inZ.getTypeReference());
+        RosMsg msgInB = GeneratorRosMsg.getRosType(packageName, inB.getTypeReference());
 
         assertNotNull(msgInQ);
         assertNotNull(msgInZ);
@@ -59,7 +58,8 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertNotNull(component);
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
-        generatorRosMsg.setTarget("target/generated-sources-rosmsg/basic", "basic");
+        String packageName = "basic";
+        generatorRosMsg.setTarget("target/generated-sources-rosmsg/basic", packageName);
 
         PortSymbol in1 = component.getPort("in1").orElse(null);
         PortSymbol out1 = component.getPort("out1").orElse(null);
@@ -67,13 +67,13 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertNotNull(in1);
         assertNotNull(out1);
 
-        RosMsg msgIn1 = generatorRosMsg.getRosType(in1.getTypeReference());
-        RosMsg msgOut1 = generatorRosMsg.getRosType(out1.getTypeReference());
+        RosMsg msgIn1 = GeneratorRosMsg.getRosType(packageName, in1.getTypeReference());
+        RosMsg msgOut1 = GeneratorRosMsg.getRosType(packageName, out1.getTypeReference());
 
         assertEquals(msgIn1, msgOut1);
         assertEquals(msgIn1.getName(), "basic/structs_BasicStruct");
 
-        assertTrue(Objects.equals(msgIn1, getBasicStruct("basic")));
+        assertTrue(Objects.equals(msgIn1, getBasicStruct(packageName)));
 
         List<File> files = generatorRosMsg.generate(in1.getTypeReference());
         testFilesAreEqual(files, "basicStruct/");
@@ -88,16 +88,17 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertNotNull(component);
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
-        generatorRosMsg.setTarget("target/generated-sources-rosmsg/nested", "nested");
+        String packageName = "nested";
+        generatorRosMsg.setTarget("target/generated-sources-rosmsg/nested", packageName);
 
         PortSymbol inNested = component.getPort("inNested").orElse(null);
 
         assertNotNull(inNested);
 
-        RosMsg rosMsg = generatorRosMsg.getRosType(inNested.getTypeReference());
+        RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, inNested.getTypeReference());
         assertEquals(rosMsg.getName(), "nested/structs_NestedStruct");
 
-        assertEquals(rosMsg, getNestedStruct("nested"));
+        assertEquals(rosMsg, getNestedStruct(packageName));
 
 
         List<File> files = generatorRosMsg.generate(inNested.getTypeReference());
@@ -112,13 +113,14 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertNotNull(component);
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
-        generatorRosMsg.setTarget("target/generated-sources-rosmsg/multinested", "multinested");
+        String packageName = "multinested";
+        generatorRosMsg.setTarget("target/generated-sources-rosmsg/multinested", packageName);
 
         PortSymbol inMultiNested = component.getPort("inMultiNested").orElse(null);
 
         assertNotNull(inMultiNested);
 
-        assertEquals(generatorRosMsg.getRosType(inMultiNested.getTypeReference()), getMultinestedStruct("multinested"));
+        assertEquals(GeneratorRosMsg.getRosType(packageName, inMultiNested.getTypeReference()), getMultinestedStruct(packageName));
 
         List<File> files = generatorRosMsg.generate(inMultiNested.getTypeReference());
         testFilesAreEqual(files, "multinestedStruct/");
