@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareSymb
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -91,6 +92,27 @@ public class GenerationTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/distributed/src/");
+
+        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
+
+    //TODO: implement feature
+    @Ignore
+    @Test
+    public void testDistributedStructTargetGenerator() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.distWithStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/distributedStruct/src/");
 
         distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");

@@ -1,0 +1,6 @@
+package tests.struct;
+
+struct Position{
+    Q longitude;
+    Q latitude;
+}

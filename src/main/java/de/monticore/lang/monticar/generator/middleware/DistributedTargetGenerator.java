@@ -25,6 +25,12 @@ public class DistributedTargetGenerator extends CMakeGenerator {
     }
 
     @Override
+    public void setGenerationTargetPath(String path) {
+        super.setGenerationTargetPath(path);
+        rosMsgImpl.setGenerationTargetPath(generationTargetPath + (generationTargetPath.endsWith("/") ? "" : "/") + "rosMsg/");
+    }
+
+    @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         Map<PortSymbol, RosConnectionSymbol> resolvedTags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
@@ -59,6 +65,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         }
 
         files.addAll(cmakeListsGenerator.generate(componentInstanceSymbol, taggingResolver));
+        files.addAll(rosMsgImpl.generate(componentInstanceSymbol, taggingResolver));
         return files;
     }
 
