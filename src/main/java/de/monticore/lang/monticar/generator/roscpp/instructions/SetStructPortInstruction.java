@@ -9,10 +9,17 @@ import java.util.stream.Collectors;
 
 public class SetStructPortInstruction extends TargetCodeInstruction {
     public SetStructPortInstruction(PortSymbol port, RosMsg rosMsg) {
-        this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
-                .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + field + ";")
-                .sorted()
-                .collect(Collectors.joining("\n"));
+        if (rosMsg.getName().startsWith("std_msgs/")) {
+            this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
+                    .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + " = msg->" + field + ";")
+                    .sorted()
+                    .collect(Collectors.joining("\n"));
+        } else {
+            this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
+                    .map(field -> "component->" + NameHelper.getPortNameTargetLanguage(port) + "." + field + " = msg->" + field + ";")
+                    .sorted()
+                    .collect(Collectors.joining("\n"));
+        }
     }
 
 }

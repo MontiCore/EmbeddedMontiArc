@@ -36,19 +36,19 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
 	
 	void publishtopic7Publisher(){
 		std_msgs::Float64 tmpMsg;
-		tmpMsg->data = component->outQ.data;
+		tmpMsg->data = component->outQ;
 		topic7Publisher.publish(tmpMsg);
 	}
 	
 	void publishtopic8Publisher(){
 		std_msgs::Int32 tmpMsg;
-		tmpMsg->data = component->outZ.data;
+		tmpMsg->data = component->outZ;
 		topic8Publisher.publish(tmpMsg);
 	}
 	
 	void publishtopic9Publisher(){
 		std_msgs::Bool tmpMsg;
-		tmpMsg->data = component->outB.data;
+		tmpMsg->data = component->outB;
 		topic9Publisher.publish(tmpMsg);
 	}
 	
@@ -59,15 +59,15 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
 	}
 	
 	void topic7Callback(const std_msgs::Float64::ConstPtr& msg){
-		component->inQ.data = msg->data;
+		component->inQ = msg->data;
 	}
 	
 	void topic8Callback(const std_msgs::Int32::ConstPtr& msg){
-		component->inZ.data = msg->data;
+		component->inZ = msg->data;
 	}
 	
 	void topic9Callback(const std_msgs::Bool::ConstPtr& msg){
-		component->inB.data = msg->data;
+		component->inB = msg->data;
 	}
 	
 };
