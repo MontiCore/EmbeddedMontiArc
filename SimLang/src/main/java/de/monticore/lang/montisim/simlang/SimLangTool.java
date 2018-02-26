@@ -7,14 +7,10 @@ package de.monticore.lang.montisim.simlang;
  */
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import de.monticore.lang.montisim.carlang._ast.ASTCar;
+import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
 import org.antlr.v4.runtime.RecognitionException;
 
 import de.monticore.lang.montisim.simlang.symbolmap.SymbolMapCreator;
@@ -30,7 +26,11 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;*/
 import de.monticore.symboltable.*;
+import de.monticore.ModelingLanguageFamily;
 import de.se_rwth.commons.logging.Log;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import de.monticore.lang.montisim.simlang.adapter.GeneralSLAdapter;
 /**
@@ -136,12 +136,12 @@ public class SimLangTool {
     return null;
   }
   //todo: finalize range+lambda -> fix cocos
-  /*
+
   public static void checkDefaultCoCos(ASTSimLangCompilationUnit ast) {
     SimLangCoCoChecker defaultCoCos = new SimLangCoCoChecker();
 
     //DataStructure Checkers --Need to runs first
-    //defaultCoCos.addCoCo(new NoInfRangeChecker());
+    defaultCoCos.addCoCo(new NoInfRangeChecker());
 
     //Simulation CoCos
     defaultCoCos.addCoCo(new RequiredSimulationEntries());
@@ -176,7 +176,7 @@ public class SimLangTool {
 
 
     defaultCoCos.checkAll(ast);
-  }*/
+  }
 
   /**
    * Create the symbol table from the parsed AST.
@@ -195,11 +195,33 @@ public class SimLangTool {
     return symbolTable.get().createFromAST(ast);
   }
 
+  public static Scope createSymbolTable(ModelingLanguageFamily lang, ASTSimLangCompilationUnit astSim, ASTCar astCar) {
+
+    return null;
+  }
+
   public static GeneralSLAdapter parseIntoContainer(String model) {
     final SimLangLang lang = new SimLangLang();
     final ASTSimLangCompilationUnit ast = parse(model);
-    //checkDefaultCoCos(ast);
+    checkDefaultCoCos(ast);
     final Scope modelTopScope = createSymbolTable(lang, ast);
+    return new GeneralSLAdapter(modelTopScope);
+  }
+  public static GeneralSLAdapter parseIntoContainer(String simModel, String carModel) {
+    ModelingLanguageFamily family = new ModelingLanguageFamily();
+    final SimLangLang simLang = new SimLangLang();
+    //final CarLangLanguage carLang = new CarLangLanguage();
+
+    family.addModelingLanguage(simLang);
+    //family.addModelingLanguage(carLang);
+
+    final ASTSimLangCompilationUnit astSim = parse(simModel);
+    //final ASTCar astCar = ;
+
+    checkDefaultCoCos(astSim);
+    //checkCocos(astCar);
+
+    final Scope modelTopScope = createSymbolTable(family, astSim, null);
     return new GeneralSLAdapter(modelTopScope);
   }
 }

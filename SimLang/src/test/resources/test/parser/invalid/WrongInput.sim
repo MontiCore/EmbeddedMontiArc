@@ -1,0 +1,4 @@
+sim WrongInput {
+  sim_render_frequency thisisnonsens;
+  map_name HorsterDreieck.osm;
+}

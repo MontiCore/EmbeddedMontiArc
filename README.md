@@ -6,7 +6,9 @@
 # SimLang
 
 SimLang is a DSL for describing settings of vehicle simulations.
-In order to do so it utilizes TNumberUnits from SI and the Weather language.
+In order to do so it utilizes TNumberUnits from NumberUnit and the Weather language.
+
+### The "bit-byte-branch" NumberUnit from EmbeddedMontiArc is required!
 
 SimLang files must end with .sim.
 

@@ -1,0 +1,4 @@
+sim WrongInput {
+  foobar 60ms;
+  map_name HorsterDreieck.osm;
+}

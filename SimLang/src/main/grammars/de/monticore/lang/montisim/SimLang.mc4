@@ -94,7 +94,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   //Scenario
   
   Pedestrians = ("<p>"
-                "(" startX:TUnitNumber "," startY:TUnitNumber ")" 
+                "(" startX:TUnitNumber "," startY:TUnitNumber ("," startZ:TUnitNumber)? ")"
                 "->" 
                 "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
                 ) ";";
@@ -116,7 +116,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
                   (amount:TUnitNumber)?;
   
   //completely random vehicle spawns and destinations with optional avoidance of path
-  RandomVehicle = "<v>" amount:TUnitNumber ("(" startX:TUnitNumber "," startY:TUnitNumber "," destX:TUnitNumber "," destY:TUnitNumber ")")?;
+  RandomVehicle = "<v>" amount:TUnitNumber ("(" startX:TUnitNumber "," startY:TUnitNumber ")" "->" "(" destX:TUnitNumber "," destY:TUnitNumber ")")?;
   
   
   //
@@ -124,7 +124,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   //
   SingleChannel = (["fixed"]|["bound"]) "channel" Name "{" (Transferrate|Latency|Outage|Area)* "}" ;
   ChannelList = "[" SingleChannel ("," SingleChannel)* "]";
-  Channel = SingleChannel|ChannelList ";" ;
+  Channel = (SingleChannel|ChannelList) ";" ;
   Transferrate = "transferrate" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
   Latency = "latency" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
   Outage = "outage" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";

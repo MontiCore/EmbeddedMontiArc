@@ -43,6 +43,7 @@
     <!-- ..Languages....................................................... -->
         <langcommon.version>0.0.10-SNAPSHOT</langcommon.version>
       <numberunit.version>0.0.11-SNAPSHOT</numberunit.version>
+        <carlang.version>0.0.1-SNAPSHOT</carlang.version>
 
         <!-- Set file encoding -->
         <java.version>1.8</java.version>
@@ -152,6 +153,19 @@
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>de.monticore.lang.montisim</groupId>
+            <artifactId>CarLang</artifactId>
+            <version>${carlang.version}</version>
+        </dependency>
+        <!-- this may actually not be needed? -->
+        <dependency>
+            <groupId>de.monticore.lang.montisim</groupId>
+            <artifactId>CarLang</artifactId>
+            <version>${carlang.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -162,22 +176,6 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${surefire.version}</version>
         </plugin>
-
-      <!-- MontiCore Generation
-      <plugin>
-        <groupId>de.monticore.mojo</groupId>
-        <artifactId>monticore-maven-plugin</artifactId>
-        <version>${monticore.plugin}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin> -->
-
-
 
       <!-- Other Configuration -->
       <plugin>
