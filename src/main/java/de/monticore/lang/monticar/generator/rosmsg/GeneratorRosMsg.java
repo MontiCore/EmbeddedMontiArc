@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
+import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
@@ -34,10 +35,21 @@ public class GeneratorRosMsg {
     }
 
     public List<File> generate(MCTypeReference<? extends MCTypeSymbol> typeReference) throws IOException {
+        List<File> res = new ArrayList<>();
+        List<FileContent> fileContents = generateStrings(typeReference);
+        for (FileContent fileContent : fileContents) {
+            File file = new File(path + "/" + fileContent.getFileName());
+            FileUtils.write(file, fileContent.getFileContent());
+            res.add(file);
+        }
+        return res;
+    }
+
+    public List<FileContent> generateStrings(MCTypeReference<? extends MCTypeSymbol> typeReference) {
         //is typeReference basic type or struct?
         if (getRosType(currentPackageName, typeReference) != null) {
             MCTypeSymbol type = typeReference.getReferencedSymbol();
-            List<File> res = new ArrayList<>();
+            List<FileContent> res = new ArrayList<>();
             if (type instanceof StructSymbol) {
                 res.addAll(generateStruct(currentPackageName, (StructSymbol) type));
             }
@@ -48,22 +60,24 @@ public class GeneratorRosMsg {
         return new ArrayList<>();
     }
 
-    public List<File> generateStruct(String packageName, StructSymbol structSymbol) throws IOException {
+    public List<FileContent> generateStruct(String packageName, StructSymbol structSymbol) {
         if (alreadyGenerated.contains(packageName + "/" + getTargetName(structSymbol))) {
             Log.debug("Struct " + structSymbol + " was already generated!", "structGeneration");
             return new ArrayList<>();
         }
         alreadyGenerated.add(packageName + "/" + getTargetName(structSymbol));
 
-        List<File> files = new ArrayList<>();
+        List<FileContent> fileContents = new ArrayList<>();
 
         String definition = structSymbol.getStructFieldDefinitions().stream()
                 .filter(sfds -> sfds.getType().existsReferencedSymbol())
                 .map(sfds -> getInMsgRosType(currentPackageName, sfds.getType().getReferencedSymbol()) + " " + sfds.getName())
                 .collect(Collectors.joining("\n"));
 
-        File f = new File(path + "/" + getTargetName(structSymbol) + ".msg");
-        FileUtils.write(f, definition);
+        FileContent fc = new FileContent();
+        fc.setFileName(getTargetName(structSymbol) + ".msg");
+        fc.setFileContent(definition);
+        fileContents.add(fc);
 
         //recursively generated needed .msg from nested structs
         for (StructFieldDefinitionSymbol sfds : structSymbol.getStructFieldDefinitions()) {
@@ -75,7 +89,7 @@ public class GeneratorRosMsg {
             }
         }
 
-        return files;
+        return fileContents;
     }
 
     public static RosMsg createMsgForStruct(String packageName, StructSymbol structSymbol) {
