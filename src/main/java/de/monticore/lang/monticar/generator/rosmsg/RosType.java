@@ -30,4 +30,9 @@ public class RosType {
         boolean fieldsEqual = Objects.deepEquals(fields, ((RosType) o).fields);
         return Objects.equals(name, rosType.name) && fieldsEqual;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, fields);
+    }
 }
