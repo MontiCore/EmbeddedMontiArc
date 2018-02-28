@@ -25,6 +25,7 @@ import java.nio.file.Paths;
  * --output-dir=C:\Users\vpupkin\proj\target\cpp-gen\autopilot \
  * --flag-generate-tests \
  * --flag-use-armadillo-backend
+ * --check-model-dir
  */
 public final class GeneratorCppCli {
 
@@ -69,6 +70,12 @@ public final class GeneratorCppCli {
             .hasArg(false)
             .required(false)
             .build();
+    public static final Option OPTION_FLAG_CHECK_MODEL_DIR= Option.builder()
+            .longOpt("flag-generate-autopilot-adapter")
+            .desc("optional flag indicating if model dir should be checked for creation of component and stream list")
+            .hasArg(false)
+            .required(false)
+            .build();
 
     private GeneratorCppCli() {
     }
@@ -90,6 +97,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_TESTS);
         options.addOption(OPTION_FLAG_ARMADILLO);
         options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
+        options.addOption(OPTION_FLAG_CHECK_MODEL_DIR);
         return options;
     }
 
@@ -120,6 +128,7 @@ public final class GeneratorCppCli {
             if (cliArgs.hasOption(OPTION_FLAG_ARMADILLO.getOpt())) {
                 g.useArmadilloBackend();
             }
+            g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
             g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
             try {
                 g.generateFiles(componentSymbol, symTab);

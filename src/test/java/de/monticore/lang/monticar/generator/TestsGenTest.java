@@ -30,7 +30,8 @@ public class TestsGenTest extends AbstractSymtabTest {
         generatorCPP.setModelsDirPath(MODELS_DIR_PATH);
         generatorCPP.setGenerateTests(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MySuperAwesomeComponent1/");
+        generatorCPP.setCheckModelDir(true);
         List<File> files = generatorCPP.generateFiles(symTab, componentSymbol, symTab);
-        assertEquals(15, files.size());
+        assertEquals(16, files.size());
     }
 }

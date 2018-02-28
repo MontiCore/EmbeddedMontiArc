@@ -26,13 +26,7 @@ import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class TestsGeneratorCPP {
 
@@ -40,10 +34,11 @@ public final class TestsGeneratorCPP {
 
     private final GeneratorCPP generator;
     private List<BluePrintCPP> bluePrints;
-    private Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
+    public static Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
     private Set<String> testedComponents;
     private List<FileContent> files;
     private TestsMainEntryViewModel viewModelForMain;
+    public static Map<String, String> componentStreamNames = new HashMap<>();
 
     TestsGeneratorCPP(GeneratorCPP generator) {
         this.generator = Log.errorIfNull(generator);
@@ -77,9 +72,36 @@ public final class TestsGeneratorCPP {
                 Log.warn("no symbol info for blue print " + b.getName() + " (package: " + b.getPackageName() + ")");
             }
         }
-        files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
-        files.add(getCatchLib());
+        if (generator.isGenerateTests()) {
+            files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
+            files.add(getCatchLib());
+        }
+        //files.add(new FileContent(getTestedComponentsString(), TESTS_DIRECTORY_NAME + "/testedComponents.txt"));
+        if (generator.isCheckModelDir())
+            files.add(new FileContent(getGeneratedComponentStreamNames(), "reporting/" + "existingStreams.txt"));
         return files;
+    }
+
+    private String getGeneratedComponentStreamNames() {
+        String result = "";
+        for (ComponentSymbol k : availableStreams.keySet()) {
+            result += "Streams for component " + k.getFullName() + ":\n";
+            Iterator<ComponentStreamUnitsSymbol> iter = availableStreams.get(k).iterator();
+            while (iter.hasNext()) {
+                ComponentStreamUnitsSymbol cus = iter.next();
+                result +="    "+ cus.getFullName();
+                result += "\n";
+            }
+        }
+        return result;
+    }
+
+    private String getTestedComponentsString() {
+        String result = "";
+        for (String t : testedComponents) {
+            result += t + "\n";
+        }
+        return result;
     }
 
     private void processBluePrint(BluePrintCPP b, ExpandedComponentInstanceSymbol s) {
@@ -94,6 +116,7 @@ public final class TestsGeneratorCPP {
         if (streamsForComponent == null || streamsForComponent.isEmpty()) {
             return;
         }
+        //this.componentStreamNames.put(cs.getFullName(), streamsForComponent.toString());
         ComponentStreamTestViewModel viewModel = getStreamViewModel(b, cs, streamsForComponent);
         String genTestCode = AllTemplates.generateComponentStreamTest(viewModel);
         files.add(new FileContent(genTestCode, getFileName(viewModel)));

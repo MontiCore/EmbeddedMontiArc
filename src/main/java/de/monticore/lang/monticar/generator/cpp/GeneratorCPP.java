@@ -44,6 +44,7 @@ public class GeneratorCPP implements Generator {
     protected MathCommandRegister mathCommandRegister;
     protected boolean generateMainClass = false;
     protected boolean generateSimulatorInterface = false;
+    protected boolean checkModelDir = false;
 
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
@@ -147,9 +148,10 @@ public class GeneratorCPP implements Generator {
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
-        if (isGenerateTests()) {
+        if (isGenerateTests() || isCheckModelDir()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
-            fileContents.addAll(g.generateStreamTests(symtab));
+            List<FileContent> fileConts = g.generateStreamTests(symtab);
+            fileContents.addAll(fileConts);
         }
         if (isGenerateAutopilotAdapter()) {
             fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
@@ -163,6 +165,7 @@ public class GeneratorCPP implements Generator {
 
             files.add(generateFile(fileContent));
         }
+
         return files;
     }
 
@@ -290,6 +293,14 @@ public class GeneratorCPP implements Generator {
 
     public void setGenerateAutopilotAdapter(boolean generateAutopilotAdapter) {
         isGenerateAutopilotAdapter = generateAutopilotAdapter;
+    }
+
+    public boolean isCheckModelDir() {
+        return checkModelDir;
+    }
+
+    public void setCheckModelDir(boolean checkModelDir) {
+        this.checkModelDir = checkModelDir;
     }
 
     public List<BluePrintCPP> getBluePrints() {
