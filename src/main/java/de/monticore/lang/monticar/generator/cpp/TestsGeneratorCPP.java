@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
@@ -38,7 +39,7 @@ public final class TestsGeneratorCPP {
     private Set<String> testedComponents;
     private List<FileContent> files;
     private TestsMainEntryViewModel viewModelForMain;
-    public static Map<String, String> componentStreamNames = new HashMap<>();
+    public static Set<ComponentSymbol> availableComponents;
 
     TestsGeneratorCPP(GeneratorCPP generator) {
         this.generator = Log.errorIfNull(generator);
@@ -51,12 +52,18 @@ public final class TestsGeneratorCPP {
             return Collections.emptyList();
         }
         findStreams(symTab);
+        findComponents(symTab);
         return generateFiles();
     }
 
     private void findStreams(Scope symTab) {
         StreamScanner scanner = new StreamScanner(generator.getModelsDirPath(), symTab);
         availableStreams = new HashMap<>(scanner.scan());
+    }
+
+    public void findComponents(Scope symTab) {
+        ComponentScanner componentScanner = new ComponentScanner(generator.getModelsDirPath(), symTab, "emam");
+        availableComponents = componentScanner.scan();
     }
 
     private List<FileContent> generateFiles() {
@@ -77,19 +84,29 @@ public final class TestsGeneratorCPP {
             files.add(getCatchLib());
         }
         //files.add(new FileContent(getTestedComponentsString(), TESTS_DIRECTORY_NAME + "/testedComponents.txt"));
-        if (generator.isCheckModelDir())
-            files.add(new FileContent(getGeneratedComponentStreamNames(), "reporting/" + "existingStreams.txt"));
+        if (generator.isCheckModelDir()) {
+            files.add(new FileContent(getExistingComponentStreamNames(), "reporting/" + "existingStreams.txt"));
+            files.add(new FileContent(getExistingComponentNames(), "reporting/" + "existingComponents.txt"));
+        }
         return files;
     }
 
-    private String getGeneratedComponentStreamNames() {
+    private String getExistingComponentNames() {
+        String result = "Components:\n";
+        for (ComponentSymbol cs : availableComponents) {
+            result += "    " + cs.getFullName() + "\n";
+        }
+        return result;
+    }
+
+    private String getExistingComponentStreamNames() {
         String result = "";
         for (ComponentSymbol k : availableStreams.keySet()) {
             result += "Streams for component " + k.getFullName() + ":\n";
             Iterator<ComponentStreamUnitsSymbol> iter = availableStreams.get(k).iterator();
             while (iter.hasNext()) {
                 ComponentStreamUnitsSymbol cus = iter.next();
-                result +="    "+ cus.getFullName();
+                result += "    " + cus.getFullName();
                 result += "\n";
             }
         }
