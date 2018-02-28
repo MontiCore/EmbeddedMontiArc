@@ -22,7 +22,6 @@ package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.embeddedmontiarc.cocos.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.AtomicComponentCoCo;
-import de.monticore.lang.math.math._cocos.MatrixAssignmentCheck;
 import de.monticore.lang.math.math._cocos.MatrixAssignmentDeclarationCheck;
 
 //check all cocos
@@ -52,7 +51,8 @@ public class EMADLCocos {
                 //Math cocos
                 .addCoCo(new MatrixAssignmentDeclarationCheck())
                 //.addCoCo(new MatrixAssignmentCheck())
-                //CNNArch coco
+
+                //CNNArch coco (already checked in CNNArchGenerator)
                 .addCoCo(new CheckArchitecture());
     }
 }

@@ -32,6 +32,8 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("", "mnist.Network");
         checkValid("", "Alexnet");
         checkValid("", "VGG16");
+        checkValid("", "ThreeInputCNN_M14");
+        checkValid("", "MultipleOutputs");
         checkValid("", "ResNet34");
         checkValid("", "ResNeXt50");
 

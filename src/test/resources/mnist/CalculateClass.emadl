@@ -9,7 +9,7 @@ component CalculateClass{
          Q maxValue = 0.0;
 
          for i = 1:10
-            Q prob = probabilities(1,i);
+            Q prob = probabilities(1, i);
             if prob > maxValue
                 max = i - 1;
                 maxValue = prob;

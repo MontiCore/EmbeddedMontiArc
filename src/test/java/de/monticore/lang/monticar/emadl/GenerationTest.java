@@ -22,7 +22,6 @@ package de.monticore.lang.monticar.emadl;
 
 import de.monticore.lang.monticar.emadl.generator.Generator;
 import freemarker.template.TemplateException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -60,5 +59,15 @@ public class GenerationTest {
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
         generate("ResNeXt50");
+    }
+
+    @Test
+    public void testThreeInputGeneration() throws IOException, TemplateException {
+        generate("ThreeInputCNN_M14");
+    }
+
+    @Test
+    public void testMultipleOutputsGeneration() throws IOException, TemplateException {
+        generate("MultipleOutputs");
     }
 }

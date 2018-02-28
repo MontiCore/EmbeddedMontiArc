@@ -25,45 +25,50 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.*;
-import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.SimulatorIntegrationHelper;
+import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
+import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 public class Generator {
 
+    public static final String CNN_HELPER = "CNNTranslator";
+
     private GeneratorCPP emamGen;
-    private Target targetLanguage;
 
     public Generator() {
-        targetLanguage = Target.CPP;
         emamGen = new GeneratorCPP();
-        //MathConverter.curBackend = new ArmadilloBackend();
+        emamGen.useArmadilloBackend();
+        emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
+    }
+
+    public void setGenerationTargetPath(String generationTargetPath){
+        getEmamGen().setGenerationTargetPath(generationTargetPath);
+    }
+
+    public String getGenerationTargetPath(){
+        return getEmamGen().getGenerationTargetPath();
     }
 
     public GeneratorCPP getEmamGen() {
         return emamGen;
-    }
-
-    public Target getTargetLanguage() {
-        return targetLanguage;
     }
 
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
@@ -75,19 +80,16 @@ public class Generator {
         Optional<MathStatementsSymbol> mathStatements = astComponent.getSpannedScope().get().resolve("MathStatements", MathStatementsSymbol.KIND);
 
         if (architecture.isPresent()){
-            fileContents.addAll(generateCNNImplementation(componentInstanceSymbol, architecture.get()));
+            fileContents.addAll(generateCNN(taggingResolver, componentInstanceSymbol, architecture.get()));
         }
         else if (mathStatements.isPresent()){
-            fileContents.addAll(generateMathImplementation(taggingResolver, componentInstanceSymbol, mathStatements.get()));
+            fileContents.add(generateMathComponent(taggingResolver, componentInstanceSymbol, mathStatements.get()));
         }
         else {
             fileContents.addAll(generateSubComponents(taggingResolver, componentInstanceSymbol, symtab));
         }
 
-        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
-            fileContents.add(OctaveHelper.getOctaveHelperFileContent());
-        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
-            fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+        fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
 
         if (emamGen.shouldGenerateMainClass()) {
             //fileContents.add(emamGen.getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
@@ -98,15 +100,60 @@ public class Generator {
         return fileContents;
     }
 
-    public List<FileContent> generateCNNImplementation(ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
-        CNNArchTemplateController archTc = new CNNArchTemplateController(architecture, targetLanguage);
-        FileContent fileContent = new FileContent(archTc.process(), instance);
-        return Collections.singletonList(fileContent);
+    public List<FileContent> generateCNN(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
+        List<FileContent> fileContents = new ArrayList<>();
+        CNNArchGenerator cnnArchGenerator = new CNNArchGenerator();
+        Map<String,String> contentMap = cnnArchGenerator.generateStrings(architecture);
+        String fullName = instance.getComponentType().getReferencedSymbol().getFullName();
+
+        //get the components execute method
+        String executeKey = "execute_" + fullName;
+        String executeMethod = contentMap.get(executeKey);
+        if (executeMethod == null){
+            throw new IllegalStateException("execute method of " + fullName + " not found");
+        }
+        contentMap.remove(executeKey);
+
+        String component = emamGen.generateString(taggingResolver, instance, (MathStatementsSymbol) null);
+        FileContent componentFileContent = new FileContent(
+                transformComponent(component, "CNNPredictor_" + fullName, executeMethod),
+                instance);
+
+        for (String fileName : contentMap.keySet()){
+            fileContents.add(new FileContent(contentMap.get(fileName), fileName));
+        }
+        fileContents.add(componentFileContent);
+        fileContents.add(new FileContent(processTemplate(new HashMap<>(), CNN_HELPER), CNN_HELPER + ".h"));
+
+        return fileContents;
     }
 
-    public List<FileContent> generateMathImplementation(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol){
-        FileContent fileContent = new FileContent(emamGen.generateString(taggingResolver, componentSymbol, mathStatementsSymbol), componentSymbol);
-        return Collections.singletonList(fileContent);
+    protected String transformComponent(String component, String predictorClassName, String executeMethod){
+        String networkVariableName = "cnn_";
+        //insert includes
+        component = component.replaceFirst("using namespace",
+                "#include \"" + predictorClassName + ".h" + "\"\n" +
+                        "#include \"" + CNN_HELPER + ".h" + "\"\n" +
+                        "using namespace");
+
+        //insert network attribute
+        component = component.replaceFirst("public:",
+                "public:\n" + predictorClassName + " " + networkVariableName + ";");
+
+        //insert attribute initialization
+        component = component.replaceFirst("void init\\(\\)\\s\\{",
+                "void init()\n{\n" + networkVariableName + "=" + predictorClassName + "();");
+
+        //insert execute method
+        component = component.replaceFirst("void execute\\(\\)\\s\\{\\s\\}",
+                "void execute(){\n" + executeMethod + "\n}");
+        return component;
+    }
+
+    public FileContent generateMathComponent(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol){
+        return new FileContent(
+                emamGen.generateString(taggingResolver, componentSymbol, mathStatementsSymbol),
+                componentSymbol);
     }
 
     public List<FileContent> generateSubComponents(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
@@ -134,11 +181,7 @@ public class Generator {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
         fileContents.addAll(tg.generateTypes(TypeConverter.getTypeSymbols()));
-        /*if (isGenerateTests()) {
-            TestsGeneratorCPP g = new TestsGeneratorCPP(this);
-            fileContents.addAll(g.generateStreamTests(symtab));
-        }*/
-        //System.out.println(fileContents);
+
         if (emamGen.getGenerationTargetPath().charAt(emamGen.getGenerationTargetPath().length() - 1) != '/') {
             emamGen.setGenerationTargetPath(emamGen.getGenerationTargetPath() + "/");
         }
@@ -156,24 +199,33 @@ public class Generator {
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
         String componentName = splitName.get(splitName.size() - 1);
         String instanceName = componentName.substring(0, 1).toLowerCase() + componentName.substring(1);
+
+        if (component == null){
+            Log.error("Component with name '" + componentName + "' does not exist.");
+            System.exit(1);
+        }
+
         ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
 
         generateFiles(symtab, instance, symtab);
     }
 
-
-    public static void main(String[] args) throws IOException, TemplateException {
-        if(args.length < 2){
-            System.err.println("Two argument are required (directory path and component name (without extension))");
+    protected String processTemplate(Map<String, Object> ftlContext, String templateNameWithoutEnding){
+        StringWriter writer = new StringWriter();
+        String templateName = templateNameWithoutEnding + ".ftl";
+        try{
+            Template template = TemplateConfiguration.get().getTemplate(templateName);
+            template.process(ftlContext, writer);
         }
-        Path modelPath = Paths.get(args[0]).toAbsolutePath();
-        String qualifiedName = args[1];
-
-        Generator generator = new Generator();
-        if (args.length >= 3){
-            generator.targetLanguage = Target.fromString(args[2]);
+        catch (IOException e) {
+            Log.error("Freemarker could not find template " + templateName + " :\n" + e.getMessage());
+            System.exit(1);
         }
-
-        generator.generate(modelPath, qualifiedName);
+        catch (TemplateException e){
+            Log.error("An exception occured in template " + templateName + " :\n" + e.getMessage());
+            System.exit(1);
+        }
+        return writer.toString();
     }
+
 }

@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl.adapter;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
@@ -30,9 +31,11 @@ import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.resolving.SymbolAdapter;
+import de.se_rwth.commons.SourcePosition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         implements SymbolAdapter<PortArraySymbol> {
@@ -107,4 +110,13 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         }
     }
 
+    @Override
+    public Optional<ASTNode> getAstNode() {
+        return getAdaptee().getAstNode();
+    }
+
+    @Override
+    public SourcePosition getSourcePosition() {
+        return getAdaptee().getSourcePosition();
+    }
 }

@@ -25,27 +25,24 @@ import freemarker.template.TemplateExceptionHandler;
 
 public class TemplateConfiguration {
 
+    private static TemplateConfiguration instance;
+    private Configuration configuration;
+
+    private TemplateConfiguration() {
+        configuration = new Configuration(Configuration.VERSION_2_3_23);
+        configuration.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
+        configuration.setDefaultEncoding("UTF-8");
+        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
     public static Configuration get(){
-        Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-        cfg.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
-        cfg.setDefaultEncoding("UTF-8");
-        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        return cfg;
-        /*try{
-            //String path = "/home/thomas/git/EmbeddedMontiArcDL/src/main/resources/templates/";
-            String path = TemplateConfiguration.class.getResource("/templates").getPath();
-            File templateDir = new File(path);
-            //TemplateLoader templateLoader = new FileTemplateLoader(templateDir);
-            Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-            cfg.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
-            //cfg.setTemplateLoader(templateLoader);
-            cfg.setDefaultEncoding("UTF-8");
-            cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-            return cfg;
+        if (instance == null){
+            instance = new TemplateConfiguration();
         }
-        catch(IOException e){
-            Log.error("Template directory could not be found: " + e.getMessage());
-        }
-        throw new IllegalStateException();*/
+        return instance.getConfiguration();
     }
 }

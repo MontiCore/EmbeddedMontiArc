@@ -3,7 +3,7 @@ import Network;
 import CalculateClass;
 
 component Main{
-    ports in Z(0:255)^{3, 224, 224} image,
+    ports in Z(0:255)^{1, 28, 28} image,
          out Z(0:9) digit;
 
     instance Network net;

@@ -24,6 +24,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.symboltable.Scope;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -51,6 +52,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertNotNull(a);
     }
 
+    @Ignore
     @Test
     public void test2(){
         Scope symTab = createSymTab("src/test/resources");

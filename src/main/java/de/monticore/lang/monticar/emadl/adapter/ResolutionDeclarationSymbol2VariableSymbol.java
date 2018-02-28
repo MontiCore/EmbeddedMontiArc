@@ -20,13 +20,17 @@
  */
 package de.monticore.lang.monticar.emadl.adapter;
 
+import de.monticore.ast.ASTNode;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.resolving.SymbolAdapter;
+import de.se_rwth.commons.SourcePosition;
 import org.jscience.mathematics.number.Rational;
+
+import java.util.Optional;
 
 public class ResolutionDeclarationSymbol2VariableSymbol extends VariableSymbol
         implements SymbolAdapter<ResolutionDeclarationSymbol> {
@@ -46,6 +50,16 @@ public class ResolutionDeclarationSymbol2VariableSymbol extends VariableSymbol
     @Override
     public ResolutionDeclarationSymbol getAdaptee() {
         return adaptee;
+    }
+
+    @Override
+    public Optional<ASTNode> getAstNode() {
+        return getAdaptee().getAstNode();
+    }
+
+    @Override
+    public SourcePosition getSourcePosition() {
+        return getAdaptee().getSourcePosition();
     }
 
 }

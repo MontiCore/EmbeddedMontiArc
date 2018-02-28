@@ -1,6 +1,6 @@
 component ResNeXt50{
     ports in Z(0:255)^{3, 224, 224} image,
-         out Q(0:1)^{1000} predictions;
+         out Q(0:1)^{1000,1,1} predictions;
 
     implementation CNN {
 
