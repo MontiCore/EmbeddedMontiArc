@@ -15,6 +15,7 @@ Release History
 * v1.0: Car-Simulator with Physics Engine
 * v1.0: 3D-Car Visualisation
 * **v1.1:** 2D Component Visualisation
+* v1.1: Reporting (Overview of Model Quality)
 
 Credits
 =======
