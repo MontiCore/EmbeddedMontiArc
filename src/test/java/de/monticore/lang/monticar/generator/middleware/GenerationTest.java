@@ -10,7 +10,6 @@ import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareSymb
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -99,8 +98,6 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
-    //TODO: implement feature
-    @Ignore
     @Test
     public void testDistributedStructTargetGenerator() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");

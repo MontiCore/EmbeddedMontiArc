@@ -5,12 +5,16 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosMsgImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +22,11 @@ import java.util.*;
 
 public class DistributedTargetGenerator extends CMakeGenerator {
     private RosMsgImpl rosMsgImpl;
+    private Set<String> subDirs = new HashSet<>();
+
 
     public DistributedTargetGenerator() {
-        rosMsgImpl = new RosMsgImpl("rosmsg");
+        rosMsgImpl = new RosMsgImpl("struct_msgs");
         //this.add(rosMsgImpl,"rosmsg/");
     }
 
@@ -55,18 +61,24 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         List<File> files = new ArrayList<>();
 
-        CMakeGenerator cmakeListsGenerator = new CMakeGenerator();
-        cmakeListsGenerator.setGenerationTargetPath(generationTargetPath);
+        subDirs.add("rosMsg");
         for (ExpandedComponentInstanceSymbol comp : generatorMap.keySet()) {
             files.addAll(generatorMap.get(comp).generate(comp, taggingResolver));
-            //add empty generator to cmakeListsGenerator so that CMakeLists.txt will be generated
-            cmakeListsGenerator.add(new GeneratorImpl() {
-            }, comp.getFullName().replace(".", "_"));
+            //add empty generator to subDirs so that CMakeLists.txt will be generated correctly
+            subDirs.add(comp.getFullName().replace(".", "_"));
         }
 
-        files.addAll(cmakeListsGenerator.generate(componentInstanceSymbol, taggingResolver));
-        files.addAll(rosMsgImpl.generate(componentInstanceSymbol, taggingResolver));
+        files.add(generateCMake());
+        files.add(generateRosMsgGen());
+
         return files;
+    }
+
+    //TODO:refactor, dont always generate
+    private File generateRosMsgGen() throws IOException {
+        File file = new File(generationTargetPath + "rosMsg/CMakeLists.txt");
+        FileUtils.write(file, TemplateHelper.struct_msgsCmakeTemplate);
+        return file;
     }
 
     private GeneratorImpl createFullGenerator(String subdir) {
@@ -165,5 +177,27 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         return componentInstanceSymbol.getSubComponents();
     }
 
+    //TODO: refactor
+    private File generateCMake() throws IOException {
+        FileContent fileContent = new FileContent();
+        fileContent.setFileName("CMakeLists.txt");
+        StringBuilder content = new StringBuilder();
+        content.append("cmake_minimum_required(VERSION 3.5)\n");
+        //TODO setProjectName?
+        content.append("project (default)\n");
+        content.append("set (CMAKE_CXX_STANDARD 11)\n");
+
+        subDirs.stream().filter(dir -> dir.equals("rosMsg")).forEach(
+                dir -> content.append("add_subdirectory(" + dir + ")\n")
+        );
+
+        subDirs.stream().filter(dir -> !dir.equals("rosMsg")).forEach(
+                dir -> content.append("add_subdirectory(" + dir + ")\n")
+        );
+
+        fileContent.setFileContent(content.toString());
+
+        return FileHelper.generateFile(generationTargetPath, fileContent);
+    }
 
 }

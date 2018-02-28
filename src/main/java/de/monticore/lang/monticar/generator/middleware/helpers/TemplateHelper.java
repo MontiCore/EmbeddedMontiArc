@@ -132,4 +132,31 @@ public class TemplateHelper {
                     "target_link_libraries(DummyAdapter_${compName} ${compName})\n" +
                     "target_include_directories(DummyAdapter_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
                     "export(TARGETS DummyAdapter_${compName} FILE DummyAdapter_${compName}.cmake)";
+
+    public static String struct_msgsCmakeTemplate =
+            "cmake_minimum_required(VERSION 3.5)\n" +
+                    "project (struct_msgs)\n" +
+                    "\n" +
+                    "find_package(genmsg REQUIRED)\n" +
+                    "\n" +
+                    "FILE(GLOB MSG_FILES_RAW RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../*/roscpp/struct_msgs/*.msg)\n" +
+                    "\n" +
+                    "#generate struct_msgs iff .msg files where found\n" +
+                    "if(MSG_FILES_RAW)\n" +
+                    "    #filter: add each struct msg only once (distinct by filename without path)\n" +
+                    "    foreach(CUR_MSG_FILE ${MSG_FILES_RAW})\n" +
+                    "        get_filename_component(TMP_MSG_NAME ${CUR_MSG_FILE} NAME)\n" +
+                    "        IF(NOT MSG_DEFINED_${TMP_MSG})\n" +
+                    "            LIST(APPEND MSG_FILES ${CUR_MSG_FILE})\n" +
+                    "            SET(MSG_DEFINED_${TMP_MSG} TRUE)\n" +
+                    "        ENDIF()\n" +
+                    "    endforeach(CUR_MSG_FILE)\n" +
+                    "\n" +
+                    "    #generate messages\n" +
+                    "    add_message_files(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} FILES ${MSG_FILES})\n" +
+                    "    generate_messages()\n" +
+                    "\n" +
+                    "    #export the include_dirs, so that other subprojects can use it\n" +
+                    "    set(struct_msgs_INCLUDE_DIRS ${struct_msgs_INCLUDE_DIRS} PARENT_SCOPE)\n" +
+                    "endif()\n";
 }
