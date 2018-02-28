@@ -25,6 +25,11 @@ public class GeneratorCppCliTest extends AbstractSymtabTest {
         generateAndCompareMyComponentX(9);
     }
 
+    @Test
+    public void testInstructionsOrder3() throws IOException {
+        generateAndCompareMyComponentX(10);
+    }
+
     private void generateAndCompareMyComponentX(int x) throws IOException {
         generateAndCompare(
                 String.format("testing.subpackage%1$s.myComponent%1$s", x),

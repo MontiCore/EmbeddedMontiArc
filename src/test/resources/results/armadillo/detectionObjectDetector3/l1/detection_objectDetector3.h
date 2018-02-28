@@ -28,10 +28,10 @@ spectralClusterer[2].init();
 void execute()
 {
 spectralClusterer[0].imgMatrix = imgFront;
-spectralClusterer[1].imgMatrix = imgBack;
-spectralClusterer[2].imgMatrix = imgLeft;
 spectralClusterer[0].execute();
+spectralClusterer[1].imgMatrix = imgBack;
 spectralClusterer[1].execute();
+spectralClusterer[2].imgMatrix = imgLeft;
 spectralClusterer[2].execute();
 clusters[0] = spectralClusterer[0].clusters;
 clusters[1] = spectralClusterer[1].clusters;

@@ -48,20 +48,20 @@ spectralClusterer[7].init();
 void execute()
 {
 spectralClusterer[0].imgMatrix = imgFront;
-spectralClusterer[1].imgMatrix = imgRight;
-spectralClusterer[2].imgMatrix = imgLeft;
-spectralClusterer[3].imgMatrix = imgBack;
-spectralClusterer[4].imgMatrix = imgFront2;
-spectralClusterer[5].imgMatrix = imgRight2;
-spectralClusterer[6].imgMatrix = imgLeft2;
-spectralClusterer[7].imgMatrix = imgBack2;
 spectralClusterer[0].execute();
+spectralClusterer[1].imgMatrix = imgRight;
 spectralClusterer[1].execute();
+spectralClusterer[2].imgMatrix = imgLeft;
 spectralClusterer[2].execute();
+spectralClusterer[3].imgMatrix = imgBack;
 spectralClusterer[3].execute();
+spectralClusterer[4].imgMatrix = imgFront2;
 spectralClusterer[4].execute();
+spectralClusterer[5].imgMatrix = imgRight2;
 spectralClusterer[5].execute();
+spectralClusterer[6].imgMatrix = imgLeft2;
 spectralClusterer[6].execute();
+spectralClusterer[7].imgMatrix = imgBack2;
 spectralClusterer[7].execute();
 clusters[0] = spectralClusterer[0].clusters;
 clusters[1] = spectralClusterer[1].clusters;
