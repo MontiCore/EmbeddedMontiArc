@@ -1,8 +1,8 @@
 #pragma once
 #include "IAdapter.h"
 #include "tests_msg_basicStructComp.h"
-#include <msgs/tests_structs_BasicStruct.h>
 #include <ros/ros.h>
+#include <struct_msgs/tests_structs_BasicStruct.h>
 class RosAdapter_tests_msg_basicStructComp: public IAdapter{
 	tests_msg_basicStructComp* component;
 	ros::Subscriber topic1Subscriber;
@@ -20,17 +20,17 @@ class RosAdapter_tests_msg_basicStructComp: public IAdapter{
 		ros::init(i, &tmp, "RosAdapter_tests_msg_basicStructComp_node");
 		ros::NodeHandle node_handle = ros::NodeHandle();
 		topic1Subscriber = node_handle.subscribe("topic1" ,5,&RosAdapter_tests_msg_basicStructComp::topic1Callback, this, ros::TransportHints().tcpNoDelay());
-		topic2Publisher = node_handle.advertise<msgs::tests_structs_BasicStruct>("topic2",5);
+		topic2Publisher = node_handle.advertise<struct_msgs::tests_structs_BasicStruct>("topic2",5);
 		ros::spin();
 	}
 	
 	void publishtopic2Publisher(){
-		msgs::tests_structs_BasicStruct tmpMsg;
-		tmpMsg->fieldB1 = component->out1.fieldB1;
-		tmpMsg->fieldQ1 = component->out1.fieldQ1;
-		tmpMsg->fieldQ2 = component->out1.fieldQ2;
-		tmpMsg->fieldZ1 = component->out1.fieldZ1;
-		tmpMsg->fieldZ2 = component->out1.fieldZ2;
+		struct_msgs::tests_structs_BasicStruct tmpMsg;
+		tmpMsg.fieldB1 = component->out1.fieldB1;
+		tmpMsg.fieldQ1 = component->out1.fieldQ1;
+		tmpMsg.fieldQ2 = component->out1.fieldQ2;
+		tmpMsg.fieldZ1 = component->out1.fieldZ1;
+		tmpMsg.fieldZ2 = component->out1.fieldZ2;
 		topic2Publisher.publish(tmpMsg);
 	}
 	
@@ -38,7 +38,7 @@ class RosAdapter_tests_msg_basicStructComp: public IAdapter{
 		publishtopic2Publisher();
 	}
 	
-	void topic1Callback(const msgs::tests_structs_BasicStruct::ConstPtr& msg){
+	void topic1Callback(const struct_msgs::tests_structs_BasicStruct::ConstPtr& msg){
 		component->in1.fieldB1 = msg->fieldB1;
 		component->in1.fieldQ1 = msg->fieldQ1;
 		component->in1.fieldQ2 = msg->fieldQ2;

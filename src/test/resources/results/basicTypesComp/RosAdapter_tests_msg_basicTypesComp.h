@@ -36,19 +36,19 @@ class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
 	
 	void publishtopic7Publisher(){
 		std_msgs::Float64 tmpMsg;
-		tmpMsg->data = component->outQ;
+		tmpMsg.data = component->outQ;
 		topic7Publisher.publish(tmpMsg);
 	}
 	
 	void publishtopic8Publisher(){
 		std_msgs::Int32 tmpMsg;
-		tmpMsg->data = component->outZ;
+		tmpMsg.data = component->outZ;
 		topic8Publisher.publish(tmpMsg);
 	}
 	
 	void publishtopic9Publisher(){
 		std_msgs::Bool tmpMsg;
-		tmpMsg->data = component->outB;
+		tmpMsg.data = component->outB;
 		topic9Publisher.publish(tmpMsg);
 	}
 	
