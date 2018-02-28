@@ -9,6 +9,8 @@ import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,7 +23,7 @@ public class LanguageUnitRosCppAdapter {
     private List<Method> publishMethods = new ArrayList<>();
     private List<MsgConverter> msgConverts = new ArrayList<>();
     private List<String> additionalPackages = new ArrayList<>();
-
+    private Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> usedRosMsgs = new HashMap<>();
 
     public List<String> getAdditionalPackages() {
         return additionalPackages;
@@ -94,6 +96,7 @@ public class LanguageUnitRosCppAdapter {
                     if (!rcs.getMsgField().isPresent()) {
                         String packageName = Arrays.stream(rcs.getTopicType().get().split("/")).findFirst().get();
                         RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, p.getTypeReference());
+                        usedRosMsgs.put(rosMsg, p.getTypeReference());
                         method.addInstruction(new SetStructMsgInstruction(p, rosMsg));
                     } else {
                         SetMsgFieldInstruction tmpInstr = new SetMsgFieldInstruction(p, getMsgConverter(rcs.getMsgField().get(), p.isIncoming()));
@@ -241,6 +244,7 @@ public class LanguageUnitRosCppAdapter {
                         //TODO: checks?
                         String packageName = Arrays.stream(rosCon.getTopicType().get().split("/")).findFirst().get();
                         RosMsg rosMsg = GeneratorRosMsg.getRosType(packageName, portSymbol.getTypeReference());
+                        usedRosMsgs.put(rosMsg, portSymbol.getTypeReference());
                         method.addInstruction(new SetStructPortInstruction(portSymbol, rosMsg));
                     } else {
                         method.addInstruction(new SetPortInstruction(portSymbol, getMsgConverter(msgField, portSymbol.isIncoming())));
@@ -272,5 +276,9 @@ public class LanguageUnitRosCppAdapter {
 
     public List<BluePrintCPP> getBluePrints() {
         return bluePrints;
+    }
+
+    public Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> getUsedRosMsgs() {
+        return usedRosMsgs;
     }
 }

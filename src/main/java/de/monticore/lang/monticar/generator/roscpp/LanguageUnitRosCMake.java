@@ -19,13 +19,13 @@ public class LanguageUnitRosCMake {
                     "set_target_properties(<name> PROPERTIES LINKER_LANGUAGE CXX)\n" +
                     "target_link_libraries(<name> <compName> <libraries>)\n" +
                     "target_include_directories(<name> PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} <include_dirs>)\n" +
+                    "<dependency>\n" +
                     "\n" +
                     "export(TARGETS <name> FILE <name>.cmake)";
 
-
     FileContent generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages) {
-        FileContent res = new FileContent();
-        res.setFileName("CMakeLists.txt");
+        FileContent fileContent = new FileContent();
+        fileContent.setFileName("CMakeLists.txt");
 
         List<String> allPackages = new ArrayList<>();
         allPackages.addAll(additionalPackages);
@@ -39,6 +39,7 @@ public class LanguageUnitRosCMake {
         String compName = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
         String name = NameHelper.getAdapterName(componentInstanceSymbol);
         String packages = distinctSortedPackages.stream()
+                .filter(p -> !p.equals("struct_msgs"))
                 .map(p -> "find_package(" + p + " REQUIRED)")
                 .collect(Collectors.joining("\n"));
 
@@ -50,16 +51,22 @@ public class LanguageUnitRosCMake {
                 .map(p -> "${" + p + "_INCLUDE_DIRS}")
                 .collect(Collectors.joining(" "));
 
+        String dependency = "";
+        if (distinctSortedPackages.stream().filter(pack -> pack.startsWith("struct_msgs")).count() > 0) {
+            dependency = "add_dependencies(<name> struct_msgs_generate_messages)".replace("<name>", name);
+        }
+
+
         String content = cmakeTemplate
                 .replace("<name>", name)
                 .replace("<compName>", compName)
                 .replace("<packages>", packages)
                 .replace("<libraries>", libraries)
-                .replace("<include_dirs>", include_dirs);
+                .replace("<include_dirs>", include_dirs)
+                .replace("<dependency>", dependency);
 
-        res.setFileContent(content);
-        return res;
+        fileContent.setFileContent(content);
+        return fileContent;
     }
-
 
 }

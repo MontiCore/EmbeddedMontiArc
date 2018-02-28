@@ -5,6 +5,10 @@ import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.FormatHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
+import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
+import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -13,7 +17,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class GeneratorRosCpp {
 
@@ -65,7 +71,9 @@ public class GeneratorRosCpp {
     public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol component) {
         List<FileContent> fileContents = new ArrayList<>();
         fileContents.addAll(generateRosAdapter(component));
-        fileContents.forEach(fc -> fc.setFileContent(FormatHelper.fixIndentation(fc.getFileContent())));
+        fileContents.stream()
+                .filter(fc -> fc.getFileName().endsWith(".h"))
+                .forEach(fc -> fc.setFileContent(FormatHelper.fixIndentation(fc.getFileContent())));
         return fileContents;
     }
 
@@ -83,10 +91,20 @@ public class GeneratorRosCpp {
         apdapter.setFileName(classname + ".h");
         apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter"));
 
+        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
+        for (Map.Entry<RosMsg, MCTypeReference<? extends MCTypeSymbol>> entry : languageUnitRosCppAdapter.getUsedRosMsgs().entrySet()) {
+            String packageName = Arrays.stream(entry.getKey().getName().split("/")).findFirst().get();
+            if (packageName.equals("struct_msgs")) {
+                generatorRosMsg.setTarget(generationTargetPath + "/" + packageName, packageName);
+                List<FileContent> tmpFileContents = generatorRosMsg.generateStrings(entry.getValue());
+                tmpFileContents.forEach(fc -> fc.setFileName(packageName + "/" + fc.getFileName()));
+                res.addAll(tmpFileContents);
+            }
+        }
+
         if (generateCMake) {
             LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
-            FileContent cmake = languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages());
-            res.add(cmake);
+            res.add(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages()));
         }
 
         res.add(apdapter);
