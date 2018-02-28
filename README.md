@@ -12,7 +12,7 @@ See here how to create new releases: https://help.github.com/articles/creating-r
 Release History
 =======
 * **v1.0:** EMAM-Compiler
-* v1.0: Car-Simulator
+* v1.0: Car-Simulator with Physics Engine
 * v1.0: 3D-Car Visualisation
 * **v1.1:** 2D Component Visualisation
 
