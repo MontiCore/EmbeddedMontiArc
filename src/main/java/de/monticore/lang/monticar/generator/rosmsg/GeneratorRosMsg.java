@@ -84,7 +84,7 @@ public class GeneratorRosMsg {
             if (sfds.getType().existsReferencedSymbol()) {
                 if (sfds.getType().getReferencedSymbol() instanceof StructSymbol) {
                     StructSymbol referencedSymbol = (StructSymbol) sfds.getType().getReferencedSymbol();
-                    generateStruct(packageName, referencedSymbol);
+                    fileContents.addAll(generateStruct(packageName, referencedSymbol));
                 }
             }
         }
