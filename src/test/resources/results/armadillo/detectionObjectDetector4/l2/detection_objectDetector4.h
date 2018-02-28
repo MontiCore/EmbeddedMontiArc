@@ -33,12 +33,12 @@ spectralClusterer[3].init();
 void execute()
 {
 spectralClusterer[0].imgMatrix = imgFront;
-spectralClusterer[1].imgMatrix = imgRight;
-spectralClusterer[2].imgMatrix = imgLeft;
-spectralClusterer[3].imgMatrix = imgBack;
 std::thread thread1( [ this ] {this->spectralClusterer[0].execute();});
+spectralClusterer[1].imgMatrix = imgRight;
 std::thread thread2( [ this ] {this->spectralClusterer[1].execute();});
+spectralClusterer[2].imgMatrix = imgLeft;
 std::thread thread3( [ this ] {this->spectralClusterer[2].execute();});
+spectralClusterer[3].imgMatrix = imgBack;
 std::thread thread4( [ this ] {this->spectralClusterer[3].execute();});
 thread1.join();
 thread2.join();
