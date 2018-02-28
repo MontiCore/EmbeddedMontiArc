@@ -11,12 +11,12 @@ public class SetStructMsgInstruction extends TargetCodeInstruction {
     public SetStructMsgInstruction(PortSymbol portSymbol, RosMsg rosMsg) {
         if (rosMsg.getName().startsWith("std_msgs/")) {
             this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
-                    .map(field -> "tmpMsg->" + field + " = component->" + portSymbol.getName() + ";")
+                    .map(field -> "tmpMsg." + field + " = component->" + portSymbol.getName() + ";")
                     .sorted()
                     .collect(Collectors.joining("\n"));
         } else {
             this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
-                    .map(field -> "tmpMsg->" + field + " = component->" + portSymbol.getName() + "." + field + ";")
+                    .map(field -> "tmpMsg." + field + " = component->" + portSymbol.getName() + "." + field + ";")
                     .sorted()
                     .collect(Collectors.joining("\n"));
         }
