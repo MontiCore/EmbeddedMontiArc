@@ -1,8 +1,12 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
+import de.monticore.lang.monticar.generator.ConnectInstruction;
+import de.monticore.lang.monticar.generator.ExecuteInstruction;
+import de.monticore.lang.monticar.generator.Instruction;
+import de.monticore.lang.monticar.generator.Method;
+import de.monticore.lang.monticar.generator.TargetCodeInstruction;
+import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -46,24 +50,10 @@ public class ExecutionOrderFixer {
         for (ExpandedComponentInstanceSymbol subComponent : instanceSymbol.getSubComponents()) {
             if (!listContainsExecuteInstruction(newList, subComponent.getName())) {
                 ExecuteInstruction executeInstruction = (ExecuteInstruction) getExecuteInstruction(subComponent.getName(), bluePrintCPP, threadableComponents, generatorCPP);
-
-                newList.add(executeInstruction);
+                int insertionIndex = getIndexOfLastConnectInstruction(newList, subComponent.getName());
+                newList.add(insertionIndex, executeInstruction);
             }
         }
-
-        /*int lastDotIndex = instanceSymbol.getFullName().lastIndexOf(".");
-        if (lastDotIndex != -1) {
-            String name = instanceSymbol.getFullName().substring(0, lastDotIndex);
-            //Log.info(name,"Trying to fix name:");
-            if (parentSymbol.isSubComponent(name)) {
-                //Log.info(name,"IsSubcomponent ExecuteInstruction:");
-                String nameToAdd;
-                if (!listContainsExecuteInstruction(newList, name)) {
-                    //Log.info(name,"Added additional ExecuteInstruction:");
-                    newList.add(getExecuteInstruction(name));
-                }
-            }
-        }*/
     }
 
     public static boolean listContainsExecuteInstruction(List<Instruction> list, String name) {
@@ -149,5 +139,19 @@ public class ExecutionOrderFixer {
             }
         }
         return newList;
+    }
+
+    private static int getIndexOfLastConnectInstruction(List<Instruction> instructions, String componentInstanceName) {
+        int result = -1;
+        for (int i = 0, len = instructions.size(); i < len; i++) {
+            Instruction instr = instructions.get(i);
+            if (instr.isConnectInstruction()) {
+                Variable lhs = ((ConnectInstruction) instr).getVariable1();
+                if (lhs.getName().startsWith(componentInstanceName) && i > result) {
+                    result = i;
+                }
+            }
+        }
+        return result + 1;
     }
 }
