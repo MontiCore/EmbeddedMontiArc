@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2cppwrapper;
+package de.monticore.lang.monticar.adapter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
-public class GeneratorCPPWrapper {
+public class GeneratorCppWrapper {
 
   private GeneratorCPP generator;
 
-  public GeneratorCPPWrapper(GeneratorCPP generator) {
+  public GeneratorCppWrapper(GeneratorCPP generator) {
     this.generator = generator;
   }
 

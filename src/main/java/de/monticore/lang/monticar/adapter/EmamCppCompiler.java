@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.adapter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.emam2cppwrapper.GeneratorCPPWrapper;
 import de.monticore.lang.monticar.emam2wasm.cpp.CppCompiler;
 import de.monticore.lang.monticar.emam2wasm.cpp.CppCompilerException;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -11,11 +10,11 @@ import java.nio.file.Path;
 
 public class EmamCppCompiler implements CppCompiler<ExpandedComponentInstanceSymbol> {
 
-  private final GeneratorCPPWrapper modelCompiler;
+  private final GeneratorCppWrapper modelCompiler;
   private final CppFileGenerator cppFileGenerator;
   private final TaggingResolver symtab;
 
-  public EmamCppCompiler(GeneratorCPPWrapper modelCompiler, CppFileGenerator cppFileGenerator,
+  public EmamCppCompiler(GeneratorCppWrapper modelCompiler, CppFileGenerator cppFileGenerator,
       TaggingResolver symtab) {
     this.modelCompiler = modelCompiler;
     this.cppFileGenerator = cppFileGenerator;
