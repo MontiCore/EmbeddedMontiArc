@@ -27,6 +27,8 @@ class EmscriptenCommandBuilderFactoryTest {
   private static final Path OTHER_INCLUDE_LIBRARY = Paths.get("./other_library");
   private static final Option OPTION = new Option("some_option", true);
   private static final Option OTHER_OPTION = new Option("other_option", false);
+  private static final String FLAG = "some_flag";
+  private static final String OTHER_FLAG = "other_flag";
 
   @Nested
   class WhenNoDefaultValuesSet {
@@ -176,6 +178,16 @@ class EmscriptenCommandBuilderFactoryTest {
           builder.addOption(OTHER_OPTION);
           assertThat(builder.toString())
               .isEqualTo("./emscripten model.cpp -s some_option=1 -s other_option=0");
+        }
+
+        @Test
+        void addFlag() {
+          builderFactory.addFlag(FLAG);
+          EmscriptenCommandBuilder builder = builderFactory.getBuilder();
+
+          builder.addFlag(OTHER_FLAG);
+          assertThat(builder.toString())
+              .isEqualTo("./emscripten model.cpp -some_flag -other_flag");
         }
       }
     }

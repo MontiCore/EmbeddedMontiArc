@@ -21,6 +21,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   private Path file;
   private final List<Path> includes = new ArrayList<>();
   private final List<Option> options = new ArrayList<>();
+  private final List<String> flags = new ArrayList<>();
   private Optimization optimizationLevel;
   private boolean bind;
   private String std;
@@ -88,6 +89,18 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    */
   public EmscriptenCommandBuilder addOption(Option option) {
     options.add(requiresNotNull(option));
+    return this;
+  }
+
+  /**
+   * Adds a command line flag to the emscripten command. The actual command will look like
+   * {@code -flag}.
+   *
+   * @param flag command line flag
+   * @return this builder
+   */
+  public EmscriptenCommandBuilder addFlag(String flag) {
+    flags.add(flag);
     return this;
   }
 
@@ -165,6 +178,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     list.addAll(outputFile());
     list.addAll(includes());
     list.addAll(options());
+    list.addAll(flags());
     if (optimizationLevel != null) {
       list.add(optimizationLevel.toString());
     }
@@ -200,6 +214,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
         Objects.equals(file, that.file) &&
         Objects.equals(includes, that.includes) &&
         Objects.equals(options, that.options) &&
+        Objects.equals(flags, that.flags) &&
         optimizationLevel == that.optimizationLevel &&
         Objects.equals(std, that.std) &&
         Objects.equals(outputFile, that.outputFile);
@@ -208,8 +223,8 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   @Override
   public final int hashCode() {
     return Objects
-        .hash(referenceDir, emscripten, file, includes, options, optimizationLevel, bind, std,
-            outputFile);
+        .hash(referenceDir, emscripten, file, includes, options, flags, optimizationLevel, bind,
+            std, outputFile);
   }
 
   private String file() {
@@ -239,5 +254,9 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
       res.add(s);
     });
     return res;
+  }
+
+  private List<String> flags() {
+    return flags.stream().map(flag -> '-' + flag).collect(Collectors.toList());
   }
 }

@@ -26,6 +26,7 @@ class EmscriptenCommandBuilderTest {
   private static final Option LINKABLE_OPTION = new Option("LINKABLE", true);
   private static final Optimization SOME_LEVEL = Optimization.O3;
   private static final String EMPTY_STRING = "";
+  private static final String SOME_FLAG = "DARMA_DONT_USE_WRAPPER";
 
   @SafeVarargs
   private final <T> List<T> listof(T... elements) {
@@ -127,6 +128,14 @@ class EmscriptenCommandBuilderTest {
                 listof(EMSCRIPTEN, "model.cpp",
                     "-I\"" + INCLUDE_ARMADILLO.toString() + "\"",
                     "-I\"" + INCLUDE_BLAS.toString() + "\""));
+      }
+
+      @Test
+      void whenCommandWithFlag() {
+        builder.addFlag("DARMA_DONT_USE_WRAPPER");
+
+        assertThat(builder.toList()).isEqualTo(
+            listof(EMSCRIPTEN, "model.cpp", "-" + SOME_FLAG));
       }
 
       @Test
@@ -253,6 +262,13 @@ class EmscriptenCommandBuilderTest {
       }
 
       @Test
+      void whenCommandWithFlag() {
+        builder.addFlag(SOME_FLAG);
+
+        assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp " + "-" + SOME_FLAG);
+      }
+
+      @Test
       void whenCommandWithOptimization() {
         builder.setOptimization(SOME_LEVEL);
 
@@ -274,11 +290,12 @@ class EmscriptenCommandBuilderTest {
         builder.setBind(true);
         builder.setStd("c++11");
         builder.setOutput("module.js");
+        builder.addFlag(SOME_FLAG);
 
         assertThat(builder.toString())
             .isEqualTo(
                 EMSCRIPTEN + " model.cpp -o module.js -I\"" + INCLUDE_ARMADILLO.toString()
-                    + "\" -s WASM=1 -O3 --bind -std=c++11");
+                    + "\" -s WASM=1 -DARMA_DONT_USE_WRAPPER -O3 --bind -std=c++11");
       }
     }
   }

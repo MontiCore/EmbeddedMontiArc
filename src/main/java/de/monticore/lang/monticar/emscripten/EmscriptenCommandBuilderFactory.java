@@ -23,6 +23,7 @@ public class EmscriptenCommandBuilderFactory {
   private Path file;
   private List<Path> includes = new ArrayList<>();
   private List<Option> options = new ArrayList<>();
+  private List<String> flags = new ArrayList<>();
   private Optimization optimizationLevel;
   private Boolean bind;
   private String std;
@@ -73,6 +74,18 @@ public class EmscriptenCommandBuilderFactory {
    */
   public EmscriptenCommandBuilderFactory addOption(Option option) {
     options.add(option);
+    return this;
+  }
+
+  /**
+   * Adds a command line flag to the emscripten command. The actual command will look like
+   * {@code -flag}.
+   *
+   * @param flag command line flag
+   * @return this builder
+   */
+  public EmscriptenCommandBuilderFactory addFlag(String flag) {
+    flags.add(flag);
     return this;
   }
 
@@ -191,6 +204,9 @@ public class EmscriptenCommandBuilderFactory {
       }
       if (options != null) {
         options.forEach(super::addOption);
+      }
+      if (flags != null) {
+        flags.forEach(super::addFlag);
       }
     }
 
