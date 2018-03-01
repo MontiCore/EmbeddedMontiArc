@@ -1,0 +1,15 @@
+target
+nppBackup
+.project
+.settings
+.classpath
+.idea
+.git
+
+*.iml
+cib
+emam2wasm
+compile.bat
+emam2wasm.jar
+emam2wasm.zip
+site.7z
