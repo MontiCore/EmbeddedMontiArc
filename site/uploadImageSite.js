@@ -6,14 +6,14 @@
 function main() {
     // The div that receives drops and the new iFrame
     var targetDiv = document.getElementById("dropTarget"),
-        iframe = document.createElement("iframe");
+        iframe = document.getElementById("iframeTarget");
 
     // Set the iframe to a blank page
     iframe.src = "about:blank";
 
     // Append it to the target
-    document.getElementById("iframeTarget").appendChild(iframe);
-    document.getElementById("iframeTarget").width="1000";
+    //document.getElementById("iframeTarget").appendChild(iframe);
+    //document.getElementById("iframeTarget").width="1000";
     // Drag over is when an object is hovering over the div
     // e.preventDefault keeps the page from changing
     targetDiv.addEventListener("dragover", function (e) {
@@ -55,19 +55,58 @@ function loadFile(f, destination) {
     reader.onload = function (event) {
         var newImage = document.createElement("img");
         newImage.src = event.target.result;
-        destination.contentWindow.document.getElementsByTagName("body")[0].appendChild(newImage);
+        destination.appendChild(newImage);
+        //if(destination.getElementsByName("body")
+        /*destination.contentWindow.document.getElementsByTagName("body")[0].appendChild(newImage);
         if(destination.contentWindow.document.getElementsByTagName("body")[0].childElementCount>1){
             destination.contentWindow.document.getElementsByTagName("body")[0].removeChild(destination.contentWindow.document.getElementsByTagName("body")[0].firstChild);
-        }
-        $('#iframeTarget').height(1000);
-        $('#iframeTarget').width(1000);
+        }*/
+        //$('#iframe').height("1000px");
+        //$('#iframe').width("1000px");
         console.log("Loaded File");
-        
+        var img = newImage;
+        var canvas = document.createElement('canvas');
+        canvas.id ="ClusterResult";
+        console.log(img.width, img.height);
+        destination.appendChild(canvas);
+        img.addEventListener("load",function(){
+                var context=canvas.getContext('2d');
+
+                canvas.width = img.width;
+                canvas.height = img.height;            
+                context.drawImage(img, 0, 0, 50, 50);
+                var pixelData = context.getImageData(0, 0, 1, 1).data;
+            
+        });
     };
 
     // Tell the reader to start reading asynchrounously
     reader.readAsDataURL(f);
 }
 
+function loadModule(){
+    
+}
+
+function clusterInWebAssembly(){
+    Module.init();
+    var out1 = Module.getOut1();
+    out1=true;
+    Module.setIn1(out1);
+    Module.execute();
+    var out2 = Module.getOut1();
+}
+
+function updateCanvas(){
+    var imgData = ctx.createImageData(width, height);
+    var i;
+    for (i = 0; i < imgData.data.length; i += 4) {
+        imgData.data[i+0] = randomInt(0, 255);
+        imgData.data[i+1] = randomInt(0, 255);
+        imgData.data[i+2] = randomInt(0, 255);
+        imgData.data[i+3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);   // set x and y
+}
 // Run the main script
 //window.onload = main;

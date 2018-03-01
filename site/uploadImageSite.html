@@ -1,46 +1,49 @@
 <!DOCTYPE html>
 <html>
    <head>
-   <script type="text/javascript" src="http://code.jquery.com/jquery-git.js"></script>
+      <script type="text/javascript" src="http://code.jquery.com/jquery-git.js"></script>
       <title>I framed it</title>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width">
       <script type="text/javascript" src="uploadImageSite.js"></script>
+      <script type="text/javascript" src="objectDetector1.js"></script>
       <link href="uploadImageSite.css" rel="stylesheet" type="text/css" />
-<script>
-    $(document).ready(function(){
-        main();
-    });
-</script>
+      
    </head>
    <body>
       <div id="dragDiv" class="section">
-    <div>The div below receives dragged in files</div>
-    <div id="dropTarget" class="dropEnabled"></div>
-</div>
-<div id="browseDiv" class="section">
-    <input type="file" id="browsedFile">
-    <button id="upload">Upload</button>
-</div>
-
-<div id="iframeDiv" class="section">
-    <div id="iframeTarget"></div>
-</div>
-<script type="application/javascript">
-
-function resizeIFrameToFitContent( iFrame ) {
-
-    iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
-    iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-}
-
-window.addEventListener('DOMContentLoaded', function(e) {
-
-    var iFrame = document.getElementById( '#iframeTarget' );
-    resizeIFrameToFitContent( iFrame );
-    console.log("updated div");
-} );
-
-</script>
+         <div>The div below receives dragged in files</div>
+         <div id="dropTarget" class="dropEnabled"></div>
+      </div>
+      <div id="browseDiv" class="section">
+         <input type="file" id="browsedFile">
+         <button id="upload">Upload</button>
+         <button id="upload">Cluster</button>
+      </div>
+      <div id="iframeDiv" class="section">
+         <div id="iframeTarget"></div>
+      </div>
+      <script type="application/javascript">
+         
+                 
+      </script>
+      <script>
+         $(document).ready(function(){
+             main();
+            /*function resizeIFrameToFitContent( iFrame ) {
+         
+             iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
+             iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
+         }
+         
+         //window.addEventListener('DOMContentLoaded', function(e) {
+         
+             var iFrame = $("#iframeTarget > iframe")[0];
+             resizeIFrameToFitContent( iFrame );
+             console.log("updated div");
+         //} );*/
+         });
+         
+      </script>
    </body>
 </html>
