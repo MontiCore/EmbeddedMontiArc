@@ -18,7 +18,7 @@
       <div id="browseDiv" class="section">
          <input type="file" id="browsedFile">
          <button id="upload">Upload</button>
-         <button id="upload">Cluster</button>
+         <button id="cluster">Cluster</button>
       </div>
       <div id="iframeDiv" class="section">
          <div id="iframeTarget"></div>
@@ -30,12 +30,18 @@
       <script>
          $(document).ready(function(){
              main();
+             var buttonCluster=document.getElementById('cluster');
+             
+             buttonCluster.addEventListener("click", function(e){
+             
+                alert("test");
+             });
             /*function resizeIFrameToFitContent( iFrame ) {
          
              iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
              iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
          }
-         
+         document.getElementById
          //window.addEventListener('DOMContentLoaded', function(e) {
          
              var iFrame = $("#iframeTarget > iframe")[0];
