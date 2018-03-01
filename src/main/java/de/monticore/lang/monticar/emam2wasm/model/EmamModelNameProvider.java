@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2wasm;
+package de.monticore.lang.monticar.emam2wasm.model;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;

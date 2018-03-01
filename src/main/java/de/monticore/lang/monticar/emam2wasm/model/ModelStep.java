@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2wasm;
+package de.monticore.lang.monticar.emam2wasm.model;
 
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 

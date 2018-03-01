@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2wasm;
+package de.monticore.lang.monticar.emam2wasm.wasm;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

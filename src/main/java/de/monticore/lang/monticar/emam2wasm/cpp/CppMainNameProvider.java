@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2wasm;
+package de.monticore.lang.monticar.emam2wasm.cpp;
 
 import de.monticore.symboltable.Symbol;
 

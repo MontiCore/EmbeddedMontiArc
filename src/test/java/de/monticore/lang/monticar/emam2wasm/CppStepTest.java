@@ -7,6 +7,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
+import de.monticore.lang.monticar.emam2wasm.cpp.CppCompiler;
+import de.monticore.lang.monticar.emam2wasm.cpp.CppNameProvider;
+import de.monticore.lang.monticar.emam2wasm.cpp.CppStep;
 import de.monticore.symboltable.Symbol;
 import java.nio.file.Path;
 import java.nio.file.Paths;
