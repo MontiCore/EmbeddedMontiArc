@@ -1,4 +1,4 @@
-package movement;
+package simulatorts.visualization.movement;
 
 component ConstantVelocity {
 	port

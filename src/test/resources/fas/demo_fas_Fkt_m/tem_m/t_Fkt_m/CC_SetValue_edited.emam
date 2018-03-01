@@ -21,7 +21,7 @@ component CC_SetValue_edited {
 
 	instance GreaterEquals<(-oo:d:oo)> greaterEq;
 	instance And and1, and2;
-	instance And3 and3;
+	instance And<3> and3;
 	instance Or<(-oo:d:oo)> or1;
 	instance Not<B> not1, not2, not3, not4;
 	instance SwitchB<(-oo:d:oo)> switch1, switch2;

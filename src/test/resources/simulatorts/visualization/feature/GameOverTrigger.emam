@@ -1,4 +1,4 @@
-package feature;
+package simulatorts.visualization.feature;
 
 component GameOverTrigger {
     port

@@ -39,7 +39,7 @@ public final class TestsGeneratorCPP {
     private Set<String> testedComponents;
     private List<FileContent> files;
     private TestsMainEntryViewModel viewModelForMain;
-    public static Set<ComponentSymbol> availableComponents;
+    public static Set<String> availableComponents;
 
     TestsGeneratorCPP(GeneratorCPP generator) {
         this.generator = Log.errorIfNull(generator);
@@ -93,8 +93,8 @@ public final class TestsGeneratorCPP {
 
     private String getExistingComponentNames() {
         String result = "Components:\n";
-        for (ComponentSymbol cs : availableComponents) {
-            result += "    " + cs.getFullName() + "\n";
+        for (String s : availableComponents) {
+            result += "    " + s + "\n";
         }
         return result;
     }

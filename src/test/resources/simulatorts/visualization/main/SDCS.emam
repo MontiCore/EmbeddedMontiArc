@@ -1,4 +1,4 @@
-package main;
+package simulatorts.visualization.main;
 
 import doors.*;
 import lights.*;

@@ -19,8 +19,8 @@ component CC_ChangeSetValue_Lvl2_Repeater {
 		
 
 	instance Equals<(-oo:d:oo)> eq1, eq2, eq3, eq4;
-	instance Or4<B> or;
-	instance Or3<B> or2;
+	instance Or<B,4> or;
+	instance Or<B,3> or2;
 	instance Not<B> not1, not2;
 	instance Memory<B>(0) mem1;
 	instance CountDown cDown;

@@ -1,4 +1,4 @@
-package lights;
+package simulatorts.visualization.lights;
 
 component IndicatorStatus {
     port
