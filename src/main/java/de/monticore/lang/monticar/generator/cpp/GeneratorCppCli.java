@@ -70,8 +70,8 @@ public final class GeneratorCppCli {
             .hasArg(false)
             .required(false)
             .build();
-    public static final Option OPTION_FLAG_CHECK_MODEL_DIR= Option.builder()
-            .longOpt("flag-generate-autopilot-adapter")
+    public static final Option OPTION_FLAG_CHECK_MODEL_DIR = Option.builder()
+            .longOpt("check-model-dir")
             .desc("optional flag indicating if model dir should be checked for creation of component and stream list")
             .hasArg(false)
             .required(false)
@@ -120,30 +120,34 @@ public final class GeneratorCppCli {
         TaggingResolver symTab = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString());
         Resolver resolver = new Resolver(symTab);
         ExpandedComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
-        if (componentSymbol != null) {
-            GeneratorCPP g = new GeneratorCPP();
-            g.setModelsDirPath(modelsDirPath);
-            g.setGenerationTargetPath(outputPath);
-            g.setGenerateTests(cliArgs.hasOption(OPTION_FLAG_TESTS.getOpt()));
-            if (cliArgs.hasOption(OPTION_FLAG_ARMADILLO.getOpt())) {
-                g.useArmadilloBackend();
-            }
-            g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
-            g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
-            try {
-                g.generateFiles(componentSymbol, symTab);
-            } catch (IOException e) {
-                Log.error("error during generation", e);
-                System.exit(1);
-            }
+
+        GeneratorCPP g = new GeneratorCPP();
+        g.setModelsDirPath(modelsDirPath);
+        g.setGenerationTargetPath(outputPath);
+        g.setGenerateTests(cliArgs.hasOption(OPTION_FLAG_TESTS.getOpt()));
+        if (cliArgs.hasOption(OPTION_FLAG_ARMADILLO.getOpt())) {
+            g.useArmadilloBackend();
         }
+        g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
+        g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
+        try {
+            if (componentSymbol != null) {
+                g.generateFiles(componentSymbol, symTab);
+            } else {
+                g.saveFilesToDisk(g.handleTestAndCheckDir(symTab));
+            }
+        } catch (IOException e) {
+            Log.error("error during generation", e);
+            System.exit(1);
+        }
+
     }
 
     private static ExpandedComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
         ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(rootModelName).orElse(null);
         if (componentSymbol == null) {
-            Log.error("could not resolve component " + rootModelName);
-            System.exit(1);
+            Log.debug("could not resolve component " + rootModelName,"ERROR");
+            //System.exit(1);
             return null;
         }
         return componentSymbol;

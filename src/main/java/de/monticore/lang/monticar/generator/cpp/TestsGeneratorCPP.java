@@ -47,12 +47,13 @@ public final class TestsGeneratorCPP {
 
     public List<FileContent> generateStreamTests(Scope symTab) {
         bluePrints = new ArrayList<>(generator.getBluePrints());
-        if (bluePrints.isEmpty()) {
-            Log.warn("no blue prints were generated");
-            return Collections.emptyList();
-        }
         findStreams(symTab);
         findComponents(symTab);
+
+        if (bluePrints.isEmpty()) {
+            Log.warn("no blue prints were generated");
+            //return Collections.emptyList();
+        }
         return generateFiles();
     }
 
@@ -85,8 +86,8 @@ public final class TestsGeneratorCPP {
         }
         //files.add(new FileContent(getTestedComponentsString(), TESTS_DIRECTORY_NAME + "/testedComponents.txt"));
         if (generator.isCheckModelDir()) {
-            files.add(new FileContent(getExistingComponentStreamNames(), "reporting/" + "existingStreams.txt"));
-            files.add(new FileContent(getExistingComponentNames(), "reporting/" + "existingComponents.txt"));
+            files.add(new FileContent(getExistingComponentStreamNames(), "/reporting/" + "existingStreams.txt"));
+            files.add(new FileContent(getExistingComponentNames(), "/reporting/" + "existingComponents.txt"));
         }
         return files;
     }
