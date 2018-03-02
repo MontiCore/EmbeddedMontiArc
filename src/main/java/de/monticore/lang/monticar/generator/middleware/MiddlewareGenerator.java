@@ -48,11 +48,13 @@ public class MiddlewareGenerator extends CMakeGenerator {
 
         String includes = filesNames.stream()
                 .filter(fn -> fn.matches("(\\w+(Adapter_))?(" + name + "\\.h)"))
+                .filter(fn -> !fn.startsWith("IAdapter"))
                 .map(fn -> "#include \"" + fn + "\"")
                 .collect(Collectors.joining("\n"));
 
         String addAdapters = filesNames.stream()
                 .filter(fn -> fn.matches("\\w+Adapter_" + name + "\\.h"))
+                .filter(fn -> !fn.startsWith("IAdapter"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .map(fn -> "  adapters.push_back(new " + fn + "());")
                 .collect(Collectors.joining("\n"));
@@ -77,6 +79,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
         String targets = files.stream()
                 .map(File::getName)
                 .filter(fn -> fn.matches("(\\w+(Adapter_))?(" + name + "\\.h)"))
+                .filter(fn -> !fn.startsWith("IAdapter"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .collect(Collectors.joining(" "));
 
