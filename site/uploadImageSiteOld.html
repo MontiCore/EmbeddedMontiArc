@@ -95,7 +95,8 @@
                 var loadedImageCanvas=document.getElementById('LoadedImage');
                 context.width=loadedImageCanvas.width;
                 context.height=loadedImageCanvas.height;
-                context.drawImage(imagedata_to_image(newImgData),0,0,loadedImageCanvas.width,loadedImageCanvas.height);
+                context.scale(8,8);
+                context.drawImage(imagedata_to_image(newImgData),0,0,loadedImageCanvas.data.width,loadedImageCanvas.height);
                 
                 function imagedata_to_image(imagedata) {
                     var canvas = document.createElement('canvas');
