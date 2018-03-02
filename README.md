@@ -3,7 +3,7 @@
 <a href="https://codeclimate.com/github/MontiSim/SimLang/test_coverage"><img src="https://api.codeclimate.com/v1/badges/dc74fd9002ab989462b0/test_coverage" /></a>
 [![Coverage Status](https://coveralls.io/repos/github/MontiSim/SimLang/badge.svg?branch=master)](https://coveralls.io/github/MontiSim/SimLang?branch=master)
 
-# SimLang
+# SimulationLanguage
 
 SimLang is a DSL for describing settings of vehicle simulations.
 In order to do so it utilizes TNumberUnits from NumberUnit and the Weather language.
