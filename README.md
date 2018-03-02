@@ -11,7 +11,7 @@ See here how to create new releases: https://help.github.com/articles/creating-r
 
 Release History
 =======
-* **v[v1.0:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.0)** EMAM-Compiler
+* **[v1.0:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.0)** EMAM-Compiler
 * [v1.0:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.0) Car-Simulator with Physics Engine
 * [v1.0:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.0) 3D-Car Visualisation
 * **[v1.05:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.05)** pre-release with IDE (v1.1 - v1.2 contain no IDE)
