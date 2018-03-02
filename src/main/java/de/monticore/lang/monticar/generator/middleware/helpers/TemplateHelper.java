@@ -15,13 +15,38 @@ public class TemplateHelper {
                     "using namespace std;\n" +
                     "using namespace chrono;\n" +
                     "\n" +
+                    "static int exeMs = 100;\n" +
+                    "\n" +
+                    "bool parseCommandLineParameters(int argc, char* argv[]){\n" +
+                    "  if(argc == 1){\n" +
+                    "    return true;\n" +
+                    "  }\n" +
+                    "  if(argc == 3 && string(argv[1]) == \"-t\"){\n" +
+                    "    try{\n" +
+                    "      int tmp = stoi(argv[2]);\n" +
+                    "      if(tmp >= 0){\n" +
+                    "        exeMs = tmp;\n" +
+                    "        return true;\n" +
+                    "      }\n" +
+                    "    }catch(...){\n" +
+                    "      //Ignore\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "  cout << \"Usage: \" << argv[0] << \" [-h | -t sleepTimeMs]\\n\";\n" +
+                    "  return false;\n" +
+                    "}\n" +
+                    "\n" +
                     "void startMiddleware(IAdapter_${compName}& adapter,${compName}& comp,atomic<bool>& done){\n" +
                     "  adapter.init(&comp);\n" +
                     "  done = true;\n" +
                     "}\n" +
                     "\n" +
-                    "int main() \n" +
+                    "int main(int argc, char* argv[])\n" +
                     "{\n" +
+                    "  if(!parseCommandLineParameters(argc,argv)){\n" +
+                    "    return 1;\n" +
+                    "  }\n" +
+                    "\n" +
                     "  atomic<bool> done(false);\n" +
                     "  ${compName} comp;\n" +
                     "  comp.init();\n" +
@@ -36,9 +61,8 @@ public class TemplateHelper {
                     "\n" +
                     "  cout << \"waiting for all middleware to start\\n\";\n" +
                     "  this_thread::sleep_for(seconds(3));\n" +
-                    "  cout << \"started!\\n\";\n" +
+                    "  cout << \"started! Executing every \" << exeMs << \"ms\\n\";\n" +
                     "\n" +
-                    "  int exeMs = 100;\n" +
                     "  time_point<system_clock> start, end;\n" +
                     "  while(!done){\n" +
                     "    start = system_clock::now();\n" +
