@@ -61,6 +61,7 @@ function loadFile(f, destination) {
         var newImageCanvas = oldImageCanvas;
         var newImage = document.createElement('img');
         newImage.src = event.target.result;
+        newImage.id = "CurrentImage";
         if(oldImageCanvas == null){
             newImageCanvas = document.createElement('canvas');
             newImageCanvas.id = "LoadedImage";
