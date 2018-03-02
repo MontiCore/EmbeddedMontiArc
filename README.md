@@ -16,6 +16,7 @@ Release History
 * v1.0: 3D-Car Visualisation
 * **v1.1:** 2D Component Visualisation
 * v1.1: Reporting (Overview of Model Quality)
+* **v1.2:** Visualisation inside Reporting
 
 Credits
 =======
