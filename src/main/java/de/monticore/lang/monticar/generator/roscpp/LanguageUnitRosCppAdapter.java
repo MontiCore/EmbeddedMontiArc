@@ -55,8 +55,9 @@ public class LanguageUnitRosCppAdapter {
 
     private void generateIncludes(ExpandedComponentInstanceSymbol componentSymbol, List<PortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
         currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
-        currentBluePrint.addAdditionalIncludeString("\"" + componentSymbol.getFullName().replace(".", "_") + ".h\"");
-        currentBluePrint.addAdditionalIncludeString("\"IAdapter.h\"");
+        String compName = componentSymbol.getFullName().replace(".", "_");
+        currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
+        currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
         //Add each msg include exactly once
 
         rosPorts.stream()
