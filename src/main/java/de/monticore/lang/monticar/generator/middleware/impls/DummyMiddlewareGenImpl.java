@@ -30,7 +30,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
 
     private FileContent generateAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
-        String content = TemplateHelper.dummyAdapterTemplate
+        String content = TemplateHelper.getDummyAdapterTemplate()
                 .replace("${compName}", name);
 
         FileContent res = new FileContent();
@@ -57,7 +57,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
-        String content = TemplateHelper.dummyCmakeTemplate
+        String content = TemplateHelper.getDummyCmakeTemplate()
                 .replace("${compName}", name);
 
         res.setFileName("CMakeLists.txt");

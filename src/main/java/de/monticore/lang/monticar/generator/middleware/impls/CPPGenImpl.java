@@ -39,7 +39,7 @@ public class CPPGenImpl implements GeneratorImpl {
         FileContent cmake = new FileContent();
         cmake.setFileName("CMakeLists.txt");
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
-        cmake.setFileContent(TemplateHelper.cmakeCppTemplate.replace("${compName}", name));
+        cmake.setFileContent(TemplateHelper.getCmakeCppTemplate().replace("${compName}", name));
         return cmake;
     }
 }

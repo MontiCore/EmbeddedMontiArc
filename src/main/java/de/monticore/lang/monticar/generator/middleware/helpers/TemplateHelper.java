@@ -1,186 +1,58 @@
 package de.monticore.lang.monticar.generator.middleware.helpers;
 
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 public class TemplateHelper {
+    private static Map<String, String> cache = new HashMap<>();
 
-    public static String coordinatorTemplate =
-            "#include <iostream>\n" +
-                    "#include <thread>\n" +
-                    "#include <chrono>\n" +
-                    "#include <atomic>\n" +
-                    "#include <list>\n" +
-                    "#include \"IAdapter_${compName}.h\"\n" +
-                    "\n" +
-                    "${includes}" +
-                    "\n" +
-                    "using namespace std;\n" +
-                    "using namespace chrono;\n" +
-                    "\n" +
-                    "static int exeMs = 100;\n" +
-                    "\n" +
-                    "bool parseCommandLineParameters(int argc, char* argv[]){\n" +
-                    "  if(argc == 1){\n" +
-                    "    return true;\n" +
-                    "  }\n" +
-                    "  if(argc == 3 && string(argv[1]) == \"-t\"){\n" +
-                    "    try{\n" +
-                    "      int tmp = stoi(argv[2]);\n" +
-                    "      if(tmp >= 0){\n" +
-                    "        exeMs = tmp;\n" +
-                    "        return true;\n" +
-                    "      }\n" +
-                    "    }catch(...){\n" +
-                    "      //Ignore\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "  cout << \"Usage: \" << argv[0] << \" [-h | -t sleepTimeMs]\\n\";\n" +
-                    "  return false;\n" +
-                    "}\n" +
-                    "\n" +
-                    "void startMiddleware(IAdapter_${compName}& adapter,${compName}& comp,atomic<bool>& done){\n" +
-                    "  adapter.init(&comp);\n" +
-                    "  done = true;\n" +
-                    "}\n" +
-                    "\n" +
-                    "int main(int argc, char* argv[])\n" +
-                    "{\n" +
-                    "  if(!parseCommandLineParameters(argc,argv)){\n" +
-                    "    return 1;\n" +
-                    "  }\n" +
-                    "\n" +
-                    "  atomic<bool> done(false);\n" +
-                    "  ${compName} comp;\n" +
-                    "  comp.init();\n" +
-                    "\n" +
-                    "  list<IAdapter_${compName}*> adapters;\n" +
-                    "${addAdapters}" +
-                    "\n" +
-                    "  list<thread*> threads;\n" +
-                    "  for(auto a : adapters){\n" +
-                    "    threads.push_back(new thread(startMiddleware,ref(*a),ref(comp),ref(done)));\n" +
-                    "  }\n" +
-                    "\n" +
-                    "  cout << \"waiting for all middleware to start\\n\";\n" +
-                    "  this_thread::sleep_for(seconds(3));\n" +
-                    "  cout << \"started! Executing every \" << exeMs << \"ms\\n\";\n" +
-                    "\n" +
-                    "  time_point<system_clock> start, end;\n" +
-                    "  while(!done){\n" +
-                    "    start = system_clock::now();\n" +
-                    "\n" +
-                    "    comp.execute();\n" +
-                    "    for(auto a : adapters){\n" +
-                    "       (*a).tick();\n" +
-                    "    }\n" +
-                    "\n" +
-                    "    end = system_clock::now();\n" +
-                    "    int elapsedMs = duration_cast<milliseconds>(end-start).count();\n" +
-                    "    int newSleep = exeMs - elapsedMs;\n" +
-                    "    if(newSleep <= 0){\n" +
-                    "      cout << \"Cant keep up! \"<< (-newSleep) <<\"ms late!\\n\";\n" +
-                    "    }else{\n" +
-                    "       this_thread::sleep_for(milliseconds(newSleep));\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "\n" +
-                    "  return 0;\n" +
-                    "}";
+    private static String getTemplate(String fileName) {
+        if (cache.containsKey(fileName)) {
+            return cache.get(fileName);
+        }
 
-    public static String iAdapterTemplate = "#pragma once\n" +
-            "#include \"${compName}.h\"\n" +
-            "\n" +
-            "class IAdapter_${compName}{\n" +
-            "\tpublic:\n" +
-            "\t\tvirtual ~IAdapter_${compName}(){}\n" +
-            "\t\tvirtual void init(${compName}* comp) = 0;\n" +
-            "\t\tvirtual void tick() = 0;\n" +
-            "};";
+        String tmpStr = "";
+        String fullFileName = "src/main/resources/de/monticore/lang/monticar/generator/middleware/" + fileName;
+        try {
+            tmpStr = FileUtils.readFileToString(new File(fullFileName));
+        } catch (Exception e) {
+            //Not recoverable
+            Log.error("Template file not found: " + fullFileName);
+        }
 
-    public static String coordinatorCmakeListsTemplate =
-            "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (Coordinator_${compName} CXX)\n" +
-                    "\n" +
-                    "set (CMAKE_CXX_STANDARD 11)\n" +
-                    "set (THREADS_PREFER_PTHREAD_FLAG ON)\n" +
-                    "find_package(Threads REQUIRED)\n" +
-                    "\n" +
-                    "add_executable(Coordinator_${compName} Coordinator_${compName}.cpp)\n" +
-                    "set_target_properties(Coordinator_${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(Coordinator_${compName} ${targets} Threads::Threads)\n" +
-                    "target_include_directories(Coordinator_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "\n" +
-                    "export(TARGETS Coordinator_${compName} FILE Coordinator_${compName}.cmake)";
+        cache.put(fileName, tmpStr);
+        return tmpStr;
+    }
 
-    public static String cmakeCppTemplate =
-            "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project(${compName} LANGUAGES CXX)\n" +
-                    "add_library(${compName} ${compName}.h)\n" +
-                    "target_include_directories(${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "set_target_properties(${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "export(TARGETS ${compName} FILE ${compName}.cmake)";
+    public static String getCoordinatorTemplate() {
+        return getTemplate("coordinatorTemplate.ftl");
+    }
 
-    public static String dummyAdapterTemplate = "#pragma once\n" +
-            "#include \"${compName}.h\"\n" +
-            "#include <thread>\n" +
-            "#include <chrono>\n" +
-            "#include \"IAdapter_${compName}.h\"\n" +
-            "\n" +
-            "class DummyAdapter_${compName}: public IAdapter_${compName}{\n" +
-            "\t${compName}* component;\n" +
-            "\n" +
-            "public:\n" +
-            "\tDummyAdapter_${compName}(){\n" +
-            "\n" +
-            "\t}\n" +
-            "\n" +
-            "\tvoid tick(){\n" +
-            "\t\tcout << \"Dummy publish data: component.out1 = \"<< component->out1 << endl;\n" +
-            "\t}\n" +
-            "\t\n" +
-            "\tvoid init(${compName}* comp){\n" +
-            "\t\tthis->component = comp;\n" +
-            "\t\twhile(1){\n" +
-            "       \t\t    std::this_thread::sleep_for(std::chrono::seconds(1));\n" +
-            "\t\t    component->in2 += 1000;\n" +
-            "\t\t}\n" +
-            "\t}\n" +
-            "\n" +
-            "\t\n" +
-            "};";
+    public static String getStruct_msgsCmakeTemplate() {
+        return getTemplate("struct_msgsCmakeTemplate.ftl");
+    }
 
-    public static String dummyCmakeTemplate =
-            "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (DummyAdapter_${compName})\n" +
-                    "\n" +
-                    "add_library(DummyAdapter_${compName} DummyAdapter_${compName}.h)\n" +
-                    "set_target_properties(DummyAdapter_${compName} PROPERTIES LINKER_LANGUAGE CXX)\n" +
-                    "target_link_libraries(DummyAdapter_${compName} ${compName})\n" +
-                    "target_include_directories(DummyAdapter_${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})\n" +
-                    "export(TARGETS DummyAdapter_${compName} FILE DummyAdapter_${compName}.cmake)";
+    public static String getDummyCmakeTemplate() {
+        return getTemplate("dummyCmakeTemplate.ftl");
+    }
 
-    public static String struct_msgsCmakeTemplate =
-            "cmake_minimum_required(VERSION 3.5)\n" +
-                    "project (struct_msgs)\n" +
-                    "\n" +
-                    "find_package(genmsg REQUIRED)\n" +
-                    "\n" +
-                    "FILE(GLOB MSG_FILES_RAW RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ../*/roscpp/struct_msgs/*.msg)\n" +
-                    "\n" +
-                    "#generate struct_msgs iff .msg files where found\n" +
-                    "if(MSG_FILES_RAW)\n" +
-                    "    #filter: add each struct msg only once (distinct by filename without path)\n" +
-                    "    foreach(CUR_MSG_FILE ${MSG_FILES_RAW})\n" +
-                    "        get_filename_component(TMP_MSG_NAME ${CUR_MSG_FILE} NAME)\n" +
-                    "        IF(NOT MSG_DEFINED_${TMP_MSG})\n" +
-                    "            LIST(APPEND MSG_FILES ${CUR_MSG_FILE})\n" +
-                    "            SET(MSG_DEFINED_${TMP_MSG} TRUE)\n" +
-                    "        ENDIF()\n" +
-                    "    endforeach(CUR_MSG_FILE)\n" +
-                    "\n" +
-                    "    #generate messages\n" +
-                    "    add_message_files(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} FILES ${MSG_FILES})\n" +
-                    "    generate_messages()\n" +
-                    "\n" +
-                    "    #export the include_dirs, so that other subprojects can use it\n" +
-                    "    set(struct_msgs_INCLUDE_DIRS ${struct_msgs_INCLUDE_DIRS} PARENT_SCOPE)\n" +
-                    "endif()\n";
+    public static String getDummyAdapterTemplate() {
+        return getTemplate("dummyAdapterTemplate.ftl");
+    }
+
+    public static String getIAdapterTemplate() {
+        return getTemplate("IAdapterTemplate.ftl");
+    }
+
+    public static String getCoordinatorCmakeListsTemplate() {
+        return getTemplate("coordinatorCmakeListsTemplate.ftl");
+    }
+
+    public static String getCmakeCppTemplate() {
+        return getTemplate("cmakeCppTemplate.ftl");
+    }
 }

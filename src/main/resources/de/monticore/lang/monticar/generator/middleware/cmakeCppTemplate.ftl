@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project(${compName} LANGUAGES CXX)
+add_library(${compName} ${compName}.h)
+target_include_directories(${compName} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(${compName} PROPERTIES LINKER_LANGUAGE CXX)
+export(TARGETS ${compName} FILE ${compName}.cmake)

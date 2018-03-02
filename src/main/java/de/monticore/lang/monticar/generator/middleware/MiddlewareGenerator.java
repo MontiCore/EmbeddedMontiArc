@@ -33,7 +33,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
         FileContent res = new FileContent();
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
         res.setFileName("IAdapter_" + name + ".h");
-        res.setFileContent(TemplateHelper.iAdapterTemplate.replace("${compName}", name));
+        res.setFileContent(TemplateHelper.getIAdapterTemplate().replace("${compName}", name));
         return res;
     }
 
@@ -59,7 +59,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .map(fn -> "  adapters.push_back(new " + fn + "());")
                 .collect(Collectors.joining("\n"));
 
-        String content = TemplateHelper.coordinatorTemplate
+        String content = TemplateHelper.getCoordinatorTemplate()
                 .replace("${compName}", name)
                 .replace("${includes}", includes)
                 .replace("${addAdapters}", addAdapters);
@@ -83,7 +83,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .collect(Collectors.joining(" "));
 
-        String content = TemplateHelper.coordinatorCmakeListsTemplate
+        String content = TemplateHelper.getCoordinatorCmakeListsTemplate()
                 .replace("${targets}", targets)
                 .replace("${compName}", name);
 

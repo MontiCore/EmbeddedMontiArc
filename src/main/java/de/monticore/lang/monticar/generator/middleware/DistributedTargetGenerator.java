@@ -59,7 +59,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
     //TODO:refactor, dont always generate
     private File generateRosMsgGen() throws IOException {
         File file = new File(generationTargetPath + "rosMsg/CMakeLists.txt");
-        FileUtils.write(file, TemplateHelper.struct_msgsCmakeTemplate);
+        FileUtils.write(file, TemplateHelper.getStruct_msgsCmakeTemplate());
         return file;
     }
 
