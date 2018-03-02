@@ -52,7 +52,7 @@
                 var result = Module.getClusters();
                 var newImgData=context.createImageData(100,100);
                 counter=0;
-                for(var i=0;i<result.data.length;i++){
+                for(var i=0;i<result.length;i++){
                     if(result[i][0]==1){
                         newImgData[counter]=0;
                         newImgData[counter+1]=0;
