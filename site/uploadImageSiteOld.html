@@ -92,9 +92,9 @@
                     
                     }
                 }
-                var loadedImageCanvas=document.getElementById('LoadedImage');
-                context.width=loadedImageCanvas.width;
-                context.height=loadedImageCanvas.height;
+                //var loadedImageCanvas=document.getElementById('LoadedImage');
+                //context.width=loadedImageCanvas.width;
+                //context.height=loadedImageCanvas.height;
                 var newCanvas = $("<canvas>")
                 .attr("width", newImgData.width)
                 .attr("height", newImgData.height)[0];
@@ -103,7 +103,7 @@
                 //var newWidth=loadedImageCanvas.width/50;
                 //var newHeight=loadedImageCanvas.height/50;
                 //context.scale(newWidth,newHeight);
-                context.drawImage(newCanvas,0,0,loadedImageCanvas.width,loadedImageCanvas.height);
+                context.drawImage(newCanvas,0,0,canvas.width,canvas.height);
                 
                 //context.scale(1/newWidth,1/newHeight);
                 console.log("second image target size");
