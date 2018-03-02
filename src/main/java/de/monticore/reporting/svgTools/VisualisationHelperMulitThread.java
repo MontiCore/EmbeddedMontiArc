@@ -1,6 +1,6 @@
 package de.monticore.reporting.svgTools;
 
-import de.monticore.reporting.testCocos.helper.TestResult;
+import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 
 import java.io.File;
 import java.util.Iterator;
@@ -11,8 +11,7 @@ public class VisualisationHelperMulitThread {
     private int timeout = 60;
     private int threadNumber = 1;
 
-    public void generateSVGs(List<TestResult> testResults, String outputPath) {
-        this.threadNumber = 4 * Runtime.getRuntime().availableProcessors();
+    public void generateSVGs(List<CheckCoCoResult> testResults, String outputPath) {
         String output = outputPath.replace("\\", "/");
         if (output.charAt(output.length() - 1) != '/')
             output = output + "/";
@@ -29,7 +28,7 @@ public class VisualisationHelperMulitThread {
         System.out.println("Time needed for file: " + data.maxTimeErroredFile);
     }
 
-    private Data startThreads(List<TestResult> testResults, String outputPath) {
+    private Data startThreads(List<CheckCoCoResult> testResults, String outputPath) {
         Data data = new Data(testResults);
         Thread[] threads = new Thread[this.threadNumber];
         for (int i = 0; i < threads.length; i++) {
@@ -60,8 +59,8 @@ public class VisualisationHelperMulitThread {
     }
 
     public class Data {
-        private List<TestResult> testResults;
-        private Iterator<TestResult> iterator;
+        private List<CheckCoCoResult> testResults;
+        private Iterator<CheckCoCoResult> iterator;
         private int z = 0;
 
         public int timeouts = 0;
@@ -70,12 +69,12 @@ public class VisualisationHelperMulitThread {
         public String maxTimeFile = "";
         public String maxTimeErroredFile = "";
 
-        public Data(List<TestResult> testResults) {
+        public Data(List<CheckCoCoResult> testResults) {
             this.testResults = testResults;
             this.iterator = testResults.iterator();
         }
 
-        public synchronized TestResult getNextTestResult() {
+        public synchronized CheckCoCoResult getNextTestResult() {
             if (!iterator.hasNext()) return null;
             return iterator.next();
         }
@@ -109,5 +108,9 @@ public class VisualisationHelperMulitThread {
 
     public void setTimeout(int timeout) {
         this.timeout = timeout;
+    }
+
+    public void setThreadNumber(int threadNumber) {
+        this.threadNumber = threadNumber;
     }
 }

@@ -1,9 +1,10 @@
 package de.monticore.reporting.testCocos;
 
+import de.monticore.reporting.order.OrderTestResults;
 import de.monticore.reporting.svgTools.VisualisationHelper;
-import de.monticore.reporting.testCocos.helper.TestResult;
+import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 import de.monticore.reporting.testCocos.helper.TestResultPrinter;
-import de.monticore.reporting.testCocos.helper.TestsEndWithTestResult;
+import de.monticore.reporting.testCocos.helper.CheckTestResult;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -13,20 +14,23 @@ public class Main {
     public static void main(String[] args) {
         ReportContext context = getContext(args);
         if (context.isTestCoCos()) {
-            TestCoCos tcc = new TestCoCos();
+            CheckCoCos tcc = new CheckCoCos();
             System.out.println("\n<================Test CoCos================>\n");
-            List<TestResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
+            List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
+            List<CheckCoCoResult> rootModels = OrderTestResults.orderTestResults(testResults);
+
             if (context.isSvg()) {
                 System.out.println("\n<==============SVG Generation==============>\n");
-                VisualisationHelper.generateSVGs(testResults, context.getOutput() + "SVG");
+                VisualisationHelper.generateSVGs(rootModels, context.getOutput() + "SVG");
             }
+
             System.out.println("\n<============Write Test Results============>\n");
             TestResultPrinter.printTestResults(testResults, context.getOutput() + "data.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
-            TestsEndWithTest tewt = new TestsEndWithTest();
+            CheckTests tewt = new CheckTests();
             System.out.println("\n<================Test Tests================>\n");
-            List<TestsEndWithTestResult> testResults = tewt.testTestsEndWithTest(new File(context.getProjectRoot()));
+            List<CheckTestResult> testResults = tewt.testTestsEndWithTest(new File(context.getProjectRoot()));
             System.out.println("\n<============Write Test Results============>\n");
             TestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "/dataEWT.json", context.isMerge());
         }
@@ -186,7 +190,7 @@ public class Main {
                             Log.error("Could not parse \"" + c + "\", see -h for help.");
                         }
                     } catch (Exception e) {
-                        Log.error("Missing argument for option \"m\", see -h for help.");
+                        Log.error("Missing argument for option \"svg\", see -h for help.");
                     }
                     break;
                 case "-zn":

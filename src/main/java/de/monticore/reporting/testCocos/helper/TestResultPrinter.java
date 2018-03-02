@@ -14,6 +14,7 @@ public class TestResultPrinter {
             "\"Project\"",
             "\"ModelName\"",
             "\"Name\"",
+            "\"Path\"",
             "\"OnlineIDE\"",
             "\"LogNr\"",
             "\"LogOutput\"",
@@ -60,9 +61,6 @@ public class TestResultPrinter {
     private static String modelName_hiddenPath(String visible, String hidden) {
         hidden = hidden.replace("\\", "/");
         String name = visible;
-//        if (hidden.contains("MontiSim")) {
-//            name = "MontiSim/" + name;
-//        }
         String otherClasses = "";
         if (hidden.contains("noSVGhidden"))
             otherClasses = " noSVGvisible";
@@ -70,14 +68,14 @@ public class TestResultPrinter {
             otherClasses = " sVGvisible";
         return
                 "<div class=\'shortLabel" + otherClasses + "\'>" + name + "</div>" +
-                        "<div class=\'fullLabel\' style=\'display: none\'>" + hidden + "</div>";
+                        "<div class=\'fullLabel\'>" + hidden + "</div>";
     }
 
-    public static void printTestResults(List<TestResult> testResults, String path) {
+    public static void printTestResults(List<CheckCoCoResult> testResults, String path) {
         printTestResults(testResults, path, false);
     }
 
-    public static void printTestResults(List<TestResult> testResults, String path, boolean merge) {
+    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge) {
         if (testResults.size() == 0) return;
         if (merge) {
             try {
@@ -99,14 +97,14 @@ public class TestResultPrinter {
         }
     }
 
-    public static String printTestResults(List<TestResult> testResults, boolean merge) {
+    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge) {
         IndentPrinter ip = new IndentPrinter();
         if (!merge)
             ip.println("[");
         ip.indent();
 
         boolean first = true;
-        for (TestResult testResult : testResults) {
+        for (CheckCoCoResult testResult : testResults) {
             if (testResult == null) continue;
             int i = 0;
 
@@ -117,17 +115,18 @@ public class TestResultPrinter {
 
             ip.println("{");
             ip.indent();
-            ip.println(names[i++] + ": \"" + testResult.getRoot().getName() + "\",");
-            ip.println(names[i++] + ": \"" + testResult.getProject()     + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getRootFile().getName() + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
-            ip.println(names[i++] + ": \"" + modelName_hiddenPath(testResult.getModelName(), getVisulisationLink(testResult)) + "\",");
+            ip.println(names[i++] + ": \"" + getVisulisationLink(testResult) + "\",");
+            ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
             ip.println(names[i++] + ": \"" + getVFSTag(testResult) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
-            ip.println(names[i++] + ": \"" + testResult.getType() + "\",");
+            ip.println(names[i++] + ": \"" + testResult.getFileType() + "\",");
             ip.println(names[i++] + ": " + tagOf(testResult.isValid() ? 1 : -1) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getParsed()) + ",");
-            ip.println(names[i++] + ": " + tagOf(testResult.getResolve()) + ",");
+            ip.println(names[i++] + ": " + tagOf(testResult.getResolved()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getComponentCapitalized()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getComponentInstanceNamesUnique()) + ",");
             ip.println(names[i++] + ": " + tagOf(testResult.getComponentWithTypeParametersHasInstance()) + ",");
@@ -156,10 +155,10 @@ public class TestResultPrinter {
         return ip.getContent();
     }
 
-    private static String getVFSTag(TestResult testResult) {
+    private static String getVFSTag(CheckCoCoResult testResult) {
         String zipName = testResult.getZipName();
-        File file = testResult.getFilePath();
-        File project = testResult.getProjectPath();
+        File file = testResult.getModelFile();
+        File project = testResult.getProjectFile();
         String urlToZip;
         String zipName_;
         if (zipName == null)
@@ -179,29 +178,32 @@ public class TestResultPrinter {
                 "</a>").replace("\\", "/");
     }
 
-    private static String getVisulisationLink(TestResult testResult) {
-        File file = testResult.getFilePath();
-        File project = testResult.getProjectPath();
-        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
-        String displayName = name;
+    private static String getVisulisationLink(CheckCoCoResult testResult) {
+        File file = testResult.getModelFile();
+        String displayName = testResult.getModelName();
 
-//        if (project.getAbsolutePath().contains("MontiSim")) {
-//            displayName = "MontiSim/" + displayName;
-//        }
         if (testResult.getSvgPath().equals(""))
-            return "<div class='noSVGhidden'>" + displayName + "</div>";
+            return "<div class='noSVG'>" + displayName + "</div>";
         else
-            return "<a class='sVGhidden' target='_blank' href='" +
-                    testResult.getSvgPath().replace("\\", "/") + ".html'>" +
+            return "<a class='sVG' target='_blank' href='" +
+                    testResult.getSvgPath() + "'>" +
                     displayName +
                     "</a>";
     }
 
-    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path) {
+    private static String getFilePath(CheckCoCoResult testResult) {
+        File file = testResult.getModelFile();
+        File project = testResult.getProjectFile();
+        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
+        String displayName = name.replace("\\","/");
+        return displayName;
+    }
+
+    public static void printTestsEndWithTestResults(List<CheckTestResult> results, String path) {
         printTestsEndWithTestResults(results, path, false);
     }
 
-    public static void printTestsEndWithTestResults(List<TestsEndWithTestResult> results, String path, boolean merge) {
+    public static void printTestsEndWithTestResults(List<CheckTestResult> results, String path, boolean merge) {
         if (results.size() == 0) return;
         if (merge) {
             try {
@@ -221,14 +223,14 @@ public class TestResultPrinter {
             }
     }
 
-    public static String printTestsEndWithTestResults(List<TestsEndWithTestResult> results, boolean merge) {
+    public static String printTestsEndWithTestResults(List<CheckTestResult> results, boolean merge) {
         IndentPrinter ip = new IndentPrinter();
         if (!merge)
             ip.println("[");
         ip.indent();
 
         boolean first = true;
-        for (TestsEndWithTestResult testResult : results) {
+        for (CheckTestResult testResult : results) {
             if (testResult == null /*testResult.isValid()*/) continue;
 
             if (!first)

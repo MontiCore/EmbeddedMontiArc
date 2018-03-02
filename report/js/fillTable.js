@@ -1,17 +1,17 @@
-function loadJSON(file,callback) {   
+function loadJSON(file,callback, ide) {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType('application/json');
   xobj.open('GET', file, true); 
   xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == '200') {
     // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-      callback(xobj.responseText);
+      callback(xobj.responseText, ide);
      }
   };
   xobj.send(null);  
 }
 
-function createTable(data) {
+function createTable(data, ide) {
   data = JSON.parse(data);
   table = $('#my-table').DataTable( {
       fixedHeader: true,
@@ -49,16 +49,21 @@ function createTable(data) {
         },
         endRender: null //function( rows, group ) {return group;}
       },
+      "bAutoWidth": false ,
       "aoColumns": [
           { "data": "Root", visible: false},
           { 
-              "className": 'grow',
+              "className": 'growTable',
               "data": "Name", 
               "sType": "growDiv",
-              "bSortable": true
-              
+              "bSortable": true,
+              "sWidth": "50%"
           },
-          { "data": "OnlineIDE", "orderable": false },
+          {
+              "data": "OnlineIDE",
+              "className": "onlineIDE",
+              "orderable": false,
+              "visible": ide },
           {
               "className":      'details-control',
               "orderable":      false,
@@ -87,19 +92,23 @@ function createTable(data) {
           { "data": "TypeParameterNamesUnique", sort:"string", type:"alt-string" },
           { "data": "AtomicComponent", sort:"string", type:"alt-string" }
       ],
+      columnDefs: [
+          { width: '50%', targets: 1 }
+      ],
       "order": [[1, 'asc']]
   } );      
 };
-  
-/* Formatting function for row details - modify as you need */
-function format ( d ) {
+
+function formatLog ( d ) {
     // `d` is the original data object for the row
-    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+    return '<tr>'+
+            '<td>Path:</td>'+
+            '<td>'+d.Path+'</td>'+
+        '</tr>' +
         '<tr>'+
             '<td>Log output:</td>'+
             '<td>'+d.LogOutput+'</td>'+
-        '</tr>'+
-    '</table>';
+        '</tr>';
 }
 
 function adjustHeader() {
@@ -125,7 +134,17 @@ function getStringFromGrow(x) {
   str2= $(x).find('.sVGhidden').text().toLowerCase();
   return str1 == "" ? str2 : str1;
 }
-      
+
+function getURLParameter(sParam) {
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) {
+            return decodeURIComponent(sParameterName[1]);
+        }
+    }
+}
 $(document).ready(function() {
   jQuery.fn.dataTableExt.oSort["growDiv-desc"] = function (x, y) {
     return getStringFromGrow(x) < getStringFromGrow(y);
@@ -133,15 +152,15 @@ $(document).ready(function() {
        
   jQuery.fn.dataTableExt.oSort["growDiv-asc"] = function (x, y) {
     return getStringFromGrow(x) > getStringFromGrow(y);
-  }    
+  }
 
-    
   $('#my-table thead tr').clone(true).appendTo( '#my-table thead' );
   $('#my-table thead tr:eq(1)').addClass('group');
   adjustHeader();
-  
-  loadJSON("data/data.json", createTable);
-   
+
+  var ide = (getURLParameter('ide') != 'false');
+  loadJSON("data/data.json", createTable, ide);
+
   // Add event listener for opening and closing details
   $('#my-table tbody').on('click', 'td.details-control', function () {
       var tr = $(this).closest('tr');
@@ -151,10 +170,9 @@ $(document).ready(function() {
           // This row is already open - close it
           row.child.hide();
           tr.removeClass('shown');
-      }
-      else {
+      } else {
           // Open this row
-          row.child( format(row.data()) ).show();
+          row.child( formatLog(row.data()) ).show();
           tr.addClass('shown');
       }
   } );
@@ -191,22 +209,22 @@ $(document).ready(function() {
       init = false;
     }
   });
-  
+
   $('.grow').mouseover( function(){
-    $(this).find('.shortLabel').hide();
-    $(this).find('.fullLabel').show();
+      $(this).find('.shortLabel').hide();
+      $(this).find('.fullLabel').show();
   });
   $('.grow').mouseout( function(){
     $(this).find('.shortLabel').show();
     $(this).find('.fullLabel').hide();
   });
-  
-  $('#my-table tbody').on('mouseenter', 'td.grow', function() {
-    $(this).find('.shortLabel').css('display', 'none');
-    $(this).find('.fullLabel').css('display', 'block');
-  } );
-  $('#my-table tbody').on('mouseleave', 'td.grow', function() {
-    $(this).find('.shortLabel').css('display', 'block');
-    $(this).find('.fullLabel').css('display', 'none');
-  } );
+
+  // $('#my-table tbody').on('mouseenter', 'td.grow', function() {
+  //   $(this).find('.shortLabel').css('display', 'none');
+  //   $(this).find('.fullLabel').css('display', 'block');
+  // } );
+  // $('#my-table tbody').on('mouseleave', 'td.grow', function() {
+  //   $(this).find('.shortLabel').css('display', 'block');
+  //   $(this).find('.fullLabel').css('display', 'none');
+  // } );
 } );

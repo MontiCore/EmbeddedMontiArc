@@ -1,9 +1,14 @@
 package de.monticore.reporting.svgTools;
 
-import de.monticore.reporting.testCocos.helper.TestResult;
+import de.monticore.lang.monticar.helper.IndentPrinter;
+import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -27,7 +32,7 @@ public class VisualisationHelperSingleThread implements Runnable {
 
     @Override
     public void run() {
-        TestResult tr = testResults.getNextTestResult();
+        CheckCoCoResult tr = testResults.getNextTestResult();
         int z;
 
         while(tr != null) {
@@ -61,14 +66,16 @@ public class VisualisationHelperSingleThread implements Runnable {
         }
     }
 
-    private int generateSVG(TestResult testResult, String outputPath) {
-        if (testResult.getResolve() != 1) return NOTRESOLVED;
+    private int generateSVG(CheckCoCoResult testResult, String outputPath) {
+        if (testResult.getResolved() != 1) return NOTRESOLVED;
         testResult.addErrorMessage("[INFO] do SVG generation<br>=========================");
         File out = new File(outputPath);
         if (!out.exists())
             out.mkdirs();
         try {
-            generateSVG(testResult.getModelPath(), testResult.getQualifiedName(), outputPath);
+            String modelPath = testResult.isEmaModelPathAvailable() ? testResult.getEmaModelPath() :
+                    testResult.getModelPath();
+            generateSVG(modelPath, testResult.getQualifiedName(), outputPath);
             testResult.setSvgPath(outputPath + testResult.getQualifiedName());
             testResult.addErrorMessage("[INFO] SVG generation success<br>");
             return SUCCESS;
@@ -91,42 +98,55 @@ public class VisualisationHelperSingleThread implements Runnable {
     private void generateSVG(String modelPath, String modelName, String outputPath) throws InterruptedException, TimeoutException, IOException, SVGGenerationException {
         boolean timeouted = false;
         boolean failed = false;
+        boolean success = true;
         String[] args = {
                 "java", "-jar",
-                "montiarc-svggenerator-4.0.1-SNAPSHOT-jar-with-dependencies.jar",
+                "src/main/resources/montiarc-svggenerator-4.0.1-SNAPSHOT-jar-with-dependencies.jar",
                 "--input", modelName,
-                "--onlineIDE",
                 "--modelPath", modelPath,
                 "--recursiveDrawing", "true",
                 "--outputPath", outputPath
         };
-        long timeStart = System.currentTimeMillis();
-        Process ps = Runtime.getRuntime().exec(args);
-        if (!ps.waitFor(timeout, timeUnit)) {
-            //timeout - kill the process.
-            ps.destroy(); // consider using destroyForcibly instead
-            timeouted = true;
+        String command = "";
+        for(String str: args) {
+            command += str + " ";
         }
+
+        long timeStart = System.currentTimeMillis();
+
+//        IndentPrinter ip = new IndentPrinter();
+//
+//        ProcessBuilder pb = new ProcessBuilder("tasklist");
+//        pb.redirectErrorStream(true);
+//        Process process = pb.start();
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//        String line;
+//        while ((line = reader.readLine()) != null)
+//            ip.println(line);
+
+        ByteArrayOutputStream stdoutOS = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderrOS = new ByteArrayOutputStream();
+
+        DefaultExecutor executor = new DefaultExecutor();
+        PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(stdoutOS, stderrOS);
+        ExecuteWatchdog watchDog = new ExecuteWatchdog(timeout * 1000);
+        executor.setStreamHandler(pumpStreamHandler);
+        executor.setWatchdog(watchDog);
+        executor.execute(CommandLine.parse(command));
 
         long timeEnd = System.currentTimeMillis();
         long timeNeeded = timeEnd - timeStart;
 
-        java.io.InputStream is = ps.getInputStream();
-        java.io.InputStream err = ps.getErrorStream();
-        byte b1[] = new byte[is.available()];
-        is.read(b1, 0, b1.length);
-        byte b2[] = new byte[err.available()];
-        err.read(b2, 0, b2.length);
-        ps.destroy();
-        String inputString = new String(b1);
-        String errorString = new String(b2);
-        errorString = deleteWarning(errorString);
+        if(timeNeeded/1000 > timeout) {
+            timeouted = true;
+        }
 
-        String checkString = errorString
-                .replace("\t", "").replace(" ", "")
-                .replace("\r\n", "").replace("\r","").replace("\n","");
+        String output = deleteWarning(stdoutOS.toString() + "\n" + stderrOS.toString());
 
-        if (!checkString.equals("")) {
+        if (!output.contains("Overall: success")) {
+            failed = true;
+            testResults.setTimeErrored(timeNeeded, modelPath + modelName);
+        } else if(output.contains("exception") || output.contains("Overall: failure")) {
             failed = true;
             testResults.setTimeErrored(timeNeeded, modelPath + modelName);
         } else if (!timeouted){
@@ -134,10 +154,11 @@ public class VisualisationHelperSingleThread implements Runnable {
         }
 
 
+        String argsString = Arrays.toString(args).replace("[","").replace("]","").replace(",", "");
         if (timeouted)
-            throw new TimeoutException("<br>" + inputString + "<br>" + errorString);
+            throw new TimeoutException("<br>" + "command: " + argsString + "<br>" + output);
         if (failed)
-            throw new SVGGenerationException("<br>" + inputString + "<br>" + errorString);
+            throw new SVGGenerationException("<br>" + "command: " + argsString + "<br>"  + output);
 
     }
 
