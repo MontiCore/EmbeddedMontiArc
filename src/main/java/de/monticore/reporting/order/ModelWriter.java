@@ -19,6 +19,7 @@ public class ModelWriter {
         }
 
         for(CheckCoCoResult model: models) {
+            if(model.getParsed() != 1) continue;
             String pathToFile = model.getPathToFile().substring(model.getRootFile().
                     getAbsolutePath().length() + 1).replace("emam", "ema");
             File modelFile = new File(newRoot + "/" + pathToFile);
