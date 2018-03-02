@@ -56,6 +56,7 @@ function loadFile(f, destination) {
         var oldImage=document.getElementById("LoadedImage");
         if(oldImage!==null){
             destination.removeChild(oldImage);
+            console.log("removing old child");
         }
         var newImage = document.createElement("img");
         newImage.src = event.target.result;
