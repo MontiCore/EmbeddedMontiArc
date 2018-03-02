@@ -53,16 +53,19 @@ function loadFile(f, destination) {
     // When the reader is done reading,
     // Make a new image tag and append it to the iFrame
     reader.onload = function (event) {
-        var oldImage=document.getElementById('LoadedImage');
-        if(oldImage!=null){
+        var oldImageCanvas=document.getElementById('LoadedImage');
+        /*if(oldImage!=null){
             destination.removeChild(oldImage);
             console.log("removing old child");
-        }
-        var newImage = document.createElement("img");
+        }*/
+        var newImageCanvas = oldImageCanvas;
+        var newImage = document.createElement('img');
         newImage.src = event.target.result;
-        newImage.id="LoadedImage";
-        destination.appendChild(newImage);
-        
+        if(oldImageCanvas == null){
+            newImageCanvas = document.createElement('canvas');
+            newImageCanvas.id = "LoadedImage";
+            destination.appendChild(newImageCanvas);
+        }
         //if(destination.getElementsByName("body")
         /*destination.contentWindow.document.getElementsByTagName("body")[0].appendChild(newImage);
         if(destination.contentWindow.document.getElementsByTagName("body")[0].childElementCount>1){
@@ -74,6 +77,7 @@ function loadFile(f, destination) {
         var img = newImage;
         var canvas = document.getElementById('ClusterResult');
         if(canvas == null){
+            console.log("Creating new Canvas");
         canvas = document.createElement('canvas');
         canvas.id ="ClusterResult";
         console.log(img.width, img.height);
@@ -81,10 +85,13 @@ function loadFile(f, destination) {
         }
         img.addEventListener("load",function(){
                 var context=canvas.getContext('2d');
-
+                var contextSource=newImageCanvas.getContext('2d');
                 canvas.width = img.width;
-                canvas.height = img.height;            
+                canvas.height = img.height;
+                newImageCanvas.width=img.width;
+                newImageCanvas.height=img.height;
                 context.drawImage(img, 0, 0, 50, 50);
+                contextSource.drawImage(img,0,0,img.width,img.height);
                 //var pixelData = context.getImageData(0, 0, 1, 1).data;
             
         });
