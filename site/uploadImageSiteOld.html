@@ -37,11 +37,11 @@
                 var loadedImageCanvas=document.getElementById('LoadedImage');
                 var contextLoadedImg=loadedImageCanvas.getContext('2d');
                 var newCanvas2 = document.createElement('canvas');
-                newCanvas2.getContext('2d').drawImage(newCanvas2,0,0,50,50);
+                newCanvas2.getContext('2d').drawImage(loadedImageCanvas,0,0,50,50);
                 var context=canvas.getContext('2d');
                 
                 
-                var pixelData = contextLoadedImg.getImageData(0, 0, 50, 50).data;
+                var pixelData = newCanvas2.getContext('2d').getImageData(0, 0, 50, 50).data;
                 var dataForClusterer=new Array(2500);
                 var counter=0;
                 for(var i=0;i<2500;++i){
