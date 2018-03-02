@@ -28,7 +28,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
     public DistributedTargetGenerator() {
         rosMsgImpl = new RosMsgImpl("struct_msgs");
-        //this.add(rosMsgImpl,"rosmsg/");
     }
 
     @Override
@@ -44,7 +43,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         Map<ExpandedComponentInstanceSymbol, GeneratorImpl> generatorMap = new HashMap<>();
 
         fixComponentInstance(componentInstanceSymbol);
-        Collection<ExpandedComponentInstanceSymbol> subComps = getSubComponentInstances(componentInstanceSymbol);
 
         List<ExpandedComponentInstanceSymbol> clusterSubcomponents = ClusterHelper.getClusterSubcomponents(componentInstanceSymbol);
         if (clusterSubcomponents.size() > 0) {
@@ -165,12 +163,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         if (sourceRosConnection.getMsgField().isPresent() && !targetRosConnection.getMsgField().isPresent())
             targetRosConnection.setMsgField(sourceRosConnection.getMsgField().get());
-    }
-
-    private Collection<ExpandedComponentInstanceSymbol> getSubComponentInstances(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        //TODO: check which subcomponents are mw only
-        //TODO: (build clusters?)
-        return componentInstanceSymbol.getSubComponents();
     }
 
     //TODO: refactor
