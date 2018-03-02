@@ -32,8 +32,26 @@
              var buttonCluster=document.getElementById('cluster');
              
              buttonCluster.addEventListener("click", function(e){
-             
-                
+                Module.init();
+                var context=canvas.getContext('2d');
+
+                canvas.width = img.width;
+                canvas.height = img.height;            
+                context.drawImage(img, 0, 0, 50, 50);
+                var pixelData = context.getImageData(0, 0, 50, 50).data;
+                var dataForClusterer=new Array(2500);
+                var counter=0;
+                for(var i=0;i<2500;++i){
+                    dataForClusterer[i]=new Array(3);
+                    dataForClusterer[i][0]=pixelData[counter];
+                    dataForClusterer[i][1]=pixelData[counter+1];
+                    dataForClusterer[i][2]=pixelData[counter+2];
+                    //dataForClusterer[i][0]=pixelData[i];
+                    counter=counter + 4;
+                }
+                Module.setImgFront(dataForClusterer);
+                Module.execute();
+                Module.getClusters();
              });
             /*function resizeIFrameToFitContent( iFrame ) {
          
