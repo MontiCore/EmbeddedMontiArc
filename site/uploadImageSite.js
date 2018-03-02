@@ -72,17 +72,20 @@ function loadFile(f, destination) {
         //$('#iframe').width("1000px");
         console.log("Loaded File");
         var img = newImage;
-        var canvas = document.createElement('canvas');
+        var canvas = document.getElementById('ClusterResult');
+        if(canvas == null){
+        canvas = document.createElement('canvas');
         canvas.id ="ClusterResult";
         console.log(img.width, img.height);
         destination.appendChild(canvas);
+        }
         img.addEventListener("load",function(){
                 var context=canvas.getContext('2d');
 
                 canvas.width = img.width;
                 canvas.height = img.height;            
                 context.drawImage(img, 0, 0, 50, 50);
-                var pixelData = context.getImageData(0, 0, 1, 1).data;
+                //var pixelData = context.getImageData(0, 0, 1, 1).data;
             
         });
     };
