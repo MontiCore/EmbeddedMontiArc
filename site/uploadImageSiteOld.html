@@ -95,10 +95,20 @@
                 var loadedImageCanvas=document.getElementById('LoadedImage');
                 context.width=loadedImageCanvas.width;
                 context.height=loadedImageCanvas.height;
-                context.drawImage(imagedata_to_image(newImgData),0,0,loadedImageCanvas.width,loadedImageCanvas.height);
+                var newCanvas = $("<canvas>")
+                .attr("width", imageData.width)
+                .attr("height", imageData.height)[0];
+
+                newCanvas.getContext("2d").putImageData(imageData, 0, 0);
+                var newWidth=loadedImageCanvas.width/50;
+                var newHeight=loadedImageCanvas.height/50;
+                context.scale(newWidth,newHeight);
+                context.putImageData(newImgData,0,0);
+                
+                context.scale(1/newWidth,1/newHeight);
                 console.log("second image target size");
                 console.log(loadedImageCanvas.width,loadedImageCanvas.height);
-                function imagedata_to_image(imagedata) {
+                /*function imagedata_to_image(imagedata) {
                     var canvas = document.createElement('canvas');
                     var ctx = canvas.getContext('2d');
                     canvas.width = imagedata.width;
@@ -108,7 +118,7 @@
                     var image = new Image();
                     image.src = canvas.toDataURL();
                     return image;
-                }
+                }*/
              });
             /*function resizeIFrameToFitContent( iFrame ) {
          
