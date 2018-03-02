@@ -43,7 +43,7 @@ public class CheckCoCos {
                 testResult.setModelFile(file);
                 testResult.setProjectFile(projectDir);
 //                    testResult.setPathToFile(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
-                testResult.setPathToFile(getVFSTag(projectDir, file, zipName));
+                testResult.setOnlineIDE(getVFSTag(projectDir, file, zipName));
                 String relativeProject = projectDir.getName();
                 testResult.setProject(relativeProject);
                 testResult.setRootFile(root);

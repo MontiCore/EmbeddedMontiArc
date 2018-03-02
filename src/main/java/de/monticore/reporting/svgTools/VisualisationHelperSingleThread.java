@@ -1,6 +1,4 @@
 package de.monticore.reporting.svgTools;
-
-import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -95,13 +93,14 @@ public class VisualisationHelperSingleThread implements Runnable {
         }
     }
 
-    private void generateSVG(String modelPath, String modelName, String outputPath) throws InterruptedException, TimeoutException, IOException, SVGGenerationException {
+    private void generateSVG(String modelPath, String modelName, String outputPath) throws TimeoutException, IOException, SVGGenerationException {
         boolean timeouted = false;
         boolean failed = false;
         boolean success = true;
+
         String[] args = {
                 "java", "-jar",
-                "src/main/resources/montiarc-svggenerator-4.0.1-SNAPSHOT-jar-with-dependencies.jar",
+                "svgGenerator/montiarc-svggenerator-4.0.1-SNAPSHOT-jar-with-dependencies.jar",
                 "--input", modelName,
                 "--modelPath", modelPath,
                 "--recursiveDrawing", "true",
@@ -113,16 +112,6 @@ public class VisualisationHelperSingleThread implements Runnable {
         }
 
         long timeStart = System.currentTimeMillis();
-
-//        IndentPrinter ip = new IndentPrinter();
-//
-//        ProcessBuilder pb = new ProcessBuilder("tasklist");
-//        pb.redirectErrorStream(true);
-//        Process process = pb.start();
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-//        String line;
-//        while ((line = reader.readLine()) != null)
-//            ip.println(line);
 
         ByteArrayOutputStream stdoutOS = new ByteArrayOutputStream();
         ByteArrayOutputStream stderrOS = new ByteArrayOutputStream();

@@ -1,5 +1,6 @@
 package de.monticore.reporting.testCocos.svgTools;
 
+import de.monticore.reporting.order.OrderTestResults;
 import de.monticore.reporting.svgTools.VisualisationHelper;
 import de.monticore.reporting.testCocos.CheckCoCos;
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
@@ -22,8 +23,9 @@ public class SVGToolsTester {
         File rootFile = new File(root);
         CheckCoCos tcc = new CheckCoCos();
         List<CheckCoCoResult> testResults = tcc.testAllCocos(rootFile, zipDummy, "ema");
+        List<CheckCoCoResult> rootModels = OrderTestResults.orderTestResults(testResults);
 
-        VisualisationHelper.generateSVGs(testResults, output, false);
+        VisualisationHelper.generateSVGs(testResults, rootModels, output, false);
 
         File out = new File(output + "/resources");
         File toCompare = new File(compareSVG);

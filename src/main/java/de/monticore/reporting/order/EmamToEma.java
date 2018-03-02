@@ -10,7 +10,7 @@ import java.util.List;
 
 public class EmamToEma {
 
-    public static void convertToEma(List<CheckCoCoResult> models) {
+    public static String convertToEma(List<CheckCoCoResult> models) {
         String root = "";
         for (CheckCoCoResult model: models) {
             root = model.getRootFile().getAbsolutePath();
@@ -20,10 +20,12 @@ public class EmamToEma {
         }
 
         try {
-            ModelWriter.writeModels(models, root, root + "\\_EMA");
+            ModelWriter.writeModels(models, root, root + "_EMA");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return root + "_EMA";
     }
 
 }

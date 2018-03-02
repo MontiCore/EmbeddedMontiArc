@@ -21,6 +21,7 @@ public class CheckCoCoResult {
     private String project = "";
     private String fileType = "";
     private String svgPath = "";
+    private String onlineIDE = "";
     private String zipName = "";
     private List<String> errorMessage = new LinkedList<>();
     private int parsed = 0;
@@ -444,5 +445,13 @@ public class CheckCoCoResult {
 
     public boolean isEmaModelPathAvailable() {
         return emaModelPathAvailable;
+    }
+
+    public String getOnlineIDE() {
+        return onlineIDE;
+    }
+
+    public void setOnlineIDE(String onlineIDE) {
+        this.onlineIDE = onlineIDE;
     }
 }

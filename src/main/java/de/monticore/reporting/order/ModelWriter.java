@@ -19,17 +19,17 @@ public class ModelWriter {
         }
 
         for(CheckCoCoResult model: models) {
-            String modelPath = model.getPathToFile().substring(model.getRootFile().
+            String pathToFile = model.getPathToFile().substring(model.getRootFile().
                     getAbsolutePath().length() + 1).replace("emam", "ema");
-            File modelFile = new File(newRoot + "/" + modelPath);
+            File modelFile = new File(newRoot + "/" + pathToFile);
             if(!modelFile.getParentFile().exists())
                 modelFile.getParentFile().mkdirs();
-            if(model.isAtomic())
+//            if(model.isAtomic())
                 FileUtils.write(modelFile, model.getEmaToPrint());
-            else
-                FileUtils.copyFile(new File(model.getPathToFile()), modelFile);
-            model.setEmaModelPath(model.getModelPath().replace("\\","/").replace(oldRoot, newRoot));
-
+//            else
+//                FileUtils.copyFile(new File(model.getPathToFile()), modelFile);
+            String newModelPath = (newRoot + "\\" + model.getModelPath().substring(oldRoot.length())).replace("\\","/").replace("//","/");
+            model.setEmaModelPath(newModelPath);
         }
     }
 
