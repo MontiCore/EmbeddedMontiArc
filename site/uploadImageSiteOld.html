@@ -95,7 +95,7 @@
                 var loadedImageCanvas=document.getElementById('LoadedImage');
                 context.width=loadedImageCanvas.width;
                 context.height=loadedImageCanvas.height;
-                context.drawImageData(newImgData,0,0,loadedImageCanvas.width,loadedImageCanvas.height);
+                context.putImageData(newImgData,0,0);
              });
             /*function resizeIFrameToFitContent( iFrame ) {
          
