@@ -96,8 +96,8 @@
                 context.width=loadedImageCanvas.width;
                 context.height=loadedImageCanvas.height;
                 var newCanvas = $("<canvas>")
-                .attr("width", imageData.width)
-                .attr("height", imageData.height)[0];
+                .attr("width", newImgData.width)
+                .attr("height", newImgData.height)[0];
 
                 newCanvas.getContext("2d").putImageData(imageData, 0, 0);
                 //var newWidth=loadedImageCanvas.width/50;
