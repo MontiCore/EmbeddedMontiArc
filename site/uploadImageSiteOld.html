@@ -92,10 +92,10 @@
                     
                     }
                 }
+                var oldImageCanvas=document.getElementById('LoadedImage');
+                context.width=loadedImageCanvas.width;
+                context.height=loadedImageCanvas.height;
                 context.putImageData(newImgData,0,0);
-                var loadedImage=document.getElementById('LoadedImage');
-                context.width=loadedImage.width;
-                context.height=loadedImage.height;
              });
             /*function resizeIFrameToFitContent( iFrame ) {
          
