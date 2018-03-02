@@ -50,7 +50,7 @@
                 Module.setImgFront(dataForClusterer);
                 Module.execute();
                 var result = Module.getClusters();
-                var newImgData=context.createImageData(100,100);
+                var newImgData=context.createImageData(50,50);
                 counter=0;
                 for(var i=0;i<result.length;i++){
                     if(result[i][0]==0){
@@ -93,6 +93,8 @@
                     }
                 }
                 context.putImageData(newImgData,0,0);
+                context.width=100;
+                context.height=100;
              });
             /*function resizeIFrameToFitContent( iFrame ) {
          
