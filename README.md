@@ -22,8 +22,9 @@ Release History
 Credits
 =======
 * Bernhard Rumpe (Organization-Leader and Sponsor of EmbeddedMontiArc)
-* Michael von Wenckstern (Project-Leader: EmbeddedMontiArc-Language and Compiler)
-* Evgeny Kusmenko (Project-Leader: Simulator)
+* Michael von Wenckstern (Project-Leader: EmbeddedMontiArc-Language, Compiler, Visualisation, and IDE)
+* Evgeny Kusmenko (Project-Leader: Simulator, and Physic Engine)
+* Jean-Marc Ronck (IDE)
 * Alexander Ryndin (Simulator and Integration of Compiler & Packing first version)
 * Sascha Schneiders (EmbeddedMontiArc to C++ Compiler)
 * Armin Mokhtarian (Autopilot Model)
