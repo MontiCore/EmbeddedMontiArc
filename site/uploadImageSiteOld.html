@@ -54,35 +54,42 @@
                 counter=0;
                 for(var i=0;i<result.length;i++){
                     if(result[i][0]==0){
-                        newImgData[counter]=255;
-                        newImgData[counter+1]=0;
-                        newImgData[counter+2]=0;
-                        newImgData[counter+3]=255;
+                        newImgData.data[counter]=255;
+                        newImgData.data[counter+1]=0;
+                        newImgData.data[counter+2]=0;
+                        newImgData.data[counter+3]=255;
                         counter=counter + 4;
                     }else if(result[i][0]==1){
-                        newImgData[counter]=0;
-                        newImgData[counter+1]=0;
-                        newImgData[counter+2]=0;
-                        newImgData[counter+3]=255;
+                        newImgData.data[counter]=0;
+                        newImgData.data[counter+1]=0;
+                        newImgData.data[counter+2]=0;
+                        newImgData.data[counter+3]=255;
                         counter=counter + 4;
                     }else if(result[i][0]==2){
-                        newImgData[counter]=255;
-                        newImgData[counter+1]=255;
-                        newImgData[counter+2]=255;
-                        newImgData[counter+3]=255;
+                        newImgData.data[counter]=255;
+                        newImgData.data[counter+1]=255;
+                        newImgData.data[counter+2]=255;
+                        newImgData.data[counter+3]=255;
                         counter=counter + 4;
                     }else if(result[i][0]==3){
-                        newImgData[counter]=136;
-                        newImgData[counter+1]=136;
-                        newImgData[counter+2]=136;
-                        newImgData[counter+3]=255;
+                        newImgData.data[counter]=136;
+                        newImgData.data[counter+1]=136;
+                        newImgData.data[counter+2]=136;
+                        newImgData.data[counter+3]=255;
                         counter=counter + 4;
                     }else if(result[i][0]==4){
-                        newImgData[counter]=77;
-                        newImgData[counter+1]=77;
-                        newImgData[counter+2]=77;
-                        newImgData[counter+3]=255;
+                        newImgData.data[counter]=77;
+                        newImgData.data[counter+1]=77;
+                        newImgData.data[counter+2]=77;
+                        newImgData.data[counter+3]=255;
                         counter=counter + 4;
+                    }else{
+                        newImgData.data[counter]=0;
+                        newImgData.data[counter+1]=0;
+                        newImgData.data[counter+2]=255;
+                        newImgData.data[counter+3]=255;
+                        counter=counter + 4;
+                    
                     }
                 }
                 context.putImageData(newImgData,0,0);
