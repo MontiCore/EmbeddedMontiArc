@@ -91,7 +91,7 @@ function loadFile(f, destination) {
                 canvas.height = img.height;
                 newImageCanvas.width=img.width;
                 newImageCanvas.height=img.height;
-                context.drawImage(img, 0, 0, img.width, img.height);
+                context.drawImage(img, 0, 0, 50, 50);
                 contextSource.drawImage(img,0,0,img.width,img.height);
                 //var pixelData = context.getImageData(0, 0, 1, 1).data;
             
