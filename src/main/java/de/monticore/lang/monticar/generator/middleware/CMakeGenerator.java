@@ -27,11 +27,11 @@ public class CMakeGenerator extends StarBridgeGenerator {
         }
 
         List<File> res = super.generate(componentInstanceSymbol, taggingResolver);
-        res.add(generateCMake(generationTargetPath, componentInstanceSymbol));
+        res.add(generateCMake(componentInstanceSymbol));
         return res;
     }
 
-    private File generateCMake(String targetPath, ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
+    protected File generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
         StringBuilder content = new StringBuilder();
@@ -48,7 +48,7 @@ public class CMakeGenerator extends StarBridgeGenerator {
 
         fileContent.setFileContent(content.toString());
 
-        return FileHelper.generateFile(targetPath, fileContent);
+        return FileHelper.generateFile(generationTargetPath, fileContent);
     }
 
 

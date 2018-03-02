@@ -10,7 +10,6 @@ import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
-import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -35,8 +34,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
     @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
-        Map<PortSymbol, RosConnectionSymbol> resolvedTags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
-
         Map<ExpandedComponentInstanceSymbol, GeneratorImpl> generatorMap = new HashMap<>();
 
         fixComponentInstance(componentInstanceSymbol);
@@ -52,14 +49,14 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         List<File> files = new ArrayList<>();
 
-        subDirs.add("rosMsg");
         for (ExpandedComponentInstanceSymbol comp : generatorMap.keySet()) {
             files.addAll(generatorMap.get(comp).generate(comp, taggingResolver));
             //add empty generator to subDirs so that CMakeLists.txt will be generated correctly
             subDirs.add(comp.getFullName().replace(".", "_"));
         }
 
-        files.add(generateCMake());
+        subDirs.add("rosMsg");
+        files.add(generateCMake(componentInstanceSymbol));
         files.add(generateRosMsgGen());
 
         return files;
@@ -161,8 +158,8 @@ public class DistributedTargetGenerator extends CMakeGenerator {
             targetRosConnection.setMsgField(sourceRosConnection.getMsgField().get());
     }
 
-    //TODO: refactor
-    private File generateCMake() throws IOException {
+    @Override
+    protected File generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
         StringBuilder content = new StringBuilder();
