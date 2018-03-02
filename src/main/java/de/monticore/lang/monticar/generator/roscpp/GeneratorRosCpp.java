@@ -89,7 +89,7 @@ public class GeneratorRosCpp {
 
         String classname = currentBluePrint.getName();
         apdapter.setFileName(classname + ".h");
-        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter_" + classname));
+        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter_" + component.getFullName().replace(".", "_")));
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
         for (Map.Entry<RosMsg, MCTypeReference<? extends MCTypeSymbol>> entry : languageUnitRosCppAdapter.getUsedRosMsgs().entrySet()) {

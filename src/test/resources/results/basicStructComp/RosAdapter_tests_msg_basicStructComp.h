@@ -1,9 +1,9 @@
 #pragma once
-#include "IAdapter.h"
+#include "IAdapter_tests_msg_basicStructComp.h"
 #include "tests_msg_basicStructComp.h"
 #include <ros/ros.h>
 #include <struct_msgs/tests_structs_BasicStruct.h>
-class RosAdapter_tests_msg_basicStructComp: public IAdapter{
+class RosAdapter_tests_msg_basicStructComp: public IAdapter_tests_msg_basicStructComp{
 	tests_msg_basicStructComp* component;
 	ros::Subscriber topic1Subscriber;
 	ros::Publisher topic2Publisher;

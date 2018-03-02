@@ -1,11 +1,11 @@
 #pragma once
-#include "IAdapter.h"
+#include "IAdapter_tests_msg_basicTypesComp.h"
 #include "tests_msg_basicTypesComp.h"
 #include <ros/ros.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float64.h>
 #include <std_msgs/Int32.h>
-class RosAdapter_tests_msg_basicTypesComp: public IAdapter{
+class RosAdapter_tests_msg_basicTypesComp: public IAdapter_tests_msg_basicTypesComp{
 	tests_msg_basicTypesComp* component;
 	ros::Subscriber topic7Subscriber;
 	ros::Subscriber topic8Subscriber;
