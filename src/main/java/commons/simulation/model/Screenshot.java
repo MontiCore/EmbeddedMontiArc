@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import sun.misc.BASE64Decoder;
+import java.util.Base64;
 
 /**
  * A screenshot.
@@ -45,8 +45,7 @@ public class Screenshot {
     }
 
     private static BufferedImage parseImage(final String base64Image) throws IOException {
-        final BASE64Decoder decoder = new BASE64Decoder();
-        final byte[] imageByte = decoder.decodeBuffer(base64Image);
+        final byte[] imageByte = Base64.getDecoder().decode(base64Image);
         try (ByteArrayInputStream bis = new ByteArrayInputStream(imageByte)) {
             return ImageIO.read(bis);
         }
