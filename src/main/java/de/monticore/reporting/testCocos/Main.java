@@ -21,7 +21,7 @@ public class Main {
 
             if (context.isSvg()) {
                 System.out.println("\n<==============SVG Generation==============>\n");
-                VisualisationHelper.generateSVGs(rootModels, context.getOutput() + "SVG");
+                VisualisationHelper.generateSVGs(rootModels, context.getOutput() + "SVG", context.isMerge());
             }
 
             System.out.println("\n<============Write Test Results============>\n");

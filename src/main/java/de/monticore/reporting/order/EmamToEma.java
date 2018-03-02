@@ -5,41 +5,24 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._ast.ASTBehav
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 
+import java.io.IOException;
 import java.util.List;
 
 public class EmamToEma {
 
-    public static void convertToEma(List<CheckCoCoResult> models){
-        int z = 0;
+    public static void convertToEma(List<CheckCoCoResult> models) {
+        String root = "";
         for (CheckCoCoResult model: models) {
-            System.out.println(++z);
-            convertToEma(model);
+            root = model.getRootFile().getAbsolutePath();
+            if(model.getFileType().toUpperCase().equals("EMAM")) {
+                model.setEmaToPrint(EmamToEmaPrettyPrinter.getEmaString(model.getPathToFile()));
+            }
         }
-    }
 
-    public static void convertToEma(CheckCoCoResult model){
-        if (model.getFileType().toUpperCase().equals("EMA")) return;
-        else if(!model.getFileType().toUpperCase().equals("EMAM")) return; // ERROR
-        else if(model.getParsed() != 1) return; //ERROR
-
-        ASTEMAMCompilationUnit ast = model.getCompilationUnit();
-
-        boolean atomic = false;
-        for(ASTElement element: ast.getEMACompilationUnit().getComponent().getBody().getElements()){
-            if(element instanceof ASTBehaviorImplementation) atomic = true;
-        }
-        model.setAtomic(atomic);
-
-        if(atomic){
-            model.setEmaToPrint(EmamToEmaPrettyPrinter.prettyPrint(ast));
-        }
-    }
-
-    public static void convertToEmaSimple(List<CheckCoCoResult> models) {
-        int z = 0;
-        for (CheckCoCoResult model: models) {
-
-            model.setEmaToPrint(SimpleEmamToEmaPrinter.getEmaString(model.getPathToFile()));
+        try {
+            ModelWriter.writeModels(models, root, root + "\\_EMA");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

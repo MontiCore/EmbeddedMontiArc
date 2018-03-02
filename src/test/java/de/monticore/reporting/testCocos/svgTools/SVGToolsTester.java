@@ -23,7 +23,7 @@ public class SVGToolsTester {
         CheckCoCos tcc = new CheckCoCos();
         List<CheckCoCoResult> testResults = tcc.testAllCocos(rootFile, zipDummy, "ema");
 
-        VisualisationHelper.generateSVGs(testResults, output);
+        VisualisationHelper.generateSVGs(testResults, output, false);
 
         File out = new File(output + "/resources");
         File toCompare = new File(compareSVG);
