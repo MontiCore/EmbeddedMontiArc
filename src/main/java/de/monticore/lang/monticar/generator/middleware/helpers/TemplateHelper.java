@@ -8,14 +8,14 @@ public class TemplateHelper {
                     "#include <chrono>\n" +
                     "#include <atomic>\n" +
                     "#include <list>\n" +
-                    "#include \"IAdapter.h\"\n" +
+                    "#include \"IAdapter_${compName}.h\"\n" +
                     "\n" +
                     "${includes}" +
                     "\n" +
                     "using namespace std;\n" +
                     "using namespace chrono;\n" +
                     "\n" +
-                    "void startMiddleware(IAdapter& adapter,${compName}& comp,atomic<bool>& done){\n" +
+                    "void startMiddleware(IAdapter_${compName}& adapter,${compName}& comp,atomic<bool>& done){\n" +
                     "  adapter.init(&comp);\n" +
                     "  done = true;\n" +
                     "}\n" +
@@ -26,7 +26,7 @@ public class TemplateHelper {
                     "  ${compName} comp;\n" +
                     "  comp.init();\n" +
                     "\n" +
-                    "  list<IAdapter*> adapters;\n" +
+                    "  list<IAdapter_${compName}*> adapters;\n" +
                     "${addAdapters}" +
                     "\n" +
                     "  list<thread*> threads;\n" +
@@ -64,9 +64,9 @@ public class TemplateHelper {
     public static String iAdapterTemplate = "#pragma once\n" +
             "#include \"${compName}.h\"\n" +
             "\n" +
-            "class IAdapter{\n" +
+            "class IAdapter_${compName}{\n" +
             "\tpublic:\n" +
-            "\t\tvirtual ~IAdapter(){}\n" +
+            "\t\tvirtual ~IAdapter_${compName}(){}\n" +
             "\t\tvirtual void init(${compName}* comp) = 0;\n" +
             "\t\tvirtual void tick() = 0;\n" +
             "};";
@@ -98,9 +98,9 @@ public class TemplateHelper {
             "#include \"${compName}.h\"\n" +
             "#include <thread>\n" +
             "#include <chrono>\n" +
-            "#include \"IAdapter.h\"\n" +
+            "#include \"IAdapter_${compName}.h\"\n" +
             "\n" +
-            "class DummyAdapter_${compName}: public IAdapter{\n" +
+            "class DummyAdapter_${compName}: public IAdapter_${compName}{\n" +
             "\t${compName}* component;\n" +
             "\n" +
             "public:\n" +

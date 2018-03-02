@@ -31,8 +31,8 @@ public class MiddlewareGenerator extends CMakeGenerator {
 
     private FileContent generateIAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
-        res.setFileName("IAdapter.h");
         String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        res.setFileName("IAdapter_" + name + ".h");
         res.setFileContent(TemplateHelper.iAdapterTemplate.replace("${compName}", name));
         return res;
     }
