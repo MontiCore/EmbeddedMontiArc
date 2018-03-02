@@ -53,9 +53,15 @@ function loadFile(f, destination) {
     // When the reader is done reading,
     // Make a new image tag and append it to the iFrame
     reader.onload = function (event) {
+        var oldImage=document.getElementById("LoadedImage");
+        if(oldImage!==null){
+            destination.removeChild(oldImage);
+        }
         var newImage = document.createElement("img");
         newImage.src = event.target.result;
+        newImage.id="LoadedImage";
         destination.appendChild(newImage);
+        
         //if(destination.getElementsByName("body")
         /*destination.contentWindow.document.getElementsByTagName("body")[0].appendChild(newImage);
         if(destination.contentWindow.document.getElementsByTagName("body")[0].childElementCount>1){
