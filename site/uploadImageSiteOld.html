@@ -92,12 +92,12 @@
                     
                     }
                 }
-                var curImage=document.getElementById('CurrentImage');
                 var loadedImageCanvas=document.getElementById('LoadedImage');
                 context.width=loadedImageCanvas.width;
                 context.height=loadedImageCanvas.height;
-                context.drawImage(imagedata_to_image(newImgData),0,0,curImage.width,curImage.height);
-                
+                context.drawImage(imagedata_to_image(newImgData),0,0,loadedImageCanvas.width,loadedImageCanvas.height);
+                console.log("second image target size");
+                console.log(loadedImageCanvas.width,loadedImageCanvas.height);
                 function imagedata_to_image(imagedata) {
                     var canvas = document.createElement('canvas');
                     var ctx = canvas.getContext('2d');
