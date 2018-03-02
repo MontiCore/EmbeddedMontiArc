@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymb
 import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
@@ -45,16 +46,11 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         fixComponentInstance(componentInstanceSymbol);
         Collection<ExpandedComponentInstanceSymbol> subComps = getSubComponentInstances(componentInstanceSymbol);
 
-        //TODO: cluster non mw subcomps together with mw subcomps
-
-        boolean allSubsMwOnly = subComps.stream()
-                .flatMap(comp -> comp.getPorts().stream())
-                .allMatch(p -> p.getMiddlewareSymbol().isPresent());
-
-        if (subComps.size() > 0 && allSubsMwOnly) {
-            subComps.forEach(comp ->
-                    generatorMap.put(comp, createFullGenerator(comp.getFullName().replace(".", "_")))
-            );
+        List<ExpandedComponentInstanceSymbol> clusterSubcomponents = ClusterHelper.getClusterSubcomponents(componentInstanceSymbol);
+        if (clusterSubcomponents.size() > 0) {
+            clusterSubcomponents.forEach(clusterECIS -> {
+                generatorMap.put(clusterECIS, createFullGenerator(clusterECIS.getFullName().replace(".", "_")));
+            });
         } else {
             generatorMap.put(componentInstanceSymbol, createFullGenerator(componentInstanceSymbol.getFullName().replace(".", "_")));
         }

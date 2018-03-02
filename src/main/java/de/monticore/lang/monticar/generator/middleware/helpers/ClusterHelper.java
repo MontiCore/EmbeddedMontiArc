@@ -1,10 +1,10 @@
 package de.monticore.lang.monticar.generator.middleware.helpers;
 
-import com.google.common.collect.Sets;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.symboltable.CommonScope;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 import org.jgrapht.Graph;
 import org.jgrapht.alg.ConnectivityInspector;
@@ -51,12 +51,13 @@ public class ClusterHelper {
         int[] i = {0};
         clusters.forEach(c -> {
             if (c.size() == 1) {
-                res.add(ExpandedComponentInstanceBuilder.clone(c.iterator().next()));
+                res.add(c.iterator().next());
             } else {
-                //TODO: can lead to naming conflicts: subcomp that is named <componentName>Cluster<i[0]>
-                String clusterName = componentInstanceSymbol.getName() + "Cluster" + i[0];
-                i[0]++;
-                res.add(createECISFromCluster(componentInstanceSymbol, c, clusterName));
+                String clusterPrefix = componentInstanceSymbol.getName() + "_cluster";
+                while (componentInstanceSymbol.getSubComponent(clusterPrefix + i[0]).isPresent()) {
+                    i[0]++;
+                }
+                res.add(createECISFromCluster(componentInstanceSymbol, c, clusterPrefix + i[0]));
             }
         });
         return res;
@@ -74,13 +75,12 @@ public class ClusterHelper {
 //    Sub Ros -> Sub Ros: do nothing, wrapper and therefore the mw does not affect this level
 //    Sub Ros -> Sub normal: handled(let comp connect)
     private static ExpandedComponentInstanceSymbol createECISFromCluster(ExpandedComponentInstanceSymbol inst, Set<ExpandedComponentInstanceSymbol> cluster, String clusterName) {
-        //TODO: implement
         Set<PortSymbol> curClusterPorts = cluster.stream().flatMap(ecis -> ecis.getPorts().stream()).collect(Collectors.toSet());
         Set<PortSymbol> combinedPorts = new HashSet<>();
         combinedPorts.addAll(curClusterPorts);
         combinedPorts.addAll(inst.getPorts());
 
-        Set<ConnectorSymbol> validConnectors = inst.getConnectors().stream()
+        Set<ConnectorSymbol> tmpConnectiors = inst.getConnectors().stream()
                 //remove all connections that use subcomponents not in cluster
                 .filter(c -> combinedPorts.contains(c.getSourcePort()) && combinedPorts.contains(c.getTargetPort()))
                 //remove all connections from super -> super and warn
@@ -91,21 +91,51 @@ public class ClusterHelper {
                     }
                     return true;
                 })
+                //remove all connections super <-> cluster
+                .filter(c -> !(inst.getPorts().contains(c.getSourcePort()) || (inst.getPorts().contains(c.getTargetPort()))))
                 .collect(Collectors.toSet());
 
-        Collection<PortSymbol> validPorts = validConnectors.stream()
-                .flatMap(c -> Sets.newHashSet(c.getTargetPort(), c.getSourcePort()).stream())
-                .filter(p -> !inst.containsPort(p))
+        Collection<PortSymbol> mwPorts = curClusterPorts.stream()
+                .filter(p -> p.getMiddlewareSymbol().isPresent())
                 .collect(Collectors.toSet());
 
-        return new ExpandedComponentInstanceBuilder()
+        List<PortSymbol> tmpPorts = mwPorts.stream()
+                .filter(p -> p.getMiddlewareSymbol().isPresent())
+                .map(p -> {
+                    String sourcePortName;
+                    String targetPortName;
+                    String subName = p.getComponentInstance().get().getName();
+                    if (p.isIncoming()) {
+                        sourcePortName = p.getName();
+                        targetPortName = subName + "." + p.getName();
+                    } else {
+                        sourcePortName = subName + "." + p.getName();
+                        targetPortName = p.getName();
+                    }
+                    ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
+                            .setSource(sourcePortName)
+                            .setTarget(targetPortName)
+                            .build();
+                    tmpConnectiors.add(tmpConnector);
+                    return EMAPortBuilder.clone(p);
+                })
+                .collect(Collectors.toList());
+
+        Set<ResolvingFilter<? extends Symbol>> resolvingFilters = inst.getSpannedScope().getResolvingFilters();
+        List<ExpandedComponentInstanceSymbol> tmpSubcomps = cluster.stream().map(ExpandedComponentInstanceBuilder::clone).collect(Collectors.toList());
+        tmpSubcomps.forEach(sc -> ((CommonScope) sc.getSpannedScope()).setResolvingFilters(resolvingFilters));
+        ExpandedComponentInstanceSymbol res = new ExpandedComponentInstanceBuilder()
                 .setName(clusterName)
                 .setSymbolReference(inst.getComponentType())
-                .addPorts(validPorts)
-                .addConnectors(validConnectors)
-                .addSubComponents(cluster.stream().map(ExpandedComponentInstanceBuilder::clone).collect(Collectors.toList()))
+                .addPorts(tmpPorts)
+                .addConnectors(tmpConnectiors)
+                .addSubComponents(tmpSubcomps)
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
                 .build();
+
+        ((CommonScope) res.getSpannedScope()).setResolvingFilters(resolvingFilters);
+        res.setEnclosingScope((MutableScope) inst.getEnclosingScope());
+        return res;
     }
 
 
