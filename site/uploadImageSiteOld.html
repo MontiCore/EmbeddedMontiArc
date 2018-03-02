@@ -100,12 +100,12 @@
                 .attr("height", imageData.height)[0];
 
                 newCanvas.getContext("2d").putImageData(imageData, 0, 0);
-                var newWidth=loadedImageCanvas.width/50;
-                var newHeight=loadedImageCanvas.height/50;
-                context.scale(newWidth,newHeight);
-                context.putImageData(newImgData,0,0);
+                //var newWidth=loadedImageCanvas.width/50;
+                //var newHeight=loadedImageCanvas.height/50;
+                //context.scale(newWidth,newHeight);
+                context.drawImage(newCanvas,0,0,loadedImageCanvas.width,loadedImageCanvas.height);
                 
-                context.scale(1/newWidth,1/newHeight);
+                //context.scale(1/newWidth,1/newHeight);
                 console.log("second image target size");
                 console.log(loadedImageCanvas.width,loadedImageCanvas.height);
                 /*function imagedata_to_image(imagedata) {
