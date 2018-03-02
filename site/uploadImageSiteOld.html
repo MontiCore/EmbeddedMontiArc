@@ -36,8 +36,8 @@
                 var canvas = document.getElementById('ClusterResult');
                 var context=canvas.getContext('2d');
 
-                canvas.width = img.width;
-                canvas.height = img.height;            
+                canvas.width = 50;
+                canvas.height = 50;            
                 context.drawImage(img, 0, 0, 50, 50);
                 var pixelData = context.getImageData(0, 0, 50, 50).data;
                 var dataForClusterer=new Array(2500);
