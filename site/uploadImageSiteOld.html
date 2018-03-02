@@ -53,7 +53,13 @@
                 var newImgData=context.createImageData(100,100);
                 counter=0;
                 for(var i=0;i<result.length;i++){
-                    if(result[i][0]==1){
+                    if(result[i][0]==0){
+                        newImgData[counter]=255;
+                        newImgData[counter+1]=0;
+                        newImgData[counter+2]=0;
+                        newImgData[counter+3]=255;
+                        counter=counter + 4;
+                    }else if(result[i][0]==1){
                         newImgData[counter]=0;
                         newImgData[counter+1]=0;
                         newImgData[counter+2]=0;
@@ -75,13 +81,6 @@
                         newImgData[counter]=77;
                         newImgData[counter+1]=77;
                         newImgData[counter+2]=77;
-                        newImgData[counter+3]=255;
-                        counter=counter + 4;
-                    }else if(result[i][0]==0){
-                    
-                        newImgData[counter]=255;
-                        newImgData[counter+1]=0;
-                        newImgData[counter+2]=0;
                         newImgData[counter+3]=255;
                         counter=counter + 4;
                     }
