@@ -10,8 +10,8 @@ import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.RosMsgImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
+import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -22,18 +22,15 @@ import java.io.IOException;
 import java.util.*;
 
 public class DistributedTargetGenerator extends CMakeGenerator {
-    private RosMsgImpl rosMsgImpl;
     private Set<String> subDirs = new HashSet<>();
 
 
     public DistributedTargetGenerator() {
-        rosMsgImpl = new RosMsgImpl("struct_msgs");
     }
 
     @Override
     public void setGenerationTargetPath(String path) {
         super.setGenerationTargetPath(path);
-        rosMsgImpl.setGenerationTargetPath(generationTargetPath + (generationTargetPath.endsWith("/") ? "" : "/") + "rosMsg/");
     }
 
     @Override
@@ -125,8 +122,8 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         //target port name is unique: each in port can only have one connection!
         String topicName = connectorSymbol.getTargetPort().getFullName().replace(".", "_");
-        RosMsg rosTypeA = rosMsgImpl.getRosType(connectorSymbol.getTargetPort().getTypeReference());
-        RosMsg rosTypeB = rosMsgImpl.getRosType(connectorSymbol.getSourcePort().getTypeReference());
+        RosMsg rosTypeA = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getTargetPort().getTypeReference());
+        RosMsg rosTypeB = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getSourcePort().getTypeReference());
         if (!rosTypeA.equals(rosTypeB)) {
             Log.error("topicType mismatch! "
                     + connectorSymbol.getSourcePort().getFullName() + " has " + rosTypeB + " and "
@@ -134,7 +131,6 @@ public class DistributedTargetGenerator extends CMakeGenerator {
             return;
         }
 
-        rosMsgImpl.addRosTypeToGenerate(connectorSymbol.getTargetPort().getTypeReference());
         if (rosTypeA.getFields().size() == 1) {
             connectorSymbol.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol(topicName, rosTypeB.getName(), rosTypeB.getFields().get(0).getName()));
             connectorSymbol.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol(topicName, rosTypeA.getName(), rosTypeA.getFields().get(0).getName()));
