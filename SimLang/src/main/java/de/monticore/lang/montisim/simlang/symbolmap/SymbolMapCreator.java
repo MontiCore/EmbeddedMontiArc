@@ -16,7 +16,7 @@ import de.se_rwth.commons.logging.Log;
 
 
 public class SymbolMapCreator implements SimLangVisitor{
-
+/*
   HashMap<String, Object> symbolMap;
 
   private SimLangVisitor realThis = this;
@@ -237,5 +237,5 @@ public class SymbolMapCreator implements SimLangVisitor{
       this.symbolMap.put(id, value);
     }
     //this.symbolMap.get("channels").add(new Channel());
-  }
+  }*/
 }

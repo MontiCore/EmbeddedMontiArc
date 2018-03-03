@@ -7,7 +7,7 @@
   <parent>
     <groupId>de.monticore.lang.montisim</groupId>
     <artifactId>SimulationLanguage</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
 
   <artifactId>SimLang</artifactId>
@@ -28,14 +28,26 @@
     </dependency>-->
     <!-- Forces correct order in maven reactor -->
     <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>NumberUnit</artifactId>
+            <version>${numberunit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>NumberUnit</artifactId>
+            <version>${numberunit.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+            </dependency>
+    <dependency>
       <groupId>de.monticore.lang.montisim</groupId>
       <artifactId>Weather</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
       <groupId>de.monticore.lang.montisim</groupId>
       <artifactId>Weather</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <classifier>${grammars.classifier}</classifier>
       <scope>provided</scope>
     </dependency>

@@ -5,13 +5,13 @@ package de.monticore.lang.montisim.simlang.util;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ValueListRangeLambda {
+public class AlternativeInput {
   private Optional<NumberUnit> nUnit = Optional.empty();
   private Optional<ArrayList> list = Optional.empty();
   private Optional<Range> range = Optional.empty();
   private Optional<Lambda> lambda = Optional.empty();
 
-  public ValueListRangeLambda(Optional opt) {
+  public AlternativeInput(Optional opt) {
     if(opt.get() instanceof NumberUnit) {
       this.nUnit = opt;
     }

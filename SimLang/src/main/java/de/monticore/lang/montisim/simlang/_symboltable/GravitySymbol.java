@@ -1,19 +1,19 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
+import de.monticore.lang.montisim.simlang.util.AlternativeInput;
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.ValueListRangeLambda;
 
 public class GravitySymbol extends CommonSymbol{
 
   public static final GravitySymbolKind KIND = GravitySymbolKind.INSTANCE;
-  private ValueListRangeLambda gravity;
+  private AlternativeInput gravity;
 
-  public GravitySymbol(String name, ValueListRangeLambda gravity) {
+  public GravitySymbol(String name, AlternativeInput gravity) {
     super(name, KIND);
     this.gravity = gravity;
   }
 
-  public ValueListRangeLambda getGravity() {
+  public AlternativeInput getGravity() {
     return gravity;
   }
 }

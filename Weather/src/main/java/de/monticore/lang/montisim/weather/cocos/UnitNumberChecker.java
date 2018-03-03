@@ -12,7 +12,7 @@ public class UnitNumberChecker extends NumberChecker{
     
     int i = 0;
     while(i < this.unitNumber.length()) {
-      if(Character.isDigit(this.unitNumber.charAt(i)) || this.unitNumber.charAt(i)=='.') {
+      if(Character.isDigit(this.unitNumber.charAt(i)) || this.unitNumber.charAt(i)=='.' || this.unitNumber.charAt(i)=='-') {
         i++;
       } else {
         break;

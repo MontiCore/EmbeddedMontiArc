@@ -6,8 +6,8 @@ sim MaxModel {
   weather fixed {temperature 290K;
                  humidity 0.2;
                  pressure 100Pa;
-                 windstrength 2km/h;
-                 //winddirection 38.0°;
+                 wind_strength 2km/h;
+                 //wind_direction 38.0°;
                  precipitation_type snow;
                  precipitation_amount 5mm;
                  clouding stratus;

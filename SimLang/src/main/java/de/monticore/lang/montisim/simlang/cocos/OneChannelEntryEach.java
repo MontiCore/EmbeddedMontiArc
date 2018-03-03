@@ -15,7 +15,7 @@ public class OneChannelEntryEach implements SimLangASTSingleChannelCoCo {
   @Override
   public void check(ASTSingleChannel obj) {
     System.out.println("[CoCo] OneChannelEntryEach...");
-    List<de.monticore.lang.montisim.simlang._ast.ASTTransferrate> transferrates = obj.getTransferrates();
+    List<de.monticore.lang.montisim.simlang._ast.ASTTransferRate> transferrates = obj.getTransferRates();
     List<de.monticore.lang.montisim.simlang._ast.ASTLatency> latencys = obj.getLatencys();
     List<de.monticore.lang.montisim.simlang._ast.ASTOutage> outages = obj.getOutages();
     List<de.monticore.lang.montisim.simlang._ast.ASTArea> areas = obj.getAreas();

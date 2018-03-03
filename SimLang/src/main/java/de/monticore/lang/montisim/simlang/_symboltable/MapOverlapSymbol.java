@@ -1,19 +1,19 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
+import de.monticore.lang.montisim.simlang.util.AlternativeInput;
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.ValueListRangeLambda;
 
 public class MapOverlapSymbol extends CommonSymbol{
 
   public static final MapOverlapSymbolKind KIND = MapOverlapSymbolKind.INSTANCE;
-  private ValueListRangeLambda mapOverlap;
+  private AlternativeInput mapOverlap;
 
-  public MapOverlapSymbol(String name, ValueListRangeLambda mapOverlap) {
+  public MapOverlapSymbol(String name, AlternativeInput mapOverlap) {
     super(name, KIND);
     this.mapOverlap = mapOverlap;
   }
 
-  public ValueListRangeLambda getMapOverlap() {
+  public AlternativeInput getMapOverlap() {
     return mapOverlap;
   }
 }

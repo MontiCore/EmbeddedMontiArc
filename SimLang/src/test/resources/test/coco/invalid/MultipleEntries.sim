@@ -1,5 +1,0 @@
-sim MultipleEntries {
-  sim_type realtime;
-  sim_type maxfps;
-  map_name error.osm;
-}

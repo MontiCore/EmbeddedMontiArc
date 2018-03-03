@@ -1,4 +1,0 @@
-sim InfiniteRanges {
-  sim_duration (-oo:1m:2m);
-  map_name error.osm;
-}

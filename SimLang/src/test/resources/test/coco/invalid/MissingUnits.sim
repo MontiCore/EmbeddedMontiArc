@@ -1,4 +1,0 @@
-sim MissingUnits {
-  sim_render_frequency 60;
-  map_name error.osm;
-}

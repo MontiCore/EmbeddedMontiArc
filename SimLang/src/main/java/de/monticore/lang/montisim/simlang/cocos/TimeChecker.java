@@ -7,6 +7,7 @@ package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSingleTime;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTSingleTimeCoCo;
+import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 import de.se_rwth.commons.logging.Log;
 import java.util.Optional;
 
@@ -25,9 +26,11 @@ public class TimeChecker implements SimLangASTSingleTimeCoCo {
     
     if(!checkerHours.legitUnit() || !checkerMinutes.legitUnit()) {
       Log.error("Unit Error: Time does not take units.");
+      return;
     }
     if(!checkerHours.noDecimals() || !checkerMinutes.noDecimals()) {
       Log.error("Type Error: Time does not take decimals.");
+      return;
     }
     int hours = (int)Float.parseFloat(timeHours);
     int minutes = (int)Float.parseFloat(timeMinutes);
@@ -45,6 +48,7 @@ public class TimeChecker implements SimLangASTSingleTimeCoCo {
       UnitNumberChecker checkerSeconds = new UnitNumberChecker(timeSeconds.get(),allowedUnits);
       if(!checkerSeconds.legitUnit()) {
       Log.error("Unit Error: Time does not take units.");
+      return;
       }
       if(!checkerSeconds.noDecimals()) {
         Log.error("Type Error: Time does not take decimals.");
@@ -58,6 +62,7 @@ public class TimeChecker implements SimLangASTSingleTimeCoCo {
       UnitNumberChecker checkerMilliseconds = new UnitNumberChecker(timeMilliseconds.get(),allowedUnits);
       if(!checkerMilliseconds.legitUnit()) {
       Log.error("Unit Error: Time does not take units.");
+      return;
       }
       if(!checkerMilliseconds.noDecimals()) {
         Log.error("Type Error: Time does not take decimals.");

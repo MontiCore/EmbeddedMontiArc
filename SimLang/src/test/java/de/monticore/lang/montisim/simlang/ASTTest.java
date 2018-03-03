@@ -11,13 +11,12 @@ import static org.junit.Assert.assertTrue;
 
 
 public class ASTTest {
-  public static final boolean ENABLE_FAIL_QUICK = false;
 
   @Before
   public void setUp() {
     // ensure an empty log
     Log.getFindings().clear();
-    Log.enableFailQuick(ENABLE_FAIL_QUICK);
+    Log.enableFailQuick(false);
   }
 
   @Test
@@ -35,36 +34,36 @@ public class ASTTest {
       assertTrue(
               ast.getSimulation().getName().equals("FullExample") );
       assertTrue(
-              ast.getSimulation().getSimulationRenderFrequencys().get(0).getTUnitNumber().get().equals("60ms") );
+              ast.getSimulation().getSimulationRenderFrequencys().get(0).getAlternativeInput().getTUnitNumber().get().equals("60ms") );
       assertTrue(
-              ast.getSimulation().getSimulationLoopFrequencys().get(0).getRange().get().getStart().get().getUnitNumber().get().getTUnitNumber().get().equals("60m") );
+              ast.getSimulation().getSimulationLoopFrequencys().get(0).getAlternativeInput().getRange().get().getStart().get().getUnitNumber().get().getTUnitNumber().get().equals("60m") );
       assertTrue(
-              ast.getSimulation().getSimulationLoopFrequencys().get(0).getRange().get().getStep().get().getUnitNumber().get().getTUnitNumber().get().equals("1m") );
+              ast.getSimulation().getSimulationLoopFrequencys().get(0).getAlternativeInput().getRange().get().getStep().get().getUnitNumber().get().getTUnitNumber().get().equals("1m") );
       assertTrue(
-              ast.getSimulation().getSimulationLoopFrequencys().get(0).getRange().get().getEnd().get().getUnitNumber().get().getTUnitNumber().get().equals("80m") );
+              ast.getSimulation().getSimulationLoopFrequencys().get(0).getAlternativeInput().getRange().get().getEnd().get().getUnitNumber().get().getTUnitNumber().get().equals("80m") );
       assertTrue(
-              ast.getSimulation().getSimulationDurations().get(0).getTUnitNumberList().get().getTUnitNumbers().get(0).equals("50m") );
+              ast.getSimulation().getSimulationDurations().get(0).getAlternativeInput().getTUnitNumberList().get().getTUnitNumbers().get(0).equals("50m") );
       assertTrue(
-              ast.getSimulation().getSimulationDurations().get(0).getTUnitNumberList().get().getTUnitNumbers().get(1).equals("4h") );
+              ast.getSimulation().getSimulationDurations().get(0).getAlternativeInput().getTUnitNumberList().get().getTUnitNumbers().get(1).equals("4h") );
       assertTrue(
-              ast.getSimulation().getSimulationDurations().get(0).getTUnitNumberList().get().getTUnitNumbers().get(2).equals("5h") );
+              ast.getSimulation().getSimulationDurations().get(0).getAlternativeInput().getTUnitNumberList().get().getTUnitNumbers().get(2).equals("5h") );
       assertTrue(
-              ast.getSimulation().getSimulationDurations().get(0).getTUnitNumberList().get().getTUnitNumbers().get(3).equals("6h") );
+              ast.getSimulation().getSimulationDurations().get(0).getAlternativeInput().getTUnitNumberList().get().getTUnitNumbers().get(3).equals("6h") );
       //assertTrue(ast.getSimulation().getSimulationTypes().get(0).getSimType() == 2 ); //MC has unintuitive enums
       //assertTrue(ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getTemperatures().get(0).getWeatherTemperature().equals("290°") ); //needs antlr 4.7.1
-      assertTrue(ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getHumiditys().get(0).getWeatherHumidity().equals("0.2") );
+      assertTrue(ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getWeatherObj().getHumiditys().get(0).getAlternativeInput().getTUnitNumber().get().equals("0.2") );
       assertTrue(
-              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getPressures().get(0).getWeatherPressure().equals("100Pa") );
+              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getWeatherObj().getPressures().get(0).getAlternativeInput().getTUnitNumber().get().equals("100Pa") );
       assertTrue(
-              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getWindstrengths().get(0).getWeatherWindstrength().equals("2km/h") );
+              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getWeatherObj().getWindStrengths().get(0).getAlternativeInput().getTUnitNumber().get().equals("2km/h") );
       assertTrue(
-              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getWinddirections().get(0).getWeatherWinddirection().equals("38.0°") );
+              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getWeatherObj().getWindDirections().get(0).getAlternativeInput().getTUnitNumber().get().equals("38.0°") );
       //assertTrue(ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getPrecipitationtypes().get(0).getPrecipitationType() == 5 );
       assertTrue(
-              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getPrecipitationamounts().get(0).getWeatherPrecipitationamount().equals("5mm") );
+              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getWeatherObj().getPrecipitationAmounts().get(0).getAlternativeInput().getTUnitNumber().get().equals("5mm") );
       //assertTrue(ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getCloudings().get(0).getCloudingType() == 5 );
       assertTrue(
-              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getFixWeatherObj().getSights().get(0).isUnlimited() );
+              ast.getSimulation().getWeathers().get(0).getSingleWeather().get().getFixedWeather().get().getWeatherObj().getSights().get(0).isUnlimited() );
       //add phenomena
       assertTrue(
               ast.getSimulation().getTimes().get(0).getSingleTime().get().getHours().equals("1") );
@@ -82,17 +81,17 @@ public class ASTTest {
               ast.getSimulation().getMapNames().get(0).getFileFormat().equals("osm") );
       //assertTrue(ast.getSimulation().getMapHeights().get(0).getHeightMode() == 0 );
       assertTrue(
-              ast.getSimulation().getMapOverlaps().get(0).getTUnitNumber().get().equals("10") );
+              ast.getSimulation().getMapOverlaps().get(0).getAlternativeInput().getTUnitNumber().get().equals("10") );
       assertTrue(
-              ast.getSimulation().getMapSectorWidths().get(0).getTUnitNumber().get().equals("100") );
+              ast.getSimulation().getMapSectorWidths().get(0).getAlternativeInput().getTUnitNumber().get().equals("100") );
       assertTrue(
-              ast.getSimulation().getMapSectorHeights().get(0).getTUnitNumber().get().equals("100") );
+              ast.getSimulation().getMapSectorHeights().get(0).getAlternativeInput().getTUnitNumber().get().equals("100") );
       assertTrue(
-              ast.getSimulation().getMaxSectorUserss().get(0).getTUnitNumber().get().equals("1234") );
+              ast.getSimulation().getMaxSectorUserss().get(0).getAlternativeInput().getTUnitNumber().get().equals("1234") );
       assertTrue(
-              ast.getSimulation().getTimeouts().get(0).getTUnitNumber().get().equals("12h") );
+              ast.getSimulation().getTimeouts().get(0).getAlternativeInput().getTUnitNumber().get().equals("12h") );
       assertTrue(
-              ast.getSimulation().getGravitys().get(0).getTUnitNumber().get().equals("12m/s^2") );
+              ast.getSimulation().getGravitys().get(0).getAlternativeInput().getTUnitNumber().get().equals("12m/s^2") );
       //assertTrue(ast.getSimulation().getPedestrianDensitys().get(0).getLambda().get().getHours().equals("1") );
       assertTrue(
               ast.getSimulation().getPedestrianss().get(0).getStartX().equals("10.10") );
@@ -106,7 +105,7 @@ public class ASTTest {
               ast.getSimulation().getPedestrianss().get(0).getDestY().equals("20.0") );
       assertTrue(ast.getSimulation().getPedestrianss().get(0).getDestZ().get().equals("0.0") );
       assertTrue(
-              ast.getSimulation().getVehicless().get(0).getExplicitVehicle().get().getVehicle().equals("car1") );
+              ast.getSimulation().getVehicless().get(0).getExplicitVehicle().get().getName().equals("car1") );
       assertTrue(
               ast.getSimulation().getVehicless().get(0).getExplicitVehicle().get().getStartX().equals("-22") );
       assertTrue(
@@ -147,11 +146,11 @@ public class ASTTest {
       assertTrue(
               ast.getSimulation().getChannels().get(0).getSingleChannel().get().isFixed() );
       assertTrue(
-              ast.getSimulation().getChannels().get(0).getSingleChannel().get().getTransferrates().get(0).getTUnitNumber().get().equals("20 Mbit/s") );
+              ast.getSimulation().getChannels().get(0).getSingleChannel().get().getTransferRates().get(0).getAlternativeInput().getTUnitNumber().get().equals("20 Mbit/s") );
       assertTrue(
-              ast.getSimulation().getChannels().get(0).getSingleChannel().get().getLatencys().get(0).getTUnitNumber().get().equals("10ms") );
+              ast.getSimulation().getChannels().get(0).getSingleChannel().get().getLatencys().get(0).getAlternativeInput().getTUnitNumber().get().equals("10ms") );
       assertTrue(
-              ast.getSimulation().getChannels().get(0).getSingleChannel().get().getOutages().get(0).getTUnitNumber().get().equals("0.001") );
+              ast.getSimulation().getChannels().get(0).getSingleChannel().get().getOutages().get(0).getAlternativeInput().getTUnitNumber().get().equals("0.001") );
       assertTrue(
               ast.getSimulation().getChannels().get(0).getSingleChannel().get().getAreas().get(0).isGlobal());
     }

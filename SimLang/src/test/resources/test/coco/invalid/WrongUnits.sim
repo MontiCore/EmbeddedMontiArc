@@ -1,4 +1,0 @@
-sim WrongUnits {
-  sim_render_frequency 60km;
-  map_name HorsterDreieck.osm;
-}

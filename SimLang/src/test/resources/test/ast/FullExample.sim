@@ -6,8 +6,8 @@ sim FullExample {
   weather fixed {temperature 290°C;
                  humidity 0.2;
                  pressure 100Pa;
-                 windstrength 2km/h;
-                 winddirection 38.0°;
+                 wind_strength 2km/h;
+                 wind_direction 38.0°;
                  precipitation_type snow;
                  precipitation_amount 5mm;
                  clouding stratus;
@@ -33,14 +33,14 @@ sim FullExample {
   <v> 1234 (-150, -150) -> (500, 600);
   
   fixed channel LTE {
-    transferrate 20 Mbit/s;
+    transfer_rate 20 Mbit/s;
     latency 10ms;
     outage 0.001;
     area global;
   };
   
   bound channel ICE {
-    transferrate 2bit/s;
+    transfer_rate 2bit/s;
     latency 1s;
     outage 99%;
     area (10,10) 30;

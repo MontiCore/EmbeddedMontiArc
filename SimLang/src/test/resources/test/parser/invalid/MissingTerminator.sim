@@ -1,4 +1,4 @@
-sim WrongInput {
+sim MissingTerminator {
   sim_render_frequency 60ms
   map_name HorsterDreieck.osm;
 }

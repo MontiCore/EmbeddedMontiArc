@@ -161,9 +161,9 @@ public class SimLangTool {
     defaultCoCos.addCoCo(new PressureChecker());
     defaultCoCos.addCoCo(new HumidityChecker());
     defaultCoCos.addCoCo(new SightChecker());
-    defaultCoCos.addCoCo(new PrecipitationamountChecker());
-    defaultCoCos.addCoCo(new WindstrengthChecker());
-    defaultCoCos.addCoCo(new WinddirectionChecker());
+    defaultCoCos.addCoCo(new PrecipitationAmountChecker());
+    defaultCoCos.addCoCo(new WindStrengthChecker());
+    defaultCoCos.addCoCo(new WindDirectionChecker());
 
     //Communication CoCos
     defaultCoCos.addCoCo(new OneChannelEntryEach());

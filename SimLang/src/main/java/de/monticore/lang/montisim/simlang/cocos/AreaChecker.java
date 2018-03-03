@@ -10,7 +10,7 @@ import de.monticore.lang.montisim.simlang._cocos.SimLangASTAreaCoCo;
 
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
+import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 
 public class AreaChecker implements SimLangASTAreaCoCo {
   
@@ -35,7 +35,6 @@ public class AreaChecker implements SimLangASTAreaCoCo {
     if(!checker.legitUnit()) {
       Log.error("Unit Error: Area missing or invalid unit.");
     }
-    
     //Coordinates are handled by the Coordinate CoCo
     
     System.out.println("[Done] AreaChecker");

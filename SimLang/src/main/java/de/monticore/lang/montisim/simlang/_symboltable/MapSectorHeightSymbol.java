@@ -1,19 +1,19 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
+import de.monticore.lang.montisim.simlang.util.AlternativeInput;
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.ValueListRangeLambda;
 
 public class MapSectorHeightSymbol extends CommonSymbol{
 
   public static final MapSectorHeightSymbolKind KIND = MapSectorHeightSymbolKind.INSTANCE;
-  private ValueListRangeLambda mapSectorHeight;
+  private AlternativeInput mapSectorHeight;
 
-  public MapSectorHeightSymbol(String name, ValueListRangeLambda mapSectorHeight) {
+  public MapSectorHeightSymbol(String name, AlternativeInput mapSectorHeight) {
     super(name, KIND);
     this.mapSectorHeight = mapSectorHeight;
   }
 
-  public ValueListRangeLambda getMapSectorHeight() {
+  public AlternativeInput getMapSectorHeight() {
     return mapSectorHeight;
   }
 }

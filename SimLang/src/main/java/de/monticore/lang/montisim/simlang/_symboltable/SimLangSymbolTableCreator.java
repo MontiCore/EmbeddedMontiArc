@@ -1,16 +1,16 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
-import de.se_rwth.commons.logging.Log;
 import de.monticore.lang.montisim.simlang._ast.*;
 
+import de.monticore.lang.montisim.weather._ast.ASTAlternativeInput;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.ImportStatement;
 
 import de.se_rwth.commons.Names;
 import de.monticore.lang.montisim.simlang.util.*;
+import jline.internal.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +26,9 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
         super(resolvingConfig, scopeStack);
   }
 
-
-
   // Scope Symbols
   @Override
   public void visit(ASTSimLangCompilationUnit node) {
-    //coCoChecker.checkAll(node);
     String packageQualifiedName = Names.getQualifiedName(node.getPackage());
     List<ImportStatement> imports = node.getImportStatements()
             .stream()
@@ -78,11 +75,6 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
 
     addToScopeAndLinkWithNode(weatherSymbol, node);*/
   }
-
-  @Override
-  public void endVisit(final ASTWeather node) {
-    //removeCurrentScope();
-  }
   
   @Override
   public void visit(final ASTChannel node) {/*
@@ -93,60 +85,35 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     addToScopeAndLinkWithNode(channelSymbol, node);*/
   }
 
-  @Override
-  public void endVisit(final ASTChannel node) {
-    //removeCurrentScope();
-  }
-
   // Standard Symbols
+
+  private AlternativeInput getUsedAlternative(ASTAlternativeInput node) {
+    if (node.tUnitNumberIsPresent()) {
+      return new AlternativeInput(node.getTUnitNumber());
+    }
+    else if(node.tUnitNumberListIsPresent()) {
+      return new AlternativeInput(node.getTUnitNumberList());
+    }
+    else if(node.rangeIsPresent()) {
+      return new AlternativeInput(node.getRange());
+    }
+    else {
+      Log.error("Error: unhandled alternative input.");
+      return null;
+    }
+  }
 
   //Simulation
   public void visit(final ASTSimulationRenderFrequency node) {
-    final SimulationRenderFrequencySymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new SimulationRenderFrequencySymbol("sim_render_frequency", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new SimulationRenderFrequencySymbol("sim_render_frequency", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new SimulationRenderFrequencySymbol("sim_render_frequency", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new SimulationRenderFrequencySymbol("sim_render_frequency", new ValueListRangeLambda(node.getLambda()));
-    }
+    final SimulationRenderFrequencySymbol symbol = new SimulationRenderFrequencySymbol("sim_render_frequency", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTSimulationLoopFrequency node) {
-    final SimulationLoopFrequencySymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new SimulationLoopFrequencySymbol("sim_loop_frequency", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new SimulationLoopFrequencySymbol("sim_loop_frequency", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new SimulationLoopFrequencySymbol("sim_loop_frequency", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new SimulationLoopFrequencySymbol("sim_loop_frequency", new ValueListRangeLambda(node.getLambda()));
-    }
+    final SimulationLoopFrequencySymbol symbol = new SimulationLoopFrequencySymbol("sim_loop_frequency", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTSimulationDuration node) {
-    final SimulationDurationSymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new SimulationDurationSymbol("sim_duration", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new SimulationDurationSymbol("sim_duration", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new SimulationDurationSymbol("sim_duration", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new SimulationDurationSymbol("sim_duration", new ValueListRangeLambda(node.getLambda()));
-    }
+    final SimulationDurationSymbol symbol = new SimulationDurationSymbol("sim_duration", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTSimulationType node) {
@@ -219,115 +186,31 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTMapOverlap node) {
-    final MapOverlapSymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new MapOverlapSymbol("map_overlap", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new MapOverlapSymbol("map_overlap", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new MapOverlapSymbol("map_overlap", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new MapOverlapSymbol("map_overlap", new ValueListRangeLambda(node.getLambda()));
-    }
+    final MapOverlapSymbol symbol = new MapOverlapSymbol("map_overlap", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTMapSectorWidth node) {
-    final MapSectorWidthSymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new MapSectorWidthSymbol("map_sector_width", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new MapSectorWidthSymbol("map_sector_width", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new MapSectorWidthSymbol("map_sector_width", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new MapSectorWidthSymbol("map_sector_width", new ValueListRangeLambda(node.getLambda()));
-    }
+    final MapSectorWidthSymbol symbol = new MapSectorWidthSymbol("map_sector_width", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTMapSectorHeight node) {
-    final MapSectorHeightSymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new MapSectorHeightSymbol("map_sector_height", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new MapSectorHeightSymbol("map_sector_height", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new MapSectorHeightSymbol("map_sector_height", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new MapSectorHeightSymbol("map_sector_height", new ValueListRangeLambda(node.getLambda()));
-    }
+    final MapSectorHeightSymbol symbol = new MapSectorHeightSymbol("map_sector_height", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTMaxSectorUsers node) {
-    final MaxSectorUsersSymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new MaxSectorUsersSymbol("max_sector_users", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new MaxSectorUsersSymbol("max_sector_users", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new MaxSectorUsersSymbol("max_sector_users", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new MaxSectorUsersSymbol("max_sector_users", new ValueListRangeLambda(node.getLambda()));
-    }
+    final MaxSectorUsersSymbol symbol = new MaxSectorUsersSymbol("max_sector_users", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTTimeout node) {
-    final TimeoutSymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new TimeoutSymbol("timeout", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new TimeoutSymbol("timeout", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new TimeoutSymbol("timeout", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new TimeoutSymbol("timeout", new ValueListRangeLambda(node.getLambda()));
-    }
+    final TimeoutSymbol symbol = new TimeoutSymbol("timeout", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTGravity node) {
-    final GravitySymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new GravitySymbol("gravity", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new GravitySymbol("gravity", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new GravitySymbol("gravity", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new GravitySymbol("gravity", new ValueListRangeLambda(node.getLambda()));
-    }
+    final GravitySymbol symbol = new GravitySymbol("gravity", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTPedestrianDensity node) {
-    final PedestrianDensitySymbol symbol;
-    if(node.getTUnitNumber().isPresent()) {
-      symbol = new PedestrianDensitySymbol("pedestrian_density", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getTUnitNumberList().isPresent()) {
-      symbol = new PedestrianDensitySymbol("pedestrian_density", new ValueListRangeLambda(node.getTUnitNumber()));
-    }
-    else if(node.getRange().isPresent()) {
-      symbol = new PedestrianDensitySymbol("pedestrian_density", new ValueListRangeLambda(node.getRange()));
-    }
-    else {
-      symbol = new PedestrianDensitySymbol("pedestrian_density", new ValueListRangeLambda(node.getLambda()));
-    }
+    final PedestrianDensitySymbol symbol = new PedestrianDensitySymbol("pedestrian_density", getUsedAlternative(node.getAlternativeInput()));
     addToScopeAndLinkWithNode(symbol, node);
   }
 

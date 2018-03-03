@@ -1,33 +1,26 @@
 /* 
- * advanced weather language v0.2
+ * advanced weather language v1.0
  * @author Deniz Schmidt
 */
 package de.monticore.lang.montisim;
 
-grammar Weather extends de.monticore.lang.NumberUnit {
+grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Ranges {
 
-  //takes float in °celsius or °fahrenheit OR float in [0,oo) in Kelvin
-  Temperature = "temperature" weatherTemperature:TUnitNumber ";";
-  
-  //in relative air humidity as % OR float in [0,1]
-  Humidity = "humidity" weatherHumidity:TUnitNumber (["%"])? ";";
-  
-  //takes float in [0, oo)
-  //in Pascal or bar
-  Pressure = "pressure" weatherPressure:TUnitNumber ";";
-  
-  //https://en.wikipedia.org/wiki/Beaufort_scale
-  //takes float in [0, oo)
-  //in (knots,) meter/second, km/hour or miles/hour
-  Windstrength = "windstrength" weatherWindstrength:TUnitNumber ";";
-  
-  //see windrose
-  //takes float in [0,360]
-  //in angle degree
-  Winddirection = "winddirection" weatherWinddirection:TUnitNumber ";";
-  
-  //https://en.wikipedia.org/wiki/Precipitation_types
-  Precipitationtype = "precipitation_type" precipitationType:["none"|
+  Coordinate = "(" posX:TUnitNumber "," posY:TUnitNumber ")";
+  TUnitNumberList = "[" TUnitNumber ("," TUnitNumber)* "]";
+  AlternativeInput = (TUnitNumber | TUnitNumberList | Range);
+
+  Temperature = "temperature" AlternativeInput;
+
+  Humidity = "humidity" AlternativeInput;
+
+  Pressure = "pressure" AlternativeInput;
+
+  WindStrength = "wind_strength" AlternativeInput;
+
+  WindDirection = "wind_direction" AlternativeInput;
+
+  PrecipitationType = "precipitation_type" precipitationType:["none"|
                                             "drizzle"|
                                             "rain"|
                                             "freezing drizzle"|
@@ -38,10 +31,9 @@ grammar Weather extends de.monticore.lang.NumberUnit {
                                             "ice_pellets"|"sleet"|
                                             "hail"|
                                             "snow_pellets"|"graupel"|
-                                            "ice_crystals"] ";";
-  
-  //takes float in [0,oo) in liter/square meter or millimeter
-  Precipitationamount = "precipitation_amount" weatherPrecipitationamount:TUnitNumber ";";
+                                            "ice_crystals"] ;
+
+  PrecipitationAmount = "precipitation_amount" AlternativeInput;
   
   Clouding = "clouding" cloudingType:["none"|
                          "cirrostratus"|
@@ -57,12 +49,11 @@ grammar Weather extends de.monticore.lang.NumberUnit {
                          "cumulus_humilis"|
                          "cumulus_mediocris"|
                          "cumulus_congestus"|
-                         "cumulonimbus"] ";";
-                         
-  //takes float in [0,oo) in centi-,meter,kilometer OR keyword unlimited
-  Sight = "sight" (weatherSight:TUnitNumber | ["unlimited"]) ";";
+                         "cumulonimbus"] ;
+
+  Sight = "sight" (AlternativeInput | ["unlimited"]) ;
   
-  WeatherPhenomena = ("weather_phenomena" phenomenaType:["fog"|
+  WeatherPhenomena = "weather_phenomena" phenomenaType:["fog"|
                                            "rope_tornado"|
                                            "cone_tornado"|
                                            "wedge_tornado"|
@@ -73,18 +64,17 @@ grammar Weather extends de.monticore.lang.NumberUnit {
                                            "dust_devil"|
                                            "steam_devil"|
                                            "thunderstorm"]
-                    ("(" (posX:TUnitNumber) "," (posY:TUnitNumber) ")")? 
-                    ) ";";
+                    (Coordinate)? ;
                                     
-  OpticalPhenomena = ("optical_phenomena" phenomenaType:["rainbow"|
+  OpticalPhenomena = "optical_phenomena" phenomenaType:["rainbow"|
                                            "northern_lights"|
                                            "circumzenithal_arc"|
                                            "zodiacal_light"|
                                            "crepuscular_rays"|
                                            "mirage"|
-                                           "fog_bow"]) ";";
+                                           "fog_bow"] ;
                                            
-  ArtificialPhenomena = ("artificial_phenomena" phenomenaType:["contrails"|
+  ArtificialPhenomena = "artificial_phenomena" phenomenaType:["contrails"|
                                                  "smog"|
-                                                 "rocket_exhaust_trails"]) ";";
+                                                 "rocket_exhaust_trails"] ;
 }

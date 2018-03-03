@@ -9,6 +9,8 @@ import de.monticore.lang.montisim.weather._ast.ASTHumidity;
 import de.monticore.lang.montisim.weather._cocos.WeatherASTHumidityCoCo;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
+
 public class HumidityChecker implements WeatherASTHumidityCoCo {
   
   @Override
@@ -17,20 +19,15 @@ public class HumidityChecker implements WeatherASTHumidityCoCo {
     
     String[] allowedUnits = {""};
     
-    String input = obj.getWeatherHumidity();
-    
-    UnitNumberChecker checker = new UnitNumberChecker(input, allowedUnits);
-    
-    if(!checker.legitUnit()) {
-      Log.error("Unit Error: Humidity invalid unit.");
-    }
-    
-    if(obj.isPERCENT()) {
-      if(!checker.inClosedRange(0,100)) {
-        Log.error("Range Error: Humidity in percent must be within [0,100].");
+    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+
+    for(String nu : input) {
+      UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
+
+      if (!checker.legitUnit()) {
+        Log.error("Unit Error: Humidity invalid unit.");
       }
-    } else {
-      if(!checker.inClosedRange(0,1)) {
+      if (!checker.inClosedRange(0, 1)) {
         Log.error("Range Error: Humidity in float must be within [0,1].");
       }
     }
