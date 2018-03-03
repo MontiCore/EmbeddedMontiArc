@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -87,7 +88,8 @@ class CppStepIT {
   }
 
   private List<Path> files(Path dir) throws IOException {
-    try (Stream<Path> fileStream = Files.walk(dir)) {
+    try (Stream<Path> fileStream = Files.walk(dir)
+        .sorted(Comparator.comparing(Path::getFileName))) {
       return fileStream.collect(Collectors.toList());
     }
   }
