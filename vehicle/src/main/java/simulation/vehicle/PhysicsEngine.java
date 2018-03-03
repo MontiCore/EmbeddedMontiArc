@@ -85,10 +85,7 @@ public class PhysicsEngine{
                 List<Map.Entry<RealVector, RealVector>> otherBoundaries = physicalObject.getBoundaryVectors();
                 boolean collisionDetected = MathHelper.checkIntersection2D(boundaries, otherBoundaries);
 
-                //NetworkCellBaseStations should not be involved in collisions
-                if (collisionDetected &&
-                		!physicalObject.getPhysicalObjectType().equals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION)) {
-                    
+                if (collisionDetected) {
                 	object.setCollision(true);
                     physicalObject.setCollision(true);
                     calcCollisionForces(object, physicalObject, deltaT);
