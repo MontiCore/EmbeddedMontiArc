@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.emam2wasm;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.adapter.CppFileGenerator;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,18 +78,22 @@ class CppStepIT {
   private void assertFolderContentsAreEqual(Path actual, Path expected) throws IOException {
     List<Path> actualFiles = files(actual);
     List<Path> expectedFiles = files(expected);
-    for (int i = 0; i < actualFiles.size(); i++) {
-      Path actualFile = actualFiles.get(i);
-      Path expectedFile = expectedFiles.get(i);
-      if (Files.isRegularFile(actualFile) && Files.isRegularFile(expectedFile)) {
-        assertThat(actualFile).hasSameContentAs(expectedFile);
+
+    for (Path actualFile : actualFiles) {
+      for (Path expectedFile : expectedFiles) {
+        if (actualFile.getFileName().equals(expectedFile.getFileName())) {
+          if (Files.isRegularFile(actualFile) && Files.isRegularFile(expectedFile)) {
+            assertThat(actualFile).hasSameContentAs(expectedFile);
+          } else {
+            fail("No matching file was found for " + actualFile.toString());
+          }
+        }
       }
     }
   }
 
   private List<Path> files(Path dir) throws IOException {
-    try (Stream<Path> fileStream = Files.walk(dir)
-        .sorted(Comparator.comparing(Path::getFileName))) {
+    try (Stream<Path> fileStream = Files.walk(dir)) {
       return fileStream.collect(Collectors.toList());
     }
   }
