@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2wasm;
+package de.monticore.lang.monticar.emam2wasm.model;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
@@ -7,22 +7,41 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public class ModelNameParser {
+public class EmamModelNameProvider implements ModelNameProvider {
+
+  private static final String EMAM_EXTENSION = "emam";
 
   private EmbeddedMontiArcMathParser parser;
 
-  public ModelNameParser(EmbeddedMontiArcMathParser parser) {
+  public EmamModelNameProvider(EmbeddedMontiArcMathParser parser) {
     this.parser = parser;
   }
 
-  public String parseModelName(String model) {
+  @Override
+  public String getPackage(String model) {
+    try {
+      ASTEMAMCompilationUnit ast = parse(model);
+      return ast.getEMACompilationUnit().getPackage().stream().collect(Collectors.joining("."));
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
+  public String getName(String model) {
     try {
       ASTEMAMCompilationUnit ast = parse(model);
       return ast.getEMACompilationUnit().getComponent().getName();
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  @Override
+  public String getFileExtension() {
+    return EMAM_EXTENSION;
   }
 
   private ASTEMAMCompilationUnit parse(String model) throws IOException {

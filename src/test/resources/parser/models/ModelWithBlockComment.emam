@@ -1,0 +1,6 @@
+/*package abc;*/
+package /*xyz*/ models;
+
+//component Comment { }
+component /*BlockComment*/ ModelWithBlockComment {
+}
