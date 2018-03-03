@@ -88,6 +88,7 @@ public final class TestsGeneratorCPP {
         if (generator.isCheckModelDir()) {
             files.add(new FileContent(getExistingComponentStreamNames(), "/reporting/" + "existingStreams.txt"));
             files.add(new FileContent(getExistingComponentNames(), "/reporting/" + "existingComponents.txt"));
+            files.add(new FileContent(getComponentNamesThatHaveTests(), "/reporting/" + "testComponents.txt"));
         }
         return files;
     }
@@ -110,6 +111,14 @@ public final class TestsGeneratorCPP {
                 result += "    " + cus.getFullName();
                 result += "\n";
             }
+        }
+        return result;
+    }
+
+    private String getComponentNamesThatHaveTests() {
+        String result = "";
+        for (ComponentSymbol k : availableStreams.keySet()) {
+            result += k.getFullName() + "\n";
         }
         return result;
     }
