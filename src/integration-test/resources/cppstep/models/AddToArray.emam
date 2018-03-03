@@ -1,0 +1,12 @@
+package models;
+
+component AddToArray {
+  ports
+    in Z array[5],
+    in Z offset,
+    out Z result[5];
+
+  implementation Math {
+    result = offset + array;
+  }
+}
