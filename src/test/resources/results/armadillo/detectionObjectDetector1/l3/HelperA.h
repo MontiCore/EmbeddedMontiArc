@@ -77,9 +77,22 @@ static double getEuclideanDistance(mat A, int colIndexA, mat B, int colIndexB){
 }
 
 static mat getSqrtMat(mat A){
-cx_mat result=sqrtmat(A);
-return real(result);
+
+for(int i=0;i<A.n_rows;++i){
+    double curVal = A(i,i);
+    A(i,i) = sqrt(curVal);
 }
+return A;
+}
+
+static mat getSqrtMatDiag(mat A){
+for(int i=0;i<A.n_rows;++i){
+    double curVal = A(i,i);
+    A(i,i) = sqrt(curVal);
+}
+return A;
+}
+
 static mat invertDiagMatrix(mat A){
 for(int i=0;i<A.n_rows;++i){
     double curVal = A(i,i);

@@ -187,8 +187,8 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l3");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);

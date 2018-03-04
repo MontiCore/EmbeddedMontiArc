@@ -4,6 +4,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo.h"
+#include "HelperA.h"
 using namespace arma;
 class detection_objectDetector_spectralClusterer_1__normalizedLaplacian{
 const int n = 2500;
@@ -19,7 +20,7 @@ nLaplacian=mat(n,n);
 }
 void execute()
 {
-nLaplacian = Helper::getmatFromOctaveListFirstResult(Fmpower(Helper::convertToOctaveValueList(degree,-0.5*W),1))*Helper::getmatFromOctaveListFirstResult(Fmpower(Helper::convertToOctaveValueList(degree,-0.5),1));
+nLaplacian = (HelperA::getSqrtMat((inv(degree))))*W*(HelperA::getSqrtMat((inv(degree))));
 }
 
 };

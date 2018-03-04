@@ -11,6 +11,8 @@
 using namespace arma;
 class detection_objectDetector_spectralClusterer_1_{
 const int n = 2500;
+const int k = 4;
+const int maximumClusters = 4;
 public:
 mat imgMatrix;
 mat clusters;

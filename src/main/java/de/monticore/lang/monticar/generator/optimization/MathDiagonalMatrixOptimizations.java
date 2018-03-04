@@ -6,7 +6,6 @@ import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorS
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.se_rwth.commons.logging.Log;
 
@@ -15,7 +14,7 @@ import java.util.List;
 /**
  * @author Sascha Schneiders
  */
-public class MathDiagonalMatrixInversionOptimization implements MathOptimizationRule {
+public class MathDiagonalMatrixOptimizations implements MathOptimizationRule {
     MathStatementsSymbol currentMathStatementsSymbol = null;
 
     @Override
@@ -72,11 +71,18 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
     public void optimize(MathMatrixNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (mathExpressionSymbol.getNameToAccess().equals("inv")) {
             //ComponentConverter.currentBluePrint.getMathInformationRegister().isDiagonalMatrix()
-            boolean invertsDiagonalMatrix = invertsDiagonalMatrix(mathExpressionSymbol);
+            boolean invertsDiagonalMatrix = isDiagonalMatrix(mathExpressionSymbol);
             if (invertsDiagonalMatrix) {
                 mathExpressionSymbol.setNameToAccess("invdiag");
             }
             Log.debug("Found inv and replaced with invdiag", "optimizeMathMatrixNameExp");
+        } else if (mathExpressionSymbol.getNameToAccess().equals("sqrtm")) {
+            boolean isDiagMatrix = isDiagonalMatrix(mathExpressionSymbol);
+            if (isDiagMatrix) {
+                mathExpressionSymbol.setNameToAccess("sqrtmdiag");
+            }
+            Log.debug("Found sqrtm and replaced with sqrtdiag", "optimizeMathMatrixNameExp");
+
         }
         if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {
             optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
@@ -84,12 +90,14 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
             Log.debug("Not handled: EndOperator", "optimizeMathMatrixNameExpr");
     }
 
-    private boolean invertsDiagonalMatrix(MathMatrixNameExpressionSymbol mathExpressionSymbol) {
+    private boolean isDiagonalMatrix(MathMatrixNameExpressionSymbol mathExpressionSymbol) {
         boolean invertsDiagonalMatrix = false;
         if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {
             //optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
             //Log.error(ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable("degree").getProperties().toString());
             String name = getMatrixName((MathMatrixAccessSymbol) mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().get().getMathMatrixAccesss().get(0).getSymbol().get());//TODO handle all possible cases
+            //System.out.println("isDiagonalMatrix: " + name);
+            //System.out.println(mathExpressionSymbol.getTextualRepresentation());
             invertsDiagonalMatrix = ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable(name).getProperties().contains("diag");
         }
         return invertsDiagonalMatrix;
@@ -107,6 +115,12 @@ public class MathDiagonalMatrixInversionOptimization implements MathOptimization
         if (curMathExp.isValueExpression()) {
             if (((MathValueExpressionSymbol) curMathExp).isNameExpression()) {
                 return ((MathNameExpressionSymbol) curMathExp).getNameToResolveValue();
+            } else {
+                Log.debug("Not handled getMatrixName", "MissingImplementation");
+            }
+        } else if (curMathExp.isMatrixExpression()) {
+            if (((MathMatrixExpressionSymbol) curMathExp).isMatrixNameExpression()) {
+                return getMatrixName(((MathMatrixNameExpressionSymbol) curMathExp).getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0));
             } else {
                 Log.debug("Not handled getMatrixName", "MissingImplementation");
             }

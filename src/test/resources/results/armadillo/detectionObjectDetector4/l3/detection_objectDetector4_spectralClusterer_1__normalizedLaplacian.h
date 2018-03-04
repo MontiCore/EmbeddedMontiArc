@@ -21,7 +21,8 @@ nLaplacian=mat(n,n);
 }
 void execute()
 {
-nLaplacian = (HelperA::getSqrtMat((inv(degree))))*W*(HelperA::getSqrtMat((inv(degree))));
+auto _I_0 = (HelperA::getSqrtMatDiag((HelperA::invertDiagMatrix(degree))));
+nLaplacian = _I_0*W*_I_0;
 }
 
 };
