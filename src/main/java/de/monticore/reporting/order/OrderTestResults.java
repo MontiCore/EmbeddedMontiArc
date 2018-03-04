@@ -28,19 +28,25 @@ public class OrderTestResults {
 
             for(ASTElement element: ast.getBody().getElements()){
                 if ( element instanceof ASTSubComponent ){
-                    ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
-                    ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
-                    ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
+                    if(((ASTSubComponent) element).getInstances().size() > 0) {
+                        ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
+                        ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
+                        ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
 
-                    String name = commonSymbolReference.getFullName();
-                    CheckCoCoResult child = modelPathMap.get(name);
-                    testResult.addChild(child);
-                    if(child != null)
-                        child.addParent(testResult);
+                        String name = commonSymbolReference.getFullName();
+                        CheckCoCoResult child = modelPathMap.get(name);
+
+                        String referencedName = ((ASTSubComponent) element).getInstances().get(0).getName();
+                        ChildElement childElement = new ChildElement(referencedName, child);
+                        testResult.addChild(childElement);
+                        if (child != null)
+                            child.addParent(testResult);
+                    }
                 }
             }
         }
 
+        List<CheckCoCoResult> rootModels = new LinkedList<>();
         List<CheckCoCoResult> parentModels = new LinkedList<>();
         List<CheckCoCoResult> moreThanOneParent = new LinkedList<>();
 
@@ -50,9 +56,11 @@ public class OrderTestResults {
                 parentModels.add(testResult);
             else if (testResult.getParents().size() > 1)
                 moreThanOneParent.add(testResult);
+            if(testResult.getParents().size() == 0 && testResult.getChildren().size() > 0)
+                rootModels.add(testResult);
         }
 
-        return parentModels;
+        return rootModels;
     }
 
     private static Map<String, Map<String, CheckCoCoResult>> mapTestResults(List<CheckCoCoResult> testResults){

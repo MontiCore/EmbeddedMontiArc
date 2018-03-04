@@ -1,8 +1,5 @@
-package de.monticore.reporting.order;
+package de.monticore.reporting.emam2ema;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTElement;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._ast.ASTBehaviorImplementation;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 
 import java.io.IOException;

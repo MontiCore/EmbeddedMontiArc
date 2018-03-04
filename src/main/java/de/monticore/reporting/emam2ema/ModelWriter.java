@@ -1,4 +1,4 @@
-package de.monticore.reporting.order;
+package de.monticore.reporting.emam2ema;
 
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 import org.apache.commons.io.FileUtils;

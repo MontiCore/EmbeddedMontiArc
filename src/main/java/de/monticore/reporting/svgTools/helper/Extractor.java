@@ -1,4 +1,4 @@
-package de.monticore.reporting.extractSVGGenerator;
+package de.monticore.reporting.svgTools.helper;
 
 import org.apache.commons.io.FileUtils;
 
@@ -53,9 +53,12 @@ public class Extractor {
 
         for (String fileName : iconsToCopy) {
             URL inputUrl = ClassLoader.getSystemResource(fileName);
+            File targetParent = new File("svgGenerator");
+            if(!targetParent.exists()) targetParent.mkdirs();
             File target = Paths.get("svgGenerator/" + fileName).toFile();
             System.out.println("copying svgGenerator " + inputUrl + " to " + target.getAbsolutePath());
             FileUtils.copyURLToFile(inputUrl, target);
+            targetParent.deleteOnExit();
             target.deleteOnExit();
         }
     }

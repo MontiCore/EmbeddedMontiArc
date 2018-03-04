@@ -2,6 +2,7 @@ package de.monticore.reporting.testCocos.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.reporting.order.ChildElement;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -33,7 +34,7 @@ public class CheckCoCoResult {
     private ASTEmbeddedMontiArcNode resolvedAst = null;
 
     private List<CheckCoCoResult> parents = new LinkedList<>();
-    private List<CheckCoCoResult> children = new LinkedList<>();
+    private List<ChildElement> children = new LinkedList<>();
 
     private int componentCapitalized = 0;
     private int componentInstanceNamesUnique = 0;
@@ -405,7 +406,7 @@ public class CheckCoCoResult {
         return parents;
     }
 
-    public List<CheckCoCoResult> getChildren() {
+    public List<ChildElement> getChildren() {
         return children;
     }
 
@@ -413,7 +414,7 @@ public class CheckCoCoResult {
         this.parents.add(parent);
     }
 
-    public void addChild(CheckCoCoResult child){
+    public void addChild(ChildElement child){
         this.children.add(child);
     }
 

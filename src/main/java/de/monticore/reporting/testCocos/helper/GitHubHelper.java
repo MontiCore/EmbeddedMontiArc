@@ -39,8 +39,10 @@ public class GitHubHelper {
             String branch = "";
             try {
                 for (String line : lines) {
-                    if (line.contains("Fetch URL"))
-                        url = "https://" + line.substring(line.indexOf("git://") + "git://".length(), line.lastIndexOf(".git")) + "/";
+                    if (line.contains("Fetch URL")) {
+                        String owner_Project = line.substring(line.lastIndexOf("github.com/") + "github.com/".length());
+                        url = "https://github.com/" + owner_Project + "/";
+                    }
                     if (line.contains("HEAD branch"))
                         branch = line.substring(line.indexOf("HEAD branch") + "HEAD branch: ".length());
                 }
