@@ -28,8 +28,9 @@ public class GeneratorCppWrapper {
   }
 
   public TextFile generateFiles(ExpandedComponentInstanceSymbol componentSymbol,
-      TaggingResolver symtab)
-      throws IOException {
+      TaggingResolver symtab) throws IOException {
+    generator.useArmadilloBackend();
+    generator.setUseAlgebraicOptimizations(true);
     List<File> files = generator.generateFiles(symtab, componentSymbol, symtab);
     return new TextFile(files.get(0).toPath());
   }
@@ -40,7 +41,7 @@ public class GeneratorCppWrapper {
     Resolver resolver = new Resolver(symtab);
     ExpandedComponentInstanceSymbol componentSymbol = resolver
         .getExpandedComponentInstanceSymbol(fullName);
-    generator.useArmadilloBackend();
+
     return generateFiles(componentSymbol, symtab);
   }
 }
