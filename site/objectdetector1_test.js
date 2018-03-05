@@ -1783,8 +1783,8 @@ var ASM_CONSTS = [];
 
 STATIC_BASE = GLOBAL_BASE;
 
-STATICTOP = STATIC_BASE + 43120;
-/* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__I_000101() } }, { func: function() { ___cxx_global_var_init_108() } }, { func: function() { ___cxx_global_var_init_109() } }, { func: function() { ___cxx_global_var_init_110() } }, { func: function() { __GLOBAL__sub_I_objectDetector1_cpp() } }, { func: function() { __GLOBAL__sub_I_bind_cpp() } }, { func: function() { __GLOBAL__sub_I_iostream_cpp() } });
+STATICTOP = STATIC_BASE + 42960;
+/* global initializers */  __ATINIT__.push({ func: function() { __GLOBAL__I_000101() } }, { func: function() { ___cxx_global_var_init_26() } }, { func: function() { ___cxx_global_var_init_27() } }, { func: function() { ___cxx_global_var_init_28() } }, { func: function() { __GLOBAL__sub_I_objectDetector1_cpp() } }, { func: function() { __GLOBAL__sub_I_bind_cpp() } }, { func: function() { __GLOBAL__sub_I_iostream_cpp() } });
 
 
 
@@ -1792,7 +1792,7 @@ STATICTOP = STATIC_BASE + 43120;
 
 
 
-var STATIC_BUMP = 43120;
+var STATIC_BUMP = 42960;
 Module["STATIC_BASE"] = STATIC_BASE;
 Module["STATIC_BUMP"] = STATIC_BUMP;
 
@@ -2031,26 +2031,6 @@ function copyTempDouble(ptr) {
 
   function ___gxx_personality_v0() {
     }
-
-  function ___kmpc_for_static_fini() {
-  Module['printErr']('missing function: __kmpc_for_static_fini'); abort(-1);
-  }
-
-  function ___kmpc_for_static_init_4u() {
-  Module['printErr']('missing function: __kmpc_for_static_init_4u'); abort(-1);
-  }
-
-  function ___kmpc_fork_call() {
-  Module['printErr']('missing function: __kmpc_fork_call'); abort(-1);
-  }
-
-  function ___kmpc_global_thread_num() {
-  Module['printErr']('missing function: __kmpc_global_thread_num'); abort(-1);
-  }
-
-  function ___kmpc_push_num_threads() {
-  Module['printErr']('missing function: __kmpc_push_num_threads'); abort(-1);
-  }
 
   function ___lock() {}
 
@@ -6400,14 +6380,6 @@ function copyTempDouble(ptr) {
 
    
 
-  function _omp_get_max_threads() {
-  Module['printErr']('missing function: omp_get_max_threads'); abort(-1);
-  }
-
-  function _omp_in_parallel() {
-  Module['printErr']('missing function: omp_in_parallel'); abort(-1);
-  }
-
    
 
   function _pthread_cond_wait() { return 0; }
@@ -6944,15 +6916,13 @@ function nullFunc_viiiiiiiiii(x) { Module["printErr"]("Invalid function pointer 
 
 function nullFunc_viiiiiiiiiii(x) { Module["printErr"]("Invalid function pointer called with signature 'viiiiiiiiiii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
 
-function nullFunc_viiiiiiiiiiii(x) { Module["printErr"]("Invalid function pointer called with signature 'viiiiiiiiiiii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
-
 function nullFunc_viiiiiiiiiiiiiii(x) { Module["printErr"]("Invalid function pointer called with signature 'viiiiiiiiiiiiiii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
 
 function nullFunc_viijii(x) { Module["printErr"]("Invalid function pointer called with signature 'viijii'. Perhaps this is an invalid value (e.g. caused by calling a virtual method on a NULL pointer)? Or calling a function with an incorrect type, which will fail? (it is worth building your source files with -Werror (warnings are errors), as warnings can indicate undefined behavior which can cause this)");  Module["printErr"]("Build with ASSERTIONS=2 for more info.");abort(x) }
 
-Module['wasmTableSize'] = 35968;
+Module['wasmTableSize'] = 34432;
 
-Module['wasmMaxTableSize'] = 35968;
+Module['wasmMaxTableSize'] = 34432;
 
 function invoke_dd(index,a1) {
   try {
@@ -7305,15 +7275,6 @@ function invoke_viiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11) {
   }
 }
 
-function invoke_viiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12) {
-  try {
-    Module["dynCall_viiiiiiiiiiii"](index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
-  } catch(e) {
-    if (typeof e !== 'number' && e !== 'longjmp') throw e;
-    Module["setThrew"](1, 0);
-  }
-}
-
 function invoke_viiiiiiiiiiiiiii(index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15) {
   try {
     Module["dynCall_viiiiiiiiiiiiiii"](index,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15);
@@ -7334,7 +7295,7 @@ function invoke_viijii(index,a1,a2,a3,a4,a5,a6) {
 
 Module.asmGlobalArg = {};
 
-Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_dd": nullFunc_dd, "nullFunc_di": nullFunc_di, "nullFunc_diii": nullFunc_diii, "nullFunc_diiii": nullFunc_diiii, "nullFunc_fiii": nullFunc_fiii, "nullFunc_i": nullFunc_i, "nullFunc_id": nullFunc_id, "nullFunc_ii": nullFunc_ii, "nullFunc_iid": nullFunc_iid, "nullFunc_iii": nullFunc_iii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_iiiii": nullFunc_iiiii, "nullFunc_iiiiid": nullFunc_iiiiid, "nullFunc_iiiiii": nullFunc_iiiiii, "nullFunc_iiiiiid": nullFunc_iiiiiid, "nullFunc_iiiiiii": nullFunc_iiiiiii, "nullFunc_iiiiiiii": nullFunc_iiiiiiii, "nullFunc_iiiiiiiii": nullFunc_iiiiiiiii, "nullFunc_iiiiiiiiiii": nullFunc_iiiiiiiiiii, "nullFunc_iiiiiiiiiiii": nullFunc_iiiiiiiiiiii, "nullFunc_iiiiiiiiiiiii": nullFunc_iiiiiiiiiiiii, "nullFunc_iiiiij": nullFunc_iiiiij, "nullFunc_jd": nullFunc_jd, "nullFunc_jiiii": nullFunc_jiiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vid": nullFunc_vid, "nullFunc_vii": nullFunc_vii, "nullFunc_viid": nullFunc_viid, "nullFunc_viii": nullFunc_viii, "nullFunc_viiid": nullFunc_viiid, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiid": nullFunc_viiiid, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "nullFunc_viiiiiii": nullFunc_viiiiiii, "nullFunc_viiiiiiiii": nullFunc_viiiiiiiii, "nullFunc_viiiiiiiiii": nullFunc_viiiiiiiiii, "nullFunc_viiiiiiiiiii": nullFunc_viiiiiiiiiii, "nullFunc_viiiiiiiiiiii": nullFunc_viiiiiiiiiiii, "nullFunc_viiiiiiiiiiiiiii": nullFunc_viiiiiiiiiiiiiii, "nullFunc_viijii": nullFunc_viijii, "invoke_dd": invoke_dd, "invoke_di": invoke_di, "invoke_diii": invoke_diii, "invoke_diiii": invoke_diiii, "invoke_fiii": invoke_fiii, "invoke_i": invoke_i, "invoke_id": invoke_id, "invoke_ii": invoke_ii, "invoke_iid": invoke_iid, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiid": invoke_iiiiid, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiid": invoke_iiiiiid, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii, "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii, "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii, "invoke_iiiiij": invoke_iiiiij, "invoke_jd": invoke_jd, "invoke_jiiii": invoke_jiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vid": invoke_vid, "invoke_vii": invoke_vii, "invoke_viid": invoke_viid, "invoke_viii": invoke_viii, "invoke_viiid": invoke_viiid, "invoke_viiii": invoke_viiii, "invoke_viiiid": invoke_viiiid, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viiiiiii": invoke_viiiiiii, "invoke_viiiiiiiii": invoke_viiiiiiiii, "invoke_viiiiiiiiii": invoke_viiiiiiiiii, "invoke_viiiiiiiiiii": invoke_viiiiiiiiiii, "invoke_viiiiiiiiiiii": invoke_viiiiiiiiiiii, "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii, "invoke_viijii": invoke_viijii, "_MAIN__": _MAIN__, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___assert_fail": ___assert_fail, "___buildEnvironment": ___buildEnvironment, "___clock_gettime": ___clock_gettime, "___cxa_allocate_exception": ___cxa_allocate_exception, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_end_catch": ___cxa_end_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "___cxa_free_exception": ___cxa_free_exception, "___cxa_rethrow": ___cxa_rethrow, "___cxa_throw": ___cxa_throw, "___gxx_personality_v0": ___gxx_personality_v0, "___kmpc_for_static_fini": ___kmpc_for_static_fini, "___kmpc_for_static_init_4u": ___kmpc_for_static_init_4u, "___kmpc_fork_call": ___kmpc_fork_call, "___kmpc_global_thread_num": ___kmpc_global_thread_num, "___kmpc_push_num_threads": ___kmpc_push_num_threads, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall10": ___syscall10, "___syscall140": ___syscall140, "___syscall145": ___syscall145, "___syscall146": ___syscall146, "___syscall194": ___syscall194, "___syscall195": ___syscall195, "___syscall197": ___syscall197, "___syscall221": ___syscall221, "___syscall33": ___syscall33, "___syscall330": ___syscall330, "___syscall5": ___syscall5, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall63": ___syscall63, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__embind_register_bool": __embind_register_bool, "__embind_register_emval": __embind_register_emval, "__embind_register_float": __embind_register_float, "__embind_register_function": __embind_register_function, "__embind_register_integer": __embind_register_integer, "__embind_register_memory_view": __embind_register_memory_view, "__embind_register_std_string": __embind_register_std_string, "__embind_register_std_wstring": __embind_register_std_wstring, "__embind_register_void": __embind_register_void, "__emval_as": __emval_as, "__emval_decref": __emval_decref, "__emval_get_property": __emval_get_property, "__emval_incref": __emval_incref, "__emval_new_array": __emval_new_array, "__emval_new_cstring": __emval_new_cstring, "__emval_register": __emval_register, "__emval_run_destructors": __emval_run_destructors, "__emval_set_property": __emval_set_property, "__emval_take_value": __emval_take_value, "__exit": __exit, "__isLeapYear": __isLeapYear, "_abort": _abort, "_atexit": _atexit, "_clock_gettime": _clock_gettime, "_embind_repr": _embind_repr, "_emscripten_get_now": _emscripten_get_now, "_emscripten_get_now_is_monotonic": _emscripten_get_now_is_monotonic, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_exit": _exit, "_getenv": _getenv, "_gettimeofday": _gettimeofday, "_llvm_fabs_f64": _llvm_fabs_f64, "_llvm_pow_f64": _llvm_pow_f64, "_omp_get_max_threads": _omp_get_max_threads, "_omp_in_parallel": _omp_in_parallel, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_signal": _signal, "_strftime": _strftime, "_strftime_l": _strftime_l, "count_emval_handles": count_emval_handles, "craftInvokerFunction": craftInvokerFunction, "createNamedFunction": createNamedFunction, "embind__requireFunction": embind__requireFunction, "embind_init_charCodes": embind_init_charCodes, "ensureOverloadTable": ensureOverloadTable, "exposePublicSymbol": exposePublicSymbol, "extendError": extendError, "floatReadValueFromPointer": floatReadValueFromPointer, "getShiftFromSize": getShiftFromSize, "getStringOrSymbol": getStringOrSymbol, "getTypeName": getTypeName, "get_first_emval": get_first_emval, "heap32VectorToArray": heap32VectorToArray, "init_emval": init_emval, "integerReadValueFromPointer": integerReadValueFromPointer, "makeLegalFunctionName": makeLegalFunctionName, "new_": new_, "readLatin1String": readLatin1String, "registerType": registerType, "replacePublicSymbol": replacePublicSymbol, "requireHandle": requireHandle, "requireRegisteredType": requireRegisteredType, "runDestructors": runDestructors, "simpleReadValueFromPointer": simpleReadValueFromPointer, "throwBindingError": throwBindingError, "throwInternalError": throwInternalError, "throwUnboundTypeError": throwUnboundTypeError, "whenDependentTypesAreResolved": whenDependentTypesAreResolved, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
+Module.asmLibraryArg = { "abort": abort, "assert": assert, "enlargeMemory": enlargeMemory, "getTotalMemory": getTotalMemory, "abortOnCannotGrowMemory": abortOnCannotGrowMemory, "abortStackOverflow": abortStackOverflow, "nullFunc_dd": nullFunc_dd, "nullFunc_di": nullFunc_di, "nullFunc_diii": nullFunc_diii, "nullFunc_diiii": nullFunc_diiii, "nullFunc_fiii": nullFunc_fiii, "nullFunc_i": nullFunc_i, "nullFunc_id": nullFunc_id, "nullFunc_ii": nullFunc_ii, "nullFunc_iid": nullFunc_iid, "nullFunc_iii": nullFunc_iii, "nullFunc_iiii": nullFunc_iiii, "nullFunc_iiiii": nullFunc_iiiii, "nullFunc_iiiiid": nullFunc_iiiiid, "nullFunc_iiiiii": nullFunc_iiiiii, "nullFunc_iiiiiid": nullFunc_iiiiiid, "nullFunc_iiiiiii": nullFunc_iiiiiii, "nullFunc_iiiiiiii": nullFunc_iiiiiiii, "nullFunc_iiiiiiiii": nullFunc_iiiiiiiii, "nullFunc_iiiiiiiiiii": nullFunc_iiiiiiiiiii, "nullFunc_iiiiiiiiiiii": nullFunc_iiiiiiiiiiii, "nullFunc_iiiiiiiiiiiii": nullFunc_iiiiiiiiiiiii, "nullFunc_iiiiij": nullFunc_iiiiij, "nullFunc_jd": nullFunc_jd, "nullFunc_jiiii": nullFunc_jiiii, "nullFunc_v": nullFunc_v, "nullFunc_vi": nullFunc_vi, "nullFunc_vid": nullFunc_vid, "nullFunc_vii": nullFunc_vii, "nullFunc_viid": nullFunc_viid, "nullFunc_viii": nullFunc_viii, "nullFunc_viiid": nullFunc_viiid, "nullFunc_viiii": nullFunc_viiii, "nullFunc_viiiid": nullFunc_viiiid, "nullFunc_viiiii": nullFunc_viiiii, "nullFunc_viiiiii": nullFunc_viiiiii, "nullFunc_viiiiiii": nullFunc_viiiiiii, "nullFunc_viiiiiiiii": nullFunc_viiiiiiiii, "nullFunc_viiiiiiiiii": nullFunc_viiiiiiiiii, "nullFunc_viiiiiiiiiii": nullFunc_viiiiiiiiiii, "nullFunc_viiiiiiiiiiiiiii": nullFunc_viiiiiiiiiiiiiii, "nullFunc_viijii": nullFunc_viijii, "invoke_dd": invoke_dd, "invoke_di": invoke_di, "invoke_diii": invoke_diii, "invoke_diiii": invoke_diiii, "invoke_fiii": invoke_fiii, "invoke_i": invoke_i, "invoke_id": invoke_id, "invoke_ii": invoke_ii, "invoke_iid": invoke_iid, "invoke_iii": invoke_iii, "invoke_iiii": invoke_iiii, "invoke_iiiii": invoke_iiiii, "invoke_iiiiid": invoke_iiiiid, "invoke_iiiiii": invoke_iiiiii, "invoke_iiiiiid": invoke_iiiiiid, "invoke_iiiiiii": invoke_iiiiiii, "invoke_iiiiiiii": invoke_iiiiiiii, "invoke_iiiiiiiii": invoke_iiiiiiiii, "invoke_iiiiiiiiiii": invoke_iiiiiiiiiii, "invoke_iiiiiiiiiiii": invoke_iiiiiiiiiiii, "invoke_iiiiiiiiiiiii": invoke_iiiiiiiiiiiii, "invoke_iiiiij": invoke_iiiiij, "invoke_jd": invoke_jd, "invoke_jiiii": invoke_jiiii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "invoke_vid": invoke_vid, "invoke_vii": invoke_vii, "invoke_viid": invoke_viid, "invoke_viii": invoke_viii, "invoke_viiid": invoke_viiid, "invoke_viiii": invoke_viiii, "invoke_viiiid": invoke_viiiid, "invoke_viiiii": invoke_viiiii, "invoke_viiiiii": invoke_viiiiii, "invoke_viiiiiii": invoke_viiiiiii, "invoke_viiiiiiiii": invoke_viiiiiiiii, "invoke_viiiiiiiiii": invoke_viiiiiiiiii, "invoke_viiiiiiiiiii": invoke_viiiiiiiiiii, "invoke_viiiiiiiiiiiiiii": invoke_viiiiiiiiiiiiiii, "invoke_viijii": invoke_viijii, "_MAIN__": _MAIN__, "__ZSt18uncaught_exceptionv": __ZSt18uncaught_exceptionv, "___assert_fail": ___assert_fail, "___buildEnvironment": ___buildEnvironment, "___clock_gettime": ___clock_gettime, "___cxa_allocate_exception": ___cxa_allocate_exception, "___cxa_begin_catch": ___cxa_begin_catch, "___cxa_end_catch": ___cxa_end_catch, "___cxa_find_matching_catch": ___cxa_find_matching_catch, "___cxa_find_matching_catch_2": ___cxa_find_matching_catch_2, "___cxa_find_matching_catch_3": ___cxa_find_matching_catch_3, "___cxa_free_exception": ___cxa_free_exception, "___cxa_rethrow": ___cxa_rethrow, "___cxa_throw": ___cxa_throw, "___gxx_personality_v0": ___gxx_personality_v0, "___lock": ___lock, "___map_file": ___map_file, "___resumeException": ___resumeException, "___setErrNo": ___setErrNo, "___syscall10": ___syscall10, "___syscall140": ___syscall140, "___syscall145": ___syscall145, "___syscall146": ___syscall146, "___syscall194": ___syscall194, "___syscall195": ___syscall195, "___syscall197": ___syscall197, "___syscall221": ___syscall221, "___syscall33": ___syscall33, "___syscall330": ___syscall330, "___syscall5": ___syscall5, "___syscall54": ___syscall54, "___syscall6": ___syscall6, "___syscall63": ___syscall63, "___syscall91": ___syscall91, "___unlock": ___unlock, "__addDays": __addDays, "__arraySum": __arraySum, "__embind_register_bool": __embind_register_bool, "__embind_register_emval": __embind_register_emval, "__embind_register_float": __embind_register_float, "__embind_register_function": __embind_register_function, "__embind_register_integer": __embind_register_integer, "__embind_register_memory_view": __embind_register_memory_view, "__embind_register_std_string": __embind_register_std_string, "__embind_register_std_wstring": __embind_register_std_wstring, "__embind_register_void": __embind_register_void, "__emval_as": __emval_as, "__emval_decref": __emval_decref, "__emval_get_property": __emval_get_property, "__emval_incref": __emval_incref, "__emval_new_array": __emval_new_array, "__emval_new_cstring": __emval_new_cstring, "__emval_register": __emval_register, "__emval_run_destructors": __emval_run_destructors, "__emval_set_property": __emval_set_property, "__emval_take_value": __emval_take_value, "__exit": __exit, "__isLeapYear": __isLeapYear, "_abort": _abort, "_atexit": _atexit, "_clock_gettime": _clock_gettime, "_embind_repr": _embind_repr, "_emscripten_get_now": _emscripten_get_now, "_emscripten_get_now_is_monotonic": _emscripten_get_now_is_monotonic, "_emscripten_memcpy_big": _emscripten_memcpy_big, "_exit": _exit, "_getenv": _getenv, "_gettimeofday": _gettimeofday, "_llvm_fabs_f64": _llvm_fabs_f64, "_llvm_pow_f64": _llvm_pow_f64, "_pthread_cond_wait": _pthread_cond_wait, "_pthread_getspecific": _pthread_getspecific, "_pthread_key_create": _pthread_key_create, "_pthread_once": _pthread_once, "_pthread_setspecific": _pthread_setspecific, "_signal": _signal, "_strftime": _strftime, "_strftime_l": _strftime_l, "count_emval_handles": count_emval_handles, "craftInvokerFunction": craftInvokerFunction, "createNamedFunction": createNamedFunction, "embind__requireFunction": embind__requireFunction, "embind_init_charCodes": embind_init_charCodes, "ensureOverloadTable": ensureOverloadTable, "exposePublicSymbol": exposePublicSymbol, "extendError": extendError, "floatReadValueFromPointer": floatReadValueFromPointer, "getShiftFromSize": getShiftFromSize, "getStringOrSymbol": getStringOrSymbol, "getTypeName": getTypeName, "get_first_emval": get_first_emval, "heap32VectorToArray": heap32VectorToArray, "init_emval": init_emval, "integerReadValueFromPointer": integerReadValueFromPointer, "makeLegalFunctionName": makeLegalFunctionName, "new_": new_, "readLatin1String": readLatin1String, "registerType": registerType, "replacePublicSymbol": replacePublicSymbol, "requireHandle": requireHandle, "requireRegisteredType": requireRegisteredType, "runDestructors": runDestructors, "simpleReadValueFromPointer": simpleReadValueFromPointer, "throwBindingError": throwBindingError, "throwInternalError": throwInternalError, "throwUnboundTypeError": throwUnboundTypeError, "whenDependentTypesAreResolved": whenDependentTypesAreResolved, "DYNAMICTOP_PTR": DYNAMICTOP_PTR, "tempDoublePtr": tempDoublePtr, "ABORT": ABORT, "STACKTOP": STACKTOP, "STACK_MAX": STACK_MAX };
 // EMSCRIPTEN_START_ASM
 var asm =Module["asm"]// EMSCRIPTEN_END_ASM
 (Module.asmGlobalArg, Module.asmLibraryArg, buffer);
@@ -7375,22 +7336,22 @@ var real____cxa_is_pointer_type = asm["___cxa_is_pointer_type"]; asm["___cxa_is_
   return real____cxa_is_pointer_type.apply(null, arguments);
 };
 
-var real____cxx_global_var_init_108 = asm["___cxx_global_var_init_108"]; asm["___cxx_global_var_init_108"] = function() {
+var real____cxx_global_var_init_26 = asm["___cxx_global_var_init_26"]; asm["___cxx_global_var_init_26"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real____cxx_global_var_init_108.apply(null, arguments);
+  return real____cxx_global_var_init_26.apply(null, arguments);
 };
 
-var real____cxx_global_var_init_109 = asm["___cxx_global_var_init_109"]; asm["___cxx_global_var_init_109"] = function() {
+var real____cxx_global_var_init_27 = asm["___cxx_global_var_init_27"]; asm["___cxx_global_var_init_27"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real____cxx_global_var_init_109.apply(null, arguments);
+  return real____cxx_global_var_init_27.apply(null, arguments);
 };
 
-var real____cxx_global_var_init_110 = asm["___cxx_global_var_init_110"]; asm["___cxx_global_var_init_110"] = function() {
+var real____cxx_global_var_init_28 = asm["___cxx_global_var_init_28"]; asm["___cxx_global_var_init_28"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return real____cxx_global_var_init_110.apply(null, arguments);
+  return real____cxx_global_var_init_28.apply(null, arguments);
 };
 
 var real____errno_location = asm["___errno_location"]; asm["___errno_location"] = function() {
@@ -7531,18 +7492,18 @@ var ___cxa_is_pointer_type = Module["___cxa_is_pointer_type"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["___cxa_is_pointer_type"].apply(null, arguments) };
-var ___cxx_global_var_init_108 = Module["___cxx_global_var_init_108"] = function() {
+var ___cxx_global_var_init_26 = Module["___cxx_global_var_init_26"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["___cxx_global_var_init_108"].apply(null, arguments) };
-var ___cxx_global_var_init_109 = Module["___cxx_global_var_init_109"] = function() {
+  return Module["asm"]["___cxx_global_var_init_26"].apply(null, arguments) };
+var ___cxx_global_var_init_27 = Module["___cxx_global_var_init_27"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["___cxx_global_var_init_109"].apply(null, arguments) };
-var ___cxx_global_var_init_110 = Module["___cxx_global_var_init_110"] = function() {
+  return Module["asm"]["___cxx_global_var_init_27"].apply(null, arguments) };
+var ___cxx_global_var_init_28 = Module["___cxx_global_var_init_28"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["___cxx_global_var_init_110"].apply(null, arguments) };
+  return Module["asm"]["___cxx_global_var_init_28"].apply(null, arguments) };
 var ___errno_location = Module["___errno_location"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -7791,10 +7752,6 @@ var dynCall_viiiiiiiiiii = Module["dynCall_viiiiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
   return Module["asm"]["dynCall_viiiiiiiiiii"].apply(null, arguments) };
-var dynCall_viiiiiiiiiiii = Module["dynCall_viiiiiiiiiiii"] = function() {
-  assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-  assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiiiiiii"].apply(null, arguments) };
 var dynCall_viiiiiiiiiiiiiii = Module["dynCall_viiiiiiiiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
