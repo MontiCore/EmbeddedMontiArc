@@ -1509,9 +1509,9 @@ function integrateWasmJS() {
 
   var method = 'native-wasm';
 
-  var wasmTextFile = 'objectdetector1_test.wast';
-  var wasmBinaryFile = 'objectdetector1_test.wasm';
-  var asmjsCodeFile = 'objectdetector1_test.temp.asm.js';
+  var wasmTextFile = 'objectdetector1test.wast';
+  var wasmBinaryFile = 'objectdetector1test.wasm';
+  var asmjsCodeFile = 'objectdetector1test.temp.asm.js';
 
   if (typeof Module['locateFile'] === 'function') {
     if (!isDataURI(wasmTextFile)) {
