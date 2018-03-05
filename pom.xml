@@ -142,19 +142,19 @@
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>de.monticore.lang.montisim</groupId>
             <artifactId>CarLang</artifactId>
             <version>${carlang.version}</version>
-        </dependency>
+        </dependency> -->
         <!-- this may actually not be needed? -->
-        <dependency>
+        <!-- <dependency>
             <groupId>de.monticore.lang.montisim</groupId>
             <artifactId>CarLang</artifactId>
             <version>${carlang.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
-        </dependency>
+        </dependency> -->
     </dependencies>
 
     <build>
