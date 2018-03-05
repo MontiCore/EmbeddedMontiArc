@@ -15,8 +15,6 @@ public class TemperatureChecker implements WeatherASTTemperatureCoCo {
   
   @Override
   public void check(ASTTemperature obj) {
-    System.out.println("[CoCo] TemperatureChecker...");
-    
     //Java + ° = ugh....
     String[] allowedUnits = {"K","\u00b0C","\u00b0F"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
@@ -41,7 +39,6 @@ public class TemperatureChecker implements WeatherASTTemperatureCoCo {
         }
       }
     }
-    System.out.println("[Done] TemperatureChecker");
   }
   
 }

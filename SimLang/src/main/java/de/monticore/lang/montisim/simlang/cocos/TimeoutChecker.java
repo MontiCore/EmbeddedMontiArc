@@ -18,8 +18,6 @@ public class TimeoutChecker implements SimLangASTTimeoutCoCo {
   
   @Override
   public void check(ASTTimeout obj) {
-    System.out.println("[CoCo] TimeoutChecker...");
-    
     String[] allowedUnits = {"ms","s","m","h"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -33,7 +31,6 @@ public class TimeoutChecker implements SimLangASTTimeoutCoCo {
         Log.error("Unit Error: timeout missing or invalid unit.");
       }
     }
-    System.out.println("[Done] TimeoutChecker");
   }
   
 }

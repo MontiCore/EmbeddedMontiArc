@@ -40,6 +40,7 @@ import de.monticore.lang.montisim.simlang.adapter.GeneralSLAdapter;
  * @version $Revision$, $Date$
  */
 public class SimLangTool {
+  public static SimLangLang SIMLANG_LANGUAGE = new SimLangLang();
 
   /**
    * Use the single argument for specifying the single input automaton file.
@@ -142,6 +143,7 @@ public class SimLangTool {
 
     //DataStructure Checkers --Need to runs first
     defaultCoCos.addCoCo(new NoInfRangeChecker());
+    defaultCoCos.addCoCo(new CoordinateChecker());
 
     //Simulation CoCos
     defaultCoCos.addCoCo(new RequiredSimulationEntries());
@@ -152,7 +154,7 @@ public class SimLangTool {
     defaultCoCos.addCoCo(new MapNameChecker());
     defaultCoCos.addCoCo(new TimeChecker());
     defaultCoCos.addCoCo(new TimeoutChecker());
-    //defaultCoCos.addCoCo(new GravityChecker());
+    defaultCoCos.addCoCo(new GravityChecker());
     defaultCoCos.addCoCo(new PedestrianDensityChecker());
 
     //Weather CoCos
@@ -166,14 +168,12 @@ public class SimLangTool {
     defaultCoCos.addCoCo(new WindDirectionChecker());
 
     //Communication CoCos
+    defaultCoCos.addCoCo(new NoDuplicateChannelNames());
     defaultCoCos.addCoCo(new OneChannelEntryEach());
     defaultCoCos.addCoCo(new TransferrateChecker());
     defaultCoCos.addCoCo(new LatencyChecker());
     defaultCoCos.addCoCo(new OutageChecker());
     defaultCoCos.addCoCo(new AreaChecker());
-    defaultCoCos.addCoCo(new CoordinateChecker());
-
-
 
     defaultCoCos.checkAll(ast);
   }

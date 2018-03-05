@@ -15,8 +15,6 @@ public class WindDirectionChecker implements WeatherASTWindDirectionCoCo {
   
   @Override
   public void check(ASTWindDirection obj) {
-    System.out.println("[CoCo] WindDirectionChecker...");
-    
     String[] allowedUnits = {"°",""};
 
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
@@ -31,8 +29,6 @@ public class WindDirectionChecker implements WeatherASTWindDirectionCoCo {
         Log.error("Range Error: wind_direction must be at least 0 and smaller 360.");
       }
     }
-    
-    System.out.println("[Done] WindDirectionChecker");
   }
   
 }

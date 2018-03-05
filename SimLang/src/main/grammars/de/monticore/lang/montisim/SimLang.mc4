@@ -5,9 +5,7 @@
 package de.monticore.lang.montisim;
 
 grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2  {
-  SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation; 
-
-  //AlternativeInput = "";
+  SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation;
 
   symbol scope Simulation = "sim" Name "{"
     ((SimulationRenderFrequency|
@@ -29,16 +27,25 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
     PedestrianDensity|
     Vehicles|
     Channel) ";")*
-  "}";  
+  "}";
 
-
-  
+  //
+  // Simulator Configuration
+  //
   SimulationRenderFrequency = "sim_render_frequency" AlternativeInput;
   SimulationLoopFrequency = "sim_loop_frequency" AlternativeInput;
   SimulationDuration = "sim_duration" AlternativeInput;
   SimulationType = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ;
-  
-  
+
+  MapOverlap = "map_overlap" AlternativeInput;
+  MapSectorWidth = "map_sector_width" AlternativeInput;
+  MapSectorHeight = "map_sector_height" AlternativeInput;
+  MaxSectorUsers = "max_sector_users" AlternativeInput;
+  Timeout = "timeout" AlternativeInput;
+
+  //
+  // Environment+World Configuration
+  //
   WeatherObj = "{" ((Temperature|
                    Clouding|
                    Sight| 
@@ -63,31 +70,24 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   TimeList = "[" SingleTime ("," SingleTime)* "]" ;
 
   Time = "time" (SingleTime | TimeList) ;
-             
 
-  
   MapPath = "map_path" mapPath:Name ;
   MapName = "map_name" mapName:Name "." fileFormat:Name ;
-  
   MapHeight = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ;
-  
-  MapOverlap = "map_overlap" AlternativeInput;
-  MapSectorWidth = "map_sector_width" AlternativeInput;
-  MapSectorHeight = "map_sector_height" AlternativeInput;
-  MaxSectorUsers = "max_sector_users" AlternativeInput;
-  
-  Timeout = "timeout" AlternativeInput;
   
   Gravity = "gravity" AlternativeInput;
   
   PedestrianDensity = "pedestrian_density" AlternativeInput;
-  
+
+  //
+  // Entity Configuration
+  //
   Pedestrians = ("<p>"
                 "(" startX:TUnitNumber "," startY:TUnitNumber ("," startZ:TUnitNumber)? ")"
                 "->" 
                 "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
                 ) ;
-  
+
   Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ;
   
   //defined vehicle moving from start to destination pos
@@ -106,7 +106,6 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   
   //completely random vehicle spawns and destinations with optional avoidance of path
   RandomVehicle = "<v>" amount:TUnitNumber ("(" startX:TUnitNumber "," startY:TUnitNumber ")" "->" "(" destX:TUnitNumber "," destY:TUnitNumber ")")?;
-  
   
   //
   // Communication Configuration

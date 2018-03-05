@@ -14,14 +14,11 @@ public class RequiredSimulationEntries implements SimLangASTSimulationCoCo {
   
   @Override
   public void check(ASTSimulation sim) {
-    System.out.println("[CoCo] RequiredSimLangEntries...");
     List<de.monticore.lang.montisim.simlang._ast.ASTMapName> mapName = sim.getMapNames();
     
     if(mapName.size() < 1) {
       Log.error("Semantic Error: Map name attribute missing.");
     }
-    
-    System.out.println("[Done] RequiredSimLangEntries");
   }
   
 }

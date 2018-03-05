@@ -14,8 +14,6 @@ public class NoMultipleWeatherObjEntries implements SimLangASTWeatherObjCoCo {
   
   @Override
   public void check(ASTWeatherObj wObj) {
-    System.out.println("[CoCo] NoMultipleWeatherObjEntries...");
-    
     List<de.monticore.lang.montisim.weather._ast.ASTTemperature> temperatures = wObj.getTemperatures();
     List<de.monticore.lang.montisim.weather._ast.ASTClouding> cloudings = wObj.getCloudings();
     List<de.monticore.lang.montisim.weather._ast.ASTSight> sights = wObj.getSights();
@@ -38,8 +36,6 @@ public class NoMultipleWeatherObjEntries implements SimLangASTWeatherObjCoCo {
     ) {
       Log.error("Semantic Error: A weather attribute was defined more than once.");
     }
-    
-    System.out.println("[Done] NoMultipleWeatherObjEntries");
   }
   
 }

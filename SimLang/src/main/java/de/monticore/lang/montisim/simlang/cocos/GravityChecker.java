@@ -16,8 +16,6 @@ public class GravityChecker implements SimLangASTGravityCoCo {
   
   @Override
   public void check(ASTGravity obj) {
-    System.out.println("[CoCo] GravityChecker...");
-
     String[] allowedUnits = {"m/s^2"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -31,8 +29,6 @@ public class GravityChecker implements SimLangASTGravityCoCo {
         Log.error("Unit Error: gravity missing or invalid unit.");
       }
     }
-
-    System.out.println("[Done] GravityChecker");
   }
   
 }

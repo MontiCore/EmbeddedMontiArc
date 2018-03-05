@@ -15,8 +15,6 @@ public class PrecipitationAmountChecker implements WeatherASTPrecipitationAmount
   
   @Override
   public void check(ASTPrecipitationAmount obj) {
-    System.out.println("[CoCo] PrecipitationAmountChecker...");
-
     String[] allowedUnits = {"l/m^2", "mm"};
 
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
@@ -31,7 +29,6 @@ public class PrecipitationAmountChecker implements WeatherASTPrecipitationAmount
         Log.error("Range Error: precipitation_amount must be at least 0.");
       }
     }
-    System.out.println("[Done] PrecipitationAmountChecker");
   }
   
 }

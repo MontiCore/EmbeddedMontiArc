@@ -15,8 +15,6 @@ public class HumidityChecker implements WeatherASTHumidityCoCo {
   
   @Override
   public void check(ASTHumidity obj) {
-    System.out.println("[CoCo] HumidityChecker...");
-    
     String[] allowedUnits = {""};
     
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
@@ -31,7 +29,6 @@ public class HumidityChecker implements WeatherASTHumidityCoCo {
         Log.error("Range Error: Humidity in float must be within [0,1].");
       }
     }
-    System.out.println("[Done] HumidityChecker");
   }
   
 }

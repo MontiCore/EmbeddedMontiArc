@@ -16,10 +16,7 @@ public class AreaChecker implements SimLangASTAreaCoCo {
   
   @Override
   public void check(ASTArea obj) {
-    System.out.println("[CoCo] AreaChecker...");
-    
     if(obj.isGlobal() || !obj.getRadius().isPresent()) {
-      System.out.println("[Done] AreaChecker");
       return;
     }
     
@@ -36,8 +33,6 @@ public class AreaChecker implements SimLangASTAreaCoCo {
       Log.error("Unit Error: Area missing or invalid unit.");
     }
     //Coordinates are handled by the Coordinate CoCo
-    
-    System.out.println("[Done] AreaChecker");
   }
   
 }

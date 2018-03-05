@@ -17,8 +17,6 @@ public class NoDuplicateChannelNames implements SimLangASTSimulationCoCo {
 
     @Override
     public void check(ASTSimulation obj) {
-        System.out.println("[CoCo] NoDuplicateChannelNames...");
-
         List<ASTChannel> channels = obj.getChannels();
         ArrayList<String> singleChannelNames = new ArrayList();
         ArrayList<ArrayList<String>> alternatingChannelNames = new ArrayList<>();
@@ -52,8 +50,6 @@ public class NoDuplicateChannelNames implements SimLangASTSimulationCoCo {
             alternatingChannelNames.add(newAlternatives);
           }
         }
-
-        System.out.println("[Done] NoDuplicateChannelNames");
     }
 
 }

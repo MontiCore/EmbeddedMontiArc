@@ -17,8 +17,6 @@ public class OutageChecker implements SimLangASTOutageCoCo {
   
   @Override
   public void check(ASTOutage obj) {
-    System.out.println("[CoCo] OutageChecker...");
-    
     String[] allowedUnits = {""};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -32,7 +30,6 @@ public class OutageChecker implements SimLangASTOutageCoCo {
         Log.error("Range Error: Outage in float must be within [0,1].");
       }
     }
-    System.out.println("[Done] OutageChecker");
   }
   
 }

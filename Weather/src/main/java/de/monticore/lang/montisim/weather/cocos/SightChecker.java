@@ -15,8 +15,6 @@ public class SightChecker implements WeatherASTSightCoCo {
   
   @Override
   public void check(ASTSight obj) {
-    System.out.println("[CoCo] SightChecker...");
-    
     String[] allowedUnits = {"mm","cm","dm","m","km"};
     
     if(obj.isUnlimited()) {
@@ -35,7 +33,6 @@ public class SightChecker implements WeatherASTSightCoCo {
         Log.error("Range Error: Sight must be at least 0.");
       }
     }
-    System.out.println("[Done] SightChecker");
   }
   
 }

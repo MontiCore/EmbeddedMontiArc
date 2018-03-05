@@ -15,7 +15,6 @@ public class PressureChecker implements WeatherASTPressureCoCo {
   
   @Override
   public void check(ASTPressure obj) {
-    System.out.println("[CoCo] PressureChecker...");
     String[] allowedUnits = {"Pa","kPa","mPa","hPa","bar"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -29,8 +28,6 @@ public class PressureChecker implements WeatherASTPressureCoCo {
         Log.error("Range Error: Pressure  must be at least 0.");
       }
     }
-    
-    System.out.println("[Done] PressureChecker");
   }
   
 }

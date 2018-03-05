@@ -17,8 +17,6 @@ public class LatencyChecker implements SimLangASTLatencyCoCo {
   
   @Override
   public void check(ASTLatency obj) {
-    System.out.println("[CoCo] LatencyChecker...");
-    
     String[] allowedUnits = {"ms","s","m","h"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -32,8 +30,6 @@ public class LatencyChecker implements SimLangASTLatencyCoCo {
         Log.error("Unit Error: latency missing or invalid unit.");
       }
     }
-    
-    System.out.println("[Done] LatencyChecker");
   }
   
 }

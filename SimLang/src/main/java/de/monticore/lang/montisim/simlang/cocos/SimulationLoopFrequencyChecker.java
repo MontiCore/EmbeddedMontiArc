@@ -17,8 +17,6 @@ public class SimulationLoopFrequencyChecker implements SimLangASTSimulationLoopF
   
   @Override
   public void check(ASTSimulationLoopFrequency obj) {
-    System.out.println("[CoCo] SimulationLoopFrequencyChecker...");
-    
     String[] allowedUnits = {"ms","s","m","h"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -32,7 +30,6 @@ public class SimulationLoopFrequencyChecker implements SimLangASTSimulationLoopF
         Log.error("Unit Error: sim_loop_frequency missing or invalid unit.");
       }
     }
-    System.out.println("[Done] SimulationLoopFrequencyChecker");
   }
   
 }

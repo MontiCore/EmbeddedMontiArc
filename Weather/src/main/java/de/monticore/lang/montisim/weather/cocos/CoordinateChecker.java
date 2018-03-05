@@ -13,8 +13,6 @@ public class CoordinateChecker implements WeatherASTCoordinateCoCo {
   
   @Override
   public void check(ASTCoordinate obj) {
-    System.out.println("[CoCo] CoordinateChecker...");
-    
     String[] allowedUnits = {""};
     
     String inputX = obj.getPosX();
@@ -26,8 +24,6 @@ public class CoordinateChecker implements WeatherASTCoordinateCoCo {
     if(!checkerX.legitUnit() || !checkerY.legitUnit()) {
       Log.error("Unit Error: Coordinate invalid unit.");
     }
-    
-    System.out.println("[Done] CoordinateChecker");
   }
   
 }

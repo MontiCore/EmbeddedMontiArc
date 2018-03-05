@@ -17,8 +17,6 @@ public class SimulationDurationChecker implements SimLangASTSimulationDurationCo
   
   @Override
   public void check(ASTSimulationDuration obj) {
-    System.out.println("[CoCo] SimulationDurationChecker...");
-    
     String[] allowedUnits = {"ms","s","m","h"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -32,8 +30,6 @@ public class SimulationDurationChecker implements SimLangASTSimulationDurationCo
         Log.error("Unit Error: sim_duration missing or invalid unit.");
       }
     }
-    
-    System.out.println("[Done] SimulationDurationChecker");
   }
   
 }

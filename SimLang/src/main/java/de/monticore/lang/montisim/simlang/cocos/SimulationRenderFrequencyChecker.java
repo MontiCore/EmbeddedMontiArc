@@ -17,8 +17,6 @@ public class SimulationRenderFrequencyChecker implements SimLangASTSimulationRen
   
   @Override
   public void check(ASTSimulationRenderFrequency obj) {
-    System.out.println("[CoCo] SimulationRenderFrequencyChecker...");
-    
     String[] allowedUnits = {"ms","s","m","h"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -32,7 +30,6 @@ public class SimulationRenderFrequencyChecker implements SimLangASTSimulationRen
         Log.error("Unit Error: sim_render_frequency missing or invalid unit.");
       }
     }
-    System.out.println("[Done] SimulationRenderFrequencyChecker");
   }
   
 }

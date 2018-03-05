@@ -18,8 +18,6 @@ public class TransferrateChecker implements SimLangASTTransferRateCoCo {
   
   @Override
   public void check(ASTTransferRate obj) {
-    System.out.println("[CoCo] TransferRateChecker...");
-    
     String[] allowedUnits = {"bit/s","Kbit/s","Mbit/s","Gbit/s"};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -33,7 +31,6 @@ public class TransferrateChecker implements SimLangASTTransferRateCoCo {
         Log.error("Unit Error: transfer_rate missing or invalid unit.");
       }
     }
-    System.out.println("[Done] TransferRateChecker");
   }
   
 }

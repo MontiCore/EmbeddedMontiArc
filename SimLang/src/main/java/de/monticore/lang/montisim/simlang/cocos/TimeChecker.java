@@ -15,8 +15,6 @@ public class TimeChecker implements SimLangASTSingleTimeCoCo {
   
   @Override
   public void check(ASTSingleTime timeObj) {
-    System.out.println("[CoCo] TimeChecker...");
-    
     String[] allowedUnits = {""};
     
     String timeHours = timeObj.getHours();
@@ -72,8 +70,6 @@ public class TimeChecker implements SimLangASTSingleTimeCoCo {
         Log.error("Range Error: Time:milliseconds must be within [0,999].");
       }
     }
-    
-    System.out.println("[Done] TimeChecker");
   }
   
 }

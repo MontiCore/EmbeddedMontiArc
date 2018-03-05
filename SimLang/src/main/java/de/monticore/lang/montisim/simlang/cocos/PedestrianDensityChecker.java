@@ -18,8 +18,6 @@ public class PedestrianDensityChecker implements SimLangASTPedestrianDensityCoCo
   
   @Override
   public void check(ASTPedestrianDensity obj) {
-    System.out.println("[CoCo] PedestrianDensityChecker...");
-
     String[] allowedUnits = {""};
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
@@ -33,7 +31,6 @@ public class PedestrianDensityChecker implements SimLangASTPedestrianDensityCoCo
         Log.error("Unit Error: pedestrian_density missing or invalid unit.");
       }
     }
-    System.out.println("[Done] PedestrianDensityChecker");
   }
   
 }

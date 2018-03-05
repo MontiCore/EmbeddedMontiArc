@@ -15,8 +15,6 @@ public class WindStrengthChecker implements WeatherASTWindStrengthCoCo {
   
   @Override
   public void check(ASTWindStrength obj) {
-    System.out.println("[CoCo] WindStrengthChecker...");
-    
     String[] allowedUnits = {"knots","m/s","km/h","mph"};
 
     ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
@@ -31,8 +29,6 @@ public class WindStrengthChecker implements WeatherASTWindStrengthCoCo {
         Log.error("Range Error: wind_strength must be at least 0.");
       }
     }
-    
-    System.out.println("[Done] WindStrengthChecker");
   }
   
 }
