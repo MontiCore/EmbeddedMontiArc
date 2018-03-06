@@ -5,6 +5,7 @@ import de.monticore.reporting.svgTools.VisualisationHelper;
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 import de.monticore.reporting.testCocos.helper.TestResultPrinter;
 import de.monticore.reporting.testCocos.helper.CheckTestResult;
+import de.monticore.reporting.testCocos.helper.TestResultPrinter2;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -17,7 +18,10 @@ public class Main {
             CheckCoCos tcc = new CheckCoCos();
             System.out.println("\n<================Test CoCos================>\n");
             List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
-            List<CheckCoCoResult> rootModels = OrderTestResults.orderTestResults(testResults);
+            OrderTestResults order = new OrderTestResults();
+            order.orderTestResults(testResults);
+            List<CheckCoCoResult> rootModels = order.getRootModels();
+            List<CheckCoCoResult> hasNoParentModels = order.getHasNoParentModels();
 
             if (context.isSvg()) {
                 System.out.println("\n<==============SVG Generation==============>\n");
@@ -25,7 +29,7 @@ public class Main {
             }
 
             System.out.println("\n<============Write Test Results============>\n");
-            TestResultPrinter.printTestResults(testResults, context.getOutput() + "data.json", context.isMerge());
+            TestResultPrinter2.printTestResults(hasNoParentModels, context.getOutput() + "data.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
             CheckTests tewt = new CheckTests();

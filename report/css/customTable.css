@@ -3,8 +3,11 @@ th div {
   vertical-align:middle;
 }
 
-td {
+table.dataTable td {
   position: relative;
+  padding: 3px 10px;
+  width: 1px;
+  white-space: nowrap;
 }
 
 td img {
@@ -31,14 +34,19 @@ td img {
   width: 0.9vw;
 }
 
+td.expandChildren-control {
+  cursor: pointer;
+}
+
 td.details-control {
   background: url('../images/log.jpg') no-repeat center center;
   background-size: 40px 35px;
   cursor: pointer;
 }
-tr.shown td.details-control {
+tr.detailsShown td.details-control {
   background: url('../images/log.jpg') no-repeat center center;
   background-size: 30px 25px;
+  cursor: pointer;
 }
 
 th {

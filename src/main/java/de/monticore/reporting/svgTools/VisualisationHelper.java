@@ -18,7 +18,7 @@ public class VisualisationHelper {
     public static void generateSVGs(List<CheckCoCoResult> allModels, List<CheckCoCoResult> rootModels, String outputPath, boolean merge) {
         Extractor.extractSVGGenerator();
         VisualisationHelperMulitThread vHelper = new VisualisationHelperMulitThread();
-//        vHelper.setThreadNumber(Math.max(Runtime.getRuntime().availableProcessors() - 1, 1));
+        vHelper.setThreadNumber(Runtime.getRuntime().availableProcessors());
         vHelper.setTimeout(60);
         File out = new File(outputPath);
         try {

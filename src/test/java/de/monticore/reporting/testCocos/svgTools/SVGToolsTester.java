@@ -23,7 +23,9 @@ public class SVGToolsTester {
         File rootFile = new File(root);
         CheckCoCos tcc = new CheckCoCos();
         List<CheckCoCoResult> testResults = tcc.testAllCocos(rootFile, zipDummy, "ema");
-        List<CheckCoCoResult> rootModels = OrderTestResults.orderTestResults(testResults);
+        OrderTestResults order = new OrderTestResults();
+        order.orderTestResults(testResults);
+        List<CheckCoCoResult> rootModels = order.getRootModels();
 
         VisualisationHelper.generateSVGs(testResults, rootModels, output, false);
 

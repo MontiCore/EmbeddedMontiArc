@@ -8,6 +8,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbolReference;
 import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,62 +16,85 @@ import java.util.Map;
 
 public class OrderTestResults {
 
-    public static List<CheckCoCoResult> orderTestResults(List<CheckCoCoResult> testResults) {
+
+    private List<CheckCoCoResult> rootModels = new LinkedList<>();
+    private List<CheckCoCoResult> hasNoParentModels = new LinkedList<>();
+
+
+    public void orderTestResults(List<CheckCoCoResult> testResults) {
 
         Map<String, Map<String, CheckCoCoResult>> maps = mapTestResults(testResults);
 
-        for(CheckCoCoResult testResult: testResults) {
-            if(testResult.getResolved() != 1) continue;
+        CheckCoCoResult notParsed   = new CheckCoCoResult("");
+        CheckCoCoResult notResolved = new CheckCoCoResult("");
+        notParsed.setModelName("Parsing failed");
+        notResolved.setModelName("Resolving failed");
+        notParsed.setRootFile(new File(CheckCoCoResult.erroredString));
+        notResolved.setRootFile(new File(CheckCoCoResult.erroredString));
+        notParsed.setProject("Errored_Parsing");
+        notResolved.setProject("Errored_Resolving");
+        notParsed.setParsed(-1);
+        notResolved.setResolved(-1);
 
-            ASTComponent ast = (ASTComponent) testResult.getResolvedAst();
-            String modelPath = testResult.getModelPath();
-            Map<String, CheckCoCoResult> modelPathMap = maps.get(modelPath);
+        for (CheckCoCoResult testResult : testResults) {
+            if (testResult.getParsed() != 1) {
+                notParsed.addChild(new ChildElement("", testResult));
+                testResult.addParent(notParsed);
+            } else if (testResult.getResolved() != 1) {
+                notResolved.addChild(new ChildElement("", testResult));
+                testResult.addParent(notResolved);
+            } else {
 
-            for(ASTElement element: ast.getBody().getElements()){
-                if ( element instanceof ASTSubComponent ){
-                    if(((ASTSubComponent) element).getInstances().size() > 0) {
-                        ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
-                        ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
-                        ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
+                ASTComponent ast = (ASTComponent) testResult.getResolvedAst();
+                String modelPath = testResult.getModelPath();
+                Map<String, CheckCoCoResult> modelPathMap = maps.get(modelPath);
 
-                        String name = commonSymbolReference.getFullName();
-                        CheckCoCoResult child = modelPathMap.get(name);
+                for (ASTElement element : ast.getBody().getElements()) {
+                    if (element instanceof ASTSubComponent) {
+                        if (((ASTSubComponent) element).getInstances().size() > 0) {
+                            ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
+                            ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
+                            ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
 
-                        String referencedName = ((ASTSubComponent) element).getInstances().get(0).getName();
-                        ChildElement childElement = new ChildElement(referencedName, child);
-                        testResult.addChild(childElement);
-                        if (child != null)
-                            child.addParent(testResult);
+                            String name = commonSymbolReference.getFullName();
+                            CheckCoCoResult child = modelPathMap.get(name);
+
+                            if(child != null) {
+
+                                String referencedName = ((ASTSubComponent) element).getInstances().get(0).getName();
+                                ChildElement childElement = new ChildElement(referencedName, child);
+                                testResult.addChild(childElement);
+                                child.addParent(testResult);
+                            }
+                        }
                     }
                 }
             }
         }
 
-        List<CheckCoCoResult> rootModels = new LinkedList<>();
-        List<CheckCoCoResult> parentModels = new LinkedList<>();
-        List<CheckCoCoResult> moreThanOneParent = new LinkedList<>();
-
-        for(CheckCoCoResult testResult: testResults){
-            if(testResult.getResolved() != 1) continue;
-            if(testResult.getChildren().size() > 0)
-                parentModels.add(testResult);
-            else if (testResult.getParents().size() > 1)
-                moreThanOneParent.add(testResult);
-            if(testResult.getParents().size() == 0 && testResult.getChildren().size() > 0)
-                rootModels.add(testResult);
+        for (CheckCoCoResult testResult : testResults) {
+            if (testResult.getResolved() != 1) continue;
+            if (testResult.getParents().size() == 0 && testResult != notParsed && testResult != notResolved)
+                getHasNoParentModels().add(testResult);
+            if (testResult.getParents().size() == 0 && testResult.getChildren().size() > 0 && testResult != notParsed && testResult != notResolved)
+                getRootModels().add(testResult);
         }
 
-        return rootModels;
+        if(notParsed.getChildren().size() > 0)
+            hasNoParentModels.add(notParsed);
+        if(notResolved.getChildren().size() > 0)
+            hasNoParentModels.add(notResolved);
+
     }
 
-    private static Map<String, Map<String, CheckCoCoResult>> mapTestResults(List<CheckCoCoResult> testResults){
+    private Map<String, Map<String, CheckCoCoResult>> mapTestResults(List<CheckCoCoResult> testResults) {
         Map<String, Map<String, CheckCoCoResult>> res = new HashMap<>();
 
-        for(CheckCoCoResult testResult: testResults) {
-            if(testResult.getParsed() != 1) continue;
+        for (CheckCoCoResult testResult : testResults) {
+            if (testResult.getParsed() != 1) continue;
             String modelPath = testResult.getModelPath();
             String modelName = testResult.getModelName();
-            if(res.get(modelPath) == null) {
+            if (res.get(modelPath) == null) {
                 res.put(modelPath, new HashMap<>());
             }
             res.get(modelPath).put(modelName, testResult);
@@ -80,4 +104,19 @@ public class OrderTestResults {
     }
 
 
+    public List<CheckCoCoResult> getRootModels() {
+        return rootModels;
+    }
+
+    public void setRootModels(List<CheckCoCoResult> rootModels) {
+        this.rootModels = rootModels;
+    }
+
+    public List<CheckCoCoResult> getHasNoParentModels() {
+        return hasNoParentModels;
+    }
+
+    public void setHasNoParentModels(List<CheckCoCoResult> hasNoParentModels) {
+        this.hasNoParentModels = hasNoParentModels;
+    }
 }

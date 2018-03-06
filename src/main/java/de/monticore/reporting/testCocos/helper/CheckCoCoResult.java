@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CheckCoCoResult {
+
+    public static String erroredString = "" + ((char) 160) + "Errored";
+
     private File modelFile;
     private File projectFile;
     private File rootFile;
@@ -274,11 +277,9 @@ public class CheckCoCoResult {
     }
 
     public String getErrorMessage() {
-        if (this.getModelName().contains("Block1")) {
-            int i = 0;
-        }
-        String msg = "";
+        if(getRootFile().getName().equals(erroredString)) return "";
 
+        String msg = "";
 
         for (String m : errorMessage) {
             if (m != null) {
