@@ -114,11 +114,9 @@ function formatLog(d) {
     return '<tr>' +
         '<td>Path:</td>' +
         '<td>' + d.Path + '</td>' +
-        '<td>' + d.Path + '</td>' +
         '</tr>' +
         '<tr>' +
         '<td>Log output:</td>' +
-        '<td>' + d.LogOutput + '</td>' +
         '<td>' + d.LogOutput + '</td>' +
         '</tr>';
 }
