@@ -22,6 +22,7 @@ public class Main {
             order.orderTestResults(testResults);
             List<CheckCoCoResult> rootModels = order.getRootModels();
             List<CheckCoCoResult> hasNoParentModels = order.getHasNoParentModels();
+            List<CheckCoCoResult> mainPackages = order.getMainPackageModels();
 
             if (context.isSvg()) {
                 System.out.println("\n<==============SVG Generation==============>\n");
@@ -29,7 +30,7 @@ public class Main {
             }
 
             System.out.println("\n<============Write Test Results============>\n");
-            TestResultPrinter2.printTestResults(hasNoParentModels, context.getOutput() + "data.json", context.isMerge());
+            TestResultPrinter2.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
             CheckTests tewt = new CheckTests();

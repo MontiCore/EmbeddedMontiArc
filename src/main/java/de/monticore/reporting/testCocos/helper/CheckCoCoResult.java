@@ -58,6 +58,9 @@ public class CheckCoCoResult {
     private int uniquePorts = 0;
     private int atomicComponent = 0;
 
+    private boolean errorResult = false;
+    private boolean mainPackage = false;
+
 
     public CheckCoCoResult(String pathToFile) {
         this.setPathToFile(pathToFile);
@@ -277,7 +280,7 @@ public class CheckCoCoResult {
     }
 
     public String getErrorMessage() {
-        if(getRootFile().getName().equals(erroredString)) return "";
+        if(isErrorResult() || isMainPackage()) return "";
 
         String msg = "";
 
@@ -455,5 +458,21 @@ public class CheckCoCoResult {
 
     public void setOnlineIDE(String onlineIDE) {
         this.onlineIDE = onlineIDE;
+    }
+
+    public boolean isErrorResult() {
+        return errorResult;
+    }
+
+    public void setErrorResult(boolean errorResult) {
+        this.errorResult = errorResult;
+    }
+
+    public boolean isMainPackage() {
+        return mainPackage;
+    }
+
+    public void setMainPackage(boolean mainPackage) {
+        this.mainPackage = mainPackage;
     }
 }

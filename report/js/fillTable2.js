@@ -143,15 +143,11 @@ function incClass(row, childRow) {
 
 removeChildRows = function (tr, row, data) {
     const table = $('#my-table').DataTable();
-    var name = data.Project.replace("/", "") + "_" + $(data.Name).text().replace(/\./g, "_");
+    var name = data.Project.replace("/", "") + "_" + data.Name.replace(/\./g, "_").replace(/\(/, "").replace(/\)/,"").split(' ').join('');
 
     $('.' + name + '_Child').each(function () {
         var childTr = $(this).closest('tr');
         var childRow = table.row(childTr);
-        var childData = childRow.data();
-
-        removeChildRows(childTr, childRow, childData);
-
         table.row(childRow).remove();
     });
 
@@ -164,7 +160,7 @@ expandRow = function (tr, row, data) {
 
 
         const table = $('#my-table').DataTable();
-        var name = data.Project.replace("/", "") + "_" + $(data.Name).text().replace(/\./g, "_");
+        var name = data.Project.replace("/", "") + "_" + data.Name.replace(/\./g, "_").replace(/\(/, "").replace(/\)/,"").split(' ').join('');
 
         if ($(tr).hasClass('childrenShown')) {
             removeChildRows(tr, row, data);
@@ -193,10 +189,9 @@ function childControlInit() {
 
 
     var indexes = table.rows().eq(0).filter(function (rowIdx) {
-        var res = (table.cell(rowIdx, 3).data() === 'Parsing failed' || table.cell(rowIdx, 3).data() === 'Resolving failed') ? true : false;
+        var res = (table.cell(rowIdx, 3).data().indexOf('Parsing failed') !== -1 || table.cell(rowIdx, 3).data().indexOf('Resolving failed') !== -1) ? true : false;
         return res;
     });
-
 
     table.rows(indexes).eq(0).map(function (rowIdx) {
         table.cell(rowIdx, 2).nodes().to$().click();

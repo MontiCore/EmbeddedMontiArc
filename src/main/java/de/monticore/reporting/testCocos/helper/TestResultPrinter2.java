@@ -73,7 +73,7 @@ public class TestResultPrinter2 {
             try {
                 String first = FileUtils.readFileToString(new File(path));
                 first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + printTestResults(testResults, merge, "", 0);
+                String str = first + ",\n" + printTestResults(testResults, merge, "", null, 0);
                 FileUtils.writeStringToFile(new File(path),
                         str);
             } catch (IOException e) {
@@ -82,14 +82,14 @@ public class TestResultPrinter2 {
         } else {
             try {
                 FileUtils.writeStringToFile(new File(path),
-                        printTestResults(testResults, merge, "", 0));
+                        printTestResults(testResults, merge, "", null, 0));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String baseOrder, int depth) {
+    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String baseOrder, File rootFile, int depth) {
         IndentPrinter ip = new IndentPrinter();
         char c = 160;
         if (!merge)
@@ -108,7 +108,7 @@ public class TestResultPrinter2 {
 
             ip.println("{");
             ip.indent();
-            ip.println(names[i++] + ": \"" + (baseOrder.contains("ZZZZZZErrored")?CheckCoCoResult.erroredString:testResult.getRootFile().getName()) + "\",");
+            ip.println(names[i++] + ": \"" + (rootFile == null ? testResult.getRootFile().getName() : rootFile.getName()) + "\",");
             ip.println(names[i++] + ": \"" + getOrder(baseOrder, testResult) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
@@ -142,7 +142,10 @@ public class TestResultPrinter2 {
             ip.println(names[i++] + ": " + tagOf(testResult.getUniquePorts()) + ",");
             ip.println(names[i++] + ": ");
             ip.indent();
-            ip.println(getChildData(testResult, getOrder(baseOrder, testResult), depth + 1));
+            if(depth == 0)
+                ip.println(getChildData(testResult, getOrder(baseOrder, testResult), testResult.getRootFile(), depth + 1));
+            else
+                ip.println("[]");
             ip.unindent();
             ip.unindent();
             ip.print("}");
@@ -157,28 +160,31 @@ public class TestResultPrinter2 {
     private static String getOrder(String baseOrder, CheckCoCoResult testResult){
         if(testResult.getModelName().equals("Parsing failed")) return "ZZZZZZErrored_Parsing";
         if(testResult.getModelName().equals("Resolving failed")) return "ZZZZZZErrored_Resolving";
+        if(testResult.isMainPackage()) return testResult.getRootFile().getName() + "." + testResult.getModelName();
         if(baseOrder.equals("")) return testResult.getQualifiedName() + "." + testResult.getProject().replace("/","");
-        return baseOrder + testResult.getQualifiedName().substring(testResult.getQualifiedName().lastIndexOf(".") + 1);
+        String name = testResult.getModelName();
+        if (name.endsWith("ema") || name.endsWith("emam") )
+            name = name.substring(0, name.lastIndexOf("."));
+        if (name.contains("."))
+            name = name.substring(testResult.getModelName().lastIndexOf(".") + 1);
+        return baseOrder + name;
     }
 
-    private static String getChildData(CheckCoCoResult testResult, String baseOrder, int depth) {
+    private static String getChildData(CheckCoCoResult testResult, String baseOrder, File rootFile, int depth) {
         List<CheckCoCoResult> childResults = new LinkedList<>();
         for(ChildElement childElement: testResult.getChildren()){
             childResults.add(childElement.getChild());
         }
-        return printTestResults(childResults, false, baseOrder + ".", depth);
+        return printTestResults(childResults, false, baseOrder + ".", rootFile, depth);
     }
 
     private static String getDepthImage(CheckCoCoResult testResult, int depth){
-        if(testResult.getModelName().equals("customerAcceptanceTests.LoopComponent")){
-            int i = 0;
-        }
-        if(testResult.getChildren().size() == 0) return "<div class=\'atomicImage" + depth + "\'></div>";
+        if(testResult.getChildren().size() == 0 || depth == 1) return "<div class=\'atomicImage" + depth + "\'></div>";
         return "<div class=\'depthImage" + depth + "\'></div>";
     }
 
     private static String getVFSTag(CheckCoCoResult testResult) {
-        if(testResult.getRootFile().getName().equals(CheckCoCoResult.erroredString)) return "";
+        if(testResult.isErrorResult() || testResult.isMainPackage()) return "";
         String zipName = testResult.getZipName();
         File file = testResult.getModelFile();
         File project = testResult.getProjectFile();
@@ -202,7 +208,7 @@ public class TestResultPrinter2 {
     }
 
     private static String getVisulisationLink(CheckCoCoResult testResult) {
-        if(testResult.getRootFile().getName().equals(CheckCoCoResult.erroredString)) return testResult.getModelName();
+        if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
         File file = testResult.getModelFile();
         String displayName = testResult.getModelName();
 
@@ -216,7 +222,8 @@ public class TestResultPrinter2 {
     }
 
     private static String getFilePath(CheckCoCoResult testResult) {
-        if(testResult.getRootFile().getName().equals(CheckCoCoResult.erroredString)) return testResult.getModelName();
+        if(testResult.isErrorResult()) return testResult.getModelName();
+        if(testResult.isMainPackage()) return testResult.getRootFile().getName() + "/" + testResult.getProject();
         File file = testResult.getModelFile();
         File project = testResult.getProjectFile();
         String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
