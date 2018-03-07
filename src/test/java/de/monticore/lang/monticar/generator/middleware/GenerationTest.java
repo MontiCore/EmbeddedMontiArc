@@ -118,6 +118,39 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testIntersectionGeneration() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        componentInstanceSymbol.getConnectors().stream()
+                .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
+                .forEach(c -> System.out.println("Source = Target:"+c.getSource() + " -> " + c.getTargetPort()));
+
+        componentInstanceSymbol.getSubComponents().stream()
+        .flatMap(subc -> subc.getConnectors().stream())
+                .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
+                .forEach(c -> System.out.println("Source = Target in comp "+c.getComponentInstance().get().getName()+":"+c.getSource() + " -> " + c.getTargetPort()));
+
+        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
+        componentInstanceSymbol.getSubComponents().stream()
+                .flatMap(subc -> subc.getPorts().stream())
+                .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
+
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/intersection/src/");
+
+        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
+
+    @Test
     public void testMutliMwGenerateAll() throws IOException {
         testMutliMw("allMw", true, true);
     }
