@@ -84,7 +84,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>0.0.7-SNAPSHOT</version>
+            <version>0.0.7a-SNAPSHOT</version>
         </dependency>
 
         <dependency>
