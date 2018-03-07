@@ -27,7 +27,7 @@ bool parseCommandLineParameters(int argc, char* argv[]){
       //Ignore
     }
   }
-  cout << "Usage: " << argv[0] << " [-h | -t sleepTimeMs]\\n";
+  cout << "Usage: " << argv[0] << " [-h | -t sleepTimeMs]\n";
   return false;
 }
 
@@ -54,9 +54,9 @@ int main(int argc, char* argv[])
     threads.push_back(new thread(startMiddleware,ref(*a),ref(comp),ref(done)));
   }
 
-  cout << "waiting for all middleware to start\\n";
+  cout << "waiting for all middleware to start\n";
   this_thread::sleep_for(seconds(3));
-  cout << "started! Executing every " << exeMs << "ms\\n";
+  cout << "started! Executing every " << exeMs << "ms\n";
 
   time_point<system_clock> start, end;
   while(!done){
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     int elapsedMs = duration_cast<milliseconds>(end-start).count();
     int newSleep = exeMs - elapsedMs;
     if(newSleep <= 0){
-      cout << "Cant keep up! "<< (-newSleep) <<"ms late!\\n";
+      cout << "Cant keep up! "<< (-newSleep) <<"ms late!\n";
     }else{
        this_thread::sleep_for(milliseconds(newSleep));
     }
