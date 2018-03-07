@@ -36,6 +36,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
+import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -50,6 +51,7 @@ import java.util.*;
 public class Generator {
 
     public static final String CNN_HELPER = "CNNTranslator";
+    public static final String CNN_TRAINER = "CNNTrainer";
 
     private GeneratorCPP emamGen;
 
@@ -73,22 +75,11 @@ public class Generator {
 
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
         List<FileContent> fileContents = new ArrayList<>();
-        ASTComponent astComponent = (ASTComponent) componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().get();
-        EMADLCocos.createChecker().checkAll(astComponent);
+        Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
 
-        Optional<ArchitectureSymbol> architecture = astComponent.getSpannedScope().get().resolve("", ArchitectureSymbol.KIND);
-        Optional<MathStatementsSymbol> mathStatements = astComponent.getSpannedScope().get().resolve("MathStatements", MathStatementsSymbol.KIND);
+        generateStrings(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
-        if (architecture.isPresent()){
-            fileContents.addAll(generateCNN(taggingResolver, componentInstanceSymbol, architecture.get()));
-        }
-        else if (mathStatements.isPresent()){
-            fileContents.add(generateMathComponent(taggingResolver, componentInstanceSymbol, mathStatements.get()));
-        }
-        else {
-            fileContents.addAll(generateSubComponents(taggingResolver, componentInstanceSymbol, symtab));
-        }
-
+        fileContents.add(generateCNNTrainer(allInstances, componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_")));
         fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
 
         if (emamGen.shouldGenerateMainClass()) {
@@ -100,14 +91,36 @@ public class Generator {
         return fileContents;
     }
 
-    public List<FileContent> generateCNN(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
-        List<FileContent> fileContents = new ArrayList<>();
+    protected void generateStrings(List<FileContent> fileContents,
+                                Set<ExpandedComponentInstanceSymbol> allInstances,
+                                TaggingResolver taggingResolver,
+                                ExpandedComponentInstanceSymbol componentInstanceSymbol,
+                                Scope symtab){
+        allInstances.add(componentInstanceSymbol);
+        ASTComponent astComponent = (ASTComponent) componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().get();
+        EMADLCocos.createChecker().checkAll(astComponent);
+
+        Optional<ArchitectureSymbol> architecture = astComponent.getSpannedScope().get().resolve("", ArchitectureSymbol.KIND);
+        Optional<MathStatementsSymbol> mathStatements = astComponent.getSpannedScope().get().resolve("MathStatements", MathStatementsSymbol.KIND);
+
+        if (architecture.isPresent()){
+            generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
+        }
+        else if (mathStatements.isPresent()){
+            generateMathComponent(fileContents, taggingResolver, componentInstanceSymbol, mathStatements.get());
+        }
+        else {
+            generateSubComponents(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
+        }
+    }
+
+    public void generateCNN(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
         CNNArchGenerator cnnArchGenerator = new CNNArchGenerator();
         Map<String,String> contentMap = cnnArchGenerator.generateStrings(architecture);
         String fullName = instance.getComponentType().getReferencedSymbol().getFullName();
 
         //get the components execute method
-        String executeKey = "execute_" + fullName;
+        String executeKey = "execute_" + fullName.replaceAll("\\.", "_");
         String executeMethod = contentMap.get(executeKey);
         if (executeMethod == null){
             throw new IllegalStateException("execute method of " + fullName + " not found");
@@ -124,8 +137,6 @@ public class Generator {
         }
         fileContents.add(componentFileContent);
         fileContents.add(new FileContent(processTemplate(new HashMap<>(), CNN_HELPER), CNN_HELPER + ".h"));
-
-        return fileContents;
     }
 
     protected String transformComponent(String component, String predictorClassName, String executeMethod){
@@ -150,14 +161,13 @@ public class Generator {
         return component;
     }
 
-    public FileContent generateMathComponent(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol){
-        return new FileContent(
+    public void generateMathComponent(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol){
+        fileContents.add(new FileContent(
                 emamGen.generateString(taggingResolver, componentSymbol, mathStatementsSymbol),
-                componentSymbol);
+                componentSymbol));
     }
 
-    public List<FileContent> generateSubComponents(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
-        List<FileContent> fileContents = new ArrayList<>();
+    public void generateSubComponents(List<FileContent> fileContents, Set<ExpandedComponentInstanceSymbol> allInstances, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
         fileContents.add(new FileContent(emamGen.generateString(taggingResolver, componentInstanceSymbol, (MathStatementsSymbol) null), componentInstanceSymbol));
         String lastNameWithoutArrayPart = "";
         for (ExpandedComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
@@ -170,14 +180,29 @@ public class Generator {
                 Log.info(generateComponentInstance + "", "Bool:");
             }
             if (generateComponentInstance) {
-                fileContents.addAll(generateStrings(taggingResolver, instanceSymbol, symtab));
+                generateStrings(fileContents, allInstances, taggingResolver, instanceSymbol, symtab);
             }
         }
-
-        return fileContents;
     }
 
-    public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
+    public FileContent generateCNNTrainer(Set<ExpandedComponentInstanceSymbol> allInstances, String mainComponentName){
+        List<ExpandedComponentInstanceSymbol> cnnInstances = new ArrayList<>();
+        Set<String> componentNames = new HashSet<>();
+        for (ExpandedComponentInstanceSymbol componentInstance : allInstances){
+            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
+            Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+            if (architecture.isPresent()){
+                cnnInstances.add(componentInstance);
+                componentNames.add(component.getFullName());
+            }
+        }
+        Map<String, Object> ftlContext = new HashMap<>();
+        ftlContext.put("instances", cnnInstances);
+        ftlContext.put("componentNames", componentNames);
+        return new FileContent(processTemplate(ftlContext, CNN_TRAINER), CNN_TRAINER + "_" + mainComponentName + ".py");
+    }
+
+    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
         fileContents.addAll(tg.generateTypes(TypeConverter.getTypeSymbols()));
@@ -185,11 +210,9 @@ public class Generator {
         if (emamGen.getGenerationTargetPath().charAt(emamGen.getGenerationTargetPath().length() - 1) != '/') {
             emamGen.setGenerationTargetPath(emamGen.getGenerationTargetPath() + "/");
         }
-        List<File> files = new ArrayList<>();
         for (FileContent fileContent : fileContents) {
-            files.add(emamGen.generateFile(fileContent));
+            emamGen.generateFile(fileContent);
         }
-        return files;
     }
 
     public void generate(Path modelPath, String qualifiedName) throws IOException, TemplateException {

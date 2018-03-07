@@ -44,11 +44,6 @@ import de.monticore.symboltable.Scope;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-/**
- * Common methods for symboltable tests
- *
- * @author Robert Heim
- */
 public class AbstractSymtab {
     protected static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);

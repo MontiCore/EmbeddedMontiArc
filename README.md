@@ -3,9 +3,7 @@
 [![Build Status](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master)
 
 # EmbeddedMontiArcDL
-
 **work in progress**
-
 ##Examples
 ```
 package mnist;
@@ -211,7 +209,7 @@ component ResNeXt50{
         resLayer(innerChannels=32, outChannels=2048, stride=2) ->
         resLayer(innerChannels=32, outChannels=2048, -> = 2) ->
         GlobalPooling(pool_type="avg") ->
-        FullyConnected(units=classes) ->
+        FullyConnected(units=1000) ->
         Softmax() ->
         predictions
     }
