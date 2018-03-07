@@ -32,17 +32,22 @@ public class ClusterHelper {
                     ExpandedComponentInstanceSymbol compTarget = c.getTargetPort().getComponentInstance().orElse(null);
                     if (compSource == null || compTarget == null)
                         Log.error("ComponentInstance of source or target not found!");
-
-                    graph.addEdge(compSource, compTarget);
+                        if(!compSource.equals(compTarget))
+                            graph.addEdge(compSource, compTarget);
                 });
 
         ConnectivityInspector<ExpandedComponentInstanceSymbol, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(graph);
-        if (connectivityInspector.connectedSetOf(componentInstanceSymbol).size() != 1)
-            Log.error("0x8EFC3: The supercomponent can only be connected to subcomponents via middleware ports!");
+        int instanceSetSize = connectivityInspector.connectedSetOf(componentInstanceSymbol).size();
+        if (instanceSetSize != 1) {
+            Log.warn("0x8EFC3: The supercomponent can only be connected to subcomponents via middleware ports!");
+            return new ArrayList<>();
+        }
+        //All subcomps are connected via non mw -> only highest level needs to be generated
+        if(instanceSetSize != componentInstanceSymbol.getSubComponents().size() + 1)
+            graph.removeVertex(componentInstanceSymbol);
 
-        graph.removeVertex(componentInstanceSymbol);
-
-        return connectivityInspector.connectedSets();
+        List<Set<ExpandedComponentInstanceSymbol>> res = connectivityInspector.connectedSets();
+        return res;
     }
 
     public static List<ExpandedComponentInstanceSymbol> getClusterSubcomponents(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
