@@ -2,13 +2,16 @@ package de.monticore.lang.monticar.generator.rosmsg;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -48,6 +51,21 @@ public class BasicTypesTest extends AbstractSymtabTest {
         assertEquals(msgInQ.getFields().get(0).getType().getName(), "float64");
         assertEquals(msgInZ.getFields().get(0).getType().getName(), "int32");
         assertEquals(msgInB.getFields().get(0).getType().getName(), "bool");
+    }
+
+    @Test
+    public void testMatrixTypes() {
+        Scope symtab = createSymTab("src/test/resources/");
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.matrixTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        Map<String, RosMsg> portToMsg = component.getPorts().stream()
+                .collect(Collectors.toMap(CommonSymbol::getName, p -> GeneratorRosMsg.getRosType("std_msgs", p.getTypeReference())));
+
+        assertTrue(portToMsg.get("in1").getName().equals("std_msgs/Float64MultiArray"));
+        assertTrue(portToMsg.get("in2").getName().equals("std_msgs/Float64MultiArray"));
+        assertTrue(portToMsg.get("out1").getName().equals("std_msgs/ByteMultiArray"));
+        assertTrue(portToMsg.get("out2").getName().equals("std_msgs/Int32MultiArray"));
     }
 
     @Test

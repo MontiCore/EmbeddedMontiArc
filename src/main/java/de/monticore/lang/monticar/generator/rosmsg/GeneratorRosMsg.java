@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
@@ -132,21 +133,40 @@ public class GeneratorRosMsg {
 
     public static RosMsg getRosType(String packageName, MCTypeReference<? extends MCTypeSymbol> typeReference) {
         MCTypeSymbol type = typeReference.getReferencedSymbol();
-        if(type.isKindOf(MCASTTypeSymbol.KIND)){
+        if (type.isKindOf(MCASTTypeSymbol.KIND)) {
             MCASTTypeSymbol mcastTypeSymbol = (MCASTTypeSymbol) type;
-            if(mcastTypeSymbol.getName().equals("Q")){
+            if (mcastTypeSymbol.getName().equals("Q")) {
                 RosMsg tmpMsg = new RosMsg("std_msgs/Float64");
                 tmpMsg.addField(new RosField("data", new RosType("float64")));
                 return tmpMsg;
-            }else if(mcastTypeSymbol.getName().equals("Z")){
+            } else if (mcastTypeSymbol.getName().equals("Z")) {
                 RosMsg tmpMsg = new RosMsg("std_msgs/Int32");
                 tmpMsg.addField(new RosField("data", new RosType("int32")));
                 return tmpMsg;
-            }else if(mcastTypeSymbol.getName().equals("B")){
+            } else if (mcastTypeSymbol.getName().equals("B")) {
                 RosMsg tmpMsg = new RosMsg("std_msgs/Bool");
                 tmpMsg.addField(new RosField("data", new RosType("bool")));
                 return tmpMsg;
-            }else{
+            } else if (mcastTypeSymbol.getName().equals("CommonMatrixType")) {
+                ASTCommonMatrixType matrixType = (ASTCommonMatrixType) mcastTypeSymbol.getAstType();
+                String tmpMsgName = "";
+                String tmpTypeName = "";
+                if (matrixType.getElementType().isIsRational()) {
+                    tmpMsgName = "std_msgs/Float64MultiArray";
+                    tmpTypeName = "float64";
+                } else if (matrixType.getElementType().isIsWholeNumberNumber()) {
+                    tmpMsgName = "std_msgs/Int32MultiArray";
+                    tmpTypeName = "int32";
+                } else if (matrixType.getElementType().isIsBoolean()) {
+                    //TODO: BoolMultiArray?
+                    tmpMsgName = "std_msgs/ByteMultiArray";
+                    tmpTypeName = "byte";
+                } else {
+                    Log.error("Matrix type not supported: " + matrixType);
+                }
+                //TODO: refactor
+                return getMultMatrixRosMsg(tmpMsgName, tmpTypeName);
+            } else {
                 Log.error("Case not handled! MCASTTypeSymbol " + mcastTypeSymbol.getName());
             }
         }
@@ -157,6 +177,38 @@ public class GeneratorRosMsg {
         }
         Log.error("Case not handled! MCTypeReference " + typeReference);
         return null;
+    }
+
+    private static RosMsg getMultMatrixRosMsg(String msgName, String tmpTypeName) {
+        RosMsg tmpMsg = new RosMsg(msgName);
+
+        //uint32 data_offset
+        RosMsg multiArrayLayout = new RosMsg("MultiArrayLayout");
+        multiArrayLayout.addField(new RosField("data_offset", new RosType("uint32")));
+
+        //MultiArrayDimension[] dim
+        RosMsg mutliArrayDimMsg = new RosMsg("MultiArrayDimension");
+
+        //string label
+        mutliArrayDimMsg.addField(new RosField("label", new RosType("string")));
+        //uint32 size
+        mutliArrayDimMsg.addField(new RosField("size", new RosType("uint32")));
+        //uint32 stride
+        mutliArrayDimMsg.addField(new RosField("stride", new RosType("uint32")));
+
+        RosField multiArrayDimField = new RosField("dim", mutliArrayDimMsg);
+        multiArrayDimField.setArray(true);
+
+        multiArrayLayout.addField(multiArrayDimField);
+
+        RosField fieldData = new RosField("data", new RosType(tmpTypeName));
+        fieldData.setArray(true);
+        RosField layoutField = new RosField("layout", multiArrayLayout);
+
+        tmpMsg.addField(fieldData);
+        tmpMsg.addField(layoutField);
+
+        return tmpMsg;
     }
 
     private static String getTargetName(StructSymbol structSymbol) {
