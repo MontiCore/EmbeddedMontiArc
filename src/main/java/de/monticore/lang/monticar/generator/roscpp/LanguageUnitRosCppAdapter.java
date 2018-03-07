@@ -113,7 +113,9 @@ public class LanguageUnitRosCppAdapter {
     }
 
     private String getTopicNameTargetLanguage(String topicName) {
-        return topicName.replace("/", "_");
+        return topicName.replace("/", "_")
+                .replace("[", "_")
+                .replace("]", "_");
     }
 
     private void generateConstructor(String classname, BluePrint currentBluePrint) {
