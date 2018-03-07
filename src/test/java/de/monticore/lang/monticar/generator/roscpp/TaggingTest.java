@@ -171,4 +171,22 @@ public class TaggingTest extends AbstractSymtabTest {
 
         testFilesAreEqual(files, "multiNestedStructComp/", generationTargetPath);
     }
+
+    @Test
+    public void testMatrixTypesComp() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(symtab);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        String generationTargetPath = "./target/generated-sources-roscpp/matrixTypesComp/";
+        generatorRosCpp.setGenerationTargetPath(generationTargetPath);
+
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.matrixTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+
+        List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
+
+        testFilesAreEqual(files, "matrixTypesComp/", generationTargetPath);
+    }
 }
