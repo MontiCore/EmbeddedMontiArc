@@ -18,7 +18,7 @@ Release History
 * **[v1.1:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.1)** 2D Component Visualisation
 * [v1.1:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.1) Reporting (Overview of Model Quality)
 * **[v1.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.2)** Visualisation inside Reporting
-* **[v1.2.5:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.2)** Merging the previous releases
+* **[v1.2.5:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.2.5)** Merging the previous releases
 
 Credits
 =======
