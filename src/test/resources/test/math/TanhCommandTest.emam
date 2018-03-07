@@ -1,7 +1,0 @@
-package test.math;
-
-component TanhCommandTest{
-    implementation Math{
-        Q a = tanh(0.5);
-    }
-}

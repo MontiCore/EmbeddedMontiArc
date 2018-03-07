@@ -1,7 +1,0 @@
-package test.math;
-
-component MinCommandTest{
-    implementation Math{
-        Q a = min(15,4);
-    }
-}

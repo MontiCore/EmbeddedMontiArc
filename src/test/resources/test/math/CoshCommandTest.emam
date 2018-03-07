@@ -1,7 +1,0 @@
-package test.math;
-
-component CoshCommandTest{
-    implementation Math{
-        Q a = cosh(0.5);
-    }
-}
