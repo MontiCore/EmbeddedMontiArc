@@ -31,7 +31,7 @@ import java.util.*;
 
 public final class TestsGeneratorCPP {
 
-    public static final String TESTS_DIRECTORY_NAME = "test";
+    public static final String TESTS_DIRECTORY_NAME = "/test";
 
     private final GeneratorCPP generator;
     private List<BluePrintCPP> bluePrints;
