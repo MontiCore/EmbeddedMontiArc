@@ -26,6 +26,7 @@ import de.monticore.lang.monticar.streamunits._visitor.StreamUnitsVisitor;
 import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.math3.geometry.spherical.oned.ArcsSet;
 
 import java.util.*;
 
@@ -118,8 +119,29 @@ public final class TestsGeneratorCPP {
     private String getComponentNamesThatHaveTests() {
         String result = "";
         for (ComponentSymbol k : availableStreams.keySet()) {
-            result += k.getFullName() + "\n";
+            result += getSmallStartingName(k.getFullName()) + "\n";
         }
+        return result;
+    }
+
+    private String getSmallStartingName(String name) {
+        String result = "";
+        String splits[] = name.split("\\.");
+
+        for (int i = 0; i < splits.length - 1; ++i) {
+            result += splits[i] + ".";
+        }
+
+        result += getStringFirstLetterSmall(splits[splits.length - 1]);
+        return result;
+    }
+
+    private String getStringFirstLetterSmall(String name) {
+        String result = "";
+        String firstLetter = "" + name.charAt(0);
+        firstLetter = firstLetter.toLowerCase();
+        result += firstLetter;
+        result += name.substring(1);
         return result;
     }
 
