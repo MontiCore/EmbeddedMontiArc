@@ -68,4 +68,109 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
         testMathCommand("zeros");
     }
 
+    @Test
+    public void testAbsCommand() throws IOException {
+        testMathCommand("abs");
+    }
+
+    @Test
+    public void testAcosCommand() throws IOException {
+        testMathCommand("acos");
+    }
+
+    @Test
+    public void testAcoshCommand() throws IOException {
+        testMathCommand("acosh");
+    }
+
+    @Test
+    public void testAsinCommand() throws IOException {
+        testMathCommand("asin");
+    }
+
+    @Test
+    public void testAsinhCommand() throws IOException {
+        testMathCommand("asinh");
+    }
+
+    @Test
+    public void testAtan2Command() throws IOException {
+        testMathCommand("atan2");
+    }
+
+    @Test
+    public void testAtanCommand() throws IOException {
+        testMathCommand("atan");
+    }
+
+    @Test
+    public void testAtanhCommand() throws IOException {
+        testMathCommand("atanh");
+    }
+
+    @Test
+    public void testCosCommand() throws IOException {
+        testMathCommand("cos");
+    }
+
+
+    @Test
+    public void testCoshCommand() throws IOException {
+        testMathCommand("cosh");
+    }
+
+    @Test
+    public void testDetCommand() throws IOException {
+        testMathCommand("det");
+    }
+
+    @Test
+    public void testDiagCommand() throws IOException {
+        testMathCommand("diag");
+    }
+
+    @Test
+    public void testEyeCommand() throws IOException {
+        testMathCommand("eye");
+    }
+
+    @Test
+    public void testLog2Command() throws IOException {
+        testMathCommand("log2");
+    }
+
+    @Test
+    public void testLog10Command() throws IOException {
+        testMathCommand("log10");
+    }
+
+    @Test
+    public void testLogCommand() throws IOException {
+        testMathCommand("log");
+    }
+
+    @Test
+    public void testNormCommand() throws IOException {
+        testMathCommand("norm");
+    }
+
+    @Test
+    public void testSinCommand() throws IOException {
+        testMathCommand("sin");
+    }
+
+    @Test
+    public void testSinhCommand() throws IOException {
+        testMathCommand("sinh");
+    }
+
+    @Test
+    public void testTanCommand() throws IOException {
+        testMathCommand("tan");
+    }
+
+    @Test
+    public void testTanhCommand() throws IOException {
+        testMathCommand("tanh");
+    }
 }
