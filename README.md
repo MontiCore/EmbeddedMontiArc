@@ -1,6 +1,6 @@
 # EmbeddedMontiArcStudio
 
-**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.1
+**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.3.0
 
 **Video for release v1.0:** https://youtu.be/2CopDQLGCJ8
 (New video will come soon)
