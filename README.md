@@ -12,7 +12,7 @@ See here how to create new releases: https://help.github.com/articles/creating-r
 
 Release History
 =======
-* **[v1.3:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.3)** IDE with Visualisation, 3D-Simulator and Reporting
+* **[v1.3:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.3.0)** IDE with Visualisation, 3D-Simulator and Reporting
 * **[v1.2.5:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.2.5)** Merging the previous releases
 * **[v1.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.2)** Visualisation inside Reporting
 * **[v1.1:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.1)** 2D Component Visualisation
