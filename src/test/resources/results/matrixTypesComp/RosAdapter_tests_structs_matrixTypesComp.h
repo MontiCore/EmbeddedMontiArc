@@ -18,29 +18,24 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 	}
 	
 	void _name1Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
-		(component->in1)(0, 0) = msg->data[0];
-		(component->in1)(1, 0) = msg->data[1];
-		(component->in1)(2, 0) = msg->data[2];
+		int counter = 0;
+		for(int i0 = 0; i0 < 3; i0++){
+			for(int i1 = 0; i1 < 1; i1++){
+				(component->in1)(i0, i1) = msg->data[counter];
+				counter++;
+			}
+		}
 		
 	}
 	
-	void _name2Callback(const std_msgs::Float64MultiArray::ConstPtr& msg){
-		(component->in2)(0, 0) = msg->data[0] != 0;
-		(component->in2)(0, 1) = msg->data[1] != 0;
-		(component->in2)(0, 2) = msg->data[2] != 0;
-		(component->in2)(0, 3) = msg->data[3] != 0;
-		(component->in2)(1, 0) = msg->data[4] != 0;
-		(component->in2)(1, 1) = msg->data[5] != 0;
-		(component->in2)(1, 2) = msg->data[6] != 0;
-		(component->in2)(1, 3) = msg->data[7] != 0;
-		(component->in2)(2, 0) = msg->data[8] != 0;
-		(component->in2)(2, 1) = msg->data[9] != 0;
-		(component->in2)(2, 2) = msg->data[10] != 0;
-		(component->in2)(2, 3) = msg->data[11] != 0;
-		(component->in2)(3, 0) = msg->data[12] != 0;
-		(component->in2)(3, 1) = msg->data[13] != 0;
-		(component->in2)(3, 2) = msg->data[14] != 0;
-		(component->in2)(3, 3) = msg->data[15] != 0;
+	void _name2Callback(const std_msgs::ByteMultiArray::ConstPtr& msg){
+		int counter = 0;
+		for(int i0 = 0; i0 < 4; i0++){
+			for(int i1 = 0; i1 < 4; i1++){
+				(component->in2)(i0, i1) = msg->data[counter] != 0;
+				counter++;
+			}
+		}
 		
 	}
 	
@@ -59,28 +54,28 @@ class RosAdapter_tests_structs_matrixTypesComp: public IAdapter_tests_structs_ma
 	
 	void publish_name3Publisher(){
 		std_msgs::ByteMultiArray tmpMsg;
-		tmpMsg.data.resize(6);
-		tmpMsg.data[0] = (component->out1)(0, 0) ? 1 : 0;
-		tmpMsg.data[1] = (component->out1)(0, 1) ? 1 : 0;
-		tmpMsg.data[2] = (component->out1)(0, 2) ? 1 : 0;
-		tmpMsg.data[3] = (component->out1)(1, 0) ? 1 : 0;
-		tmpMsg.data[4] = (component->out1)(1, 1) ? 1 : 0;
-		tmpMsg.data[5] = (component->out1)(1, 2) ? 1 : 0;
+		tmpMsg.data.resize(2 * 3);
+		int counter = 0;
+		for(int i0 = 0; i0 < 2; i0++){
+			for(int i1 = 0; i1 < 3; i1++){
+				tmpMsg.data[counter] = (component->out1)(i0, i1) ? 1 : 0;
+				counter++;
+			}
+		}
 		
 		_name3Publisher.publish(tmpMsg);
 	}
 	
 	void publish_name4Publisher(){
 		std_msgs::Int32MultiArray tmpMsg;
-		tmpMsg.data.resize(8);
-		tmpMsg.data[0] = (component->out2)(0, 0);
-		tmpMsg.data[1] = (component->out2)(0, 1);
-		tmpMsg.data[2] = (component->out2)(0, 2);
-		tmpMsg.data[3] = (component->out2)(0, 3);
-		tmpMsg.data[4] = (component->out2)(1, 0);
-		tmpMsg.data[5] = (component->out2)(1, 1);
-		tmpMsg.data[6] = (component->out2)(1, 2);
-		tmpMsg.data[7] = (component->out2)(1, 3);
+		tmpMsg.data.resize(2 * 4);
+		int counter = 0;
+		for(int i0 = 0; i0 < 2; i0++){
+			for(int i1 = 0; i1 < 4; i1++){
+				tmpMsg.data[counter] = (component->out2)(i0, i1);
+				counter++;
+			}
+		}
 		
 		_name4Publisher.publish(tmpMsg);
 	}

@@ -16,20 +16,30 @@ public class SetStructPortInstruction extends TargetCodeInstruction {
         if (rosMsg.getName().startsWith("std_msgs/")) {
             if (rosMsg.getName().endsWith("MultiArray")) {
                 ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) port.getTypeReference().getReferencedSymbol()).getAstType();
-                List<String> indexStrings = IndexHelper.getIndexStrings(matrixType);
+                List<String> dimSizes = IndexHelper.getDimSizesOfMatrixType(matrixType);
 
-                int i = 0;
                 this.instruction = "";
-                for (String indexString : indexStrings) {
-                    this.instruction += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->data[" + i + "]";
-                    //TODO: check type not name
-                    if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
-                        //is a bool msg
-                        this.instruction += " != 0";
-                    }
-                    this.instruction += ";\n";
-                    i++;
+                this.instruction += "int counter = 0;\n";
+                String indexString = "";
+                for (int i = 0; i < dimSizes.size(); i++) {
+                    String curInd = "i" + i;
+                    indexString += (i == 0 ? "" : ", ") + curInd;
+                    this.instruction += "for(int " + curInd + " = 0; " + curInd + " < " + dimSizes.get(i) + "; " + curInd + "++){\n";
                 }
+
+                this.instruction += "(component->" + NameHelper.getPortNameTargetLanguage(port) + ")(" + indexString + ") = msg->data[counter]";
+                //TODO: check type not name
+                if (rosMsg.getName().equals("std_msgs/ByteMultiArray")) {
+                    //is a bool msg
+                    this.instruction += " != 0";
+                }
+                this.instruction += ";\n";
+                this.instruction += "counter++;\n";
+
+                for (int i = 0; i < dimSizes.size(); i++) {
+                    this.instruction += "}\n";
+                }
+
 
             } else {
                 this.instruction = NameHelper.getAllFieldNames(rosMsg).stream()
