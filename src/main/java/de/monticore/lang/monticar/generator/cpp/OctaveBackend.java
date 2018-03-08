@@ -10,6 +10,7 @@ import de.se_rwth.commons.logging.Log;
  * @author Sascha Schneiders
  */
 public class OctaveBackend implements MathBackend {
+    public static final String NAME="OctaveBackend";
     @Override
     public String getMatrixTypeName() {
         return "Matrix";
@@ -42,7 +43,7 @@ public class OctaveBackend implements MathBackend {
 
     @Override
     public String getBackendName() {
-        return "OctaveBackend";
+        return NAME;
     }
 
     @Override

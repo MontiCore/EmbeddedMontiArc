@@ -25,7 +25,7 @@ public class AllTemplatesTest {
         vm.setIncludes(
                 Arrays.asList("cmp1.h", "cmp2.h", "cmp3.h")
         );
-        String result = AllTemplates.generateMainEntry(vm);
+        String result = AllTemplates.generateMainEntry(vm,true);
         Assert.assertNotNull(result);
         Assert.assertTrue(result.contains("#include \"cmp1.h\""));
         Assert.assertTrue(result.contains("#include \"cmp2.h\""));

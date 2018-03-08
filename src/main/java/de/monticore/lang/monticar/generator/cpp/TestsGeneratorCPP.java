@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.StreamViewModel;
@@ -82,7 +83,10 @@ public final class TestsGeneratorCPP {
             }
         }
         if (generator.isGenerateTests()) {
-            files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
+            boolean isOctaveBackend = true;
+            if (!MathConverter.curBackend.getBackendName().equals(OctaveBackend.NAME))
+                isOctaveBackend = false;
+            files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain, isOctaveBackend), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
             files.add(getCatchLib());
         }
         //files.add(new FileContent(getTestedComponentsString(), TESTS_DIRECTORY_NAME + "/testedComponents.txt"));
