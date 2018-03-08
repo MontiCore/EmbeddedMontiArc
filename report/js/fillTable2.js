@@ -1,17 +1,32 @@
-function loadJSON(file, callback, ide) {
+function loadInfo(infoFile, file, callback, ide) {
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType('application/json');
+    xobj.open('GET', infoFile, true);
+    var res;
+    var ready = 0;
+    xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == '200') {
+            res = JSON.parse(xobj.responseText);
+            loadJSON(file, callback, res, ide);
+        }
+    };
+    xobj.send(null);
+}
+
+function loadJSON(file, callback, info, ide) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType('application/json');
     xobj.open('GET', file, true);
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == '200') {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText, ide);
+            callback(xobj.responseText, info, ide);
         }
     };
     xobj.send(null);
 }
 
-function createTable(data, ide) {
+function createTable(data, info, ide) {
     data = JSON.parse(data);
     table = $('#my-table').DataTable({
         fixedHeader: true,
@@ -33,22 +48,10 @@ function createTable(data, ide) {
         "rowGroup": {
             dataSrc: "Root",
             startRender: function (rows, group) {
-                var valid = rows
-                    .data()
-                    .pluck('Valid')
-                    .reduce(function (a, b) {
-                        if (b == undefined) {
-                            return 0;
-                        }
-                        if (b.toLowerCase().indexOf("cross") >= 0) {
-                            return a + 0;
-                        } else {
-                            return a + 1;
-                        }
-                    }, 0);
-
-                var count = rows.count();
-                return group + ' (' + count + ')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; valid: ' + valid + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; invalid: ' + (count - valid);
+                var count = info[group]['Number'];
+                var valid = info[group]['Valid'];
+                var invalid = info[group]['Invalid'];
+                return group + ' (' + count + ')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; valid: ' + valid + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; invalid: ' + invalid;
             },
             endRender: null //function( rows, group ) {return group;}
         },
@@ -152,6 +155,7 @@ removeChildRows = function (tr, row, data) {
     });
 
     $(tr).removeClass('childrenShown');
+    $(tr).addClass('childrenNotShown');
 }
 
 expandRow = function (tr, row, data) {
@@ -169,7 +173,9 @@ expandRow = function (tr, row, data) {
                 const tmpRow = table.row.add(data.ChildData[i]).node();
                 incClass(tr[0], tmpRow);
                 $(tmpRow).addClass((name + "_Child"));
+                $(tmpRow).removeClass('childrenNotShown');
             }
+            $(tr).removeClass('childrenNotShown');
             $(tr).addClass('childrenShown');
         }
         table.draw();
@@ -211,7 +217,6 @@ function adjustFloatingHeader(content) {
         if (first) {
             first = false;
             second = true;
-            $(this).text('');
         } else if (second) {
             second = false;
             $(this).html(content);
@@ -252,7 +257,7 @@ $(document).ready(function () {
     adjustHeader();
 
     var ide = (getURLParameter('ide') != 'false');
-    loadJSON("data/data.json", createTable, ide);
+    loadInfo("data/info.json", "data/data.json", createTable, ide);
 
     // Add event listener for opening and closing details
     $('#my-table tbody').on('click', 'td.details-control', function () {

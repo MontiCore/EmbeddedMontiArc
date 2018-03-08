@@ -80,6 +80,7 @@ public class OrderTestResults {
                 if(modelName.startsWith("."))
                     modelName = modelName.substring(1);
                 String mainPackage = modelName.substring(0,modelName.indexOf("."));
+
                 if(mainPackage.equals(""))
                     mainPackage = modelName.substring(1).substring(modelName.substring(1).indexOf("."));
 

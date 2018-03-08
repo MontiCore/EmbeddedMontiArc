@@ -2,10 +2,7 @@ package de.monticore.reporting.testCocos;
 
 import de.monticore.reporting.order.OrderTestResults;
 import de.monticore.reporting.svgTools.VisualisationHelper;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
-import de.monticore.reporting.testCocos.helper.TestResultPrinter;
-import de.monticore.reporting.testCocos.helper.CheckTestResult;
-import de.monticore.reporting.testCocos.helper.TestResultPrinter2;
+import de.monticore.reporting.testCocos.helper.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -31,6 +28,7 @@ public class Main {
 
             System.out.println("\n<============Write Test Results============>\n");
             TestResultPrinter2.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge());
+            TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
             CheckTests tewt = new CheckTests();
