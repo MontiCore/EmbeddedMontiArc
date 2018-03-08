@@ -24,7 +24,7 @@ return eigenValues;
 static mat getKMeansClusters(mat A, int k){
 mat clusters;
 kmeans(clusters,A.t(),k,random_subset,20,true);
-printf("cluster centroid calculation done\n");
+/*printf("cluster centroid calculation done\n");
 std::ofstream myfile;
      myfile.open("data after cluster.txt");
      myfile << A;
@@ -33,14 +33,14 @@ std::ofstream myfile;
 	 std::ofstream myfile2;
      myfile2.open("cluster centroids.txt");
      myfile2 << clusters;
-     myfile2.close();
+     myfile2.close();*/
 mat indexedData=getKMeansClustersIndexData(A.t(), clusters);
 
-std::ofstream myfile3;
+/*std::ofstream myfile3;
      myfile3.open("data after index.txt");
      myfile3 << indexedData;
      myfile3.close();
-	 
+	 */
 return indexedData;
 }
 
