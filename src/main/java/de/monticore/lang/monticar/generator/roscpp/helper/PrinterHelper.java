@@ -55,6 +55,7 @@ public class PrinterHelper {
         } else {
             builder.append("class " + bluePrint.getName() + extendsString + "{\n");
         }
+        bluePrint.getConsts().forEach(builder::append);
 
         bluePrint.getVariables().forEach(v -> builder.append("\t" + PrinterHelper.printVariable(v) + "\n"));
         builder.append("\n");

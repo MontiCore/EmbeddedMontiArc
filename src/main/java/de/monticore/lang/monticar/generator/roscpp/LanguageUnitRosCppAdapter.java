@@ -156,7 +156,8 @@ public class LanguageUnitRosCppAdapter {
         currentBluePrint.addMethod(initMethod);
     }
 
-    private void generateFields(ExpandedComponentInstanceSymbol symbol, List<PortSymbol> rosPorts, BluePrint currBluePrint) {
+    private void generateFields(ExpandedComponentInstanceSymbol symbol, List<PortSymbol> rosPorts, BluePrintCPP currBluePrint) {
+        currBluePrint.addDefineGenerics(symbol);
         //component
         Variable componentField = new Variable();
         componentField.setName("component");
