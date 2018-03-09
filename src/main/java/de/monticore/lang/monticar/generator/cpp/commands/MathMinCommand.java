@@ -31,8 +31,8 @@ public class MathMinCommand extends MathCommand {
         if (backendName.equals("OctaveBackend")) {
             convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
         } else if (backendName.equals("ArmadilloBackend")) {
-            //convertUsingArmadilloBackend(mathExpressionSymbol, bluePrint);
-            Log.error("min is currently not supported in ArmadilloBackend");
+            convertUsingArmadilloBackend(mathExpressionSymbol, bluePrint);
+            //Log.error("min is currently not supported in ArmadilloBackend");
         }
     }
 
@@ -53,6 +53,26 @@ public class MathMinCommand extends MathCommand {
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
         ((BluePrintCPP) bluePrint).addAdditionalIncludeString("octave/builtin-defun-decls");
+
+
+    }
+    
+    public void convertUsingArmadilloBackend(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
+        MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
+
+        mathMatrixNameExpressionSymbol.setNameToAccess("");
+
+
+        String valueListString = "";
+        for (MathMatrixAccessSymbol accessSymbol : mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols())
+            MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
+        valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
+        //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
+        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
+        MathStringExpression stringExpression = new MathStringExpression("min"+valueListString);
+        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
+
+        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
 
 
     }
