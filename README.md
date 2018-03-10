@@ -7,8 +7,10 @@
 
 The aim of this repository is to host the already packed version of EmbeddedMontiArcStudio, a Development Suite for EmbeddedMontiArc. 
 
-This repo only contains zip-file releases. Please do not push the content of the zip file into the repo, as it is not compliant with the github rules.
+This repo only contains self extracting archive-file releases. Please do not push the content of the zip file or the exe into the repo, as it is not compliant with the github rules.
 See here how to create new releases: https://help.github.com/articles/creating-releases/
+
+For stable releases later than version 1.4 please insert the EmbeddedMontiArcLogo as logo for the self extracting exe (https://www.youtube.com/watch?v=tWA0VFcwi4c) and replace `ide.bat` in the root folder by a link which also has the EmbeddedMontiArcLogo. (Here is the link to the logo: https://github.com/EmbeddedMontiArc/website/blob/master/EMALogoTransparentWithoutSE.png
 
 Release History
 =======
