@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "./Helper.h"
 
 ${viewModel.mainModelName} AUTOPILOT_INSTANCE;
 
@@ -172,7 +171,6 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_exec
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_init
   (JNIEnv *jenv, jobject jobj) {
     srand(time(NULL));
-    Helper::init();
     AUTOPILOT_INSTANCE.init();
   }
 
