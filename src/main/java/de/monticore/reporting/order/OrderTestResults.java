@@ -128,6 +128,11 @@ public class OrderTestResults {
                     if(mainPackageResult.getProject().equals("")) mainPackageResult.setProject(testResult.getProject());
                     mainPackageResult.addChild(new ChildElement(testResult.getModelName(), testResult));
                     if(mainPackageResult.getRootFile() == null) mainPackageResult.setRootFile(testResult.getRootFile());
+                    if(mainPackageResult.getModelPath().equals("")) mainPackageResult.setModelPath(testResult.getModelPath());
+
+                    if(mainPackageResult.getFileType().equals("")) mainPackageResult.setFileType(testResult.getFileType());
+                    else if(!mainPackageResult.getFileType().equals("EMA/EMAM") && !mainPackageResult.getFileType().equals(testResult.getFileType()))
+                        mainPackageResult.setFileType("EMA/EMAM");
 
                     if(testResult.getParsed() != 0 && testResult.getParsed() < mainPackageResult.getParsed() || mainPackageResult.getParsed() == 0) {
                         mainPackageResult.setParsed(testResult.getParsed());

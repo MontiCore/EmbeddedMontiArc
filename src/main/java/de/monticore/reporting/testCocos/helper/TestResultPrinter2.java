@@ -115,7 +115,7 @@ public class TestResultPrinter2 {
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
             ip.println(names[i++] + ": \"" + getVisulisationLink(testResult) + "\",");
             ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
-            ip.println(names[i++] + ": \"" + getVFSTag(testResult) + "\",");
+            ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getFileType() + "\",");
@@ -160,14 +160,18 @@ public class TestResultPrinter2 {
     private static String getOrder(String baseOrder, CheckCoCoResult testResult){
         if(testResult.getModelName().equals("Parsing failed")) return "ZZZZZZErrored_Parsing";
         if(testResult.getModelName().equals("Resolving failed")) return "ZZZZZZErrored_Resolving";
-        if(testResult.isMainPackage()) return testResult.getRootFile().getName() + "." + testResult.getModelName();
+        if(testResult.isMainPackage()) return testResult.getRootFile().getName() + "."
+                + "." + testResult.getModelName()
+                + testResult.getModelPath().substring(testResult.getRootFile().getAbsolutePath().length())
+                .replace("\\",".").replace(":",".").replace("/",".")
+                ;
         if(baseOrder.equals("")) return testResult.getQualifiedName() + "." + testResult.getProject().replace("/","");
-        String name = testResult.getModelName();
-        if (name.endsWith("ema") || name.endsWith("emam") )
-            name = name.substring(0, name.lastIndexOf("."));
-        if (name.contains("."))
-            name = name.substring(testResult.getModelName().lastIndexOf(".") + 1);
-        return baseOrder + name;
+//        String name = testResult.getModelName();
+//        if (name.endsWith("ema") || name.endsWith("emam") )
+//            name = name.substring(0, name.lastIndexOf("."));
+//        if (name.contains("."))
+//            name = name.substring(testResult.getModelName().lastIndexOf(".") + 1);
+        return baseOrder + "_Child";
     }
 
     private static String getChildData(CheckCoCoResult testResult, String baseOrder, File rootFile, int depth) {
@@ -184,7 +188,7 @@ public class TestResultPrinter2 {
     }
 
     private static String getVFSTag(CheckCoCoResult testResult) {
-        if(testResult.isErrorResult() || testResult.isMainPackage()) return "";
+        if(testResult.isErrorResult() || testResult.isMainPackage()) return tagOf(0);
         String zipName = testResult.getZipName();
         File file = testResult.getModelFile();
         File project = testResult.getProjectFile();
@@ -201,10 +205,10 @@ public class TestResultPrinter2 {
         String displayName = name;
 //        if (project.getAbsolutePath().contains("MontiSim"))
 //            displayName = "MontiSim/" + displayName;
-        return ("<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+        return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
-                "<img border='0' alt='" + displayName + "' src='images/favicon.ico'>" +
-                "</a>").replace("\\", "/");
+                "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
+                "</a>\"").replace("\\", "/");
     }
 
     private static String getVisulisationLink(CheckCoCoResult testResult) {

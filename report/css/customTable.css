@@ -30,6 +30,10 @@ td img {
 	display: block;
 }
 
+.onlineIDEImage {
+  background : url('../images/favicon.ico') no-repeat center center;
+}
+
 .myTableContainer {
   width: 0.9vw;
 }

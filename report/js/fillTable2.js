@@ -42,7 +42,7 @@ function createTable(data, info, ide) {
         "bInfo": false,
         "orderFixed": {
             "pre": [0, 'asc'],
-            "post": [1, 'asc']
+            "pre": [1, 'asc']
         },
         "select": true,
         "rowGroup": {
@@ -65,9 +65,9 @@ function createTable(data, info, ide) {
                 "orderable": false,
             },
             {
-                "className": 'growTable',
+                "className": 'groupName',
                 "data": "Name",
-                "sType": "growDiv",
+                "sType": "groupName",
                 "bSortable": true,
                 "sWidth": "50%"
             },
@@ -226,12 +226,6 @@ function adjustFloatingHeader(content) {
     });
 }
 
-function getStringFromGrow(x) {
-    str1 = $(x).find('.noSVGhidden').text().toLowerCase();
-    str2 = $(x).find('.sVGhidden').text().toLowerCase();
-    return str1 == "" ? str2 : str1;
-}
-
 function getURLParameter(sParam) {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
@@ -244,12 +238,12 @@ function getURLParameter(sParam) {
 }
 
 $(document).ready(function () {
-    jQuery.fn.dataTableExt.oSort["growDiv-desc"] = function (x, y) {
-        return getStringFromGrow(x) < getStringFromGrow(y);
+    jQuery.fn.dataTableExt.oSort["groupName-desc"] = function (x, y) {
+        return x < y;
     };
 
-    jQuery.fn.dataTableExt.oSort["growDiv-asc"] = function (x, y) {
-        return getStringFromGrow(x) > getStringFromGrow(y);
+    jQuery.fn.dataTableExt.oSort["groupName-asc"] = function (x, y) {
+        return x > y;
     }
 
     $('#my-table thead tr').clone(true).appendTo('#my-table thead');
