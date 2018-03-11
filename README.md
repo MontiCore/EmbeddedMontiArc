@@ -2,7 +2,7 @@
 
 <img width="960" alt="emastudio" src="https://user-images.githubusercontent.com/30497492/37244360-2c4f5ac0-2488-11e8-8110-a35906afd89e.PNG">
 
-**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.0
+**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.2
 
 **Video for release v1.0:** https://youtu.be/2CopDQLGCJ8
 (New video will come soon)
