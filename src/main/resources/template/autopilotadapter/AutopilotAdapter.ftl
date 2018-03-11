@@ -11,13 +11,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-
+#include "armadillo.h"
 
 ${viewModel.mainModelName} AUTOPILOT_INSTANCE;
 
 
 
-void copyJLongArrayToMatrix(JNIEnv *jenv, jlongArray &source, Matrix &dest) {
+void copyJLongArrayToMatrix(JNIEnv *jenv, jlongArray &source, mat &dest) {
   jsize len = jenv -> GetArrayLength(source);
   if (len <= 0) {
     return;
@@ -29,7 +29,7 @@ void copyJLongArrayToMatrix(JNIEnv *jenv, jlongArray &source, Matrix &dest) {
   jenv -> ReleaseLongArrayElements(source, body, 0);
 }
 
-void copyJDoubleArrayToMatrix(JNIEnv *jenv, jdoubleArray &source, Matrix &dest) {
+void copyJDoubleArrayToMatrix(JNIEnv *jenv, jdoubleArray &source, mat &dest) {
   jsize len = jenv -> GetArrayLength(source);
   if (len <= 0) {
     return;
