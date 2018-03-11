@@ -58,7 +58,7 @@ public class GeneratorCPP implements Generator {
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
-        Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
+        //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
     public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
