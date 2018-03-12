@@ -27,6 +27,7 @@ public class Variable {
     boolean constantVariable = false;
     boolean parameterVariable = false;
     int arraySize = 1;
+    boolean isArray = false;
     Optional<String> constantValue = Optional.empty();
     List<String> additionalInformation = new ArrayList<>();
     List<String> dimensionalInformation = new ArrayList<>();
@@ -40,6 +41,7 @@ public class Variable {
     public Variable(String name, String additionalInformation) {
         this.name = name;
         this.additionalInformation.add(additionalInformation);
+        updateArrayStatus();
     }
 
     public Variable(Variable variable) {
@@ -49,6 +51,7 @@ public class Variable {
         this.constantVariable = variable.constantVariable;
         this.arraySize = variable.arraySize;
         this.additionalInformation = variable.additionalInformation;
+        updateArrayStatus();
     }
 
     public List<String> getAdditionalInformation() {
@@ -104,6 +107,7 @@ public class Variable {
 
     public void setName(String name) {
         this.name = name;
+        updateArrayStatus();
     }
 
     public void setTypeNameTargetLanguage(String typeName) {
@@ -139,6 +143,7 @@ public class Variable {
 
     public void setArraySize(int size) {
         this.arraySize = size;
+        updateArrayStatus();
     }
 
     public int getArraySize() {
@@ -146,7 +151,7 @@ public class Variable {
     }
 
     public boolean isArray() {
-        return arraySize > 1;
+        return isArray;
     }
 
     public boolean isStaticVariable() {
@@ -229,5 +234,14 @@ public class Variable {
 
     public static String convertToVariableName(String fullName) {
         return fullName.replaceAll("\\.", "_");
+    }
+
+    private void updateArrayStatus() {
+        if ((this.name.contains("[") && this.name.contains("]")) || arraySize > 1) {
+            isArray = true;
+            Log.debug("set isArray to true of v: " + getName(), "VARIABLE");
+        } else {
+            isArray = false;
+        }
     }
 }

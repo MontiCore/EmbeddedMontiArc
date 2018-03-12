@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Variable;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public class BluePrintFixer {
     public static void fixBluePrintVariableArrays(BluePrint bluePrint) {
+
         List<Variable> newVars = new ArrayList<>();
         for (Variable variable : bluePrint.getVariables()) {
             String currentArrayName = variable.getNameWithoutArrayNamePart();
@@ -24,6 +26,10 @@ public class BluePrintFixer {
             }
             if (add)
                 newVars.add(variable);
+        }
+
+        for (Variable v : newVars) {
+            Log.info("v: " + v.getName() + " isArray: " + v.isArray() + " size: " + v.getArraySize() + " ", "NEW VAR:");
         }
         bluePrint.setVariables(newVars);
     }

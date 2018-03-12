@@ -9,6 +9,8 @@ import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpre
 public interface MathBackend {
     String getMatrixTypeName();
 
+    String getCubeTypeName();
+
     String getMatrixInitString(int sizeN, int sizeM);
 
     String getRowVectorTypeName();

@@ -139,10 +139,17 @@ public class MathInformationRegister {
     }
 
     public void addVariable(Variable variable) {
-        this.variables.add(variable);
+
+        if (this.variables.contains(variable)) {
+
+        } else {
+            Log.info("v: " + variable.getName(), "addVariable");
+            this.variables.add(variable);
+        }
     }
 
     public void addVariable(MathValueSymbol mathValueSymbol) {
+        Log.info("mathValueSymbol: " + mathValueSymbol.getTextualRepresentation(), "addVariable");
         Variable var = new Variable(mathValueSymbol.getName(), Variable.VARIABLE);
         var.setTypeNameTargetLanguage(TypeConverter.getVariableTypeNameForMathLanguageTypeName(mathValueSymbol.getType()));
         for (MathExpressionSymbol dimension : mathValueSymbol.getType().getDimensions())
@@ -162,13 +169,13 @@ public class MathInformationRegister {
     }
 
     public static String getVariableInitName(Variable v, BluePrintCPP bluePrint) {
-        for (Variable v2 : bluePrint.getVariables()) {
+        /*for (Variable v2 : bluePrint.getVariables()) {
             if (v2.isArray() && PortConverter.getPortNameWithoutArrayBracketPart(v2.getName()).equals(v.getName())) {
                 if (!v.getName().endsWith("]")) {
                     return v.getName() + "[0]";
                 }
             }
-        }
+        }*/
         return v.getNameTargetLanguageFormat();
     }
 }

@@ -123,4 +123,10 @@ public class MathConverter {
             return "" + unitNumber.getNumber().get().doubleValue();
         }
     }
+
+    public static String getCubeTypeInitLine(Variable variable, BluePrintCPP bluePrintCPP) {
+        //TODO implement me
+
+        return null;
+    }
 }

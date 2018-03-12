@@ -17,7 +17,8 @@ public class ConnectInstructionCPP extends ConnectInstruction {
     @Override
     public String getTargetLanguageInstruction() {
         String resultString = "";
-        if (getVariable1().isArray()) {
+
+        if (getVariable1().isArray()&&false) {
             Log.info("Size: "+getVariable1().getArraySize(),"Array True Method:");
             for (int i = 0; i < getVariable1().getArraySize(); ++i) {
                 if (isUseThis1())

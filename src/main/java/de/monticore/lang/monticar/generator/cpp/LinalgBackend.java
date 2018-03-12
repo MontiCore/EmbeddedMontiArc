@@ -15,6 +15,11 @@ public class LinalgBackend implements MathBackend {
     }
 
     @Override
+    public String getCubeTypeName() {
+        return null;
+    }
+
+    @Override
     public String getMatrixInitString(int sizeN, int sizeM) {
         return "(" + sizeN + "," + sizeM + ");\n";
     }

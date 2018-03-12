@@ -52,6 +52,7 @@ public class GeneratorCPP implements Generator {
         TypeConverter.clearTypeSymbols();
     }
 
+
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
     }

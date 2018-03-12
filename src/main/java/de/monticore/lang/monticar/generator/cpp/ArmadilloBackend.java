@@ -18,6 +18,10 @@ public class ArmadilloBackend implements MathBackend {
         return "mat";
     }
 
+    @Override
+    public String getCubeTypeName() {
+        return "cube";
+    }
 
     @Override
     public String getMatrixInitString(int sizeN, int sizeM) {

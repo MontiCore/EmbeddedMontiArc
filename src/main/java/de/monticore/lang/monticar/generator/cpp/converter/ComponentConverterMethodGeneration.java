@@ -34,7 +34,8 @@ public class ComponentConverterMethodGeneration {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
                 Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
                 Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
-
+                Log.info("v1: "+v1.getName()+" v2: "+v2.getName(),"Variable Info:");
+                Log.info("v1: "+v1.getNameTargetLanguageFormat()+" v2: "+v2.getNameTargetLanguageFormat(),"Variable Info:");
 
                 Instruction instruction = new ConnectInstructionCPP(v2, v1);
                 method.addInstruction(instruction);

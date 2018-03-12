@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.se_rwth.commons.logging.Log;
 
 /**
  * @author Sascha Schneiders
@@ -60,6 +61,7 @@ public class PortConverter {
         variable.setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(typeNameMontiCar, variable, portSymbol).get());
         variable.addAdditionalInformation(Variable.ORIGINPORT);
         bluePrint.getMathInformationRegister().addVariable(variable);
+        Log.debug("EMAVAR: " + variable.getName() + " targetType:" + variable.getVariableType().getTypeNameTargetLanguage()+" isArray:"+variable.isArray(), "PortConverter");
 
         return variable;
     }
