@@ -16,6 +16,7 @@ For stable releases later than version 1.4 please insert the EmbeddedMontiArcLog
 
 Release History
 =======
+* [v1.4.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.2) Patches for EmbeddedMontiArcStudio v1.4
 * **[v1.4:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.0)** Two Examples: Autopilot Model and Image Clusterer Example
 * **[v1.3:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.3.0)** IDE with Visualisation, 3D-Simulator and Reporting
 * **[v1.2.5:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.2.5)** Merging the previous releases
