@@ -1,12 +1,8 @@
 # EmbeddedMontiArcStudio
 
-
-[![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
-
 **Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.0
 
-**Video for release v1.0:** https://youtu.be/2CopDQLGCJ8
-(New video will come soon)
+[![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
 
 The aim of this repository is to host the already packed version of EmbeddedMontiArcStudio, a Development Suite for EmbeddedMontiArc. 
 
