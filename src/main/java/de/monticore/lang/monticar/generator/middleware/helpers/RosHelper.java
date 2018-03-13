@@ -36,6 +36,7 @@ public class RosHelper {
                 });
     }
 
+    //Cannot be moved to GeneratorRosCpp: target port name needed for topic name
     private static void generateRosConnectionIfPossible(ConnectorSymbol connectorSymbol) {
         MiddlewareSymbol sourceTag = connectorSymbol.getSourcePort().getMiddlewareSymbol().orElse(null);
         MiddlewareSymbol targetTag = connectorSymbol.getTargetPort().getMiddlewareSymbol().orElse(null);
