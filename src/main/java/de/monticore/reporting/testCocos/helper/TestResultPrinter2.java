@@ -158,8 +158,10 @@ public class TestResultPrinter2 {
     }
 
     private static String getOrder(String baseOrder, CheckCoCoResult testResult){
-        if(testResult.getModelName().equals("Parsing failed")) return "ZZZZZZErrored_Parsing";
-        if(testResult.getModelName().equals("Resolving failed")) return "ZZZZZZErrored_Resolving";
+        if(testResult.getModelName().equals("Parsing failed")) return CheckCoCoResult.erroredString
+                + testResult.getRootFile().getName() + "_Parsing";
+        if(testResult.getModelName().equals("Resolving failed")) return CheckCoCoResult.erroredString
+                + testResult.getRootFile().getName() + "_Resolving";
         if(testResult.isMainPackage()) return testResult.getRootFile().getName() + "."
                 + "." + testResult.getModelName()
                 + testResult.getModelPath().substring(testResult.getRootFile().getAbsolutePath().length())
@@ -205,7 +207,7 @@ public class TestResultPrinter2 {
         String displayName = name;
 //        if (project.getAbsolutePath().contains("MontiSim"))
 //            displayName = "MontiSim/" + displayName;
-        return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+        return ("\"<a target='_blank' href='https://ide.embeddedmontiarc.com/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
                 "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
                 "</a>\"").replace("\\", "/");

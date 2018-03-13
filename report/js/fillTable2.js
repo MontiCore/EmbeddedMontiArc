@@ -41,8 +41,8 @@ function createTable(data, info, ide) {
         "paging": false,
         "bInfo": false,
         "orderFixed": {
-            "pre": [1, 'asc'],
-            "pre": [0, 'asc']
+            "pre": [0, 'asc'],
+            "pre": [1, 'asc']
         },
         "select": true,
         "rowGroup": {
