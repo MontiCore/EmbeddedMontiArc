@@ -69,4 +69,31 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         String restPath = "testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
+    @Test
+    public void testMatrixAssignmentTest() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.matrixAssignmentTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        String restPath = "testMath/l0/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
+    public void testMatrixArrayPortAccessTest() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.matrixArrayPortAccessTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        String restPath = "testMath/l0/";
+        testFilesAreEqual(files, restPath);
+    }
 }

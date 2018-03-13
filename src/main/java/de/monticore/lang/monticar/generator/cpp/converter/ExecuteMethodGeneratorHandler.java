@@ -1,13 +1,9 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
-import de.monticore.lang.math.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
-import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
+import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
@@ -123,23 +119,60 @@ public class ExecuteMethodGeneratorHandler {
     public static String generateExecuteCode(MathValueType mathValueType, List<String> includeStrings) {
         String result = "";
         if (mathValueType.isRationalType()) {
-            if (mathValueType.getDimensions().size() == 0)
-                return "double";
-            else if (mathValueType.getDimensions().size() == 2) {
-                Log.info("Dim1:" + mathValueType.getDimensions().get(0).getTextualRepresentation() + "Dim2: " + mathValueType.getDimensions().get(1).getTextualRepresentation(), "DIMS:");
-                if (mathValueType.getDimensions().get(0).getTextualRepresentation().equals("1")) {
-                    return MathConverter.curBackend.getRowVectorTypeName();
-                } else if (mathValueType.getDimensions().get(1).getTextualRepresentation().equals("1")) {
-                    return MathConverter.curBackend.getColumnVectorTypeName();
-                }
-                return MathConverter.curBackend.getMatrixTypeName();//TODO improve in future
-            } else {
-                Log.error("0xGEEXCOMAVAT Type conversion Case not handled!");
-            }
+            result = handleRationalType(mathValueType);
+        } else if (mathValueType.getType().isIsWholeNumberNumber()) {
+            result = handleWholeNumberType(mathValueType);
+        } else if (mathValueType.getType().isIsBoolean()) {
+            result = handleBooleanType(mathValueType);
         } else {
-            Log.error("Case not handled!");
+            Log.info(mathValueType.getTextualRepresentation(), "Representation:");
+            Log.error("MathValueType: Case not handled!");
         }
         return result;
+    }
+
+    private static String handleRationalType(MathValueType mathValueType) {
+        if (mathValueType.getDimensions().size() == 0)
+            return "double";
+        else if (mathValueType.getDimensions().size() == 2) {
+            Log.info("Dim1:" + mathValueType.getDimensions().get(0).getTextualRepresentation() + "Dim2: " + mathValueType.getDimensions().get(1).getTextualRepresentation(), "DIMS:");
+            if (mathValueType.getDimensions().get(0).getTextualRepresentation().equals("1")) {
+                return MathConverter.curBackend.getRowVectorTypeName();
+            } else if (mathValueType.getDimensions().get(1).getTextualRepresentation().equals("1")) {
+                return MathConverter.curBackend.getColumnVectorTypeName();
+            }
+            return MathConverter.curBackend.getMatrixTypeName();//TODO improve in future
+        } else {
+            Log.error("0xGEEXCOMAVAT Type conversion Case not handled!");
+        }
+        return null;
+    }
+
+    private static String handleWholeNumberType(MathValueType mathValueType) {
+        if (mathValueType.getDimensions().size() == 0)
+            return "int";
+        else if (mathValueType.getDimensions().size() == 2) {
+            //TODO handle just like RationalMatrix right now
+            Log.info("Dim1:" + mathValueType.getDimensions().get(0).getTextualRepresentation() + "Dim2: " + mathValueType.getDimensions().get(1).getTextualRepresentation(), "DIMS:");
+            if (mathValueType.getDimensions().get(0).getTextualRepresentation().equals("1")) {
+                return MathConverter.curBackend.getRowVectorTypeName();
+            } else if (mathValueType.getDimensions().get(1).getTextualRepresentation().equals("1")) {
+                return MathConverter.curBackend.getColumnVectorTypeName();
+            }
+            return MathConverter.curBackend.getMatrixTypeName();//TODO improve in future
+        } else {
+            Log.error("0xGEEXCOMAVAT Type conversion Case not handled!");
+        }
+        return null;
+    }
+
+    private static String handleBooleanType(MathValueType mathValueType) {
+        if (mathValueType.getDimensions().size() == 0)
+            return "bool";
+        else {
+            Log.error("0xGEEXCOMAVAT Type conversion Case not handled!");
+        }
+        return null;
     }
 
     public static String generateExecuteCode(MathNameExpressionSymbol mathNameExpressionSymbol, List<String> includeStrings) {
@@ -161,8 +194,16 @@ public class ExecuteMethodGeneratorHandler {
                 String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
                 result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
                 result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
-                result += ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
-
+                String input = ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
+                if (MathCommandRegisterCPP.containsCommandExpression(mathAssignmentExpressionSymbol.getExpressionSymbol(), input)) {
+                    result += input;
+                } else {
+                    if(!StringValueListExtractorUtil.containsPortName(input))
+                    result += StringIndexHelper.modifyContentBetweenBracketsByAdding(input, "-1");
+                    else
+                        result += input;
+                }
+                Log.info("result1: " + result, "MathAssignmentExpressionSymbol");
                 return result;
 
             }
@@ -174,12 +215,14 @@ public class ExecuteMethodGeneratorHandler {
             String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
             result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
             result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
-            result += ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
+            result += StringIndexHelper.modifyContentBetweenBracketsByAdding(ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n", "-1");
+            Log.info("result2: " + result, "MathAssignmentExpressionSymbol");
 
             return result;
         }
-
-        return mathAssignmentExpressionSymbol.getNameOfMathValue() + " " + mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " " + ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
+        String result = mathAssignmentExpressionSymbol.getNameOfMathValue() + " " + mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " " + ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
+        Log.info("result3: " + result, "MathAssignmentExpressionSymbol");
+        return result;
     }
 
 

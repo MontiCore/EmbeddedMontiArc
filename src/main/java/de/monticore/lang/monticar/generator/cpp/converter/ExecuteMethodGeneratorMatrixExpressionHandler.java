@@ -154,7 +154,28 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
             result += updateMatrixAccessString(mathMatrixAccessOperatorSymbol, counter, matrixExtractionPart, false, includeStrings);
         }
         result += mathMatrixAccessOperatorSymbol.getAccessEndSymbol();
+        Log.info("MatrixExtractionPart: " + matrixExtractionPart, "MathMatrixAccessOperatorSymbol");
+        Log.info("mathMatrixAccessOperatorSymbol: " + mathMatrixAccessOperatorSymbol.getTextualRepresentation(), "MathMatrixAccessOperatorSymbol");
+        Log.info("Oldresult: " + result, "MathMatrixAccessOperatorSymbol");
+        result = tryFix(result, mathMatrixAccessOperatorSymbol);
         return result;
+    }
+
+    private static String tryFix(String result, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
+        result=fixDoubleOffset(result,mathMatrixAccessOperatorSymbol,"]");
+        result=fixDoubleOffset(result,mathMatrixAccessOperatorSymbol,")");
+        return result;
+    }
+
+    private static String fixDoubleOffset(String result,MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol,String endPart){
+        String fixingTestString = (result.substring(0, result.length() - 3) + endPart);
+        Log.info("Checking Possible Fixing Test String: " + fixingTestString, "MathMatrixAccessOperatorSymbol");
+        if (fixingTestString.equals(mathMatrixAccessOperatorSymbol.getTextualRepresentation())) {
+            Log.info("Fixing:" + result + " to " + mathMatrixAccessOperatorSymbol.getTextualRepresentation(), "MathMatrixAccessOperatorSymbol");
+            result = mathMatrixAccessOperatorSymbol.getTextualRepresentation();
+        }
+        return result;
+
     }
 
     public static String updateMatrixAccessStringFixForLoop(MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, int counter, String matrixExtractionPart, List<String> includeStrings) {

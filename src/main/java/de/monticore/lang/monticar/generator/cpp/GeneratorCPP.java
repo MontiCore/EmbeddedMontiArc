@@ -30,7 +30,7 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class GeneratorCPP implements Generator {
-
+    public static GeneratorCPP currentInstance;
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
     private boolean isGenerateAutopilotAdapter = false;
@@ -50,6 +50,7 @@ public class GeneratorCPP implements Generator {
         this.mathCommandRegister = new MathCommandRegisterCPP();
         useOctaveBackend();
         TypeConverter.clearTypeSymbols();
+        currentInstance = this;
     }
 
 

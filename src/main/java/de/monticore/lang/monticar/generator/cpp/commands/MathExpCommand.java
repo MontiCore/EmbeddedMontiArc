@@ -11,7 +11,9 @@ import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.StringIndexHelper;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +67,10 @@ public class MathExpCommand extends MathCommand {
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression("exp"+valueListString);
+        Log.info("Previous valueList: "+valueListString,"EXPCOMMAND");
+        valueListString = StringIndexHelper.modifyContentBetweenBracketsByRemoving(valueListString, "-1)", ")");
+        Log.info("New valueList: "+valueListString,"EXPCOMMAND");
+        MathStringExpression stringExpression = new MathStringExpression("exp" +valueListString);
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
