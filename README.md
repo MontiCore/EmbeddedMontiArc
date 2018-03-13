@@ -9,6 +9,9 @@ Publications
   In: Modelling Foundations and Applications (ECMFA’17),
       Held as Part of STAF 2017, pages 34-50.
       Springer International Publishing, 2017.
+* [HKK+18] S. Hillemacher, S. Kriebel, E. Kusmenko, M. Lorang, B. Rumpe, A. Sema, G. Strobl, M. von Wenckstern:
+[Model-Based Development of Self-Adaptive Autonomous Vehicles using the SMARDT Methodology](http://www.se-rwth.de/publications/Model-Based-Development-of-Self-Adaptive-Autonomous-Vehicles-using-the-SMARDT-Methodology.pdf).
+In: Proceedings of the 6th International Conference on Model-Driven Engineering and Software Development (MODELSWARD'18), pg. 163-178. SciTePress, Jan. 2018.
 
 Further Examples
 ----
