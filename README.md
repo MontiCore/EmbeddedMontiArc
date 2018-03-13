@@ -1,6 +1,7 @@
 # Documentation of EmbeddedMontiArcMath 
 
-[Repository Status and Overview](RepoStatus.md)
+* [Repository Status and Overview](RepoStatus.md)
+* [Development Suite for EmbeddedMontiArc](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio)
 
 Publications
 ----
