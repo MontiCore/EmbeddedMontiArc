@@ -12,6 +12,9 @@ Publications
 * [HKK+18] S. Hillemacher, S. Kriebel, E. Kusmenko, M. Lorang, B. Rumpe, A. Sema, G. Strobl, M. von Wenckstern:
 [Model-Based Development of Self-Adaptive Autonomous Vehicles using the SMARDT Methodology](http://www.se-rwth.de/publications/Model-Based-Development-of-Self-Adaptive-Autonomous-Vehicles-using-the-SMARDT-Methodology.pdf).
 In: Proceedings of the 6th International Conference on Model-Driven Engineering and Software Development (MODELSWARD'18), pg. 163-178. SciTePress, Jan. 2018.
+* [GKR+17] F. Grazioli, E. Kusmenko, A. Roth, B. Rumpe, M. von Wenckstern:
+[Simulation Framework for Executing Component and Connector Models of Self-Driving Vehicles](http://www.se-rwth.de/publications/Simulation-Framework-for-Executing-Component-and-Connector-Models-of-Self-Driving-Vehicles.pdf).
+In: Proceedings of MODELS 2017. Workshop EXE, Austin, CEUR 2019, Sept. 2017.
 
 Further Examples
 ----
