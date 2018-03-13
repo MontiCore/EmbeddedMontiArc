@@ -1,7 +1,7 @@
 # EmbeddedMontiArcStudio
 
 
-[![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37244360-2c4f5ac0-2488-11e8-8110-a35906afd89e.PNG)](https://youtu.be/VTKSWwWp-kg)
+[![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
 
 **Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.0
 
