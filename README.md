@@ -1,6 +1,7 @@
 # EmbeddedMontiArcStudio
 
-<img width="960" alt="emastudio" src="https://user-images.githubusercontent.com/30497492/37244360-2c4f5ac0-2488-11e8-8110-a35906afd89e.PNG">
+
+[![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37244360-2c4f5ac0-2488-11e8-8110-a35906afd89e.PNG)](https://youtu.be/VTKSWwWp-kg)
 
 **Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.0
 
