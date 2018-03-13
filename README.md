@@ -2,7 +2,7 @@
 
 <img width="960" alt="emastudio" src="https://user-images.githubusercontent.com/30497492/37244360-2c4f5ac0-2488-11e8-8110-a35906afd89e.PNG">
 
-**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.2
+**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.0
 
 **Video for release v1.0:** https://youtu.be/2CopDQLGCJ8
 (New video will come soon)
@@ -16,6 +16,7 @@ For stable releases later than version 1.4 please insert the EmbeddedMontiArcLog
 
 Release History
 =======
+* **[v1.5:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.0)** Replace Octave Backend with Armadillo Backend to reduce download size and increase compilation time
 * [v1.4.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.2) Patches for EmbeddedMontiArcStudio v1.4
 * **[v1.4:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.0)** Two Examples: Autopilot Model and Image Clusterer Example
 * **[v1.3:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.3.0)** IDE with Visualisation, 3D-Simulator and Reporting
