@@ -3,20 +3,16 @@ package ba.intersection;
 import ba.util.RelToAbsTrajectory;
 
 component IntersectionController{
-    port in Z objectIdIn[4];
-    port in Q^{3,5} relTrajIn[4];
-    port in Q^{2,1} absPosIn[4];
+    port in Q^{3,5} relTrajIn[2];
+    port in Q^{2,1} absPosIn[2];
 
     port in Q cutoffPosIn;
     port in Q cutoffTimeIn;
 
-    port out Z objectIdOut[4];
-    port out B stopOut[4];
+    port out B stopOut[2];
 
-    instance RelToAbsTrajectory<4,5> relToAbsTrajectory;
-    instance TrajectoryToStop<4,6,5> trajectoryToStop;
-
-    connect objectIdIn[:] -> objectIdOut[:];
+    instance RelToAbsTrajectory<2,5> relToAbsTrajectory;
+    instance TrajectoryToStop<2,1,5> trajectoryToStop;
 
     connect cutoffPosIn -> trajectoryToStop.cutoffPos;
     connect cutoffTimeIn -> trajectoryToStop.cutoffTime;
