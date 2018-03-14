@@ -3,11 +3,11 @@ set -e # Exit with nonzero exit code if anything fails
 
 emaZip=$1
 msZip=$2
+emaGZip=$3
+msGZip=$4
 
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
-
-echo "EMAZIP: $emaZip"
 
 # Save some useful information
 REPO=`git config remote.origin.url`
