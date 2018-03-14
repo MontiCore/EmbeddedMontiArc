@@ -4,16 +4,21 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.TestConverter;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareSymbol;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
+import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -148,6 +153,28 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+
+    }
+
+    @Ignore
+    @Test
+    public void testsStreamTest() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.tests.relToAbsTrajectoryInst", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-emam/intersection/test/");
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
+        generatorCPP.setGenerateTests(false);
+//        generatorCPP.useArmadilloBackend();
+        ComponentStreamUnitsSymbol streamSymbol = taggingResolver.<ComponentStreamUnitsSymbol>resolve("ba.tests.RelToAbsTrajectory", ComponentStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(streamSymbol);
+        generatorCPP.generateFiles(componentInstanceSymbol,taggingResolver);
+        generatorCPP.generateFile(TestConverter.generateMainTestFile(streamSymbol,componentInstanceSymbol));
     }
 
     @Test

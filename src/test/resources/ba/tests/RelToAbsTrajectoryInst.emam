@@ -1,0 +1,19 @@
+package ba.tests;
+import ba.util.RelToAbsTrajectory;
+
+component RelToAbsTrajectoryInst{
+    ports in Q^{3,5} relTrajIn1,
+          in Q^{3,5} relTrajIn2,
+          in Q^{2,1} absPosIn1,
+          in Q^{2,1} absPosIn2,
+          out Q^{3,5} absTrajOut1,
+          out Q^{3,5} absTrajOut2;
+
+    instance RelToAbsTrajectory<2,5> relToAbsTrajectory;
+    connect relTrajIn1 -> relToAbsTrajectory.relTrajectoryIn[1];
+    connect relTrajIn2 -> relToAbsTrajectory.relTrajectoryIn[2];
+    connect absPosIn1 -> relToAbsTrajectory.absPositionIn[1];
+    connect absPosIn2 -> relToAbsTrajectory.absPositionIn[2];
+    connect relToAbsTrajectory.absTrajectoryOut[1] -> absTrajOut1;
+    connect relToAbsTrajectory.absTrajectoryOut[2] -> absTrajOut2;
+}

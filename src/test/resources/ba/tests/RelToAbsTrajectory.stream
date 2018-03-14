@@ -1,0 +1,12 @@
+package ba.tests;
+
+stream RelToAbsTrajectory for RelToAbsTrajectoryInst{
+    relTrajIn1: [0,0,0,0,0;1,1,1,1,1;2,2,2,2,2];
+    relTrajIn2: [0,0,0,0,0;1,1,1,1,1;2,2,2,2,2];
+
+    absPosIn1: [1;1];
+    absPosIn2: [2;2];
+
+    absTrajOut1: [1,1,1,1,1;2,2,2,2,2;2,2,2,2,2];
+    absTrajOut2: [2,2,2,2,2;3,3,3,3,3;2,2,2,2,2];
+}
