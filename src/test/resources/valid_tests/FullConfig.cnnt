@@ -1,13 +1,7 @@
-configuration FullConfig(trainData, trainLabel, testData, testLabel){
-     train_data:trainData
-     train_label:trainLabel
-     test_data:testData
-     test_label:testLabel
+configuration FullConfig{
      num_epoch : 5
      batch_size : 100
-     loading_mode:load_and_train
      eval_metric:ce
-     checkpoint:1000
      optimizer:rmsprop{
          learning_rate:0.001
          weight_decay:0.01

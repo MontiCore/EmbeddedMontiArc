@@ -25,9 +25,7 @@ public class CNNTrainCocos {
     public static CNNTrainCoCoChecker createChecker() {
         return new CNNTrainCoCoChecker()
                 .addCoCo(new CheckEntryRepetition())
-                .addCoCo(new CheckInteger())
-                .addCoCo(new CheckValidPath())
-                .addCoCo(new CheckNameValue());
+                .addCoCo(new CheckInteger());
     }
 
 }

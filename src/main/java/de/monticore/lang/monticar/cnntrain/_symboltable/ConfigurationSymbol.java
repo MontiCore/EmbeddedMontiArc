@@ -55,15 +55,6 @@ public class ConfigurationSymbol extends ConfigurationSymbolTOP {
         this.parameters = parameters;
     }
 
-    public void checkParameters(){
-        for (ConfigParameterSymbol parameter : getParameters()){
-            if (!parameter.getValue().isPresent()){
-                Log.error("0" + ErrorCodes.MISSING_PARAMETER_VALUE_CODE + " Missing configuration argument. " +
-                        "The parameter '" + parameter.getName() + "' has no value.");
-            }
-        }
-    }
-
     public Optional<ConfigParameterSymbol> getParameter(String name){
         for (ConfigParameterSymbol parameter : getParameters()){
             if (parameter.getName().equals(name)){

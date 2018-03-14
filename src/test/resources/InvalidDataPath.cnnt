@@ -1,6 +1,0 @@
-configuration InvalidDataPath{
-    train_data:"./data//mnist_train"
-    num_epoch : 5
-    batch_size : 100
-    optimizer : adam
-}

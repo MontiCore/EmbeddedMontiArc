@@ -83,11 +83,14 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
      * the expected errors are present; once only with the given cocos, checking that no additional
      * errors are present.
      */
-    protected static void checkInvalid(CNNTrainCoCoChecker cocos, ASTCNNTrainNode node,
+    protected static void checkInvalid(CNNTrainCoCoChecker cocos,
+                                       String modelPath,
+                                       String model,
                                        ExpectedErrorInfo expectedErrors) {
 
         // check whether all the expected errors are present when using all cocos
         Log.getFindings().clear();
+        ASTCNNTrainNode node = getAstNode(modelPath, model);
         CNNTrainCocos.createChecker().checkAll(node);
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");

@@ -1,3 +1,0 @@
-configuration MissingParameter1{
-    train_data:"./data/mnist_train"
-}

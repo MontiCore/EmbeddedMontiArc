@@ -1,0 +1,6 @@
+configuration A{
+     num_epoch : 5
+     batch_size : 100
+     eval_metric : cross_entropy
+     optimizer:rmsprop
+ }

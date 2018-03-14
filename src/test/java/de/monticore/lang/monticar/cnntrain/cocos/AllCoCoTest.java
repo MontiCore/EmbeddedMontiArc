@@ -21,33 +21,33 @@
 package de.monticore.lang.monticar.cnntrain.cocos;
 
 import de.monticore.lang.monticar.cnntrain._cocos.*;
+import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
 import java.io.IOException;
 
 public class AllCoCoTest extends AbstractCoCoTest{
-    String baseDir="src/test/resources";
+
+    public AllCoCoTest() {
+        Log.enableFailQuick(false);
+    }
+
     @Test
-    public void testCoCosSimulator() throws IOException {
-        //checkValid("", "InvalidName");
-        checkValid("","SimpleConfig1");
-        checkValid("","SimpleConfig2");
-        checkValid("","DataReferenceTest");
-        checkValid("","FullConfig");
-        checkValid("","FullConfig2");
+    public void testValidCoCos() throws IOException {
+        checkValid("valid_tests","SimpleConfig1");
+        checkValid("valid_tests","SimpleConfig2");
+        checkValid("valid_tests","FullConfig");
+        checkValid("valid_tests","FullConfig2");
+    }
 
+    @Test
+    public void testInvalidCoCos() throws IOException {
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckEntryRepetition()),
-                getAstNode("", "EntryRepetition"),
-                new ExpectedErrorInfo(1, "xC8853"));
+                "invalid_cocos_tests", "EntryRepetition",
+                new ExpectedErrorInfo(1, ErrorCodes.ENTRY_REPETITION_CODE));
         checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckInteger()),
-                getAstNode("", "IntegerTest"),
-                new ExpectedErrorInfo(1, "xC8851"));
-        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckNameValue()),
-                getAstNode("", "InvalidName"),
-                new ExpectedErrorInfo(2, "xC8558"));
-        checkInvalid(new CNNTrainCoCoChecker().addCoCo(new CheckNameValue()),
-                getAstNode("", "ParameterRepetition"),
-                new ExpectedErrorInfo(1, "xC8559"));
-
+                "invalid_cocos_tests", "IntegerTest",
+                new ExpectedErrorInfo(1, ErrorCodes.NOT_INTEGER_CODE));
     }
 }

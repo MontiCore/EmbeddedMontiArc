@@ -34,18 +34,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertTrue;
 
 
 public class ParserTest {
     public static final boolean ENABLE_FAIL_QUICK = false;
-    private static List<String> expectedParseErrorModels = Arrays.asList(
-            "src/test/resources/WrongParameterName.cnnt",
-            "src/test/resources/InvalidType.cnnt",
-            "src/test/resources/InvalidOptimizer.cnnt")
+    private static List<String> expectedParseErrorModels = Stream.of(
+            "src/test/resources/invalid_parser_tests/WrongParameterName.cnnt",
+            "src/test/resources/invalid_parser_tests/WrongParameterName2.cnnt",
+            "src/test/resources/invalid_parser_tests/InvalidType.cnnt",
+            "src/test/resources/invalid_parser_tests/InvalidOptimizer.cnnt",
+            "src/test/resources/invalid_parser_tests/MissingColon.cnnt")
 
-            .stream().map(s -> Paths.get(s).toString())
+            .map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());
 
     @Before
@@ -65,7 +68,7 @@ public class ParserTest {
 
     private void test(String fileEnding) throws IOException {
         ParseTest parserTest = new ParseTest("." + fileEnding);
-        Files.walkFileTree(Paths.get("src/test/resources"), parserTest);
+        Files.walkFileTree(Paths.get("src/test/resources/"), parserTest);
 
         if (!parserTest.getModelsInError().isEmpty()) {
             Log.debug("Models in error", "ParserTest");

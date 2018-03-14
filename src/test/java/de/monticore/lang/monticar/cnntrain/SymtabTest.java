@@ -34,12 +34,12 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testParsing() throws Exception {
         CNNTrainParser parser = new CNNTrainParser();
-        assertTrue(parser.parse("src/test/resources/SimpleConfig1.cnnt").isPresent());
+        assertTrue(parser.parse("src/test/resources/valid_tests/SimpleConfig1.cnnt").isPresent());
     }
 
     @Test
     public void testAlexnet(){
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/valid_tests/");
         ConfigurationSymbol a = symTab.<ConfigurationSymbol>resolve(
                 "SimpleConfig2",
                 ConfigurationSymbol.KIND).orElse(null);

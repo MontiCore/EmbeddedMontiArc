@@ -25,8 +25,5 @@ public class ErrorCodes {
     public static final String ENTRY_REPETITION_CODE = "xC8853";
     public static final String NOT_INTEGER_CODE = "xC8851";
     public static final String UNKNOWN_VARIABLE_CODE = "xC8558";
-    public static final String PARAMETER_REPETITION_CODE = "xC8559";
-    public static final String INVALID_PATH_CODE = "xC8556";
     public static final String MISSING_PARAMETER_VALUE_CODE = "xC7293";
-
 }

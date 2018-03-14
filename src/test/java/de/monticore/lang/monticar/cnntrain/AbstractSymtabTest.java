@@ -25,11 +25,13 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
 
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
+//        Log.enableFailQuick(false);
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
 
         fam.addModelingLanguage(new CNNTrainLanguage());

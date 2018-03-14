@@ -1,5 +1,4 @@
 configuration IntegerTest{
-     train_data:"./data/mnist_train"
      num_epoch : 5.1
      batch_size : 100
      optimizer : adam{

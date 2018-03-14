@@ -72,18 +72,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void endVisit(final ASTConfiguration trainingConfiguration) {
-        List<ConfigParameterSymbol> parameters = new ArrayList<>();
-        for (ASTConfigParameter astParameter : trainingConfiguration.getParameters()){
-            parameters.add((ConfigParameterSymbol) astParameter.getSymbol().get());
-        }
-        configuration.setParameters(parameters);
         removeCurrentScope();
-    }
-
-    @Override
-    public void endVisit(ASTConfigParameter node) {
-        ConfigParameterSymbol parameter = new ConfigParameterSymbol(node.getName());
-        addToScopeAndLinkWithNode(parameter, node);
     }
 
     @Override
@@ -93,25 +82,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(entry, node);
 
         configuration.getEntryMap().put(node.getName(), entry);
-    }
-
-    @Override
-    public void endVisit(ASTDataValue node){
-        ValueSymbol value;
-        if (node.getDataVariable().isPresent()){
-            value = (ValueSymbol) node.getDataVariable().get().getSymbol().get();
-        }
-        else {
-            value = (ValueSymbol) node.getPathValue().get().getSymbol().get();
-        }
-        node.setSymbol(value);
-    }
-
-    @Override
-    public void endVisit(ASTPathValue node) {
-        ValueSymbol value = new ValueSymbol();
-        value.setValue(node.getPath().getValue().replaceAll("\"", ""));
-        addToScopeAndLinkWithNode(value, node);
     }
 
     @Override
@@ -138,18 +108,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         }
         else if (node.getFALSE().isPresent()){
             value.setValue(false);
-        }
-        addToScopeAndLinkWithNode(value, node);
-    }
-
-    @Override
-    public void endVisit(ASTContextValue node) {
-        ValueSymbol value = new ValueSymbol();
-        if (node.getCPU().isPresent()){
-            value.setValue(Context.CPU);
-        }
-        else if (node.getGPU().isPresent()){
-            value.setValue(Context.GPU);
         }
         addToScopeAndLinkWithNode(value, node);
     }
@@ -201,24 +159,6 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         }
         else if (node.getPoly().isPresent()){
             value.setValue(LRPolicy.POLY);
-        }
-        addToScopeAndLinkWithNode(value, node);
-    }
-
-    @Override
-    public void endVisit(ASTLoadingModeValue node) {
-        ValueSymbol value = new ValueSymbol();
-        if (node.getLoadAndTrain().isPresent()){
-            value.setValue(LoadingMode.LOAD_AND_TRAIN);
-        }
-        else if (node.getLoadOnly().isPresent()){
-            value.setValue(LoadingMode.LOAD_ONLY);
-        }
-        else if (node.getNoLoad().isPresent()){
-            value.setValue(LoadingMode.NO_LOAD);
-        }
-        else if (node.getOverwrite().isPresent()){
-            value.setValue(LoadingMode.OVERWRITE);
         }
         addToScopeAndLinkWithNode(value, node);
     }
