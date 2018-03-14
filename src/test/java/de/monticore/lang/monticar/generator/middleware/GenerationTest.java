@@ -262,4 +262,25 @@ public class GenerationTest extends AbstractSymtabTest {
 
         middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
+
+    @Test
+    public void testTwoDimMatrix() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        //register the middleware tag types
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.matrix.twoDimMatrixComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/twoDimMatrixComp/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
 }
