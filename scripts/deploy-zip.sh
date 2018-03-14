@@ -27,6 +27,8 @@ git rm *.zip
 
 mv ../$emaZip $emaZip
 mv ../$msZip $msZip
+mv ../$emaGZip $emaGZip
+mv ../$msGZip $msGZip
 
 git add *.zip
 git commit -m "Deploy new Zips: ${SHA}"
