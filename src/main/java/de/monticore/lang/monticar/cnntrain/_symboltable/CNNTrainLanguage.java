@@ -42,7 +42,6 @@ public class CNNTrainLanguage extends CNNTrainLanguageTOP {
         addResolvingFilter(new CommonResolvingFilter<Symbol>(EntrySymbol.KIND));
         addResolvingFilter(new CommonResolvingFilter<Symbol>(NameValueSymbol.KIND));
         addResolvingFilter(new CommonResolvingFilter<Symbol>(ValueSymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(ConfigParameterSymbol.KIND));
         setModelNameCalculator(new CNNTrainModelNameCalculator());
     }
 

@@ -39,14 +39,6 @@ public class ConfigurationSymbol extends ConfigurationSymbolTOP {
         return entryMap;
     }
 
-    public Collection<EntrySymbol> getEntries(){
-        return getEntryMap().values();
-    }
-
-    public EntrySymbol getEntry(String name){
-        return getEntryMap().get(name);
-    }
-
     public List<ConfigParameterSymbol> getParameters() {
         return parameters;
     }
@@ -55,53 +47,4 @@ public class ConfigurationSymbol extends ConfigurationSymbolTOP {
         this.parameters = parameters;
     }
 
-    public Optional<ConfigParameterSymbol> getParameter(String name){
-        for (ConfigParameterSymbol parameter : getParameters()){
-            if (parameter.getName().equals(name)){
-                return Optional.of(parameter);
-            }
-        }
-        return Optional.empty();
-    }
-
-    private ConfigParameterSymbol getParameterOrError(String name){
-        Optional<ConfigParameterSymbol> param = getParameter(name);
-        if (param.isPresent()){
-            return param.get();
-        }
-        else {
-            throw new IllegalArgumentException("configuration parameter with name " + name + " does not exist.");
-        }
-    }
-
-    public void setParameter(String name, Rational value){
-        ConfigParameterSymbol parameter = getParameterOrError(name);
-        if (value.getDivisor().intValue() == 1){
-            parameter.setValue(value.getDividend().intValue());
-        }
-        else {
-            parameter.setValue(value.doubleValue());
-        }
-    }
-
-    public void setParameter(String name, boolean value){
-        ConfigParameterSymbol parameter = getParameterOrError(name);
-        parameter.setValue(value);
-    }
-
-    public void setParameter(String name, int value){
-        ConfigParameterSymbol parameter = getParameterOrError(name);
-        parameter.setValue(value);
-    }
-
-    public void setParameter(String name, double value){
-        ConfigParameterSymbol parameter = getParameterOrError(name);
-        parameter.setValue(value);
-    }
-
-    public void setParameter(String name, String value){
-        ConfigParameterSymbol parameter = getParameterOrError(name);
-        parameter.setValue(value);
-    }
-    
 }

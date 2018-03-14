@@ -5,10 +5,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
     CNNTrainCompilationUnit = Configuration;
     symbol scope Configuration = "configuration"
                                  name:Name&
-                                 ("(" parameters:(ConfigParameter || ",")* ")")? "{"
-                                 entries:ConfigEntry* "}";
-
-    ConfigParameter = Name&;
+                                 "{"entries:ConfigEntry* "}";
 
     interface Entry;
     ast Entry = method String getName(){}
