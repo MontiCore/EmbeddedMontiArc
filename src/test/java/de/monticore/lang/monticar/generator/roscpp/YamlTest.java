@@ -53,8 +53,8 @@ public class YamlTest extends AbstractSymtabTest {
 
         PortSymbol rosIn = portNamesToPort.get("rosIn");
         PortSymbol noRosIn = portNamesToPort.get("noRosIn");
-        assertEquals(subInter.getMsgFieldForPort(rosIn).getConversion(rosIn), "msg->posX");
-        assertEquals(subInter.getMsgFieldForPort(noRosIn).getConversion(noRosIn), "msg->posY");
+        assertEquals(subInter.getMsgFieldForPort(rosIn), "posX");
+        assertEquals(subInter.getMsgFieldForPort(noRosIn), "posY");
 
 
         ResolvedRosInterface pubInter = tag.getPublisherInterfaces().stream().findFirst().get();
@@ -68,7 +68,7 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(portNamesToPort.containsKey("rosOut"));
 
         PortSymbol rosOut = portNamesToPort.get("rosOut");
-        assertEquals(pubInter.getMsgFieldForPort(rosOut).getConversion(rosOut), ".data = component.rosOut");
+        assertEquals(pubInter.getMsgFieldForPort(rosOut), "data");
     }
 
     @Test
@@ -78,7 +78,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/arrayGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/array.yaml", symtab, generatorRosCpp);
@@ -109,7 +108,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/arraySyntaxGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/arrayColonSyntax.yaml", symtab, generatorRosCpp);
@@ -140,7 +138,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/multipleGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/multipleComponents.yaml", symtab, generatorRosCpp);
@@ -149,7 +146,7 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(files.size() == 2);
 
         List<String> fileNames = files.stream().map(File::getName).collect(Collectors.toList());
-        List<String> positiveFileList = Lists.newArrayList("tests_a_compA_RosWrapper.h", "test_basicPorts_RosWrapper.h");
+        List<String> positiveFileList = Lists.newArrayList("RosAdapter_tests_a_compA.h", "RosAdapter_test_basicPorts.h");
 
         assertTrue(fileNames.containsAll(positiveFileList));
     }
@@ -161,7 +158,6 @@ public class YamlTest extends AbstractSymtabTest {
 
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/converterMethodGenCpp/");
-        generatorRosCpp.setGenerateCpp(false);
 
         //Execute
         List<File> files = YamlHelper.generateFromFile("src/test/resources/config/converterMethod.yaml", symtab, generatorRosCpp);

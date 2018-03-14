@@ -1,0 +1,10 @@
+package tests.msg;
+
+component BasicTypesComp{
+    ports in Q inQ,
+          out Q outQ,
+          in Z inZ,
+          out Z outZ,
+          in B inB,
+          out B outB;
+}

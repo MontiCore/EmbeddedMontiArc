@@ -1,7 +1,0 @@
-package test.math;
-
-component MaxCommandTest{
-    implementation Math{
-        Q a = max(15,4);
-    }
-}

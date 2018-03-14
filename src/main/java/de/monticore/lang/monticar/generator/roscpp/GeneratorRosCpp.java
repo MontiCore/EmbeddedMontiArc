@@ -3,10 +3,13 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.roscpp.helper.FormatHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
+import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
+import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.BufferedWriter;
@@ -14,23 +17,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class GeneratorRosCpp {
 
     private String generationTargetPath;
-    private boolean generateCpp = true;
-    private GeneratorCPP generatorCPP;
+    private boolean generateCMake = false;
 
-    //TODO: as tag?
-    private ExecutionStrategy executionStrategy;
-
-    public void setExecutionStrategy(ExecutionStrategy executionStrategy) {
-        this.executionStrategy = executionStrategy;
-    }
-
-    public void setGenerateCpp(boolean generateCpp) {
-        this.generateCpp = generateCpp;
+    public void setGenerateCMake(boolean generateCMake) {
+        this.generateCMake = generateCMake;
     }
 
     public String getGenerationTargetPath() {
@@ -41,8 +38,8 @@ public class GeneratorRosCpp {
         this.generationTargetPath = generationTargetPath;
     }
 
-    public List<File> generateFiles(ResolvedRosTag resolvedRosTag, TaggingResolver symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(symtab, resolvedRosTag);
+    public List<File> generateFiles(ExpandedComponentInstanceSymbol component, TaggingResolver symtab) throws IOException {
+        List<FileContent> fileContents = generateStrings(component);
 
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
@@ -51,10 +48,6 @@ public class GeneratorRosCpp {
         for (FileContent fileContent : fileContents) {
 
             files.add(generateFile(fileContent));
-        }
-
-        if (generateCpp) {
-            files.addAll(generateCppFiles(symtab, resolvedRosTag.getComponent()));
         }
 
         return files;
@@ -75,42 +68,46 @@ public class GeneratorRosCpp {
         return f;
     }
 
-    public List<FileContent> generateStrings(Scope scope, ResolvedRosTag resolvedRosTag) {
+    public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol component) {
         List<FileContent> fileContents = new ArrayList<>();
-        fileContents.add(generateRosCompUnit(resolvedRosTag));
+        fileContents.addAll(generateRosAdapter(component));
+        fileContents.stream()
+                .filter(fc -> fc.getFileName().endsWith(".h"))
+                .forEach(fc -> fc.setFileContent(FormatHelper.fixIndentation(fc.getFileContent())));
         return fileContents;
     }
 
-    public void setGeneratorCPP(GeneratorCPP generatorCPP) {
-        this.generatorCPP = generatorCPP;
-    }
+    private List<FileContent> generateRosAdapter(ExpandedComponentInstanceSymbol component) {
+        List<FileContent> res = new ArrayList<>();
 
-    private List<File> generateCppFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol symbol) throws IOException {
-        //If user does not specify otherwise init with useful defaults
-        if (generatorCPP == null) {
-            generatorCPP = new GeneratorCPP();
-            generatorCPP.useArmadilloBackend();
-        }
-        //TODO: let user specify 2 different paths?
-        generatorCPP.setGenerationTargetPath(generationTargetPath);
-        return generatorCPP.generateFiles(symbol, taggingResolver);
-    }
+        FileContent apdapter = new FileContent();
 
-    private FileContent generateRosCompUnit(ResolvedRosTag resolvedRosTag) {
-        FileContent res = new FileContent();
-
-        LanguageUnitRosCppWrapper languageUnitRosCppWrapper = new LanguageUnitRosCppWrapper();
-        languageUnitRosCppWrapper.generateBluePrints(resolvedRosTag);
+        LanguageUnitRosCppAdapter languageUnitRosCppAdapter = new LanguageUnitRosCppAdapter();
+        languageUnitRosCppAdapter.generateBluePrints(component);
         //TODO: unsave, does not work with multiple
-        BluePrintCPP currentBluePrint = languageUnitRosCppWrapper.getBluePrints().get(0);
-        //TODO pull down into LanguageUnitRosCppWrapper
-        if (executionStrategy != null)
-            executionStrategy.generate(currentBluePrint);
+        BluePrintCPP currentBluePrint = languageUnitRosCppAdapter.getBluePrints().get(0);
 
         String classname = currentBluePrint.getName();
-        res.setFileName(classname + ".h");
+        apdapter.setFileName(classname + ".h");
+        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter_" + component.getFullName().replace(".", "_")));
 
-        res.setFileContent(PrinterHelper.printClass(currentBluePrint));
+        GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
+        for (Map.Entry<RosMsg, MCTypeReference<? extends MCTypeSymbol>> entry : languageUnitRosCppAdapter.getUsedRosMsgs().entrySet()) {
+            String packageName = Arrays.stream(entry.getKey().getName().split("/")).findFirst().get();
+            if (packageName.equals("struct_msgs")) {
+                generatorRosMsg.setTarget(generationTargetPath + "/" + packageName, packageName);
+                List<FileContent> tmpFileContents = generatorRosMsg.generateStrings(entry.getValue());
+                tmpFileContents.forEach(fc -> fc.setFileName(packageName + "/" + fc.getFileName()));
+                res.addAll(tmpFileContents);
+            }
+        }
+
+        if (generateCMake) {
+            LanguageUnitRosCMake languageUnitRosCMake = new LanguageUnitRosCMake();
+            res.add(languageUnitRosCMake.generate(component, languageUnitRosCppAdapter.getAdditionalPackages()));
+        }
+
+        res.add(apdapter);
         return res;
     }
 

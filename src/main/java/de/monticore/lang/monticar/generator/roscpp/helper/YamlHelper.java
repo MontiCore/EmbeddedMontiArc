@@ -4,6 +4,7 @@ import com.esotericsoftware.yamlbeans.YamlReader;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -19,6 +20,9 @@ import java.util.stream.Stream;
 //TODO: better exceptions
 public class YamlHelper {
 
+    private YamlHelper() {
+    }
+
     public static List<File> generateFromFile(String configFilePath, TaggingResolver symtab, GeneratorRosCpp generatorRosCpp) throws IOException {
         YamlReader reader = new YamlReader(new FileReader(configFilePath));
         List<RosTag> rosTags = (List<RosTag>) reader.read();
@@ -28,7 +32,16 @@ public class YamlHelper {
             fixPortSyntax(rosTag, symtab);
             fixMsgFieldIndices(rosTag);
             ResolvedRosTag resolvedRosTag = ResolveHelper.resolveRosTag(rosTag, symtab);
-            result.addAll(generatorRosCpp.generateFiles(resolvedRosTag, symtab));
+            Stream.concat(resolvedRosTag.getSubscriberInterfaces().stream(), resolvedRosTag.getPublisherInterfaces().stream()).
+                    forEach(inter -> {
+                        inter.getPorts().forEach(p -> {
+                            String topicName = inter.getTopic();
+                            String topicType = inter.getInclude();
+                            String msgField = inter.getMsgFieldForPort(p);
+                            p.setMiddlewareSymbol(new RosConnectionSymbol(topicName, topicType, msgField));
+                        });
+                    });
+            result.addAll(generatorRosCpp.generateFiles(resolvedRosTag.getComponent(), symtab));
         }
 
         return result;
@@ -87,7 +100,7 @@ public class YamlHelper {
                     inter.ports = new HashMap<>(
                             inter.ports.entrySet().stream()
                                     .collect(Collectors.toMap(Map.Entry::getKey,
-                                            e -> e.getValue().contains("[") && e.getValue().contains("]") ? PortNameHelper.getFixedMsgFieldName(e.getValue()) : e.getValue())));
+                                            e -> e.getValue().contains("[") && e.getValue().contains("]") ? NameHelper.getFixedMsgFieldName(e.getValue()) : e.getValue())));
                 });
     }
 }

@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Sets;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.Variable;
@@ -15,7 +14,7 @@ public class ResolvedRosInterface {
     private String type;
     private String topic;
     private String include;
-    private Map<PortSymbol, MsgConverter> portToMsgField = new HashMap<>();
+    private Map<PortSymbol, String> portToMsgField = new HashMap<>();
     private Optional<Variable> publisherField = Optional.empty();
     private Optional<Variable> subscriberField = Optional.empty();
     private Optional<Method> publishMethod = Optional.empty();
@@ -82,7 +81,7 @@ public class ResolvedRosInterface {
         this.include = include;
     }
 
-    public void addPort(PortSymbol portSymbol, MsgConverter msgField) {
+    public void addPort(PortSymbol portSymbol, String msgField) {
         portToMsgField.put(portSymbol, msgField);
     }
 
@@ -90,12 +89,8 @@ public class ResolvedRosInterface {
         return portToMsgField.keySet();
     }
 
-    public MsgConverter getMsgFieldForPort(PortSymbol portSymbol) {
+    public String getMsgFieldForPort(PortSymbol portSymbol) {
         return portToMsgField.get(portSymbol);
-    }
-
-    public Set<MsgConverter> getMsgConverters() {
-        return Sets.newHashSet(portToMsgField.values());
     }
 
     @Override

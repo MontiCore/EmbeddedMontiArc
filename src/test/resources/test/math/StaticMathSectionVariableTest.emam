@@ -1,7 +1,0 @@
-package test.math;
-
-component StaticMathSectionVariableTest{
-    implementation Math{
-        static Q counter = 2;
-    }
-}

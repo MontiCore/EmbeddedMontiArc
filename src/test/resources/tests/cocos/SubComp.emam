@@ -1,6 +1,0 @@
-package tests.cocos;
-
-component SubComp{
-    port in Q inPort;
-    port out Q outPort;
-}

@@ -1,7 +1,0 @@
-package test.math;
-
-component ExpCommandTest{
-    implementation Math{
-        Q a = exp(5);
-    }
-}

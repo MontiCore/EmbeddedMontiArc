@@ -1,9 +1,0 @@
-package issues;
-
-component Issue2{
-    //works
-    port in Q^{3,3} in1;
-
-    //Does not work
-    port in N^{3,3} in2;
-}
