@@ -1,6 +1,6 @@
 package ba.util;
 
-component RelToAbsTrajectory<N1 n = 4, N1 m = 5>{
+component RelToAbsTrajectory<N1 n = 2, N1 m = 5>{
     port in Q^{3,m} relTrajectoryIn[n];
     port in Q^{2,1} absPositionIn[n];
     port out Q^{3,m} absTrajectoryOut[n];

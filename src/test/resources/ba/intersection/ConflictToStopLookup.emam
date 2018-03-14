@@ -2,7 +2,7 @@ package ba.intersection;
 
 //TODO: rename
 //TODO: automatically calculate x: x = (n-1)n/2
-component ConflictToStopLookup<N1 n = 2,N1 x = 3>{
+component ConflictToStopLookup<N1 n = 2,N1 x = 1>{
 
     port out Z(1:n) indexLookup[x];
 
