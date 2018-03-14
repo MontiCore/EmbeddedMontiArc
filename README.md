@@ -6,7 +6,7 @@ Workaround: Download these branches and build each via 'mvn clean install -U -s 
 * EmbeddedMontiArc/RosPort: https://github.com/EmbeddedMontiArc/EmbeddedMontiArc/tree/RosPort
 * EmbeddedMontiArcMath/RosPort: https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath/tree/RosPort
 * EMAM2RosMsg: https://github.com/EmbeddedMontiArc/EMAM2RosMsg
-* EMAM2RosCpp/RosPort: https://github.com/EmbeddedMontiArc/EMAM2RosCpp/tree/RosPort
+* EMAM2RosCpp: https://github.com/EmbeddedMontiArc/EMAM2RosCpp
 * EMAM2Cpp/hellwig: https://github.com/EmbeddedMontiArc/EMAM2Cpp/tree/hellwig
 or use this script:
 ```bash
@@ -36,7 +36,6 @@ mvn clean install -U -s settings.xml
 cd ..
 
 cd EMAM2RosCpp
-git checkout RosPort
 mvn clean install -U -s settings.xml
 cd ..
 
