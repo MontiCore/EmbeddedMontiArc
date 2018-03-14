@@ -238,4 +238,28 @@ public class GenerationTest extends AbstractSymtabTest {
         assertEquals(fileNames.contains("RosAdapter_tests_a_addComp.h"), genRosAdapter);
         assertEquals(fileNames.contains("DummyAdapter_tests_a_addComp.h"), genDummyAdapter);
     }
+
+    @Ignore
+    //Cpp:  No 3 dim matrices(https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/37)
+    //      No types other then Q(https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/14)
+    @Test
+    public void testThreeDimMatrix() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        //register the middleware tag types
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.matrix.threeDimMatrixComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/threeDimMatrixComp/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
 }
