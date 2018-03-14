@@ -32,7 +32,7 @@ after_success:
 - msGZip="grammars$md5.zip"
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
-- bash ./scripts/deploy-zip.sh $emaZip $msZip
+- bash ./scripts/deploy-zip.sh $emaZip $msZip $emaGZip $msGZip
 - bash ./scripts/deploy-gh_pages.sh
 env:
   global:
