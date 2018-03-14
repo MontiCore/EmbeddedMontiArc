@@ -26,8 +26,12 @@ after_success:
 - emaZip="models$md5.zip"
 - createZip MontiSim
 - msZip="models$md5.zip"
-- java -jar target/reporting-0.7.1-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt true -tc true -zn $emaZip
-- java -jar target/reporting-0.7.1-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt true -tc true -zn $msZip -m true
+- createGrammarZip EmbeddedMontiArc
+- emaGZip="grammars$md5.zip"
+- createGrammarZip MontiSim
+- msGZip="grammars$md5.zip"
+- java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
+- java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
 - bash ./scripts/deploy-zip.sh $emaZip $msZip
 - bash ./scripts/deploy-gh_pages.sh
 env:

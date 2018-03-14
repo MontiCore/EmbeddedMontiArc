@@ -7,14 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 public class SearchFiles {
-    public static void main(String[] args) {
-        File project = new File("C:\\Praktikum\\Neu\\EmbeddedMontiArcMath");
-        String fileType = "emam";
-        List<File> files = searchFiles(project, fileType);
-        for (File file : files) {
-            System.out.println("File: " + file.getAbsoluteFile());
-        }
-    }
 
     public static List<File> searchFiles(File path, String... fileType) {
         SearchFiles tc = new SearchFiles();
@@ -35,9 +27,6 @@ public class SearchFiles {
             if (file.isDirectory()) {
                 walk(file, fileTypes, result);
             } else {
-                if (file.getName().contains("Autopilot")) {
-                    int i = 0;
-                }
                 for (String fileType : fileTypes)
                     if (file.getName().endsWith("." + fileType))
                         result.add(file);

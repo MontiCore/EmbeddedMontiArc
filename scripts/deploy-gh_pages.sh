@@ -23,6 +23,7 @@ git rm -rf report/images/* || exit 0
 git rm -rf report/js/* || exit 0
 git rm -rf report/report.html || exit 0
 git rm -rf report/reportEWT.html || exit 0
+git rm -rf report/grammarReport.html || exit 0
 if [ ! -d "report" ]
 then
   mkdir report
@@ -37,6 +38,7 @@ mkdir report/js
 mv ../report/js/* report/js
 mv ../report/report.html report/report.html
 mv ../report/reportEWT.html report/reportEWT.html
+mv ../report/reportEWT.html report/grammarReport.html
 
 git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
