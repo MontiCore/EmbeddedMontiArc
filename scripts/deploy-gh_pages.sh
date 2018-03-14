@@ -23,7 +23,7 @@ git rm -rf report/images/* || exit 0
 git rm -rf report/js/* || exit 0
 git rm -rf report/report.html || exit 0
 git rm -rf report/reportEWT.html || exit 0
-git rm -rf report/grammarReport.html || exit 0
+#git rm -rf report/grammarReport.html || exit 0
 if [ ! -d "report" ]
 then
   mkdir report

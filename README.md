@@ -11,6 +11,9 @@ To add a project (EmbeddedMontiArc/MontiSim), add it to the corresponding String
 Link to analyzing all component files in the project:
 [Component Quality](https://embeddedmontiarc.github.io/reporting/report/report.html)
 
+Link to all grammars in the project:
+[Grammars](https://embeddedmontiarc.github.io/reporting/report/grammarReport.html)
+
 Link to analyzing all Test files in the project:
 [Test Quality](https://embeddedmontiarc.github.io/reporting/report/reportEWT.html)
 
