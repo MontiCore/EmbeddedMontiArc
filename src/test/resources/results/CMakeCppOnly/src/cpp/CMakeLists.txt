@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project(tests_a_addComp LANGUAGES CXX)
+add_library(tests_a_addComp tests_a_addComp.h)
+target_include_directories(tests_a_addComp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(tests_a_addComp PROPERTIES LINKER_LANGUAGE CXX)
+export(TARGETS tests_a_addComp FILE tests_a_addComp.cmake)

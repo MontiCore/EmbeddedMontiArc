@@ -18,6 +18,10 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +63,22 @@ public class GenerationTest extends AbstractSymtabTest {
         starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
 
         starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
+
+    @Test
+    public void testCppOnlyMiddlewareGeneration() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.addComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/CMakeCppOnly/src/";
+        middlewareGenerator.setGenerationTargetPath(generationTargetPath);
+        middlewareGenerator.add(new CPPGenImpl(),"cpp");
+
+        List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+        testFilesAreEqual(files,"CMakeCppOnly/src/",generationTargetPath);
+
     }
 
     @Test
@@ -122,10 +142,6 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
-    @Ignore
-    //Workaround for compiler errors: change
-    //conflictIn(i-1) to conflictIn[i-1]
-    //indexLookupIn(i-1) to indexLookupIn[i-1]
     @Test
     public void testIntersectionGeneration() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
@@ -156,8 +172,21 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
-        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
 
+
+        //Workaround for compiler errors: change
+        //conflictIn(i-1) to conflictIn[i-1]
+        //indexLookupIn(i-1) to indexLookupIn[i-1]
+        for(File f : files) {
+            Path path = Paths.get(f.getAbsolutePath());
+            Charset charset = StandardCharsets.UTF_8;
+            String content = new String(Files.readAllBytes(path), charset);
+            content = content.replace("conflictIn(i-1)", "conflictIn[i-1]");
+            content = content.replace("indexLookupIn(i-1)", "indexLookupIn[i-1]");
+            content = content.replace("Col<int> counter=Col<int>(1);","Col<int> counter=Col<int>(2);");
+            Files.write(path, content.getBytes(charset));
+        }
     }
 
     @Ignore
