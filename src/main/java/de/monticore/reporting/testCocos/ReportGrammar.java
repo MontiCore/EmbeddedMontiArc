@@ -17,7 +17,7 @@ public class ReportGrammar {
     }
 
     public void reportGrammars_(Main.ReportContext context, String outputFile, boolean merge) {
-        List<File> files = SearchFiles.searchFiles(new File(context.getProjectRoot()), "mc4");
+        List<File> files = SearchFiles.searchFiles(new File(context.getProjectRoot()), "mc4", "mc5");
         List<GrammarInfo> grammars = new LinkedList<>();
 
         for(File file: files) {
