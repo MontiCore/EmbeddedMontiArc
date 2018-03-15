@@ -21,7 +21,7 @@ git rm -rf report/css/* || exit 0
 git rm -rf report/data/* || exit 0
 git rm -rf report/images/* || exit 0
 git rm -rf report/js/* || exit 0
-git rm -rf report/report.html || exit 0
+git rm -rf report/cocosReport.html || exit 0
 git rm -rf report/reportEWT.html || exit 0
 git rm -rf report/grammarReport.html || exit 0
 if [ ! -d "report" ]
