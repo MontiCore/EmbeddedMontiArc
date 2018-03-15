@@ -18,9 +18,9 @@ script:
 - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
   -B clean install --settings "./settings.xml"
 - bash ./scripts/gitPullSimple.sh
-after_success:
 #- bash ./scripts/gitpull.sh "EmbeddedMontiArc"
 #- bash ./scripts/gitpull.sh "MontiSim"
+after_success:
 - source ./scripts/zipAndMd5Models.sh
 - createZip EmbeddedMontiArc
 - emaZip="models$md5.zip"
@@ -30,9 +30,12 @@ after_success:
 - emaGZip="grammars$md5.zip"
 - createGrammarZip MontiSim
 - msGZip="grammars$md5.zip"
+- createGrammarZip MontiCore
+- mcGZip="grammars$md5.zip"
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
-- bash ./scripts/deploy-zip.sh $emaZip $msZip $emaGZip $msGZip
+- java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiCore -grammar -gzn mcGZip -m
+- bash ./scripts/deploy-zip.sh $emaZip $msZip $emaGZip $msGZip $mcGZip
 - bash ./scripts/deploy-gh_pages.sh
 env:
   global:

@@ -51,34 +51,9 @@ function createTable(data) {
     });
 };
 
-function adjustHeader() {
-    $('#my-table thead tr:eq(1) th').each(function (i) {
-        $(this).text('');
-    });
-}
-
-function adjustFloatingHeader(content) {
-    var first = true;
-    var second = false;
-    $('.fixedHeader-floating thead tr:eq(1) th').each(function (i) {
-        if (first) {
-            first = false;
-            second = true;
-        } else if (second) {
-            second = false;
-            $(this).html(content);
-        } else {
-            $(this).text('');
-        }
-    });
-}
-
 $(document).ready(function () {
 
-    $('#my-table thead tr').clone(true).appendTo('#my-table thead');
-    $('#my-table thead tr:eq(1)').addClass('group');
-    adjustHeader();
-
+    initHeader();
     loadJSON("data/dataGrammars.json", createTable);
 
     var init = false;

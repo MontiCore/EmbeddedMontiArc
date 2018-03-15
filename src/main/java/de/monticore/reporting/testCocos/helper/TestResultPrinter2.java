@@ -207,7 +207,7 @@ public class TestResultPrinter2 {
         String displayName = name;
 //        if (project.getAbsolutePath().contains("MontiSim"))
 //            displayName = "MontiSim/" + displayName;
-        return ("\"<a target='_blank' href='https://ide.embeddedmontiarc.com/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+        return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
                 "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
                 "</a>\"").replace("\\", "/");

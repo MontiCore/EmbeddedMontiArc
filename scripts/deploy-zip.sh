@@ -1,11 +1,6 @@
 #!/bin/bash
 set -e # Exit with nonzero exit code if anything fails
 
-emaZip=$1
-msZip=$2
-emaGZip=$3
-msGZip=$4
-
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
 
@@ -25,10 +20,10 @@ git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 git rm *.zip
 
-mv ../$emaZip $emaZip
-mv ../$msZip $msZip
-mv ../$emaGZip $emaGZip
-mv ../$msGZip $msGZip
+for var in "$@"
+do
+    mv ../$var $var
+done
 
 git add *.zip
 git commit -m "Deploy new Zips: ${SHA}"

@@ -33,11 +33,11 @@ public class ReportGrammar {
 
         String zipName_ = zipName.substring(0, zipName.lastIndexOf("."));
         String urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;;
-        String path = file.getAbsolutePath().substring(root.getAbsolutePath().length() - root.getName().length());
+        String path = file.getAbsolutePath().substring(root.getAbsolutePath().length() + 1);
         String displayName = path.replace("/",".").replace("\\",".");
 
 
-        return ("\"<a target='_blank' href='https://ide.embeddedmontiarc.com/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
+        return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName_ + "&url="
                 + urlToZip + "&openFile=/" + path + "'>" +
                 "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
                 "</a>\"").replace("\\", "/");
