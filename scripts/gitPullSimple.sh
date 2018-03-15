@@ -38,7 +38,7 @@ do
     git clone --depth 1 "https://github.com/MontiSim/$repo"
   fi
 done
-cd..
+cd ..
 
 # clone MontiCore
 if [ ! -d "MontiCore" ]

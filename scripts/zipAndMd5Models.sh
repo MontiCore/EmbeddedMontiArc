@@ -11,7 +11,7 @@ createZip() {
 
 createGrammarZip() {
   cd $1
-  zip -R -q ../grammars.zip '*.mc4'
+  zip -R -q ../grammars.zip '*.mc4' '*.mc5'
   ema="../grammars.zip"
   md5=`md5sum ${ema} | awk '{ print $1 }'`
   cd ..
