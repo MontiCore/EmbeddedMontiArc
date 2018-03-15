@@ -32,6 +32,9 @@ after_success:
 - msGZip="grammars$md5.zip"
 - createGrammarZip MontiCore
 - mcGZip="grammars$md5.zip"
+- cd target
+- ls
+- cd ..
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiCore -grammar -gzn mcGZip -m
