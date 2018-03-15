@@ -6,6 +6,7 @@ createZip() {
   md5=`md5sum ${ema} | awk '{ print $1 }'`
   cd ..
   mv "models.zip" "models$md5.zip"
+  echo "models$md5.zip"
   return 0;
 }
 
@@ -16,5 +17,6 @@ createGrammarZip() {
   md5=`md5sum ${ema} | awk '{ print $1 }'`
   cd ..
   mv "grammars.zip" "grammars$md5.zip"
+  echo "grammars$md5.zip"
   return 0;
 }

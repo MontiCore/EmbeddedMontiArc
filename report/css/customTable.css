@@ -10,6 +10,10 @@ table.dataTable td {
   white-space: nowrap;
 }
 
+.nowrap {
+  white-space: nowrap ;
+}
+
 td img {
   position: absolute;
   top: 27%;

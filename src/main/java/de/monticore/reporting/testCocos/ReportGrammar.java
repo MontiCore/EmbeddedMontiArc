@@ -21,7 +21,10 @@ public class ReportGrammar {
         List<GrammarInfo> grammars = new LinkedList<>();
 
         for(File file: files) {
-            String name = file.getName().replace(".mc4","").replace("\\","/");
+            String name = file.getAbsolutePath().substring(new File(context.getProjectRoot()).
+                    getAbsolutePath().length() + 1)
+                    .replace(".mc4","").replace(".mc5", "")
+                    .replace("\\","/");
             String ideLink = generateIDELink(file, context.getGrammarZip(), new File(context.getProjectRoot()));
             grammars.add(new GrammarInfo(file, name, ideLink));
         }

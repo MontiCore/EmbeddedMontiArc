@@ -84,18 +84,6 @@ function initLogMechanic(controlClass, formatFunction) {
     });
 }
 
-function formatLog1(d) {
-    // `d` is the original data object for the row
-    return '<tr>' +
-        '<td>Path:</td>' +
-        '<td>' + d.Path + '</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td>Log output:</td>' +
-        '<td>' + d.LogOutput + '</td>' +
-        '</tr>';
-}
-
 function initGrowMechanic(growClass, shortLabel, fullLabel) {
     $('.' + growClass).mouseover(function () {
         $(this).find('.' + shortLabel).hide();
@@ -104,5 +92,50 @@ function initGrowMechanic(growClass, shortLabel, fullLabel) {
     $('.grow').mouseout(function () {
         $(this).find('.' + shortLabel).show();
         $(this).find('.' + fullLabel).hide();
+    });
+}
+
+function defaultExpand(columnToClick, columnFilterFunction) {
+    var indexes = table.rows().eq(0).filter(columnFilterFunction);
+
+    table.rows(indexes).eq(0).map(function (rowIdx) {
+        table.cell(rowIdx, columnToClick).nodes().to$().click();
+    });
+}
+
+expandRow = function (tr, row, data, uniqueNameFunction) {
+
+    if (data.ChildData.length != 0) {
+        var name = uniqueNameFunction(data);
+        data['Order'] = name;
+
+        if ($(tr).hasClass('childrenShown')) {
+            $('.' + name + '_Child').each(function () {
+                var childTr = $(this).closest('tr');
+                var childRow = table.row(childTr);
+                table.row(childRow).remove();
+            });
+            $(tr).removeClass('childrenShown');
+        } else {
+            for (var i = 0; i < data.ChildData.length; i++) {
+                var childData = data.ChildData[i];
+                childData['Order'] = name + "_Child";
+                const tmpRow = table.row.add(childData).node();
+                $(tmpRow).addClass('childRow1')
+                $(tmpRow).addClass(name + "_Child");
+            }
+            $(tr).addClass('childrenShown');
+        }
+        table.draw();
+    }
+
+};
+
+function childControlInit(controlClass, uniqueNameFunction) {
+    $(tableReference + ' tbody').on('click', 'td.' + controlClass, function () {
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+
+        expandRow(tr, row, row.data(), uniqueNameFunction);
     });
 }

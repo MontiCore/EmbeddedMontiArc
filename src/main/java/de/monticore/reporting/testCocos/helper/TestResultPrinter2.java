@@ -109,7 +109,7 @@ public class TestResultPrinter2 {
             ip.println("{");
             ip.indent();
             ip.println(names[i++] + ": \"" + (rootFile == null ? testResult.getRootFile().getName() : rootFile.getName()) + "\",");
-            ip.println(names[i++] + ": \"" + getOrder(baseOrder, testResult) + "\",");
+            ip.println(names[i++] + ": \"" + /*getOrder(baseOrder, testResult)*/"" + "\",");
             ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");

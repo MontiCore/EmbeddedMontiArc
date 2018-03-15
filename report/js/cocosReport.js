@@ -1,5 +1,10 @@
-function createTable(file, infoFile) {
-    loadInfo(file, infoFile, createTable_);
+$(document).ready(function () {
+    initHeader();
+    createTable_custom(dataFile, infoFile);
+});
+
+function createTable_custom(file, infoFile) {
+    loadInfo(file, infoFile, computeDataThenCreateTable);
 }
 
 function loadInfo(file, infoFile, callback) {
@@ -21,18 +26,29 @@ function loadJSON(file, callback, info) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType('application/json');
     xobj.open('GET', file, true);
+    var res;
+    var ready = 0;
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == '200') {
             // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
-            callback(xobj.responseText, info);
+            res = JSON.parse(xobj.responseText);
+            callback(res, info);
         }
     };
     xobj.send(null);
 }
 
-function createTable_(data, info) {
-    data = JSON.parse(data);
+function computeDataThenCreateTable(data, info){
+    data.forEach(function(datum){
+        var order = uniqueNameFunction_custom(datum);
+        datum['Order'] = order;
+    });
+    createTable(data, info);
+}
+
+function createTable(data, info) {
     table = $(tableReference).DataTable({
+        "fnInitComplete": function() { init(); },
         "fixedHeader": true,
         "select": true,
         "data": data,
@@ -40,22 +56,19 @@ function createTable_(data, info) {
         "ordering": true,
         "paging": false,
         "bInfo": false,
-        "orderFixed": {
-            "pre": [0, 'asc'],
-            "pre": [1, 'asc']
-        },
+        "orderFixed": { "pre": [0, 'asc'], "pre": [1, 'asc'] },
         "rowGroup": {
             "dataSrc": "Root",
             "startRender": function (rows, group) {
                 var count = info[group]['Number'];
                 var valid = info[group]['Valid'];
                 var invalid = info[group]['Invalid'];
-                return group + ' (' + count + ')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; valid: ' + valid + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; invalid: ' + invalid;
-            },
-            "endRender": null //function( rows, group ) {return group;}
-        },
-        "fnInitComplete": function(oSettings, json) {
-            init();
+                return '<span class="nowrap">' + group + ' (' + count + ')</span>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' +
+                    '<span class="nowrap">valid: ' + valid + '</span>' +
+                    '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' +
+                    '<span class="nowrap"> invalid: ' + invalid + '</span>';
+            }
         },
         "aoColumns": [
             {"data": "Root", "visible": false},
@@ -110,101 +123,36 @@ function createTable_(data, info) {
 };
 
 function init() {
-    childControlInit();
+    table = $(tableReference).DataTable();
+    childControlInit('expandChildren-control', uniqueNameFunction_custom);
     initFloatingHeader();
-    initLogMechanic('details-control', formatLog1);
+    initLogMechanic('details-control', formatLog_custom);
     initGrowMechanic('grow', 'shortLabel', 'fullLabel');
-
-    $(tableReference + ' thead').on('click', 'th', function(){
-
-        var indexes = table.rows().eq(0).filter(function (rowIdx) {
-            return (table.row(rowIdx).data().Valid.indexOf('cross') !== -1) ? true : false;
-        });
-
-        table.rows(indexes).eq(0).map(function (rowIdx) {
-            var order = table.row(rowIdx).data()['Order'];
-            table.row(rowIdx).data['Order'] = "0" + order;
-            console.log(rowIdx);
-        });
-
-        indexes = table.rows().eq(0).filter(function (rowIdx) {
-            return (table.row(rowIdx).data().Valid.indexOf('tick') !== -1) ? true : false;
-        });
-
-        table.rows(indexes).eq(0).map(function (rowIdx) {
-            var order = table.row(rowIdx).data()['Order'];
-            table.row(rowIdx).data['Order'] = "1" + order;
-        });
-
-        $(tableReference).DataTable().draw();
-    });
+    defaultExpand(2, columnFilter_custom);
 }
 
-removeChildRows = function (tr, row, data) {
-    const table = $(tableReference).DataTable();
-    var name = data.Order.replace(/\./g, "_").replace(/\(/, "").replace(/\)/,"").split(' ').join('');
-
-    $('.' + name + '_Child').each(function () {
-        var childTr = $(this).closest('tr');
-        var childRow = table.row(childTr);
-        table.row(childRow).remove();
-    });
-
-    $(tr).removeClass('childrenShown');
-    $(tr).addClass('childrenNotShown');
+function formatLog_custom(d) {
+    // `d` is the original data object for the row
+    return '<tr>' +
+        '<td>Path:</td>' +
+        '<td>' + d.Path + '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td>Log output:</td>' +
+        '<td>' + d.LogOutput + '</td>' +
+        '</tr>';
 }
 
-expandRow = function (tr, row, data) {
-
-    if (data.ChildData.length != 0) {
-
-
-        const table = $(tableReference).DataTable();
-        var name = data.Order.replace(/\./g, "_").replace(/\(/, "").replace(/\)/,"").split(' ').join('');
-
-        if ($(tr).hasClass('childrenShown')) {
-            removeChildRows(tr, row, data);
-        } else {
-            for (var i = 0; i < data.ChildData.length; i++) {
-                const tmpRow = table.row.add(data.ChildData[i]).node();
-
-                var childRow = table.row(tmpRow);
-                childRow.data()['Order'] = data['Order'] + "_Child---------";
-
-                $(tmpRow).addClass('childRow1')
-                $(tmpRow).addClass((name + "_Child"));
-                $(tmpRow).removeClass('childrenNotShown');
-            }
-            $(tr).removeClass('childrenNotShown');
-            $(tr).addClass('childrenShown');
-        }
-        table.draw();
-    }
-
-};
-
-function childControlInit() {
-    var table = $(tableReference).DataTable();
-
-    $(tableReference + ' tbody').on('click', 'td.expandChildren-control', function () {
-        var tr = $(this).closest('tr');
-        var row = table.row(tr);
-
-        expandRow(tr, row, row.data());
-    });
-
-
-    var indexes = table.rows().eq(0).filter(function (rowIdx) {
-        var res = (table.row(rowIdx).data().Name.indexOf('Parsing failed') !== -1 || table.row(rowIdx).data().Name.indexOf('Resolving failed') !== -1) ? true : false;
-        return res;
-    });
-
-    table.rows(indexes).eq(0).map(function (rowIdx) {
-        table.cell(rowIdx, 2).nodes().to$().click();
-    });
+function uniqueNameFunction_custom(data) {
+    var res = data['Root'] + "_" + data['Path'] + +"_" + data['Name'];
+    res = res.split(' ').join('');
+    res = res.replace(/\./g, "_").replace(/\(/g, "").replace(/\)/g,"")
+        .replace(/\\/g, "_").replace(/\//g,"");
+    return res;
 }
 
-$(document).ready(function () {
-    initHeader();
-    createTable(dataFile, infoFile);
-});
+function columnFilter_custom(rowIdx) {
+    return (table.row(rowIdx).data().Name.indexOf('Parsing failed') !== -1 ||
+        table.row(rowIdx).data().Name.indexOf('Resolving failed') !== -1)
+        ? true : false;
+}
