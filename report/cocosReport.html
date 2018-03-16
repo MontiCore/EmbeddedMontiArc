@@ -112,6 +112,7 @@
       </tbody>
     </table>
   <!-- <div> -->
+  <script src="js/cocosReport.js"></script>
   <script>
     var tableName = "my-table";
     var tableReference = "#my-table";
@@ -119,8 +120,11 @@
     var infoFile = "data/info.json";
     var ide = (getURLParameter('ide') != 'false');
     var table;
+    $(document).ready(function () {
+        initHeader();
+        createTable_custom(dataFile, infoFile);
+    });
   </script>
-  <script src="js/cocosReport.js"></script>
-   
+
 </body>
 </html>

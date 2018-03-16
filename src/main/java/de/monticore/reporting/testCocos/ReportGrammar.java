@@ -71,7 +71,6 @@ public class ReportGrammar {
     private String getPrintString(List<GrammarInfo> grammars, Main.ReportContext context, boolean merge){
         String[] names = {
                 "\"Root\"",
-                "\"Order\"",
                 "\"Name\"",
                 "\"OnlineIDE\""
         };
@@ -93,8 +92,6 @@ public class ReportGrammar {
             ip.println("{");
             ip.indent();
             ip.println(names[i++] + ": \"" + new File(context.getProjectRoot()).getName() + "\",");
-            ip.println(names[i++] + ": \"" + new File(context.getProjectRoot()).getName() + "." + grammar.file.getAbsolutePath().
-                    replace("/",".").replace("\\",".").replace(":","") + "\",");
             ip.println(names[i++] + ": \"" + grammar.name + "\",");
             ip.println(names[i++] + ": " + grammar.ideLink);
             ip.unindent();

@@ -14,14 +14,14 @@ function loadJSON(file, callback) {
 function createTable(data) {
     data = JSON.parse(data);
     table = $('#my-table').DataTable({
-        fixedHeader: true,
+        "fnInitComplete": function() { init(); },
+        "fixedHeader": true,
         "data": data,
         "language": {
             "loadingRecords": "Please wait - loading..."
         },
         "processing": true,
         "orderCellsTop": true,
-        "aaSorting": [1, 'asc'],
         "ordering": true,
         "paging": false,
         "bInfo": false,
@@ -51,41 +51,9 @@ function createTable(data) {
     });
 };
 
-$(document).ready(function () {
+function init() {
+    table = $(tableReference).DataTable();
+    initFloatingHeader();
+}
 
-    initHeader();
-    loadJSON("data/dataGrammars.json", createTable);
 
-    var init = false;
-    var lastIndex = -1;
-    $(document).scroll(function () {
-        var currentGroup = "EmbeddedMontiArc";
-        var index = 0;
-        var lastFoundIndex = -1;
-        var lastFound = "";
-        $('#my-table tbody .group td').each(function () {
-
-            var docViewTop = $(window).scrollTop();
-            var elemTop = $(this).offset().top;
-            var elemBottom = elemTop + $(this).height();
-
-            if (elemBottom < docViewTop || elemTop < docViewTop) {
-                lastFound = $(this).html();
-                lastFoundIndex = index;
-            }
-            index++;
-        });
-
-        if (lastFoundIndex != lastIndex || init == false) {
-            lastIndex = lastFoundIndex;
-            if ($('.fixedHeader-floating')[0]) {
-                adjustFloatingHeader(lastFound);
-                init = true;
-            }
-        }
-
-        if (!$('.fixedHeader-floating')[0]) {
-            init = false;
-        }
-    });
-});

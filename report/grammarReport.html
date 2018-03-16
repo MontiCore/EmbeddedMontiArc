@@ -34,10 +34,17 @@
       <tbody>
       </tbody>
     </table>
+  <script src="js/grammarReport.js"></script>
   <script>
     var tableReference = "#my-table";
+    var dataFile = "data/dataGrammars.json";
+    var table;
+
+    $(document).ready(function () {
+        initHeader();
+        loadJSON(dataFile, createTable);
+    });
   </script>
-  <script src="js/grammarReport.js"></script>
    
 </body>
 </html>

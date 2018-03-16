@@ -28,6 +28,7 @@ after_success:
 - emaGZip=$(createGrammarZip EmbeddedMontiArc)
 - msGZip=$(createGrammarZip MontiSim)
 - mcGZip=$(createGrammarZip MontiCore)
+- echo $mcGZip
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiCore -grammar -gzn mcGZip -m

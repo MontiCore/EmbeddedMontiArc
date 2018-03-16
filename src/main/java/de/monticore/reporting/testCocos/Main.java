@@ -40,6 +40,7 @@ public class Main {
             TestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "dataEWT.json", context.isMerge());
         }
         if (context.isReportGrammar()) {
+            System.out.println("\n<==============Grammar Report==============>\n");
             ReportGrammar.reportGrammars(context, context.getOutput() + "dataGrammars.json", context.isMerge());
         }
     }

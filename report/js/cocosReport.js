@@ -1,8 +1,3 @@
-$(document).ready(function () {
-    initHeader();
-    createTable_custom(dataFile, infoFile);
-});
-
 function createTable_custom(file, infoFile) {
     loadInfo(file, infoFile, computeDataThenCreateTable);
 }
@@ -16,13 +11,13 @@ function loadInfo(file, infoFile, callback) {
     xobj.onreadystatechange = function () {
         if (xobj.readyState == 4 && xobj.status == '200') {
             res = JSON.parse(xobj.responseText);
-            loadJSON(file, callback, res);
+            loadJSON(file, res, callback);
         }
     };
     xobj.send(null);
 }
 
-function loadJSON(file, callback, info) {
+function loadJSON(file, info, callback) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType('application/json');
     xobj.open('GET', file, true);
@@ -79,11 +74,8 @@ function createTable(data, info) {
                 "orderable": false,
             },
             {
-                "className": 'groupName',
                 "data": "Name",
-                "sType": "groupName",
                 "bSortable": true,
-                "sWidth": "50%"
             },
             {
                 "data": "OnlineIDE",
@@ -147,7 +139,7 @@ function uniqueNameFunction_custom(data) {
     var res = data['Root'] + "_" + data['Path'] + +"_" + data['Name'];
     res = res.split(' ').join('');
     res = res.replace(/\./g, "_").replace(/\(/g, "").replace(/\)/g,"")
-        .replace(/\\/g, "_").replace(/\//g,"");
+        .replace(/\\/g, "_").replace(/\//g,"_");
     return res;
 }
 
