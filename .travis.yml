@@ -31,9 +31,7 @@ after_success:
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
 - java -jar target/reporting-0.8-SNAPSHOT-jar-with-dependencies.jar MontiCore -grammar -gzn mcGZip -m
-- bash ./scripts/initDeploy.sh
-- bash ./scripts/deploy-zip.sh $emaZip $msZip $emaGZip $msGZip $mcGZip
-- bash ./scripts/deploy-gh_pages.sh
+- bash ./scripts/deploy.sh $emaZip $msZip $emaGZip $msGZip $mcGZip
 env:
   global:
   - COMMIT_AUTHOR_EMAIL: malte.heithoff@rwth-aachen.de
