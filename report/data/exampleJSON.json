@@ -1,0 +1,32 @@
+[
+  {
+    "Root": "group1",
+    "DataForColumn1": "data11",
+    "DataForColumn2": "data12",
+    "DataForColumn3": "data13"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data21",
+    "DataForColumn2": "data22",
+    "DataForColumn3": "data23"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data31",
+    "DataForColumn2": "data32",
+    "DataForColumn3": "data33"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data41",
+    "DataForColumn2": "data42",
+    "DataForColumn3": "data43"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data51",
+    "DataForColumn2": "data52",
+    "DataForColumn3": "data53"
+  }
+]
