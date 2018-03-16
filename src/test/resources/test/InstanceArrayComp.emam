@@ -1,0 +1,5 @@
+package test;
+
+component InstanceArrayComp{
+    instance BasicPorts basicPorts[2];
+}

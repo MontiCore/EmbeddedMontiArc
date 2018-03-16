@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.FormatHelper;
+import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
@@ -89,7 +90,8 @@ public class GeneratorRosCpp {
 
         String classname = currentBluePrint.getName();
         apdapter.setFileName(classname + ".h");
-        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter_" + component.getFullName().replace(".", "_")));
+        String nameTargetLanguage = NameHelper.getComponentNameTargetLanguage(component.getFullName());
+        apdapter.setFileContent(PrinterHelper.printClass(currentBluePrint, ": public IAdapter_" + nameTargetLanguage));
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
         for (Map.Entry<RosMsg, MCTypeReference<? extends MCTypeSymbol>> entry : languageUnitRosCppAdapter.getUsedRosMsgs().entrySet()) {

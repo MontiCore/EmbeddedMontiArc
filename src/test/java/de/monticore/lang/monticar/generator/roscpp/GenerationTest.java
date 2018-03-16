@@ -35,4 +35,23 @@ public class GenerationTest extends AbstractSymtabTest {
 
         testFilesAreEqual(files, "basicGenericInstance/", generationTargetPath);
     }
+
+    @Test
+    public void testInstanceArrayComp() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        String generationTargetPath = "./target/generated-sources-roscpp/testInstanceArrayComp/";
+        generatorRosCpp.setGenerationTargetPath(generationTargetPath);
+        generatorRosCpp.setGenerateCMake(true);
+
+        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("test.instanceArrayComp.basicPorts[1]", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+
+        List<File> files = generatorRosCpp.generateFiles(component, taggingResolver);
+
+        testFilesAreEqual(files, "testInstanceArrayComp/", generationTargetPath);
+    }
 }

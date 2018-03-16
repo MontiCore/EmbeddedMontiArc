@@ -55,7 +55,7 @@ public class LanguageUnitRosCppAdapter {
 
     private void generateIncludes(ExpandedComponentInstanceSymbol componentSymbol, List<PortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
         currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
-        String compName = componentSymbol.getFullName().replace(".", "_");
+        String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
         currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
         currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
         //Add each msg include exactly once
@@ -162,7 +162,7 @@ public class LanguageUnitRosCppAdapter {
         Variable componentField = new Variable();
         componentField.setName("component");
         //TODO: get from generator
-        componentField.setTypeNameTargetLanguage(symbol.getFullName().replace(".", "_") + "*");
+        componentField.setTypeNameTargetLanguage(NameHelper.getComponentNameTargetLanguage(symbol.getFullName()) + "*");
         currBluePrint.addVariable(componentField);
 
         Map<String, Variable> uniqueSubFields = new HashMap<>();
