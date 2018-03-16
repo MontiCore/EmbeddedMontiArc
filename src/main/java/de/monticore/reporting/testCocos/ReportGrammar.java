@@ -33,6 +33,7 @@ public class ReportGrammar {
     }
 
     private String generateIDELink(File file, String zipName, File root){
+        System.out.println(zipName);
 
         String zipName_ = zipName.substring(0, zipName.lastIndexOf("."));
         String urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;;

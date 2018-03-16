@@ -4,14 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Test Quality</title>
-  <link href="favicon.ico" type="image/x-icon" rel="icon"/>
+  <link href="images/favicon.ico" type="image/x-icon" rel="icon"/>
   <script src="js/dataTable/jquery-3.3.1.min.js"></script>
   <script src="js/dataTable/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/fixedheader/3.1.2/js/dataTables.fixedHeader.min.js" type="text/javascript"></script>
+  <script src="js/dataTable/dataTables.fixedHeader.min.js"></script>
+  <script src="js/dataTable/dataTables.rowGroup.min.js"></script>
+  <script src="js/dataTable/dataTables.select.min.js"></script>
+  <script src="js/customDataTable.js"></script>
   <link rel="stylesheet" media="all" href="css/bootstrap-2.3.2.min.css">
+  <link rel="stylesheet" media="all" href="css/fixedHeader.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/select.dataTables.min.css">
   <link rel="stylesheet" media="all" href="css/jquery.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.2/css/fixedHeader.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/responsive.dataTables.min.css">
   <link rel="stylesheet" media="all" href="css/customTable.css">
+  <link rel="stylesheet" media="all" href="css/childControlImages.css">
 </head>
 <body>
   <!-- <div class="myTableContainer"> -->
@@ -27,6 +33,15 @@
   <!-- <div> -->
      
   <script src="js/testReport.js"></script>
+  <script>
+      var tableReference = "#my-table";
+      var dataFile = "data/dataEWT.json";
+      var table;
+
+      $(document).ready(function () {
+          loadJSON(dataFile, createTable);
+      });
+  </script>
    
 </body>
 </html>
