@@ -2,10 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.RosHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.apache.commons.io.FileUtils;
@@ -35,10 +32,12 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         List<ExpandedComponentInstanceSymbol> clusterSubcomponents = ClusterHelper.getClusterSubcomponents(componentInstanceSymbol);
         if (clusterSubcomponents.size() > 0) {
             clusterSubcomponents.forEach(clusterECIS -> {
-                generatorMap.put(clusterECIS, createFullGenerator(clusterECIS.getFullName().replace(".", "_")));
+                String nameTargetLanguage = NameHelper.getNameTargetLanguage(clusterECIS.getFullName());
+                generatorMap.put(clusterECIS, createFullGenerator(nameTargetLanguage));
             });
         } else {
-            generatorMap.put(componentInstanceSymbol, createFullGenerator(componentInstanceSymbol.getFullName().replace(".", "_")));
+            String nameTargetLanguage = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
+            generatorMap.put(componentInstanceSymbol, createFullGenerator(nameTargetLanguage));
         }
 
         List<File> files = new ArrayList<>();
@@ -46,7 +45,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         for (ExpandedComponentInstanceSymbol comp : generatorMap.keySet()) {
             files.addAll(generatorMap.get(comp).generate(comp, taggingResolver));
             //add empty generator to subDirs so that CMakeLists.txt will be generated correctly
-            subDirs.add(comp.getFullName().replace(".", "_"));
+            subDirs.add(NameHelper.getNameTargetLanguage(comp.getFullName()));
         }
 
         subDirs.add("rosMsg");

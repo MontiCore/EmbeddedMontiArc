@@ -4,8 +4,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
-import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
 
 
     private FileContent generateAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = TemplateHelper.getDummyAdapterTemplate()
                 .replace("${compName}", name);
 
@@ -56,7 +56,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
 
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
-        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = TemplateHelper.getDummyCmakeTemplate()
                 .replace("${compName}", name);
 

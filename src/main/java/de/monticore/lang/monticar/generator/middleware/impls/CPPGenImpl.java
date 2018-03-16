@@ -3,8 +3,8 @@ package de.monticore.lang.monticar.generator.middleware.impls;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
-import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
@@ -38,7 +38,7 @@ public class CPPGenImpl implements GeneratorImpl {
     private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent cmake = new FileContent();
         cmake.setFileName("CMakeLists.txt");
-        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         cmake.setFileContent(TemplateHelper.getCmakeCppTemplate().replace("${compName}", name));
         return cmake;
     }

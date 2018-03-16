@@ -3,9 +3,9 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
-import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
 
     private FileContent generateIAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
-        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         res.setFileName("IAdapter_" + name + ".h");
         res.setFileContent(TemplateHelper.getIAdapterTemplate().replace("${compName}", name));
         return res;
@@ -41,7 +41,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
     private FileContent generateCoordinator(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
 
 
-        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         List<String> filesNames = files.stream()
                 .map(File::getName)
                 .collect(Collectors.toList());
@@ -74,7 +74,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
 
     private FileContent generateCoordinatorCMakeList(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<File> files) {
         FileContent res = new FileContent();
-        String name = NameHelper.getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
 
         String targets = files.stream()
                 .map(File::getName)

@@ -53,7 +53,7 @@ public class RosHelper {
         }
 
         //target port name is unique: each in port can only have one connection!
-        String topicName = connectorSymbol.getTargetPort().getFullName().replace(".", "_").replace("[","_").replace("]","_");
+        String topicName = NameHelper.getNameTargetLanguage(connectorSymbol.getTargetPort().getFullName());
         RosMsg rosTypeA = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getTargetPort().getTypeReference());
         RosMsg rosTypeB = GeneratorRosMsg.getRosType("struct_msgs", connectorSymbol.getSourcePort().getTypeReference());
         if (!rosTypeA.equals(rosTypeB)) {
