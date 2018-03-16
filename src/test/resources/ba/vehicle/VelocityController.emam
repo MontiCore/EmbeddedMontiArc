@@ -1,0 +1,35 @@
+package ba.vehicle;
+
+component VelocityController{
+    ports in Q maxVelIn,
+          in Q maxAccelIn,
+          in Q deltaTimeIn,
+          in B slowDownIn,
+          in B resetVelIn;
+
+    ports out Q curVelOut;
+
+    implementation Math{
+        static Q lastVel = 0;
+        Q resVel;
+
+        if resetVelIn
+            lastVel = maxVelIn;
+        else
+            Q deltaVel = 0.5 * maxAccelIn * deltaTimeIn * deltaTimeIn;
+            if slowDownIn
+                resVel = lastVel - deltaVel;
+            else
+                resVel = lastVel + deltaVel;
+            end
+        end
+
+        if resVel < 0
+            curVelOut = 0;
+        elseif resVel > maxVelIn
+            curVelOut = maxVelIn;
+        end
+
+        lastVel = curVelOut;
+    }
+}

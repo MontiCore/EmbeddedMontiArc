@@ -1,0 +1,44 @@
+package ba;
+import ba.intersection.IntersectionController;
+import ba.vehicle.Planner;
+import ba.util.Position;
+
+component System{
+    instance IntersectionController intersectionController;
+    instance Planner planner[2];
+
+    //Intersection
+    port in Q cutoffPosIn;
+    port in Q cutoffTimeIn;
+    port in B isActiveIn;
+
+    connect cutoffPosIn -> intersectionController.cutoffPos;
+    connect cutoffTimeIn -> intersectionController.cutoffTime;
+    connect isActiveIn -> intersectionController.isActive;
+
+    //Planner(s)
+    ports in Q^{4,10} lanelatIn[2],
+          in Position positionIn[2],
+          in Q maxVelocityIn[2],
+          in Q maxAccelerationIn[2],
+          in Q deltaTimeIn[2],
+          in Q planningTimeIn[2],
+          in B resetVelocityIn[2],
+          out Q^{3,20} desiredTrajectoryOut[2];
+
+    connect lanelatIn[:] -> planner[:].lanelat;
+    connect positionIn[:] -> planner[:].position;
+    connect maxVelocityIn[:] -> planner[:].maxVelocity;
+    connect maxAccelerationIn[:] -> planner[:].maxAcceleration;
+    connect deltaTimeIn[:] -> planner[:].deltaTime;
+    connect planningTimeIn[:] -> planner[:].planningTime;
+    connect resetVelocityIn[:] -> planner[:].resetVelocity;
+    connect planner[:] -> desiredTrajectoryOut[:];
+
+    //Both
+    connect planner[:].desiredTrajectory -> intersectionController.trajectoryIn[:];
+    connect intersectionController.stop[:] -> planner[:].slowDown;
+
+
+
+}

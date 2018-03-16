@@ -4,6 +4,7 @@ package ba.intersection;
 component ConflictToStopConverter<N1 n = 2,N1 x = 1,N1 m = 5>{
     port in Z(1:n) indexLookupIn[x];
     port in B conflictIn[x];
+    port in B active;
     port out B stopOut[n];
 
     implementation Math{
@@ -11,10 +12,12 @@ component ConflictToStopConverter<N1 n = 2,N1 x = 1,N1 m = 5>{
             stopOut(i) = False;
         end
 
-        for i = 1:x
-            if conflictIn(i)
-                Z curIndex = indexLookupIn(i);
-                stopOut(curIndex) = True;
+        if active
+            for i = 1:x
+                if conflictIn(i)
+                    Z curIndex = indexLookupIn(i);
+                    stopOut(curIndex) = True;
+                end
             end
         end
 

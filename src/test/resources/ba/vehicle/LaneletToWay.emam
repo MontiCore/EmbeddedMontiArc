@@ -1,0 +1,18 @@
+package ba.vehicle;
+import ba.util.Position;
+
+component LaneletToWay<N1 k = 10>{
+    ports in Q^{4,k} laneletIn;
+
+    ports out Q^{2,k} wayOut;
+
+    implementation Math{
+        for i = 1:k
+            Q deltaX = laneletIn(1, i) - laneletIn(3, i);
+            Q deltaY = laneletIn(2, i) - laneletIn(4, i);
+
+            wayOut(1,i) = laneletIn(1, i) + 0.5 * deltaX;
+            wayOut(2,i) = laneletIn(2, i) + 0.5 * deltaY;
+        end
+    }
+}

@@ -1,0 +1,8 @@
+package ba.util;
+
+struct LaneletPair{
+    Q leftX;
+    Q leftY;
+    Q rightX;
+    Q rightY;
+}

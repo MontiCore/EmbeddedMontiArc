@@ -1,26 +1,23 @@
 package ba.intersection;
 
-import ba.util.RelToAbsTrajectory;
-
+//component IntersectionController<N1 n = 2,N1 x = 1,N1 m = 20>{
 component IntersectionController{
-    port in Q^{3,5} relTrajIn[2];
-    port in Q^{2,1} absPosIn[2];
+    port in Q^{3,20} trajectoryIn[2];
+    port in Q cutoffPos;
+    port in Q cutoffTime;
+    port in B isActive;
 
-    port in Q cutoffPosIn;
-    port in Q cutoffTimeIn;
+    port out B stop[2];
 
-    port out B stopOut[2];
+    instance ConflictToStopLookup<2,1> conflictToStopLookup;
+    instance ConflictComputer<2,1,20> conflictComputer;
+    instance ConflictToStopConverter<2,1,20> conflictToStopConverter;
 
-    instance RelToAbsTrajectory<2,5> relToAbsTrajectory;
-    instance TrajectoryToStop<2,1,5> trajectoryToStop;
-
-    connect cutoffPosIn -> trajectoryToStop.cutoffPos;
-    connect cutoffTimeIn -> trajectoryToStop.cutoffTime;
-
-    connect relTrajIn[:] -> relToAbsTrajectory.relTrajectoryIn[:];
-    connect absPosIn[:] -> relToAbsTrajectory.absPositionIn[:];
-    connect relToAbsTrajectory.absTrajectoryOut[:] -> trajectoryToStop.trajectoryIn[:];
-
-    connect trajectoryToStop.stop[:] -> stopOut[:];
-
+    connect trajectoryIn[:] -> conflictComputer.trajectory[:];
+    connect cutoffPos -> conflictComputer.cutoffPosIn;
+    connect cutoffTime -> conflictComputer.cutoffTimeIn;
+    connect conflictComputer.conflictOut[:] -> conflictToStopConverter.conflictIn[:];
+    connect conflictToStopLookup.indexLookup[:] -> conflictToStopConverter.indexLookupIn[:];
+    connect conflictToStopConverter.stopOut[:] ->  stop[:];
+    connect isActive -> conflictToStopConverter.active;
 }

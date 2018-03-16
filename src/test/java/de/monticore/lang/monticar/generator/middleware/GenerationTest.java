@@ -1,7 +1,10 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -82,6 +85,87 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void plannerTest() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.vehicle.planner", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ComponentSymbol componentSymbol = taggingResolver.<ComponentSymbol>resolve("ba.vehicle.Planner",ComponentSymbol.KIND).orElse(null);
+
+        EmbeddedMontiArcMathCoCos.createChecker().checkAll((ASTComponent)componentSymbol.getAstNode().orElse(null));
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/Planner/src/";
+        middlewareGenerator.setGenerationTargetPath(generationTargetPath);
+        middlewareGenerator.add(new CPPGenImpl(),"cpp");
+
+        List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+        //known errors:
+        //wayOut(1-1, i-1)
+        //wayout[1-1,i-1]
+        //Helper::getDoubleFromOctaveListFirstResult(Fasin(Helper::convertToOctaveValueList(deltaY/dist),1)
+        //=> Fasin(deltaY/dist) => std::sin(...)
+        //...
+        fixKnownErrors(files);
+
+
+        testFilesAreEqual(files,"Planner/src/",generationTargetPath);
+
+    }
+
+    @Test
+    public void testBaSystem() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ComponentSymbol componentSymbol = taggingResolver.<ComponentSymbol>resolve("ba.System",ComponentSymbol.KIND).orElse(null);
+
+        EmbeddedMontiArcMathCoCos.createChecker().checkAll((ASTComponent)componentSymbol.getAstNode().orElse(null));
+
+        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
+        componentInstanceSymbol.getSubComponents().stream()
+                .flatMap(sc -> sc.getPorts().stream())
+                .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/system/src/";
+        distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
+        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
+
+        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+        fixKnownErrors(files);
+
+
+    }
+
+    private void fixKnownErrors(List<File> files) throws IOException {
+        //known errors:
+        //wayOut(1-1, i-1)
+        //=> wayOut[1-1,i-1]
+        //Helper::getDoubleFromOctaveListFirstResult(Fasin(Helper::convertToOctaveValueList(deltaY/dist),1)
+        //=> Fasin(deltaY/dist) => std::sin(...)
+        //...
+        for(File f : files) {
+            Path path = Paths.get(f.getAbsolutePath());
+            Charset charset = StandardCharsets.UTF_8;
+            String content = new String(Files.readAllBytes(path), charset);
+            content = content.replace("#include \"octave/builtin-defun-decls.h\"","#include <cmath>");
+            content = content.replaceAll("\\(Helper::getDoubleFromOctaveListFirstResult\\(([\\w|/]*)\\(Helper::convertToOctaveValueList\\(([\\w|/]*)\\),1\\)\\)\\)","$1($2)");
+            content = content.replaceAll("(\\w+)\\(([\\w|\\-|,|\" \"]+\\-1)\\)","$1[$2]");
+            content = content.replace("LaneletPaircurLaneletPair", "ba_util_LaneletPair curLaneletPair");
+            content = content.replace("Fasin","std::asin");
+            content = content.replace("Fsin","std::sin");
+            content = content.replace("Fcos","std::cos");
+            content = content.replace("Fabs","std::abs");
+//            content = content.replace("sqrt","std::sqrt");
+            Files.write(path, content.getBytes(charset));
+        }
+    }
+
+
+    @Test
     public void testMiddlewareGenerator() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         //register the middleware tag types
@@ -155,12 +239,14 @@ public class GenerationTest extends AbstractSymtabTest {
                 .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
                 .forEach(c -> System.out.println("Source = Target:"+c.getSource() + " -> " + c.getTargetPort()));
 
+
+
+        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
         componentInstanceSymbol.getSubComponents().stream()
         .flatMap(subc -> subc.getConnectors().stream())
                 .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
                 .forEach(c -> System.out.println("Source = Target in comp "+c.getComponentInstance().get().getName()+":"+c.getSource() + " -> " + c.getTargetPort()));
 
-        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
         componentInstanceSymbol.getSubComponents().stream()
                 .flatMap(subc -> subc.getPorts().stream())
                 .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));

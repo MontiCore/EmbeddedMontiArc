@@ -1,0 +1,28 @@
+package ba.vehicle;
+import ba.util.Position;
+
+component TrajectoryComputer<N1 k = 10,N1 m = 20>{
+    ports in Position posIn,
+          in Q^{2,k} wayIn,
+          in Q curVelIn,
+          in Q planningTimeIn;
+
+    ports out Q^{3,m} trajOut;
+
+    instance PosToIndex<10> posToIndex;
+    instance IndexToTrajectory<10,20> indexToTrajectory;
+
+    connect planningTimeIn -> indexToTrajectory.planningTime;
+    connect curVelIn -> indexToTrajectory.curVel;
+    connect posIn -> indexToTrajectory.pos;
+    connect wayIn -> indexToTrajectory.way;
+
+
+    connect posIn -> posToIndex.pos;
+    connect wayIn -> posToIndex.way;
+
+    connect posToIndex.index -> indexToTrajectory.indexIn;
+
+    connect indexToTrajectory.traj -> trajOut;
+
+}

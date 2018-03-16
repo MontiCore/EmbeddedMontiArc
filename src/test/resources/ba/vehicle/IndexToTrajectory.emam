@@ -1,0 +1,68 @@
+package ba.vehicle;
+import ba.util.Position;
+
+component IndexToTrajectory<N1 k = 10, N1 m = 20>{
+    ports in Q planningTime,
+          in Q curVel,
+          in Position pos,
+          in Q^{2,k} way,
+          in Z indexIn,
+          out Q^{3,m} traj;
+
+implementation Math{
+    //s = v*t
+    Q maxPlanDist = planningTime * curVel;
+    Q stepDist = maxPlanDist  / k;
+    Q stepTime = maxPlanDist  / k;
+    Q planDist = 0;
+    Q lastPosX = pos.posX;
+    Q lastPosY = pos.posY;
+    Q lastTime = 0;
+
+    Z curIndex = indexIn;
+
+    //set nextCutoff
+    Q dxToNext = lastPosX - way(1, curIndex);
+    Q dyToNext = lastPosY - way(2, curIndex);
+    Q nextCutoff = planDist + sqrt(dxToNext * dxToNext + dyToNext * dyToNext);
+
+
+    for i = 1:m
+        if nextCutoff < planDist
+            if curIndex == k
+                //end of way reached
+                if (way(1, k)== way(1, 1)) && (way(2, k) == way(2, 1))
+                    //way is loop
+                    curIndex = 2;
+                else
+                    //Stop planning
+                    planDist = maxPlanDist + 1;
+                end
+            else
+                curIndex = curIndex + 1;
+            end
+            Q dxToNext = lastPosX - way(1, curIndex);
+            Q dyToNext = lastPosY - way(2, curIndex);
+            nextCutoff = planDist + sqrt(dxToNext * dxToNext + dyToNext * dyToNext);
+        end
+
+        Q deltaX = lastPosX - way(1, curIndex);
+        Q deltaY = lastPosY - way(2, curIndex);
+        Q dist = sqrt(deltaX * deltaX + deltaY * deltaY);
+        Q angleToGoal =  asin(deltaY/dist);
+
+        if planDist < maxPlanDist
+            lastTime = lastTime + stepTime;
+            lastPosX = lastPosX + cos(angleToGoal) * stepDist;
+            lastPosY = lastPosY + sin(angleToGoal) * stepDist;
+        end
+
+        planDist = planDist + stepDist;
+        traj(1,i) = lastPosX;
+        traj(2,i) = lastPosY;
+        traj(3,i) = lastTime;
+    end
+}
+
+
+}

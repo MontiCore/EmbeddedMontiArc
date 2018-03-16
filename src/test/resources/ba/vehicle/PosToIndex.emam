@@ -1,0 +1,54 @@
+package ba.vehicle;
+import ba.util.Position;
+
+component PosToIndex<N1 k = 10>{
+    ports in Position pos,
+          in Q^{2,k} way,
+          out Z index;
+
+    implementation Math{
+        Z closestInd = -1;
+        Z secondClosestInd = -1;
+        Q closestDist = 0;
+        Q secondClosestDist = 0;
+
+        for i = 1:k
+            Q deltaX = pos.posX - way(1,i);
+            Q deltaY = pos.posY - way(2,i);
+            Q curDist =  sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (closestInd == -1) || (curDist <= closestDist)
+                secondClosestDist = closestDist;
+                secondClosestInd = closestInd;
+
+                closestDist = curDist;
+                closestInd = i;
+            end
+        end
+
+        Q betweenDX = way(1, closestInd)- way(1, secondClosestInd);
+        Q betweenDY = way(2, closestInd) - way(2, secondClosestInd);
+        Q betweenDist = sqrt(betweenDX * betweenDX + betweenDY * betweenDY);
+        Q angleWay = 0;
+        if betweenDist > 0
+            angleWay = asin(betweenDY/betweenDist);
+        end
+
+        //angle between the vector pos -> closest and the x axis
+        Q angle = 0;
+        if closestDist > 0
+            Q deltaY = pos.posY - way(2, closestInd);
+            angle = asin(deltaY/closestDist);
+        end
+
+        //asin= -pi/2 : pi/2 => res = angle - angleWay = -pi:pi => abs(res) < pi/4
+        Q deltaAngle = angle - angleWay;
+        if abs(deltaAngle) > (M_PI/4)
+            //past closest point
+            index = secondClosestInd;
+        else
+            //in front of closest point
+            index = closestInd;
+        end
+
+    }
+}
