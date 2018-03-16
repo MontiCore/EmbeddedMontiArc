@@ -1,6 +1,6 @@
-package de.monticore.reporting.emam2ema;
+package de.monticore.reporting.svgTools.emam2ema;
 
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import de.monticore.reporting.svgTools.SVGInfo;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ModelWriter {
 
-    public static void writeModels(List<CheckCoCoResult> models, String oldRoot, String newRoot) throws IOException {
+    public static void writeModels(List<? extends SVGInfo> models, String oldRoot, String newRoot) throws IOException {
         File out = new File(newRoot);
         if(!out.exists())
             out.mkdirs();
@@ -18,7 +18,7 @@ public class ModelWriter {
             out.mkdirs();
         }
 
-        for(CheckCoCoResult model: models) {
+        for(SVGInfo model: models) {
             if(model.getParsed() != 1) continue;
             String pathToFile = model.getPathToFile().substring(model.getRootFile().
                     getAbsolutePath().length() + 1).replace("emam", "ema");

@@ -173,7 +173,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>de.monticore.reporting.testCocos.Main</mainClass>
+                            <mainClass>de.monticore.reporting.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

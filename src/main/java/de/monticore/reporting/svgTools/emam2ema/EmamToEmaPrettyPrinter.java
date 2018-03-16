@@ -1,4 +1,4 @@
-package de.monticore.reporting.emam2ema;
+package de.monticore.reporting.svgTools.emam2ema;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import org.apache.commons.lang3.StringUtils;

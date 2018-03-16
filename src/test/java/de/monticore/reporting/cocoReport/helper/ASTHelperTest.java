@@ -1,9 +1,11 @@
-package de.monticore.reporting.testCocos.helper;
+package de.monticore.reporting.cocoReport.helper;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
+import de.monticore.reporting.tools.ASTHelper;
+import de.monticore.reporting.tools.CouldNotResolveException;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;

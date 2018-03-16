@@ -1,4 +1,4 @@
-package de.monticore.reporting.testCocos.helper;
+package de.monticore.reporting.tools;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
@@ -11,6 +11,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedM
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
+import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;

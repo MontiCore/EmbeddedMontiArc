@@ -1,10 +1,8 @@
 package de.monticore.reporting.svgTools;
 
-import de.monticore.reporting.emam2ema.EmamToEma;
+import de.monticore.reporting.svgTools.emam2ema.EmamToEma;
 import de.monticore.reporting.order.ChildElement;
 import de.monticore.reporting.svgTools.helper.Extractor;
-import de.monticore.reporting.testCocos.CheckCoCo;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -15,7 +13,7 @@ public class VisualisationHelper {
 
     private final static File ICON_FOLDER = new File("report/images/icons");
 
-    public static void generateSVGs(List<CheckCoCoResult> allModels, List<CheckCoCoResult> rootModels, String outputPath, boolean merge) {
+    public static void generateSVGs(List<? extends SVGInfo> allModels, List<? extends SVGInfo> rootModels, String outputPath, boolean merge) {
         Extractor.extractSVGGenerator();
         VisualisationHelperMulitThread vHelper = new VisualisationHelperMulitThread();
         vHelper.setThreadNumber(Runtime.getRuntime().availableProcessors());
@@ -39,13 +37,13 @@ public class VisualisationHelper {
         }
     }
 
-    private static void setChildrenSVGPath(List<CheckCoCoResult> models) {
-        for (CheckCoCoResult model : models) {
+    private static void setChildrenSVGPath(List<? extends SVGInfo> models) {
+        for (SVGInfo model : models) {
             setChildrenSVGPath(model);
         }
     }
 
-    private static void setChildrenSVGPath(CheckCoCoResult model) {
+    private static void setChildrenSVGPath(SVGInfo model) {
         if (model.getSvgPath() != null && !model.getSvgPath().equals("") && model.getChildren().size() > 0) {
             String svgPathParent = model.getSvgPath().substring(0, model.getSvgPath().lastIndexOf("html"));
             for(ChildElement childElement: model.getChildren()){

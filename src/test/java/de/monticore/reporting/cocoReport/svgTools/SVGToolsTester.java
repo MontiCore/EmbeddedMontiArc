@@ -1,9 +1,9 @@
-package de.monticore.reporting.testCocos.svgTools;
+package de.monticore.reporting.cocoReport.svgTools;
 
 import de.monticore.reporting.order.OrderTestResults;
 import de.monticore.reporting.svgTools.VisualisationHelper;
-import de.monticore.reporting.testCocos.CheckCoCos;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import de.monticore.reporting.cocoReport.CheckCoCos;
+import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 import org.junit.Test;
 
 import java.io.File;

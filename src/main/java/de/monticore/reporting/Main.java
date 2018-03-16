@@ -1,9 +1,13 @@
-package de.monticore.reporting.testCocos;
+package de.monticore.reporting;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.reporting.order.OrderTestResults;
 import de.monticore.reporting.svgTools.VisualisationHelper;
-import de.monticore.reporting.testCocos.helper.*;
+import de.monticore.reporting.cocoReport.CheckCoCos;
+import de.monticore.reporting.testReport.CheckTests;
+import de.monticore.reporting.grammarReport.ReportGrammar;
+import de.monticore.reporting.cocoReport.helper.*;
+import de.monticore.reporting.testReport.TestsTestResultPrinter;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -20,7 +24,6 @@ public class Main {
             OrderTestResults order = new OrderTestResults();
             order.orderTestResults(testResults);
             List<CheckCoCoResult> rootModels = order.getRootModels();
-            List<CheckCoCoResult> hasNoParentModels = order.getHasNoParentModels();
             List<CheckCoCoResult> mainPackages = order.getMainPackageModels();
 
             if (context.isSvg()) {
@@ -29,7 +32,7 @@ public class Main {
             }
 
             System.out.println("\n<============Write Test Results============>\n");
-            TestResultPrinter2.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge());
+            CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge());
             TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
@@ -37,7 +40,7 @@ public class Main {
             System.out.println("\n<================Test Tests================>\n");
             List<CheckTestResult> testResults = tewt.testTestsEndWithTest(new File(context.getProjectRoot()));
             System.out.println("\n<============Write Test Results============>\n");
-            TestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "dataEWT.json", context.isMerge());
+            TestsTestResultPrinter.printTestsEndWithTestResults(testResults, context.getOutput() + "dataEWT.json", context.isMerge());
         }
         if (context.isReportGrammar()) {
             System.out.println("\n<==============Grammar Report==============>\n");
@@ -45,7 +48,7 @@ public class Main {
         }
     }
 
-    protected static class ReportContext {
+    public static class ReportContext {
         private boolean testsEndWithTest = false;
         private boolean testCoCos = false;
         private String output = "report/data/";

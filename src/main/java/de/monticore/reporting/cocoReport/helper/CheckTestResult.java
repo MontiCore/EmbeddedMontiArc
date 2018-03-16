@@ -1,4 +1,4 @@
-package de.monticore.reporting.testCocos.helper;
+package de.monticore.reporting.cocoReport.helper;
 
 public class CheckTestResult {
     private String path;

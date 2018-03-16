@@ -1,7 +1,5 @@
 package de.monticore.reporting.svgTools;
 
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
-
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +9,7 @@ public class VisualisationHelperMulitThread {
     private int timeout = 60;
     private int threadNumber = 1;
 
-    public void generateSVGs(List<CheckCoCoResult> testResults, String outputPath) {
+    public void generateSVGs(List<? extends SVGInfo> testResults, String outputPath) {
         String output = outputPath.replace("\\", "/");
         if (output.charAt(output.length() - 1) != '/')
             output = output + "/";
@@ -28,7 +26,7 @@ public class VisualisationHelperMulitThread {
         System.out.println("Time needed for file: " + data.maxTimeErroredFile);
     }
 
-    private Data startThreads(List<CheckCoCoResult> testResults, String outputPath) {
+    private Data startThreads(List<? extends SVGInfo> testResults, String outputPath) {
         Data data = new Data(testResults);
         Thread[] threads = new Thread[this.threadNumber];
         for (int i = 0; i < threads.length; i++) {
@@ -59,8 +57,8 @@ public class VisualisationHelperMulitThread {
     }
 
     public class Data {
-        private List<CheckCoCoResult> testResults;
-        private Iterator<CheckCoCoResult> iterator;
+        private List<? extends SVGInfo> testResults;
+        private Iterator<? extends SVGInfo> iterator;
         private int z = 0;
 
         public int timeouts = 0;
@@ -69,12 +67,12 @@ public class VisualisationHelperMulitThread {
         public String maxTimeFile = "";
         public String maxTimeErroredFile = "";
 
-        public Data(List<CheckCoCoResult> testResults) {
+        public Data(List<? extends SVGInfo> testResults) {
             this.testResults = testResults;
             this.iterator = testResults.iterator();
         }
 
-        public synchronized CheckCoCoResult getNextTestResult() {
+        public synchronized SVGInfo getNextTestResult() {
             if (!iterator.hasNext()) return null;
             return iterator.next();
         }

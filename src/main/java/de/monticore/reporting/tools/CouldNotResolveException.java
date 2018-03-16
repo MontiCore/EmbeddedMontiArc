@@ -1,4 +1,4 @@
-package de.monticore.reporting.testCocos.helper;
+package de.monticore.reporting.tools;
 
 public class CouldNotResolveException extends Exception {
 }

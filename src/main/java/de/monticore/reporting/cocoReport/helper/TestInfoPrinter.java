@@ -1,4 +1,4 @@
-package de.monticore.reporting.testCocos.helper;
+package de.monticore.reporting.cocoReport.helper;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import org.apache.commons.io.FileUtils;
@@ -34,20 +34,10 @@ public class TestInfoPrinter {
     private static String getInfo(List<CheckCoCoResult> testResults,  boolean merge){
         ValidInfo info = getValidInfo(testResults);
 
-        char c = 160;
-
         IndentPrinter ip = new IndentPrinter();
         if (!merge)
             ip.println("{");
         ip.indent();
-
-        boolean first = true;
-        int i = 0;
-
-        if (!first)
-            ip.print(",\n");
-        else
-            first = false;
 
         ip.println("\"" + info.root + "\": {");
         ip.indent();
@@ -59,7 +49,7 @@ public class TestInfoPrinter {
         ip.print("},");
         ip.println();
 
-        ip.println("\"" + c + "Errored_" + info.root + "\": {");
+        ip.println("\"" + CheckCoCoResult.erroredString + info.root + "\": {");
         ip.indent();
         ip.println("\"Number\": \"" + info.errored + "\",");
         ip.println("\"Valid\": \"" + 0 + "\",");

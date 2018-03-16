@@ -1,9 +1,8 @@
-package de.monticore.reporting.testCocos;
+package de.monticore.reporting.testReport;
 
-import de.monticore.reporting.testCocos.helper.GitHubHelper;
-import de.monticore.reporting.testCocos.helper.SearchFiles;
-import de.monticore.reporting.testCocos.helper.TestResultPrinter;
-import de.monticore.reporting.testCocos.helper.CheckTestResult;
+import de.monticore.reporting.tools.GitHubHelper;
+import de.monticore.reporting.tools.SearchFiles;
+import de.monticore.reporting.cocoReport.helper.CheckTestResult;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
@@ -14,21 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class CheckTests {
-
-    public static void main(String[] args) {
-        if (args.length == 0)
-            Log.error("Please enter a path.");
-        String path = args[0];
-
-        File root = new File(path);
-        if (!root.exists())
-            Log.error("Path does not exist");
-
-        CheckTests tewt = new CheckTests();
-        List<CheckTestResult> testResults = tewt.testTestsEndWithTest(root);
-
-        TestResultPrinter.printTestsEndWithTestResults(testResults, "C:/Praktikum/report/dataEWT.json");
-    }
 
     public List<CheckTestResult> testTestsEndWithTest(File projectRoot) {
         List<CheckTestResult> testResults = new LinkedList<>();

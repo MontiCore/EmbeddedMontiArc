@@ -4,7 +4,7 @@ then
 fi
 
 cd $1
-repos=$(curl "https://api.github.com/orgs/$1/repos?per_page=200" | grep -e 'git_url*' | cut -d \" -f 4)
+repos=$(curl -s "https://api.github.com/orgs/$1/repos?per_page=200" | grep -e 'git_url*' | cut -d \" -f 4)
 for entry in $repos
 do
   url=$entry

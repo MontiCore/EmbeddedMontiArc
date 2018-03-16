@@ -1,7 +1,8 @@
-package de.monticore.reporting.testCocos;
+package de.monticore.reporting.grammarReport;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;
-import de.monticore.reporting.testCocos.helper.SearchFiles;
+import de.monticore.reporting.Main;
+import de.monticore.reporting.tools.SearchFiles;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;

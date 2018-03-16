@@ -6,7 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbolReference;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 
 import java.io.File;
 import java.util.HashMap;

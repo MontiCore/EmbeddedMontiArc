@@ -1,8 +1,8 @@
-package de.monticore.reporting.testCocos;
+package de.monticore.reporting.cocoReport;
 
-import de.monticore.reporting.testCocos.helper.CustomPrinter;
-import de.monticore.reporting.testCocos.helper.SearchFiles;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import de.monticore.reporting.tools.CustomPrinter;
+import de.monticore.reporting.tools.SearchFiles;
+import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 
 import java.io.File;
 import java.util.HashMap;

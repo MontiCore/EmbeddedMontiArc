@@ -1,14 +1,15 @@
-package de.monticore.reporting.testCocos.helper;
+package de.monticore.reporting.cocoReport.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.reporting.order.ChildElement;
+import de.monticore.reporting.svgTools.SVGInfo;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckCoCoResult {
+public class CheckCoCoResult implements SVGInfo {
 
     public static String erroredString = "" + ((char) 160) + "Errored";
 

@@ -1,6 +1,6 @@
 package de.monticore.reporting.order;
 
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 
 public class ChildElement {
     private String referencedName;

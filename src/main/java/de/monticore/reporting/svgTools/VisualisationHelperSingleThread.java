@@ -1,5 +1,4 @@
 package de.monticore.reporting.svgTools;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
@@ -30,7 +29,7 @@ public class VisualisationHelperSingleThread implements Runnable {
 
     @Override
     public void run() {
-        CheckCoCoResult tr = testResults.getNextTestResult();
+        SVGInfo tr = testResults.getNextTestResult();
         int z;
 
         while(tr != null) {
@@ -64,7 +63,7 @@ public class VisualisationHelperSingleThread implements Runnable {
         }
     }
 
-    private int generateSVG(CheckCoCoResult testResult, String outputPath) {
+    private int generateSVG(SVGInfo testResult, String outputPath) {
         if (testResult.getResolved() != 1) return NOTRESOLVED;
         testResult.addErrorMessage("[INFO] do SVG generation<br>=========================");
         File out = new File(outputPath);

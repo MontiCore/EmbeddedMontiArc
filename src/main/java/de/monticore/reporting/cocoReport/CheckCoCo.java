@@ -1,11 +1,11 @@
-package de.monticore.reporting.testCocos;
+package de.monticore.reporting.cocoReport;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
-import de.monticore.reporting.testCocos.helper.ASTHelper;
-import de.monticore.reporting.testCocos.helper.CustomPrinter;
-import de.monticore.reporting.testCocos.helper.CheckCoCoResult;
+import de.monticore.reporting.tools.ASTHelper;
+import de.monticore.reporting.tools.CustomPrinter;
+import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
