@@ -7,6 +7,7 @@ declare -a msRepos=( "CarLang" "server" "visualization" "SimLang" "simulation" "
 declare -a mcRepos=( "javaDSL" "monticore" "se-commons" "OCL" "Language-Editor" )
 
 # clone EmbeddedMontiArc
+echo "clone EmbeddedMontiArc"
 if [ ! -d "EmbeddedMontiArc" ]
 then
   mkdir "EmbeddedMontiArc"
@@ -24,6 +25,7 @@ done
 cd ..
 
 # clone MontiSim
+echo "clone MontiSim"
 if [ ! -d "MontiSim" ]
 then
   mkdir "MontiSim"
@@ -38,9 +40,10 @@ do
     git clone --depth 1 "https://github.com/MontiSim/$repo"
   fi
 done
-cd c..
+cd ..
 
 # clone MontiCore
+echo "clone MontiCore"
 if [ ! -d "MontiCore" ]
 then
   mkdir "MontiCore"
