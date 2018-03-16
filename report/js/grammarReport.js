@@ -39,7 +39,7 @@ function createTable(data) {
         "bAutoWidth": false,
         "aoColumns": [
             {"data": "Root", visible: false},
-            {"data": "Order", visible: false},
+            {"data": null, visible: false},
             {"data": "Name", sort: "string", type: "alt-string"},
             {
                 "data": "OnlineIDE",
@@ -53,7 +53,7 @@ function createTable(data) {
 
 function init() {
     table = $(tableReference).DataTable();
-    initFloatingHeader();
+    initFloatingHeader(0);
 }
 
 

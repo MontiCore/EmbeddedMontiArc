@@ -117,7 +117,7 @@ function createTable(data, info) {
 function init() {
     table = $(tableReference).DataTable();
     childControlInit('expandChildren-control', uniqueNameFunction_custom);
-    initFloatingHeader();
+    initFloatingHeader(1);
     initLogMechanic('details-control', formatLog_custom);
     initGrowMechanic('grow', 'shortLabel', 'fullLabel');
     defaultExpand(2, columnFilter_custom);
