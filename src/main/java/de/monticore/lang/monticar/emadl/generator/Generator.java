@@ -81,6 +81,8 @@ public class Generator {
 
         fileContents.add(generateCNNTrainer(allInstances, componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_")));
         fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+        TypesGeneratorCPP tg = new TypesGeneratorCPP();
+        fileContents.addAll(tg.generateTypes(TypeConverter.getTypeSymbols()));
 
         if (emamGen.shouldGenerateMainClass()) {
             //fileContents.add(emamGen.getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
@@ -204,12 +206,7 @@ public class Generator {
 
     public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
-        TypesGeneratorCPP tg = new TypesGeneratorCPP();
-        fileContents.addAll(tg.generateTypes(TypeConverter.getTypeSymbols()));
 
-        if (emamGen.getGenerationTargetPath().charAt(emamGen.getGenerationTargetPath().length() - 1) != '/') {
-            emamGen.setGenerationTargetPath(emamGen.getGenerationTargetPath() + "/");
-        }
         for (FileContent fileContent : fileContents) {
             emamGen.generateFile(fileContent);
         }

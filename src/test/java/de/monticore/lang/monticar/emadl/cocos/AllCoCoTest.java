@@ -35,6 +35,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("", "ThreeInputCNN_M14");
         checkValid("", "MultipleOutputs");
         checkValid("", "ResNet34");
+        checkValid("", "ResNet152");
         checkValid("", "ResNeXt50");
 
         checkValid("", "mnist.Main");
