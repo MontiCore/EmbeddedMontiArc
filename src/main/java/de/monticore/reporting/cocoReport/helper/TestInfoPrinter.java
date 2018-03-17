@@ -49,7 +49,7 @@ public class TestInfoPrinter {
         ip.print("},");
         ip.println();
 
-        ip.println("\"" + CheckCoCoResult.erroredString + info.root + "\": {");
+        ip.println("\"" + CheckCoCoResult.erroredString + "" + info.root + "\": {");
         ip.indent();
         ip.println("\"Number\": \"" + info.errored + "\",");
         ip.println("\"Valid\": \"" + 0 + "\",");
