@@ -16,7 +16,7 @@ component ThreeInputCNN_M14{
         }
 
         image ->
-        inputGroup(index=0|..|2) ->
+        inputGroup(index=[0|..|2]) ->
         Concatenate() ->
         conv(filter=(3,3), channels=64) ->
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
