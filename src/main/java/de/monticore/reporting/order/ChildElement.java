@@ -1,12 +1,13 @@
 package de.monticore.reporting.order;
 
 import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
+import de.monticore.reporting.helper.OrderableModelInfo;
 
 public class ChildElement {
     private String referencedName;
-    private CheckCoCoResult child;
+    private OrderableModelInfo child;
 
-    public ChildElement(String referencedName, CheckCoCoResult child){
+    public ChildElement(String referencedName, OrderableModelInfo child){
         this.child = child;
         this.referencedName = referencedName;
     }
@@ -15,7 +16,7 @@ public class ChildElement {
         return referencedName;
     }
 
-    public CheckCoCoResult getChild() {
+    public OrderableModelInfo getChild() {
         return child;
     }
 }

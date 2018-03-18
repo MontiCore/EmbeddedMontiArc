@@ -10,9 +10,9 @@ public class EmamToEma {
     public static String convertToEma(List<? extends SVGInfo> models) {
         String root = "";
         for (SVGInfo model: models) {
-            root = model.getRootFile().getAbsolutePath();
+            root = model.getRootFile1().getAbsolutePath();
             if(model.getFileType().toUpperCase().equals("EMAM")) {
-                model.setEmaToPrint(EmamToEmaPrettyPrinter.getEmaString(model.getPathToFile()));
+                model.setEmaToPrint(EmamToEmaPrettyPrinter.getEmaString(model.getModelFileAsString()));
             }
         }
 

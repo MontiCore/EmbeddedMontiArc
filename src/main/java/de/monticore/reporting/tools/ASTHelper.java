@@ -11,7 +11,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedM
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
-import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
+import de.monticore.reporting.helper.CommonModelInfo;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
@@ -23,34 +23,34 @@ import java.nio.file.Paths;
 
 public class ASTHelper {
 
-    public static void setTestResultInfo(CheckCoCoResult testResult) {
+    public static void setTestResultInfo(CommonModelInfo model) {
         Log.enableFailQuick(false);
         Log.getFindings().clear();
 
-        String fileName = testResult.getPathToFile();
+        String fileName = model.getModelFileAsString();
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()).toUpperCase();
-        testResult.setFileType(fileType);
+        model.setFileType(fileType);
         boolean parse = false;
         ASTEMAMCompilationUnit ast = null;
         ASTEmbeddedMontiArcNode resolvedAST = null;
 
         EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         try {
-            testResult.addErrorMessage("[INFO] do Parser Test <br>=========================");
+            model.addErrorMessage("[INFO] do Parser Test <br>=========================");
             ast = parser.parse(fileName).orElse(null);
         } catch (Exception e) {}
         parse = ast != null;
 
-        testResult.addErrorMessage(parse ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
+        model.addErrorMessage(parse ? "[INFO] Parser Test success<br>" : "[ERROR] Parser Test failed");
         if(!parse){
             CustomPrinter.println("ERROR. Parser Test failed");
             for (Finding finding : Log.getFindings())
-                testResult.addErrorMessage(finding.getMsg());
+                model.addErrorMessage(finding.getMsg());
         }
 
-        testResult.setParsed(parse?1:-1);
+        model.setParsed(parse?1:-1);
         if(parse) {
-            testResult.setCompilationUnit(ast);
+            model.setUnresolvedAST(ast);
             String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackage());
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());
             String modelPath = fileName.substring(0, fileName.length() - (PackageName + "/" + FileName).length()); // package name + File name
@@ -58,31 +58,31 @@ public class ASTHelper {
             String qualifiedName = FileName.replace(".emam", "").replace(".ema", "");
             qualifiedName = PackageName + "." + ("" + qualifiedName.charAt(0)).toLowerCase() + qualifiedName.substring(1, qualifiedName.length());
 
-            testResult.setModelName(modelName);
-            testResult.setModelPath(modelPath);
-            testResult.setQualifiedName(qualifiedName);
+            model.setModelName(modelName);
+            model.setModelPath(modelPath);
+            model.setQualifiedName(qualifiedName);
 
             try {
                 Log.getFindings().clear();
-                testResult.addErrorMessage("[INFO] do Resolve Test<br>=========================");
+                model.addErrorMessage("[INFO] do Resolve Test<br>=========================");
                 resolvedAST = getAstNode(modelPath, modelName, fileType);
-                testResult.setResolvedAst(resolvedAST);
-                testResult.setResolved(1);
-                testResult.addErrorMessage("[INFO] Resolve Test success<br>");
+                model.setResolvedAST(resolvedAST);
+                model.setResolved(1);
+                model.addErrorMessage("[INFO] Resolve Test success<br>");
             } catch (CouldNotResolveException e) {
                 CustomPrinter.println("ERROR. Resolve Test failed");
-                testResult.setResolved(-1);
-                testResult.addErrorMessage("[ERROR] Resolve Test failed");
+                model.setResolved(-1);
+                model.addErrorMessage("[ERROR] Resolve Test failed");
                 for (Finding finding : Log.getFindings())
-                    testResult.addErrorMessage(finding.getMsg());
+                    model.addErrorMessage(finding.getMsg());
             } catch (Exception e) {
                 CustomPrinter.println("ERROR. Something went wrong");
-                testResult.setResolved(-1);
-                testResult.addErrorMessage("[ERROR] Something went wrong");
+                model.setResolved(-1);
+                model.addErrorMessage("[ERROR] Something went wrong");
             }
         } else {
             String FileName = fileName.substring(fileName.replace("\\", "/").lastIndexOf("/") + 1, fileName.length());
-            testResult.setModelName(FileName);
+            model.setModelName(FileName);
         }
 
     }

@@ -20,7 +20,7 @@ public class ModelWriter {
 
         for(SVGInfo model: models) {
             if(model.getParsed() != 1) continue;
-            String pathToFile = model.getPathToFile().substring(model.getRootFile().
+            String pathToFile = model.getModelFileAsString().substring(model.getRootFile1().
                     getAbsolutePath().length() + 1).replace("emam", "ema");
             File modelFile = new File(newRoot + "/" + pathToFile);
             if(!modelFile.getParentFile().exists())

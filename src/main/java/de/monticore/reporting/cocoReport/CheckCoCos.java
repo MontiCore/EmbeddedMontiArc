@@ -41,12 +41,12 @@ public class CheckCoCos {
 
                 testResult = ccT.testCoCos(file.getAbsolutePath());
                 testResult.setModelFile(file);
-                testResult.setProjectFile(projectDir);
+//                testResult.setProject(projectDir);
 //                    testResult.setPathToFile(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
                 testResult.setOnlineIDE(getVFSTag(projectDir, file, zipName));
                 String relativeProject = projectDir.getName();
                 testResult.setProject(relativeProject);
-                testResult.setRootFile(root);
+                testResult.setRootFile1(root);
                 testResult.setZipName(zipName);
 
                 testResults.add(testResult);

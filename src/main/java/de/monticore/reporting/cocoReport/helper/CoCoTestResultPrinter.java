@@ -68,7 +68,7 @@ public class CoCoTestResultPrinter {
             try {
                 String first = FileUtils.readFileToString(new File(path));
                 first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + printTestResults(testResults, merge, null, 0);
+                String str = first + ",\n" + printTestResults(testResults, merge, "", 0);
                 FileUtils.writeStringToFile(new File(path),
                         str);
             } catch (IOException e) {
@@ -77,14 +77,14 @@ public class CoCoTestResultPrinter {
         } else {
             try {
                 FileUtils.writeStringToFile(new File(path),
-                        printTestResults(testResults, merge, null, 0));
+                        printTestResults(testResults, merge, "", 0));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, File rootFile, int depth) {
+    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth) {
         IndentPrinter ip = new IndentPrinter();
         char c = 160;
         if (!merge)
@@ -103,7 +103,7 @@ public class CoCoTestResultPrinter {
 
             ip.println("{");
             ip.indent();
-            ip.println(names[i++] + ": \"" + (rootFile == null ? testResult.getRootFile().getName() : rootFile.getName()) + "\",");
+            ip.println(names[i++] + ": \"" + (rootName.equals("") ? testResult.getRootName1() : rootName) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
@@ -137,7 +137,7 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": ");
             ip.indent();
             if(depth == 0)
-                ip.println(getChildData(testResult, testResult.getRootFile(), depth + 1));
+                ip.println(getChildData(testResult, testResult.getRootName1(), depth + 1));
             else
                 ip.println("[]");
             ip.unindent();
@@ -151,12 +151,12 @@ public class CoCoTestResultPrinter {
         return ip.getContent();
     }
 
-    private static String getChildData(CheckCoCoResult testResult, File rootFile, int depth) {
+    private static String getChildData(CheckCoCoResult testResult, String rootName, int depth) {
         List<CheckCoCoResult> childResults = new LinkedList<>();
         for(ChildElement childElement: testResult.getChildren()){
-            childResults.add(childElement.getChild());
+            childResults.add((CheckCoCoResult) childElement.getChild());
         }
-        return printTestResults(childResults, false, rootFile, depth);
+        return printTestResults(childResults, false, rootName, depth);
     }
 
     private static String getDepthImage(CheckCoCoResult testResult, int depth){
@@ -168,12 +168,12 @@ public class CoCoTestResultPrinter {
         if(testResult.isErrorResult() || testResult.isMainPackage()) return tagOf(0);
         String zipName = testResult.getZipName();
         File file = testResult.getModelFile();
-        File project = testResult.getProjectFile();
+        File root = testResult.getRootFile1();
         String urlToZip;
 
         urlToZip = "https://raw.githubusercontent.com/EmbeddedMontiArc/reporting/gh-pages/" + zipName;
         zipName = zipName.substring(0, zipName.lastIndexOf("."));
-        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
+        String name = file.getAbsolutePath().substring(root.getAbsolutePath().length());
         String displayName = name;
         return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
@@ -196,10 +196,9 @@ public class CoCoTestResultPrinter {
 
     private static String getFilePath(CheckCoCoResult testResult) {
         if(testResult.isErrorResult()) return testResult.getModelName();
-        if(testResult.isMainPackage()) return testResult.getRootFile().getName() + "/" + testResult.getProject();
+        if(testResult.isMainPackage()) return testResult.getRootName1()+ "/" + testResult.getProject();
         File file = testResult.getModelFile();
-        File project = testResult.getProjectFile();
-        String name = file.getAbsolutePath().substring(project.getAbsolutePath().length() - project.getName().length());
+        String name = file.getAbsolutePath().substring(testResult.getRootFile1().getAbsolutePath().length());
         String displayName = name.replace("\\","/");
         return displayName;
     }

@@ -1,45 +1,59 @@
 package de.monticore.reporting.svgTools;
 
+import de.monticore.reporting.helper.CommonModelInfo;
+import de.monticore.reporting.helper.OrderableModelInfo;
 import de.monticore.reporting.order.ChildElement;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
-public interface SVGInfo {
+public abstract class SVGInfo extends OrderableModelInfo {
 
-    public String getPathToFile();
+    private String svgPath = "";
+    private boolean emaModelPathAvailable;
+    private String emaModelPath = "";
+    private String emaToPrint = "";
 
-    public String getProject();
+    public SVGInfo(File modelFile){
+        super(modelFile);
+    }
 
-    public File getRootFile();
+    public SVGInfo(String model) {
+        super(model);
+    }
 
-    public String getModelName();
+    public String getSvgPath() {
+        return svgPath;
+    }
 
-    public String getModelPath();
+    public void setSvgPath(String svgPath) {
+        this.svgPath = svgPath;
+    }
 
-    public String getQualifiedName();
+    public boolean isEmaModelPathAvailable() {
+        return emaModelPathAvailable;
+    }
 
-    public String getFileType();
+    public void setEmaModelPathAvailable(boolean emaModelPathAvailable) {
+        this.emaModelPathAvailable = emaModelPathAvailable;
+    }
 
-    public int getParsed();
+    public String getEmaModelPath() {
+        return emaModelPath;
+    }
 
-    public int getResolved();
+    public void setEmaModelPath(String emaModelPath) {
+        this.emaModelPath = emaModelPath;
+        if(!emaModelPath.equals(""))
+            setEmaModelPathAvailable(true);
+    }
 
-    public String getSvgPath();
+    public String getEmaToPrint() {
+        return emaToPrint;
+    }
 
-    public void setSvgPath(String s);
-
-    public boolean isEmaModelPathAvailable();
-
-    public String getEmaModelPath();
-
-    public void setEmaModelPath(String newModelPath);
-
-    public void setEmaToPrint(String emaString);
-
-    public String getEmaToPrint();
-
-    public List<ChildElement> getChildren();
-
-    public void addErrorMessage(String msg);
+    public void setEmaToPrint(String emaToPrint) {
+        this.emaToPrint = emaToPrint;
+    }
 }

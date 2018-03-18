@@ -21,8 +21,8 @@ public class Main {
             CheckCoCos tcc = new CheckCoCos();
             System.out.println("\n<================Test CoCos================>\n");
             List<CheckCoCoResult> testResults = tcc.testAllCocos(new File(context.getProjectRoot()), context.getZipName(), "ema", "emam");
-            OrderTestResults order = new OrderTestResults();
-            order.orderTestResults(testResults);
+            OrderTestResults<CheckCoCoResult> order = new OrderTestResults();
+            order.orderTestResults(testResults, new CheckCoCoResultCreator());
             List<CheckCoCoResult> rootModels = order.getRootModels();
             List<CheckCoCoResult> mainPackages = order.getMainPackageModels();
 

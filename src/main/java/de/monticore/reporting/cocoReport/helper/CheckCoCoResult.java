@@ -9,36 +9,34 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CheckCoCoResult implements SVGInfo {
+public class CheckCoCoResult extends SVGInfo {
 
-    public static String erroredString = "" + ((char) 160) + "Errored";
-
-    private File modelFile;
-    private File projectFile;
-    private File rootFile;
-
-    private String modelPath = "";
-    private String emaModelPath = "";
-    private boolean emaModelPathAvailable = false;
-    private String qualifiedName = "";
-    private String modelName = "";
-    private String pathToFile = "";
-    private String project = "";
-    private String fileType = "";
-    private String svgPath = "";
+//    private File modelFile;
+//    private File projectFile;
+//    private File rootFile;
+//
+//    private String modelPath = "";
+//    private String emaModelPath = "";
+//    private boolean emaModelPathAvailable = false;
+//    private String qualifiedName = "";
+//    private String modelName = "";
+//    private String pathToFile = "";
+//    private String project = "";
+//    private String fileType = "";
+//    private String svgPath = "";
     private String onlineIDE = "";
     private String zipName = "";
-    private List<String> errorMessage = new LinkedList<>();
-    private int parsed = 0;
-    private int resolved = 0;
+//    private List<String> errorMessage = new LinkedList<>();
+//    private int parsed = 0;
+//    private int resolved = 0;
     private boolean atomic = false;
-    private String emaToPrint = "";
+//    private String emaToPrint = "";
 
-    private ASTEMAMCompilationUnit compilationUnit = null;
-    private ASTEmbeddedMontiArcNode resolvedAst = null;
+//    private ASTEMAMCompilationUnit unresolvedAST = null;
+//    private ASTEmbeddedMontiArcNode resolvedAST = null;
 
-    private List<CheckCoCoResult> parents = new LinkedList<>();
-    private List<ChildElement> children = new LinkedList<>();
+//    private List<CheckCoCoResult> parents = new LinkedList<>();
+//    private List<ChildElement> children = new LinkedList<>();
 
     private int componentCapitalized = 0;
     private int componentInstanceNamesUnique = 0;
@@ -59,16 +57,16 @@ public class CheckCoCoResult implements SVGInfo {
     private int uniquePorts = 0;
     private int atomicComponent = 0;
 
-    private boolean errorResult = false;
-    private boolean mainPackage = false;
+//    private boolean errorResult = false;
+//    private boolean mainPackage = false;
 
 
     public CheckCoCoResult(String pathToFile) {
-        this.setPathToFile(pathToFile);
+        super(pathToFile);
     }
 
     public String toString() {
-        return this.modelName;
+        return this.getModelName();
     }
 
     public boolean isValid() {
@@ -96,25 +94,6 @@ public class CheckCoCoResult implements SVGInfo {
                 + urlToZip + "&openFile=/" + name + "'>" + displayName + "</a>";
     }
 
-    public String getPathToFile() {
-        return pathToFile;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public int getParsed() {
-        return parsed;
-    }
-
-    public void setParsed(int parsed) {
-        this.parsed = parsed;
-    }
 
     public int getComponentCapitalized() {
         return componentCapitalized;
@@ -260,32 +239,13 @@ public class CheckCoCoResult implements SVGInfo {
         this.atomicComponent = atomicComponent;
     }
 
-    public void setPathToFile(String pathToFile) {
-        this.pathToFile = pathToFile;
-    }
-
-    public int getResolved() {
-        return resolved;
-    }
-
-    public void setResolved(int resolved) {
-        this.resolved = resolved;
-    }
-
-    public void addErrorMessage(String msg) {
-        this.errorMessage.add(msg);
-    }
-
-    public List<String> getErrorMessages() {
-        return this.errorMessage;
-    }
-
+    @Override
     public String getErrorMessage() {
-        if(isErrorResult() || isMainPackage()) return "";
+        if (isErrorResult() || isMainPackage()) return "";
 
         String msg = "";
 
-        for (String m : errorMessage) {
+        for (String m : getErrorMessages()) {
             if (m != null) {
                 String ms = m.replace("\r\n", "<br>")
                         .replace("\n", "<br>")
@@ -306,57 +266,37 @@ public class CheckCoCoResult implements SVGInfo {
         return msg;
     }
 
-    public String getModelName() {
-        return modelName;
-    }
-
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
-    }
-
-    public String getModelPath() {
-        return modelPath;
-    }
-
+    @Override
     public void setModelPath(String modelPath) {
         String res = modelPath.replace("\\", "/");
         if (res.charAt(res.length() - 1) != '/')
             res = res + "/";
-        this.modelPath = res;
+        super.setModelPath(res);
     }
 
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    public String getProject() {
-        return project;
-    }
-
+    @Override
     public void setProject(String project) {
         String res = project.replace("\\", "/");
         if (res.charAt(res.length() - 1) != '/')
             res = res + "/";
-        this.project = res;
+        super.setProject(res);
     }
 
+    @Override
     public String getSvgPath() {
-        if (svgPath.equals(""))
+        if (super.getSvgPath().equals(""))
             return "";
 
-        String str = svgPath.contains("report/") ? svgPath.substring("report/".length()) : svgPath;
-        if(str.contains("html"))
+        String str = super.getSvgPath().contains("report/") ? super.getSvgPath().substring("report/".length()) : super.getSvgPath();
+        if (str.contains("html"))
             return str.replace("\\", "/");
         else
             return str.replace("\\", "/") + ".html";
     }
 
+    @Override
     public void setSvgPath(String svgPath) {
-        this.svgPath = svgPath.replace("\\", "/");
+        super.setSvgPath(svgPath.replace("\\", "/"));
     }
 
     public String getZipName() {
@@ -367,90 +307,12 @@ public class CheckCoCoResult implements SVGInfo {
         this.zipName = zipName;
     }
 
-    public File getModelFile() {
-        return modelFile;
-    }
-
-    public void setModelFile(File modelFile) {
-        this.modelFile = modelFile;
-    }
-
-    public File getProjectFile() {
-        return projectFile;
-    }
-
-    public void setProjectFile(File projectFile) {
-        this.projectFile = projectFile;
-    }
-
-    public File getRootFile() {
-        return rootFile;
-    }
-
-    public void setRootFile(File rootFile) {
-        this.rootFile = rootFile;
-    }
-
-    public ASTEMAMCompilationUnit getCompilationUnit() {
-        return compilationUnit;
-    }
-
-    public void setCompilationUnit(ASTEMAMCompilationUnit compilationUnit) {
-        this.compilationUnit = compilationUnit;
-    }
-
-    public ASTEmbeddedMontiArcNode getResolvedAst() {
-        return resolvedAst;
-    }
-
-    public void setResolvedAst(ASTEmbeddedMontiArcNode resolvedAst) {
-        this.resolvedAst = resolvedAst;
-    }
-
-    public List<CheckCoCoResult> getParents() {
-        return parents;
-    }
-
-    public List<ChildElement> getChildren() {
-        return children;
-    }
-
-    public void addParent(CheckCoCoResult parent){
-        this.parents.add(parent);
-    }
-
-    public void addChild(ChildElement child){
-        this.children.add(child);
-    }
-
     public boolean isAtomic() {
         return atomic;
     }
 
     public void setAtomic(boolean atomic) {
         this.atomic = atomic;
-    }
-
-    public String getEmaToPrint() {
-        return emaToPrint;
-    }
-
-    public void setEmaToPrint(String emaToPrint) {
-        this.emaToPrint = emaToPrint;
-    }
-
-    public String getEmaModelPath() {
-        return emaModelPath;
-    }
-
-    public void setEmaModelPath(String emaModelPath) {
-        this.emaModelPath = emaModelPath;
-        if(!emaModelPath.equals(""))
-            this.emaModelPathAvailable = true;
-    }
-
-    public boolean isEmaModelPathAvailable() {
-        return emaModelPathAvailable;
     }
 
     public String getOnlineIDE() {
@@ -461,19 +323,65 @@ public class CheckCoCoResult implements SVGInfo {
         this.onlineIDE = onlineIDE;
     }
 
-    public boolean isErrorResult() {
-        return errorResult;
-    }
+    public void setChildInfo() {
+        CheckCoCoResult mainPackage = this;
+        for (ChildElement childElement: getChildren()) {
+            CheckCoCoResult child = (CheckCoCoResult) childElement.getChild();
 
-    public void setErrorResult(boolean errorResult) {
-        this.errorResult = errorResult;
-    }
-
-    public boolean isMainPackage() {
-        return mainPackage;
-    }
-
-    public void setMainPackage(boolean mainPackage) {
-        this.mainPackage = mainPackage;
+            if (child.getComponentCapitalized() != 0 && child.getComponentCapitalized() < mainPackage.getComponentCapitalized() || mainPackage.getComponentCapitalized() == 0) {
+                mainPackage.setComponentCapitalized(child.getComponentCapitalized());
+            }
+            if (child.getComponentInstanceNamesUnique() != 0 && child.getComponentInstanceNamesUnique() < mainPackage.getComponentInstanceNamesUnique() || mainPackage.getComponentInstanceNamesUnique() == 0) {
+                mainPackage.setComponentInstanceNamesUnique(child.getComponentInstanceNamesUnique());
+            }
+            if (child.getComponentWithTypeParametersHasInstance() != 0 && child.getComponentWithTypeParametersHasInstance() < mainPackage.getComponentWithTypeParametersHasInstance() || mainPackage.getComponentWithTypeParametersHasInstance() == 0) {
+                mainPackage.setComponentWithTypeParametersHasInstance(child.getComponentWithTypeParametersHasInstance());
+            }
+            if (child.getConnectorEndPointCorrectlyQualified() != 0 && child.getConnectorEndPointCorrectlyQualified() < mainPackage.getConnectorEndPointCorrectlyQualified() || mainPackage.getConnectorEndPointCorrectlyQualified() == 0) {
+                mainPackage.setConnectorEndPointCorrectlyQualified(child.getConnectorEndPointCorrectlyQualified());
+            }
+            if (child.getDefaultParametersHaveCorrectOrder() != 0 && child.getDefaultParametersHaveCorrectOrder() < mainPackage.getDefaultParametersHaveCorrectOrder() || mainPackage.getDefaultParametersHaveCorrectOrder() == 0) {
+                mainPackage.setDefaultParametersHaveCorrectOrder(child.getDefaultParametersHaveCorrectOrder());
+            }
+            if (child.getInPortUniqueSender() != 0 && child.getInPortUniqueSender() < mainPackage.getInPortUniqueSender() || mainPackage.getInPortUniqueSender() == 0) {
+                mainPackage.setInPortUniqueSender(child.getInPortUniqueSender());
+            }
+            if (child.getPackageLowerCase() != 0 && child.getPackageLowerCase() < mainPackage.getPackageLowerCase() || mainPackage.getPackageLowerCase() == 0) {
+                mainPackage.setPackageLowerCase(child.getPackageLowerCase());
+            }
+            if (child.getParameterNamesUnique() != 0 && child.getParameterNamesUnique() < mainPackage.getParameterNamesUnique() || mainPackage.getParameterNamesUnique() == 0) {
+                mainPackage.setParameterNamesUnique(child.getParameterNamesUnique());
+            }
+            if (child.getPortTypeOnlyBooleanOrSIUnit() != 0 && child.getPortTypeOnlyBooleanOrSIUnit() < mainPackage.getPortTypeOnlyBooleanOrSIUnit() || mainPackage.getPortTypeOnlyBooleanOrSIUnit() == 0) {
+                mainPackage.setPortTypeOnlyBooleanOrSIUnit(child.getPortTypeOnlyBooleanOrSIUnit());
+            }
+            if (child.getPortUsage() != 0 && child.getPortUsage() < mainPackage.getPortUsage() || mainPackage.getPortUsage() == 0) {
+                mainPackage.setPortUsage(child.getPortUsage());
+            }
+            if (child.getReferencedSubComponentExists() != 0 && child.getReferencedSubComponentExists() < mainPackage.getReferencedSubComponentExists() || mainPackage.getReferencedSubComponentExists() == 0) {
+                mainPackage.setReferencedSubComponentExists(child.getReferencedSubComponentExists());
+            }
+            if (child.getSimpleConnectorSourceExists() != 0 && child.getSimpleConnectorSourceExists() < mainPackage.getSimpleConnectorSourceExists() || mainPackage.getSimpleConnectorSourceExists() == 0) {
+                mainPackage.setSimpleConnectorSourceExists(child.getSimpleConnectorSourceExists());
+            }
+            if (child.getSourceTargetNumberMatch() != 0 && child.getSourceTargetNumberMatch() < mainPackage.getSourceTargetNumberMatch() || mainPackage.getSourceTargetNumberMatch() == 0) {
+                mainPackage.setSourceTargetNumberMatch(child.getSourceTargetNumberMatch());
+            }
+            if (child.getSubComponentsConnected() != 0 && child.getSubComponentsConnected() < mainPackage.getSubComponentsConnected() || mainPackage.getSubComponentsConnected() == 0) {
+                mainPackage.setSubComponentsConnected(child.getSubComponentsConnected());
+            }
+            if (child.getTopLevelComponentHasNoInstanceName() != 0 && child.getTopLevelComponentHasNoInstanceName() < mainPackage.getTopLevelComponentHasNoInstanceName() || mainPackage.getTopLevelComponentHasNoInstanceName() == 0) {
+                mainPackage.setTopLevelComponentHasNoInstanceName(child.getTopLevelComponentHasNoInstanceName());
+            }
+            if (child.getTypeParameterNamesUnique() != 0 && child.getTypeParameterNamesUnique() < mainPackage.getTypeParameterNamesUnique() || mainPackage.getTypeParameterNamesUnique() == 0) {
+                mainPackage.setTypeParameterNamesUnique(child.getTypeParameterNamesUnique());
+            }
+            if (child.getUniquePorts() != 0 && child.getUniquePorts() < mainPackage.getUniquePorts() || mainPackage.getUniquePorts() == 0) {
+                mainPackage.setUniquePorts(child.getUniquePorts());
+            }
+            if (child.getAtomicComponent() != 0 && child.getAtomicComponent() < mainPackage.getAtomicComponent() || mainPackage.getAtomicComponent() == 0) {
+                mainPackage.setAtomicComponent(child.getAtomicComponent());
+            }
+        }
     }
 }

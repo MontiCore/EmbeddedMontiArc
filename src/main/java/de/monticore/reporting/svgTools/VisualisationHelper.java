@@ -47,11 +47,11 @@ public class VisualisationHelper {
         if (model.getSvgPath() != null && !model.getSvgPath().equals("") && model.getChildren().size() > 0) {
             String svgPathParent = model.getSvgPath().substring(0, model.getSvgPath().lastIndexOf("html"));
             for(ChildElement childElement: model.getChildren()){
-                if(childElement.getChild().getSvgPath() == null || childElement.getChild().getSvgPath().equals("")) {
+                if(((SVGInfo) childElement.getChild()).getSvgPath() == null || ((SVGInfo) childElement.getChild()).getSvgPath().equals("")) {
                     if(childElement.getChild().getChildren().size() > 0) {
                         String referencedName = childElement.getReferencedName();
-                        childElement.getChild().setSvgPath(svgPathParent + referencedName + ".html");
-                        setChildrenSVGPath(childElement.getChild());
+                        ((SVGInfo) childElement.getChild()).setSvgPath(svgPathParent + referencedName + ".html");
+                        setChildrenSVGPath((SVGInfo) childElement.getChild());
                     }
                 }
             }

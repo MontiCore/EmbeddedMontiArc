@@ -6,7 +6,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbolReference;
-import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
+import de.monticore.reporting.helper.OrderableModelInfo;
+import de.monticore.reporting.helper.OrderableModelInfoCreator;
 
 import java.io.File;
 import java.util.HashMap;
@@ -14,20 +15,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class OrderTestResults {
+public class OrderTestResults <T extends OrderableModelInfo>{
 
 
-    private List<CheckCoCoResult> rootModels = new LinkedList<>();
-    private List<CheckCoCoResult> hasNoParentModels = new LinkedList<>();
-    private List<CheckCoCoResult> mainPackageModels = new LinkedList<>();
+    private List<T> rootModels = new LinkedList<>();
+    private List<T> hasNoParentModels = new LinkedList<>();
+    private List<T> mainPackageModels = new LinkedList<>();
 
-    public void orderTestResults(List<CheckCoCoResult> testResults) {
+    public void orderTestResults(List<T> testResults, OrderableModelInfoCreator<T> creator) {
 
-        Map<String, Map<String, CheckCoCoResult>> maps = mapTestResults(testResults);
-        Map<String, Map<String, List<CheckCoCoResult>>> mainPackages = new HashMap<>();
+        Map<String, Map<String, T>> maps = mapTestResults(testResults);
+        Map<String, Map<String, List<T>>> mainPackages = new HashMap<>();
 
-        CheckCoCoResult notParsed   = new CheckCoCoResult("");
-        CheckCoCoResult notResolved = new CheckCoCoResult("");
+        T notParsed   = creator.createNewInstance("");
+        T notResolved = creator.createNewInstance("");
         notParsed.setErrorResult(true);
         notResolved.setErrorResult(true);
         notParsed.setModelName("Parsing failed");
@@ -37,22 +38,23 @@ public class OrderTestResults {
         notParsed.setParsed(-1);
         notResolved.setResolved(-1);
 
-        for (CheckCoCoResult testResult : testResults) {
+        for (T testResult : testResults) {
             if (testResult.getParsed() != 1) {
-                if(notParsed.getRootFile() == null)
-                    notParsed.setRootFile(new File(CheckCoCoResult.erroredString + "_" + testResult.getRootFile().getName()));
+                if(notParsed.getRootName1().equals(""))
+                    notParsed.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
+                testResult.setRootName1(notParsed.getRootName1());
                 notParsed.addChild(new ChildElement("", testResult));
                 testResult.addParent(notParsed);
             } else if (testResult.getResolved() != 1) {
-                if(notResolved.getRootFile() == null)
-                    notResolved.setRootFile(new File(CheckCoCoResult.erroredString + "_" + testResult.getRootFile().getName()));
+                if(notResolved.getRootName1().equals(""))
+                    notResolved.setRootName1(OrderableModelInfo.erroredString + "_" + testResult.getRootName1());
                 notResolved.addChild(new ChildElement("", testResult));
                 testResult.addParent(notResolved);
             } else {
 
-                ASTComponent ast = (ASTComponent) testResult.getResolvedAst();
+                ASTComponent ast = (ASTComponent) testResult.getResolvedAST();
                 String modelPath = testResult.getModelPath();
-                Map<String, CheckCoCoResult> modelPathMap = maps.get(modelPath);
+                Map<String, T> modelPathMap = maps.get(modelPath);
 
                 for (ASTElement element : ast.getBody().getElements()) {
                     if (element instanceof ASTSubComponent) {
@@ -62,7 +64,7 @@ public class OrderTestResults {
                             ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
 
                             String name = commonSymbolReference.getFullName();
-                            CheckCoCoResult child = modelPathMap.get(name);
+                            OrderableModelInfo child = modelPathMap.get(name);
 
                             if(child != null) {
 
@@ -86,18 +88,18 @@ public class OrderTestResults {
 
                 if(mainPackages.get(testResult.getModelPath()) == null)
                     mainPackages.put(testResult.getModelPath(), new HashMap<>());
-                Map<String, List<CheckCoCoResult>> modelPathModels = mainPackages.get(testResult.getModelPath());
+                Map<String, List<T>> modelPathModels = mainPackages.get(testResult.getModelPath());
 
                 if(modelPathModels.get(mainPackage) == null)
                     modelPathModels.put(mainPackage, new LinkedList<>());
-                List<CheckCoCoResult> insideMainPackage = modelPathModels.get(mainPackage);
+                List<T> insideMainPackage = modelPathModels.get(mainPackage);
 
                 insideMainPackage.add(testResult);
 
             }
         }
 
-        for (CheckCoCoResult testResult : testResults) {
+        for (T testResult : testResults) {
             if (testResult.getResolved() != 1) continue;
             if (testResult.getParents().size() == 0 && testResult != notParsed && testResult != notResolved)
                 getHasNoParentModels().add(testResult);
@@ -115,19 +117,20 @@ public class OrderTestResults {
         }
 
         for(String modelPath: mainPackages.keySet()){
-            Map<String, List<CheckCoCoResult>> modelPathModels = mainPackages.get(modelPath);
+            Map<String, List<T>> modelPathModels = mainPackages.get(modelPath);
 
             for(String mainPackage: modelPathModels.keySet()){
-                List<CheckCoCoResult> insideMainPackage = modelPathModels.get(mainPackage);
+                List<T> insideMainPackage = modelPathModels.get(mainPackage);
 
-                CheckCoCoResult mainPackageResult = new CheckCoCoResult(modelPath + "." + mainPackage);
+                T mainPackageResult = creator.createNewInstance(modelPath + "." + mainPackage);
                 mainPackageModels.add(mainPackageResult);
                 mainPackageResult.setMainPackage(true);
 
-                for(CheckCoCoResult testResult: insideMainPackage){
+                for(OrderableModelInfo testResult: insideMainPackage){
                     if(mainPackageResult.getProject().equals("")) mainPackageResult.setProject(testResult.getProject());
                     mainPackageResult.addChild(new ChildElement(testResult.getModelName(), testResult));
-                    if(mainPackageResult.getRootFile() == null) mainPackageResult.setRootFile(testResult.getRootFile());
+                    if(mainPackageResult.getRootFile1() == null) mainPackageResult.setRootFile1(testResult.getRootFile1());
+                    if(mainPackageResult.getRootName1().equals("")) mainPackageResult.setRootName1(testResult.getRootName1());
                     if(mainPackageResult.getModelPath().equals("")) mainPackageResult.setModelPath(testResult.getModelPath());
 
                     if(mainPackageResult.getFileType().equals("")) mainPackageResult.setFileType(testResult.getFileType());
@@ -140,60 +143,7 @@ public class OrderTestResults {
                     if(testResult.getResolved() != 0 && testResult.getResolved() < mainPackageResult.getResolved() || mainPackageResult.getResolved() == 0) {
                         mainPackageResult.setResolved(testResult.getResolved());
                     }
-                    if(testResult.getComponentCapitalized() != 0 && testResult.getComponentCapitalized() < mainPackageResult.getComponentCapitalized() || mainPackageResult.getComponentCapitalized() == 0) {
-                        mainPackageResult.setComponentCapitalized(testResult.getComponentCapitalized());
-                    }
-                    if(testResult.getComponentInstanceNamesUnique() != 0 && testResult.getComponentInstanceNamesUnique() < mainPackageResult.getComponentInstanceNamesUnique() || mainPackageResult.getComponentInstanceNamesUnique() == 0) {
-                        mainPackageResult.setComponentInstanceNamesUnique(testResult.getComponentInstanceNamesUnique());
-                    }
-                    if(testResult.getComponentWithTypeParametersHasInstance() != 0 && testResult.getComponentWithTypeParametersHasInstance() < mainPackageResult.getComponentWithTypeParametersHasInstance() || mainPackageResult.getComponentWithTypeParametersHasInstance() == 0) {
-                        mainPackageResult.setComponentWithTypeParametersHasInstance(testResult.getComponentWithTypeParametersHasInstance());
-                    }
-                    if(testResult.getConnectorEndPointCorrectlyQualified() != 0 && testResult.getConnectorEndPointCorrectlyQualified() < mainPackageResult.getConnectorEndPointCorrectlyQualified() || mainPackageResult.getConnectorEndPointCorrectlyQualified() == 0) {
-                        mainPackageResult.setConnectorEndPointCorrectlyQualified(testResult.getConnectorEndPointCorrectlyQualified());
-                    }
-                    if(testResult.getDefaultParametersHaveCorrectOrder() != 0 && testResult.getDefaultParametersHaveCorrectOrder() < mainPackageResult.getDefaultParametersHaveCorrectOrder() || mainPackageResult.getDefaultParametersHaveCorrectOrder() == 0) {
-                        mainPackageResult.setDefaultParametersHaveCorrectOrder(testResult.getDefaultParametersHaveCorrectOrder());
-                    }
-                    if(testResult.getInPortUniqueSender() != 0 && testResult.getInPortUniqueSender() < mainPackageResult.getInPortUniqueSender() || mainPackageResult.getInPortUniqueSender() == 0) {
-                        mainPackageResult.setInPortUniqueSender(testResult.getInPortUniqueSender());
-                    }
-                    if(testResult.getPackageLowerCase() != 0 && testResult.getPackageLowerCase() < mainPackageResult.getPackageLowerCase() || mainPackageResult.getPackageLowerCase() == 0) {
-                        mainPackageResult.setPackageLowerCase(testResult.getPackageLowerCase());
-                    }
-                    if(testResult.getParameterNamesUnique() != 0 && testResult.getParameterNamesUnique() < mainPackageResult.getParameterNamesUnique() || mainPackageResult.getParameterNamesUnique() == 0) {
-                        mainPackageResult.setParameterNamesUnique(testResult.getParameterNamesUnique());
-                    }
-                    if(testResult.getPortTypeOnlyBooleanOrSIUnit() != 0 && testResult.getPortTypeOnlyBooleanOrSIUnit() < mainPackageResult.getPortTypeOnlyBooleanOrSIUnit() || mainPackageResult.getPortTypeOnlyBooleanOrSIUnit() == 0) {
-                        mainPackageResult.setPortTypeOnlyBooleanOrSIUnit(testResult.getPortTypeOnlyBooleanOrSIUnit());
-                    }
-                    if(testResult.getPortUsage() != 0 && testResult.getPortUsage() < mainPackageResult.getPortUsage() || mainPackageResult.getPortUsage() == 0) {
-                        mainPackageResult.setPortUsage(testResult.getPortUsage());
-                    }
-                    if(testResult.getReferencedSubComponentExists() != 0 && testResult.getReferencedSubComponentExists() < mainPackageResult.getReferencedSubComponentExists() || mainPackageResult.getReferencedSubComponentExists() == 0) {
-                        mainPackageResult.setReferencedSubComponentExists(testResult.getReferencedSubComponentExists());
-                    }
-                    if(testResult.getSimpleConnectorSourceExists() != 0 && testResult.getSimpleConnectorSourceExists() < mainPackageResult.getSimpleConnectorSourceExists() || mainPackageResult.getSimpleConnectorSourceExists() == 0) {
-                        mainPackageResult.setSimpleConnectorSourceExists(testResult.getSimpleConnectorSourceExists());
-                    }
-                    if(testResult.getSourceTargetNumberMatch() != 0 && testResult.getSourceTargetNumberMatch() < mainPackageResult.getSourceTargetNumberMatch() || mainPackageResult.getSourceTargetNumberMatch() == 0) {
-                        mainPackageResult.setSourceTargetNumberMatch(testResult.getSourceTargetNumberMatch());
-                    }
-                    if(testResult.getSubComponentsConnected() != 0 && testResult.getSubComponentsConnected() < mainPackageResult.getSubComponentsConnected() || mainPackageResult.getSubComponentsConnected() == 0) {
-                        mainPackageResult.setSubComponentsConnected(testResult.getSubComponentsConnected());
-                    }
-                    if(testResult.getTopLevelComponentHasNoInstanceName() != 0 && testResult.getTopLevelComponentHasNoInstanceName() < mainPackageResult.getTopLevelComponentHasNoInstanceName() || mainPackageResult.getTopLevelComponentHasNoInstanceName() == 0) {
-                        mainPackageResult.setTopLevelComponentHasNoInstanceName(testResult.getTopLevelComponentHasNoInstanceName());
-                    }
-                    if(testResult.getTypeParameterNamesUnique() != 0 && testResult.getTypeParameterNamesUnique() < mainPackageResult.getTypeParameterNamesUnique() || mainPackageResult.getTypeParameterNamesUnique() == 0) {
-                        mainPackageResult.setTypeParameterNamesUnique(testResult.getTypeParameterNamesUnique());
-                    }
-                    if(testResult.getUniquePorts() != 0 && testResult.getUniquePorts() < mainPackageResult.getUniquePorts() || mainPackageResult.getUniquePorts() == 0) {
-                        mainPackageResult.setUniquePorts(testResult.getUniquePorts());
-                    }
-                    if(testResult.getAtomicComponent() != 0 && testResult.getAtomicComponent() < mainPackageResult.getAtomicComponent() || mainPackageResult.getAtomicComponent() == 0) {
-                        mainPackageResult.setAtomicComponent(testResult.getAtomicComponent());
-                    }
+                    testResult.setChildInfo();
 
                     mainPackageResult.setModelName(mainPackageResult.getProject().substring(0, mainPackageResult.getProject().length() - 1)
                             + "." + mainPackage);
@@ -204,10 +154,10 @@ public class OrderTestResults {
 
     }
 
-    private Map<String, Map<String, CheckCoCoResult>> mapTestResults(List<CheckCoCoResult> testResults) {
-        Map<String, Map<String, CheckCoCoResult>> res = new HashMap<>();
+    private Map<String, Map<String, T>> mapTestResults(List<T> testResults) {
+        Map<String, Map<String, T>> res = new HashMap<>();
 
-        for (CheckCoCoResult testResult : testResults) {
+        for (T testResult : testResults) {
             if (testResult.getParsed() != 1) continue;
             String modelPath = testResult.getModelPath();
             String modelName = testResult.getModelName();
@@ -221,27 +171,17 @@ public class OrderTestResults {
     }
 
 
-    public List<CheckCoCoResult> getRootModels() {
+    public List<T> getRootModels() {
         return rootModels;
     }
 
-    public void setRootModels(List<CheckCoCoResult> rootModels) {
-        this.rootModels = rootModels;
-    }
 
-    public List<CheckCoCoResult> getHasNoParentModels() {
+    public List<T> getHasNoParentModels() {
         return hasNoParentModels;
     }
 
-    public void setHasNoParentModels(List<CheckCoCoResult> hasNoParentModels) {
-        this.hasNoParentModels = hasNoParentModels;
-    }
 
-    public List<CheckCoCoResult> getMainPackageModels() {
+    public List<T> getMainPackageModels() {
         return mainPackageModels;
-    }
-
-    public void setMainPackageModels(List<CheckCoCoResult> mainPackageModels) {
-        this.mainPackageModels = mainPackageModels;
     }
 }

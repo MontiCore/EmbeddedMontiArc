@@ -1,6 +1,7 @@
 package de.monticore.reporting.cocoReport.helper;
 
 import de.monticore.lang.monticar.helper.IndentPrinter;
+import de.monticore.reporting.helper.OrderableModelInfo;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -49,7 +50,7 @@ public class TestInfoPrinter {
         ip.print("},");
         ip.println();
 
-        ip.println("\"" + CheckCoCoResult.erroredString + info.root + "\": {");
+        ip.println("\"" + CheckCoCoResult.erroredString + "_" + info.root + "\": {");
         ip.indent();
         ip.println("\"Number\": \"" + info.errored + "\",");
         ip.println("\"Valid\": \"" + 0 + "\",");
@@ -77,11 +78,15 @@ public class TestInfoPrinter {
         int invalid = 0;
         int errored = 0;
 
+        String tempRoot = "";
+
 
         for(CheckCoCoResult testResult: testResults){
             number++;
-            if(root.equals(""))
-                root = testResult.getRootFile().getName();
+            if(root.equals("") && !testResult.getRootName1().contains(OrderableModelInfo.erroredString))
+                root = testResult.getRootName1();
+            else if (root.equals(""))
+                tempRoot = testResult.getRootName1();
             if(testResult.isValid())
                 valid++;
             else
@@ -89,6 +94,7 @@ public class TestInfoPrinter {
             if(testResult.getParsed() != 1 || testResult.getResolved() != 1)
                 errored++;
         }
+        if ( root.equals("")) root = tempRoot;
         info.root = root;
         info.number = number;
         info.valid = valid;

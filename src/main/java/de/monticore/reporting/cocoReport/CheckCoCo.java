@@ -25,7 +25,7 @@ public class CheckCoCo {
 
         if (testResult.getParsed() == 1 && testResult.getResolved() == 1) {
             String fileType = testResult.getFileType();
-            ASTEmbeddedMontiArcNode astToTest = testResult.getResolvedAst();
+            ASTEmbeddedMontiArcNode astToTest = testResult.getResolvedAST();
 
             testResult.addErrorMessage("[INFO] do CoCo Tests<br>=========================");
             Log.getFindings().clear();
