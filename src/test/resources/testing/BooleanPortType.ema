@@ -1,4 +1,0 @@
-package testing;
-component BooleanPortType{
-	port in B sIn;
-}

@@ -1,9 +1,0 @@
-package testing;
-component SeatBeltsensor{
-    ports
-      in B seatBelt,
-      out B indicator;
-
-    connect seatBelt->indicator;
-
-}

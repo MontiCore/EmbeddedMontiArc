@@ -1,4 +1,0 @@
-package testing;
-component SIUnitDoubleAccTest{
-	port in (0 cm : d : 1000 cm) distance;
-}

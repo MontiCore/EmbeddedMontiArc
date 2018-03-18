@@ -1,7 +1,0 @@
-package testing;
-
-component BasicResolution<N1 n=2> {
-	port
-		in B in1[n],
-		out B out1;
-}

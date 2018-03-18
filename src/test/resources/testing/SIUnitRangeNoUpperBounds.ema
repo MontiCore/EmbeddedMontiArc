@@ -1,4 +1,0 @@
-package testing;
-component SIUnitRangeNoUpperBounds{
-	ports in (0 m : oo m ) distance;
-}

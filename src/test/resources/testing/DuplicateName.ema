@@ -1,4 +1,0 @@
-package testing;
-component DuplicateName{
-    instance BooleanConnector cmp1,cmp1;
-}

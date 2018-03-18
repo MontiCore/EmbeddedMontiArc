@@ -1,5 +1,0 @@
-package testing;
-//test for integer invalid this should fail
-component IntegerPortType{
-	port in Integer sIn;
-}
