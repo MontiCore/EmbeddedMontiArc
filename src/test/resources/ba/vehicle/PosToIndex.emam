@@ -22,6 +22,9 @@ component PosToIndex<N1 k = 10>{
 
                 closestDist = curDist;
                 closestInd = i;
+            elseif(secondClosestInd == -1) || (curDist <= secondClosestDist)
+                secondClosestDist = curDist;
+                secondClosestInd = i;
             end
         end
 

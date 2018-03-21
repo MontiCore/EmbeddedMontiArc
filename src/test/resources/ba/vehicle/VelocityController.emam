@@ -15,8 +15,9 @@ component VelocityController{
 
         if resetVelIn
             lastVel = maxVelIn;
+            resVel = maxVelIn;
         else
-            Q deltaVel = 0.5 * maxAccelIn * deltaTimeIn * deltaTimeIn;
+            Q deltaVel = maxAccelIn * deltaTimeIn;
             if slowDownIn
                 resVel = lastVel - deltaVel;
             else
@@ -25,11 +26,11 @@ component VelocityController{
         end
 
         if resVel < 0
-            curVelOut = 0;
+            resVel = 0;
         elseif resVel > maxVelIn
-            curVelOut = maxVelIn;
+            resVel = maxVelIn;
         end
-
+        curVelOut = resVel;
         lastVel = curVelOut;
     }
 }

@@ -3,7 +3,7 @@ import ba.util.Position;
 
 //component Planner<N1 k = 10,N1 m = 20>{
 component Planner{
-    ports in Q^{4,10} lanelat,
+    ports in Q^{4,10} lanelet,
           in Position position,
           in Q maxVelocity,
           in Q maxAcceleration,
@@ -14,11 +14,11 @@ component Planner{
 
     ports out Q^{3,20} desiredTrajectory;
 
-    instance LaneletToWay<10,20> lanelatToWay;
+    instance LaneletToWay<10,20> laneletToWay;
     instance VelocityController velocityController;
     instance TrajectoryComputer<10,20> trajectoryComputer;
 
-    connect lanelat -> lanelatToWay.laneletIn;
+    connect lanelet -> laneletToWay.laneletIn;
 
     connect maxVelocity -> velocityController.maxVelIn;
     connect maxAcceleration -> velocityController.maxAccelIn;
@@ -26,7 +26,7 @@ component Planner{
     connect slowDown -> velocityController.slowDownIn;
     connect resetVelocity -> velocityController.resetVelIn;
 
-    connect lanelatToWay.wayOut -> trajectoryComputer.wayIn;
+    connect laneletToWay.wayOut -> trajectoryComputer.wayIn;
 
     connect velocityController.curVelOut -> trajectoryComputer.curVelIn;
 

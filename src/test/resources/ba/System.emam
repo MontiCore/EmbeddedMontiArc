@@ -17,7 +17,7 @@ component System{
     connect isActiveIn -> intersectionController.isActive;
 
     //Planner(s)
-    ports in Q^{4,10} lanelatIn[2],
+    ports in Q^{4,10} laneletIn[2],
           in Position positionIn[2],
           in Q maxVelocityIn[2],
           in Q maxAccelerationIn[2],
@@ -26,7 +26,7 @@ component System{
           in B resetVelocityIn[2],
           out Q^{3,20} desiredTrajectoryOut[2];
 
-    connect lanelatIn[:] -> planner[:].lanelat;
+    connect laneletIn[:] -> planner[:].lanelet;
     connect positionIn[:] -> planner[:].position;
     connect maxVelocityIn[:] -> planner[:].maxVelocity;
     connect maxAccelerationIn[:] -> planner[:].maxAcceleration;
