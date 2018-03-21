@@ -1,0 +1,38 @@
+package ba.util;
+
+component RectToLines{
+    ports in Q^{2,4} rect,
+          //TODO: as array once issue is resolved
+          out Q^{4,1} line1,
+          out Q^{4,1} line2,
+          out Q^{4,1} line3,
+          out Q^{4,1} line4;
+
+    implementation Math{
+        Q^{4,1} tmpLine;
+        for i = 1:4
+            Z j;
+            if i == 4
+                j = 1;
+            else
+                j = i + 1;
+            end
+            //x1,y1,x2,y2
+            tmpLine(1,1) = rect(1,i);
+            tmpLine(2,1) = rect(2,i);
+            tmpLine(3,1) = rect(1,j);
+            tmpLine(4,1) = rect(2,j);
+
+          //TODO: as array once issue is resolved
+            if i == 1
+                line1 = tmpLine;
+            elseif i == 2
+                line2 = tmpLine;
+            elseif i == 3
+                line3 = tmpLine;
+            elseif i == 4
+                line4 = tmpLine;
+            end
+        end
+    }
+}

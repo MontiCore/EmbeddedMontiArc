@@ -136,8 +136,40 @@ public class GenerationTest extends AbstractSymtabTest {
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
         fixKnownErrors(files);
+    }
 
+    @Test
+    public void testLaneIntersection() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.util.lineIntersection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
 
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/laneIntersection/src/";
+        middlewareGenerator.setGenerationTargetPath(generationTargetPath);
+        middlewareGenerator.add(new CPPGenImpl(),"cpp");
+        //middlewareGenerator.add(new RosCppGenImpl(),"roscpp");
+
+        List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+        fixKnownErrors(files);
+    }
+
+    @Test
+    public void testRectIntersection() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.util.rectIntersection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        //EmbeddedMontiArcMathCoCos.createChecker().checkAll((ASTComponent)componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().orElse(null));
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/rectIntersection/src/";
+        middlewareGenerator.setGenerationTargetPath(generationTargetPath);
+        middlewareGenerator.add(new CPPGenImpl(),"cpp");
+        //middlewareGenerator.add(new RosCppGenImpl(),"roscpp");
+
+        List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+        fixKnownErrors(files);
     }
 
     private void fixKnownErrors(List<File> files) throws IOException {
@@ -152,13 +184,15 @@ public class GenerationTest extends AbstractSymtabTest {
             Charset charset = StandardCharsets.UTF_8;
             String content = new String(Files.readAllBytes(path), charset);
             content = content.replace("#include \"octave/builtin-defun-decls.h\"","#include <cmath>");
-            content = content.replaceAll("\\(Helper::getDoubleFromOctaveListFirstResult\\(([\\w|/]*)\\(Helper::convertToOctaveValueList\\(([\\w|/]*)\\),1\\)\\)\\)","$1($2)");
-            content = content.replaceAll("(\\w+)\\(([\\w|\\-|,|\" \"]+\\-1)\\)","$1[$2]");
+            content = content.replaceAll("\\(Helper::getDoubleFromOctaveListFirstResult\\(([\\w|/]*)\\(Helper::convertToOctaveValueList\\(([\\w|/|\\(|\\)|,| |-]*)\\),1\\)\\)\\)","$1($2)");
+            content = content.replaceAll("(\\w+)\\(([\\w]+\\-1)\\)","$1[$2]");
             content = content.replace("LaneletPaircurLaneletPair", "ba_util_LaneletPair curLaneletPair");
             content = content.replace("Fasin","std::asin");
             content = content.replace("Fsin","std::sin");
             content = content.replace("Fcos","std::cos");
             content = content.replace("Fabs","std::abs");
+
+            content = content.replace("colvec tmpLine;","colvec tmpLine = colvec(4);");
 //            content = content.replace("sqrt","std::sqrt");
             Files.write(path, content.getBytes(charset));
         }

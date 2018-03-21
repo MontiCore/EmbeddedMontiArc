@@ -1,0 +1,14 @@
+package ba;
+import ba.util.RectIntersection;
+
+//TODO: as generic
+component CollisionDetection{
+    ports in Q^{2,4} hulls[2],
+          out B collision;
+
+    instance RectIntersection rectIntersection;
+
+    connect hulls[1] -> rectIntersection.rect1;
+    connect hulls[2] -> rectIntersection.rect2;
+    connect rectIntersection.collision -> collision;
+}

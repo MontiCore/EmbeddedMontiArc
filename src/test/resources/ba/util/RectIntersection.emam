@@ -1,0 +1,53 @@
+package ba.util;
+
+component RectIntersection{
+    //TODO: make rect type clearer. Current: 4 points going clockwise around the rect
+    ports in Q^{2,4} rect1,
+          in Q^{2,4} rect2,
+          out B collision;
+
+    //check intersection of 4*4 lines w/o permutations
+    //4*(4+1)/2 = 10 possibilities
+
+    instance RectToLines rectToLines1;
+    instance RectToLines rectToLines2;
+
+    instance LineIntersection lineIntersection[10];
+    instance MultiOr<10> multiOr;
+
+    connect rect1 -> rectToLines1.rect;
+    connect rect2 -> rectToLines2.rect;
+
+    connect rectToLines1.line1 -> lineIntersection[1].line1;
+    connect rectToLines2.line1 -> lineIntersection[1].line2;
+
+    connect rectToLines1.line1 -> lineIntersection[2].line1;
+    connect rectToLines2.line2 -> lineIntersection[2].line2;
+
+    connect rectToLines1.line1 -> lineIntersection[3].line1;
+    connect rectToLines2.line3 -> lineIntersection[3].line2;
+
+    connect rectToLines1.line1 -> lineIntersection[4].line1;
+    connect rectToLines2.line4 -> lineIntersection[4].line2;
+
+    connect rectToLines1.line2 -> lineIntersection[5].line1;
+    connect rectToLines2.line2 -> lineIntersection[5].line2;
+
+    connect rectToLines1.line2 -> lineIntersection[6].line1;
+    connect rectToLines2.line3 -> lineIntersection[6].line2;
+
+    connect rectToLines1.line2 -> lineIntersection[7].line1;
+    connect rectToLines2.line4 -> lineIntersection[7].line2;
+
+    connect rectToLines1.line3 -> lineIntersection[8].line1;
+    connect rectToLines2.line3 -> lineIntersection[8].line2;
+
+    connect rectToLines1.line3 -> lineIntersection[9].line1;
+    connect rectToLines2.line4 -> lineIntersection[9].line2;
+
+    connect rectToLines1.line4 -> lineIntersection[10].line1;
+    connect rectToLines2.line4 -> lineIntersection[10].line2;
+
+    connect lineIntersection[:].intersects -> multiOr.boolIn[:];
+    connect multiOr.boolOut -> collision;
+}
