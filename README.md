@@ -3,6 +3,11 @@
 * [Repository Status and Overview](RepoStatus.md)
 * [Development Suite for EmbeddedMontiArc](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio)
 
+> Welcome at EmbeddedMontiArc - a high-level modeling family for modeling, simulating, and testing the logical layer of embedded and cyber-physical systems. Our base concept is similar to Simulink and Modelica, but with focus on modeling the logical layer and abstracting away from technical details¹ and providing powerful reuse concepts such as generic and configuration parameters²  as well as supporting arrays of components to avoid copying components several times.
+> 
+> ¹e.g. specify ranges in the physical domain instead of fixed integers - (0 km/h : 0.1 km/h : 250 km/h)<br/>
+> ²e.g. for library components such as PID controllers
+
 Publications
 ----
 * **[KRRvW17] E. Kusmenko, A. Roth, B. Rumpe, M. von Wenckstern:
