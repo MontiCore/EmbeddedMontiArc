@@ -27,7 +27,7 @@ import org.junit.Test;
 /**
  * Created by MichaelvonWenckstern on 13.06.2016.
  */
-public class ParserTagValue {
+public class ParserTagValueTest {
 
 //  @Test
 //  public void testUnit() throws Exception {
