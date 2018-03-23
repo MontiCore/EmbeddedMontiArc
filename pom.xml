@@ -17,9 +17,9 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <spring.version>1.5.8.RELEASE</spring.version>
+    <spring.version>2.0.0.RELEASE</spring.version>
     <freemarker.version>2.3.23</freemarker.version>
-    <emam2cpp.version>0.0.7-SNAPSHOT</emam2cpp.version>
+    <emam2cpp.version>0.0.8-SNAPSHOT</emam2cpp.version>
     <embedded-montiarc.version>0.0.11-SNAPSHOT</embedded-montiarc.version>
     <grammars.classifier>grammars</grammars.classifier>
 
@@ -51,14 +51,22 @@
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
+      <artifactId>spring-boot-starter</artifactId>
       <version>${spring.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-starter-logging</artifactId>
-        </exclusion>
-      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <version>${spring.version}</version>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
