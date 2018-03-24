@@ -1,36 +1,30 @@
 package de.monticore.lang.monticar.emam2wasm.wasm;
 
 import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilder;
+import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * This class helps compile C++ files to WebAssembly using emscripten.
  */
+@Component
 public class WasmStep {
 
+  private final EmscriptenCommandBuilderFactory commandBuilderFactory;
   private final Path wasmDir;
   private final WasmNameProvider nameProvider;
   private ProcessBuilder pb = new ProcessBuilder();
 
   /**
-   * Creates a new {@code WasmStep} object.
+   * Creates a new {@code WasmStep} object.<p>
    *
-   * @param wasmDir Directory, that the WebAssembly code is compiled to. This
-   * directory will be created if it does not yet exist.
-   * @param nameProvider Provides the name for the WebAssembly file
-   */
-  public WasmStep(Path wasmDir, WasmNameProvider nameProvider) {
-    this.wasmDir = wasmDir;
-    this.nameProvider = nameProvider;
-  }
-
-  /**
-   * Compiles the supplied C++ code to WebAssembly code. The returned path
-   * points to the output file specified by a {@link WasmNameProvider}.<p>
-   * The following values will be set in the supplied
-   * {@link EmscriptenCommandBuilder}:
+   * <b>Note:</b>
+   * The following values will be set later and should not be configured
+   * in the supplied {@link EmscriptenCommandBuilderFactory}:
    * <ul>
    * <li>C++ file: {@link EmscriptenCommandBuilder#setFile(Path)}</li>
    * <li>Output file name:
@@ -38,18 +32,33 @@ public class WasmStep {
    * <li>Output directory as reference:
    * {@link EmscriptenCommandBuilder#setReferenceOutputDir(Path)}</li>
    * </ul>
-   * Therefore, the supplied {@code EmscriptenCommandBuilder} needs to at
+   * The supplied {@code EmscriptenCommandBuilderFactory} needs to at
    * least specify the command to call the emscripten binary.
    *
-   * @param commandBuilder command builder that at least specifies the
-   * emscripten binary command. C++ file, output file name and output reference
-   * directory will be set by this method.
+   * @param commandBuilderFactory factory configured with default parameters
+   * for any subsequently obtained {@link EmscriptenCommandBuilder}
+   * @param wasmDir directory, that the WebAssembly code is compiled to. This
+   * directory will be created if it does not yet exist.
+   * @param nameProvider provides the name for the WebAssembly file
+   */
+  @Autowired
+  public WasmStep(EmscriptenCommandBuilderFactory commandBuilderFactory, Path wasmDir,
+      WasmNameProvider nameProvider) {
+    this.commandBuilderFactory = commandBuilderFactory;
+    this.wasmDir = wasmDir;
+    this.nameProvider = nameProvider;
+  }
+
+  /**
+   * Compiles the supplied C++ code to WebAssembly code. The returned path
+   * points to the output file specified by a {@link WasmNameProvider}.
+   *
    * @param cppFile C++ file to compile to WebAssembly
    * @return path to the compiled output file
    * @throws WasmCompilerException if the compilation failed
    */
-  public Path compile(EmscriptenCommandBuilder commandBuilder, Path cppFile)
-      throws WasmCompilerException {
+  public Path compile(Path cppFile) throws WasmCompilerException {
+    EmscriptenCommandBuilder commandBuilder = commandBuilderFactory.getBuilder();
     commandBuilder.setOutput(nameProvider.getName(cppFile) + "." + nameProvider.getFileExtension());
     commandBuilder.setFile(cppFile);
     commandBuilder.setReferenceOutputDir(wasmDir);

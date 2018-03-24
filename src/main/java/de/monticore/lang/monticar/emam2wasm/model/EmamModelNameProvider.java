@@ -8,13 +8,17 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EmamModelNameProvider implements ModelNameProvider {
 
   private static final String EMAM_EXTENSION = "emam";
 
   private EmbeddedMontiArcMathParser parser;
 
+  @Autowired
   public EmamModelNameProvider(EmbeddedMontiArcMathParser parser) {
     this.parser = parser;
   }

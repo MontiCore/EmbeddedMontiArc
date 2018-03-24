@@ -7,13 +7,17 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.nio.file.Path;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EmamCppCompiler implements CppCompiler<ExpandedComponentInstanceSymbol> {
 
   private final GeneratorCppWrapper modelCompiler;
   private final CppFileGenerator cppFileGenerator;
   private final TaggingResolver symtab;
 
+  @Autowired
   public EmamCppCompiler(GeneratorCppWrapper modelCompiler, CppFileGenerator cppFileGenerator,
       TaggingResolver symtab) {
     this.modelCompiler = modelCompiler;
