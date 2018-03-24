@@ -1,48 +1,27 @@
 package ba.intersection;
+import ba.util.LineIntersection;
+import ba.util.TrajectoryToLine;
 
 //TODO: x = (n-1)n/2
-//TODO: units
 component ConflictComputer<N1 n = 2,N1 x = 1,N1 m = 5>{
     port in Q^{3,m} trajectory[n];
-    port in Q cutoffPosIn,in Q cutoffTimeIn;
+    port in Q cutoffTimeIn;
     port out B conflictOut[x];
 
-    //TODO: horrible runtime O(n²m²)
-    //TODO: split into mutliple components?
-    //TODO: rename loop variables, comments
-    implementation Math{
-        Z xi = 1;
+    instance TrajectoryCompare trajectoryCompare;
+    instance CollisionToConflict collisionToConflict;
 
-        for ni = 1:n
-        Z minNj = ni + 1;
-        for nj = minNj:n
-            B conflictFlag = False;
-            Q^{3,m} tmpTrajA = trajectory(ni);
-            Q^{3,m} tmpTrajB = trajectory(nj);
+    connect trajectory[1] -> trajectoryCompare.trajectory[1];
+    connect trajectory[2] -> trajectoryCompare.trajectory[2];
 
-            for mi = 1:m
-            Z minMj = mi + 1;
-            for mj = minMj:m
-                Q deltaXSquared = (tmpTrajA(1,mi) - tmpTrajB(1,mj)) * (tmpTrajA(1,mi) - tmpTrajB(1,mj));
-                Q deltaYSquared = (tmpTrajA(2,mi) - tmpTrajB(2,mj)) * (tmpTrajA(2,mi) - tmpTrajB(2,mj));
-                Q deltaTSquared = (tmpTrajA(3,mi) - tmpTrajB(3,mj)) * (tmpTrajA(3,mi) - tmpTrajB(3,mj));
+    connect trajectory[1] -> collisionToConflict.trajectoryIn1;
+    connect trajectory[2] -> collisionToConflict.trajectoryIn2;
+    connect cutoffTimeIn -> collisionToConflict.timeCutoff;
 
-                B condPos = deltaXSquared + deltaYSquared <= cutoffPosIn * cutoffPosIn;
-                B condTime = deltaTSquared <= cutoffTimeIn * cutoffTimeIn;
+    connect trajectoryCompare.collision -> collisionToConflict.collisionIn;
+    connect trajectoryCompare.index1 -> collisionToConflict.indexIn1;
+    connect trajectoryCompare.index2 -> collisionToConflict.indexIn2;
+    connect trajectoryCompare.colPos -> collisionToConflict.colPosIn;
 
-                if condPos && condTime
-                    conflictFlag = True;
-                    //TODO: break
-                end
-            end
-            end
-
-            conflictOut(xi) = conflictFlag;
-            xi = xi + 1;
-        end
-        end
-    }
-
-
-
+    connect collisionToConflict.conflict -> conflictOut[1];
 }

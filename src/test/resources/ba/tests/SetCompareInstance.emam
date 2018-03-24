@@ -1,0 +1,13 @@
+package ba.tests;
+import ba.util.*;
+
+component SetCompareInstance{
+    instance SingleSetCompare<3,3,Q> singleSetCompareQ;
+    //instance SingleSetCompare<Q^{3,5},2,1> singleSetCompareMatGen;
+    instance MatrixSingleSetCompare<3,5,2,1> singleSetCompareMat;
+
+
+    instance DualSetCompare<3,6,Q> dualSetCompareQ;
+    //instance DualSetCompare<Q^{3,5},2,3> dualSetCompareMatGen;
+    instance MatrixDualSetCompare<4,1,2,3> dualSetCompareMat;
+}

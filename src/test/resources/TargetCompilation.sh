@@ -17,9 +17,9 @@ for d in */ ; do
     mkdir "$d"/build
     quitOnError
     echo CMake
-    cmake -B"$d"/build/ -H"$d"/src/
+    cmake -B"$d"/build/ -H"$d"/src/ -DCMAKE_BUILD_TYPE=DEBUG
     quitOnError
-    echo make
+    echo make -j4
     make -C "$d"/build/
     quitOnError
 done

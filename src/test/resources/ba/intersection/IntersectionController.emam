@@ -1,20 +1,18 @@
 package ba.intersection;
 
-//component IntersectionController<N1 n = 2,N1 x = 1,N1 m = 20>{
+//component IntersectionController<N1 n = 2,N1 x = 1,N1 m = 5>{
 component IntersectionController{
-    port in Q^{3,20} trajectoryIn[2];
-    port in Q cutoffPos;
+    port in Q^{3,5} trajectoryIn[2];
     port in Q cutoffTime;
     port in B isActive;
 
     port out B stop[2];
 
     instance ConflictToStopLookup<2,1> conflictToStopLookup;
-    instance ConflictComputer<2,1,20> conflictComputer;
-    instance ConflictToStopConverter<2,1,20> conflictToStopConverter;
+    instance ConflictComputer<2,1,5> conflictComputer;
+    instance ConflictToStopConverter<2,1,5> conflictToStopConverter;
 
     connect trajectoryIn[:] -> conflictComputer.trajectory[:];
-    connect cutoffPos -> conflictComputer.cutoffPosIn;
     connect cutoffTime -> conflictComputer.cutoffTimeIn;
     connect conflictComputer.conflictOut[:] -> conflictToStopConverter.conflictIn[:];
     connect conflictToStopLookup.indexLookup[:] -> conflictToStopConverter.indexLookupIn[:];

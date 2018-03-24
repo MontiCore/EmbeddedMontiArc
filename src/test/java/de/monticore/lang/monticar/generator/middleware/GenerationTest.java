@@ -131,10 +131,27 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
+        distributedTargetGenerator.setGenDebug(true);
         distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+        fixKnownErrors(files);
+    }
+
+    @Test
+    public void testSetCompareInstance() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.tests.setCompareInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/setCompareInstance/src/";
+        middlewareGenerator.setGenerationTargetPath(generationTargetPath);
+        middlewareGenerator.add(new CPPGenImpl(),"cpp");
+        //middlewareGenerator.add(new RosCppGenImpl(),"roscpp");
+
+        List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
         fixKnownErrors(files);
     }
 
@@ -192,6 +209,7 @@ public class GenerationTest extends AbstractSymtabTest {
             content = content.replace("Fcos","std::cos");
             content = content.replace("Fabs","std::abs");
 
+            content = content.replace("Col<int> counter=Col<int>(1);" , "Col<int> counter=Col<int>(n);");
             content = content.replace("colvec tmpLine;","colvec tmpLine = colvec(4);");
 //            content = content.replace("sqrt","std::sqrt");
             Files.write(path, content.getBytes(charset));

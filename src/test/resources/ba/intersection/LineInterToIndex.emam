@@ -1,0 +1,34 @@
+package ba.intersection;
+
+component LineInterToIndex{
+    ports in B collisionIn[10],
+          in Q^{2,1} pointsIn[10],
+
+          out B collisionOut,
+          out Z index1,
+          out Z index2,
+          out Q^{2,1} pos;
+
+    implementation Math{
+        Z k = 1;
+        B found = False;
+
+
+        for i = 1:4
+            for j = i:4
+                if found == False
+                    if collisionIn(k)
+                        index1 = i;
+                        index2 = j;
+                        pos = pointsIn(k);
+                        found = True;
+                    end
+                    k = k + 1;
+                end
+            end
+        end
+
+        collisionOut = found;
+    }
+
+}
