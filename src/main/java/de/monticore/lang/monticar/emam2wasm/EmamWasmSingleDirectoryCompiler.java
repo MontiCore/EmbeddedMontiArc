@@ -7,6 +7,10 @@ import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class compiles EmbeddedMontiArc models to WebAssembly. It does so
+ * without creating any intermediate directories.
+ */
 @Component
 public class EmamWasmSingleDirectoryCompiler implements EmamWasmCompiler {
 
