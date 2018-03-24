@@ -1,27 +1,31 @@
 package ba.intersection;
 import ba.util.LineIntersection;
 import ba.util.TrajectoryToLine;
+import ba.util.MatrixSingleSetCompare;
 
 //TODO: x = (n-1)n/2
-component ConflictComputer<N1 n = 2,N1 x = 1,N1 m = 5>{
+//TODO: m1 = m -1, m2 = m1(m1+1)/2
+component ConflictComputer<N1 n = 2,N1 x = 1,N1 m = 5, N1 m1 = 4,N1 m2 = 10>{
     port in Q^{3,m} trajectory[n];
     port in Q cutoffTimeIn;
     port out B conflictOut[x];
 
-    instance TrajectoryCompare trajectoryCompare;
-    instance CollisionToConflict collisionToConflict;
+    instance MatrixSingleSetCompare<3,m,2,x> singleSetCompare;
+    instance TrajectoryCompare<m,m1,m2> trajectoryCompare[x];
+    instance CollisionToConflict collisionToConflict[x];
 
-    connect trajectory[1] -> trajectoryCompare.trajectory[1];
-    connect trajectory[2] -> trajectoryCompare.trajectory[2];
+    connect trajectory[:] -> singleSetCompare.setIn[:];
+    connect singleSetCompare.listOut1[:] -> trajectoryCompare[:].trajectory1;
+    connect singleSetCompare.listOut2[:] -> trajectoryCompare[:].trajectory2;
+    connect trajectoryCompare[:].collision -> collisionToConflict[:].collisionIn;
+    connect singleSetCompare.listOut1[:] -> collisionToConflict[:].trajectoryIn1;
+    connect singleSetCompare.listOut2[:] -> collisionToConflict[:].trajectoryIn2;
+    connect cutoffTimeIn -> collisionToConflict[:].timeCutoff;
 
-    connect trajectory[1] -> collisionToConflict.trajectoryIn1;
-    connect trajectory[2] -> collisionToConflict.trajectoryIn2;
-    connect cutoffTimeIn -> collisionToConflict.timeCutoff;
+    connect trajectoryCompare[:].collision -> collisionToConflict[:].collisionIn;
+    connect trajectoryCompare[:].index1 -> collisionToConflict[:].indexIn1;
+    connect trajectoryCompare[:].index2 -> collisionToConflict[:].indexIn2;
+    connect trajectoryCompare[:].colPos -> collisionToConflict[:].colPosIn;
 
-    connect trajectoryCompare.collision -> collisionToConflict.collisionIn;
-    connect trajectoryCompare.index1 -> collisionToConflict.indexIn1;
-    connect trajectoryCompare.index2 -> collisionToConflict.indexIn2;
-    connect trajectoryCompare.colPos -> collisionToConflict.colPosIn;
-
-    connect collisionToConflict.conflict -> conflictOut[1];
+    connect collisionToConflict[:].conflict -> conflictOut[:];
 }

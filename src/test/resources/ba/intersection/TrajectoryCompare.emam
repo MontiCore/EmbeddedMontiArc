@@ -1,21 +1,26 @@
 package ba.intersection;
 import ba.util.TrajectoryToLine;
 import ba.util.LineIntersection;
+import ba.util.MatrixDualSetCompare;
 
-component TrajectoryCompare{
-    ports in Q^{3,5} trajectory[2],
+//TODO: m1 = m -1, m2 = m1(m1+1)/2
+component TrajectoryCompare<N1 m = 5, N1 m1 = 4, N1 m2 = 10>{
+    ports in Q^{3,m} trajectory1,
+          in Q^{3,m} trajectory2,
           out B collision,
           out Z index1,
           out Z index2,
           out Q^{2,1} colPos;
 
+
+    instance MatrixDualSetCompare<4,1,m1,m2> dualSetCompare;
     instance TrajectoryToLine trajectoryToLine1;
     instance TrajectoryToLine trajectoryToLine2;
-    instance LineIntersection lineIntersection[10];
+    instance LineIntersection lineIntersection[m2];
     instance LineInterToIndex lineInterToIndex;
 
-    connect trajectory[1] -> trajectoryToLine1.trajectoryIn;
-    connect trajectory[2] -> trajectoryToLine2.trajectoryIn;
+    connect trajectory1 -> trajectoryToLine1.trajectoryIn;
+    connect trajectory2 -> trajectoryToLine2.trajectoryIn;
 
     connect lineIntersection[:].intersects -> lineInterToIndex.collisionIn[:];
     connect lineIntersection[:].point -> lineInterToIndex.pointsIn[:];
@@ -29,38 +34,9 @@ component TrajectoryCompare{
     //compare 4 lines to 4 other lines without permutations with same index
     //4*5/2 = 10
 
-    connect trajectoryToLine1.lineOut[1] -> lineIntersection[1].line1;
-    connect trajectoryToLine2.lineOut[1] -> lineIntersection[1].line2;
+    connect trajectoryToLine1.lineOut[:] -> dualSetCompare.setIn1[:];
+    connect trajectoryToLine2.lineOut[:] -> dualSetCompare.setIn2[:];
 
-    connect trajectoryToLine1.lineOut[1] -> lineIntersection[2].line1;
-    connect trajectoryToLine2.lineOut[2] -> lineIntersection[2].line2;
-
-    connect trajectoryToLine1.lineOut[1] -> lineIntersection[3].line1;
-    connect trajectoryToLine2.lineOut[3] -> lineIntersection[3].line2;
-
-    connect trajectoryToLine1.lineOut[1] -> lineIntersection[4].line1;
-    connect trajectoryToLine2.lineOut[4] -> lineIntersection[4].line2;
-
-    connect trajectoryToLine1.lineOut[2] -> lineIntersection[5].line1;
-    connect trajectoryToLine2.lineOut[2] -> lineIntersection[5].line2;
-
-    connect trajectoryToLine1.lineOut[2] -> lineIntersection[6].line1;
-    connect trajectoryToLine2.lineOut[3] -> lineIntersection[6].line2;
-
-    connect trajectoryToLine1.lineOut[2] -> lineIntersection[7].line1;
-    connect trajectoryToLine2.lineOut[4] -> lineIntersection[7].line2;
-
-    connect trajectoryToLine1.lineOut[3] -> lineIntersection[8].line1;
-    connect trajectoryToLine2.lineOut[3] -> lineIntersection[8].line2;
-
-    connect trajectoryToLine1.lineOut[3] -> lineIntersection[9].line1;
-    connect trajectoryToLine2.lineOut[4] -> lineIntersection[9].line2;
-
-    connect trajectoryToLine1.lineOut[4] -> lineIntersection[10].line1;
-    connect trajectoryToLine2.lineOut[4] -> lineIntersection[10].line2;
-    //end line compare
-
-
-
-
+    connect dualSetCompare.listOut1[:] -> lineIntersection[:].line1;
+    connect dualSetCompare.listOut2[:] -> lineIntersection[:].line2;
 }

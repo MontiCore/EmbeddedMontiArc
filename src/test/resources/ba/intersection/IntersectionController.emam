@@ -9,7 +9,7 @@ component IntersectionController{
     port out B stop[2];
 
     instance ConflictToStopLookup<2,1> conflictToStopLookup;
-    instance ConflictComputer<2,1,5> conflictComputer;
+    instance ConflictComputer<2,1,5,4,10> conflictComputer;
     instance ConflictToStopConverter<2,1,5> conflictToStopConverter;
 
     connect trajectoryIn[:] -> conflictComputer.trajectory[:];
