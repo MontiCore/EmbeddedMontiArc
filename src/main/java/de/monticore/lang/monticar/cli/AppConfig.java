@@ -1,0 +1,99 @@
+package de.monticore.lang.monticar.cli;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
+import de.monticore.lang.monticar.emscripten.Option;
+import de.monticore.lang.monticar.freemarker.TemplateFactory;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.resolver.Resolver;
+import de.monticore.lang.monticar.resolver.SymTabCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import freemarker.template.Template;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
+
+@Configuration
+@ComponentScan(basePackages = {
+    "de.monticore.lang.monticar.adapter",
+    "de.monticore.lang.monticar.emam2wasm"},
+    excludeFilters = @Filter(type = FilterType.REGEX,
+        pattern = "de\\.monticore\\.lang\\.monticar\\.emam2wasm\\.model..*"))
+public class AppConfig {
+
+  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
+  private static final String TEMPLATE_NAME = "cpp.ftl";
+
+  @Value("${model}")
+  private String modelFullName;
+
+  @Value("${model-path}")
+  private Path modelPath;
+
+  @Value("${target:}")
+  private Path target;
+
+  @Value("${cpp-dir:.}")
+  private Path cppDir;
+
+  @Value("${wasm-dir:.}")
+  private Path wasmDir;
+
+  @Value("${emscripten:}")
+  private String emscripten;
+
+  @Value("#{'${include:}' ?: {}}")
+  private Path[] includes;
+
+  @Bean
+  public ExpandedComponentInstanceSymbol model(TaggingResolver taggingResolver) {
+    return new Resolver(taggingResolver).getExpandedComponentInstanceSymbol(modelFullName);
+  }
+
+  @Bean
+  public GeneratorCPP generator() {
+    return new GeneratorCPP();
+  }
+
+  @Bean
+  public Template template() throws IOException {
+    return new TemplateFactory(TEMPLATE_DIR).getTemplate(TEMPLATE_NAME);
+  }
+
+  @Bean
+  public TaggingResolver taggingResolver() {
+    return new SymTabCreator(modelPath).createSymTabAndTaggingResolver();
+  }
+
+  @Bean
+  public EmscriptenCommandBuilderFactory commandBuilderFactory() {
+    EmscriptenCommandBuilderFactory commandBuilderFactory = new EmscriptenCommandBuilderFactory();
+    commandBuilderFactory.setEmscripten(emscripten);
+    for (Path include : includes) {
+      commandBuilderFactory.include(include);
+    }
+    commandBuilderFactory.setStd("c++11");
+    commandBuilderFactory.addOption(new Option("WASM", true));
+    commandBuilderFactory.addOption(new Option("LINKABLE", true));
+    commandBuilderFactory.addOption(new Option("EXPORT_ALL", true));
+    commandBuilderFactory.addOption(new Option("ALLOW_MEMORY_GROWTH", true));
+    commandBuilderFactory.setBind(true);
+    return commandBuilderFactory;
+  }
+
+  @Bean
+  public Path cppDir() {
+    return target != null ? target : cppDir;
+  }
+
+  @Bean
+  public Path wasmDir() {
+    return target != null ? target : wasmDir;
+  }
+}
