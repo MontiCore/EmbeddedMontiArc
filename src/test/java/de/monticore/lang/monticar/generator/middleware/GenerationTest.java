@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +86,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     }
 
+    @Ignore("Planner no longer used")
     @Test
     public void plannerTest() throws IOException{
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
@@ -128,10 +131,29 @@ public class GenerationTest extends AbstractSymtabTest {
                 .flatMap(sc -> sc.getPorts().stream())
                 .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
 
+        List<ConnectorSymbol> stopCommConnectors = componentInstanceSymbol.getConnectors()
+                .stream()
+                .filter(con -> con.getTarget().startsWith("stopCommQuality") || con.getSource().startsWith("stopCommQuality"))
+                .sorted(Comparator.comparing(ConnectorSymbol::getName))
+                .collect(Collectors.toList());
+
+        for(ConnectorSymbol con : stopCommConnectors){
+            String indexString = con.getName().replaceAll(".*\\[(\\d+)\\].*","$1");
+            if(con.getSource().startsWith("stopCommQuality")){
+                con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol("/v"+ indexString + "/comm/in/slowDown"+ indexString,"std_msgs/Bool","data"));
+                con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol("/v"+ indexString + "/comm/in/slowDown"+ indexString,"std_msgs/Bool","data"));
+
+            }else{
+                con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol("/sim/comm/slowDown" + indexString,"std_msgs/Bool","data"));
+                con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol("/sim/comm/slowDown" + indexString,"std_msgs/Bool","data"));
+
+            }
+        }
+
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
-        distributedTargetGenerator.setGenDebug(true);
+//        distributedTargetGenerator.setGenDebug(true);
         distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 
@@ -278,6 +300,7 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
+    @Ignore("Part of system now. See testBaSystem")
     @Test
     public void testIntersectionGeneration() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");

@@ -4,6 +4,7 @@ component VelocityController{
     ports in Q maxVelIn,
           in Q maxAccelIn,
           in Q deltaTimeIn,
+          in Q holdTimeIn,
           in B slowDownIn,
           in B resetVelIn;
 
@@ -11,17 +12,25 @@ component VelocityController{
 
     implementation Math{
         static Q lastVel = 0;
+        static Q holdFor = 0;
         Q resVel;
 
         if resetVelIn
             lastVel = maxVelIn;
             resVel = maxVelIn;
+            holdFor = 0;
         else
-            Q deltaVel = maxAccelIn * deltaTimeIn;
             if slowDownIn
-                resVel = lastVel - deltaVel;
+                resVel = lastVel - maxAccelIn * deltaTimeIn;
+                holdFor = holdTimeIn;
             else
-                resVel = lastVel + deltaVel;
+                holdFor = holdFor - deltaTimeIn;
+                if holdFor <= 0
+                    //holdFor is either (-deltaTimeIn)
+                    //or (- time since accel start)
+                    resVel = lastVel + maxAccelIn * (-holdFor);
+                    holdFor = 0;
+                end
             end
         end
 

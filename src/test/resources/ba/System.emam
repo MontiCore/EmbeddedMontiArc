@@ -1,7 +1,9 @@
 package ba;
 import ba.intersection.IntersectionController;
 import ba.util.RelToAbsTrajectory;
+import ba.util.CommQuality;
 import ba.vehicle.VelocityController;
+
 
 component System{
     //Intersection
@@ -25,9 +27,11 @@ component System{
 
     //Vehicles
     instance VelocityController velocityController[2];
+
     ports in Q maxAccel[2],
           in Q maxVel[2],
           in Q deltaTime[2],
+          in Q holdTime[2],
           in B resetVel[2],
           in B slowDown[2],
           out Q curVel[2];
@@ -35,11 +39,15 @@ component System{
     connect maxAccel[:] -> velocityController[:].maxAccelIn;
     connect maxVel[:] -> velocityController[:].maxVelIn;
     connect deltaTime[:] -> velocityController[:].deltaTimeIn;
+    connect holdTime[:] -> velocityController[:].holdTimeIn;
     connect resetVel[:] -> velocityController[:].resetVelIn;
     connect velocityController[:].curVelOut -> curVel[:];
 
-    connect intersectionController.stop[:] -> velocityController[:].slowDownIn;
+    instance CommQuality<B> stopCommQuality[2];
+    connect intersectionController.stop[:] -> stopCommQuality[:].in1;
+    connect stopCommQuality[:].out1 -> velocityController[:].slowDownIn;
 
+    //connect intersectionController.stop[:] -> velocityController[:].slowDownIn;
 
 
 }
