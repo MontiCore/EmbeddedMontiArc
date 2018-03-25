@@ -144,6 +144,21 @@ public class BasicTypesTest extends AbstractSymtabTest {
         testFilesAreEqual(files, "multinestedStruct/");
     }
 
+    @Test
+    public void testGenericCompInstance() {
+        Scope symtab = createSymTab("src/test/resources/");
+        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.genericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        RosMsg typeB = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instB").get().getPort("in1").get().getTypeReference());
+        RosMsg typeQ = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instQ").get().getPort("in1").get().getTypeReference());
+        RosMsg typeZ = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instZ").get().getPort("in1").get().getTypeReference());
+
+        assertTrue(typeB.getName().equals("std_msgs/Bool"));
+        assertTrue(typeQ.getName().equals("std_msgs/Float64"));
+        assertTrue(typeZ.getName().equals("std_msgs/Int32"));
+    }
+
     public RosMsg getBasicStruct(String packageName) {
         RosMsg res = new RosMsg(packageName + "/structs_BasicStruct");
         res.addField(new RosField("fieldQ1", new RosType("float64")));

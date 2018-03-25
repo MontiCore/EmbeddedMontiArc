@@ -1,0 +1,6 @@
+package tests;
+
+component GenericComp<T>{
+    port in T in1;
+
+}

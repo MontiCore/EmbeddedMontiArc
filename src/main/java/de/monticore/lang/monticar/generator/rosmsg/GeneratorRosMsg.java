@@ -133,42 +133,38 @@ public class GeneratorRosMsg {
 
     public static RosMsg getRosType(String packageName, MCTypeReference<? extends MCTypeSymbol> typeReference) {
         MCTypeSymbol type = typeReference.getReferencedSymbol();
-        if (type.isKindOf(MCASTTypeSymbol.KIND)) {
-            MCASTTypeSymbol mcastTypeSymbol = (MCASTTypeSymbol) type;
-            if (mcastTypeSymbol.getName().equals("Q")) {
-                RosMsg tmpMsg = new RosMsg("std_msgs/Float64");
-                tmpMsg.addField(new RosField("data", new RosType("float64")));
-                return tmpMsg;
-            } else if (mcastTypeSymbol.getName().equals("Z")) {
-                RosMsg tmpMsg = new RosMsg("std_msgs/Int32");
-                tmpMsg.addField(new RosField("data", new RosType("int32")));
-                return tmpMsg;
-            } else if (mcastTypeSymbol.getName().equals("B")) {
-                RosMsg tmpMsg = new RosMsg("std_msgs/Bool");
-                tmpMsg.addField(new RosField("data", new RosType("bool")));
-                return tmpMsg;
-            } else if (mcastTypeSymbol.getName().equals("CommonMatrixType")) {
-                ASTCommonMatrixType matrixType = (ASTCommonMatrixType) mcastTypeSymbol.getAstType();
-                String tmpMsgName = "";
-                String tmpTypeName = "";
-                if (matrixType.getElementType().isIsRational()) {
-                    tmpMsgName = "std_msgs/Float64MultiArray";
-                    tmpTypeName = "float64";
-                } else if (matrixType.getElementType().isIsWholeNumberNumber()) {
-                    tmpMsgName = "std_msgs/Int32MultiArray";
-                    tmpTypeName = "int32";
-                } else if (matrixType.getElementType().isIsBoolean()) {
-                    //TODO: BoolMultiArray?
-                    tmpMsgName = "std_msgs/ByteMultiArray";
-                    tmpTypeName = "byte";
-                } else {
-                    Log.error("Matrix type not supported: " + matrixType);
-                }
-                //TODO: refactor
-                return getMultMatrixRosMsg(tmpMsgName, tmpTypeName);
+        String typeName = type.getName();
+
+        if (typeName.equals("Q")) {
+            RosMsg tmpMsg = new RosMsg("std_msgs/Float64");
+            tmpMsg.addField(new RosField("data", new RosType("float64")));
+            return tmpMsg;
+        } else if (typeName.equals("Z")) {
+            RosMsg tmpMsg = new RosMsg("std_msgs/Int32");
+            tmpMsg.addField(new RosField("data", new RosType("int32")));
+            return tmpMsg;
+        } else if (typeName.equals("B")) {
+            RosMsg tmpMsg = new RosMsg("std_msgs/Bool");
+            tmpMsg.addField(new RosField("data", new RosType("bool")));
+            return tmpMsg;
+        } else if (typeName.equals("CommonMatrixType") && type.isKindOf(MCASTTypeSymbol.KIND)) {
+            ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) type).getAstType();
+            String tmpMsgName = "";
+            String tmpTypeName = "";
+            if (matrixType.getElementType().isIsRational()) {
+                tmpMsgName = "std_msgs/Float64MultiArray";
+                tmpTypeName = "float64";
+            } else if (matrixType.getElementType().isIsWholeNumberNumber()) {
+                tmpMsgName = "std_msgs/Int32MultiArray";
+                tmpTypeName = "int32";
+            } else if (matrixType.getElementType().isIsBoolean()) {
+                tmpMsgName = "std_msgs/ByteMultiArray";
+                tmpTypeName = "byte";
             } else {
-                Log.error("Case not handled! MCASTTypeSymbol " + mcastTypeSymbol.getName());
+                Log.error("Matrix type not supported: " + matrixType);
             }
+            //TODO: refactor
+            return getMultMatrixRosMsg(tmpMsgName, tmpTypeName);
         }
 
         if (type instanceof StructSymbol) {
