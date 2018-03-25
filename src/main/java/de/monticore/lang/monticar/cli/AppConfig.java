@@ -88,6 +88,11 @@ public class AppConfig {
   }
 
   @Bean
+  public Path modelPath() {
+    return modelPath;
+  }
+
+  @Bean
   public Path cppDir() {
     return target != null ? target : cppDir;
   }

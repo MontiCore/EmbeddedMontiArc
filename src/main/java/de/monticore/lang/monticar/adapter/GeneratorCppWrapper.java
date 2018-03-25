@@ -2,8 +2,6 @@ package de.monticore.lang.monticar.adapter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.lang.monticar.resolver.Resolver;
-import de.monticore.lang.monticar.resolver.SymTabCreator;
 import de.monticore.lang.monticar.util.TextFile;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import java.io.File;
@@ -17,10 +15,14 @@ import org.springframework.stereotype.Component;
 public class GeneratorCppWrapper {
 
   private GeneratorCPP generator;
+  private TaggingResolver symtab;
+  private Path modelPath;
 
   @Autowired
-  public GeneratorCppWrapper(GeneratorCPP generator) {
+  public GeneratorCppWrapper(GeneratorCPP generator, TaggingResolver symtab, Path modelPath) {
     this.generator = generator;
+    this.symtab = symtab;
+    this.modelPath = modelPath;
   }
 
   public String getTargetPath() {
@@ -31,21 +33,13 @@ public class GeneratorCppWrapper {
     generator.setGenerationTargetPath(path.toString());
   }
 
-  public TextFile generateFiles(ExpandedComponentInstanceSymbol componentSymbol,
-      TaggingResolver symtab) throws IOException {
+  public TextFile generateFiles(ExpandedComponentInstanceSymbol componentSymbol)
+      throws IOException {
     generator.useArmadilloBackend();
     generator.setUseAlgebraicOptimizations(true);
+    generator.setModelsDirPath(modelPath);
+    generator.setGenerateTests(true);
     List<File> files = generator.generateFiles(symtab, componentSymbol, symtab);
     return new TextFile(files.get(0).toPath());
-  }
-
-  public TextFile generateFiles(Path emaPath, String fullName) throws IOException {
-    SymTabCreator symTabCreator = new SymTabCreator(emaPath);
-    TaggingResolver symtab = symTabCreator.createSymTabAndTaggingResolver();
-    Resolver resolver = new Resolver(symtab);
-    ExpandedComponentInstanceSymbol componentSymbol = resolver
-        .getExpandedComponentInstanceSymbol(fullName);
-
-    return generateFiles(componentSymbol, symtab);
   }
 }

@@ -32,8 +32,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 class CppStepIT {
 
-  private static final Path RESOURCE_DIR = Paths.get("src/integration-test/resources/cppstep");
-  private static final Path EXPECTED = RESOURCE_DIR.resolve("expected");
+  private static final Path MODEL_PATH = Paths.get("src/integration-test/resources/cppstep");
+  private static final Path EXPECTED = MODEL_PATH.resolve("expected");
   private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
   private static final String CPP_TEMPLATE_NAME = "cpp.ftl";
   private static final String SOME_MODEL = "models.addToArray";
@@ -42,7 +42,7 @@ class CppStepIT {
 
   @BeforeEach
   void setUp() {
-    SymTabCreator symTabCreator = new SymTabCreator(RESOURCE_DIR);
+    SymTabCreator symTabCreator = new SymTabCreator(MODEL_PATH);
     symtab = symTabCreator.createSymTabAndTaggingResolver();
     resolver = new Resolver(symtab);
   }
@@ -61,9 +61,10 @@ class CppStepIT {
   }
 
   private CppCompiler<ExpandedComponentInstanceSymbol> cppCompiler() throws IOException {
-    GeneratorCppWrapper generatorCppWrapper = new GeneratorCppWrapper(new GeneratorCPP());
+    GeneratorCppWrapper generatorCppWrapper = new GeneratorCppWrapper(new GeneratorCPP(), symtab,
+        MODEL_PATH);
     CppFileGenerator cppFileGenerator = new CppGeneratorAdapter(cppTemplate());
-    return new EmamCppCompiler(generatorCppWrapper, cppFileGenerator, symtab);
+    return new EmamCppCompiler(generatorCppWrapper, cppFileGenerator);
   }
 
   private CppNameProvider cppNameProvider() {
