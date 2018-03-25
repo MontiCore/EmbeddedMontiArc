@@ -21,11 +21,11 @@
   <!-- == PROJECT DEPENDENCIES ============================================ -->
 
   <dependencies>
-    <!--<dependency>
-      <groupId>montisim</groupId>
+    <dependency>
+      <groupId>montisim-simulation</groupId>
       <artifactId>environment</artifactId>
       <version>1.0.1</version>
-    </dependency>-->
+    </dependency>
     <!-- Forces correct order in maven reactor -->
     <dependency>
             <groupId>de.monticore.lang</groupId>

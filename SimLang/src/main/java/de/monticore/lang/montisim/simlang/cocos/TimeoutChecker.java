@@ -8,6 +8,7 @@ package de.monticore.lang.montisim.simlang.cocos;
 import de.monticore.lang.montisim.simlang._ast.ASTTimeout;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTTimeoutCoCo;
 import de.monticore.lang.montisim.weather.cocos.InputHelper;
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
 import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 import de.se_rwth.commons.logging.Log;
 
@@ -19,9 +20,9 @@ public class TimeoutChecker implements SimLangASTTimeoutCoCo {
   @Override
   public void check(ASTTimeout obj) {
     String[] allowedUnits = {"ms","s","m","h"};
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.inPositiveRange()) {

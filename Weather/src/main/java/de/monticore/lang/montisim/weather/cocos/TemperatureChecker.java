@@ -17,9 +17,9 @@ public class TemperatureChecker implements WeatherASTTemperatureCoCo {
   public void check(ASTTemperature obj) {
     //Java + ° = ugh....
     String[] allowedUnits = {"K","\u00b0C","\u00b0F"};
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {

@@ -17,9 +17,9 @@ public class PrecipitationAmountChecker implements WeatherASTPrecipitationAmount
   public void check(ASTPrecipitationAmount obj) {
     String[] allowedUnits = {"l/m^2", "mm"};
 
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {

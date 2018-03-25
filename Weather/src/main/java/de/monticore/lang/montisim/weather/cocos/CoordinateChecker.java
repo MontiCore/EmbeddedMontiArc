@@ -14,9 +14,9 @@ public class CoordinateChecker implements WeatherASTCoordinateCoCo {
   @Override
   public void check(ASTCoordinate obj) {
     String[] allowedUnits = {""};
-    
-    String inputX = obj.getPosX();
-    String inputY = obj.getPosY();
+
+    NumberUnit inputX = new NumberUnit(obj.getPosX());
+    NumberUnit inputY = new NumberUnit(obj.getPosY());
     
     UnitNumberChecker checkerX = new UnitNumberChecker(inputX, allowedUnits);
     UnitNumberChecker checkerY = new UnitNumberChecker(inputY, allowedUnits);

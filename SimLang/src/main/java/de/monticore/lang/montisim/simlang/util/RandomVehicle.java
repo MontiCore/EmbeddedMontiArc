@@ -1,38 +1,26 @@
 package de.monticore.lang.montisim.simlang.util;
 
+import java.util.Optional;
+
 public class RandomVehicle {
-  private Float amount;
-  private Float startX;
-  private Float startY;
-  private Float destX;
-  private Float destY;
+  private float amount;
+  private Optional<Path2D> path = Optional.empty();
 
-
-  public RandomVehicle(Float amount, Float startX, Float startY, Float destX, Float destY) {
+  public RandomVehicle(float amount) {
     this.amount = amount;
-    this.startX = startX;
-    this.startY = startY;
-    this.destX = destX;
-    this.destY = destY;
+  }
+  public RandomVehicle(float amount, Float startX, Float startY, Float destX, Float destY) {
+    this.amount = amount;
+    if(startX != null) {
+      this.path = Optional.of(new Path2D(startX, startY, destX, destY));
+    }
   }
 
-  public Float getAmount() {
+  public float getAmount() {
     return amount;
   }
 
-  public Float getStartX() {
-    return startX;
-  }
-
-  public Float getStartY() {
-    return startY;
-  }
-
-  public Float getDestX() {
-    return destX;
-  }
-
-  public Float getDestY() {
-    return destY;
+  public Optional getPath() {
+    return path;
   }
 }

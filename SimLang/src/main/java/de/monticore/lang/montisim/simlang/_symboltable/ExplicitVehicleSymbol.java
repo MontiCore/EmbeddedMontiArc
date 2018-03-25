@@ -9,14 +9,14 @@ import java.util.List;
 public class ExplicitVehicleSymbol extends CommonSymbol{
 
   public static final ExplicitVehicleKind KIND = ExplicitVehicleKind.INSTANCE;
-  private ArrayList<ExplicitVehicle> vehicles;
+  private ExplicitVehicle vehicles;
 
-  public ExplicitVehicleSymbol(String name, List vehicles) {
+  public ExplicitVehicleSymbol(String name, ExplicitVehicle vehicles) {
     super(name, KIND);
-    this.vehicles = new ArrayList<>(vehicles);
+    this.vehicles = vehicles;
   }
 
-  public ArrayList getVehicles() {
+  public ExplicitVehicle getVehicle() {
     return vehicles;
   }
 }

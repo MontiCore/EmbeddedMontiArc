@@ -17,9 +17,9 @@ public class HumidityChecker implements WeatherASTHumidityCoCo {
   public void check(ASTHumidity obj) {
     String[] allowedUnits = {""};
     
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {

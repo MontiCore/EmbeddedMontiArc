@@ -2,6 +2,8 @@ package de.monticore.lang.montisim.simlang.util;
 
 //Feel free to find a better name <3
 
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
+
 import java.util.ArrayList;
 import java.util.Optional;
 

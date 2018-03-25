@@ -1,7 +1,9 @@
 package de.monticore.lang.montisim.simlang.util;
 
 public class SimLangEnums {
-
+  public enum ChannelTypes {
+    FIXED, BOUND
+  }
   public enum SimulationTypes {
     FIXED, REALTIME, MAXFPS
   }
@@ -11,7 +13,7 @@ public class SimLangEnums {
   }
 
   public enum WeatherTypes {
-    FIXED, SEQUENCE, RANDOM, FORECAST
+    FIXED, SEQUENCE, RANDOM
   }
 
   public enum CloudingTypes {

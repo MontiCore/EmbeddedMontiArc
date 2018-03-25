@@ -1,6 +1,7 @@
 package de.monticore.lang.montisim.simlang.util;
 
 
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
 
 public class Range {
   NumberUnit start;

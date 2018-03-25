@@ -1,7 +1,7 @@
 package de.monticore.lang.montisim.weather.cocos;
 
 public class NumberChecker {
-  private float digit;
+  protected float digit;
   
   public NumberChecker(String digit) {
     this.digit = Float.parseFloat(digit);
@@ -12,9 +12,6 @@ public class NumberChecker {
   
   public float getDigit() {
     return this.digit;
-  }
-  protected void setDigit(float newDigit) {
-    this.digit = newDigit;
   }
   
   public boolean inPositiveRange() {

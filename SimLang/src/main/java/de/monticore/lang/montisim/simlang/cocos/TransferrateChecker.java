@@ -8,6 +8,7 @@ package de.monticore.lang.montisim.simlang.cocos;
 import de.monticore.lang.montisim.simlang._ast.ASTTransferRate;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTTransferRateCoCo;
 import de.monticore.lang.montisim.weather.cocos.InputHelper;
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
 import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 import de.se_rwth.commons.logging.Log;
 
@@ -19,9 +20,9 @@ public class TransferrateChecker implements SimLangASTTransferRateCoCo {
   @Override
   public void check(ASTTransferRate obj) {
     String[] allowedUnits = {"bit/s","Kbit/s","Mbit/s","Gbit/s"};
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.inPositiveRange()) {

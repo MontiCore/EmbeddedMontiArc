@@ -8,6 +8,7 @@ package de.monticore.lang.montisim.simlang.cocos;
 import de.monticore.lang.montisim.simlang._ast.ASTOutage;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTOutageCoCo;
 import de.monticore.lang.montisim.weather.cocos.InputHelper;
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
 import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 import de.se_rwth.commons.logging.Log;
 
@@ -18,9 +19,9 @@ public class OutageChecker implements SimLangASTOutageCoCo {
   @Override
   public void check(ASTOutage obj) {
     String[] allowedUnits = {""};
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if(!checker.legitUnit()) {

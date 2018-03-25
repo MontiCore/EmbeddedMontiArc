@@ -13,7 +13,7 @@ public class SimulationDurationSymbol extends CommonSymbol{
     this.simulationDuration = simulationDuration;
   }
 
-  public AlternativeInput getSimulationRenderFrequency() {
+  public AlternativeInput getSimulationDuration() {
     return simulationDuration;
   }
 }

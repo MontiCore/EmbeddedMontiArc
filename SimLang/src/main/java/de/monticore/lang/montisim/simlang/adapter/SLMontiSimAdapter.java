@@ -1,23 +1,20 @@
 package de.monticore.lang.montisim.simlang.adapter;
 
 import de.se_rwth.commons.logging.Log;
-import de.monticore.lang.montisim.simlang.util.ConcreteWeather;
 import de.monticore.lang.montisim.simlang.util.ExplicitVehicle;
-import de.monticore.lang.montisim.simlang.util.Weather;
 
-import de.monticore.lang.montisim.simlang.stolen.*;
-//import simulation.environment.weather.Weather;
-//import simulation.environment.weather.WeatherSettings;
+import simulation.environment.weather.Weather;
+import simulation.environment.weather.WeatherSettings;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 public class SLMontiSimAdapter {
   private Optional<ArrayList<ExplicitVehicle>> vehicles;
-  private de.monticore.lang.montisim.simlang.stolen.Weather weather;
+  private simulation.environment.weather.Weather weather;
   private String mapName;
 
-  public SLMontiSimAdapter(GeneralSLAdapter adapter) {
+  public SLMontiSimAdapter(SimLangContainer adapter) {
     if(adapter.getMapName().isPresent()) {
       this.mapName = adapter.getMapName().get();
     } else {
@@ -25,24 +22,22 @@ public class SLMontiSimAdapter {
     }
 
     if(adapter.getWeather().isPresent()) {
-     switch(adapter.getWeather().get().getType()) {
-       case FIXED:
-         boolean isSunny = adapter.getWeather().get().getWeatherObjects().get(0).getPrecipitationtype().equals(de.monticore.lang.montisim.simlang.util.SimLangEnums.PrecipitationTypes.NONE);
-         if(isSunny) {
-           this.weather = new de.monticore.lang.montisim.simlang.stolen.Weather(new WeatherSettings((double) 0.25));
-         } else {
-           this.weather = new de.monticore.lang.montisim.simlang.stolen.Weather(new WeatherSettings((double) 0.75));
-         }
-         break;
-       case RANDOM:
-         new de.monticore.lang.montisim.simlang.stolen.Weather(new WeatherSettings());
-         break;
-       default:
-         Log.error("Cannot compute weather type.");
+     if(adapter.getWeather().get().get(0).getFixedWeather().isPresent()) {
+       boolean isSunny = adapter.getWeather().get().get(0).getFixedWeather().get().getWeather().getPrecipitationType().equals(de.monticore.lang.montisim.simlang.util.SimLangEnums.PrecipitationTypes.NONE);
+       if (isSunny) {
+         this.weather = new Weather(new WeatherSettings(0.25d));
+       } else {
+         this.weather = new Weather(new WeatherSettings(0.75d));
+       }
+     }
+     else if(adapter.getWeather().get().get(0).getRandomWeather().isPresent())
+       new Weather(new WeatherSettings());
+     else {
+       Log.error("Cannot compute weather type.");
      }
     } else {
       //apply some default weather
-      this.weather = new de.monticore.lang.montisim.simlang.stolen.Weather(new WeatherSettings((double) 0.25));
+      this.weather = new Weather(new WeatherSettings(0.25d));
     }
 
     if(adapter.getExplicitVehicles().isPresent()) {
@@ -56,7 +51,7 @@ public class SLMontiSimAdapter {
     return vehicles;
   }
 
-  public de.monticore.lang.montisim.simlang.stolen.Weather getWeather() {
+  public Weather getWeather() {
     return weather;
   }
 

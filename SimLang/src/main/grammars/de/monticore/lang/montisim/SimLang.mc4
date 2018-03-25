@@ -63,10 +63,10 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   WeatherList = "[" SingleWeather ("," SingleWeather)* "]";
   Weather = "weather" (SingleWeather|WeatherList) ;
   FixedWeather = ["fixed"] WeatherObj;
-  SequenceWeather = ["sequence"] (WeatherObj TUnitNumber)+;
-  RandomWeather = ["random"] TUnitNumber;
+  SequenceWeather = ["sequence"] (WeatherObj UnitNumber)+;
+  RandomWeather = ["random"] (UnitNumber)?;
  
-  SingleTime = hours:TUnitNumber ":" minutes:TUnitNumber (":" seconds:TUnitNumber (":" milliseconds:TUnitNumber)?)?;
+  SingleTime = hours:UnitNumber ":" minutes:UnitNumber (":" seconds:UnitNumber (":" milliseconds:UnitNumber)?)?;
   TimeList = "[" SingleTime ("," SingleTime)* "]" ;
 
   Time = "time" (SingleTime | TimeList) ;
@@ -83,38 +83,36 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   // Entity Configuration
   //
   Pedestrians = ("<p>"
-                "(" startX:TUnitNumber "," startY:TUnitNumber ("," startZ:TUnitNumber)? ")"
+                "(" startX:UnitNumber "," startY:UnitNumber ("," startZ:UnitNumber)? ")"
                 "->" 
-                "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
+                "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
                 ) ;
 
   Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ;
   
   //defined vehicle moving from start to destination pos
   ExplicitVehicle = Name
-              ("(" startX:TUnitNumber "," startY:TUnitNumber "," startRot:TUnitNumber ")"
+              ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")"
               "->" 
-              "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
+              "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
               );
               
   //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
   PathedVehicle = "<v>"
-                  "(" startX:TUnitNumber "," startY:TUnitNumber "," spawnRadius:TUnitNumber ")"
+                  "(" startX:UnitNumber "," startY:UnitNumber "," spawnRadius:UnitNumber ")"
                   "->"
-                  "(" destX:TUnitNumber "," destY:TUnitNumber "," destRadius:TUnitNumber ")" 
-                  (amount:TUnitNumber)?;
+                  "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")"
+                  (amount:UnitNumber)?;
   
   //completely random vehicle spawns and destinations with optional avoidance of path
-  RandomVehicle = "<v>" amount:TUnitNumber ("(" startX:TUnitNumber "," startY:TUnitNumber ")" "->" "(" destX:TUnitNumber "," destY:TUnitNumber ")")?;
+  RandomVehicle = "<v>" amount:UnitNumber ("(" startX:UnitNumber "," startY:UnitNumber ")" "->" "(" destX:UnitNumber "," destY:UnitNumber ")")?;
   
   //
   // Communication Configuration
   //
-  SingleChannel = (["fixed"]|["bound"]) "channel" Name "{" ((TransferRate|Latency|Outage|Area) ";")* "}" ;
-  ChannelList = "[" SingleChannel ("," SingleChannel)* "]";
-  Channel = (SingleChannel|ChannelList) ;
+  Channel = channelType:["fixed"|"bound"] "channel" Name "{" ((TransferRate|Latency|Outage|Area) ";")* "}" ;
   TransferRate = "transfer_rate" AlternativeInput;
   Latency = "latency" AlternativeInput;
   Outage = "outage" AlternativeInput;
-  Area = "area" (["global"]|(Coordinate (Coordinate|radius:TUnitNumber))) ;
+  Area = "area" (["global"]|(point1:Coordinate (point2:Coordinate|radius:UnitNumber))) ;
 }

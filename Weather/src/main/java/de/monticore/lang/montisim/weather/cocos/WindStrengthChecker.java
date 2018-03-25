@@ -17,9 +17,9 @@ public class WindStrengthChecker implements WeatherASTWindStrengthCoCo {
   public void check(ASTWindStrength obj) {
     String[] allowedUnits = {"knots","m/s","km/h","mph"};
 
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {

@@ -16,9 +16,9 @@ public class PressureChecker implements WeatherASTPressureCoCo {
   @Override
   public void check(ASTPressure obj) {
     String[] allowedUnits = {"Pa","kPa","mPa","hPa","bar"};
-    ArrayList<String> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    for(String nu : input) {
+    for(NumberUnit nu : input) {
       UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {

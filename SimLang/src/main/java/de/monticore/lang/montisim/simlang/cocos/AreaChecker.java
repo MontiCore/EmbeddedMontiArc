@@ -8,6 +8,7 @@ package de.monticore.lang.montisim.simlang.cocos;
 import de.monticore.lang.montisim.simlang._ast.ASTArea;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTAreaCoCo;
 
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
 import de.se_rwth.commons.logging.Log;
 
 import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
@@ -22,7 +23,7 @@ public class AreaChecker implements SimLangASTAreaCoCo {
     
     String[] allowedUnits = {""};
     
-    String input = obj.getRadius().get();
+    NumberUnit input = new NumberUnit(obj.getRadius().get());
     
     UnitNumberChecker checker = new UnitNumberChecker(input, allowedUnits);
     

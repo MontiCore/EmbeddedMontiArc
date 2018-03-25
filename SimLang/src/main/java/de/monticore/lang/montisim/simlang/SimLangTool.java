@@ -9,11 +9,11 @@ package de.monticore.lang.montisim.simlang;
 import java.io.IOException;
 import java.util.Optional;
 
-import de.monticore.lang.montisim.carlang._ast.ASTCar;
-import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
+//import de.monticore.lang.montisim.carlang._ast.ASTCar;
+//import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
+import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
 import org.antlr.v4.runtime.RecognitionException;
 
-import de.monticore.lang.montisim.simlang.symbolmap.SymbolMapCreator;
 import de.monticore.lang.montisim.simlang._ast.*;
 import de.monticore.lang.montisim.simlang._cocos.*;
 import de.monticore.lang.montisim.simlang._parser.*;
@@ -29,10 +29,6 @@ import de.monticore.symboltable.*;
 import de.monticore.ModelingLanguageFamily;
 import de.se_rwth.commons.logging.Log;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import de.monticore.lang.montisim.simlang.adapter.GeneralSLAdapter;
 /**
  * Main class for the Automaton DSL tool.
  *
@@ -95,7 +91,7 @@ public class SimLangTool {
     SymbolMapCreator data = new SymbolMapCreator();
     data.createFromAST(ast);
     System.out.println(data.getSymbolMap());
-    GeneralSLAdapter adapter = new GeneralSLAdapter(data.getSymbolMap());
+    SimLangContainer adapter = new SimLangContainer(data.getSymbolMap());
     System.out.println(adapter.getMapName());
     */
     //Grab data from symboltable
@@ -195,19 +191,22 @@ public class SimLangTool {
     return symbolTable.get().createFromAST(ast);
   }
 
+  /*
   public static Scope createSymbolTable(ModelingLanguageFamily lang, ASTSimLangCompilationUnit astSim, ASTCar astCar) {
 
     return null;
   }
+  */
 
-  public static GeneralSLAdapter parseIntoContainer(String model) {
+  public static SimLangContainer parseIntoContainer(String model) {
     final SimLangLang lang = new SimLangLang();
     final ASTSimLangCompilationUnit ast = parse(model);
     checkDefaultCoCos(ast);
     final Scope modelTopScope = createSymbolTable(lang, ast);
-    return new GeneralSLAdapter(modelTopScope);
+    return new SimLangContainer(modelTopScope);
   }
-  public static GeneralSLAdapter parseIntoContainer(String simModel, String carModel) {
+  /*
+  public static SimLangContainer parseIntoContainer(String simModel, String carModel) {
     ModelingLanguageFamily family = new ModelingLanguageFamily();
     final SimLangLang simLang = new SimLangLang();
     //final CarLangLanguage carLang = new CarLangLanguage();
@@ -222,6 +221,7 @@ public class SimLangTool {
     //checkCocos(astCar);
 
     final Scope modelTopScope = createSymbolTable(family, astSim, null);
-    return new GeneralSLAdapter(modelTopScope);
+    return new SimLangContainer(modelTopScope);
   }
+  */
 }

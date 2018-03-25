@@ -19,8 +19,15 @@ public class UnitNumberChecker extends NumberChecker{
       }
     }
     
-    setDigit(Float.parseFloat(this.unitNumber.substring(0,i)));
+    this.digit = Float.parseFloat(this.unitNumber.substring(0,i));
     this.unit = this.unitNumber.substring(i);
+  }
+  public UnitNumberChecker(NumberUnit nu, String[] allowedUnits) {
+    super(0.0f);
+    this.digit = nu.number;
+    this.unit = nu.unit;
+    this.unitNumber = nu.numberUnit;
+    this.allowedUnits = allowedUnits;
   }
   
   public String getUnit() {

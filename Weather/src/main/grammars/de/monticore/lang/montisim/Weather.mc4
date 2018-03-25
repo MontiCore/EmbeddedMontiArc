@@ -6,9 +6,9 @@ package de.monticore.lang.montisim;
 
 grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Ranges {
 
-  Coordinate = "(" posX:TUnitNumber "," posY:TUnitNumber ")";
-  TUnitNumberList = "[" TUnitNumber ("," TUnitNumber)* "]";
-  AlternativeInput = (TUnitNumber | TUnitNumberList | Range);
+  Coordinate = "(" posX:UnitNumber "," posY:UnitNumber ")";
+  UnitNumberList = "[" UnitNumber ("," UnitNumber)* "]";
+  AlternativeInput = (UnitNumber | UnitNumberList | Range);
 
   Temperature = "temperature" AlternativeInput;
 
@@ -23,9 +23,9 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
   PrecipitationType = "precipitation_type" precipitationType:["none"|
                                             "drizzle"|
                                             "rain"|
-                                            "freezing drizzle"|
-                                            "freezing rain"|
-                                            "snow rain"|"snain"|
+                                            "freezing_drizzle"|
+                                            "freezing_rain"|
+                                            "snow_rain"|"snain"|
                                             "snow"|
                                             "snow_grains"|
                                             "ice_pellets"|"sleet"|

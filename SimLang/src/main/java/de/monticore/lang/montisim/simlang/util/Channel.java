@@ -1,31 +1,23 @@
 package de.monticore.lang.montisim.simlang.util;
 
 public class Channel {
-  String type;
+  SimLangEnums.ChannelTypes type;
   String name;
-  NumberUnit transferrate;
-  NumberUnit latency;
-  Float outage;
-  boolean global = false;
+  AlternativeInput transferRate;
+  AlternativeInput latency;
+  AlternativeInput outage;
+  Area area;
 
-  public Channel(String type, String name, NumberUnit transferrate, NumberUnit latency, Float outage) {
+  public Channel(SimLangEnums.ChannelTypes type, String name, AlternativeInput transferRate, AlternativeInput latency, AlternativeInput outage, Area area) {
     this.type = type;
     this.name = name;
-    this.transferrate = transferrate;
+    this.transferRate = transferRate;
     this.latency = latency;
     this.outage = outage;
+    this.area = area;
   }
 
-  public Channel(String type, String name, NumberUnit transferrate, NumberUnit latency, Float outage, boolean global) {
-    this.type = type;
-    this.name = name;
-    this.transferrate = transferrate;
-    this.latency = latency;
-    this.outage = outage;
-    this.global = global;
-  }
-
-  public String getType() {
+  public SimLangEnums.ChannelTypes getType() {
     return type;
   }
 
@@ -33,19 +25,17 @@ public class Channel {
     return name;
   }
 
-  public NumberUnit getTransferrate() {
-    return transferrate;
+  public AlternativeInput getTransferRate() {
+    return transferRate;
   }
 
-  public NumberUnit getLatency() {
+  public AlternativeInput getLatency() {
     return latency;
   }
 
-  public Float getOutage() {
+  public AlternativeInput getOutage() {
     return outage;
   }
 
-  public boolean isGlobal() {
-    return global;
-  }
+  public Area getArea() {return this.area;}
 }
