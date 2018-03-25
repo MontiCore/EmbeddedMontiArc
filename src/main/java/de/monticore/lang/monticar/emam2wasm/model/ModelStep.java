@@ -4,11 +4,14 @@ import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 
 import de.monticore.lang.monticar.util.TextFile;
 import java.nio.file.Path;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * This class offers methods to save EmbeddedMontiArc models with arbitrary packages and names to
  * the correct files in the correct directory hierarchy.
  */
+@Component
 public class ModelStep {
 
   private final Path emamDir;
@@ -22,6 +25,7 @@ public class ModelStep {
    * @param emamDir Base path where models will be saved to
    * @param nameProvider Used to parse the package and name of EmbeddedMontiArc models
    */
+  @Autowired
   public ModelStep(Path emamDir, ModelNameProvider nameProvider) {
     this.emamDir = requiresNotNull(emamDir);
     this.nameProvider = requiresNotNull(nameProvider);

@@ -4,11 +4,14 @@ import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 
 import de.monticore.symboltable.Symbol;
 import java.nio.file.Path;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * This class is used to compile MontiArc models to C++.
  * It combines the functionality of {@link CppCompiler} and {@link CppNameProvider}.
  */
+@Component
 public class CppStep<T extends Symbol> {
 
   private final CppCompiler<T> cppCompiler;
@@ -23,6 +26,7 @@ public class CppStep<T extends Symbol> {
    * will be created if it does not yet exist.
    * @param nameProvider Provides the name for the main C++ file
    */
+  @Autowired
   public CppStep(CppCompiler<T> cppCompiler, Path cppDir, CppNameProvider nameProvider) {
     this.cppCompiler = requiresNotNull(cppCompiler);
     this.cppDir = requiresNotNull(cppDir);
