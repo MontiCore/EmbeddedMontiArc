@@ -6,7 +6,6 @@ package de.monticore.lang.monticar.generator.cpp;
 public class ArmadilloHelperSource {
     public static String armadilloHelperSourceCode = "#ifndef HELPERA_H\n" +
             "#define HELPERA_H\n" +
-            "#define _GLIBCXX_USE_CXX11_ABI 0\n" +
             "#include <iostream>\n" +
             "#include \"armadillo.h\"\n" +
             "#include <stdarg.h>\n" +

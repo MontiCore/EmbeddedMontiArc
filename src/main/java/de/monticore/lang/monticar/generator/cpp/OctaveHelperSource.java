@@ -6,7 +6,6 @@ package de.monticore.lang.monticar.generator.cpp;
 public class OctaveHelperSource {
     public static String octaveHelperSourceCode = "#ifndef HELPER_H\n" +
             "#define HELPER_H\n" +
-            "#define _GLIBCXX_USE_CXX11_ABI 0\n" +
             "#include <iostream>\n" +
             "#include <octave/oct.h>\n" +
             "#include <octave/octave.h>\n" +
