@@ -34,3 +34,4 @@ For Coveralls the badge can be added by replacing `organization` and `projectnam
 ```
 
 Note that it may take some time for some badges to update.
+Using Ctrl + F5(when using chrome atleast) should show the current badge.
