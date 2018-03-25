@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-generator</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.9-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -300,35 +300,29 @@
         </configuration>
       </plugin>
 
-      <!--plugin>
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${assembly.plugin}</version>
-        <dependencies>
-          <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>mc-assemblies</artifactId>
-            <version>${mc.grammars.assembly.version}</version>
-          </dependency>
-        </dependencies>
+        <version>3.1.0</version>
         <executions>
           <execution>
-            <id>grammars</id>
-            <configuration>
-              <finalName>${project.artifactId}-${project.version}</finalName>
-              <descriptorRefs>
-                <descriptorRef>grammars-assembly</descriptorRef>
-              </descriptorRefs>
-              <formats>
-                <format>jar</format>
-              </formats>
-            </configuration>
+            <id>jar-with-dependencies</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>de.monticore.lang.monticar.generator.cpp.GeneratorCppCli</mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
           </execution>
         </executions>
-      </plugin -->
+      </plugin>
 
       <!-- Source Jar Configuration -->
       <plugin>

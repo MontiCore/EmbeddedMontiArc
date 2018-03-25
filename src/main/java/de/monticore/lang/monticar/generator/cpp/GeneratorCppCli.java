@@ -70,9 +70,17 @@ public final class GeneratorCppCli {
             .hasArg(false)
             .required(false)
             .build();
+
     public static final Option OPTION_FLAG_CHECK_MODEL_DIR = Option.builder()
             .longOpt("check-model-dir")
             .desc("optional flag indicating if model dir should be checked for creation of component and stream list")
+            .hasArg(false)
+            .required(false)
+            .build();
+
+    public static final Option OPTION_FLAG_SERVER_WRAPPER = Option.builder()
+            .longOpt("flag-generate-server-wrapper")
+            .desc("optional flag indicating if model should be wrapped into a server")
             .hasArg(false)
             .required(false)
             .build();
@@ -98,6 +106,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_ARMADILLO);
         options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
         options.addOption(OPTION_FLAG_CHECK_MODEL_DIR);
+        options.addOption(OPTION_FLAG_SERVER_WRAPPER);
         return options;
     }
 
@@ -129,6 +138,7 @@ public final class GeneratorCppCli {
             g.useArmadilloBackend();
         }
         g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
+        g.setGenerateServerWrapper(cliArgs.hasOption(OPTION_FLAG_SERVER_WRAPPER.getLongOpt()));
         g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
         try {
             if (componentSymbol != null) {

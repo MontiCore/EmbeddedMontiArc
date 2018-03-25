@@ -11,6 +11,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
@@ -34,6 +35,7 @@ public class GeneratorCPP implements Generator {
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
     private boolean isGenerateAutopilotAdapter = false;
+    private boolean isGenerateServerWrapper = false;
     private final List<BluePrintCPP> bluePrints = new ArrayList<>();
 
     protected String generationTargetPath = "./target/generated-sources-cpp/";
@@ -153,6 +155,9 @@ public class GeneratorCPP implements Generator {
         fileContents.addAll(handleTestAndCheckDir(symtab));
         if (isGenerateAutopilotAdapter()) {
             fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
+        }
+        if (isGenerateServerWrapper()) {
+            fileContents.addAll(getServerWrapperFiles(componentSymbol));
         }
         //System.out.println(fileContents);
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
@@ -307,6 +312,14 @@ public class GeneratorCPP implements Generator {
         isGenerateAutopilotAdapter = generateAutopilotAdapter;
     }
 
+    public boolean isGenerateServerWrapper() {
+        return isGenerateServerWrapper;
+    }
+
+    public void setGenerateServerWrapper(boolean generateServerWrapper) {
+        isGenerateServerWrapper = generateServerWrapper;
+    }
+
     public boolean isCheckModelDir() {
         return checkModelDir;
     }
@@ -336,5 +349,26 @@ public class GeneratorCPP implements Generator {
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateAutopilotAdapter(vm);
         return new FileContent(fileContents, "AutopilotAdapter.cpp");
+    }
+
+    private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+        List<FileContent> result = new ArrayList<>();
+        String[] filesToCopy = new String[]{
+                "Makefile",
+                "model.proto"
+        };
+        for (String file : filesToCopy) {
+            String resourcePath = String.format("/template/serverwrapper/%s", file);
+            result.add(FileUtil.getResourceAsFile(resourcePath, file));
+        }
+        result.add(generateServerWrapper(componentSymbol));
+        return result;
+    }
+
+    private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
+        ServerWrapperViewModel vm = new ServerWrapperViewModel();
+        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        String fileContents = AllTemplates.generateServerWrapper(vm);
+        return new FileContent(fileContents, "server.cc");
     }
 }
