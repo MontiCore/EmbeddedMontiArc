@@ -228,7 +228,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   }
 
   private String file() {
-    return referenceDir != null ? relative(referenceDir, normalize(file)).toString()
+    return referenceDir != null ? relative(referenceDir, file).toString()
         : file.toString();
   }
 
@@ -243,7 +243,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
 
   private List<String> includes() {
     return includes.stream()
-        .map(path -> referenceDir != null ? relative(referenceDir, normalize(path)) : path)
+        .map(path -> referenceDir != null ? relative(referenceDir, path) : path)
         .map(path -> "-I\"" + path.toString() + "\"").collect(Collectors.toList());
   }
 
