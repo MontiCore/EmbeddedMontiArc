@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.emscripten;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,8 +13,6 @@ import org.junit.jupiter.api.Test;
 
 class EmscriptenCommandBuilderFactoryTest {
 
-  private static final String EMSCRIPTEN_COMMAND = "./emscripten";
-  private static final String OTHER_EMSCRIPTEN_COMMAND = "docker exec -it emscripten";
   private static final Path FILE = Paths.get("model.cpp");
   private static final Path OTHER_FILE = Paths.get("other_model.cpp");
   private static final Optimization OPTIMIZATION = Optimization.O0;
@@ -30,11 +30,23 @@ class EmscriptenCommandBuilderFactoryTest {
   private static final String FLAG = "some_flag";
   private static final String OTHER_FLAG = "other_flag";
 
+  private Emscripten emscripten;
+  private Emscripten otherEmscripten;
+
+  @BeforeEach
+  void setUp() {
+    emscripten = mock(Emscripten.class);
+    when(emscripten.getCommand()).thenReturn(new String[]{"emscripten"});
+
+    otherEmscripten = mock(Emscripten.class);
+    when(otherEmscripten.getCommand()).thenReturn(new String[]{"docker exec -it emscripten"});
+  }
+
   @Nested
   class WhenNoDefaultValuesSet {
 
     private void setCommandValues(EmscriptenCommandBuilder commandBuilder) {
-      commandBuilder.setEmscripten(EMSCRIPTEN_COMMAND);
+      commandBuilder.setEmscripten(emscripten);
       commandBuilder.setFile(FILE);
       commandBuilder.setOptimization(OPTIMIZATION);
       commandBuilder.setBind(BIND);
@@ -84,11 +96,11 @@ class EmscriptenCommandBuilderFactoryTest {
         void setEmscripten() {
           EmscriptenCommandBuilderFactory builderFactory = new EmscriptenCommandBuilderFactory();
 
-          builderFactory.setEmscripten(EMSCRIPTEN_COMMAND);
+          builderFactory.setEmscripten(emscripten);
           EmscriptenCommandBuilder builder = builderFactory.getBuilder();
 
           assertThatExceptionOfType(UnsupportedOperationException.class)
-              .isThrownBy(() -> builder.setEmscripten(OTHER_EMSCRIPTEN_COMMAND));
+              .isThrownBy(() -> builder.setEmscripten(otherEmscripten));
         }
 
         @Test
@@ -155,7 +167,7 @@ class EmscriptenCommandBuilderFactoryTest {
         @BeforeEach
         void setUpFactory() {
           builderFactory = new EmscriptenCommandBuilderFactory();
-          builderFactory.setEmscripten(EMSCRIPTEN_COMMAND);
+          builderFactory.setEmscripten(emscripten);
           builderFactory.setFile(FILE);
         }
 
@@ -166,7 +178,7 @@ class EmscriptenCommandBuilderFactoryTest {
 
           builder.include(OTHER_INCLUDE_LIBRARY);
           assertThat(builder.toString())
-              .isEqualTo(String.format("./emscripten model.cpp -I\"%s\" -I\"%s\"",
+              .isEqualTo(String.format("emscripten model.cpp -I\"%s\" -I\"%s\"",
                   INCLUDE_LIBRARY.toString(), OTHER_INCLUDE_LIBRARY));
         }
 
@@ -177,7 +189,7 @@ class EmscriptenCommandBuilderFactoryTest {
 
           builder.addOption(OTHER_OPTION);
           assertThat(builder.toString())
-              .isEqualTo("./emscripten model.cpp -s some_option=1 -s other_option=0");
+              .isEqualTo("emscripten model.cpp -s some_option=1 -s other_option=0");
         }
 
         @Test
@@ -187,7 +199,7 @@ class EmscriptenCommandBuilderFactoryTest {
 
           builder.addFlag(OTHER_FLAG);
           assertThat(builder.toString())
-              .isEqualTo("./emscripten model.cpp -some_flag -other_flag");
+              .isEqualTo("emscripten model.cpp -some_flag -other_flag");
         }
       }
     }

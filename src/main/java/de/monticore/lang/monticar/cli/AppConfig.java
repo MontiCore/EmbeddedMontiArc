@@ -1,8 +1,11 @@
 package de.monticore.lang.monticar.cli;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.emscripten.Emscripten;
+import de.monticore.lang.monticar.emscripten.EmscriptenCommand;
 import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
 import de.monticore.lang.monticar.emscripten.Option;
+import de.monticore.lang.monticar.emscripten.Shell;
 import de.monticore.lang.monticar.freemarker.TemplateFactory;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.resolver.Resolver;
@@ -29,6 +32,7 @@ public class AppConfig {
 
   private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
   private static final String TEMPLATE_NAME = "cpp.ftl";
+  private static final String WINDOWS = "windows";
 
   @Value("${model}")
   private String modelFullName;
@@ -50,6 +54,9 @@ public class AppConfig {
 
   @Value("#{'${include:}' ?: {}}")
   private Path[] includes;
+
+  @Value("#{systemProperties['os.name'].toLowerCase()}")
+  private String osName;
 
   @Bean
   public ExpandedComponentInstanceSymbol model(TaggingResolver taggingResolver) {
@@ -74,7 +81,7 @@ public class AppConfig {
   @Bean
   public EmscriptenCommandBuilderFactory commandBuilderFactory() {
     EmscriptenCommandBuilderFactory commandBuilderFactory = new EmscriptenCommandBuilderFactory();
-    commandBuilderFactory.setEmscripten(emscripten);
+    commandBuilderFactory.setEmscripten(emscripten());
     for (Path include : includes) {
       commandBuilderFactory.include(include);
     }
@@ -85,6 +92,12 @@ public class AppConfig {
     commandBuilderFactory.addOption(new Option("ALLOW_MEMORY_GROWTH", true));
     commandBuilderFactory.setBind(true);
     return commandBuilderFactory;
+  }
+
+  @Bean
+  public Emscripten emscripten() {
+    Shell shell = osName.startsWith(WINDOWS) ? Shell.CMD : Shell.BASH;
+    return new EmscriptenCommand(shell, emscripten);
   }
 
   @Bean

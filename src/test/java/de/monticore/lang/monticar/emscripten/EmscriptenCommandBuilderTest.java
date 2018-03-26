@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.emscripten;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
 import java.nio.file.Path;
@@ -18,7 +20,6 @@ import org.junit.jupiter.api.Test;
 //because of unix vs. windows file seperators
 class EmscriptenCommandBuilderTest {
 
-  private static final String EMSCRIPTEN = "./emscripten";
   private static final Path FILE = Paths.get("model.cpp");
   private static final Path INCLUDE_ARMADILLO = Paths.get("./armadillo/include");
   private static final Path INCLUDE_BLAS = Paths.get("./blas");
@@ -27,7 +28,16 @@ class EmscriptenCommandBuilderTest {
   private static final Optimization SOME_LEVEL = Optimization.O3;
   private static final String EMPTY_STRING = "";
   private static final String SOME_FLAG = "DARMA_DONT_USE_WRAPPER";
+  private static final String EMSCRIPTEN = "emscripten";
 
+  private Emscripten emscripten;
+
+  @BeforeEach
+  void setUp() {
+    emscripten = mock(Emscripten.class);
+    when(emscripten.getCommand()).thenReturn(new String[]{EMSCRIPTEN});
+  }
+  
   @SafeVarargs
   private final <T> List<T> listof(T... elements) {
     return Arrays.asList(elements);
@@ -65,7 +75,7 @@ class EmscriptenCommandBuilderTest {
       @Test
       void whenFileIsNotSet() {
         EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
-        builder.setEmscripten(EMSCRIPTEN);
+        builder.setEmscripten(emscripten);
 
         assertThatExceptionOfType(PreconditionViolationException.class)
             .isThrownBy(builder::toList);
@@ -80,7 +90,7 @@ class EmscriptenCommandBuilderTest {
       @BeforeEach
       void setUp() {
         builder = new EmscriptenCommandBuilder();
-        builder.setEmscripten(EMSCRIPTEN);
+        builder.setEmscripten(emscripten);
         builder.setFile(FILE);
       }
 
@@ -170,8 +180,9 @@ class EmscriptenCommandBuilderTest {
         builder.setReferenceOutputDir(Paths.get("src"));
         builder.include(INCLUDE_ARMADILLO);
 
-        assertThat(builder.toList()).isEqualTo(
-            listof(EMSCRIPTEN, Paths.get("../").resolve("model.cpp").toString(),
+        assertThat(builder.toList()).isEqualTo(listof(
+            EMSCRIPTEN,
+            Paths.get("../").resolve("model.cpp").toString(),
                 "-I\"" + Paths.get("../").resolve(INCLUDE_ARMADILLO).normalize().toString()
                     + "\""));
       }
@@ -195,7 +206,7 @@ class EmscriptenCommandBuilderTest {
       @Test
       void WhenFileIsNotSet() {
         EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
-        builder.setEmscripten(EMSCRIPTEN);
+        builder.setEmscripten(emscripten);
 
         assertThat(builder.toString()).isEqualTo(EMPTY_STRING);
       }
@@ -216,7 +227,7 @@ class EmscriptenCommandBuilderTest {
       @BeforeEach
       void setUp() {
         builder = new EmscriptenCommandBuilder();
-        builder.setEmscripten(EMSCRIPTEN);
+        builder.setEmscripten(emscripten);
         builder.setFile(FILE);
       }
 
@@ -265,7 +276,8 @@ class EmscriptenCommandBuilderTest {
       void whenCommandWithFlag() {
         builder.addFlag(SOME_FLAG);
 
-        assertThat(builder.toString()).isEqualTo(EMSCRIPTEN + " model.cpp " + "-" + SOME_FLAG);
+        assertThat(builder.toString())
+            .isEqualTo(EMSCRIPTEN + " model.cpp " + "-" + SOME_FLAG);
       }
 
       @Test
@@ -294,8 +306,9 @@ class EmscriptenCommandBuilderTest {
 
         assertThat(builder.toString())
             .isEqualTo(
-                EMSCRIPTEN + " model.cpp -o module.js -I\"" + INCLUDE_ARMADILLO.toString()
-                    + "\" -s WASM=1 -DARMA_DONT_USE_WRAPPER -O3 --bind -std=c++11");
+                EMSCRIPTEN + " model.cpp -o module.js "
+                    + "-I\"" + INCLUDE_ARMADILLO.toString() + "\" "
+                    + "-s WASM=1 -DARMA_DONT_USE_WRAPPER -O3 --bind -std=c++11");
       }
     }
   }
