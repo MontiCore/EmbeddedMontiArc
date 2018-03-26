@@ -48,12 +48,20 @@ class AutoSetupIT {
     Path emscriptenBinary = emscriptenBinaryDir.resolve(emcc());
 
     WasmStep wasmStep = new WasmStep(
-        commandBuilderFactory("\"" + emscriptenBinary.toAbsolutePath().toString() + "\""), dir,
+        commandBuilderFactory(emccString(emscriptenBinary)), dir,
         new WasmJsNameProvider());
     Path wasmFile = wasmStep
         .compile(SOME_C_FILE);
 
     assertThat(wasmFile).exists();
+  }
+
+  private String emccString(Path emscriptenBinary) {
+    String emscriptenBinaryString = emscriptenBinary.toAbsolutePath().toString();
+    if (OS_NAME.startsWith(WINDOWS)) {
+      return "\"" + emscriptenBinaryString + "\"";
+    }
+    return emscriptenBinaryString;
   }
 
   private EmscriptenCommandBuilderFactory commandBuilderFactory(String emscripten) {

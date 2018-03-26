@@ -45,7 +45,6 @@ class CppGeneratorIT {
 
   @BeforeEach
   void setUp() throws IOException {
-    System.out.println("Integration Test");
     TemplateFactory templateFactory = new TemplateFactory(TEMPLATE_DIR);
     Template template = templateFactory.getTemplate(CPP_TEMPLATE);
     writer = new StringWriter();
