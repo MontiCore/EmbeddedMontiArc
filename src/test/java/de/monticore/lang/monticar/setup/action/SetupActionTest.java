@@ -41,7 +41,7 @@ class SetupActionTest {
       Path subdir = dir.resolve(SUBDIR_NAME);
       Files.createDirectory(subdir);
 
-      String[] command = concat(shell(), new String[]{"echo", "Hello", ">", SUBDIR_NAME});
+      String[] command = concat(shell(), new String[]{"echo Hello > " + SUBDIR_NAME});
       List<String[]> commands = new ArrayList<>();
       commands.add(command);
 
@@ -56,7 +56,7 @@ class SetupActionTest {
     @Test
     @ExtendWith(TemporaryDirectoryExtension.class)
     void shouldCreateFile(Path dir) {
-      String[] command = concat(shell(), new String[]{"echo", "Hello", ">", FILE_NAME});
+      String[] command = concat(shell(), new String[]{"echo Hello > " + FILE_NAME});
       List<String[]> commands = new ArrayList<>();
       commands.add(command);
 
