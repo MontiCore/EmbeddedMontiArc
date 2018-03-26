@@ -53,6 +53,7 @@ public class EmscriptenConfiguration implements Configuration {
   }
 
   private String emsdk() {
+    System.out.println("Detected OS: " + osName);
     if (osName.startsWith("windows")) {
       String extractionDirString = extractionPath.resolve(".\\emsdk-master\\emsdk.bat")
           .toAbsolutePath().normalize().toString();
