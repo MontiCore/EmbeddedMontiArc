@@ -26,6 +26,7 @@ public class NumberUnit {
   public NumberUnit(float number, String unit) {
     this.number = number;
     this.unit = unit;
+    this.numberUnit = number+unit;
   }
 
   public NumberUnit(ASTUnitNumber astUN) {
@@ -35,6 +36,7 @@ public class NumberUnit {
     } else {
       this.unit = "";
     }
+    this.numberUnit = number+unit;
   }
 
   public float getNumber() {
@@ -43,5 +45,10 @@ public class NumberUnit {
 
   public String getUnit() {
     return unit;
+  }
+
+  // Careful: Non-decimal numbers still get a trailing zero: eg. 4 -> 4.0
+  public String getNumberUnit() {
+    return numberUnit;
   }
 }

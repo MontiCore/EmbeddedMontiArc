@@ -17,7 +17,7 @@ public class GravityChecker implements SimLangASTGravityCoCo {
   
   @Override
   public void check(ASTGravity obj) {
-    String[] allowedUnits = {"m/s^2"};
+    String[] allowedUnits = {"m/s^2","m/s²","g"};
     ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
     for (NumberUnit nu : input) {
@@ -27,7 +27,7 @@ public class GravityChecker implements SimLangASTGravityCoCo {
         Log.error("Range Error: gravity must be at least 0.");
       }
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: gravity missing or invalid unit.");
+        Log.error("Unit Error: gravity missing or invalid unit." + "Got: "+checker.getUnit());
       }
     }
   }

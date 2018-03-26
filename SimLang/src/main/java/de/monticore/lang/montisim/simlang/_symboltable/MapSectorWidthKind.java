@@ -2,9 +2,9 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class MapOverlapSymbolKind implements SymbolKind {
-  public static final MapOverlapSymbolKind INSTANCE = new MapOverlapSymbolKind();
-  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.MapOverlapSymbolKind";
+public class MapSectorWidthKind implements SymbolKind {
+  public static final MapSectorWidthKind INSTANCE = new MapSectorWidthKind();
+  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.MapSectorWidthKind";
 
   @Override
   public String getName() {

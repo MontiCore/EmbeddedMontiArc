@@ -98,7 +98,15 @@ public class SimLangContainer {
     if(pedestrian_density != null)
       this.pedestrian_density = Optional.of(pedestrian_density.getPedestrianDensity());
 
-    //DAS LÄSST SICH VEREINFACHEN DERP
+    Collection<PedestrianSymbol> pedestrians = symTab.<PedestrianSymbol>resolveMany(name+"pedestrian", PedestrianSymbol.KIND);
+    if(!pedestrians.isEmpty()) {
+      ArrayList<Pedestrian> content = new ArrayList<>();
+      for(PedestrianSymbol sym : pedestrians) {
+        content.add(sym.getPedestrian());
+      }
+      this.pedestrians = Optional.of(content);
+    }
+
     Collection<ExplicitVehicleSymbol> explicit_vehicles = symTab.<ExplicitVehicleSymbol>resolveMany(name+"explicit_vehicles", ExplicitVehicleSymbol.KIND);
     if(!explicit_vehicles.isEmpty()) {
       ArrayList<ExplicitVehicle> content = new ArrayList<>();

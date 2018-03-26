@@ -3,36 +3,32 @@ package de.monticore.lang.montisim.simlang.util;
 //Feel free to find a better name <3
 
 import de.monticore.lang.montisim.weather.cocos.NumberUnit;
+import jline.internal.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class AlternativeInput {
   private Optional<NumberUnit> nUnit = Optional.empty();
-  private Optional<ArrayList> list = Optional.empty();
+  private Optional<ArrayList<NumberUnit>> list = Optional.empty();
   private Optional<Range> range = Optional.empty();
-  private Optional<Lambda> lambda = Optional.empty();
 
-  public AlternativeInput(Optional opt) {
-    if(opt.get() instanceof NumberUnit) {
-      this.nUnit = opt;
-    }
-    else if(opt.get() instanceof ArrayList) {
-      this.list = opt;
-    }
-    else if(opt.get() instanceof Range) {
-      this.range = opt;
-    }
-    else{
-      this.lambda = opt;
-    }
+  public AlternativeInput(NumberUnit nu) {
+    this.nUnit = Optional.of(nu);
+  }
+  public AlternativeInput(ArrayList list) {
+    this.list = Optional.of(list);
+  }
+  public AlternativeInput(Range range) {
+    this.range = Optional.of(range);
   }
 
   public Optional<NumberUnit> getNUnit() {
     return this.nUnit;
   }
 
-  public Optional<ArrayList> getList() {
+  public Optional<ArrayList<NumberUnit>> getList() {
     return this.list;
   }
 
@@ -40,8 +36,5 @@ public class AlternativeInput {
     return this.range;
   }
 
-  public Optional<Lambda> getLambda() {
-    return this.lambda;
-  }
 
 }

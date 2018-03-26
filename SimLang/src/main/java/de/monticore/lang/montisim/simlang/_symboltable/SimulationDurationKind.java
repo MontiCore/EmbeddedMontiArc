@@ -2,9 +2,9 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class TimeSymbolKind implements SymbolKind {
-  public static final TimeSymbolKind INSTANCE = new TimeSymbolKind();
-  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.TimeSymbolKind";
+public class SimulationDurationKind implements SymbolKind {
+  public static final SimulationDurationKind INSTANCE = new SimulationDurationKind();
+  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.SimulationDurationKind";
 
   @Override
   public String getName() {

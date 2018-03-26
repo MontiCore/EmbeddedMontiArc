@@ -20,7 +20,7 @@ public class RandomVehicle {
     return amount;
   }
 
-  public Optional getPath() {
+  public Optional<Path2D> getPath() {
     return path;
   }
 }

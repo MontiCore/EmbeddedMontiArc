@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class WeatherSymbol extends de.monticore.symboltable.CommonSymbol {
 
-  public static final WeatherSymbolKind KIND = WeatherSymbolKind.INSTANCE;
+  public static final WeatherKind KIND = WeatherKind.INSTANCE;
   private final ArrayList<Weather> weathers;
 
   public WeatherSymbol(String name, ArrayList<Weather> weathers) {

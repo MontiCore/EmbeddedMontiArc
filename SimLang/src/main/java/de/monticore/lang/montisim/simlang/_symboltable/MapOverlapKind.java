@@ -2,9 +2,9 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class GravitySymbolKind implements SymbolKind {
-  public static final GravitySymbolKind INSTANCE = new GravitySymbolKind();
-  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.GravitySymbolKind";
+public class MapOverlapKind implements SymbolKind {
+  public static final MapOverlapKind INSTANCE = new MapOverlapKind();
+  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.MapOverlapKind";
 
   @Override
   public String getName() {

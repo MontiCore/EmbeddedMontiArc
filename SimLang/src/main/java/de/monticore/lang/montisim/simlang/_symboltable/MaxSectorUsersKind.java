@@ -2,9 +2,9 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class MapNameSymbolKind implements SymbolKind {
-  public static final MapNameSymbolKind INSTANCE = new MapNameSymbolKind();
-  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.MapNameSymbolKind";
+public class MaxSectorUsersKind implements SymbolKind {
+  public static final MaxSectorUsersKind INSTANCE = new MaxSectorUsersKind();
+  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.MaxSectorUsersKind";
 
   @Override
   public String getName() {

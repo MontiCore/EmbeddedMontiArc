@@ -39,23 +39,7 @@ public class SimLangLang extends SimLangLanguage {
     addResolvingFilter(new SimulationLoopFrequencyResolvingFilter());
     addResolvingFilter(new SimulationDurationResolvingFilter());
     addResolvingFilter(new SimulationTypeResolvingFilter());
-    //addResolvingFilter(new WeatherResolvingFilter());
-    //addResolvingFilter(new TemperatureResolvingFilter());
-    //addResolvingFilter(new CloudingResolvingFilter());
-    //addResolvingFilter(new SightResolvingFilter());
-    //addResolvingFilter(new PrecipitationtypeResolvingFilter());
-    //addResolvingFilter(new HumidityResolvingFilter());
-    //addResolvingFilter(new PressureResolvingFilter());
-    //addResolvingFilter(new WindstrengthResolvingFilter());
-    //addResolvingFilter(new WinddirectionResolvingFilter());
-    //addResolvingFilter(new PrecipitationAmountResolvingFilter());
-    //addResolvingFilter(new WeatherPhenomenaResolvingFilter());
-    //addResolvingFilter(new OpticalPhenomenaResolvingFilter());
-    //addResolvingFilter(new ArtificialPhenomenaResolvingFilter());
     addResolvingFilter(new TimeResolvingFilter());
-    addResolvingFilter(new MapPathResolvingFilter());
-    addResolvingFilter(new MapNameResolvingFilter());
-    addResolvingFilter(new MapHeightResolvingFilter());
     addResolvingFilter(new MapOverlapResolvingFilter());
     addResolvingFilter(new MapSectorWidthResolvingFilter());
     addResolvingFilter(new MapSectorHeightResolvingFilter());
@@ -63,14 +47,18 @@ public class SimLangLang extends SimLangLanguage {
     addResolvingFilter(new TimeoutResolvingFilter());
     addResolvingFilter(new GravityResolvingFilter());
     addResolvingFilter(new PedestrianDensityResolvingFilter());
-    //addResolvingFilter(new PedestrianResolvingFilter());
+
+    addResolvingFilter(new MapPathResolvingFilter());
+    addResolvingFilter(new MapNameResolvingFilter());
+    addResolvingFilter(new MapHeightResolvingFilter());
+
+    addResolvingFilter(new PedestrianResolvingFilter());
     addResolvingFilter(new ExplicitVehicleResolvingFilter());
-    //addResolvingFilter(new PathedVehicleResolvingFilter());
-    //addResolvingFilter(new RandomVehicleResolvingFilter());
-    //addResolvingFilter(new ChannelResolvingFilter());
-    //addResolvingFilter(new TransferrateResolvingFilter());
-    //addResolvingFilter(new LatencyResolvingFilter());
-    //addResolvingFilter(new OutageResolvingFilter());
-    //addResolvingFilter(new AreaResolvingFilter());
+    addResolvingFilter(new PathedVehicleResolvingFilter());
+    addResolvingFilter(new RandomVehicleResolvingFilter());
+
+    addResolvingFilter(new ChannelResolvingFilter());
+
+    addResolvingFilter(new WeatherResolvingFilter());
   }
 }

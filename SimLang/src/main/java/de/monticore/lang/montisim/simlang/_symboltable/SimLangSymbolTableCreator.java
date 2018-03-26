@@ -20,6 +20,7 @@ import jline.internal.Log;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Deque;
 
@@ -30,6 +31,19 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   }
   public SimLangSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
+  }
+
+  private Float nullOrFloat(Optional<ASTUnitNumber> opt) {
+    if(opt.isPresent()) {
+      return opt.get().getNumber().get().floatValue();
+    }
+    return null;
+  }
+  private Integer nullOrInteger(Optional<ASTUnitNumber> opt) {
+    if(opt.isPresent()) {
+      return opt.get().getNumber().get().intValue();
+    }
+    return null;
   }
 
   // Scope Symbols
@@ -108,7 +122,11 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     AlternativeInput windD = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
     AlternativeInput precA = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
 
-    Sight sight = obj.getSights().size() > 0 ? new Sight(getUsedAlternative(obj.getSights().get(0).getAlternativeInput().get())) : new Sight();
+    Sight sight = null;
+    if(obj.getSights().size() > 0) {
+      sight = !obj.getSights().get(0).isUnlimited() ? new Sight(getUsedAlternative(obj.getSights().get(0).getAlternativeInput().get())) : new Sight();
+    }
+
 
     SimLangEnums.CloudingTypes cloud = null;
     if(obj.getCloudings().size() > 0) {
@@ -219,6 +237,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   
   @Override
   public void visit(final ASTChannel node) {
+    Log.info("visit channel","symtabcreator");
     SimLangEnums.ChannelTypes type;
     switch (node.getChannelType()) {
       case 0: type = SimLangEnums.ChannelTypes.FIXED;
@@ -256,13 +275,20 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
 
   private AlternativeInput getUsedAlternative(ASTAlternativeInput node) {
     if (node.unitNumberIsPresent()) {
-      return new AlternativeInput(node.getUnitNumber());
+      return new AlternativeInput(new NumberUnit(node.getUnitNumber().get()));
     }
     else if(node.unitNumberListIsPresent()) {
-      return new AlternativeInput(node.getUnitNumberList());
+      ArrayList<NumberUnit> tmplist = new ArrayList<>();
+      for(ASTUnitNumber un : node.getUnitNumberList().get().getUnitNumbers()) {
+        tmplist.add(new NumberUnit(un));
+      }
+      return new AlternativeInput(tmplist);
     }
     else if(node.rangeIsPresent()) {
-      return new AlternativeInput(node.getRange());
+      NumberUnit start = new NumberUnit(node.getRange().get().getStartValue().floatValue(), node.getRange().get().getStartUnit().toString());
+      NumberUnit step = new NumberUnit(node.getRange().get().getStepValue().floatValue(), node.getRange().get().getStepUnit().toString());
+      NumberUnit end = new NumberUnit(node.getRange().get().getEndValue().floatValue(), node.getRange().get().getEndUnit().toString());
+      return new AlternativeInput(new Range(start, step, end));
     }
     else {
       Log.error("Error: unhandled alternative input.");
@@ -284,7 +310,6 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTSimulationType node) {
-    System.out.println("AHA!");
     final SimulationTypeSymbol symbol;
     switch(node.getSimType()) {
       case 0:
@@ -309,8 +334,8 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     if(node.getSingleTime().isPresent()) {
       Time val = new Time(node.getSingleTime().get().getHours().getNumber().get().intValue(),
                           node.getSingleTime().get().getMinutes().getNumber().get().intValue(),
-                          node.getSingleTime().get().getSeconds().orElse(null).getNumber().get().intValue(),
-                          node.getSingleTime().get().getMilliseconds().orElse(null).getNumber().get().intValue());
+                          nullOrInteger(node.getSingleTime().get().getSeconds()),
+                          nullOrInteger(node.getSingleTime().get().getMilliseconds()));
       list.add(val);
       symbol = new TimeSymbol("time", list);
     }
@@ -318,8 +343,8 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
       for(ASTSingleTime ele : node.getTimeList().get().getSingleTimes()) {
         list.add(new Time(ele.getHours().getNumber().get().intValue(),
                           ele.getMinutes().getNumber().get().intValue(),
-                          ele.getSeconds().orElse(null).getNumber().get().intValue(),
-                          ele.getMilliseconds().orElse(null).getNumber().get().intValue()));
+                          nullOrInteger(ele.getSeconds()),
+                          nullOrInteger(ele.getMilliseconds())));
       }
       symbol = new TimeSymbol("time", list);
     }
@@ -330,7 +355,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTMapName node) {
-    final MapNameSymbol symbol = new MapNameSymbol("map_name", (node.getMapName()+node.getFileFormat()));
+    final MapNameSymbol symbol = new MapNameSymbol("map_name", node.getMapName(),node.getFileFormat());
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(final ASTMapHeight node) {
@@ -382,6 +407,18 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     addToScopeAndLinkWithNode(symbol, node);
   }
 
+  public void visit(ASTPedestrians node) {
+    final PedestrianSymbol symbol = new PedestrianSymbol("pedestrian",
+            new Pedestrian(node.getStartX().getNumber().get().floatValue(),
+                    node.getStartY().getNumber().get().floatValue(),
+                    node.getDestX().getNumber().get().floatValue(),
+                    node.getDestY().getNumber().get().floatValue(),
+                    nullOrFloat(node.getStartZ()),
+                    nullOrFloat(node.getDestZ())
+                    ));
+    addToScopeAndLinkWithNode(symbol, node);
+  }
+
   public void visit(ASTExplicitVehicle node) {
     final ExplicitVehicleSymbol symbol = new ExplicitVehicleSymbol("explicit_vehicle",
             new ExplicitVehicle(node.getName(),
@@ -390,7 +427,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                     node.getDestX().getNumber().get().floatValue(),
                     node.getDestY().getNumber().get().floatValue(),
                     node.getStartRot().getNumber().get().floatValue(),
-                    node.getDestZ().orElse(null).getNumber().get().floatValue()
+                    nullOrFloat(node.getDestZ())
     ));
     addToScopeAndLinkWithNode(symbol, node);
   }
@@ -402,17 +439,17 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                     node.getDestX().getNumber().get().floatValue(),
                     node.getDestY().getNumber().get().floatValue(),
                     new NumberUnit(node.getDestRadius()),
-                    node.getAmount().orElse(null).getNumber().get().floatValue()
+                    nullOrFloat(node.getAmount())
             ));
     addToScopeAndLinkWithNode(symbol, node);
   }
   public void visit(ASTRandomVehicle node) {
     final RandomVehicleSymbol symbol = new RandomVehicleSymbol("random_vehicle",
               new RandomVehicle(node.getAmount().getNumber().get().floatValue(),
-                      node.getStartX().orElse(null).getNumber().get().floatValue(),
-                      node.getStartY().orElse(null).getNumber().get().floatValue(),
-                      node.getDestX().orElse(null).getNumber().get().floatValue(),
-                      node.getDestY().orElse(null).getNumber().get().floatValue()
+                      nullOrFloat(node.getStartX()),
+                      nullOrFloat(node.getStartY()),
+                      nullOrFloat(node.getDestX()),
+                      nullOrFloat(node.getDestY())
                       ));
     addToScopeAndLinkWithNode(symbol, node);
   }

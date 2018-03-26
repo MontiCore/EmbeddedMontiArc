@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class MapSectorHeightSymbol extends CommonSymbol{
 
-  public static final MapSectorHeightSymbolKind KIND = MapSectorHeightSymbolKind.INSTANCE;
+  public static final MapSectorHeightKind KIND = MapSectorHeightKind.INSTANCE;
   private AlternativeInput mapSectorHeight;
 
   public MapSectorHeightSymbol(String name, AlternativeInput mapSectorHeight) {

@@ -2,13 +2,12 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.lang.montisim.simlang.util.Time;
-import de.monticore.lang.montisim.simlang.util.TimeAlternatives;
 
 import java.util.ArrayList;
 
 public class TimeSymbol extends CommonSymbol{
 
-  public static final TimeSymbolKind KIND = TimeSymbolKind.INSTANCE;
+  public static final TimeKind KIND = TimeKind.INSTANCE;
   private ArrayList<Time> time;
 
   public TimeSymbol(String name, ArrayList time) {

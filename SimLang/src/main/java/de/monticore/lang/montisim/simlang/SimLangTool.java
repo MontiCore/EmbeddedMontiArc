@@ -137,10 +137,12 @@ public class SimLangTool {
   public static void checkDefaultCoCos(ASTSimLangCompilationUnit ast) {
     SimLangCoCoChecker defaultCoCos = new SimLangCoCoChecker();
 
+    Log.info("Data CoCo...",SimLangTool.class.getName());
     //DataStructure Checkers --Need to runs first
     defaultCoCos.addCoCo(new NoInfRangeChecker());
     defaultCoCos.addCoCo(new CoordinateChecker());
 
+    Log.info("Simulation CoCo...",SimLangTool.class.getName());
     //Simulation CoCos
     defaultCoCos.addCoCo(new RequiredSimulationEntries());
     defaultCoCos.addCoCo(new NoMultipleSimulationEntries());
@@ -153,6 +155,7 @@ public class SimLangTool {
     defaultCoCos.addCoCo(new GravityChecker());
     defaultCoCos.addCoCo(new PedestrianDensityChecker());
 
+    Log.info("Weather CoCo...",SimLangTool.class.getName());
     //Weather CoCos
     defaultCoCos.addCoCo(new NoMultipleWeatherObjEntries());
     defaultCoCos.addCoCo(new TemperatureChecker());
@@ -163,6 +166,7 @@ public class SimLangTool {
     defaultCoCos.addCoCo(new WindStrengthChecker());
     defaultCoCos.addCoCo(new WindDirectionChecker());
 
+    Log.info("Channel CoCo...", SimLangTool.class.getName());
     //Communication CoCos
     defaultCoCos.addCoCo(new NoDuplicateChannelNames());
     defaultCoCos.addCoCo(new OneChannelEntryEach());

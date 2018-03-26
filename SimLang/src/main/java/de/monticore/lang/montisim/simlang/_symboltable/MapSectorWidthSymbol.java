@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class MapSectorWidthSymbol extends CommonSymbol{
 
-  public static final MapSectorWidthSymbolKind KIND = MapSectorWidthSymbolKind.INSTANCE;
+  public static final MapSectorWidthKind KIND = MapSectorWidthKind.INSTANCE;
   private AlternativeInput mapSectorWidth;
 
   public MapSectorWidthSymbol(String name, AlternativeInput mapSectorWidth) {

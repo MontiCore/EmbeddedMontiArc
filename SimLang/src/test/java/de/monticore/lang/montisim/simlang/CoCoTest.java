@@ -42,9 +42,9 @@ public class CoCoTest {
 
   private void logEpilogue(CoCoTester tester) {
     if (!tester.getErrors().isEmpty()) {
-      Log.debug("Models in error", "CoCoTester");
+      Log.debug("Models in error", CoCoTest.class.getName());
       for (String model : tester.getErrors()) {
-        Log.debug("  " + model, "CoCoTester");
+        Log.debug("  " + model, CoCoTest.class.getName());
       }
     }
     Log.info(
@@ -85,7 +85,7 @@ public class CoCoTest {
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
       if (file.toFile().isFile() && (file.toString().toLowerCase().endsWith(fileEnding))) {
-        Log.debug("Parsing file " + file.toString(), "CoCoTester");
+        Log.debug("Parsing file " + file.toString(), CoCoTest.class.getName());
         testCount++;
         ASTSimLangCompilationUnit ast = SimLangTool.parse(file.toString());
         Log.getFindings().clear();
@@ -99,6 +99,7 @@ public class CoCoTest {
         boolean isSuccess = Log.getFindings().isEmpty();
         boolean isTestFailed = (!isSuccess && !expectFailure) || (isSuccess && expectFailure);
         if (isTestFailed) {
+          System.out.println("smth went wrong: "+file.toString());
           errors.add(file.toString());
         }
       }

@@ -2,9 +2,9 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class ChannelSymbolKind implements SymbolKind {
-  public static final ChannelSymbolKind INSTANCE = new ChannelSymbolKind();
-  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.ChannelSymbolKind";
+public class GravityKind implements SymbolKind {
+  public static final GravityKind INSTANCE = new GravityKind();
+  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.GravityKind";
 
   @Override
   public String getName() {

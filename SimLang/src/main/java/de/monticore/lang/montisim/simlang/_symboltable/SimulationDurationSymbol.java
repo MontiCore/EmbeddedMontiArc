@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class SimulationDurationSymbol extends CommonSymbol{
 
-  public static final SimulationDurationSymbolKind KIND = SimulationDurationSymbolKind.INSTANCE;
+  public static final SimulationDurationKind KIND = SimulationDurationKind.INSTANCE;
   private AlternativeInput simulationDuration;
 
   public SimulationDurationSymbol(String name, AlternativeInput simulationDuration) {

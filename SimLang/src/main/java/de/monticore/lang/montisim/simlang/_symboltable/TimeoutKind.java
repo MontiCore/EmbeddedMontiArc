@@ -2,9 +2,9 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class MaxSectorUsersSymbolKind implements SymbolKind {
-  public static final MaxSectorUsersSymbolKind INSTANCE = new MaxSectorUsersSymbolKind();
-  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.MaxSectorUsersSymbolKind";
+public class TimeoutKind implements SymbolKind {
+  public static final TimeoutKind INSTANCE = new TimeoutKind();
+  private static final String NAME = "de.monticore.lang.montisim. de.monticore.lang.montisim.simlang._symboltable.TimeoutKind";
 
   @Override
   public String getName() {

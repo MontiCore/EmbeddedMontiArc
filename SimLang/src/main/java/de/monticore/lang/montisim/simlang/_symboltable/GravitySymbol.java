@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class GravitySymbol extends CommonSymbol{
 
-  public static final GravitySymbolKind KIND = GravitySymbolKind.INSTANCE;
+  public static final GravityKind KIND = GravityKind.INSTANCE;
   private AlternativeInput gravity;
 
   public GravitySymbol(String name, AlternativeInput gravity) {

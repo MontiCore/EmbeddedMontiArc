@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class TimeoutSymbol extends CommonSymbol{
 
-  public static final TimeoutSymbolKind KIND = TimeoutSymbolKind.INSTANCE;
+  public static final TimeoutKind KIND = TimeoutKind.INSTANCE;
   private AlternativeInput timeout;
 
   public TimeoutSymbol(String name, AlternativeInput timeout) {

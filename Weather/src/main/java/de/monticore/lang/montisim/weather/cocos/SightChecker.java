@@ -18,7 +18,6 @@ public class SightChecker implements WeatherASTSightCoCo {
     String[] allowedUnits = {"mm","cm","dm","m","km"};
     
     if(obj.isUnlimited()) {
-      System.out.println("[Done] SightChecker");
       return;
     }
     ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput().get()).getExtractedValues();

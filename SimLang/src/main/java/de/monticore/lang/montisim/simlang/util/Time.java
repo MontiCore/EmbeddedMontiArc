@@ -31,11 +31,11 @@ public class Time {
     return minutes;
   }
 
-  public Optional getSeconds() {
+  public Optional<Integer> getSeconds() {
     return seconds;
   }
 
-  public Optional getMilliseconds() {
+  public Optional<Integer> getMilliseconds() {
     return milliseconds;
   }
 }

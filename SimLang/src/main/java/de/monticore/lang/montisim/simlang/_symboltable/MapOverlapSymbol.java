@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class MapOverlapSymbol extends CommonSymbol{
 
-  public static final MapOverlapSymbolKind KIND = MapOverlapSymbolKind.INSTANCE;
+  public static final MapOverlapKind KIND = MapOverlapKind.INSTANCE;
   private AlternativeInput mapOverlap;
 
   public MapOverlapSymbol(String name, AlternativeInput mapOverlap) {

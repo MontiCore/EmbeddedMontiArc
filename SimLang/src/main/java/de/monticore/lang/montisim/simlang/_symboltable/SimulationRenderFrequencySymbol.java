@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class SimulationRenderFrequencySymbol extends CommonSymbol{
 
-  public static final SimulationRenderFrequencySymbolKind KIND = SimulationRenderFrequencySymbolKind.INSTANCE;
+  public static final SimulationRenderFrequencyKind KIND = SimulationRenderFrequencyKind.INSTANCE;
   private AlternativeInput simulationRenderFrequency;
 
   public SimulationRenderFrequencySymbol(String name, AlternativeInput simulationRenderFrequency) {

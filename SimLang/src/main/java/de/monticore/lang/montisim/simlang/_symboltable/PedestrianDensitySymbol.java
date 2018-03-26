@@ -5,7 +5,7 @@ import de.monticore.symboltable.CommonSymbol;
 
 public class PedestrianDensitySymbol extends CommonSymbol{
 
-  public static final PedestrianDensitySymbolKind KIND = PedestrianDensitySymbolKind.INSTANCE;
+  public static final PedestrianDensityKind KIND = PedestrianDensityKind.INSTANCE;
   private AlternativeInput pedestrianDensity;
 
   public PedestrianDensitySymbol(String name, AlternativeInput pedestrianDensity) {

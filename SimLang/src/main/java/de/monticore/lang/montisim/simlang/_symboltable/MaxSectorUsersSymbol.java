@@ -5,7 +5,7 @@ import de.monticore.lang.montisim.simlang.util.AlternativeInput;
 
 public class MaxSectorUsersSymbol extends CommonSymbol{
 
-  public static final MaxSectorUsersSymbolKind KIND = MaxSectorUsersSymbolKind.INSTANCE;
+  public static final MaxSectorUsersKind KIND = MaxSectorUsersKind.INSTANCE;
   private AlternativeInput maxSectorUsers;
 
   public MaxSectorUsersSymbol(String name, AlternativeInput maxSectorUsers) {
