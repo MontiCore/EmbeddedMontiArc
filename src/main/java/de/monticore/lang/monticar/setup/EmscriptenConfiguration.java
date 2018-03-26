@@ -9,23 +9,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
 public class EmscriptenConfiguration implements Configuration {
 
-  @Value("https://github.com/juj/emsdk/archive/master.zip")
   private URL emscripten;
-
-  @Value("#{systemProperties['user.home']}/emscripten/emscripten.zip")
   private Path filePath;
-
-  @Value("#{systemProperties['user.home']}/emscripten/")
   private Path extractionPath;
-
-  @Value("#{systemProperties['os.name'].toLowerCase()}")
   private String osName;
+
+  public EmscriptenConfiguration(URL emscripten, Path filePath, Path extractionPath,
+      String osName) {
+    this.emscripten = emscripten;
+    this.filePath = filePath;
+    this.extractionPath = extractionPath;
+    this.osName = osName;
+  }
 
   public List<Action> getActions() {
     List<Action> actions = new ArrayList<>();
@@ -59,7 +57,7 @@ public class EmscriptenConfiguration implements Configuration {
     Path emsdk = Paths.get(osName.startsWith("windows") ?
         ".\\emsdk-master\\emsdk.bat" :
         "./emsdk-master/emsdk");
-    return extractionPath.resolve(emsdk).toAbsolutePath().normalize().toString();
+    return "\"" + extractionPath.resolve(emsdk).toAbsolutePath().normalize().toString() + "\"";
   }
 
   private String[] arrayof(String... strings) {
