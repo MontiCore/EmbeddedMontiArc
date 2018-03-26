@@ -28,16 +28,12 @@ public class SymboltableTest {
     SimLangTool.checkDefaultCoCos(ast);
     final Scope symtab = SimLangTool.createSymbolTable(lang, ast);
     Log.info(symtab.getSubScopes().get(0).toString(),"symtest");
-    Log.info(symtab.getSubScopes().get(0).getName().get(),"symtest");
-    Log.info(((SimulationRenderFrequencySymbol)(((Collection)symtab.getSubScopes().get(0).getLocalSymbols().values().toArray()[0]).toArray()[0])).getPackageName(),"symtest");
-    Log.info(((SimulationRenderFrequencySymbol)(((Collection)symtab.getSubScopes().get(0).getLocalSymbols().values().toArray()[0]).toArray()[0])).getName(),"symtest");
-    Log.info(((SimulationRenderFrequencySymbol)(((Collection)symtab.getSubScopes().get(0).getLocalSymbols().values().toArray()[0]).toArray()[0])).getFullName(),"symtest");
 
     //resolve and check for correct/expected values
     final SimulationRenderFrequencySymbol simRenFre = symtab.<SimulationRenderFrequencySymbol>resolve("simlang.test.ASTTest.sim_render_frequency", SimulationRenderFrequencySymbol.KIND).orElse(null);
     assertNotNull(simRenFre);
     Log.info(simRenFre.getSimulationRenderFrequency().getNUnit().toString(),"symtest");
-    //assert simRenFre.getSimulationRenderFrequency().getNUnit().get().getNumberUnit().equals("60ms");
+    assert simRenFre.getSimulationRenderFrequency().getNUnit().get().getNumberUnit().equals("60.0ms");
 
     final SimulationLoopFrequencySymbol simLoFre = symtab.<SimulationLoopFrequencySymbol>resolve("simlang.test.ASTTest.sim_loop_frequency", SimulationLoopFrequencySymbol.KIND).orElse(null);
     assertNotNull(simLoFre);
@@ -139,12 +135,12 @@ public class SymboltableTest {
 
     final Collection<RandomVehicleSymbol> raVe = symtab.resolveMany("simlang.test.ASTTest.random_vehicle", RandomVehicleSymbol.KIND);
     assert !raVe.isEmpty();
-    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getAmount() == 1000f; //no idea why this order
-    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getAmount() == 1234f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getPath().get().getStartX() == -150f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getPath().get().getStartY() == -150f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getPath().get().getDestX() == 500f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getPath().get().getDestY() == 600f;
+    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getAmount() == 1000f; //no idea why this order
+    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getAmount() == 1234f;
+    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getStartX() == -150f;
+    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getStartY() == -150f;
+    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getDestX() == 500f;
+    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getDestY() == 600f;
 
     final Collection<ChannelSymbol> ch = symtab.resolveMany("simlang.test.ASTTest.channel", ChannelSymbol.KIND);
     assert !ch.isEmpty();

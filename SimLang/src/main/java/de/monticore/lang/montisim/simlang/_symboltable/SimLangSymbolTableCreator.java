@@ -259,6 +259,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
               new Point2D.Float(node.getAreas().get(0).getPoint2().get().getPosX().getNumber().get().floatValue(),
                                 node.getAreas().get(0).getPoint2().get().getPosY().getNumber().get().floatValue()));
     }
+    Log.info("creating symbol "+node.getName(),"symtabcreator");
     final ChannelSymbol symbol = new ChannelSymbol("channel",
             new Channel(type,
               node.getName(),
@@ -267,7 +268,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
                     getUsedAlternative(node.getOutages().get(0).getAlternativeInput()),
                     area
             ));
-
+    Log.info("appending symbol "+node.getName()," -symtabcreator-");
     addToScopeAndLinkWithNode(symbol, node);
   }
 

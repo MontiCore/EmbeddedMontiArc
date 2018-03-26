@@ -207,7 +207,7 @@ public class SimLangTool {
     final ASTSimLangCompilationUnit ast = parse(model);
     checkDefaultCoCos(ast);
     final Scope modelTopScope = createSymbolTable(lang, ast);
-    return new SimLangContainer(modelTopScope);
+    return new SimLangContainer(modelTopScope, String.join(".",ast.getPackage()), ast.getSimulation().getName());
   }
   /*
   public static SimLangContainer parseIntoContainer(String simModel, String carModel) {

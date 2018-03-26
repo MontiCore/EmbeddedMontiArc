@@ -165,9 +165,14 @@
          -->
 
         <mirror>
-            <id>github</id>
+            <id>github1</id>
             <mirrorOf>*</mirrorOf>
             <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+        </mirror>
+        <mirror>
+            <id>github2</id>
+            <mirrorOf>github2</mirrorOf>
+            <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
         </mirror>
         <mirror>
             <id>maven-central</id>

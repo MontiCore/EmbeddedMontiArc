@@ -13,4 +13,8 @@ public class WeatherSymbol extends de.monticore.symboltable.CommonSymbol {
     super(name, KIND);
     this.weathers = weathers;
   }
+
+  public ArrayList<Weather> getWeathers() {
+    return this.weathers;
+  }
 }
