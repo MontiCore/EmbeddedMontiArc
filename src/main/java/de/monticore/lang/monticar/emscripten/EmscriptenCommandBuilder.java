@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 /**
  * This class helps building emscripten compile commands. Parameters are typed as much as possible.
  * However, they are by no means complete. <p>
- * At a minimum, it is required to call {@link #setEmscripten(String)} and {@link #setFile(Path)}.
+ * At a minimum, it is required to call {@link #setEmscripten(Emscripten)} and {@link #setFile(Path)}.
  */
 public class EmscriptenCommandBuilder implements CommandBuilder {
 
   private Path referenceDir;
-  private String emscripten;
+  private Emscripten emscripten;
   private Path file;
   private final List<Path> includes = new ArrayList<>();
   private final List<Option> options = new ArrayList<>();
@@ -54,7 +54,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    *
    * @param emscripten emscripten command
    */
-  public EmscriptenCommandBuilder setEmscripten(String emscripten) {
+  public EmscriptenCommandBuilder setEmscripten(Emscripten emscripten) {
     this.emscripten = emscripten;
     return this;
   }
@@ -173,7 +173,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     checkParameters();
 
     List<String> list = new ArrayList<>();
-    list.add(emscripten);
+    list.addAll(emscripten());
     list.add(file());
     list.addAll(outputFile());
     list.addAll(includes());
@@ -225,6 +225,10 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     return Objects
         .hash(referenceDir, emscripten, file, includes, options, flags, optimizationLevel, bind,
             std, outputFile);
+  }
+
+  private List<String> emscripten() {
+    return Arrays.asList(emscripten.getCommand());
   }
 
   private String file() {

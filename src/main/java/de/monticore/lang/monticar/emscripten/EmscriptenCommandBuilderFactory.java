@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class EmscriptenCommandBuilderFactory {
 
-  private String emscripten;
+  private Emscripten emscripten;
   private Path file;
   private List<Path> includes = new ArrayList<>();
   private List<Option> options = new ArrayList<>();
@@ -36,7 +36,7 @@ public class EmscriptenCommandBuilderFactory {
    * @param emscripten default emscripten command
    * @return this factory
    */
-  public EmscriptenCommandBuilderFactory setEmscripten(String emscripten) {
+  public EmscriptenCommandBuilderFactory setEmscripten(Emscripten emscripten) {
     this.emscripten = emscripten;
     return this;
   }
@@ -165,7 +165,7 @@ public class EmscriptenCommandBuilderFactory {
     private final boolean outputDefault;
 
     DefaultValueEmscriptenCommandBuilder(
-        String emscripten,
+        Emscripten emscripten,
         Path file,
         List<Path> includes,
         List<Option> options,
@@ -218,7 +218,7 @@ public class EmscriptenCommandBuilderFactory {
      * @throws UnsupportedOperationException if a default value was specified
      */
     @Override
-    public EmscriptenCommandBuilder setEmscripten(String emscripten) {
+    public EmscriptenCommandBuilder setEmscripten(Emscripten emscripten) {
       if (emscriptenDefault) {
         throw new UnsupportedOperationException("Default parameter cannot be changed.");
       }

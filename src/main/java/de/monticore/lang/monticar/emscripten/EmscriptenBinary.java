@@ -22,6 +22,6 @@ public class EmscriptenBinary implements Emscripten {
   }
 
   private String emscripten() {
-    return emscripten.toAbsolutePath().toString();
+    return emscripten.toAbsolutePath().normalize().toString();
   }
 }
