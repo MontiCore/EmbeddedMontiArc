@@ -11,6 +11,10 @@ public class SetupAction implements Action {
   private List<String[]> commands;
   private ProcessBuilder pb;
 
+  public SetupAction(List<String[]> commands) {
+    this(null, commands);
+  }
+
   public SetupAction(Path workdir, List<String[]> commands) {
     this.workdir = workdir;
     this.commands = commands;
@@ -27,8 +31,10 @@ public class SetupAction implements Action {
 
   @Override
   public void execute() throws ActionException {
-    pb.directory(workdir.toFile());
     pb.inheritIO();
+    if (workdir != null) {
+      pb.directory(workdir.toFile());
+    }
     for (String[] command : commands) {
       pb.command(command);
 
