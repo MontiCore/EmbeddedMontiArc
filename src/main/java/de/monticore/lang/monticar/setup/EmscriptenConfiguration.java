@@ -6,7 +6,6 @@ import de.monticore.lang.monticar.setup.action.ExtractionAction;
 import de.monticore.lang.monticar.setup.action.SetupAction;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +53,12 @@ public class EmscriptenConfiguration implements Configuration {
   }
 
   private String emsdk() {
-    Path emsdk = Paths.get(osName.startsWith("windows") ?
-        ".\\emsdk-master\\emsdk.bat" :
-        "./emsdk-master/emsdk");
-    return "\"" + extractionPath.resolve(emsdk).toAbsolutePath().normalize().toString() + "\"";
+    if (osName.startsWith("windows")) {
+      String extractionDirString = extractionPath.resolve(".\\emsdk-master\\emsdk.bat")
+          .toAbsolutePath().normalize().toString();
+      return "\"" + extractionDirString + "\"";
+    }
+    return extractionPath.resolve("./emsdk-master/emsdk").toAbsolutePath().normalize().toString();
   }
 
   private String[] arrayof(String... strings) {
