@@ -57,12 +57,6 @@
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
       <version>${se-commons.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
     <dependency>
@@ -118,12 +112,6 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
-        <exclusions>
-            <exclusion>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-            </exclusion>
-        </exclusions>
     </dependency>
   
     <dependency>
