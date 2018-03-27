@@ -8,24 +8,22 @@ package de.monticore.lang.montisim.simlang.cocos;
 import de.monticore.lang.montisim.simlang._ast.ASTArea;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTAreaCoCo;
 
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Optional;
+import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 
 public class AreaChecker implements SimLangASTAreaCoCo {
   
   @Override
   public void check(ASTArea obj) {
-    System.out.println("[CoCo] AreaChecker...");
-    
     if(obj.isGlobal() || !obj.getRadius().isPresent()) {
-      System.out.println("[Done] AreaChecker");
       return;
     }
     
     String[] allowedUnits = {""};
     
-    String input = obj.getRadius().get();
+    NumberUnit input = new NumberUnit(obj.getRadius().get());
     
     UnitNumberChecker checker = new UnitNumberChecker(input, allowedUnits);
     
@@ -35,10 +33,7 @@ public class AreaChecker implements SimLangASTAreaCoCo {
     if(!checker.legitUnit()) {
       Log.error("Unit Error: Area missing or invalid unit.");
     }
-    
     //Coordinates are handled by the Coordinate CoCo
-    
-    System.out.println("[Done] AreaChecker");
   }
   
 }

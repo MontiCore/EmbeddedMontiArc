@@ -1,4 +1,0 @@
-sim WrongSemanticRanges {
-  sim_render_frequency -60ms;
-  map_name error.osm;
-}

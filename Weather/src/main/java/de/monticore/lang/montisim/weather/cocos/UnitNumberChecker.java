@@ -12,15 +12,22 @@ public class UnitNumberChecker extends NumberChecker{
     
     int i = 0;
     while(i < this.unitNumber.length()) {
-      if(Character.isDigit(this.unitNumber.charAt(i)) || this.unitNumber.charAt(i)=='.') {
+      if(Character.isDigit(this.unitNumber.charAt(i)) || this.unitNumber.charAt(i)=='.' || this.unitNumber.charAt(i)=='-') {
         i++;
       } else {
         break;
       }
     }
     
-    setDigit(Float.parseFloat(this.unitNumber.substring(0,i)));
+    this.digit = Float.parseFloat(this.unitNumber.substring(0,i));
     this.unit = this.unitNumber.substring(i);
+  }
+  public UnitNumberChecker(NumberUnit nu, String[] allowedUnits) {
+    super(0.0f);
+    this.digit = nu.number;
+    this.unit = nu.unit;
+    this.unitNumber = nu.numberUnit;
+    this.allowedUnits = allowedUnits;
   }
   
   public String getUnit() {

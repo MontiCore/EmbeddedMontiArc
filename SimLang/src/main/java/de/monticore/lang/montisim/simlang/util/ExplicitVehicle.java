@@ -1,40 +1,37 @@
 package de.monticore.lang.montisim.simlang.util;
 
+import java.util.Optional;
+
 public class ExplicitVehicle {
-  private Float startX;
-  private Float startY;
-  private Float startRot;
-  private Float destX;
-  private Float destY;
+  private Path2D path;
+  private float startRot;
+  private Optional<Float> destZ = Optional.empty();
   private String name;
 
-  public ExplicitVehicle(String name, Float startX, Float startY, Float startRot, Float destX, Float destY) {
-    this.startX = startX;
-    this.startY = startY;
+  public ExplicitVehicle(String name, float startX, float startY, float destX, float destY, float startRot) {
+    this.path = new Path2D(startX, startY, destX, destY);
     this.startRot = startRot;
-    this.destX = destX;
-    this.destY = destY;
+    this.name = name;
+  }
+  public ExplicitVehicle(String name, float startX, float startY, float destX, float destY, float startRot, Float destZ) {
+    this.path = new Path2D(startX, startY, destX, destY);
+    if(destZ != null) {
+      this.destZ = Optional.of(destZ);
+    }
+    this.startRot = startRot;
     this.name = name;
   }
 
-  public Float getStartX() {
-    return startX;
-  }
-
-  public Float getStartY() {
-    return startY;
+  public Path2D getPath() {
+    return path;
   }
 
   public Float getStartRot() {
     return startRot;
   }
 
-  public Float getDestX() {
-    return destX;
-  }
-
-  public Float getDestY() {
-    return destY;
+  public Optional<Float> getDestZ() {
+    return destZ;
   }
 
   public String getName() {

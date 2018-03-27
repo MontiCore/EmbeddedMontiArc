@@ -1,14 +1,14 @@
 /*
- * Simulation-Settings language v0.311
+ * Simulation-Settings language v1.0
  * @author Deniz Schmidt
 */
 package de.monticore.lang.montisim;
 
-grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2, de.monticore.lang.monticar.Ranges  {
-  SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation; 
-  
+grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2  {
+  SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation;
+
   symbol scope Simulation = "sim" Name "{"
-    (SimulationRenderFrequency|
+    ((SimulationRenderFrequency|
     SimulationLoopFrequency|
     SimulationDuration|
     SimulationType|
@@ -26,108 +26,93 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
     Pedestrians|
     PedestrianDensity|
     Vehicles|
-    Channel)* 
-  "}";  
-  
-  TUnitNumberList = "[" TUnitNumber ("," TUnitNumber)* "]";
-  
-  //VariableList = (MathNameExpression ("," MathNameExpression)*);
-  //Lambda = "(" "lambda" VariableList "->" MathArithmeticExpression ")";
-  Lambda = "(" "lambda" ")"; //temp
-  //Range = "(" "range" ")"; //temp
-  
-  /* Stuff that's there, but not needed
-  SimulationRunCount = "sim_runs" count:TUnitNumber; 
-  SynchronousSimulation = "sim_synchronous" (["true"]|["false"]);
-  //+screenshot settings
-  */
-  
-  SimulationRenderFrequency = "sim_render_frequency"  (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  SimulationLoopFrequency = "sim_loop_frequency"  (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  SimulationDuration = "sim_duration" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  SimulationType = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ";";
-  
-  
-  WeatherObj = "{" (Temperature| 
+    Channel) ";")*
+  "}";
+
+  //
+  // Simulator Configuration
+  //
+  SimulationRenderFrequency = "sim_render_frequency" AlternativeInput;
+  SimulationLoopFrequency = "sim_loop_frequency" AlternativeInput;
+  SimulationDuration = "sim_duration" AlternativeInput;
+  SimulationType = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ;
+
+  MapOverlap = "map_overlap" AlternativeInput;
+  MapSectorWidth = "map_sector_width" AlternativeInput;
+  MapSectorHeight = "map_sector_height" AlternativeInput;
+  MaxSectorUsers = "max_sector_users" AlternativeInput;
+  Timeout = "timeout" AlternativeInput;
+
+  //
+  // Environment+World Configuration
+  //
+  WeatherObj = "{" ((Temperature|
                    Clouding|
                    Sight| 
-                   Precipitationtype|
+                   PrecipitationType|
                    Humidity|
                    Pressure|
-                   Windstrength|
-                   Winddirection|
-                   Precipitationamount|
+                   WindStrength|
+                   WindDirection|
+                   PrecipitationAmount|
                    WeatherPhenomena|
                    OpticalPhenomena|
-                   ArtificialPhenomena)* "}";
+                   ArtificialPhenomena) ";")* "}";
   
-  SingleWeather = (FixedWeather | SequenceWeather | RandomWeather | Forecast);
+  SingleWeather = (FixedWeather | SequenceWeather | RandomWeather);
   WeatherList = "[" SingleWeather ("," SingleWeather)* "]";
-  Weather = "weather" (SingleWeather|WeatherList) ";";
-  FixedWeather = ["fixed"] fixWeatherObj:WeatherObj;
-  SequenceWeather = ["sequence"] (seqWeatherObj:WeatherObj)* (sequenceDurations:TUnitNumber)+;
-  RandomWeather = ["random"] randomDuration:TUnitNumber;
-  Forecast = ["forecast"] forWeatherObj:WeatherObj forDuration:TUnitNumber; //todo: additional automaton input for markov chains 
+  Weather = "weather" (SingleWeather|WeatherList) ;
+  FixedWeather = ["fixed"] WeatherObj;
+  SequenceWeather = ["sequence"] (WeatherObj UnitNumber)+;
+  RandomWeather = ["random"] (UnitNumber)?;
  
-  SingleTime = hours:TUnitNumber ":" minutes:TUnitNumber (":" seconds:TUnitNumber (":" milliseconds:TUnitNumber)?)?;
+  SingleTime = hours:UnitNumber ":" minutes:UnitNumber (":" seconds:UnitNumber (":" milliseconds:UnitNumber)?)?;
   TimeList = "[" SingleTime ("," SingleTime)* "]" ;
 
-  Time = "time" (SingleTime | TimeList) ";";
-             
+  Time = "time" (SingleTime | TimeList) ;
 
+  MapPath = "map_path" mapPath:Name ;
+  MapName = "map_name" mapName:Name "." fileFormat:Name ;
+  MapHeight = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ;
   
-  MapPath = "map_path" mapPath:Name ";";
-  MapName = "map_name" mapName:Name "." fileFormat:Name ";";
+  Gravity = "gravity" AlternativeInput;
   
-  MapHeight = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ";";
-  
-  MapOverlap = "map_overlap" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  MapSectorWidth = "map_sector_width" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  MapSectorHeight = "map_sector_height" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  MaxSectorUsers = "max_sector_users" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  
-  Timeout = "timeout" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  
-  Gravity = "gravity" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  
-  PedestrianDensity = "pedestrian_density" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  //Scenario
-  
+  PedestrianDensity = "pedestrian_density" AlternativeInput;
+
+  //
+  // Entity Configuration
+  //
   Pedestrians = ("<p>"
-                "(" startX:TUnitNumber "," startY:TUnitNumber ("," startZ:TUnitNumber)? ")"
+                "(" startX:UnitNumber "," startY:UnitNumber ("," startZ:UnitNumber)? ")"
                 "->" 
-                "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
-                ) ";";
-  
-  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ";";
+                "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
+                ) ;
+
+  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ;
   
   //defined vehicle moving from start to destination pos
-  ExplicitVehicle = vehicle:Name 
-              ("(" startX:TUnitNumber "," startY:TUnitNumber "," startRot:TUnitNumber ")"
+  ExplicitVehicle = Name
+              ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")"
               "->" 
-              "(" destX:TUnitNumber "," destY:TUnitNumber ("," destZ:TUnitNumber)? ")"
+              "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
               );
               
   //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
   PathedVehicle = "<v>"
-                  "(" startX:TUnitNumber "," startY:TUnitNumber "," spawnRadius:TUnitNumber ")"
+                  "(" startX:UnitNumber "," startY:UnitNumber "," spawnRadius:UnitNumber ")"
                   "->"
-                  "(" destX:TUnitNumber "," destY:TUnitNumber "," destRadius:TUnitNumber ")" 
-                  (amount:TUnitNumber)?;
+                  "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")"
+                  (amount:UnitNumber)?;
   
   //completely random vehicle spawns and destinations with optional avoidance of path
-  RandomVehicle = "<v>" amount:TUnitNumber ("(" startX:TUnitNumber "," startY:TUnitNumber ")" "->" "(" destX:TUnitNumber "," destY:TUnitNumber ")")?;
-  
+  RandomVehicle = "<v>" amount:UnitNumber ("(" startX:UnitNumber "," startY:UnitNumber ")" "->" "(" destX:UnitNumber "," destY:UnitNumber ")")?;
   
   //
   // Communication Configuration
   //
-  SingleChannel = (["fixed"]|["bound"]) "channel" Name "{" (Transferrate|Latency|Outage|Area)* "}" ;
-  ChannelList = "[" SingleChannel ("," SingleChannel)* "]";
-  Channel = (SingleChannel|ChannelList) ";" ;
-  Transferrate = "transferrate" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  Latency = "latency" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  Outage = "outage" (TUnitNumber | Range | TUnitNumberList | Lambda) ";";
-  Area = "area" (["global"]|(Coordinate (Coordinate|radius:TUnitNumber))) ";";
-  Coordinate = "(" posX:TUnitNumber "," posY:TUnitNumber ")";
+  Channel = channelType:["fixed"|"bound"] "channel" Name "{" ((TransferRate|Latency|Outage|Area) ";")* "}" ;
+  TransferRate = "transfer_rate" AlternativeInput;
+  Latency = "latency" AlternativeInput;
+  Outage = "outage" AlternativeInput;
+  Area = "area" (["global"]|(point1:Coordinate (point2:Coordinate|radius:UnitNumber))) ;
 }

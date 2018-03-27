@@ -5,7 +5,7 @@ import de.monticore.lang.montisim.simlang.util.MapHeight;
 
 public class MapHeightSymbol extends CommonSymbol{
 
-  public static final MapHeightSymbolKind KIND = MapHeightSymbolKind.INSTANCE;
+  public static final MapHeightKind KIND = MapHeightKind.INSTANCE;
   private MapHeight mapHeight;
 
   public MapHeightSymbol(String name, MapHeight mapHeight) {

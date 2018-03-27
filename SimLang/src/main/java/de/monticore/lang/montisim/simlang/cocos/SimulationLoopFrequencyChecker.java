@@ -7,6 +7,9 @@ package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimulationLoopFrequency;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTSimulationLoopFrequencyCoCo;
+import de.monticore.lang.montisim.weather.cocos.InputHelper;
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
+import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -15,40 +18,19 @@ public class SimulationLoopFrequencyChecker implements SimLangASTSimulationLoopF
   
   @Override
   public void check(ASTSimulationLoopFrequency obj) {
-    System.out.println("[CoCo] SimulationLoopFrequencyChecker...");
-    
     String[] allowedUnits = {"ms","s","m","h"};
-    ArrayList<String> toCheck;
+    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
 
-    if(obj.getTUnitNumber().isPresent()) {
-      toCheck = new InputHelper(obj.getTUnitNumber()).getExtractedValues();
-    }
-    else if(obj.getTUnitNumberList().isPresent()) {
-      toCheck = new InputHelper(obj.getTUnitNumberList()).getExtractedValues();
-    }
-    else if(obj.getRange().isPresent()) {
-      toCheck = new InputHelper(obj.getRange()).getExtractedValues();
-    }
-    else if(obj.getLambda().isPresent()) {
-      toCheck = new InputHelper(obj.getLambda()).getExtractedValues();
-    }
-    else {
-      Log.error("Unexpected code region entered in CoCo.");
-      toCheck = new ArrayList<>(); //unreachable, but IDE wants it
-    }
-
-    for(String num : toCheck) {
-      UnitNumberChecker checker = new UnitNumberChecker(num, allowedUnits);
+    for(NumberUnit nu : input) {
+      UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
 
       if (!checker.inPositiveRange()) {
-        Log.error("Range Error: SimulationRenderFrequency must be greater 0.");
+        Log.error("Range Error: sim_loop_frequency must be greater 0.");
       }
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: SimulationRenderFrequency missing or invalid unit.");
+        Log.error("Unit Error: sim_loop_frequency missing or invalid unit.");
       }
     }
-    
-    System.out.println("[Done] SimulationLoopFrequencyChecker");
   }
   
 }

@@ -9,11 +9,11 @@ package de.monticore.lang.montisim.simlang;
 import java.io.IOException;
 import java.util.Optional;
 
-import de.monticore.lang.montisim.carlang._ast.ASTCar;
-import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
+//import de.monticore.lang.montisim.carlang._ast.ASTCar;
+//import de.monticore.lang.montisim.carlang._symboltable.CarLangLanguage;
+import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
 import org.antlr.v4.runtime.RecognitionException;
 
-import de.monticore.lang.montisim.simlang.symbolmap.SymbolMapCreator;
 import de.monticore.lang.montisim.simlang._ast.*;
 import de.monticore.lang.montisim.simlang._cocos.*;
 import de.monticore.lang.montisim.simlang._parser.*;
@@ -29,10 +29,6 @@ import de.monticore.symboltable.*;
 import de.monticore.ModelingLanguageFamily;
 import de.se_rwth.commons.logging.Log;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import de.monticore.lang.montisim.simlang.adapter.GeneralSLAdapter;
 /**
  * Main class for the Automaton DSL tool.
  *
@@ -40,6 +36,7 @@ import de.monticore.lang.montisim.simlang.adapter.GeneralSLAdapter;
  * @version $Revision$, $Date$
  */
 public class SimLangTool {
+  public static SimLangLang SIMLANG_LANGUAGE = new SimLangLang();
 
   /**
    * Use the single argument for specifying the single input automaton file.
@@ -94,7 +91,7 @@ public class SimLangTool {
     SymbolMapCreator data = new SymbolMapCreator();
     data.createFromAST(ast);
     System.out.println(data.getSymbolMap());
-    GeneralSLAdapter adapter = new GeneralSLAdapter(data.getSymbolMap());
+    SimLangContainer adapter = new SimLangContainer(data.getSymbolMap());
     System.out.println(adapter.getMapName());
     */
     //Grab data from symboltable
@@ -140,9 +137,12 @@ public class SimLangTool {
   public static void checkDefaultCoCos(ASTSimLangCompilationUnit ast) {
     SimLangCoCoChecker defaultCoCos = new SimLangCoCoChecker();
 
+    Log.info("Data CoCo...",SimLangTool.class.getName());
     //DataStructure Checkers --Need to runs first
     defaultCoCos.addCoCo(new NoInfRangeChecker());
+    defaultCoCos.addCoCo(new CoordinateChecker());
 
+    Log.info("Simulation CoCo...",SimLangTool.class.getName());
     //Simulation CoCos
     defaultCoCos.addCoCo(new RequiredSimulationEntries());
     defaultCoCos.addCoCo(new NoMultipleSimulationEntries());
@@ -152,28 +152,28 @@ public class SimLangTool {
     defaultCoCos.addCoCo(new MapNameChecker());
     defaultCoCos.addCoCo(new TimeChecker());
     defaultCoCos.addCoCo(new TimeoutChecker());
-    //defaultCoCos.addCoCo(new GravityChecker());
+    defaultCoCos.addCoCo(new GravityChecker());
     defaultCoCos.addCoCo(new PedestrianDensityChecker());
 
+    Log.info("Weather CoCo...",SimLangTool.class.getName());
     //Weather CoCos
     defaultCoCos.addCoCo(new NoMultipleWeatherObjEntries());
     defaultCoCos.addCoCo(new TemperatureChecker());
     defaultCoCos.addCoCo(new PressureChecker());
     defaultCoCos.addCoCo(new HumidityChecker());
     defaultCoCos.addCoCo(new SightChecker());
-    defaultCoCos.addCoCo(new PrecipitationamountChecker());
-    defaultCoCos.addCoCo(new WindstrengthChecker());
-    defaultCoCos.addCoCo(new WinddirectionChecker());
+    defaultCoCos.addCoCo(new PrecipitationAmountChecker());
+    defaultCoCos.addCoCo(new WindStrengthChecker());
+    defaultCoCos.addCoCo(new WindDirectionChecker());
 
+    Log.info("Channel CoCo...", SimLangTool.class.getName());
     //Communication CoCos
+    defaultCoCos.addCoCo(new NoDuplicateChannelNames());
     defaultCoCos.addCoCo(new OneChannelEntryEach());
     defaultCoCos.addCoCo(new TransferrateChecker());
     defaultCoCos.addCoCo(new LatencyChecker());
     defaultCoCos.addCoCo(new OutageChecker());
     defaultCoCos.addCoCo(new AreaChecker());
-    defaultCoCos.addCoCo(new CoordinateChecker());
-
-
 
     defaultCoCos.checkAll(ast);
   }
@@ -195,19 +195,22 @@ public class SimLangTool {
     return symbolTable.get().createFromAST(ast);
   }
 
+  /*
   public static Scope createSymbolTable(ModelingLanguageFamily lang, ASTSimLangCompilationUnit astSim, ASTCar astCar) {
 
     return null;
   }
+  */
 
-  public static GeneralSLAdapter parseIntoContainer(String model) {
+  public static SimLangContainer parseIntoContainer(String model) {
     final SimLangLang lang = new SimLangLang();
     final ASTSimLangCompilationUnit ast = parse(model);
     checkDefaultCoCos(ast);
     final Scope modelTopScope = createSymbolTable(lang, ast);
-    return new GeneralSLAdapter(modelTopScope);
+    return new SimLangContainer(modelTopScope, String.join(".",ast.getPackage()), ast.getSimulation().getName());
   }
-  public static GeneralSLAdapter parseIntoContainer(String simModel, String carModel) {
+  /*
+  public static SimLangContainer parseIntoContainer(String simModel, String carModel) {
     ModelingLanguageFamily family = new ModelingLanguageFamily();
     final SimLangLang simLang = new SimLangLang();
     //final CarLangLanguage carLang = new CarLangLanguage();
@@ -222,6 +225,7 @@ public class SimLangTool {
     //checkCocos(astCar);
 
     final Scope modelTopScope = createSymbolTable(family, astSim, null);
-    return new GeneralSLAdapter(modelTopScope);
+    return new SimLangContainer(modelTopScope);
   }
+  */
 }

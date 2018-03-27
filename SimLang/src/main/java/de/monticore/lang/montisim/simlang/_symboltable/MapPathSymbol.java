@@ -1,11 +1,10 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.Time;
 
 public class MapPathSymbol extends CommonSymbol{
 
-  public static final MapPathSymbolKind KIND = MapPathSymbolKind.INSTANCE;
+  public static final MapPathKind KIND = MapPathKind.INSTANCE;
   private String mapPath;
 
   public MapPathSymbol(String name, String mapPath) {

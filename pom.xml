@@ -6,10 +6,11 @@
 
     <artifactId>SimulationLanguage</artifactId>
     <groupId>de.monticore.lang.montisim</groupId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
     
     <modules>
+        <module>NumberUnit</module>
         <module>Weather</module>
         <module>SimLang</module>
     </modules>
@@ -56,7 +57,7 @@
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
       <version>${se-commons.version}</version>
-    </dependency>
+        </dependency>
 
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -130,18 +131,6 @@
       </dependency>
 
         <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${numberunit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${numberunit.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>common-monticar</artifactId>
             <version>${langcommon.version}</version>
@@ -153,19 +142,19 @@
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>de.monticore.lang.montisim</groupId>
             <artifactId>CarLang</artifactId>
             <version>${carlang.version}</version>
-        </dependency>
+        </dependency> -->
         <!-- this may actually not be needed? -->
-        <dependency>
+        <!-- <dependency>
             <groupId>de.monticore.lang.montisim</groupId>
             <artifactId>CarLang</artifactId>
             <version>${carlang.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
-        </dependency>
+        </dependency> -->
     </dependencies>
 
     <build>

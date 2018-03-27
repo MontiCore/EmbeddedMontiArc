@@ -3,6 +3,7 @@
 
 package de.monticore.lang.montisim.simlang._symboltable;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,9 +26,9 @@ public class SimLangModelNameCalculator extends SimLangModelNameCalculatorTOP {
 
     return calculatedModelNames;*/
     List<String> parts = Splitters.DOT.splitToList(name);
-    /*if (parts.size() < 2) {
+    if (parts.size() < 2) {
       return Collections.emptySet();
-    }*/
+    }
     String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
     HashSet<String> result = new HashSet<>();
     result.add(modelName);

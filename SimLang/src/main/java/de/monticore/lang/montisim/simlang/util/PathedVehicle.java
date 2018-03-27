@@ -1,49 +1,42 @@
 package de.monticore.lang.montisim.simlang.util;
 
+import de.monticore.lang.montisim.weather.cocos.NumberUnit;
+
+import java.util.Optional;
+
 public class PathedVehicle {
-  private Float startX;
-  private Float startY;
-  private Float startRad;
-  private Float destX;
-  private Float destY;
-  private Float destRad;
-  private Float amount;
+  private Path2D path;
+  private NumberUnit startRad;
+  private NumberUnit destRad;
+  private Optional<Float> amount = Optional.empty();
 
-  public PathedVehicle(Float startX, Float startY, Float startRad, Float destX, Float destY, Float destRad, Float amount) {
-    this.startX = startX;
-    this.startY = startY;
+  public PathedVehicle(float startX, float startY, NumberUnit startRad, float destX, float destY, NumberUnit destRad) {
+    this.path = new Path2D(startX, startY, destX, destY);
     this.startRad = startRad;
-    this.destX = destX;
-    this.destY = destY;
     this.destRad = destRad;
-    this.amount = amount;
+  }
+  public PathedVehicle(float startX, float startY, NumberUnit startRad, float destX, float destY, NumberUnit destRad, Float amount) {
+    this.path = new Path2D(startX, startY, destX, destY);
+    this.startRad = startRad;
+    this.destRad = destRad;
+    if(amount != null) {
+      this.amount = Optional.of(amount);
+    }
   }
 
-  public Float getStartX() {
-    return startX;
+  public Path2D getPath() {
+    return path;
   }
 
-  public Float getStartY() {
-    return startY;
-  }
-
-  public Float getStartRad() {
+  public NumberUnit getStartRad() {
     return startRad;
   }
 
-  public Float getDestX() {
-    return destX;
-  }
-
-  public Float getDestY() {
-    return destY;
-  }
-
-  public Float getDestRad() {
+  public NumberUnit getDestRad() {
     return destRad;
   }
 
-  public Float getAmount() {
+  public Optional<Float> getAmount() {
     return amount;
   }
 }

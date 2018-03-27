@@ -15,17 +15,10 @@ public class MapNameChecker implements SimLangASTMapNameCoCo {
   
   @Override
   public void check(ASTMapName obj) {
-    System.out.println("[CoCo] MapNameChecker...");
-    
     String[] allowedFormats = {"osm"};
-    
     
     if(!Arrays.asList(allowedFormats).contains(obj.getFileFormat())) {
       Log.error("Fileformat Error: Invalid Mapfile format.");
     }
-    
-    
-    System.out.println("[Done] MapNameChecker");
   }
-  
 }

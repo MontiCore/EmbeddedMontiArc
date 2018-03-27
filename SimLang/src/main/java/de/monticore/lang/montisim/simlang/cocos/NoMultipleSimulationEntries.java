@@ -14,7 +14,6 @@ public class NoMultipleSimulationEntries implements SimLangASTSimulationCoCo {
   
   @Override
   public void check(ASTSimulation sim) {
-    System.out.println("[CoCo] NoMultipleSimlulationEntries...");
     List<de.monticore.lang.montisim.simlang._ast.ASTSimulationRenderFrequency> simRenderFreq = sim.getSimulationRenderFrequencys();
     List<de.monticore.lang.montisim.simlang._ast.ASTSimulationLoopFrequency> simLoopFreq = sim.getSimulationLoopFrequencys();
     List<de.monticore.lang.montisim.simlang._ast.ASTSimulationDuration> simDuration = sim.getSimulationDurations();
@@ -49,8 +48,6 @@ public class NoMultipleSimulationEntries implements SimLangASTSimulationCoCo {
     ) {
       Log.error("Semantic Error: A simulation attribute was defined more than once.");
     }
-    
-    System.out.println("[Done] NoMultipleSimulationEntries");
   }
   
 }

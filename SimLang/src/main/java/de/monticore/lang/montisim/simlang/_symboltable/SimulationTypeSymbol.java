@@ -2,7 +2,6 @@ package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.lang.montisim.simlang.util.SimLangEnums;
-import de.monticore.lang.montisim.simlang.util.ValueListRangeLambda;
 
 public class SimulationTypeSymbol extends CommonSymbol{
 

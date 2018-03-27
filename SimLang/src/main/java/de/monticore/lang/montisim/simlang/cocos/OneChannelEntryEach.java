@@ -5,17 +5,16 @@
  */
 package de.monticore.lang.montisim.simlang.cocos;
 
-import de.monticore.lang.montisim.simlang._ast.ASTSingleChannel;
-import de.monticore.lang.montisim.simlang._cocos.SimLangASTSingleChannelCoCo;
+import de.monticore.lang.montisim.simlang._ast.ASTChannel;
+import de.monticore.lang.montisim.simlang._cocos.SimLangASTChannelCoCo;
 import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
-public class OneChannelEntryEach implements SimLangASTSingleChannelCoCo {
+public class OneChannelEntryEach implements SimLangASTChannelCoCo {
   
   @Override
-  public void check(ASTSingleChannel obj) {
-    System.out.println("[CoCo] OneChannelEntryEach...");
-    List<de.monticore.lang.montisim.simlang._ast.ASTTransferrate> transferrates = obj.getTransferrates();
+  public void check(ASTChannel obj) {
+    List<de.monticore.lang.montisim.simlang._ast.ASTTransferRate> transferrates = obj.getTransferRates();
     List<de.monticore.lang.montisim.simlang._ast.ASTLatency> latencys = obj.getLatencys();
     List<de.monticore.lang.montisim.simlang._ast.ASTOutage> outages = obj.getOutages();
     List<de.monticore.lang.montisim.simlang._ast.ASTArea> areas = obj.getAreas();
@@ -27,8 +26,6 @@ public class OneChannelEntryEach implements SimLangASTSingleChannelCoCo {
     ) {
       Log.error("Semantic Error: A channel attribute was defined more than once or not at all.");
     }
-    
-    System.out.println("[Done] OneChannelEntryEach");
   }
   
 }
