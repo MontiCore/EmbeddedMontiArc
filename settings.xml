@@ -166,7 +166,7 @@
 
         <mirror>
             <id>github1</id>
-            <mirrorOf>*</mirrorOf>
+            <mirrorOf>github1</mirrorOf>
             <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
         </mirror>
         <mirror>
@@ -284,6 +284,26 @@
             <!-- all requests to nexus via the mirror -->
             <repositories>
                 <repository>
+                    <id>github1</id>
+                    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>github2</id>
+                    <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
                     <id>central</id>
                     <url>http://central</url>
                     <releases><enabled /></releases>
@@ -313,6 +333,26 @@
                 </repository>
             </repositories>
             <pluginRepositories>
+                <pluginRepository>
+                    <id>github1</id>
+                    <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>github2</id>
+                    <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
                 <pluginRepository>
                     <id>maven-central</id>
                     <url>http://central.maven.org/maven2/</url>

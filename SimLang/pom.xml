@@ -17,7 +17,9 @@
   <name>SimLang main-language</name>
   <description>stuff</description>
 
-  
+  <properties>
+    <main.basedir>${project.parent.basedir}</main.basedir>
+  </properties>
   <!-- == PROJECT DEPENDENCIES ============================================ -->
 
   <dependencies>
