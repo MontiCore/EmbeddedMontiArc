@@ -63,8 +63,6 @@ class AutoSetupIT {
     private String[] emscriptenActivate;
     private Configuration configuration;
 
-    @BeforeEach
-    @ExtendWith(TemporaryDirectoryExtension.class)
     void setUp(Path dir) throws Exception {
       this.dir = dir;
       this.downloadPath = dir.resolve(EMSCRIPTEN_ARCHIVE_NAME);
@@ -73,13 +71,15 @@ class AutoSetupIT {
       this.emsdkCommand = "\"" + extractionPath.resolve(EMSDK_WIN)
           .toAbsolutePath().normalize().toString() + "\"";
       this.emscriptenUpdate = new String[]{emsdkCommand, "update"};
-      this.emscriptenUpdate = new String[]{emsdkCommand, "install", "latest"};
-      this.emscriptenUpdate = new String[]{emsdkCommand, "activate", "latest"};
+      this.emscriptenInstall = new String[]{emsdkCommand, "install", "latest"};
+      this.emscriptenActivate = new String[]{emsdkCommand, "activate", "latest"};
       this.configuration = emscriptenWindowsConfig();
     }
 
     @Test
-    void shouldSetupEmscripten() throws IOException {
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void shouldSetupEmscripten(Path dir) throws Exception {
+      setUp(dir);
       AutoSetup autoSetup = new AutoSetup(listof(configuration));
 
       autoSetup.setup();
@@ -136,20 +136,18 @@ class AutoSetupIT {
   @EnabledOnOs({OS.LINUX, OS.MAC})
   class WhenOnOtherOS {
 
-    private Path dir;
     private SetupAction action;
     private Configuration configuration;
 
     @BeforeEach
-    @ExtendWith(TemporaryDirectoryExtension.class)
-    void setUp(Path dir) {
-      this.dir = dir;
+    void setUp() {
       this.action = new SetupAction(commands());
       this.configuration = new BasicConfiguration(action);
     }
 
     @Test
-    void shouldSetupEmscripten() {
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void shouldSetupEmscripten(Path dir) {
       AutoSetup autoSetup = new AutoSetup(listof(configuration));
 
       autoSetup.setup();
