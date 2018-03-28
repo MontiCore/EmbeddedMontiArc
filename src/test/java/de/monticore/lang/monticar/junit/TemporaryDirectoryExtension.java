@@ -55,7 +55,7 @@ public class TemporaryDirectoryExtension implements ParameterResolver, AfterEach
   }
 
   private String tempDirName(ExtensionContext context) {
-    return context.getDisplayName();
+    return context.getDisplayName().replaceAll("[^\\w]", "");
   }
 
   private Path createTempDirectory(String name) {
