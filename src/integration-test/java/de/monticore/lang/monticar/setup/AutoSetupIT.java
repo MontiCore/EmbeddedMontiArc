@@ -42,7 +42,7 @@ class AutoSetupIT {
 
   private static final String DOCKER_INSTALL_COMMAND =
       "docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash";
-  private static final String DOCKER_EMSCRIPTEN_CALL = "docker exec -it emscripten";
+  private static final String DOCKER_EMSCRIPTEN_CALL = "docker exec -i emscripten";
 
   @SafeVarargs
   private final <T> T[] arrayof(T... elements) {
