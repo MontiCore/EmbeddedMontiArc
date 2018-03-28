@@ -3,14 +3,13 @@ import ba.intersection.IntersectionController;
 import ba.util.RelToAbsTrajectory;
 import ba.util.CommQuality;
 import ba.vehicle.VelocityController;
-
-
+//component System<N1 n = 2,N1 x = 1,N1 m = 5,N1 m1 = 4,N1 m2 = 10>{
 component System{
     //Intersection
     instance IntersectionController intersectionController;
     ports in Q cutoffTimeIn,
           in B isActiveIn,
-          in Q^{3,20} absTrajectory[2];
+          in Q^{3,5} absTrajectory[2];
 
     connect cutoffTimeIn -> intersectionController.cutoffTime;
     connect isActiveIn -> intersectionController.isActive;

@@ -10,22 +10,12 @@ component ConflictComputer<N1 n = 2,N1 x = 1,N1 m = 5, N1 m1 = 4,N1 m2 = 10>{
     port in Q cutoffTimeIn;
     port out B conflictOut[x];
 
-    instance MatrixSingleSetCompare<3,m,2,x> singleSetCompare;
+    instance MatrixSingleSetCompare<3,m,n,x> singleSetCompare;
     instance TrajectoryCompare<m,m1,m2> trajectoryCompare[x];
-    instance CollisionToConflict collisionToConflict[x];
 
     connect trajectory[:] -> singleSetCompare.setIn[:];
     connect singleSetCompare.listOut1[:] -> trajectoryCompare[:].trajectory1;
     connect singleSetCompare.listOut2[:] -> trajectoryCompare[:].trajectory2;
-    connect trajectoryCompare[:].collision -> collisionToConflict[:].collisionIn;
-    connect singleSetCompare.listOut1[:] -> collisionToConflict[:].trajectoryIn1;
-    connect singleSetCompare.listOut2[:] -> collisionToConflict[:].trajectoryIn2;
-    connect cutoffTimeIn -> collisionToConflict[:].timeCutoff;
-
-    connect trajectoryCompare[:].collision -> collisionToConflict[:].collisionIn;
-    connect trajectoryCompare[:].index1 -> collisionToConflict[:].indexIn1;
-    connect trajectoryCompare[:].index2 -> collisionToConflict[:].indexIn2;
-    connect trajectoryCompare[:].colPos -> collisionToConflict[:].colPosIn;
-
-    connect collisionToConflict[:].conflict -> conflictOut[:];
+    connect cutoffTimeIn -> trajectoryCompare[:].cutoffTime;
+    connect trajectoryCompare[:].conflict -> conflictOut[:];
 }

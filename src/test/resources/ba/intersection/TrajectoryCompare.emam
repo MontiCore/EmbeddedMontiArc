@@ -7,17 +7,15 @@ import ba.util.MatrixDualSetCompare;
 component TrajectoryCompare<N1 m = 5, N1 m1 = 4, N1 m2 = 10>{
     ports in Q^{3,m} trajectory1,
           in Q^{3,m} trajectory2,
-          out B collision,
-          out Z index1,
-          out Z index2,
-          out Q^{2,1} colPos;
-
+          in Q cutoffTime,
+          out B conflict;
 
     instance MatrixDualSetCompare<4,1,m1,m2> dualSetCompare;
     instance TrajectoryToLine trajectoryToLine1;
     instance TrajectoryToLine trajectoryToLine2;
     instance LineIntersection lineIntersection[m2];
     instance LineInterToIndex lineInterToIndex;
+    instance CollisionToConflict collisionToConflict;
 
     connect trajectory1 -> trajectoryToLine1.trajectoryIn;
     connect trajectory2 -> trajectoryToLine2.trajectoryIn;
@@ -25,14 +23,14 @@ component TrajectoryCompare<N1 m = 5, N1 m1 = 4, N1 m2 = 10>{
     connect lineIntersection[:].intersects -> lineInterToIndex.collisionIn[:];
     connect lineIntersection[:].point -> lineInterToIndex.pointsIn[:];
 
-    connect lineInterToIndex.collisionOut -> collision;
-    connect lineInterToIndex.index1 -> index1;
-    connect lineInterToIndex.index2 -> index2;
-    connect lineInterToIndex.pos -> colPos;
-
-
-    //compare 4 lines to 4 other lines without permutations with same index
-    //4*5/2 = 10
+    connect lineInterToIndex.collisionOut -> collisionToConflict.collisionIn;
+    connect lineInterToIndex.index1 -> collisionToConflict.indexIn1;
+    connect lineInterToIndex.index2 -> collisionToConflict.indexIn2;
+    connect lineInterToIndex.pos -> collisionToConflict.colPosIn;
+    connect trajectory1 -> collisionToConflict.trajectoryIn1;
+    connect trajectory2 -> collisionToConflict.trajectoryIn2;
+    connect cutoffTime -> collisionToConflict.timeCutoff;
+    connect collisionToConflict.conflict -> conflict;
 
     connect trajectoryToLine1.lineOut[:] -> dualSetCompare.setIn1[:];
     connect trajectoryToLine2.lineOut[:] -> dualSetCompare.setIn2[:];

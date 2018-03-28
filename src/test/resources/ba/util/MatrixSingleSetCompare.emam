@@ -1,7 +1,7 @@
 package ba.util;
 //TODO: x has to be (n-1)n/2
 //TODO: remove once EMAM2Cpp works with matrix generics
-component MatrixSingleSetCompare<N1 rows = 3,N1 cols = 3, N1 n =2,N1 x = 1>{
+component MatrixSingleSetCompare<N1 rows = 3,N1 cols = 5, N1 n = 2,N1 x = 1>{
     ports in Q^{rows,cols} setIn[n],
           out Q^{rows,cols} listOut1[x],
           out Q^{rows,cols} listOut2[x];
