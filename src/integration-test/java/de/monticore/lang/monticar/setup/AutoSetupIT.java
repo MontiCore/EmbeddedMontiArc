@@ -2,7 +2,6 @@ package de.monticore.lang.monticar.setup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.monticore.lang.monticar.cli.EmscriptenSetupConfig;
 import de.monticore.lang.monticar.emam2wasm.wasm.WasmJsNameProvider;
 import de.monticore.lang.monticar.emam2wasm.wasm.WasmStep;
 import de.monticore.lang.monticar.emscripten.Emscripten;
@@ -10,46 +9,121 @@ import de.monticore.lang.monticar.emscripten.EmscriptenCommand;
 import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
 import de.monticore.lang.monticar.emscripten.Shell;
 import de.monticore.lang.monticar.junit.TemporaryDirectoryExtension;
+import de.monticore.lang.monticar.setup.action.DownloadAction;
+import de.monticore.lang.monticar.setup.action.ExtractionAction;
+import de.monticore.lang.monticar.setup.action.SetupAction;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = EmscriptenSetupConfig.class,
-    initializers = {OSContextInitializer.class})
-@ActiveProfiles(profiles = "setup")
 class AutoSetupIT {
 
   private static final Path SOME_C_FILE = Paths
       .get("src/integration-test/resources/setup/hello_world.c");
 
-  @Autowired
-  private Configuration emscriptenConfiguration;
+  private static final Path EMSDK_WIN = Paths.get("./emsdk-master/emsdk.bat");
+  private static final String EMSCRIPTEN_URL = "https://github.com/juj/emsdk/archive/master.zip";
+  private static final String EMSCRIPTEN = "emscripten";
+  private static final String EMSCRIPTEN_ARCHIVE_NAME = "emscripten.zip";
+  private static final String EMCC_WIN = "emcc.bat";
+  private static final String BRANCH = "emsdk-master";
 
-  @Autowired
-  private Supplier<String> emscriptenCommandSupplier;
+  private static final String DOCKER_INSTALL_COMMAND =
+      "docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash";
+  private static final String DOCKER_EMSCRIPTEN_CALL = "docker exec -it emscripten";
 
-  @Test
-  @ExtendWith(TemporaryDirectoryExtension.class)
-  void shouldSetupEmscriptenLinux(Path dir) {
-    AutoSetup autoSetup = new AutoSetup(listof(emscriptenConfiguration));
+  @SafeVarargs
+  private final <T> T[] arrayof(T... elements) {
+    return elements;
+  }
 
-    autoSetup.setup();
+  @EnabledOnOs(OS.WINDOWS)
+  @Nested
+  class WhenOnWindows {
 
-    WasmStep wasmStep = new WasmStep(
-        commandBuilderFactory(emscripten(emscriptenCommandSupplier.get())),
-        dir, new WasmJsNameProvider());
-    Path wasmFile = wasmStep.compile(SOME_C_FILE);
+    private Path dir;
+    private Path downloadPath;
+    private Path extractionPath;
+    private URL emscriptenUrl;
+    private String emsdkCommand;
+    private String[] emscriptenUpdate;
+    private String[] emscriptenInstall;
+    private String[] emscriptenActivate;
+    private Configuration configuration;
 
-    assertThat(wasmFile).exists();
+    @BeforeEach
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void setUp(Path dir) throws Exception {
+      this.dir = dir;
+      this.downloadPath = dir.resolve(EMSCRIPTEN_ARCHIVE_NAME);
+      this.extractionPath = dir.resolve(EMSCRIPTEN);
+      this.emscriptenUrl = new URL(EMSCRIPTEN_URL);
+      this.emsdkCommand = "\"" + extractionPath.resolve(EMSDK_WIN)
+          .toAbsolutePath().normalize().toString() + "\"";
+      this.emscriptenUpdate = new String[]{emsdkCommand, "update"};
+      this.emscriptenUpdate = new String[]{emsdkCommand, "install", "latest"};
+      this.emscriptenUpdate = new String[]{emsdkCommand, "activate", "latest"};
+      this.configuration = emscriptenWindowsConfig();
+    }
+
+    @Test
+    void shouldSetupEmscripten() throws IOException {
+      AutoSetup autoSetup = new AutoSetup(listof(configuration));
+
+      autoSetup.setup();
+
+      //find subdirectory, full path looks something like emscripten/emsdk-master/emscripten/1.37.36
+      Path binaryDir = findSubDirectory(extractionPath.resolve(BRANCH).resolve(EMSCRIPTEN));
+      String emcc = binaryDir.resolve(EMCC_WIN).toAbsolutePath().normalize().toString();
+
+      WasmStep wasmStep = new WasmStep(commandBuilderFactory(emscripten(emcc)), dir,
+          new WasmJsNameProvider());
+      Path wasmFile = wasmStep.compile(SOME_C_FILE);
+
+      assertThat(wasmFile).exists();
+    }
+
+    private BasicConfiguration emscriptenWindowsConfig() {
+      return new BasicConfiguration(
+          new DownloadAction(emscriptenUrl, downloadPath),
+          new ExtractionAction(downloadPath, extractionPath),
+          new SetupAction(extractionPath, emscriptenWindowsCommands()));
+    }
+
+    private List<String[]> emscriptenWindowsCommands() {
+      List<String[]> commands = new ArrayList<>();
+      commands.add(emscriptenUpdate);
+      commands.add(emscriptenInstall);
+      commands.add(emscriptenActivate);
+      return commands;
+    }
+
+    private Emscripten emscripten(String emscriptenCommand) {
+      return new EmscriptenCommand(Shell.CMD, emscriptenCommand);
+    }
+
+    private Path findSubDirectory(Path path) throws IOException {
+      try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+        for (Path p : stream) {
+          if (Files.isDirectory(p)) {
+            return p;
+          }
+        }
+      }
+      return null;
+    }
   }
 
   private EmscriptenCommandBuilderFactory commandBuilderFactory(Emscripten emscripten) {
@@ -58,8 +132,48 @@ class AutoSetupIT {
     return commandBuilderFactory;
   }
 
-  private Emscripten emscripten(String emscriptenCommand) {
-    return new EmscriptenCommand(Shell.CMD, emscriptenCommand);
+  @Nested
+  @EnabledOnOs({OS.LINUX, OS.MAC})
+  class WhenOnOtherOS {
+
+    private Path dir;
+    private SetupAction action;
+    private Configuration configuration;
+
+    @BeforeEach
+    @ExtendWith(TemporaryDirectoryExtension.class)
+    void setUp(Path dir) {
+      this.dir = dir;
+      this.action = new SetupAction(commands());
+      this.configuration = new BasicConfiguration(action);
+    }
+
+    @Test
+    void shouldSetupEmscripten() {
+      AutoSetup autoSetup = new AutoSetup(listof(configuration));
+
+      autoSetup.setup();
+
+      WasmStep wasmStep = new WasmStep(commandBuilderFactory(emscripten(DOCKER_EMSCRIPTEN_CALL)),
+          dir, new WasmJsNameProvider());
+      Path wasmFile = wasmStep.compile(SOME_C_FILE);
+
+      assertThat(wasmFile).exists();
+    }
+
+    private List<String[]> commands() {
+      Shell shell = Shell.BASH;
+      List<String[]> commands = new ArrayList<>();
+      commands.add(new String[]{
+          shell.getShellCommand(),
+          shell.getExecuteSwitch(),
+          DOCKER_INSTALL_COMMAND});
+      return commands;
+    }
+
+    private Emscripten emscripten(String emscriptenCommand) {
+      return new EmscriptenCommand(Shell.BASH, emscriptenCommand);
+    }
   }
 
   @SafeVarargs
