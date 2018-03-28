@@ -1,0 +1,40 @@
+package ba.intersection;
+
+component TimeCutoffFilter{
+    ports in B collisionIn,
+          in Z IndexInA,
+          in Z IndexInB,
+          in Q^{2,1} colPosIn,
+          in Q^{3,5} trajectoryInA,
+          in Q^{3,5} trajectoryInB,
+          in Q timeCutoff,
+          out B collisionOut;
+
+    implementation Math{
+        if collisionIn
+            //TODO: with norm()?
+            Q dx1 = trajectoryInA(1,IndexInA) - trajectoryInA(1,IndexInA + 1);
+            Q dy1 = trajectoryInA(2,IndexInA) - trajectoryInA(2,IndexInA + 1);
+            Q dist1 = sqrt(dx1*dx1 + dy1*dy1);
+
+            Q dx2 = trajectoryInB(1,IndexInB) - trajectoryInB(1,IndexInB + 1);
+            Q dy2 = trajectoryInB(2,IndexInB) - trajectoryInB(2,IndexInB + 1);
+            Q dist2 = sqrt(dx2*dx2 + dy2*dy2);
+
+            Q dxp1 = trajectoryInA(1,IndexInA) - colPosIn(1,1);
+            Q dyp1 = trajectoryInA(2,IndexInA) - colPosIn(2,1);
+            Q distp1 = sqrt(dxp1*dxp1 + dyp1*dyp1);
+
+            Q dxp2 = trajectoryInB(1,IndexInB) - colPosIn(1,1);
+            Q dyp2 = trajectoryInB(2,IndexInB) - colPosIn(2,1);
+            Q distp2 = sqrt(dxp2*dxp2 + dyp2*dyp2);
+
+            Q time1 = distp1/dist1 * (trajectoryInA(3,IndexInA + 1) - trajectoryInA(3,IndexInA));
+            Q time2 = distp2/dist2 * (trajectoryInB(3,IndexInB + 1) - trajectoryInB(3,IndexInB));
+
+            collisionOut = abs(time1 - time2) < timeCutoff;
+        else
+            collisionOut = False;
+        end
+    }
+}

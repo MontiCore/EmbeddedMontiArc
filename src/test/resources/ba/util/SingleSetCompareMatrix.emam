@@ -3,15 +3,15 @@ package ba.util;
 //TODO: remove once EMAM2Cpp works with matrix generics
 component SingleSetCompareMatrix<N1 rows = 3,N1 cols = 5, N1 n = 2,N1 x = 1>{
     ports in Q^{rows,cols} setIn[n],
-          out Q^{rows,cols} listOut1[x],
-          out Q^{rows,cols} listOut2[x];
+          out Q^{rows,cols} outA[x],
+          out Q^{rows,cols} outB[x];
 
     implementation Math{
         Z counter = 1;
         for i = 1:n
             for j = (i+1):n
-                listOut1(counter) = setIn(i);
-                listOut2(counter) = setIn(j);
+                outA(counter) = setIn(i);
+                outB(counter) = setIn(j);
                 counter = counter + 1;
             end
         end

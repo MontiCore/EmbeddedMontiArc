@@ -1,19 +1,19 @@
 package ba.util;
 
 component LineIntersection{
-    ports in Q^{4,1} line1,
-          in Q^{4,1} line2,
+    ports in Q^{4,1} lineA,
+          in Q^{4,1} lineB,
           out Q^{2,1} point,
           out B intersects;
     implementation Math{
-        Q n1 = (line1(1,1)-line1(3,1))*(line2(2,1)-line2(4,1))-(line1(2,1)-line1(4,1))*(line2(1,1)-line2(3,1));
-        Q n2 = (line1(1,1)-line1(3,1))*(line2(2,1)-line2(4,1))-(line1(2,1)-line1(4,1))*(line2(1,1)-line2(3,1));
+        Q n1 = (lineA(1,1)-lineA(3,1))*(lineB(2,1)-lineB(4,1))-(lineA(2,1)-lineA(4,1))*(lineB(1,1)-lineB(3,1));
+        Q n2 = (lineA(1,1)-lineA(3,1))*(lineB(2,1)-lineB(4,1))-(lineA(2,1)-lineA(4,1))*(lineB(1,1)-lineB(3,1));
 
         Q cutoff = 0.00000001;
 
         if (abs(n1) > cutoff) && (abs(n2) > cutoff)
-            Q z1 = (line1(1,1)*line1(4,1)-line1(2,1)*line1(3,1))*(line2(1,1)-line2(3,1))-(line1(1,1)-line1(3,1))*(line2(1,1)*line2(4,1)-line2(2,1)*line2(3,1));
-            Q z2 = (line1(1,1)*line1(4,1)-line1(2,1)*line1(3,1))*(line2(2,1)-line2(4,1))-(line1(2,1)-line1(4,1))*(line2(1,1)*line2(4,1)-line2(2,1)*line2(3,1));
+            Q z1 = (lineA(1,1)*lineA(4,1)-lineA(2,1)*lineA(3,1))*(lineB(1,1)-lineB(3,1))-(lineA(1,1)-lineA(3,1))*(lineB(1,1)*lineB(4,1)-lineB(2,1)*lineB(3,1));
+            Q z2 = (lineA(1,1)*lineA(4,1)-lineA(2,1)*lineA(3,1))*(lineB(2,1)-lineB(4,1))-(lineA(2,1)-lineA(4,1))*(lineB(1,1)*lineB(4,1)-lineB(2,1)*lineB(3,1));
             point(1,1) = z1/n1;
             point(2,1) = z2/n2;
 
@@ -36,43 +36,43 @@ component LineIntersection{
             Q ymax2;
 
             //bounding box 1
-            if line1(1,1) >= line1(3,1)
-                xmax1 = line1(1,1);
-                xmin1 = line1(3,1);
+            if lineA(1,1) >= lineA(3,1)
+                xmax1 = lineA(1,1);
+                xmin1 = lineA(3,1);
             else
-                xmax1 = line1(3,1);
-                xmin1 = line1(1,1);
+                xmax1 = lineA(3,1);
+                xmin1 = lineA(1,1);
             end
 
-            if line1(2,1) >= line1(4,1)
-                ymax1 = line1(2,1);
-                ymin1 = line1(4,1);
+            if lineA(2,1) >= lineA(4,1)
+                ymax1 = lineA(2,1);
+                ymin1 = lineA(4,1);
             else
-                ymax1 = line1(4,1);
-                ymin1 = line1(2,1);
+                ymax1 = lineA(4,1);
+                ymin1 = lineA(2,1);
             end
 
             //bounding box 2
-            if line2(1,1) >= line2(3,1)
-                xmax2 = line2(1,1);
-                xmin2 = line2(3,1);
+            if lineB(1,1) >= lineB(3,1)
+                xmax2 = lineB(1,1);
+                xmin2 = lineB(3,1);
             else
-                xmax2 = line2(3,1);
-                xmin2 = line2(1,1);
+                xmax2 = lineB(3,1);
+                xmin2 = lineB(1,1);
             end
 
-            if line2(2,1) >= line2(4,1)
-                ymax2 = line2(2,1);
-                ymin2 = line2(4,1);
+            if lineB(2,1) >= lineB(4,1)
+                ymax2 = lineB(2,1);
+                ymin2 = lineB(4,1);
             else
-                ymax2 = line2(4,1);
-                ymin2 = line2(2,1);
+                ymax2 = lineB(4,1);
+                ymin2 = lineB(2,1);
             end
 
-            B onLine1 = (xmin1 <= point(1,1)) && (point(1,1) <= xmax1) && (ymin1 <= point(2,1)) && (point(2,1) <= ymax1);
-            B onLine2 = (xmin2 <= point(1,1)) && (point(1,1) <= xmax2) && (ymin2 <= point(2,1)) && (point(2,1) <= ymax2);
+            B onLineA = (xmin1 <= point(1,1)) && (point(1,1) <= xmax1) && (ymin1 <= point(2,1)) && (point(2,1) <= ymax1);
+            B onLineB = (xmin2 <= point(1,1)) && (point(1,1) <= xmax2) && (ymin2 <= point(2,1)) && (point(2,1) <= ymax2);
 
-            intersects = onLine1 && onLine2;
+            intersects = onLineA && onLineB;
         else
             point(1,1) = 0;
             point(2,1) = 0;

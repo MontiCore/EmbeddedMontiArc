@@ -1,6 +1,6 @@
 package ba.util;
 
-component TrajectoryToLine{
+component TrajectoryToLines{
     ports in Q^{3,5} trajectoryIn,
           //m-1 lineOuts
           out Q^{4,1} lineOut[4];

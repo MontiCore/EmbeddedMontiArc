@@ -18,35 +18,35 @@ component RectIntersection{
     connect rect1 -> rectToLines1.rect;
     connect rect2 -> rectToLines2.rect;
 
-    connect rectToLines1.line1 -> lineIntersection[1].line1;
-    connect rectToLines2.line1 -> lineIntersection[1].line2;
+    connect rectToLines1.lineA -> lineIntersection[1].lineA;
+    connect rectToLines2.lineA -> lineIntersection[1].lineB;
 
-    connect rectToLines1.line1 -> lineIntersection[2].line1;
-    connect rectToLines2.line2 -> lineIntersection[2].line2;
+    connect rectToLines1.lineA -> lineIntersection[2].lineA;
+    connect rectToLines2.lineB -> lineIntersection[2].lineB;
 
-    connect rectToLines1.line1 -> lineIntersection[3].line1;
-    connect rectToLines2.line3 -> lineIntersection[3].line2;
+    connect rectToLines1.lineA -> lineIntersection[3].lineA;
+    connect rectToLines2.lineC -> lineIntersection[3].lineB;
 
-    connect rectToLines1.line1 -> lineIntersection[4].line1;
-    connect rectToLines2.line4 -> lineIntersection[4].line2;
+    connect rectToLines1.lineA -> lineIntersection[4].lineA;
+    connect rectToLines2.lineD -> lineIntersection[4].lineB;
 
-    connect rectToLines1.line2 -> lineIntersection[5].line1;
-    connect rectToLines2.line2 -> lineIntersection[5].line2;
+    connect rectToLines1.lineB -> lineIntersection[5].lineA;
+    connect rectToLines2.lineB -> lineIntersection[5].lineB;
 
-    connect rectToLines1.line2 -> lineIntersection[6].line1;
-    connect rectToLines2.line3 -> lineIntersection[6].line2;
+    connect rectToLines1.lineB -> lineIntersection[6].lineA;
+    connect rectToLines2.lineC -> lineIntersection[6].lineB;
 
-    connect rectToLines1.line2 -> lineIntersection[7].line1;
-    connect rectToLines2.line4 -> lineIntersection[7].line2;
+    connect rectToLines1.lineB -> lineIntersection[7].lineA;
+    connect rectToLines2.lineD -> lineIntersection[7].lineB;
 
-    connect rectToLines1.line3 -> lineIntersection[8].line1;
-    connect rectToLines2.line3 -> lineIntersection[8].line2;
+    connect rectToLines1.lineC -> lineIntersection[8].lineA;
+    connect rectToLines2.lineC -> lineIntersection[8].lineB;
 
-    connect rectToLines1.line3 -> lineIntersection[9].line1;
-    connect rectToLines2.line4 -> lineIntersection[9].line2;
+    connect rectToLines1.lineC -> lineIntersection[9].lineA;
+    connect rectToLines2.lineD -> lineIntersection[9].lineB;
 
-    connect rectToLines1.line4 -> lineIntersection[10].line1;
-    connect rectToLines2.line4 -> lineIntersection[10].line2;
+    connect rectToLines1.lineD -> lineIntersection[10].lineA;
+    connect rectToLines2.lineD -> lineIntersection[10].lineB;
 
     connect lineIntersection[:].intersects -> multiOr.boolIn[:];
     connect multiOr.boolOut -> collision;

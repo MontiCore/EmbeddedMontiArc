@@ -10,16 +10,16 @@ component IntersectionController<N1 n = 2,N1 x = 1,N1 m = 5,N1 m1 = 4,N1 m2 = 10
           out B stop[n];
 
     instance SingleSetCompareMatrix<3,m,n,x> singleSetCompare;
-    instance TrajectoryCompare<m,m1,m2> trajectoryCompare[x];
-    instance ConflictToStopConverter<n,x,m> conflictToStopConverter;
+    instance TrajectoryCollision<m,m1,m2> trajectoryCollision[x];
+    instance CollisionToStop<n,x,m> collisionToStop;
 
     connect trajectoryIn[:] -> singleSetCompare.setIn[:];
-    connect singleSetCompare.listOut1[:] -> trajectoryCompare[:].trajectory1;
-    connect singleSetCompare.listOut2[:] -> trajectoryCompare[:].trajectory2;
+    connect singleSetCompare.outA[:] -> trajectoryCollision[:].trajectoryA;
+    connect singleSetCompare.outB[:] -> trajectoryCollision[:].trajectoryB;
 
-    connect cutoffTime -> trajectoryCompare[:].cutoffTime;
-    connect trajectoryCompare[:].conflict -> conflictToStopConverter.conflictIn[:];
+    connect cutoffTime -> trajectoryCollision[:].cutoffTime;
+    connect trajectoryCollision[:].collision -> collisionToStop.collisionIn[:];
 
-    connect isActive -> conflictToStopConverter.active;
-    connect conflictToStopConverter.stopOut[:] ->  stop[:];
+    connect isActive -> collisionToStop.active;
+    connect collisionToStop.stopOut[:] ->  stop[:];
 }

@@ -1,8 +1,8 @@
 package ba.intersection;
 
 //TODO: x = (n-1)n/2
-component ConflictToStopConverter<N1 n = 2,N1 x = 1,N1 m = 5>{
-    port in B conflictIn[x];
+component CollisionToStop<N1 n = 2,N1 x = 1,N1 m = 5>{
+    port in B collisionIn[x];
     port in B active;
     port out B stopOut[n];
 
@@ -38,7 +38,7 @@ component ConflictToStopConverter<N1 n = 2,N1 x = 1,N1 m = 5>{
 
         if active
             for i = 1:x
-                if conflictIn(i)
+                if collisionIn(i)
                     Z curIndex = indexLookup(i,1);
                     stopOut(curIndex) = True;
                 end

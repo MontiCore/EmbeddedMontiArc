@@ -3,10 +3,10 @@ package ba.util;
 component RectToLines{
     ports in Q^{2,4} rect,
           //TODO: as array once issue is resolved
-          out Q^{4,1} line1,
-          out Q^{4,1} line2,
-          out Q^{4,1} line3,
-          out Q^{4,1} line4;
+          out Q^{4,1} lineA,
+          out Q^{4,1} lineB,
+          out Q^{4,1} lineC,
+          out Q^{4,1} lineD;
 
     implementation Math{
         Q^{4,1} tmpLine;
@@ -25,13 +25,13 @@ component RectToLines{
 
           //TODO: as array once issue is resolved
             if i == 1
-                line1 = tmpLine;
+                lineA = tmpLine;
             elseif i == 2
-                line2 = tmpLine;
+                lineB = tmpLine;
             elseif i == 3
-                line3 = tmpLine;
+                lineC = tmpLine;
             elseif i == 4
-                line4 = tmpLine;
+                lineD = tmpLine;
             end
         end
     }
