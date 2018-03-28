@@ -68,7 +68,10 @@ public class WasmStep {
     pb.inheritIO();
 
     try {
-      pb.start().waitFor();
+      int returnCode = pb.start().waitFor();
+      if (returnCode != 0) {
+        throw new WasmCompilerException("Compiling to WebAssembly failed with code " + returnCode);
+      }
     } catch (InterruptedException | IOException e) {
       throw new WasmCompilerException(e);
     }
