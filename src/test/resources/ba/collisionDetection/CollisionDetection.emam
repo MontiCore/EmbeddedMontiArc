@@ -1,4 +1,4 @@
-package ba;
+package ba.collisionDetection;
 import ba.util.RectIntersection;
 
 //TODO: as generic

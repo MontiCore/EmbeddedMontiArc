@@ -1,0 +1,21 @@
+package ba.collisionDetection;
+import ba.util.RectIntersection;
+import ba.util.SingleSetCompareMatrix;
+import ba.util.MultiOr;
+
+component CollisionDetection<N1 n = 2,N1 x = 1>{
+//component CollisionDetection{
+    ports in Q^{2,4} hulls[n],
+          out B collision;
+
+    instance SingleSetCompareMatrix<2,4,n,x> singleSetCompare;
+    instance RectIntersection rectIntersection[x];
+    instance MultiOr<x> multiOr;
+
+    connect hulls[:] -> singleSetCompare.setIn[:];
+
+    connect singleSetCompare.listOut1[:] -> rectIntersection[:].rect1;
+    connect singleSetCompare.listOut2[:] -> rectIntersection[:].rect2;
+    connect rectIntersection[:].collision -> multiOr.boolIn[:];
+    connect multiOr.boolOut -> collision;
+}
