@@ -2,12 +2,36 @@ package ba.intersection;
 
 //TODO: x = (n-1)n/2
 component ConflictToStopConverter<N1 n = 2,N1 x = 1,N1 m = 5>{
-    port in Z(1:n) indexLookupIn[x];
     port in B conflictIn[x];
     port in B active;
     port out B stopOut[n];
 
     implementation Math{
+        Z^{n,1} counter;
+        Z^{x,1} indexLookup;
+        for i = 1:n
+            counter(i,1) = 0;
+        end
+
+        Z k = 1;
+        //TODO: remove once generator can handle i = n-1:n
+        Z maxI = n - 1;
+        for i = 1:maxI
+            Z minJ = i + 1;
+            for j = minJ:n
+                counter(i,1) = counter(i,1) + 1;
+                counter(j,1) = counter(j,1) + 1;
+
+                if counter(i,1) <= counter(j,1)
+                    indexLookup(k,1) = i;
+                else
+                    indexLookup(k,1) = j;
+                end
+                k = k + 1;
+            end
+        end
+
+
         for i = 1:n
             stopOut(i) = False;
         end
@@ -15,7 +39,7 @@ component ConflictToStopConverter<N1 n = 2,N1 x = 1,N1 m = 5>{
         if active
             for i = 1:x
                 if conflictIn(i)
-                    Z curIndex = indexLookupIn(i);
+                    Z curIndex = indexLookup(i,1);
                     stopOut(curIndex) = True;
                 end
             end
