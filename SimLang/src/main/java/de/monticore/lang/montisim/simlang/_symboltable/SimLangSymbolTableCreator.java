@@ -116,11 +116,11 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   }
   private ConcreteWeather astToConcWeather(ASTWeatherObj obj) {
     AlternativeInput temp = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
-    AlternativeInput humi = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
-    AlternativeInput press = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
-    AlternativeInput windS = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
-    AlternativeInput windD = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
-    AlternativeInput precA = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
+    AlternativeInput humi = obj.getHumiditys().size() > 0 ? getUsedAlternative(obj.getHumiditys().get(0).getAlternativeInput()) : null;
+    AlternativeInput press = obj.getPressures().size() > 0 ? getUsedAlternative(obj.getPressures().get(0).getAlternativeInput()) : null;
+    AlternativeInput windS = obj.getWindStrengths().size() > 0 ? getUsedAlternative(obj.getWindStrengths().get(0).getAlternativeInput()) : null;
+    AlternativeInput windD = obj.getWindDirections().size() > 0 ? getUsedAlternative(obj.getWindDirections().get(0).getAlternativeInput()) : null;
+    AlternativeInput precA = obj.getPrecipitationAmounts().size() > 0 ? getUsedAlternative(obj.getPrecipitationAmounts().get(0).getAlternativeInput()) : null;
 
     Sight sight = null;
     if(obj.getSights().size() > 0) {
@@ -237,7 +237,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   
   @Override
   public void visit(final ASTChannel node) {
-    Log.info("visit channel","symtabcreator");
+    Log.info("visit channel"," -symtabcreator-");
     SimLangEnums.ChannelTypes type;
     switch (node.getChannelType()) {
       case 0: type = SimLangEnums.ChannelTypes.FIXED;
@@ -259,7 +259,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
               new Point2D.Float(node.getAreas().get(0).getPoint2().get().getPosX().getNumber().get().floatValue(),
                                 node.getAreas().get(0).getPoint2().get().getPosY().getNumber().get().floatValue()));
     }
-    Log.info("creating symbol "+node.getName(),"symtabcreator");
+    Log.info("creating symbol "+node.getName()," -symtabcreator-");
     final ChannelSymbol symbol = new ChannelSymbol("channel",
             new Channel(type,
               node.getName(),

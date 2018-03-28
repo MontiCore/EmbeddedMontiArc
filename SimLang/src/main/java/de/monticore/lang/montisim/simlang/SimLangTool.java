@@ -14,9 +14,9 @@ import java.util.Optional;
 import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
 import org.antlr.v4.runtime.RecognitionException;
 
-import de.monticore.lang.montisim.simlang._ast.*;
-import de.monticore.lang.montisim.simlang._cocos.*;
-import de.monticore.lang.montisim.simlang._parser.*;
+import de.monticore.lang.montisim.simlang._ast.ASTSimLangCompilationUnit;
+import de.monticore.lang.montisim.simlang._cocos.SimLangCoCoChecker;
+import de.monticore.lang.montisim.simlang._parser.SimLangParser;
 import de.monticore.lang.montisim.simlang._symboltable.*;
 import de.monticore.lang.montisim.simlang.cocos.*;
 import de.monticore.lang.montisim.weather.cocos.*;

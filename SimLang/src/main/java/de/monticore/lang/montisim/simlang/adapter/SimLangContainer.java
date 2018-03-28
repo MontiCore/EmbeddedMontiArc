@@ -3,11 +3,9 @@ package de.monticore.lang.montisim.simlang.adapter;
 import de.monticore.lang.montisim.simlang._symboltable.*;
 import de.monticore.symboltable.Scope;
 import de.monticore.lang.montisim.simlang.util.*;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Optional;
 
 public class SimLangContainer {
@@ -59,7 +57,7 @@ public class SimLangContainer {
     if(time != null)
       this.time = Optional.of(time.getTime());
 
-    WeatherSymbol weather = symTab.<WeatherSymbol>resolve(symPrefix+"time", WeatherSymbol.KIND).orElse(null);
+    WeatherSymbol weather = symTab.<WeatherSymbol>resolve(symPrefix+"weather", WeatherSymbol.KIND).orElse(null);
     if(weather != null)
       this.weather = Optional.of(weather.getWeathers());
 

@@ -57,6 +57,9 @@ public class SymboltableTest {
     assertNotNull(simDur);
     //assert simTy.getSimulationType().equals(SimLangEnums.SimulationTypes.MAXFPS); //requires better insight into MC enums
 
+    final WeatherSymbol we = symtab.<WeatherSymbol>resolve("simlang.test.ASTTest.weather", WeatherSymbol.KIND).orElse(null);
+    assertNotNull(simDur);
+
     final TimeSymbol tim = symtab.<TimeSymbol>resolve("simlang.test.ASTTest.time", TimeSymbol.KIND).orElse(null);
     assertNotNull(tim);
     assert tim.getTime().get(0).getHours() == 1;
@@ -102,7 +105,7 @@ public class SymboltableTest {
 
     final PedestrianDensitySymbol pedDen = symtab.<PedestrianDensitySymbol>resolve("simlang.test.ASTTest.pedestrian_density", PedestrianDensitySymbol.KIND).orElse(null);
     assertNotNull(pedDen);
-    //assert pedDen.getPedestrianDensity().getLambda().get();
+    assert pedDen.getPedestrianDensity().getNUnit().get().getNumberUnit().equals("2.0");
 
     final Collection<PedestrianSymbol> peds = symtab.resolveMany("simlang.test.ASTTest.pedestrian", PedestrianSymbol.KIND);
     assert !peds.isEmpty();
@@ -135,12 +138,20 @@ public class SymboltableTest {
 
     final Collection<RandomVehicleSymbol> raVe = symtab.resolveMany("simlang.test.ASTTest.random_vehicle", RandomVehicleSymbol.KIND);
     assert !raVe.isEmpty();
-    assert ((RandomVehicleSymbol)raVe.toArray()[0]).getVehicle().getAmount() == 1000f; //no idea why this order
-    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getAmount() == 1234f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getStartX() == -150f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getStartY() == -150f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getDestX() == 500f;
-    assert ((RandomVehicleSymbol)raVe.toArray()[1]).getVehicle().getPath().get().getDestY() == 600f;
+    for(RandomVehicleSymbol sym : raVe) {
+      if(sym.getVehicle().getAmount() == 1000f) {
+        //ok
+      }
+      else if(sym.getVehicle().getAmount() == 1234f) {
+        assert sym.getVehicle().getPath().get().getStartX()  == -150f;
+        assert sym.getVehicle().getPath().get().getStartY() == -150f;
+        assert sym.getVehicle().getPath().get().getDestX() == 500f;
+        assert sym.getVehicle().getPath().get().getDestY() == 600f;
+      }
+      else {
+        Log.error("Unaccounted for random vehicle symbol appeared.");
+      }
+    }
 
     final Collection<ChannelSymbol> ch = symtab.resolveMany("simlang.test.ASTTest.channel", ChannelSymbol.KIND);
     assert !ch.isEmpty();

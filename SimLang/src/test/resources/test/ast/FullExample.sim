@@ -25,7 +25,7 @@ sim FullExample {
   gravity 12m/s^2;
   
   <p>(10.10, 10.0, 10)->(0, 20.0, 0.0);
-  pedestrian_density 2.0; //lambda
+  pedestrian_density 2.0;
   
   car1(-22, -34.0, 90)->(-1, 0, 10);
   <v>(123, -94, 201)->(1024, 960, 200);
@@ -33,7 +33,7 @@ sim FullExample {
   <v> 1234 (-150, -150) -> (500, 600);
   
   fixed channel LTE {
-    transfer_rate 20 Mbit/s;
+    transfer_rate 20000bit/s;
     latency 10ms;
     outage 0.001;
     area global;

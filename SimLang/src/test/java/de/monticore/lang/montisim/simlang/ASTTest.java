@@ -1,8 +1,6 @@
 package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimLangCompilationUnit;
-import de.monticore.lang.montisim.weather._ast.ASTAlternativeInput;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +92,7 @@ public class ASTTest {
               ast.getSimulation().getTimeouts().get(0).getAlternativeInput().getUnitNumber().get().getTUnitNumber().get().equals("12h") );
       assertTrue(
               ast.getSimulation().getGravitys().get(0).getAlternativeInput().getUnitNumber().get().getTUnitNumber().get().equals("12m/s^2") );
-      //assertTrue(ast.getSimulation().getPedestrianDensitys().get(0).getLambda().get().getHours().equals("1") );
+      assertTrue(ast.getSimulation().getPedestrianDensitys().get(0).getAlternativeInput().getUnitNumber().get().getTUnitNumber().get().equals("2.0") );
       assertTrue(
               ast.getSimulation().getPedestrianss().get(0).getStartX().getTUnitNumber().get().equals("10.10") );
       assertTrue(
@@ -147,7 +145,7 @@ public class ASTTest {
               ast.getSimulation().getChannels().get(0).getName().equals("LTE") );
       //assertTrue(ast.getSimulation().getChannels().get(0).getChannelType() == 0);
       assertTrue(
-              ast.getSimulation().getChannels().get(0).getTransferRates().get(0).getAlternativeInput().getUnitNumber().get().getTUnitNumber().get().equals("20 Mbit/s") );
+              ast.getSimulation().getChannels().get(0).getTransferRates().get(0).getAlternativeInput().getUnitNumber().get().getTUnitNumber().get().equals("20000bit/s") );
       assertTrue(
               ast.getSimulation().getChannels().get(0).getLatencys().get(0).getAlternativeInput().getUnitNumber().get().getTUnitNumber().get().equals("10ms") );
       assertTrue(

@@ -12,4 +12,12 @@ public class MapHeight {
   public MapHeight(SimLangEnums.SimulationHeightModes mode) {
     this.heightMode = Optional.of(mode);
   }
+
+  public Optional<SimLangEnums.SimulationHeightModes> getHeightMode() {
+    return heightMode;
+  }
+
+  public Optional<String> getCustomHeight() {
+    return customHeight;
+  }
 }
