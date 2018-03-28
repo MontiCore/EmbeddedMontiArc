@@ -26,8 +26,6 @@ jobs:
       services:
         - docker
       script:
-        - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
-        - ./install_armadillo.sh
         - mvn verify -P integration-test jacoco:report coveralls:report --settings "settings.xml"
     - stage: acceptance-test
       script:

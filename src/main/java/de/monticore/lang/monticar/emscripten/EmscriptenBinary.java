@@ -17,8 +17,11 @@ public class EmscriptenBinary implements Emscripten {
   }
 
   @Override
-  public String[] getCommand() {
-    return new String[]{emscripten()};
+  public String[] getCommand(String... options) {
+    String[] command = new String[options.length + 1];
+    command[0] = emscripten();
+    System.arraycopy(options, 0, command, 1, options.length);
+    return command;
   }
 
   private String emscripten() {
