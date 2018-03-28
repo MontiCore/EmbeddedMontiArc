@@ -22,6 +22,9 @@ jobs:
       script:
         - mvn test jacoco:report coveralls:report --settings "settings.xml"
     - stage: integration-test
+      sudo: required
+      services:
+        - docker
       script:
         - mvn verify -P integration-test jacoco:report coveralls:report --settings "settings.xml"
     - stage: acceptance-test
