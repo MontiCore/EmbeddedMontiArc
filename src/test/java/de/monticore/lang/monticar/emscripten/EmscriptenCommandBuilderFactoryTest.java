@@ -29,17 +29,20 @@ class EmscriptenCommandBuilderFactoryTest {
   private static final Option OTHER_OPTION = new Option("other_option", false);
   private static final String FLAG = "some_flag";
   private static final String OTHER_FLAG = "other_flag";
+  private static final String EMSCRIPTEN = "emscripten";
 
   private Emscripten emscripten;
   private Emscripten otherEmscripten;
 
   @BeforeEach
   void setUp() {
-    emscripten = mock(Emscripten.class);
-    when(emscripten.getCommand()).thenReturn(new String[]{"emscripten"});
+    Path emscriptenPath = mock(Path.class);
+    when(emscriptenPath.toAbsolutePath()).thenReturn(emscriptenPath);
+    when(emscriptenPath.normalize()).thenReturn(emscriptenPath);
+    when(emscriptenPath.toString()).thenReturn(EMSCRIPTEN);
+    emscripten = new EmscriptenBinary(emscriptenPath);
 
     otherEmscripten = mock(Emscripten.class);
-    when(otherEmscripten.getCommand()).thenReturn(new String[]{"docker exec -it emscripten"});
   }
 
   @Nested
