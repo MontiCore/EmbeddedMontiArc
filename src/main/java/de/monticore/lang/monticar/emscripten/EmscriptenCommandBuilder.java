@@ -172,23 +172,24 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   public List<String> toList() {
     checkParameters();
 
-    List<String> list = new ArrayList<>();
-    list.addAll(emscripten());
-    list.add(file());
-    list.addAll(outputFile());
-    list.addAll(includes());
-    list.addAll(options());
-    list.addAll(flags());
+    List<String> options = new ArrayList<>();
+    options.add(file());
+    options.addAll(outputFile());
+    options.addAll(includes());
+    options.addAll(options());
+    options.addAll(flags());
     if (optimizationLevel != null) {
-      list.add(optimizationLevel.toString());
+      options.add(optimizationLevel.toString());
     }
     if (bind) {
-      list.add("--bind");
+      options.add("--bind");
     }
     if (std != null) {
-      list.add("-std=" + std);
+      options.add("-std=" + std);
     }
-    return list;
+    String[] command = emscripten.getCommand(options.toArray(new String[]{}));
+
+    return Arrays.asList(command);
   }
 
   @Override

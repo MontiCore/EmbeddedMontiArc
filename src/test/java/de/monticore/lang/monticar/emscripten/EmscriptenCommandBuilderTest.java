@@ -34,8 +34,11 @@ class EmscriptenCommandBuilderTest {
 
   @BeforeEach
   void setUp() {
-    emscripten = mock(Emscripten.class);
-    when(emscripten.getCommand()).thenReturn(new String[]{EMSCRIPTEN});
+    Path emscriptenPath = mock(Path.class);
+    when(emscriptenPath.toAbsolutePath()).thenReturn(emscriptenPath);
+    when(emscriptenPath.normalize()).thenReturn(emscriptenPath);
+    when(emscriptenPath.toString()).thenReturn(EMSCRIPTEN);
+    emscripten = new EmscriptenBinary(emscriptenPath);
   }
   
   @SafeVarargs
