@@ -35,7 +35,7 @@ jobs:
       services:
         - docker
       script:
-        - mvn verify -Dskip.unit.tests=false -Dskip.integration.tests=false -Dskip.acceptance.tests=false jacoco:report coveralls:report
+        - mvn verify -Dskip.unit.tests=false -Dskip.integration.tests=false -Dskip.acceptance.tests=false jacoco:report coveralls:report --settings "settings.xml"
 
 after_success:
 #- mvn deploy --settings "./settings.xml"
