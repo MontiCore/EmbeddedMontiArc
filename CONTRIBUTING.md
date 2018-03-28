@@ -1,5 +1,13 @@
 # Contributing
 
+THIS DOCUMENTATION IS INVALID: 
+* SEE OUR SE-RULES: https://github.com/EmbeddedMontiArc/demonstrator/issues/5
+* ALSO USE THE FORMATTING OF THE SE CHAIR AND **NOT** INTELLIJ ONE: https://sselab.de/lab2/private/intwiki/se-conventions/index.php?title=Code_Style_Guidelines
+
+Here is a PDF print of it:
+[Code Style Guidelines - se-conventions.pdf](https://github.com/EmbeddedMontiArc/demonstrator/files/1857943/Code.Style.Guidelines.-.se-conventions.pdf)
+
+
 ## Git
 
 ### Commit Messages
