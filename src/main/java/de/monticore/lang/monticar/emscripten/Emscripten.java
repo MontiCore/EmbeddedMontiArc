@@ -7,12 +7,11 @@ public interface Emscripten {
 
   /**
    * Returns an array possibly containing multiple entries that need to be
-   * called in conjunction to invoke emscripten.<p>
-   * In general, command line parameters for emscripten can be simply
-   * concatenated to this array.
+   * called in conjunction to invoke emscripten.
    *
+   * @param options additional command line options
    * @return command to invoke emscripten
    */
-  String[] getCommand();
+  String[] getCommand(String... options);
 
 }
