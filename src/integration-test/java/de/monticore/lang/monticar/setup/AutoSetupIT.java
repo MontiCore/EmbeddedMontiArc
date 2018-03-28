@@ -153,7 +153,7 @@ class AutoSetupIT {
       autoSetup.setup();
 
       WasmStep wasmStep = new WasmStep(commandBuilderFactory(emscripten(DOCKER_EMSCRIPTEN_CALL)),
-          dir, new WasmJsNameProvider());
+          Paths.get("."), new WasmJsNameProvider());
       Path wasmFile = wasmStep.compile(SOME_C_FILE);
 
       assertThat(wasmFile).exists();
