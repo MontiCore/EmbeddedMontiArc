@@ -1,6 +1,0 @@
-package ba.util;
-
-struct Position{
-    Q posX;
-    Q posY;
-}
