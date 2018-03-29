@@ -48,6 +48,8 @@ mv ../report/css/* report/css
 mv ../report/data/* report/data
 mv ../report/images/* report/images
 mv ../report/js/* report/js
+mv ../report/componentQuality.html report/componentQuality.html
+mv ../report/cocosReportExpanded.html report/cocosReportExpanded.html
 mv ../report/cocosReport.html report/cocosReport.html
 mv ../report/grammarReport.html report/grammarReport.html
 mv ../report/testReport.html report/testReport.html
