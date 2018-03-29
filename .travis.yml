@@ -20,7 +20,7 @@ jobs:
         - mvn clean test-compile --settings "settings.xml"
     - stage: test
       script:
-        - mvn test --settings jacoco:report coveralls:report "settings.xml"
+        - mvn test jacoco:report coveralls:report --settings "settings.xml"
     - stage: integration-test
       sudo: required
       services:
