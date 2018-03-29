@@ -7,7 +7,7 @@ Reporting
 Creates a report of the quality of all models within a projects-root e.g. `EmbeddedMontiArc` / `MontiSim` / `MontiCore`.
 Each day, Travis automatically calculates the report for `EmbeddedMontiArc` and `MontiSim` and uploads it afterwards to gh-pages.
 
-[Component Quality](https://embeddedmontiarc.github.io/reporting/report/cocosReport.html) : 
+[Component Quality](https://embeddedmontiarc.github.io/reporting/report/componentQuality.html) : 
 Report for the CoCo tests of all components.
 
 [Grammars](https://embeddedmontiarc.github.io/reporting/report/grammarReport.html) : 

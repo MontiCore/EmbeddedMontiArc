@@ -81,11 +81,11 @@ function initLogMechanic(controlClass, formatFunction) {
 }
 
 function initGrowMechanic(growClass, shortLabel, fullLabel) {
-    $('.' + growClass).mouseover(function () {
+    $('.' + growClass).on('mouseover touchstart', function () {
         $(this).find('.' + shortLabel).hide();
         $(this).find('.' + fullLabel).show();
     });
-    $('.grow').mouseout(function () {
+    $('.grow').on('mouseout touchend', function () {
         $(this).find('.' + shortLabel).show();
         $(this).find('.' + fullLabel).hide();
     });

@@ -33,8 +33,8 @@ function loadJSON(file, info, callback) {
     xobj.send(null);
 }
 
-function computeDataThenCreateTable(data, info){
-    data.forEach(function(datum){
+function computeDataThenCreateTable(data, info) {
+    data.forEach(function (datum) {
         var order = uniqueNameFunction_custom(datum);
         datum['Order'] = order;
     });
@@ -43,7 +43,9 @@ function computeDataThenCreateTable(data, info){
 
 function createTable(data, info) {
     table = $(tableReference).DataTable({
-        "fnInitComplete": function() { init(); },
+        "fnInitComplete": function () {
+            init();
+        },
         "fixedHeader": true,
         "select": true,
         "data": data,
@@ -51,7 +53,7 @@ function createTable(data, info) {
         "ordering": true,
         "paging": false,
         "bInfo": false,
-        "orderFixed": { "pre": [0, 'asc'], "pre": [1, 'asc'] },
+        "orderFixed": {"pre": [0, 'asc'], "pre": [1, 'asc']},
         "rowGroup": {
             "dataSrc": "Root",
             "startRender": function (rows, group) {
@@ -76,6 +78,11 @@ function createTable(data, info) {
             {
                 "data": "Name",
                 "bSortable": true,
+            },
+            {
+                "data": "Visualisation",
+                "className": "visualisation",
+                "orderable": true
             },
             {
                 "data": "OnlineIDE",
@@ -115,6 +122,16 @@ function createTable(data, info) {
 };
 
 function init() {
+    $("th.expandChildren-control").on('click', function () {
+        window.parent.tabExpanded();
+    });
+    $('thead tr').find('th').each(function (i) {
+        if ($(this).text() !== "" && ($(this).hasClass('sorting') || $(this).hasClass('sorting_asc') || $(this).hasClass('sorting_desc'))) {
+            $(this).on('click', function () {
+                window.parent.tabExpandedWithOrder(i + 1);
+            });
+        }
+    });
     table = $(tableReference).DataTable();
     childControlInit('expandChildren-control', uniqueNameFunction_custom);
     initFloatingHeader(1);
@@ -138,8 +155,8 @@ function formatLog_custom(d) {
 function uniqueNameFunction_custom(data) {
     var res = data['Root'] + "_" + data['Path'] + +"_" + data['Name'];
     res = res.split(' ').join('');
-    res = res.replace(/\./g, "_").replace(/\(/g, "").replace(/\)/g,"")
-        .replace(/\\/g, "_").replace(/\//g,"_");
+    res = res.replace(/\./g, "_").replace(/\(/g, "").replace(/\)/g, "")
+        .replace(/\\/g, "_").replace(/\//g, "_");
     return res;
 }
 

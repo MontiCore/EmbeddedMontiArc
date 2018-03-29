@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Component Quality</title>
+  <title>Component Quality Grouped</title>
   <link href="images/favicon.ico" type="image/x-icon" rel="icon"/>
   <script src="js/dataTable/jquery-3.3.1.min.js"></script>
   <script src="js/dataTable/jquery.dataTables.min.js"></script>
@@ -25,10 +25,11 @@
     
       <thead>
         <tr>
-        <th>Root</th>
-        <th>Order</th>
-        <th>Expand</th>
+        <th style="visibility: hidden;">Root</th>
+        <th style="visibility: hidden;">Order</th>
+        <th class="nowrap"><img src="images/next.png" style="height: 24px; width:auto;">&nbsp;Expand</th>
         <th class="grow" style="width: 50%"><div><span>Name</span></div></th>
+        <th>VIS</th>
         <th id="onlineIDE">IDE</th>
         <th>Log</th>
         <th class="grow"><div><span>Type</span></div></th>

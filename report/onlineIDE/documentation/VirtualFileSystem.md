@@ -38,8 +38,8 @@ iframe with the following content:
 
 ```
 ...
-<script src="/resources/js/production/browserfs.min.js"></script>
-<script src="/resources/js/development/shared/VFS.js"></script>
+<script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+<script src="modules/se.rwth.common.vfs/vfs.js"></script>
 <script>
     var vfs = VFS("Peter/API/master");
     
@@ -91,7 +91,7 @@ iframe. In order to accomplish this task, her code would look like this:
 
 ```
 ...
-<iframe src="/static.html?method=raw&mountPoint=Peter/API/master&path=/src/html/index.html">
+<iframe src="api/static.html?method=raw&mountPoint=Peter/API/master&path=/src/html/index.html">
 ...
 </iframe>
 ... 
@@ -122,7 +122,7 @@ Loading `index.html` into an iframe as follows:
 
 ```
 ...
-<iframe src="/static.html?method=rawurlrewrite&mountPoint=Peter/API/master&path=/src/html/index.html&radix=/src/html/">
+<iframe src="api/static.html?method=rawurlrewrite&mountPoint=Peter/API/master&path=/src/html/index.html&radix=/src/html/">
 ...
 </iframe>
 ...
@@ -131,7 +131,7 @@ Loading `index.html` into an iframe as follows:
 will cause `secret.html` in the anchor to be replaced by:
 
 ```
-/static.html?method=rawurlrewrite&mountPoint=Peter/API/master&path=/src/html/secret.html&radix=/src/main/html
+api/static.html?method=rawurlrewrite&mountPoint=Peter/API/master&path=/src/html/secret.html&radix=/src/main/html
 ```
 
 Due to the way `static.html` works, it is highly discouraged to use this part of the API
@@ -159,7 +159,7 @@ would have to provide something along these lines:
 
 ```
 ...
-<a href="/api/load.html?mountPoint=Peter/API/demo&url=peterapis.com/demo.zip&openFile=/demo/HelloWorld.txt">Open in Online IDE</a>
+<a href="api/load.html?mountPoint=Peter/API/demo&url=peterapis.com/demo.zip&openFile=/demo/HelloWorld.txt">Open in Online IDE</a>
 ...
 ```
 

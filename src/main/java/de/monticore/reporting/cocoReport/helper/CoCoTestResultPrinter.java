@@ -18,6 +18,7 @@ public class CoCoTestResultPrinter {
             "\"ModelName\"",
             "\"Name\"",
             "\"Path\"",
+            "\"Visualisation\"",
             "\"OnlineIDE\"",
             "\"LogNr\"",
             "\"LogOutput\"",
@@ -47,7 +48,7 @@ public class CoCoTestResultPrinter {
     };
     private static String tickTag = "\"<img src='images/tick.png'/>\"";
     private static String crossTag = "\"<img src='images/Red_cross_tick.png'/>\"";
-    private static String noTag = "\"<img src='images/minus_318-140716.jpg'/>\"";
+    private static String noTag = "\"<img src='images/minus.jpg'/>\"";
 
     private static String tagOf(int i) {
         switch (i) {
@@ -62,13 +63,14 @@ public class CoCoTestResultPrinter {
         }
     }
 
-    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge) {
+    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean printChildren) {
         if (testResults.size() == 0) return;
+        int depth = printChildren ? 0 : 1;
         if (merge) {
             try {
                 String first = FileUtils.readFileToString(new File(path));
                 first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + printTestResults(testResults, merge, "", 0);
+                String str = first + ",\n" + printTestResults(testResults, merge, "", depth);
                 FileUtils.writeStringToFile(new File(path),
                         str);
             } catch (IOException e) {
@@ -77,7 +79,7 @@ public class CoCoTestResultPrinter {
         } else {
             try {
                 FileUtils.writeStringToFile(new File(path),
-                        printTestResults(testResults, merge, "", 0));
+                        printTestResults(testResults, merge, "", depth));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -107,8 +109,9 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
-            ip.println(names[i++] + ": \"" + getVisulisationLink(testResult) + "\",");
+            ip.println(names[i++] + ": \"" + getGithubLink(testResult) + "\",");
             ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
+            ip.println(names[i++] + ": \"" + getVisulisationLink(testResult) + "\",");
             ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
@@ -175,23 +178,44 @@ public class CoCoTestResultPrinter {
         zipName = zipName.substring(0, zipName.lastIndexOf("."));
         String name = file.getAbsolutePath().substring(root.getAbsolutePath().length());
         String displayName = name;
-        return ("\"<a target='_blank' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
+        return ("\"<a class='ideLink' target='_blank' rel='noopener' href='onlineIDE/api/load.html?mountPoint=EmbeddedMontiArc/reporting/" + zipName + "&url="
                 + urlToZip + "&openFile=/" + name + "'>" +
                 "<img border='0' alt='" + displayName + "' src='images/favicon.ico' class='onlineIDEImage'>" +
                 "</a>\"").replace("\\", "/");
     }
 
     private static String getVisulisationLink(CheckCoCoResult testResult) {
-        if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
         String displayName = testResult.getModelName();
 
-        if (testResult.getSvgPath().equals(""))
-            return "<div class='noSVG'>" + displayName + "</div>";
+        if (testResult.isErrorResult() || testResult.isMainPackage())
+            return "<div class='svgMinus'>" +
+                    "<img alt='" + displayName + "' src='images/minus.jpg'>" +
+                    "</div>";
+        else if (testResult.getSvgPath().equals(""))
+            return "<div class='svgNoEye'>" +
+                    "<img alt='" + displayName + "' src='images/noEye.png'>" +
+                    "</div>";
         else
-            return "<a class='sVG' target='_blank' href='" +
+            return "<a class='svgEye' target='_blank' rel='noopener' href='" +
                     testResult.getSvgPath() + "'>" +
-                    displayName +
+                    "<img alt='" + displayName + "' src='images/eye.png'>" +
                     "</a>";
+    }
+
+    private static String getGithubLink(CheckCoCoResult testResult) {
+        if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
+        String ghLink = "https://github.com/" + testResult.getRootName1() + "/" + testResult.getProject()
+                + "blob/" + testResult.getGithubBranch() + "/"
+                + testResult.getModelFile().getAbsolutePath().substring(
+                        testResult.getRootFile1().getAbsolutePath().length() + testResult.getProject().length() + 1)
+                .replace("\\","/");
+        ghLink = ghLink.replace("\\","/");
+
+        String htmlTag = "<a class='ghLink' href='" + ghLink + "' target='_blank' rel='noopener'>"
+                + testResult.getModelName() + "</a>";
+
+
+        return htmlTag;
     }
 
     private static String getFilePath(CheckCoCoResult testResult) {

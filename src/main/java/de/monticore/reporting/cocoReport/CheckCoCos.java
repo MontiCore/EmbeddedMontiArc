@@ -3,12 +3,16 @@ package de.monticore.reporting.cocoReport;
 import de.monticore.reporting.tools.CustomPrinter;
 import de.monticore.reporting.tools.SearchFiles;
 import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.environment.EnvironmentUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public class CheckCoCos {
 
@@ -30,6 +34,13 @@ public class CheckCoCos {
             max += filesMap.get(projectDir).size();
 
         for (File projectDir : filesMap.keySet()) {
+            String gitHubBranch = null;
+            try {
+                gitHubBranch = getGitHubBranch(projectDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             for(File file: filesMap.get(projectDir)) {
                 CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" +
                         " Test CoCos of file \"" + file.getAbsolutePath());
@@ -48,6 +59,7 @@ public class CheckCoCos {
                 testResult.setProject(relativeProject);
                 testResult.setRootFile1(root);
                 testResult.setZipName(zipName);
+                testResult.setGithubBranch(gitHubBranch);
 
                 testResults.add(testResult);
             }
@@ -56,6 +68,42 @@ public class CheckCoCos {
         CustomPrinter.end();
 
         return testResults;
+    }
+
+    private String getGitHubBranch(File projectDir) throws IOException {
+        String[] args = { "git", "remote", "show", "origin" };
+        String command = "";
+        for(String str: args)
+            command += str + " ";
+        ByteArrayOutputStream stdoutOS = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderrOS = new ByteArrayOutputStream();
+
+        DefaultExecutor executor = new DefaultExecutor();
+        PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(stdoutOS, stderrOS);
+        ExecuteWatchdog watchDog = new ExecuteWatchdog(10 * 1000);
+        executor.setStreamHandler(pumpStreamHandler);
+        executor.setWatchdog(watchDog);
+        executor.setWorkingDirectory(projectDir);
+        executor.execute(CommandLine.parse(command));
+
+        String branch = "";
+        String[] lines = stdoutOS.toString().split("\n");
+        boolean nextLineContainsHeadBranch = false;
+        for(String line: lines) {
+            if(nextLineContainsHeadBranch){
+                nextLineContainsHeadBranch = false;
+                branch = line.split(" ")[0];
+            }
+            if(line.toLowerCase().contains("head branch")){
+                String[] lines2 = line.split(" ");
+                if(lines2.length > 2)
+                    branch = lines2[lines2.length - 1];
+                else
+                    nextLineContainsHeadBranch = true;
+            }
+        }
+
+        return branch;
     }
 
     private String getVFSTag(File project, File file, String zipName) {

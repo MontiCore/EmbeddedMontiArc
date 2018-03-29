@@ -20,8 +20,8 @@ td img {
   left: 20%;
   width: 25px;
   height: auto;
-	margin: auto;
-	display: block;
+  margin: auto;
+  display: block;
 }
 
 .logImage {
@@ -30,8 +30,8 @@ td img {
   left: 15%;
   width: 50px;
   height: auto;
-	margin: auto;
-	display: block;
+  margin: auto;
+  display: block;
 }
 
 .onlineIDEImage {
@@ -46,12 +46,16 @@ td.expandChildren-control {
   cursor: pointer;
 }
 
+th.expandChildren-control {
+  cursor: pointer;
+}
+
 td.details-control {
   background: url('../images/log.jpg') no-repeat center center;
   background-size: 40px 35px;
   cursor: pointer;
 }
-tr.detailsShown td.details-control {
+tr.logShown td.details-control {
   background: url('../images/log.jpg') no-repeat center center;
   background-size: 30px 25px;
   cursor: pointer;
@@ -82,4 +86,20 @@ table.dataTable tr.group th{
 
 .sVGvisible {
   color: #1c7000;
+}
+
+.svgEye img {
+  position: absolute;
+  top: 3%;
+  left: 20%;
+  height: auto;
+  width: 35px;
+}
+
+.svgNoEye img {
+  position: absolute;
+  top: 3%;
+  left: 15%;
+  height: auto;
+  width: 40px;
 }

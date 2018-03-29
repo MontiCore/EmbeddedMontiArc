@@ -38,6 +38,8 @@ public class CheckCoCoResult extends SVGInfo {
 //    private List<CheckCoCoResult> parents = new LinkedList<>();
 //    private List<ChildElement> children = new LinkedList<>();
 
+    private String githubBranch = "";
+
     private int componentCapitalized = 0;
     private int componentInstanceNamesUnique = 0;
     private int componentWithTypeParametersHasInstance = 0;
@@ -383,5 +385,13 @@ public class CheckCoCoResult extends SVGInfo {
                 mainPackage.setAtomicComponent(child.getAtomicComponent());
             }
         }
+    }
+
+    public String getGithubBranch() {
+        return githubBranch;
+    }
+
+    public void setGithubBranch(String githubBranch) {
+        this.githubBranch = githubBranch;
     }
 }

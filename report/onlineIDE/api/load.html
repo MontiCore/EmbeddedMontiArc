@@ -4,29 +4,30 @@
         <title>Load</title>
         <base href=".."/>
 
-        <link href="resources/css/index.css" type="text/css" rel="stylesheet"/>
+        <link href="modules/se.rwth.index.ui/css/ui.css" type="text/css" rel="stylesheet"/>
 
-        <script src="resources/js/production/index/jquery-3.2.1.min.js"></script>
-        <script src="resources/js/production/browserfs.min.js"></script>
-        <script src="resources/js/production/index/async.min.js"></script>
-        <script src="resources/js/production/jszip.min.js"></script>
-        <script src="resources/js/production/index/browser-detect.min.js"></script>
+        <script src="modules/se.rwth.common.module/jquery-3.2.1.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+        <script src="modules/se.rwth.common.checker/async.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/jszip.min.js"></script>
+        <script src="modules/se.rwth.common.checker/browser-detect.min.js"></script>
 
-        <script src="resources/js/development/shared/Loader.js"></script>
-        <script src="resources/js/development/shared/Dialog.js"></script>
-        <script src="resources/js/development/index/Settings.js"></script>
-        <script src="resources/js/development/shared/Checker.js"></script>
-        <script src="resources/js/development/index/Trashbin.js"></script>
-        <script src="resources/js/development/index/Menu.js"></script>
-        <script src="resources/js/development/shared/Dashboard.js"></script>
-        <script src="resources/js/development/shared/VFS.js"></script>
-        <script src="resources/js/development/shared/Utilities.js"></script>
-        <script src="resources/js/development/api/load/URLVFS.js"></script>
-        <script src="resources/js/development/api/load/load.js"></script>
+        <script src="modules/se.rwth.common.loader/loader.js"></script>
+        <script src="modules/se.rwth.common.dialog/dialog.js"></script>
+        <script src="modules/se.rwth.common.settings/settings.js"></script>
+        <script src="modules/se.rwth.common.checker/checker.js"></script>
+        <script src="modules/se.rwth.index.trashbin/trashbin.js"></script>
+        <script src="modules/se.rwth.index.menu/menu.js"></script>
+        <script src="modules/se.rwth.common.dashboard/dashboard.js"></script>
+        <script src="modules/se.rwth.common.vfs/vfs.js"></script>
+        <script src="modules/se.rwth.common.utilities/utilities.js"></script>
+
+        <script src="modules/se.rwth.api.load/url.vfs.js"></script>
+        <script src="modules/se.rwth.api.load/load.js"></script>
     </head>
     <body>
         <div id="loader-container">
-            <img src="resources/media/images/Loader.svg"/>
+            <img src="modules/se.rwth.common.loader/images/loader.svg"/>
             <span id="loader-message">Checking Prerequisites...</span>
         </div>
         <div id="dialog-container">

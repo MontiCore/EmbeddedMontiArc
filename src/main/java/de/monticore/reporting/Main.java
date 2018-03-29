@@ -32,7 +32,8 @@ public class Main {
             }
 
             System.out.println("\n<============Write Test Results============>\n");
-            CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge());
+            CoCoTestResultPrinter.printTestResults(mainPackages, context.getOutput() + "data.json", context.isMerge(), true);
+            CoCoTestResultPrinter.printTestResults(testResults, context.getOutput() + "dataExpanded.json", context.isMerge(), false);
             TestInfoPrinter.printInfo(testResults, context.getOutput() + "info.json", context.isMerge());
         }
         if (context.isTestsEndWithTest()) {
