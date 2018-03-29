@@ -20,22 +20,16 @@ jobs:
         - mvn clean test-compile --settings "settings.xml"
     - stage: test
       script:
-        - mvn test --settings "settings.xml"
+        - mvn test --settings jacoco:report coveralls:report "settings.xml"
     - stage: integration-test
       sudo: required
       services:
         - docker
       script:
-        - mvn verify -Pintegration-test --settings "settings.xml"
+        - mvn verify -Pintegration-test jacoco:report coveralls:report --settings "settings.xml"
     - stage: acceptance-test
       script:
-        - mvn verify -Pacceptance-test --settings "settings.xml"
-    - stage: coverage
-      sudo: required
-      services:
-        - docker
-      script:
-        - mvn verify -Dskip.unit.tests=false -Dskip.integration.tests=false -Dskip.acceptance.tests=false jacoco:report coveralls:report --settings "settings.xml"
+        - mvn verify -Pacceptance-test jacoco:report coveralls:report --settings "settings.xml"
 
 after_success:
 #- mvn deploy --settings "./settings.xml"
