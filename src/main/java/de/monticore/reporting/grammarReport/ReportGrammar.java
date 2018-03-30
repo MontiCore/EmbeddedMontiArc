@@ -91,7 +91,7 @@ public class ReportGrammar {
 
             ip.println("{");
             ip.indent();
-            ip.println(names[i++] + ": \"" + new File(context.getProjectRoot()).getName() + "\",");
+            ip.println(names[i++] + ": \"" + getComputedRootName(context.getProjectRoot(), grammar) + "\",");
             ip.println(names[i++] + ": \"" + getGithubLink(grammar, context.getProjectRoot()) + "\",");
             ip.println(names[i++] + ": " + grammar.ideLink);
             ip.unindent();
@@ -105,22 +105,48 @@ public class ReportGrammar {
 
     }
 
-    private static String getGithubLink(GrammarInfo modelInfo, String root) {
+    private static String getComputedRootName(String root, GrammarInfo grammar){
+        String rootName = (new File(root)).getName().replace("\\","/");
+        if(rootName.equals("MontiCore")){
+            String projectName = grammar.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
+            projectName = projectName.substring(0,projectName.indexOf("/", projectName.indexOf("/") + 1));
+            if(projectName.contains("monticore-grammar") && grammar.file.getAbsolutePath().contains("src\\main"))
+                return rootName + "&nbsp;&ndash;&nbsp;MainGrammars";
+            else
+                return rootName + "&nbsp;&ndash;&nbsp;Test";
+        }
+        return rootName;
+    }
+
+    private static String getGithubLink(GrammarInfo grammar, String root) {
         String rootName = (new File(root)).getName();
-        String projectName = modelInfo.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
+        String projectName = grammar.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
         projectName = projectName.substring(0,projectName.indexOf("/"));
         String ghLink = "https://github.com/" + rootName + "/" + projectName
                 + "/blob/master/"
-                + modelInfo.file.getAbsolutePath().substring(
+                + grammar.file.getAbsolutePath().substring(
                 root.length() + projectName.length() + 1)
                 .replace("\\","/");
         ghLink = ghLink.replace("\\","/");
 
         String htmlTag = "<a class='ghLink' href='" + ghLink + "' target='_blank' rel='noopener'>"
-                + modelInfo.name + "</a>";
-
+                + computeName(grammar) + "</a>";
 
         return htmlTag;
+    }
+
+    private static String computeName(GrammarInfo grammar){
+        String name = grammar.name.
+                replace("src/main/grammar/","").
+                replace("src/test/grammar/","").
+                replace("src/main/grammars/","").
+                replace("src/test/grammars/","").
+                replace("src/main/resources/","").
+                replace("src/test/resources/","").
+                replace("src/main/","").
+                replace("src/test/","");
+
+        return name;
     }
 
     private class GrammarInfo {
