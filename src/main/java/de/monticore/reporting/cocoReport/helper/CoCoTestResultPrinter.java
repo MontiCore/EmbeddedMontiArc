@@ -204,7 +204,7 @@ public class CoCoTestResultPrinter {
 
     private static String getGithubLink(CheckCoCoResult testResult) {
         if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
-        String ghLink = "https://github.com/" + testResult.getRootName1() + "/" + testResult.getProject()
+        String ghLink = "https://github.com/" + testResult.getRootFile1().getName() + "/" + testResult.getProject()
                 + "blob/" + testResult.getGithubBranch() + "/"
                 + testResult.getModelFile().getAbsolutePath().substring(
                         testResult.getRootFile1().getAbsolutePath().length() + testResult.getProject().length() + 1)

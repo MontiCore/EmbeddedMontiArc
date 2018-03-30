@@ -92,7 +92,7 @@ public class ReportGrammar {
             ip.println("{");
             ip.indent();
             ip.println(names[i++] + ": \"" + new File(context.getProjectRoot()).getName() + "\",");
-            ip.println(names[i++] + ": \"" + grammar.name + "\",");
+            ip.println(names[i++] + ": \"" + getGithubLink(grammar, context.getProjectRoot()) + "\",");
             ip.println(names[i++] + ": " + grammar.ideLink);
             ip.unindent();
             ip.print("}");
@@ -103,6 +103,24 @@ public class ReportGrammar {
 
         return ip.getContent();
 
+    }
+
+    private static String getGithubLink(GrammarInfo modelInfo, String root) {
+        String rootName = (new File(root)).getName();
+        String projectName = modelInfo.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
+        projectName = projectName.substring(0,projectName.indexOf("/"));
+        String ghLink = "https://github.com/" + rootName + "/" + projectName
+                + "/blob/master/"
+                + modelInfo.file.getAbsolutePath().substring(
+                root.length() + projectName.length() + 1)
+                .replace("\\","/");
+        ghLink = ghLink.replace("\\","/");
+
+        String htmlTag = "<a class='ghLink' href='" + ghLink + "' target='_blank' rel='noopener'>"
+                + modelInfo.name + "</a>";
+
+
+        return htmlTag;
     }
 
     private class GrammarInfo {
