@@ -12,41 +12,19 @@ component RectIntersection{
     instance RectToLines rectToLines1;
     instance RectToLines rectToLines2;
 
+    instance DualSetCompareMatrix<2,4,4,10> dualSetCompare;
+
     instance LineIntersection lineIntersection[10];
     instance MultiOr<10> multiOr;
 
     connect rect1 -> rectToLines1.rect;
     connect rect2 -> rectToLines2.rect;
 
-    connect rectToLines1.lineA -> lineIntersection[1].lineA;
-    connect rectToLines2.lineA -> lineIntersection[1].lineB;
+    connect rectToLines1.lines[:] -> dualSetCompare.setInA[:];
+    connect rectToLines2.lines[:] -> dualSetCompare.setInB[:];
 
-    connect rectToLines1.lineA -> lineIntersection[2].lineA;
-    connect rectToLines2.lineB -> lineIntersection[2].lineB;
-
-    connect rectToLines1.lineA -> lineIntersection[3].lineA;
-    connect rectToLines2.lineC -> lineIntersection[3].lineB;
-
-    connect rectToLines1.lineA -> lineIntersection[4].lineA;
-    connect rectToLines2.lineD -> lineIntersection[4].lineB;
-
-    connect rectToLines1.lineB -> lineIntersection[5].lineA;
-    connect rectToLines2.lineB -> lineIntersection[5].lineB;
-
-    connect rectToLines1.lineB -> lineIntersection[6].lineA;
-    connect rectToLines2.lineC -> lineIntersection[6].lineB;
-
-    connect rectToLines1.lineB -> lineIntersection[7].lineA;
-    connect rectToLines2.lineD -> lineIntersection[7].lineB;
-
-    connect rectToLines1.lineC -> lineIntersection[8].lineA;
-    connect rectToLines2.lineC -> lineIntersection[8].lineB;
-
-    connect rectToLines1.lineC -> lineIntersection[9].lineA;
-    connect rectToLines2.lineD -> lineIntersection[9].lineB;
-
-    connect rectToLines1.lineD -> lineIntersection[10].lineA;
-    connect rectToLines2.lineD -> lineIntersection[10].lineB;
+    connect dualSetCompare.outA[:] -> lineIntersection[:].lineA;
+    connect dualSetCompare.outB[:] -> lineIntersection[:].lineB;
 
     connect lineIntersection[:].intersects -> multiOr.boolIn[:];
     connect multiOr.boolOut -> collision;

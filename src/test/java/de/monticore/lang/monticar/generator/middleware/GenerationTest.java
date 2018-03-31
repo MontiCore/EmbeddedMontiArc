@@ -234,6 +234,24 @@ public class GenerationTest extends AbstractSymtabTest {
             content = content.replace("Col<int> counter=Col<int>(1);" , "Col<int> counter=Col<int>(n);");
             content = content.replace("colvec tmpLine;","colvec tmpLine = colvec(4);");
 //            content = content.replace("sqrt","std::sqrt");
+
+            if(f.getName().equals("ba_system_collisionDetection_multiOr.h")){
+                content = content.replace("10","1");
+            }
+
+//            if(f.getName().equals("ba_system_collisionDetection_rectIntersection_1__dualSetCompare.h")){
+//                String fixedGenerics = "const int n = 4;\nconst int n2 = 10;\n";
+//                content = content.replace("const int cols = 1;","const int cols = 1;\n" + fixedGenerics);
+//            }
+
+            if(f.getName().equals("ba_system_collisionDetection_rectIntersection_1__dualSetCompare.h")){
+                content = content.replace("rows = 4","rows = 2");
+                content = content.replace("cols = 1","cols = 4");
+                content = content.replace("n = 4","n = 2");
+                content = content.replace("n2 = 10","n2 = 1");
+            }
+
+
             Files.write(path, content.getBytes(charset));
         }
     }

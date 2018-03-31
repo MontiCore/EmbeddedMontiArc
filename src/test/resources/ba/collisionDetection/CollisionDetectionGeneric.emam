@@ -3,14 +3,14 @@ import ba.util.RectIntersection;
 import ba.util.SingleSetCompareMatrix;
 import ba.util.MultiOr;
 
-component CollisionDetection<N1 n = 2,N1 x = 1>{
+component CollisionDetectionGeneric<N1 n = 2,N1 x = 1>{
 //component CollisionDetection{
     ports in Q^{2,4} hulls[n],
           out B collision;
 
-    instance SingleSetCompareMatrix<2,4,n,x> singleSetCompare;
+    instance SingleSetCompareMatrix<2,4,2,1> singleSetCompare;
     instance RectIntersection rectIntersection[x];
-    instance MultiOr<x> multiOr;
+    instance MultiOr<1> multiOr;
 
     connect hulls[:] -> singleSetCompare.setIn[:];
 

@@ -2,16 +2,16 @@ package ba.intersection;
 import ba.util.SingleSetCompareMatrix;
 //TODO: x = (n-1)n/2
 //TODO: m1 = m - 1, m2 = m1(m1+1)/2
-component IntersectionController<N1 n = 2,N1 x = 1,N1 m = 5,N1 m1 = 4,N1 m2 = 10>{
-//component IntersectionController{
-    ports in Q^{3,m} trajectoryIn[n],
+//component IntersectionController<N1 n = 2,N1 x = 1,N1 m = 5,N1 m1 = 4,N1 m2 = 10>{
+component IntersectionController{
+    ports in Q^{3,5} trajectoryIn[2],
           in Q(0m : 10m) cutoffTime,
           in B isActive,
-          out B stop[n];
+          out B stop[2];
 
-    instance SingleSetCompareMatrix<3,m,n,x> singleSetCompare;
-    instance TrajectoryCollision<m,m1,m2> trajectoryCollision[x];
-    instance CollisionToStop<n,x,m> collisionToStop;
+    instance SingleSetCompareMatrix<3,5,2,1> singleSetCompare;
+    instance TrajectoryCollision<5,4,10> trajectoryCollision[1];
+    instance CollisionToStop<2,1,5> collisionToStop;
 
     connect trajectoryIn[:] -> singleSetCompare.setIn[:];
     connect singleSetCompare.outA[:] -> trajectoryCollision[:].trajectoryA;
