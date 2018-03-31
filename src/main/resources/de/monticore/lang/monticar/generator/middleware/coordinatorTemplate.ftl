@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
   atomic<bool> done(false);
   ${compName} comp;
-  comp.init();
+  comp.init(${initParams});
 
   list<IAdapter_${compName}*> adapters;
   ${addAdapters}

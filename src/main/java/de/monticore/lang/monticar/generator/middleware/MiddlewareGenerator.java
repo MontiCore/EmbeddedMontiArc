@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
@@ -59,10 +60,15 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .map(fn -> "  adapters.push_back(new " + fn + "());")
                 .collect(Collectors.joining("\n"));
 
+        String initParams = componentInstanceSymbol.getArguments().stream()
+                .map(ComponentConverter::getExpressionParameterConversion)
+                .collect(Collectors.joining(","));
+
         String content = TemplateHelper.getCoordinatorTemplate()
                 .replace("${compName}", name)
                 .replace("${includes}", includes)
-                .replace("${addAdapters}", addAdapters);
+                .replace("${addAdapters}", addAdapters)
+                .replace("${initParams}",initParams);
 
 
         FileContent res = new FileContent();
