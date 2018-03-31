@@ -350,6 +350,20 @@ public class GenerationTest extends AbstractSymtabTest {
         }
     }
 
+    @Test
+    public void testParameterInit() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.parameterInit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/paramInit/src/");
+        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+        distributedTargetGenerator.generate(componentInstanceSymbol,taggingResolver);
+    }
+
     @Ignore
     @Test
     public void testsStreamTest() throws IOException {
