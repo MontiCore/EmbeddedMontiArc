@@ -1,10 +1,10 @@
 package ba.vehicle;
 
-component VelocityController{
+component VelocityController(adaptable Q holdTimeIn){
     ports in Q maxVelIn,
           in Q maxAccelIn,
           in Q deltaTimeIn,
-          in Q holdTimeIn,
+          //in Q holdTimeIn,
           in B slowDownIn,
           in B resetVelIn;
 
@@ -27,7 +27,7 @@ component VelocityController{
                 holdFor = holdFor - deltaTimeIn;
                 if holdFor <= 0
                     //holdFor is either (-deltaTimeIn)
-                    //or (- time since accel start)
+                    //or (- time since accel should start)
                     resVel = lastVel + maxAccelIn * (-holdFor);
                     holdFor = 0;
                 end

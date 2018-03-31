@@ -27,7 +27,7 @@ component System{
     instance IntersectionController intersectionController;
     instance CollisionDetection collisionDetection;
     instance CommQuality<B> stopCommQuality[2];
-    instance VelocityController velocityController[2];
+    instance VelocityController(3.0) velocityController[2];
 
 
     //Intersection

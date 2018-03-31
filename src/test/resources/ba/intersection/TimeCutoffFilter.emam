@@ -1,13 +1,13 @@
 package ba.intersection;
 
-component TimeCutoffFilter{
+component TimeCutoffFilter(adaptable Q timeCutoff){
     ports in B collisionIn,
           in Z IndexInA,
           in Z IndexInB,
           in Q^{2,1} colPosIn,
           in Q^{3,5} trajectoryInA,
           in Q^{3,5} trajectoryInB,
-          in Q timeCutoff,
+          //in Q timeCutoff,
           out B collisionOut;
 
     implementation Math{
