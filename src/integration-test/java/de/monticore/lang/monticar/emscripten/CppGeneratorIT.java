@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.freemarker.SimpleTemplatePrinter;
 import de.monticore.lang.monticar.freemarker.TemplateFactory;
 import de.monticore.lang.monticar.freemarker.TemplateProcessor;
+import de.monticore.lang.monticar.generator.cpp.CppGenerator;
 import de.monticore.lang.monticar.resolver.Resolver;
 import de.monticore.lang.monticar.resolver.ResolverFactory;
 import freemarker.template.Template;

@@ -1,15 +1,15 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator.cpp;
 
-import static de.monticore.lang.monticar.emscripten.TypeConverter.CppTypes.BOOL;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.CppTypes.DOUBLE;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.ASSIGNMENT_TYPE;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.B;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.C;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.COMMON_MATRIX_TYPE;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.Q;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.SI_UNIT_RANGES_TYPE;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.UNIT_NUMBER_RESOLUTION;
-import static de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes.Z;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.CppTypes.BOOL;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.CppTypes.DOUBLE;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.ASSIGNMENT_TYPE;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.B;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.C;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.COMMON_MATRIX_TYPE;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.Q;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.SI_UNIT_RANGES_TYPE;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.UNIT_NUMBER_RESOLUTION;
+import static de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes.Z;
 
 import java.util.EnumSet;
 

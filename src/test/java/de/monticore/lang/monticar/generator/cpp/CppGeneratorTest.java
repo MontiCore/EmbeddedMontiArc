@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator.cpp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;

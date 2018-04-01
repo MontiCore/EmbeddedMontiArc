@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator.cpp;
 
 public class Setter extends Method {
 

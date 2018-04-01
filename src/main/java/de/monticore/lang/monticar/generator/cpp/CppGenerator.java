@@ -1,15 +1,15 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator.cpp;
 
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotBlank;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.emscripten.Method.Datatype;
-import de.monticore.lang.monticar.emscripten.Method.Type;
-import de.monticore.lang.monticar.emscripten.TypeConverter.CppTypes;
-import de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes;
 import de.monticore.lang.monticar.freemarker.TemplateProcessor;
+import de.monticore.lang.monticar.generator.cpp.Method.Datatype;
+import de.monticore.lang.monticar.generator.cpp.Method.Type;
+import de.monticore.lang.monticar.generator.cpp.TypeConverter.CppTypes;
+import de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.ArrayList;

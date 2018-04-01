@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.adapter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.emscripten.CppGenerator;
 import de.monticore.lang.monticar.freemarker.FileTemplatePrinter;
+import de.monticore.lang.monticar.generator.cpp.CppGenerator;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
