@@ -1,6 +1,6 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator;
 
-import static de.monticore.lang.monticar.emscripten.FileContentAssert.assertThat;
+import static de.monticore.lang.monticar.generator.FileContentAssert.assertThat;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.freemarker.SimpleTemplatePrinter;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 class CppGeneratorIT {
 
-  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
+  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl/cpp");
   private static final String CPP_TEMPLATE = "cpp.ftl";
 
   private static final Path RESOLVING_BASE_DIR = Paths

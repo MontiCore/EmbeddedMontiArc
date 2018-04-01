@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.monticar.util.TextFile;
 import java.nio.file.Path;
