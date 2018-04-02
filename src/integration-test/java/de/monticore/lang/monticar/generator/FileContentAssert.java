@@ -18,6 +18,7 @@ public class FileContentAssert extends AbstractAssert<FileContentAssert, String>
   private static String eraseWhitespaces(String s) {
     s = s.replaceAll("\\R", " ");
     s = s.replaceAll("\\h+", " ");
+    s = s.trim();
     return s;
   }
 
@@ -54,6 +55,9 @@ public class FileContentAssert extends AbstractAssert<FileContentAssert, String>
       if (i >= s2.length() || s1.charAt(i) != s2.charAt(i)) {
         return i;
       }
+    }
+    if (s1.length() < s2.length()) {
+      return s1.length();
     }
     return -1;
   }
