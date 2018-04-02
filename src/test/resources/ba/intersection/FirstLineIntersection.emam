@@ -1,9 +1,9 @@
 package ba.intersection;
 
 //Finds the earliest line intersection from a set of LineIntersection components
-component FirstLineIntersection{
-    ports in B collisionIn[10],
-          in Q^{2,1} pointsIn[10],
+component FirstLineIntersection<N1 m1 = 4, N1 m2 = 10>{
+    ports in B collisionIn[m2],
+          in Q^{2,1} pointsIn[m2],
 
           out B collisionOut,
           out Z linexA,
@@ -14,8 +14,8 @@ component FirstLineIntersection{
         Z k = 1;
         B found = False;
 
-        for i = 1:4
-            for j = i:4
+        for i = 1:m1
+            for j = i:m1
                 if found == False
                     if collisionIn(k)
                         linexA = i;

@@ -23,8 +23,8 @@ component System{
         in B slowDown[2],
         out Q(0m/s : 60m/s) curVel[2];
 
-    instance IntersectionController intersectionController;
-    instance CollisionDetection collisionDetection;
+    instance IntersectionController<2,1,5,4,10> intersectionController;
+    instance CollisionDetection<2,1> collisionDetection;
     instance CommQuality<B> stopCommQuality[2];
     instance VelocityController(3.0) velocityController[2];
 

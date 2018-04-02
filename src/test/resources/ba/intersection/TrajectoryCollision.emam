@@ -14,8 +14,8 @@ component TrajectoryCollision<N1 m = 5, N1 m1 = 4, N1 m2 = 10>{
     instance TrajectoryToLines trajectoryToLinesB;
     instance DualSetCompareMatrix<4,1,4,10> dualSetCompare;
     instance LineIntersection lineIntersection[m2];
-    instance FirstLineIntersection firstLineIntersection;
-    instance TimeCutoffFilter(2.0) timeCutoffFilter;
+    instance FirstLineIntersection<4,10> firstLineIntersection;
+    instance TimeCutoffFilter<5>(2.0) timeCutoffFilter;
 
     connect trajectoryA -> trajectoryToLinesA.trajectoryIn;
     connect trajectoryB -> trajectoryToLinesB.trajectoryIn;
@@ -24,8 +24,8 @@ component TrajectoryCollision<N1 m = 5, N1 m1 = 4, N1 m2 = 10>{
     connect lineIntersection[:].point -> firstLineIntersection.pointsIn[:];
 
     connect firstLineIntersection.collisionOut -> timeCutoffFilter.collisionIn;
-    connect firstLineIntersection.linexA -> timeCutoffFilter.IndexInA;
-    connect firstLineIntersection.linexB -> timeCutoffFilter.IndexInB;
+    connect firstLineIntersection.linexA -> timeCutoffFilter.indexInA;
+    connect firstLineIntersection.linexB -> timeCutoffFilter.indexInB;
     connect firstLineIntersection.pos -> timeCutoffFilter.colPosIn;
     connect trajectoryA -> timeCutoffFilter.trajectoryInA;
     connect trajectoryB -> timeCutoffFilter.trajectoryInB;
