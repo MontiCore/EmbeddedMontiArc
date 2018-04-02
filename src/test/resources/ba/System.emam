@@ -1,35 +1,32 @@
 package ba;
 import ba.intersection.IntersectionController;
-import ba.util.RelToAbsTrajectory;
 import ba.util.CommQuality;
 import ba.vehicle.VelocityController;
 import ba.collision.CollisionDetection;
 import ba.struct.Rectangle;
-//component System<N1 n = 2,N1 x = 1,N1 m = 5,N1 m1 = 4,N1 m2 = 10>{
+
 component System{
+    ports
     //Intersection ports
-    ports in Q(0s : 10s) cutoffTimeIn,
-          in B isActiveIn,
-          in Q^{3,5} absTrajectory[2];
-
+        in Q(0s : 10s) cutoffTimeIn,
+        in B isActiveIn,
+        in Q^{3,5} absTrajectory[2],
     //Collision detection ports
-    ports in Rectangle hullsIn[2],
-          out B collisionOut;
-
+        in Rectangle hullsIn[2],
+        out B collisionOut,
     //Vehicle ports
-    ports in Q(0m/s^2 : 100m/s^2) maxAccel[2],
-          in Q(0m/s : 60m/s) maxVel[2],
-          in Q(0s : 10s) deltaTime[2],
-          in Q(0s : 60s) holdTime[2],
-          in B resetVel[2],
-          in B slowDown[2],
-          out Q(0m/s : 60m/s) curVel[2];
+        in Q(0m/s^2 : 100m/s^2) maxAccel[2],
+        in Q(0m/s : 60m/s) maxVel[2],
+        in Q(0s : 10s) deltaTime[2],
+        in Q(0s : 60s) holdTime[2],
+        in B resetVel[2],
+        in B slowDown[2],
+        out Q(0m/s : 60m/s) curVel[2];
 
     instance IntersectionController intersectionController;
     instance CollisionDetection collisionDetection;
     instance CommQuality<B> stopCommQuality[2];
     instance VelocityController(3.0) velocityController[2];
-
 
     //Intersection
     connect cutoffTimeIn -> intersectionController.cutoffTime;

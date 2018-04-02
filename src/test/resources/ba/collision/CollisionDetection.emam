@@ -4,7 +4,6 @@ import ba.util.SingleSetCompareRectangle;
 import ba.struct.Rectangle;
 
 component CollisionDetection<N1 n = 2,N1 x = 1>{
-//component CollisionDetection{
     ports in Rectangle hulls[n],
           out B collision;
 

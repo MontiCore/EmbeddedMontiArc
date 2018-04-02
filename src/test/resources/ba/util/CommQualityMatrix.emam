@@ -1,8 +1,0 @@
-package ba.util;
-
-//TODO: remove once EMAM2Cpp can handle matrix generics
-//Dummy component. Behaviour is implemented in ROS. The Ports are only used to define the incoming and outgoing topics
-component CommQualityMatrix<N1 rows = 3,N1 cols = 3>{
-    port in Q^{rows,cols} commIn,
-         out Q^{rows,cols} commOut;
-}
