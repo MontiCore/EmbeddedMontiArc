@@ -54,8 +54,8 @@ Module.${setter.delegateMethodName}(${varName}.toSI().toNumber());
 <#macro forloop index dim times>
   for (var i${index} = 0; i${index} < ${dim[index]}; i${index}++) {
   <#if times gt 0>
-    array<@arrayindex n=index/> = [];
-    <@forloop index=index+1 dim=dim times=times-1></@forloop>
+    array<@arrayindex n=index+1/> = [];
+    <@forloop index=index+1 dim=dim times=times-1><#nested></@forloop>
   <#else>
     <#nested>
   </#if>
@@ -63,7 +63,7 @@ Module.${setter.delegateMethodName}(${varName}.toSI().toNumber());
 </#macro>
 
 <#macro arrayindex n>
-  <#list 0..n as i>[i${i}]</#list>
+  <#list 0..<n as i>[i${i}]</#list>
 </#macro>
 
 <#macro checkUnit unit var>
