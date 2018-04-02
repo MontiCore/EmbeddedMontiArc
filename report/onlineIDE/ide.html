@@ -18,26 +18,26 @@
     </script>
 
     <!-- Added -->
-    <link href="resources/css/ide.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.ide.ui/css/ui.css" type="text/css" rel="stylesheet"/>
 
-    <script src="resources/js/development/shared/Base.js"></script>
-	<script src="resources/js/production/browserfs.min.js"></script>
-	<script src="resources/js/development/shared/VFS.js"></script>
+    <script src="static/plugins/se.rwth.ide.base/base.js"></script>
+	<script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+	<script src="modules/se.rwth.common.vfs/vfs.js"></script>
 </head>
 <body>
     <!-- Added -->
     <div id="loader-container">
-        <img src="resources/media/images/Loader.svg"/>
+        <img src="modules/se.rwth.common.loader/images/loader.svg"/>
         <span id="loader-percentage">0%</span>
     </div>
 
     <a id="se-rwth-logo" href="http://www.se-rwth.de/" target="_blank"></a>
 
-    <link rel="stylesheet" type="text/css" href="plugins/c9.ide.layout.classic/loading-flat.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="plugins/c9.ide.layout.classic/loading-flat.css"/>-->
 
     <script src="static/mini_require.js"></script>
     <script src="configs/require_config.js"></script>
-    <script src="resources/js/development/ide/Plugins.js"></script>
+    <script src="static/plugins/se.rwth.ide.plugins/plugins.js"></script>
     <script>
         var start = Date.now();
         

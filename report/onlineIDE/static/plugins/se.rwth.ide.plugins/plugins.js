@@ -1036,6 +1036,7 @@ var plugins = [
     "plugins/c9.ide.language.jsonalyzer/mock_collab",
     "plugins/se.rwth.visualization/visualization",
     "plugins/se.rwth.vfs/vfs.main",
+    "plugins/se.rwth.language.monticore/monticore",
     "plugins/se.rwth.language.embeddedmontiarc/embeddedmontiarc",
     "plugins/se.rwth.language.montimath/montimath",
     "plugins/se.rwth.language.embeddedmontiarcmath/embeddedmontiarcmath",

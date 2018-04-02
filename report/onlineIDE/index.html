@@ -5,46 +5,45 @@
 
         <!-- == STYLESHEETS ==================================== -->
         <link href="favicon.ico" type="image/x-icon" rel="icon"/>
-        <link href="resources/css/index.css" type="text/css" rel="stylesheet"/>
+        <link href="modules/se.rwth.index.ui/css/ui.css" type="text/css" rel="stylesheet"/>
 
         <!-- == SCRIPTS ======================================== -->
-        <script src="resources/js/production/index/jquery-3.2.1.min.js"></script>
-        <script src="resources/js/production/GitHub.bundle.min.js"></script>
-        <script src="resources/js/production/index/async.min.js"></script>
-        <script src="resources/js/production/browserfs.min.js"></script>
-        <script src="resources/js/production/jszip.min.js"></script>
-        <script src="resources/js/production/index/browser-detect.min.js"></script>
+        <script src="modules/se.rwth.common.module/jquery-3.2.1.min.js"></script>
+        <script src="modules/se.rwth.common.github/github.bundle.min.js"></script>
+        <script src="modules/se.rwth.common.checker/async.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/jszip.min.js"></script>
+        <script src="modules/se.rwth.common.checker/browser-detect.min.js"></script>
+        <script src="modules/se.rwth.common.loader/loader.js"></script>
+        <script src="modules/se.rwth.common.dialog/dialog.js"></script>
+        <script src="modules/se.rwth.common.settings/settings.js"></script>
+        <script src="modules/se.rwth.common.checker/checker.js"></script>
+        <script src="modules/se.rwth.common.dashboard/dashboard.js"></script>
+        <script src="modules/se.rwth.common.utilities/utilities.js"></script>
+        <script src="modules/se.rwth.common.vfs/vfs.js"></script>
 
-        <script src="resources/js/development/shared/Loader.js"></script>
-        <script src="resources/js/development/shared/Dialog.js"></script>
-        <script src="resources/js/development/index/Settings.js"></script>
-        <script src="resources/js/development/shared/Checker.js"></script>
-        <script src="resources/js/development/index/GitHubContainer.js"></script>
-        <script src="resources/js/development/index/Menu.js"></script>
-        <script src="resources/js/development/index/Trashbin.js"></script>
-        <script src="resources/js/development/shared/Dashboard.js"></script>
-        <script src="resources/js/development/index/Credentials.js"></script>
-        <script src="resources/js/development/index/GitHub.js"></script>
-        <script src="resources/js/development/index/Demos.js"></script>
-        <script src="resources/js/development/index/Repositories.js"></script>
-        <script src="resources/js/development/index/Branches.js"></script>
-        <script src="resources/js/development/index/Users.js"></script>
-        <script src="resources/js/development/index/Search.js"></script>
-        <script src="resources/js/development/shared/Utilities.js"></script>
-        <script src="resources/js/development/shared/VFS.js"></script>
-        <script src="resources/js/development/index/GitHubVFS.js"></script>
-        <script src="resources/js/development/index/DemoVFS.js"></script>
+        <script src="modules/se.rwth.index.github/github.js"></script>
+        <script src="modules/se.rwth.index.menu/menu.js"></script>
+        <script src="modules/se.rwth.index.trashbin/trashbin.js"></script>
+        <script src="modules/se.rwth.index.credentials/credentials.js"></script>
+        <script src="modules/se.rwth.index.demos/demos.js"></script>
+        <script src="modules/se.rwth.index.repositories/repositories.js"></script>
+        <script src="modules/se.rwth.index.branches/branches.js"></script>
+        <script src="modules/se.rwth.index.users/users.js"></script>
+        <script src="modules/se.rwth.index.search/search.js"></script>
+        <script src="modules/se.rwth.index.github/github.vfs.js"></script>
+        <script src="modules/se.rwth.index.demos/demos.vfs.js"></script>
 	</head>
 	<body>
         <!-- == LOADER ========================================= -->
         <div id="loader-container">
-            <img src="resources/media/images/Loader.svg"/>
+            <img src="modules/se.rwth.common.loader/images/loader.svg"/>
             <span id="loader-message">Checking Prerequisites...</span>
 		</div>
 
         <!-- == LOGOS ========================================== -->
         <div id="logos-container">
-			<a href="http://www.se-rwth.de/" target="_blank"><img src="resources/media/images/SE-RWTH.png"/></a>
+			<a href="http://www.se-rwth.de/" target="_blank"><img src="modules/se.rwth.index.ui/images/se.rwth.png"/></a>
             <a href="http://www.embeddedmontiarc.com/" target="_blank" style="margin-right:8px"><img src="https://raw.githubusercontent.com/EmbeddedMontiArc/website/master/EMALogoTransparentWithoutSE.png"/></a>
 			<a href="https://c9.io/" target="_blank"><img src="static/plugins/c9.ide.theme.flat/images/cloud9_logo@2x.png"/></a>
 		</div>
