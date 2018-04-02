@@ -30,6 +30,7 @@ import org.jscience.mathematics.number.Rational;
 
 public class JsGenerator {
 
+  private static final String PARAMETER_NAME = "param";
   private final TemplateProcessor templateProcessor;
 
   public JsGenerator(TemplateProcessor templateProcessor) {
@@ -198,6 +199,7 @@ public class JsGenerator {
       Setter setter = new Setter();
       String methodName = getSetterMethodName(port);
       setter.setMethodName(methodName);
+      setter.setParameterName(PARAMETER_NAME);
       setter.setDelegateMethodName(methodName);
       setter.setDimension(getDimension(incomingPorts, port));
       setter.setUnit(getUnit(port));
