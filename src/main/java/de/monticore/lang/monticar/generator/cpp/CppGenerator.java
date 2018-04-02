@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
-import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotBlank;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.filterMultipleArrayPorts;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getGetterMethodName;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getSetterMethodName;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
@@ -15,11 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.util.StringUtils;
 
 public class CppGenerator {
 
@@ -44,26 +43,12 @@ public class CppGenerator {
     return EmbeddedMontiArcTypes.get(port.getTypeReference().getName());
   }
 
-  protected static String getSetterMethodName(PortSymbol port) {
-    return getSetterMethodName(requiresNotNull(port).getName());
-  }
-
-  protected static String getSetterMethodName(String portName) {
-    return SETTER_PREFIX + StringUtils.capitalize(requiresNotBlank(portName));
-  }
-
-  protected static String getGetterMethodName(PortSymbol port) {
-    return getGetterMethodName(requiresNotNull(port).getName());
-  }
-
-  protected static String getGetterMethodName(String portName) {
-    return GETTER_PREFIX + StringUtils.capitalize(requiresNotBlank(portName));
-  }
-
   public void generate(ExpandedComponentInstanceSymbol symbol)
       throws IOException, TemplateException {
-    List<Getter> getters = produceGetters(symbol.getOutgoingPorts());
-    List<Setter> setters = produceSetters(symbol.getIncomingPorts());
+    Set<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
+    Set<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
+    List<Getter> getters = produceGetters(outports);
+    List<Setter> setters = produceSetters(inports);
     String mainClassName = getCppClassName(symbol.getFullName());
 
     Map<String, Object> dataModel = new HashMap<>();
@@ -77,25 +62,17 @@ public class CppGenerator {
   private List<Getter> produceGetters(Collection<PortSymbol> ports) {
     List<Getter> getters = new ArrayList<>();
 
-    Set<String> processedArrays = new HashSet<>();
     for (PortSymbol port : ports) {
       Type type;
       String name;
       if (port.isPartOfPortArray()) {
-        String arrayName = port.getNameWithoutArrayBracketPart();
-
-        if (processedArrays.contains(arrayName)) {
-          continue;
-        }
-
-        processedArrays.add(arrayName);
-        name = arrayName;
+        name = port.getNameWithoutArrayBracketPart();
         type = Type.ARRAY;
       } else {
         name = port.getName();
         type = Type.SCALAR;
       }
-      String methodName = GETTER_PREFIX + StringUtils.capitalize(name);
+      String methodName = getGetterMethodName(port);
       Datatype datatype =
           getCppDataType(port) == CppTypes.MATRIX ? Datatype.MATRIX : Datatype.PRIMITIVE;
       String variableName = name;
@@ -109,25 +86,17 @@ public class CppGenerator {
   private List<Setter> produceSetters(Collection<PortSymbol> ports) {
     List<Setter> setters = new ArrayList<>();
 
-    Set<String> processedArrays = new HashSet<>();
     for (PortSymbol port : ports) {
       Type type;
       String name;
       if (port.isPartOfPortArray()) {
-        String arrayName = port.getNameWithoutArrayBracketPart();
-
-        if (processedArrays.contains(arrayName)) {
-          continue;
-        }
-
-        processedArrays.add(arrayName);
-        name = arrayName;
+        name = port.getNameWithoutArrayBracketPart();
         type = Type.ARRAY;
       } else {
         name = port.getName();
         type = Type.SCALAR;
       }
-      String methodName = SETTER_PREFIX + StringUtils.capitalize(name);
+      String methodName = getSetterMethodName(port);
       Datatype datatype =
           getCppDataType(port) == CppTypes.MATRIX ? Datatype.MATRIX : Datatype.PRIMITIVE;
       String variableName = name;
