@@ -31,9 +31,9 @@ public class FileContentAssert extends AbstractAssert<FileContentAssert, String>
 
     String expectedFileContent = file.read();
 
-    String actualWithoutWhitespaces = eraseWhitespaces(actual);
-    String expectedWithoutWhitespaces = eraseWhitespaces(expectedFileContent);
-    if (!actualWithoutWhitespaces.equals(expectedWithoutWhitespaces)) {
+    if (!robustEquals(actual, expectedFileContent)) {
+      String actualWithoutWhitespaces = eraseWhitespaces(actual);
+      String expectedWithoutWhitespaces = eraseWhitespaces(expectedFileContent);
       failWithMessage(
           "%nAfter replacing whitespaces, tabs and line breaks with a single whitespace:%n"
               + "%nExpecting:%n <%s>%nto be equal to:%n <%s>%n  %s%nbut was not.",
@@ -60,6 +60,25 @@ public class FileContentAssert extends AbstractAssert<FileContentAssert, String>
       return s1.length();
     }
     return -1;
+  }
+
+  private boolean robustEquals(String s1, String s2) {
+    int i = 0, j = 0;
+    while (i < s1.length() && j < s2.length()) {
+      char c1 = s1.charAt(i);
+      char c2 = s2.charAt(j);
+      if (c1 == c2) {
+        i++;
+        j++;
+      } else if (Character.isWhitespace(c1)) {
+        i++;
+      } else if (Character.isWhitespace(c2)) {
+        j++;
+      } else {
+        return false;
+      }
+    }
+    return true;
   }
 
 

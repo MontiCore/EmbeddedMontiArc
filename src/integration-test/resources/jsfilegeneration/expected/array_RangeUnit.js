@@ -15,8 +15,7 @@ function execute() {
 }
 
 function getOutRangeUnit() {
-    return math.format(Module.getOutRangeUnit(), {notation: 'fixed'})
-        .concat(" m/s");
+    return math.format(Module.getOutRangeUnit(), {notation: 'fixed'}).concat(" m/s");
 }
 
 function setInRangeUnit(param) {
@@ -48,8 +47,7 @@ function setInRangeUnit(param) {
         if (math.larger(e, math.eval("10/1 km/h"))) {
             throw "Value " + e + " out of range";
         }
-        array  [i0]
-            = e.toSI().toNumber();
+        array[i0] = e.toSI().toNumber();
     }
     Module.setInRangeUnit(array);
 }

@@ -15,8 +15,7 @@ function execute() {
 }
 
 function getOutRangeNoUnit() {
-    return math.format(Module.getOutRangeNoUnit(), {notation: 'fixed'})
-        ;
+    return math.format(Module.getOutRangeNoUnit(), {notation: 'fixed'});
 }
 
 function setInRangeNoUnit(param) {
@@ -34,8 +33,7 @@ function setInRangeNoUnit(param) {
 
     var array = [];
     for (var i0 = 0; i0 < 1; i0++) {
-        array  [i0]
-            = [];
+        array[i0] = [];
         for (var i1 = 0; i1 < 2; i1++) {
             array  [i0][i1]
                 = [];
@@ -50,8 +48,7 @@ function setInRangeNoUnit(param) {
                 if (math.larger(e, math.eval("10/1"))) {
                     throw "Value " + e + " out of range";
                 }
-                array  [i0][i1][i2]
-                    = e.toSI().toNumber();
+                array[i0][i1][i2] = e.toSI().toNumber();
             }
         }
     }

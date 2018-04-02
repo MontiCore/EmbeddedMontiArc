@@ -1,8 +1,8 @@
 <#ftl strip_whitespace=true>
 var Module = {
-  'print': function(text) { console.log('stdout: ' + text) },
-  'printErr': function(text) { console.log('stderr: ' + text) },
-  onRuntimeInitialized: function() {Module.init();}
+  'print': function (text) { console.log('stdout: ' + text) },
+  'printErr': function (text) { console.log('stderr: ' + text) },
+  onRuntimeInitialized: function () { Module.init(); }
 };
 
 function execute() {
@@ -27,7 +27,7 @@ if (${varName} === undefined) {
 
   <#if setter.dimension??>
 //check dimension
-var dim = math.matrix([ ${setter.dimension?join(",")} ]);
+var dim = math.matrix([${setter.dimension?join(", ")}]);
 if (!math.deepEqual(${varName}.size(), dim)) {
   throw "Input has dimension " + ${varName}.size() + " but expected " + dim;
 }

@@ -15,8 +15,7 @@ function execute() {
 }
 
 function getOutNoRangeNoUnit() {
-    return math.format(Module.getOutNoRangeNoUnit(), {notation: 'fixed'})
-        ;
+    return math.format(Module.getOutNoRangeNoUnit(), {notation: 'fixed'});
 }
 
 function setInNoRangeNoUnit(param) {
@@ -34,15 +33,14 @@ function setInNoRangeNoUnit(param) {
 
     var array = [];
     for (var i0 = 0; i0 < 3; i0++) {
-        array  [i0]
+        array[i0]
             = [];
         for (var i1 = 0; i1 < 1; i1++) {
             var e = value.get([i0, i1]);
 
             //check unit
             //check range
-            array  [i0][i1]
-                = e.toSI().toNumber();
+            array[i0][i1] = e.toSI().toNumber();
         }
     }
     Module.setInNoRangeNoUnit(array);

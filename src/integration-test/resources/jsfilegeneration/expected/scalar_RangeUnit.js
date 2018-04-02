@@ -15,8 +15,7 @@ function execute() {
 }
 
 function getOutRangeUnit() {
-    return math.format(Module.getOutRangeUnit(), {notation: 'fixed'})
-        .concat(" m/s");
+    return math.format(Module.getOutRangeUnit(), {notation: 'fixed'}).concat(" m/s");
 }
 
 function setInRangeUnit(param) {
