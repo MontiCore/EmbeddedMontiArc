@@ -17,42 +17,36 @@ function ${getter.methodName}() {
 </#list>
 
 <#list setters as setter>
+  <#assign varName = "value">
 function ${setter.methodName}(${setter.parameterName}) {
-var value = math.eval(${setter.parameterName});
+var ${varName} = math.eval(${setter.parameterName});
 
-if (value === undefined) {
+if (${varName} === undefined) {
   throw "Could not evaluate input for ${setter.parameterName}";
 }
 
   <#if setter.dimension??>
 //check dimension
 var dim = math.matrix([ ${setter.dimension?join(",")} ]);
-if (!math.deepEqual(value.size(), dim)) {
-  throw "Input has dimension " + value.size() + " but expected " + dim;
+if (!math.deepEqual(${varName}.size(), dim)) {
+  throw "Input has dimension " + ${varName}.size() + " but expected " + dim;
 }
 
 var array = [];
     <#assign dimensions = setter.dimension?size>
     <@forloop index = 0 dim = setter.dimension times = dimensions - 1>
-      <#assign varName = "e">
-  var ${varName} = value.get([<#list 0..<dimensions as i>i${i}<#sep>,</#list>]);
+      <#assign elementName = "e">
+  var ${elementName} = ${varName}.get([<#list 0..<dimensions as i>i${i}<#sep>,</#list>]);
 
-      <@checkUnit unit=setter.unit var=varName/>
-      <@checkRange var=varName lowerBound=setter.lowerBound upperBound=setter.upperBound/>
+      <@checkUnit unit=setter.unit!"" var=elementName/>
+      <@checkRange var=elementName lowerBound=setter.lowerBound!"" upperBound=setter.upperBound!""/>
   array<@arrayindex n=dimensions/> = e.toSI().toNumber();
     </@forloop>
 Module.${setter.delegateMethodName}(array);
   <#else>
-    <#assign varName = "value">
-var ${varName} = math.eval(${setter.parameterName});
-
-if (c === undefined) {
-    throw "Could not evaluate input for ${setter.parameterName}";
-}
-
-    <@checkUnit unit=setter.unit var=varName/>
-    <@checkRange var=varName lowerBound=setter.lowerBound upperBound=setter.upperBound/>
-Module.${setter.delegateMethodName}(value.toSI().toNumber());
+    <@checkUnit unit=setter.unit!"" var=varName/>
+    <@checkRange var=varName lowerBound=setter.lowerBound!"" upperBound=setter.upperBound!""/>
+Module.${setter.delegateMethodName}(${varName}.toSI().toNumber());
   </#if>
 }
 </#list>
@@ -74,20 +68,22 @@ Module.${setter.delegateMethodName}(value.toSI().toNumber());
 
 <#macro checkUnit unit var>
   //check unit
+  <#if unit?has_content>
   var expectedUnit = math.eval("${unit}");
   if (math.typeof(expectedUnit) !== math.typeof(${var}) || !expectedUnit.equalBase(${var})) {
     throw "Expected unit ${unit}";
   }
+  </#if>
 </#macro>
 
 <#macro checkRange var lowerBound upperBound>
   //check range
-  <#if lowerBound??>
+  <#if lowerBound?has_content>
   if (math.smaller(${var}, math.eval("${lowerBound}"))) {
     throw "Value " + ${var} + " out of range";
   }
   </#if>
-  <#if upperBound??>
+  <#if upperBound?has_content>
   if (math.larger(${var}, math.eval("${upperBound}"))) {
     throw "Value " + ${var} + " out of range";
   }
