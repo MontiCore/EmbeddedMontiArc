@@ -34,7 +34,7 @@ class CppStepIT {
 
   private static final Path MODEL_PATH = Paths.get("src/integration-test/resources/cppstep");
   private static final Path EXPECTED = MODEL_PATH.resolve("expected");
-  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
+  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl/cpp");
   private static final String CPP_TEMPLATE_NAME = "cpp.ftl";
   private static final String SOME_MODEL = "models.addToArray";
   private TaggingResolver symtab;

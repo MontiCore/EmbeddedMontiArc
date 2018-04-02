@@ -1,0 +1,7 @@
+package models;
+
+component Scalar_NoRangeNoUnit {
+  ports
+    in Q inNoRangeNoUnit,
+    out Q outNoRangeNoUnit;
+}

@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Profile;
         pattern = "de\\.monticore\\.lang\\.monticar\\.emam2wasm\\.model..*"))
 public class AppConfig {
 
-  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
+  private static final Path TEMPLATE_DIR = Paths.get("src/main/resources/ftl/cpp");
   private static final String TEMPLATE_NAME = "cpp.ftl";
   private static final String WINDOWS = "windows";
 

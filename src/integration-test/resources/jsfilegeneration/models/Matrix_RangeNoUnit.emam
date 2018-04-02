@@ -1,0 +1,7 @@
+package models;
+
+component Matrix_RangeNoUnit {
+  ports
+	  in Q(-10 : 0.1 : 10)^{2,3} inRangeNoUnit,
+    out Q(-10 : 0.1 : 10)^{2,3} outRangeNoUnit;
+}

@@ -1,11 +1,11 @@
-package de.monticore.lang.monticar.emscripten;
+package de.monticore.lang.monticar.generator.cpp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.quicktheories.QuickTheory.qt;
 import static org.quicktheories.generators.SourceDSL.strings;
 
-import de.monticore.lang.monticar.emscripten.TypeConverter.CppTypes;
-import de.monticore.lang.monticar.emscripten.TypeConverter.EmbeddedMontiArcTypes;
+import de.monticore.lang.monticar.generator.cpp.TypeConverter.CppTypes;
+import de.monticore.lang.monticar.generator.cpp.TypeConverter.EmbeddedMontiArcTypes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
