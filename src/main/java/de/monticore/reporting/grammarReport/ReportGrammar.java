@@ -108,9 +108,10 @@ public class ReportGrammar {
     private static String getComputedRootName(String root, GrammarInfo grammar){
         String rootName = (new File(root)).getName().replace("\\","/");
         if(rootName.equals("MontiCore")){
-            String projectName = grammar.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
-            projectName = projectName.substring(0,projectName.indexOf("/", projectName.indexOf("/") + 1));
-            if(projectName.contains("monticore-grammar") && grammar.file.getAbsolutePath().contains("src\\main"))
+//            String projectName = grammar.file.getAbsolutePath().substring(root.length() + 1).replace("\\","/");
+//            projectName = projectName.substring(0,projectName.indexOf("/", projectName.indexOf("/") + 1));
+//            if(projectName.contains("monticore-grammar") && grammar.file.getAbsolutePath().contains("src\\main"))
+            if(grammar.file.getAbsolutePath().contains("monticore-grammar"))
                 return rootName + "&nbsp;&ndash;&nbsp;MainGrammars";
             else
                 return rootName + "&nbsp;&ndash;&nbsp;Test";
@@ -158,6 +159,10 @@ public class ReportGrammar {
             this.file = file;
             this.name = name;
             this.ideLink = ideLink;
+        }
+
+        public String toString() {
+            return name;
         }
     }
 
