@@ -3,7 +3,7 @@ import ba.intersection.IntersectionController;
 import ba.util.RelToAbsTrajectory;
 import ba.util.CommQuality;
 import ba.vehicle.VelocityController;
-import ba.collisionDetection.CollisionDetectionGeneric;
+import ba.collision.CollisionDetection;
 import ba.struct.Rectangle;
 //component System<N1 n = 2,N1 x = 1,N1 m = 5,N1 m1 = 4,N1 m2 = 10>{
 component System{
@@ -26,7 +26,7 @@ component System{
           out Q(0m/s : 60m/s) curVel[2];
 
     instance IntersectionController intersectionController;
-    instance CollisionDetectionGeneric collisionDetection;
+    instance CollisionDetection collisionDetection;
     instance CommQuality<B> stopCommQuality[2];
     instance VelocityController(3.0) velocityController[2];
 

@@ -1,4 +1,7 @@
-package ba.util;
+package ba.collision;
+import ba.util.DualSetCompareMatrix;
+import ba.util.LineIntersection;
+import ba.util.MultiOr;
 import ba.struct.Rectangle;
 
 component RectIntersection{

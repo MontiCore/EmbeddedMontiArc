@@ -1,4 +1,4 @@
-package ba.util;
+package ba.collision;
 import ba.struct.Rectangle;
 import ba.struct.RectToPoints;
 
@@ -23,5 +23,4 @@ component RectToLines{
     connect rectToPoints.points[1] -> pointsToLine[4].pointB;
 
     connect pointsToLine[:].line -> lines[:];
-
 }

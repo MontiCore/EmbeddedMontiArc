@@ -1,4 +1,4 @@
-package ba.util;
+package ba.collision;
 import ba.struct.Point;
 
 component PointsToLine{
