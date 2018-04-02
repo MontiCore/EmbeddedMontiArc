@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar.generator.js;
 
-import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
-import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotBlank;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.filterMultipleArrayPorts;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getGetterMethodName;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getSetterMethodName;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
@@ -23,14 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jscience.mathematics.number.Rational;
-import org.springframework.util.StringUtils;
 
 public class JsGenerator {
-
-  private static final String GETTER_PREFIX = "get";
-  private static final String SETTER_PREFIX = "set";
 
   private final TemplateProcessor templateProcessor;
 
@@ -38,21 +36,7 @@ public class JsGenerator {
     this.templateProcessor = templateProcessor;
   }
 
-  protected static String getSetterMethodName(PortSymbol port) {
-    return getSetterMethodName(requiresNotNull(port).getName());
-  }
 
-  protected static String getSetterMethodName(String portName) {
-    return SETTER_PREFIX + StringUtils.capitalize(requiresNotBlank(portName));
-  }
-
-  protected static String getGetterMethodName(PortSymbol port) {
-    return getGetterMethodName(requiresNotNull(port).getName());
-  }
-
-  protected static String getGetterMethodName(String portName) {
-    return GETTER_PREFIX + StringUtils.capitalize(requiresNotBlank(portName));
-  }
 
   static String getUnit(PortSymbol port) {
     Optional<ASTRange> rangeOpt = getRange(port);
@@ -183,8 +167,10 @@ public class JsGenerator {
 
   public void generate(ExpandedComponentInstanceSymbol symbol)
       throws IOException, TemplateException {
-    List<Getter> getters = produceGetters(symbol.getOutgoingPorts());
-    List<Setter> setters = produceSetters(symbol.getIncomingPorts());
+    Set<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
+    Set<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
+    List<Getter> getters = produceGetters(outports);
+    List<Setter> setters = produceSetters(inports);
 
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("getters", getters);
