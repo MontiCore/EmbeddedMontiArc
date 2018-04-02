@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.quicktheories.QuickTheory.qt;
-import static org.quicktheories.generators.SourceDSL.integers;
 import static org.quicktheories.generators.SourceDSL.strings;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
@@ -71,72 +70,6 @@ class CppGeneratorTest {
       cppGenerator.generate(model);
 
       verify(templateProcessor).process(any());
-    }
-  }
-
-  @Nested
-  class IsArray {
-
-    @Nested
-    class ShouldReturnTrue {
-
-      @Test
-      void withArrayName() {
-        qt().forAll(strings().betweenCodePoints(CODEPOINT_LOWERCASE_A, CODEPOINT_LOWERCASE_Z)
-                .ofLengthBetween(1, 10)
-            , integers().allPositive())
-            .assuming((s, i) -> isValidVariableName(s))
-            .as((s, i) -> s + "[" + i + "]")
-            .check(CppGenerator::isArray);
-      }
-    }
-
-    @Nested
-    class ShouldReturnFalse {
-
-      @Test
-      void withInvalidVariableName() {
-        qt().forAll(strings().basicLatinAlphabet().ofLengthBetween(1, 10))
-            .assuming(s -> !isValidVariableName(s))
-            .check(s -> !CppGenerator.isArray(s));
-      }
-
-      @Test
-      void withNotArrayVariableName() {
-        qt().forAll(strings().betweenCodePoints(CODEPOINT_LOWERCASE_A, CODEPOINT_LOWERCASE_Z)
-            .ofLengthBetween(1, 10))
-            .assuming(s -> isValidVariableName(s))
-            .check(s -> !CppGenerator.isArray(s));
-      }
-    }
-  }
-
-  @Nested
-  class GetArrayName {
-
-    @Nested
-    class ShouldThrowIllegalArgumentException {
-
-      @Test
-      void withNotArrayVariableName() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> CppGenerator.getArrayName(NOT_ARRAY_PORT_NAME));
-      }
-    }
-
-    @Nested
-    class ShouldReturnArrayName {
-
-      @Test
-      void withValidPortName() {
-        qt().forAll(strings().betweenCodePoints(CODEPOINT_LOWERCASE_A, CODEPOINT_LOWERCASE_Z)
-                .ofLengthBetween(1, 10)
-            , integers().allPositive())
-            .assuming((s, i) -> isValidVariableName(s))
-            .asWithPrecursor((variableName, number) -> variableName + "[" + number + "]")
-            .check((variableName, number, portName) ->
-                variableName.equals(CppGenerator.getArrayName(portName)));
-      }
     }
   }
 
