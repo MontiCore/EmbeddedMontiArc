@@ -1,0 +1,7 @@
+package models;
+
+component Array_NoRangeNoUnit {
+  ports
+    in Q inNoRangeNoUnit[4],
+    out Q outNoRangeNoUnit[4];
+}
