@@ -1,9 +1,9 @@
 package ba.util;
+import ba.struct.Rectangle;
 
 component RectIntersection{
-    //TODO: make rect type clearer. Current: 4 points going clockwise around the rect
-    ports in Q^{2,4} rect1,
-          in Q^{2,4} rect2,
+    ports in Rectangle rect1,
+          in Rectangle rect2,
           out B collision;
 
     //check intersection of 4*4 lines w/o permutations

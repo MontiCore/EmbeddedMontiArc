@@ -1,14 +1,15 @@
 package ba.collisionDetection;
 import ba.util.RectIntersection;
-import ba.util.SingleSetCompareMatrix;
+import ba.util.SingleSetCompareRectangle;
 import ba.util.MultiOr;
+import ba.struct.Rectangle;
 
 component CollisionDetectionGeneric<N1 n = 2,N1 x = 1>{
 //component CollisionDetection{
-    ports in Q^{2,4} hulls[n],
+    ports in Rectangle hulls[n],
           out B collision;
 
-    instance SingleSetCompareMatrix<2,4,2,1> singleSetCompare;
+    instance SingleSetCompareRectangle<2,1> singleSetCompare;
     instance RectIntersection rectIntersection[x];
     instance MultiOr<1> multiOr;
 
