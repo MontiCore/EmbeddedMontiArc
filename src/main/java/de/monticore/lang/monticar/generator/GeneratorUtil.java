@@ -31,7 +31,7 @@ public class GeneratorUtil {
   }
 
   public static String getSetterMethodName(PortSymbol port) {
-    return getSetterMethodName(requiresNotNull(port).getName());
+    return getSetterMethodName(requiresNotNull(port).getNameWithoutArrayBracketPart());
   }
 
   public static String getSetterMethodName(String portName) {
@@ -39,7 +39,7 @@ public class GeneratorUtil {
   }
 
   public static String getGetterMethodName(PortSymbol port) {
-    return getGetterMethodName(requiresNotNull(port).getName());
+    return getGetterMethodName(requiresNotNull(port).getNameWithoutArrayBracketPart());
   }
 
   public static String getGetterMethodName(String portName) {

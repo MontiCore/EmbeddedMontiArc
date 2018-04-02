@@ -5,6 +5,8 @@ import static de.monticore.lang.monticar.generator.GeneratorUtil.getGetterMethod
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getSetterMethodName;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
@@ -31,6 +33,9 @@ class GeneratorUtilTest {
   private static final String UPPERCASE_SINGLE_CHARACTER = "A";
   private static final String FIRST_LOWERCASE_STRING = "aSdF";
   private static final String FIRST_UPPERCASE_STRING = "ASdF";
+  private static final String ARRAY_NAME = "array[1]";
+  private static final String ARRAY_BASE_NAME = "array";
+  private static final String NOT_ARRAY_NAME = "somePort";
 
   @Nested
   class FilterMultipleArrayPorts {
@@ -160,6 +165,35 @@ class GeneratorUtilTest {
         assertThat(getGetterMethodName(FIRST_UPPERCASE_STRING)).isEqualTo("getASdF");
       }
     }
+
+    @Nested
+    class ShouldReturnNameWithoutArrayBrackets {
+
+      private PortSymbol arrayPort;
+      private PortSymbol notArrayPort;
+
+
+      @BeforeEach
+      void setUp() {
+        arrayPort = mock(PortSymbol.class);
+        when(arrayPort.getName()).thenReturn(ARRAY_NAME);
+        when(arrayPort.getNameWithoutArrayBracketPart()).thenReturn(ARRAY_BASE_NAME);
+
+        notArrayPort = mock(PortSymbol.class);
+        when(notArrayPort.getName()).thenReturn(NOT_ARRAY_NAME);
+        when(notArrayPort.getNameWithoutArrayBracketPart()).thenReturn(NOT_ARRAY_NAME);
+      }
+
+      @Test
+      void whenNotAnArrayName() {
+        assertThat(getGetterMethodName(notArrayPort)).isEqualTo("getSomePort");
+      }
+
+      @Test
+      void whenArrayName() {
+        assertThat(getGetterMethodName(arrayPort)).isEqualTo("getArray");
+      }
+    }
   }
 
   @Nested
@@ -208,6 +242,35 @@ class GeneratorUtilTest {
       @Test
       void whenGivenFirstUppercaseString() {
         assertThat(getSetterMethodName(FIRST_UPPERCASE_STRING)).isEqualTo("setASdF");
+      }
+    }
+
+    @Nested
+    class ShouldReturnNameWithoutArrayBrackets {
+
+      private PortSymbol arrayPort;
+      private PortSymbol notArrayPort;
+
+
+      @BeforeEach
+      void setUp() {
+        arrayPort = mock(PortSymbol.class);
+        when(arrayPort.getName()).thenReturn(ARRAY_NAME);
+        when(arrayPort.getNameWithoutArrayBracketPart()).thenReturn(ARRAY_BASE_NAME);
+
+        notArrayPort = mock(PortSymbol.class);
+        when(notArrayPort.getName()).thenReturn(NOT_ARRAY_NAME);
+        when(notArrayPort.getNameWithoutArrayBracketPart()).thenReturn(NOT_ARRAY_NAME);
+      }
+
+      @Test
+      void whenNotAnArrayName() {
+        assertThat(getSetterMethodName(notArrayPort)).isEqualTo("setSomePort");
+      }
+
+      @Test
+      void whenArrayName() {
+        assertThat(getSetterMethodName(arrayPort)).isEqualTo("setArray");
       }
     }
   }
