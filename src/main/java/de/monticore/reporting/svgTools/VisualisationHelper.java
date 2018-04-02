@@ -11,8 +11,6 @@ import java.util.List;
 
 public class VisualisationHelper {
 
-    private final static File ICON_FOLDER = new File("report/images/icons");
-
     public static void generateSVGs(List<? extends SVGInfo> allModels, List<? extends SVGInfo> rootModels, String outputPath, boolean merge) {
         Extractor.extractSVGGenerator();
         VisualisationHelperMulitThread vHelper = new VisualisationHelperMulitThread();

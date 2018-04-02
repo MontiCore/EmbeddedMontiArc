@@ -1,5 +1,6 @@
 package de.monticore.reporting.cocoReport;
 
+import de.monticore.reporting.cocoReport.helper.RewriteWithoutArray;
 import de.monticore.reporting.tools.CustomPrinter;
 import de.monticore.reporting.tools.SearchFiles;
 import de.monticore.reporting.cocoReport.helper.CheckCoCoResult;
@@ -41,19 +42,24 @@ public class CheckCoCos {
                 e.printStackTrace();
             }
 
+            // Save original file
+            for(File file: filesMap.get(projectDir)){
+                String oldFilePath = file.getAbsolutePath();
+                String newFilePath = oldFilePath + "_temp";
+                file.renameTo(new File(newFilePath));
+                RewriteWithoutArray.rewrite(newFilePath, oldFilePath);
+            }
+
             for(File file: filesMap.get(projectDir)) {
                 CustomPrinter.println("[" + getFormattedNumber(z, max) + "/" + max + "]" +
                         " Test CoCos of file \"" + file.getAbsolutePath());
-//                    GitHubHelper ghh = new GitHubHelper();
-//                    String gitHubRoot = ghh.getGitHubRoot(projectDir);
                 z++;
                 CheckCoCo ccT = new CheckCoCo();
                 CheckCoCoResult testResult = null;
 
                 testResult = ccT.testCoCos(file.getAbsolutePath());
+
                 testResult.setModelFile(file);
-//                testResult.setProject(projectDir);
-//                    testResult.setPathToFile(ghh.getHTMLTagOf(projectDir, file, gitHubRoot));
                 testResult.setOnlineIDE(getVFSTag(projectDir, file, zipName));
                 String relativeProject = projectDir.getName();
                 testResult.setProject(relativeProject);
@@ -62,6 +68,14 @@ public class CheckCoCos {
                 testResult.setGithubBranch(gitHubBranch);
 
                 testResults.add(testResult);
+            }
+
+            // Reset original file
+            for(File file: filesMap.get(projectDir)){
+                File newFile = new File(file.getAbsolutePath() + "_temp");
+                if(file.exists() && newFile.exists())
+                    file.delete();
+                newFile.renameTo(file);
             }
         }
 

@@ -143,7 +143,7 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                     if(testResult.getResolved() != 0 && testResult.getResolved() < mainPackageResult.getResolved() || mainPackageResult.getResolved() == 0) {
                         mainPackageResult.setResolved(testResult.getResolved());
                     }
-                    testResult.setChildInfo();
+                    mainPackageResult.setChildInfo();
 
                     mainPackageResult.setModelName(mainPackageResult.getProject().substring(0, mainPackageResult.getProject().length() - 1)
                             + "." + mainPackage);
