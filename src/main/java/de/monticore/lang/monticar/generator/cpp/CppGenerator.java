@@ -19,8 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.springframework.util.StringUtils;
 
 public class CppGenerator {
@@ -28,34 +26,10 @@ public class CppGenerator {
   private static final String GETTER_PREFIX = "get";
   private static final String SETTER_PREFIX = "set";
 
-  private static final Pattern ARRAY_PATTERN = Pattern.compile("([a-zA-Z_$]\\w*)\\[\\d+\\]");
-
   private final TemplateProcessor templateProcessor;
 
   public CppGenerator(TemplateProcessor templateProcessor) {
     this.templateProcessor = templateProcessor;
-  }
-
-  protected static boolean isArray(PortSymbol port) {
-    return isArray(port.getName());
-  }
-
-  protected static boolean isArray(String portName) {
-    return ARRAY_PATTERN.matcher(portName).matches();
-  }
-
-  protected static String getArrayName(PortSymbol port) {
-    return getArrayName(port.getName());
-  }
-
-  protected static String getArrayName(String portName) {
-    Matcher matcher = ARRAY_PATTERN.matcher(portName);
-    if (matcher.matches()) {
-      return matcher.group(1);
-    } else {
-      throw new IllegalArgumentException(
-          "Port " + portName + " is not part of a port array.");
-    }
   }
 
   protected static String getCppClassName(String fullName) {
@@ -107,8 +81,8 @@ public class CppGenerator {
     for (PortSymbol port : ports) {
       Type type;
       String name;
-      if (isArray(port)) {
-        String arrayName = getArrayName(port);
+      if (port.isPartOfPortArray()) {
+        String arrayName = port.getNameWithoutArrayBracketPart();
 
         if (processedArrays.contains(arrayName)) {
           continue;
@@ -139,8 +113,8 @@ public class CppGenerator {
     for (PortSymbol port : ports) {
       Type type;
       String name;
-      if (isArray(port)) {
-        String arrayName = getArrayName(port);
+      if (port.isPartOfPortArray()) {
+        String arrayName = port.getNameWithoutArrayBracketPart();
 
         if (processedArrays.contains(arrayName)) {
           continue;
