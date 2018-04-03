@@ -153,7 +153,7 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
-        distributedTargetGenerator.setGenDebug(true);
+//        distributedTargetGenerator.setGenDebug(true);
         distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 
@@ -243,6 +243,12 @@ public class GenerationTest extends AbstractSymtabTest {
 //                String fixedGenerics = "const int n = 4;\nconst int n2 = 10;\n";
 //                content = content.replace("const int cols = 1;","const int cols = 1;\n" + fixedGenerics);
 //            }
+
+            if(f.getName().equals("ba_system_collisionDetection_singleSetCompare.h")){
+                content = content.replace("const int n = 3","const int n = 2");
+                content = content.replace("const int x = 5","const int x = 1");
+
+            }
 
             if(f.getName().equals("ba_system_collisionDetection_rectIntersection_1__dualSetCompare.h")){
                 content = content.replace("rows = 4","rows = 2");
