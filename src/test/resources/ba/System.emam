@@ -10,7 +10,7 @@ component System{
     //Intersection ports
         in Q(0s : 10s) cutoffTimeIn,
         in B isActiveIn,
-        in Q^{3,5} absTrajectory[2],
+        in Q^{3,10} absTrajectory[2],
     //Collision detection ports
         in Rectangle hullsIn[2],
         out B collisionOut,
@@ -23,7 +23,7 @@ component System{
         in B slowDown[2],
         out Q(0m/s : 60m/s) curVel[2];
 
-    instance IntersectionController<2,1,5,4,10> intersectionController;
+    instance IntersectionController<2,1,10,4,10> intersectionController;
     instance CollisionDetection<2,1> collisionDetection;
     instance CommQuality<B> stopCommQuality[2];
     instance VelocityController(3.0) velocityController[2];
