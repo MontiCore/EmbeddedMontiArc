@@ -4,9 +4,9 @@ import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 import static de.monticore.lang.monticar.contract.StringPrecondition.requiresNotBlank;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import org.springframework.util.StringUtils;
 
 public class GeneratorUtil {
@@ -14,9 +14,9 @@ public class GeneratorUtil {
   private static final String GETTER_PREFIX = "get";
   private static final String SETTER_PREFIX = "set";
 
-  public static Set<PortSymbol> filterMultipleArrayPorts(Collection<PortSymbol> ports) {
-    Set<PortSymbol> filteredPorts = new HashSet<>();
-    Set<String> processedArrays = new HashSet<>();
+  public static Collection<PortSymbol> filterMultipleArrayPorts(Collection<PortSymbol> ports) {
+    List<PortSymbol> filteredPorts = new ArrayList<>();
+    List<String> processedArrays = new ArrayList<>();
     for (PortSymbol port : ports) {
       if (port.isPartOfPortArray()) {
         String arrayName = port.getNameWithoutArrayBracketPart();

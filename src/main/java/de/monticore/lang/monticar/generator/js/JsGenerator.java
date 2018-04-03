@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.jscience.mathematics.number.Rational;
 
@@ -168,8 +167,8 @@ public class JsGenerator {
 
   public void generate(ExpandedComponentInstanceSymbol symbol)
       throws IOException, TemplateException {
-    Set<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
-    Set<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
+    Collection<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
+    Collection<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
     List<Getter> getters = produceGetters(outports);
     List<Setter> setters = produceSetters(inports);
 

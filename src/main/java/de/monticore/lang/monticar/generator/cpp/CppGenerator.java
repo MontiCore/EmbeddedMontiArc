@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class CppGenerator {
 
@@ -45,8 +44,8 @@ public class CppGenerator {
 
   public void generate(ExpandedComponentInstanceSymbol symbol)
       throws IOException, TemplateException {
-    Set<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
-    Set<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
+    Collection<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
+    Collection<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
     List<Getter> getters = produceGetters(outports);
     List<Setter> setters = produceSetters(inports);
     String mainClassName = getCppClassName(symbol.getFullName());
