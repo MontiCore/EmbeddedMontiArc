@@ -1,37 +1,36 @@
 package de.monticore.lang.monticar.freemarker;
 
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 public class TemplateFactory {
 
   private static final String UTF_8 = "UTF-8";
 
   private Configuration cfg;
-  private Path templateDir;
+  private TemplateLoader templateLoader;
 
-  public TemplateFactory(Path templateDir) {
-    this.templateDir = templateDir;
+  public TemplateFactory(TemplateLoader templateLoader) {
+    this.templateLoader = templateLoader;
   }
 
   public Template getTemplate(String name) throws IOException {
-    return prepareConfiguration(templateDir).getTemplate(name);
+    return prepareConfiguration(templateLoader).getTemplate(name);
   }
 
-  private Configuration prepareConfiguration(Path dir) throws IOException {
+  private Configuration prepareConfiguration(TemplateLoader templateLoader) throws IOException {
     if (cfg == null) {
       cfg = new Configuration(Configuration.VERSION_2_3_23);
-      setUpConfiguration(dir.toFile());
+      setUpConfiguration(templateLoader);
     }
     return cfg;
   }
 
-  private void setUpConfiguration(File templateDir) throws IOException {
-    cfg.setDirectoryForTemplateLoading(templateDir);
+  private void setUpConfiguration(TemplateLoader templateLoader) throws IOException {
+    cfg.setTemplateLoader(templateLoader);
     cfg.setDefaultEncoding(UTF_8);
     cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     cfg.setLogTemplateExceptions(false);

@@ -9,6 +9,7 @@ import de.monticore.lang.monticar.freemarker.TemplateProcessor;
 import de.monticore.lang.monticar.generator.cpp.CppGenerator;
 import de.monticore.lang.monticar.resolver.Resolver;
 import de.monticore.lang.monticar.resolver.ResolverFactory;
+import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import java.io.IOException;
@@ -46,7 +47,8 @@ class CppGeneratorIT {
 
   @BeforeEach
   void setUp() throws IOException {
-    TemplateFactory templateFactory = new TemplateFactory(TEMPLATE_DIR);
+    FileTemplateLoader ftl = new FileTemplateLoader(TEMPLATE_DIR.toFile());
+    TemplateFactory templateFactory = new TemplateFactory(ftl);
     Template template = templateFactory.getTemplate(CPP_TEMPLATE);
     writer = new StringWriter();
     TemplateProcessor templateProcessor = new SimpleTemplatePrinter(template, writer);

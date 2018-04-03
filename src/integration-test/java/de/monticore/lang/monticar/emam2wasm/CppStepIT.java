@@ -18,6 +18,7 @@ import de.monticore.lang.monticar.junit.TemporaryDirectoryExtension;
 import de.monticore.lang.monticar.resolver.Resolver;
 import de.monticore.lang.monticar.resolver.SymTabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Template;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,7 +73,8 @@ class CppStepIT {
   }
 
   private Template cppTemplate() throws IOException {
-    TemplateFactory templateFactory = new TemplateFactory(TEMPLATE_DIR);
+    FileTemplateLoader ftl = new FileTemplateLoader(TEMPLATE_DIR.toFile());
+    TemplateFactory templateFactory = new TemplateFactory(ftl);
     return templateFactory.getTemplate(CPP_TEMPLATE_NAME);
   }
 
