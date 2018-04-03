@@ -21,7 +21,7 @@ install:
   - cmd: mvn --version
   - cmd: java -version
 build_script:
-  - mvn -B -Prun-its clean verify
+  - mvn clean verify -B -Punit-test -Pintegration-test -Pacceptance-test
 cache:
   - C:\maven\ -> appveyor.yml
   - C:\Users\appveyor\.m2\ -> pom.xml
