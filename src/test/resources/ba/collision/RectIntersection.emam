@@ -14,20 +14,20 @@ component RectIntersection{
 
     //check intersection of 4*4 lines w/o permutations
     //4*(4+1)/2 = 10 possibilities
-    instance DualSetCompareMatrix<2,4,4,10> dualSetCompare;
+    instance DualSetCompareMatrix<2,4,4,10> dualSetCompareLines;
 
     instance LineIntersection lineIntersection[10];
-    instance MultiOr<10> multiOr;
+    instance MultiOr<10> multiOrRect;
 
     connect rect1 -> rectToLines1.rect;
     connect rect2 -> rectToLines2.rect;
 
-    connect rectToLines1.lines[:] -> dualSetCompare.setInA[:];
-    connect rectToLines2.lines[:] -> dualSetCompare.setInB[:];
+    connect rectToLines1.lines[:] -> dualSetCompareLines.setInA[:];
+    connect rectToLines2.lines[:] -> dualSetCompareLines.setInB[:];
 
-    connect dualSetCompare.outA[:] -> lineIntersection[:].lineA;
-    connect dualSetCompare.outB[:] -> lineIntersection[:].lineB;
+    connect dualSetCompareLines.outA[:] -> lineIntersection[:].lineA;
+    connect dualSetCompareLines.outB[:] -> lineIntersection[:].lineB;
 
-    connect lineIntersection[:].intersects -> multiOr.boolIn[:];
-    connect multiOr.boolOut -> collision;
+    connect lineIntersection[:].intersects -> multiOrRect.boolIn[:];
+    connect multiOrRect.boolOut -> collision;
 }

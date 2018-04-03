@@ -153,7 +153,7 @@ public class GenerationTest extends AbstractSymtabTest {
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
-//        distributedTargetGenerator.setGenDebug(true);
+        distributedTargetGenerator.setGenDebug(true);
         distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 
@@ -233,30 +233,6 @@ public class GenerationTest extends AbstractSymtabTest {
 
             content = content.replace("Col<int> counter=Col<int>(1);" , "Col<int> counter=Col<int>(n);");
             content = content.replace("colvec tmpLine;","colvec tmpLine = colvec(4);");
-//            content = content.replace("sqrt","std::sqrt");
-
-            if(f.getName().equals("ba_system_collisionDetection_multiOr.h")){
-                content = content.replace("10","1");
-            }
-
-//            if(f.getName().equals("ba_system_collisionDetection_rectIntersection_1__dualSetCompare.h")){
-//                String fixedGenerics = "const int n = 4;\nconst int n2 = 10;\n";
-//                content = content.replace("const int cols = 1;","const int cols = 1;\n" + fixedGenerics);
-//            }
-
-            if(f.getName().equals("ba_system_collisionDetection_singleSetCompare.h")){
-                content = content.replace("const int n = 3","const int n = 2");
-                content = content.replace("const int x = 5","const int x = 1");
-
-            }
-
-            if(f.getName().equals("ba_system_collisionDetection_rectIntersection_1__dualSetCompare.h")){
-                content = content.replace("rows = 4","rows = 2");
-                content = content.replace("cols = 1","cols = 4");
-//                content = content.replace("n = 4","n = 2");
-//                content = content.replace("n2 = 10","n2 = 1");
-            }
-
 
             Files.write(path, content.getBytes(charset));
         }
