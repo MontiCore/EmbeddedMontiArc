@@ -1,6 +1,5 @@
 package de.monticore.lang.monticar.emam2wasm;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
@@ -13,10 +12,12 @@ import de.monticore.lang.monticar.emam2wasm.cpp.CppMainNameProvider;
 import de.monticore.lang.monticar.emam2wasm.cpp.CppNameProvider;
 import de.monticore.lang.monticar.emam2wasm.cpp.CppStep;
 import de.monticore.lang.monticar.freemarker.TemplateFactory;
+import de.monticore.lang.monticar.generator.FileContentAssert;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.junit.TemporaryDirectoryExtension;
 import de.monticore.lang.monticar.resolver.Resolver;
 import de.monticore.lang.monticar.resolver.SymTabCreator;
+import de.monticore.lang.monticar.util.TextFile;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Template;
@@ -86,7 +87,9 @@ class CppStepIT {
       for (Path expectedFile : expectedFiles) {
         if (actualFile.getFileName().equals(expectedFile.getFileName())) {
           if (Files.isRegularFile(actualFile) && Files.isRegularFile(expectedFile)) {
-            assertThat(actualFile).hasSameContentAs(expectedFile);
+            TextFile actualText = new TextFile(actualFile);
+            TextFile expectedText = new TextFile(expectedFile);
+            FileContentAssert.assertThat(actualText.read()).isEqualToFileContent(expectedText);
           } else {
             fail("No matching file was found for " + actualFile.toString());
           }
@@ -100,5 +103,4 @@ class CppStepIT {
       return fileStream.collect(Collectors.toList());
     }
   }
-
 }
