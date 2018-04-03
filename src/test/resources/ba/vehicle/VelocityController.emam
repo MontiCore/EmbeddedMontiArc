@@ -13,7 +13,7 @@ component VelocityController(adaptable Q holdTimeIn){
     implementation Math{
         static Q lastVel = 0;
         static Q holdFor = 0;
-        Q resVel;
+        Q resVel = lastVel;
 
         if resetVelIn
             lastVel = maxVelIn;
