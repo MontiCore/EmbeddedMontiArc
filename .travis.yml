@@ -18,18 +18,26 @@ jobs:
     - stage: build
       script:
         - mvn clean test-compile --settings "settings.xml"
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
     - stage: test
       script:
         - mvn test --settings "settings.xml"
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
     - stage: integration-test
       sudo: required
       services:
         - docker
       script:
         - mvn verify -Pintegration-test --settings "settings.xml"
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
     - stage: acceptance-test
       script:
         - mvn verify -Pacceptance-test --settings "settings.xml"
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
 
 after_success:
 #- mvn deploy --settings "./settings.xml"
