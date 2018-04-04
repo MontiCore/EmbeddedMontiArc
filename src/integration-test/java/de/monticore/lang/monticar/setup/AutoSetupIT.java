@@ -88,11 +88,14 @@ class AutoSetupIT {
       Path binaryDir = findSubDirectory(extractionPath.resolve(BRANCH).resolve(EMSCRIPTEN));
       String emcc = binaryDir.resolve(EMCC_WIN).toAbsolutePath().normalize().toString();
 
-      WasmStep wasmStep = new WasmStep(commandBuilderFactory(emscripten(emcc)), dir,
-          new WasmJsNameProvider());
-      Path wasmFile = wasmStep.compile(SOME_C_FILE);
+      assertThat(runEmscriptenCommand(emcc)).isZero();
+    }
 
-      assertThat(wasmFile).exists();
+    private int runEmscriptenCommand(String emscripten) throws IOException, InterruptedException {
+      ProcessBuilder pb = new ProcessBuilder();
+      pb.inheritIO();
+      pb.command(emscripten, "--version");
+      return pb.start().waitFor();
     }
 
     private BasicConfiguration emscriptenWindowsConfig() {
