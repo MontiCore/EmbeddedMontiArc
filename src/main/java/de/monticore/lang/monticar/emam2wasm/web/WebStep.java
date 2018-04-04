@@ -56,9 +56,10 @@ public class WebStep {
    * @param wasmFile WebAssembly file that implements the actions of the model
    * and is used by the web interface to calculate the model's output for given
    * input.
+   * @return path to the wrapper file
    * @throws WebInterfaceGeneratorException if the web files generation fails
    */
-  public void generateWebInterface(ExpandedComponentInstanceSymbol model, Path wasmFile) {
+  public Path generateWebInterface(ExpandedComponentInstanceSymbol model, Path wasmFile) {
     requiresNotNull(model);
     requiresNotNull(wasmFile);
 
@@ -76,5 +77,7 @@ public class WebStep {
     } catch (IOException | TemplateException e) {
       throw new WebInterfaceGeneratorException(e);
     }
+
+    return wrapperPath;
   }
 }
