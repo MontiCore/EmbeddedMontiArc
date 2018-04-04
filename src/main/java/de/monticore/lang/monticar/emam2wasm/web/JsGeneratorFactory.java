@@ -4,10 +4,14 @@ import de.monticore.lang.monticar.freemarker.FileTemplatePrinter;
 import de.monticore.lang.monticar.generator.js.JsGenerator;
 import freemarker.template.Template;
 import java.nio.file.Path;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 /**
  * Factory for {@link JsGenerator}.
  */
+@Component
 public class JsGeneratorFactory {
 
   private Template template;
@@ -18,7 +22,8 @@ public class JsGeneratorFactory {
    * @param template the template that the {@link JsGenerator} will use to
    * produce HTML code
    */
-  public JsGeneratorFactory(Template template) {
+  @Autowired
+  public JsGeneratorFactory(@Qualifier("jsTemplate") Template template) {
     this.template = template;
   }
 

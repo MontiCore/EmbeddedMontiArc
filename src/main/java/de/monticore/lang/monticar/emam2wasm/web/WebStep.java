@@ -9,6 +9,8 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * This class generates a web interface for a WebAssembly module implementing
@@ -16,6 +18,7 @@ import org.apache.commons.io.FilenameUtils;
  *
  * @see de.monticore.lang.monticar.emam2wasm.wasm.WasmStep
  */
+@Component
 public class WebStep {
 
   private JsGeneratorFactory jsGeneratorFactory;
@@ -24,6 +27,7 @@ public class WebStep {
   private WrapperNameProvider wrapperNameProvider;
   private InterfaceNameProvider interfaceNameProvider;
 
+  @Autowired
   public WebStep(JsGeneratorFactory jsGeneratorFactory, HtmlGeneratorFactory htmlGeneratorFactory,
       Path webDir, WrapperNameProvider wrapperNameProvider,
       InterfaceNameProvider interfaceNameProvider) {

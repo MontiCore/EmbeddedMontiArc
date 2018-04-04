@@ -8,6 +8,7 @@ import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +17,7 @@ public class CppGeneratorAdapter implements CppFileGenerator {
   private Template template;
 
   @Autowired
-  public CppGeneratorAdapter(Template template) {
+  public CppGeneratorAdapter(@Qualifier("cppTemplate") Template template) {
     this.template = template;
   }
 

@@ -6,10 +6,14 @@ import de.monticore.lang.monticar.generator.html.HtmlGenerator;
 import freemarker.template.Template;
 import java.nio.file.Path;
 import java.util.function.Function;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 /**
  * Factory for {@link HtmlGenerator}.
  */
+@Component
 public class HtmlGeneratorFactory {
 
   private Template template;
@@ -20,7 +24,8 @@ public class HtmlGeneratorFactory {
    * @param template the template that the {@link HtmlGenerator} will use to
    * produce HTML code
    */
-  public HtmlGeneratorFactory(Template template) {
+  @Autowired
+  public HtmlGeneratorFactory(@Qualifier("htmlTemplate") Template template) {
     this.template = template;
   }
 
