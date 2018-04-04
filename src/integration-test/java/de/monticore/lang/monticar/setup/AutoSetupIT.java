@@ -71,8 +71,8 @@ class AutoSetupIT {
       this.emsdkCommand = "\"" + extractionPath.resolve(EMSDK_WIN)
           .toAbsolutePath().normalize().toString() + "\"";
       this.emscriptenUpdate = new String[]{emsdkCommand, "update"};
-      this.emscriptenInstall = new String[]{emsdkCommand, "install", "sdk-1.37.35-64bit"};
-      this.emscriptenActivate = new String[]{emsdkCommand, "activate", "sdk-1.37.35-64bit"};
+      this.emscriptenInstall = new String[]{emsdkCommand, "install", "sdk-1.37.1-64bit"};
+      this.emscriptenActivate = new String[]{emsdkCommand, "activate", "sdk-1.37.1-64bit"};
       this.configuration = emscriptenWindowsConfig();
     }
 
