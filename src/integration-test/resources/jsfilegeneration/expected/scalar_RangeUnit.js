@@ -18,11 +18,13 @@ function getOutRangeUnit() {
     return math.format(Module.getOutRangeUnit(), {notation: 'fixed'}).concat(" m/s");
 }
 
-function setInRangeUnit(param) {
-    var value = math.eval(param);
+function setInRangeUnit(_inRangeUnit) {
+    var value = math.eval(_inRangeUnit);
+    var lower = math.eval("-10/3 m/s").toSI().toNumber();
+    var upper = math.eval("10/1 km/h").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for param";
+        throw "Could not evaluate input for _inRangeUnit";
     }
 
     //check unit
@@ -30,13 +32,13 @@ function setInRangeUnit(param) {
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {
         throw "Expected unit m/s";
     }
+    var value_num = value.toSI().toNumber();
     //check range
-    if (math.smaller(value, math.eval("-10/3 m/s"))) {
-        throw "Value " + value + " out of range";
+    if (math.smaller(value_num, lower)) {
+        throw "Value " + value_num + " out of range";
     }
-    if (math.larger(value, math.eval("10/1 km/h"))) {
-        throw "Value " + value + " out of range";
+    if (math.larger(value_num, upper)) {
+        throw "Value " + value_num + " out of range";
     }
-    Module.setInRangeUnit(value.toSI().toNumber());
+    Module.setInRangeUnit(value_num);
 }
-

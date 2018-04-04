@@ -18,14 +18,15 @@ function getOutNoRangeNoUnit() {
     return math.format(Module.getOutNoRangeNoUnit(), {notation: 'fixed'});
 }
 
-function setInNoRangeNoUnit(param) {
-    var value = math.eval(param);
+function setInNoRangeNoUnit(_inNoRangeNoUnit) {
+    var value = math.eval(_inNoRangeNoUnit);
 
     if (value === undefined) {
-        throw "Could not evaluate input for param";
+        throw "Could not evaluate input for _inNoRangeNoUnit";
     }
 
     //check unit
+    var value_num = value.toSI().toNumber();
     //check range
-    Module.setInNoRangeNoUnit(value.toSI().toNumber());
+    Module.setInNoRangeNoUnit(value_num);
 }

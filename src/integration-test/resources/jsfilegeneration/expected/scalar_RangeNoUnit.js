@@ -18,20 +18,23 @@ function getOutRangeNoUnit() {
     return math.format(Module.getOutRangeNoUnit(), {notation: 'fixed'});
 }
 
-function setInRangeNoUnit(param) {
-    var value = math.eval(param);
+function setInRangeNoUnit(_inRangeNoUnit) {
+    var value = math.eval(_inRangeNoUnit);
+    var lower = math.eval("-10/1").toSI().toNumber();
+    var upper = math.eval("10/1").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for param";
+        throw "Could not evaluate input for _inRangeNoUnit";
     }
 
     //check unit
+    var value_num = value.toSI().toNumber();
     //check range
-    if (math.smaller(value, math.eval("-10/1"))) {
-        throw "Value " + value + " out of range";
+    if (math.smaller(value_num, lower)) {
+        throw "Value " + value_num + " out of range";
     }
-    if (math.larger(value, math.eval("10/1"))) {
-        throw "Value " + value + " out of range";
+    if (math.larger(value_num, upper)) {
+        throw "Value " + value_num + " out of range";
     }
-    Module.setInRangeNoUnit(value.toSI().toNumber());
+    Module.setInRangeNoUnit(value_num);
 }

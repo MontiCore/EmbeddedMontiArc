@@ -198,7 +198,7 @@ public class JsGenerator {
       Setter setter = new Setter();
       String methodName = getSetterMethodName(port);
       setter.setMethodName(methodName);
-      setter.setParameterName(PARAMETER_NAME);
+      setter.setParameterName('_' + port.getNameWithoutArrayBracketPart());
       setter.setDelegateMethodName(methodName);
       setter.setDimension(getDimension(incomingPorts, port));
       setter.setUnit(getUnit(port));

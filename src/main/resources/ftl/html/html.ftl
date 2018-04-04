@@ -6,56 +6,45 @@
     overflow: hidden;
     width: fit-content;
   }
-
   .ports {
     overflow: hidden;
   }
-
   .inports {
     float: left;
     margin: 10px;
   }
-
   .outports {
     float: left;
     margin: 10px;
   }
-
   .inport-header {
     margin: 0 auto;
     width: fit-content;
   }
-
   .inport-label {
     float: left;
     margin-right: 5px;
   }
-
   .inport-field {
     float: right;
     width: 200px;
   }
-
   .outport-header {
     margin: 0 auto;
     width: fit-content;
   }
-
   .outport-label {
     float: left;
     margin-right: 5px;
   }
-
   .outport-field {
     float: left;
     min-width: 200px;
   }
-
   .execute {
     width: fit-content;
     margin: 10px auto;
   }
-
   .error {
     color: red;
     margin: 10px;

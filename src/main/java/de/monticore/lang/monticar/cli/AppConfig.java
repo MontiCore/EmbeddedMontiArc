@@ -13,6 +13,7 @@ import de.monticore.lang.monticar.resolver.SymTabCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Template;
 import java.io.IOException;
@@ -35,9 +36,16 @@ import org.springframework.context.annotation.Profile;
         pattern = "de\\.monticore\\.lang\\.monticar\\.emam2wasm\\.model..*"))
 public class AppConfig {
 
-  private static final Path REGULAR_TEMPLATE_DIR = Paths.get("src/main/resources/ftl/cpp");
-  private static final String JAR_TEMPLATE_DIR = "/ftl/cpp";
-  private static final String TEMPLATE_NAME = "cpp.ftl";
+  private static final Path REGULAR_TEMPLATE_DIR = Paths.get("src/main/resources/ftl");
+  private static final Path REGULAR_CPP_TEMPLATE_DIR = REGULAR_TEMPLATE_DIR.resolve("cpp");
+  private static final Path REGULAR_JS_TEMPLATE_DIR = REGULAR_TEMPLATE_DIR.resolve("js");
+  private static final Path REGULAR_HTML_TEMPLATE_DIR = REGULAR_TEMPLATE_DIR.resolve("html");
+  private static final String JAR_CPP_TEMPLATE_DIR = "/ftl/cpp";
+  private static final String JAR_JS_TEMPLATE_DIR = "/ftl/js";
+  private static final String JAR_HTML_TEMPLATE_DIR = "/ftl/html";
+  private static final String CPP_TEMPLATE_NAME = "cpp.ftl";
+  private static final String JS_TEMPLATE_NAME = "js.ftl";
+  private static final String HTML_TEMPLATE_NAME = "html.ftl";
   private static final String WINDOWS = "windows";
 
   @Value("${model}")
@@ -54,6 +62,9 @@ public class AppConfig {
 
   @Value("${wasm-dir:.}")
   private Path wasmDir;
+
+  @Value("${web-dir:.}")
+  private Path webDir;
 
   @Value("${emscripten:}")
   private String emscripten;
@@ -75,14 +86,35 @@ public class AppConfig {
   }
 
   @Bean
-  public Template template() throws IOException {
-    TemplateLoader loader;
+  public Template cppTemplate(TemplateLoader loader) throws IOException {
+    return new TemplateFactory(loader).getTemplate(CPP_TEMPLATE_NAME);
+  }
+
+  @Bean
+  public Template jsTemplate(TemplateLoader loader) throws IOException {
+    return new TemplateFactory(loader).getTemplate(JS_TEMPLATE_NAME);
+  }
+
+  @Bean
+  public Template htmlTemplate(TemplateLoader loader) throws IOException {
+    return new TemplateFactory(loader).getTemplate(HTML_TEMPLATE_NAME);
+  }
+
+  @Bean
+  public TemplateLoader templateLoader() throws IOException {
+    MultiTemplateLoader mtl;
     if (runsInJar()) {
-      loader = new ClassTemplateLoader(AppConfig.class, JAR_TEMPLATE_DIR);
+      ClassTemplateLoader ctl1 = new ClassTemplateLoader(AppConfig.class, JAR_CPP_TEMPLATE_DIR);
+      ClassTemplateLoader ctl2 = new ClassTemplateLoader(AppConfig.class, JAR_JS_TEMPLATE_DIR);
+      ClassTemplateLoader ctl3 = new ClassTemplateLoader(AppConfig.class, JAR_HTML_TEMPLATE_DIR);
+      mtl = new MultiTemplateLoader(new TemplateLoader[]{ctl1, ctl2, ctl3});
     } else {
-      loader = new FileTemplateLoader(REGULAR_TEMPLATE_DIR.toFile());
+      FileTemplateLoader ftl1 = new FileTemplateLoader(REGULAR_CPP_TEMPLATE_DIR.toFile());
+      FileTemplateLoader ftl2 = new FileTemplateLoader(REGULAR_JS_TEMPLATE_DIR.toFile());
+      FileTemplateLoader ftl3 = new FileTemplateLoader(REGULAR_HTML_TEMPLATE_DIR.toFile());
+      mtl = new MultiTemplateLoader(new TemplateLoader[]{ftl1, ftl2, ftl3});
     }
-    return new TemplateFactory(loader).getTemplate(TEMPLATE_NAME);
+    return mtl;
   }
 
   @Bean
@@ -125,6 +157,11 @@ public class AppConfig {
   @Bean
   public Path wasmDir() {
     return target != null ? target : wasmDir;
+  }
+
+  @Bean
+  public Path webDir() {
+    return target != null ? target : webDir;
   }
 
   private boolean runsInJar() {
