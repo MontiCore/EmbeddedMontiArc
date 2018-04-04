@@ -32,4 +32,5 @@ jobs:
         - mvn verify -Pacceptance-test jacoco:report coveralls:report --settings "settings.xml"
 
 after_success:
+ - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
 #- mvn deploy --settings "./settings.xml"
