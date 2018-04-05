@@ -4,7 +4,7 @@ import static de.monticore.lang.monticar.contract.FilePrecondition.requiresReada
 import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
 
 import de.monticore.lang.monticar.util.TextFile;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -19,7 +19,7 @@ public class EmscriptenConfigFileParser implements ConfigFileParser {
   public Map<String, String> parseConfigurations() {
     requiresReadable(configFile.getPath());
 
-    Map<String, String> configs = new HashMap<>();
+    Map<String, String> configs = new LinkedHashMap<>();
     Stream<String> lines = configFile.lines();
     lines.forEach(line -> {
       if (line != null) {
