@@ -65,4 +65,19 @@ public class TextFile {
       throw new UncheckedIOException(e);
     }
   }
+
+  /**
+   * Reads the text file and returns it line by line as a stream.
+   *
+   * @return file lines as stream
+   * @throws UncheckedIOException whenever the underlying read operations throw a checked
+   * {@code IOException}
+   */
+  public Stream<String> lines() {
+    try (Stream<String> lines = Files.lines(path)) {
+      return lines;
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
 }
