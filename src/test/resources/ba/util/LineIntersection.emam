@@ -5,78 +5,32 @@ component LineIntersection{
           in Q^{4,1} lineB,
           out Q^{2,1} point,
           out B intersects;
+
     implementation Math{
-        Q n1 = (lineA(1,1)-lineA(3,1))*(lineB(2,1)-lineB(4,1))-(lineA(2,1)-lineA(4,1))*(lineB(1,1)-lineB(3,1));
-        Q n2 = (lineA(1,1)-lineA(3,1))*(lineB(2,1)-lineB(4,1))-(lineA(2,1)-lineA(4,1))*(lineB(1,1)-lineB(3,1));
+		Q Ax = lineA(3,1) - lineA(1,1);
+		Q Ay = lineA(4,1) - lineA(2,1);
+		Q Bx = lineB(1,1) - lineB(3,1);
+		Q By = lineB(2,1) - lineB(4,1);
+		Q Cx = lineA(1,1) - lineB(1,1);
+		Q Cy = lineA(2,1) - lineB(2,1);
 
+        Q n1 = Ay*Bx - Ax*By;
         Q cutoff = 0.00000001;
+		B res = False;
 
-        if (abs(n1) > cutoff) && (abs(n2) > cutoff)
-            Q z1 = (lineA(1,1)*lineA(4,1)-lineA(2,1)*lineA(3,1))*(lineB(1,1)-lineB(3,1))-(lineA(1,1)-lineA(3,1))*(lineB(1,1)*lineB(4,1)-lineB(2,1)*lineB(3,1));
-            Q z2 = (lineA(1,1)*lineA(4,1)-lineA(2,1)*lineA(3,1))*(lineB(2,1)-lineB(4,1))-(lineA(2,1)-lineA(4,1))*(lineB(1,1)*lineB(4,1)-lineB(2,1)*lineB(3,1));
-            point(1,1) = z1/n1;
-            point(2,1) = z2/n2;
-
-            if abs(point(1,1)) < cutoff
-                point(1,1) = 0;
-            end
-
-            if abs(point(2,1)) < cutoff
-                point(2,1) = 0;
-            end
-
-            Q xmin1;
-            Q xmax1;
-            Q ymin1;
-            Q ymax1;
-
-            Q xmin2;
-            Q xmax2;
-            Q ymin2;
-            Q ymax2;
-
-            //bounding box 1
-            if lineA(1,1) >= lineA(3,1)
-                xmax1 = lineA(1,1);
-                xmin1 = lineA(3,1);
-            else
-                xmax1 = lineA(3,1);
-                xmin1 = lineA(1,1);
-            end
-
-            if lineA(2,1) >= lineA(4,1)
-                ymax1 = lineA(2,1);
-                ymin1 = lineA(4,1);
-            else
-                ymax1 = lineA(4,1);
-                ymin1 = lineA(2,1);
-            end
-
-            //bounding box 2
-            if lineB(1,1) >= lineB(3,1)
-                xmax2 = lineB(1,1);
-                xmin2 = lineB(3,1);
-            else
-                xmax2 = lineB(3,1);
-                xmin2 = lineB(1,1);
-            end
-
-            if lineB(2,1) >= lineB(4,1)
-                ymax2 = lineB(2,1);
-                ymin2 = lineB(4,1);
-            else
-                ymax2 = lineB(4,1);
-                ymin2 = lineB(2,1);
-            end
-
-            B onLineA = (xmin1 <= point(1,1)) && (point(1,1) <= xmax1) && (ymin1 <= point(2,1)) && (point(2,1) <= ymax1);
-            B onLineB = (xmin2 <= point(1,1)) && (point(1,1) <= xmax2) && (ymin2 <= point(2,1)) && (point(2,1) <= ymax2);
-
-            intersects = onLineA && onLineB;
-        else
-            point(1,1) = 0;
-            point(2,1) = 0;
-            intersects = False;
+		//if lines are not parallel(ish)
+        if (abs(n1) > cutoff)
+			Q alpha = (By * Cx - Bx * Cy) / n1;
+			if (alpha >= cutoff) && (alpha <= 1)
+				Q beta = (Ax * Cy - Ay * Cx) / n1;
+				if (beta >= cutoff) && (beta <= 1)
+					res = True;
+				    point(1,1) = lineA(1,1) + alpha * Ax;
+				    point(2,1) = lineA(2,1) + alpha * Ay;
+				end			
+			end
         end
+
+		intersects = res;
     }
 }
