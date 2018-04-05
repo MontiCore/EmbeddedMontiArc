@@ -20,24 +20,25 @@ public class EmscriptenConfigFileParser implements ConfigFileParser {
     requiresReadable(configFile.getPath());
 
     Map<String, String> configs = new LinkedHashMap<>();
-    Stream<String> lines = configFile.lines();
-    lines.forEach(line -> {
-      if (line != null) {
-        String[] keyValue = line.split("=", 2);
-        if (keyValue.length > 0) {
-          String key = keyValue[0].trim();
-          String value = null;
+    try (Stream<String> lines = configFile.lines()) {
+      lines.forEach(line -> {
+        if (line != null) {
+          String[] keyValue = line.split("=", 2);
+          if (keyValue.length > 0) {
+            String key = keyValue[0].trim();
+            String value = null;
 
-          if (keyValue.length > 1) {
-            value = removeQuotes(keyValue[1].trim());
-          }
+            if (keyValue.length > 1) {
+              value = removeQuotes(keyValue[1].trim());
+            }
 
-          if (!isNullOrEmpty(key)) {
-            configs.put(key, value);
+            if (!isNullOrEmpty(key)) {
+              configs.put(key, value);
+            }
           }
         }
-      }
-    });
+      });
+    }
     return configs;
   }
 

@@ -74,8 +74,8 @@ public class TextFile {
    * {@code IOException}
    */
   public Stream<String> lines() {
-    try (Stream<String> lines = Files.lines(path)) {
-      return lines;
+    try {
+      return Files.lines(path);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
