@@ -4,12 +4,14 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.emscripten.Emscripten;
 import de.monticore.lang.monticar.emscripten.EmscriptenCommand;
 import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
+import de.monticore.lang.monticar.emscripten.EmscriptenConfigFileParser;
 import de.monticore.lang.monticar.emscripten.Option;
 import de.monticore.lang.monticar.emscripten.Shell;
 import de.monticore.lang.monticar.freemarker.TemplateFactory;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.resolver.Resolver;
 import de.monticore.lang.monticar.resolver.SymTabCreator;
+import de.monticore.lang.monticar.util.TextFile;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -17,8 +19,10 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Template;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,7 +51,7 @@ public class AppConfig {
   private static final String CPP_TEMPLATE_NAME = "cpp.ftl";
   private static final String JS_TEMPLATE_NAME = "js.ftl";
   private static final String HTML_TEMPLATE_NAME = "html.ftl";
-  private static final String WINDOWS = "windows";
+  private static final String EMSCRIPTEN_CONFIG_KEY = "EMSCRIPTEN_ROOT";
 
   @Value("${model}")
   private String modelFullName;
@@ -70,10 +74,13 @@ public class AppConfig {
   @Value("${emscripten:}")
   private String emscripten;
 
-  @Value("#{'${include:}' ?: {}}")
+  @Value("#{systemProperties['user.home']}/.emscripten")
+  private Path emscriptenConfig;
+
+  @Value("#{'${include:}'.split(',') ?: {}}")
   private Path[] includes;
 
-  @Value("#{'${library:}' ?: {}}")
+  @Value("#{'${library:}'.split(',') ?: {}}")
   private Path[] libraries;
 
   @Value("${option:WASM=1, LINKABLE=1, EXPORT_ALL=1, ALLOW_MEMORY_GROWTH=1}")
@@ -85,8 +92,8 @@ public class AppConfig {
   @Value("${bind:true}")
   private boolean bind;
 
-  @Value("#{systemProperties['os.name'].toLowerCase()}")
-  private String osName;
+  @Value("${emscripten.execute.binary.name:emcc.bat}")
+  private String emscriptenBinaryName;
 
   @Bean
   public OptionConverter optionConverter() {
@@ -175,6 +182,20 @@ public class AppConfig {
   @Bean
   @Conditional(WindowsCondition.class)
   public Emscripten emscriptenWindows() {
+    if (emscripten == null || emscripten.isEmpty()) {
+      if (Files.isReadable(emscriptenConfig)) {
+        TextFile configFile = new TextFile(emscriptenConfig);
+        EmscriptenConfigFileParser parser = new EmscriptenConfigFileParser(configFile);
+        Map<String, String> configurations = parser.parseConfigurations();
+        String emscriptenDirString = configurations.get(EMSCRIPTEN_CONFIG_KEY);
+        Path emscriptenDir = Paths.get(emscriptenDirString);
+        Path emscriptenBin = emscriptenDir.resolve(emscriptenBinaryName);
+        return new EmscriptenCommand(Shell.CMD,
+            emscriptenBin.toAbsolutePath().normalize().toString());
+      } else {
+        System.out.println("Please setup emscripten first by activating profile 'setup'");
+      }
+    }
     return new EmscriptenCommand(Shell.CMD, emscripten);
   }
 
