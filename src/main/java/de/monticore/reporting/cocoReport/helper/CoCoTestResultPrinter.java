@@ -63,14 +63,14 @@ public class CoCoTestResultPrinter {
         }
     }
 
-    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean printChildren) {
+    public static void printTestResults(List<CheckCoCoResult> testResults, String path, boolean merge, boolean group) {
         if (testResults.size() == 0) return;
-        int depth = printChildren ? 0 : 1;
+        int depth = group ? 0 : 1;
         if (merge) {
             try {
                 String first = FileUtils.readFileToString(new File(path));
                 first = first.substring(0, first.length() - 3);
-                String str = first + ",\n" + printTestResults(testResults, merge, "", depth);
+                String str = first + ",\n" + printTestResults(testResults, merge, "", depth, !group);
                 FileUtils.writeStringToFile(new File(path),
                         str);
             } catch (IOException e) {
@@ -79,14 +79,14 @@ public class CoCoTestResultPrinter {
         } else {
             try {
                 FileUtils.writeStringToFile(new File(path),
-                        printTestResults(testResults, merge, "", depth));
+                        printTestResults(testResults, merge, "", depth, !group));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth) {
+    public static String printTestResults(List<CheckCoCoResult> testResults, boolean merge, String rootName, int depth, boolean expanded) {
         IndentPrinter ip = new IndentPrinter();
         char c = 160;
         if (!merge)
@@ -109,7 +109,7 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": \"" + testResult.getProject() + "\",");
             ip.println(names[i++] + ": \"" + getDepthImage(testResult, depth) + "\",");
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
-            ip.println(names[i++] + ": \"" + getGithubLink(testResult) + "\",");
+            ip.println(names[i++] + ": \"" + getGithubLink(testResult, expanded) + "\",");
             ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
             ip.println(names[i++] + ": \"" + getVisulisationLink(testResult) + "\",");
             ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
@@ -159,7 +159,7 @@ public class CoCoTestResultPrinter {
         for(ChildElement childElement: testResult.getChildren()){
             childResults.add((CheckCoCoResult) childElement.getChild());
         }
-        return printTestResults(childResults, false, rootName, depth);
+        return printTestResults(childResults, false, rootName, depth, false);
     }
 
     private static String getDepthImage(CheckCoCoResult testResult, int depth){
@@ -202,7 +202,7 @@ public class CoCoTestResultPrinter {
                     "</a>";
     }
 
-    private static String getGithubLink(CheckCoCoResult testResult) {
+    private static String getGithubLink(CheckCoCoResult testResult, boolean expanded) {
         if(testResult.isErrorResult() || testResult.isMainPackage()) return testResult.getModelName() + " (" + testResult.getChildren().size() + ")";
         String ghLink = "https://github.com/" + testResult.getRootFile1().getName() + "/" + testResult.getProject()
                 + "blob/" + testResult.getGithubBranch() + "/"
@@ -211,8 +211,12 @@ public class CoCoTestResultPrinter {
                 .replace("\\","/");
         ghLink = ghLink.replace("\\","/");
 
+        String displayName = testResult.getModelName();
+        if (expanded)
+            displayName = testResult.getProject() + displayName;
+
         String htmlTag = "<a class='ghLink' href='" + ghLink + "' target='_blank' rel='noopener'>"
-                + testResult.getModelName() + "</a>";
+                + displayName + "</a>";
 
 
         return htmlTag;

@@ -7,7 +7,9 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VisualisationHelper {
 
@@ -36,23 +38,35 @@ public class VisualisationHelper {
     }
 
     private static void setChildrenSVGPath(List<? extends SVGInfo> models) {
+        Set<SVGInfo> visited = new HashSet();
         for (SVGInfo model : models) {
-            setChildrenSVGPath(model);
+            setChildrenSVGPath(model, model.getProject() + model.getModelName(), visited);
         }
     }
 
-    private static void setChildrenSVGPath(SVGInfo model) {
+    private static void setChildrenSVGPath(SVGInfo model, String root, Set<SVGInfo> visited) {
         if (model.getSvgPath() != null && !model.getSvgPath().equals("") && model.getChildren().size() > 0) {
+            visited.add(model);
             String svgPathParent = model.getSvgPath().substring(0, model.getSvgPath().lastIndexOf("html"));
             for(ChildElement childElement: model.getChildren()){
                 if(((SVGInfo) childElement.getChild()).getSvgPath() == null || ((SVGInfo) childElement.getChild()).getSvgPath().equals("")) {
                     if(childElement.getChild().getChildren().size() > 0) {
                         String referencedName = childElement.getReferencedName();
                         ((SVGInfo) childElement.getChild()).setSvgPath(svgPathParent + referencedName + ".html");
-                        setChildrenSVGPath((SVGInfo) childElement.getChild());
+                        setChildrenSVGPath((SVGInfo) childElement.getChild(), root, visited);
                     }
                 }
             }
+        } else if(!visited.contains(model)){
+            visited.add(model);
+            if ((model.getSvgPath() == null || model.getSvgPath().equals("")) &&
+                    !(model.getProject() + model.getModelName()).equals(root)){
+                model.addErrorMessage("[INFO] do SVG generation<br>=========================");
+                model.addErrorMessage("[INFO] See at " + root);
+            }
+            if (model.getChildren().size() > 0)
+                for(ChildElement childElement: model.getChildren())
+                    setChildrenSVGPath((SVGInfo) childElement.getChild(), root, visited);
         }
     }
 }
