@@ -12,11 +12,19 @@ import java.util.List;
 //TODO: make GeneratorRosCpp implement GeneratorImpl
 public class RosCppGenImpl implements GeneratorImpl {
     private String generationTargetPath;
+    private GeneratorRosCpp generatorRosCpp;
+
+    public RosCppGenImpl(){
+        generatorRosCpp = new GeneratorRosCpp();
+        generatorRosCpp.setGenerateCMake(true);
+    }
+
+    public void setGeneratorRosCpp(GeneratorRosCpp generatorRosCpp) {
+        this.generatorRosCpp = generatorRosCpp;
+    }
 
     @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
-        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
-        generatorRosCpp.setGenerateCMake(true);
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
         return generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
     }
