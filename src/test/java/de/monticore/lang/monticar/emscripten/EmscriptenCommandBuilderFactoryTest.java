@@ -178,7 +178,7 @@ class EmscriptenCommandBuilderFactoryTest {
           builderFactory.addLibrary(SOME_LIBRARY);
           EmscriptenCommandBuilder builder = builderFactory.getBuilder();
 
-          builder.include(OTHER_LIBRARY);
+          builder.addLibrary(OTHER_LIBRARY);
           assertThat(builder.toString())
               .isEqualTo(String.format("emscripten model.cpp -L\"%s\" -L\"%s\"",
                   SOME_LIBRARY.toString(), OTHER_LIBRARY));
