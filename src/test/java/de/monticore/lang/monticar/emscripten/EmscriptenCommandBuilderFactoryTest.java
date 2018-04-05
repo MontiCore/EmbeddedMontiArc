@@ -19,12 +19,12 @@ class EmscriptenCommandBuilderFactoryTest {
   private static final Optimization OTHER_OPTIMIZATION = Optimization.O3;
   private static final boolean BIND = true;
   private static final boolean OTHER_BIND = false;
-  private static final String STD = "c++11";
-  private static final String OTHER_STD = "c99";
   private static final String OUTPUT = "module.js";
   private static final String OTHER_OUTPUT = "other_module.js";
   private static final Path INCLUDE_LIBRARY = Paths.get("./some_library");
   private static final Path OTHER_INCLUDE_LIBRARY = Paths.get("./other_library");
+  private static final Path SOME_LIBRARY = Paths.get("./lib");
+  private static final Path OTHER_LIBRARY = Paths.get("./some/other/lib");
   private static final Option OPTION = new Option("some_option", true);
   private static final Option OTHER_OPTION = new Option("other_option", false);
   private static final String FLAG = "some_flag";
@@ -53,7 +53,6 @@ class EmscriptenCommandBuilderFactoryTest {
       commandBuilder.setFile(FILE);
       commandBuilder.setOptimization(OPTIMIZATION);
       commandBuilder.setBind(BIND);
-      commandBuilder.setStd(STD);
       commandBuilder.setOutput(OUTPUT);
       commandBuilder.include(INCLUDE_LIBRARY);
       commandBuilder.addOption(OPTION);
@@ -140,17 +139,6 @@ class EmscriptenCommandBuilderFactoryTest {
         }
 
         @Test
-        void setStd() {
-          EmscriptenCommandBuilderFactory builderFactory = new EmscriptenCommandBuilderFactory();
-
-          builderFactory.setStd(STD);
-          EmscriptenCommandBuilder builder = builderFactory.getBuilder();
-
-          assertThatExceptionOfType(UnsupportedOperationException.class)
-              .isThrownBy(() -> builder.setStd(OTHER_STD));
-        }
-
-        @Test
         void setOutput() {
           EmscriptenCommandBuilderFactory builderFactory = new EmscriptenCommandBuilderFactory();
 
@@ -183,6 +171,17 @@ class EmscriptenCommandBuilderFactoryTest {
           assertThat(builder.toString())
               .isEqualTo(String.format("emscripten model.cpp -I\"%s\" -I\"%s\"",
                   INCLUDE_LIBRARY.toString(), OTHER_INCLUDE_LIBRARY));
+        }
+
+        @Test
+        void addLibrary() {
+          builderFactory.addLibrary(SOME_LIBRARY);
+          EmscriptenCommandBuilder builder = builderFactory.getBuilder();
+
+          builder.include(OTHER_LIBRARY);
+          assertThat(builder.toString())
+              .isEqualTo(String.format("emscripten model.cpp -L\"%s\" -L\"%s\"",
+                  SOME_LIBRARY.toString(), OTHER_LIBRARY));
         }
 
         @Test

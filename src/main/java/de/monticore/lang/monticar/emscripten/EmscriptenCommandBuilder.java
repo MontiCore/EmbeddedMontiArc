@@ -20,15 +20,19 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   private Emscripten emscripten;
   private Path file;
   private final List<Path> includes = new ArrayList<>();
+  private final List<Path> libraries = new ArrayList<>();
   private final List<Option> options = new ArrayList<>();
   private final List<String> flags = new ArrayList<>();
   private Optimization optimizationLevel;
   private boolean bind;
-  private String std;
   private String outputFile;
 
-  private static Path relative(Path base, Path other) {
-    return normalize(base).relativize(normalize(other)).normalize();
+  private static Path relativizeIfNotAbsulute(Path base, Path other) {
+    if (!other.isAbsolute()) {
+      return normalize(base).relativize(normalize(other)).normalize();
+    } else {
+      return other;
+    }
   }
 
   private static Path normalize(Path path) {
@@ -38,13 +42,13 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   /**
    * Emscripten must be called inside the directory where the output files are supposed to be
    * placed. The supplied directory will be used to have all paths supplied through other setters
-   * point to the correct path relative to this output directory path.
+   * point to the correct path relative to this output directory path if they are not absolute.
    *
    * @param outputDir directory from which emscripten will be called
    * @return this builder
    */
   public EmscriptenCommandBuilder setReferenceOutputDir(Path outputDir) {
-    this.referenceDir = outputDir;
+    this.referenceDir = requiresNotNull(outputDir);
     return this;
   }
 
@@ -55,7 +59,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @param emscripten emscripten command
    */
   public EmscriptenCommandBuilder setEmscripten(Emscripten emscripten) {
-    this.emscripten = emscripten;
+    this.emscripten = requiresNotNull(emscripten);
     return this;
   }
 
@@ -65,7 +69,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @param file main C++ file
    */
   public EmscriptenCommandBuilder setFile(Path file) {
-    this.file = file;
+    this.file = requiresNotNull(file);
     return this;
   }
 
@@ -78,6 +82,18 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    */
   public EmscriptenCommandBuilder include(Path include) {
     includes.add(requiresNotNull(include));
+    return this;
+  }
+
+  /**
+   * Tells emscripten to include the given path during compilation. The actual command will look
+   * like {@code -L"path"}. Use {@link #addFlag(String)} to define the name of the library.
+   *
+   * @param library directory with a library to be included during compilation
+   * @return this builder
+   */
+  public EmscriptenCommandBuilder addLibrary(Path library) {
+    libraries.add(requiresNotNull(library));
     return this;
   }
 
@@ -112,7 +128,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @see Optimization
    */
   public EmscriptenCommandBuilder setOptimization(Optimization level) {
-    this.optimizationLevel = level;
+    this.optimizationLevel = requiresNotNull(level);
     return this;
   }
 
@@ -129,18 +145,6 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
   }
 
   /**
-   * Specifies which compiler to use, e.g. {@code c++11}. The actual command will look like
-   * {@code -std="std"}.
-   *
-   * @param std C/C++ compiler to be used for compilation
-   * @return this builder
-   */
-  public EmscriptenCommandBuilder setStd(String std) {
-    this.std = std;
-    return this;
-  }
-
-  /**
    * Specifies the name of the output file. This <b>cannot</b> be a path, it has to be a filename
    * with a filename extension. E.g. "module.js".
    * Therefore, the shell has to be opened at the designated target output path.
@@ -149,7 +153,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
    * @return this builder
    */
   public EmscriptenCommandBuilder setOutput(String outputFile) {
-    this.outputFile = outputFile;
+    this.outputFile = requiresNotNull(outputFile);
     return this;
   }
 
@@ -176,6 +180,7 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     options.add(file());
     options.addAll(outputFile());
     options.addAll(includes());
+    options.addAll(libraries());
     options.addAll(options());
     options.addAll(flags());
     if (optimizationLevel != null) {
@@ -183,9 +188,6 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
     }
     if (bind) {
       options.add("--bind");
-    }
-    if (std != null) {
-      options.add("-std=" + std);
     }
     String[] command = emscripten.getCommand(options.toArray(new String[]{}));
 
@@ -198,6 +200,45 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
       return "";
     }
     return toList().stream().collect(Collectors.joining(" "));
+  }
+
+  private String file() {
+    return referenceDir != null ? relativizeIfNotAbsulute(referenceDir, file).toString()
+        : file.toString();
+  }
+
+  private List<String> outputFile() {
+    return Arrays.asList(outputFile != null ? new String[]{"-o", outputFile} : new String[]{});
+  }
+
+  private void checkParameters() {
+    requiresNotNull(emscripten);
+    requiresNotNull(file);
+  }
+
+  private List<String> includes() {
+    return includes.stream()
+        .map(path -> referenceDir != null ? relativizeIfNotAbsulute(referenceDir, path) : path)
+        .map(path -> "-I\"" + path.toString() + "\"").collect(Collectors.toList());
+  }
+
+  private List<String> libraries() {
+    return libraries.stream()
+        .map(path -> referenceDir != null ? relativizeIfNotAbsulute(referenceDir, path) : path)
+        .map(path -> "-L\"" + path.toString() + "\"").collect(Collectors.toList());
+  }
+
+  private List<String> options() {
+    List<String> res = new ArrayList<>();
+    options.stream().map(Option::toString).forEach(s -> {
+      res.add("-s");
+      res.add(s);
+    });
+    return res;
+  }
+
+  private List<String> flags() {
+    return flags.stream().map(flag -> '-' + flag).collect(Collectors.toList());
   }
 
   @Override
@@ -214,54 +255,16 @@ public class EmscriptenCommandBuilder implements CommandBuilder {
         Objects.equals(emscripten, that.emscripten) &&
         Objects.equals(file, that.file) &&
         Objects.equals(includes, that.includes) &&
+        Objects.equals(libraries, that.libraries) &&
         Objects.equals(options, that.options) &&
         Objects.equals(flags, that.flags) &&
         optimizationLevel == that.optimizationLevel &&
-        Objects.equals(std, that.std) &&
         Objects.equals(outputFile, that.outputFile);
   }
 
   @Override
   public final int hashCode() {
-    return Objects
-        .hash(referenceDir, emscripten, file, includes, options, flags, optimizationLevel, bind,
-            std, outputFile);
-  }
-
-  private List<String> emscripten() {
-    return Arrays.asList(emscripten.getCommand());
-  }
-
-  private String file() {
-    return referenceDir != null ? relative(referenceDir, file).toString()
-        : file.toString();
-  }
-
-  private List<String> outputFile() {
-    return Arrays.asList(outputFile != null ? new String[]{"-o", outputFile} : new String[]{});
-  }
-
-  private void checkParameters() {
-    requiresNotNull(emscripten);
-    requiresNotNull(file);
-  }
-
-  private List<String> includes() {
-    return includes.stream()
-        .map(path -> referenceDir != null ? relative(referenceDir, path) : path)
-        .map(path -> "-I\"" + path.toString() + "\"").collect(Collectors.toList());
-  }
-
-  private List<String> options() {
-    List<String> res = new ArrayList<>();
-    options.stream().map(Option::toString).forEach(s -> {
-      res.add("-s");
-      res.add(s);
-    });
-    return res;
-  }
-
-  private List<String> flags() {
-    return flags.stream().map(flag -> '-' + flag).collect(Collectors.toList());
+    return Objects.hash(referenceDir, emscripten, file, includes, libraries, options, flags,
+        optimizationLevel, bind, outputFile);
   }
 }
