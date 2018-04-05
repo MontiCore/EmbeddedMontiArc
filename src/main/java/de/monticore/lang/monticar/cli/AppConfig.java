@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Profile;
@@ -72,8 +73,25 @@ public class AppConfig {
   @Value("#{'${include:}' ?: {}}")
   private Path[] includes;
 
+  @Value("#{'${library:}' ?: {}}")
+  private Path[] libraries;
+
+  @Value("${option:WASM=1, LINKABLE=1, EXPORT_ALL=1, ALLOW_MEMORY_GROWTH=1}")
+  private String[] options;
+
+  @Value("${flag:std=c++11}")
+  private String[] flags;
+
+  @Value("${bind:true}")
+  private boolean bind;
+
   @Value("#{systemProperties['os.name'].toLowerCase()}")
   private String osName;
+
+  @Bean
+  public OptionConverter optionConverter() {
+    return new OptionConverter();
+  }
 
   @Bean
   public ExpandedComponentInstanceSymbol model(TaggingResolver taggingResolver) {
@@ -86,34 +104,39 @@ public class AppConfig {
   }
 
   @Bean
-  public Template cppTemplate(TemplateLoader loader) throws IOException {
-    return new TemplateFactory(loader).getTemplate(CPP_TEMPLATE_NAME);
+  public Template cppTemplate(TemplateLoader templateLoader) throws IOException {
+    return new TemplateFactory(templateLoader).getTemplate(CPP_TEMPLATE_NAME);
   }
 
   @Bean
-  public Template jsTemplate(TemplateLoader loader) throws IOException {
-    return new TemplateFactory(loader).getTemplate(JS_TEMPLATE_NAME);
+  public Template jsTemplate(TemplateLoader templateLoader) throws IOException {
+    return new TemplateFactory(templateLoader).getTemplate(JS_TEMPLATE_NAME);
   }
 
   @Bean
-  public Template htmlTemplate(TemplateLoader loader) throws IOException {
-    return new TemplateFactory(loader).getTemplate(HTML_TEMPLATE_NAME);
+  public Template htmlTemplate(TemplateLoader templateLoader) throws IOException {
+    return new TemplateFactory(templateLoader).getTemplate(HTML_TEMPLATE_NAME);
   }
 
   @Bean
-  public TemplateLoader templateLoader() throws IOException {
+  @Conditional(JarCondition.class)
+  public TemplateLoader jarTemplateLoader() throws IOException {
     MultiTemplateLoader mtl;
-    if (runsInJar()) {
-      ClassTemplateLoader ctl1 = new ClassTemplateLoader(AppConfig.class, JAR_CPP_TEMPLATE_DIR);
-      ClassTemplateLoader ctl2 = new ClassTemplateLoader(AppConfig.class, JAR_JS_TEMPLATE_DIR);
-      ClassTemplateLoader ctl3 = new ClassTemplateLoader(AppConfig.class, JAR_HTML_TEMPLATE_DIR);
-      mtl = new MultiTemplateLoader(new TemplateLoader[]{ctl1, ctl2, ctl3});
-    } else {
-      FileTemplateLoader ftl1 = new FileTemplateLoader(REGULAR_CPP_TEMPLATE_DIR.toFile());
-      FileTemplateLoader ftl2 = new FileTemplateLoader(REGULAR_JS_TEMPLATE_DIR.toFile());
-      FileTemplateLoader ftl3 = new FileTemplateLoader(REGULAR_HTML_TEMPLATE_DIR.toFile());
-      mtl = new MultiTemplateLoader(new TemplateLoader[]{ftl1, ftl2, ftl3});
-    }
+    ClassTemplateLoader ctl1 = new ClassTemplateLoader(AppConfig.class, JAR_CPP_TEMPLATE_DIR);
+    ClassTemplateLoader ctl2 = new ClassTemplateLoader(AppConfig.class, JAR_JS_TEMPLATE_DIR);
+    ClassTemplateLoader ctl3 = new ClassTemplateLoader(AppConfig.class, JAR_HTML_TEMPLATE_DIR);
+    mtl = new MultiTemplateLoader(new TemplateLoader[]{ctl1, ctl2, ctl3});
+    return mtl;
+  }
+
+  @Bean
+  @Conditional(DevCondition.class)
+  public TemplateLoader devTemplateLoader() throws IOException {
+    MultiTemplateLoader mtl;
+    FileTemplateLoader ftl1 = new FileTemplateLoader(REGULAR_CPP_TEMPLATE_DIR.toFile());
+    FileTemplateLoader ftl2 = new FileTemplateLoader(REGULAR_JS_TEMPLATE_DIR.toFile());
+    FileTemplateLoader ftl3 = new FileTemplateLoader(REGULAR_HTML_TEMPLATE_DIR.toFile());
+    mtl = new MultiTemplateLoader(new TemplateLoader[]{ftl1, ftl2, ftl3});
     return mtl;
   }
 
@@ -123,18 +146,22 @@ public class AppConfig {
   }
 
   @Bean
-  public EmscriptenCommandBuilderFactory commandBuilderFactory() {
+  public EmscriptenCommandBuilderFactory commandBuilderFactory(Option[] options) {
     EmscriptenCommandBuilderFactory commandBuilderFactory = new EmscriptenCommandBuilderFactory();
     commandBuilderFactory.setEmscripten(emscripten());
     for (Path include : includes) {
       commandBuilderFactory.include(include);
     }
-    commandBuilderFactory.setStd("c++11");
-    commandBuilderFactory.addOption(new Option("WASM", true));
-    commandBuilderFactory.addOption(new Option("LINKABLE", true));
-    commandBuilderFactory.addOption(new Option("EXPORT_ALL", true));
-    commandBuilderFactory.addOption(new Option("ALLOW_MEMORY_GROWTH", true));
-    commandBuilderFactory.setBind(true);
+    for (Path library : libraries) {
+      commandBuilderFactory.addLibrary(library);
+    }
+    for (Option option : options) {
+      commandBuilderFactory.addOption(option);
+    }
+    for (String flag : flags) {
+      commandBuilderFactory.addFlag(flag);
+    }
+    commandBuilderFactory.setBind(bind);
     return commandBuilderFactory;
   }
 
@@ -164,8 +191,13 @@ public class AppConfig {
     return target != null ? target : webDir;
   }
 
-  private boolean runsInJar() {
-    String classJar = AppConfig.class.getResource("AppConfig.class").toString();
-    return classJar.startsWith("jar:");
+  @Bean
+  public Option[] options() {
+    OptionConverter optionConverter = optionConverter();
+    Option[] optionArray = new Option[options.length];
+    for (int i = 0; i < options.length; i++) {
+      optionArray[i] = optionConverter.convert(options[i]);
+    }
+    return optionArray;
   }
 }

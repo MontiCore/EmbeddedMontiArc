@@ -29,6 +29,8 @@ class EmscriptenCommandBuilderTest {
   private static final String EMPTY_STRING = "";
   private static final String SOME_FLAG = "DARMA_DONT_USE_WRAPPER";
   private static final String EMSCRIPTEN = "emscripten";
+  private static final Path SOME_LIBRARY = Paths.get("./lib");
+  private static final Path OTHER_LIBRARY = Paths.get("./some/other/lib");
 
   private Emscripten emscripten;
 
@@ -50,6 +52,118 @@ class EmscriptenCommandBuilderTest {
   void equalsShouldAdhereToSpecification() {
     EqualsVerifier.forClass(EmscriptenCommandBuilder.class).suppress(Warning.NONFINAL_FIELDS)
         .verify();
+  }
+
+  @Nested
+  class SetEmscripten {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenEmscriptenIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.setEmscripten(null));
+      }
+    }
+  }
+
+  @Nested
+  class SetFile {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenFileIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.setFile(null));
+      }
+    }
+  }
+
+  @Nested
+  class SetOptimization {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenOptimizationIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.setOptimization(null));
+      }
+    }
+  }
+
+  @Nested
+  class SetOutput {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenOutputIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.setOutput(null));
+      }
+    }
+  }
+
+  @Nested
+  class SetReferenceOutputDir {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenEmscriptenIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.setReferenceOutputDir(null));
+      }
+    }
+  }
+
+  @Nested
+  class Include {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenIncludeIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.include(null));
+      }
+    }
+  }
+
+  @Nested
+  class AddLibrary {
+
+    @Nested
+    class ShouldThrowPreconditionViolationException {
+
+      @Test
+      void whenLibraryIsNull() {
+        EmscriptenCommandBuilder builder = new EmscriptenCommandBuilder();
+
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> builder.addLibrary(null));
+      }
+    }
   }
 
   @Nested
@@ -144,6 +258,28 @@ class EmscriptenCommandBuilderTest {
       }
 
       @Test
+      void whenCommandWithLibrary() {
+        builder.addLibrary(SOME_LIBRARY);
+
+        assertThat(builder.toList())
+            .isEqualTo(
+                listof(EMSCRIPTEN, "model.cpp",
+                    "-L\"" + SOME_LIBRARY.toString() + "\""));
+      }
+
+      @Test
+      void whenCommandWithMultipleLibraries() {
+        builder.addLibrary(SOME_LIBRARY);
+        builder.addLibrary(OTHER_LIBRARY);
+
+        assertThat(builder.toList())
+            .isEqualTo(
+                listof(EMSCRIPTEN, "model.cpp",
+                    "-L\"" + SOME_LIBRARY.toString() + "\"",
+                    "-L\"" + OTHER_LIBRARY.toString() + "\""));
+      }
+
+      @Test
       void whenCommandWithFlag() {
         builder.addFlag("DARMA_DONT_USE_WRAPPER");
 
@@ -169,13 +305,16 @@ class EmscriptenCommandBuilderTest {
       @Test
       void whenFullCommand() {
         builder.include(INCLUDE_ARMADILLO);
+        builder.addLibrary(SOME_LIBRARY);
         builder.addOption(WASM_OPTION);
         builder.setOptimization(SOME_LEVEL);
         builder.setBind(true);
 
         assertThat(builder.toList())
             .isEqualTo(listof(EMSCRIPTEN, "model.cpp",
-                "-I\"" + INCLUDE_ARMADILLO.toString() + "\"", "-s", "WASM=1", "-O3", "--bind"));
+                "-I\"" + INCLUDE_ARMADILLO.toString() + "\"",
+                "-L\"" + SOME_LIBRARY.toString() + "\"",
+                "-s", "WASM=1", "-O3", "--bind"));
       }
 
       @Test
@@ -276,6 +415,25 @@ class EmscriptenCommandBuilderTest {
       }
 
       @Test
+      void whenCommandWithLibrary() {
+        builder.addLibrary(SOME_LIBRARY);
+
+        assertThat(builder.toString())
+            .isEqualTo(EMSCRIPTEN + " model.cpp -L\"" + SOME_LIBRARY.toString() + "\"");
+      }
+
+      @Test
+      void whenCommandWithMultipleLibraries() {
+        builder.addLibrary(SOME_LIBRARY);
+        builder.addLibrary(OTHER_LIBRARY);
+
+        assertThat(builder.toString())
+            .isEqualTo(EMSCRIPTEN + " model.cpp " +
+                "-L\"" + SOME_LIBRARY.toString() + "\" " +
+                "-L\"" + OTHER_LIBRARY.toString() + "\"");
+      }
+
+      @Test
       void whenCommandWithFlag() {
         builder.addFlag(SOME_FLAG);
 
@@ -300,10 +458,10 @@ class EmscriptenCommandBuilderTest {
       @Test
       void whenFullCommand() {
         builder.include(INCLUDE_ARMADILLO);
+        builder.addLibrary(SOME_LIBRARY);
         builder.addOption(WASM_OPTION);
         builder.setOptimization(SOME_LEVEL);
         builder.setBind(true);
-        builder.setStd("c++11");
         builder.setOutput("module.js");
         builder.addFlag(SOME_FLAG);
 
@@ -311,7 +469,8 @@ class EmscriptenCommandBuilderTest {
             .isEqualTo(
                 EMSCRIPTEN + " model.cpp -o module.js "
                     + "-I\"" + INCLUDE_ARMADILLO.toString() + "\" "
-                    + "-s WASM=1 -DARMA_DONT_USE_WRAPPER -O3 --bind -std=c++11");
+                    + "-L\"" + SOME_LIBRARY.toString() + "\" "
+                    + "-s WASM=1 -DARMA_DONT_USE_WRAPPER -O3 --bind");
       }
     }
   }

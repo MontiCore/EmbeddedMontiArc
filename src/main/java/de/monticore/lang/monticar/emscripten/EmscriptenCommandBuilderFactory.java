@@ -22,11 +22,11 @@ public class EmscriptenCommandBuilderFactory {
   private Emscripten emscripten;
   private Path file;
   private List<Path> includes = new ArrayList<>();
+  private final List<Path> libraries = new ArrayList<>();
   private List<Option> options = new ArrayList<>();
   private List<String> flags = new ArrayList<>();
   private Optimization optimizationLevel;
   private Boolean bind;
-  private String std;
   private String outputFile;
 
   /**
@@ -62,6 +62,18 @@ public class EmscriptenCommandBuilderFactory {
    */
   public EmscriptenCommandBuilderFactory include(Path include) {
     includes.add(include);
+    return this;
+  }
+
+  /**
+   * Tells emscripten to include the given path during compilation. The actual command will look
+   * like {@code -L"path"}. Use {@link #addFlag(String)} to define the name of the library.
+   *
+   * @param library directory with a library to be included during compilation
+   * @return this builder
+   */
+  public EmscriptenCommandBuilderFactory addLibrary(Path library) {
+    libraries.add(library);
     return this;
   }
 
@@ -114,18 +126,6 @@ public class EmscriptenCommandBuilderFactory {
   }
 
   /**
-   * Specifies which default compiler to use, e.g. {@code c++11}. The actual
-   * command will look like {@code -std="std"}.
-   *
-   * @param std default C/C++ compiler to be used for compilation
-   * @return this factory
-   */
-  public EmscriptenCommandBuilderFactory setStd(String std) {
-    this.std = std;
-    return this;
-  }
-
-  /**
    * Specifies the default name of the output file. This <b>cannot</b> be a
    * path, it has to be a filename with a filename extension. E.g. "module.js".
    * Therefore, the shell has to be opened at the designated target output
@@ -151,8 +151,8 @@ public class EmscriptenCommandBuilderFactory {
    * @return command builder with default values
    */
   public EmscriptenCommandBuilder getBuilder() {
-    return new DefaultValueEmscriptenCommandBuilder(emscripten, file, includes, options,
-        optimizationLevel, bind, std, outputFile);
+    return new DefaultValueEmscriptenCommandBuilder(emscripten, file, includes, libraries, options,
+        optimizationLevel, bind, outputFile);
   }
 
   private class DefaultValueEmscriptenCommandBuilder extends EmscriptenCommandBuilder {
@@ -161,23 +161,21 @@ public class EmscriptenCommandBuilderFactory {
     private final boolean fileDefault;
     private final boolean optimizationDefault;
     private final boolean bindDefault;
-    private final boolean stdDefault;
     private final boolean outputDefault;
 
     DefaultValueEmscriptenCommandBuilder(
         Emscripten emscripten,
         Path file,
         List<Path> includes,
+        List<Path> libraries,
         List<Option> options,
         Optimization optimizationLevel,
         Boolean bind,
-        String std,
         String outputFile) {
       emscriptenDefault = emscripten != null;
       fileDefault = file != null;
       optimizationDefault = optimizationLevel != null;
       bindDefault = bind != null;
-      stdDefault = std != null;
       outputDefault = outputFile != null;
 
       if (emscriptenDefault) {
@@ -192,15 +190,15 @@ public class EmscriptenCommandBuilderFactory {
       if (bindDefault) {
         super.setBind(bind);
       }
-      if (stdDefault) {
-        super.setStd(std);
-      }
       if (outputDefault) {
         super.setOutput(outputFile);
       }
 
       if (includes != null) {
         includes.forEach(super::include);
+      }
+      if (libraries != null) {
+        libraries.forEach(super::addLibrary);
       }
       if (options != null) {
         options.forEach(super::addOption);
@@ -269,22 +267,6 @@ public class EmscriptenCommandBuilderFactory {
         throw new UnsupportedOperationException("Default parameter cannot be changed.");
       }
       return super.setBind(bind);
-    }
-
-    /**
-     * Specifies which compiler to use, e.g. {@code c++11}. The actual command will look like
-     * {@code -std="std"}.
-     *
-     * @param std C/C++ compiler to be used for compilation
-     * @return this builder
-     * @throws UnsupportedOperationException if a default value was specified
-     */
-    @Override
-    public EmscriptenCommandBuilder setStd(String std) {
-      if (stdDefault) {
-        throw new UnsupportedOperationException("Default parameter cannot be changed.");
-      }
-      return super.setStd(std);
     }
 
     /**

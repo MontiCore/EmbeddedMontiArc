@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
 
 @Configuration
 @ComponentScan
@@ -19,20 +20,10 @@ public class App implements CommandLineRunner {
 
   private AutoSetup autoSetup;
 
-  @Autowired(required = false)
-  public App(AutoSetup autoSetup) {
-    this.autoSetup = autoSetup;
-  }
-
-  @Autowired(required = false)
-  public App(EmamWasmSingleDirectoryCompiler compiler, ExpandedComponentInstanceSymbol model) {
-    this.compiler = compiler;
-    this.model = model;
-  }
-
-  @Autowired(required = false)
-  public App(AutoSetup autoSetup,
-      EmamWasmSingleDirectoryCompiler compiler, ExpandedComponentInstanceSymbol model) {
+  @Autowired
+  public App(@Nullable AutoSetup autoSetup,
+      @Nullable EmamWasmSingleDirectoryCompiler compiler,
+      @Nullable ExpandedComponentInstanceSymbol model) {
     this.autoSetup = autoSetup;
     this.compiler = compiler;
     this.model = model;
@@ -46,6 +37,11 @@ public class App implements CommandLineRunner {
   public void run(String... args) {
     Log.enableFailQuick(false);
 
+    if (autoSetup == null && (compiler == null || model == null)) {
+      System.out.println("Consider specifying a spring profile");
+      return;
+    }
+
     if (autoSetup != null) {
       autoSetup.setup();
     }
@@ -53,5 +49,4 @@ public class App implements CommandLineRunner {
       compiler.emam2wasm(model);
     }
   }
-
 }
