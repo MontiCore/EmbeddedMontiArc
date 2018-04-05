@@ -146,9 +146,10 @@ public class AppConfig {
   }
 
   @Bean
-  public EmscriptenCommandBuilderFactory commandBuilderFactory(Option[] options) {
+  public EmscriptenCommandBuilderFactory commandBuilderFactory(Emscripten emscripten,
+      Option[] options) {
     EmscriptenCommandBuilderFactory commandBuilderFactory = new EmscriptenCommandBuilderFactory();
-    commandBuilderFactory.setEmscripten(emscripten());
+    commandBuilderFactory.setEmscripten(emscripten);
     for (Path include : includes) {
       commandBuilderFactory.include(include);
     }
@@ -166,9 +167,15 @@ public class AppConfig {
   }
 
   @Bean
-  public Emscripten emscripten() {
-    Shell shell = osName.startsWith(WINDOWS) ? Shell.CMD : Shell.BASH;
-    return new EmscriptenCommand(shell, emscripten);
+  @Conditional(OtherOSCondition.class)
+  public Emscripten emscriptenOther() {
+    return new EmscriptenCommand(Shell.BASH, emscripten);
+  }
+
+  @Bean
+  @Conditional(WindowsCondition.class)
+  public Emscripten emscriptenWindows() {
+    return new EmscriptenCommand(Shell.CMD, emscripten);
   }
 
   @Bean
