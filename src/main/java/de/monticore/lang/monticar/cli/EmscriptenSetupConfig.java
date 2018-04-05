@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -52,26 +53,26 @@ public class EmscriptenSetupConfig {
   @Value("${emscripten.execute.binary.name:emcc.bat}")
   private String emcc;
 
-  @Profile("windows")
   @Bean
+  @Conditional(WindowsCondition.class)
   public de.monticore.lang.monticar.setup.Configuration emscriptenConfigurationWindows() {
     return emscriptenWindowsConfig();
   }
 
-  @Profile("other")
   @Bean
+  @Conditional(OtherOSCondition.class)
   public de.monticore.lang.monticar.setup.Configuration emscriptenConfigurationOther() {
     return emscriptenLinuxConfig();
   }
 
-  @Profile("windows")
   @Bean
+  @Conditional(WindowsCondition.class)
   public Supplier<String> emscriptenCommandWindowsSupplier() {
     return this::emscriptenCommandWindows;
   }
 
-  @Profile("other")
   @Bean
+  @Conditional(OtherOSCondition.class)
   public Supplier<String> emscriptenCommandOtherSupplier() {
     return this::emscriptenCommandOther;
   }
