@@ -345,10 +345,7 @@ public class GeneratorCPP implements Generator {
     }
 
     private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
-        AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
-        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
-        String fileContents = AllTemplates.generateAutopilotAdapter(vm);
-        return new FileContent(fileContents, "AutopilotAdapter.cpp");
+        return generateWrapper(componentSymbol, "AutopilotAdapter.cpp");
     }
 
     private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
@@ -366,9 +363,13 @@ public class GeneratorCPP implements Generator {
     }
 
     private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
+        return generateWrapper(componentSymbol, name);
+    }
+    
+     private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
         ServerWrapperViewModel vm = new ServerWrapperViewModel();
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateServerWrapper(vm);
-        return new FileContent(fileContents, "server.cc");
+        return new FileContent(fileContents, name);
     }
 }
