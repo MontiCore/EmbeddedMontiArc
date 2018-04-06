@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.emscripten;
 
 public enum Shell {
   CMD("cmd", "/C"),
+  POWERSHELL("powershell", "-command"),
   BASH("/bin/bash", "-c"),
   SH("/bin/sh", "-c");
 
