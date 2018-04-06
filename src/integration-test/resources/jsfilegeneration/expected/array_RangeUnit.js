@@ -28,13 +28,13 @@ function setInRangeUnit(_inRangeUnit) {
     }
 
     //check dimension
-    var dim = math.matrix([1]);
+    var dim = math.matrix([4]);
     if (!math.deepEqual(value.size(), dim)) {
         throw "Input has dimension " + value.size() + " but expected " + dim;
     }
 
     var array = [];
-    for (var i0 = 0; i0 < 1; i0++) {
+    for (var i0 = 0; i0 < 4; i0++) {
 
         var e = value.get([i0]);
 

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.measure.unit.Unit;
 import org.jscience.mathematics.number.Rational;
 
 public class JsGenerator {
@@ -40,7 +41,7 @@ public class JsGenerator {
 
   static String getUnit(PortSymbol port) {
     Optional<ASTRange> rangeOpt = getRange(port);
-    String unit = rangeOpt.map(astRange -> astRange.getUnit().toString()).orElse("");
+    String unit = rangeOpt.map(astRange -> format(astRange.getUnit())).orElse("");
     return unit.isEmpty() ? null : unit;
   }
 
@@ -48,8 +49,10 @@ public class JsGenerator {
     Optional<ASTRange> rangeOpt = getRange(port);
     if (rangeOpt.isPresent()) {
       ASTRange range = rangeOpt.get();
-      String bound = join(" ", getLowerBoundValue(range), getLowerBoundUnit(range));
-      return bound.isEmpty() ? null : bound;
+      if (!range.hasNoLowerLimit()) {
+        String bound = join(" ", getLowerBoundValue(range), getLowerBoundUnit(range));
+        return bound.isEmpty() ? null : bound;
+      }
     }
     return null;
   }
@@ -58,22 +61,24 @@ public class JsGenerator {
     Optional<ASTRange> rangeOpt = getRange(port);
     if (rangeOpt.isPresent()) {
       ASTRange range = rangeOpt.get();
-      String bound = join(" ", getUpperBoundValue(range), getUpperBoundUnit(range));
-      return bound.isEmpty() ? null : bound;
+      if (!range.hasNoUpperLimit()) {
+        String bound = join(" ", getUpperBoundValue(range), getUpperBoundUnit(range));
+        return bound.isEmpty() ? null : bound;
+      }
     }
     return null;
   }
 
   private static String getLowerBoundUnit(ASTRange range) {
     if (range.hasStartUnit()) {
-      return range.getStartUnit().toString();
+      return format(range.getStartUnit());
     }
     return "";
   }
 
   private static String getUpperBoundUnit(ASTRange range) {
     if (range.hasEndUnit()) {
-      return range.getEndUnit().toString();
+      return format(range.getEndUnit());
     }
     return "";
   }
@@ -165,12 +170,21 @@ public class JsGenerator {
     return Arrays.stream(elements).filter(s -> !s.isEmpty()).collect(Collectors.joining(delimiter));
   }
 
+  private static String format(Unit<?> unit) {
+    return unit.toString()
+        .replaceAll("²", "^2")
+        .replaceAll("³", "^3")
+        .replaceAll("°", "deg")
+        .replace('µ', 'u')
+        .replace('·', '*');
+  }
+
   public void generate(ExpandedComponentInstanceSymbol symbol)
       throws IOException, TemplateException {
     Collection<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
     Collection<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
     List<Getter> getters = produceGetters(outports);
-    List<Setter> setters = produceSetters(inports);
+    List<Setter> setters = produceSetters(inports, symbol.getIncomingPorts());
 
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("getters", getters);
@@ -192,7 +206,8 @@ public class JsGenerator {
     return getters;
   }
 
-  private List<Setter> produceSetters(Collection<PortSymbol> incomingPorts) {
+  private List<Setter> produceSetters(Collection<PortSymbol> incomingPorts,
+      Collection<PortSymbol> rawIncomingPorts) {
     List<Setter> setters = new ArrayList<>();
     for (PortSymbol port : incomingPorts) {
       Setter setter = new Setter();
@@ -200,7 +215,7 @@ public class JsGenerator {
       setter.setMethodName(methodName);
       setter.setParameterName('_' + port.getNameWithoutArrayBracketPart());
       setter.setDelegateMethodName(methodName);
-      setter.setDimension(getDimension(incomingPorts, port));
+      setter.setDimension(getDimension(rawIncomingPorts, port));
       setter.setUnit(getUnit(port));
       setter.setLowerBound(getLowerBound(port));
       setter.setUpperBound(getUpperBound(port));
