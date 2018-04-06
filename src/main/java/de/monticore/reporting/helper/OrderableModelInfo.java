@@ -15,6 +15,7 @@ public abstract class OrderableModelInfo extends CommonModelInfo {
     private String project = "";
     private List<ChildElement> children = new LinkedList<>();
     private List<OrderableModelInfo> parents = new LinkedList<>();
+    private boolean isAtomic = true;
 
     private boolean errorResult = false;
     private boolean mainPackage = false;
@@ -84,5 +85,13 @@ public abstract class OrderableModelInfo extends CommonModelInfo {
     public void setRootFile1(File rootFile) {
         this.rootFile = rootFile;
         this.rootName = rootFile.getName();
+    }
+
+    public boolean isAtomic() {
+        return isAtomic;
+    }
+
+    public void setAtomic(boolean atomic) {
+        isAtomic = atomic;
     }
 }

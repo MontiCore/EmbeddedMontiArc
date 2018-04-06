@@ -59,6 +59,8 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                 for (ASTElement element : ast.getBody().getElements()) {
                     if (element instanceof ASTSubComponent) {
                         if (((ASTSubComponent) element).getInstances().size() > 0) {
+                            testResult.setAtomic(true);
+
                             ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
                             ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
                             ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
@@ -89,7 +91,7 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                 }
 
                 if(mainPackage == null){
-                    mainPackage = "FailedToFindMainPackage";
+                    mainPackage = "No Package";
                 }
                 else if(mainPackage.equals(""))
                     mainPackage = modelName.substring(1).substring(modelName.substring(1).indexOf("."));
@@ -111,7 +113,8 @@ public class OrderTestResults <T extends OrderableModelInfo>{
             if (testResult.getResolved() != 1) continue;
             if (testResult.getParents().size() == 0 && testResult != notParsed && testResult != notResolved)
                 getHasNoParentModels().add(testResult);
-            if (testResult.getParents().size() == 0 && testResult.getChildren().size() > 0 && testResult != notParsed && testResult != notResolved)
+            if (testResult.getParents().size() == 0 && (testResult.getChildren().size() > 0 || !testResult.isAtomic())
+                    && testResult != notParsed && testResult != notResolved)
                 getRootModels().add(testResult);
         }
 
