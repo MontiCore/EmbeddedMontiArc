@@ -81,9 +81,17 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                 String modelName = testResult.getModelName();
                 if(modelName.startsWith("."))
                     modelName = modelName.substring(1);
-                String mainPackage = modelName.substring(0,modelName.indexOf("."));
+                String mainPackage = null;
+                try {
+                    mainPackage = modelName.substring(0,modelName.indexOf("."));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                if(mainPackage.equals(""))
+                if(mainPackage == null){
+                    mainPackage = "FailedToFindMainPackage";
+                }
+                else if(mainPackage.equals(""))
                     mainPackage = modelName.substring(1).substring(modelName.substring(1).indexOf("."));
 
                 if(mainPackages.get(testResult.getModelPath()) == null)
