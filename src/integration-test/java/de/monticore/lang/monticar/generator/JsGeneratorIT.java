@@ -52,7 +52,7 @@ public class JsGeneratorIT {
 
   @ParameterizedTest
   @ValueSource(strings = {
-      "noPorts",
+      "noPorts", "caretSymbol",
       "scalar_NoRangeNoUnit", "scalar_RangeNoUnit", "scalar_RangeUnit",
       "array_NoRangeNoUnit", "array_RangeNoUnit", "array_RangeUnit",
       "rowVector_NoRangeNoUnit", "rowVector_RangeNoUnit", "rowVector_RangeUnit",
