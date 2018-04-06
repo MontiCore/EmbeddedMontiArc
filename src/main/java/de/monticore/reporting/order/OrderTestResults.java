@@ -58,8 +58,8 @@ public class OrderTestResults <T extends OrderableModelInfo>{
 
                 for (ASTElement element : ast.getBody().getElements()) {
                     if (element instanceof ASTSubComponent) {
+                        testResult.setAtomic(false);
                         if (((ASTSubComponent) element).getInstances().size() > 0) {
-                            testResult.setAtomic(true);
 
                             ComponentInstanceSymbol instanceSymbol = (ComponentInstanceSymbol) element.getSymbol().get();
                             ComponentSymbolReference symbolReference = instanceSymbol.getComponentType();
