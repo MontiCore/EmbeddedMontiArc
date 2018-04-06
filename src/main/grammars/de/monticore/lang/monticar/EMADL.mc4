@@ -1,7 +1,8 @@
 package de.monticore.lang.monticar;
 
 grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
-                      de.monticore.lang.monticar.CNNArch{
+                      de.monticore.lang.monticar.CNNArch,
+                      de.monticore.lang.monticar.CNNTrain{
 
     EMADLCompilationUnit = EMACompilationUnit;
 

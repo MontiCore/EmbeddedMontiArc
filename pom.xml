@@ -45,6 +45,7 @@
         <Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <CNNArch.version>0.2.0-SNAPSHOT</CNNArch.version>
+        <CNNTrain.version>0.2.0-SNAPSHOT</CNNTrain.version>
         <Math.version>0.0.11-SNAPSHOT</Math.version>
         <Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
         <embedded-montiarc-math-generator>0.0.7-SNAPSHOT</embedded-montiarc-math-generator>
@@ -215,6 +216,20 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>cnn-arch</artifactId>
             <version>${CNNArch.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnn-train</artifactId>
+            <version>${CNNTrain.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnn-train</artifactId>
+            <version>${CNNTrain.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
