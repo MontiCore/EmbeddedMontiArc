@@ -5,6 +5,8 @@ import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class WasmStep {
 
+  private static final Logger logger = LoggerFactory.getLogger(WasmStep.class);
   private final EmscriptenCommandBuilderFactory commandBuilderFactory;
   private final Path wasmDir;
   private final WasmNameProvider nameProvider;
@@ -68,6 +71,7 @@ public class WasmStep {
     pb.inheritIO();
 
     try {
+      logger.info("Compiling C++ to WASM using command: " + commandBuilder.toString());
       int returnCode = pb.start().waitFor();
       if (returnCode != 0) {
         throw new WasmCompilerException("Compiling to WebAssembly failed with code " + returnCode);
