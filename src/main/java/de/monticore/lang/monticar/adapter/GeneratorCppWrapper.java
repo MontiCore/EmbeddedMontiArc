@@ -33,12 +33,18 @@ public class GeneratorCppWrapper {
     generator.setGenerationTargetPath(path.toString());
   }
 
+  public void setUseAlgebraicOptimization(boolean useAlgebraicOptimization) {
+    generator.setUseAlgebraicOptimizations(useAlgebraicOptimization);
+  }
+
+  public void setGenerateTests(boolean generateTests) {
+    generator.setGenerateTests(generateTests);
+  }
+
   public TextFile generateFiles(ExpandedComponentInstanceSymbol componentSymbol)
       throws IOException {
     generator.useArmadilloBackend();
-    generator.setUseAlgebraicOptimizations(true);
     generator.setModelsDirPath(modelPath);
-    generator.setGenerateTests(true);
     List<File> files = generator.generateFiles(symtab, componentSymbol, symtab);
     return new TextFile(files.get(0).toPath());
   }

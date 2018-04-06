@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.cli;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.adapter.GeneratorCppWrapper;
 import de.monticore.lang.monticar.emscripten.Emscripten;
 import de.monticore.lang.monticar.emscripten.EmscriptenCommand;
 import de.monticore.lang.monticar.emscripten.EmscriptenCommandBuilderFactory;
@@ -95,6 +96,12 @@ public class AppConfig {
   @Value("${emscripten.execute.binary.name:emcc.bat}")
   private String emscriptenBinaryName;
 
+  @Value("${algebraic-optimization:true}")
+  private boolean useAlgebraicOptimization;
+
+  @Value("${generate-tests:true}")
+  private boolean generateTests;
+
   @Bean
   public OptionConverter optionConverter() {
     return new OptionConverter();
@@ -108,6 +115,15 @@ public class AppConfig {
   @Bean
   public GeneratorCPP generator() {
     return new GeneratorCPP();
+  }
+
+  @Bean
+  public GeneratorCppWrapper generatorCppWrapper(GeneratorCPP generatorCPP, TaggingResolver symtab,
+      Path modelPath) {
+    GeneratorCppWrapper cppWrapper = new GeneratorCppWrapper(generatorCPP, symtab,
+        modelPath);
+
+    return cppWrapper;
   }
 
   @Bean
