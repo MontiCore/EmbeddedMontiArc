@@ -1,0 +1,7 @@
+package models;
+
+component Scalar_RangeUnit {
+  ports
+    in Q(-10/3 m/s : 10 km/h) inRangeUnit,
+    out Q(-10/3 m/s : 10 km/h) outRangeUnit;
+}

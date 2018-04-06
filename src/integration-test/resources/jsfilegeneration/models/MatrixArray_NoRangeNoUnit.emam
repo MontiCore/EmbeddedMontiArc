@@ -1,0 +1,7 @@
+package models;
+
+component MatrixArray_NoRangeNoUnit {
+  ports
+	  in Q^{2,3} inNoRangeNoUnit[4],
+    out Q^{2,3} outNoRangeNoUnit[4];
+}

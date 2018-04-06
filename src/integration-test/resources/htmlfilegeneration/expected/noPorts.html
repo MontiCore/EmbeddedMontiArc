@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-us">
+<style>
+  .model {
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  .ports {
+    overflow: hidden;
+  }
+
+  .inports {
+    float: left;
+    margin: 10px;
+  }
+
+  .outports {
+    float: left;
+    margin: 10px;
+  }
+
+  .inport-header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .inport-label {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .inport-field {
+    float: right;
+    width: 200px;
+  }
+
+  .outport-header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .outport-label {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .outport-field {
+    float: left;
+    min-width: 200px;
+  }
+
+  .execute {
+    width: fit-content;
+    margin: 10px auto;
+  }
+
+  .error {
+    color: red;
+    margin: 10px;
+  }
+</style>
+<head>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.1/math.min.js"></script>
+  <script type="text/javascript" src="noPorts_wrapper.js"></script>
+  <script type="text/javascript" src="noPorts.js"></script>
+  <title>Model</title>
+</head>
+<body>
+<div class="container">
+  <div class="model">
+    <div class="ports">
+      <div class="inports">
+        <div class="inport-header">
+          <h3>Inports</h3>
+        </div>
+      </div>
+      <div class="outports">
+        <div class="outport-header">
+          <h3>Outports</h3>
+        </div>
+      </div>
+    </div>
+    <div class="execute">
+      <button id="execute" onclick="exec()">Execute</button>
+    </div>
+  </div>
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+    function exec() {
+        document.getElementById("error").innerHTML = "";
+
+        try {
+
+            execute();
+
+        }
+        catch (err) {
+            if (err.message === undefined) {
+                document.getElementById("error").innerText = err;
+            }
+            else {
+                document.getElementById("error").innerHTML = err.message;
+            }
+        }
+    }
+</script>
+</body>
+</html>

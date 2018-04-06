@@ -1,0 +1,7 @@
+package models;
+
+component Array_RangeUnit {
+  ports
+    in Q(-10/3 m/s : 10 km/h) inRangeUnit[4],
+    out Q(-10/3 m/s : 10 km/h) outRangeUnit[4];
+}

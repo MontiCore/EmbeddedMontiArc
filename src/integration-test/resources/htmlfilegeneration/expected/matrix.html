@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en-us">
+<style>
+  .model {
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  .ports {
+    overflow: hidden;
+  }
+
+  .inports {
+    float: left;
+    margin: 10px;
+  }
+
+  .outports {
+    float: left;
+    margin: 10px;
+  }
+
+  .inport-header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .inport-label {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .inport-field {
+    float: right;
+    width: 200px;
+  }
+
+  .outport-header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .outport-label {
+    float: left;
+    margin-right: 5px;
+  }
+
+  .outport-field {
+    float: left;
+    min-width: 200px;
+  }
+
+  .execute {
+    width: fit-content;
+    margin: 10px auto;
+  }
+
+  .error {
+    color: red;
+    margin: 10px;
+  }
+
+  .inport-container-inMatrix {
+    overflow: hidden;
+    margin: 3px;
+  }
+
+  .outport-container-outMatrix {
+    overflow: hidden;
+    margin: 3px;
+  }
+</style>
+<head>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.1/math.min.js"></script>
+  <script type="text/javascript" src="matrix_wrapper.js"></script>
+  <script type="text/javascript" src="matrix.js"></script>
+  <title>Model</title>
+</head>
+<body>
+<div class="container">
+  <div class="model">
+    <div class="ports">
+      <div class="inports">
+        <div class="inport-header">
+          <h3>Inports</h3>
+        </div>
+        <div class="inport-container-inMatrix">
+          <div class="inport-label">
+            inMatrix:
+          </div>
+          <div class="inport-field">
+            <input type="text" id="inport-field-inMatrix">
+          </div>
+        </div>
+      </div>
+      <div class="outports">
+        <div class="outport-header">
+          <h3>Outports</h3>
+        </div>
+        <div class="outport-container-outMatrix">
+          <div class="outport-label">
+            outMatrix:
+          </div>
+          <div class="outport-field" id="outport-field-outMatrix"></div>
+        </div>
+      </div>
+    </div>
+    <div class="execute">
+      <button id="execute" onclick="exec()">Execute</button>
+    </div>
+  </div>
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+    function exec() {
+        document.getElementById("outport-field-outMatrix").innerText = "";
+        document.getElementById("error").innerHTML = "";
+
+        try {
+            setInMatrix(document.getElementById("inport-field-inMatrix").value);
+
+            execute();
+
+            document.getElementById("outport-field-outMatrix").innerText = getOutMatrix();
+        }
+        catch (err) {
+            if (err.message === undefined) {
+                document.getElementById("error").innerText = err;
+            }
+            else {
+                document.getElementById("error").innerHTML = err.message;
+            }
+        }
+    }
+</script>
+</body>
+</html>
