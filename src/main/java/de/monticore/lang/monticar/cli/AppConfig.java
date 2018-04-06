@@ -71,7 +71,7 @@ public class AppConfig {
   @Value("${web-dir:.}")
   private Path webDir;
 
-  @Value("${emscripten:}")
+  @Value("${emscripten.execute.command:}")
   private String emscripten;
 
   @Value("#{systemProperties['user.home']}/.emscripten")
