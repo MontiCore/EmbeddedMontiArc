@@ -170,7 +170,7 @@ public class JsGenerator {
     Collection<PortSymbol> outports = filterMultipleArrayPorts(symbol.getOutgoingPorts());
     Collection<PortSymbol> inports = filterMultipleArrayPorts(symbol.getIncomingPorts());
     List<Getter> getters = produceGetters(outports);
-    List<Setter> setters = produceSetters(inports);
+    List<Setter> setters = produceSetters(inports, symbol.getIncomingPorts());
 
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("getters", getters);
@@ -192,7 +192,8 @@ public class JsGenerator {
     return getters;
   }
 
-  private List<Setter> produceSetters(Collection<PortSymbol> incomingPorts) {
+  private List<Setter> produceSetters(Collection<PortSymbol> incomingPorts,
+      Collection<PortSymbol> rawIncomingPorts) {
     List<Setter> setters = new ArrayList<>();
     for (PortSymbol port : incomingPorts) {
       Setter setter = new Setter();
@@ -200,7 +201,7 @@ public class JsGenerator {
       setter.setMethodName(methodName);
       setter.setParameterName('_' + port.getNameWithoutArrayBracketPart());
       setter.setDelegateMethodName(methodName);
-      setter.setDimension(getDimension(incomingPorts, port));
+      setter.setDimension(getDimension(rawIncomingPorts, port));
       setter.setUnit(getUnit(port));
       setter.setLowerBound(getLowerBound(port));
       setter.setUpperBound(getUpperBound(port));

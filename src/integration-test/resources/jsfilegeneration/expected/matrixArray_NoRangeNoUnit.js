@@ -26,13 +26,13 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
     }
 
     //check dimension
-    var dim = math.matrix([1, 2, 3]);
+    var dim = math.matrix([4, 2, 3]);
     if (!math.deepEqual(value.size(), dim)) {
         throw "Input has dimension " + value.size() + " but expected " + dim;
     }
 
     var array = [];
-    for (var i0 = 0; i0 < 1; i0++) {
+    for (var i0 = 0; i0 < 4; i0++) {
         array[i0] = [];
         for (var i1 = 0; i1 < 2; i1++) {
             array[i0][i1] = [];
