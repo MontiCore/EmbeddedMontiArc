@@ -1,6 +1,5 @@
 #ifndef HELPER_H
 #define HELPER_H
-#define _GLIBCXX_USE_CXX11_ABI 0
 #include <iostream>
 #include <octave/oct.h>
 #include <octave/octave.h>

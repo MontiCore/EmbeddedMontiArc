@@ -1,6 +1,5 @@
 #ifndef HELPERA_H
 #define HELPERA_H
-#define _GLIBCXX_USE_CXX11_ABI 0
 #include <iostream>
 #include "armadillo.h"
 #include <stdarg.h>

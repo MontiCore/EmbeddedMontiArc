@@ -30,6 +30,17 @@ public class GeneratorCppCliTest extends AbstractSymtabTest {
         generateAndCompareMyComponentX(10);
     }
 
+    @Test
+    public void testServerWrapperCanBeGenerated() {
+        String[] args = new String[]{
+                formatParam(GeneratorCppCli.OPTION_MODELS_PATH, "src/test/resources"),
+                formatParam(GeneratorCppCli.OPTION_ROOT_MODEL, "testing.serverwrapper.myComponent"),
+                formatParam(GeneratorCppCli.OPTION_OUTPUT_PATH, "./target/generated-sources-cpp/testing/ServerWrapperTest"),
+                String.format("--%s", GeneratorCppCli.OPTION_FLAG_SERVER_WRAPPER.getLongOpt()),
+        };
+        GeneratorCppCli.main(args);
+    }
+
     private void generateAndCompareMyComponentX(int x) throws IOException {
         generateAndCompare(
                 String.format("testing.subpackage%1$s.myComponent%1$s", x),
