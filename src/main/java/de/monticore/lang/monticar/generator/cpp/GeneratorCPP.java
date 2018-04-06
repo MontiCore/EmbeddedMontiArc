@@ -363,7 +363,7 @@ public class GeneratorCPP implements Generator {
     }
 
     private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
-        return generateWrapper(componentSymbol, name);
+        return generateWrapper(componentSymbol, "server.cc");
     }
     
      private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
