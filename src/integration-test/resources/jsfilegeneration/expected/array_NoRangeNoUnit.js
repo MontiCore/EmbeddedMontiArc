@@ -33,13 +33,10 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
 
     var array = [];
     for (var i0 = 0; i0 < 4; i0++) {
-
         var e = value.get([i0]);
 
-        //check unit
-        var e_num = e.toSI().toNumber();
-        //check range
-        array  [i0] = e_num;
+        var e_num = e;
+        array[i0] = e_num;
     }
     Module.setInNoRangeNoUnit(array);
 }

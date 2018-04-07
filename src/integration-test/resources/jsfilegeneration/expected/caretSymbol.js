@@ -20,7 +20,6 @@ function getAcceleration() {
 
 function setPower(_power) {
     var value = math.eval(_power);
-    var lower = math.eval("0/1 kg*m^2/s^3").toSI().toNumber();
 
     if (value === undefined) {
         throw "Could not evaluate input for _power";
@@ -33,7 +32,7 @@ function setPower(_power) {
     }
     var value_num = value.toSI().toNumber();
     //check range
-    if (math.smaller(value_num, lower)) {
+    if (math.smaller(value_num, 0 / 1)) {
         throw "Value " + value_num + " out of range";
     }
     Module.setPower(value_num);

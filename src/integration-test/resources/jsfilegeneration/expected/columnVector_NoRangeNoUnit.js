@@ -35,12 +35,9 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
     for (var i0 = 0; i0 < 3; i0++) {
         array[i0] = [];
         for (var i1 = 0; i1 < 1; i1++) {
-
             var e = value.get([i0, i1]);
 
-            //check unit
-            var e_num = e.toSI().toNumber();
-            //check range
+            var e_num = e;
             array[i0][i1] = e_num;
         }
     }

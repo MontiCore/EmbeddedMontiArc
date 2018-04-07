@@ -20,8 +20,6 @@ function getOutRangeUnit() {
 
 function setInRangeUnit(_inRangeUnit) {
     var value = math.eval(_inRangeUnit);
-    var lower = math.eval("-10/3 m/s").toSI().toNumber();
-    var upper = math.eval("10/1 km/h").toSI().toNumber();
 
     if (value === undefined) {
         throw "Could not evaluate input for _inRangeUnit";
@@ -35,7 +33,6 @@ function setInRangeUnit(_inRangeUnit) {
 
     var array = [];
     for (var i0 = 0; i0 < 4; i0++) {
-
         var e = value.get([i0]);
 
         //check unit
@@ -45,10 +42,10 @@ function setInRangeUnit(_inRangeUnit) {
         }
         var e_num = e.toSI().toNumber();
         //check range
-        if (math.smaller(e_num, lower)) {
+        if (math.smaller(e_num, -10 / 3)) {
             throw "Value " + e_num + " out of range";
         }
-        if (math.larger(e_num, upper)) {
+        if (math.larger(e_num, 10 / 1)) {
             throw "Value " + e_num + " out of range";
         }
         array[i0] = e_num;

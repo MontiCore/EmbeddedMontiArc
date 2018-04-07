@@ -4,6 +4,7 @@ import static de.monticore.lang.monticar.generator.GeneratorUtil.filterMultipleA
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getGetterMethodName;
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getSetterMethodName;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
@@ -37,50 +38,18 @@ public class JsGenerator {
     this.templateProcessor = templateProcessor;
   }
 
-
-
-  static String getUnit(PortSymbol port) {
-    Optional<ASTRange> rangeOpt = getRange(port);
-    String unit = rangeOpt.map(astRange -> format(astRange.getUnit())).orElse("");
-    return unit.isEmpty() ? null : unit;
-  }
-
-  static String getLowerBound(PortSymbol port) {
-    Optional<ASTRange> rangeOpt = getRange(port);
-    if (rangeOpt.isPresent()) {
-      ASTRange range = rangeOpt.get();
-      if (!range.hasNoLowerLimit()) {
-        String bound = join(" ", getLowerBoundValue(range), getLowerBoundUnit(range));
-        return bound.isEmpty() ? null : bound;
-      }
-    }
-    return null;
-  }
-
-  static String getUpperBound(PortSymbol port) {
-    Optional<ASTRange> rangeOpt = getRange(port);
-    if (rangeOpt.isPresent()) {
-      ASTRange range = rangeOpt.get();
-      if (!range.hasNoUpperLimit()) {
-        String bound = join(" ", getUpperBoundValue(range), getUpperBoundUnit(range));
-        return bound.isEmpty() ? null : bound;
-      }
-    }
-    return null;
-  }
-
   private static String getLowerBoundUnit(ASTRange range) {
     if (range.hasStartUnit()) {
       return format(range.getStartUnit());
     }
-    return "";
+    return null;
   }
 
   private static String getUpperBoundUnit(ASTRange range) {
     if (range.hasEndUnit()) {
       return format(range.getEndUnit());
     }
-    return "";
+    return null;
   }
 
   private static String getLowerBoundValue(ASTRange range) {
@@ -88,7 +57,7 @@ public class JsGenerator {
       Rational startValue = range.getStartValue();
       return startValue.toString();
     }
-    return "";
+    return null;
   }
 
   private static String getUpperBoundValue(ASTRange range) {
@@ -96,9 +65,10 @@ public class JsGenerator {
       Rational startValue = range.getEndValue();
       return startValue.toString();
     }
-    return "";
+    return null;
   }
 
+  @VisibleForTesting
   static int[] getDimension(Collection<PortSymbol> ports, PortSymbol port) {
     int arrayDimension = port.isPartOfPortArray() ?
         getArrayDimension(ports, port.getNameWithoutArrayBracketPart()) : 0;
@@ -200,7 +170,7 @@ public class JsGenerator {
       String methodName = getGetterMethodName(port);
       getter.setMethodName(methodName);
       getter.setDelegateMethodName(methodName);
-      getter.setUnit(getUnit(port));
+      getter.setUnit(getRange(port).map(JsGenerator::getLowerBoundUnit).orElse(null));
       getters.add(getter);
     }
     return getters;
@@ -213,12 +183,18 @@ public class JsGenerator {
       Setter setter = new Setter();
       String methodName = getSetterMethodName(port);
       setter.setMethodName(methodName);
+      //prefix "_" so ports can be named Javascript keywords (e.g. "undefined", "var")
       setter.setParameterName('_' + port.getNameWithoutArrayBracketPart());
       setter.setDelegateMethodName(methodName);
       setter.setDimension(getDimension(rawIncomingPorts, port));
-      setter.setUnit(getUnit(port));
-      setter.setLowerBound(getLowerBound(port));
-      setter.setUpperBound(getUpperBound(port));
+
+      Optional<ASTRange> rangeOpt = getRange(port);
+      rangeOpt.ifPresent(range -> {
+        setter.setLowerBoundUnit(getLowerBoundUnit(range));
+        setter.setLowerBoundValue(getLowerBoundValue(range));
+        setter.setUpperBoundUnit(getUpperBoundUnit(range));
+        setter.setUpperBoundValue(getUpperBoundValue(range));
+      });
       setters.add(setter);
     }
     return setters;
