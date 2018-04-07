@@ -29,7 +29,6 @@ public class CheckCoCoResult extends SVGInfo {
 //    private List<String> errorMessage = new LinkedList<>();
 //    private int parsed = 0;
 //    private int resolved = 0;
-    private boolean atomic = false;
 //    private String emaToPrint = "";
 
 //    private ASTEMAMCompilationUnit unresolvedAST = null;
@@ -307,14 +306,6 @@ public class CheckCoCoResult extends SVGInfo {
 
     public void setZipName(String zipName) {
         this.zipName = zipName;
-    }
-
-    public boolean isAtomic() {
-        return atomic;
-    }
-
-    public void setAtomic(boolean atomic) {
-        this.atomic = atomic;
     }
 
     public String getOnlineIDE() {

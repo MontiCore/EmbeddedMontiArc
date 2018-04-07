@@ -66,6 +66,9 @@ public class OrderTestResults <T extends OrderableModelInfo>{
                             ComponentSymbol commonSymbolReference = symbolReference.getReferencedSymbol();
 
                             String name = commonSymbolReference.getFullName();
+                            if(!name.toLowerCase().contains(commonSymbolReference.getPackageName().toLowerCase())){
+                                name = commonSymbolReference.getPackageName() + "." + name;
+                            }
                             OrderableModelInfo child = modelPathMap.get(name);
 
                             if(child != null) {

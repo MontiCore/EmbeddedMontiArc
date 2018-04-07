@@ -45,31 +45,28 @@ public class VisualisationHelper {
     }
 
     private static void setChildrenSVGPath(SVGInfo model, String root, Set<SVGInfo> visited) {
-        if(model.getQualifiedName().toLowerCase().contains("behaviorgeneration")){
-            int i = 0;
-        }
         if (!visited.contains(model) && model.getSvgPath() != null && !model.getSvgPath().equals("") && model.getChildren().size() > 0) {
-            visited.add(model);
             String svgPathParent = model.getSvgPath().substring(0, model.getSvgPath().lastIndexOf("html"));
             for(ChildElement childElement: model.getChildren()){
                 if(((SVGInfo) childElement.getChild()).getSvgPath() == null || ((SVGInfo) childElement.getChild()).getSvgPath().equals("")) {
-//                    if(childElement.getChild().getChildren().size() > 0) {
+                    if(childElement.getChild().getChildren().size() > 0) {
                         String referencedName = childElement.getReferencedName();
                         ((SVGInfo) childElement.getChild()).setSvgPath(svgPathParent + referencedName + ".html");
-                        setChildrenSVGPath((SVGInfo) childElement.getChild(), root, visited);
-//                    }
+                    }
+                    setChildrenSVGPath((SVGInfo) childElement.getChild(), root, visited);
                 }
             }
         } else if(!visited.contains(model)){
-            visited.add(model);
             if ((model.getSvgPath() == null || model.getSvgPath().equals("")) &&
                     !(model.getProject() + model.getModelName()).equals(root)){
                 model.addErrorMessage("[INFO] do SVG generation<br>=========================");
                 model.addErrorMessage("[INFO] See at " + root);
             }
-            if (model.getChildren().size() > 0)
+            if (model.getChildren().size() > 0) {
                 for(ChildElement childElement: model.getChildren())
                     setChildrenSVGPath((SVGInfo) childElement.getChild(), root, visited);
+            }
         }
+        visited.add(model);
     }
 }
