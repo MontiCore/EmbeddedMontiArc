@@ -25,8 +25,6 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
         throw "Could not evaluate input for _inNoRangeNoUnit";
     }
 
-    //check unit
-    var value_num = value.toSI().toNumber();
-    //check range
+    var value_num = value;
     Module.setInNoRangeNoUnit(value_num);
 }

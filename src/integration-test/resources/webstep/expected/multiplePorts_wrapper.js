@@ -25,8 +25,6 @@ function getK() {
 
 function setM1(_m1) {
     var value = math.eval(_m1);
-    var lower = math.eval("0/1 m").toSI().toNumber();
-    var upper = math.eval("10/1 km").toSI().toNumber();
 
     if (value === undefined) {
         throw "Could not evaluate input for _m1";
@@ -42,7 +40,6 @@ function setM1(_m1) {
     for (var i0 = 0; i0 < 2; i0++) {
         array[i0] = [];
         for (var i1 = 0; i1 < 3; i1++) {
-
             var e = value.get([i0, i1]);
 
             //check unit
@@ -53,10 +50,10 @@ function setM1(_m1) {
 
             var e_num = e.toSI().toNumber();
             //check range
-            if (math.smaller(e_num, lower)) {
+            if (math.smaller(e_num, 0 / 1)) {
                 throw "Value " + e_num + " out of range";
             }
-            if (math.larger(e_num, upper)) {
+            if (math.larger(e_num, 10 / 1)) {
                 throw "Value " + e_num + " out of range";
             }
             array[i0][i1] = e_num;
@@ -67,8 +64,6 @@ function setM1(_m1) {
 
 function setM2(_m2) {
     var value = math.eval(_m2);
-    var lower = math.eval("5/1 Hz").toSI().toNumber();
-    var upper = math.eval("20/1 kHz").toSI().toNumber();
 
     if (value === undefined) {
         throw "Could not evaluate input for _m2";
@@ -84,7 +79,6 @@ function setM2(_m2) {
     for (var i0 = 0; i0 < 3; i0++) {
         array[i0] = [];
         for (var i1 = 0; i1 < 1; i1++) {
-
             var e = value.get([i0, i1]);
 
             //check unit
@@ -95,10 +89,10 @@ function setM2(_m2) {
 
             var e_num = e.toSI().toNumber();
             //check range
-            if (math.smaller(e_num, lower)) {
+            if (math.smaller(e_num, 5 / 1)) {
                 throw "Value " + e_num + " out of range";
             }
-            if (math.larger(e_num, upper)) {
+            if (math.larger(e_num, 20 / 1)) {
                 throw "Value " + e_num + " out of range";
             }
             array[i0][i1] = e_num;
@@ -109,8 +103,6 @@ function setM2(_m2) {
 
 function setC(_c) {
     var value = math.eval(_c);
-    var lower = math.eval("-2/1 mm/h").toSI().toNumber();
-    var upper = math.eval("2/1 km/s").toSI().toNumber();
 
     if (value === undefined) {
         throw "Could not evaluate input for _c";
@@ -124,10 +116,10 @@ function setC(_c) {
 
     var value_num = value.toSI().toNumber();
     //check range
-    if (math.smaller(value_num, lower)) {
+    if (math.smaller(value_num, -2 / 1)) {
         throw "Value " + value_num + " out of range";
     }
-    if (math.larger(value_num, upper)) {
+    if (math.larger(value_num, 2 / 1)) {
         throw "Value " + value_num + " out of range";
     }
     Module.setC(value_num);
