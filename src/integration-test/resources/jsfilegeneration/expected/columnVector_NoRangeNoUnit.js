@@ -10,6 +10,10 @@ var Module = {
     }
 };
 
+function init() {
+    Module.init();
+}
+
 function execute() {
     Module.execute();
 }
