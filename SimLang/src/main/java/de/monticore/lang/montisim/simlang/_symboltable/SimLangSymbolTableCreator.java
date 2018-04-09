@@ -115,6 +115,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     return ret;
   }
   private ConcreteWeather astToConcWeather(ASTWeatherObj obj) {
+    obj.getWeatherAttributes().get(0).
     AlternativeInput temp = obj.getTemperatures().size() > 0 ? getUsedAlternative(obj.getTemperatures().get(0).getAlternativeInput()) : null;
     AlternativeInput humi = obj.getHumiditys().size() > 0 ? getUsedAlternative(obj.getHumiditys().get(0).getAlternativeInput()) : null;
     AlternativeInput press = obj.getPressures().size() > 0 ? getUsedAlternative(obj.getPressures().get(0).getAlternativeInput()) : null;

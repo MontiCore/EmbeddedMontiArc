@@ -7,61 +7,35 @@ package de.monticore.lang.montisim;
 grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2  {
   SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation;
 
+  interface SimulationAttribute;
+  interface SimulationEntity;
+
   symbol scope Simulation = "sim" Name "{"
-    ((SimulationRenderFrequency|
-    SimulationLoopFrequency|
-    SimulationDuration|
-    SimulationType|
-    Weather|
-    Time|
-    MapPath|
-    MapName|
-    MapHeight|
-    MapOverlap|
-    MapSectorWidth|
-    MapSectorHeight|
-    MaxSectorUsers|
-    Timeout|
-    Gravity|
-    Pedestrians|
-    PedestrianDensity|
-    Vehicles|
-    Channel) ";")*
+    ((SimulationAttribute | SimulationEntity) ";")*
   "}";
 
   //
   // Simulator Configuration
   //
-  SimulationRenderFrequency = "sim_render_frequency" AlternativeInput;
-  SimulationLoopFrequency = "sim_loop_frequency" AlternativeInput;
-  SimulationDuration = "sim_duration" AlternativeInput;
-  SimulationType = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ;
+  SimulationRenderFrequency implements SimulationAttribute = "sim_render_frequency" AlternativeInput;
+  SimulationLoopFrequency implements SimulationAttribute = "sim_loop_frequency" AlternativeInput;
+  SimulationDuration implements SimulationAttribute = "sim_duration" AlternativeInput;
+  SimulationType implements SimulationAttribute = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ;
 
-  MapOverlap = "map_overlap" AlternativeInput;
-  MapSectorWidth = "map_sector_width" AlternativeInput;
-  MapSectorHeight = "map_sector_height" AlternativeInput;
-  MaxSectorUsers = "max_sector_users" AlternativeInput;
-  Timeout = "timeout" AlternativeInput;
+  MapOverlap implements SimulationAttribute = "map_overlap" AlternativeInput;
+  MapSectorWidth implements SimulationAttribute = "map_sector_width" AlternativeInput;
+  MapSectorHeight implements SimulationAttribute = "map_sector_height" AlternativeInput;
+  MaxSectorUsers implements SimulationAttribute = "max_sector_users" AlternativeInput;
+  Timeout implements SimulationAttribute = "timeout" AlternativeInput;
 
   //
   // Environment+World Configuration
   //
-  WeatherObj = "{" ((Temperature|
-                   Clouding|
-                   Sight| 
-                   PrecipitationType|
-                   Humidity|
-                   Pressure|
-                   WindStrength|
-                   WindDirection|
-                   PrecipitationAmount|
-                   WeatherPhenomena|
-                   OpticalPhenomena|
-                   ArtificialPhenomena) ";")* "}";
+  WeatherObj = "{" ((WeatherAttribute | WeatherEntity) ";")* "}";
   
   SingleWeather = (FixedWeather | SequenceWeather | RandomWeather);
   WeatherList = "[" SingleWeather ("," SingleWeather)* "]";
-  Weather = "weather" (SingleWeather|WeatherList) ;
+  Weather implements SimulationAttribute = "weather" (SingleWeather|WeatherList) ;
   FixedWeather = ["fixed"] WeatherObj;
   SequenceWeather = ["sequence"] (WeatherObj UnitNumber)+;
   RandomWeather = ["random"] (UnitNumber)?;
@@ -69,50 +43,49 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   SingleTime = hours:UnitNumber ":" minutes:UnitNumber (":" seconds:UnitNumber (":" milliseconds:UnitNumber)?)?;
   TimeList = "[" SingleTime ("," SingleTime)* "]" ;
 
-  Time = "time" (SingleTime | TimeList) ;
+  Time implements SimulationAttribute = "time" (SingleTime | TimeList) ;
 
-  MapPath = "map_path" mapPath:Name ;
-  MapName = "map_name" mapName:Name "." fileFormat:Name ;
-  MapHeight = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ;
+  MapPath implements SimulationAttribute = "map_path" mapPath:Name ;
+  MapName implements SimulationAttribute = "map_name" mapName:Name "." fileFormat:Name ;
+  MapHeight implements SimulationAttribute = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ;
   
-  Gravity = "gravity" AlternativeInput;
+  Gravity implements SimulationAttribute = "gravity" AlternativeInput;
   
-  PedestrianDensity = "pedestrian_density" AlternativeInput;
+  PedestrianDensity implements SimulationAttribute = "pedestrian_density" AlternativeInput;
 
   //
   // Entity Configuration
   //
-  Pedestrians = ("<p>"
+  Pedestrians implements SimulationEntity = ("<p>"
                 "(" startX:UnitNumber "," startY:UnitNumber ("," startZ:UnitNumber)? ")"
                 "->" 
                 "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
                 ) ;
 
-  Vehicles = (ExplicitVehicle | PathedVehicle | RandomVehicle) ;
-  
   //defined vehicle moving from start to destination pos
-  ExplicitVehicle = Name
+  ExplicitVehicle implements SimulationEntity = Name
               ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")"
               "->" 
               "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
               );
               
   //random vehicles spawning somewhere within a circle at x,y with radius r moving to somewhere within dest circle
-  PathedVehicle = "<v>"
+  PathedVehicle implements SimulationEntity = "<v>"
                   "(" startX:UnitNumber "," startY:UnitNumber "," spawnRadius:UnitNumber ")"
                   "->"
                   "(" destX:UnitNumber "," destY:UnitNumber "," destRadius:UnitNumber ")"
                   (amount:UnitNumber)?;
   
   //completely random vehicle spawns and destinations with optional avoidance of path
-  RandomVehicle = "<v>" amount:UnitNumber ("(" startX:UnitNumber "," startY:UnitNumber ")" "->" "(" destX:UnitNumber "," destY:UnitNumber ")")?;
+  RandomVehicle implements SimulationEntity = "<v>" amount:UnitNumber ("(" startX:UnitNumber "," startY:UnitNumber ")" "->" "(" destX:UnitNumber "," destY:UnitNumber ")")?;
   
   //
   // Communication Configuration
   //
-  Channel = channelType:["fixed"|"bound"] "channel" Name "{" ((TransferRate|Latency|Outage|Area) ";")* "}" ;
-  TransferRate = "transfer_rate" AlternativeInput;
-  Latency = "latency" AlternativeInput;
-  Outage = "outage" AlternativeInput;
-  Area = "area" (["global"]|(point1:Coordinate (point2:Coordinate|radius:UnitNumber))) ;
+  interface ChannelAttribute;
+  Channel implements SimulationEntity = channelType:["fixed"|"bound"] "channel" Name "{" (ChannelAttribute ";")* "}" ;
+  TransferRate implements ChannelAttribute = "transfer_rate" AlternativeInput;
+  Latency implements ChannelAttribute = "latency" AlternativeInput;
+  Outage implements ChannelAttribute = "outage" AlternativeInput;
+  Area implements ChannelAttribute = "area" (["global"]|(point1:Coordinate (point2:Coordinate|radius:UnitNumber))) ;
 }
