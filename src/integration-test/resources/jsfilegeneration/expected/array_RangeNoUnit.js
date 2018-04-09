@@ -24,6 +24,8 @@ function getOutRangeNoUnit() {
 
 function setInRangeNoUnit(_inRangeNoUnit) {
     var value = math.eval(_inRangeNoUnit);
+    var lower = -10 / 1;
+    var upper = 10 / 1;
 
     if (value === undefined) {
         throw "Could not evaluate input for _inRangeNoUnit";
@@ -41,10 +43,10 @@ function setInRangeNoUnit(_inRangeNoUnit) {
 
         var e_num = e;
         //check range
-        if (math.smaller(e_num, -10 / 1)) {
+        if (math.smaller(e_num, lower)) {
             throw "Value " + e_num + " out of range";
         }
-        if (math.larger(e_num, 10 / 1)) {
+        if (math.larger(e_num, upper)) {
             throw "Value " + e_num + " out of range";
         }
         array[i0] = e_num;
