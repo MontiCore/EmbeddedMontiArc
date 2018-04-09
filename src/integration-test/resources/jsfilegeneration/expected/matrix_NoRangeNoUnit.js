@@ -10,6 +10,10 @@ var Module = {
     }
 };
 
+function init() {
+    Module.init();
+}
+
 function execute() {
     Module.execute();
 }
@@ -38,9 +42,7 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
 
             var e = value.get([i0, i1]);
 
-            //check unit
-            var e_num = e.toSI().toNumber();
-            //check range
+            var e_num = e;
             array[i0][i1] = e_num;
         }
     }

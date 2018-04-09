@@ -10,6 +10,10 @@ var Module = {
     }
 };
 
+function init() {
+    Module.init();
+}
+
 function execute() {
     Module.execute();
 }
@@ -32,7 +36,7 @@ function setM1(_m1) {
         throw "Could not evaluate input for _m1";
     }
 
-//check dimension
+    //check dimension
     var dim = math.matrix([2, 3]);
     if (!math.deepEqual(value.size(), dim)) {
         throw "Input has dimension " + value.size() + " but expected " + dim;
@@ -42,7 +46,6 @@ function setM1(_m1) {
     for (var i0 = 0; i0 < 2; i0++) {
         array[i0] = [];
         for (var i1 = 0; i1 < 3; i1++) {
-
             var e = value.get([i0, i1]);
 
             //check unit
@@ -74,7 +77,7 @@ function setM2(_m2) {
         throw "Could not evaluate input for _m2";
     }
 
-//check dimension
+    //check dimension
     var dim = math.matrix([3, 1]);
     if (!math.deepEqual(value.size(), dim)) {
         throw "Input has dimension " + value.size() + " but expected " + dim;
@@ -84,7 +87,6 @@ function setM2(_m2) {
     for (var i0 = 0; i0 < 3; i0++) {
         array[i0] = [];
         for (var i1 = 0; i1 < 1; i1++) {
-
             var e = value.get([i0, i1]);
 
             //check unit

@@ -5,10 +5,11 @@ public class Setter {
   private String methodName;
   private String parameterName;
   private String delegateMethodName;
-  private int[] dimension;
-  private String unit;
-  private String lowerBound;
-  private String upperBound;
+  private String[] dimension;
+  private String lowerBoundValue;
+  private String lowerBoundUnit;
+  private String upperBoundValue;
+  private String upperBoundUnit;
 
   public String getMethodName() {
     return methodName;
@@ -34,35 +35,43 @@ public class Setter {
     this.delegateMethodName = delegateMethodName;
   }
 
-  public int[] getDimension() {
+  public String[] getDimension() {
     return dimension;
   }
 
-  public void setDimension(int[] dimension) {
+  public void setDimension(String[] dimension) {
     this.dimension = dimension;
   }
 
-  public String getUnit() {
-    return unit;
+  public String getLowerBoundValue() {
+    return lowerBoundValue;
   }
 
-  public void setUnit(String unit) {
-    this.unit = unit;
+  public void setLowerBoundValue(String lowerBoundValue) {
+    this.lowerBoundValue = lowerBoundValue;
   }
 
-  public String getLowerBound() {
-    return lowerBound;
+  public String getLowerBoundUnit() {
+    return lowerBoundUnit;
   }
 
-  public void setLowerBound(String lowerBound) {
-    this.lowerBound = lowerBound;
+  public void setLowerBoundUnit(String lowerBoundUnit) {
+    this.lowerBoundUnit = lowerBoundUnit;
   }
 
-  public String getUpperBound() {
-    return upperBound;
+  public String getUpperBoundValue() {
+    return upperBoundValue;
   }
 
-  public void setUpperBound(String upperBound) {
-    this.upperBound = upperBound;
+  public void setUpperBoundValue(String upperBoundValue) {
+    this.upperBoundValue = upperBoundValue;
+  }
+
+  public String getUpperBoundUnit() {
+    return upperBoundUnit;
+  }
+
+  public void setUpperBoundUnit(String upperBoundUnit) {
+    this.upperBoundUnit = upperBoundUnit;
   }
 }

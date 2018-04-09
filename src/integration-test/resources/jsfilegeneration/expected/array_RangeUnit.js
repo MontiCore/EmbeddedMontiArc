@@ -10,6 +10,10 @@ var Module = {
     }
 };
 
+function init() {
+    Module.init();
+}
+
 function execute() {
     Module.execute();
 }
@@ -35,7 +39,6 @@ function setInRangeUnit(_inRangeUnit) {
 
     var array = [];
     for (var i0 = 0; i0 < 4; i0++) {
-
         var e = value.get([i0]);
 
         //check unit
