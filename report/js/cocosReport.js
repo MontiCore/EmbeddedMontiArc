@@ -60,11 +60,12 @@ function createTable(data, info) {
                 var count = info[group]['Number'];
                 var valid = info[group]['Valid'];
                 var invalid = info[group]['Invalid'];
-                return '<span class="nowrap">' + group + ' (' + count + ')</span>' +
+                return '<div class="nowrap" style="width:0px; overflow:visible;">' +
+                    '<span class="nowrap">' + group + ' (' + count + ')</span>' +
                     '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' +
                     '<span class="nowrap">valid: ' + valid + '</span>' +
                     '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' +
-                    '<span class="nowrap"> invalid: ' + invalid + '</span>';
+                    '<span class="nowrap"> invalid: ' + invalid + '</span></div>';
             }
         },
         "aoColumns": [
@@ -134,7 +135,7 @@ function init() {
     });
     table = $(tableReference).DataTable();
     childControlInit('expandChildren-control', uniqueNameFunction_custom);
-    initFloatingHeader(1);
+    initFloatingHeader(0);
     initLogMechanic('details-control', formatLog_custom);
     initGrowMechanic('grow', 'shortLabel', 'fullLabel');
     defaultExpand(2, columnFilter_custom);

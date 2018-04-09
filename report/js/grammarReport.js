@@ -32,7 +32,7 @@ function createTable(data) {
         "rowGroup": {
             dataSrc: "Root",
             startRender: function (rows, group) {
-                return group + ' (' + rows.count() + ')';
+                return '<div class="nowrap" style="width:0px; overflow:visible;">' + group + ' (' + rows.count() + ')</div>';
             },
             endRender: null //function( rows, group ) {return group;}
         },
@@ -40,12 +40,12 @@ function createTable(data) {
         "aoColumns": [
             {"data": "Root", visible: false},
             {"data": null, visible: false},
-            {"data": "Name", sort: "string", type: "alt-string"},
             {
                 "data": "OnlineIDE",
                 "className": "onlineIDE",
                 "orderable": false
-            }
+            },
+            {"data": "Name", sort: "string", type: "alt-string"}
         ],
         "order": [[1, 'asc']]
     });

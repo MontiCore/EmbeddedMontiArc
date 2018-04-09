@@ -111,7 +111,7 @@ public class CoCoTestResultPrinter {
             ip.println(names[i++] + ": \"" + testResult.getModelName() + "\",");
             ip.println(names[i++] + ": \"" + getGithubLink(testResult, expanded) + "\",");
             ip.println(names[i++] + ": \"" + getFilePath(testResult) + "\",");
-            ip.println(names[i++] + ": \"" + getVisulisationLink(testResult) + "\",");
+            ip.println(names[i++] + ": " + getVisulisationLink(testResult) + ",");
             ip.println(names[i++] + ": " + getVFSTag(testResult) + ",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessages().size() + "\",");
             ip.println(names[i++] + ": \"" + testResult.getErrorMessage() + "\",");
@@ -187,19 +187,20 @@ public class CoCoTestResultPrinter {
     private static String getVisulisationLink(CheckCoCoResult testResult) {
         String displayName = testResult.getModelName();
 
-        if (testResult.isErrorResult() || testResult.isMainPackage())
-            return "<div class='svgMinus'>" +
+
+        if (testResult.isErrorResult() || testResult.isMainPackage() || testResult.isAtomic())
+            return "\"<div class='svgMinus'>" +
                     "<img alt='" + displayName + "' src='images/minus.jpg'>" +
-                    "</div>";
+                    "</div>\"";
         else if (testResult.getSvgPath().equals(""))
-            return "<div class='svgNoEye'>" +
+            return "\"<div class='svgNoEye'>" +
                     "<img alt='" + displayName + "' src='images/noEye.png'>" +
-                    "</div>";
+                    "</div>\"";
         else
-            return "<a class='svgEye' target='_blank' rel='noopener' href='" +
+            return "\"<a class='svgEye' target='_blank' rel='noopener' href='" +
                     testResult.getSvgPath() + "'>" +
                     "<img alt='" + displayName + "' src='images/eye.png'>" +
-                    "</a>";
+                    "</a>\"";
     }
 
     private static String getGithubLink(CheckCoCoResult testResult, boolean expanded) {

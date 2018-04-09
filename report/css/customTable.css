@@ -103,3 +103,15 @@ table.dataTable tr.group th{
   height: auto;
   width: 40px;
 }
+
+table thead th {
+  text-align: left;
+}
+
+table thead tr.group {
+  display:none;
+}
+
+table.fixedHeader-floating thead tr.group {
+  display:block;
+}

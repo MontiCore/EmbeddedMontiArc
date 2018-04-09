@@ -50,6 +50,11 @@ function initFloatingHeader(columnIndex) {
         });
 
         if (lastFoundIndex != lastIndex || init == false) {
+            if(!init) {
+                $('table thead tr.group').each(function () {
+                    $(this).show();
+                });
+            }
             lastIndex = lastFoundIndex;
             if ($('.fixedHeader-floating')[0]) {
                 adjustFloatingHeader(lastFound, columnIndex);
@@ -59,6 +64,9 @@ function initFloatingHeader(columnIndex) {
 
         if (!$('.fixedHeader-floating')[0]) {
             init = false;
+            $('table thead tr.group').each(function () {
+                $(this).hide();
+            })
         }
     });
 }
