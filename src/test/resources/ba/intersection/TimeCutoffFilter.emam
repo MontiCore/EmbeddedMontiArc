@@ -8,7 +8,8 @@ component TimeCutoffFilter<N1 m = 10>(adaptable Q timeCutoff){
           in Q^{3,m} trajectoryInA,
           in Q^{3,m} trajectoryInB,
           //in Q timeCutoff,
-          out B collisionOut;
+          out B collisionOut,
+          out B aIsFasterOut;
 
     implementation Math{
         if ((collisionIn) && (indexInA >= 1) && (indexInB >= 1) && (indexInA <= m - 1) && (indexInB <= m - 1))
@@ -31,6 +32,12 @@ component TimeCutoffFilter<N1 m = 10>(adaptable Q timeCutoff){
 
             Q time1 = distp1/dist1 * (trajectoryInA(3,indexInA + 1) - trajectoryInA(3,indexInA));
             Q time2 = distp2/dist2 * (trajectoryInB(3,indexInB + 1) - trajectoryInB(3,indexInB));
+
+            if time1 <= time2
+                aIsFasterOut = True;
+            else
+                aIsFasterOut = False;
+            end
 
             collisionOut = abs(time1 - time2) < timeCutoff;
         else

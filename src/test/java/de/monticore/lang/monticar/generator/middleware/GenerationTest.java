@@ -142,18 +142,16 @@ public class GenerationTest extends AbstractSymtabTest {
             if(con.getSource().startsWith("stopCommQuality")){
                 con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol("/v"+ indexString + "/comm/in/slowDown"+ indexString,"std_msgs/Bool","data"));
                 con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol("/v"+ indexString + "/comm/in/slowDown"+ indexString,"std_msgs/Bool","data"));
-
             }else{
                 con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol("/sim/comm/slowDown" + indexString,"std_msgs/Bool","data"));
                 con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol("/sim/comm/slowDown" + indexString,"std_msgs/Bool","data"));
-
             }
         }
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
         distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
-        distributedTargetGenerator.setGenDebug(true);
+        //distributedTargetGenerator.setGenDebug(true);
         distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
         distributedTargetGenerator.add(new RosCppGenImpl(),"roscpp");
 

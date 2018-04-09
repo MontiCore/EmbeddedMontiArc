@@ -8,7 +8,8 @@ component TrajectoryCollision<N1 m = 10, N1 m1 = 9, N1 m2 = 45>{
     ports in Q^{3,m} trajectoryA,
           in Q^{3,m} trajectoryB,
           in Q cutoffTime,
-          out B collision;
+          out B collision,
+          out B aIsFasterOut;
 
     instance TrajectoryToLines<10,9> trajectoryToLinesA;
     instance TrajectoryToLines<10,9> trajectoryToLinesB;
@@ -31,6 +32,7 @@ component TrajectoryCollision<N1 m = 10, N1 m1 = 9, N1 m2 = 45>{
     connect trajectoryB -> timeCutoffFilter.trajectoryInB;
     connect cutoffTime -> timeCutoffFilter.timeCutoff;
     connect timeCutoffFilter.collisionOut -> collision;
+    connect timeCutoffFilter.aIsFasterOut -> aIsFasterOut;
 
     connect trajectoryToLinesA.lineOut[:] -> dualSetCompare.setInA[:];
     connect trajectoryToLinesB.lineOut[:] -> dualSetCompare.setInB[:];
