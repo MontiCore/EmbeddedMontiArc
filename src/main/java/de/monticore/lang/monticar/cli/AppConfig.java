@@ -122,7 +122,8 @@ public class AppConfig {
       Path modelPath) {
     GeneratorCppWrapper cppWrapper = new GeneratorCppWrapper(generatorCPP, symtab,
         modelPath);
-
+    cppWrapper.setUseAlgebraicOptimization(useAlgebraicOptimization);
+    cppWrapper.setGenerateTests(generateTests);
     return cppWrapper;
   }
 
