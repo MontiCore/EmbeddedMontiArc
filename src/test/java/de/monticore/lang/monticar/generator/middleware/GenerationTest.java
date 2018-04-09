@@ -160,22 +160,6 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testSetCompareInstance() throws IOException{
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.tests.setCompareInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
-        String generationTargetPath = "./target/generated-sources-cmake/setCompareInstance/src/";
-        middlewareGenerator.setGenerationTargetPath(generationTargetPath);
-        middlewareGenerator.add(new CPPGenImpl(),"cpp");
-        //middlewareGenerator.add(new RosCppGenImpl(),"roscpp");
-
-        List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        fixKnownErrors(files);
-    }
-
-    @Test
     public void testLaneIntersection() throws IOException{
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.util.lineIntersection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -194,7 +178,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testRectIntersection() throws IOException{
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.util.rectIntersection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.collision.rectIntersection", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
         //EmbeddedMontiArcMathCoCos.createChecker().checkAll((ASTComponent)componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().orElse(null));
