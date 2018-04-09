@@ -5,6 +5,10 @@ var Module = {
   onRuntimeInitialized: function () { Module.init(); }
 };
 
+function init() {
+  Module.init();
+}
+
 function execute() {
   Module.execute();
 }
@@ -21,25 +25,9 @@ function execute() {
   <#assign varNumber = varName + "_num">
   <#assign elementName = "e">
   <#assign elementNumber = elementName + "_num">
-<#--<#assign lowerBoundVar = "lower">
-<#assign upperBoundVar = "upper">-->
 
   function ${setter.methodName}(${setter.parameterName}) {
   var ${varName} = math.eval(${setter.parameterName});
-<#--<#if setter.lowerBoundValue?has_content>
-  <#if setter.lowerBoundUnit?has_content>
-    var ${lowerBoundVar} = math.eval("${setter.lowerBoundValue} ${setter.lowerBoundUnit}").toSI().toNumber();
-  <#else>
-    var ${lowerBoundVar} = ${setter.lowerBoundValue};
-  </#if>
-</#if>
-<#if setter.upperBoundValue?has_content>
-  <#if setter.upperBoundUnit?has_content>
-    var ${upperBoundVar} = math.eval("${setter.upperBoundValue} ${setter.upperBoundUnit}").toSI().toNumber();
-  <#else>
-    var ${upperBoundVar} = ${setter.upperBoundValue};
-  </#if>
-</#if>-->
 
   if (${varName} === undefined) {
     throw "Could not evaluate input for ${setter.parameterName}";

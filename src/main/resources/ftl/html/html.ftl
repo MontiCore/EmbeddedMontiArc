@@ -41,9 +41,35 @@
     float: left;
     min-width: 200px;
   }
-  .execute {
-    width: fit-content;
-    margin: 10px auto;
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+  }
+
+  .buttons div {
+    flex-basis: 100%;
+  }
+
+  .button {
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100px;
+    flex-basis: 100%;
+  }
+
+  #reset {
+    background-color: #d22b23;
+  }
+
+  #execute {
+    background-color: #24d231;
   }
   .error {
     color: red;
@@ -102,8 +128,13 @@
 </#list>
       </div>
     </div>
-    <div class="execute">
-      <button id="execute" onclick="exec()">Execute</button>
+    <div class="buttons">
+      <div class="reset">
+        <button class="button" id="reset" onclick="reset()">Reset</button>
+      </div>
+      <div class="execute">
+        <button class="button" id="execute" onclick="exec()">Execute</button>
+      </div>
     </div>
   </div>
   <div class="error" id="error"></div>
@@ -111,10 +142,8 @@
 
 <script>
   function exec() {
-  <#list outports as outport>
-    document.getElementById("outport-field-${outport.name}").innerText = "";
-  </#list>
-    document.getElementById("error").innerHTML = "";
+    clearOutportFields();
+    clearErrors();
 
     try {
     <#list inports as inport>
@@ -135,6 +164,29 @@
         document.getElementById("error").innerHTML = err.message;
       }
     }
+  }
+
+  function reset() {
+    init();
+    clearInportFields();
+    clearOutportFields();
+    clearErrors();
+  }
+
+  function clearInportFields() {
+  <#list inports as inport>
+    document.getElementById("inport-field-${inport.name}").value = "";
+  </#list>
+  }
+
+  function clearOutportFields() {
+  <#list outports as outport>
+    document.getElementById("outport-field-${outport.name}").innerText = "";
+  </#list>
+  }
+
+  function clearErrors() {
+    document.getElementById("error").innerHTML = "";
   }
 </script>
 </body>
