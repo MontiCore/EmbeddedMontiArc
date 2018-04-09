@@ -36,7 +36,7 @@ public class SimLangContainer {
   private Optional<ArrayList<Channel>> channels = Optional.empty();
 
   public SimLangContainer(Scope symTab, String fullPackage, String modelName) {
-    String symPrefix = fullPackage+"."+modelName+".";
+    String symPrefix = fullPackage.equals("") ? modelName+"." : fullPackage+"."+modelName+".";
     SimulationRenderFrequencySymbol sim_render_frequency = symTab.<SimulationRenderFrequencySymbol>resolve(symPrefix+"sim_render_frequency", SimulationRenderFrequencySymbol.KIND).orElse(null);
     if(sim_render_frequency != null)
       this.sim_render_frequency = Optional.of(sim_render_frequency.getSimulationRenderFrequency());
