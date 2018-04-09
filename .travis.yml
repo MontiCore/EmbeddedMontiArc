@@ -26,10 +26,10 @@ jobs:
       services:
         - docker
       script:
-        - mvn verify -Pintegration-test jacoco:report coveralls:report --settings "settings.xml"
+        - mvn verify -Pintegration-test jacoco:report --settings "settings.xml"
     - stage: acceptance-test
       script:
-        - mvn verify -Pacceptance-test jacoco:report coveralls:report --settings "settings.xml"
+        - mvn verify -Pacceptance-test jacoco:report --settings "settings.xml"
 
 after_success:
  - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
