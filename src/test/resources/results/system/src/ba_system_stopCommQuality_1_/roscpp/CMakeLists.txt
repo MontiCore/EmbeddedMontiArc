@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.5)
+project (RosAdapter_ba_system_stopCommQuality_1_)
+
+find_package(roscpp REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_library(RosAdapter_ba_system_stopCommQuality_1_ RosAdapter_ba_system_stopCommQuality_1_.h)
+set_target_properties(RosAdapter_ba_system_stopCommQuality_1_ PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(RosAdapter_ba_system_stopCommQuality_1_ ba_system_stopCommQuality_1_ ${roscpp_LIBRARIES} ${std_msgs_LIBRARIES})
+target_include_directories(RosAdapter_ba_system_stopCommQuality_1_ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${roscpp_INCLUDE_DIRS} ${std_msgs_INCLUDE_DIRS})
+
+
+export(TARGETS RosAdapter_ba_system_stopCommQuality_1_ FILE RosAdapter_ba_system_stopCommQuality_1_.cmake)

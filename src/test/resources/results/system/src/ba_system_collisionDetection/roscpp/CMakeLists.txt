@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.5)
+project (RosAdapter_ba_system_collisionDetection)
+
+find_package(roscpp REQUIRED)
+find_package(std_msgs REQUIRED)
+
+add_library(RosAdapter_ba_system_collisionDetection RosAdapter_ba_system_collisionDetection.h)
+set_target_properties(RosAdapter_ba_system_collisionDetection PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(RosAdapter_ba_system_collisionDetection ba_system_collisionDetection ${roscpp_LIBRARIES} ${std_msgs_LIBRARIES} ${struct_msgs_LIBRARIES})
+target_include_directories(RosAdapter_ba_system_collisionDetection PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${roscpp_INCLUDE_DIRS} ${std_msgs_INCLUDE_DIRS} ${struct_msgs_INCLUDE_DIRS})
+add_dependencies(RosAdapter_ba_system_collisionDetection struct_msgs_generate_messages)
+
+export(TARGETS RosAdapter_ba_system_collisionDetection FILE RosAdapter_ba_system_collisionDetection.cmake)
