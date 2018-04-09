@@ -24,6 +24,7 @@ function getOutThousandsMatrixArray() {
 
 function setInThousandsMatrixArray(_inThousandsMatrixArray) {
     var value = math.eval(_inThousandsMatrixArray);
+    var lower = math.eval("2/1 m").toSI().toNumber();
 
     if (value === undefined) {
         throw "Could not evaluate input for _inThousandsMatrixArray";
@@ -52,7 +53,7 @@ function setInThousandsMatrixArray(_inThousandsMatrixArray) {
                     }
                     var e_num = e.toSI().toNumber();
                     //check range
-                    if (math.smaller(e_num, 2 / 1)) {
+                    if (math.smaller(e_num, lower)) {
                         throw "Value " + e_num + " out of range";
                     }
                     array[i0][i1][i2][i3] = e_num;
