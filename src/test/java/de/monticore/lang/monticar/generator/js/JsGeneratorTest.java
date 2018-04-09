@@ -28,14 +28,6 @@ class JsGeneratorTest {
   private static final String OUT = "out";
 
   private static final String RANGE_MODEL = "models.multiplePorts";
-  private static final String BOOL = "Bool";
-  private static final String UNBOUNDED = "Unbounded";
-  private static final String BOUNDED = "Bounded";
-  private static final String STEP = "Step";
-  private static final String UNIT = "Unit";
-  private static final String UPPER_BOUND = "UpperBound";
-  private static final String LOWER_BOUND = "LowerBound";
-  private static final String STEP_UNIT = "StepUnit";
 
   private static final String DIMENSION_MODEL = "models.dimensions";
   private static final String SCALAR = "Scalar";
@@ -131,7 +123,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getIncomingPort(portName(IN, ARRAY)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(3);
+          assertThat(getDimension(ports, port)).containsExactly("3");
         }
 
         @Test
@@ -139,7 +131,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getIncomingPort(portName(IN, ROW_VECTOR)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(1, 3);
+          assertThat(getDimension(ports, port)).containsExactly("1", "3");
         }
 
         @Test
@@ -147,7 +139,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getIncomingPort(portName(IN, COLUMN_VECTOR)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(4, 1);
+          assertThat(getDimension(ports, port)).containsExactly("4", "1");
         }
 
         @Test
@@ -155,7 +147,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getIncomingPort(portName(IN, MATRIX)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(2, 3);
+          assertThat(getDimension(ports, port)).containsExactly("2", "3");
         }
 
         @Test
@@ -163,7 +155,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getIncomingPort(portName(IN, MATRIX_ARRAY)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(2, 3, 4);
+          assertThat(getDimension(ports, port)).containsExactly("2", "3", "4");
         }
       }
 
@@ -175,7 +167,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getOutgoingPort(portName(OUT, ARRAY)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(3);
+          assertThat(getDimension(ports, port)).containsExactly("3");
         }
 
         @Test
@@ -183,7 +175,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getOutgoingPort(portName(OUT, ROW_VECTOR)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(1, 3);
+          assertThat(getDimension(ports, port)).containsExactly("1", "3");
         }
 
         @Test
@@ -191,7 +183,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getOutgoingPort(portName(OUT, COLUMN_VECTOR)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(4, 1);
+          assertThat(getDimension(ports, port)).containsExactly("4", "1");
         }
 
         @Test
@@ -199,7 +191,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getOutgoingPort(portName(OUT, MATRIX)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(2, 3);
+          assertThat(getDimension(ports, port)).containsExactly("2", "3");
         }
 
         @Test
@@ -207,7 +199,7 @@ class JsGeneratorTest {
           Collection<PortSymbol> ports = dimensionModel.getPorts();
           PortSymbol port = dimensionModel.getOutgoingPort(portName(OUT, MATRIX_ARRAY)).get();
 
-          assertThat(getDimension(ports, port)).containsExactly(2, 3, 4);
+          assertThat(getDimension(ports, port)).containsExactly("2", "3", "4");
         }
       }
     }

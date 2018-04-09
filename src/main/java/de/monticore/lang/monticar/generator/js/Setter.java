@@ -5,7 +5,7 @@ public class Setter {
   private String methodName;
   private String parameterName;
   private String delegateMethodName;
-  private int[] dimension;
+  private String[] dimension;
   private String lowerBoundValue;
   private String lowerBoundUnit;
   private String upperBoundValue;
@@ -35,11 +35,11 @@ public class Setter {
     this.delegateMethodName = delegateMethodName;
   }
 
-  public int[] getDimension() {
+  public String[] getDimension() {
     return dimension;
   }
 
-  public void setDimension(int[] dimension) {
+  public void setDimension(String[] dimension) {
     this.dimension = dimension;
   }
 

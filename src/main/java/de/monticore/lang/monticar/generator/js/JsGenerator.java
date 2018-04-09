@@ -69,23 +69,23 @@ public class JsGenerator {
   }
 
   @VisibleForTesting
-  static int[] getDimension(Collection<PortSymbol> ports, PortSymbol port) {
+  static String[] getDimension(Collection<PortSymbol> ports, PortSymbol port) {
     int arrayDimension = port.isPartOfPortArray() ?
         getArrayDimension(ports, port.getNameWithoutArrayBracketPart()) : 0;
     int[] matrixDimension = getMatrixDimension(port);
     return combineDimensions(arrayDimension, matrixDimension);
   }
 
-  private static int[] combineDimensions(int arrayDimension, int[] matrixDimension) {
+  private static String[] combineDimensions(int arrayDimension, int[] matrixDimension) {
     if (arrayDimension > 0 && matrixDimension.length > 0) {
       int[] dimension = new int[matrixDimension.length + 1];
       dimension[0] = arrayDimension;
       System.arraycopy(matrixDimension, 0, dimension, 1, matrixDimension.length);
-      return dimension;
+      return toStringArray(dimension);
     } else if (matrixDimension.length > 0) {
-      return matrixDimension;
+      return toStringArray(matrixDimension);
     } else if (arrayDimension > 0) {
-      return new int[]{arrayDimension};
+      return new String[]{String.valueOf(arrayDimension)};
     } else {
       return null;
     }
@@ -138,6 +138,10 @@ public class JsGenerator {
 
   private static String join(String delimiter, String... elements) {
     return Arrays.stream(elements).filter(s -> !s.isEmpty()).collect(Collectors.joining(delimiter));
+  }
+
+  private static <T> String[] toStringArray(int[] array) {
+    return Arrays.stream(array).mapToObj(String::valueOf).toArray(String[]::new);
   }
 
   private static String format(Unit<?> unit) {

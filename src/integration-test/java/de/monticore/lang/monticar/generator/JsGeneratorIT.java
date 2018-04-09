@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class JsGeneratorIT {
+class JsGeneratorIT {
 
   private static final Path RESSOURCE_DIR = Paths
       .get("src/integration-test/resources/jsfilegeneration");
@@ -52,7 +52,7 @@ public class JsGeneratorIT {
 
   @ParameterizedTest
   @ValueSource(strings = {
-      "noPorts", "caretSymbol",
+      "noPorts", "caretSymbol", "thousandsDimension",
       "scalar_NoRangeNoUnit", "scalar_RangeNoUnit", "scalar_RangeUnit",
       "array_NoRangeNoUnit", "array_RangeNoUnit", "array_RangeUnit",
       "rowVector_NoRangeNoUnit", "rowVector_RangeNoUnit", "rowVector_RangeUnit",
