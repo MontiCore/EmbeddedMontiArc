@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
 
 
-    <groupId>de.moticore.lang.monticar</groupId>
+    <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 

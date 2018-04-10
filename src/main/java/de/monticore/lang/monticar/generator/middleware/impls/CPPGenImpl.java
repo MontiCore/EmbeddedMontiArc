@@ -15,15 +15,22 @@ import java.util.List;
 //TODO: make GeneratorCpp implement GeneratorImpl directly!
 public class CPPGenImpl implements GeneratorImpl {
     private String generationTargetPath;
+    private GeneratorCPP generatorCPP;
 
+    public CPPGenImpl(){
+        generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+    }
+
+    public void setGeneratorCPP(GeneratorCPP generatorCPP){
+        this.generatorCPP = generatorCPP;
+    }
 
     @Override
     public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
         List<File> files = new ArrayList<>();
 
-        GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath(generationTargetPath);
-        generatorCPP.useArmadilloBackend();
         files.add(generatorCPP.generateFile(generateCMake(componentInstanceSymbol)));
         files.addAll(generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver));
 
