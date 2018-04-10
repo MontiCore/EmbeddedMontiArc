@@ -4,9 +4,9 @@
 [![Coverage Coveralls][coveralls-image]][coveralls-url]
 # EMAM2Wasm
 
-This project compiles EmbeddedMontiArc models to WebAssembly.
+This project compiles EmbeddedMontiArc models to WebAssembly and generates a fully functional web interface to the model:
 
-Check out our project page: http://embeddedmontiarc.com/
+![2018-04-09 23_44_55-windows 10 x64 - vmware workstation](https://user-images.githubusercontent.com/33121464/38524849-5bc479ea-3c50-11e8-946d-72e463036ed8.png)
 
 ## Getting started
 
