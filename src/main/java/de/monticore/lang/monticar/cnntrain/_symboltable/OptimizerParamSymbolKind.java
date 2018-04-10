@@ -20,36 +20,19 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.types2._ast.ASTType;
-import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.Optional;
+public class OptimizerParamSymbolKind implements SymbolKind {
 
-public class ConfigParameterSymbol extends CommonSymbol {
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.OptimizerParamSymbolKind";
 
-    public static final ConfigParameterKind KIND = new ConfigParameterKind();
-
-    private ASTType type;
-    private Object value = null;
-
-    public ConfigParameterSymbol(String name) {
-        super(name, KIND);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
-    public ASTType getType() {
-        return type;
-    }
-
-    public void setType(ASTType type) {
-        this.type = type;
-    }
-
-    public Optional<Object> getValue(){
-        return Optional.ofNullable(value);
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 }

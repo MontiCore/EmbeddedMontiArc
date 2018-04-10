@@ -20,31 +20,53 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
-import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
+import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
-import java.util.*;
+import java.util.Optional;
 
-public class ConfigurationSymbol extends ConfigurationSymbolTOP {
+public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
-    private Map<String, EntrySymbol> entryMap = new HashMap<>();
-    private List<ConfigParameterSymbol> parameters = new ArrayList<>();
+    private NumEpochSymbol numEpoch;
+    private BatchSizeSymbol batchSize;
+    private LoadCheckpointSymbol loadCheckpoint;
+    private OptimizerSymbol optimizer;
 
-    public ConfigurationSymbol(String name) {
-        super(name);
+    public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
+
+    public ConfigurationSymbol()  {
+        super("", KIND);
     }
 
-    public Map<String, EntrySymbol> getEntryMap() {
-        return entryMap;
+    public NumEpochSymbol getNumEpoch() {
+        return numEpoch;
     }
 
-    public List<ConfigParameterSymbol> getParameters() {
-        return parameters;
+    public void setNumEpoch(NumEpochSymbol numEpoch) {
+        this.numEpoch = numEpoch;
     }
 
-    public void setParameters(List<ConfigParameterSymbol> parameters) {
-        this.parameters = parameters;
+    public OptimizerSymbol getOptimizer() {
+        return optimizer;
+    }
+
+    public void setOptimizer(OptimizerSymbol optimizer) {
+        this.optimizer = optimizer;
+    }
+
+    public BatchSizeSymbol getBatchSize() {
+        return batchSize;
+    }
+
+    public void setBatchSize(BatchSizeSymbol batchSize) {
+        this.batchSize = batchSize;
+    }
+
+    public LoadCheckpointSymbol getLoadCheckpoint() {
+        return loadCheckpoint;
+    }
+
+    public void setLoadCheckpoint(LoadCheckpointSymbol loadCheckpoint) {
+        this.loadCheckpoint = loadCheckpoint;
     }
 
 }

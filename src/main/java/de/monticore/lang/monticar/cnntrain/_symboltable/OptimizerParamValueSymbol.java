@@ -23,19 +23,17 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.Optional;
+public class OptimizerParamValueSymbol extends CommonSymbol {
 
-public class ValueSymbol extends CommonSymbol {
-
-    public static final ValueKind KIND = new ValueKind();
+    public static final OptimizerParamValueSymbolKind KIND = new OptimizerParamValueSymbolKind();
 
     private Object value;
 
-    public ValueSymbol() {
+    public OptimizerParamValueSymbol() {
         super("", KIND);
     }
 
-    public ValueSymbol(String name, SymbolKind kind) {
+    public OptimizerParamValueSymbol(String name, SymbolKind kind) {
         super(name, kind);
     }
 

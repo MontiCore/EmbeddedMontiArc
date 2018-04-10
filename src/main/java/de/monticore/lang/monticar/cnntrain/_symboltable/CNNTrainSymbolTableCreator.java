@@ -27,10 +27,7 @@ import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
@@ -39,19 +36,19 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
 
     public CNNTrainSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
-                                     final MutableScope enclosingScope) {
+                                      final MutableScope enclosingScope) {
         super(resolvingConfig, enclosingScope);
     }
 
     public CNNTrainSymbolTableCreator(final ResolvingConfiguration resolvingConfig,
-                                     final Deque<MutableScope> scopeStack) {
+                                      final Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
     }
 
 
     @Override
     public void visit(final ASTCNNTrainCompilationUnit compilationUnit) {
-        Log.debug("Building Symboltable for Script: " + compilationUnit.getConfiguration().getName(),
+        Log.debug("Building Symboltable for Script: " + compilationUnit.getName(),
                 CNNTrainSymbolTableCreator.class.getSimpleName());
 
         List<ImportStatement> imports = new ArrayList<>();
@@ -62,11 +59,22 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
                 imports);
 
         putOnStack(artifactScope);
+
+        CNNTrainCompilationUnitSymbol compilationUnitSymbol = new CNNTrainCompilationUnitSymbol(compilationUnit.getName());
+        addToScopeAndLinkWithNode(compilationUnitSymbol, compilationUnit);
     }
 
     @Override
+    public void endVisit(ASTCNNTrainCompilationUnit ast) {
+        CNNTrainCompilationUnitSymbol compilationUnitSymbol = (CNNTrainCompilationUnitSymbol) ast.getSymbol().get();
+        compilationUnitSymbol.setConfiguration((ConfigurationSymbol) ast.getConfiguration().getSymbol().get());
+        setEnclosingScopeOfNodes(ast);
+    }
+
+
+    @Override
     public void visit(final ASTConfiguration node){
-        configuration = new ConfigurationSymbol(node.getName());
+        configuration = new ConfigurationSymbol();
         addToScopeAndLinkWithNode(configuration , node);
     }
 
@@ -76,72 +84,57 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     }
 
     @Override
-    public void endVisit(ASTEntry node) {
-        EntrySymbol entry = new EntrySymbol(node.getName());
-        entry.setValue((ValueSymbol) node.getValue().getSymbol().get());
-        addToScopeAndLinkWithNode(entry, node);
-
-        configuration.getEntryMap().put(node.getName(), entry);
+    public void visit(ASTOptimizerEntry node) {
+        OptimizerSymbol optimizer = new OptimizerSymbol(node.getValue().getName());
+        configuration.setOptimizer(optimizer);
+        addToScopeAndLinkWithNode(optimizer, node);
     }
 
     @Override
-    public void endVisit(ASTNumberValue node) {
-        ValueSymbol value = new ValueSymbol();
-        Double number = node.getNumber().getUnitNumber().get().getNumber().get().doubleValue();
-        value.setValue(number);
-        addToScopeAndLinkWithNode(value, node);
+    public void endVisit(ASTOptimizerEntry node) {
+        for (ASTEntry nodeParam : node.getValue().getParams()) {
+            OptimizerParamSymbol param = new OptimizerParamSymbol();
+            OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol) nodeParam.getValue().getSymbol().get();
+            param.setValue(valueSymbol);
+            configuration.getOptimizer().getOptimizerParamMap().put(nodeParam.getName(), param);;
+        }
+
     }
 
     @Override
-    public void endVisit(ASTIntegerValue node) {
-        ValueSymbol value = new ValueSymbol();
-        Integer number = node.getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
-        value.setValue(number);
-        addToScopeAndLinkWithNode(value, node);
+    public void endVisit(ASTNumEpochEntry node) {
+        NumEpochSymbol symbol = new NumEpochSymbol();
+        Integer value_as_int = node.getValue().getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
+        symbol.setValue(value_as_int);
+        addToScopeAndLinkWithNode(symbol, node);
+        configuration.setNumEpoch(symbol);
     }
 
     @Override
-    public void endVisit(ASTBooleanValue node) {
-        ValueSymbol value = new ValueSymbol();
-        if (node.getTRUE().isPresent()){
-            value.setValue(true);
-        }
-        else if (node.getFALSE().isPresent()){
-            value.setValue(false);
-        }
-        addToScopeAndLinkWithNode(value, node);
+    public void endVisit(ASTBatchSizeEntry node) {
+        BatchSizeSymbol symbol = new BatchSizeSymbol();
+        Integer value_as_int = node.getValue().getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
+        symbol.setValue(value_as_int);
+        addToScopeAndLinkWithNode(symbol, node);
+        configuration.setBatchSize(symbol);
     }
 
     @Override
-    public void endVisit(ASTEvalMetricValue node) {
-        ValueSymbol value = new ValueSymbol();
-        if (node.getAccuracy().isPresent()){
-            value.setValue(EvalMetric.ACCURACY);
+    public void endVisit(ASTLoadCheckpointEntry node) {
+        LoadCheckpointSymbol symbol = new LoadCheckpointSymbol();
+        if (node.getValue().getTRUE().isPresent()){
+            symbol.setValue(true);
         }
-        else if (node.getCrossEntropy().isPresent()){
-            value.setValue(EvalMetric.CROSS_ENTROPY);
+        else if (node.getValue().getFALSE().isPresent()){
+           symbol.setValue(false);
         }
-        else if (node.getF1().isPresent()){
-            value.setValue(EvalMetric.F1);
-        }
-        else if (node.getMae().isPresent()){
-            value.setValue(EvalMetric.MAE);
-        }
-        else if (node.getMse().isPresent()){
-            value.setValue(EvalMetric.MSE);
-        }
-        else if (node.getRmse().isPresent()){
-            value.setValue(EvalMetric.RMSE);
-        }
-        else if (node.getTopKAccuracy().isPresent()){
-            value.setValue(EvalMetric.TOP_K_ACCURACY);
-        }
-        addToScopeAndLinkWithNode(value, node);
+         configuration.setLoadCheckpoint(symbol);
     }
+
 
     @Override
     public void endVisit(ASTLRPolicyValue node) {
-        ValueSymbol value = new ValueSymbol();
+        OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
         if (node.getFixed().isPresent()){
             value.setValue(LRPolicy.FIXED);
         }
@@ -163,15 +156,32 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(value, node);
     }
 
-    public void endVisit(ASTOptimizerValue node){
-        ValueSymbol value = new ValueSymbol();
-        value.setValue(node.getName());
+    @Override
+    public void endVisit(ASTNumberValue node) {
+        OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
+        Double number = node.getNumber().getUnitNumber().get().getNumber().get().doubleValue();
+        value.setValue(number);
         addToScopeAndLinkWithNode(value, node);
     }
 
     @Override
-    public void endVisit(ASTDataVariable node){
-        NameValueSymbol variableSymbol = new NameValueSymbol(node.getName());
-        addToScopeAndLinkWithNode(variableSymbol, node);
+    public void endVisit(ASTIntegerValue node) {
+        OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
+        Integer number = node.getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
+        value.setValue(number);
+        addToScopeAndLinkWithNode(value, node);
     }
+
+    @Override
+    public void endVisit(ASTBooleanValue node) {
+        OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
+        if (node.getTRUE().isPresent()){
+            value.setValue(true);
+        }
+        else if (node.getFALSE().isPresent()){
+            value.setValue(false);
+        }
+        addToScopeAndLinkWithNode(value, node);
+    }
+
 }

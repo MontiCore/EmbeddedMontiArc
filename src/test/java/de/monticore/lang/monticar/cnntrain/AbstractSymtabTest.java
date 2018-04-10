@@ -31,7 +31,7 @@ import java.nio.file.Paths;
 
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
-//        Log.enableFailQuick(false);
+        Log.enableFailQuick(false);
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
 
         fam.addModelingLanguage(new CNNTrainLanguage());

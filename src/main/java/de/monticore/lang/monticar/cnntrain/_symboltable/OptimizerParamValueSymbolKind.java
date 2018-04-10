@@ -20,24 +20,19 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public class NameValueSymbol extends ValueSymbol {
+import de.monticore.symboltable.SymbolKind;
 
-    public static final NameValueKind KIND = new NameValueKind();
-    private ConfigParameterSymbol parameter;
+public class OptimizerParamValueSymbolKind implements SymbolKind {
 
-    public NameValueSymbol(String name) {
-        super(name, KIND);
-    }
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.OptimizerParamValueSymbolKind";
 
-    public ConfigParameterSymbol getParameter(){
-        if (parameter == null){
-            parameter = (ConfigParameterSymbol) getEnclosingScope().resolve(getName(), ConfigParameterSymbol.KIND).get();
-        }
-        return parameter;
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     @Override
-    public Object getValue() {
-        return getParameter().getValue();
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 }

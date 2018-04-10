@@ -39,9 +39,10 @@ public class CNNTrainLanguage extends CNNTrainLanguageTOP {
     @Override
     protected void initResolvingFilters() {
         super.initResolvingFilters();
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(EntrySymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(NameValueSymbol.KIND));
-        addResolvingFilter(new CommonResolvingFilter<Symbol>(ValueSymbol.KIND));
+        addResolvingFilter(new CNNTrainCompilationUnitResolvingFilter());
+        addResolvingFilter(new CommonResolvingFilter<Symbol>(ConfigurationSymbol.KIND));
+        addResolvingFilter(new CommonResolvingFilter<Symbol>(OptimizerSymbol.KIND));
+        addResolvingFilter(new CommonResolvingFilter<Symbol>(OptimizerParamSymbol.KIND));
         setModelNameCalculator(new CNNTrainModelNameCalculator());
     }
 

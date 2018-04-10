@@ -2,10 +2,11 @@ package de.monticore.lang.monticar;
 
 grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.NumberUnit{
 
-    CNNTrainCompilationUnit = Configuration;
-    symbol scope Configuration = "configuration"
+    symbol scope CNNTrainCompilationUnit = "configuration"
                                  name:Name&
-                                 "{"entries:ConfigEntry* "}";
+                                 Configuration;
+
+    Configuration =  "{"entries:ConfigEntry* "}";
 
     interface Entry;
     ast Entry = method String getName(){}
@@ -15,18 +16,12 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
     interface VariableReference;
     ast VariableReference = method String getName(){};
 
-    OptimizerEntry implements ConfigEntry = name:"optimizer" ":" value:OptimizerValue;
-    EvalMetricEntry implements ConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
+    LoadCheckpointEntry implements ConfigEntry = name:"load_checkpoint" ":" value:BooleanValue;
+    OptimizerEntry implements ConfigEntry = name:"optimizer" ":" value:OptimizerValue;
 
-    EvalMetricValue implements ConfigValue =(accuracy:"accuracy"
-                                           | crossEntropy:"ce"
-                                           | f1:"f1"
-                                           | mae:"mae"
-                                           | mse:"mse"
-                                           | rmse:"rmse"
-                                           | topKAccuracy:"top_k_accuracy");
+
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
                                          | exp:"exp"

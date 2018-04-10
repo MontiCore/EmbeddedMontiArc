@@ -18,21 +18,32 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain.generator;
 
-import de.monticore.symboltable.SymbolKind;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
 
-public class ConfigParameterKind implements SymbolKind {
+public class TemplateConfiguration {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ConfigParameterKind";
+    private static TemplateConfiguration instance;
+    private Configuration configuration;
 
-    @Override
-    public String getName() {
-        return NAME;
+    private TemplateConfiguration() {
+        configuration = new Configuration(Configuration.VERSION_2_3_23);
+        configuration.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
+        configuration.setDefaultEncoding("UTF-8");
+        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     }
 
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    public Configuration getConfiguration() {
+        return configuration;
     }
+
+    public static Configuration get(){
+        if (instance == null){
+            instance = new TemplateConfiguration();
+        }
+        return instance.getConfiguration();
+    }
+
 }

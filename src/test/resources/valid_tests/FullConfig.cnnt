@@ -1,7 +1,7 @@
 configuration FullConfig{
      num_epoch : 5
      batch_size : 100
-     eval_metric:ce
+     load_checkpoint: true
      optimizer:rmsprop{
          learning_rate:0.001
          weight_decay:0.01
@@ -16,4 +16,4 @@ configuration FullConfig{
          centered:true
          clip_weights:10
      }
- }
+}

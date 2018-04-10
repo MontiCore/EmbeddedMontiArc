@@ -18,24 +18,25 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.se_rwth.commons.logging.Log;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CNNTrainCocos {
+public class OptimizerSymbol extends de.monticore.symboltable.CommonSymbol {
 
-    public static CNNTrainCoCoChecker createChecker() {
-        return new CNNTrainCoCoChecker()
-                .addCoCo(new CheckEntryRepetition())
-                .addCoCo(new CheckInteger());
+    private Map<String, OptimizerParamSymbol> optimizerParamMap = new HashMap<>();
+    public static final OptimizerSymbolKind KIND = OptimizerSymbolKind.INSTANCE;
+
+    public OptimizerSymbol(String name) {
+        super(name, KIND);
     }
 
-    public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
-        ASTCNNTrainNode node = (ASTCNNTrainNode) compilationUnit.getAstNode().get();
-        int findings = Log.getFindings().size();
-        createChecker().checkAll(node);
+    public Map<String, OptimizerParamSymbol> getOptimizerParamMap() {
+        return optimizerParamMap;
     }
 
+    public void setOptimizerParamMap(Map<String, OptimizerParamSymbol> optimizerParamMap) {
+        this.optimizerParamMap = optimizerParamMap;
+    }
 }

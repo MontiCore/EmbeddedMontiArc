@@ -21,9 +21,11 @@
 package de.monticore.lang.monticar.cnntrain.cocos;
 
 import de.monticore.lang.monticar.cnntrain.AbstractSymtabTest;
+import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainCompilationUnit;
 import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCoCoChecker;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
@@ -45,14 +47,14 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
 
     private static final String MODEL_PATH = "src/test/resources/";
 
-    protected static ASTCNNTrainNode getAstNode(String modelPath, String model) {
+    protected static ASTCNNTrainCompilationUnit getAstNode(String modelPath, String model) {
 
         Scope symTab = createSymTab(MODEL_PATH + modelPath);
-        ConfigurationSymbol comp = symTab.<ConfigurationSymbol> resolve(
-                model, ConfigurationSymbol.KIND).orElse(null);
+        CNNTrainCompilationUnitSymbol comp = symTab.<CNNTrainCompilationUnitSymbol> resolve(
+                model, CNNTrainCompilationUnitSymbol.KIND).orElse(null);
         assertNotNull("Could not resolve model " + model, comp);
 
-        return (ASTCNNTrainNode) comp.getAstNode().get();
+        return (ASTCNNTrainCompilationUnit) comp.getAstNode().get();
     }
 
     /**
@@ -63,7 +65,7 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
     protected static void runCheckerWithSymTab(String modelPath, String model) {
         Log.getFindings().clear();
 
-        ASTCNNTrainNode node = getAstNode(modelPath, model);
+        ASTCNNTrainCompilationUnit node = getAstNode(modelPath, model);
 
         CNNTrainCocos.createChecker().checkAll(node);
     }
@@ -90,7 +92,7 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
 
         // check whether all the expected errors are present when using all cocos
         Log.getFindings().clear();
-        ASTCNNTrainNode node = getAstNode(modelPath, model);
+        ASTCNNTrainCompilationUnit node = getAstNode(modelPath, model);
         CNNTrainCocos.createChecker().checkAll(node);
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");

@@ -20,17 +20,19 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum Context {
-    CPU{
-        @Override
-        public String toString() {
-            return "cpu";
-        }
-    },
-    GPU{
-        @Override
-        public String toString() {
-            return "gpu";
-        }
+import de.monticore.symboltable.SymbolKind;
+
+public class LoadCheckpointSymbolKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.LoadCheckpointSymbolKind";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
 }

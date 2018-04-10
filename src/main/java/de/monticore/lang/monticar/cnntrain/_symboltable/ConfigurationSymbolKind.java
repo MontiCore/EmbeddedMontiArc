@@ -20,47 +20,20 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-public enum EvalMetric {
-    ACCURACY{
-        @Override
-        public String toString() {
-            return "accuracy";
-        }
-    },
-    CROSS_ENTROPY{
-        @Override
-        public String toString() {
-            return "crossEntropy";
-        }
-    },
-    F1{
-        @Override
-        public String toString() {
-            return "f1";
-        }
-    },
-    MAE{
-        @Override
-        public String toString() {
-            return "mae";
-        }
-    },
-    MSE{
-        @Override
-        public String toString() {
-            return "mse";
-        }
-    },
-    RMSE{
-        @Override
-        public String toString() {
-            return "rmse";
-        }
-    },
-    TOP_K_ACCURACY{
-        @Override
-        public String toString() {
-            return "topKAccuracy";
-        }
+import de.monticore.symboltable.SymbolKind;
+
+public class ConfigurationSymbolKind implements SymbolKind {
+
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbolKind";
+
+    @Override
+    public String getName() {
+        return NAME;
     }
+
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    }
+
 }

@@ -18,24 +18,38 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._symboltable;
+package de.monticore.lang.monticar.cnntrain.generator;
 
-import de.monticore.symboltable.CommonSymbol;
+public enum Target {
+    PYTHON{
+        @Override
+        public String toString() {
+            return ".py";
+        }
+    },
+    CPP{
+        @Override
+        public String toString() {
+            return ".cpp";
+        }
+    };
 
-public class EntrySymbol extends CommonSymbol {
+    public static Target fromString(String target){
+        switch (target.toLowerCase()){
+            case "python":
+                return PYTHON;
 
-    public static final EntryKind KIND = new EntryKind();
-    private ValueSymbol value;
+            case "py":
+                return PYTHON;
 
-    public EntrySymbol(String name) {
-        super(name, KIND);
-    }
+            case "cpp":
+                return CPP;
 
-    public ValueSymbol getValue() {
-        return value;
-    }
+            case "c++":
+                return CPP;
 
-    public void setValue(ValueSymbol value) {
-        this.value = value;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }

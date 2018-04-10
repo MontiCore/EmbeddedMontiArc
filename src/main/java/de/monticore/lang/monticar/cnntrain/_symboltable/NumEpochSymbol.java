@@ -18,24 +18,33 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.SymbolKind;
 
-public class CNNTrainCocos {
+import java.util.Optional;
 
-    public static CNNTrainCoCoChecker createChecker() {
-        return new CNNTrainCoCoChecker()
-                .addCoCo(new CheckEntryRepetition())
-                .addCoCo(new CheckInteger());
+public class NumEpochSymbol extends CommonSymbol {
+
+    public static final NumEpochSymbolKind KIND = new NumEpochSymbolKind();
+
+    private int value;
+
+    public NumEpochSymbol() {
+        super("", KIND);
     }
 
-    public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
-        ASTCNNTrainNode node = (ASTCNNTrainNode) compilationUnit.getAstNode().get();
-        int findings = Log.getFindings().size();
-        createChecker().checkAll(node);
+    public NumEpochSymbol(String name, SymbolKind kind) {
+        super(name, kind);
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 
 }

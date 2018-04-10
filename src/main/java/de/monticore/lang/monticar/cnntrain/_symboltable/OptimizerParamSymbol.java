@@ -18,24 +18,34 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.se_rwth.commons.logging.Log;
+import de.monticore.symboltable.CommonSymbol;
+import de.monticore.symboltable.SymbolKind;
 
-public class CNNTrainCocos {
+public class OptimizerParamSymbol extends CommonSymbol {
 
-    public static CNNTrainCoCoChecker createChecker() {
-        return new CNNTrainCoCoChecker()
-                .addCoCo(new CheckEntryRepetition())
-                .addCoCo(new CheckInteger());
+    public static final OptimizerParamSymbolKind KIND = new OptimizerParamSymbolKind();
+
+    private OptimizerParamValueSymbol value;
+
+    public OptimizerParamSymbol() {
+        super("", KIND);
     }
 
-    public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
-        ASTCNNTrainNode node = (ASTCNNTrainNode) compilationUnit.getAstNode().get();
-        int findings = Log.getFindings().size();
-        createChecker().checkAll(node);
+    public OptimizerParamSymbol(String name, SymbolKind kind) {
+        super(name, kind);
     }
 
+    public OptimizerParamValueSymbol getValue() {
+        return value;
+    }
+
+    public void setValue(OptimizerParamValueSymbol value) {
+        this.value = value;
+    }
+
+    public String toString(){
+        return getValue().toString();
+    }
 }

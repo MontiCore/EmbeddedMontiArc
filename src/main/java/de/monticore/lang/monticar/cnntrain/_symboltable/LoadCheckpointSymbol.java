@@ -20,19 +20,31 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-public class NameValueKind extends ValueKind {
+import java.util.Optional;
 
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.NameValueKind";
+public class LoadCheckpointSymbol extends CommonSymbol {
 
-    @Override
-    public String getName() {
-        return NAME;
+    public static final LoadCheckpointSymbolKind KIND = new LoadCheckpointSymbolKind();
+
+    private boolean value = false;
+
+    public LoadCheckpointSymbol() {
+        super("", KIND);
     }
 
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || super.isKindOf(kind);
+    public LoadCheckpointSymbol(String name, SymbolKind kind) {
+        super(name, kind);
     }
+
+    public boolean getValue() {
+        return value;
+    }
+
+    public void setValue(boolean value) {
+        this.value = value;
+    }
+
 }

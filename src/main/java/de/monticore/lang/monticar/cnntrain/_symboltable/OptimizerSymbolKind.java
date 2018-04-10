@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class ValueKind implements SymbolKind {
-
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ValueKind";
+public class OptimizerSymbolKind implements SymbolKind {
+    public static final OptimizerSymbolKind INSTANCE = new OptimizerSymbolKind();
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.OptimizerSymbolKind";
 
     @Override
     public String getName() {

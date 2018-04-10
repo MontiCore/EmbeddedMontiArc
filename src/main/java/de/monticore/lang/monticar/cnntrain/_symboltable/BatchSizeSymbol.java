@@ -20,19 +20,31 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
+import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-public class EntryKind implements SymbolKind {
+import java.util.Optional;
 
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.EntryKind";
+public class BatchSizeSymbol extends CommonSymbol {
 
-    @Override
-    public String getName() {
-        return NAME;
+    public static final BatchSizeSymbolKind KIND = new BatchSizeSymbolKind();
+
+    private int value;
+
+    public BatchSizeSymbol() {
+        super("", KIND);
     }
 
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    public BatchSizeSymbol(String name, SymbolKind kind) {
+        super(name, kind);
     }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
 }

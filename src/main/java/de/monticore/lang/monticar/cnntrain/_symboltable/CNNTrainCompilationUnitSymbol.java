@@ -18,24 +18,28 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnntrain._cocos;
+package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.se_rwth.commons.logging.Log;
 
-public class CNNTrainCocos {
+public class CNNTrainCompilationUnitSymbol extends CNNTrainCompilationUnitSymbolTOP{
 
-    public static CNNTrainCoCoChecker createChecker() {
-        return new CNNTrainCoCoChecker()
-                .addCoCo(new CheckEntryRepetition())
-                .addCoCo(new CheckInteger());
+    private ConfigurationSymbol configuration;
+
+    public CNNTrainCompilationUnitSymbol(String name) {
+        super(name);
     }
 
-    public static void checkAll(CNNTrainCompilationUnitSymbol compilationUnit){
-        ASTCNNTrainNode node = (ASTCNNTrainNode) compilationUnit.getAstNode().get();
-        int findings = Log.getFindings().size();
-        createChecker().checkAll(node);
+    public ConfigurationSymbol getConfiguration() {
+        return configuration;
     }
 
+    public void setConfiguration(ConfigurationSymbol configuration) {
+        this.configuration = configuration;
+    }
+
+
+    public void resolve(){
+;
+//        getConfiguration().resolve();
+    }
 }
