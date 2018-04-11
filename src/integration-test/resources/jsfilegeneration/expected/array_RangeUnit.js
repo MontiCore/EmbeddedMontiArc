@@ -28,13 +28,13 @@ function setInRangeUnit(_inRangeUnit) {
     var upper = math.eval("10/1 km/h").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inRangeUnit";
+        throw "inRangeUnit: Could not evaluate input";
     }
 
     //check dimension
     var dim = math.matrix([4]);
     if (!math.deepEqual(value.size(), dim)) {
-        throw "Input has dimension " + value.size() + " but expected " + dim;
+        throw "inRangeUnit: Input has dimension " + value.size() + " but expected " + dim;
     }
 
     var array = [];
@@ -44,15 +44,15 @@ function setInRangeUnit(_inRangeUnit) {
         //check unit
         var expectedUnit = math.eval("m/s");
         if (math.typeof(expectedUnit) !== math.typeof(e) || !expectedUnit.equalBase(e)) {
-            throw "Expected unit m/s";
+            throw "inRangeUnit: Expected unit m/s";
         }
         var e_num = e.toSI().toNumber();
         //check range
         if (math.smaller(e_num, lower)) {
-            throw "Value " + e_num + " out of range";
+            throw "inRangeUnit: Value " + e_num + " out of range";
         }
         if (math.larger(e_num, upper)) {
-            throw "Value " + e_num + " out of range";
+            throw "inRangeUnit: Value " + e_num + " out of range";
         }
         array[i0] = e_num;
     }

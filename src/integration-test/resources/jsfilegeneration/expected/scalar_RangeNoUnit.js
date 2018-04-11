@@ -28,16 +28,16 @@ function setInRangeNoUnit(_inRangeNoUnit) {
     var upper = 10 / 1;
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inRangeNoUnit";
+        throw "inRangeNoUnit: Could not evaluate input";
     }
 
     var value_num = value;
     //check range
     if (math.smaller(value_num, lower)) {
-        throw "Value " + value_num + " out of range";
+        throw "inRangeNoUnit: Value " + value_num + " out of range";
     }
     if (math.larger(value_num, upper)) {
-        throw "Value " + value_num + " out of range";
+        throw "inRangeNoUnit: Value " + value_num + " out of range";
     }
     Module.setInRangeNoUnit(value_num);
 }

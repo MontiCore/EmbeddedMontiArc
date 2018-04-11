@@ -27,9 +27,11 @@ function execute() {
   <#assign elementNumber = elementName + "_num">
   <#assign lowerBoundVar = "lower">
   <#assign upperBoundVar = "upper">
+  <#assign portName = setter.parameterName>
 
-  function ${setter.methodName}(${setter.parameterName}) {
-  var ${varName} = math.eval(${setter.parameterName});
+<#--prefix parameter with "_" so ports can be named Javascript keywords (e.g. "undefined", "var")-->
+  function ${setter.methodName}(_${setter.parameterName}) {
+  var ${varName} = math.eval(_${setter.parameterName});
   <#if setter.lowerBoundValue?has_content>
     <#if setter.lowerBoundUnit?has_content>
       var ${lowerBoundVar} = math.eval("${setter.lowerBoundValue} ${setter.lowerBoundUnit}").toSI().toNumber();
@@ -46,14 +48,14 @@ function execute() {
   </#if>
 
   if (${varName} === undefined) {
-    throw "Could not evaluate input for ${setter.parameterName}";
+    throw "${portName}: Could not evaluate input";
   }
 
   <#if setter.dimension??>
     //check dimension
     var dim = math.matrix([${setter.dimension?join(", ")}]);
     if (!math.deepEqual(${varName}.size(), dim)) {
-      throw "Input has dimension " + ${varName}.size() + " but expected " + dim;
+      throw "${portName}: Input has dimension " + ${varName}.size() + " but expected " + dim;
     }
 
     var array = [];
@@ -61,24 +63,24 @@ function execute() {
     <@forloop index = 0 dim = setter.dimension times = dimensions - 1>
       var ${elementName} = ${varName}.get([<#list 0..<dimensions as i>i${i}<#sep>,</#list>]);
 
-      <@checkUnit unit=setter.lowerBoundUnit!"" var=elementName/>
+      <@checkUnit identifier=portName unit=setter.lowerBoundUnit!"" var=elementName/>
       <#if setter.lowerBoundUnit?has_content>
         var ${elementNumber} = ${elementName}.toSI().toNumber();
       <#else>
         var ${elementNumber} = ${elementName};
       </#if>
-      <@checkRange var=elementNumber lowerBound=setter.lowerBoundValue!"" upperBound=setter.upperBoundValue!""/>
+      <@checkRange identifier=portName var=elementNumber lowerBound=setter.lowerBoundValue!"" upperBound=setter.upperBoundValue!""/>
       array<@arrayindex n=dimensions/> = ${elementNumber};
     </@forloop>
     Module.${setter.delegateMethodName}(array);
   <#else>
-    <@checkUnit unit=setter.lowerBoundUnit!"" var=varName/>
+    <@checkUnit identifier=portName unit=setter.lowerBoundUnit!"" var=varName/>
     <#if setter.lowerBoundUnit?has_content>
       var ${varNumber} = ${varName}.toSI().toNumber();
     <#else>
       var ${varNumber} = ${varName};
     </#if>
-    <@checkRange var=varNumber lowerBound=setter.lowerBoundValue!"" upperBound=setter.upperBoundValue!""/>
+    <@checkRange identifier=portName var=varNumber lowerBound=setter.lowerBoundValue!"" upperBound=setter.upperBoundValue!""/>
     Module.${setter.delegateMethodName}(${varNumber});
   </#if>
 }
@@ -99,27 +101,27 @@ function execute() {
   <#list 0..<n as i>[i${i}]</#list>
 </#macro>
 
-<#macro checkUnit unit var>
+<#macro checkUnit identifier unit var>
   <#if unit?has_content>
     //check unit
     var expectedUnit = math.eval("${unit}");
     if (math.typeof(expectedUnit) !== math.typeof(${var}) || !expectedUnit.equalBase(${var})) {
-      throw "Expected unit ${unit}";
+      throw "${identifier}: Expected unit ${unit}";
     }
   </#if>
 </#macro>
 
-<#macro checkRange var lowerBound upperBound>
+<#macro checkRange identifier var lowerBound upperBound>
   <#if lowerBound?has_content || upperBound?has_content>
     //check range
     <#if lowerBound?has_content>
   if (math.smaller(${var}, ${lowerBoundVar})) {
-        throw "Value " + ${var} + " out of range";
+        throw "${identifier}: Value " + ${var} + " out of range";
       }
     </#if>
     <#if upperBound?has_content>
   if (math.larger(${var}, ${upperBoundVar})) {
-        throw "Value " + ${var} + " out of range";
+        throw "${identifier}: Value " + ${var} + " out of range";
       }
     </#if>
   </#if>

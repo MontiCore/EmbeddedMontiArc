@@ -28,13 +28,13 @@ function setInRangeNoUnit(_inRangeNoUnit) {
     var upper = 10 / 1;
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inRangeNoUnit";
+        throw "inRangeNoUnit: Could not evaluate input";
     }
 
     //check dimension
     var dim = math.matrix([2, 3]);
     if (!math.deepEqual(value.size(), dim)) {
-        throw "Input has dimension " + value.size() + " but expected " + dim;
+        throw "inRangeNoUnit: Input has dimension " + value.size() + " but expected " + dim;
     }
 
     var array = [];
@@ -46,10 +46,10 @@ function setInRangeNoUnit(_inRangeNoUnit) {
             var e_num = e;
             //check range
             if (math.smaller(e_num, lower)) {
-                throw "Value " + e_num + " out of range";
+                throw "inRangeNoUnit: Value " + e_num + " out of range";
             }
             if (math.larger(e_num, upper)) {
-                throw "Value " + e_num + " out of range";
+                throw "inRangeNoUnit: Value " + e_num + " out of range";
             }
             array[i0][i1] = e_num;
         }
