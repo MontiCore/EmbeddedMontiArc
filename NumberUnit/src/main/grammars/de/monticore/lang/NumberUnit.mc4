@@ -96,7 +96,7 @@ grammar NumberUnit {
   fragment token PosNumber =
      (PosInt Space* '/' Space* PosInt) |
      (PosInt ('.' ('0'..'9')+ )?) |
-     '0' ('.' ('0'..'9')+)?;
+     ('0')+ ('.' ('0'..'9')+)?;
 
   fragment token PosInt =
      UngroupedPosInt |
