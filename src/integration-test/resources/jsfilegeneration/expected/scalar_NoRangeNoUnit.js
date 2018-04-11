@@ -29,6 +29,11 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
         throw "inNoRangeNoUnit: Could not evaluate input";
     }
 
+    //check type
+    if (math.typeof(value) !== "number") {
+        throw "inNoRangeNoUnit: Expected type number";
+    }
+
     var value_num = value;
     Module.setInNoRangeNoUnit(value_num);
 }

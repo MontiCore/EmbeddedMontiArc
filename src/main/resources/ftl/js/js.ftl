@@ -28,6 +28,8 @@ function execute() {
   <#assign lowerBoundVar = "lower">
   <#assign upperBoundVar = "upper">
   <#assign portName = setter.parameterName>
+  <#assign typeUnit = "Unit">
+  <#assign typeNumber = "number">
 
 <#--prefix parameter with "_" so ports can be named Javascript keywords (e.g. "undefined", "var")-->
   function ${setter.methodName}(_${setter.parameterName}) {
@@ -74,6 +76,7 @@ function execute() {
     </@forloop>
     Module.${setter.delegateMethodName}(array);
   <#else>
+    <@checkType identifier=portName var=varName type=setter.lowerBoundUnit?has_content?then(typeUnit, typeNumber)/>
     <@checkUnit identifier=portName unit=setter.lowerBoundUnit!"" var=varName/>
     <#if setter.lowerBoundUnit?has_content>
       var ${varNumber} = ${varName}.toSI().toNumber();
@@ -125,4 +128,11 @@ function execute() {
       }
     </#if>
   </#if>
+</#macro>
+
+<#macro checkType identifier var type>
+  //check type
+  if (math.typeof(${var}) !== "${type}") {
+    throw "${identifier}: Expected type ${type}";
+  }
 </#macro>

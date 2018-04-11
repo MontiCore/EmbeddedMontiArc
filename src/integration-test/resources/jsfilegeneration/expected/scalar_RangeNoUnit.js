@@ -31,6 +31,11 @@ function setInRangeNoUnit(_inRangeNoUnit) {
         throw "inRangeNoUnit: Could not evaluate input";
     }
 
+    //check type
+    if (math.typeof(value) !== "number") {
+        throw "inRangeNoUnit: Expected type number";
+    }
+
     var value_num = value;
     //check range
     if (math.smaller(value_num, lower)) {

@@ -31,6 +31,10 @@ function setInRangeUnit(_inRangeUnit) {
         throw "inRangeUnit: Could not evaluate input";
     }
 
+    //check type
+    if (math.typeof(value) !== "Unit") {
+        throw "inRangeUnit: Expected type Unit";
+    }
     //check unit
     var expectedUnit = math.eval("m/s");
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {

@@ -118,6 +118,11 @@ function setC(_c) {
         throw "c: Could not evaluate input";
     }
 
+    //check type
+    if (math.typeof(value) !== "Unit") {
+        throw "c: Expected type Unit";
+    }
+
     //check unit
     var expectedUnit = math.eval("mm/h");
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {

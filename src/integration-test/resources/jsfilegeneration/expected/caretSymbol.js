@@ -30,6 +30,11 @@ function setPower(_power) {
         throw "power: Could not evaluate input";
     }
 
+    //check type
+    if (math.typeof(value) !== "Unit") {
+        throw "power: Expected type Unit";
+    }
+
     //check unit
     var expectedUnit = math.eval("kg*m^2/s^3");
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {
