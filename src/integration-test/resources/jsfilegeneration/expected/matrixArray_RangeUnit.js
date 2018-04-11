@@ -33,8 +33,8 @@ function setInRangeUnit(_inRangeUnit) {
 
     //check dimension
     var dim = math.matrix([4, 2, 3]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "inRangeUnit: Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "inRangeUnit: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];

@@ -38,8 +38,8 @@ function setM1(_m1) {
 
     //check dimension
     var dim = math.matrix([2, 3]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "m1: Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "m1: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];
@@ -79,8 +79,8 @@ function setM2(_m2) {
 
     //check dimension
     var dim = math.matrix([3, 1]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "m2: Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "m2: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];

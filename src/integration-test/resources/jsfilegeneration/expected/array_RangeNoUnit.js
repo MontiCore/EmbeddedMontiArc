@@ -33,8 +33,8 @@ function setInRangeNoUnit(_inRangeNoUnit) {
 
     //check dimension
     var dim = math.matrix([4]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "inRangeNoUnit: Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "inRangeNoUnit: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];

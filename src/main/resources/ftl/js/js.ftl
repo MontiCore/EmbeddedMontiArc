@@ -54,8 +54,8 @@ function execute() {
   <#if setter.dimension??>
     //check dimension
     var dim = math.matrix([${setter.dimension?join(", ")}]);
-    if (!math.deepEqual(${varName}.size(), dim)) {
-      throw "${portName}: Input has dimension " + ${varName}.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(${varName}), dim)) {
+      throw "${portName}: Input has dimension " + math.size(${varName}) + " but expected " + dim;
     }
 
     var array = [];

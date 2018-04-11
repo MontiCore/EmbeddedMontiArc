@@ -32,8 +32,8 @@ function setInThousandsMatrixArray(_inThousandsMatrixArray) {
 
     //check dimension
     var dim = math.matrix([1111, 1234, 3, 1200300]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "inThousandsMatrixArray: Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "inThousandsMatrixArray: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];
