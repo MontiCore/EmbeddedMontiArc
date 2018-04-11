@@ -12,9 +12,10 @@ if __name__ == "__main__":
 
 <#list instances as instance>
     ${instance.fullName?replace(".", "_")} = CNNCreator_${instance.componentType.fullName?replace(".", "_")}.CNNCreator_${instance.componentType.fullName?replace(".", "_")}()
-    ${instance.fullName?replace(".", "_")}.train(batch_size=100,
-        num_epoch=10,
-        optimizer='sgd',
-        optimizer_params={'learning_rate':0.1},
-        load_checkpoint=True)
+    ${instance.fullName?replace(".", "_")}.train(
+    <#if (trainParams[instance_index])??>
+       ${trainParams[instance_index]}
+    </#if>
+    )
+
 </#list>

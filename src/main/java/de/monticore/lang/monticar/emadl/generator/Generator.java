@@ -20,12 +20,15 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
+import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
+import de.monticore.lang.monticar.cnntrain.generator.CNNTrainGenerator;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
@@ -34,6 +37,7 @@ import de.monticore.lang.monticar.generator.cpp.SimulatorIntegrationHelper;
 import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.Symbol;
@@ -44,7 +48,9 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 
@@ -52,6 +58,7 @@ public class Generator {
 
     public static final String CNN_HELPER = "CNNTranslator";
     public static final String CNN_TRAINER = "CNNTrainer";
+    public static final String MODELS_DIR_PATH = "src/test/resources/";
 
     private GeneratorCPP emamGen;
 
@@ -189,19 +196,42 @@ public class Generator {
 
     public FileContent generateCNNTrainer(Set<ExpandedComponentInstanceSymbol> allInstances, String mainComponentName){
         List<ExpandedComponentInstanceSymbol> cnnInstances = new ArrayList<>();
+        List<String> trainParams = new ArrayList<>();
         Set<String> componentNames = new HashSet<>();
         for (ExpandedComponentInstanceSymbol componentInstance : allInstances){
             ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
             Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
+
             if (architecture.isPresent()){
+
+                String fileContent = getTrainingParamsForComponent(mainComponentName);
+                if (!fileContent.isEmpty()) {
+                    trainParams.add(fileContent);
+                }
+
                 cnnInstances.add(componentInstance);
                 componentNames.add(component.getFullName());
+
             }
         }
         Map<String, Object> ftlContext = new HashMap<>();
         ftlContext.put("instances", cnnInstances);
         ftlContext.put("componentNames", componentNames);
+        ftlContext.put("trainParams", trainParams);
         return new FileContent(processTemplate(ftlContext, CNN_TRAINER), CNN_TRAINER + "_" + mainComponentName + ".py");
+    }
+
+    private String getTrainingParamsForComponent(String mainComponentName) {
+        String configFilename = mainComponentName + "Config";
+        if (!Files.exists(Paths.get( MODELS_DIR_PATH + configFilename + ".cnnt"))) {
+            return "";
+        }
+
+        CNNTrainGenerator cnnTrainGenerator =  new CNNTrainGenerator();
+        final ModelPath mp = new ModelPath(Paths.get(MODELS_DIR_PATH));
+        GlobalScope trainScope = new GlobalScope(mp, new CNNTrainLanguage());
+        Map.Entry<String, String> fileContents = cnnTrainGenerator.generateFileContent( trainScope, configFilename );
+        return fileContents.getValue();
     }
 
     public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
@@ -213,7 +243,7 @@ public class Generator {
     }
 
     public void generate(Path modelPath, String qualifiedName) throws IOException, TemplateException {
-        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver("src/test/resources");
+        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver(MODELS_DIR_PATH);
         ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
 
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);

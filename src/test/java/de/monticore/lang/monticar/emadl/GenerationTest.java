@@ -70,4 +70,9 @@ public class GenerationTest {
     public void testMultipleOutputsGeneration() throws IOException, TemplateException {
         generate("MultipleOutputs");
     }
+
+    @Test
+    public void tesVGGGeneration() throws IOException, TemplateException {
+        generate("VGG16");
+    }
 }
