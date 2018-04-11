@@ -28,21 +28,25 @@ function setInRangeUnit(_inRangeUnit) {
     var upper = math.eval("10/1 km/h").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inRangeUnit";
+        throw "inRangeUnit: Could not evaluate input";
     }
 
+    //check type
+    if (math.typeof(value) !== "Unit") {
+        throw "inRangeUnit: Expected type Unit";
+    }
     //check unit
     var expectedUnit = math.eval("m/s");
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {
-        throw "Expected unit m/s";
+        throw "inRangeUnit: Expected unit m/s";
     }
     var value_num = value.toSI().toNumber();
     //check range
     if (math.smaller(value_num, lower)) {
-        throw "Value " + value_num + " out of range";
+        throw "inRangeUnit: Value " + value_num + " out of range";
     }
     if (math.larger(value_num, upper)) {
-        throw "Value " + value_num + " out of range";
+        throw "inRangeUnit: Value " + value_num + " out of range";
     }
     Module.setInRangeUnit(value_num);
 }

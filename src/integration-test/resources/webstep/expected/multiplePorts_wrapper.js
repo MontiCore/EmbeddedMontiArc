@@ -33,13 +33,13 @@ function setM1(_m1) {
     var upper = math.eval("10/1 km").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _m1";
+        throw "m1: Could not evaluate input";
     }
 
     //check dimension
     var dim = math.matrix([2, 3]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "m1: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];
@@ -51,16 +51,16 @@ function setM1(_m1) {
             //check unit
             var expectedUnit = math.eval("m");
             if (math.typeof(expectedUnit) !== math.typeof(e) || !expectedUnit.equalBase(e)) {
-                throw "Expected unit m";
+                throw "m1: Expected unit m";
             }
 
             var e_num = e.toSI().toNumber();
             //check range
             if (math.smaller(e_num, lower)) {
-                throw "Value " + e_num + " out of range";
+                throw "m1: Value " + e_num + " out of range";
             }
             if (math.larger(e_num, upper)) {
-                throw "Value " + e_num + " out of range";
+                throw "m1: Value " + e_num + " out of range";
             }
             array[i0][i1] = e_num;
         }
@@ -74,13 +74,13 @@ function setM2(_m2) {
     var upper = math.eval("20/1 kHz").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _m2";
+        throw "m2: Could not evaluate input";
     }
 
     //check dimension
     var dim = math.matrix([3, 1]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "m2: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];
@@ -92,16 +92,16 @@ function setM2(_m2) {
             //check unit
             var expectedUnit = math.eval("Hz");
             if (math.typeof(expectedUnit) !== math.typeof(e) || !expectedUnit.equalBase(e)) {
-                throw "Expected unit Hz";
+                throw "m2: Expected unit Hz";
             }
 
             var e_num = e.toSI().toNumber();
             //check range
             if (math.smaller(e_num, lower)) {
-                throw "Value " + e_num + " out of range";
+                throw "m2: Value " + e_num + " out of range";
             }
             if (math.larger(e_num, upper)) {
-                throw "Value " + e_num + " out of range";
+                throw "m2: Value " + e_num + " out of range";
             }
             array[i0][i1] = e_num;
         }
@@ -115,22 +115,27 @@ function setC(_c) {
     var upper = math.eval("2/1 km/s").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _c";
+        throw "c: Could not evaluate input";
+    }
+
+    //check type
+    if (math.typeof(value) !== "Unit") {
+        throw "c: Expected type Unit";
     }
 
     //check unit
     var expectedUnit = math.eval("mm/h");
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {
-        throw "Expected unit mm/h";
+        throw "c: Expected unit mm/h";
     }
 
     var value_num = value.toSI().toNumber();
     //check range
     if (math.smaller(value_num, lower)) {
-        throw "Value " + value_num + " out of range";
+        throw "c: Value " + value_num + " out of range";
     }
     if (math.larger(value_num, upper)) {
-        throw "Value " + value_num + " out of range";
+        throw "c: Value " + value_num + " out of range";
     }
     Module.setC(value_num);
 }

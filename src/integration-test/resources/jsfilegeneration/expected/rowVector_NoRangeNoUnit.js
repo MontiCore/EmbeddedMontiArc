@@ -26,13 +26,13 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
     var value = math.eval(_inNoRangeNoUnit);
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inNoRangeNoUnit";
+        throw "inNoRangeNoUnit: Could not evaluate input";
     }
 
     //check dimension
     var dim = math.matrix([1, 3]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "inNoRangeNoUnit: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];

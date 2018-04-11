@@ -187,8 +187,7 @@ public class JsGenerator {
       Setter setter = new Setter();
       String methodName = getSetterMethodName(port);
       setter.setMethodName(methodName);
-      //prefix "_" so ports can be named Javascript keywords (e.g. "undefined", "var")
-      setter.setParameterName('_' + port.getNameWithoutArrayBracketPart());
+      setter.setParameterName(port.getNameWithoutArrayBracketPart());
       setter.setDelegateMethodName(methodName);
       setter.setDimension(getDimension(rawIncomingPorts, port));
 
