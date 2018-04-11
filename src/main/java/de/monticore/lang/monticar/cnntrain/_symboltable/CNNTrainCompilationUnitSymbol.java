@@ -36,10 +36,4 @@ public class CNNTrainCompilationUnitSymbol extends CNNTrainCompilationUnitSymbol
     public void setConfiguration(ConfigurationSymbol configuration) {
         this.configuration = configuration;
     }
-
-
-    public void resolve(){
-;
-//        getConfiguration().resolve();
-    }
 }

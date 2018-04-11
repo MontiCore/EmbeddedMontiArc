@@ -25,10 +25,6 @@ import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
-import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
-import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
-import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -37,7 +33,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -63,58 +58,47 @@ public class CNNTrainGenerator {
     public void generate(Path modelsDirPath, String rootModelName){
         final ModelPath mp = new ModelPath(modelsDirPath);
         GlobalScope scope = new GlobalScope(mp, new CNNTrainLanguage());
-        generate(scope, rootModelName);
-    }
-
-    public void generate(Scope scope, String rootModelName){
-        Optional<CNNTrainCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNTrainCompilationUnitSymbol.KIND);
-        if (!compilationUnit.isPresent()){
-            Log.error("could not resolve configuration " + rootModelName);
-            System.exit(1);
-        }
-
-        CNNTrainCocos.checkAll(compilationUnit.get());
-
-        try{
-            ConfigurationSymbol configuration = compilationUnit.get().getConfiguration();
-            generateFiles(configuration);
+        Map.Entry<String,String> fileContent = generateFileContent(scope, rootModelName);
+        try {
+            generateConfigFile(fileContent);
         }
         catch (IOException e){
             Log.error(e.toString());
         }
     }
 
-    //check cocos with CNNTrainCocos.checkAll(configuration) before calling this method.
-    public Map<String, String> generateStrings(ConfigurationSymbol configuration){
-        Map<String, String> fileContentMap = new HashMap<>();
+    public Map.Entry<String,String> generateFileContent(Scope scope, String rootModelName){
+        Optional<CNNTrainCompilationUnitSymbol> compilationUnit = scope.resolve(rootModelName, CNNTrainCompilationUnitSymbol.KIND);
+        if (!compilationUnit.isPresent()){
+            Log.error("CNNTrainCompilationUnitSymbol is empty. Could not resolve configuration " + rootModelName);
+            System.exit(1);
+        }
+        CNNTrainCocos.checkAll(compilationUnit.get());
+        ConfigurationSymbol configuration = compilationUnit.get().getConfiguration();
         CNNTrainTemplateController cnnTrainTemplateController = new CNNTrainTemplateController(configuration);
-        Map.Entry<String, String> temp;
+        Map.Entry<String, String> fileContent1;
 
-        temp = cnnTrainTemplateController.process("Config", Target.PYTHON);
-        fileContentMap.put(temp.getKey(), temp.getValue());
-        return fileContentMap;
+        fileContent1 = cnnTrainTemplateController.process("Config", Target.PYTHON);
+        Map.Entry<String,String> fileContent = fileContent1;
+        return fileContent;
+
     }
 
-    //check cocos with CNNTrainCocos.checkAll(configuration) before calling this method.
-    public void generateFiles(ConfigurationSymbol configuration) throws IOException{
-        Log.info("Start generating files...", "Generation Test");
-        CNNTrainTemplateController trainTemplateController = new CNNTrainTemplateController(configuration);
-        Map<String, String> fileContentMap = generateStrings(configuration);
+    public void generateConfigFile(Map.Entry<String,String> fileContent) throws IOException{
+        Log.info("Start generating config file...", "Generation Test");
 
-        for (String fileName : fileContentMap.keySet()){
-            File f = new File(getGenerationTargetPath() + fileName);
-            Log.info(f.getName(), "FileCreation:");
-            if (!f.exists()) {
-                f.getParentFile().mkdirs();
-                if (!f.createNewFile()) {
-                    Log.error("File could not be created");
-                }
+        File f = new File(getGenerationTargetPath() + fileContent.getKey());
+        Log.info(f.getName(), "FileCreation:");
+        if (!f.exists()) {
+            f.getParentFile().mkdirs();
+            if (!f.createNewFile()) {
+                Log.error("File could not be created");
             }
-
-            FileWriter writer = new FileWriter(f);
-            writer.write(fileContentMap.get(fileName));
-            writer.close();
         }
+
+        FileWriter writer = new FileWriter(f);
+        writer.write(fileContent.getValue());
+        writer.close();
     }
 
 }

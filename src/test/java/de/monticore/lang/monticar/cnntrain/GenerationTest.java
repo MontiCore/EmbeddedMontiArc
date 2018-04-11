@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 public class GenerationTest {
 
     private void generate(String qualifiedName) throws IOException, TemplateException {
-        Path modelPath = Paths.get("./src/test/resources/valid_tests");
+        Path modelPath = Paths.get("src/test/resources/valid_tests");
         CNNTrainGenerator gen =  new CNNTrainGenerator();
         gen.generate(modelPath, qualifiedName);
     }
