@@ -20,44 +20,22 @@
     margin: 10px;
   }
 
-  .inport-header {
+  .header {
     margin: 0 auto;
     width: fit-content;
   }
 
-  .inport-label {
-    float: left;
-    margin-right: 5px;
-  }
-
-  .inport-field {
-    float: right;
-    width: 200px;
-  }
-
-  .outport-header {
-    margin: 0 auto;
-    width: fit-content;
-  }
-
-  .outport-label {
-    float: left;
-    margin-right: 5px;
-  }
-
-  .outport-field {
-    float: left;
-    min-width: 200px;
+  .type {
+    width: max-content;
+    margin: 2px 15px 2px 2px;
+    color: grey;
   }
 
   .buttons {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
     margin: 10px;
-  }
-
-  .buttons div {
-    flex-basis: 100%;
   }
 
   .button {
@@ -69,7 +47,6 @@
     font-size: 14px;
     cursor: pointer;
     width: 100px;
-    flex-basis: 100%;
   }
 
   #reset {
@@ -84,6 +61,12 @@
     color: red;
     margin: 10px;
   }
+
+  textarea {
+    height: 1em;
+    width: 200px;
+    padding: 3px;
+  }
 </style>
 <head>
   <script type="text/javascript"
@@ -97,14 +80,18 @@
   <div class="model">
     <div class="ports">
       <div class="inports">
-        <div class="inport-header">
+        <div class="header">
           <h3>Inports</h3>
         </div>
+        <table>
+        </table>
       </div>
       <div class="outports">
-        <div class="outport-header">
+        <div class="header">
           <h3>Outports</h3>
         </div>
+        <table>
+        </table>
       </div>
     </div>
     <div class="buttons">
