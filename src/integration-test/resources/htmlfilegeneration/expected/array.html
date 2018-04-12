@@ -137,6 +137,10 @@
 </div>
 
 <script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-inArray").value = url.searchParams.get("inArray");
+
     function exec() {
         clearOutportFields();
         clearErrors();

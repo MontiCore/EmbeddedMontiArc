@@ -137,6 +137,10 @@
 </div>
 
 <script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-inMatrix").value = url.searchParams.get("inMatrix");
+
     function exec() {
         clearOutportFields();
         clearErrors();
