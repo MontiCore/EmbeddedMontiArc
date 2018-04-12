@@ -137,6 +137,10 @@
 </div>
 
 <script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-inScalar").value = url.searchParams.get("inScalar");
+
     function exec() {
         clearOutportFields();
         clearErrors();

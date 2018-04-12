@@ -182,6 +182,12 @@
 </div>
 
 <script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-m1").value = url.searchParams.get("m1");
+    document.getElementById("inport-field-m2").value = url.searchParams.get("m2");
+    document.getElementById("inport-field-c").value = url.searchParams.get("c");
+
     function exec() {
         clearOutportFields();
         clearErrors();

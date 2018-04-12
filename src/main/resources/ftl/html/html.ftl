@@ -134,6 +134,12 @@
 </div>
 
 <script>
+  var url_string = window.location.href;
+  var url = new URL(url_string);
+  <#list inports as inport>
+    document.getElementById("inport-field-${inport.name}").value = url.searchParams.get("${inport.name}");
+  </#list>
+
   function exec() {
     clearOutportFields();
     clearErrors();
