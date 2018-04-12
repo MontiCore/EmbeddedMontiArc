@@ -4,6 +4,7 @@ public class Port {
 
   private String name;
   private String wrapperFunction;
+  private String type;
 
   public String getName() {
     return name;
@@ -19,5 +20,9 @@ public class Port {
 
   public void setWrapperFunction(String wrapperFunction) {
     this.wrapperFunction = wrapperFunction;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
 }
