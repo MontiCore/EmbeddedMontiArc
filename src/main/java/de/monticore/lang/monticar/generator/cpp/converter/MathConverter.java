@@ -1,13 +1,14 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.MathBackend;
+import de.monticore.lang.monticar.generator.TargetCodeInstruction;
+import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
-
 import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
 
@@ -124,9 +125,7 @@ public class MathConverter {
         }
     }
 
-    public static String getCubeTypeInitLine(Variable variable, BluePrintCPP bluePrintCPP) {
-        //TODO implement me
-
-        return null;
+    public static String getCubeTypeInitLine(Variable v, BluePrintCPP bluePrint) {
+        return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
 }

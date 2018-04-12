@@ -15,5 +15,8 @@ component TypeDimensionsTest{
         // matrix
         Q^{3, 3} mat33;
 
+        // cube
+        Q^{3, 3, 3} cub333;
+
     }
 }
