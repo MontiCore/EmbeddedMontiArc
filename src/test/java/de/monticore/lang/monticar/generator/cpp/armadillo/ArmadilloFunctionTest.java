@@ -183,4 +183,9 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     public void testTanhCommand() throws IOException {
         testMathCommand("tanh");
     }
+
+    @Test
+    public void testSumExtendedCommand() throws IOException {
+        testMathCommand("sumExtended");
+    }
 }
