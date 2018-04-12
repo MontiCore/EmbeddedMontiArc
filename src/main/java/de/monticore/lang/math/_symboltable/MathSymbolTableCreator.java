@@ -59,15 +59,15 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
         // imports
         List<ImportStatement> imports = new ArrayList<>();
-        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatementList()) {
+        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatements()) {
             String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportList());
             ImportStatement importStatement = new ImportStatement(qualifiedImport,
                     astImportStatement.isStar());
             imports.add(importStatement);
         }
         String package2 = "";
-        if (compilationUnit.isR__packagePresent()) {
-            package2 = Names.getQualifiedName(compilationUnit.getPackage().getParts());
+        if (compilationUnit.r__packageIsPresent()) {
+            package2 = Names.getQualifiedName(compilationUnit.getPackage().get().getParts());
         }
         ArtifactScope artifactScope = new ArtifactScope(
                 Optional.empty(),
@@ -92,24 +92,24 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         MatrixSymbol sym = new MatrixSymbol(name);
 
         //Creating the Dimensions
-        if (type.isDimPresent()) {
-            if (type.getDim().isVecDimPresent()) {
-                Optional<ASTNumberWithUnit> number = evaluate(type.getDim().getVecDim()); // evaluate(type.getDim().getVecDim());
+        if (type.dimIsPresent()) {
+            if (type.getDim().get().vecDimIsPresent()) {
+                Optional<ASTNumberWithUnit> number = evaluate(type.getDim().get().getVecDim().get()); // evaluate(type.getDim().getVecDim());
                 // calculate dim
                 sym.setCol(testDimension(number, pos));
                 sym.setRow(1); // have a row vector
             } else {
-                if (type.getDim().getMatrixDimList().size() > 2) {
+                if (type.getDim().get().getMatrixDim().size() > 2) {
                     Log.error("0xMATH15: Dimension can just contains maximal two numbers", pos);
                 }
-                if (type.getDim().getMatrixDimList().isEmpty()) {
+                if (type.getDim().get().getMatrixDim().isEmpty()) {
                     Log.error("0xMATH16: Dimension cannot be empty", pos);
                 }
-                Optional<ASTNumberWithUnit> numberCol = evaluate(type.getDim().getMatrixDim(0)); // evaluate(type.getDim().getMatrixDim(0));
+                Optional<ASTNumberWithUnit> numberCol = evaluate(type.getDim().get().getMatrixDim(0)); // evaluate(type.getDim().getMatrixDim(0));
                 // calculate dim
                 sym.setCol(testDimension(numberCol, pos));
 
-                Optional<ASTNumberWithUnit> numberRow = evaluate(type.getDim().getMatrixDim(1)); // evaluate(type.getDim().getMatrixDim(1));
+                Optional<ASTNumberWithUnit> numberRow = evaluate(type.getDim().get().getMatrixDim(1)); // evaluate(type.getDim().getMatrixDim(1));
                 // calculate dim
                 sym.setCol(testDimension(numberRow, pos));
 
@@ -122,18 +122,18 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
         //Creating the Min Max and Steps
         //ElementType with ranges
-        if (type.getElementType().isRangesPresent()) {
+        if (type.getElementType().rangesIsPresent()) {
 
-            Optional<ASTNumberWithUnit> numberMin = evaluate(type.getElementType().getRanges().getMin());
+            Optional<ASTNumberWithUnit> numberMin = evaluate(type.getElementType().getRanges().get().getMin().get());
             sym.setMin(testElementType(numberMin, pos));
-            Optional<ASTNumberWithUnit> numberMax = evaluate(type.getElementType().getRanges().getMax());
+            Optional<ASTNumberWithUnit> numberMax = evaluate(type.getElementType().getRanges().get().getMax().get());
             sym.setMin(testElementType(numberMax, pos));
             if (testElementType(numberMin, pos).get() > testElementType(numberMax, pos).get()) {
                 Log.error("0xMATH17: Min cannot be bigger than Max", pos);
             }
 
-            if (type.getElementType().getRanges().isStepPresent()) {
-                Optional<ASTNumberWithUnit> numberStep = evaluate(type.getElementType().getRanges().getStep());
+            if (type.getElementType().getRanges().get().getStep().isPresent()) {
+                Optional<ASTNumberWithUnit> numberStep = evaluate(type.getElementType().getRanges().get().getStep().get());
                 sym.setMin(testElementType(numberStep, pos));
                 if (testElementType(numberMax, pos).get() - testElementType(numberMin, pos).get() < testElementType(numberStep, pos).get()) {
                     Log.error("0xMATH19: The Steps cannot be bigger than the difference between Min and Max", pos);
@@ -146,8 +146,8 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public static Optional<Double> testElementType(Optional<ASTNumberWithUnit> number, SourcePosition pos) {
         if (!number.isPresent()) {
             Log.error("0xMATH20: Could not evaluate Ranges for Math Variable Decleration", pos);
-        } else if (!number.get().getNumber().isPresent()) {
-            Log.error("0xMATH18: Min, Max and Steps are not allowed to be plus or minus infinity or to be a complex number", pos);
+        } else if (number.get().isComplexNumber()) {
+            Log.error("0xMATH18: Min, Max and Steps are not allowed to be a complex number", pos);
         } else {
             Optional<Double> d = number.get().getNumber();
             return d;
@@ -161,8 +161,8 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
             Log.error("0xMATH10: Could not evaluate dimension for Math Variable Decleration", pos);
         } else if (!number.get().getUnit().isCompatible(Unit.ONE)) { // dimensionless
             Log.error("0xMATH11: A dimension is a natural number therefore has no unit", pos);
-        } else if (!number.get().getNumber().isPresent()) {
-            Log.error("0xMATH12: dimension is not allowed to be plus or minus infinity or to be a complex number", pos);
+        } else if (number.get().isComplexNumber()) {
+            Log.error("0xMATH12: dimension is not allowed to be a complex number", pos);
         } else {
             double n = number.get().getNumber().get();
             double n2 = Math.round(n);
@@ -182,12 +182,12 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         VectorSymbol sym = new VectorSymbol(name);
         Optional<ASTNumberWithUnit> start = evaluate(ast.getStart());
         Optional<ASTNumberWithUnit> end = evaluate(ast.getEnd());
-        if (ast.isStepsPresent()) {
-            Optional<ASTNumberWithUnit> step = evaluate(ast.getSteps());
-            if (step.get().getNum().isNegNumberPresent()) {
+        if (ast.stepsIsPresent()) {
+            Optional<ASTNumberWithUnit> step = evaluate(ast.getSteps().get());
+            if (step.get().getNum().get().negNumberIsPresent()) {
                 Log.error("0xMATH34: Steps cannot be negative", pos);
-            } else if (step.get().getNumber().isPresent()) {
-                Log.error("0xMATH31: Number is not allowed to be Infinite or Complex", pos);
+            } else if (step.get().isComplexNumber()) {
+                Log.error("0xMATH31: Number is not allowed to be Complex", pos);
             }
             double n = step.get().getNumber().get();
             double n2 = Math.round(n);
@@ -195,6 +195,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 Log.error("0xMATH32: step is not a integer number", pos);
             }else{
                 Integer stepint = step.get().getNumber().get().intValue();
+                //Optional<Integer> stepop = stepint;
             }
 
         }
@@ -205,8 +206,8 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public static int testVector(Optional<ASTNumberWithUnit> number, SourcePosition pos) {
         if (!number.isPresent()) {
             Log.error("0xMATH30: Could not evaluate vector without any Number", pos);
-        } else if (number.get().getNumber().get().isInfinite() | number.get().isComplexNumber()) {
-            Log.error("0xMATH31: Number is not allowed to be Infinite or Complex", pos);
+        } else if (number.get().isComplexNumber()) {
+            Log.error("0xMATH31: Number is not allowed to be Complex", pos);
         } else {
             double n = number.get().getNumber().get();
             double n2 = Math.round(n);

@@ -21,7 +21,7 @@
 package de.monticore.lang.math.math;
 
 import de.monticore.lang.math._ast.ASTMathCompilationUnit;
-import de.monticore.lang.math._symboltable.MathLanguage2;
+import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 public class SymbolTableTestHelper {
 
     public static void createSymbolTableOnInput(String content) throws Exception {
-        MathLanguage2 mathLanguage = new MathLanguage2();
+        MathLanguage mathLanguage = new MathLanguage();
         ASTMathCompilationUnit ast = mathLanguage.getParser().parse_String(content).orElse(null);
         assertNotNull(ast);
 

@@ -29,7 +29,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         (ImportStatement)* // to import later on other scripts/functions
         MathScript;
 
-      symbol scope MathScript =
+    symbol scope MathScript =
         "script" Name (Expression)+ "end";
 
     //Arithmetic expressions for matrices
@@ -90,7 +90,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathElseIfExpression =
     	"elseif" condition:Expression body:Expression+ ;
 
-    MathElseExpression    =
+    MathElseExpression =
     	"else" body:Expression+ ;
 
 //Assignments
@@ -101,13 +101,13 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
      Dimension =
          	"^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
 
-     MathDeclarationExpression implements Expression<320> =
+     MathDeclarationExpression implements Expression<305> =
         type:AssignmentType Name;
 
-     MathAssignmentDeclarationExpression implements Expression<320> =
+     MathAssignmentDeclarationExpression implements Expression<305> =
         type:AssignmentType Name MathAssignmentOperator (Expression);
 
-     MathAssignmentExpression implements Expression<230> =
+     MathAssignmentExpression implements Expression<200> =
         (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression);
 
      MathAssignmentOperator =
@@ -115,15 +115,17 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
 //Element Types WholeNumberNumber="Z" Rational:"Q" Complex:"C" Boolean:"B" Natural:"N"
      ElementType implements Type, TypeArgument =
-             ZQCBN |
+             // ZQCBN |
+             Name |
              Ranges;
 
-     Ranges = ZQCBN ("(" min:Expression ":" step:Expression ":" max:Expression ")" |
+
+     Ranges = /* ZQCBN? */ ("(" min:Expression ":" step:Expression ":" max:Expression ")" |
                      "(" min:Expression ":" max:Expression ")")
           ;
 
-     ZQCBN = { _input.LT(1).getText().matches("Z|Q|C|B|N") }?
-              Name ;
+    //ZQCBN = { _input.LT(1).getText().matches("Z|Q|C|B|N") }?
+    //          Name ;
 
 //Expression for all Numbers with units
     NumberExpression implements Expression<291> =
@@ -133,5 +135,4 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         Name;
 
     Statement implements Expression<5> = Expression ";" ; // to not write down every time ";"?
-
  }

@@ -21,7 +21,7 @@ package calculations;
 
 script example2
 
-    Q(0:10)^{1,5} c = 1:2:10 ;
+    (0:10)^{1,5} c = 1:2:10 ;
     Q x = 0 ;
     Q y = 0 ;
 

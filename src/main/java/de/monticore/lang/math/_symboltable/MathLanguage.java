@@ -25,16 +25,22 @@ import de.monticore.symboltable.ResolvingConfiguration;
 
 import java.util.Collections;
 
-// stupid name, but is due to ticket: https://sselab.de/lab2/private/trac/MontiCore/ticket/2087
-public class MathLanguage2 extends MathLanguage {
-    public MathLanguage2() {
-        super("MathLanguage", "m");
-    }
-    public MathSymbolTableCreator getSymbolTableCreator() {
-        ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
-        resolvingConfiguration.addDefaultFilters(this.getResolvingFilters());
-        ArtifactScope scope = new ArtifactScope("unnamed", Collections.EMPTY_LIST);
-        return this.getSymbolTableCreator(resolvingConfiguration, scope).get();
-    }
+public class MathLanguage extends MathLanguageTOP {
+
+  public MathLanguage() {
+    super("MathLanguage", "m");
+  }
+
+  @Override
+  protected MathModelLoader provideModelLoader() {
+    return new MathModelLoader(this);
+  }
+
+  public MathSymbolTableCreator getSymbolTableCreator() {
+    ResolvingConfiguration resolvingConfiguration = new ResolvingConfiguration();
+    resolvingConfiguration.addDefaultFilters(this.getResolvingFilters());
+    ArtifactScope scope = new ArtifactScope("unnamed", Collections.EMPTY_LIST);
+    return this.getSymbolTableCreator(resolvingConfiguration, scope).get();
+  }
 
 }

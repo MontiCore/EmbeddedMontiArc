@@ -42,11 +42,6 @@ public class DimensionTest {
     }
 
     @Test
-    public void testDimensionIsInfinite() throws Exception {
-        createSymbolTableOnInputAndExpectErrorCode("script S Q^oo a; end", "0xMATH12");
-    }
-
-    @Test
     public void testDimensionIsNoInteger() throws Exception {
         createSymbolTableOnInputAndExpectErrorCode("script S Q^1.3 a; end", "0xMATH13");
     }
@@ -79,11 +74,5 @@ public class DimensionTest {
     @Test
     public void testMultipleDimensionsComplex() throws Exception {
         createSymbolTableOnInputAndExpectErrorCode("script S Q^{1+5i,2} a; end", "0xMATH12");
-    }
-
-    @Ignore("grammar does not support it")
-    @Test
-    public void testMultipleDimensionsIsEmpty() throws Exception {
-        createSymbolTableOnInputAndExpectErrorCode("script S Q^{} a; end", "0xMATH15");
     }
 }
