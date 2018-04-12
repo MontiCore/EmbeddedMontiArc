@@ -53,7 +53,7 @@ function execute() {
     throw "${portName}: Could not evaluate input";
   }
 
-  <#if setter.dimension??>
+  <#if setter.dimension?has_content>
     //check dimension
     var dim = math.matrix([${setter.dimension?join(", ")}]);
     if (!math.deepEqual(math.size(${varName}), dim)) {
