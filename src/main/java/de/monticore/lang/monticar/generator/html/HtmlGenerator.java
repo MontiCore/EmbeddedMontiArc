@@ -102,7 +102,7 @@ public class HtmlGenerator {
 
     String[] dimension = getDimension(ports, port);
     String dim = dimension.length > 0 ?
-        "[" + Arrays.stream(dimension).collect(Collectors.joining("][")) + "]" : "";
+        "^{" + Arrays.stream(dimension).collect(Collectors.joining(", ")) + "}" : "";
 
     return type + dim;
   }
