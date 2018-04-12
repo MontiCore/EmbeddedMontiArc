@@ -3,7 +3,6 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
-import de.monticore.symboltable.Scope;
 import org.junit.Test;
 
 import java.io.File;
@@ -88,6 +87,20 @@ public class BasicMathGenerationTest extends AbstractSymtabTest {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.matrixArrayPortAccessTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        String restPath = "testMath/l0/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
+    public void testTypeDimensionsTest() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.typeDimensionsTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
