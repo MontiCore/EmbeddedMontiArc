@@ -98,7 +98,7 @@ public class HtmlGenerator {
     } else {
       throw new RuntimeException("Unexpected ASTType: " + astType);
     }
-    String type = elementType.orElse("");
+    String type = elementType.orElse(typeReference.getName());
 
     String[] dimension = getDimension(ports, port);
     String dim = dimension.length > 0 ?
