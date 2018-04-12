@@ -99,7 +99,7 @@ public class VisualisationHelperSingleThread implements Runnable {
 
         String[] args = {
                 "java", "-jar",
-                "svgGenerator/montiarc-svggenerator-4.0.1-SNAPSHOT-jar-with-dependencies.jar",
+                "svgGenerator/svggenerator.jar",
                 "--input", modelName,
                 "--modelPath", modelPath,
                 "--recursiveDrawing", "true",

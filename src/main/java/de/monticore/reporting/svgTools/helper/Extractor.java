@@ -49,7 +49,7 @@ public class Extractor {
 
     private void extract() throws IOException {
         List<String> iconsToCopy = new ArrayList<>();
-        iconsToCopy.add("montiarc-svggenerator-4.0.1-SNAPSHOT-jar-with-dependencies.jar");
+        iconsToCopy.add("svggenerator.jar");
 
         for (String fileName : iconsToCopy) {
             URL inputUrl = ClassLoader.getSystemResource(fileName);
