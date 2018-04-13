@@ -147,7 +147,14 @@ public class TypeConverter {
     }
 
     public static boolean isVectorDimension(ASTCommonDimensionElement astCommonDimensionElement) {
-        return astCommonDimensionElement.getUnitNumber().get().getNumber().get().intValue() == 1;
+        boolean result = false;
+        if (astCommonDimensionElement.getUnitNumber().isPresent()) {
+            ASTUnitNumber unitNumber = astCommonDimensionElement.getUnitNumber().get();
+            if (unitNumber.getNumber().isPresent()) {
+                result = unitNumber.getNumber().get().intValue() == 1;
+            }
+        }
+        return result;
     }
 
     public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
