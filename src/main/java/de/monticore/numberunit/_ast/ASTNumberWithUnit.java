@@ -35,9 +35,9 @@ import de.monticore.literals.literals._ast.ASTNumericLiteral;
 public class ASTNumberWithUnit extends ASTNumberWithUnitTOP {
 
   public  ASTNumberWithUnit (
-          de.monticore.numberunit._ast.ASTComplexNumber complexNumber,
-          de.monticore.numberunit._ast.ASTNumberWithInf number,
-          de.monticore.numberunit._ast.ASTUnit unit) {
+          Optional<de.monticore.numberunit._ast.ASTComplexNumber> complexNumber,
+          Optional<de.monticore.numberunit._ast.ASTNumberWithInf> number,
+          Optional<de.monticore.numberunit._ast.ASTUnit> unit) {
     super(complexNumber,number, unit);
   }
 
@@ -64,18 +64,18 @@ public class ASTNumberWithUnit extends ASTNumberWithUnitTOP {
    * @return
    */
   public Optional<Double> getNumber() {
-    if (this.numIsPresent() && this.getNum().get().numberIsPresent()) {
-      ASTNumericLiteral number = this.getNum().getNumber().get();
+    if (this.isPresentNum() && this.getNum().isPresentNumber()) {
+      ASTNumericLiteral number = this.getNum().getNumber();
       double d;
-      if (this.getNum().get().negNumberIsPresent()) {
+      if (this.getNum().isPresentNegNumber()) {
         d = -1*Double.parseDouble(print(number));
       }
       else {
         d = Double.parseDouble(print(number));
       }
 
-      if (this.unIsPresent() && this.getUn().get().imperialUnitIsPresent() &&
-              this.getUn().get().getImperialUnit().get().getName().equals("th")) {
+      if (this.isPresentUn() && this.getUn().isPresentImperialUnit() &&
+              this.getUn().getImperialUnit().getName().equals("th")) {
         d *= 0.0254;
       }
       return Optional.of(d);
@@ -84,59 +84,59 @@ public class ASTNumberWithUnit extends ASTNumberWithUnitTOP {
   }
 
   public Optional<ASTComplexNumber> getComplexNumber() {
-    return this.getCn();
+    return this.getCnOpt();
   }
 
   public Unit getUnit() {
-    if (this.unIsPresent()) {
-      if (this.getUn().get().degCelsiusIsPresent()) {
+    if (this.isPresentUn()) {
+      if (this.getUn().isPresentDegCelsius()) {
         return SI.CELSIUS;
       }
-      if (this.getUn().get().degFahrenheitIsPresent()) {
+      if (this.getUn().isPresentDegFahrenheit()) {
         return NonSI.FAHRENHEIT;
       }
-      if (this.getUn().get().imperialUnitIsPresent()) {
-        if (this.getUn().get().getImperialUnit().get().getName().equals("th")) {
+      if (this.getUn().isPresentImperialUnit()) {
+        if (this.getUn().getImperialUnit().getName().equals("th")) {
           return Unit.valueOf("mm");
         }
-        return Unit.valueOf(this.getUn().get().getImperialUnit().get().getName());
+        return Unit.valueOf(this.getUn().getImperialUnit().getName());
       }
-      if (this.getUn().get().sIUnitIsPresent()) {
-        return siUnit(this.getUn().get().getSIUnit().get());
+      if (this.getUn().isPresentSIUnit()) {
+        return siUnit(this.getUn().getSIUnit());
       }
     }
     return Unit.ONE;
   }
 
   protected Unit siUnit(ASTSIUnit siUnit) {
-    if (siUnit.siUnitDimensionlessIsPresent()) {
-      return Unit.valueOf(siUnit.getSiUnitDimensionless().get().getName().replace("deg", "°"));
+    if (siUnit.isEmptyTimeDivs()) {
+      return Unit.valueOf(siUnit.getSiUnitDimensionless().getName().replace("deg", "°"));
     }
-    String s = toString(siUnit.getSIUnitBasics().get(0));
-    for (int i = 1; i < siUnit.getSIUnitBasics().size(); i++) {
-      s += toString(siUnit.getTimeDivs(i-1)) +  toString(siUnit.getSIUnitBasics().get(i));
+    String s = toString(siUnit.getSIUnitBasicList().get(0));
+    for (int i = 1; i < siUnit.getSIUnitBasicList().size(); i++) {
+      s += toString(siUnit.getTimeDiv(i-1)) +  toString(siUnit.getSIUnitBasicList().get(i));
     }
     return Unit.valueOf(s);
   }
 
   protected String toString(ASTSIUnitBasic sib) {
     String unit = "";
-    if (sib.unitBaseDimWithPrefixIsPresent()) {
-      unit =  sib.getUnitBaseDimWithPrefix().get().getName();
+    if (sib.isPresentUnitBaseDimWithPrefix()) {
+      unit =  sib.getUnitBaseDimWithPrefix().getName();
     }
-    else if (sib.officallyAcceptedUnitIsPresent()) {
-      unit = sib.getOfficallyAcceptedUnit().get().getName();
+    else if (sib.isPresentOfficallyAcceptedUnit()) {
+      unit = sib.getOfficallyAcceptedUnit().getName();
     }
-    else if (sib.degIsPresent()) {
+    else if (sib.isPresentDeg()) {
       unit = "°";
     }
-    if (sib.signedIntLiteralIsPresent()) {
-      unit = unit + "^" + print(sib.getSignedIntLiteral().get());
+    if (sib.isPresentSignedIntLiteral()) {
+      unit = unit + "^" + print(sib.getSignedIntLiteral());
     }
     return unit;
   }
 
   protected String toString(ASTTimeDiv timeDivs) {
-    return timeDivs.isDivIsPresent() ? "/" : "*";
+    return timeDivs.isPresentIsDiv() ? "/" : "*";
   }
 }

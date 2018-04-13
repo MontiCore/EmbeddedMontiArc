@@ -20,9 +20,9 @@ grammar NumberUnit extends de.monticore.literals.Literals {
    ;
 
    NumberWithInf =
-     negNumber:"-"? number:NumericLiteral |
-     "+"? posInf:Inf |
-     "-" negInf:Inf
+     ((negNumber:"-")? number:NumericLiteral) |
+     ((posInf:"+" |negInf:"-")? Inf)
+
    ;
 
    // Inf = "oo"; (use Name to not generate a "oo" token which would clash with other tokens later)

@@ -32,11 +32,6 @@ public class DimensionTest {
     }
 
     @Test
-    public void testDimensionUnitless() throws Exception {
-        createSymbolTableOnInputAndExpectErrorCode("script S Q^1 cm a; end", "0xMATH11");
-    }
-
-    @Test
     public void testDimensionIsComplex() throws Exception {
         createSymbolTableOnInputAndExpectErrorCode("script S Q^1+1i a; end", "0xMATH12");
     }
