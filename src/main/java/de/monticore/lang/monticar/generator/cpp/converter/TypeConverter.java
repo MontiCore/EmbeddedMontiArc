@@ -18,6 +18,7 @@ import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -131,11 +132,8 @@ public class TypeConverter {
         } else if (dimensionElements.size() == 2) {
             if (isVectorDimension(dimensionElements.get(0)))
                 variableType = new VariableType("CommonRowVectorType", MathConverter.curBackend.getRowVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-            else if (isVectorDimension(dimensionElements.get(1))) {
-                variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-            } else {
+            else {
                 variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-
             }
         } else if (dimensionElements.size() == 3) {
             variableType = new VariableType("CommonCubeType", MathConverter.curBackend.getCubeTypeName(), MathConverter.curBackend.getIncludeHeaderName());
