@@ -1,145 +1,31 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <script type="text/javascript" src="https://code.jquery.com/jquery-git.js"></script>
       <title>I framed it</title>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width">
-      <script type="text/javascript" src="uploadImageSite.js"></script>
-      <link href="uploadImageSite.css" rel="stylesheet" type="text/css" />
-      
+
+      <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script type="text/javascript" src="resources/js/dropzone.js"></script>
+      <script type="text/javascript" src="resources/js/index.js"></script>
+
+      <link href="resources/css/dropzone.css" rel="stylesheet" type="text/css"/>
+      <link href="resources/css/index.css" rel="stylesheet" type="text/css"/>
    </head>
    <body>
-      <div id="dragDiv" class="section">
-         <div>The div below receives dragged in files</div>
-         <div id="dropTarget" class="dropEnabled"></div>
+      <div class="row row-1">
+         <img src="resources/images/example-image-1.jpg"/>
+         <img src="resources/images/example-image-2.jpg"/>
       </div>
-      <div id="browseDiv" class="section">
-         <input type="file" id="browsedFile">
-         <button id="upload">Upload</button>
-         <button id="cluster">Cluster</button>
+      <div class="row row-2">
+         Either: * Drag an image from your desktop into the dropzone. * Click on the dropzone. * Drag an image from above into the dropzone.
+         <div id="dropzone"></div>
       </div>
-      <div id="iframeDiv" class="section">
-         <div id="iframeTarget"></div>
+      <div class="row row-3">
+         <img id="spinner" src="resources/images/loader.svg"/>
       </div>
-      <script type="application/javascript">
-         
-                 
-      </script>
-      <script>
-         $(document).ready(function(){
-             main();
-             var buttonCluster=document.getElementById('cluster');
-             
-             buttonCluster.addEventListener("click", function(e){
-                Module.init();
-                var canvas = document.getElementById('ClusterResult');
-                var loadedImageCanvas=document.getElementById('LoadedImage');
-                var contextLoadedImg=loadedImageCanvas.getContext('2d');
-                var newCanvas2 = document.createElement('canvas');
-                newCanvas2.getContext('2d').drawImage(loadedImageCanvas,0,0,50,50);
-                var context=canvas.getContext('2d');
-                
-                
-                var pixelData = newCanvas2.getContext('2d').getImageData(0, 0, 50, 50).data;
-                var dataForClusterer=new Array(2500);
-                var counter=0;
-                for(var i=0;i<2500;++i){
-                    dataForClusterer[i]=new Array(3);
-                    dataForClusterer[i][0]=pixelData[counter];
-                    dataForClusterer[i][1]=pixelData[counter+1];
-                    dataForClusterer[i][2]=pixelData[counter+2];
-                    //dataForClusterer[i][0]=pixelData[i];
-                    counter=counter + 4;
-                }
-                Module.setImgFront(dataForClusterer);
-                Module.execute();
-                var result = Module.getClusters();
-                var newImgData=context.createImageData(50,50);
-                counter=0;
-                for(var i=0;i<result.length;i++){
-                    if(result[i][0]==0){
-                        newImgData.data[counter]=255;
-                        newImgData.data[counter+1]=0;
-                        newImgData.data[counter+2]=0;
-                        newImgData.data[counter+3]=255;
-                        counter=counter + 4;
-                    }else if(result[i][0]==1){
-                        newImgData.data[counter]=0;
-                        newImgData.data[counter+1]=0;
-                        newImgData.data[counter+2]=0;
-                        newImgData.data[counter+3]=255;
-                        counter=counter + 4;
-                    }else if(result[i][0]==2){
-                        newImgData.data[counter]=255;
-                        newImgData.data[counter+1]=255;
-                        newImgData.data[counter+2]=255;
-                        newImgData.data[counter+3]=255;
-                        counter=counter + 4;
-                    }else if(result[i][0]==3){
-                        newImgData.data[counter]=136;
-                        newImgData.data[counter+1]=136;
-                        newImgData.data[counter+2]=136;
-                        newImgData.data[counter+3]=255;
-                        counter=counter + 4;
-                    }else if(result[i][0]==4){
-                        newImgData.data[counter]=77;
-                        newImgData.data[counter+1]=77;
-                        newImgData.data[counter+2]=77;
-                        newImgData.data[counter+3]=255;
-                        counter=counter + 4;
-                    }else{
-                        newImgData.data[counter]=0;
-                        newImgData.data[counter+1]=0;
-                        newImgData.data[counter+2]=255;
-                        newImgData.data[counter+3]=255;
-                        counter=counter + 4;
-                    
-                    }
-                }
-                //var loadedImageCanvas=document.getElementById('LoadedImage');
-                //context.width=loadedImageCanvas.width;
-                //context.height=loadedImageCanvas.height;
-                var newCanvas = document.createElement('canvas');
-                newCanvas.width=newImgData.width;
-                newCanvas.height=newImgData.height;
-                newCanvas.getContext("2d").putImageData(newImgData, 0, 0);
-                //var newWidth=loadedImageCanvas.width/50;
-                //var newHeight=loadedImageCanvas.height/50;
-                //context.scale(newWidth,newHeight);
-                context.drawImage(newCanvas,0,0,canvas.width/2,canvas.height/2);
-                
-                //context.scale(1/newWidth,1/newHeight);
-                console.log("second image target size");
-                console.log(newImgData.width,newImgData.height);
-                /*function imagedata_to_image(imagedata) {
-                    var canvas = document.createElement('canvas');
-                    var ctx = canvas.getContext('2d');
-                    canvas.width = imagedata.width;
-                    canvas.height = imagedata.height;
-                    ctx.putImageData(imagedata, 0, 0);
-
-                    var image = new Image();
-                    image.src = canvas.toDataURL();
-                    return image;
-                }*/
-             });
-            /*function resizeIFrameToFitContent( iFrame ) {
-         
-             iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
-             iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-         }
-         document.getElementById
-         //window.addEventListener('DOMContentLoaded', function(e) {
-         
-             var iFrame = $("#iframeTarget > iframe")[0];
-             resizeIFrameToFitContent( iFrame );
-             console.log("updated div");
-         //} );*/
-         });
-         
-      </script>
-      
-    <script type="text/javascript" src="objectDetector1.js"></script>
+      <div class="row row-4">
+         <canvas id="result"></canvas>
+      </div>
    </body>
 </html>
