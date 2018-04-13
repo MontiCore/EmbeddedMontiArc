@@ -1,6 +1,6 @@
 # EmbeddedMontiArcStudio
 
-**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.1
+**Latest release:** https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.2
 
 [![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
 
@@ -13,6 +13,7 @@ For stable releases later than version 1.4 please insert the EmbeddedMontiArcLog
 
 Release History
 =======
+* **[v1.5.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.1)** Updated SVG-Visualization (using new and better algorithm)
 * **[v1.5.1:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.1)** Fixes issues [#5](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/5) and [#12](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/12)
 * **[v1.5:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.0)** Replace Octave Backend with Armadillo Backend to reduce download size and increase compilation time
 * [v1.4.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.4.2) Patches for EmbeddedMontiArcStudio v1.4
