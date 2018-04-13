@@ -174,7 +174,7 @@ public class TypeConverter {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
                     if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
-                        variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                        variableType = getRealVariableTypeFromPortSymbol(portSymbol);
                     }
                     handleCommonMatrixType(variable, portSymbol);
                 } else if (typeNameMontiCar.equals("AssignmentType")) {
@@ -187,6 +187,17 @@ public class TypeConverter {
             }
         }
         return Optional.empty();
+    }
+
+    private static VariableType getRealVariableTypeFromPortSymbol(PortSymbol portSymbol) {
+        VariableType variableType;
+        Optional<ASTCommonMatrixType> astCommonMatrixType = PortConverter.getCommonMatrixTypeFromPortSymbol(portSymbol);
+        if (astCommonMatrixType.isPresent()) {
+            variableType = getRealVariableType(astCommonMatrixType.get());
+        } else {
+            variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        }
+        return variableType;
     }
 
     public static void handleCommonMatrixType(Variable variable, PortSymbol portSymbol) {

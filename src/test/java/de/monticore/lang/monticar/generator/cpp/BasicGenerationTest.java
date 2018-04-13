@@ -105,6 +105,19 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testing");
-        generatorCPP.generateFiles(componentSymbol,symtab);
+        generatorCPP.generateFiles(componentSymbol, symtab);
+    }
+
+    @Test
+    public void testPortTypeCube() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.portTypeCubeTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testing");
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        String restPath = "armadillo/testing/";
+        testFilesAreEqual(files, restPath);
     }
 }
