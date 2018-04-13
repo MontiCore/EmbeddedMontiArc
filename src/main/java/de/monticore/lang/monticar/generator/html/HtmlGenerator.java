@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.util.StringUtils;
 
 /**
  * This generator generates html files that can be used in combination with a
@@ -62,6 +63,7 @@ public class HtmlGenerator {
     List<Port> outports = produceOutports(model.getOutgoingPorts());
 
     Map<String, Object> dataModel = new HashMap<>();
+    dataModel.put("modelName", getModelName(model));
     dataModel.put("model", wasmNamingFunction.apply(model));
     dataModel.put("model_wrapper", wrapperNamingFunction.apply(model));
     dataModel.put("inports", inports);
@@ -105,6 +107,10 @@ public class HtmlGenerator {
         "^{" + Arrays.stream(dimension).collect(Collectors.joining(", ")) + "}" : "";
 
     return type + dim;
+  }
+
+  private String getModelName(ExpandedComponentInstanceSymbol model) {
+    return StringUtils.capitalize(model.getName());
   }
 
   private Port port(String name, String wrapperFunction, String type) {
