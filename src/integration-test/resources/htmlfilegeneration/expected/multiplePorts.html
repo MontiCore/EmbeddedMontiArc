@@ -20,44 +20,22 @@
     margin: 10px;
   }
 
-  .inport-header {
+  .header {
     margin: 0 auto;
     width: fit-content;
   }
 
-  .inport-label {
-    float: left;
-    margin-right: 5px;
-  }
-
-  .inport-field {
-    float: right;
-    width: 200px;
-  }
-
-  .outport-header {
-    margin: 0 auto;
-    width: fit-content;
-  }
-
-  .outport-label {
-    float: left;
-    margin-right: 5px;
-  }
-
-  .outport-field {
-    float: left;
-    min-width: 200px;
+  .type {
+    width: max-content;
+    margin: 2px 15px 2px 2px;
+    color: grey;
   }
 
   .buttons {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
     margin: 10px;
-  }
-
-  .buttons div {
-    flex-basis: 100%;
   }
 
   .button {
@@ -69,7 +47,6 @@
     font-size: 14px;
     cursor: pointer;
     width: 100px;
-    flex-basis: 100%;
   }
 
   #reset {
@@ -85,29 +62,10 @@
     margin: 10px;
   }
 
-  .inport-container-m1 {
-    overflow: hidden;
-    margin: 3px;
-  }
-
-  .inport-container-m2 {
-    overflow: hidden;
-    margin: 3px;
-  }
-
-  .inport-container-c {
-    overflow: hidden;
-    margin: 3px;
-  }
-
-  .outport-container-v {
-    overflow: hidden;
-    margin: 3px;
-  }
-
-  .outport-container-k {
-    overflow: hidden;
-    margin: 3px;
+  textarea {
+    height: 1em;
+    width: 200px;
+    padding: 3px;
   }
 </style>
 <head>
@@ -122,50 +80,93 @@
   <div class="model">
     <div class="ports">
       <div class="inports">
-        <div class="inport-header">
+        <div class="header">
           <h3>Inports</h3>
         </div>
-        <div class="inport-container-m1">
-          <div class="inport-label">
-            m1:
-          </div>
-          <div class="inport-field">
-            <input type="text" id="inport-field-m1">
-          </div>
-        </div>
-        <div class="inport-container-m2">
-          <div class="inport-label">
-            m2:
-          </div>
-          <div class="inport-field">
-            <input type="text" id="inport-field-m2">
-          </div>
-        </div>
-        <div class="inport-container-c">
-          <div class="inport-label">
-            c:
-          </div>
-          <div class="inport-field">
-            <input type="text" id="inport-field-c">
-          </div>
-        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Q(0 m : 0.1 m : 10 km)^{2, 3}</div>
+            </td>
+            <td>
+              <div class="label">
+                m1:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-m1"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q(5 Hz : 20 kHz)^{3, 1}</div>
+            </td>
+            <td>
+              <div class="label">
+                m2:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-m2"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q(-2 mm/h : 2 km/s)</div>
+            </td>
+            <td>
+              <div class="label">
+                c:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-c"></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
       <div class="outports">
-        <div class="outport-header">
+        <div class="header">
           <h3>Outports</h3>
         </div>
-        <div class="outport-container-v">
-          <div class="outport-label">
-            v:
-          </div>
-          <div class="outport-field" id="outport-field-v"></div>
-        </div>
-        <div class="outport-container-k">
-          <div class="outport-label">
-            k:
-          </div>
-          <div class="outport-field" id="outport-field-k"></div>
-        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Q(-oo km/h : oo km/h)^{2, 1}</div>
+            </td>
+            <td>
+              <div class="label">
+                v:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-v" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q(-oo km^-1 : oo m^-1)</div>
+            </td>
+            <td>
+              <div class="label">
+                k:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-k" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
     <div class="buttons">
@@ -181,6 +182,12 @@
 </div>
 
 <script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-m1").value = url.searchParams.get("m1");
+    document.getElementById("inport-field-m2").value = url.searchParams.get("m2");
+    document.getElementById("inport-field-c").value = url.searchParams.get("c");
+
     function exec() {
         clearOutportFields();
         clearErrors();
@@ -192,8 +199,8 @@
 
             execute();
 
-            document.getElementById("outport-field-v").innerText = getV();
-            document.getElementById("outport-field-k").innerText = getK();
+            document.getElementById("outport-field-v").value = getV();
+            document.getElementById("outport-field-k").value = getK();
         }
         catch (err) {
             if (err.message === undefined) {
@@ -219,8 +226,8 @@
     }
 
     function clearOutportFields() {
-        document.getElementById("outport-field-v").innerText = "";
-        document.getElementById("outport-field-k").innerText = "";
+        document.getElementById("outport-field-v").value = "";
+        document.getElementById("outport-field-k").value = "";
     }
 
     function clearErrors() {

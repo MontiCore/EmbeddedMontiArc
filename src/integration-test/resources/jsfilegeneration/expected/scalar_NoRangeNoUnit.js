@@ -26,7 +26,12 @@ function setInNoRangeNoUnit(_inNoRangeNoUnit) {
     var value = math.eval(_inNoRangeNoUnit);
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inNoRangeNoUnit";
+        throw "inNoRangeNoUnit: Could not evaluate input";
+    }
+
+    //check type
+    if (math.typeof(value) !== "number") {
+        throw "inNoRangeNoUnit: Expected type number";
     }
 
     var value_num = value;

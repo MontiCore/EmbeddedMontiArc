@@ -27,18 +27,23 @@ function setPower(_power) {
     var lower = math.eval("0/1 kg*m^2/s^3").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _power";
+        throw "power: Could not evaluate input";
+    }
+
+    //check type
+    if (math.typeof(value) !== "Unit") {
+        throw "power: Expected type Unit";
     }
 
     //check unit
     var expectedUnit = math.eval("kg*m^2/s^3");
     if (math.typeof(expectedUnit) !== math.typeof(value) || !expectedUnit.equalBase(value)) {
-        throw "Expected unit kg*m^2/s^3";
+        throw "power: Expected unit kg*m^2/s^3";
     }
     var value_num = value.toSI().toNumber();
     //check range
     if (math.smaller(value_num, lower)) {
-        throw "Value " + value_num + " out of range";
+        throw "power: Value " + value_num + " out of range";
     }
     Module.setPower(value_num);
 }

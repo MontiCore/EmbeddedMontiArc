@@ -27,13 +27,13 @@ function setInThousandsMatrixArray(_inThousandsMatrixArray) {
     var lower = math.eval("2/1 m").toSI().toNumber();
 
     if (value === undefined) {
-        throw "Could not evaluate input for _inThousandsMatrixArray";
+        throw "inThousandsMatrixArray: Could not evaluate input";
     }
 
     //check dimension
     var dim = math.matrix([1111, 1234, 3, 1200300]);
-    if (!math.deepEqual(value.size(), dim)) {
-        throw "Input has dimension " + value.size() + " but expected " + dim;
+    if (!math.deepEqual(math.size(value), dim)) {
+        throw "inThousandsMatrixArray: Input has dimension " + math.size(value) + " but expected " + dim;
     }
 
     var array = [];
@@ -49,12 +49,12 @@ function setInThousandsMatrixArray(_inThousandsMatrixArray) {
                     //check unit
                     var expectedUnit = math.eval("m");
                     if (math.typeof(expectedUnit) !== math.typeof(e) || !expectedUnit.equalBase(e)) {
-                        throw "Expected unit m";
+                        throw "inThousandsMatrixArray: Expected unit m";
                     }
                     var e_num = e.toSI().toNumber();
                     //check range
                     if (math.smaller(e_num, lower)) {
-                        throw "Value " + e_num + " out of range";
+                        throw "inThousandsMatrixArray: Value " + e_num + " out of range";
                     }
                     array[i0][i1][i2][i3] = e_num;
                 }

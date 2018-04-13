@@ -17,41 +17,23 @@
     float: left;
     margin: 10px;
   }
-  .inport-header {
+
+  .header {
     margin: 0 auto;
     width: fit-content;
-  }
-  .inport-label {
-    float: left;
-    margin-right: 5px;
-  }
-  .inport-field {
-    float: right;
-    width: 200px;
-  }
-  .outport-header {
-    margin: 0 auto;
-    width: fit-content;
-  }
-  .outport-label {
-    float: left;
-    margin-right: 5px;
-  }
-  .outport-field {
-    float: left;
-    min-width: 200px;
   }
 
+  .type {
+    width: max-content;
+    margin: 2px 15px 2px 2px;
+    color: grey;
+  }
   .buttons {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
     margin: 10px;
   }
-
-  .buttons div {
-    flex-basis: 100%;
-  }
-
   .button {
     color: white;
     padding: 10px 16px;
@@ -61,13 +43,10 @@
     font-size: 14px;
     cursor: pointer;
     width: 100px;
-    flex-basis: 100%;
   }
-
   #reset {
     background-color: #d22b23;
   }
-
   #execute {
     background-color: #24d231;
   }
@@ -75,18 +54,12 @@
     color: red;
     margin: 10px;
   }
-<#list inports as inport>
-  .inport-container-${inport.name} {
-    overflow: hidden;
-    margin: 3px;
+
+  textarea {
+    height: 1em;
+    width: 200px;
+    padding: 3px;
   }
-</#list>
-<#list outports as outport>
-  .outport-container-${outport.name} {
-    overflow: hidden;
-    margin: 3px;
-  }
-</#list>
 </style>
 <head>
   <script type="text/javascript"
@@ -100,32 +73,52 @@
   <div class="model">
     <div class="ports">
       <div class="inports">
-        <div class="inport-header">
+        <div class="header">
           <h3>Inports</h3>
         </div>
-<#list inports as inport>
-<div class="inport-container-${inport.name}">
-  <div class="inport-label">
-    ${inport.name}:
-  </div>
-  <div class="inport-field">
-    <input type="text" id="inport-field-${inport.name}">
-  </div>
-</div>
-</#list>
+        <table>
+        <#list inports as inport>
+          <tr>
+            <td>
+              <div class="type">${inport.type}</div>
+            </td>
+            <td>
+              <div class="label">
+                ${inport.name}:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-${inport.name}"></textarea>
+              </div>
+            </td>
+          </tr>
+        </#list>
+        </table>
       </div>
       <div class="outports">
-        <div class="outport-header">
+        <div class="header">
           <h3>Outports</h3>
         </div>
-<#list outports as outport>
-  <div class="outport-container-${outport.name}">
-    <div class="outport-label">
-      ${outport.name}:
-    </div>
-    <div class="outport-field" id="outport-field-${outport.name}"></div>
-  </div>
-</#list>
+        <table>
+        <#list outports as outport>
+          <tr>
+            <td>
+              <div class="type">${outport.type}</div>
+            </td>
+            <td>
+              <div class="label">
+                ${outport.name}:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-${outport.name}" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+        </#list>
+        </table>
       </div>
     </div>
     <div class="buttons">
@@ -141,6 +134,12 @@
 </div>
 
 <script>
+  var url_string = window.location.href;
+  var url = new URL(url_string);
+  <#list inports as inport>
+    document.getElementById("inport-field-${inport.name}").value = url.searchParams.get("${inport.name}");
+  </#list>
+
   function exec() {
     clearOutportFields();
     clearErrors();
@@ -153,7 +152,7 @@
       execute();
 
     <#list outports as outport>
-      document.getElementById("outport-field-${outport.name}").innerText = ${outport.wrapperFunction}();
+      document.getElementById("outport-field-${outport.name}").value = ${outport.wrapperFunction}();
     </#list>
     }
     catch (err) {
@@ -181,7 +180,7 @@
 
   function clearOutportFields() {
   <#list outports as outport>
-    document.getElementById("outport-field-${outport.name}").innerText = "";
+    document.getElementById("outport-field-${outport.name}").value = "";
   </#list>
   }
 

@@ -6,14 +6,14 @@
 
 This project compiles EmbeddedMontiArc models to WebAssembly and generates a fully functional web interface to the model:
 
-![2018-04-09 23_44_55-windows 10 x64 - vmware workstation](https://user-images.githubusercontent.com/33121464/38524849-5bc479ea-3c50-11e8-946d-72e463036ed8.png)
+![image](https://user-images.githubusercontent.com/33121464/38712066-b3266a42-3ec9-11e8-93a0-78a3041e7481.png)
 
 ## Getting started
 
 Download the latest release from [https://github.com/EmbeddedMontiArc/EMAM2Wasm/releases](https://github.com/EmbeddedMontiArc/EMAM2Wasm/releases).
 Extract the archive and run 
 ``` bash
-$ setup.bat
+$ scripts\setup.bat
 ```
 
 To compile a model, use
