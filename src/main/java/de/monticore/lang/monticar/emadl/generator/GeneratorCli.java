@@ -85,7 +85,6 @@ public class GeneratorCli{
     }
 
     private static void runGenerator(CommandLine cliArgs) {
-        Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
         Generator generator = new Generator();
@@ -93,7 +92,7 @@ public class GeneratorCli{
             generator.setGenerationTargetPath(outputPath);
         }
         try{
-            generator.generate(modelsDirPath, rootModelName);
+            generator.generate(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), rootModelName);
         }
         catch (IOException e){
             Log.error("io error during generation", e);

@@ -40,12 +40,10 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
-import de.se_rwth.commons.Symbol;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
@@ -58,7 +56,6 @@ public class Generator {
 
     public static final String CNN_HELPER = "CNNTranslator";
     public static final String CNN_TRAINER = "CNNTrainer";
-    public static final String MODELS_DIR_PATH = "src/test/resources/";
 
     private GeneratorCPP emamGen;
 
@@ -66,6 +63,16 @@ public class Generator {
         emamGen = new GeneratorCPP();
         emamGen.useArmadilloBackend();
         emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
+    }
+
+    private String modelsPath;
+
+    public String getModelsPath() {
+        return modelsPath;
+    }
+
+    public void setModelsPath(String modelsPath) {
+        this.modelsPath = modelsPath;
     }
 
     public void setGenerationTargetPath(String generationTargetPath){
@@ -223,12 +230,12 @@ public class Generator {
 
     private String getTrainingParamsForComponent(String mainComponentName) {
         String configFilename = mainComponentName + "Config";
-        if (!Files.exists(Paths.get( MODELS_DIR_PATH + configFilename + ".cnnt"))) {
+        if (!Files.exists(Paths.get( getModelsPath() + configFilename + ".cnnt"))) {
             return "";
         }
 
         CNNTrainGenerator cnnTrainGenerator =  new CNNTrainGenerator();
-        final ModelPath mp = new ModelPath(Paths.get(MODELS_DIR_PATH));
+        final ModelPath mp = new ModelPath(Paths.get(getModelsPath()));
         GlobalScope trainScope = new GlobalScope(mp, new CNNTrainLanguage());
         Map.Entry<String, String> fileContents = cnnTrainGenerator.generateFileContent( trainScope, configFilename );
         return fileContents.getValue();
@@ -242,8 +249,9 @@ public class Generator {
         }
     }
 
-    public void generate(Path modelPath, String qualifiedName) throws IOException, TemplateException {
-        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver(MODELS_DIR_PATH);
+    public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
+        setModelsPath( modelPath );
+        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
         ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
 
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);

@@ -31,9 +31,8 @@ import java.nio.file.Paths;
 public class GenerationTest {
 
     private void generate(String qualifiedName) throws IOException, TemplateException{
-        Path modelPath = Paths.get("src/test/resources/");
         Generator gen =  new Generator();
-        gen.generate(modelPath, qualifiedName);
+        gen.generate("src/test/resources/", qualifiedName);
     }
 
     @Test
