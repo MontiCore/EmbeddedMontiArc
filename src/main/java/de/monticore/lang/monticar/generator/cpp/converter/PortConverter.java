@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Connecto
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math.math._ast.ASTAssignmentType;
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -11,6 +12,8 @@ import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.Optional;
 
 /**
  * @author Sascha Schneiders
@@ -61,7 +64,7 @@ public class PortConverter {
         variable.setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(typeNameMontiCar, variable, portSymbol).get());
         variable.addAdditionalInformation(Variable.ORIGINPORT);
         bluePrint.getMathInformationRegister().addVariable(variable);
-        Log.debug("EMAVAR: " + variable.getName() + " targetType:" + variable.getVariableType().getTypeNameTargetLanguage()+" isArray:"+variable.isArray(), "PortConverter");
+        Log.debug("EMAVAR: " + variable.getName() + " targetType:" + variable.getVariableType().getTypeNameTargetLanguage() + " isArray:" + variable.isArray(), "PortConverter");
 
         return variable;
     }
@@ -102,6 +105,28 @@ public class PortConverter {
                 variable.addProperties(astAssignmentType.getMatrixProperty());
             }
         }
+    }
+
+    private static Optional<ASTType> getAstTypeFromPortSymbol(PortSymbol portSymbol) {
+        Optional<ASTType> result = Optional.empty();
+        MCTypeReference<? extends MCTypeSymbol> typeRef = portSymbol.getTypeReference();
+        if (typeRef.existsReferencedSymbol() && typeRef.getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
+            MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
+            ASTType astType = typeSymbolReference.getAstType();
+            result = Optional.of(astType);
+        }
+        return result;
+    }
+
+    public static Optional<ASTCommonMatrixType> getCommonMatrixTypeFromPortSymbol(PortSymbol portSymbol) {
+        Optional<ASTCommonMatrixType> result = Optional.empty();
+        Optional<ASTType> astType = getAstTypeFromPortSymbol(portSymbol);
+        if (astType.isPresent()) {
+            if (astType.get() instanceof ASTCommonMatrixType) {
+                result = Optional.of((ASTCommonMatrixType) astType.get());
+            }
+        }
+        return result;
     }
 
     public static String getPortNameWithoutArrayBracketPart(String name) {
