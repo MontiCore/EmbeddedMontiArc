@@ -59,7 +59,7 @@ public class HtmlGenerator {
     List<Port> outports = produceOutports(model.getOutgoingPorts());
 
     Map<String, Object> dataModel = new HashMap<>();
-    dataModel.put("modelName", getComponentName(model));
+    dataModel.put("model_name", getComponentName(model));
     dataModel.put("model", wasmNamingFunction.apply(model));
     dataModel.put("model_wrapper", wrapperNamingFunction.apply(model));
     dataModel.put("inports", inports);
