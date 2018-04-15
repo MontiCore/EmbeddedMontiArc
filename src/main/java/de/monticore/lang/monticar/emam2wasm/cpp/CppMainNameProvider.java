@@ -1,5 +1,7 @@
 package de.monticore.lang.monticar.emam2wasm.cpp;
 
+import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
+
 import de.monticore.symboltable.Symbol;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +12,7 @@ public class CppMainNameProvider implements CppNameProvider {
 
   @Override
   public String getName(Symbol model) {
-    return model.getName();
+    return requiresNotNull(model).getName();
   }
 
   @Override
