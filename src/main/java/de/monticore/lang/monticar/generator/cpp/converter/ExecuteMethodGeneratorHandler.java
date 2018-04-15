@@ -217,11 +217,11 @@ public class ExecuteMethodGeneratorHandler {
 
     public static String generateExecuteCode(MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol, List<String> includeStrings) {
         Log.info(mathAssignmentExpressionSymbol.getTextualRepresentation(), "mathAssignmentExpressionSymbol:");
-
+        String result;
         if (mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol() != null) {
             if (MathFunctionFixer.fixForLoopAccess(mathAssignmentExpressionSymbol.getNameOfMathValue(), ComponentConverter.currentBluePrint)) {
 
-                String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
+                result = mathAssignmentExpressionSymbol.getNameOfMathValue();
                 result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
                 result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
                 String input = ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
@@ -234,24 +234,23 @@ public class ExecuteMethodGeneratorHandler {
                         result += input;
                 }
                 Log.info("result1: " + result, "MathAssignmentExpressionSymbol");
-                return result;
-
-            }
-            /*if (mathAssignmentExpressionSymbol.getNameOfMathValue().equals("eigenVectors")) {
+            } else {
+                /*if (mathAssignmentExpressionSymbol.getNameOfMathValue().equals("eigenVectors")) {
                 for (Variable var : ComponentConverter.currentBluePrint.getMathInformationRegister().getVariables()) {
                     Log.info(var.getName(), "Var:");
                 }
             }*/
-            String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
+
+            result = mathAssignmentExpressionSymbol.getNameOfMathValue();
             result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
             result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
             result += StringIndexHelper.modifyContentBetweenBracketsByAdding(ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n", "-1");
             Log.info("result2: " + result, "MathAssignmentExpressionSymbol");
-
-            return result;
+            }
+        } else {
+            result = mathAssignmentExpressionSymbol.getNameOfMathValue() + " " + mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " " + ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
+            Log.info("result3: " + result, "MathAssignmentExpressionSymbol");
         }
-        String result = mathAssignmentExpressionSymbol.getNameOfMathValue() + " " + mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " " + ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
-        Log.info("result3: " + result, "MathAssignmentExpressionSymbol");
         return result;
     }
 
