@@ -88,4 +88,10 @@ public class LinalgBackend implements MathBackend {
         Log.error("Not supported yet");
         return null;
     }
+
+    @Override
+    public boolean usesZeroBasedIndexing() {
+        // TODO: check this! Do not know this backend...
+        return false;
+    }
 }
