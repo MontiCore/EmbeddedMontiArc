@@ -264,12 +264,9 @@ public class MathFunctionFixer {
 
     public static boolean fixForLoopAccess(String nameToAccess, Variable variable, BluePrintCPP bluePrintCPP) {
         MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(nameToAccess);
-        if (mathCommand == null) {
-            if (variable != null)
-                if (variable.getVariableType() != null)
-                    if (variable.getVariableType().getTypeNameTargetLanguage() != null)
-                        if (isTargetLanguageMatrixType(variable.getVariableType().getTypeNameTargetLanguage()))
-                            return true;
+        if ((mathCommand == null) && (variable != null) && (variable.getVariableType() != null) && (variable.getVariableType().getTypeNameTargetLanguage() != null)) {
+            String type = variable.getVariableType().getTypeNameTargetLanguage();
+            return isTargetLanguageMatrixType(type);
         }
         return false;
     }
