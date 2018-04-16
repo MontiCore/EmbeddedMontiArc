@@ -84,7 +84,7 @@ public class CNNTrainTemplateController {
     }
 
     public String getBatchSize() {
-        if (getConfiguration().getNumEpoch() == null) {
+        if (getConfiguration().getBatchSize() == null) {
             return null;
         }
         return String.valueOf(getConfiguration().getBatchSize().getValue());

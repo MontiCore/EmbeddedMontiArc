@@ -62,4 +62,11 @@ public class GenerationTest {
         generate("FullConfig2");
     }
 
+
+    @Test
+    public void testEmptyConfigGeneration() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        generate("EmptyConfig");
+    }
+
 }
