@@ -31,17 +31,18 @@ public abstract class MathCommandRegister {
             if (getMathCommand(functionName) != null) {
                 isMathCommand = true;
             } else {
-                for (MathCommand mathCommand : mathCommands) {
-                    for (String s : mathCommand.getTargetLanguageCommandNames()) {
-                        if (s.contains(functionName)) {
-                            isMathCommand = true;
-                            break;
-                        }
-                    }
-                }
+                isMathCommand = isTargetLanguageCommand(functionName);
             }
         }
         return isMathCommand;
+    }
+
+    private boolean isTargetLanguageCommand(String command) {
+        for (MathCommand mathCommand : mathCommands)
+            for (String s : mathCommand.getTargetLanguageCommandNames())
+                if (s.contains(command))
+                    return true;
+        return false;
     }
 
     protected abstract void init();
