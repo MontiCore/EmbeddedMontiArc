@@ -160,7 +160,7 @@ public class MathFunctionFixer {
             if (mathCommand != null) {
                 if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
                     bluePrintCPP.addAdditionalIncludeString("Helper");
-                mathCommand.convert(mathExpressionSymbol, bluePrintCPP);
+                mathCommand.convertAndSetTargetLanguageName(mathExpressionSymbol, bluePrintCPP);
             }
             if (fixForLoopAccess(mathExpressionSymbol, variable, bluePrintCPP)) {
                 for (MathMatrixAccessSymbol mathMatrixAccessSymbol : mathExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols()) {

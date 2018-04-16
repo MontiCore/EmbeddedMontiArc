@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class MathCommandRegister {
     public List<MathCommand> mathCommands = new ArrayList<>();
 
-    public MathCommandRegister(){
+    public MathCommandRegister() {
         init();
     }
 
@@ -24,6 +24,26 @@ public abstract class MathCommandRegister {
         }
         return null;
     }
+
+    public boolean isMathCommand(String functionName) {
+        boolean isMathCommand = false;
+        if (!functionName.isEmpty()) {
+            if (getMathCommand(functionName) != null) {
+                isMathCommand = true;
+            } else {
+                for (MathCommand mathCommand : mathCommands) {
+                    for (String s : mathCommand.getTargetLanguageCommandNames()) {
+                        if (s.contains(functionName)) {
+                            isMathCommand = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return isMathCommand;
+    }
+
     protected abstract void init();
 
 }
