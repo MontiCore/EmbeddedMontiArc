@@ -46,7 +46,17 @@ public abstract class MathCommand {
      *
      * @return targetLanguageCommandName
      */
-    public HashSet<String> getTargetLanguageCommandNames() {
+    protected HashSet<String> getTargetLanguageCommandNames() {
         return targetLanguageCommandNames;
     }
+
+    public boolean isTargetLanguageCommand(String command) {
+        if (!command.isEmpty())
+            for (String s : getTargetLanguageCommandNames())
+                if (s.contains(command))
+                    return true;
+        return false;
+    }
+
+
 }

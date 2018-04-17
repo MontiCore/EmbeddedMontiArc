@@ -27,21 +27,18 @@ public abstract class MathCommandRegister {
 
     public boolean isMathCommand(String functionName) {
         boolean isMathCommand = false;
-        if (!functionName.isEmpty()) {
-            if (getMathCommand(functionName) != null) {
-                isMathCommand = true;
-            } else {
-                isMathCommand = isTargetLanguageCommand(functionName);
-            }
+        if (getMathCommand(functionName) != null) {
+            isMathCommand = true;
+        } else {
+            isMathCommand = isTargetLanguageCommand(functionName);
         }
         return isMathCommand;
     }
 
     private boolean isTargetLanguageCommand(String command) {
         for (MathCommand mathCommand : mathCommands)
-            for (String s : mathCommand.getTargetLanguageCommandNames())
-                if (s.contains(command))
-                    return true;
+            if (mathCommand.isTargetLanguageCommand(command))
+                return true;
         return false;
     }
 
