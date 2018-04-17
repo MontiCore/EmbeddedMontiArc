@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.emam2wasm;
+package de.monticore.lang.monticar.emam2wasm.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -7,8 +7,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
-import de.monticore.lang.monticar.emam2wasm.model.ModelNameProvider;
-import de.monticore.lang.monticar.emam2wasm.model.ModelStep;
 import de.monticore.lang.monticar.junit.TemporaryDirectoryExtension;
 import java.nio.file.Path;
 import java.nio.file.Paths;

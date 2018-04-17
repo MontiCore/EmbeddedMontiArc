@@ -1,5 +1,7 @@
 package de.monticore.lang.monticar.emam2wasm.wasm;
 
+import static de.monticore.lang.monticar.contract.Precondition.requiresNotNull;
+
 import java.nio.file.Path;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
@@ -11,7 +13,7 @@ public class WasmJsNameProvider implements WasmNameProvider {
 
   @Override
   public String getName(Path cppFile) {
-    return FilenameUtils.getBaseName(cppFile.toString());
+    return FilenameUtils.getBaseName(requiresNotNull(cppFile).toString());
   }
 
   @Override

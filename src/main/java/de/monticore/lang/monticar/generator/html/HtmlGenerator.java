@@ -1,16 +1,14 @@
 package de.monticore.lang.monticar.generator.html;
 
 import static de.monticore.lang.monticar.generator.GeneratorUtil.filterMultipleArrayPorts;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getComponentName;
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getDimension;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getType;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.freemarker.TemplateProcessor;
 import de.monticore.lang.monticar.generator.GeneratorUtil;
-import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
-import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import freemarker.template.TemplateException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,7 +16,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,6 +59,7 @@ public class HtmlGenerator {
     List<Port> outports = produceOutports(model.getOutgoingPorts());
 
     Map<String, Object> dataModel = new HashMap<>();
+    dataModel.put("model_name", getComponentName(model));
     dataModel.put("model", wasmNamingFunction.apply(model));
     dataModel.put("model_wrapper", wrapperNamingFunction.apply(model));
     dataModel.put("inports", inports);
@@ -82,23 +80,11 @@ public class HtmlGenerator {
       Function<PortSymbol, String> methodNameFunction) {
     return filterMultipleArrayPorts(ports).stream().map(
         p -> port(p.getNameWithoutArrayBracketPart(), methodNameFunction.apply(p),
-            getType(ports, p))).collect(Collectors.toList());
+            getPortDefinition(ports, p))).collect(Collectors.toList());
   }
 
-  private String getType(Collection<PortSymbol> ports, PortSymbol port) {
-    MCASTTypeSymbolReference typeReference = (MCASTTypeSymbolReference) port.getTypeReference();
-    ASTType astType = typeReference.getAstType();
-    Optional<String> elementType;
-    if (astType instanceof ASTCommonMatrixType) {
-      ASTCommonMatrixType type = (ASTCommonMatrixType) astType;
-      elementType = type.getElementType().getTElementType();
-    } else if (astType instanceof ASTElementType) {
-      ASTElementType type = (ASTElementType) astType;
-      elementType = type.getTElementType();
-    } else {
-      throw new RuntimeException("Unexpected ASTType: " + astType);
-    }
-    String type = elementType.orElse(typeReference.getName());
+  private String getPortDefinition(Collection<PortSymbol> ports, PortSymbol port) {
+    String type = getType(port);
 
     String[] dimension = getDimension(ports, port);
     String dim = dimension.length > 0 ?

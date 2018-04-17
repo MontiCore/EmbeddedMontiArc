@@ -66,11 +66,14 @@
           src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.1/math.min.js"></script>
   <script type="text/javascript" src="${model_wrapper}.js"></script>
   <script type="text/javascript" src="${model}.js"></script>
-  <title>Model</title>
+  <title>${model_name}</title>
 </head>
 <body>
 <div class="container">
   <div class="model">
+    <div class="header">
+      <h2>${model_name}</h2>
+    </div>
     <div class="ports">
       <div class="inports">
         <div class="header">

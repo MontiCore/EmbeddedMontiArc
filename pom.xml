@@ -6,7 +6,7 @@
 
   <groupId>de.monticore.lang.montiarc</groupId>
   <artifactId>emam2wasm</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -348,16 +348,16 @@
     </profile>
   </profiles>
 
-  <!--<distributionManagement>
+  <distributionManagement>
     <repository>
       <id>internal.repo</id>
-        <name>Temporary Staging Repository</name>
-        <url>file://${project.build.directory}/external-dependencies</url>
+      <name>Temporary Staging Repository</name>
+      <url>file://${project.build.directory}/external-dependencies</url>
     </repository>
     <snapshotRepository>
-        <id>internal.repo</id>
-        <url>file://${project.build.directory}/external-dependencies</url>
+      <id>internal.repo</id>
+      <url>file://${project.build.directory}/external-dependencies</url>
     </snapshotRepository>
-  </distributionManagement>-->
+  </distributionManagement>
 
 </project>

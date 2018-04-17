@@ -1,9 +1,11 @@
 package de.monticore.lang.monticar.generator;
 
 import static de.monticore.lang.monticar.generator.GeneratorUtil.filterMultipleArrayPorts;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getComponentName;
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getDimension;
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getGetterMethodName;
 import static de.monticore.lang.monticar.generator.GeneratorUtil.getSetterMethodName;
+import static de.monticore.lang.monticar.generator.GeneratorUtil.getType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -14,6 +16,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymb
 import de.monticore.lang.monticar.contract.Precondition.PreconditionViolationException;
 import de.monticore.lang.monticar.resolver.Resolver;
 import de.monticore.lang.monticar.resolver.ResolverFactory;
+import de.monticore.symboltable.Symbol;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -21,7 +24,10 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
+@SuppressWarnings("ConstantConditions")
 class GeneratorUtilTest {
 
   private static final Path RESOLVING_BASE_DIR = Paths.get("src/test/resources/generatorutil");
@@ -49,6 +55,14 @@ class GeneratorUtilTest {
   private static final String COLUMN_VECTOR = "ColumnVector";
   private static final String MATRIX = "Matrix";
   private static final String MATRIX_ARRAY = "MatrixArray[2]";
+  private static final Symbol NULL_SYMBOL = null;
+  private static final String ALL_LOWERCASE_NAME = "somename";
+  private static final String EXPECTED_ALL_LOWERCASE_COMPONENT_NAME = "Somename";
+  private static final String EXPECTED_FIRST_UPPERCASE_COMPONENT_NAME = "Somename";
+  private static final String EXPECTED_ALL_UPPERCASE_COMPONENT_NAME = "SOMENAME";
+  private static final String FIRST_UPPERCASE_NAME = "Somename";
+  private static final String ALL_UPPERCASE_NAME = "SOMENAME";
+  private static final String TYPES_MODEL = "models.types";
 
   private static String portName(String direction, String name) {
     return direction + name;
@@ -289,6 +303,101 @@ class GeneratorUtilTest {
       void whenArrayName() {
         assertThat(getSetterMethodName(arrayPort)).isEqualTo("setArray");
       }
+    }
+  }
+
+  @Nested
+  class GetComponentName {
+
+    @Nested
+    class ShouldThrowException {
+
+      @Test
+      void whenSymbolIsNull() {
+        assertThatExceptionOfType(PreconditionViolationException.class)
+            .isThrownBy(() -> getComponentName(NULL_SYMBOL));
+      }
+    }
+
+    @Nested
+    class ShouldReturnCapitalizedSymbolName {
+
+      @Test
+      void whenAllLowercase() {
+        Symbol symbol = mock(Symbol.class);
+        when(symbol.getName()).thenReturn(ALL_LOWERCASE_NAME);
+        assertThat(getComponentName(symbol)).isEqualTo(EXPECTED_ALL_LOWERCASE_COMPONENT_NAME);
+      }
+
+      @Test
+      void whenFirstUppercase() {
+        Symbol symbol = mock(Symbol.class);
+        when(symbol.getName()).thenReturn(FIRST_UPPERCASE_NAME);
+        assertThat(getComponentName(symbol)).isEqualTo(EXPECTED_FIRST_UPPERCASE_COMPONENT_NAME);
+      }
+
+      @Test
+      void whenAllUppercase() {
+        Symbol symbol = mock(Symbol.class);
+        when(symbol.getName()).thenReturn(ALL_UPPERCASE_NAME);
+        assertThat(getComponentName(symbol)).isEqualTo(EXPECTED_ALL_UPPERCASE_COMPONENT_NAME);
+      }
+    }
+  }
+
+  @Nested
+  class GetType {
+
+    private ExpandedComponentInstanceSymbol typesModel;
+
+    @BeforeEach
+    void setUp() {
+      ResolverFactory resolverFactory = new ResolverFactory(RESOLVING_BASE_DIR);
+      Resolver resolver = resolverFactory.get();
+      typesModel = resolver.getExpandedComponentInstanceSymbol(TYPES_MODEL);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "bool, B",
+//        "natural, N",
+        "integer, Z",
+        "rational, Q",
+        "complex, C",
+        "boolMatrix, B",
+        "naturalMatrix, N",
+        "integerMatrix, Z",
+        "rationalMatrix, Q",
+        "complexMatrix, C",
+        "boolArray[1], B",
+        "boolArray[2], B",
+//        "naturalArray[1], N",
+//        "naturalArray[2], N",
+//        "naturalArray[3], N",
+        "integerArray[1], Z",
+        "integerArray[2], Z",
+        "rationalArray[1], Q",
+        "rationalArray[2], Q",
+        "complexArray[1], C",
+        "complexArray[2], C",
+        "boolMatrixArray[1], B",
+        "boolMatrixArray[2], B",
+        "naturalMatrixArray[1], N",
+        "naturalMatrixArray[2], N",
+        "integerMatrixArray[1], Z",
+        "integerMatrixArray[2], Z",
+        "rationalMatrixArray[1], Q",
+        "rationalMatrixArray[2], Q",
+        "complexMatrixArray[1], C",
+        "complexMatrixArray[2], C",
+        "rangeNoUnit, Q(-10 : 0.01 : oo)",
+        "rangeUnit, Z(0 g : 1 kg)",
+        "matrixRangeUnit, Q(-oo m/s : 0.5 m/s : oo m/s)",
+    })
+    void testType(String portName, String expectedType) {
+      PortSymbol port = typesModel.getPort(portName).get();
+
+      assertThat(getType(port)).isEqualToIgnoringWhitespace(expectedType);
     }
   }
 
