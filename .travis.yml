@@ -33,4 +33,5 @@ jobs:
 
 after_success:
  - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
-#- mvn deploy --settings "./settings.xml"
+ after_success:
+ - if [ "${TRAVIS_BRANCH}" == "master" ]; then mvn -B deploy --settings "./settings.xml"; fi
