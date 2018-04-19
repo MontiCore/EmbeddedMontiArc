@@ -125,6 +125,43 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
 
+    /**
+     * Without KMeans for comparision of other operations with libraries that do not support it
+     * @throws IOException
+     */
+    @Test
+    public void testObjectDetectorTestInstancing() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector1Test", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l0");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+
+        generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setUseThreadingOptimization(false);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l1");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+
+        generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setUseAlgebraicOptimizations(false);
+        generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l2");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+
+        generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l3");
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+    }
+
     @Test
     public void testAllObjectDetectorInstances() throws IOException {
         for (int i = 1; i <= 9; ++i) {
