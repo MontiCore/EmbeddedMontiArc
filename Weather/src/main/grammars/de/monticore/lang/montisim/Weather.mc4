@@ -10,20 +10,21 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
   UnitNumberList = "[" UnitNumber ("," UnitNumber)* "]";
   AlternativeInput = (UnitNumber | UnitNumberList | Range);
 
-  interface WeatherAttribute;
+  interface WeatherSetting;
   interface WeatherEntity;
+  WeatherScope = "{" ((WeatherSetting | WeatherEntity) ";")* "}";
 
-  Temperature implements WeatherAttribute = "temperature" AlternativeInput;
+  Temperature implements WeatherSetting = "temperature" AlternativeInput;
 
-  Humidity implements WeatherAttribute = "humidity" AlternativeInput;
+  Humidity implements WeatherSetting = "humidity" AlternativeInput;
 
-  Pressure implements WeatherAttribute = "pressure" AlternativeInput;
+  Pressure implements WeatherSetting = "pressure" AlternativeInput;
 
-  WindStrength implements WeatherAttribute = "wind_strength" AlternativeInput;
+  WindStrength implements WeatherSetting = "wind_strength" AlternativeInput;
 
-  WindDirection implements WeatherAttribute = "wind_direction" AlternativeInput;
+  WindDirection implements WeatherSetting = "wind_direction" AlternativeInput;
 
-  PrecipitationType implements WeatherAttribute = "precipitation_type" precipitationType:["none"|
+  PrecipitationType implements WeatherSetting = "precipitation_type" precipitationType:["none"|
                                             "drizzle"|
                                             "rain"|
                                             "freezing_drizzle"|
@@ -36,9 +37,9 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                                             "snow_pellets"|"graupel"|
                                             "ice_crystals"] ;
 
-  PrecipitationAmount implements WeatherAttribute = "precipitation_amount" AlternativeInput;
+  PrecipitationAmount implements WeatherSetting = "precipitation_amount" AlternativeInput;
   
-  Clouding implements WeatherAttribute = "clouding" cloudingType:["none"|
+  Clouding implements WeatherSetting = "clouding" cloudingType:["none"|
                          "cirrostratus"|
                          "altostratus"|
                          "stratus"|
@@ -54,7 +55,7 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                          "cumulus_congestus"|
                          "cumulonimbus"] ;
 
-  Sight implements WeatherAttribute = "sight" (AlternativeInput | ["unlimited"]) ;
+  Sight implements WeatherSetting = "sight" (AlternativeInput | ["unlimited"]) ;
   
   WeatherPhenomena implements WeatherEntity = "weather_phenomena" phenomenaType:["fog"|
                                            "rope_tornado"|

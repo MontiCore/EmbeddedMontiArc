@@ -1,6 +1,6 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
-import de.monticore.lang.montisim.simlang.util.AlternativeInput;
+import de.monticore.lang.montisim.util.types.AlternativeInput;
 import de.monticore.symboltable.CommonSymbol;
 
 public class SimulationLoopFrequencySymbol extends CommonSymbol{

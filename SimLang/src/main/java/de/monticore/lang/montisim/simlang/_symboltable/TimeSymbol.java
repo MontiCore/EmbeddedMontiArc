@@ -1,7 +1,7 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.Time;
+import de.monticore.lang.montisim.util.types.Time;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,7 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.AlternativeInput;
+import de.monticore.lang.montisim.util.types.AlternativeInput;
 
 public class MaxSectorUsersSymbol extends CommonSymbol{
 

@@ -1,6 +1,6 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
-import de.monticore.lang.montisim.simlang.util.Pedestrian;
+import de.monticore.lang.montisim.util.types.Pedestrian;
 import de.monticore.symboltable.CommonSymbol;
 
 public class PedestrianSymbol extends CommonSymbol{

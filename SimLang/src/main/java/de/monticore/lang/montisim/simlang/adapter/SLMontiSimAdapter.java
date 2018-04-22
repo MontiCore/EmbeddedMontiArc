@@ -1,7 +1,7 @@
 package de.monticore.lang.montisim.simlang.adapter;
 
 import de.se_rwth.commons.logging.Log;
-import de.monticore.lang.montisim.simlang.util.ExplicitVehicle;
+import de.monticore.lang.montisim.util.types.ExplicitVehicle;
 
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
@@ -23,7 +23,7 @@ public class SLMontiSimAdapter {
 
     if(adapter.getWeather().isPresent()) {
      if(adapter.getWeather().get().get(0).getFixedWeather().isPresent()) {
-       boolean isSunny = adapter.getWeather().get().get(0).getFixedWeather().get().getWeather().getPrecipitationType().equals(de.monticore.lang.montisim.simlang.util.SimLangEnums.PrecipitationTypes.NONE);
+       boolean isSunny = adapter.getWeather().get().get(0).getFixedWeather().get().getWeather().getPrecipitationType().equals(de.monticore.lang.montisim.util.types.SimLangEnums.PrecipitationTypes.NONE);
        if (isSunny) {
          this.weather = new Weather(new WeatherSettings(0.25d));
        } else {

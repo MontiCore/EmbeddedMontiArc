@@ -7,24 +7,24 @@ package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimulation;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTSimulationCoCo;
+import de.monticore.lang.montisim.simlang._symboltable.ChannelSymbol;
 import de.se_rwth.commons.logging.Log;
-import java.util.List;
 import java.util.ArrayList;
-import de.monticore.lang.montisim.simlang._ast.ASTChannel;
+import java.util.Collection;
 
 public class NoDuplicateChannelNames implements SimLangASTSimulationCoCo {
 
     @Override
-    public void check(ASTSimulation obj) {
-        List<ASTChannel> channels = obj.getChannels();
-        ArrayList<String> names = new ArrayList<>();
+    public void check(ASTSimulation node) {
+      Collection<ChannelSymbol> channels = node.getEnclosingScope().get().resolveMany("channel", ChannelSymbol.KIND);
+      ArrayList<String> names = new ArrayList<>();
 
-        for(ASTChannel c : channels) {
-          if(names.contains(c.getName())) {
-            Log.error("Error: Duplicate Channel names.");
-          }
-          names.add(c.getName());
+      for(ChannelSymbol c : channels) {
+        if(names.contains(c.getChannel().getName())) {
+          Log.warn("Error: Duplicate Channel names.");
         }
+        names.add(c.getChannel().getName());
+      }
     }
 
 }

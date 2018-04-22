@@ -7,28 +7,31 @@ package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimulation;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTSimulationCoCo;
+import de.monticore.lang.montisim.simlang._symboltable.*;
 import de.se_rwth.commons.logging.Log;
-import java.util.List;
+
+import java.util.Collection;
 
 public class NoMultipleSimulationEntries implements SimLangASTSimulationCoCo {
   
   @Override
   public void check(ASTSimulation sim) {
-    List<de.monticore.lang.montisim.simlang._ast.ASTSimulationRenderFrequency> simRenderFreq = sim.getSimulationRenderFrequencys();
-    List<de.monticore.lang.montisim.simlang._ast.ASTSimulationLoopFrequency> simLoopFreq = sim.getSimulationLoopFrequencys();
-    List<de.monticore.lang.montisim.simlang._ast.ASTSimulationDuration> simDuration = sim.getSimulationDurations();
-    List<de.monticore.lang.montisim.simlang._ast.ASTSimulationType> simType = sim.getSimulationTypes();
-    List<de.monticore.lang.montisim.simlang._ast.ASTWeather> weather = sim.getWeathers();
-    List<de.monticore.lang.montisim.simlang._ast.ASTTime> time = sim.getTimes();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMapPath> mapPath = sim.getMapPaths();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMapName> mapName = sim.getMapNames();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMapHeight> mapHeight = sim.getMapHeights();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMapOverlap> mapOverlap = sim.getMapOverlaps();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMapSectorWidth> mapSectorWidth = sim.getMapSectorWidths();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMapSectorHeight> mapSectorHeight = sim.getMapSectorHeights();
-    List<de.monticore.lang.montisim.simlang._ast.ASTMaxSectorUsers> maxSectorUser = sim.getMaxSectorUserss();
-    List<de.monticore.lang.montisim.simlang._ast.ASTTimeout> timeout = sim.getTimeouts();
-    List<de.monticore.lang.montisim.simlang._ast.ASTPedestrianDensity> pedestrianDensity = sim.getPedestrianDensitys();
+    Collection<SimulationRenderFrequencySymbol> simRenderFreq = sim.getEnclosingScope().get().resolveMany("sim_render_frequency",SimulationRenderFrequencySymbol.KIND);
+    Collection<SimulationLoopFrequencySymbol> simLoopFreq = sim.getEnclosingScope().get().resolveMany("sim_loop_frequency", SimulationLoopFrequencySymbol.KIND);
+    Collection<SimulationDurationSymbol> simDuration = sim.getEnclosingScope().get().resolveMany("sim_duration",SimulationDurationSymbol.KIND);
+    Collection<SimulationTypeSymbol> simType = sim.getEnclosingScope().get().resolveMany("sim_type",SimulationTypeSymbol.KIND);
+    Collection<WeatherSymbol> weather = sim.getEnclosingScope().get().resolveMany("weather",WeatherSymbol.KIND);
+    Collection<TimeSymbol> time = sim.getEnclosingScope().get().resolveMany("time",TimeSymbol.KIND);
+    Collection<MapPathSymbol> mapPath = sim.getEnclosingScope().get().resolveMany("map_path",MapPathSymbol.KIND);
+    Collection<MapNameSymbol> mapName = sim.getEnclosingScope().get().resolveMany("map_name",MapNameSymbol.KIND);
+    Collection<MapHeightSymbol> mapHeight = sim.getEnclosingScope().get().resolveMany("map_height",MapHeightSymbol.KIND);
+    Collection<MapOverlapSymbol> mapOverlap = sim.getEnclosingScope().get().resolveMany("map_overlap",MapOverlapSymbol.KIND);
+    Collection<MapSectorWidthSymbol> mapSectorWidth = sim.getEnclosingScope().get().resolveMany("map_sector_width",MapSectorWidthSymbol.KIND);
+    Collection<MapSectorHeightSymbol> mapSectorHeight = sim.getEnclosingScope().get().resolveMany("map_sector_height",MapSectorHeightSymbol.KIND);
+    Collection<MaxSectorUsersSymbol> maxSectorUser = sim.getEnclosingScope().get().resolveMany("max_sector_users",MaxSectorUsersSymbol.KIND);
+    Collection<TimeoutSymbol> timeout = sim.getEnclosingScope().get().resolveMany("timeout",TimeoutSymbol.KIND);
+    Collection<PedestrianDensitySymbol> pedestrianDensity = sim.getEnclosingScope().get().resolveMany("pedestrian_density",PedestrianDensitySymbol.KIND);
+    Collection<GravitySymbol> gravity = sim.getEnclosingScope().get().resolveMany("gravity",GravitySymbol.KIND);
     
     if(simRenderFreq.size() > 1 |
        simLoopFreq.size() > 1 |
@@ -44,9 +47,10 @@ public class NoMultipleSimulationEntries implements SimLangASTSimulationCoCo {
        mapSectorHeight.size() > 1 |
        maxSectorUser.size() > 1 |
        timeout.size() > 1 |
-       pedestrianDensity.size() > 1
+       pedestrianDensity.size() > 1 |
+            gravity.size() > 1
     ) {
-      Log.error("Semantic Error: A simulation attribute was defined more than once.");
+      Log.warn("Semantic Error: A simulation attribute was defined more than once.");
     }
   }
   

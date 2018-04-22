@@ -2,7 +2,7 @@ package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimLangCompilationUnit;
 import de.monticore.lang.montisim.simlang._symboltable.*;
-import de.monticore.lang.montisim.simlang.util.SimLangEnums;
+import de.monticore.lang.montisim.util.types.SimLangEnums;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -25,8 +25,9 @@ public class SymboltableTest {
     //create symboltable
     final ASTSimLangCompilationUnit ast = SimLangTool.parse("src/test/resources/test/ast/ASTTest.sim");
     final SimLangLang lang = new SimLangLang();
-    SimLangTool.checkDefaultCoCos(ast);
+
     final Scope symtab = SimLangTool.createSymbolTable(lang, ast);
+    SimLangTool.checkDefaultCoCos(ast);
     Log.info(symtab.getSubScopes().get(0).toString(),"symtest");
 
     //resolve and check for correct/expected values
@@ -155,24 +156,28 @@ public class SymboltableTest {
 
     final Collection<ChannelSymbol> ch = symtab.resolveMany("simlang.test.ASTTest.channel", ChannelSymbol.KIND);
     assert !ch.isEmpty();
-    System.out.println(ch.size());
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getName().equals("LTE"); //again, inverse order as in file
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getType().equals(SimLangEnums.ChannelTypes.FIXED);
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("20.0bit/s");
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getLatency().getNUnit().get().getNumberUnit().equals("10.0ms");
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getOutage().getNUnit().get().getNumber() == 0.001f;
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getArea().isGlobal();
+    for(ChannelSymbol sym : ch) {
+      if(sym.getChannel().getName().equals("LTE")) {
+        assert sym.getChannel().getType().equals(SimLangEnums.ChannelTypes.FIXED);
+        assert sym.getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("20.0bit/s");
+        assert sym.getChannel().getLatency().getNUnit().get().getNumberUnit().equals("10.0ms");
+        assert sym.getChannel().getOutage().getNUnit().get().getNumber() == 0.001f;
+        assert sym.getChannel().getArea().isGlobal();
+      }
 
-    /* //This symbol is not resolved?
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getName().equals("ICE");
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getType().equals(SimLangEnums.ChannelTypes.BOUND);
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("2bit/s");
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getLatency().getNUnit().get().getNumberUnit().equals("1s");
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getOutage().getNUnit().get().getNumber() == 0.99f;
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getArea().getPoint1().get().x == 10f;
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getArea().getPoint1().get().y == 10f;
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getArea().getRadius().get().getNumber() == 30f;
-    assert ((ChannelSymbol)ch.toArray()[0]).getChannel().getArea().isCircular();
-    */
+      else if(sym.getChannel().getName().equals("ICE")) {
+        assert sym.getChannel().getType().equals(SimLangEnums.ChannelTypes.BOUND);
+        assert sym.getChannel().getTransferRate().getNUnit().get().getNumberUnit().equals("2.0bit/s");
+        assert sym.getChannel().getLatency().getNUnit().get().getNumberUnit().equals("1.0s");
+        assert sym.getChannel().getOutage().getNUnit().get().getNumber() == 0.99f;
+        assert sym.getChannel().getArea().getPoint1().get().x == 10f;
+        assert sym.getChannel().getArea().getPoint1().get().y == 10f;
+        assert sym.getChannel().getArea().getRadius().get().getNumber() == 30f;
+        assert sym.getChannel().getArea().isCircular();
+      }
+      else {
+        Log.error("Unaccounted channel symbol.");
+      }
+    }
   }
 }

@@ -7,29 +7,31 @@ package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.simlang._ast.ASTPedestrianDensity;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTPedestrianDensityCoCo;
-import de.monticore.lang.montisim.weather.cocos.InputHelper;
-import de.monticore.lang.montisim.weather.cocos.NumberUnit;
-import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
+import de.monticore.lang.montisim.simlang._symboltable.PedestrianDensitySymbol;
+import de.monticore.lang.montisim.util.cocos.NumberUnitChecker;
+import de.monticore.lang.montisim.util.cocos.InputHelper;
+import de.monticore.lang.montisim.util.types.NumberUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class PedestrianDensityChecker implements SimLangASTPedestrianDensityCoCo {
   
   @Override
-  public void check(ASTPedestrianDensity obj) {
+  public void check(ASTPedestrianDensity node) {
     String[] allowedUnits = {""};
-    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    PedestrianDensitySymbol sym = (PedestrianDensitySymbol)node.getSymbol().get();
+
+    ArrayList<NumberUnit> input = new InputHelper(sym.getPedestrianDensity()).getExtractedValues();
 
     for(NumberUnit nu : input) {
-      UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
+      NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.inPositiveRange()) {
-        Log.error("Range Error: pedestrian_density must be greater 0.");
+        Log.warn("Range Error: pedestrian_density must be greater 0.");
       }
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: pedestrian_density missing or invalid unit.");
+        Log.warn("Unit Error: pedestrian_density missing or invalid unit.");
       }
     }
   }
