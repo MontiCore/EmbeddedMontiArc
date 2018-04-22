@@ -1,6 +1,6 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
-import de.monticore.lang.montisim.simlang.util.RandomVehicle;
+import de.monticore.lang.montisim.util.types.RandomVehicle;
 import de.monticore.symboltable.CommonSymbol;
 
 public class RandomVehicleSymbol extends CommonSymbol{

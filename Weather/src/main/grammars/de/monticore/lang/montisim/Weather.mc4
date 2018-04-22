@@ -10,17 +10,21 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
   UnitNumberList = "[" UnitNumber ("," UnitNumber)* "]";
   AlternativeInput = (UnitNumber | UnitNumberList | Range);
 
-  Temperature = "temperature" AlternativeInput;
+  interface WeatherSetting;
+  interface WeatherEntity;
+  WeatherScope = "{" ((WeatherSetting | WeatherEntity) ";")* "}";
 
-  Humidity = "humidity" AlternativeInput;
+  Temperature implements WeatherSetting = "temperature" AlternativeInput;
 
-  Pressure = "pressure" AlternativeInput;
+  Humidity implements WeatherSetting = "humidity" AlternativeInput;
 
-  WindStrength = "wind_strength" AlternativeInput;
+  Pressure implements WeatherSetting = "pressure" AlternativeInput;
 
-  WindDirection = "wind_direction" AlternativeInput;
+  WindStrength implements WeatherSetting = "wind_strength" AlternativeInput;
 
-  PrecipitationType = "precipitation_type" precipitationType:["none"|
+  WindDirection implements WeatherSetting = "wind_direction" AlternativeInput;
+
+  PrecipitationType implements WeatherSetting = "precipitation_type" precipitationType:["none"|
                                             "drizzle"|
                                             "rain"|
                                             "freezing_drizzle"|
@@ -33,9 +37,9 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                                             "snow_pellets"|"graupel"|
                                             "ice_crystals"] ;
 
-  PrecipitationAmount = "precipitation_amount" AlternativeInput;
+  PrecipitationAmount implements WeatherSetting = "precipitation_amount" AlternativeInput;
   
-  Clouding = "clouding" cloudingType:["none"|
+  Clouding implements WeatherSetting = "clouding" cloudingType:["none"|
                          "cirrostratus"|
                          "altostratus"|
                          "stratus"|
@@ -51,9 +55,9 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                          "cumulus_congestus"|
                          "cumulonimbus"] ;
 
-  Sight = "sight" (AlternativeInput | ["unlimited"]) ;
+  Sight implements WeatherSetting = "sight" (AlternativeInput | ["unlimited"]) ;
   
-  WeatherPhenomena = "weather_phenomena" phenomenaType:["fog"|
+  WeatherPhenomena implements WeatherEntity = "weather_phenomena" phenomenaType:["fog"|
                                            "rope_tornado"|
                                            "cone_tornado"|
                                            "wedge_tornado"|
@@ -66,7 +70,7 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                                            "thunderstorm"]
                     (Coordinate)? ;
                                     
-  OpticalPhenomena = "optical_phenomena" phenomenaType:["rainbow"|
+  OpticalPhenomena implements WeatherEntity = "optical_phenomena" phenomenaType:["rainbow"|
                                            "northern_lights"|
                                            "circumzenithal_arc"|
                                            "zodiacal_light"|
@@ -74,7 +78,7 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                                            "mirage"|
                                            "fog_bow"] ;
                                            
-  ArtificialPhenomena = "artificial_phenomena" phenomenaType:["contrails"|
+  ArtificialPhenomena implements WeatherEntity = "artificial_phenomena" phenomenaType:["contrails"|
                                                  "smog"|
                                                  "rocket_exhaust_trails"] ;
 }

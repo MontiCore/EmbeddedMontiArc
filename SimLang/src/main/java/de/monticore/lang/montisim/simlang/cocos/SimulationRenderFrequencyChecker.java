@@ -7,9 +7,10 @@ package de.monticore.lang.montisim.simlang.cocos;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimulationRenderFrequency;
 import de.monticore.lang.montisim.simlang._cocos.SimLangASTSimulationRenderFrequencyCoCo;
-import de.monticore.lang.montisim.weather.cocos.InputHelper;
-import de.monticore.lang.montisim.weather.cocos.NumberUnit;
-import de.monticore.lang.montisim.weather.cocos.UnitNumberChecker;
+import de.monticore.lang.montisim.simlang._symboltable.SimulationRenderFrequencySymbol;
+import de.monticore.lang.montisim.util.cocos.InputHelper;
+import de.monticore.lang.montisim.util.cocos.NumberUnitChecker;
+import de.monticore.lang.montisim.util.types.NumberUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -17,18 +18,20 @@ import java.util.ArrayList;
 public class SimulationRenderFrequencyChecker implements SimLangASTSimulationRenderFrequencyCoCo {
   
   @Override
-  public void check(ASTSimulationRenderFrequency obj) {
+  public void check(ASTSimulationRenderFrequency node) {
     String[] allowedUnits = {"ms","s","m","h"};
-    ArrayList<NumberUnit> input = new InputHelper(obj.getAlternativeInput()).getExtractedValues();
+    SimulationRenderFrequencySymbol sym = (SimulationRenderFrequencySymbol)node.getSymbol().get();
+
+    ArrayList<NumberUnit> input = new InputHelper(sym.getSimulationRenderFrequency()).getExtractedValues();
 
     for(NumberUnit nu : input) {
-      UnitNumberChecker checker = new UnitNumberChecker(nu, allowedUnits);
+      NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.inPositiveRange()) {
-        Log.error("Range Error: sim_render_frequency must be greater 0.");
+        Log.warn("Range Error: sim_render_frequency must be greater 0.");
       }
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: sim_render_frequency missing or invalid unit.");
+        Log.warn("Unit Error: sim_render_frequency missing or invalid unit.");
       }
     }
   }

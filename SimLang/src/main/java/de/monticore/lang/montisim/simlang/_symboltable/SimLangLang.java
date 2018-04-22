@@ -4,9 +4,8 @@
  * http://www.se-rwth.de/
  */
 package de.monticore.lang.montisim.simlang._symboltable;
-import de.monticore.symboltable.GlobalScope;
+import de.monticore.lang.montisim.weather.symboltable.*;
 import de.monticore.symboltable.ResolvingConfiguration;
-//import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 
 import java.util.Optional;
@@ -58,7 +57,23 @@ public class SimLangLang extends SimLangLanguage {
     addResolvingFilter(new RandomVehicleResolvingFilter());
 
     addResolvingFilter(new ChannelResolvingFilter());
+    addResolvingFilter(new TransferRateResolvingFilter());
+    addResolvingFilter(new LatencyResolvingFilter());
+    addResolvingFilter(new OutageResolvingFilter());
+    addResolvingFilter(new AreaResolvingFilter());
 
     addResolvingFilter(new WeatherResolvingFilter());
+    addResolvingFilter(new TemperatureResolvingFilter());
+    addResolvingFilter(new HumidityResolvingFilter());
+    addResolvingFilter(new PressureResolvingFilter());
+    addResolvingFilter(new WindStrengthResolvingFilter());
+    addResolvingFilter(new WindDirectionResolvingFilter());
+    addResolvingFilter(new PrecipitationTypeResolvingFilter());
+    addResolvingFilter(new PrecipitationAmountResolvingFilter());
+    addResolvingFilter(new CloudingResolvingFilter());
+    addResolvingFilter(new SightResolvingFilter());
+    addResolvingFilter(new WeatherPhenomenaResolvingFilter());
+    addResolvingFilter(new OpticalPhenomenaResolvingFilter());
+    addResolvingFilter(new ArtificialPhenomenaResolvingFilter());
   }
 }

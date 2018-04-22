@@ -1,8 +1,8 @@
 package de.monticore.lang.montisim.simlang.adapter;
 
 import de.monticore.lang.montisim.simlang._symboltable.*;
+import de.monticore.lang.montisim.util.types.*;
 import de.monticore.symboltable.Scope;
-import de.monticore.lang.montisim.simlang.util.*;
 
 import java.util.ArrayList;
 import java.util.Collection;

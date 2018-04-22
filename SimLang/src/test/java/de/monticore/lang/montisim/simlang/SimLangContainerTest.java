@@ -1,7 +1,7 @@
 package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang.adapter.SimLangContainer;
-import de.monticore.lang.montisim.simlang.util.SimLangEnums;
+import de.monticore.lang.montisim.util.types.SimLangEnums;
 
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;

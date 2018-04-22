@@ -34,7 +34,13 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Forces correct order in maven reactor -->
+
+    <!-- module dependencies -->
+    <dependency>
+      <groupId>de.monticore.lang.montisim</groupId>
+      <artifactId>Util</artifactId>
+      <version>1.0.1</version>
+    </dependency>
     <dependency>
             <groupId>de.monticore.lang</groupId>
             <artifactId>NumberUnit</artifactId>

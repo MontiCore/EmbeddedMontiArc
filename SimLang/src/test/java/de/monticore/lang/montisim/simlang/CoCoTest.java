@@ -1,6 +1,7 @@
 package de.monticore.lang.montisim.simlang;
 
 import de.monticore.lang.montisim.simlang._ast.ASTSimLangCompilationUnit;
+import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,12 +91,13 @@ public class CoCoTest {
         ASTSimLangCompilationUnit ast = SimLangTool.parse(file.toString());
         Log.getFindings().clear();
         try {
+          SimLangTool.createSymbolTable(SimLangTool.SIMLANG_LANGUAGE, ast);
           SimLangTool.checkDefaultCoCos(ast);
         } catch (NoSuchElementException e) {
           Log.warn("WARNING: This error is only expected in the CoCoTest parsing InfRanges.", e);
-        } /*catch (java.lang.NumberFormatException e) {
-          Log.warn("WARNING: This error is only expected in the NoInfRangesCoCo.", e);
-        }*/
+        } catch (ResolvedSeveralEntriesException e) {
+          Log.warn("WARNING: This error is only expected in the CoCo Test.", e);
+        }
         boolean isSuccess = Log.getFindings().isEmpty();
         boolean isTestFailed = (!isSuccess && !expectFailure) || (isSuccess && expectFailure);
         if (isTestFailed) {

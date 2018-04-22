@@ -14,7 +14,7 @@ public class NoInfRangeChecker implements RangesASTRangeCoCo {
   @Override
   public void check(ASTRange obj) {
     if(obj.getStartInf().isPresent() || obj.getEndInf().isPresent()) {
-      Log.error("Range Error: Infinite start/end are not allowed.");
+      Log.warn("Range Error: Infinite start/end are not allowed.");
     }
   }
   

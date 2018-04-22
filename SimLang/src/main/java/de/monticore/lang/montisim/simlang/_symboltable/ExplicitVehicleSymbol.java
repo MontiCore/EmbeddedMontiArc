@@ -1,10 +1,7 @@
 package de.monticore.lang.montisim.simlang._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.lang.montisim.simlang.util.ExplicitVehicle;
-
-import java.util.ArrayList;
-import java.util.List;
+import de.monticore.lang.montisim.util.types.ExplicitVehicle;
 
 public class ExplicitVehicleSymbol extends CommonSymbol{
 

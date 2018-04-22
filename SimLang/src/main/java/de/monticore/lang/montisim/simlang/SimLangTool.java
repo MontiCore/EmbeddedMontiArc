@@ -1,7 +1,7 @@
 package de.monticore.lang.montisim.simlang;
 
 /*
- * Copyright (c) 2015 RWTH Aachen. All rights reserved.
+ * Copyright (c) 2017 RWTH Aachen. All rights reserved.
  *
  * http://www.se-rwth.de/
  */
@@ -26,14 +26,14 @@ import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;*/
 import de.monticore.symboltable.*;
-import de.monticore.ModelingLanguageFamily;
+//import de.monticore.ModelingLanguageFamily;
 import de.se_rwth.commons.logging.Log;
 
 /**
- * Main class for the Automaton DSL tool.
+ * Main class for the SimLang DSL tool.
  *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
+ * @author Schmidt, Deniz
+ * @version 1.0.1
  */
 public class SimLangTool {
   public static SimLangLang SIMLANG_LANGUAGE = new SimLangLang();
@@ -48,7 +48,7 @@ public class SimLangTool {
       Log.error("Please specify only one single path to the input model.");
       return;
     }
-    Log.info("Simulation DSL Tool", SimLangTool.class.getName());
+    Log.info("SimLang-DSL Tool", SimLangTool.class.getName());
     Log.info("------------------", SimLangTool.class.getName());
     String model = args[0];
 
@@ -59,54 +59,13 @@ public class SimLangTool {
     final ASTSimLangCompilationUnit ast = parse(model);
     Log.info(model + " parsed successfully!", SimLangTool.class.getName());
 
-
-
-    // can be used for resolving things in the model
-    //Optional<String> scopeName = modelTopScope.getName();
-    //List<?> scopeMap = modelTopScope.getSubScopes();
-    //Optional<Symbol> aSymbol = modelTopScope.resolve("FullExample", SimulationKind.KIND);
-    /*if (aSymbol.isPresent()) {
-      Log.info("Resolved state symbol \"bla\"; FQN = " + aSymbol.get().toString(),
-          SimLangTool.class.getName());
-    }*/
-    /*
-    final ResolvingConfiguration resolverConfiguration = new ResolvingConfiguration();
-    resolverConfiguration.addTopScopeResolvers(lang.getResolvers());
-
-    Path mp = Paths.get(args[0]);
-    GlobalScope globalScope = new GlobalScope(new ModelPath(mp), lang, resolverConfiguration);
-
-    Optional<SimulationSymbolTableCreatorImp> symbolTable = lang.getSymbolTableCreator(resolverConfiguration, globalScope);
-    Scope modelTopScope = symbolTable.get().createFromAST(ast);
-    System.out.println(modelTopScope);
-    */
-    //Run Context-Conditions
-    Log.info("Running CoCos...", SimLangTool.class.getName());
-    //checkDefaultCoCos(ast);
-    Log.info("Finished CoCos.", SimLangTool.class.getName());
-
     // setup the symbol table
     Scope modelTopScope = createSymbolTable(lang, ast);
-    /*
-    SymbolMapCreator data = new SymbolMapCreator();
-    data.createFromAST(ast);
-    System.out.println(data.getSymbolMap());
-    SimLangContainer adapter = new SimLangContainer(data.getSymbolMap());
-    System.out.println(adapter.getMapName());
-    */
-    //Grab data from symboltable
-    Log.info("Grabbing symboltable content...", SimLangTool.class.getName());
-    System.out.println(modelTopScope);
-    System.out.println(modelTopScope.getSymbolsSize());
-    System.out.println(modelTopScope.getSymbols());
-    System.out.println(modelTopScope.getLocalSymbols());
-    System.out.println(modelTopScope.getSubScopes());
-    Optional<Symbol> aSymbol = modelTopScope.resolve("sim_type", SimulationTypeSymbol.KIND);
-    if (aSymbol.isPresent()) {
-      Log.info("Resolved symbol = " + aSymbol.get().toString(), SimLangTool.class.getName());
-    }
-    System.out.println(aSymbol);
-    Log.info("Finished grabbing.", SimLangTool.class.getName());
+
+    //Run Context-Conditions
+    Log.info("Running CoCos...", SimLangTool.class.getName());
+    checkDefaultCoCos(ast);
+    Log.info("Finished CoCos.", SimLangTool.class.getName());
 
     Log.info("Done.", SimLangTool.class.getName());
   }
@@ -125,14 +84,13 @@ public class SimLangTool {
       if (!parser.hasErrors() && optSimulation.isPresent()) {
         return optSimulation.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.warn("Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.warn("Failed to parse " + model, e);
     }
     return null;
   }
-  //todo: finalize range+lambda -> fix cocos
 
   public static void checkDefaultCoCos(ASTSimLangCompilationUnit ast) {
     SimLangCoCoChecker defaultCoCos = new SimLangCoCoChecker();
@@ -205,8 +163,8 @@ public class SimLangTool {
   public static SimLangContainer parseIntoContainer(String model) {
     final SimLangLang lang = new SimLangLang();
     final ASTSimLangCompilationUnit ast = parse(model);
-    checkDefaultCoCos(ast);
     final Scope modelTopScope = createSymbolTable(lang, ast);
+    checkDefaultCoCos(ast);
     return new SimLangContainer(modelTopScope, String.join(".",ast.getPackage()), ast.getSimulation().getName());
   }
   /*

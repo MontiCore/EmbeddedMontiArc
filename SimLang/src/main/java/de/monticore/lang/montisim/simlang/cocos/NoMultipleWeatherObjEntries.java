@@ -5,36 +5,38 @@
  */
 package de.monticore.lang.montisim.simlang.cocos;
 
-import de.monticore.lang.montisim.simlang._ast.ASTWeatherObj;
-import de.monticore.lang.montisim.simlang._cocos.SimLangASTWeatherObjCoCo;
+import de.monticore.lang.montisim.weather._ast.ASTWeatherScope;
+import de.monticore.lang.montisim.weather._cocos.WeatherASTWeatherScopeCoCo;
+import de.monticore.lang.montisim.weather.symboltable.TemperatureSymbol;
 import de.se_rwth.commons.logging.Log;
-import java.util.List;
 
-public class NoMultipleWeatherObjEntries implements SimLangASTWeatherObjCoCo {
+import java.util.Collection;
+
+public class NoMultipleWeatherObjEntries implements WeatherASTWeatherScopeCoCo {
   
   @Override
-  public void check(ASTWeatherObj wObj) {
-    List<de.monticore.lang.montisim.weather._ast.ASTTemperature> temperatures = wObj.getTemperatures();
-    List<de.monticore.lang.montisim.weather._ast.ASTClouding> cloudings = wObj.getCloudings();
-    List<de.monticore.lang.montisim.weather._ast.ASTSight> sights = wObj.getSights();
-    List<de.monticore.lang.montisim.weather._ast.ASTPrecipitationType> precipitationtypes = wObj.getPrecipitationTypes();
-    List<de.monticore.lang.montisim.weather._ast.ASTHumidity> humiditys = wObj.getHumiditys();
-    List<de.monticore.lang.montisim.weather._ast.ASTPressure> pressures = wObj.getPressures();
-    List<de.monticore.lang.montisim.weather._ast.ASTWindStrength> windstrengths = wObj.getWindStrengths();
-    List<de.monticore.lang.montisim.weather._ast.ASTWindDirection> winddirections = wObj.getWindDirections();
-    List<de.monticore.lang.montisim.weather._ast.ASTPrecipitationAmount> precipitationamounts = wObj.getPrecipitationAmounts();
+  public void check(ASTWeatherScope node) {
+    Collection<TemperatureSymbol> temp = node.getSpannedScope().get().resolveMany("temperature", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> cloud = node.getSpannedScope().get().resolveMany("clouding", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> humidity = node.getSpannedScope().get().resolveMany("humidity", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> pressure = node.getSpannedScope().get().resolveMany("pressure", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> windS = node.getSpannedScope().get().resolveMany("wind_strength", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> windD = node.getSpannedScope().get().resolveMany("wind_direction", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> preT = node.getSpannedScope().get().resolveMany("precipitation_type", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> preA = node.getSpannedScope().get().resolveMany("precipitation_amount", TemperatureSymbol.KIND);
+    Collection<TemperatureSymbol> sight = node.getSpannedScope().get().resolveMany("sight", TemperatureSymbol.KIND);
     
-    if(temperatures.size() > 1 |
-       cloudings.size() > 1 |
-       sights.size() > 1 |
-       precipitationtypes.size() > 1 |
-       humiditys.size() > 1 |
-       pressures.size() > 1 |
-       windstrengths.size() > 1 |
-       winddirections.size() > 1 |
-       precipitationamounts.size() > 1
+    if(temp.size() > 1 |
+       cloud.size() > 1 |
+       humidity.size() > 1 |
+       pressure.size() > 1 |
+       windS.size() > 1 |
+       windD.size() > 1 |
+       preT.size() > 1 |
+       preA.size() > 1 |
+       sight.size() > 1
     ) {
-      Log.error("Semantic Error: A weather attribute was defined more than once.");
+      Log.warn("Semantic Error: A weather attribute was defined more than once.");
     }
   }
   

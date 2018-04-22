@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
 import de.se_rwth.commons.Joiners;
