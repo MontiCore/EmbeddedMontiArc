@@ -15,6 +15,9 @@ import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import de.monticore.lang.montisim.simlang._ast.ASTConstantsSimLang;
+import de.monticore.lang.montisim.weather._ast.ASTConstantsWeather;
+
 public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   
   public SimLangSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
@@ -206,21 +209,21 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(final ASTPrecipitationType node) {
     SimLangEnums.PrecipitationTypes precT;
     switch (node.getPrecipitationType()) {
-      case 0: precT = SimLangEnums.PrecipitationTypes.NONE; break;
-      case 1: precT = SimLangEnums.PrecipitationTypes.DRIZZLE; break;
-      case 2: precT = SimLangEnums.PrecipitationTypes.RAIN; break;
-      case 3: precT = SimLangEnums.PrecipitationTypes.FREEZING_DRIZZLE; break;
-      case 4: precT = SimLangEnums.PrecipitationTypes.FREEZING_RAIN; break;
-      case 5: precT = SimLangEnums.PrecipitationTypes.SNOW_RAIN; break;
-      case 6: precT = SimLangEnums.PrecipitationTypes.SNAIN; break;
-      case 7: precT = SimLangEnums.PrecipitationTypes.SNOW; break;
-      case 8: precT = SimLangEnums.PrecipitationTypes.SNOW_GRAINS; break;
-      case 9: precT = SimLangEnums.PrecipitationTypes.ICE_PELLETS; break;
-      case 10: precT = SimLangEnums.PrecipitationTypes.SLEET; break;
-      case 11: precT = SimLangEnums.PrecipitationTypes.HAIL; break;
-      case 12: precT = SimLangEnums.PrecipitationTypes.SNOW_PELLETS; break;
-      case 13: precT = SimLangEnums.PrecipitationTypes.GRAUPEL; break;
-      case 14: precT = SimLangEnums.PrecipitationTypes.ICE_CRYSTALS; break;
+      case ASTConstantsWeather.NONE: precT = SimLangEnums.PrecipitationTypes.NONE; break;
+      case ASTConstantsWeather.DRIZZLE: precT = SimLangEnums.PrecipitationTypes.DRIZZLE; break;
+      case ASTConstantsWeather.RAIN: precT = SimLangEnums.PrecipitationTypes.RAIN; break;
+      case ASTConstantsWeather.FREEZINGDRIZZLE: precT = SimLangEnums.PrecipitationTypes.FREEZING_DRIZZLE; break;
+      case ASTConstantsWeather.FREEZINGRAIN: precT = SimLangEnums.PrecipitationTypes.FREEZING_RAIN; break;
+      case ASTConstantsWeather.SNOWRAIN: precT = SimLangEnums.PrecipitationTypes.SNOW_RAIN; break;
+      case ASTConstantsWeather.SNAIN: precT = SimLangEnums.PrecipitationTypes.SNAIN; break;
+      case ASTConstantsWeather.SNOW: precT = SimLangEnums.PrecipitationTypes.SNOW; break;
+      case ASTConstantsWeather.SNOWGRAINS: precT = SimLangEnums.PrecipitationTypes.SNOW_GRAINS; break;
+      case ASTConstantsWeather.ICEPELLETS: precT = SimLangEnums.PrecipitationTypes.ICE_PELLETS; break;
+      case ASTConstantsWeather.SLEET: precT = SimLangEnums.PrecipitationTypes.SLEET; break;
+      case ASTConstantsWeather.HAIL: precT = SimLangEnums.PrecipitationTypes.HAIL; break;
+      case ASTConstantsWeather.SNOWPELLETS: precT = SimLangEnums.PrecipitationTypes.SNOW_PELLETS; break;
+      case ASTConstantsWeather.GRAUPEL: precT = SimLangEnums.PrecipitationTypes.GRAUPEL; break;
+      case ASTConstantsWeather.ICECRYSTALS: precT = SimLangEnums.PrecipitationTypes.ICE_CRYSTALS; break;
       default: precT = SimLangEnums.PrecipitationTypes.NONE;
     }
     final PrecipitationTypeSymbol symbol = new PrecipitationTypeSymbol("precipitation_type", precT);
@@ -230,21 +233,21 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(final ASTClouding node) {
     SimLangEnums.CloudingTypes cloud;
     switch (node.getCloudingType()) {
-      case 0: cloud = SimLangEnums.CloudingTypes.NONE; break;
-      case 1: cloud = SimLangEnums.CloudingTypes.CIRROSTRATUS; break;
-      case 2: cloud = SimLangEnums.CloudingTypes.ALTOSTRATUS; break;
-      case 3: cloud = SimLangEnums.CloudingTypes.STRATUS; break;
-      case 4: cloud = SimLangEnums.CloudingTypes.NIMBOSTRATUS; break;
-      case 5: cloud = SimLangEnums.CloudingTypes.NOCTILUCENT; break;
-      case 6: cloud = SimLangEnums.CloudingTypes.POLAR_STRATOSPHERIC; break;
-      case 7: cloud = SimLangEnums.CloudingTypes.CIRRUS; break;
-      case 8: cloud = SimLangEnums.CloudingTypes.CIRROCUMULUS; break;
-      case 9: cloud = SimLangEnums.CloudingTypes.ALTOCUMULUS; break;
-      case 10: cloud = SimLangEnums.CloudingTypes.STRATOCUMULUS; break;
-      case 11: cloud = SimLangEnums.CloudingTypes.CUMULUS_HUMILIS; break;
-      case 12: cloud = SimLangEnums.CloudingTypes.CUMULUS_MEDIOCRIS; break;
-      case 13: cloud = SimLangEnums.CloudingTypes.CUMULUS_CONGESTUS; break;
-      case 14: cloud = SimLangEnums.CloudingTypes.CUMULONIMBUS; break;
+      case ASTConstantsWeather.NONE: cloud = SimLangEnums.CloudingTypes.NONE; break;
+      case ASTConstantsWeather.CIRROSTRATUS: cloud = SimLangEnums.CloudingTypes.CIRROSTRATUS; break;
+      case ASTConstantsWeather.ALTOSTRATUS: cloud = SimLangEnums.CloudingTypes.ALTOSTRATUS; break;
+      case ASTConstantsWeather.STRATUS: cloud = SimLangEnums.CloudingTypes.STRATUS; break;
+      case ASTConstantsWeather.NIMBOSTRATUS: cloud = SimLangEnums.CloudingTypes.NIMBOSTRATUS; break;
+      case ASTConstantsWeather.NOCTILUCENT: cloud = SimLangEnums.CloudingTypes.NOCTILUCENT; break;
+      case ASTConstantsWeather.POLARSTRATOSPHERIC: cloud = SimLangEnums.CloudingTypes.POLAR_STRATOSPHERIC; break;
+      case ASTConstantsWeather.CIRRUS: cloud = SimLangEnums.CloudingTypes.CIRRUS; break;
+      case ASTConstantsWeather.CIRROCUMULUS: cloud = SimLangEnums.CloudingTypes.CIRROCUMULUS; break;
+      case ASTConstantsWeather.ALTOCUMULUS: cloud = SimLangEnums.CloudingTypes.ALTOCUMULUS; break;
+      case ASTConstantsWeather.STRATOCUMULUS: cloud = SimLangEnums.CloudingTypes.STRATOCUMULUS; break;
+      case ASTConstantsWeather.CUMULUSHUMILIS: cloud = SimLangEnums.CloudingTypes.CUMULUS_HUMILIS; break;
+      case ASTConstantsWeather.CUMULUSMEDIOCRIS: cloud = SimLangEnums.CloudingTypes.CUMULUS_MEDIOCRIS; break;
+      case ASTConstantsWeather.CUMULUSCONGESTUS: cloud = SimLangEnums.CloudingTypes.CUMULUS_CONGESTUS; break;
+      case ASTConstantsWeather.CUMULONIMBUS: cloud = SimLangEnums.CloudingTypes.CUMULONIMBUS; break;
       default: cloud = SimLangEnums.CloudingTypes.NONE;
     }
     final CloudingSymbol symbol = new CloudingSymbol("clouding", cloud);
@@ -261,17 +264,17 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     SimLangEnums.WeatherPhenomenas tmpPhen;
     Point2D.Float tmpCoord;
       switch (node.getPhenomenaType()) {
-        case 0: tmpPhen = SimLangEnums.WeatherPhenomenas.FOG; break;
-        case 1: tmpPhen = SimLangEnums.WeatherPhenomenas.ROPE_TORNADO; break;
-        case 2: tmpPhen = SimLangEnums.WeatherPhenomenas.CONE_TORNADO; break;
-        case 3: tmpPhen = SimLangEnums.WeatherPhenomenas.WEDGE_TORNADO; break;
-        case 4: tmpPhen = SimLangEnums.WeatherPhenomenas.MULTI_VORTEX_TORNADO; break;
-        case 5: tmpPhen = SimLangEnums.WeatherPhenomenas.LANDSPOUT; break;
-        case 6: tmpPhen = SimLangEnums.WeatherPhenomenas.WATERSPOUT; break;
-        case 7: tmpPhen = SimLangEnums.WeatherPhenomenas.GUSTNADO; break;
-        case 9: tmpPhen = SimLangEnums.WeatherPhenomenas.DUST_DEVIL; break;
-        case 10: tmpPhen = SimLangEnums.WeatherPhenomenas.STEAM_DEVIL; break;
-        case 11: tmpPhen = SimLangEnums.WeatherPhenomenas.THUNDERSTORM; break;
+        case ASTConstantsWeather.FOG: tmpPhen = SimLangEnums.WeatherPhenomenas.FOG; break;
+        case ASTConstantsWeather.ROPETORNADO: tmpPhen = SimLangEnums.WeatherPhenomenas.ROPE_TORNADO; break;
+        case ASTConstantsWeather.CONETORNADO: tmpPhen = SimLangEnums.WeatherPhenomenas.CONE_TORNADO; break;
+        case ASTConstantsWeather.WEDGETORNADO: tmpPhen = SimLangEnums.WeatherPhenomenas.WEDGE_TORNADO; break;
+        case ASTConstantsWeather.MULTIVORTEXTORNADO: tmpPhen = SimLangEnums.WeatherPhenomenas.MULTI_VORTEX_TORNADO; break;
+        case ASTConstantsWeather.LANDSPOUT: tmpPhen = SimLangEnums.WeatherPhenomenas.LANDSPOUT; break;
+        case ASTConstantsWeather.WATERSPOUT: tmpPhen = SimLangEnums.WeatherPhenomenas.WATERSPOUT; break;
+        case ASTConstantsWeather.GUSTNADO: tmpPhen = SimLangEnums.WeatherPhenomenas.GUSTNADO; break;
+        case ASTConstantsWeather.DUSTDEVIL: tmpPhen = SimLangEnums.WeatherPhenomenas.DUST_DEVIL; break;
+        case ASTConstantsWeather.STEAMDEVIL: tmpPhen = SimLangEnums.WeatherPhenomenas.STEAM_DEVIL; break;
+        case ASTConstantsWeather.THUNDERSTORM: tmpPhen = SimLangEnums.WeatherPhenomenas.THUNDERSTORM; break;
         default: tmpPhen = SimLangEnums.WeatherPhenomenas.FOG;
       }
       tmpCoord = node.coordinateIsPresent() ?
@@ -287,13 +290,13 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(final ASTOpticalPhenomena node) {
     SimLangEnums.OpticalPhenomenas tmpPhen;
     switch (node.getPhenomenaType()) {
-      case 0: tmpPhen = SimLangEnums.OpticalPhenomenas.RAINBOW; break;
-      case 1: tmpPhen = SimLangEnums.OpticalPhenomenas.NORTHERN_LIGHTS; break;
-      case 2: tmpPhen = SimLangEnums.OpticalPhenomenas.CIRCUMZENITHAL_ARC; break;
-      case 3: tmpPhen = SimLangEnums.OpticalPhenomenas.ZODIACAL_LIGHTS; break;
-      case 4: tmpPhen = SimLangEnums.OpticalPhenomenas.CREPUSCULAR_RAYS; break;
-      case 5: tmpPhen = SimLangEnums.OpticalPhenomenas.MIRAGE; break;
-      case 6: tmpPhen = SimLangEnums.OpticalPhenomenas.FOG_BOW; break;
+      case ASTConstantsWeather.RAINBOW: tmpPhen = SimLangEnums.OpticalPhenomenas.RAINBOW; break;
+      case ASTConstantsWeather.NORTHERNLIGHTS: tmpPhen = SimLangEnums.OpticalPhenomenas.NORTHERN_LIGHTS; break;
+      case ASTConstantsWeather.CIRCUMZENITHALARC: tmpPhen = SimLangEnums.OpticalPhenomenas.CIRCUMZENITHAL_ARC; break;
+      case ASTConstantsWeather.ZODIACALLIGHT: tmpPhen = SimLangEnums.OpticalPhenomenas.ZODIACAL_LIGHTS; break;
+      case ASTConstantsWeather.CREPUSCULARRAYS: tmpPhen = SimLangEnums.OpticalPhenomenas.CREPUSCULAR_RAYS; break;
+      case ASTConstantsWeather.MIRAGE: tmpPhen = SimLangEnums.OpticalPhenomenas.MIRAGE; break;
+      case ASTConstantsWeather.FOGBOW: tmpPhen = SimLangEnums.OpticalPhenomenas.FOG_BOW; break;
       default: tmpPhen = SimLangEnums.OpticalPhenomenas.RAINBOW;
     }
     final OpticalPhenomenaSymbol symbol = new OpticalPhenomenaSymbol("optical_phenomena", tmpPhen);
@@ -303,13 +306,13 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(final ASTArtificialPhenomena node) {
     SimLangEnums.ArtificialPhenomena tmpPhen;
     switch (node.getPhenomenaType()) {
-      case 0:
+      case ASTConstantsWeather.CONTRAILS:
         tmpPhen = SimLangEnums.ArtificialPhenomena.CONTRAILS;
         break;
-      case 1:
+      case ASTConstantsWeather.SMOG:
         tmpPhen = SimLangEnums.ArtificialPhenomena.SMOG;
         break;
-      case 2:
+      case ASTConstantsWeather.ROCKETEXHAUSTTRAILS:
         tmpPhen = SimLangEnums.ArtificialPhenomena.ROCKET_EXHAUST_TRAILS;
         break;
       default:
@@ -333,9 +336,9 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void endVisit(final ASTChannel node) {
     SimLangEnums.ChannelTypes type;
     switch (node.getChannelType()) {
-      case 0: type = SimLangEnums.ChannelTypes.FIXED;
+      case ASTConstantsSimLang.FIXED: type = SimLangEnums.ChannelTypes.FIXED;
         break;
-      case 1: type = SimLangEnums.ChannelTypes.BOUND;
+      case ASTConstantsSimLang.BOUND: type = SimLangEnums.ChannelTypes.BOUND;
         break;
       default: type = SimLangEnums.ChannelTypes.FIXED;
     }
@@ -424,13 +427,13 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
   public void visit(final ASTSimulationType node) {
     final SimulationTypeSymbol symbol;
     switch(node.getSimType()) {
-      case 0:
+      case ASTConstantsSimLang.FIXED:
         symbol = new SimulationTypeSymbol("sim_type", SimLangEnums.SimulationTypes.FIXED);
         break;
-      case 1:
+      case ASTConstantsSimLang.REALTIME:
         symbol = new SimulationTypeSymbol("sim_type", SimLangEnums.SimulationTypes.REALTIME);
         break;
-      case 2:
+      case ASTConstantsSimLang.MAXFPS:
         symbol = new SimulationTypeSymbol("sim_type", SimLangEnums.SimulationTypes.MAXFPS);
         break;
       default:
@@ -477,10 +480,10 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
     }
     else {
       switch(node.getHeightMode()) {
-        case 0:
+        case ASTConstantsSimLang.FLAT:
           symbol = new MapHeightSymbol("map_height", new MapHeight(SimLangEnums.SimulationHeightModes.FLAT));
           break;
-        case 1:
+        case ASTConstantsSimLang.RANDOM:
           symbol = new MapHeightSymbol("map_height", new MapHeight(SimLangEnums.SimulationHeightModes.RANDOM));
           break;
         default:

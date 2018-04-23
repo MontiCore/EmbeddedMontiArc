@@ -27,15 +27,15 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
   PrecipitationType implements WeatherSetting = "precipitation_type" precipitationType:["none"|
                                             "drizzle"|
                                             "rain"|
-                                            "freezing_drizzle"|
-                                            "freezing_rain"|
-                                            "snow_rain"|"snain"|
+                                            "freezingdrizzle"|
+                                            "freezingrain"|
+                                            "snowrain"|"snain"|
                                             "snow"|
-                                            "snow_grains"|
-                                            "ice_pellets"|"sleet"|
+                                            "snowgrains"|
+                                            "icepellets"|"sleet"|
                                             "hail"|
-                                            "snow_pellets"|"graupel"|
-                                            "ice_crystals"] ;
+                                            "snowpellets"|"graupel"|
+                                            "icecrystals"] ;
 
   PrecipitationAmount implements WeatherSetting = "precipitation_amount" AlternativeInput;
   
@@ -45,40 +45,40 @@ grammar Weather extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar
                          "stratus"|
                          "nimbostratus"|
                          "noctilucent"|
-                         "polar_stratospheric"|
+                         "polarstratospheric"|
                          "cirrus"|
                          "cirrocumulus"|
                          "altocumulus"|
                          "stratocumulus"|
-                         "cumulus_humilis"|
-                         "cumulus_mediocris"|
-                         "cumulus_congestus"|
+                         "cumulushumilis"|
+                         "cumulusmediocris"|
+                         "cumuluscongestus"|
                          "cumulonimbus"] ;
 
   Sight implements WeatherSetting = "sight" (AlternativeInput | ["unlimited"]) ;
   
   WeatherPhenomena implements WeatherEntity = "weather_phenomena" phenomenaType:["fog"|
-                                           "rope_tornado"|
-                                           "cone_tornado"|
-                                           "wedge_tornado"|
-                                           "multi-vortex_tornado"|
+                                           "ropetornado"|
+                                           "conetornado"|
+                                           "wedgetornado"|
+                                           "multivortextornado"|
                                            "landspout"|
                                            "waterspout"|
                                            "gustnado"|
-                                           "dust_devil"|
-                                           "steam_devil"|
+                                           "dustdevil"|
+                                           "steamdevil"|
                                            "thunderstorm"]
                     (Coordinate)? ;
                                     
   OpticalPhenomena implements WeatherEntity = "optical_phenomena" phenomenaType:["rainbow"|
-                                           "northern_lights"|
-                                           "circumzenithal_arc"|
-                                           "zodiacal_light"|
-                                           "crepuscular_rays"|
+                                           "northernlights"|
+                                           "circumzenithalarc"|
+                                           "zodiacallight"|
+                                           "crepuscularrays"|
                                            "mirage"|
-                                           "fog_bow"] ;
+                                           "fogbow"] ;
                                            
   ArtificialPhenomena implements WeatherEntity = "artificial_phenomena" phenomenaType:["contrails"|
                                                  "smog"|
-                                                 "rocket_exhaust_trails"] ;
+                                                 "rocketexhausttrails"] ;
 }
