@@ -1,0 +1,609 @@
+{
+  "elements": [
+    {
+      "id": 1,
+      "name": "EmbeddedMontiArc",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "EmbeddedMontiArc"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Enum",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "Enum"
+      }
+    },
+    {
+      "id": 3,
+      "name": "languagescommon",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "languagescommon"
+      }
+    },
+    {
+      "id": 4,
+      "name": "EmbeddedMontiArcMath",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "EmbeddedMontiArcMath"
+      }
+    },
+    {
+      "id": 5,
+      "name": "MontiMath",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "MontiMath"
+      }
+    },
+    {
+      "id": 6,
+      "name": "TaggingExamples",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "TaggingExamples"
+      }
+    },
+    {
+      "id": 7,
+      "name": "Struct",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "Struct"
+      }
+    },
+    {
+      "id": 8,
+      "name": "EmbeddedMontiView",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "EmbeddedMontiView"
+      }
+    },
+    {
+      "id": 9,
+      "name": "EMAM2Cpp",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "EMAM2Cpp"
+      }
+    },
+    {
+      "id": 10,
+      "name": "ViewVerification",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "ViewVerification"
+      }
+    },
+    {
+      "id": 11,
+      "name": "Tagging",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "Tagging"
+      }
+    },
+    {
+      "id": 12,
+      "name": "reporting",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "reporting"
+      }
+    },
+    {
+      "id": 13,
+      "name": "NumberUnit",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "NumberUnit"
+      }
+    },
+    {
+      "id": 14,
+      "name": "visualisation",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "visualisation"
+      }
+    }
+  ],
+  "links": [
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 1,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 1,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 1,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 1,
+      "target": 13,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 1,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 2,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 2,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 2,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 3,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 3,
+      "target": 13,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 3,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 3,
+      "target": 5,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 5,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 5,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 5,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 5,
+      "target": 9,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 5,
+      "target": 11,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 5,
+      "target": 13,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 6,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 6,
+      "target": 11,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 6,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 6,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 7,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 7,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 7,
+      "target": 2,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 7,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 8,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 13,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 11,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 4,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 2,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 9,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 10,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 10,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 10,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 11,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 12,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 12,
+      "target": 4,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 12,
+      "target": 14,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 12,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 12,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 12,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 13,
+      "target": 8,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 14,
+      "target": 11,
+      "name": "MergedLink"
+    }
+  ]
+}

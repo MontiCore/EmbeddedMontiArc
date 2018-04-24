@@ -1,0 +1,178 @@
+objectdiagram ModuleRelations {
+
+  EmbeddedMontiArc:Module {
+    simpleName = "EmbeddedMontiArc";
+  }
+
+  Enum:Module {
+    simpleName = "Enum";
+  }
+
+  languagescommon:Module {
+    simpleName = "languagescommon";
+  }
+
+  EmbeddedMontiArcMath:Module {
+    simpleName = "EmbeddedMontiArcMath";
+  }
+
+  MontiMath:Module {
+    simpleName = "MontiMath";
+  }
+
+  TaggingExamples:Module {
+    simpleName = "TaggingExamples";
+  }
+
+  Struct:Module {
+    simpleName = "Struct";
+  }
+
+  EmbeddedMontiView:Module {
+    simpleName = "EmbeddedMontiView";
+  }
+
+  EMAM2Cpp:Module {
+    simpleName = "EMAM2Cpp";
+  }
+
+  ViewVerification:Module {
+    simpleName = "ViewVerification";
+  }
+
+  Tagging:Module {
+    simpleName = "Tagging";
+  }
+
+  reporting:Module {
+    simpleName = "reporting";
+  }
+
+  NumberUnit:Module {
+    simpleName = "NumberUnit";
+  }
+
+  visualisation:Module {
+    simpleName = "visualisation";
+  }
+
+  link reliesOnModule EmbeddedMontiArc -> EmbeddedMontiView ;
+
+  link reliesOnModule EmbeddedMontiArc -> languagescommon ;
+
+  link reliesOnModule EmbeddedMontiArc -> visualisation ;
+
+  link reliesOnModule EmbeddedMontiArc -> NumberUnit ;
+
+  link reliesOnModule EmbeddedMontiArc -> Struct ;
+
+  link reliesOnModule Enum -> languagescommon ;
+
+  link reliesOnModule Enum -> EmbeddedMontiView ;
+
+  link reliesOnModule Enum -> visualisation ;
+
+  link reliesOnModule languagescommon -> EmbeddedMontiView ;
+
+  link reliesOnModule languagescommon -> NumberUnit ;
+
+  link reliesOnModule languagescommon -> visualisation ;
+
+  link reliesOnModule languagescommon -> MontiMath ;
+
+  link reliesOnModule languagescommon -> EmbeddedMontiArc ;
+
+  link reliesOnModule languagescommon -> Enum ;
+
+  link reliesOnModule EmbeddedMontiArcMath -> EmbeddedMontiArc ;
+
+  link reliesOnModule EmbeddedMontiArcMath -> MontiMath ;
+
+  link reliesOnModule EmbeddedMontiArcMath -> languagescommon ;
+
+  link reliesOnModule EmbeddedMontiArcMath -> EmbeddedMontiView ;
+
+  link reliesOnModule EmbeddedMontiArcMath -> visualisation ;
+
+  link reliesOnModule EmbeddedMontiArcMath -> Struct ;
+
+  link reliesOnModule MontiMath -> EmbeddedMontiView ;
+
+  link reliesOnModule MontiMath -> EmbeddedMontiArc ;
+
+  link reliesOnModule MontiMath -> EMAM2Cpp ;
+
+  link reliesOnModule MontiMath -> Tagging ;
+
+  link reliesOnModule MontiMath -> languagescommon ;
+
+  link reliesOnModule MontiMath -> NumberUnit ;
+
+  link reliesOnModule TaggingExamples -> EmbeddedMontiArc ;
+
+  link reliesOnModule TaggingExamples -> Tagging ;
+
+  link reliesOnModule TaggingExamples -> EmbeddedMontiView ;
+
+  link reliesOnModule TaggingExamples -> visualisation ;
+
+  link reliesOnModule Struct -> languagescommon ;
+
+  link reliesOnModule Struct -> EmbeddedMontiView ;
+
+  link reliesOnModule Struct -> Enum ;
+
+  link reliesOnModule Struct -> visualisation ;
+
+  link reliesOnModule EmbeddedMontiView -> languagescommon ;
+
+  link reliesOnModule EmbeddedMontiView -> visualisation ;
+
+  link reliesOnModule EMAM2Cpp -> EmbeddedMontiArc ;
+
+  link reliesOnModule EMAM2Cpp -> visualisation ;
+
+  link reliesOnModule EMAM2Cpp -> EmbeddedMontiView ;
+
+  link reliesOnModule EMAM2Cpp -> MontiMath ;
+
+  link reliesOnModule EMAM2Cpp -> languagescommon ;
+
+  link reliesOnModule EMAM2Cpp -> NumberUnit ;
+
+  link reliesOnModule EMAM2Cpp -> Tagging ;
+
+  link reliesOnModule EMAM2Cpp -> EmbeddedMontiArcMath ;
+
+  link reliesOnModule EMAM2Cpp -> Enum ;
+
+  link reliesOnModule EMAM2Cpp -> Struct ;
+
+  link reliesOnModule ViewVerification -> EmbeddedMontiArc ;
+
+  link reliesOnModule ViewVerification -> EmbeddedMontiView ;
+
+  link reliesOnModule ViewVerification -> languagescommon ;
+
+  link reliesOnModule Tagging -> EmbeddedMontiView ;
+
+  link reliesOnModule reporting -> EmbeddedMontiArc ;
+
+  link reliesOnModule reporting -> EmbeddedMontiArcMath ;
+
+  link reliesOnModule reporting -> visualisation ;
+
+  link reliesOnModule reporting -> languagescommon ;
+
+  link reliesOnModule reporting -> Struct ;
+
+  link reliesOnModule reporting -> EmbeddedMontiView ;
+
+  link reliesOnModule NumberUnit -> EmbeddedMontiView ;
+
+  link reliesOnModule visualisation -> EmbeddedMontiArc ;
+
+  link reliesOnModule visualisation -> EmbeddedMontiView ;
+
+  link reliesOnModule visualisation -> Tagging ;
+}
