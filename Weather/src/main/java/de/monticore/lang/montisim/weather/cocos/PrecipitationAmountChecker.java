@@ -28,10 +28,10 @@ public class PrecipitationAmountChecker implements WeatherASTPrecipitationAmount
       NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: precipitation_amount invalid or missing unit.");
+        Log.warn("Unit Error: precipitation_amount invalid or missing unit.");
       }
       if (!checker.inMinRange(0)) {
-        Log.error("Range Error: precipitation_amount must be at least 0.");
+        Log.warn("Range Error: precipitation_amount must be at least 0.");
       }
     }
   }

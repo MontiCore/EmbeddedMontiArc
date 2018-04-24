@@ -406,7 +406,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
       return new AlternativeInput(new Range(start, step, end));
     }
     else {
-      Log.error("Error: unhandled alternative input.");
+      Log.warn("Error: unhandled alternative input.");
       return null;
     }
   }
@@ -437,7 +437,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
         symbol = new SimulationTypeSymbol("sim_type", SimLangEnums.SimulationTypes.MAXFPS);
         break;
       default:
-        //Log.error("Something broke while visiting sim_type node.");
+        //Log.warn("Something broke while visiting sim_type node.");
         symbol = new SimulationTypeSymbol("sim_type", SimLangEnums.SimulationTypes.FIXED);
     }
     addToScopeAndLinkWithNode(symbol, node);
@@ -487,7 +487,7 @@ public class SimLangSymbolTableCreator extends SimLangSymbolTableCreatorTOP {
           symbol = new MapHeightSymbol("map_height", new MapHeight(SimLangEnums.SimulationHeightModes.RANDOM));
           break;
         default:
-          //Log.error("Something went wrong when visiting height mode node");
+          //Log.warn("Something went wrong when visiting height mode node");
           symbol = new MapHeightSymbol("map_height", new MapHeight(SimLangEnums.SimulationHeightModes.FLAT));
       }
     }

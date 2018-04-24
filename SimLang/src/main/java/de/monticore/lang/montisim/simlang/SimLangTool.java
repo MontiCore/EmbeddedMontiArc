@@ -45,7 +45,7 @@ public class SimLangTool {
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("Please specify only one single path to the input model.");
+      Log.warn("Please specify only one single path to the input model.");
       return;
     }
     Log.info("SimLang-DSL Tool", SimLangTool.class.getName());

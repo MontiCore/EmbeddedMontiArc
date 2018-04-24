@@ -28,10 +28,10 @@ public class PressureChecker implements WeatherASTPressureCoCo {
       NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: Pressure invalid or missing unit.");
+        Log.warn("Unit Error: Pressure invalid or missing unit.");
       }
       if (!checker.inMinRange(0)) {
-        Log.error("Range Error: Pressure  must be at least 0.");
+        Log.warn("Range Error: Pressure  must be at least 0.");
       }
     }
   }

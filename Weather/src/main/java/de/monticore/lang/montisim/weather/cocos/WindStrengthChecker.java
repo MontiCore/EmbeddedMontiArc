@@ -28,10 +28,10 @@ public class WindStrengthChecker implements WeatherASTWindStrengthCoCo {
       NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: wind_strength invalid or missing unit.");
+        Log.warn("Unit Error: wind_strength invalid or missing unit.");
       }
       if (!checker.inMinRange(0)) {
-        Log.error("Range Error: wind_strength must be at least 0.");
+        Log.warn("Range Error: wind_strength must be at least 0.");
       }
     }
   }

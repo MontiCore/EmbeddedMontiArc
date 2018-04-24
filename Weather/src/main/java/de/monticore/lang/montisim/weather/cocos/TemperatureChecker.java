@@ -29,19 +29,19 @@ public class TemperatureChecker implements WeatherASTTemperatureCoCo {
       NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: Temperature invalid or missing unit.");
+        Log.warn("Unit Error: Temperature invalid or missing unit.");
       }
       if (checker.getUnit().equals("K")) {
         if (!checker.inMinRange(0.0f)) {
-          Log.error("Range Error: Temperature in K must be at least 0.");
+          Log.warn("Range Error: Temperature in K must be at least 0.");
         }
       } else if (checker.getUnit().equals("°C")) {
         if (!checker.inMinRange(-273.15f)) {
-          Log.error("Range Error: Temperature in °C must be greater than -273.15.");
+          Log.warn("Range Error: Temperature in °C must be greater than -273.15.");
         }
       } else { //assume °F
         if (!checker.inMinRange(-459.67f)) {
-          Log.error("Range Error: Temperature in °F must be greater than -459.67.");
+          Log.warn("Range Error: Temperature in °F must be greater than -459.67.");
         }
       }
     }

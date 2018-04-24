@@ -28,10 +28,10 @@ public class SimulationDurationChecker implements SimLangASTSimulationDurationCo
       NumberUnitChecker checker = new NumberUnitChecker(nu, allowedUnits);
 
       if (!checker.inPositiveRange()) {
-        Log.error("Range Error: sim_duration must be greater 0.");
+        Log.warn("Range Error: sim_duration must be greater 0.");
       }
       if (!checker.legitUnit()) {
-        Log.error("Unit Error: sim_duration missing or invalid unit.");
+        Log.warn("Unit Error: sim_duration missing or invalid unit.");
       }
     }
   }

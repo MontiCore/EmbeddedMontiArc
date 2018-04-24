@@ -18,7 +18,7 @@ public class SLMontiSimAdapter {
     if(adapter.getMapName().isPresent()) {
       this.mapName = adapter.getMapName().get();
     } else {
-      Log.error("No map name found.");
+      Log.warn("No map name found.");
     }
 
     if(adapter.getWeather().isPresent()) {
@@ -33,7 +33,7 @@ public class SLMontiSimAdapter {
      else if(adapter.getWeather().get().get(0).getRandomWeather().isPresent())
        new Weather(new WeatherSettings());
      else {
-       Log.error("Cannot compute weather type.");
+       Log.warn("Cannot compute weather type.");
      }
     } else {
       //apply some default weather
