@@ -120,7 +120,7 @@ public class Generator {
         Optional<MathStatementsSymbol> mathStatements = astComponent.getSpannedScope().get().resolve("MathStatements", MathStatementsSymbol.KIND);
 
         if (architecture.isPresent()){
-            generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
+            generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get().resolve());
         }
         else if (mathStatements.isPresent()){
             generateMathComponent(fileContents, taggingResolver, componentInstanceSymbol, mathStatements.get());
