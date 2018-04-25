@@ -146,11 +146,26 @@ $(function() {
 
                 blob.name = fileName;
                 that.addFile(blob);
-                clusterImage();
-                drawClusteredImage();
-                $spinner.hide();
-                that.removeAllFiles();
             });
+        },
+
+        addedfile: function(event) {
+            var reader = new FileReader();
+
+            reader.onloadend = function(event) {
+                var dataURL = event.target.result;
+
+                $spinner.show();
+
+                getDataUri(dataURL, function(dataUri) {
+                    clusterImage();
+                    drawClusteredImage();
+                    $spinner.hide();
+                    that.removeAllFiles();
+                });
+            };
+
+            reader.readAsDataURL(event);
         }
     });
 
