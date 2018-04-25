@@ -62,7 +62,7 @@ $(function() {
             dataForClusterer[i][0] = pixelData[counter];
             dataForClusterer[i][1] = pixelData[counter + 1];
             dataForClusterer[i][2] = pixelData[counter + 2];
-            counter=counter + 3;
+            counter=counter + 4;
         }
 
         Module.setImgFront(dataForClusterer);
