@@ -1,0 +1,2 @@
+call generateArmadilloBackend
+call compileClusterer

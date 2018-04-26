@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "module": "amd",
+    "target": "es2016",
+    "sourceMap": true
+  },
+  "compileOnSave": false
+}
