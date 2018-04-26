@@ -25,6 +25,9 @@ public class AbstractSymtabTest extends AbstractSymtab {
     public static void testFilesAreEqual(List<File> files, String restPath) {
         for (File f : files) {
             File fileTarget = new File("./src/test/resources/results/" + restPath + f.getName());
+            if(f.getName().contains("Helper")){
+                continue;
+            }
             Log.debug("" + fileTarget.exists(), "Exists");
             Log.debug(f.getName() + " " + fileTarget.getName(), "Comparing");
             assertTrue(areBothFilesEqual(f, fileTarget));
