@@ -30,8 +30,8 @@ public class MathSqrtmDiagCommand extends MathCommand {
     public void convert(MathExpressionSymbol mathExpressionSymbol, BluePrint bluePrint) {
         String backendName = MathConverter.curBackend.getBackendName();
         if (backendName.equals("OctaveBackend")) {
-            //convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
-            Log.error("OctaveBackend does not support command sqrtdiag yet");
+            convertUsingOctaveBackend(mathExpressionSymbol, bluePrint);
+            //Log.error("OctaveBackend does not support command sqrtdiag yet");
         } else if (backendName.equals("ArmadilloBackend")) {
             convertUsingArmadilloBackend(mathExpressionSymbol, bluePrint);
         }
@@ -49,7 +49,7 @@ public class MathSqrtmDiagCommand extends MathCommand {
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression(OctaveHelper.getCallBuiltInFunction(mathExpressionSymbol, "Fsqrt", "Double", valueListString, "FirstResult", false, 1));
+        MathStringExpression stringExpression = new MathStringExpression("Helper::getSqrtMatrixDiag" + valueListString);
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);

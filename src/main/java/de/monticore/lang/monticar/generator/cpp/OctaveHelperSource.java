@@ -213,6 +213,25 @@ public class OctaveHelperSource {
             "    static int getIntFromOctaveListFirstResult(octave_value_list list){\n" +
             "        return list(0).int_value();\n" +
             "    }\n" +
+            "\n" +
+            "    static Matrix getSqrtMatrixDiag(Matrix A){\n" +
+            "        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));\n" +
+            "        for(int i=0;i<rows;++i){\n" +
+            "            double curVal = A(i,i);\n" +
+            "            A(i,i) = sqrt(curVal);\n" +
+            "        }\n" +
+            "        return A;\n" +
+            "        }\n" +
+            "    }\n" +
+            "\n" +
+            "    static Matrix invertDiagMatrix(mat A){\n" +
+            "        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));\n" +
+            "    for(int i=0;i<rows;++i){\n" +
+            "        double curVal = A(i,i);\n" +
+            "        A(i,i) = 1/curVal;\n" +
+            "    }\n" +
+            "    return A;\n" +
+            "    }\n" +
             "};\n" +
             "\n" +
             "#endif // HELPER_H";
