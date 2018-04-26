@@ -15,3 +15,5 @@ The building tool chain is the following:
 5)	Appveyor downloads WinRaR
 6)	Appveyor packs the entire contents to a self-extracting archive
 7)	Appveyor creates a new pre-release at [EmbeddedMontiArcStudio](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio) via the Github Release API whereby the text for the release is the same text which is specified in ReleaseNotes.md
+
+In order to not spam the user with too many automatically created pre-releases, we will only keep the latest 5 pre-releases -- Appveyor will delete older automatically created pre-releases (all pre-releases automatically created have a tag like `aut-2018-04-26--19-06`, this way older releases can be automatically removed).
