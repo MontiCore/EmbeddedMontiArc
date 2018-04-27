@@ -15,13 +15,13 @@ install:
         
         "Dependencies have changed. Downloading again."
         
-        $dir = ""       
+        $dir = "C:\dependencies\"       
         foreach($line in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
         
             # if line begins with * extract directory
             if($line -match '^\*\s.+'){
-               $dir = $line.Remove(0,2)
-               New-Item -ItemType Directory -Force -Path "C:\dependencies\" + $dir
+               $dir = "C:\dependencies\" + $line.Remove(0,2)
+               New-Item -ItemType Directory -Force -Path $dir
             }
             
             # if line beginns with ** extract link
@@ -33,8 +33,8 @@ install:
                   $filename = $matches[0]
                   "Downloading " + $filename + " from: " + $link
                   appveyor DownloadFile $link -FileName $filename
-                  "Extracting " + $filename + " to " + "C:\dependencies\" + $dir
-                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, "C:\dependencies\" + $dir)
+                  "Extracting " + $filename + " to " + $dir
+                  [System.IO.Compression.ZipFile]::ExtractToDirectory($dir + $filename, $dir)
                 }
             }
         }
