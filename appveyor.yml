@@ -5,7 +5,7 @@ clone_depth: 10
 platform:
   - x64
 install:
-  - ps:
+  - ps: |
       Add-Type -AssemblyName System.IO.Compression.FileSystem
       
       # download new dependencies if dependencies.txt has changed
