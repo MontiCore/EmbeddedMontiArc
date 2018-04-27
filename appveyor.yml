@@ -7,18 +7,19 @@ platform:
 install:
   - ps: |
       Add-Type -AssemblyName System.IO.Compression.FileSystem
-      
+      $dl = "C:\EMAStudioBuilder\download\"       
+      $dep = "C:\EMAStudioBuilder\dependencies\"       
+      $dir = $dep
+        
       # download new dependencies if dependencies.txt has changed
-      if(![System.IO.File]::Exists('C:\EMAStudioBuilder\dependencies')){
+      if(![System.IO.File]::Exists($dep)){
         New-Item -ItemType directory -Path C:\EMAStudioBuilder\download
         New-Item -ItemType directory -Path C:\EMAStudioBuilder\dependencies
         Set-Location -Path C:\EMAStudioBuilder\download 
         
         "Dependencies have changed. Downloading again."
  
-        $dl = "C:\EMAStudioBuilder\download\"       
-        $dep = "C:\EMAStudioBuilder\dependencies\"       
-        $dir = $dep
+
         
         foreach($line in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
         
