@@ -10,9 +10,11 @@ install:
         New-Item -ItemType directory -Path C:\dependencies
         Set-Location -Path C:\dependencies 
         tree /F
-        foreach($link in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
-          if($link -match '^\*\*.+'){
+        
+        Get-Content C:\EMAStudioBuilder\dependencies.txt | Where-Object {$link -match '^\*\*.+'} | ForEach-Object {
+
             $link.Remove(0,3)
+            
             if($link -match '[a-zA-Z0-9\-]+\.zip'){
               $filename = matches[1]
               "Downloading " + $filename + " from: " + $link
@@ -21,7 +23,7 @@ install:
               [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EMAStudio')
             }
             
-          }
+          
         }
         tree /F
       }
