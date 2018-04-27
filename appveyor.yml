@@ -9,7 +9,7 @@ install:
       if(![System.IO.File]::Exists('C:\dependencies')){
         New-Item -ItemType directory -Path C:\dependencies
         Set-Location -Path C:\dependencies 
-        foreach($line in Get-Content .\dependencies.txt) {
+        foreach($line in Get-Content ..\dependencies.txt) {
           if($line -match '^\*\*\s[.]+$'){
             $line.Remove(0,3)
             $line -match '^.*\/\[^\/]+$'
