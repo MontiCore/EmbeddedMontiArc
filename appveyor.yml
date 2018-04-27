@@ -10,15 +10,15 @@ install:
         New-Item -ItemType directory -Path C:\dependencies
         Set-Location -Path C:\dependencies 
         foreach($line in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
-          $line
           if($line -match '^\*\*.+'){
-            $line.Remove(0,3)
-            $line
-            $line -match '^.*\/\[^\/]+$'
-            $filename = matches[1]
-            $filename
-            appveyor DownloadFile $line -FileName $filename
-            [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EMAStudio')
+            $link = $line.Remove(0,3)
+            if($line -match '[a-zA-Z\-]+\.zip'){
+              $filename = matches[1]
+              "Downloading " + $filename + " from: " $link
+              appveyor DownloadFile $line -FileName $filename
+              [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EMAStudio')
+            }
+            
           }
         }
       }
