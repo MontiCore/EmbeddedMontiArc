@@ -11,7 +11,7 @@ install:
         Set-Location -Path C:\dependencies 
         foreach($line in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
           $line
-          if($line -match '^\*\*\s[.]+$'){
+          if($line -match '^\*\*.+'){
             $line.Remove(0,3)
             $line
             $line -match '^.*\/\[^\/]+$'
