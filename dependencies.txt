@@ -13,7 +13,7 @@
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/chrome.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/externallibs.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/jdk.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/lib.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/mingw64.zip
