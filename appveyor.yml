@@ -45,8 +45,8 @@ install:
       
   - ps: |
       # copy dependencies to project folder
-      Copy-Item -Recurse –Verbose "C:\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder" 
+      Copy-Item -Force -Recurse –Verbose "C:\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder" 
      
 build: off    
 cache:
-  - C:\dependencies -> dependencies.txt
+  - dependencies -> dependencies.txt
