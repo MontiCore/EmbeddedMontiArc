@@ -11,9 +11,8 @@ install:
         Set-Location -Path C:\dependencies 
         tree /F
         
-        Get-Content C:\EMAStudioBuilder\dependencies.txt | Where-Object {$link -match '^\*\*.+'} | ForEach-Object {
-
-            $link.Remove(0,3)
+        Get-Content C:\EMAStudioBuilder\dependencies.txt | Where-Object {$_ -match '^\*\*.+'} | ForEach-Object {
+            $link = $_.Remove(0,3)
             
             if($link -match '[a-zA-Z0-9\-]+\.zip'){
               $filename = matches[1]
