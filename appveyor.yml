@@ -13,7 +13,7 @@ install:
         foreach($link in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
           if($link -match '^\*\*.+'){
             $link.Remove(0,3)
-            if($link -match '[a-zA-Z\-]+\.zip'){
+            if($link -match '[a-zA-Z0-9\-]+\.zip'){
               $filename = matches[1]
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $line -FileName $filename
