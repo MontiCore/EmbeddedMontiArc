@@ -82,12 +82,8 @@ public class ArmadilloHelperSource {
             "}\n" +
             "\n" +
             "static mat getSqrtMat(mat A){\n" +
-            "\n" +
-            "for(int i=0;i<A.n_rows;++i){\n" +
-            "    double curVal = A(i,i);\n" +
-            "    A(i,i) = sqrt(curVal);\n" +
-            "}\n" +
-            "return A;\n" +
+            "    cx_mat result=sqrtmat(A);\n" +
+            "    return real(result);\n" +
             "}\n" +
             "\n" +
             "static mat getSqrtMatDiag(mat A){\n" +

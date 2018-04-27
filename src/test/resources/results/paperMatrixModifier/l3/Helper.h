@@ -207,6 +207,25 @@ public:
     static int getIntFromOctaveListFirstResult(octave_value_list list){
         return list(0).int_value();
     }
+
+    static Matrix getSqrtMatrixDiag(Matrix A){
+        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));
+        for(int i=0;i<rows;++i){
+            double curVal = A(i,i);
+            A(i,i) = sqrt(curVal);
+        }
+        return A;
+        }
+    }
+
+    static Matrix invertDiagMatrix(mat A){
+        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));
+    for(int i=0;i<rows;++i){
+        double curVal = A(i,i);
+        A(i,i) = 1/curVal;
+    }
+    return A;
+    }
 };
 
 #endif // HELPER_H

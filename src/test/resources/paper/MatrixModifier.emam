@@ -10,7 +10,6 @@ component MatrixModifier{
 
 
     implementation Math{
-        static Q storage = 1;
         Q^{1000, 200} a = mat1+mat2;
         Q^{200, 100} b = mat3*mat4;
         matOut = (a*b)*factor;

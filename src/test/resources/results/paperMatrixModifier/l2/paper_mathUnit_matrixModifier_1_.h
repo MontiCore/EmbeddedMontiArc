@@ -13,7 +13,6 @@ Matrix mat3;
 Matrix mat4;
 double factor;
 Matrix matOut;
-double storage;
 void init()
 {
 mat1=Matrix(1000,200);
@@ -21,7 +20,6 @@ mat2=Matrix(1000,200);
 mat3=Matrix(200,10);
 mat4=Matrix(10,100);
 matOut=Matrix(1000,100);
-storage=1;
 }
 void execute()
 {

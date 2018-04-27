@@ -13,7 +13,6 @@ mat mat3;
 mat mat4;
 double factor;
 mat matOut;
-double storage;
 void init()
 {
 mat1=mat(1000,200);
@@ -21,7 +20,6 @@ mat2=mat(1000,200);
 mat3=mat(200,10);
 mat4=mat(10,100);
 matOut=mat(1000,100);
-storage=1;
 }
 void execute()
 {
