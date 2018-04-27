@@ -43,6 +43,6 @@ install:
         "Loading dependencies from cache."
       }
      
-build_script:     
+build: off    
 cache:
   - C:\dependencies -> dependencies.txt
