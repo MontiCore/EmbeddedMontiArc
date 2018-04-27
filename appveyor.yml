@@ -10,7 +10,7 @@ install:
       
       # download new dependencies if dependencies.txt has changed
       if(![System.IO.File]::Exists('C:\dependencies')){
-        New-Item -ItemType directory -Path C:\dependencies
+        New-Item -ItemType directory -Path C:\dependencies\EmbeddedMontiArcStudio
         Set-Location -Path C:\dependencies 
         
         # get links from dependencies.txt
@@ -22,8 +22,8 @@ install:
               $filename = $matches[0]
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $link -FileName $filename
-              "Extracting " + $filename + " to " + "C:\EMAStudioBuilder\EmbeddedMontiArcStudio"
-              [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EmbeddedMontiArcStudio')
+              "Extracting " + $filename + " to " + "C:\dependencies\EmbeddedMontiArcStudio"
+              [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\EmbeddedMontiArcStudio\" + $filename, 'C:\EMAStudioBuilder\EmbeddedMontiArcStudio')
               
           }
         }
