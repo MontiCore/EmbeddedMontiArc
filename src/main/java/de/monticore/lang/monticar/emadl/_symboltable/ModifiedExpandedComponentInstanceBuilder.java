@@ -1,0 +1,96 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
+package de.monticore.lang.monticar.emadl._symboltable;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.math.math._ast.ASTMathNumberExpression;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
+import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.*;
+
+public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentInstanceBuilder {
+
+    @Override
+    public ExpandedComponentInstanceSymbol build() {
+        ExpandedComponentInstanceSymbol instance = super.build();
+        ComponentSymbol component = instance.getComponentType().getReferencedSymbol();
+        Optional<ArchitectureSymbol> architecture = component.getSpannedScope()
+                .resolve("", ArchitectureSymbol.KIND);
+
+        if (architecture.isPresent()){
+
+            addPortArraySymbolsToInstance(instance);
+            addVariableSymbolsToInstance(instance);
+
+            ArchitectureSymbol architectureInstance = architecture.get()
+                    .preResolveDeepCopy(instance.getSpannedScope());
+            instance.getSpannedScope().getAsMutableScope().add(architectureInstance);
+        }
+        return instance;
+    }
+
+    public void addVariableSymbolsToInstance(ExpandedComponentInstanceSymbol instance){
+        for (int i = 0; i < instance.getArguments().size(); i++){
+            if (!(instance.getArguments().get(i) instanceof ASTMathNumberExpression)){
+                Log.error("Argument type error. Arguments of a CNN component " +
+                                "that are not numbers are not supported."
+                        , instance.getArguments().get(i).get_SourcePositionStart());
+            }
+            ASTMathNumberExpression exp = (ASTMathNumberExpression) instance.getArguments().get(i);
+
+            MCFieldSymbol emaParam = instance.getComponentType().getConfigParameters().get(i);
+            VariableSymbol archParam = new VariableSymbol.Builder()
+                    .name(emaParam.getName())
+                    .type(VariableType.ARCHITECTURE_PARAMETER)
+                    .build();
+            archParam.setExpression(ArchSimpleExpressionSymbol.of(
+                    exp.getNumber().getUnitNumber().get().getNumber().get()));
+
+            instance.getSpannedScope().getAsMutableScope().add(archParam);
+        }
+    }
+
+    public void addPortArraySymbolsToInstance(ExpandedComponentInstanceSymbol instance){
+        Map<String, List<PortSymbol>> nameToPortList = new HashMap<>();
+        for (PortSymbol port : instance.getPorts()){
+            List<PortSymbol> list = nameToPortList
+                    .computeIfAbsent(port.getNameWithoutArrayBracketPart(), k -> new ArrayList<>());
+            list.add(port);
+        }
+
+        for (String name : nameToPortList.keySet()){
+            if (!instance.getSpannedScope().resolveLocally(name, PortArraySymbol.KIND).isPresent()) {
+                List<PortSymbol> ports = nameToPortList.get(name);
+                PortArraySymbol portArray = new PortArraySymbol(name, null);
+                portArray.setDimension(ports.size());
+                portArray.setDirection(ports.get(0).isIncoming());
+                portArray.setTypeReference(ports.get(0).getTypeReference());
+                instance.getSpannedScope().getAsMutableScope().add(portArray);
+            }
+        }
+    }
+
+}

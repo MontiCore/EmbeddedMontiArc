@@ -26,8 +26,6 @@ import freemarker.template.TemplateException;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class GeneratorCli{
 

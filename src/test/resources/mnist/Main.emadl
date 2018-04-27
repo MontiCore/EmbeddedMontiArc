@@ -6,7 +6,7 @@ component Main{
     ports in Z(0:255)^{1, 28, 28} image,
          out Z(0:9) digit;
 
-    instance Network net;
+    instance Network(10) net;
 
     instance CalculateClass outCalc;
 

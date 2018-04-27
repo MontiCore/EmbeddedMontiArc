@@ -20,16 +20,27 @@
  */
 package de.monticore.lang.monticar.emadl.cocos;
 
+import de.se_rwth.commons.logging.Log;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 
+import static de.monticore.lang.monticar.emadl.ParserTest.ENABLE_FAIL_QUICK;
+
 public class AllCoCoTest extends AbstractCoCoTest {
     String baseDir="src/test/resources";
 
+    @Before
+    public void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(ENABLE_FAIL_QUICK);
+    }
+
     @Test
     public void testCoCosSimulator() throws IOException {
-        checkValid("", "mnist.Network");
+        checkValid("", "mnist.Main");
         checkValid("", "Alexnet");
         checkValid("", "VGG16");
         checkValid("", "ThreeInputCNN_M14");
@@ -38,7 +49,6 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkValid("", "ResNet152");
         checkValid("", "ResNeXt50");
 
-        checkValid("", "mnist.Main");
         checkValid("", "simulator.MainController");
 
         checkValid("", "Add");

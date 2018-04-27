@@ -20,16 +20,15 @@
  */
 package de.monticore.lang.monticar.emadl._cocos;
 
-import de.monticore.lang.monticar.cnnarch._ast.ASTArchitecture;
-import de.monticore.lang.monticar.cnnarch._cocos.CNNArchASTArchitectureCoCo;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 
-public class CheckArchitecture implements CNNArchASTArchitectureCoCo{
+public class CheckArchitecture{
 
-    @Override
-    public void check(ASTArchitecture node) {
-        ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbol().get();
+    public static void check(ExpandedComponentInstanceSymbol instance) {
+        ArchitectureSymbol architecture = instance.getSpannedScope().
+                <ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
         CNNArchCocos.checkAll(architecture);
     }
 }

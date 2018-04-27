@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.emadl._symboltable;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
-import de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit;
 import de.monticore.lang.monticar.emadl._visitor.CommonEMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.symboltable.MutableScope;
@@ -54,7 +53,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     }
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
-        this.emaSTC = new EmbeddedMontiArcSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emaSTC = new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);//new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);
         this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack);
 
         visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarc__visitor_EmbeddedMontiArcVisitor(emaSTC);
@@ -99,11 +98,11 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
-    @Override
+    /*@Override
     public void visit(ASTEMADLCompilationUnit ast) {
         EMADLCompilationUnitSymbol compilationUnit = new EMADLCompilationUnitSymbol("");
         addToScopeAndLinkWithNode(compilationUnit, ast);
-    }
+    }*/
 
 }
 

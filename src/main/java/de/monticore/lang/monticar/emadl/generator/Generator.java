@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.emadl.generator;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
@@ -114,13 +116,14 @@ public class Generator {
                                 Scope symtab){
         allInstances.add(componentInstanceSymbol);
         ASTComponent astComponent = (ASTComponent) componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().get();
-        EMADLCocos.createChecker().checkAll(astComponent);
 
-        Optional<ArchitectureSymbol> architecture = astComponent.getSpannedScope().get().resolve("", ArchitectureSymbol.KIND);
+        Optional<ArchitectureSymbol> architecture = componentInstanceSymbol.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
         Optional<MathStatementsSymbol> mathStatements = astComponent.getSpannedScope().get().resolve("MathStatements", MathStatementsSymbol.KIND);
 
+        EMADLCocos.checkAll(componentInstanceSymbol);
+
         if (architecture.isPresent()){
-            generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get().resolve());
+            generateCNN(fileContents, taggingResolver, componentInstanceSymbol, architecture.get());
         }
         else if (mathStatements.isPresent()){
             generateMathComponent(fileContents, taggingResolver, componentInstanceSymbol, mathStatements.get());
@@ -133,7 +136,7 @@ public class Generator {
     public void generateCNN(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
         CNNArchGenerator cnnArchGenerator = new CNNArchGenerator();
         Map<String,String> contentMap = cnnArchGenerator.generateStrings(architecture);
-        String fullName = instance.getComponentType().getReferencedSymbol().getFullName();
+        String fullName = instance.getFullName();
 
         //get the components execute method
         String executeKey = "execute_" + fullName.replaceAll("\\.", "_");
@@ -211,7 +214,7 @@ public class Generator {
 
             if (architecture.isPresent()){
 
-                String fileContent = getTrainingParamsForComponent(mainComponentName);
+                String fileContent = getTrainingParamsForComponent(mainComponentName, component, componentInstance);
                 if (!fileContent.isEmpty()) {
                     trainParams.add(fileContent);
                 }
@@ -228,14 +231,36 @@ public class Generator {
         return new FileContent(processTemplate(ftlContext, CNN_TRAINER), CNN_TRAINER + "_" + mainComponentName + ".py");
     }
 
-    private String getTrainingParamsForComponent(String mainComponentName) {
-        String configFilename = mainComponentName + "Config";
-        if (!Files.exists(Paths.get( getModelsPath() + configFilename + ".cnnt"))) {
+    private String getTrainingParamsForComponent(String mainComponentName, ComponentSymbol component, ExpandedComponentInstanceSymbol instance) {
+        String configFilename;
+        String mainComponentConfigFilename = mainComponentName + "Config";
+        String componentConfigFilename = component.getFullName().replaceAll("\\.", "/") + "Config";
+        String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_" + instance.getName() + "Config";
+        if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
+            configFilename = instanceConfigFilename;
+        }
+        else if (Files.exists(Paths.get( getModelsPath() + componentConfigFilename + ".cnnt"))){
+            configFilename = componentConfigFilename;
+        }
+        else if (Files.exists(Paths.get( getModelsPath() + mainComponentConfigFilename + ".cnnt"))){
+            configFilename = mainComponentConfigFilename;
+        }
+        else{
+            Log.error("Missing configuration file. " +
+                    "Could not find a file with any of the following names (only one needed): '"
+                    + instanceConfigFilename + ".cnnt', '" + componentConfigFilename + ".cnnt', '" + mainComponentConfigFilename + ".cnnt'." +
+                    " These files denote respectively the configuration for the single instance, the component or the whole system.");
             return "";
         }
 
+        //should be removed when CNNTrain supports packages
+        List<String> names = Splitter.on("/").splitToList(configFilename);
+        configFilename = names.get(names.size()-1);
+        Path modelPath = Paths.get(getModelsPath() + "/" + Joiner.on("/").join(names.subList(0,names.size()-1)));
+        //
+
         CNNTrainGenerator cnnTrainGenerator =  new CNNTrainGenerator();
-        final ModelPath mp = new ModelPath(Paths.get(getModelsPath()));
+        final ModelPath mp = new ModelPath(modelPath);
         GlobalScope trainScope = new GlobalScope(mp, new CNNTrainLanguage());
         Map.Entry<String, String> fileContents = cnnTrainGenerator.generateFileContent( trainScope, configFilename );
         return fileContents.getValue();

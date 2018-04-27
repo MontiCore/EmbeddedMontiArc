@@ -22,8 +22,8 @@ package de.monticore.lang.monticar.emadl.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl.AbstractSymtabTest;
-import de.monticore.lang.monticar.emadl._cocos.EMADLCoCoChecker;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
@@ -45,14 +45,16 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
 
     private static final String MODEL_PATH = "src/test/resources/";
 
-    protected static ASTEmbeddedMontiArcNode getAstNode(String modelPath, String model) {
+    protected static ExpandedComponentInstanceSymbol getComponentInstance(String modelPath, String model) {
 
         Scope symTab = createSymTab(MODEL_PATH + modelPath);
         ComponentSymbol comp = symTab.<ComponentSymbol> resolve(
                 model, ComponentSymbol.KIND).orElse(null);
         assertNotNull("Could not resolve model " + model, comp);
 
-        return (ASTEmbeddedMontiArcNode) comp.getAstNode().get();
+        return (ExpandedComponentInstanceSymbol) comp.getEnclosingScope()
+                .resolveLocally(ExpandedComponentInstanceSymbol.KIND)
+                .stream().findFirst().get();
     }
 
     /**
@@ -63,9 +65,7 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
     protected static void runCheckerWithSymTab(String modelPath, String model) {
         Log.getFindings().clear();
 
-        ASTEmbeddedMontiArcNode node = getAstNode(modelPath, model);
-
-        EMADLCocos.createChecker().checkAll(node);
+        EMADLCocos.checkAll(getComponentInstance(modelPath, model));
     }
 
     /**
@@ -74,7 +74,7 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
      */
     protected static void checkValid(String modelPath, String model) {
         Log.getFindings().clear();
-        EMADLCocos.createChecker().checkAll(getAstNode(modelPath, model));
+        EMADLCocos.checkAll(getComponentInstance(modelPath, model));
         new ExpectedErrorInfo().checkOnlyExpectedPresent(Log.getFindings());
     }
 
@@ -83,21 +83,21 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
      * the expected errors are present; once only with the given cocos, checking that no addditional
      * errors are present.
      */
-    protected static void checkInvalid(EMADLCoCoChecker cocos, ASTEmbeddedMontiArcNode node,
+    /*protected static void checkInvalid(EMADLCoCoChecker cocos, ExpandedComponentInstanceSymbol instance,
                                        ExpectedErrorInfo expectedErrors) {
 
         // check whether all the expected errors are present when using all cocos
         Log.getFindings().clear();
-        EMADLCocos.createChecker().checkAll(node);
+        EMADLCocos.checkAll(instance);
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");
 
         // check whether only the expected errors are present when using only the given cocos
         Log.getFindings().clear();
-        cocos.checkAll(node);
+        cocos.checkAll(instance);
         expectedErrors.checkOnlyExpectedPresent(Log.getFindings(), "Got no findings when checking only "
                 + "the given coco. Did you pass an empty coco checker?");
-    }
+    }*/
 
     protected static class ExpectedErrorInfo {
         private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("x[0-9A-F]{5}");

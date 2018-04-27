@@ -21,13 +21,25 @@
 package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.embeddedmontiarc.cocos.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.AtomicComponentCoCo;
 import de.monticore.lang.math.math._cocos.MatrixAssignmentDeclarationCheck;
+import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
+
+import java.util.Optional;
 
 //check all cocos
 public class EMADLCocos {
 
-    public static EMADLCoCoChecker createChecker() {
+    public static void checkAll(ExpandedComponentInstanceSymbol instance){
+        Optional<ArchitectureSymbol> architecture = instance.getSpannedScope().
+                resolve("", ArchitectureSymbol.KIND);
+
+        architecture.ifPresent(CNNArchCocos::checkAll);
+    }
+
+    private static EMADLCoCoChecker createASTChecker() {
         CheckBehaviorName behaviorCoco = new CheckBehaviorName();
         return new EMADLCoCoChecker()
                 //EMA cocos
@@ -49,10 +61,7 @@ public class EMADLCocos {
                 .addCoCo((EMADLASTBehaviorNameCoCo) behaviorCoco)
                 .addCoCo(new AtomicComponentCoCo())
                 //Math cocos
-                .addCoCo(new MatrixAssignmentDeclarationCheck())
+                .addCoCo(new MatrixAssignmentDeclarationCheck());
                 //.addCoCo(new MatrixAssignmentCheck())
-
-                //CNNArch coco (already checked in CNNArchGenerator)
-                .addCoCo(new CheckArchitecture());
     }
 }

@@ -22,8 +22,11 @@ package de.monticore.lang.monticar.emadl.adapter;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
+import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
@@ -48,7 +51,7 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         setArrayLength(ps.getDimension());
 
         ArchTypeSymbol type = new ArchTypeSymbol();
-        List<Integer> shape = getShape(ps);
+        List<ArchSimpleExpressionSymbol> shape = getShape(ps);
         if (shape.size() >= 1){
             type.setChannelIndex(0);
         }
@@ -59,7 +62,7 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
             type.setWidthIndex(2);
         }
         type.setElementType(getElementType(ps));
-        type.setDimensions(shape);
+        type.setDimensionSymbols(shape);
 
         setType(type);
 
@@ -82,15 +85,24 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         }
     }
 
-    private List<Integer> getShape(PortArraySymbol port){
-        List<Integer> dimensionList = new ArrayList<>(4);
+    private List<ArchSimpleExpressionSymbol> getShape(PortArraySymbol port){
+        List<ArchSimpleExpressionSymbol> dimensionList = new ArrayList<>(4);
         ASTType astType = getASTType(port);
 
         if (astType instanceof ASTCommonMatrixType){
             ASTCommonMatrixType matrixType = (ASTCommonMatrixType) astType;
             for (ASTCommonDimensionElement element : matrixType.getCommonDimension().getCommonDimensionElements()){
-                int dimension = element.getUnitNumber().get().getNumber().get().getDividend().intValue();
-                dimensionList.add(dimension);
+                if (element.getUnitNumber().isPresent()){
+                    int dimension = element.getUnitNumber().get().getNumber().get().getDividend().intValue();
+                    dimensionList.add(ArchSimpleExpressionSymbol.of(dimension));
+                }
+                else {
+                    ArchSimpleExpressionSymbol dimension = ArchSimpleExpressionSymbol.of(
+                            new MathNameExpressionSymbol(element.getName().get()));
+                    VariableSymbol variable= port.getEnclosingScope()
+                            .<VariableSymbol>resolve(element.getName().get(), VariableSymbol.KIND).get();
+                    dimensionList.add(variable.getExpression());
+                }
             }
         }
 

@@ -34,8 +34,6 @@ public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
         ModelingLanguageFamily fam = new EMADLLanguageFamily();
 
-        Log.enableFailQuick(false);
-
         final ModelPath mp = new ModelPath();
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));

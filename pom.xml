@@ -48,7 +48,7 @@
         <CNNTrain.version>0.2.0-SNAPSHOT</CNNTrain.version>
         <Math.version>0.0.11-SNAPSHOT</Math.version>
         <Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
-        <embedded-montiarc-math-generator>0.0.7-SNAPSHOT</embedded-montiarc-math-generator>
+        <embedded-montiarc-math-generator>0.0.9-SNAPSHOT</embedded-montiarc-math-generator>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
