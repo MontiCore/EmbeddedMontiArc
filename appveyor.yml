@@ -15,7 +15,7 @@ install:
             $link = $_.Remove(0,3)
             
             if($link -match '[a-zA-Z0-9\-]+\.zip'){
-              $filename = matches[1]
+              $filename = matches[0]
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $line -FileName $filename
               "Extracting " + $filename
