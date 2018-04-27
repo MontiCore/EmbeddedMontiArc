@@ -56,5 +56,6 @@ install:
       Copy-Item -Force "C:\EMAStudioBuilder\ide.bat" -Destination "C:\EMAStudioBuilder\build\ide.bat" 
  
 build: off    
+# Cache extracted dependencies, still need to be copied every time from dependencies/ to build/
 cache:
   - dependencies -> dependencies.txt
