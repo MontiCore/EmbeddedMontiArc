@@ -1,6 +1,7 @@
 version: '{build}'
 skip_tags: true
 clone_depth: 10
+clone_folder: C:\EMAStudioBuilder
 platform:
   - x64
 install:
