@@ -1,0 +1,21 @@
+version: '{build}'
+skip_tags: true
+clone_folder: C:\EMAStudioBuilder
+clone_depth: 10
+platform:
+  - x64
+install:
+  - ps: |
+      if(![System.IO.File]::Exists('C:\dependencies')){
+        Set-Location -Path C:\dependencies 
+        foreach($line in Get-Content .\dependencies.txt) {
+          if($line -match '^\*\*\s[.]+$'){
+            $line.Remove(0,3)
+            $line -match '^.*\/\[^\/]+$'
+            $filename = matches[1]
+            appveyor DownloadFile $line -FileName $filename
+          }
+        }
+      }
+cache:
+  - C:\dependencies -> dependencies.txt
