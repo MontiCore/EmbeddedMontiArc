@@ -9,11 +9,11 @@ install:
       if(![System.IO.File]::Exists('C:\dependencies')){
         New-Item -ItemType directory -Path C:\dependencies
         Set-Location -Path C:\dependencies 
-        tree
+        tree /F
         foreach($link in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
-          if($line -match '^\*\*.+'){
+          if($link -match '^\*\*.+'){
             $link.Remove(0,3)
-            if($line -match '[a-zA-Z\-]+\.zip'){
+            if($link -match '[a-zA-Z\-]+\.zip'){
               $filename = matches[1]
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $line -FileName $filename
@@ -23,9 +23,8 @@ install:
             
           }
         }
-        tree
+        tree /F
       }
       
-  - ps: tree /F
 cache:
   - C:\dependencies -> dependencies.txt
