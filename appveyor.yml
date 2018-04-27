@@ -15,20 +15,27 @@ install:
         
         "Dependencies have changed. Downloading again."
         
-        # get links from dependencies.txt
-        Get-Content C:\EMAStudioBuilder\dependencies.txt | Where-Object {$_ -match '^\*\*.+'} | ForEach-Object {
-            $link = $_.Remove(0,3)
-            
-            # if it is a zip download and extract
-            if($link -match '[a-zA-Z0-9\-\.]+\.zip'){
-              $filename = $matches[0]
-              "Downloading " + $filename + " from: " + $link
-              appveyor DownloadFile $link -FileName $filename
-              "Extracting " + $filename + " to " + "C:\dependencies\EmbeddedMontiArcStudio"
-              [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, 'C:\dependencies\EmbeddedMontiArcStudio')
-              
-          }
+        $dir = "EmbeddedMontiArcStudi\"       
+        foreach($line in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
+            # if line begins with * extract directory
+            if($line -match $'^\*\s.+'){
+               $dir = $line.Remove(0,2)
+            }
+            # if line beginns with ** extract link
+            if($line -match $'^\*\*.+'){
+                $link = $line.Remove(0,3)
+        
+                # if it is a zip download and extract
+                if($link -match '[a-zA-Z0-9\-\.]+\.zip'){
+                  $filename = $matches[0]
+                  "Downloading " + $filename + " from: " + $link
+                  appveyor DownloadFile $link -FileName $filename
+                  "Extracting " + $filename + " to " + "C:\dependencies\" + $dir
+                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, "C:\dependencies\" + $dir)
+                }
+            }
         }
+        
       } else {
         "Loading dependencies from cache."
       }
