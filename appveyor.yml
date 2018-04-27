@@ -42,6 +42,10 @@ install:
       } else {
         "Loading dependencies from cache."
       }
+      
+  - ps: |
+      # copy dependencies to project folder
+      Copy-Item -Recurse –Verbose "C:\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder" 
      
 build: off    
 cache:
