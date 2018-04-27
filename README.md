@@ -1,6 +1,6 @@
 # EMAStudioBuilder
 
-[![Windows Build][https://img.shields.io/appveyor/ci/edithere][https://ci.appveyor.com/project/edithere]
+[![Windows Build][https://img.shields.io/appveyor/ci/edithere]][https://ci.appveyor.com/project/edithere]
 
 This repo contains the scripts and the sources which are used to build EmbeddedMontiArcStudio automatically.
 
