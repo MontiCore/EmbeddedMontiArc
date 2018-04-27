@@ -13,6 +13,8 @@ install:
         New-Item -ItemType directory -Path C:\dependencies\EmbeddedMontiArcStudio
         Set-Location -Path C:\dependencies 
         
+        "Dependencies have changed. Downloading again."
+        
         # get links from dependencies.txt
         Get-Content C:\EMAStudioBuilder\dependencies.txt | Where-Object {$_ -match '^\*\*.+'} | ForEach-Object {
             $link = $_.Remove(0,3)
@@ -23,10 +25,12 @@ install:
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $link -FileName $filename
               "Extracting " + $filename + " to " + "C:\dependencies\EmbeddedMontiArcStudio"
-              [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\EmbeddedMontiArcStudio\" + $filename, 'C:\EMAStudioBuilder\EmbeddedMontiArcStudio')
+              [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, 'C:\dependencies\EmbeddedMontiArcStudio')
               
           }
         }
+      } else {
+        "Loading dependencies from cache."
       }
       
 cache:
