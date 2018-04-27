@@ -1,6 +1,6 @@
-# EMAStudioBuilder
+[![Windows Build][appveyor-image]][appveyor-url]
 
-[![Windows Build][https://img.shields.io/appveyor/ci/edithere]][https://ci.appveyor.com/project/edithere]
+# EMAStudioBuilder
 
 This repo contains the scripts and the sources which are used to build EmbeddedMontiArcStudio automatically.
 
@@ -19,3 +19,5 @@ The building tool chain is the following:
 7)	Appveyor creates a new pre-release at [EmbeddedMontiArcStudio](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio) via the Github Release API whereby the text for the release is the same text which is specified in ReleaseNotes.md
 
 In order to not spam the user with too many automatically created pre-releases, we will only keep the latest 5 pre-releases -- Appveyor will delete older automatically created pre-releases (all pre-releases automatically created have a tag like `aut-2018-04-26--19-06`, this way older releases can be automatically removed).
+
+[appveyor-url]: https://ci.appveyor.com/project/vonwenckstern/emastudiobuilder
