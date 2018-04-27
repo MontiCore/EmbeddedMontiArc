@@ -6,6 +6,8 @@ platform:
   - x64
 install:
   - ps: |
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      
       # download new dependencies if dependencies.txt has changed
       if(![System.IO.File]::Exists('C:\dependencies')){
         New-Item -ItemType directory -Path C:\dependencies
@@ -20,7 +22,7 @@ install:
               $filename = $matches[0]
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $link -FileName $filename
-              "Extracting " + $filename + " to " + "C:\EMAStudioBuilder\EMAStudio"
+              "Extracting " + $filename + " to " + "C:\EMAStudioBuilder\EmbeddedMontiArcStudio"
               [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EmbeddedMontiArcStudio')
               
           }
