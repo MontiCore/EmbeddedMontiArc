@@ -11,7 +11,7 @@
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/armadillo-8.200.2.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/apache-tomcat-9.0.5.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/chrome.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
+//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/externallibs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/jdk.zip
