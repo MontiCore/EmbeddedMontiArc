@@ -34,7 +34,7 @@ install:
                   "Downloading " + $filename + " from: " + $link
                   appveyor DownloadFile $link -FileName $filename
                   "Extracting " + $filename + " to " + $dir
-                  [System.IO.Compression.ZipFile]::ExtractToDirectory($dir + $filename, $dir)
+                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, $dir)
                 }
             }
         }
