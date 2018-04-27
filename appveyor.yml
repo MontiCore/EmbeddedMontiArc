@@ -1,6 +1,5 @@
 version: '{build}'
 skip_tags: true
-clone_folder: C:\EMAStudioBuilder
 clone_depth: 10
 platform:
   - x64
@@ -10,7 +9,7 @@ install:
       
       # download new dependencies if dependencies.txt has changed
       if(![System.IO.File]::Exists('C:\dependencies')){
-        New-Item -ItemType directory -Path C:\dependencies\
+        New-Item -ItemType directory -Path C:\dependencies\build
         Set-Location -Path C:\dependencies 
         
         "Dependencies have changed. Downloading again."
@@ -34,7 +33,7 @@ install:
                   "Downloading " + $filename + " from: " + $link
                   appveyor DownloadFile $link -FileName $filename
                   "Extracting " + $filename + " to " + $dir
-                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, $dir)
+                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\build" + $filename, $dir)
                 }
             }
         }
@@ -44,9 +43,10 @@ install:
       }
       
   - ps: |
-      # copy dependencies to project folder
-      Copy-Item -Recurse –Verbose "C:\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder" 
-     
+      # copy project items
+      Copy-Item -Recurse –Verbose -Force "C:\EMAStudioBuilder\EmbeddedMontiArcStudio" -Destination "C:\dependencies\build\EmbeddedMontiArcStudio" 
+      Copy-Item –Verbose -Force "C:\EMAStudioBuilder\ide.bat" -Destination "C:\dependencies\build\ide.bat" 
+ 
 build: off    
 cache:
-  - C:\dependencies\ -> dependencies.txt
+  - dependencies -> dependencies.txt
