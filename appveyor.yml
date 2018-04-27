@@ -47,13 +47,13 @@ install:
         "Loading dependencies from cache."
       }
   - ps: |
-      # copy dependencies to build
+      "Copy dependencies to build/"
       New-Item -ItemType directory -Path C:\EMAStudioBuilder\build
-      Copy-Item -Recurse -Verbose -Force "C:\EMAStudioBuilder\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
+      Copy-Item -Recurse -Force "C:\EMAStudioBuilder\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
   - ps: |
-      # copy project items to build
-      Copy-Item -Recurse –Verbose -Force "C:\EMAStudioBuilder\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
-      Copy-Item –Verbose -Force "C:\EMAStudioBuilder\ide.bat" -Destination "C:\EMAStudioBuilder\build\ide.bat" 
+      "Copy project items to build/"
+      Copy-Item -Recurse -Force "C:\EMAStudioBuilder\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
+      Copy-Item -Force "C:\EMAStudioBuilder\ide.bat" -Destination "C:\EMAStudioBuilder\build\ide.bat" 
  
 build: off    
 cache:
