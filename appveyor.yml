@@ -20,7 +20,7 @@ install:
         
             # if line begins with * extract directory
             if($line -match '^\*\s.+'){
-               $dir = "C:\dependencies\" + $line.Remove(0,2)
+               $dir = "C:\dependencies\build\" + $line.Remove(0,2)
                New-Item -ItemType Directory -Force -Path $dir
             }
             
@@ -34,7 +34,7 @@ install:
                   "Downloading " + $filename + " from: " + $link
                   appveyor DownloadFile $link -FileName $filename
                   "Extracting " + $filename + " to " + $dir
-                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\build" + $filename, $dir)
+                  [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\dependencies\" + $filename, $dir)
                 }
             }
         }
