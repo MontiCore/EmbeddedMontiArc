@@ -12,7 +12,7 @@ install:
       $dir = $dep
         
       # download new dependencies if dependencies.txt has changed
-      if(!(Test-Path -path $dep))
+      if(!(Test-Path -path $dep)) {
         New-Item -ItemType directory -Path C:\EMAStudioBuilder\download
         New-Item -ItemType directory -Path C:\EMAStudioBuilder\dependencies
         Set-Location -Path C:\EMAStudioBuilder\download 
