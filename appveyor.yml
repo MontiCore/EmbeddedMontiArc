@@ -21,7 +21,7 @@ install:
               "Downloading " + $filename + " from: " + $link
               appveyor DownloadFile $link -FileName $filename
               "Extracting " + $filename + " to " + "C:\EMAStudioBuilder\EMAStudio"
-              [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EMAStudio')
+              [System.IO.Compression.ZipFile]::ExtractToDirectory($filename, 'C:\EMAStudioBuilder\EmbeddedMontiArcStudio')
               
           }
         }
