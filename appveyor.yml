@@ -70,6 +70,7 @@ cache:
   - dependencies -> dependencies.txt
   - 7ZipPortable
   
+deploy:  
 - provider: GitHub
   auth_token:
     secure: Z0yTIzpwKqMlGfWGjVNUciVHSR1f4J6fqyq4+5JWLCQq+qszSdZHmj2UPUhl4jNT
