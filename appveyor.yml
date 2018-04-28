@@ -57,9 +57,11 @@ install:
       Copy-Item -Force "C:\EMAStudioBuilder\ide.bat" -Destination "C:\EMAStudioBuilder\build\ide.bat" 
   - ps: |
       "Packing to self-extracting exe"
+
+      Set-Location -Path C:\EMAStudioBuilder\ 
       appveyor DownloadFile "https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/tools/7ZipPortable.zip" -FileName "7ZipPortable.zip"
       Add-Type -AssemblyName System.IO.Compression.FileSystem
-      [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\EMAStudioBuilder\download\7ZipPortable.zip", "C:\EMAStudioBuilder")
+      [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\EMAStudioBuilder\7ZipPortable.zip", "C:\EMAStudioBuilder\")
       C:\EMAStudioBuilder\7ZipPortable\App\7-Zip64\7z.exe a EmbeddedMontiArcStudio.exe -sfx -t7z -m0=lzma2 -mx5 "C:\EMAStudioBuilder\build"
  
 build: off    
