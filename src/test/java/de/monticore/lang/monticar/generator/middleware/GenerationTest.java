@@ -157,6 +157,8 @@ public class GenerationTest extends AbstractSymtabTest {
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
         fixKnownErrors(files);
+
+        testFilesAreEqual(files,"system/src/",generationTargetPath);
     }
 
     @Test
