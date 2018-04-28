@@ -27,8 +27,9 @@ public class MathDiagonalMatrixOptimizations implements MathOptimizationRule {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else if (mathExpressionSymbol.isArithmeticExpression()) {
             optimize((MathArithmeticExpressionSymbol) mathExpressionSymbol, precedingExpressions);
-        } else {
-            Log.debug("Not handled: " + mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(),
+        }
+        else {
+            Log.debug("Not handled main Optimize: " + mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(),
                     "optimizeMathExpressionSymbol");
         }
     }

@@ -26,7 +26,7 @@ public class MathDimensionCalculator {
         } else if (mathExpressionSymbol.isPreOperatorExpression()) {
             result = getMatrixColumns(((MathPreOperatorExpressionSymbol) mathExpressionSymbol).getMathExpressionSymbol(), precedingExpressions);
         } else {
-            Log.info(mathExpressionSymbol.getClass().getName(), "Not handled:");
+            Log.info(mathExpressionSymbol.getClass().getName(), "getMatrixColumns1 Not handled:");
         }
         return result;
     }
@@ -38,7 +38,7 @@ public class MathDimensionCalculator {
         } else if (mathExpressionSymbol.isMatrixArithmeticExpression()) {
             result = getMatrixColumns((MathMatrixArithmeticExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            Log.info(mathExpressionSymbol.getClass().getName(), "Not handled:");
+            Log.info(mathExpressionSymbol.getClass().getName(), "getMatrixColumns2 Not handled:");
         }
         return result;
     }
@@ -69,8 +69,9 @@ public class MathDimensionCalculator {
             result = 1;
         } else if (mathExpressionSymbol.isValueExpression()) {
             result = getMatrixColumns((MathValueSymbol) mathExpressionSymbol, precedingExpressions);
+        } else {
+            Log.info(mathExpressionSymbol.getClass().getName(), "getMatrixColumns3 Not handled:");
         }
-        Log.info(mathExpressionSymbol.getClass().getName(), "Not handled:");
         return result;
     }
 
@@ -104,7 +105,7 @@ public class MathDimensionCalculator {
         } else if (mathExpressionSymbol.isPreOperatorExpression()) {
             result = getMatrixRows(((MathPreOperatorExpressionSymbol) mathExpressionSymbol).getMathExpressionSymbol(), precedingExpressions);
         } else {
-            Log.info(mathExpressionSymbol.getClass().getName(), "Not handled:");
+            Log.info(mathExpressionSymbol.getClass().getName(), "getMatrixRows1 Not handled:");
         }
         return result;
     }
@@ -116,7 +117,7 @@ public class MathDimensionCalculator {
         } else if (mathExpressionSymbol.isMatrixArithmeticExpression()) {
             result = getMatrixRows((MathMatrixArithmeticExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            Log.info(mathExpressionSymbol.getClass().getName(), "Not handled:");
+            Log.info(mathExpressionSymbol.getClass().getName(), "getMatrixRows2 Not handled:");
         }
         return result;
     }
@@ -147,7 +148,7 @@ public class MathDimensionCalculator {
         } else if (mathExpressionSymbol.isValueExpression()) {
             result = getMatrixRows((MathValueSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            Log.info(mathExpressionSymbol.getClass().getName(), "Not handled:");
+            Log.info(mathExpressionSymbol.getClass().getName(), "getMatrixRows3 Not handled:");
         }
         return result;
     }

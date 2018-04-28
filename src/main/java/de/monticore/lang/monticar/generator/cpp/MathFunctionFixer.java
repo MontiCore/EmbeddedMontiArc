@@ -199,7 +199,7 @@ public class MathFunctionFixer {
             MathExpressionSymbol mathExp = mathExpressionSymbol.getMathExpressionSymbol().get();
             //mathExpressionSymbol.setMathExpressionSymbol(mathExp);
             if (!(mathExp instanceof MathChainedExpression))
-                mathExpressionSymbol.setMathExpressionSymbol(new MathChainedExpression(mathExp, new MathStringExpression("-1")));
+                mathExpressionSymbol.setMathExpressionSymbol(new MathChainedExpression(mathExp, new MathStringExpression("-1", null)));
             /*if (mathExp.getExpressionID() != MathChainedExpression.ID && mathExp.getExpressionID() != MathStringExpression.ID) {
 
                 mathExpressionSymbol.setMathExpressionSymbol(new MathChainedExpression(mathExp, new MathStringExpression("-1")));

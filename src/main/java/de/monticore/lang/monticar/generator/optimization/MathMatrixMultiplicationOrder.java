@@ -72,7 +72,10 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
     public void optimize(MathArithmeticExpressionSymbol mathArithmeticExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         optimizeSubExpressions(mathArithmeticExpressionSymbol, precedingExpressions);
         if (mathArithmeticExpressionSymbol.getMathOperator().equals("*")) {
-            optimizeMatrixMultiplication(mathArithmeticExpressionSymbol, precedingExpressions);
+            while (optimizeMatrixMultiplication(mathArithmeticExpressionSymbol, precedingExpressions)) {
+                //do nothing
+            }
+
         }
     }
 
@@ -233,26 +236,84 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         }
     }*/
 
-    public void optimizeMatrixMultiplication(MathArithmeticExpressionSymbol mathArithmeticExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+    public boolean optimizeMatrixMultiplication(MathArithmeticExpressionSymbol mathArithmeticExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
 
-        int operationsStandard = MathOptimizer.getEstimatedOperations(mathArithmeticExpressionSymbol, precedingExpressions);
+        MathExpressionSymbol oldMathArithmeticExpressionSymbol = getInflatedExpression(mathArithmeticExpressionSymbol, precedingExpressions);
+        List<MathExpressionSymbol> newExps = getNewExpressions(mathArithmeticExpressionSymbol, precedingExpressions);
 
 
-        MathExpressionSymbol newExpression = getMostEfficientExpression(getNewExpressions(mathArithmeticExpressionSymbol, precedingExpressions));
+        MathExpressionSymbol newExpression = getMostEfficientExpression(newExps);
 
-        //Log.info(newExpression.getTextualRepresentation(), "Term Rewritten:");
-        int operationsRewrite = MathOptimizer.getEstimatedOperations(newExpression, precedingExpressions);
+        Log.info(oldMathArithmeticExpressionSymbol.getTextualRepresentation(), "oldExpression inflated");
+        Log.info(newExpression.getTextualRepresentation(), "newExpression:");
+        Log.info(newExpression.getTextualRepresentation(), "Term Rewritten:");
+        long operationsStandard = MathOptimizer.getEstimatedOperations(oldMathArithmeticExpressionSymbol, precedingExpressions);
+        long operationsRewrite = MathOptimizer.getEstimatedOperations(newExpression, precedingExpressions);
 
-        //Log.info(operationsStandard + "", "Operations standard term:");
-        //Log.info(operationsRewrite + "", "Operations rewrite term:");
+        Log.info(operationsStandard + "", "Operations standard term:");
+        Log.info(operationsRewrite + "", "Operations rewrite term:");
         if (operationsStandard > operationsRewrite) {
             //Log.info("True", "Rewrite:");
             if (MathOptimizer.isArithmeticExpression(newExpression.getRealMathExpressionSymbol(), "*", precedingExpressions)) {
                 mathArithmeticExpressionSymbol.setLeftExpression(((MathArithmeticExpressionSymbol) newExpression.getRealMathExpressionSymbol()).getLeftExpression());
                 mathArithmeticExpressionSymbol.setRightExpression(((MathArithmeticExpressionSymbol) newExpression.getRealMathExpressionSymbol()).getRightExpression());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public MathArithmeticExpressionSymbol getInflatedExpression(MathArithmeticExpressionSymbol mathArithmeticExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+        MathArithmeticExpressionSymbol newExp = new MathArithmeticExpressionSymbol();
+        newExp.setMathOperator(mathArithmeticExpressionSymbol.getMathOperator());
+        MathExpressionSymbol inflatedLeftExpression = getInflatedExpression(mathArithmeticExpressionSymbol.getLeftExpression(), precedingExpressions);
+        MathExpressionSymbol inflatedRightExpression = getInflatedExpression(mathArithmeticExpressionSymbol.getRightExpression(), precedingExpressions);
+        newExp.setLeftExpression(inflatedLeftExpression);
+        newExp.setRightExpression(inflatedRightExpression);
+
+        if (!newExp.getTextualRepresentation().equals(mathArithmeticExpressionSymbol.getTextualRepresentation())) {
+            MathArithmeticExpressionSymbol newerExp = getInflatedExpression(newExp, precedingExpressions);
+
+            while (!newerExp.getTextualRepresentation().equals(newExp.getTextualRepresentation())) {
+                MathArithmeticExpressionSymbol tmp = newerExp;
+                newerExp = getInflatedExpression(newExp, precedingExpressions);
+                newExp = tmp;
+            }
+            return newExp;
+        }
+        return mathArithmeticExpressionSymbol;
+    }
+
+    public MathExpressionSymbol getInflatedExpression(MathExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
+        if (mathExpressionSymbol.isArithmeticExpression()) {
+            return getInflatedExpression((MathArithmeticExpressionSymbol) mathExpressionSymbol, precedingExpressions);
+        } else if (mathExpressionSymbol.isValueExpression()) {
+            return getInflatedExpression((MathValueExpressionSymbol) mathExpressionSymbol, precedingExpressions);
+        } else {
+            Log.info(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "Inflation Not handled");
+        }
+        return mathExpressionSymbol;
+    }
+
+    public MathExpressionSymbol getInflatedExpression(MathValueExpressionSymbol mathExp, List<MathExpressionSymbol> precedingExpressions) {
+        if (mathExp.isNameExpression()) {
+            MathNameExpressionSymbol mathNameExpressionSymbol = (MathNameExpressionSymbol) mathExp;
+            for (MathExpressionSymbol mathSymbol : precedingExpressions) {
+                Log.info(mathSymbol.getClass().getName() + " " + mathSymbol.getTextualRepresentation(), "precedingExp");
+                if (mathSymbol.isValueExpression()) {
+                    MathValueSymbol valueSymbol = (MathValueSymbol) mathSymbol;
+                    Log.info(valueSymbol.getName() + " " + mathNameExpressionSymbol.getNameToResolveValue(), "name check");
+
+                    if (valueSymbol.getName().equals(mathNameExpressionSymbol.getNameToResolveValue())) {
+                        return valueSymbol.getValue();
+                    }
+                }
             }
         }
 
+        Log.info(mathExp.getClass().
+                getName() + " " + mathExp.getTextualRepresentation(), "Inflation not handled:");
+        return mathExp;
     }
 
     public List<MathExpressionSymbol> getNewExpressions(MathArithmeticExpressionSymbol mathArithmeticExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
@@ -287,9 +348,11 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         int[][] m = new int[n][n];
         int[][] s = new int[n][n];
         dims[0] = MathDimensionCalculator.getMatrixColumns(mathExpressionSymbols.get(0), new ArrayList<MathExpressionSymbol>());
-
+        Log.info(dims[0] + mathExpressionSymbols.get(0).getTextualRepresentation(), "most effi");
         for (int i = 1; i <= mathExpressionSymbols.size(); ++i) {
             dims[i] = MathDimensionCalculator.getMatrixRows(mathExpressionSymbols.get(i - 1), new ArrayList<MathExpressionSymbol>());
+            Log.info(dims[i] + mathExpressionSymbols.get(i - 1).getTextualRepresentation(), "most effi");
+
         }
         for (int lenMinusOne = 1; lenMinusOne < n; lenMinusOne++) {
             for (int i = 0; i < n - lenMinusOne; i++) {
@@ -378,4 +441,5 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
         }
         return mathExpressionSymbols;
     }
+
 }

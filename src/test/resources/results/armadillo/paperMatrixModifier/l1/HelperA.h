@@ -76,7 +76,7 @@ static double getEuclideanDistance(mat A, int colIndexA, mat B, int colIndexB){
 }
 
 static mat getSqrtMat(mat A){
-    cx_mat result=sqrtmat(A);\n" +
+    cx_mat result=sqrtmat(A);
     return real(result);
 }
 

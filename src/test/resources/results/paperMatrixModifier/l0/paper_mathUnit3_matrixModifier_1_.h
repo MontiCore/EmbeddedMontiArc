@@ -10,21 +10,23 @@ Matrix mat1;
 Matrix mat2;
 Matrix mat3;
 Matrix mat4;
-double factor;
+Matrix mat5;
 Matrix matOut;
 void init()
 {
-mat1=Matrix(1000,200);
-mat2=Matrix(1000,200);
-mat3=Matrix(200,10);
-mat4=Matrix(10,100);
-matOut=Matrix(1000,100);
+mat1=Matrix(1000,2);
+mat2=Matrix(2,1000);
+mat3=Matrix(1000,2);
+mat4=Matrix(2,10000);
+mat5=Matrix(10000,10000);
+matOut=Matrix(1000,10000);
 }
 void execute()
 {
-Matrix a = mat1+mat2;
-Matrix b = mat3*mat4;
-matOut = (a*b)*factor;
+Matrix h1 = mat1*mat2;
+Matrix h2 = mat3*mat4;
+Matrix h3 = h1*h2;
+matOut = h3*mat5;
 }
 
 };

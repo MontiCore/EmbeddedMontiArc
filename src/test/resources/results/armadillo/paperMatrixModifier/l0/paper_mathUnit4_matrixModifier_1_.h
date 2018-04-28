@@ -11,21 +11,23 @@ mat mat1;
 mat mat2;
 mat mat3;
 mat mat4;
-double factor;
+mat mat5;
 mat matOut;
 void init()
 {
-mat1=mat(1000,200);
-mat2=mat(1000,200);
-mat3=mat(200,10);
-mat4=mat(10,100);
-matOut=mat(1000,100);
+mat1=mat(1000,2);
+mat2=mat(2,1000);
+mat3=mat(1000,2);
+mat4=mat(2,10000);
+mat5=mat(10000,10000);
+matOut=mat(1000,10000);
 }
 void execute()
 {
-mat a = mat1+mat2;
-mat b = mat3*mat4;
-matOut = (a*b)*factor;
+mat h1 = mat1*mat2;
+mat h2 = mat3*mat4;
+mat h3 = h1*h2;
+matOut = h3*mat5;
 }
 
 };

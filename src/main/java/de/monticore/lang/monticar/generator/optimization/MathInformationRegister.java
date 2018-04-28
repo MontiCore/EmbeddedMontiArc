@@ -38,7 +38,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountRows(String name) {
-        return getAmount(name);
+        return getAmount(name,1);
     }
 
     public int getAmountRows(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
@@ -90,6 +90,9 @@ public class MathInformationRegister {
         int result = 0;
         if (mathValueSymbol != null) {
             String numberString = mathValueSymbol.getType().getDimensions().get(dimension).getTextualRepresentation();
+            //Log.info(name, "Name:");
+            //Log.info(mathValueSymbol.getType().getDimensions().get(0).getTextualRepresentation(), "getAmount");
+            //Log.info(mathValueSymbol.getType().getDimensions().get(1).getTextualRepresentation(), "getAmount");
             try {
                 result = Integer.valueOf(numberString);
             } catch (Exception ex) {
@@ -99,10 +102,14 @@ public class MathInformationRegister {
             Variable var = getVariable(name);
             if (var != null) {
                 try {
+                    //Log.info(name, "Name:");
+                    //Log.info(var.getDimensionalInformation().get(0), "getAmount");
+                    //Log.info(var.getDimensionalInformation().get(1), "getAmount");
+
                     result = Integer.valueOf(var.getDimensionalInformation().get(dimension));
                 } catch (Exception ex) {
                     // TODO resolve name return bluePrint.
-                    Log.error(var.getDimensionalInformation().get(dimension));
+                    Log.info("getAmount "+ex.getMessage(),"Not handled:");
                     result = 1;
                 }
             } else
@@ -112,7 +119,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountColumns(String name) {
-        return getAmount(name);
+        return getAmount(name,0);
     }
 
     public int getAmountColumns(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {

@@ -22,7 +22,6 @@ void execute()
 {
 Matrix a = mat1;
 Matrix b = mat2;
-Matrix matStore = a*b*factor;
 matOut = a*(b*(factor*(mat3*factor)));
 }
 

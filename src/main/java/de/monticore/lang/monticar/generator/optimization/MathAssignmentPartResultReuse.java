@@ -37,7 +37,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
         } else if (mathExpressionSymbol.isMatrixExpression()) {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            Log.debug(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "Symbol not handled");
+            Log.debug(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "optimize Symbol not handled");
         }
     }
 
@@ -69,7 +69,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
 
     public void optimize(MathMatrixNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (encounteredSymbolInstances.contains(mathExpressionSymbol)) {
-            Log.debug("Found Same Symbol", "MathAssignmentPartResuktReuses");
+            Log.debug("Found Same Symbol", "MathAssignmentPartResultReuses");
             String name = "";
             if (!symbolMap.containsKey(mathExpressionSymbol)) {
                 symbolMap.put(mathExpressionSymbol, name = getReplacementName(currentId++));
