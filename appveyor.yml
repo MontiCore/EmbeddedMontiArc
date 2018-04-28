@@ -70,17 +70,4 @@ cache:
   - dependencies -> dependencies.txt
   - 7ZipPortable
   
-deploy:  
-- provider: GitHub
-  tag: auto-build-v$(appveyor_build_version)
-  release: EmbeddedMontiArcStudio-v$(appveyor_build_version)
-  description: "Release description"
-  artifact: C:\EMAStudioBuilder\EmbeddedMontiArcStudio.exe        
-  prerelease: true
-  draft: false
-  force_update: false
-  repository: https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio
-  on:
-    branch: master  
-    appveyor_repo_tag: false 
 
