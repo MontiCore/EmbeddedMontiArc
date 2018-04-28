@@ -6,9 +6,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.Response;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.Duration;
 import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -92,15 +97,23 @@ public class ExampleServlet extends HttpServlet {
         ZipMultipleFiles zipOut = new ZipMultipleFiles();
 
         // TODO: modify paths to the files
-        ByteArrayOutputStream zipStream = zipOut.zipIt(
+        ByteArrayOutputStream zipStream = zipOut.zipItToStream(
                 "/home/streug/code/demonstrator/mainController.wasm",
                 "/home/streug/code/demonstrator/mainController.js");
 
-        Base64.getEncoder().encodeToString(zipStream.toByteArray());
+        // Read data from file
+//        zipOut.zipItToFile(
+//                "/home/streug/code/demonstrator/mainController.wasm",
+//                "/home/streug/code/demonstrator/mainController.js");
+//        Path path = Paths.get("multiCompressed.zip");
+//        byte[] fileBytes = Files.readAllBytes(path);
 
-        // Send response with encoded zipStream in base64
+        // Send response with encoded zipStream
+        resp.setContentType("blob");
         resp.setStatus(HttpStatus.OK_200);
-        resp.getWriter().println(Base64.getEncoder().encodeToString(zipStream.toByteArray()));
+        resp.getOutputStream().write(zipStream.toByteArray());
+
+        System.out.println("File sent back with size: " + zipStream.toByteArray().length);
     }
 
     protected String generateName(){
@@ -112,4 +125,12 @@ public class ExampleServlet extends HttpServlet {
     }
 
     protected Integer nameNumber = 0;
+
+//    public Response getFile() {
+//        File file = new File(FILE_PATH);
+//        ResponseBuilder response = Response.ok((Object) file);
+//        response.header("Content-Disposition", "attachment; filename=newfile.zip");
+//        return response.build();
+//
+//    }
 }
