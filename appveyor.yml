@@ -72,8 +72,6 @@ cache:
   
 deploy:  
 - provider: GitHub
-  auth_token:
-    secure: Z0yTIzpwKqMlGfWGjVNUciVHSR1f4J6fqyq4+5JWLCQq+qszSdZHmj2UPUhl4jNT
   tag: auto-build-v$(appveyor_build_version)
   release: EmbeddedMontiArcStudio-v$(appveyor_build_version)
   description: "Release description"
