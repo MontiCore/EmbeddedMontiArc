@@ -18,3 +18,9 @@ testInfo/''
 testResults/**
 exec/**
 tests-cpp/**
+
+dependencies/**
+download/**
+build/**
+7ZipPortable*
+EmbeddedMontiArcStudio.exe
