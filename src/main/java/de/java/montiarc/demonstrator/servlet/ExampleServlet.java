@@ -6,14 +6,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.Response;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.Duration;
-import java.util.Base64;
-import java.nio.charset.StandardCharsets;
 
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -101,7 +93,7 @@ public class ExampleServlet extends HttpServlet {
                 "/home/streug/code/demonstrator/mainController.wasm",
                 "/home/streug/code/demonstrator/mainController.js");
 
-        // Read data from file
+//        Read data from file
 //        zipOut.zipItToFile(
 //                "/home/streug/code/demonstrator/mainController.wasm",
 //                "/home/streug/code/demonstrator/mainController.js");
@@ -109,11 +101,15 @@ public class ExampleServlet extends HttpServlet {
 //        byte[] fileBytes = Files.readAllBytes(path);
 
         // Send response with encoded zipStream
+        resp.addHeader("Access-Control-Allow-Origin", "*");
         resp.setContentType("blob");
         resp.setStatus(HttpStatus.OK_200);
         resp.getOutputStream().write(zipStream.toByteArray());
 
         System.out.println("File sent back with size: " + zipStream.toByteArray().length);
+
+        clearWorkspace(new File("incomingData"));
+        clearWorkspace(new File("incomingDataExtracted"));
     }
 
     protected String generateName(){
@@ -126,11 +122,15 @@ public class ExampleServlet extends HttpServlet {
 
     protected Integer nameNumber = 0;
 
-//    public Response getFile() {
-//        File file = new File(FILE_PATH);
-//        ResponseBuilder response = Response.ok((Object) file);
-//        response.header("Content-Disposition", "attachment; filename=newfile.zip");
-//        return response.build();
-//
-//    }
+    protected void clearWorkspace(File dir) {
+
+        for(File file: dir.listFiles()) {
+            if (file.isDirectory()) this.clearWorkspace(file);
+            if (file.isDirectory()) System.out.print("Folder ");
+                else System.out.print("File ");
+            System.out.println(dir.getName()+"/"+file.getName()+" will be deleted!");
+            file.delete();
+        }
+
+    }
 }
