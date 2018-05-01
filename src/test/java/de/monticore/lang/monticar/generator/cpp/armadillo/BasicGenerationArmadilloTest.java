@@ -172,6 +172,16 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         }
     }
 
+    @Test
+    public void testAllObjectDetector4Instances()throws  Exception{
+        testObjectDetectorInstancingL0(4);
+        testObjectDetectorInstancingL1(4);
+        testObjectDetectorInstancingL2(4);
+        testObjectDetectorInstancingL3(4);
+
+    }
+
+
     private void testObjectDetectorInstancingL0(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
