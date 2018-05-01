@@ -378,4 +378,13 @@ grammar Types2 extends de.monticore.lang.monticar.Literals2, de.monticore.lang.N
                 return null;
     };
     NamingResolution implements ResolutionDeclaration = Name;
-    }
+    ast MultiplicationResolution= method public String getTypeName(){
+                    return "MultiplicationResolution";
+        }
+        method public String getName(){return null;};
+    MultiplicationResolution implements ResolutionDeclaration, TypeArgument = ResolutionDeclaration "*" ResolutionDeclaration;
+    ast AdditionResolution = method public String getTypeName(){
+                     return "AdditionResolution";
+    }method public String getName(){return null;};
+    AdditionResolution implements ResolutionDeclaration, TypeArgument = ResolutionDeclaration "+" ResolutionDeclaration;
+}
