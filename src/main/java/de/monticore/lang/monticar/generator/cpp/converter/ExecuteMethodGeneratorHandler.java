@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.math.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
@@ -217,11 +218,11 @@ public class ExecuteMethodGeneratorHandler {
 
     public static String generateExecuteCode(MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol, List<String> includeStrings) {
         Log.info(mathAssignmentExpressionSymbol.getTextualRepresentation(), "mathAssignmentExpressionSymbol:");
-
+        String result;
         if (mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol() != null) {
             if (MathFunctionFixer.fixForLoopAccess(mathAssignmentExpressionSymbol.getNameOfMathValue(), ComponentConverter.currentBluePrint)) {
 
-                String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
+                result = mathAssignmentExpressionSymbol.getNameOfMathValue();
                 result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
                 result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
                 String input = ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
@@ -234,27 +235,64 @@ public class ExecuteMethodGeneratorHandler {
                         result += input;
                 }
                 Log.info("result1: " + result, "MathAssignmentExpressionSymbol");
-                return result;
-
-            }
-            /*if (mathAssignmentExpressionSymbol.getNameOfMathValue().equals("eigenVectors")) {
+            } else {
+                /*if (mathAssignmentExpressionSymbol.getNameOfMathValue().equals("eigenVectors")) {
                 for (Variable var : ComponentConverter.currentBluePrint.getMathInformationRegister().getVariables()) {
                     Log.info(var.getName(), "Var:");
                 }
             }*/
-            String result = mathAssignmentExpressionSymbol.getNameOfMathValue();
-            result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
-            result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
-            result += StringIndexHelper.modifyContentBetweenBracketsByAdding(ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n", "-1");
-            Log.info("result2: " + result, "MathAssignmentExpressionSymbol");
 
-            return result;
+                result = mathAssignmentExpressionSymbol.getNameOfMathValue();
+                result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
+                result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
+                result += StringIndexHelper.modifyContentBetweenBracketsByAdding(ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n", "-1");
+                Log.info("result2: " + result, "MathAssignmentExpressionSymbol");
+            }
+        } else {
+            result = generateExecuteCodeForNonMatrixElementAssignments(mathAssignmentExpressionSymbol, includeStrings);
         }
-        String result = mathAssignmentExpressionSymbol.getNameOfMathValue() + " " + mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " " + ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
+        return result;
+    }
+
+    private static String generateExecuteCodeForNonMatrixElementAssignments(MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol, List<String> includeStrings) {
+        String name = mathAssignmentExpressionSymbol.getNameOfMathValue();
+        String op = mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator();
+        String assignment;
+        MathExpressionSymbol assignmentSymbol = mathAssignmentExpressionSymbol.getExpressionSymbol();
+        if (assignmentSymbol instanceof MathMatrixNameExpressionSymbol) {
+            MathMatrixNameExpressionSymbol matrixAssignmentSymbol = (MathMatrixNameExpressionSymbol) assignmentSymbol;
+            if (useZeroBasedIndexing(matrixAssignmentSymbol)) {
+                String matrixName = matrixAssignmentSymbol.getNameToAccess();
+                String matrixAccess = ExecuteMethodGenerator.getCorrectAccessString(matrixAssignmentSymbol.getNameToAccess(), matrixAssignmentSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
+                assignment = String.format("%s%s", matrixName, matrixAccess);
+            } else {
+                assignment = ExecuteMethodGenerator.generateExecuteCode(assignmentSymbol, includeStrings);
+            }
+        } else {
+            assignment = ExecuteMethodGenerator.generateExecuteCode(assignmentSymbol, includeStrings);
+        }
+        String result = String.format("%s %s %s;\n", name, op, assignment);
         Log.info("result3: " + result, "MathAssignmentExpressionSymbol");
         return result;
     }
 
+    private static boolean useZeroBasedIndexing(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol) {
+        boolean isZeroBased = false;
+        if (MathConverter.curBackend.usesZeroBasedIndexing()) {
+            if (!isFunctionCall(mathMatrixNameExpressionSymbol)) {
+                isZeroBased = true;
+            }
+        }
+        return isZeroBased;
+    }
+
+    private static boolean isFunctionCall(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol) {
+        boolean isFunctionCall = false;
+        if (MathCommandRegisterCPP.containsCommandExpression(mathMatrixNameExpressionSymbol, mathMatrixNameExpressionSymbol.getTextualRepresentation())) {
+            isFunctionCall = true;
+        }
+        return isFunctionCall;
+    }
 
     public static String generateExecuteCode(MathForLoopExpressionSymbol mathForLoopExpressionSymbol, List<String> includeStrings) {
         String result = "";

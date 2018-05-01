@@ -1,12 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
-import de.monticore.lang.monticar.generator.Generator;
 import de.monticore.lang.monticar.generator.MathCommandRegister;
 import de.monticore.lang.monticar.generator.cpp.commands.*;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -82,7 +78,7 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
                     fullName = removeTrailingStrings(fullName, "(");
                     String name = calculateName(fullName);
                     Log.info("" + input + " name: " + name, "containsCommandExpression");
-                    if (GeneratorCPP.currentInstance.getMathCommandRegister().getMathCommand(name) != null) {
+                    if (GeneratorCPP.currentInstance.getMathCommandRegister().isMathCommand(name)) {
                         return true;
                     }
                     fullName = fullName.substring(name.length() + 1);

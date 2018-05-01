@@ -69,6 +69,16 @@ public class ArmadilloFunctionTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testOnesArmadilloOnlyCommand() throws IOException {
+        testMathCommand("onesArmadilloOnly");
+    }
+
+    @Test
+    public void testZerosArmadilloOnlyCommand() throws IOException {
+        testMathCommand("zerosArmadilloOnly");
+    }
+
+    @Test
     public void testAbsCommand() throws IOException {
         testMathCommand("abs");
     }

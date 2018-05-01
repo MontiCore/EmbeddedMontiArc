@@ -101,4 +101,9 @@ public class ArmadilloBackend implements MathBackend {
         return ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getLeftExpression(), new ArrayList<>()) + "/" +
                 ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getRightExpression(), new ArrayList<>());
     }
+
+    @Override
+    public boolean usesZeroBasedIndexing() {
+        return true;
+    }
 }

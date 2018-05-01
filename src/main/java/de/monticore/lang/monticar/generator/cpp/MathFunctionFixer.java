@@ -160,7 +160,7 @@ public class MathFunctionFixer {
             if (mathCommand != null) {
                 if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
                     bluePrintCPP.addAdditionalIncludeString("Helper");
-                mathCommand.convert(mathExpressionSymbol, bluePrintCPP);
+                mathCommand.convertAndSetTargetLanguageName(mathExpressionSymbol, bluePrintCPP);
             }
             if (fixForLoopAccess(mathExpressionSymbol, variable, bluePrintCPP)) {
                 for (MathMatrixAccessSymbol mathMatrixAccessSymbol : mathExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols()) {
@@ -264,11 +264,24 @@ public class MathFunctionFixer {
 
     public static boolean fixForLoopAccess(String nameToAccess, Variable variable, BluePrintCPP bluePrintCPP) {
         MathCommand mathCommand = bluePrintCPP.getMathCommandRegister().getMathCommand(nameToAccess);
-        if (mathCommand == null) {
-            if (variable != null && variable.getVariableType() != null && variable.getVariableType().getTypeNameTargetLanguage() != null && variable.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
-                return true;
-            }
+        if ((mathCommand == null) && (variable != null) && (variable.getVariableType() != null) && (variable.getVariableType().getTypeNameTargetLanguage() != null)) {
+            String type = variable.getVariableType().getTypeNameTargetLanguage();
+            return isTargetLanguageMatrixType(type);
         }
         return false;
+    }
+
+    private static boolean isTargetLanguageMatrixType(String type) {
+        boolean isMatrixType = false;
+        String matType = MathConverter.curBackend.getMatrixTypeName();
+        String colVecType = MathConverter.curBackend.getColumnVectorTypeName();
+        String cubeType = MathConverter.curBackend.getCubeTypeName();
+        if (matType != null)
+            isMatrixType |= type.contentEquals(matType);
+        if (colVecType != null)
+            isMatrixType |= type.contentEquals(colVecType);
+        if (cubeType != null)
+            isMatrixType |= type.contentEquals(cubeType);
+        return isMatrixType;
     }
 }

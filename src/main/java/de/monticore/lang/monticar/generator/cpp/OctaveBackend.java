@@ -92,5 +92,8 @@ public class OctaveBackend implements MathBackend {
         return OctaveHelper.getCallOctaveFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), "ldivide", valueListString, false);
     }
 
-
+    @Override
+    public boolean usesZeroBasedIndexing() {
+        return false;
+    }
 }
