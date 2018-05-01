@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "@elysium/downloader",
+  "version": "0.1.0",
+  "description": "Plugin for the Implementation of Workspace Download Procedures.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "github-api": "^3.0.0",
+    "jszip": "^3.1.5"
+  },
+  "devDependencies": {}
+}

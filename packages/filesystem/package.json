@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "@elysium/filesystem",
+  "version": "0.1.0",
+  "description": "Elysium VFS emulating a FileSystem for Theia based on BrowserFS.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@elysium/core": "^0.1.0",
+    "browserfs": "^1.4.3"
+  },
+  "devDependencies": {}
+}

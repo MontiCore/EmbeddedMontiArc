@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "@elysium/core",
+  "version": "0.1.0",
+  "description": "Elysium Core extending the Core of Theia.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@theia/core": "^0.3.8"
+  },
+  "devDependencies": {}
+}

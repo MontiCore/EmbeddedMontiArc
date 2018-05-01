@@ -1,0 +1,12 @@
+# Editors
+.idea
+
+# Build
+node_modules/
+/theia/
+/packages/**/lib/
+/plugins/**/lib/
+/packages/**/docs/
+/plugins/**/docs/
+yarn-error.log
+lerna-debug.log

@@ -1,0 +1,32 @@
+{
+  "extends": "./configs/base.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@elysium/core": ["packages/core/src/*"],
+      "@elysium/filesystem": ["packages/filesystem/src/*"],
+      "@elysium/languages": ["packages/languages/src/*"],
+      "@elysium/messages": ["packages/messages/src/*"],
+      "@elysium/monaco": ["packages/monaco/src/*"],
+      "@elysium/navigator": ["packages/navigator/src/*"],
+      "@elysium/workspace": ["packages/workspace/src/*"],
+      "@elysium/cd": ["plugins/cd/src/*"],
+      "@elysium/dashboard": ["plugins/dashboard/src/*"],
+      "@elysium/downloader": ["plugins/downloader/src/*"],
+      "@elysium/embeddedmontiarc": ["plugins/embeddedmontiarc/src/*"],
+      "@elysium/embeddedmontiarcmath": ["plugins/embeddedmontiarcmath/src/*"],
+      "@elysium/embeddedmontiview": ["plugins/embeddedmontiview/src/*"],
+      "@elysium/macocoviz": ["plugins/macocoviz/src/*"],
+      "@elysium/monticore": ["plugins/monticore/src/*"],
+      "@elysium/montimath": ["plugins/montimath/src/*"],
+      "@elysium/ocl": ["plugins/ocl/src/*"],
+      "@elysium/se-logo": ["plugins/se-logo/src/*"],
+      "@elysium/streamunits": ["plugins/streamunits/src/*"]
+    }
+  },
+  "include": [
+    "packages/*/src",
+    "plugins/*/src",
+    "theia/*/src"
+  ]
+}

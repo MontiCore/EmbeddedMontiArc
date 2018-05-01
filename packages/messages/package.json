@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "@elysium/messages",
+  "version": "0.1.0",
+  "description": "Elysium Messages Package rebinding Theia's Messages Package.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {
+    "@theia/core": "^0.3.8"
+  }
+}

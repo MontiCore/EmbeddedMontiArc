@@ -1,0 +1,71 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.elysium-dashboard-icon-back, .elysium-dashboard-icon-back\:regular {
+    background-image:url("../images/icons-sprite.svg");
+    background-position:0 0;
+    background-repeat:no-repeat;
+}
+
+.elysium-dashboard-icon-back-dims {
+    width:150px;
+    height:150px;
+}
+
+.elysium-dashboard-icon-folder, .elysium-dashboard-icon-folder\:regular {
+    background-image:url("../images/icons-sprite.svg");
+    background-position:0 -151px;
+    background-repeat:no-repeat;
+}
+
+.elysium-dashboard-icon-folder-dims {
+    width:150px;
+    height:150px
+}
+
+.elysium-dashboard-icon-group, .elysium-dashboard-icon-group\:regular {
+    background-image:url("../images/icons-sprite.svg");
+    background-position:0 -300px;
+    background-repeat:no-repeat;
+}
+
+.elysium-dashboard-icon-group-dims{
+    width:150px;
+    height:150px
+}
+
+.elysium-dashboard-icon-loader, .elysium-dashboard-icon-loader\:regular {
+    background-image:url("../images/loader.svg");
+    background-position:0 0;
+    background-repeat:no-repeat;
+}
+
+.elysium-dashboard-icon-group-dims{
+    width:150px;
+    height:150px
+}
+
+.elysium-dashboard-icon-plus, .elysium-dashboard-icon-plus\:regular {
+    background-image:url("../images/icons-sprite.svg");
+    background-position:0 -450px;
+    background-repeat:no-repeat;
+}
+
+.elysium-dashboard-icon-plus-dims {
+    width:150px;
+    height:150px;
+}
+
+.elysium-dashboard-icon-user, .elysium-dashboard-icon-user\:regular {
+    background-image:url("../images/icons-sprite.svg");
+    background-position:0 -600px;
+    background-repeat:no-repeat;
+}
+
+.elysium-dashboard-icon-user-dims {
+    width:150px;
+    height:150px
+}

@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "@elysium/languages",
+  "version": "0.1.0",
+  "description": "Elysium Languages Interfaces acting as an Alternative to the Language Server Protocol.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@elysium/core": "^0.1.0"
+  },
+  "devDependencies": {}
+}

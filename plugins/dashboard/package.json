@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "name": "@elysium/dashboard",
+  "version": "0.1.0",
+  "description": "Plugin for the Implementation of a Dashboard.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "github-api": "^3.0.0"
+  },
+  "devDependencies": {
+    "@theia/core": "^0.3.8",
+    "@elysium/core": "^0.1.0",
+    "@theia/filesystem": "^0.3.8"
+  }
+}

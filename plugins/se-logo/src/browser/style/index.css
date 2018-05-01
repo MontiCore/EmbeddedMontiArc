@@ -1,0 +1,19 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.elysium-se-logo {
+    background-image:url("../images/se.rwth.cropped.png");
+    height:32px;
+    width:38px;
+    margin:5px;
+    position:absolute;
+    right:8px;
+    cursor:pointer;
+    background-position:center;
+    background-repeat:no-repeat;
+    top:-7px;
+    background-size:38px;
+}

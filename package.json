@@ -1,0 +1,70 @@
+{
+  "private": true,
+  "name": "elysium-ide",
+  "version": "0.1.0",
+  "description": "An Online IDE for the Development on Domain-Specific Languages in the Browser based on Theia IDE.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/???/???.git"
+  },
+  "keywords": [
+    "Elysium IDE",
+    "Theia IDE",
+    "Domain-Specific Languages",
+    "MontiCore"
+  ],
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "bugs": {
+    "url": "https://github.com/???/???/issues"
+  },
+  "homepage": "https://github.com/???/???/README.md",
+  "workspaces": [
+    "packages/*",
+    "plugins/*",
+    "theia/*"
+  ],
+  "dependencies": {},
+  "peerDependencies": {},
+  "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/chai-as-promised": "0.0.31",
+    "@types/chai-string": "^1.4.0",
+    "@types/jsdom": "^11.0.4",
+    "@types/jszip": "^3.1.3",
+    "@types/mocha": "^2.2.41",
+    "@types/sinon": "^2.3.5",
+    "@types/temp": "^0.8.31",
+    "copy-webpack-plugin": "4.3.0",
+    "express": "^4.16.2",
+    "file-loader": "0.11.2",
+    "fs-extra": "^5.0.0",
+    "glob": "^7.1.2",
+    "ignore-loader": "0.1.2",
+    "jsdom": "^11.5.1",
+    "jsdom-global": "^3.0.2",
+    "lerna": "^2.9.0",
+    "log4js": "^2.5.3",
+    "request": "^2.85.0",
+    "rimraf": "^2.6.2",
+    "source-map-loader": "0.2.3",
+    "style-loader": "0.13.2",
+    "tslint": "^5.7.0",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.7.2",
+    "umd-compat-loader": "2.1.1",
+    "unzip": "^0.1.11",
+    "url-loader": "0.5.9",
+    "webpack": "2.7.0",
+    "yarn": "^1.5.1",
+    "yarn-api": "^1.1.0"
+  },
+  "scripts": {
+    "download": "node scripts/download",
+    "build": "node scripts/build",
+    "start": "node scripts/start",
+    "documentation": "node scripts/documentation",
+    "preupload": "node scripts/preupload"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "@elysium/workspace",
+  "version": "0.1.0",
+  "description": "Elysium Virtual Workspace emulating a Workspace for Theia based on the Virtual File System.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "http://github.com/???/???/README.md",
+  "bugs": {
+    "url": "http://github.com/???/???/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/???/???.git"
+  },
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {
+    "@elysium/core": "^0.1.0",
+    "@elysium/dashboard": "^0.1.0",
+    "@theia/workspace": "^0.3.8"
+  }
+}
