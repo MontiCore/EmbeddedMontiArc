@@ -149,16 +149,8 @@ public final class GeneratorCppCli {
         ExpandedComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
 
         GeneratorCPP g = new GeneratorCPP();
-        if (cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getOpt())) {
-            g.setUseAlgebraicOptimizations(true);
-        } else {
-            g.setUseAlgebraicOptimizations(false);
-        }
-        if (cliArgs.hasOption(OPTION_FLAG_THREADING.getOpt())) {
-            g.setUseThreadingOptimization(true);
-        } else {
-            g.setUseThreadingOptimization(false);
-        }
+        g.setUseAlgebraicOptimizations(false);
+        g.setUseThreadingOptimization(false);
         g.setModelsDirPath(modelsDirPath);
         g.setGenerationTargetPath(outputPath);
         g.setGenerateTests(cliArgs.hasOption(OPTION_FLAG_TESTS.getOpt()));
@@ -168,6 +160,9 @@ public final class GeneratorCppCli {
         g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
         g.setGenerateServerWrapper(cliArgs.hasOption(OPTION_FLAG_SERVER_WRAPPER.getLongOpt()));
         g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
+
+        g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
+        g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         try {
             if (componentSymbol != null) {
                 g.generateFiles(componentSymbol, symTab);
