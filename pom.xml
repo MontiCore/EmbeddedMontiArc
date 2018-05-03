@@ -40,7 +40,7 @@
     <monticore.version>4.5.4-SNAPSHOT</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-	<Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
+	<Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
     <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>

@@ -39,8 +39,8 @@ import java.util.*;
 
 /**
  * @author math-group
- *         <p>
- *         creates the symbol table
+ * <p>
+ * creates the symbol table
  */
 public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     private String compilationUnitPackage = "";
@@ -418,15 +418,60 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
     public void endVisit(final ASTMathArithmeticPowerOfExpression astMathArithmeticPowerOfExpression) {
-        MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
+        MathExpressionSymbol newSymbol = null;
+        if (astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).getSymbol().isPresent()) {
+            MathExpressionSymbol expSymbol = (MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).
+                    getSymbol().get();
+            boolean useInverse = false;
+            boolean useSqrtm = false;
+            if (expSymbol.getTextualRepresentation().startsWith("-")) {
+                useInverse = true;
+                if (expSymbol.getTextualRepresentation().startsWith("-0.5")) {
+                    useSqrtm = true;
+                }
+            } else if (expSymbol.getTextualRepresentation().equals("0.5")) {
+                useSqrtm = true;
+            }
 
-        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticPowerOfExpression.
-                getMathArithmeticExpressions().get(0), astMathArithmeticPowerOfExpression.
-                getMathArithmeticExpressions().get(1), "^");
+            if (useInverse) {
+                MathMatrixNameExpressionSymbol symbolInv = convertToInternalExpression((MathExpressionSymbol)
+                        astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().
+                                get(0).getSymbol().get(), "inv");
+                if (useSqrtm) {
+                    MathMatrixNameExpressionSymbol symbolSqrtm = convertToInternalExpression(symbolInv, "sqrtm");
+                    newSymbol = symbolSqrtm;
+                } else {
+                    newSymbol = symbolInv;
 
-        addToScopeAndLinkWithNode(symbol, astMathArithmeticPowerOfExpression);
+                }
+            } else if (useSqrtm) {
+                newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
+                        getMathArithmeticExpressions().get(0).getSymbol().get(), "sqrtm");
+
+            }
+        }
+        if (newSymbol == null) {
+            MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
+
+            MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticPowerOfExpression.
+                    getMathArithmeticExpressions().get(0), astMathArithmeticPowerOfExpression.
+                    getMathArithmeticExpressions().get(1), "^");
+            newSymbol = symbol;
+        }
+        addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
+
     }
 
+    private MathMatrixNameExpressionSymbol convertToInternalExpression(MathExpressionSymbol mathExpressionSymbol, String functionName) {
+        MathMatrixNameExpressionSymbol symbol2 = new MathMatrixNameExpressionSymbol(functionName);
+        MathMatrixAccessOperatorSymbol accessOperatorSymbol = new MathMatrixAccessOperatorSymbol();
+        MathMatrixAccessSymbol accessSymbol = new MathMatrixAccessSymbol();
+        accessSymbol.setMathExpressionSymbol(mathExpressionSymbol);
+        accessOperatorSymbol.addMathMatrixAccessSymbol(accessSymbol);
+        accessOperatorSymbol.setMathMatrixNameExpressionSymbol(symbol2);
+        symbol2.setMathMatrixAccessOperatorSymbol(accessOperatorSymbol);
+        return symbol2;
+    }
 
     public void endVisit(final ASTMathArithmeticIncreaseByOneExpression astMathArithmeticIncreaseByOneExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();

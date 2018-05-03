@@ -24,25 +24,32 @@ import de.monticore.lang.math.math._ast.ASTMathMatrixNameExpression;
 import de.monticore.lang.math.math._symboltable.expression.IMathNamedExpression;
 import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
 
+import java.util.Optional;
+
 /**
  * @author Sascha Schneiders
  */
 public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol implements IMathNamedExpression {
 
-    protected ASTMathMatrixNameExpression astMathMatrixNameExpression;
+    protected Optional<ASTMathMatrixNameExpression> astMathMatrixNameExpression = Optional.empty();
     protected String nameToAccess;
+    protected Optional<MathMatrixAccessOperatorSymbol> mathMatrixAccessOperatorSymbol = Optional.empty();
 
     public MathMatrixNameExpressionSymbol(String nameToAccess) {
         super();
         this.nameToAccess = nameToAccess;
     }
 
+    public boolean isASTMathMatrixNamePresent() {
+        return astMathMatrixNameExpression.isPresent();
+    }
+
     public ASTMathMatrixNameExpression getAstMathMatrixNameExpression() {
-        return astMathMatrixNameExpression;
+        return astMathMatrixNameExpression.get();
     }
 
     public void setAstMathMatrixNameExpression(ASTMathMatrixNameExpression astMathMatrixNameExpression) {
-        this.astMathMatrixNameExpression = astMathMatrixNameExpression;
+        this.astMathMatrixNameExpression = Optional.of(astMathMatrixNameExpression);
     }
 
     public String getNameToAccess() {
@@ -54,19 +61,26 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
     }
 
     public boolean hasEndOperator() {
-        return astMathMatrixNameExpression.getEndOperator().isPresent();
+        return astMathMatrixNameExpression.get().getEndOperator().isPresent();
     }
 
     public boolean hasMatrixAccessExpression() {
-        return astMathMatrixNameExpression.getMathMatrixAccessExpression().isPresent();
+        return astMathMatrixNameExpression.get().getMathMatrixAccessExpression().isPresent();
     }
 
     public MathMatrixAccessOperatorSymbol getMathMatrixAccessOperatorSymbol() {
-        return (MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get();
+        return mathMatrixAccessOperatorSymbol.get();
+    }
+
+    public boolean isMathMatrixAccessOperatorSymbolPresent() {
+        return mathMatrixAccessOperatorSymbol.isPresent();
     }
 
     public void setMathMatrixAccessOperatorSymbol(MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
-        astMathMatrixNameExpression.getMathMatrixAccessExpression().get().setSymbol(mathMatrixAccessOperatorSymbol);
+        if (astMathMatrixNameExpression.isPresent()) {
+            astMathMatrixNameExpression.get().getMathMatrixAccessExpression().get().setSymbol(mathMatrixAccessOperatorSymbol);
+        }
+        this.mathMatrixAccessOperatorSymbol = Optional.of(mathMatrixAccessOperatorSymbol);
     }
 
     @Override
@@ -74,10 +88,10 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
         String result = "";
         result += nameToAccess;
         result += "(";
-        if (astMathMatrixNameExpression.getMathMatrixAccessExpression().isPresent())
-            result += ((MathExpressionSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get()).getTextualRepresentation();
-        else if (astMathMatrixNameExpression.getEndOperator().isPresent()) {
-            result += astMathMatrixNameExpression.getEndOperator().get().getSymbol();
+        if (isMathMatrixAccessOperatorSymbolPresent())
+            result += getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
+        else if (isASTMathMatrixNamePresent() && astMathMatrixNameExpression.get().getEndOperator().isPresent()) {
+            result += astMathMatrixNameExpression.get().getEndOperator().get().getSymbol();
         }
         result += ")";
 
