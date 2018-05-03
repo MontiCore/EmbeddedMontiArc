@@ -23,3 +23,7 @@ set ARMADILLO_HOME=%HOME%\armadillo-8.200.2
 REM set CLUSTERER_CPP_DIR=%HOME%\clusterer-cpp
 set CLUSTERER_EXEC_DIR=%HOME%\exec
 set VERIFICATION_HOME=%HOME%\viewverification
+set DISTR_SIM=%HOME%\distributed-simulator
+set PSQL=%DISTR_SIM%\PostgreSQLPortable
+set SFS=%DISTR_SIM%\SmartFoxServer_2X\SFS2X
+set RMI=%DISTR_SIM%\RMIModelServer

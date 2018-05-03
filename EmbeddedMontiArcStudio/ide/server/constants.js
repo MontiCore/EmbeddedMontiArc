@@ -60,6 +60,7 @@ const BATCHES = {};
 
 BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
+BATCHES.DISTR_SIM  = {};
 
 BATCHES.AUTOPILOT.SIMULATION       = {};
 BATCHES.AUTOPILOT.SIMULATION.START = Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -83,6 +84,7 @@ BATCHES.CLUSTERING.REPORTING           = Path.resolve(PATHS.SCRIPTS, "clustering
 BATCHES.CLUSTERING.REPORTING_STREAM    = Path.resolve(PATHS.SCRIPTS, "clustering", "reportWithStreams.bat");
 BATCHES.CLUSTERING.TEST                = Path.resolve(PATHS.SCRIPTS, "clustering", "");
 
+BATCHES.DISTR_SIM.START				= Path.resolve(PATHS.SCRIPTS, "distr-sim", "start-script.bat");
 
 /*
  * OPTIONS
@@ -112,7 +114,7 @@ const URLS = {};
 URLS.SHARED               = Util.format("http://localhost:%d", PORTS.SHARED);
 URLS.AUTOPILOT            = {};
 URLS.AUTOPILOT.SIMULATION = "http://localhost:8080";
- 
+
 /*
  * ARGUMENTS
  */

@@ -106,7 +106,51 @@ class ClusteringSimulation {
     }
 }
 
+class DistributedSimulation {
+    constructor() {
+        this.logger = Log.getLogger("DISTRIBUTED-SIM");
+        this.logger.level = "debug";
+    }
+
+    start(callback) {
+        let process = null;
+
+        this.logger.info("Starting Simulation-Server...");
+        process = Process.spawn(BATCHES.DISTR_SIM.START, [], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "distr-sim")
+        }).on("exit", callback);
+    }
+
+    stop(callback) {
+        let buffer = "";
+
+        const onTaskkillExit = () => {
+            callback();
+        };
+
+        const onNetstatOut = (chunk) => {
+            buffer = chunk.toString();
+        };
+
+        const onNetstatExit = () => {
+            const matches = buffer.match(/.+?(\d+)\r\n/);
+
+            if(matches && matches[1] !== "0") {
+                this.logger.info("Server is about to shutdown...");
+                Process.spawn("taskkill", ["/PID", matches[1], "/F"]).on("exit", onTaskkillExit);
+            } else {
+                callback();
+            }
+        };
+
+        const process = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
+
+        process.stdout.on("data", onNetstatOut);
+    }
+}
+
 module.exports = {
     AutoPilotSimulation: new AutoPilotSimulation(),
-    ClusteringSimulation: new ClusteringSimulation()
+    ClusteringSimulation: new ClusteringSimulation(),
+    DistributedSimulation: new DistributedSimulation()
 };
