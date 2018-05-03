@@ -151,9 +151,13 @@ public final class GeneratorCppCli {
         GeneratorCPP g = new GeneratorCPP();
         if (cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getOpt())) {
             g.setUseAlgebraicOptimizations(true);
+        } else {
+            g.setUseAlgebraicOptimizations(false);
         }
         if (cliArgs.hasOption(OPTION_FLAG_THREADING.getOpt())) {
             g.setUseThreadingOptimization(true);
+        } else {
+            g.setUseThreadingOptimization(false);
         }
         g.setModelsDirPath(modelsDirPath);
         g.setGenerationTargetPath(outputPath);

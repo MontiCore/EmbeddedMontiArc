@@ -17,6 +17,5 @@ component NormalizedLaplacian<N1 n = 2500>{
         */
         nLaplacian = degree^(-0.5) * similarity * degree^(-0.5);
         //nLaplacian = sqrtm(inv(degree)) * similarity * sqrtm(inv(degree));
-
     }
 }
