@@ -7,8 +7,8 @@
 using namespace arma;
 class test_booleanVariableComp{
 public:
-double bool3;
-double bool4;
+bool bool3;
+bool bool4;
 void init()
 {
 bool3=true;
