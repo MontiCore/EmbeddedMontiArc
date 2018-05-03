@@ -10,18 +10,20 @@ component FirstLineIntersection<N1 m1 = 9, N1 m2 = 45>{
           out Z linexB,
           out Q^{2,1} pos;
 
+	//TODO: bug: must not always be earliest crash pos
+	//TODO: remove: filter all with TimeCutoff and MultiOr
     implementation Math{
         Z k = 1;
-        B found = False;
+        B found = false;
 
         for i = 1:m1
             for j = i:m1
-                if found == False
+                if found == false
                     if collisionIn(k)
                         linexA = i;
                         linexB = j;
                         pos = pointsIn(k);
-                        found = True;
+                        found = true;
                     end
                     k = k + 1;
                 end

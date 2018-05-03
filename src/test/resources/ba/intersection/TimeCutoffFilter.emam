@@ -34,14 +34,14 @@ component TimeCutoffFilter<N1 m = 10>(adaptable Q timeCutoff){
             Q time2 = distp2/dist2 * (trajectoryInB(3,indexInB + 1) - trajectoryInB(3,indexInB));
 
             if time1 <= time2
-                aIsFasterOut = True;
+                aIsFasterOut = true;
             else
-                aIsFasterOut = False;
+                aIsFasterOut = false;
             end
 
             collisionOut = abs(time1 - time2) < timeCutoff;
         else
-            collisionOut = False;
+            collisionOut = false;
         end
     }
 }

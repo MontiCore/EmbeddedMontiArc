@@ -16,6 +16,7 @@ component TrajectoryCollision<N1 m = 10, N1 m1 = 9, N1 m2 = 45>{
     instance DualSetCompareMatrix<4,1,9,45> dualSetCompare;
     instance LineIntersection lineIntersection[m2];
     instance FirstLineIntersection<9,45> firstLineIntersection;
+	//TODO: filter then get first 
     instance TimeCutoffFilter<10>(2.0) timeCutoffFilter;
 
     connect trajectoryA -> trajectoryToLinesA.trajectoryIn;

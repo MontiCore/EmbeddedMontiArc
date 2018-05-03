@@ -33,14 +33,14 @@ component CollisionToStop<N1 n = 2,N1 x = 1>{
 
 
         for i = 1:n
-            stopOut(i) = False;
+            stopOut(i) = false;
         end
 
         if active
             for i = 1:x
                 if collisionIn(i)
                     Z curIndex = indexLookup(i,1);
-                    stopOut(curIndex) = True;
+                    stopOut(curIndex) = true;
                 end
             end
         end

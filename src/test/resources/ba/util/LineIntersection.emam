@@ -16,7 +16,7 @@ component LineIntersection{
 
         Q n1 = Ay*Bx - Ax*By;
         Q cutoff = 0.00000001;
-		B res = False;
+		B res = false;
 
 		//if lines are not parallel(ish)
         if (abs(n1) > cutoff)
@@ -24,7 +24,7 @@ component LineIntersection{
 			if (alpha >= cutoff) && (alpha <= 1)
 				Q beta = (Ax * Cy - Ay * Cx) / n1;
 				if (beta >= cutoff) && (beta <= 1)
-					res = True;
+					res = true;
 				    point(1,1) = lineA(1,1) + alpha * Ax;
 				    point(2,1) = lineA(2,1) + alpha * Ay;
 				end			
