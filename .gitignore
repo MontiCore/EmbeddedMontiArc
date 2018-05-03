@@ -19,8 +19,8 @@ testResults/**
 exec/**
 tests-cpp/**
 
-dependencies/**
-download/**
-build/**
-7ZipPortable*
-EmbeddedMontiArcStudio.exe
+build/extracted/**
+build/download/**
+build/EMAStudio/**
+build/7za.exe
+build/EmbeddedMontiArcStudio.exe
