@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +37,13 @@ public class RosCppGenImpl implements GeneratorImpl {
 
     @Override
     public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.getPorts().stream()
+        boolean result = componentInstanceSymbol.getPorts().stream()
                 .filter(PortSymbol::isRosPort)
                 .count() > 0;
+        if(!result){
+            Log.warn("GeneratorRosCpp: No ROS Ports found! Ignoring component " + componentInstanceSymbol.getName());
+        }
+
+        return result;
     }
 }
