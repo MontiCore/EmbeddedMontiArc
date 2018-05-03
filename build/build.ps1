@@ -1,15 +1,11 @@
-$dl = ".\download\"       
-$ext = ".\extracted\"  
+# Edit config only
+. ./config
 
-# The Folder which will be present after self-extracting
-$targetDir = "EMAStudio"
-# The name of the self-extracting archive
-$targetName = "EmbeddedMontiArcStudio.exe"
-# Project items or dirs that need to be included
-$packingItems = @("ide.bat", "EmbeddedMontiArcStudio")
+. ./clean.ps1
 
-. ./download.ps1 $dl
+. ./tools.ps1
 
-. ./extract.ps1 $dl $ext
 
-. ./pack.ps1 $targetDir $targetName $packingItems
+. ./download.ps1 
+. ./extract.ps1 
+#. ./pack.ps1 
