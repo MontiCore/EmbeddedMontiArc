@@ -70,7 +70,7 @@ cache:
   - 7ZipPortable
   
 deploy:
-  provider: GitHub
+  - provider: GitHub
   auth_token:
     secure: MDkehPr8Z/c0NH8YWPjXOdhQ+wHOeleKb4S0vAKz3pt24W+TVWOurkTFbKUQZ2x3
   release: EmbeddedMontiArcStudio-v$(appveyor_build_version)
