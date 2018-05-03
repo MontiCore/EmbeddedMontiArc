@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="doc/images/elysium.png"/>
-    <img src="doc/images/quote.png" width="669"/>
+    <img src="doc/images/elysium.svg"/>
+    <img src="doc/images/quote.svg" width="669"/>
 </p>
 <p align="center">
     <img src="https://img.shields.io/badge/Theia_Version-43a963868cefe43106a637d67d9e958018a13b08-blue.svg?longCache=true&style=flat-square"/>
@@ -105,7 +105,7 @@ would normally need a server component. A representation of this extension can b
 Figure 1.
 
 <p align="center">
-    <img src="doc/images/binding-layer.png" width="520"/>
+    <img src="doc/images/binding-layer.svg" width="520"/>
 </p>
 <p align="center">
     Figure 1. Representation of the binding layer between Elysium and Theia.
