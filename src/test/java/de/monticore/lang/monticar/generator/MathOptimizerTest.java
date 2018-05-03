@@ -328,7 +328,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setUseAlgebraicOptimizations(true);
+        //generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/optimizer/l1");
         generatorCPP.generateFiles(componentSymbol, symtab);
     }

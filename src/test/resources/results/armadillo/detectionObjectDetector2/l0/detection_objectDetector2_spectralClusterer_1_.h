@@ -10,11 +10,14 @@
 #include "detection_objectDetector2_spectralClusterer_1__kMeansClustering.h"
 using namespace arma;
 class detection_objectDetector2_spectralClusterer_1_{
-const int n = 2500;
+const int n = 50;
+const int elements = 2500;
 const int k = 4;
-const int maximumClusters = 4;
+const int maximumClusters = 1;
 public:
-mat imgMatrix;
+mat red;
+mat green;
+mat blue;
 mat clusters;
 detection_objectDetector2_spectralClusterer_1__similarity similarity;
 detection_objectDetector2_spectralClusterer_1__normalizedLaplacian normalizedLaplacian;
@@ -22,8 +25,10 @@ detection_objectDetector2_spectralClusterer_1__eigenSolver eigenSolver;
 detection_objectDetector2_spectralClusterer_1__kMeansClustering kMeansClustering;
 void init()
 {
-imgMatrix=mat(n*n,3);
-clusters=mat(n,maximumClusters);
+red=mat(n,n);
+green=mat(n,n);
+blue=mat(n,n);
+clusters=mat(elements,maximumClusters);
 similarity.init();
 normalizedLaplacian.init();
 eigenSolver.init();
@@ -31,10 +36,12 @@ kMeansClustering.init();
 }
 void execute()
 {
-similarity.data = imgMatrix;
+similarity.red = red;
+similarity.green = green;
+similarity.blue = blue;
 similarity.execute();
 normalizedLaplacian.degree = similarity.degree;
-normalizedLaplacian.W = similarity.similarity;
+normalizedLaplacian.similarity = similarity.similarity;
 normalizedLaplacian.execute();
 eigenSolver.matrix = normalizedLaplacian.nLaplacian;
 eigenSolver.execute();

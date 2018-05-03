@@ -240,7 +240,7 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         String result = "";
         //TODO fix matrix access parameter stuff
         result += mathMatrixNameExpressionSymbol.getNameToAccess();
-        if (mathMatrixNameExpressionSymbol.hasMatrixAccessExpression()) {
+        if (mathMatrixNameExpressionSymbol.isMathMatrixAccessOperatorSymbolPresent()) {
             mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixNameExpressionSymbol(mathMatrixNameExpressionSymbol);
             result += generateExecuteCode(mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
         }

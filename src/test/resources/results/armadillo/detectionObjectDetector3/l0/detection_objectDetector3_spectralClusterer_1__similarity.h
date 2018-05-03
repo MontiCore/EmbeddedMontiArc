@@ -7,23 +7,35 @@
 #include "HelperA.h"
 using namespace arma;
 class detection_objectDetector3_spectralClusterer_1__similarity{
-const int n = 2500;
+const int n = 50;
 public:
-mat data;
+mat red;
+mat green;
+mat blue;
 mat similarity;
 mat degree;
 void init()
 {
-data=mat(n,3);
-similarity=mat(n,n);
-degree=mat(n,n);
+red=mat(n,n);
+green=mat(n,n);
+blue=mat(n,n);
+similarity=mat(n*n,n*n);
+degree=mat(n*n,n*n);
 }
 void execute()
 {
-for( auto i=1;i<=(data.n_rows);++i){
-for( auto j=1;j<=(data.n_rows);++j){
-double dist = (sqrt((data(i-1, 1-1)-data(j-1, 1-1))*(data(i-1, 1-1)-data(j-1, 1-1))+(data(i-1, 2-1)-data(j-1, 2-1))*(data(i-1, 2-1)-data(j-1, 2-1))+(data(i-1, 3-1)-data(j-1, 3-1))*(data(i-1, 3-1)-data(j-1, 3-1))));
-similarity(i-1, j-1) = (exp((0-dist)/(2)));
+int counter2 = 1;
+for( auto j=1;j<=(red.n_rows);++j){
+for( auto i=1;i<=(red.n_rows);++i){
+int counter1 = 1;
+for( auto j2=1;j2<=(red.n_rows);++j2){
+for( auto i2=1;i2<=(red.n_rows);++i2){
+double dist = (sqrt((red(i-1, j-1)-red(i2-1, j2-1))*(red(i-1, j-1)-red(i2-1, j2-1))+(green(i-1, j-1)-green(i2-1, j2-1))*(green(i-1, j-1)-green(i2-1, j2-1))+(blue(i-1, j-1)-blue(i2-1, j2-1))*(blue(i-1, j-1)-blue(i2-1, j2-1))));
+similarity(counter2-1, counter1-1) = (exp(-dist/(2)));
+counter1 = counter1+1;
+}
+}
+counter2 = counter2+1;
 }
 }
 for( auto k=1;k<=(similarity.n_rows);++k){
