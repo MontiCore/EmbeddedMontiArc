@@ -39,5 +39,9 @@ Z^{3,3} matrix1 = [1 2 3;4 5 6;7 8 9];
 Z^{2,3} matrix2 = matrix1(1:2, 1:3);
 Z^{8} v = [16 5 9 4 2 11 7 14];
 Z^{4} v1 = v(1:2:8);
+B bool1 = true;
+B bool2 = false;
+B bool3 = true || false;
+B bool4 = true && false;
 
 end

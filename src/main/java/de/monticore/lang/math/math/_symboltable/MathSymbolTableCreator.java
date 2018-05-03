@@ -20,10 +20,8 @@
  */
 package de.monticore.lang.math.math._symboltable;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.lang.math.math._ast.*;
 import de.monticore.lang.math.math._matrixprops.MatrixPropertiesIdentifier;
-import de.monticore.lang.math.math._matrixprops.PropertyChecker;
 import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.math.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.types2._ast.ASTImportStatement;
@@ -132,6 +130,14 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         symbol.setValue((MathExpressionSymbol) assignmentDeclarationExpression.getMathExpression().getSymbol().get());
 
         addToScopeAndLinkWithNode(symbol, assignmentDeclarationExpression);
+    }
+
+    public void endVisit(final ASTMathTrueExpression trueExpression){
+        trueExpression.setSymbol(new MathBooleanExpressionSymbol(true));
+    }
+
+    public void endVisit(final ASTMathFalseExpression falseExpression){
+        falseExpression.setSymbol(new MathBooleanExpressionSymbol(false));
     }
 
     public void endVisit(final ASTMathAssignmentExpression assignmentExpression) {

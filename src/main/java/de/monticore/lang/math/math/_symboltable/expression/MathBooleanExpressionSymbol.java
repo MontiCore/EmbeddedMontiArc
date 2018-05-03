@@ -20,33 +20,21 @@
  */
 package de.monticore.lang.math.math._symboltable.expression;
 
-/**
- * @author Sascha Schneiders
- */
-public abstract class MathValueExpressionSymbol extends MathExpressionSymbol {
+public class MathBooleanExpressionSymbol extends MathValueExpressionSymbol {
+    private boolean value;
 
-    public MathValueExpressionSymbol() {
+    public MathBooleanExpressionSymbol(boolean value) {
         super();
-    }
-
-    public MathValueExpressionSymbol(String name) {
-        super(name);
+        this.value = value;
     }
 
     @Override
-    public boolean isValueExpression() {
+    public boolean isBooleanExpression() {
         return true;
     }
 
-    public boolean isNameExpression() {
-        return false;
-    }
-
-    public boolean isNumberExpression() {
-        return false;
-    }
-
-    public boolean isBooleanExpression() {
-        return false;
+    @Override
+    public String getTextualRepresentation() {
+        return value ? "true" : "false";
     }
 }
