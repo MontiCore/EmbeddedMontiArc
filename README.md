@@ -1,6 +1,6 @@
 <p align="center">
     <img src="doc/images/elysium.svg"/>
-    <img src="doc/images/quote.svg" width="669"/>
+    <img src="doc/images/quote.svg" width="718"/>
 </p>
 <p align="center">
     <img src="https://img.shields.io/badge/Theia_Version-43a963868cefe43106a637d67d9e958018a13b08-blue.svg?longCache=true&style=flat-square"/>
