@@ -55,6 +55,8 @@ public class MathFunctionFixer {
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNameExpression()) {
                 notHandled = false;
+            } else if (((MathValueExpressionSymbol)mathExpressionSymbol).isBooleanExpression()){
+                notHandled = false;
             }
         } else if (mathExpressionSymbol.getExpressionID() == MathChainedExpression.ID) {
             fixMathFunctions((MathChainedExpression) mathExpressionSymbol, bluePrintCPP);

@@ -59,6 +59,8 @@ public class ExecuteMethodGeneratorHandler {
             return generateExecuteCode((MathNameExpressionSymbol) mathValueExpressionSymbol, includeStrings);
         } else if (mathValueExpressionSymbol.isNumberExpression()) {
             return generateExecuteCode((MathNumberExpressionSymbol) mathValueExpressionSymbol, includeStrings);
+        }else if(mathValueExpressionSymbol.isBooleanExpression()) {
+            return generateExecuteCode((MathBooleanExpressionSymbol)mathValueExpressionSymbol,includeStrings);
         } else if (mathValueExpressionSymbol.isAssignmentDeclarationExpression()) {
             return generateExecuteCodeDeclaration((MathValueSymbol) mathValueExpressionSymbol, includeStrings);
         } else {
@@ -151,6 +153,8 @@ public class ExecuteMethodGeneratorHandler {
         return result;
     }
 
+
+
     private static String handleRationalType(MathValueType mathValueType) {
         if (mathValueType.getDimensions().size() == 0) {
             return "double";
@@ -213,6 +217,10 @@ public class ExecuteMethodGeneratorHandler {
 
     public static String generateExecuteCode(MathNumberExpressionSymbol mathNumberExpressionSymbol, List<String> includeStrings) {
         return mathNumberExpressionSymbol.getTextualRepresentation();
+    }
+
+    public static String generateExecuteCode(MathBooleanExpressionSymbol mathBooleanExpressionSymbol, List<String> includeStrings) {
+        return mathBooleanExpressionSymbol.getTextualRepresentation();
     }
 
     public static String generateExecuteCode(MathAssignmentExpressionSymbol mathAssignmentExpressionSymbol, List<String> includeStrings) {

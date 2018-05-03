@@ -22,8 +22,8 @@
 	<Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.11-SNAPSHOT</Math.version>
-	<Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
+    <Math.version>0.0.12-SNAPSHOT</Math.version>
+	<Embedded-MontiArc-Math.version>0.0.12-SNAPSHOT</Embedded-MontiArc-Math.version>
     <tagging.version>0.0.1</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
