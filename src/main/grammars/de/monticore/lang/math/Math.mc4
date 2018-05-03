@@ -117,7 +117,7 @@ grammar Math extends de.monticore.lang.monticar.Common2, de.monticore.lang.monti
 
     MathArithmeticValueExpression implements MathArithmeticExpression, MathExpression, Expression  = MathValueExpression;
 
-    MathArithmeticPowerOfExpression implements MathArithmeticExpression<1>, MathExpression<1>, Expression<1>  = MathArithmeticExpression NEWLINETOKEN* "^" NEWLINETOKEN* MathArithmeticExpression;
+    MathArithmeticPowerOfExpression implements MathArithmeticExpression<1>, MathExpression<1>, Expression<1>  = MathArithmeticExpression NEWLINETOKEN* "^" NEWLINETOKEN* "(" MathArithmeticExpression ")";
 
     MathArithmeticMultiplicationExpression implements MathArithmeticExpression<10>, MathExpression<10>, Expression<10>  = MathArithmeticExpression NEWLINETOKEN* "*" NEWLINETOKEN* MathArithmeticExpression;
 

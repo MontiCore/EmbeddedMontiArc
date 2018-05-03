@@ -247,6 +247,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixPowerOfExpression.
                 getMathArithmeticMatrixExpression(), astMathArithmeticMatrixPowerOfExpression.
                 getMathValueExpression(), "^");
+        //System.out.println("endVisit(ASTMathArithmeticMatrixPowerOfExpression was called");
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixPowerOfExpression);
     }
 
@@ -329,6 +330,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         if (astMathMatrixNameExpression.getMathMatrixAccessExpression().isPresent()) {
             MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol = (MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get();
             mathMatrixAccessOperatorSymbol.setMathMatrixNameExpressionSymbol(symbol);
+            symbol.setMathMatrixAccessOperatorSymbol(mathMatrixAccessOperatorSymbol);
         }
         addToScopeAndLinkWithNode(symbol, astMathMatrixNameExpression);
     }
@@ -419,9 +421,10 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     public void endVisit(final ASTMathArithmeticPowerOfExpression astMathArithmeticPowerOfExpression) {
         MathExpressionSymbol newSymbol = null;
+        Log.info(((MathExpressionSymbol)astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(0).getSymbol().get()).getTextualRepresentation(),"Whole Left Expression:");
         if (astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).getSymbol().isPresent()) {
-            MathExpressionSymbol expSymbol = (MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).
-                    getSymbol().get();
+            MathExpressionSymbol expSymbol = ((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).
+                    getSymbol().get()).getRealMathExpressionSymbol();
             boolean useInverse = false;
             boolean useSqrtm = false;
             if (expSymbol.getTextualRepresentation().startsWith("-")) {
@@ -440,14 +443,18 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 if (useSqrtm) {
                     MathMatrixNameExpressionSymbol symbolSqrtm = convertToInternalExpression(symbolInv, "sqrtm");
                     newSymbol = symbolSqrtm;
+                    System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
                 } else {
-                    newSymbol = symbolInv;
+                    //TODO add detection for normal numbers as these should not be inverted by calling inv
+                    //newSymbol = symbolInv;
+                    //System.out.println("SymbolInv: " + symbolInv.getTextualRepresentation());
 
                 }
             } else if (useSqrtm) {
                 newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
                         getMathArithmeticExpressions().get(0).getSymbol().get(), "sqrtm");
 
+                System.out.println("SymbolSqrtm2: " + newSymbol.getTextualRepresentation());
             }
         }
         if (newSymbol == null) {
@@ -458,6 +465,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                     getMathArithmeticExpressions().get(1), "^");
             newSymbol = symbol;
         }
+        System.out.println("newSymbol is: " + newSymbol.getTextualRepresentation());
         addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
 
     }

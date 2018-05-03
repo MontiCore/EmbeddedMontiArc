@@ -65,7 +65,7 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
     }
 
     public boolean hasMatrixAccessExpression() {
-        return astMathMatrixNameExpression.get().getMathMatrixAccessExpression().isPresent();
+        return astMathMatrixNameExpression.isPresent()&&astMathMatrixNameExpression.get().getMathMatrixAccessExpression().isPresent();
     }
 
     public MathMatrixAccessOperatorSymbol getMathMatrixAccessOperatorSymbol() {

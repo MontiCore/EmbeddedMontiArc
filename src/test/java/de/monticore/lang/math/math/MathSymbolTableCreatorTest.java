@@ -24,6 +24,7 @@ package de.monticore.lang.math.math;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.math.math._symboltable.*;
+import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.expression.MathNumberExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.expression.MathValueSymbol;
@@ -238,9 +239,20 @@ public class MathSymbolTableCreatorTest {
     public void test6() {
         Scope symTab = createSymTab("src/test/resources");
         //B bool = j == i';
+        //        final MathValueSymbol matrix = symTab.<MathValueSymbol>resolve
+        //                ("symtab.SymtabTest.bool", MathValueSymbol.KIND).orElse(null);
+
         final MathValueSymbol matrix = symTab.<MathValueSymbol>resolve
                 ("symtab.SymtabTest.bool", MathValueSymbol.KIND).orElse(null);
         assertNotNull(matrix);
+
+        final MathValueSymbol test = symTab.<MathValueSymbol>resolve
+                ("symtab.SymtabTest.test", MathValueSymbol.KIND).orElse(null);
+        assertNotNull(test);
+        Log.info(test.getTextualRepresentation(),"Test:");
+        Log.info(test.getValue().getClass().getName(),"AST:");
+        Log.info(((MathArithmeticExpressionSymbol)test.getValue()).getLeftExpression().getTextualRepresentation(),"AST:");
+
         //checks (j) == (i)
         /*assertTrue(matrix.getValue() instanceof LogicalExpression);
         assertEquals(((LogicalExpression) matrix.getValue()).getOp(), Operator.Equals);
