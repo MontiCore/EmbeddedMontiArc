@@ -49,7 +49,6 @@ install:
       }
   - ps: |
       "Copy dependencies to build/"
-      New-Item -ItemType directory -Path C:\EMAStudioBuilder\build
       Copy-Item -Recurse -Force "C:\EMAStudioBuilder\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
   - ps: |
       "Copy project items to build/"
