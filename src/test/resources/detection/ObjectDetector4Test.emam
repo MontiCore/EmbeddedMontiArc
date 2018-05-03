@@ -1,8 +1,8 @@
 package detection;
-import SpectralClusterer;
+import SpectralClustererTest;
 
-component ObjectDetector{
-ports in Q(0:255)^{50, 50} red1,
+component ObjectDetector4Test{
+  ports in Q(0:255)^{50, 50} red1,
           in Q(0:255)^{50, 50} green1,
           in Q(0:255)^{50, 50} blue1,
           in Q(0:255)^{50, 50} red2,
@@ -31,5 +31,6 @@ ports in Q(0:255)^{50, 50} red1,
     connect  green4 -> spectralClusterer[4].green;
     connect  blue4 -> spectralClusterer[4].blue;
     connect spectralClusterer[:].clusters -> clusters[:];
+
 
 }

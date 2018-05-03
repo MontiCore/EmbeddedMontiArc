@@ -27,8 +27,7 @@ public class MathDiagonalMatrixOptimizations implements MathOptimizationRule {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else if (mathExpressionSymbol.isArithmeticExpression()) {
             optimize((MathArithmeticExpressionSymbol) mathExpressionSymbol, precedingExpressions);
-        }
-        else {
+        } else {
             Log.debug("Not handled main Optimize: " + mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(),
                     "optimizeMathExpressionSymbol");
         }
@@ -85,18 +84,18 @@ public class MathDiagonalMatrixOptimizations implements MathOptimizationRule {
             Log.debug("Found sqrtm and replaced with sqrtdiag", "optimizeMathMatrixNameExp");
 
         }
-        if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {
+        if (mathExpressionSymbol.isMathMatrixAccessOperatorSymbolPresent()) {
             optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
-        } else if (mathExpressionSymbol.getAstMathMatrixNameExpression().getEndOperator().isPresent())
+        } else if (mathExpressionSymbol.isASTMathMatrixNamePresent() && mathExpressionSymbol.getAstMathMatrixNameExpression().getEndOperator().isPresent())
             Log.debug("Not handled: EndOperator", "optimizeMathMatrixNameExpr");
     }
 
     private boolean isDiagonalMatrix(MathMatrixNameExpressionSymbol mathExpressionSymbol) {
         boolean invertsDiagonalMatrix = false;
-        if (mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().isPresent()) {
+        if (mathExpressionSymbol.isMathMatrixAccessOperatorSymbolPresent()) {
             //optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
             //Log.error(ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable("degree").getProperties().toString());
-            String name = getMatrixName((MathMatrixAccessSymbol) mathExpressionSymbol.getAstMathMatrixNameExpression().getMathMatrixAccessExpression().get().getMathMatrixAccesss().get(0).getSymbol().get());//TODO handle all possible cases
+            String name = getMatrixName((MathMatrixAccessSymbol) mathExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0));//TODO handle all possible cases
             //System.out.println("isDiagonalMatrix: " + name);
             //System.out.println(mathExpressionSymbol.getTextualRepresentation());
             invertsDiagonalMatrix = ComponentConverter.currentBluePrint.getMathInformationRegister().getVariable(name).getProperties().contains("diag");

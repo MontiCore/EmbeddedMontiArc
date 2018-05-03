@@ -56,6 +56,7 @@ public class ComponentConverter {
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
+
         //generate execute method
         ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
 

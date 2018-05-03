@@ -121,6 +121,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         testFilesAreEqual(files, restPath);
     }
 
+
     @Test
     public void testClustererNoKMeans() throws IOException{
         testObjectDetectorInstancingL0();

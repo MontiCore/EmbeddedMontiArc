@@ -2,13 +2,13 @@ package detection;
 
 component NormalizedLaplacianInstance{
     ports in Q(-oo:oo)^{2500,2500} degree,
-              in Q(-oo:oo)^{2500,2500} W,
+              in Q(-oo:oo)^{2500,2500} similarity,
               out Q(-oo:oo)^{2500,2500} nLaplacian;
 
     instance NormalizedLaplacian<2500> normLaplaInst;
 
     connect degree -> normLaplaInst.degree;
-    connect W -> normLaplaInst.W;
+    connect similarity -> normLaplaInst.similarity;
     connect normLaplaInst.nLaplacian -> nLaplacian;
 
 }
