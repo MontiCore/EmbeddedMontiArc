@@ -6,16 +6,16 @@
   "keywords": [
     "Elysium IDE"
   ],
-  "homepage": "http://github.com/???/???/README.md",
+  "homepage": "https://github.com/EmbeddedMontiArc/Elysium",
   "bugs": {
-    "url": "http://github.com/???/???/issues"
+    "url": "https://github.com/EmbeddedMontiArc/Elysium/issues"
   },
   "license": "???",
   "author": "SE RWTH",
   "contributors": [],
   "repository": {
     "type": "git",
-    "url": "http://github.com/???/???.git"
+    "url": "https://github.com/EmbeddedMontiArc/Elysium.git"
   },
   "scripts": {},
   "dependencies": {},
