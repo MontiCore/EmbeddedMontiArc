@@ -13,7 +13,7 @@ foreach($line in Get-Content "..\..\dependencies.txt") {
         $link = $line.Remove(0,3)
 
         # extract filename
-        if($link -match '[a-zA-Z0-9\-\.]+\.zip'){
+        if($link -match '[a-zA-Z0-9\-\._]+\.zip'){
             $filename = $matches[0]
     
             # if file does not exist, download
