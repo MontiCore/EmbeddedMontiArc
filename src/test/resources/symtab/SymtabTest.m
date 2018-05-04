@@ -43,5 +43,5 @@ Q(0 : 10 km)^{1,3} i2 = [ 2 mm, 3 cm,4 km ];
 Q(0 : 10 km)^{3,1} j2 = [ 2 mm; 3 cm;4 km ];
 B bool = j2 == i2'; // true if j is equals i transpose
 
-Q test = degree^(-0.5) * W * degree^(-0.5);
+Q test = degree^(-0.5) * similarity * degree^(-0.5);
 end

@@ -443,7 +443,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 if (useSqrtm) {
                     MathMatrixNameExpressionSymbol symbolSqrtm = convertToInternalExpression(symbolInv, "sqrtm");
                     newSymbol = symbolSqrtm;
-                    System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
+                    //System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
                 } else {
                     //TODO add detection for normal numbers as these should not be inverted by calling inv
                     //newSymbol = symbolInv;
@@ -454,7 +454,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                 newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
                         getMathArithmeticExpressions().get(0).getSymbol().get(), "sqrtm");
 
-                System.out.println("SymbolSqrtm2: " + newSymbol.getTextualRepresentation());
+                //System.out.println("SymbolSqrtm2: " + newSymbol.getTextualRepresentation());
             }
         }
         if (newSymbol == null) {
@@ -465,7 +465,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
                     getMathArithmeticExpressions().get(1), "^");
             newSymbol = symbol;
         }
-        System.out.println("newSymbol is: " + newSymbol.getTextualRepresentation());
+        //System.out.println("newSymbol is: " + newSymbol.getTextualRepresentation());
         addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
 
     }
