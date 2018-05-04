@@ -23,7 +23,7 @@ foreach($line in Get-Content "..\dependencies.txt") {
             $filename = $dl + $matches[0]
 
            "Extracting " + $filename + " to " + $dir
-           &$7z e -aoa $filename $("-o" + $build + $dir) | Out-Null
+           &$7z x -aoa $filename $("-o" + $build + $dir) | Out-Null
         }
     }
 } 
