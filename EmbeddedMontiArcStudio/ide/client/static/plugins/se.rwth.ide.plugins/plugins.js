@@ -1035,6 +1035,7 @@ var plugins = [
     "plugins/c9.ide.services/linked-services-mock",
     "plugins/c9.ide.language.jsonalyzer/mock_collab",
     "plugins/se.rwth.visualization/visualization",
+    "plugins/se.rwth.readme.opener/readme.opener",
     "plugins/se.rwth.vfs/vfs.main",
     "plugins/se.rwth.language.embeddedmontiarc/embeddedmontiarc",
     "plugins/se.rwth.language.montimath/montimath",
