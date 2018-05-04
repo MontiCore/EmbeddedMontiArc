@@ -2,6 +2,8 @@
 
 # EMAStudioBuilder
 
+**Important: Never delete any Github Release.** Also if you do not need the release anymore, please let it there otherwise the version control of `dependencies.txt` does not work. If you want to update any binary (e.g. jar), then just upload the new JAR in a new release and then update the link in the `dependencies.txt` file.
+
 This repo contains the scripts and the sources which are used to build EmbeddedMontiArcStudio automatically.
 
 * Included in a release will be:
