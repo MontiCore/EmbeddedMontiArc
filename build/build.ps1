@@ -8,4 +8,4 @@
 
 . ./download.ps1 
 . ./extract.ps1 
-#. ./pack.ps1 
+. ./pack.ps1 
