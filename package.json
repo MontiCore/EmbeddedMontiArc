@@ -62,6 +62,7 @@
   },
   "scripts": {
     "download": "node scripts/download",
+    "compile": "node scripts/compile",
     "build": "node scripts/build",
     "start": "node scripts/start",
     "documentation": "node scripts/documentation",
