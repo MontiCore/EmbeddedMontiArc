@@ -5,3 +5,5 @@
  */
 
 export * from "./cloud9-converter";
+
+export * from "./monaco-contribution";
