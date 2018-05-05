@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/languages",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Elysium Languages Interfaces acting as an Alternative to the Language Server Protocol.",
   "keywords": [
     "Elysium IDE"

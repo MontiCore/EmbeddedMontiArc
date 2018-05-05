@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/embeddedmontiview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plugin for the EmbeddedMontiView Language.",
   "keywords": [
     "Elysium IDE"

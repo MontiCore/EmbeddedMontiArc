@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/macocoviz",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plugin for the MaCoCoVIZ Language.",
   "keywords": [
     "Elysium IDE"

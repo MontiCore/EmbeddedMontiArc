@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/montimath",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plugin for the MontiMath Language.",
   "keywords": [
     "Elysium IDE"
