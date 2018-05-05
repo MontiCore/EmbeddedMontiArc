@@ -5,6 +5,10 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Theia_Version-43a963868cefe43106a637d67d9e958018a13b08-blue.svg?longCache=true&style=flat-square"/>
 </p>
+<p align="center">
+    <img src="https://img.shields.io/travis/EmbeddedMontiArc/Elysium/master.svg?style=flat-square"/>
+    <img src="https://img.shields.io/codeclimate/maintainability/EmbeddedMontiArc/Elysium.svg?style=flat-square"/>
+</p>
 
 <!-- TODO: Code Climate -->
 
