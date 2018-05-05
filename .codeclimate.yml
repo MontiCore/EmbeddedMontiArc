@@ -1,12 +1,10 @@
 version: "2"
-plugins:
-  tslint:
-    enabled: true
-    config: "configs/strict.tslint.json"
 exclude_patterns:
 - "build/"
 - "doc/"
 - "docs/"
 - "configs/"
+- "packages/**/*.js"
+- "plugins/**/*.js"
 - "scripts/"
 - "**/*.d.ts"
