@@ -2,7 +2,6 @@ version: "2"
 exclude_patterns:
 - "build/"
 - "doc/"
-- "docs/"
 - "configs/"
 - "packages/**/*.js"
 - "plugins/**/*.js"
