@@ -6,8 +6,12 @@
     <img src="https://img.shields.io/badge/Theia_Version-43a963868cefe43106a637d67d9e958018a13b08-blue.svg?longCache=true&style=flat-square"/>
 </p>
 <p align="center">
-    <img src="https://img.shields.io/travis/EmbeddedMontiArc/Elysium/master.svg?style=flat-square"/>
-    <img src="https://img.shields.io/codeclimate/maintainability/EmbeddedMontiArc/Elysium.svg?style=flat-square"/>
+    <a href="https://travis-ci.org/EmbeddedMontiArc/Elysium">
+        <img src="https://travis-ci.org/EmbeddedMontiArc/Elysium.svg?branch=master"/>
+    </a>
+    <a href="https://codeclimate.com/github/EmbeddedMontiArc/Elysium/maintainability">
+        <img src="https://api.codeclimate.com/v1/badges/4a5e4f9dc76d2a39b607/maintainability"/>
+    </a>
 </p>
 
 <!-- TODO: Code Climate -->
