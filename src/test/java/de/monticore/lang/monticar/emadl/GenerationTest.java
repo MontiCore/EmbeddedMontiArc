@@ -51,7 +51,14 @@ public class GenerationTest {
 
     @Test
     public void testMnistGeneration() throws IOException, TemplateException {
-        generate("mnist.Main");
+        generate("mnist.MnistClassifier");
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    @Ignore
+    public void testCifar10Generation() throws IOException, TemplateException {
+        generate("cifar10.Cifar10Classifier");
         assertTrue(Log.getFindings().isEmpty());
     }
 

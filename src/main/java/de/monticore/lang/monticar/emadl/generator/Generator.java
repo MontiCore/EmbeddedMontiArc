@@ -52,6 +52,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Generator {
@@ -106,6 +108,8 @@ public class Generator {
             fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
         }
 
+        fixArmadilloImports(fileContents);
+
         return fileContents;
     }
 
@@ -133,13 +137,21 @@ public class Generator {
         }
     }
 
+    private void fixArmadilloImports(List<FileContent> fileContents){
+        for (FileContent fileContent : fileContents){
+            fileContent.setFileContent(fileContent.getFileContent()
+                    .replaceFirst("#include \"armadillo.h\"",
+                            "#include \"armadillo\""));
+        }
+    }
+
     public void generateCNN(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
         CNNArchGenerator cnnArchGenerator = new CNNArchGenerator();
         Map<String,String> contentMap = cnnArchGenerator.generateStrings(architecture);
-        String fullName = instance.getFullName();
+        String fullName = instance.getFullName().replaceAll("\\.", "_");
 
         //get the components execute method
-        String executeKey = "execute_" + fullName.replaceAll("\\.", "_");
+        String executeKey = "execute_" + fullName;
         String executeMethod = contentMap.get(executeKey);
         if (executeMethod == null){
             throw new IllegalStateException("execute method of " + fullName + " not found");
@@ -159,7 +171,8 @@ public class Generator {
     }
 
     protected String transformComponent(String component, String predictorClassName, String executeMethod){
-        String networkVariableName = "cnn_";
+        String networkVariableName = "_cnn_";
+
         //insert includes
         component = component.replaceFirst("using namespace",
                 "#include \"" + predictorClassName + ".h" + "\"\n" +
@@ -170,9 +183,15 @@ public class Generator {
         component = component.replaceFirst("public:",
                 "public:\n" + predictorClassName + " " + networkVariableName + ";");
 
+        /*
+        Pattern initPattern = Pattern.compile("void init\\(.*\\)\n\\{");
+        Matcher matcher = initPattern.matcher(component);
+        matcher.find();
+        String initMethodString = matcher.group(0);
+
         //insert attribute initialization
-        component = component.replaceFirst("void init\\(\\)\\s\\{",
-                "void init()\n{\n" + networkVariableName + "=" + predictorClassName + "();");
+        component = component.replaceFirst("\\Q" + initMethodString,
+                initMethodString + "\n" + networkVariableName + " = " + predictorClassName + "();");*/
 
         //insert execute method
         component = component.replaceFirst("void execute\\(\\)\\s\\{\\s\\}",

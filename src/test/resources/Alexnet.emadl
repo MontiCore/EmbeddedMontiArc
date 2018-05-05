@@ -1,6 +1,6 @@
 component Alexnet{
     ports in Z(0:255)^{3, 224, 224} image,
-         out Q(0:1)^{10,1,1} predictions;
+         out Q(0:1)^{1000} predictions;
 
     implementation CNN {
 
@@ -39,7 +39,7 @@ component Alexnet{
         split2(i=[0|1]) ->
         Concatenate() ->
         fc(->=2) ->
-        FullyConnected(units=10) ->
+        FullyConnected(units=1000) ->
         Softmax() ->
         predictions
 

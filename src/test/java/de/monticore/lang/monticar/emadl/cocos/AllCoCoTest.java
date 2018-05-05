@@ -40,7 +40,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
 
     @Test
     public void testCoCosSimulator() throws IOException {
-        checkValid("", "mnist.Main");
+        checkValid("", "mnist.MnistClassifier");
         checkValid("", "Alexnet");
         checkValid("", "VGG16");
         checkValid("", "ThreeInputCNN_M14");

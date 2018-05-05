@@ -1,7 +1,7 @@
 import logging
-
-<#list componentNames as name>
-import CNNCreator_${name?replace(".", "_")}
+import mxnet as mx
+<#list instances as instance>
+import CNNCreator_${instance.fullName?replace(".", "_")}
 </#list>
 
 if __name__ == "__main__":
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     logger.addHandler(handler)
 
 <#list instances as instance>
-    ${instance.fullName?replace(".", "_")} = CNNCreator_${instance.componentType.fullName?replace(".", "_")}.CNNCreator_${instance.componentType.fullName?replace(".", "_")}()
+    ${instance.fullName?replace(".", "_")} = CNNCreator_${instance.fullName?replace(".", "_")}.CNNCreator_${instance.fullName?replace(".", "_")}()
     ${instance.fullName?replace(".", "_")}.train(
     <#if (trainParams[instance_index])??>
        ${trainParams[instance_index]}

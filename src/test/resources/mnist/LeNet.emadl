@@ -1,8 +1,8 @@
 package mnist;
 
-component Network(Z classes){
-    ports in Z(0:255)^{1,28,28} data,
-         out Q(0:1)^{classes,1,1} predictions;
+component LeNet(Z(1:oo) channels, Z(1:oo) height, Z(1:oo) width, Z(2:oo) classes){
+    ports in Z(0:255)^{channels, height, width} data,
+         out Q(0:1)^{classes} predictions;
 
     implementation CNN {
 
