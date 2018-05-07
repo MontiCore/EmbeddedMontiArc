@@ -61,8 +61,7 @@ public final class DistributedTargetGeneratorCli {
     public static final String GENERATOR_CPP = "cpp";
     public static final String GENERATOR_ROSCPP = "roscpp";
 
-    public DistributedTargetGeneratorCli() {
-    }
+    private DistributedTargetGeneratorCli() {}
 
     public static void main(String[] args) {
         System.out.println(Arrays.toString(args));
@@ -96,7 +95,7 @@ public final class DistributedTargetGeneratorCli {
         try {
             cliArgs = parser.parse(options, args);
         } catch (ParseException e) {
-            Log.error("Argument parsing exception", e);
+            Log.error("0x9A1AC: Argument parsing exception", e);
             return null;
         }
         return cliArgs;

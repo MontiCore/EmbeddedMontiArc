@@ -41,6 +41,18 @@ public class CliTest{
         LogConfig.enableFailQuick(true);
     }
 
+
+    @Test
+    public void testParserError(){
+        String[] args = {
+                "invalidParsingArg"};
+
+        DistributedTargetGeneratorCli.main(args);
+        assertTrue(LogConfig.getErrorCount() == 1);
+        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0x9A1AC")));
+    }
+
+
     @Test
     public void testNoGenerators(){
         String[] args = {
@@ -62,7 +74,7 @@ public class CliTest{
                 "--output-dir=target/cliTest/InvalidGenerators/"};
         DistributedTargetGeneratorCli.main(args);
         assertTrue(LogConfig.getErrorCount() == 1);
-        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0xE28B6")));
+        assertTrue(logContains("0xE28B6"));
     }
 
     @Test
@@ -124,7 +136,7 @@ public class CliTest{
                 "--output-dir=target/cliTest/InvalidRootModel/"};
         DistributedTargetGeneratorCli.main(args);
         assertTrue(LogConfig.getErrorCount() == 1);
-        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0x5FFAE")));
+        assertTrue(logContains("0x5FFAE"));
     }
 
     @Test
@@ -136,7 +148,11 @@ public class CliTest{
                 "--output-dir=target/cliTest/InvalidModelsDir/"};
         DistributedTargetGeneratorCli.main(args);
         assertTrue(LogConfig.getErrorCount() == 1);
-        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0x6444B")));
+        assertTrue(logContains("0x6444B"));
     }
 
+
+    private boolean logContains(String errorCode){
+        return LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains(errorCode));
+    }
 }
