@@ -11,46 +11,45 @@ import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Usage example: TODO
- * java -cp emam2cpp.jar \
- * de.monticore.lang.monticar.generator.cpp.GeneratorCppCli \
- * --models-dir=C:\Users\vpupkin\proj\src\emam \
- * --root-model=de.rwth.vpupkin.modeling.autopilot.autopilot \
- * --output-dir=C:\Users\vpupkin\proj\target\cpp-gen\autopilot \
- * --flag-generate-tests \
- * --flag-use-armadillo-backend
- * --check-model-dir
+ * java -cp target/embedded-montiarc-math-middleware-generator-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
+ * de.monticore.lang.monticar.generator.middleware.DistributedTargetGeneratorCli \
+ * --models-dir=src/test/resources/ \
+ * --root-model=tests.a.addComp \
+ * --output-dir=target/cli-test/src \
+ * --generators=cpp,roscpp
  */
 public final class DistributedTargetGeneratorCli {
 
-    public static final Option OPTION_MODELS_PATH = Option.builder("m")
+    private static final Option OPTION_MODELS_PATH = Option.builder("m")
             .longOpt("models-dir")
             .desc("full path to directory with EMAM models")
             .hasArg(true)
             .required(true)
             .build();
 
-    public static final Option OPTION_ROOT_MODEL = Option.builder("r")
+    private static final Option OPTION_ROOT_MODEL = Option.builder("r")
             .longOpt("root-model")
             .desc("fully qualified name of the root model")
             .hasArg(true)
             .required(true)
             .build();
 
-    public static final Option OPTION_OUTPUT_PATH = Option.builder("o")
+    private static final Option OPTION_OUTPUT_PATH = Option.builder("o")
             .longOpt("output-dir")
             .desc("full path to output directory for tests")
             .hasArg(true)
             .required(true)
             .build();
 
-    public static final Option OPTION_GENERATORS = Option.builder("g")
+    private static final Option OPTION_GENERATORS = Option.builder("g")
             .longOpt("generators")
             .desc("identifiers for the generators that should be used")
             .hasArg(true)
@@ -60,12 +59,14 @@ public final class DistributedTargetGeneratorCli {
             .build();
 
     public static final String GENERATOR_CPP = "cpp";
-    public static final String GENERATOR_ROSCP = "roscpp";
+    public static final String GENERATOR_ROSCPP = "roscpp";
 
     public DistributedTargetGeneratorCli() {
     }
 
     public static void main(String[] args) {
+        System.out.println(Arrays.toString(args));
+
         Options options = getOptions();
         CommandLineParser parser = new DefaultParser();
         CommandLine cliArgs = parseArgs(options, parser, args);
@@ -86,7 +87,7 @@ public final class DistributedTargetGeneratorCli {
     private static Set<String> getGeneratorNames() {
         HashSet<String> res = new HashSet<>();
         res.add(GENERATOR_CPP);
-        res.add(GENERATOR_ROSCP);
+        res.add(GENERATOR_ROSCPP);
         return res;
     }
 
@@ -103,10 +104,13 @@ public final class DistributedTargetGeneratorCli {
 
     private static void runGenerator(CommandLine cliArgs) {
         String modelsDirPath = expandHomeDir(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
+        if(!Files.isDirectory(Paths.get(modelsDirPath))){
+            Log.error("0x6444B: Models dir does not exist: " + modelsDirPath);
+            return;
+        }
 
-
-        String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = expandHomeDir(cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt()));
+        String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         Set<String> generators = Arrays.stream(cliArgs.getOptionValues(OPTION_GENERATORS.getOpt())).collect(Collectors.toSet());
         TaggingResolver taggingResolver = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath);
 
@@ -118,14 +122,14 @@ public final class DistributedTargetGeneratorCli {
             if (validGenNames.contains(genName)) {
                 Log.warn("Using generator " + genName);
             } else {
-                Log.warn("Ignoring " + genName + " since it is not a valid generator name.");
+                Log.error("0xE28B6: Not a valid generator Name:" + genName  +".");
             }
         });
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve(rootModelName, ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         if (componentInstanceSymbol == null) {
-            Log.error("The given component cannot be resolved!");
+            Log.error("0x5FFAE: The given component cannot be resolved.");
             return;
         }
 
@@ -133,7 +137,7 @@ public final class DistributedTargetGeneratorCli {
             generator.add(new CPPGenImpl(), "cpp");
         }
 
-        if (generators.contains(GENERATOR_ROSCP)) {
+        if (generators.contains(GENERATOR_ROSCPP)) {
             generator.add(new RosCppGenImpl(), "roscpp");
             RosToEmamTagSchema.registerTagTypes(taggingResolver);
             TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
