@@ -27,7 +27,7 @@ lineOut[8]=mat(4,1);
 void execute()
 {
 for( auto i=1;i<=m1;++i){
-colvec tmpLine = colvec(4);
+colvec tmpLine=colvec(4);
 tmpLine(1-1, 1-1) = trajectoryIn(1-1, i-1);
 tmpLine(2-1, 1-1) = trajectoryIn(2-1, i-1);
 tmpLine(3-1, 1-1) = trajectoryIn(1-1, i+1-1);

@@ -4,7 +4,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 #include "armadillo.h"
-#include <cmath>
 using namespace arma;
 class ba_system_collisionDetection_rectIntersection_1__lineIntersection_1_{
 public:
@@ -29,7 +28,7 @@ double Cy = lineA(2-1, 1-1)-lineB(2-1, 1-1);
 double n1 = Ay*Bx-Ax*By;
 double cutoff = 1.0E-8;
 bool res = false;
-if(((std::abs(n1) > cutoff))){
+if((((abs(n1)) > cutoff))){
 double alpha = (By*Cx-Bx*Cy)/n1;
 if(((alpha >= cutoff))&&((alpha <= 1))){
 double beta = (Ax*Cy-Ay*Cx)/n1;

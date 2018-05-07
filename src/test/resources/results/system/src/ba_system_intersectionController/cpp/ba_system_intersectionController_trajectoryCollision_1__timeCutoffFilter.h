@@ -5,7 +5,6 @@
 #endif
 #include "armadillo.h"
 #include "HelperA.h"
-#include <cmath>
 using namespace arma;
 class ba_system_intersectionController_trajectoryCollision_1__timeCutoffFilter{
 const int m = 10;
@@ -49,7 +48,7 @@ aIsFasterOut = true;
 else {
 aIsFasterOut = false;
 }
-collisionOut = (std::abs(time1-time2) < timeCutoff);
+collisionOut = ((abs(time1-time2)) < timeCutoff);
 }
 else {
 collisionOut = false;

@@ -85,8 +85,8 @@ timeCutoffFilter.init(2);
 void execute()
 {
 timeCutoffFilter.collisionIn = firstLineIntersection.collisionOut;
-timeCutoffFilter.indexInA = firstLineIntersection.linexA;
-timeCutoffFilter.indexInB = firstLineIntersection.linexB;
+timeCutoffFilter.indexInA = firstLineIntersection.lIndexA;
+timeCutoffFilter.indexInB = firstLineIntersection.lIndexB;
 timeCutoffFilter.colPosIn = firstLineIntersection.pos;
 timeCutoffFilter.trajectoryInA = trajectoryA;
 timeCutoffFilter.trajectoryInB = trajectoryB;

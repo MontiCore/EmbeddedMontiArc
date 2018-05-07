@@ -12,8 +12,8 @@ public:
 bool collisionIn[45];
 mat pointsIn[45];
 bool collisionOut;
-int linexA;
-int linexB;
+int lIndexA;
+int lIndexB;
 mat pos;
 void init()
 {
@@ -72,8 +72,8 @@ for( auto i=1;i<=m1;++i){
 for( auto j=i;j<=m1;++j){
 if((found == false)){
 if(collisionIn[k-1]){
-linexA = i;
-linexB = j;
+lIndexA = i;
+lIndexB = j;
 pos = pointsIn[k-1];
 found = true;
 }

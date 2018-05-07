@@ -28,7 +28,7 @@ std::ofstream myfile;
      myfile.open("data after cluster.txt");
      myfile << A;
      myfile.close();
-	 
+
 	 std::ofstream myfile2;
      myfile2.open("cluster centroids.txt");
      myfile2 << clusters;
@@ -76,12 +76,8 @@ static double getEuclideanDistance(mat A, int colIndexA, mat B, int colIndexB){
 }
 
 static mat getSqrtMat(mat A){
-
-for(int i=0;i<A.n_rows;++i){
-    double curVal = A(i,i);
-    A(i,i) = sqrt(curVal);
-}
-return A;
+    cx_mat result=sqrtmat(A);
+    return real(result);
 }
 
 static mat getSqrtMatDiag(mat A){

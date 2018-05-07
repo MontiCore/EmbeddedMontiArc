@@ -28,7 +28,7 @@ double Cy = lineA(2-1, 1-1)-lineB(2-1, 1-1);
 double n1 = Ay*Bx-Ax*By;
 double cutoff = 1.0E-8;
 bool res = false;
-if(((std::abs(n1) > cutoff))){
+if((((abs(n1)) > cutoff))){
 double alpha = (By*Cx-Bx*Cy)/n1;
 if(((alpha >= cutoff))&&((alpha <= 1))){
 double beta = (Ax*Cy-Ay*Cx)/n1;
