@@ -57,6 +57,7 @@ public class ParserTagValueTest {
 ////    System.out.println(tags.getTags().get(0).getTagValue().length());
 //  }
 
+  @Ignore
   @Test
   public void testTagschema2() throws Exception {
     TaggingParser parser = new TaggingParser();
