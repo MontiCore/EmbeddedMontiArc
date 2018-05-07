@@ -57,7 +57,7 @@ public class ParserTagValueTest {
 ////    System.out.println(tags.getTags().get(0).getTagValue().length());
 //  }
 
-  @Ignore
+/*  @Ignore
   @Test
   public void testTagschema2() throws Exception {
     TaggingParser parser = new TaggingParser();
@@ -65,5 +65,5 @@ public class ParserTagValueTest {
     tags.getTagBody().getTags().forEach(t -> t.getTagElements().forEach(e -> System.out.println(e.getName() + ": " + e.getTagValue().orElse(""))));
 //    System.out.println(tags.getTags().size());
     //    System.out.println(tags.getTags().get(0).getTagValue().length());
-  }
+  } */
 }
