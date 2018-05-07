@@ -26,8 +26,8 @@ component TrajectoryCollision<N1 m = 10, N1 m1 = 9, N1 m2 = 45>{
     connect lineIntersection[:].point -> firstLineIntersection.pointsIn[:];
 
     connect firstLineIntersection.collisionOut -> timeCutoffFilter.collisionIn;
-    connect firstLineIntersection.linexA -> timeCutoffFilter.indexInA;
-    connect firstLineIntersection.linexB -> timeCutoffFilter.indexInB;
+    connect firstLineIntersection.lIndexA -> timeCutoffFilter.indexInA;
+    connect firstLineIntersection.lIndexB -> timeCutoffFilter.indexInB;
     connect firstLineIntersection.pos -> timeCutoffFilter.colPosIn;
     connect trajectoryA -> timeCutoffFilter.trajectoryInA;
     connect trajectoryB -> timeCutoffFilter.trajectoryInB;

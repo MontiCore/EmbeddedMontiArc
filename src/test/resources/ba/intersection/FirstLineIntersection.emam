@@ -6,8 +6,8 @@ component FirstLineIntersection<N1 m1 = 9, N1 m2 = 45>{
           in Q^{2,1} pointsIn[m2],
 
           out B collisionOut,
-          out Z linexA,
-          out Z linexB,
+          out Z lIndexA,
+          out Z lIndexB,
           out Q^{2,1} pos;
 
 	//TODO: bug: must not always be earliest crash pos
@@ -20,8 +20,8 @@ component FirstLineIntersection<N1 m1 = 9, N1 m2 = 45>{
             for j = i:m1
                 if found == false
                     if collisionIn(k)
-                        linexA = i;
-                        linexB = j;
+                        lIndexA = i;
+                        lIndexB = j;
                         pos = pointsIn(k);
                         found = true;
                     end

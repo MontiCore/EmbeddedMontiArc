@@ -7,7 +7,7 @@ component TrajectoryToLines<N1 m = 10, N1 m1 = 9>{
 
     implementation Math{
         for i = 1:m1
-            Q^{4,1} tmpLine;
+            Q^{4} tmpLine;
             tmpLine(1,1) = trajectoryIn(1,i);
             tmpLine(2,1) = trajectoryIn(2,i);
             tmpLine(3,1) = trajectoryIn(1,i+1);
