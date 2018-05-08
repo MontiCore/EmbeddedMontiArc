@@ -19,8 +19,8 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
     NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
     BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
     LoadCheckpointEntry implements ConfigEntry = name:"load_checkpoint" ":" value:BooleanValue;
+    NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
     OptimizerEntry implements ConfigEntry = name:"optimizer" ":" value:OptimizerValue;
-
 
     LRPolicyValue implements ConfigValue =(fixed:"fixed"
                                          | step:"step"
@@ -60,6 +60,7 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
 
     interface GeneralOptimizerEntry extends SGDEntry,AdamEntry,RmsPropEntry,AdaGradEntry,AdaDeltaEntry;
 
+    MinimumLearningRateEntry implements GeneralOptimizerEntry = name:"learning_rate_minimum" ":" value:NumberValue;
     LearningRateEntry implements GeneralOptimizerEntry = name:"learning_rate" ":" value:NumberValue;
     WeightDecayEntry implements GeneralOptimizerEntry = name:"weight_decay" ":" value:NumberValue;
     LRDecayEntry implements GeneralOptimizerEntry = name:"learning_rate_decay" ":" value:NumberValue;

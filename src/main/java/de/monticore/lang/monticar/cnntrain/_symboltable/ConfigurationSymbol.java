@@ -29,6 +29,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private NumEpochSymbol numEpoch;
     private BatchSizeSymbol batchSize;
     private LoadCheckpointSymbol loadCheckpoint;
+    private NormalizeSymbol normalize;
     private OptimizerSymbol optimizer;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
@@ -68,5 +69,14 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     public void setLoadCheckpoint(LoadCheckpointSymbol loadCheckpoint) {
         this.loadCheckpoint = loadCheckpoint;
     }
+
+    public NormalizeSymbol getNormalize() {
+        return normalize;
+    }
+
+    public void setNormalize(NormalizeSymbol normalize) {
+        this.normalize = normalize;
+    }
+
 
 }

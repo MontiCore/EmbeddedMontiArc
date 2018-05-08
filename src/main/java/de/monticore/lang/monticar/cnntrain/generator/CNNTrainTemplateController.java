@@ -97,6 +97,13 @@ public class CNNTrainTemplateController {
         return getConfiguration().getLoadCheckpoint();
     }
 
+    public NormalizeSymbol getNormalize() {
+        if (getConfiguration().getNormalize() == null) {
+            return null;
+        }
+        return getConfiguration().getNormalize();
+    }
+
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
             return null;

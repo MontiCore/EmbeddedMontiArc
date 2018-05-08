@@ -131,6 +131,18 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
          configuration.setLoadCheckpoint(symbol);
     }
 
+    @Override
+    public void endVisit(ASTNormalizeEntry node) {
+        NormalizeSymbol symbol = new NormalizeSymbol();
+        if (node.getValue().getTRUE().isPresent()){
+            symbol.setValue(true);
+        }
+        else if (node.getValue().getFALSE().isPresent()){
+            symbol.setValue(false);
+        }
+        configuration.setNormalize(symbol);
+    }
+
 
     @Override
     public void endVisit(ASTLRPolicyValue node) {
