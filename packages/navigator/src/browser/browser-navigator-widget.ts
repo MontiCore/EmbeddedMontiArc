@@ -16,6 +16,8 @@ import { h } from "@phosphor/virtualdom/lib";
 import { BrowserWorkspaceCommands } from "@elysium/workspace/lib/browser";
 import { SearchBoxFactory } from "@theia/navigator/lib/browser/search-box";
 import { FileNavigatorSearch } from "@theia/navigator/lib/browser/navigator-search";
+import { ApplicationShell } from "@theia/core/lib/browser/shell/application-shell";
+import { FileSystem } from "@theia/filesystem/lib/common/filesystem";
 
 @injectable()
 export class BrowserFileNavigatorWidget extends FileNavigatorWidget {
@@ -28,10 +30,13 @@ export class BrowserFileNavigatorWidget extends FileNavigatorWidget {
         @inject(WorkspaceService) protected readonly workspaceService: WorkspaceService,
         @inject(LabelProvider) protected readonly labelProvider: LabelProvider,
         @inject(FileNavigatorSearch) protected readonly navigatorSearch: FileNavigatorSearch,
-        @inject(SearchBoxFactory) protected readonly searchBoxFactory: SearchBoxFactory
+        @inject(SearchBoxFactory) protected readonly searchBoxFactory: SearchBoxFactory,
+        @inject(ApplicationShell) protected readonly shell: ApplicationShell,
+        @inject(FileSystem) protected readonly fileSystem: FileSystem
     ) {
         super(props, model, contextMenuRenderer, commandService, selectionService,
-            workspaceService, labelProvider, navigatorSearch, searchBoxFactory);
+            workspaceService, labelProvider, navigatorSearch, searchBoxFactory,
+            shell, fileSystem);
     }
 
     protected renderOpenWorkspaceDiv(): h.Child {

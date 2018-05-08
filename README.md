@@ -3,7 +3,7 @@
     <img src="doc/images/quote.svg" width="718"/>
 </p>
 <p align="center">
-    <img src="https://img.shields.io/badge/Theia_Version-43a963868cefe43106a637d67d9e958018a13b08-blue.svg?longCache=true&style=flat-square"/>
+    <img src="https://img.shields.io/badge/Theia_Version-8ab83bde790651b679dc212965b9eba871754214-blue.svg?longCache=true&style=flat-square"/>
 </p>
 <p align="center">
     <a href="https://travis-ci.org/EmbeddedMontiArc/Elysium">

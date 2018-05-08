@@ -320,11 +320,11 @@ export class FileSystemBrowser implements FileSystem {
 
     protected static readonly USER_HOME: string = '/';
 
-    public async getCurrentUserHome(): Promise<FileStat> {
+    public async getCurrentUserHome(): Promise<FileStat | undefined> {
         const uri = FileUri.create(FileSystemBrowser.USER_HOME).toString();
-        const exist = await this.exists(uri);
+        /*const exist = await this.exists(uri);
 
-        if (!exist) await fs.mkdirp(uri);
+        if (!exist) await fs.mkdirp(uri);*/
 
         return this.getFileStat(uri);
     }

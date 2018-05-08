@@ -22,9 +22,9 @@ export class FileSystemDashboard extends BaseDashboard {
     protected async resolveDashboardItems(): Promise<DashboardItem[]> {
         const items: DashboardItem[] = [];
         const home = await this.fileSystem.getCurrentUserHome();
-        const directory = await this.fileSystem.getFileStat(home.uri);
+        const directory = await this.fileSystem.getFileStat(home!.uri);
 
-        for (const child of directory.children!) {
+        for (const child of directory!.children!) {
             items.push(this.toDashboardItem(child));
         }
 

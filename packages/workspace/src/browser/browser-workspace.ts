@@ -25,7 +25,7 @@ export class WorkspaceBrowser implements WorkspaceServer {
 
         this.root = Promise.resolve(rootUri);
 
-        if (!rootUri) Widget.attach(this.widget, document.body);
+        if (!rootUri && !this.widget.isAttached) Widget.attach(this.widget, document.body);
     }
 
     public async getRoot(): Promise<string | undefined> {

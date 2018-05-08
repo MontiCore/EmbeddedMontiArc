@@ -54,7 +54,7 @@
 }
 
 .p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item:hover {
-    background-color:var(--theia-accent-color5);
+    background-color:var(--theia-menu-color2);
     cursor:pointer;
 }
 
@@ -64,7 +64,7 @@
     transform:translate(-7%,-50%) rotateZ(35deg);
     display:block;
     text-align:center;
-    text-shadow:var(--theia-ui-font-color5) 1px 2px;
+    text-shadow:var(--theia-ui-expand-button-color) 1px 2px;
     color:var(--theia-ui-font-color0);
 }
 

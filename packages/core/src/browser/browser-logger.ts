@@ -20,19 +20,19 @@ export class LoggerBrowser implements ILoggerServer {
         // NOOP
     }
 
-    public async setLogLevel(id: number, logLevel: number): Promise<void> {
+    public async setLogLevel(id: string, logLevel: number): Promise<void> {
         // NOOP
     }
 
-    public async getLogLevel(id: number): Promise<number> {
+    public async getLogLevel(id: string): Promise<number> {
         return LogLevel.DEBUG;
     }
 
-    public async log(id: number, logLevel: number, message: string, params: any[]): Promise<void> {
+    public async log(id: string, logLevel: number, message: string, params: any[]): Promise<void> {
         // NOOP
     }
 
-    public async child(obj: object): Promise<number> {
-        return 1;
+    public async child(name: string): Promise<void> {
+        // NOOP
     }
 }

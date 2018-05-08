@@ -14,7 +14,7 @@ const development = process.env.NODE_ENV === "development";
 const monacoEditorPath = development
     ? path.resolve(rootPath, "node_modules/monaco-editor-core/dev/vs")
     : path.resolve(rootPath, "node_modules/monaco-editor-core/min/vs");
-const monacoLanguagesPath = path.resolve(rootPath, "node_modules/monaco-languages/release");
+const monacoLanguagesPath = path.resolve(rootPath, "node_modules/monaco-languages/release/min");
 const monacoCssLanguagePath = path.resolve(rootPath, "node_modules/monaco-css/release/min");
 const monacoJsonLanguagePath = path.resolve(rootPath, "node_modules/monaco-json/release/min");
 const monacoHtmlLanguagePath = path.resolve(rootPath, "node_modules/monaco-html/release/min");
