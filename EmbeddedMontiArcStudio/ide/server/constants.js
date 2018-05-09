@@ -60,7 +60,6 @@ const BATCHES = {};
 
 BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
-BATCHES.DISTR_SIM  = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
