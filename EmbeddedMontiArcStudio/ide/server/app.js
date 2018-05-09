@@ -52,6 +52,15 @@ App.post("/services/autopilot/simulate", function(request, response) {
     AutoPilotSimulation.start(onStart);
 });
 
+App.post("/services/autopilot/simulate-distr", function(request, response) {
+	function onStart() {
+        Chrome.open(URLS.AUTOPILOT.DISTR_SIM);
+        response.end();
+    }
+
+    AutoPilotSimulation.startDistr(onStart);
+});
+
 App.post("/services/autopilot/visualize", function(request, response) {
 	function onExecuted() {
 		Chrome.open(URLS.SHARED + "/v/de.rwth.armin.modeling.autopilot.autopilot.html");
@@ -121,10 +130,10 @@ App.post("/services/autopilot/viewverification/all", function(request, response)
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
 			}
-		}  
+		}
 		else {
 			alert('No matching files found');
-		} 
+		}
 		response.end();
 	}
 
@@ -160,13 +169,13 @@ App.post("/services/autopilot/viewverification/single", function(request, respon
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
 			}
-		}  
+		}
 		else {
 			alert('No matching files found');
-		} 
+		}
 		response.end();
     }
-	
+
     AutoPilotVerification.execute("model\\autopilot" + body.name.replace(/\//g, "\\"), onExecuted);
 });
 

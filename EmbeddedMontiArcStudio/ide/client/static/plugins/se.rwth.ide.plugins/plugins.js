@@ -1048,7 +1048,6 @@ var plugins = [
     "plugins/se.rwth.api.switch/switch",
     "plugins/se.rwth.api.ide/ide",
 	"plugins/se.rwth.simulate/simulate",
-    "plugins/se.rwth.simulate-distr/simulate-distr",
     "plugins/se.rwth.visualize/visualize",
     "plugins/se.rwth.report/report",
     "plugins/se.rwth.reportWithStreams/reportWithStreams",

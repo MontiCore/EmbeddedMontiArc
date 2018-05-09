@@ -16,7 +16,7 @@ define(function(require, exports, module) {
 
         var loaded = false;
 		var messageIndex = -1;
-		
+
 		function onSimulateResponse() {
 			UICustom.done(messageIndex);
 		}
@@ -30,9 +30,23 @@ define(function(require, exports, module) {
                 "method": "post"
             }).then(onSimulateResponse);
 		}
-		
+
+        function onUpdatedDistr() {
+            var project = localStorage.getItem("reponame").toLowerCase();
+
+            messageIndex = UICustom.message("Starting Distributed Simulation - This might take a minute...");
+
+            window.fetch("/services/" + project + "/simulate-distr", {
+                "method": "post"
+            }).then(onSimulateResponse);
+		}
+
 		function onClick() {
 			ModelsUpdater.update(onUpdated);
+		}
+
+        function onClickDistr() {
+			ModelsUpdater.update(onUpdatedDistr);
 		}
 
         function onLoad() {
@@ -53,8 +67,20 @@ define(function(require, exports, module) {
                     "visible": true
                 });
 
+                var playDistrLabel = new UI.label({
+                    "class": "icon-play distr",
+                    "height": 14,
+                    "width": 22,
+                    "tooltip": "Execute Model in Distributed Simulator",
+                    "visible": true
+                });
+
 				playLabel.addEventListener("click", onClick);
                 UI.insertByIndex(parent, playLabel, 0, plugin);
+                UI.insertByIndex(parent, backDivider, 10, plugin);
+
+                playDistrLabel.addEventListener("click", onClickDistr);
+                UI.insertByIndex(parent, playDistrLabel, 0, plugin);
                 UI.insertByIndex(parent, backDivider, 10, plugin);
             }
         }

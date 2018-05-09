@@ -4,3 +4,7 @@
 	cursor:pointer !important;
 	top:-1px;
 }
+.icon-play.distr {
+    background:url("../images/play-distr.png") no-repeat center;
+    background-size:100% 100%;
+}
