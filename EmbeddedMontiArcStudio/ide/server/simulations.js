@@ -66,7 +66,7 @@ class AutoPilotSimulation {
             }
         };
 
-        const process = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
+        const process = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":8080"]).on("exit", onNetstatExit);
 
         process.stdout.on("data", onNetstatOut);
     }
