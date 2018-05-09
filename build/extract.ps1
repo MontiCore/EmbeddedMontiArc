@@ -1,6 +1,5 @@
-  
 $dir = $ext        
-# download new dependencies if dependencies.txt has changed
+
 if(!(Test-Path -path $ext)) {
   New-Item -ItemType directory -Path $ext
 }        
@@ -20,11 +19,11 @@ foreach($line in Get-Content "..\dependencies.txt") {
         $link = $line.Remove(0,3)
 
         # if it is a zip extract to dir
-        if($link -match '[a-zA-Z0-9\-\.]+\.zip'){
+        if($link -match '[a-zA-Z0-9\-\._]+\.zip'){
             $filename = $dl + $matches[0]
 
-            "Extracting " + $filename + " to " + $dir
-            .\7za.exe e $filename -oc:$dir
+           "Extracting " + $filename + " to " + $dir
+           &$7z x -aoa $filename $("-o" + $build + $dir) | Out-Null
         }
     }
 } 
