@@ -1,1 +1,0 @@
-Powershell.exe -noexit -executionpolicy remotesigned -File  .\build.ps1

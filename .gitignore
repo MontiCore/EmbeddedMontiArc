@@ -22,5 +22,6 @@ tests-cpp/**
 build/extracted/**
 build/download/**
 build/EMAStudio/**
-build/7za.exe
+build/7z/**
+build/curl/**
 build/EmbeddedMontiArcStudio.exe
