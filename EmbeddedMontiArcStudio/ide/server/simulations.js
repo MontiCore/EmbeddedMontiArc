@@ -66,81 +66,83 @@ class AutoPilotSimulation {
             }
         };
 
-        const process = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":8080"]).on("exit", onNetstatExit);
+        const process = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
 
         process.stdout.on("data", onNetstatOut);
     }
 
-    startDistr(callback) {
-        let process = null;
+	startDistr(callback) {
+		let process = null;
 
-        const onSimDone => () {
-            this.logger.info("Simulation servers stopped!");
-        }
+		const onSimDone = () => {
+			this.logger.info("Simulation servers stopped!");
+		}
 
-        const onStdOut = (buffer) => {
+		const onStdOut = (buffer) => {
             const data = buffer.toString();
 
             if(data.indexOf("BlueBox-2X Service") > -1) {
-                this.logger.info("...Simulation server has been started.");
+                this.logger.info("Simulation server has been started.");
                 process.stdout.removeListener("data", onStdOut);
                 callback();
-            }else if(data.indexOf("Room removed") > -1) {
-                this.stopDistr(onSimDone);
-            }
+            }else if(data.indexOf("User disconnected") > -1) {
+				this.stopDistr(onSimDone);
+			}
         };
 
         const onTimeout = () => {
-            this.logger.info("Starting Simulation...");
+            this.logger.info("Starting Distributed Simulation...");
             process = Process.spawn(BATCHES.AUTOPILOT.SIMULATION.START_DISTR, [], {
                 cwd: Path.resolve(PATHS.SCRIPTS, "autopilot")
             });
-            process.stdout.on("data", onStdOut);
+			process.stdout.on("data", onStdOut);
         };
 
         const onStop = () => {
             setTimeout(onTimeout, 3000);
         };
 
-        //stop any previous server instances, if such exists, before launching a new server intance
+		//stop previous server instance if existing, before launching a new server instance
         this.stopDistr(onStop);
-    }
+	}
 
-    stopDistr(callback) {
-        let buffer = "";
-
-        const onTaskkillExit = () => {
-            callback();
-        };
+	stopDistr(callback) {
+		let prToKill = [];
 
         const onNetstatOut = (chunk) => {
-            buffer = chunk.toString();
+            let buffer = chunk.toString();
+			const inputs = buffer.split("\r\n");
+			//retrieve the first and last pids
+			let first = inputs[0] || "";
+			let last = "";
+			for(let i=0; i<inputs.length; ++i)
+				if(inputs[i].length > 0) last = inputs[i]; //keep last non-empty input
+
+			//always stop first process, except for the DB (port 5432)
+			const inp = first.match(/:5432/) ? last : first;
+            const matches = inp.match(/.+?(\d+)$/);
+
+			//save process ID to be killed
+			if(matches && matches[1] !== "0")
+				prToKill.push(matches[1]);
         };
 
         const onNetstatExit = () => {
-            //kill latest process
-            const inputs = buffer.split("\r\n");
-            let input = "";
-            for(let i=0; i<inputs.length; ++i)
-                if(inputs[i].length > 0) input = inputs[i];
-
-            const matches = input.match(/.+?(\d+)$/);
-
-            if(matches && matches[1] !== "0") {
-                this.logger.info("Stopping server...");
-                Process.spawn("taskkill", ["/PID", matches[1], "/F"]).on("exit", onTaskkillExit);
-            } else {
-                callback();
-            }
+			while(prToKill.length > 0) {
+				let pid = prToKill.pop();
+				this.logger.info("Stopping Simulation Server..." + pid);
+                Process.spawn("taskkill", ["/PID", pid, "/F"]);
+			}
+            callback();
         };
 
-        const server = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
+		const server = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
         const db = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":5432"]).on("exit", onNetstatExit);
-        const rmi = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":10101"]).on("exit", onNetstatExit);
+		const rmi = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":10101"]).on("exit", onNetstatExit);
 
-        server.stdout.on("data", onNetstatOut);
+		server.stdout.on("data", onNetstatOut);
         db.stdout.on("data", onNetstatOut);
-        rmi.stdout.on("data", onNetstatOut);
+		rmi.stdout.on("data", onNetstatOut);
     }
 }
 
