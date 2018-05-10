@@ -9,3 +9,5 @@ export * from "./connection-status-service";
 export * from "./dialogs";
 
 export * from "./messaging";
+export * from "./window";
+export * from "./history";

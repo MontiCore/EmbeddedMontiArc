@@ -12,7 +12,7 @@ import { FileSystemDashboardWidget } from "@elysium/dashboard/lib/browser";
 import { Widget } from "@theia/core/lib/browser";
 
 @injectable()
-export class WorkspaceBrowser implements WorkspaceServer {
+export class BrowserWorkspace implements WorkspaceServer {
     @inject(FileSystemDashboardWidget) protected readonly widget: FileSystemDashboardWidget;
 
     protected root: Promise<string | undefined>;

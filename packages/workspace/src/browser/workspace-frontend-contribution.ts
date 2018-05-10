@@ -11,7 +11,8 @@ import { FileDialogFactory } from '@theia/filesystem/lib/browser';
 import { FileSystem } from '@theia/filesystem/lib/common';
 import { WorkspaceCommands } from "@theia/workspace/lib/browser/workspace-commands";
 import { WorkspaceFrontendContribution, WorkspaceService } from "@theia/workspace/lib/browser";
-import { ExtendedWindowService } from "@elysium/core/lib/browser/window/window-service";
+import { ExtendedWindowService } from "@elysium/core/lib/browser/window";
+import URI from "@theia/core/lib/common/uri";
 
 @injectable()
 export class BrowserWorkspaceFrontendContribution extends WorkspaceFrontendContribution implements CommandContribution, MenuContribution {
@@ -39,6 +40,9 @@ export class BrowserWorkspaceFrontendContribution extends WorkspaceFrontendContr
     }
 
     public handleCommand(): void {
-        this.windowService.redirectWindow('/');
+        const uri = new URI(window.location.href).withoutQuery();
+        const url = uri.toString();
+
+        this.windowService.redirectWindow(url);
     }
 }

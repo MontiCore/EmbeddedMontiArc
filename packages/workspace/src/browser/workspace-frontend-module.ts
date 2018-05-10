@@ -8,7 +8,7 @@ import { ContainerModule } from "inversify";
 import { BrowserWorkspaceContribution } from "./browser-workspace-contribution";
 import {CommandContribution, MenuContribution} from "@theia/core/lib/common";
 import { WorkspaceServer } from "@theia/workspace/lib/common";
-import { WorkspaceBrowser } from "./browser-workspace";
+import { BrowserWorkspace } from "./browser-workspace";
 import { WorkspaceFrontendContribution } from "@theia/workspace/lib/browser";
 import { BrowserWorkspaceFrontendContribution } from "./workspace-frontend-contribution";
 
@@ -18,7 +18,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         ctx => ctx.container.get(BrowserWorkspaceContribution)
     ).inSingletonScope();
 
-    rebind(WorkspaceServer).to(WorkspaceBrowser);
+    rebind(WorkspaceServer).to(BrowserWorkspace);
 
     bind(BrowserWorkspaceFrontendContribution).toSelf().inSingletonScope();
     rebind(WorkspaceFrontendContribution).to(BrowserWorkspaceFrontendContribution).inSingletonScope();
