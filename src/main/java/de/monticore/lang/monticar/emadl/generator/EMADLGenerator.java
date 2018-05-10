@@ -74,11 +74,21 @@ public class EMADLGenerator {
     }
 
     public void setModelsPath(String modelsPath) {
-        this.modelsPath = modelsPath;
+        if (!(modelsPath.substring(modelsPath.length() - 1).equals("/"))){
+            this.modelsPath = modelsPath + "/";
+        }
+        else {
+            this.modelsPath = modelsPath;
+        }
     }
 
     public void setGenerationTargetPath(String generationTargetPath){
-        getEmamGen().setGenerationTargetPath(generationTargetPath);
+        if (!(generationTargetPath.substring(generationTargetPath.length() - 1).equals("/"))){
+            getEmamGen().setGenerationTargetPath(generationTargetPath + "/");
+        }
+        else {
+            getEmamGen().setGenerationTargetPath(generationTargetPath);
+        }
     }
 
     public String getGenerationTargetPath(){
@@ -279,7 +289,7 @@ public class EMADLGenerator {
         String configFilename;
         String mainComponentConfigFilename = mainComponentName.replaceAll("\\.", "/");
         String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
-        String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_" + instance.getName();
+        String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_"  + instance.getName();
         if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
             configFilename = instanceConfigFilename;
         }
@@ -292,7 +302,9 @@ public class EMADLGenerator {
         else{
             Log.error("Missing configuration file. " +
                     "Could not find a file with any of the following names (only one needed): '"
-                    + instanceConfigFilename + ".cnnt', '" + componentConfigFilename + ".cnnt', '" + mainComponentConfigFilename + ".cnnt'." +
+                    + getModelsPath() + instanceConfigFilename + ".cnnt', '"
+                    + getModelsPath() + componentConfigFilename + ".cnnt', '"
+                    + getModelsPath() + mainComponentConfigFilename + ".cnnt'." +
                     " These files denote respectively the configuration for the single instance, the component or the whole system.");
             return "";
         }
@@ -300,7 +312,7 @@ public class EMADLGenerator {
         //should be removed when CNNTrain supports packages
         List<String> names = Splitter.on("/").splitToList(configFilename);
         configFilename = names.get(names.size()-1);
-        Path modelPath = Paths.get(getModelsPath() + "/" + Joiner.on("/").join(names.subList(0,names.size()-1)));
+        Path modelPath = Paths.get(getModelsPath() + Joiner.on("/").join(names.subList(0,names.size()-1)));
         //
 
         CNNTrainGenerator cnnTrainGenerator =  new CNNTrainGenerator();
