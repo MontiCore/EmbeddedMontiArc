@@ -12,6 +12,7 @@ contains the modules which are either overwriting or extending their counterpart
 * [**FileSystem**](filesystem)
 * [**Languages**](languages)
 * [**Messages**](messages)
+* [**Mini-Browser**](mini-browser)
 * [**Monaco**](monaco)
 * [**Navigator**](navigator)
 * [**Workspace**](workspace)
