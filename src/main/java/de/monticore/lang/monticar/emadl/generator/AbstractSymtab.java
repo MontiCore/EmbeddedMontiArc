@@ -45,7 +45,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class AbstractSymtab {
-    protected static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
+    public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);
         TaggingResolver tagging = new TaggingResolver(scope, Arrays.asList(modelPath));
         TagMinMaxTagSchema.registerTagTypes(tagging);

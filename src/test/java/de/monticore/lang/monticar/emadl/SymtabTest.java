@@ -45,30 +45,17 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testParsing() throws Exception {
         EMADLParser parser = new EMADLParser();
-        assertTrue(parser.parse("src/test/resources/Alexnet.emadl").isPresent());
+        assertTrue(parser.parse("src/test/resources/models/Alexnet.emadl").isPresent());
     }
 
     @Test
-    public void testAlexnet(){
-        Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol a = symTab.<ComponentSymbol>resolve("Alexnet", ComponentSymbol.KIND).orElse(null);
-        ExpandedComponentInstanceSymbol c = symTab.<ExpandedComponentInstanceSymbol>resolve("alexnet", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-
-        /*e.getArchitectureConstructor().resolveArchitecture();
-        ArchitectureSymbol arch = e.getArchitectureConstructor().getArchitecture();
-        String asds = new CNNArchTemplateController(arch).include(arch.getBody());*/
-
-        //....getComponentType().getReferencedSymbol().getAstNode()
-        assertNotNull(a);
-    }
-
     @Ignore
-    @Test
-    public void test2(){
-        Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol a = symTab.<ExpandedComponentInstanceSymbol>resolve("mnist", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-
+    public void testAlexnet(){
+        Scope symTab = createSymTab("src/test/resources/models");
+        ComponentSymbol a = symTab.<ComponentSymbol>resolve("ResNet34", ComponentSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol c = symTab.<ExpandedComponentInstanceSymbol>resolve("resNet34", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(a);
     }
+
 
 }

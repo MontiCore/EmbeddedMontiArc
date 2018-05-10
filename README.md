@@ -3,42 +3,38 @@
 [![Build Status](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master)
 
 # EmbeddedMontiArcDL
-**work in progress**
-##Examples
-```
-package mnist;
+Embeds [CNNArch](https://github.com/EmbeddedMontiArc/CNNArchLang), CNNTrain and MontiMath into EmbeddedMontiArc.
 
-component SimpleCNN{
+## Examples
+In the following, we list common CNN architectures that are modeled inside an EMA component.
+```
+component LeNet{
     ports in Z(0:255)^{1,28,28} data,
           out Q(0:1)^{10} predictions;
 
     implementation CNN {
-
         data ->
         Convolution(kernel=(5,5), channels=20) ->
         Tanh() ->
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
-        Convolution(kernel=(5,5), channels=20) ->
+        Convolution(kernel=(5,5), channels=50) ->
         Tanh() ->
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
-        FullyConnected(units=1000) ->
+        FullyConnected(units=500) ->
         Tanh() ->
         Dropout() ->
         FullyConnected(units=10) ->
         Softmax() ->
         predictions
-
     }
 }
 ```
-
 ```
-component VGG16{
+component VGG16(Z(2:oo) classes){
     ports in Z(0:255)^{3, 224, 224} image,
-         out Q(0:1)^{1000} predictions;
+         out Q(0:1)^{classes} predictions;
 
     implementation CNN {
-    
         def conv(filter, channels){
             Convolution(kernel=(filter,filter), channels=channels) ->
             Relu()
@@ -48,7 +44,6 @@ component VGG16{
             Relu() ->
             Dropout(p=0.5)
         }
-    
         image ->
         conv(filter=3, channels=64, ->=2) ->
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
@@ -62,17 +57,16 @@ component VGG16{
         Pooling(pool_type="max", kernel=(2,2), stride=(2,2)) ->
         fc() ->
         fc() ->
-        FullyConnected(units=1000) ->
+        FullyConnected(units=classes) ->
         Softmax() ->
         predictions
     }
 }
 ```
-
 ```
-component ResNet34{
+component ResNet34(Z(2:oo) classes){
     ports in Z(0:255)^{3, 224, 224} image,
-         out Q(0:1)^{1000} predictions;
+         out Q(0:1)^{classes} predictions;
 
     implementation CNN {
         def conv(filter, channels, stride=1, act=true){
@@ -106,20 +100,18 @@ component ResNet34{
         resLayer(channels=512, stride=2) ->
         resLayer(channels=512, ->=2) ->
         GlobalPooling(pool_type="avg") ->
-        FullyConnected(units=1000) ->
+        FullyConnected(units=classes) ->
         Softmax() ->
         predictions
     }
 }
 ```
-
 ```
-component Alexnet{
+component Alexnet(Z(2:oo) classes){
     ports in Z(0:255)^{3, 224, 224} image,
-          out Q(0:1)^{10} predictions;
+          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
-
         def split1(i){
             [i] ->
             Convolution(kernel=(5,5), channels=128) ->
@@ -140,7 +132,6 @@ component Alexnet{
             Relu() ->
             Dropout()
         }
-
         image ->
         Convolution(kernel=(11,11), channels=96, stride=(4,4), padding="no_loss") ->
         Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
@@ -155,21 +146,18 @@ component Alexnet{
         split2(i=[0|1]) ->
         Concatenate() ->
         fc(->=2) ->
-        FullyConnected(units=10) ->
+        FullyConnected(units=classes) ->
         Softmax() ->
         predictions
-
     }
 }
 ```
-
 ```
-component ResNeXt50{
+component ResNeXt50(Z(2:oo) classes){
     ports in Z(0:255)^{3, 224, 224} image,
-         out Q(0:1)^{1000} predictions;
+         out Q(0:1)^{classes} predictions;
 
     implementation CNN {
-    
         def conv(filter, channels, stride=1, act=true){
             Convolution(kernel=filter, channels=channels, stride=(stride,stride)) ->
             BatchNorm() ->
@@ -209,7 +197,7 @@ component ResNeXt50{
         resLayer(innerChannels=32, outChannels=2048, stride=2) ->
         resLayer(innerChannels=32, outChannels=2048, -> = 2) ->
         GlobalPooling(pool_type="avg") ->
-        FullyConnected(units=1000) ->
+        FullyConnected(units=classes) ->
         Softmax() ->
         predictions
     }

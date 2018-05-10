@@ -1,4 +1,4 @@
-package mnist;
+package cifar10;
 
 component ArgMax(Z(1:oo) n){
     ports in Q^{n} inputVector,

@@ -1,4 +1,4 @@
-configuration AlexnetConfig{
+configuration Alexnet{
      num_epoch : 100
      batch_size : 500
      optimizer : adam{

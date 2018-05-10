@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl.cocos;
 
+import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,8 +30,6 @@ import java.io.IOException;
 import static de.monticore.lang.monticar.emadl.ParserTest.ENABLE_FAIL_QUICK;
 
 public class AllCoCoTest extends AbstractCoCoTest {
-    String baseDir="src/test/resources";
-
     @Before
     public void setUp() {
         // ensure an empty log
@@ -39,26 +38,27 @@ public class AllCoCoTest extends AbstractCoCoTest {
     }
 
     @Test
-    public void testCoCosSimulator() throws IOException {
-        checkValid("", "mnist.MnistClassifier");
-        checkValid("", "Alexnet");
-        checkValid("", "VGG16");
-        checkValid("", "ThreeInputCNN_M14");
-        checkValid("", "MultipleOutputs");
-        checkValid("", "ResNet34");
-        checkValid("", "ResNet152");
-        checkValid("", "ResNeXt50");
+    public void testCoCosValid(){
+        checkValid("models", "cifar10.Cifar10Classifier");
+        checkValid("models", "Alexnet");
+        checkValid("models", "VGG16");
+        checkValid("models", "ThreeInputCNN_M14");
+        checkValid("models", "MultipleOutputs");
+        checkValid("models", "ResNet34");
+        checkValid("models", "ResNet152");
+        checkValid("models", "ResNeXt50");
 
-        checkValid("", "simulator.MainController");
+        checkValid("models", "simulator.MainController");
 
-        checkValid("", "Add");
-        checkValid("", "simulator.SteeringAngleCalculator");
+        checkValid("models", "Add");
+        checkValid("models", "simulator.SteeringAngleCalculator");
+    }
 
-        /*checkInvalid(new EMADLCoCoChecker().addCoCo(new CheckArchitectureIO()),
-                new EMADLCoCoChecker(),
-                "", "InvalidIOAndArgs",
-                new ExpectedErrorInfo(2, ErrorCodes.MISSING_IO_CODE, ErrorCodes.UNKNOWN_IO_CODE));
-*/
+    @Test
+    public void testInvalidLayerInput(){
+        checkInvalid("models",
+                "InvalidLayerInput",
+                new ExpectedErrorInfo(1, ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE));
     }
 
 }

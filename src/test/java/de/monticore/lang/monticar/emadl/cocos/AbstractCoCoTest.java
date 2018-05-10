@@ -78,26 +78,17 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
         new ExpectedErrorInfo().checkOnlyExpectedPresent(Log.getFindings());
     }
 
-    /**
-     * Runs coco checks on the model with two different coco sets: Once with all cocos, checking that
-     * the expected errors are present; once only with the given cocos, checking that no addditional
-     * errors are present.
-     */
-    /*protected static void checkInvalid(EMADLCoCoChecker cocos, ExpandedComponentInstanceSymbol instance,
+
+    protected static void checkInvalid(String modelPath,
+                                       String model,
                                        ExpectedErrorInfo expectedErrors) {
 
         // check whether all the expected errors are present when using all cocos
         Log.getFindings().clear();
-        EMADLCocos.checkAll(instance);
+        EMADLCocos.checkAll(getComponentInstance(modelPath, model));
         expectedErrors.checkExpectedPresent(Log.getFindings(), "Got no findings when checking all "
                 + "cocos. Did you forget to add the new coco to MontiArcCocos?");
-
-        // check whether only the expected errors are present when using only the given cocos
-        Log.getFindings().clear();
-        cocos.checkAll(instance);
-        expectedErrors.checkOnlyExpectedPresent(Log.getFindings(), "Got no findings when checking only "
-                + "the given coco. Did you pass an empty coco checker?");
-    }*/
+    }
 
     protected static class ExpectedErrorInfo {
         private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("x[0-9A-F]{5}");

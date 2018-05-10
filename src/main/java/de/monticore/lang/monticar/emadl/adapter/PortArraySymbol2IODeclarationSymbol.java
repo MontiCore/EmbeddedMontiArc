@@ -61,7 +61,7 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         if (shape.size() >= 3){
             type.setWidthIndex(2);
         }
-        type.setElementType(getElementType(ps));
+        type.setDomain(getElementType(ps));
         type.setDimensionSymbols(shape);
 
         setType(type);

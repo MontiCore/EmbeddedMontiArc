@@ -27,11 +27,11 @@ import org.apache.commons.cli.*;
 
 import java.io.IOException;
 
-public class GeneratorCli{
+public class EMADLGeneratorCli {
 
     public static final Option OPTION_MODELS_PATH = Option.builder("m")
             .longOpt("models-dir")
-            .desc("full path to directory with EMAM models e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\src\\main\\emam")
+            .desc("full path to directory with EMADL models e.g. C:\\Users\\vpupkin\\proj\\MyAwesomeAutopilot\\src\\main\\emam")
             .hasArg(true)
             .required(true)
             .build();
@@ -50,7 +50,7 @@ public class GeneratorCli{
             .required(false)
             .build();
 
-    private GeneratorCli() {
+    private EMADLGeneratorCli() {
     }
 
     public static void main(String[] args) {
@@ -85,7 +85,7 @@ public class GeneratorCli{
     private static void runGenerator(CommandLine cliArgs) {
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        Generator generator = new Generator();
+        EMADLGenerator generator = new EMADLGenerator();
         if (outputPath != null){
             generator.setGenerationTargetPath(outputPath);
         }

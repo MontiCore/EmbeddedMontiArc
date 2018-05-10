@@ -41,11 +41,7 @@ import static junit.framework.TestCase.assertTrue;
 public class ParserTest {
 
     public static final boolean ENABLE_FAIL_QUICK = false;
-    private static List<String> expectedParseErrorModels = Arrays.asList(
-            //names of the input port, output port and architecture are not in the correct order
-            "src/test/resources/MissingIO.emadl"
-            )
-
+    private static List<String> expectedParseErrorModels = new ArrayList<String>()
             .stream().map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());
 
@@ -67,7 +63,7 @@ public class ParserTest {
 
     private void test(String fileEnding) throws IOException {
         ParseTest parserTest = new ParseTest("." + fileEnding);
-        Files.walkFileTree(Paths.get("src/test/resources"), parserTest);
+        Files.walkFileTree(Paths.get("src/test/resources/models"), parserTest);
 
         if (!parserTest.getModelsInError().isEmpty()) {
             Log.debug("Models in error", "ParserTest");

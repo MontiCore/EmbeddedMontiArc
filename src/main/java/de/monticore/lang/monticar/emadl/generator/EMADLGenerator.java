@@ -52,18 +52,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
-public class Generator {
+public class EMADLGenerator {
 
     public static final String CNN_HELPER = "CNNTranslator";
     public static final String CNN_TRAINER = "CNNTrainer";
 
     private GeneratorCPP emamGen;
 
-    public Generator() {
+    public EMADLGenerator() {
         emamGen = new GeneratorCPP();
         emamGen.useArmadilloBackend();
         emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
@@ -91,11 +89,38 @@ public class Generator {
         return emamGen;
     }
 
+    public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
+        setModelsPath( modelPath );
+        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+        ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
+
+        List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
+        String componentName = splitName.get(splitName.size() - 1);
+        String instanceName = componentName.substring(0, 1).toLowerCase() + componentName.substring(1);
+
+        if (component == null){
+            Log.error("Component with name '" + componentName + "' does not exist.");
+            System.exit(1);
+        }
+
+        ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
+
+        generateFiles(symtab, instance, symtab);
+    }
+
+    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
+        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+
+        for (FileContent fileContent : fileContents) {
+            emamGen.generateFile(fileContent);
+        }
+    }
+
     public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
         List<FileContent> fileContents = new ArrayList<>();
         Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
 
-        generateStrings(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
+        generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
         fileContents.add(generateCNNTrainer(allInstances, componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_")));
         fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
@@ -113,11 +138,11 @@ public class Generator {
         return fileContents;
     }
 
-    protected void generateStrings(List<FileContent> fileContents,
-                                Set<ExpandedComponentInstanceSymbol> allInstances,
-                                TaggingResolver taggingResolver,
-                                ExpandedComponentInstanceSymbol componentInstanceSymbol,
-                                Scope symtab){
+    protected void generateComponent(List<FileContent> fileContents,
+                                     Set<ExpandedComponentInstanceSymbol> allInstances,
+                                     TaggingResolver taggingResolver,
+                                     ExpandedComponentInstanceSymbol componentInstanceSymbol,
+                                     Scope symtab){
         allInstances.add(componentInstanceSymbol);
         ASTComponent astComponent = (ASTComponent) componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().get();
 
@@ -218,7 +243,7 @@ public class Generator {
                 Log.info(generateComponentInstance + "", "Bool:");
             }
             if (generateComponentInstance) {
-                generateStrings(fileContents, allInstances, taggingResolver, instanceSymbol, symtab);
+                generateComponent(fileContents, allInstances, taggingResolver, instanceSymbol, symtab);
             }
         }
     }
@@ -252,9 +277,9 @@ public class Generator {
 
     private String getTrainingParamsForComponent(String mainComponentName, ComponentSymbol component, ExpandedComponentInstanceSymbol instance) {
         String configFilename;
-        String mainComponentConfigFilename = mainComponentName + "Config";
-        String componentConfigFilename = component.getFullName().replaceAll("\\.", "/") + "Config";
-        String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_" + instance.getName() + "Config";
+        String mainComponentConfigFilename = mainComponentName.replaceAll("\\.", "/");
+        String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
+        String instanceConfigFilename = component.getFullName().replaceAll("\\.", "/") + "_" + instance.getName();
         if (Files.exists(Paths.get( getModelsPath() + instanceConfigFilename + ".cnnt"))) {
             configFilename = instanceConfigFilename;
         }
@@ -283,33 +308,6 @@ public class Generator {
         GlobalScope trainScope = new GlobalScope(mp, new CNNTrainLanguage());
         Map.Entry<String, String> fileContents = cnnTrainGenerator.generateFileContent( trainScope, configFilename );
         return fileContents.getValue();
-    }
-
-    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
-
-        for (FileContent fileContent : fileContents) {
-            emamGen.generateFile(fileContent);
-        }
-    }
-
-    public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
-        setModelsPath( modelPath );
-        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
-        ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
-
-        List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
-        String componentName = splitName.get(splitName.size() - 1);
-        String instanceName = componentName.substring(0, 1).toLowerCase() + componentName.substring(1);
-
-        if (component == null){
-            Log.error("Component with name '" + componentName + "' does not exist.");
-            System.exit(1);
-        }
-
-        ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
-
-        generateFiles(symtab, instance, symtab);
     }
 
     protected String processTemplate(Map<String, Object> ftlContext, String templateNameWithoutEnding){

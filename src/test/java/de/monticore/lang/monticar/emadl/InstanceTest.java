@@ -22,8 +22,8 @@ package de.monticore.lang.monticar.emadl;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.CompositeLayerSymbol;
-import de.monticore.lang.monticar.cnnarch._symboltable.MethodLayerSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
+import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class InstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testInstances(){
-        Scope symtab = createSymTab("src/test/resources/");
+        Scope symtab = createSymTab("src/test/resources/models/");
         ExpandedComponentInstanceSymbol mainInstance = symtab.<ExpandedComponentInstanceSymbol>
                 resolve("InstanceTest.mainB", ExpandedComponentInstanceSymbol.KIND).get();
         ExpandedComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<ExpandedComponentInstanceSymbol>
@@ -64,8 +64,8 @@ public class InstanceTest extends AbstractSymtabTest {
         arch1.resolve();
         arch2.resolve();
 
-        int convChannels1 = ((MethodLayerSymbol)((CompositeLayerSymbol)arch1.getBody()).getLayers().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
-        int convChannels2 = ((MethodLayerSymbol)((CompositeLayerSymbol)arch2.getBody()).getLayers().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+        int convChannels1 = ((LayerSymbol)((CompositeElementSymbol)arch1.getBody()).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
+        int convChannels2 = ((LayerSymbol)((CompositeElementSymbol)arch2.getBody()).getElements().get(1)).getArgument("channels").get().getRhs().getIntValue().get();
 
         assertEquals(20, convChannels1);
         assertEquals(40, convChannels2);
