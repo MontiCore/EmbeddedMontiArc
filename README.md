@@ -158,21 +158,17 @@ component ResNeXt50(Z(2:oo) classes){
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
-        def conv(filter, channels, stride=1, act=true){
-            Convolution(kernel=filter, channels=channels, stride=(stride,stride)) ->
+        def conv(kernel, channels, stride=1, act=true){
+            Convolution(kernel=(kernel,kernel), channels=channels, stride=(stride,stride)) ->
             BatchNorm() ->
             Relu(?=act)
         }
         def resGroup(innerChannels, outChannels, stride=1){
-            conv(filter=(1,1), channels=innerChannels) ->
-            conv(filter=(3,3), channels=innerChannels, stride=stride) ->
-            conv(filter=(1,1), channels=outChannels, act=false)
+            conv(kernel=1, channels=innerChannels) ->
+            conv(kernel=3, channels=innerChannels, stride=stride) ->
+            conv(kernel=1, channels=outChannels, act=false)
         }
-        def skip(outChannels, stride){
-            Convolution(kernel=(1,1), channels=outChannels, stride=(stride,stride)) ->
-            BatchNorm()
-        }
-        def resLayer(innerChannels, outChannels, stride=1, changedChannels=false){
+        def resLayer(innerChannels, outChannels, stride=1, addSkipConv=false){
             (
                 resGroup(innerChannels=innerChannels,
                          outChannels=outChannels,
@@ -180,21 +176,22 @@ component ResNeXt50(Z(2:oo) classes){
                          | = 32) ->
                 Add()
             |
-                skip(outChannels=outChannels, stride=stride, ? = stride!=1 || changedChannels)
+                conv(kernel=1, channels=outChannels, stride=stride, act=false, ? = addSkipConv)
             ) ->
             Add() ->
             Relu()
         }
-    
-        image ->
-        conv(filter=(7,7), channels=64, stride=2) ->
+
+        data ->
+        conv(kernel=7, channels=64, stride=2) ->
         Pooling(pool_type="max", kernel=(3,3), stride=(2,2)) ->
-        resLayer(innerChannels=4, outChannels=256, changedChannels=true, -> = 3) ->
-        resLayer(innerChannels=8, outChannels=512, stride=2) ->
+        resLayer(innerChannels=4, outChannels=256, addSkipConv=true) ->
+        resLayer(innerChannels=4, outChannels=256, -> = 2) ->
+        resLayer(innerChannels=8, outChannels=512, stride=2, addSkipConv=true) ->
         resLayer(innerChannels=8, outChannels=512, -> = 3) ->
-        resLayer(innerChannels=16, outChannels=1024, stride=2) ->
+        resLayer(innerChannels=16, outChannels=1024, stride=2, addSkipConv=true) ->
         resLayer(innerChannels=16, outChannels=1024, -> = 5) ->
-        resLayer(innerChannels=32, outChannels=2048, stride=2) ->
+        resLayer(innerChannels=32, outChannels=2048, stride=2, addSkipConv=true) ->
         resLayer(innerChannels=32, outChannels=2048, -> = 2) ->
         GlobalPooling(pool_type="avg") ->
         FullyConnected(units=classes) ->
