@@ -1,6 +1,6 @@
 // add the following library files (contains the local path, and all zip url which need to be downloaded and unpacked in the local path
 //
-// if you need to update your library (e.g. new JAR file), then just upload it anywhere in a release at 
+// if you need to update your library (e.g. new JAR file), then just upload it anywhere in a release at
 //  https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/
 // and update the link here in this dependency file
 // please do not commit large JAR files in the github master branch
@@ -22,3 +22,9 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/reporting.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/viewverification.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/visualisation.zip
+
+* EmbeddedMontiArcStudio/distributed-simulator/
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/RMIModelServer.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/SmartFoxServer_2X.zip
+
