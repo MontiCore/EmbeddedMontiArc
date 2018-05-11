@@ -67,7 +67,6 @@ module.exports = Promise.resolve()
     .then(function () { return Promise.resolve(require('@elysium/embeddedmontiview/lib/browser/embeddedmontiview-frontend-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/filesystem/lib/browser/filesystem-frontend-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/languages/lib/browser/languages-frontend-module')).then(load) })
-    //.then(function () { return Promise.resolve(require('@elysium/initial/lib/browser/initial-frontend-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/macocoviz/lib/browser/macocoviz-frontend-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/messages/lib/browser/messages-frontend-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/mini-browser/lib/browser/mini-browser-frontend-module')).then(load) })
@@ -79,6 +78,7 @@ module.exports = Promise.resolve()
     .then(function () { return Promise.resolve(require('@elysium/ocl/lib/browser/ocl-frontend-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/se-logo/lib/browser/se-logo-module')).then(load) })
     .then(function () { return Promise.resolve(require('@elysium/streamunits/lib/browser/streamunits-frontend-module')).then(load) })
+    .then(function () { return Promise.resolve(require('@elysium/workspace-initiator/lib/browser/workspace-initiator-frontend-module')).then(load) })
     .then(start).catch(reason => {
         console.error('Failed to start the frontend application.');
         if (reason) {

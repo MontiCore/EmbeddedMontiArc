@@ -20,3 +20,4 @@ functionality to the IDE in the form of a plugin.
 * [**OCL**](ocl)
 * [**SE Logo**](se-logo)
 * [**StreamUnits**](streamunits)
+* [**Workspace-Initiator**](workspace-initiator)
