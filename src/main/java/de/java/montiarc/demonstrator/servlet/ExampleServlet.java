@@ -50,7 +50,7 @@ public class ExampleServlet extends HttpServlet {
         //Unzip works here, just read file from current dir
         // TODO: fix the problem with extracting an archive which contents a folder
         UnZip unZip = new UnZip();
-        unZip.unZipIt("incomingData/source.zip","incomingDataExtracted/");
+        unZip.unZipIt("incomingData/source.zip","incomingDataExtracted/simulator1");
 
         //Compile sources
 
