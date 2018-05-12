@@ -50,6 +50,8 @@ define(function(require, exports, module) {
 		}
 
         function onLoad() {
+            var project = localStorage.getItem("reponame").toLowerCase();
+
             if(loaded) {
                 return false;
             } else {
@@ -67,21 +69,23 @@ define(function(require, exports, module) {
                     "visible": true
                 });
 
-                var playDistrLabel = new UI.label({
-                    "class": "icon-play distr",
-                    "height": 14,
-                    "width": 22,
-                    "tooltip": "Execute Model in Distributed Simulator",
-                    "visible": true
-                });
-
 				playLabel.addEventListener("click", onClick);
                 UI.insertByIndex(parent, playLabel, 0, plugin);
                 UI.insertByIndex(parent, backDivider, 10, plugin);
 
-                playDistrLabel.addEventListener("click", onClickDistr);
-                UI.insertByIndex(parent, playDistrLabel, 0, plugin);
-                UI.insertByIndex(parent, backDivider, 10, plugin);
+                if(project == "autopilot") {
+                    var playDistrLabel = new UI.label({
+                        "class": "icon-play distr",
+                        "height": 14,
+                        "width": 22,
+                        "tooltip": "Execute Model in Distributed Simulator",
+                        "visible": true
+                    });
+
+                    playDistrLabel.addEventListener("click", onClickDistr);
+                    UI.insertByIndex(parent, playDistrLabel, 0, plugin);
+                    UI.insertByIndex(parent, backDivider, 10, plugin);
+                }
             }
         }
 
