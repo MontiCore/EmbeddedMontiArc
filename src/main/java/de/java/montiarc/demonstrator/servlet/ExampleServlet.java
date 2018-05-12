@@ -25,11 +25,9 @@ public class ExampleServlet extends HttpServlet {
 
 
         // Write down file to the disk
-        String fileName = this.generateName();
-
         new File("incomingData").mkdirs();
 
-        File saveFile = new File("incomingData/"+fileName+".zip");
+        File saveFile = new File("incomingData/source.zip");
         InputStream inputStream = request.getInputStream();
         FileOutputStream outputStream = new FileOutputStream(saveFile);
 
@@ -52,46 +50,19 @@ public class ExampleServlet extends HttpServlet {
         //Unzip works here, just read file from current dir
         // TODO: fix the problem with extracting an archive which contents a folder
         UnZip unZip = new UnZip();
-        unZip.unZipIt("incomingData/"+fileName+".zip","incomingDataExtracted/"+fileName);
+        unZip.unZipIt("incomingData/source.zip","incomingDataExtracted/");
 
-        // Compiling the wasm file
-//        // Measure time
-//        Instant start = Instant.now();
-//
-//        Runtime rt = Runtime.getRuntime();
-//        String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat"};
-//        Process proc = rt.exec(commands);
-//
-//        BufferedReader stdInput = new BufferedReader(new
-//                InputStreamReader(proc.getInputStream()));
-//
-//        BufferedReader stdError = new BufferedReader(new
-//                InputStreamReader(proc.getErrorStream()));
-//
-//        // read the output from the command
-//        System.out.println("Here is the standard output of the command:\n");
-//        String s = null;
-//        while ((s = stdInput.readLine()) != null) {
-//            System.out.println(s);
-//        }
-//
-//        // read any errors from the attempted command
-//        System.out.println("Here is the standard error of the command (if any):\n");
-//        while ((s = stdError.readLine()) != null) {
-//            System.out.println(s);
-//        }
-//
-//        Instant end = Instant.now();
-//        //System.out.println(Duration.between(start, end));
+        //Compile sources
 
-        // TODO: read compiled files and pack them into archive
+        compileEMAM();
+
+        //Read compiled files and pack them into archive
 
         ZipMultipleFiles zipOut = new ZipMultipleFiles();
 
-        // TODO: modify paths to the files
         ByteArrayOutputStream zipStream = zipOut.zipItToStream(
-                "/home/streug/code/demonstrator/mainController.wasm",
-                "/home/streug/code/demonstrator/mainController.js");
+                "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.wasm",
+                "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.js");
 
 //        Read data from file
 //        zipOut.zipItToFile(
@@ -132,5 +103,33 @@ public class ExampleServlet extends HttpServlet {
             file.delete();
         }
 
+    }
+
+    protected int compileEMAM() throws IOException {
+
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat"};
+        Process proc = rt.exec(commands);
+
+        BufferedReader stdInput = new BufferedReader(new
+                InputStreamReader(proc.getInputStream()));
+
+        BufferedReader stdError = new BufferedReader(new
+                InputStreamReader(proc.getErrorStream()));
+
+        // read the output from the command
+        System.out.println("Here is the standard output of the command:\n");
+        String s = null;
+        while ((s = stdInput.readLine()) != null) {
+            System.out.println(s);
+        }
+
+        // read any errors from the attempted command
+        System.out.println("Here is the standard error of the command (if any):\n");
+        while ((s = stdError.readLine()) != null) {
+            System.out.println(s);
+        }
+
+        return proc.exitValue();
     }
 }
