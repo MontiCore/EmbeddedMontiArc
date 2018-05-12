@@ -23,6 +23,8 @@ public class ExampleServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse resp)
             throws ServletException, IOException {
 
+        // Clean data from previous session
+        clearWorkspace(new File("outgoingData"));
 
         // Write down file to the disk
         new File("incomingData").mkdirs();
@@ -80,7 +82,7 @@ public class ExampleServlet extends HttpServlet {
         System.out.println("File sent back with size: " + zipStream.toByteArray().length);
 
         clearWorkspace(new File("incomingData"));
-        clearWorkspace(new File("incomingDataExtracted"));
+        clearWorkspace(new File("../emam2wasm/models"));
     }
 
     protected String generateName(){
