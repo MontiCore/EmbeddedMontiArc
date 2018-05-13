@@ -20,6 +20,13 @@ public class ExampleServlet extends HttpServlet {
     }
 
     @Override
+    protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doOptions(req, resp);
+        resp.addHeader("Access-Control-Allow-Origin","*");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse resp)
             throws ServletException, IOException {
 
