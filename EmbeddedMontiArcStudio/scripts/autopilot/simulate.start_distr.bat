@@ -5,9 +5,7 @@ call compile.bat
 
 pushd %~dp0
 cd %RMI%
-call mvn clean install
-timeout 3 > NUL
-start java -Djava.library.path=%RMI_PATH% -Djava.rmi.server.codebase=file:.\target\rmi-model-server-1.0.1.jar -Djava.rmi.server.hostname=127.0.0.1 -cp .\target\rmi-model-server-1.0.1.jar rwth.rmi.model.server.RMIServer
+start java -Djava.library.path=%RMI_PATH% -Djava.rmi.server.codebase=file:.\rmi-model-server-1.0.1.jar -Djava.rmi.server.hostname=127.0.0.1 -cp .\rmi-model-server-1.0.1.jar rwth.rmi.model.server.RMIServer
 popd
 
 start /b %PSQL%\PostgreSQLPortable.exe
