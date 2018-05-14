@@ -20,7 +20,7 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/nodejs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/precompiled.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/reporting.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/viewverification.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/visualisation.zip
 
 * EmbeddedMontiArcStudio/distributed-simulator/
