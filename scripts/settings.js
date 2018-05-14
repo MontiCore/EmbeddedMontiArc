@@ -35,7 +35,7 @@ const THEIA = {};
 
 THEIA.USERNAME = "theia-ide";
 THEIA.PROJECT = "theia";
-THEIA.REFERENCE = "8ab83bde790651b679dc212965b9eba871754214";
+THEIA.REFERENCE = "a52fab7d14e6d556647b5e202749a48aefd65cfe";
 
 THEIA.URL = Util.format(
     "https://github.com/%s/%s/archive/%s.zip",
