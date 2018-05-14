@@ -5,6 +5,8 @@
 **Important: Never delete any Github Release.** Also if you do not need the release anymore, please let it there otherwise the version control of `dependencies.txt` does not work. If you want to update any binary (e.g. jar), then just upload the new JAR in a new release and then update the link in the `dependencies.txt` file.
 
 The archives you upload to the releases **should not contain .git** files/folders or any other development information (such as `.classpath`, `.settings` or IntelliJ project information, or SVN meta-data).
+The self-extracting archive will **never use maven**, please build up-front with maven a JAR with all dependencies and add this to the 
+release.
 
 This repo contains the scripts and the sources which are used to build EmbeddedMontiArcStudio automatically.
 
