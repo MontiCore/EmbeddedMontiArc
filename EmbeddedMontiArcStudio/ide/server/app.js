@@ -251,4 +251,102 @@ App.post("/services/clustering/viewverification", function(request, response) {
 
 });
 
+App.post("/services/pump/viewverification/single", function(request, response) {
+    const body = request.body;
+
+    function onExecuted() {
+        		// Select the source folder.
+		//var myFolder = PATHS.VIEWVERIFICATION_OUTPUT;
+		var files = FileSystem.readdirSync(PATHS.VIEWVERIFICATION_OUTPUT);
+
+		/*// If a valid folder is selected
+		if (myFolder != null) {
+			var files = new Array();
+
+			// Get all files matching the pattern
+			files = myFolder.getFiles();*/
+
+		if (files.length > 0) {
+			// Get the destination to save the files
+			for (i = 0; i < files.length; i++) {
+				//var sourceDoc = app.open(files[i]); // returns the document object
+				//var title = sourceDoc.name;
+				var title = files[i];
+				var name = body.name;
+				var parts = name.split("/");
+				var titlestart = parts[parts.length-1].substring(0,parts[parts.length-1].length-4);
+				if(title.startsWith(titlestart + "Witness"))
+					Chrome.open(URLS.SHARED + "/vv/" + title);
+				//Close the Source Document
+				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
+			}
+		}  
+		else {
+			alert('No matching files found');
+		} 
+		response.end();
+    }
+	
+    PumpVerification.execute("model\\pump" + body.name.replace(/\//g, "\\"), onExecuted);
+});
+
+App.post("/services/pump/viewverification/all", function(request, response) {
+	function onExecuted() {
+		// Select the source folder.
+		//var myFolder = PATHS.VIEWVERIFICATION_OUTPUT;
+		var files = FileSystem.readdirSync(PATHS.VIEWVERIFICATION_OUTPUT);
+
+		/*// If a valid folder is selected
+		if (myFolder != null) {
+			var files = new Array();
+
+			// Get all files matching the pattern
+			files = myFolder.getFiles();*/
+
+		if (files.length > 0) {
+			// Get the destination to save the files
+			for (i = 0; i < files.length; i++) {
+				//var sourceDoc = app.open(files[i]); // returns the document object
+				//var title = sourceDoc.name;
+				var title = files[i];
+				if(!title.substring(0,title.length-5).includes(".") && !title.startsWith("icons"))
+					Chrome.open(URLS.SHARED + "/vv/" + title);
+				//Close the Source Document
+				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
+			}
+		}  
+		else {
+			alert('No matching files found');
+		} 
+		response.end();
+	}
+
+	PumpVerification.executeAll(onExecuted);
+});
+
+App.post("/services/pump/visualize", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/v/pumpStationExample.pumpStation.html");
+        response.end();
+    }
+
+    PumpVisualization.execute(onExecuted);
+});
+
+App.post("/services/pump/test", function(request, response) {
+
+});
+
+App.post("/services/pump/report", function(request, response) {
+
+});
+
+App.post("/services/pump/reportWS", function(request, response) {
+
+});
+
+App.post("/services/pump/simulate", function(request, response) {
+
+});
+
 module.exports = App;
