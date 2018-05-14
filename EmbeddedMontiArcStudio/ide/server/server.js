@@ -25,5 +25,8 @@ function onAutopilotZipped() {
 	Archiver.zip("clustering", onClusteringZipped);
 }
 
+function onPumpZipped() {
+	Archiver.zip("autopilot", onAutopilotZipped);
+}
 
-Archiver.zip("autopilot", onAutopilotZipped);
+Archiver.zip("pump", onPumpZipped);

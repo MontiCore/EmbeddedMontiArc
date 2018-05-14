@@ -9,5 +9,7 @@ mkdir %HOME%\viewverification\modelEMA\
 if exist "%HOME%\viewverification\WitnessSVG\" rmdir "%HOME%\viewverification\WitnessSVG\" /s /q
 mkdir %HOME%\viewverification\WitnessSVG\
 
-call verifyDesign2 %1
 
+for /f "tokens=*" %%a in (%HOME%\scripts\pump\helper\viewListPump.txt) do (
+  call verifyDesign2 %%a
+)

@@ -60,6 +60,7 @@ const BATCHES = {};
 
 BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
+BATCHES.PUMP = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -83,6 +84,11 @@ BATCHES.CLUSTERING.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "clusteri
 BATCHES.CLUSTERING.REPORTING           		= Path.resolve(PATHS.SCRIPTS, "clustering", "report.bat");
 BATCHES.CLUSTERING.REPORTING_STREAM    		= Path.resolve(PATHS.SCRIPTS, "clustering", "reportWithStreams.bat");
 BATCHES.CLUSTERING.TEST                		= Path.resolve(PATHS.SCRIPTS, "clustering", "");
+
+BATCHES.PUMP.VIEWVERIFICATION = {};
+BATCHES.PUMP.VIEWVERIFICATION.ALL    = Path.resolve(PATHS.SCRIPTS, "pump", "verifyAllDesigns.bat");
+BATCHES.PUMP.VIEWVERIFICATION.SINGLE = Path.resolve(PATHS.SCRIPTS, "pump", "verifyDesign.bat");
+BATCHES.PUMP.VISUALIZATION       = Path.resolve(PATHS.SCRIPTS, "pump", "visualize.bat");
 
 /*
  * OPTIONS

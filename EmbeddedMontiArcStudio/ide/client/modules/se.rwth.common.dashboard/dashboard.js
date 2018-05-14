@@ -34,6 +34,11 @@ var Dashboard = (function() {
                 reponame: "Clustering",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Clustering/v&url=/m/clustering.zip&openFile=/detection/SpectralClusterer.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "Pump",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Pump/v&url=/m/pump.zip&openFile=/pumpStationExample/PumpStation.ema"
             }];
         },
 

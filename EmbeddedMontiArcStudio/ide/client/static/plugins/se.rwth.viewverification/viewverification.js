@@ -137,7 +137,7 @@ define(function(require, exports, module) {
                 var parent = Layout.getElement("barTools");
 
                 var verifyAllLabel = new UI.label({
-                    "class": "tick",
+                    "class": "icon-doubletick",
                     "height": 14,
                     "width": 22,
 					"tooltip": "Verify All Designs",
@@ -145,7 +145,7 @@ define(function(require, exports, module) {
                 });
 
                 var verifySingleLabel = new UI.label({
-                    "class": "tick",
+                    "class": "icon-tick",
                     "height": 14,
                     "width": 22,
                     "tooltip": "Verify Design",

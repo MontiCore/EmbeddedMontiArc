@@ -3,10 +3,10 @@ const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
 const {AutoPilotSimulation, ClusteringSimulation}       = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization} = require("./visualizations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting}         = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
-const {AutoPilotVerification, ClusteringVerification} = require("./viewverification");
+const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
 const ModelUpdater                                      = require("./models-updater");
@@ -125,7 +125,7 @@ App.post("/services/autopilot/viewverification/all", function(request, response)
 				//var sourceDoc = app.open(files[i]); // returns the document object
 				//var title = sourceDoc.name;
 				var title = files[i];
-				if(!title.startsWith("de") && !title.startsWith("icons"))
+				if(!title.substring(0,title.length-5).includes(".") && !title.startsWith("icons"))
 					Chrome.open(URLS.SHARED + "/vv/" + title);
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);

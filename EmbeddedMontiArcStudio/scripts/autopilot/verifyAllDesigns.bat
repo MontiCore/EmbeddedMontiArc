@@ -3,7 +3,13 @@ call "..\shared\variables.bat"
 if exist "%HOME%\viewverification\results\" rmdir "%HOME%\viewverification\results\" /s /q
 mkdir %HOME%\viewverification\results\
 
+if exist "%HOME%\viewverification\modelEMA\" rmdir "%HOME%\viewverification\modelEMA\" /s /q
+mkdir %HOME%\viewverification\modelEMA\
 
-for /f "tokens=*" %%a in (%HOME%\viewverification\viewList.txt) do (
-  call verifyDesign %%a
+if exist "%HOME%\viewverification\WitnessSVG\" rmdir "%HOME%\viewverification\WitnessSVG\" /s /q
+mkdir %HOME%\viewverification\WitnessSVG\
+
+
+for /f "tokens=*" %%a in (%HOME%\scripts\autopilot\helper\viewList.txt) do (
+  call verifyDesign2 %%a
 )

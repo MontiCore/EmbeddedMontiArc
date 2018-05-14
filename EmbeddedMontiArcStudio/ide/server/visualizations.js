@@ -87,7 +87,16 @@ class ClusteringVisualization extends AbstractVisualization {
     }
 }
 
+class PumpVisualization extends AbstractVisualization {
+    constructor() {
+        super("pump", BATCHES.PUMP.VISUALIZATION);
+        this.logger = Log.getLogger("PUMP VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
+	PumpVisualization: new PumpVisualization(),
 	ClusteringVisualization: new ClusteringVisualization()
 };
