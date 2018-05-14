@@ -156,6 +156,7 @@ var AppModule = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BackendMockService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_operators__ = __webpack_require__("../../../../rxjs/_esm5/operators.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -167,14 +168,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var BackendMockService = /** @class */ (function () {
     function BackendMockService() {
     }
     BackendMockService.prototype.intercept = function (req, next) {
         if (req.url.includes('api/getModuleAnalysis')) {
             console.log('Redirect API Call');
-            var newRequest = new __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["d" /* HttpRequest */]('GET', 'assets/mockResponse.json');
-            return next.handle(newRequest);
+            var newRequest = new __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["d" /* HttpRequest */]('GET', 'assets/MvW-Analysis/textFiles/03.acc/ModulesMvW/d.ModuleAnalysis/ModuleAnalysis.json');
+            return next.handle(newRequest).pipe(Object(__WEBPACK_IMPORTED_MODULE_2_rxjs_operators__["a" /* map */])(function (resp) {
+                if (resp instanceof __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["e" /* HttpResponse */]) {
+                    var body = [JSON.stringify(resp.body)];
+                    var newResp = resp.clone({ body: body });
+                    return newResp;
+                }
+                return resp;
+            }));
         }
         // Default
         console.log(req);

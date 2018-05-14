@@ -10,21 +10,18 @@
  "graph" : {
    "tabs" : {
      "Artifacts" : {
-       "rootType" : "Directory",
-       "linkList" : ["contains"],
-       "flatTypes" : ["Directory", "JavaSourceFile", "FreemarkerTemplate"]
+       "containsLinks" : ["contains"],
+       "elements" : ["Directory", "JavaSourceFile", "FreemarkerTemplate"]
      },
      "Types" : {
-       "rootType" : "Pkg",
-       "linkList" : ["subPkg", "javaTypes"],
-       "flatTypes" : ["Pkg", "JavaClass", "JavaInterface", "JavaEnum"]
+       "containsLinks" : ["subPkg", "javaTypes"],
+       "elements" : ["Pkg", "JavaClass", "JavaInterface", "JavaEnum"]
      }
    }, 
    "hierarchy" : {
-     "groupItemType" : "Directory",
-     "subGroupItemType" : ["Directory"],
-     "groupChildLinkTypes" : ["artifacts", "contains"],
-     "groupCrossLinkTypes" : ["references", "generated", "instantiate", "include"]
-   }
-  }
+     "elements" : ["Directory", "JavaSourceFile", "FreemarkerTemplate"],
+     "containsLinks" : ["contains"],
+     "links" : ["references", "generated", "instantiate", "include"]
+   } 
+ }
 }
