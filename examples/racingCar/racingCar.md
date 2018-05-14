@@ -6,4 +6,4 @@ In the folder racingCarModels, there are the models of the racing car and the ev
 In the folder Documentation, it is descibed how the different models are used and are able to communicate with each other.
 
 Models are available in the folder:
-https://github.com/EmbeddedMontiArc/Documentation/tree/master/examples/racingCarModels/MontiCar
+https://github.com/EmbeddedMontiArc/Documentation/tree/master/examples/racingCar/racingCarModels
