@@ -20,6 +20,8 @@
   "scripts": {},
   "dependencies": {
     "@elysium/core": "^0.1.0",
+    "@theia/core": "^0.3.8",
+    "@theia/filesystem": "^0.3.8",
     "browserfs": "^1.4.3"
   },
   "devDependencies": {}

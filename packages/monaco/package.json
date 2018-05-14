@@ -23,6 +23,8 @@
     "@theia/core": "^0.3.8",
     "@theia/monaco": "^0.3.8",
     "@theia/markers": "^0.3.8",
+    "@theia/outline-view": "^0.3.8",
+    "@theia/editor": "^0.3.8",
     "@elysium/languages": "^0.1.0"
   }
 }

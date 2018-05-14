@@ -19,7 +19,10 @@
   },
   "scripts": {},
   "dependencies": {
-    "@elysium/core": "^0.1.0"
+    "@elysium/core": "^0.1.0",
+    "@theia/core": "^0.3.8",
+    "@theia/languages": "^0.3.8",
+    "@theia/monaco": "^0.3.8"
   },
   "devDependencies": {}
 }

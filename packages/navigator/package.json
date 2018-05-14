@@ -19,7 +19,11 @@
   },
   "scripts": {},
   "dependencies": {
-    "@elysium/workspace": "^0.1.0"
+    "@elysium/workspace": "^0.1.0",
+    "@theia/core": "^0.3.8",
+    "@theia/workspace": "^0.3.8",
+    "@theia/filesystem": "^0.3.8",
+    "@theia/navigator": "^0.3.8"
   },
   "devDependencies": {}
 }
