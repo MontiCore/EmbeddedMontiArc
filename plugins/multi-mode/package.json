@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "@elysium/multi-mode",
+  "version": "0.1.0",
+  "description": "Plugin to make the IDE behave differently depending on the concrete url.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://github.com/EmbeddedMontiArc/Elysium",
+  "bugs": {
+    "url": "https://github.com/EmbeddedMontiArc/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EmbeddedMontiArc/Elysium.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@theia/core": "^0.3.8",
+    "@elysium/core": "^0.1.0",
+    "@theia/filesystem": "^0.3.8"
+  },
+  "devDependencies": {}
+}
