@@ -1,5 +1,3 @@
-call "..\shared\variables.bat"
-
 setlocal ENABLEDELAYEDEXPANSION
 
 REM get Model
@@ -21,7 +19,7 @@ set /a count+=1
 :NEXT
 set adress=%~dp1
 set adress1=%adress:\scripts\autopilot\model\=\viewverification\modelEMA\%
-set name=%name:~10,-3%
+set name=%name:~10,-2%
 set adress1=%adress1%%name%.ema
 
 
