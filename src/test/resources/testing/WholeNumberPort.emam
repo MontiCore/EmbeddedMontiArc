@@ -1,0 +1,6 @@
+package testing;
+
+component WholeNumberPort{
+    port in Z wholeIn,
+         out Z wholeOut;
+}

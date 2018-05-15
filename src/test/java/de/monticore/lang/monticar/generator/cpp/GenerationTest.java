@@ -580,4 +580,36 @@ public class GenerationTest extends AbstractSymtabTest {
         testFilesAreEqual(files,"testing/Parameter/");
 
     }
+
+    @Test
+    public void testWholeNumberPort() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("testing.wholeNumberPort",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(componentInstanceSymbol);
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/WholeNumberPort/");
+
+        List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        testFilesAreEqual(files,"testing/WholeNumberPort/");
+    }
+
+    @Test
+    public void testWholeNumberMatrix() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("testing.wholeNumberMatrix",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        assertNotNull(componentInstanceSymbol);
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/WholeNumberMatrix/");
+
+        List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
+
+        testFilesAreEqual(files,"testing/WholeNumberMatrix/");
+    }
 }
