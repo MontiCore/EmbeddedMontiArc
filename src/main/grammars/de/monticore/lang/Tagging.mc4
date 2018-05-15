@@ -32,6 +32,19 @@ grammar Tagging extends de.monticore.common.Common {
  fragment token Recursion = '{' (~('{' | '}' | '"') | String | Recursion)+ '}';
  fragment token TagToken = (~('"' | '{' | '}' | ';'))+;
 
+ NameWithArray = (Name ("[" IntLiteral "]")?);
+ ast NameWithArray =
+    method public String toString(){
+        return name + (intLiteral.isPresent() ? "[" + intLiteral.get().getValue() + "]" : "");
+    };
+
+ QualifiedNameWithArray = ( NameWithArray || ".")+;
+ ast QualifiedNameWithArray =
+    method public String toString(){
+        return de.se_rwth.commons.Joiners.DOT.join(getNameWithArrays());
+    };
+
+
 	interface Scope;
 	ast Scope =
 	  method public String getQualifiedNameString() {
@@ -42,19 +55,19 @@ grammar Tagging extends de.monticore.common.Common {
 	  };
 
 	// this one is only defined here, to get Parser Tags
-	NameScope implements Scope = QualifiedName;
+	NameScope implements Scope = QualifiedNameWithArray;
 	ast NameScope =
 	  method public String getQualifiedNameString() {
-       return getQualifiedName().toString();
+       return getQualifiedNameWithArray().toString();
      }
 	  method public String getScopeKind() {
   	  return "NameScope";
   	};
 
-	ConnectorScope extends NameScope = source:QualifiedName "->" QualifiedName;
+	ConnectorScope extends NameScope = source:QualifiedNameWithArray "->" QualifiedNameWithArray;
   ast ConnectorScope =
     method public String getQualifiedNameString() {
-       return getQualifiedName().toString();
+       return getQualifiedNameWithArray().toString();
      }
     method public String getScopeKind() {
       return "ConnectorScope";
