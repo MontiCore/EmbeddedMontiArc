@@ -3,7 +3,7 @@
 [![Build Status](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master)
 
 # EmbeddedMontiArcDL
-Embeds [CNNArch](https://github.com/EmbeddedMontiArc/CNNArchLang), CNNTrain and MontiMath into EmbeddedMontiArc.
+Embeds [CNNArch](https://github.com/EmbeddedMontiArc/CNNArchLang), [CNNTrain](https://github.com/EmbeddedMontiArc/CNNTrainLang) and MontiMath into EmbeddedMontiArc.
 
 ## Examples
 In the following, we list common CNN architectures that are modeled inside an EMA component.
