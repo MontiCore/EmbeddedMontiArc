@@ -128,4 +128,20 @@ public class MathConverter {
     public static String getCubeTypeInitLine(Variable v, BluePrintCPP bluePrint) {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
+
+    public static String getWholeNumberMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
+    }
+
+    public static String getWholeNumberRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
+    }
+
+    public static String getWholeNumberColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
+    }
+
+    public static String getWholeNumberCubeInitLine(Variable v, BluePrintCPP bluePrint) {
+        return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getWholeNumberCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
+    }
 }

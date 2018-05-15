@@ -10,6 +10,7 @@ import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.StringValueListExtractorUtil;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -93,20 +94,38 @@ public class ExecuteMethodGeneratorHandler {
     }
 
     public static String addInitializationString(MathValueSymbol mathValueSymbol, String typeString, List<String> includeStrings) {
+        ASTElementType type = mathValueSymbol.getType().getType();
+        String matString;
+        String colvecString;
+        String cubeString;
+
+        if(type.isIsRational()){
+            matString = MathConverter.curBackend.getMatrixTypeName();
+            colvecString = MathConverter.curBackend.getColumnVectorTypeName();
+            cubeString = MathConverter.curBackend.getCubeTypeName();
+        }else if(type.isIsWholeNumberNumber()){
+            matString = MathConverter.curBackend.getWholeNumberMatrixTypeName();
+            colvecString = MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
+            cubeString = MathConverter.curBackend.getWholeNumberCubeTypeName();
+        }else{
+            Log.error("Initialization not handled!");
+            return "";
+        }
+
         String result = "";
         List<MathExpressionSymbol> dims = mathValueSymbol.getType().getDimensions();
         if (dims.size() == 1) {
             MathExpressionSymbol rows = dims.get(0);
-            if (typeString.equals(MathConverter.curBackend.getColumnVectorTypeName())) {
-                result = "=" + MathConverter.curBackend.getColumnVectorTypeName() + "(" + ExecuteMethodGenerator.
+            if (typeString.equals(colvecString)) {
+                result = "=" + colvecString + "(" + ExecuteMethodGenerator.
                         generateExecuteCode(rows, includeStrings) + ")";
             }
         } else if (dims.size() == 2) {
             MathExpressionSymbol rows = dims.get(0);
             MathExpressionSymbol cols = dims.get(1);
 
-            if (typeString.equals(MathConverter.curBackend.getMatrixTypeName())) {
-                result = "=" + MathConverter.curBackend.getMatrixTypeName() + "(" + ExecuteMethodGenerator.
+            if (typeString.equals(matString)) {
+                result = "=" + matString + "(" + ExecuteMethodGenerator.
                         generateExecuteCode(rows, includeStrings) + "," + ExecuteMethodGenerator.
                         generateExecuteCode(cols, includeStrings) + ")";
             }
@@ -115,8 +134,8 @@ public class ExecuteMethodGeneratorHandler {
             MathExpressionSymbol cols = dims.get(1);
             MathExpressionSymbol slices = dims.get(2);
 
-            if (typeString.equals(MathConverter.curBackend.getCubeTypeName())) {
-                result = "=" + MathConverter.curBackend.getCubeTypeName() + "(" + ExecuteMethodGenerator.
+            if (typeString.equals(cubeString)) {
+                result = "=" + cubeString + "(" + ExecuteMethodGenerator.
                         generateExecuteCode(rows, includeStrings) + "," + ExecuteMethodGenerator.
                         generateExecuteCode(cols, includeStrings) + "," + ExecuteMethodGenerator.
                         generateExecuteCode(slices, includeStrings) + ")";
@@ -125,7 +144,7 @@ public class ExecuteMethodGeneratorHandler {
         return result;
     }
 
-    public static String generateExecuteCode(MathValueSymbol mathValueSymbol, List<String> includeStrings) {
+       public static String generateExecuteCode(MathValueSymbol mathValueSymbol, List<String> includeStrings) {
         String result = "";
         String type = generateExecuteCode(mathValueSymbol.getType(), includeStrings);
         result += type + " " + mathValueSymbol.getName();
@@ -179,18 +198,17 @@ public class ExecuteMethodGeneratorHandler {
         if (mathValueType.getDimensions().size() == 0) {
             return "int";
         } else if (mathValueType.getDimensions().size() == 1) {
-            return MathConverter.curBackend.getColumnVectorTypeName();
+            return MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
         } else if (mathValueType.getDimensions().size() == 2) {
-            //TODO handle just like RationalMatrix right now
             Log.info("Dim1:" + mathValueType.getDimensions().get(0).getTextualRepresentation() + "Dim2: " + mathValueType.getDimensions().get(1).getTextualRepresentation(), "DIMS:");
             if (mathValueType.getDimensions().get(0).getTextualRepresentation().equals("1")) {
-                return MathConverter.curBackend.getRowVectorTypeName();
+                return MathConverter.curBackend.getWholeNumberRowVectorTypeName();
             } else if (mathValueType.getDimensions().get(1).getTextualRepresentation().equals("1")) {
-                return MathConverter.curBackend.getColumnVectorTypeName();
+                return MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
             }
-            return MathConverter.curBackend.getMatrixTypeName();//TODO improve in future
+            return MathConverter.curBackend.getWholeNumberMatrixTypeName();
         } else if (mathValueType.getDimensions().size() == 3) {
-            return MathConverter.curBackend.getCubeTypeName();
+            return MathConverter.curBackend.getWholeNumberCubeTypeName();
         } else {
             Log.error("0xGEEXCOMAVAT Type conversion Case not handled!");
         }

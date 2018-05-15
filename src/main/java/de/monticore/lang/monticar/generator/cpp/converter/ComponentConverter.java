@@ -193,6 +193,34 @@ public class ComponentConverter {
             } else
                 method.addInstruction(new TargetCodeInstruction(MathConverter.getCubeTypeInitLine(v, bluePrint)));
 
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberMatrixTypeName())){
+            if (v.isParameterVariable()) {
+                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
+                method.addParameter(v);
+            } else {
+                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberMatrixInitLine(v, bluePrint)));
+            }
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberRowVectorTypeName())){
+            if (v.isParameterVariable()) {
+                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
+                method.addParameter(v);
+            } else {
+                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberRowVectorInitLine(v, bluePrint)));
+            }
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberColumnVectorTypeName())){
+            if (v.isParameterVariable()) {
+                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
+                method.addParameter(v);
+            } else {
+                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberColumnVectorInitLine(v, bluePrint)));
+            }
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberCubeTypeName())){
+            if (v.isParameterVariable()) {
+                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
+                method.addParameter(v);
+            } else {
+                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberCubeInitLine(v, bluePrint)));
+            }
         }
     }
 

@@ -125,20 +125,37 @@ public class TypeConverter {
     }
 
     public static VariableType getRealVariableType(ASTCommonMatrixType astCommonMatrixType) {
+        String matString,colvecString,cubeString,rowString;
+        ASTElementType type = astCommonMatrixType.getElementType();
+        if(type.isIsRational()){
+            matString = MathConverter.curBackend.getMatrixTypeName();
+            colvecString = MathConverter.curBackend.getColumnVectorTypeName();
+            cubeString = MathConverter.curBackend.getCubeTypeName();
+            rowString = MathConverter.curBackend.getRowVectorTypeName();
+        }else if(type.isIsWholeNumberNumber()){
+            matString = MathConverter.curBackend.getWholeNumberMatrixTypeName();
+            colvecString = MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
+            cubeString = MathConverter.curBackend.getWholeNumberCubeTypeName();
+            rowString = MathConverter.curBackend.getWholeNumberRowVectorTypeName();
+        }else{
+            Log.error("Initialization not handled!");
+            return null;
+        }
+
         VariableType variableType;
         List<ASTCommonDimensionElement> dimensionElements = astCommonMatrixType.getCommonDimension().getCommonDimensionElements();
         if (dimensionElements.size() == 1) {
-            variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            variableType = new VariableType("CommonColumnVectorType", colvecString, MathConverter.curBackend.getIncludeHeaderName());
         } else if (dimensionElements.size() == 2) {
             if (isVectorDimension(dimensionElements.get(0)))
-                variableType = new VariableType("CommonRowVectorType", MathConverter.curBackend.getRowVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                variableType = new VariableType("CommonRowVectorType", rowString, MathConverter.curBackend.getIncludeHeaderName());
             else {
-                variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                variableType = new VariableType("CommonMatrixType", matString , MathConverter.curBackend.getIncludeHeaderName());
             }
         } else if (dimensionElements.size() == 3) {
-            variableType = new VariableType("CommonCubeType", MathConverter.curBackend.getCubeTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            variableType = new VariableType("CommonCubeType", cubeString, MathConverter.curBackend.getIncludeHeaderName());
         } else {
-            variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            variableType = new VariableType("CommonMatrixType", matString, MathConverter.curBackend.getIncludeHeaderName());
         }
 
         return variableType;
@@ -299,7 +316,7 @@ public class TypeConverter {
         addNonPrimitiveVariableType("B", "bool", "");
         addNonPrimitiveVariableType("Q", "double", "");
         // TODO: the type mappings below have been adjusted to make the tests pass. they are, however, wrong.
-        addNonPrimitiveVariableType("Z", "double", "");
+        addNonPrimitiveVariableType("Z", "int", "");
         addNonPrimitiveVariableType("C", "double", "");
         addNonPrimitiveVariableType("UnitNumberResolution", "double", "");
         addNonPrimitiveVariableType("CommonMatrixType", "Matrix", "octave/oct");
