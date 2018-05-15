@@ -8,10 +8,12 @@ import { injectable, inject } from "inversify";
 import { BaseMultiModeContribution } from "./multi-mode";
 import URI from "@elysium/core/lib/common/uri";
 import { FileSystem } from "@theia/filesystem/lib/common";
+import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
 
 @injectable()
 export class StaticMultiModeContribution extends BaseMultiModeContribution {
     @inject(FileSystem) protected readonly fileSystem: FileSystem;
+    @inject(FrontendApplicationStateService) protected readonly stateService: FrontendApplicationStateService;
 
     public readonly mode: string = "static";
 
@@ -33,6 +35,8 @@ export class StaticMultiModeContribution extends BaseMultiModeContribution {
     protected async handleFullPath(fullPath: string): Promise<void> {
         const resolvings = await this.fileSystem.resolveContent(fullPath);
         const doc = document.open("text/html", "replace");
+
+        await this.stateService.reachedState("initialized_layout");
 
         doc.write(resolvings.content);
         doc.close();

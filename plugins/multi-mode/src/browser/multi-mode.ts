@@ -58,14 +58,14 @@ export class MultiModeProcessor implements FrontendApplicationContribution {
     }
 
     protected async handleStateChange(state: FrontendApplicationState): Promise<void> {
-        if (state === "initialized_layout") {
+        if (state === "started_contributions") {
             this.toDipose.dispose();
 
-            return this.handleLayoutInitialized();
+            return this.handleContributionsStarted();
         }
     }
 
-    protected async handleLayoutInitialized(): Promise<void> {
+    protected async handleContributionsStarted(): Promise<void> {
         const uri = new URI(window.location.href);
 
         for (const contribution of this.provider.getContributions()) {
