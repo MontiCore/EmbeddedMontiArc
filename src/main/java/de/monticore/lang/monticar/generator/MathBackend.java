@@ -44,4 +44,11 @@ public interface MathBackend {
      */
     boolean usesZeroBasedIndexing();
 
+    String getWholeNumberRowVectorTypeName();
+
+    String getWholeNumberColumnVectorTypeName();
+
+    String getWholeNumberMatrixTypeName();
+
+    String getWholeNumberCubeTypeName();
 }

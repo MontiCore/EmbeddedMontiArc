@@ -108,4 +108,24 @@ public class ArmadilloBackend implements MathBackend {
     public boolean usesZeroBasedIndexing() {
         return true;
     }
+
+    @Override
+    public String getWholeNumberRowVectorTypeName() {
+        return "irow";
+    }
+
+    @Override
+    public String getWholeNumberColumnVectorTypeName() {
+        return "icol";
+    }
+
+    @Override
+    public String getWholeNumberMatrixTypeName() {
+        return "imat";
+    }
+
+    @Override
+    public String getWholeNumberCubeTypeName() {
+        return "icube";
+    }
 }

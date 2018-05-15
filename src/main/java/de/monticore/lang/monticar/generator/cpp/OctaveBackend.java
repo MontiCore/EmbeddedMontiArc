@@ -96,4 +96,28 @@ public class OctaveBackend implements MathBackend {
     public boolean usesZeroBasedIndexing() {
         return false;
     }
+
+    @Override
+    public String getWholeNumberRowVectorTypeName() {
+        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        return getRowVectorTypeName();
+    }
+
+    @Override
+    public String getWholeNumberColumnVectorTypeName() {
+        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        return getColumnVectorTypeName();
+    }
+
+    @Override
+    public String getWholeNumberMatrixTypeName() {
+        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        return getMatrixTypeName();
+    }
+
+    @Override
+    public String getWholeNumberCubeTypeName() {
+        Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
+        return getCubeTypeName();
+    }
 }
