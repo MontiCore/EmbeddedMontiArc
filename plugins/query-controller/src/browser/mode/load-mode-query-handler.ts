@@ -5,12 +5,14 @@
  */
 
 import { injectable } from "inversify";
-import { BaseMultiModeContribution } from "./multi-mode";
+import { ModeQueryHandler } from "./mode-controller";
 import URI from "@elysium/core/lib/common/uri";
 
 @injectable()
-export class LoadMultiModeContribution extends BaseMultiModeContribution {
-    public readonly mode: string = "load";
+export class LoadModeQueryHandler implements ModeQueryHandler {
+    public canHandle(uri: URI): boolean {
+        return uri.getQueryParam("mode") === "load";
+    }
 
     public async handle(uri: URI): Promise<void> {
     }

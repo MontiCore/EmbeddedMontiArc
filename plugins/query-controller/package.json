@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@elysium/multi-mode",
+  "name": "@elysium/query-controller",
   "version": "0.1.0",
-  "description": "Plugin to make the IDE behave differently depending on the concrete url.",
+  "description": "Plugin to control the IDE over query params.",
   "keywords": [
     "Elysium IDE"
   ],
@@ -19,9 +19,10 @@
   },
   "scripts": {},
   "dependencies": {
-    "@theia/core": "^0.3.8",
     "@elysium/core": "^0.1.0",
-    "@theia/filesystem": "^0.3.8"
+    "@theia/core": "^0.3.8",
+    "@theia/filesystem": "^0.3.8",
+    "@theia/editor": "^0.3.8"
   },
   "devDependencies": {}
 }
