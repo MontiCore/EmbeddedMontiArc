@@ -1,5 +1,3 @@
-call "..\shared\variables.bat"
-
 setlocal ENABLEDELAYEDEXPANSION
 
 REM get Model
