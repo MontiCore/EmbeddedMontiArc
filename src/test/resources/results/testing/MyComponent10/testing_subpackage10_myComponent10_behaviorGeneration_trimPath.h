@@ -10,10 +10,10 @@ class testing_subpackage10_myComponent10_behaviorGeneration_trimPath{
 public:
 double currentPositionX;
 double currentPositionY;
-double plannedTrajectoryLength;
+int plannedTrajectoryLength;
 Matrix plannedTrajectoryX;
 Matrix plannedTrajectoryY;
-double trimmedTrajectoryLength;
+int trimmedTrajectoryLength;
 Matrix trimmedTrajectoryX;
 Matrix trimmedTrajectoryY;
 void init()

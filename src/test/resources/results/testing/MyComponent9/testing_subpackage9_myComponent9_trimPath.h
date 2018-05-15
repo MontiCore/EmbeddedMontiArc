@@ -10,10 +10,10 @@ class testing_subpackage9_myComponent9_trimPath{
 public:
 double currentPositionX;
 double currentPositionY;
-double plannedTrajectoryLength;
+int plannedTrajectoryLength;
 Matrix plannedTrajectoryX;
 Matrix plannedTrajectoryY;
-double trimmedTrajectoryLength;
+int trimmedTrajectoryLength;
 Matrix trimmedTrajectoryX;
 Matrix trimmedTrajectoryY;
 void init()

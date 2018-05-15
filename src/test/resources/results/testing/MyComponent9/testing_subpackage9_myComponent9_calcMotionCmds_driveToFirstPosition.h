@@ -11,7 +11,7 @@ public:
 bool isDriveToFirstPosition;
 double currentPositionX;
 double currentPositionY;
-double trimmedTrajectoryLength;
+int trimmedTrajectoryLength;
 Matrix trimmedTrajectoryX;
 Matrix trimmedTrajectoryY;
 double desiredDirectionX;
