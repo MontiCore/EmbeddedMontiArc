@@ -66,9 +66,11 @@ install:
 build: off    
 # Cache extracted dependencies, still need to be copied every time from dependencies/ to build/
 cache:
-  - /EMAStudioBuilder/dependencies -> dependencies.txt
-#  - 7ZipPortable
-  
+  - /EMAStudioBuilder/build/download -> dependencies.txt
+  - /EMAStudioBuilder/build/7z -> dependencies.txt
+  - /EMAStudioBuilder/build/curl -> dependencies.txt
+
+ 
 #deploy:
 #  - provider: GitHub
 #    auth_token:
