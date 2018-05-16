@@ -17,7 +17,7 @@ import { FrontendApplicationStateService } from "@theia/core/lib/browser/fronten
  */
 @injectable()
 export class OpenFileQueryHandler implements QueryHandler {
-    @inject(EditorManager) editorManager: EditorManager;
+    @inject(EditorManager) protected readonly editorManager: EditorManager;
     @inject(FrontendApplicationStateService) protected readonly stateService: FrontendApplicationStateService;
 
     public canHandle(uri: URI): number {

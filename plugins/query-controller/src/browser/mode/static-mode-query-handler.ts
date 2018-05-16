@@ -11,7 +11,7 @@ import { FileSystem } from "@theia/filesystem/lib/common";
 import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
 
 /**
- * `ModeQueryHandler` which emulates a getting a static file from the Virtual File System.
+ * `ModeQueryHandler` which emulates getting a static file from the Virtual File System.
  */
 @injectable()
 export class StaticModeQueryHandler implements ModeQueryHandler {
