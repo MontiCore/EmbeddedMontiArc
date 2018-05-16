@@ -53,39 +53,32 @@ export class BrowserFileSystemWatcher implements FileSystemWatcherServer {
     }
 
     public addModified(uri: string): void {
-        // TODO: Check WatchOptions.
-        const change = { uri, type: FileChangeType.UPDATED };
-
-        this.addChange(change);
-        this.scheduleTrigger();
+        this.scheduleChanges(uri, FileChangeType.UPDATED, false);
     }
 
     public addCreated(uri: string): void {
-        // TODO: Check WatchOptions.
-        const urio = new URI(uri);
-        const parentURI = urio.parent.toString();
-        const change = { uri, type: FileChangeType.ADDED };
-        const parentChange = { uri: parentURI, type: FileChangeType.UPDATED };
-
-        this.addChanges(change, parentChange);
-        this.scheduleTrigger();
+        this.scheduleChanges(uri, FileChangeType.ADDED);
     }
 
     public addDeleted(uri: string): void {
-        // TODO: Check WatchOptions.
-        const urio = new URI(uri);
-        const parentURI = urio.parent.toString();
-        const change = { uri, type: FileChangeType.DELETED };
-        const parentChange = { uri: parentURI, type: FileChangeType.UPDATED };
-
-        this.addChanges(change, parentChange);
-        this.scheduleTrigger();
+        this.scheduleChanges(uri, FileChangeType.DELETED);
     }
 
-    protected addChanges(...changes: FileChange[]): void {
-        for (const change of changes) {
-            this.addChange(change);
+    protected scheduleChanges(uri: string, type: FileChangeType, parent: boolean = true): void {
+        // TODO: Check WatchOptions.
+        const urio = new URI(uri);
+        const change = { uri, type };
+
+        this.addChange(change);
+
+        if (parent) {
+            const parentURI = urio.parent.toString();
+            const parentChange = {uri: parentURI, type: FileChangeType.UPDATED};
+
+            this.addChange(parentChange);
         }
+
+        this.scheduleTrigger();
     }
 
     protected addChange(change: FileChange): void {
