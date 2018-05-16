@@ -61,7 +61,7 @@ export class QueryController implements FrontendApplicationContribution {
         for (const contribution of this.provider.getContributions()) {
             const priority = await contribution.canHandle(uri);
 
-            handlers.splice(priority, 0, contribution);
+            if (priority > 0) handlers.splice(priority, 0, contribution);
         }
 
         return handlers;
