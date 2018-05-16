@@ -1,0 +1,45 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+import { injectable, inject, named } from "inversify";
+import { FrontendApplicationContribution, FrontendApplication } from "@theia/core/lib/browser";
+import { ContributionProvider } from "@theia/core/lib/common";
+
+export const AccessContribution = Symbol("AccessContribution");
+
+/**
+ * `AccessContribution` should be implemented to provide a new access contribution.
+ */
+export interface AccessContribution {
+    /**
+     * The identifier under which the API will be registered.
+     */
+    readonly id: string;
+
+    /**
+     * Fetches the API for external or internal access.
+     */
+    fetch(): object;
+}
+
+/**
+ * `FrontendApplicationContribution` responsible for the registration of all access contributions.
+ */
+@injectable()
+export class AccessController implements FrontendApplicationContribution {
+    @inject(ContributionProvider) @named(AccessContribution)
+    protected readonly provider: ContributionProvider<AccessContribution>;
+
+    // tslint:disable:no-any
+    public async onStart(app: FrontendApplication): Promise<void> {
+        (window as any).api = {};
+
+        for (const contribution of this.provider.getContributions()) {
+            (window as any).api[contribution.id] = contribution.fetch();
+        }
+    }
+    // tslint:enable:no-any
+}

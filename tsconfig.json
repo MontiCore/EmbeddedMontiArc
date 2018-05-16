@@ -11,6 +11,7 @@
       "@elysium/monaco": ["packages/monaco/src/*"],
       "@elysium/navigator": ["packages/navigator/src/*"],
       "@elysium/workspace": ["packages/workspace/src/*"],
+      "@elysium/access-controller": ["plugins/access-controller/src/*"],
       "@elysium/cd": ["plugins/cd/src/*"],
       "@elysium/dashboard": ["plugins/dashboard/src/*"],
       "@elysium/downloader": ["plugins/downloader/src/*"],

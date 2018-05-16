@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "@elysium/access-controller",
+  "version": "0.1.0",
+  "description": "Plugin which enables embedding and controlling the IDE in the embedded context.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://github.com/EmbeddedMontiArc/Elysium",
+  "bugs": {
+    "url": "https://github.com/EmbeddedMontiArc/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EmbeddedMontiArc/Elysium.git"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@theia/core": "^0.3.8",
+    "@theia/filesystem": "^0.3.8",
+    "@theia/editor": "^0.3.8"
+  },
+  "devDependencies": {}
+}
