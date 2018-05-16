@@ -310,7 +310,6 @@
           <snapshots><enabled /></snapshots>
         </repository>
             <repository>
-                <id>maven-central</id>
                 <releases>
                     <enabled>true</enabled>
                 </releases>
@@ -319,17 +318,6 @@
                 </snapshots>
                 <url>http://central.maven.org/maven2/</url>
             </repository>
-      </repositories>
-		 <id>se-nexus</id>
-      <!-- enable snapshots for the built in central repo to direct -->
-      <!-- all requests to nexus via the mirror -->
-      <repositories>
-        <repository>
-          <id>central</id>
-          <url>http://central</url>
-          <releases><enabled>true</enabled></releases>
-          <snapshots><enabled>true</enabled></snapshots>
-        </repository>
 		  <repository>
              <id>se-public-nexus</id>
 			 <url>http://lab11.se.rwth-aachen.de/nexus/content/groups/public/</url>
