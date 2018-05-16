@@ -22,7 +22,7 @@
 package de.monticore.lang;
 
 grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions , de.monticore.CommonExpressions,
-        de.monticore.common.Common, de.monticore.lang.Matrix {
+        de.monticore.common.Common, de.monticore.lang.Matrix, de.monticore.lang.Optimization {
 
     MathCompilationUnit =
         ("package" package:QualifiedName ";")?
