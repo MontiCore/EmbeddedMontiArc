@@ -29,7 +29,7 @@ export interface QueryHandler {
 }
 
 /**
- * FrontendApplicationContribution responsible for the execution of the correct QueryHandler.
+ * `FrontendApplicationContribution` responsible for the execution of the correct QueryHandler.
  */
 @injectable()
 export class QueryController implements FrontendApplicationContribution {
