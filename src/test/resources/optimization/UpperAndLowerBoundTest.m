@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ * Copyright (c) 2018, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,15 +17,13 @@
  * ******************************************************************************
  */
 
-package calculations;
+package optimization;
 
-script add1
-    [1,2] + [3,4]
-    [(1+2),4]
-    [1,2,4;5,6,7]
-    [1,2]./[2,3]
-    [1,2].'
-    [1+2*4;8]
-    A(1,0)
-    false
+script UpperAndLowerBoundTest
+    minimize(Q x)
+        Q y = x;
+    subject to
+        0 <= x <= 1;
+        x >= -1;
+    end
 end

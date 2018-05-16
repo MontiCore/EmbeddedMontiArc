@@ -20,14 +20,15 @@
  */
 package de.monticore.lang.math.math;
 
-import static org.junit.Assert.assertTrue;
+import de.monticore.lang.math._ast.ASTMathCompilationUnit;
+import de.monticore.lang.math._parser.MathParser;
+import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,12 +36,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.math.math._ast.ASTMathCompilationUnit;
-import de.monticore.lang.math.math._parser.MathParser;
-import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static de.monticore.lang.math.math.PrintAST.printAST;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Robert Heim / Michael von Wenckstern
@@ -48,8 +45,15 @@ import org.junit.Test;
  */
 public class ParserMathTest {
     public static final boolean ENABLE_FAIL_QUICK = false; // otherwise JUnit test will not fail
+    
+    // see bug: https://sselab.de/lab2/private/trac/MontiCore/ticket/2084
     private static List<String> expectedParseErrorModels = Arrays.asList(
-            "src/test/resources/LayoutError.tag")
+            "src/test/resources/Calculations/example2.m",
+            "src/test/resources/Calculations/SteeringAngleCalculator.m",
+            "src/test/resources/forif/example1.m",
+            "src/test/resources/Generation/ForLoop2.m",
+            "src/test/resources/Generation/If3.m",
+            "src/test/resources/symtab/InvalidRange.m")
             .stream().map(s -> Paths.get(s).toString())
             .collect(Collectors.toList());
 
@@ -63,6 +67,21 @@ public class ParserMathTest {
     @Test
     public void testMath() throws RecognitionException, IOException {
         test("m");
+    }
+
+    //@Ignore("test for sselab ticket: https://sselab.de/lab2/private/trac/MontiCore/ticket/2084")
+    @Test
+    public void testFor3() throws IOException {
+        MathParser parser = new MathParser();
+        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/Calculations/example2.m");
+        System.out.println(printAST(streamCompilationUnit.get()));
+    }
+
+    @Test
+    public void testFor2() throws IOException {
+        MathParser parser = new MathParser();
+        Optional<ASTMathCompilationUnit> streamCompilationUnit = parser.parse("src/test/resources/forif/test.m");
+        System.out.println(printAST(streamCompilationUnit.get()));
     }
 
     private void test(String fileEnding) throws IOException {

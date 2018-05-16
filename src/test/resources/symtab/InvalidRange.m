@@ -36,8 +36,8 @@ Q(-5:-3) c = 2;
 
 // 3
 // with MathValueReference
-Q(-4:3) d = 3;
-Q(0:10) e = d ^(2);
+Q(-4:3) d = 1 ^ 2;
+Q(0:10) e = d ^ 2;
 
 // with multiplied ranges
 Q(2:5) f = 4;
@@ -53,7 +53,7 @@ Q(14:22) m = 15;
 Q(4:5) n = m%3;
 
 // with PowerOperator // 7
-Q(-6:3) o = 3 ^(2);
+Q(-6:3) o = 3 ^ 2;
 
 // Matrix Range does not fit
 

@@ -1,7 +1,7 @@
 /*
  * ******************************************************************************
  * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+ * Copyright (c) 2018, MontiCore, All rights reserved.
  *
  * This project is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,15 +17,28 @@
  * ******************************************************************************
  */
 
-package calculations;
+package optimization;
 
-script add1
-    [1,2] + [3,4]
-    [(1+2),4]
-    [1,2,4;5,6,7]
-    [1,2]./[2,3]
-    [1,2].'
-    [1+2*4;8]
-    A(1,0)
-    false
+script ExistingOptimizationVariable
+    // 1. scalar
+    Q x = 3;
+    minimize(x)
+        Q y = 2 * x + 1;
+    subject to
+        -1 <= x <= 1;
+    end
+    // 2. matrix
+    Q^{3,3} a = zeros(3,3);
+    minimize(a)
+        Q b = a * a';
+    subject to
+        -10 <= x <= 10;
+    end
+    // 3. substituted
+    Q squared = a * a;
+    minimize(a)
+        Q b = squared * squared';
+    subject to
+        -10 <= x <= 10;
+    end
 end
