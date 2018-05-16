@@ -1,31 +1,31 @@
 setlocal ENABLEDELAYEDEXPANSION
 
 REM get Model
-"%JAVA_HOME%\bin\java.exe" -jar "%SVG_HOME%\emam2ema.jar" ^
-   %HOME%\model ^
-   %VERIFICATION_HOME%\modelEMA 
+REM "%JAVA_HOME%\bin\java.exe" -jar "%SVG_HOME%\emam2ema.jar" ^
+REM   %HOME%\model ^
+REM   %VERIFICATION_HOME%\modelEMA 
  
 REM XCOPY /E %VERIFICATION_HOME%\modelEMA %HOME%\model
 set adress2=%~f1
 set adress2=%adress2:\scripts\pump\model\=\model\% 
 
-set count=1
-set name=""
-for /f "tokens=*" %%d in (%adress2%) do (
-if !count! equ 3 (set name=%%d & GOTO NEXT)
-set /a count+=1
-)
+REM set count=1
+REM set name=""
+REM for /f "tokens=*" %%d in (%adress2%) do (
+REM if !count! equ 3 (set name=%%d & GOTO NEXT)
+REM set /a count+=1
+REM )
 
-:NEXT
-set adress=%~dp1
-set adress1=%adress:\scripts\pump\model\=\viewverification\modelEMA\%
-set name=%name:~10,-3%
-set adress1=%adress1%%name%.ema
+REM :NEXT
+REM set adress=%~dp1
+REM set adress1=%adress:\scripts\pump\model\pump\views\=\viewverification\modelEMA\pump\model\%
+REM set name=%name:~10,-3%
+REM set adress1=%adress1%%name%.ema
 
 
 REM create Witness
 "%JAVA_HOME%\bin\java.exe" -jar "%VERIFICATION_HOME%\view-verification-0.0.2-SNAPSHOT-jar-with-dependencies.jar" ^
-	%adress1% ^
+	%HOME%\model\pump\model\pumpStationExample\PumpStation.ema ^
 	%adress2% ^
 	%VERIFICATION_HOME%\results
 	
@@ -53,7 +53,7 @@ set temp3=%~n1
 
 REM set /p temp3=<%adress1
 set adress3=%~dp1
-set adress3=%adress3:\scripts\pump\model\pump\=\viewverification\results\witness\%
+set adress3=%adress3:\scripts\pump\model\pump\views\=\viewverification\results\witness\%
 call set adress3=%%adress3:%witnessadress%=%%
 set adress3=%adress3:\=.%
 

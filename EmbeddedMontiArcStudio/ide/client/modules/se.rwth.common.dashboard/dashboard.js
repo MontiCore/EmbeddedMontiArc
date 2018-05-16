@@ -38,7 +38,7 @@ var Dashboard = (function() {
                 username: "EmbeddedMontiArcStudio",
                 reponame: "Pump",
                 branchname: "",
-                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Pump/v&url=/m/pump.zip&openFile=/pumpStationExample/PumpStation.ema"
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Pump/v&url=/m/pump.zip&openFile=/model/pumpStationExample/PumpStation.ema"
             }];
         },
 

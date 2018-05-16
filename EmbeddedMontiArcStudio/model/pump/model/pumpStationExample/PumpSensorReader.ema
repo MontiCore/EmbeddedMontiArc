@@ -1,0 +1,7 @@
+package pumpStationExample;
+
+component PumpSensorReader {
+  ports
+    in Boolean pump,
+    out Boolean pumpState;
+}

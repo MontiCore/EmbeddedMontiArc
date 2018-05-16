@@ -63,9 +63,18 @@ class ClusteringReportingWS extends AbstractReporting {
     }
 }
 
+class PumpReporting extends AbstractReporting {
+    constructor() {
+        super("pump", BATCHES.PUMP.REPORTING);
+        this.logger = Log.getLogger("PUMP REPORTING");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
     AutoPilotReporting: new AutoPilotReporting(),
     AutoPilotReportingWS: new AutoPilotReportingWS,
     ClusteringReporting: new ClusteringReporting(),
     ClusteringReportingWS: new ClusteringReportingWS(),
+	PumpReporting: new PumpReporting()
 };

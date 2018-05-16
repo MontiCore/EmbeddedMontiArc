@@ -4,7 +4,7 @@ const {PATHS, URLS, OPTIONS}                            = require("./constants")
 const Chrome                                            = require("./chrome");
 const {AutoPilotSimulation, ClusteringSimulation}       = require("./simulations");
 const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization} = require("./visualizations");
-const {AutoPilotReporting, ClusteringReporting}         = require("./reportings");
+const {AutoPilotReporting, ClusteringReporting, PumpReporting}         = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
 const Log                                               = require("log4js");
@@ -338,7 +338,12 @@ App.post("/services/pump/test", function(request, response) {
 });
 
 App.post("/services/pump/report", function(request, response) {
+function onExecuted() {
+        Chrome.open(URLS.SHARED + "/r/report.html?ide=false");
+        response.end();
+    }
 
+    PumpReporting.execute(onExecuted);
 });
 
 App.post("/services/pump/reportWS", function(request, response) {

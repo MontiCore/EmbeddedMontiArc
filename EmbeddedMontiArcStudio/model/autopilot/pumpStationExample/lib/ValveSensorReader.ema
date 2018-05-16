@@ -1,7 +1,0 @@
-package pumpStationExample.lib;
-
-component ValveSensorReader {
-  port
-    in int valve,
-    out ValvePosition valvePosition;
-}

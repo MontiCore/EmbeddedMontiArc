@@ -89,6 +89,7 @@ BATCHES.PUMP.VIEWVERIFICATION = {};
 BATCHES.PUMP.VIEWVERIFICATION.ALL    = Path.resolve(PATHS.SCRIPTS, "pump", "verifyAllDesigns.bat");
 BATCHES.PUMP.VIEWVERIFICATION.SINGLE = Path.resolve(PATHS.SCRIPTS, "pump", "verifyDesign.bat");
 BATCHES.PUMP.VISUALIZATION       = Path.resolve(PATHS.SCRIPTS, "pump", "visualize.bat");
+BATCHES.PUMP.REPORTING           		= Path.resolve(PATHS.SCRIPTS, "pump", "report.bat");
 
 /*
  * OPTIONS
