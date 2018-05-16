@@ -20,11 +20,16 @@
  */
 package de.monticore.lang.math._symboltable;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationExpression;
 import de.monticore.lang.math._ast.ASTMathCompilationUnit;
 import de.monticore.lang.math._ast.ASTMathDeclarationExpression;
+import de.monticore.lang.math.math._symboltable.MathForLoopHeadSymbol;
+import de.monticore.lang.math.math._symboltable.MathOptimizationConditionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.*;
 import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
+import de.monticore.lang.optimization._ast.*;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
@@ -217,4 +222,80 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         }
         return -1;
     }
+
+    public void endVisit(final ASTOptimizationVariableDeclarationExpression astExpression) {
+        MathValueSymbol symbol = new MathValueSymbol(astExpression.getName());
+        if (astExpression.getTypeOpt().isPresent())
+            symbol.setType(MathValueType.convert((ASTAssignmentType) astExpression.getTypeOpt().get()));
+        addToScopeAndLinkWithNode(symbol, astExpression);
+    }
+
+    public void endVisit(final ASTOptimizationForLoopExpression astExpression) {
+        MathForLoopExpressionSymbol symbol = new MathForLoopExpressionSymbol();
+        if (astExpression.getHead().getSymbolOpt().isPresent())
+            symbol.setForLoopHead((MathForLoopHeadSymbol) astExpression.getHead().getSymbolOpt().get());
+        for (ASTOptimizationConditionExpression astMathExpression : astExpression.getBodyList())
+            if (astMathExpression.getSymbolOpt().isPresent())
+            symbol.addForLoopBody((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
+        addToScopeAndLinkWithNode(symbol, astExpression);
+    }
+
+    public void endVisit(final ASTOptimizationConditionExpression astExpression) {
+
+        MathExpressionSymbol symbol = null;
+
+        if (astExpression.getSimpleConditionOpt().isPresent()) {
+            ASTOptimizationSimpleConditionExpression simpleExpr = astExpression.getSimpleConditionOpt().get();
+            MathExpressionSymbol left = (MathExpressionSymbol) simpleExpr.getLeft().getSymbolOpt().orElse(null);
+            MathExpressionSymbol right = (MathExpressionSymbol) simpleExpr.getRight().getSymbolOpt().orElse(null);
+            String operator = simpleExpr.getOperator().getOperator();
+            if ((!operator.isEmpty()) && (left != null) && (right != null)) {
+                symbol = new MathOptimizationConditionSymbol(left, operator, right);
+            }
+        } else if (astExpression.getBoundedConditionOpt().isPresent()) {
+            ASTOptimizationBoundsConditionExpression boundExpr = astExpression.getBoundedConditionOpt().get();
+            MathExpressionSymbol lower = (MathExpressionSymbol) boundExpr.getLower().getSymbolOpt().orElse(null);
+            MathExpressionSymbol expr = (MathExpressionSymbol) boundExpr.getExpr().getSymbolOpt().orElse(null);
+            MathExpressionSymbol upper = (MathExpressionSymbol) boundExpr.getUpper().getSymbolOpt().orElse(null);
+            if ((lower != null) && (expr != null) && (upper != null)) {
+                symbol = new MathOptimizationConditionSymbol(lower, expr, upper);
+            }
+        } else if (astExpression.getForLoopConditionOpt().isPresent()) {
+            ASTOptimizationForLoopExpression loopExpr = astExpression.getForLoopConditionOpt().get();
+            if (loopExpr.getSymbolOpt().isPresent()) {
+                symbol = (MathExpressionSymbol) loopExpr.getSymbolOpt().get();
+            }
+        }
+
+        if (symbol != null)
+            addToScopeAndLinkWithNode(symbol, astExpression);
+    }
+
+    public void endVisit(final ASTOptimizationExpression astMathOptimizationExpression) {
+        MathOptimizationExpressionSymbol symbol = new MathOptimizationExpressionSymbol();
+        symbol.setOptimizationType(astMathOptimizationExpression.getOptimizationType().toString());
+        if (astMathOptimizationExpression.getOptimizationVariable().getSymbolOpt().isPresent()) {
+            symbol.setOptimizationVariable((MathValueSymbol) astMathOptimizationExpression.getOptimizationVariable().getSymbolOpt().get());
+        }
+        ASTExpression objective = astMathOptimizationExpression.getObjectiveFunction();
+        if (objective.getSymbolOpt().isPresent()) {
+            symbol.setObjectiveExpression((MathExpressionSymbol) objective.getSymbolOpt().get());
+        }
+        for (ASTOptimizationConditionExpression condition : astMathOptimizationExpression.getConstraintList()) {
+            if (condition.getSymbolOpt().isPresent()) {
+                MathExpressionSymbol conditionSymbol = (MathExpressionSymbol) condition.getSymbolOpt().get();
+                if (conditionSymbol instanceof MathOptimizationConditionSymbol) {
+                    ((MathOptimizationConditionSymbol) conditionSymbol).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariable());
+                } else if (conditionSymbol instanceof MathForLoopExpressionSymbol) {
+                    for (MathExpressionSymbol sym : ((MathForLoopExpressionSymbol) conditionSymbol).getForLoopBody())
+                        if (sym instanceof MathOptimizationConditionSymbol)
+                            ((MathOptimizationConditionSymbol) sym).resolveBoundedExpressionToOptimizationVariable(symbol.getOptimizationVariable());
+                }
+                symbol.getSubjectToExpressions().add(conditionSymbol);
+            }
+        }
+        addToScopeAndLinkWithNode(symbol, astMathOptimizationExpression);
+    }
+
+
 }
