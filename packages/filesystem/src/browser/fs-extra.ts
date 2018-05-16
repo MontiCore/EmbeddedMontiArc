@@ -5,6 +5,7 @@
  */
 
 /* tslint:disable:no-null-keyword */
+/* tslint:disable:no-any */
 
 import IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import { File } from "browserfs/dist/node/core/file";
@@ -12,6 +13,7 @@ import { FileFlag } from "browserfs/dist/node/core/file_flag";
 import Stats from "browserfs/dist/node/core/node_fs_stats";
 import { configure } from "./browserfs-extra";
 import URI from "@elysium/core/lib/common/uri";
+import { ApiError } from "browserfs/dist/node/core/api_error";
 
 let fs: IndexedDBFileSystem;
 
@@ -26,15 +28,19 @@ async function doCreateFileSystem(): Promise<void> {
     else throw new Error("Virtual File System could not be created!");
 }
 
-export async function createFile(p: string, flag: FileFlag, mode: number): Promise<File> {
+async function createPromise(fname: string, ...params: any[]): Promise<any> {
     await createFileSystem();
 
-    return new Promise<File>((resolve, reject) => {
-        fs.createFile(p, flag, mode, (error, file) => {
+    return new Promise<any>((resolve, reject) => {
+        (fs as any)[fname].call(fs, ...params, (error: ApiError, result: any) => {
             if (error) reject(error);
-            else resolve(file);
+            else resolve(result);
         });
     });
+}
+
+export async function createFile(p: string, flag: FileFlag, mode: number): Promise<File> {
+    return createPromise("createFile", p, flag, mode);
 }
 
 export async function exists(p: string): Promise<boolean> {
@@ -48,92 +54,35 @@ export async function exists(p: string): Promise<boolean> {
 }
 
 export async function mkdir(p: string, mode: number): Promise<void> {
-    await createFileSystem();
-
-    return new Promise<void>((resolve, reject) => {
-        fs.mkdir(p, mode, error => {
-            if (error) reject(error);
-            else resolve();
-        });
-    });
+    return createPromise("mkdir", p, mode);
 }
 
 export async function readFile(fname: string, encoding: string | null, flag: FileFlag): Promise<string | Buffer> {
-    await createFileSystem();
-
-    return new Promise<string | Buffer>((resolve, reject) => {
-        fs.readFile(fname, encoding, flag, (error, content) => {
-            if (error) reject(error);
-            else resolve(content);
-        });
-    });
+    return createPromise("readFile", fname, encoding, flag);
 }
 
 export async function readdir(p: string): Promise<string[]> {
-    await createFileSystem();
-
-    return new Promise<string[]>((resolve, reject) => {
-        fs.readdir(p, (error, contents) => {
-            if (error) reject(error);
-            else resolve(contents);
-        });
-    });
+    return createPromise("readdir", p);
 }
 
 export async function rename(oldPath: string, newPath: string): Promise<void> {
-    await createFileSystem();
-
-    return new Promise<void>((resolve, reject) => {
-        fs.rename(oldPath, newPath, error => {
-            if (error) reject(error);
-            else resolve();
-        });
-    });
+    return createPromise("rename", oldPath, newPath);
 }
 
 export async function rmdir(p: string): Promise<void> {
-    await createFileSystem();
-
-    return new Promise<void>((resolve, reject) => {
-        fs.rmdir(p, error => {
-            if (error) reject(error);
-            else resolve();
-        });
-    });
+    return createPromise("rmdir", p);
 }
 
 export async function stat(p: string, isLstat: boolean): Promise<Stats> {
-    await createFileSystem();
-
-    return new Promise<Stats>((resolve, reject) => {
-        fs.stat(p, isLstat, (error, stats) => {
-            if (error) reject(error);
-            else resolve(stats);
-        });
-    });
+    return createPromise("stat", p, isLstat);
 }
 
 export async function unlink(p: string): Promise<void> {
-    await createFileSystem();
-
-    return new Promise<void>((resolve, reject) => {
-        fs.unlink(p, error => {
-            if (error) reject(error);
-            else resolve();
-        });
-    });
+    return createPromise("unlink", p);
 }
 
-// tslint:disable-next-line:no-any
 export async function writeFile(fname: string, data: any, encoding: string | null, flag: FileFlag, mode: number): Promise<void> {
-    await createFileSystem();
-
-    return new Promise<void>((resolve, reject) => {
-        fs.writeFile(fname, data, encoding, flag, mode, error => {
-            if (error) reject(error);
-            else resolve();
-        });
-    });
+    return createPromise("writeFile", fname, data, encoding, flag, mode);
 }
 
 export async function mkdirp(p: string): Promise<void> {
