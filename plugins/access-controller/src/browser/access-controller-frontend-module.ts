@@ -8,7 +8,11 @@ import { ContainerModule } from "inversify";
 import { bindContributionProvider } from "@theia/core/lib/common";
 import { AccessContribution, AccessController } from "./access-controller";
 import { FrontendApplicationContribution } from "@theia/core/lib/browser";
-import { FileSystemAccessContribution, EditorManagerAccessContribution } from "./access-contributions";
+import {
+    FileSystemAccessContribution,
+    EditorManagerAccessContribution,
+    URIFactoryAccessContribution, WorkspaceAccessContribution
+} from "./access-contributions";
 
 export default new ContainerModule(bind => {
     bindContributionProvider(bind, AccessContribution);
@@ -26,5 +30,15 @@ export default new ContainerModule(bind => {
     bind(EditorManagerAccessContribution).toSelf().inSingletonScope();
     bind(AccessContribution).toDynamicValue(
         ctx => ctx.container.get(EditorManagerAccessContribution)
+    ).inSingletonScope();
+
+    bind(URIFactoryAccessContribution).toSelf().inSingletonScope();
+    bind(AccessContribution).toDynamicValue(
+        ctx => ctx.container.get(URIFactoryAccessContribution)
+    ).inSingletonScope();
+
+    bind(WorkspaceAccessContribution).toSelf().inSingletonScope();
+    bind(AccessContribution).toDynamicValue(
+        ctx => ctx.container.get(WorkspaceAccessContribution)
     ).inSingletonScope();
 });
