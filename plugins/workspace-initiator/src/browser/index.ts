@@ -5,3 +5,4 @@
  */
 
 export * from "./workspace-initiator-contribution";
+export * from "./workspace-initiator-state";

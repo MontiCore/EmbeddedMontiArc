@@ -12,18 +12,14 @@ import { FrontendApplicationContribution } from "@theia/core/lib/browser/fronten
 import { FrontendApplicationStateService, FrontendApplicationState } from "@theia/core/lib/browser/frontend-application-state";
 import { DisposableCollection } from "@theia/core/lib/common";
 import { WidgetOpenerOptions } from "@theia/core/lib/browser/widget-open-handler";
-import { StorageService, ApplicationShell, OpenerService, OpenHandler } from "@theia/core/lib/browser";
+import { ApplicationShell, OpenerService, OpenHandler } from "@theia/core/lib/browser";
 import WidgetOptions = ApplicationShell.WidgetOptions;
+import { WorkspaceInitiatorStateService } from "./workspace-initiator-state";
 
 /**
  * The location of the configs.json in the workspace.
  */
-export const PATH: string = "/.elysium/workspace-initiator/configs.json";
-
-/**
- * The key for the storage of the flags.
- */
-export const STORAGE_KEY: string = "workspace-initiator";
+const PATH: string = "/.elysium/workspace-initiator/configs.json";
 
 /**
  * A single entry of the array in configs.json for the WorkspaceInitiator.
@@ -36,30 +32,14 @@ export interface WorkspaceInitiatorConfig {
 }
 
 /**
- * The flags representing whether a certain initiation step has already been done.
- */
-export interface WorkspaceInitiatorFlags {
-    readonly panelOpened: boolean;
-    readonly filesOpened: boolean;
-}
-
-/**
- * Default flags for the case that the workspace has not been opened yet.
- */
-export const defaultWorkspaceInitiatorFlags: WorkspaceInitiatorFlags = {
-    panelOpened: false,
-    filesOpened: false
-};
-
-/**
- * FrontendApplicationContribution which handles the initiation of a newly opened workspace.
+ * `FrontendApplicationContribution` which handles the initiation of a newly opened workspace.
  */
 @injectable()
 export class WorkspaceInitiatorContribution implements FrontendApplicationContribution {
     @inject(FileSystem) protected readonly fileSystem: FileSystem;
     @inject(WorkspaceServer) protected readonly workspace: WorkspaceServer;
-    @inject(FrontendApplicationStateService) protected readonly stateService: FrontendApplicationStateService;
-    @inject(StorageService) protected readonly storageService: StorageService;
+    @inject(FrontendApplicationStateService) protected readonly appStateService: FrontendApplicationStateService;
+    @inject(WorkspaceInitiatorStateService) protected readonly stateService: WorkspaceInitiatorStateService;
     @inject(ApplicationShell) protected readonly shell: ApplicationShell;
     @inject(OpenerService) protected readonly openerService: OpenerService;
 
@@ -67,7 +47,7 @@ export class WorkspaceInitiatorContribution implements FrontendApplicationContri
 
     public async onStart(): Promise<void> {
         this.toDispose.push(
-            this.stateService.onStateChanged(
+            this.appStateService.onStateChanged(
                 (state: FrontendApplicationState) => this.handleStateChanged(state)
             )
         );
@@ -81,20 +61,10 @@ export class WorkspaceInitiatorContribution implements FrontendApplicationContri
         }
     }
 
-    protected async getData(): Promise<WorkspaceInitiatorFlags> {
-        return this.storageService.getData<WorkspaceInitiatorFlags>(STORAGE_KEY, defaultWorkspaceInitiatorFlags);
-    }
-
-    protected async setData(data: WorkspaceInitiatorFlags): Promise<void> {
-        return this.storageService.setData<WorkspaceInitiatorFlags>(STORAGE_KEY, data);
-    }
-
     protected async handleReadyState(): Promise<void> {
-        const flags = await this.getData();
-
         await Promise.all([
-            flags.panelOpened ? Promise.resolve() : this.openPanel(),
-            flags.filesOpened ? Promise.resolve() : this.openFiles()
+            this.stateService.getPanelOpened() ? Promise.resolve() : this.openPanel(),
+            this.stateService.getFilesOpened() ? Promise.resolve() : this.openFiles()
         ]);
     }
 
@@ -106,28 +76,17 @@ export class WorkspaceInitiatorContribution implements FrontendApplicationContri
     }
 
     protected async openPanel(): Promise<void> {
-        const data = { panelOpened: true };
-        const currentData = await this.getData();
-        const newData = Object.assign(currentData, data);
-
         this.shell.expandPanel("left");
 
-        return this.setData(newData);
+        return this.stateService.setPanelOpened(true);
     }
 
     protected async handleRoot(rootURI: URI): Promise<void> {
         const servicePathURI = rootURI.resolve(PATH);
         const servicePath = servicePathURI.toString();
 
-        if (await this.fileSystem.exists(servicePath)) {
-            return this.handleServicePath(rootURI, servicePathURI);
-        } else {
-            const data = { filesOpened: true };
-            const currentData = await this.getData();
-            const newData: WorkspaceInitiatorFlags = Object.assign(currentData, data);
-
-            return this.setData(newData);
-        }
+        if (await this.fileSystem.exists(servicePath)) return this.handleServicePath(rootURI, servicePathURI);
+        else return this.stateService.setFilesOpened(true);
     }
 
     protected async handleServicePath(rootURI: URI, servicePathURI: URI): Promise<void> {
@@ -143,11 +102,7 @@ export class WorkspaceInitiatorContribution implements FrontendApplicationContri
             await this.handleEntry(rootURI, entry);
         }
 
-        const data = { filesOpened: true };
-        const currentData = await this.getData();
-        const newData: WorkspaceInitiatorFlags = Object.assign(currentData, data);
-
-        return this.setData(newData);
+        return this.stateService.setFilesOpened(true);
     }
 
     protected async handleEntry(rootURI: URI, entry: WorkspaceInitiatorConfig): Promise<void> {
