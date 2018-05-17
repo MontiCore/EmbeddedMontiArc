@@ -37,10 +37,14 @@ export class HideControlsQueryHandler implements QueryHandler {
 
             await this.appStateService.reachedState("ready");
 
-            if (+bits[0]) this.shell.collapsePanel("left");
-            if (+bits[1]) this.shell.collapsePanel("right");
+            return this.handleBits(bits);
         } else {
             return this.stateService.setPanelOpened(true);
         }
+    }
+
+    protected async handleBits(bits: string[]): Promise<void> {
+        if (+bits[0]) this.shell.collapsePanel("left");
+        if (+bits[1]) this.shell.collapsePanel("right");
     }
 }
