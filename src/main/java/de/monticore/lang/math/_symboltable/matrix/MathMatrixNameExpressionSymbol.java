@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.math._symboltable.matrix;
 
-import de.monticore.lang.math._symboltable.expression.IMathNamedExpression;
 import de.monticore.lang.math._ast.ASTMathMatrixNameExpression;
+import de.monticore.lang.math._symboltable.expression.IMathNamedExpression;
 
 import java.util.Optional;
 
@@ -60,11 +60,11 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
     }
 
     public boolean hasEndOperator() {
-        return astMathMatrixNameExpression.get().getEndOperator().isPresent();
+        return astMathMatrixNameExpression.get().getMathMatrixAccessExpression().getMathMatrixAccessList().size() > 1;
     }
 
     public boolean hasMatrixAccessExpression() {
-        return astMathMatrixNameExpression.isPresent()&&astMathMatrixNameExpression.get().getMathMatrixAccessExpression().isPresent();
+        return astMathMatrixNameExpression.isPresent() && (!astMathMatrixNameExpression.get().getMathMatrixAccessExpression().isEmptyMathMatrixAccesss());
     }
 
     public MathMatrixAccessOperatorSymbol getMathMatrixAccessOperatorSymbol() {
@@ -77,7 +77,7 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
 
     public void setMathMatrixAccessOperatorSymbol(MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
         if (astMathMatrixNameExpression.isPresent()) {
-            astMathMatrixNameExpression.get().getMathMatrixAccessExpression().get().setSymbol(mathMatrixAccessOperatorSymbol);
+            astMathMatrixNameExpression.get().getMathMatrixAccessExpression().setSymbol(mathMatrixAccessOperatorSymbol);
         }
         this.mathMatrixAccessOperatorSymbol = Optional.of(mathMatrixAccessOperatorSymbol);
     }
@@ -87,13 +87,8 @@ public class MathMatrixNameExpressionSymbol extends MathMatrixExpressionSymbol i
         String result = "";
         result += nameToAccess;
         result += "(";
-        if (isMathMatrixAccessOperatorSymbolPresent())
-            result += getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
-        else if (isASTMathMatrixNamePresent() && astMathMatrixNameExpression.get().getEndOperator().isPresent()) {
-            result += astMathMatrixNameExpression.get().getEndOperator().get().getSymbol();
-        }
+        result += getMathMatrixAccessOperatorSymbol().getTextualRepresentation();
         result += ")";
-
         return result;
     }
 

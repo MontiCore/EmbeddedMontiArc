@@ -20,11 +20,10 @@
  */
 package de.monticore.lang.math._symboltable.expression;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTDimension;
-import de.monticore.lang.math._ast.ASTMathArithmeticExpression;
-import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
-import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
+import de.monticore.lang.math._ast.ASTRanges;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 
 import java.util.ArrayList;
@@ -119,29 +118,23 @@ public class MathValueType extends MathExpressionSymbol {
     public static MathValueType convert(ASTAssignmentType type) {
         MathValueType mathValueType = new MathValueType();
 
-        mathValueType.setProperties(type.getMatrixProperty());
+        mathValueType.setProperties(type.getMatrixPropertyList());
 
-        if (type.commonMatrixTypeIsPresent()) {
-            //TODO type
-            ASTCommonMatrixType commonMatrixType = type.getCommonMatrixType().get();
-            mathValueType.setType(commonMatrixType.getElementType());
+        ASTElementType commonType = new ASTElementType();
+        String rangeAsString;
+        ASTRanges range = type.getElementType().getRanges();
+        if (type.getElementType().getRanges().isPresentStep())
+            rangeAsString = String.format("(%s:%s:%s)", range.getMin(), range.getStep(), range.getMax());
+        else
+            rangeAsString = String.format("(%s:%s)", range.getMin(), range.getMax());
+        commonType.setTElementType(type.getElementType().getName() + rangeAsString);
 
-            for (ASTCommonDimensionElement astCommonDimensionElement : commonMatrixType.getCommonDimension().getCommonDimensionElements()) {
-                if (astCommonDimensionElement.getName().isPresent()) {
-                    mathValueType.addDimension(new MathNameExpressionSymbol(astCommonDimensionElement.getName().get()));
-                } else if (astCommonDimensionElement.getUnitNumber().isPresent()) {
-                    mathValueType.addDimension(new MathNumberExpressionSymbol(astCommonDimensionElement.getUnitNumber().get().getNumber().get()));
-                }
-            }
-        } else if (type.getElementType().isPresent()) {
-            //TODO type
-            mathValueType.setType(type.getElementType().get());
+        mathValueType.setType(commonType);
 
-            if (type.getDim().isPresent()) {
-                ASTDimension astDimension = type.getDim().get();
-                for (ASTMathArithmeticExpression astMathArithmeticExpression : astDimension.getMathArithmeticExpressions()) {
-                    mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbol().get());
-                }
+        if (type.getDimOpt().isPresent()) {
+            ASTDimension astDimension = type.getDimOpt().get();
+            for (ASTExpression astMathArithmeticExpression : astDimension.getMatrixDimList()) {
+                mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbolOpt().get());
             }
         }
 

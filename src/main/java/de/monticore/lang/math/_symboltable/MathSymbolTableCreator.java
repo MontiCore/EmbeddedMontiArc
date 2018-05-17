@@ -20,14 +20,24 @@
  */
 package de.monticore.lang.math._symboltable;
 
+import de.monticore.assignmentexpressions._ast.ASTDecSuffixExpression;
+import de.monticore.assignmentexpressions._ast.ASTIncSuffixExpression;
+import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
+import de.monticore.commonexpressions._ast.*;
+import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._matrixprops.MatrixPropertiesIdentifier;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.math._ast.*;
-import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.types2._ast.ASTImportStatement;
-import de.monticore.symboltable.*;
+import de.monticore.lang.matrix._ast.ASTMathMatrixAccess;
+import de.monticore.lang.matrix._ast.ASTMathMatrixAccessExpression;
+import de.monticore.lang.matrix._ast.ASTMathMatrixValueExplicitExpression;
+import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
+import de.monticore.symboltable.ArtifactScope;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.types.types._ast.ASTImportStatement;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -65,11 +75,11 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void visit(final ASTMathCompilationUnit compilationUnit) {
         Log.debug("Building Symboltable for Script: " + compilationUnit.getMathScript().getName(),
                 MathSymbolTableCreator.class.getSimpleName());
-        compilationUnitPackage = Names.getQualifiedName(compilationUnit.getPackage());
+        compilationUnitPackage = Names.getQualifiedName(compilationUnit.getPackage().getPartList());
 
         // imports
         List<ImportStatement> imports = new ArrayList<>();
-        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatements()) {
+        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatementList()) {
             String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportList());
             ImportStatement importStatement = new ImportStatement(qualifiedImport,
                     astImportStatement.isStar());
@@ -95,18 +105,12 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         removeCurrentScope();
     }
 
-    /*
-        public void endVisit(final ASTMathForLoopExpression forLoopExpression){
-            addToScopeAndLinkWithNode(new MathForSymbol(""),forLoopExpression);
-        }
-    */
-
     public void endVisit(final ASTMathForLoopExpression astMathForLoopExpression) {
         MathForLoopExpressionSymbol symbol = new MathForLoopExpressionSymbol();
 
-        symbol.setForLoopHead((MathForLoopHeadSymbol) astMathForLoopExpression.getHead().getSymbol().get());
-        for (ASTMathExpression astMathExpression : astMathForLoopExpression.getBody().getMathExpressions())
-            symbol.addForLoopBody((MathExpressionSymbol) astMathExpression.getSymbol().get());
+        symbol.setForLoopHead((MathForLoopHeadSymbol) astMathForLoopExpression.getHead().getSymbolOpt().get());
+        for (ASTExpression astMathExpression : astMathForLoopExpression.getBodyList())
+            symbol.addForLoopBody((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathForLoopExpression);
     }
 
@@ -114,7 +118,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         MathForLoopHeadSymbol symbol = new MathForLoopHeadSymbol();
 
         symbol.setNameLoopVariable(astMathForLoopHead.getName());
-        symbol.setMathExpression((MathExpressionSymbol) astMathForLoopHead.getMathExpression().getSymbol().get());
+        symbol.setMathExpression((MathExpressionSymbol) astMathForLoopHead.getExpression().getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathForLoopHead);
     }
 
@@ -129,7 +133,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
         symbol.setType(MathValueType.convert(assignmentDeclarationExpression.getType()));
         Log.info(assignmentDeclarationExpression.toString(), "AST:");
-        symbol.setValue((MathExpressionSymbol) assignmentDeclarationExpression.getMathExpression().getSymbol().get());
+        symbol.setValue((MathExpressionSymbol) assignmentDeclarationExpression.getExpression().getSymbolOpt().get());
 
         addToScopeAndLinkWithNode(symbol, assignmentDeclarationExpression);
     }
@@ -137,209 +141,207 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathAssignmentExpression assignmentExpression) {
         MathAssignmentExpressionSymbol symbol = new MathAssignmentExpressionSymbol();
         //TODO change value
-        if (assignmentExpression.getName().isPresent()) {
-            symbol.setNameOfMathValue(assignmentExpression.getName().get());
-        } else if (assignmentExpression.getDottedName().isPresent()) {
-            symbol.setNameOfMathValue(Joiners.DOT.join(assignmentExpression.getDottedName().get().getNames()));
-        } else if (assignmentExpression.getMathMatrixNameExpression().isPresent()) {
-            ASTMathMatrixNameExpression astMathMatrixNameExpression = assignmentExpression.getMathMatrixNameExpression().get();
-          /*  String result = astMathMatrixNameExpression.getName().get();
+        if (assignmentExpression.getNameOpt().isPresent()) {
+            symbol.setNameOfMathValue(assignmentExpression.getNameOpt().get());
+        } else if (assignmentExpression.getMathDottedNameExpressionOpt().isPresent()) {
+            symbol.setNameOfMathValue(Joiners.DOT.join(assignmentExpression.getMathDottedNameExpressionOpt().get().getNameList()));
+        } else if (assignmentExpression.getMathMatrixNameExpressionOpt().isPresent()) {
+            ASTMathMatrixNameExpression astMathMatrixNameExpression = assignmentExpression.getMathMatrixNameExpressionOpt().get();
+          /*  String result = astMathMatrixNameExpression.getNameOpt().get();
             if (astMathMatrixNameExpression.getMathMatrixAccessExpression().isPresent())
-                result += "(" + ((MathExpressionSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get()).getTextualRepresentation() + ")";
+                result += "(" + ((MathExpressionSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpressionOpt().get().getSymbolOpt().get()).getTextualRepresentation() + ")";
             else if (astMathMatrixNameExpression.getEndOperator().isPresent())
-                result += ((MathExpressionSymbol) astMathMatrixNameExpression.getEndOperator().get().getSymbol().get()).getTextualRepresentation();
+                result += ((MathExpressionSymbol) astMathMatrixNameExpression.getEndOperatorOpt().get().getSymbolOpt().get()).getTextualRepresentation();
             else {
                 Log.error("Case not handled!");
             }*/
-            symbol.setNameOfMathValue(astMathMatrixNameExpression.getName().get());
-            //System.out.println(astMathMatrixNameExpression.getMathMatrixAccessExpression().get().toString());
-            symbol.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get());
+            symbol.setNameOfMathValue(astMathMatrixNameExpression.getName());
+            //System.out.println(astMathMatrixNameExpression.getMathMatrixAccessExpressionOpt().get().toString());
+            symbol.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().getSymbolOpt().get());
         }
         symbol.setAssignmentOperator(MathAssignmentOperator.convert(assignmentExpression.getMathAssignmentOperator()));
-        //System.out.println(assignmentExpression.getMathExpression().toString());
-        symbol.setExpressionSymbol((MathExpressionSymbol) assignmentExpression.getMathExpression().getSymbol().get());
+        //System.out.println(assignmentExpression.getExpression().toString());
+        symbol.setExpressionSymbol((MathExpressionSymbol) assignmentExpression.getExpression().getSymbolOpt().get());
 
         addToScopeAndLinkWithNode(symbol, assignmentExpression);
     }
 
-    public void endVisit(final ASTMathNumberExpression astMathNumberExpression) {
+    public void endVisit(final ASTNumberExpression astMathNumberExpression) {
         MathNumberExpressionSymbol symbol = new MathNumberExpressionSymbol();
         JSValue jsValue = new JSValue();
-        if (astMathNumberExpression.getNumber().unitNumberIsPresent()) {
+        if (astMathNumberExpression.getNumberWithUnit().isPresentUn()) {
             handleUnitNumber(astMathNumberExpression, jsValue);
         }
-        if (astMathNumberExpression.getNumber().complexNumberIsPresent()) {
-            jsValue.setRealNumber(astMathNumberExpression.getNumber().getComplexNumber().get().getReal());
-            jsValue.setImagNumber(astMathNumberExpression.getNumber().getComplexNumber().get().getImg());
+        if (astMathNumberExpression.getNumberWithUnit().isComplexNumber()) {
+            jsValue.setRealNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getComplexNumber().get().getRealNumber()));
+            jsValue.setImagNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getComplexNumber().get().getImagineNumber()));
         }
         symbol.setValue(jsValue);
         addToScopeAndLinkWithNode(symbol, astMathNumberExpression);
     }
 
-    private void handleUnitNumber(ASTMathNumberExpression astMathNumberExpression, JSValue jsValue) {
-        if (astMathNumberExpression.getNumber().getUnitNumber().get().getNumber().isPresent())
-            jsValue.setRealNumber(astMathNumberExpression.getNumber().getUnitNumber().get().getNumber().get());
-        if (astMathNumberExpression.getNumber().getUnitNumber().get().getUnit().isPresent())
-            jsValue.setUnit(astMathNumberExpression.getNumber().getUnitNumber().get().getUnit().get());
+    private void handleUnitNumber(ASTNumberExpression astMathNumberExpression, JSValue jsValue) {
+        if (astMathNumberExpression.getNumberWithUnit().getNumber().isPresent())
+            jsValue.setRealNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getNumber().get()));
+        if (astMathNumberExpression.getNumberWithUnit().isPresentUn())
+            jsValue.setUnit(astMathNumberExpression.getNumberWithUnit().getUnit());
     }
 
-    public void endVisit(final ASTMathNameExpression astMathNameExpression) {
+    public void endVisit(final ASTNameExpression astMathNameExpression) {
         MathNameExpressionSymbol symbol = new MathNameExpressionSymbol(astMathNameExpression.getName());
 
         addToScopeAndLinkWithNode(symbol, astMathNameExpression);
     }
 
     public void endVisit(final ASTMathDottedNameExpression astMathNameExpression) {
-        MathNameExpressionSymbol symbol = new MathNameExpressionSymbol(astMathNameExpression.getNames().get(0) + "." + astMathNameExpression.getNames().get(1));
+        MathNameExpressionSymbol symbol = new MathNameExpressionSymbol(astMathNameExpression.getName(0) + "." + astMathNameExpression.getName(1));
 
         addToScopeAndLinkWithNode(symbol, astMathNameExpression);
     }
 
-    public void endVisit(final ASTMathMatrixArithmeticMatrixValueExpression astMathMatrixArithmeticMatrixValueExpression) {
-        MathExpressionSymbol symbol = (MathExpressionSymbol) astMathMatrixArithmeticMatrixValueExpression.getMathValueMatrixExpression().getSymbol().get();
+//    public void endVisit(final ASTMathArithmeticMatrixAdditionExpression astMathArithmeticMatrixAdditionExpression) {
+//        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+//        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixAdditionExpression.
+//                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixAdditionExpression.
+//                getMathArithmeticMatrixExpressions().get(1), "+");
+//        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixAdditionExpression);
+//    }
+//
+//    public void endVisit(final ASTMathArithmeticMatrixSubtractionExpression astMathArithmeticMatrixSubtractionExpression) {
+//        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+//        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixSubtractionExpression.
+//                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixSubtractionExpression.
+//                getMathArithmeticMatrixExpressions().get(1), "-");
+//        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixSubtractionExpression);
+//
+//    }
+//
+//    public void endVisit(final ASTMathArithmeticMatrixMultiplicationExpression astMathArithmeticMatrixMultiplicationExpression) {
+//        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+//        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixMultiplicationExpression.
+//                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixMultiplicationExpression.
+//                getMathArithmeticMatrixExpressions().get(1), "*");
+//        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixMultiplicationExpression);
+//    }
 
-        addToScopeAndLinkWithNode(symbol, astMathMatrixArithmeticMatrixValueExpression);
-    }
-
-    public void endVisit(ASTMathMatrixElementAccessExpression astMathMatrixElementAccessExpression) {
-        // MathMatrixNameExpressionSymbol symbol = new MathMatrixNameExpressionSymbol(astMathMatrixElementAccessExpression.getMathMatrixNameExpression().getName().get());
-        //symbol.setAstMathMatrixNameExpression(astMathMatrixElementAccessExpression.getMathMatrixNameExpression());
-        addToScopeAndLinkWithNode(astMathMatrixElementAccessExpression.getMathMatrixNameExpression().getSymbol().get(), astMathMatrixElementAccessExpression);
-    }
-
-    public void endVisit(final ASTMathArithmeticMatrixAdditionExpression astMathArithmeticMatrixAdditionExpression) {
+    public void endVisit(final ASTMathArithmeticMatrixLeftDivideExpression astExpr) {
         MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
-        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixAdditionExpression.
-                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixAdditionExpression.
-                getMathArithmeticMatrixExpressions().get(1), "+");
-        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixAdditionExpression);
+        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astExpr.
+                getExpression(0), astExpr.
+                getExpression(1), "\\");
+        addToScopeAndLinkWithNode(symbol, astExpr);
     }
 
-    public void endVisit(final ASTMathArithmeticMatrixSubtractionExpression astMathArithmeticMatrixSubtractionExpression) {
+    public void endVisit(final ASTMathArithmeticMatrixSolutionExpression astExpr) {
         MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
-        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixSubtractionExpression.
-                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixSubtractionExpression.
-                getMathArithmeticMatrixExpressions().get(1), "-");
-        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixSubtractionExpression);
-
+        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astExpr.
+                getExpression(0), astExpr.
+                getExpression(1), "\\\\");
+        addToScopeAndLinkWithNode(symbol, astExpr);
     }
 
-    public void endVisit(final ASTMathArithmeticMatrixMultiplicationExpression astMathArithmeticMatrixMultiplicationExpression) {
-        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
-        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixMultiplicationExpression.
-                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixMultiplicationExpression.
-                getMathArithmeticMatrixExpressions().get(1), "*");
-        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixMultiplicationExpression);
-    }
+//    // does not exist anymore
+//    public void endVisit(final ASTMathArithmeticMatrixPowerOfExpression astMathArithmeticMatrixPowerOfExpression) {
+//        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+//        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixPowerOfExpression.
+//                getMathArithmeticMatrixExpression(), astMathArithmeticMatrixPowerOfExpression.
+//                getMathValueExpression(), "^");
+//        //System.out.println("endVisit(ASTMathArithmeticMatrixPowerOfExpression was called");
+//        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixPowerOfExpression);
+//    }
 
-    public void endVisit(final ASTMathArithmeticMatrixDivisionExpression astMathArithmeticMatrixDivisionExpression) {
-      /*  MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
-        symbol.setMathOperator("/");
-        symbol.setLeftExpression((MathExpressionSymbol) astMathArithmeticMatrixMultiplicationExpression.getMathArithmeticMatrixExpressions().get(0).getSymbol().get());
-        symbol.setRightExpression((MathExpressionSymbol) astMathArithmeticMatrixMultiplicationExpression.getMathArithmeticMatrixExpressions().get(1).getSymbol().get());
-        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixMultiplicationExpression);
-    */
-        Log.error("0xENVIMAARMADIEX not handled!");
-    }
-
-    public void endVisit(final ASTMathArithmeticMatrixPowerOfExpression astMathArithmeticMatrixPowerOfExpression) {
+    public void endVisit(final ASTMathArithmeticMatrixEEPowExpression astMathArithmeticMatrixPowerOfExpression) {
         MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixPowerOfExpression.
-                getMathArithmeticMatrixExpression(), astMathArithmeticMatrixPowerOfExpression.
-                getMathValueExpression(), "^");
-        //System.out.println("endVisit(ASTMathArithmeticMatrixPowerOfExpression was called");
+                getExpression(0), astMathArithmeticMatrixPowerOfExpression.
+                getExpression(1), ".^");
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixPowerOfExpression);
     }
 
-
-    public void endVisit(final ASTMathArithmeticMatrixEEPowerOfExpression astMathArithmeticMatrixPowerOfExpression) {
-        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
-        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixPowerOfExpression.
-                getMathArithmeticMatrixExpression(), astMathArithmeticMatrixPowerOfExpression.
-                getMathArithmeticExpression(), ".^");
-        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixPowerOfExpression);
-    }
-
-    public void endVisit(final ASTMathArithmeticMatrixEEMultiplicationExpression astMathArithmeticMatrixMultiplicationExpression) {
+    public void endVisit(final ASTMathArithmeticMatrixEEMultExpression astMathArithmeticMatrixMultiplicationExpression) {
         MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixMultiplicationExpression.
-                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixMultiplicationExpression.
-                getMathArithmeticMatrixExpressions().get(1), ".*");
+                getExpression(0), astMathArithmeticMatrixMultiplicationExpression.
+                getExpression(1), ".*");
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixMultiplicationExpression);
     }
 
 
-    public void endVisit(final ASTMathArithmeticMatrixEEDivisionExpression astMathArithmeticMatrixDivisionExpression) {
+    public void endVisit(final ASTMathArithmeticMatrixEERightDivideExpression astMathArithmeticMatrixDivisionExpression) {
         MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixDivisionExpression.
-                getMathArithmeticMatrixExpressions().get(0), astMathArithmeticMatrixDivisionExpression.
-                getMathArithmeticMatrixExpressions().get(1), "./");
+                getExpression(0), astMathArithmeticMatrixDivisionExpression.
+                getExpression(1), "./");
+        addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixDivisionExpression);
+    }
+
+    public void endVisit(final ASTMathArithmeticMatrixEELeftDivideExpression astMathArithmeticMatrixDivisionExpression) {
+        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixDivisionExpression.
+                getExpression(0), astMathArithmeticMatrixDivisionExpression.
+                getExpression(1), ".\\");
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixDivisionExpression);
     }
 
     public void endVisit(final ASTMathArithmeticMatrixTransposeExpression astMathArithmeticMatrixTransposeExpression) {
         MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMatrixTransposeExpression.
-                getMathArithmeticMatrixExpression(), null, "\'");
+                getExpression(), null, ".\'");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixTransposeExpression);
     }
 
-
+    public void endVisit(final ASTMathArithmeticMatrixComplexTransposeExpression astExpr) {
+        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astExpr.
+                getExpression(), null, "\'");
+        addToScopeAndLinkWithNode(symbol, astExpr);
+    }
 
     /*
     public void endVisit(final ASTMathArithmeticMatrixPrePlusExpression astMathArithmeticMatrixPreMinusExpression) {
-        MathExpressionSymbol symbol = new MathMatrixPreOperatorSymbol("+", (MathExpressionSymbol) astMathArithmeticMatrixPreMinusExpression.getMathValueMatrixExpression().getSymbol().get());
+        MathExpressionSymbol symbol = new MathMatrixPreOperatorSymbol("+", (MathExpressionSymbol) astMathArithmeticMatrixPreMinusExpression.getMathValueMatrixExpression().getSymbolOpt().get());
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMatrixPreMinusExpression);
     }*/
 
     public void endVisit(final ASTMathMatrixValueExplicitExpression astMathMatrixValueExplicitExpression) {
-
-        if (astMathMatrixValueExplicitExpression.mathVectorExpressionIsPresent()) {
-            ASTMathVectorExpression astMathVectorExpression = astMathMatrixValueExplicitExpression.getMathVectorExpression().get();
-            MathMatrixVectorExpressionSymbol symbol = new MathMatrixVectorExpressionSymbol();
-            if (astMathVectorExpression.getMathArithmeticExpressions().size() == 3) {
-                symbol.setStart((MathExpressionSymbol) astMathVectorExpression.getMathArithmeticExpressions().get(0).getSymbol().get());
-                symbol.setStep((MathExpressionSymbol) astMathVectorExpression.getMathArithmeticExpressions().get(1).getSymbol().get());
-                symbol.setEnd((MathExpressionSymbol) astMathVectorExpression.getMathArithmeticExpressions().get(2).getSymbol().get());
-            } else {
-                symbol.setStart((MathExpressionSymbol) astMathVectorExpression.getMathArithmeticExpressions().get(0).getSymbol().get());
-                symbol.setEnd((MathExpressionSymbol) astMathVectorExpression.getMathArithmeticExpressions().get(1).getSymbol().get());
-            }
-
-            addToScopeAndLinkWithNode(symbol, astMathMatrixValueExplicitExpression);
-            //Log.error("0xENVIMAMAVAEXEX Case not handled!");
-        } else {
-            MathMatrixArithmeticValueSymbol symbol = new MathMatrixArithmeticValueSymbol();
-            for (ASTMathMatrixAccessExpression astMathMatrixAccessExpression : astMathMatrixValueExplicitExpression.getMathMatrixAccessExpressions()) {
-                symbol.addMathMatrixAccessSymbol((MathMatrixAccessOperatorSymbol) astMathMatrixAccessExpression.getSymbol().get());
-            }
-
-            MatrixPropertiesIdentifier identifier = new MatrixPropertiesIdentifier(symbol);
-            symbol.setMatrixProperties(identifier.identifyMatrixProperties());
-            addToScopeAndLinkWithNode(symbol, astMathMatrixValueExplicitExpression);
+        MathMatrixArithmeticValueSymbol symbol = new MathMatrixArithmeticValueSymbol();
+        for (ASTMathMatrixAccessExpression astMathMatrixAccessExpression : astMathMatrixValueExplicitExpression.getMathMatrixAccessExpressionList()) {
+            symbol.addMathMatrixAccessSymbol((MathMatrixAccessOperatorSymbol) astMathMatrixAccessExpression.getSymbolOpt().get());
         }
+        MatrixPropertiesIdentifier identifier = new MatrixPropertiesIdentifier(symbol);
+        symbol.setMatrixProperties(identifier.identifyMatrixProperties());
+        addToScopeAndLinkWithNode(symbol, astMathMatrixValueExplicitExpression);
+    }
+
+    public void endVisit(final ASTMathVectorExpression astExpr) {
+        MathMatrixVectorExpressionSymbol symbol = new MathMatrixVectorExpressionSymbol();
+        symbol.setStart((MathExpressionSymbol) astExpr.getStart());
+        symbol.setEnd((MathExpressionSymbol) astExpr.getEnd());
+        if (astExpr.getStepsOpt().isPresent())
+            symbol.setStep((MathExpressionSymbol) astExpr.getStepsOpt().get());
+
+        addToScopeAndLinkWithNode(symbol, astExpr);
     }
 
 
     public void endVisit(final ASTMathMatrixNameExpression astMathMatrixNameExpression) {
-        MathMatrixNameExpressionSymbol symbol = new MathMatrixNameExpressionSymbol(astMathMatrixNameExpression.getName().get());
+        MathMatrixNameExpressionSymbol symbol = new MathMatrixNameExpressionSymbol(astMathMatrixNameExpression.getName());
 
         symbol.setAstMathMatrixNameExpression(astMathMatrixNameExpression);
-        if (astMathMatrixNameExpression.getMathMatrixAccessExpression().isPresent()) {
-            MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol = (MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().get().getSymbol().get();
-            mathMatrixAccessOperatorSymbol.setMathMatrixNameExpressionSymbol(symbol);
-            symbol.setMathMatrixAccessOperatorSymbol(mathMatrixAccessOperatorSymbol);
-        }
+        MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol = (MathMatrixAccessOperatorSymbol) astMathMatrixNameExpression.getMathMatrixAccessExpression().getSymbolOpt().get();
+        mathMatrixAccessOperatorSymbol.setMathMatrixNameExpressionSymbol(symbol);
+        symbol.setMathMatrixAccessOperatorSymbol(mathMatrixAccessOperatorSymbol);
+
         addToScopeAndLinkWithNode(symbol, astMathMatrixNameExpression);
     }
 
     public void endVisit(final ASTMathMatrixAccessExpression astMathMatrixAccessExpression) {
         MathMatrixAccessOperatorSymbol symbol = new MathMatrixAccessOperatorSymbol();
 
-        for (ASTMathMatrixAccess access : astMathMatrixAccessExpression.getMathMatrixAccesss()) {
-            symbol.addMathMatrixAccessSymbol((MathMatrixAccessSymbol) access.getSymbol().get());
+        for (ASTMathMatrixAccess access : astMathMatrixAccessExpression.getMathMatrixAccessList()) {
+            symbol.addMathMatrixAccessSymbol((MathMatrixAccessSymbol) access.getSymbolOpt().get());
         }
 
         addToScopeAndLinkWithNode(symbol, astMathMatrixAccessExpression);
@@ -347,128 +349,115 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     public void endVisit(final ASTMathMatrixAccess astMathMatrixAccess) {
         MathMatrixAccessSymbol symbol = new MathMatrixAccessSymbol();
-        if (astMathMatrixAccess.getMathArithmeticExpression().isPresent()) {
-            symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathMatrixAccess.getMathArithmeticExpression().get().getSymbol().get());
+        if (astMathMatrixAccess.getExpressionOpt().isPresent()) {
+            symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathMatrixAccess.getExpressionOpt().get().getSymbolOpt().get());
         }
         addToScopeAndLinkWithNode(symbol, astMathMatrixAccess);
     }
 
-    public void endVisit(final ASTEndOperator astEndOperator) {
-        MathMatrixAccessOperatorSymbol symbol = new MathMatrixAccessOperatorSymbol();
-        MathMatrixAccessSymbol first = new MathMatrixAccessSymbol();
-        MathMatrixAccessSymbol second = new MathMatrixAccessSymbol();
-        if (astEndOperator.endVecLeftIsPresent()) {
-            first.setMathExpressionSymbol((MathExpressionSymbol) astEndOperator.getEndVecLeft().get().getSymbol().get());
-        } else if (astEndOperator.endVecRightIsPresent()) {
-            second.setMathExpressionSymbol((MathExpressionSymbol) astEndOperator.getEndVecRight().get().getSymbol().get());
-        }
-        symbol.addMathMatrixAccessSymbol(first);
-        symbol.addMathMatrixAccessSymbol(second);
-        addToScopeAndLinkWithNode(symbol, astEndOperator);
-    }
-
-    public void endVisit(final ASTMathArithmeticAdditionExpression astMathArithmeticAdditionExpression) {
+    public void endVisit(final ASTPlusExpression astMathArithmeticAdditionExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticAdditionExpression.
-                getMathArithmeticExpressions().get(0), astMathArithmeticAdditionExpression.
-                getMathArithmeticExpressions().get(1), "+");
+                getLeftExpression(), astMathArithmeticAdditionExpression.
+                getRightExpression(), "+");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticAdditionExpression);
     }
 
-    public void endVisit(final ASTMathArithmeticSubtractionExpression astMathArithmeticSubtractionExpression) {
+    public void endVisit(final ASTMinusExpression astMathArithmeticSubtractionExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticSubtractionExpression.
-                getMathArithmeticExpressions().get(0), astMathArithmeticSubtractionExpression.
-                getMathArithmeticExpressions().get(1), "-");
+                getLeftExpression(), astMathArithmeticSubtractionExpression.
+                getRightExpression(), "-");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticSubtractionExpression);
     }
 
 
-    public void endVisit(final ASTMathArithmeticMultiplicationExpression astMathArithmeticMultiplicationExpression) {
+    public void endVisit(final ASTMultExpression astMathArithmeticMultiplicationExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticMultiplicationExpression.
-                getMathArithmeticExpressions().get(0), astMathArithmeticMultiplicationExpression.
-                getMathArithmeticExpressions().get(1), "*");
+                getLeftExpression(), astMathArithmeticMultiplicationExpression.
+                getRightExpression(), "*");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticMultiplicationExpression);
     }
 
 
-    public void endVisit(final ASTMathArithmeticDivisionExpression astMathArithmeticDivisionExpression) {
+    public void endVisit(final ASTDivideExpression astMathArithmeticDivisionExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticDivisionExpression.
-                getMathArithmeticExpressions().get(0), astMathArithmeticDivisionExpression.
-                getMathArithmeticExpressions().get(1), "/");
+                getLeftExpression(), astMathArithmeticDivisionExpression.
+                getRightExpression(), "/");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticDivisionExpression);
     }
 
-    public void endVisit(final ASTMathArithmeticModuloExpression astMathArithmeticModuloExpression) {
+    public void endVisit(final ASTModuloExpression astMathArithmeticModuloExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticModuloExpression.
-                getMathArithmeticExpressions().get(0), astMathArithmeticModuloExpression.
-                getMathArithmeticExpressions().get(1), "%");
+                getLeftExpression(), astMathArithmeticModuloExpression.
+                getRightExpression(), "%");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticModuloExpression);
     }
 
-    public void endVisit(final ASTMathArithmeticPowerOfExpression astMathArithmeticPowerOfExpression) {
-        MathExpressionSymbol newSymbol = null;
-        Log.info(((MathExpressionSymbol)astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(0).getSymbol().get()).getTextualRepresentation(),"Whole Left Expression:");
-        if (astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).getSymbol().isPresent()) {
-            MathExpressionSymbol expSymbol = ((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).
-                    getSymbol().get()).getRealMathExpressionSymbol();
-            boolean useInverse = false;
-            boolean useSqrtm = false;
-            if (expSymbol.getTextualRepresentation().startsWith("-")) {
-                useInverse = true;
-                if (expSymbol.getTextualRepresentation().startsWith("-0.5")) {
-                    useSqrtm = true;
-                }
-            } else if (expSymbol.getTextualRepresentation().equals("0.5")) {
-                useSqrtm = true;
-            }
-
-            if (useInverse) {
-                MathMatrixNameExpressionSymbol symbolInv = convertToInternalExpression((MathExpressionSymbol)
-                        astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().
-                                get(0).getSymbol().get(), "inv");
-                if (useSqrtm) {
-                    MathMatrixNameExpressionSymbol symbolSqrtm = convertToInternalExpression(symbolInv, "sqrtm");
-                    newSymbol = symbolSqrtm;
-                    //System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
-                } else {
-                    //TODO add detection for normal numbers as these should not be inverted by calling inv
-                    //newSymbol = symbolInv;
-                    //System.out.println("SymbolInv: " + symbolInv.getTextualRepresentation());
-
-                }
-            } else if (useSqrtm) {
-                newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
-                        getMathArithmeticExpressions().get(0).getSymbol().get(), "sqrtm");
-
-                //System.out.println("SymbolSqrtm2: " + newSymbol.getTextualRepresentation());
-            }
-        }
-        if (newSymbol == null) {
-            MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
-
-            MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticPowerOfExpression.
-                    getMathArithmeticExpressions().get(0), astMathArithmeticPowerOfExpression.
-                    getMathArithmeticExpressions().get(1), "^");
-            newSymbol = symbol;
-        }
-        //System.out.println("newSymbol is: " + newSymbol.getTextualRepresentation());
-        addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
-
-    }
+//    // does not exist
+//    public void endVisit(final AST ASTMathArithmeticPowerOfExpression astMathArithmeticPowerOfExpression) {
+//        MathExpressionSymbol newSymbol = null;
+//        Log.info(((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(0).getSymbolOpt().get()).getTextualRepresentation(), "Whole Left Expression:");
+//        if (astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).getSymbolOpt().isPresent()) {
+//            MathExpressionSymbol expSymbol = ((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).
+//                    getSymbolOpt().get()).getRealMathExpressionSymbol();
+//            boolean useInverse = false;
+//            boolean useSqrtm = false;
+//            if (expSymbol.getTextualRepresentation().startsWith("-")) {
+//                useInverse = true;
+//                if (expSymbol.getTextualRepresentation().startsWith("-0.5")) {
+//                    useSqrtm = true;
+//                }
+//            } else if (expSymbol.getTextualRepresentation().equals("0.5")) {
+//                useSqrtm = true;
+//            }
+//
+//            if (useInverse) {
+//                MathMatrixNameExpressionSymbol symbolInv = convertToInternalExpression((MathExpressionSymbol)
+//                        astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().
+//                                get(0).getSymbolOpt().get(), "inv");
+//                if (useSqrtm) {
+//                    MathMatrixNameExpressionSymbol symbolSqrtm = convertToInternalExpression(symbolInv, "sqrtm");
+//                    newSymbol = symbolSqrtm;
+//                    //System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
+//                } else {
+//                    //TODO add detection for normal numbers as these should not be inverted by calling inv
+//                    //newSymbol = symbolInv;
+//                    //System.out.println("SymbolInv: " + symbolInv.getTextualRepresentation());
+//
+//                }
+//            } else if (useSqrtm) {
+//                newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
+//                        getMathArithmeticExpressions().get(0).getSymbolOpt().get(), "sqrtm");
+//
+//                //System.out.println("SymbolSqrtm2: " + newSymbol.getTextualRepresentation());
+//            }
+//        }
+//        if (newSymbol == null) {
+//            MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
+//
+//            MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticPowerOfExpression.
+//                    getMathArithmeticExpressions().get(0), astMathArithmeticPowerOfExpression.
+//                    getMathArithmeticExpressions().get(1), "^");
+//            newSymbol = symbol;
+//        }
+//        //System.out.println("newSymbol is: " + newSymbol.getTextualRepresentation());
+//        addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
+//
+//    }
 
     private MathMatrixNameExpressionSymbol convertToInternalExpression(MathExpressionSymbol mathExpressionSymbol, String functionName) {
         MathMatrixNameExpressionSymbol symbol2 = new MathMatrixNameExpressionSymbol(functionName);
@@ -481,111 +470,105 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         return symbol2;
     }
 
-    public void endVisit(final ASTMathArithmeticIncreaseByOneExpression astMathArithmeticIncreaseByOneExpression) {
+    public void endVisit(final ASTIncSuffixExpression astMathArithmeticIncreaseByOneExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticIncreaseByOneExpression.
-                getMathArithmeticExpression(), null, "++");
+                getExpression(), null, "++");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticIncreaseByOneExpression);
     }
 
 
-    public void endVisit(final ASTMathArithmeticDecreaseByOneExpression astMathArithmeticDecreaseByOneExpression) {
+    public void endVisit(final ASTDecSuffixExpression astMathArithmeticDecreaseByOneExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticDecreaseByOneExpression.
-                getMathArithmeticExpression(), null, "--");
+                getExpression(), null, "--");
 
         addToScopeAndLinkWithNode(symbol, astMathArithmeticDecreaseByOneExpression);
     }
 
-    public void endVisit(final ASTMathArithmeticValueExpression astMathArithmeticValueExpression) {
-        MathExpressionSymbol mathExpressionSymbol = (MathExpressionSymbol) astMathArithmeticValueExpression.getMathValueExpression().getSymbol().get();
-
-        addToScopeAndLinkWithNode(mathExpressionSymbol, astMathArithmeticValueExpression);
-    }
-
-    public void endVisit(final ASTMathCompareEqualExpression astMathCompareEqualExpression) {
+    public void endVisit(final ASTEqualsExpression astMathCompareEqualExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathCompareEqualExpression.
-                getMathExpressions().get(0), astMathCompareEqualExpression.
-                getMathExpressions().get(1), "==");
+                getLeftExpression(), astMathCompareEqualExpression.
+                getRightExpression(), "==");
 
         addToScopeAndLinkWithNode(symbol, astMathCompareEqualExpression);
     }
 
 
-    public void endVisit(final ASTMathCompareGreaterEqualThanExpression astMathCompareGreaterEqualThanExpression) {
+    public void endVisit(final ASTGreaterEqualExpression astMathCompareGreaterEqualThanExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathCompareGreaterEqualThanExpression.
-                getMathExpressions().get(0), astMathCompareGreaterEqualThanExpression.
-                getMathExpressions().get(1), ">=");
+                getLeftExpression(), astMathCompareGreaterEqualThanExpression.
+                getRightExpression(), ">=");
 
 
         addToScopeAndLinkWithNode(symbol, astMathCompareGreaterEqualThanExpression);
     }
 
 
-    public void endVisit(final ASTMathBooleanOrExpression astMathBooleanOrExpression) {
+    public void endVisit(final ASTBooleanOrOpExpression astMathBooleanOrExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathBooleanOrExpression.
-                getMathExpressions().get(0), astMathBooleanOrExpression.
-                getMathExpressions().get(1), "||");
+                getLeftExpression(), astMathBooleanOrExpression.
+                getRightExpression(), "||");
 
         addToScopeAndLinkWithNode(symbol, astMathBooleanOrExpression);
     }
 
-    public void endVisit(final ASTMathBooleanAndExpression astMathBooleanAndExpression) {
+    public void endVisit(final ASTBooleanAndOpExpression astMathBooleanAndExpression) {
         MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathBooleanAndExpression.
-                getMathExpressions().get(0), astMathBooleanAndExpression.
-                getMathExpressions().get(1), "&&");
+                getLeftExpression(), astMathBooleanAndExpression.
+                getRightExpression(), "&&");
 
         addToScopeAndLinkWithNode(symbol, astMathBooleanAndExpression);
     }
 
-    public void endVisit(final ASTMathCompareGreaterThanExpression astMathCompareGreaterThanExpression) {
+    public void endVisit(final ASTGreaterThanExpression astMathCompareGreaterThanExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathCompareGreaterThanExpression.
-                getMathExpressions().get(0), astMathCompareGreaterThanExpression.
-                getMathExpressions().get(1), ">");
+                getLeftExpression(), astMathCompareGreaterThanExpression.
+                getRightExpression(), ">");
 
         addToScopeAndLinkWithNode(symbol, astMathCompareGreaterThanExpression);
     }
 
-    public void endVisit(final ASTMathCompareSmallerThanExpression astMathCompareSmallerThanExpression) {
+    public void endVisit(final ASTLessThanExpression astMathCompareSmallerThanExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathCompareSmallerThanExpression.
-                getMathExpressions().get(0), astMathCompareSmallerThanExpression.
-                getMathExpressions().get(1), "<");
+                getLeftExpression(), astMathCompareSmallerThanExpression.
+                getRightExpression(), "<");
 
         addToScopeAndLinkWithNode(symbol, astMathCompareSmallerThanExpression);
     }
 
-    public void endVisit(final ASTMathCompareSmallerEqualThanExpression astMathCompareSmallerEqualThanExpression) {
+    public void endVisit(final ASTLessEqualExpression astMathCompareSmallerEqualThanExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathCompareSmallerEqualThanExpression.
-                getMathExpressions().get(0), astMathCompareSmallerEqualThanExpression.
-                getMathExpressions().get(1), "<=");
+                getLeftExpression(), astMathCompareSmallerEqualThanExpression.
+                getRightExpression(), "<=");
 
         addToScopeAndLinkWithNode(symbol, astMathCompareSmallerEqualThanExpression);
     }
 
 
-    public void endVisit(final ASTMathCompareNotEqualExpression astMathCompareNotEqualExpression) {
+    public void endVisit(final ASTNotEqualsExpression astMathCompareNotEqualExpression) {
         MathCompareExpressionSymbol symbol = new MathCompareExpressionSymbol();
 
         MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathCompareNotEqualExpression.
-                getMathExpressions().get(0), astMathCompareNotEqualExpression.
-                getMathExpressions().get(1), "!=");
+                getLeftExpression(), astMathCompareNotEqualExpression.
+                getRightExpression(), "!=");
 
         addToScopeAndLinkWithNode(symbol, astMathCompareNotEqualExpression);
     }
@@ -593,93 +576,48 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathConditionalExpression astMathConditionalExpression) {
         MathConditionalExpressionsSymbol symbol = new MathConditionalExpressionsSymbol();
 
-        symbol.setIfConditionalExpression((MathConditionalExpressionSymbol) astMathConditionalExpression.getMathIfExpression().getSymbol().get());
-        for (ASTMathElseIfExpression astMathElseIfExpression : astMathConditionalExpression.getMathElseIfExpressions()) {
-            symbol.addElseIfConditionalExpression((MathConditionalExpressionSymbol) astMathElseIfExpression.getSymbol().get());
+        symbol.setIfConditionalExpression((MathConditionalExpressionSymbol) astMathConditionalExpression.getMathIfExpression().getSymbolOpt().get());
+        for (ASTMathElseIfExpression astMathElseIfExpression : astMathConditionalExpression.getMathElseIfExpressionList()) {
+            symbol.addElseIfConditionalExpression((MathConditionalExpressionSymbol) astMathElseIfExpression.getSymbolOpt().get());
         }
 
-        if (astMathConditionalExpression.mathElseExpressionIsPresent()) {
-            symbol.setElseConditionalExpression((MathConditionalExpressionSymbol) astMathConditionalExpression.getMathElseExpression().get().getSymbol().get());
+        if (astMathConditionalExpression.getMathElseExpressionOpt().isPresent()) {
+            symbol.setElseConditionalExpression((MathConditionalExpressionSymbol) astMathConditionalExpression.getMathElseExpressionOpt().get().getSymbolOpt().get());
         }
         addToScopeAndLinkWithNode(symbol, astMathConditionalExpression);
     }
 
     public void endVisit(final ASTMathIfExpression astMathIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
-        symbol.setCondition((MathExpressionSymbol) astMathIfExpression.getCondition().getSymbol().get());
-        for (ASTMathExpression astMathExpression : astMathIfExpression.getBody().getMathExpressions())
-            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbol().get());
+        symbol.setCondition((MathExpressionSymbol) astMathIfExpression.getCondition().getSymbolOpt().get());
+        for (ASTExpression astMathExpression : astMathIfExpression.getBodyList())
+            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathIfExpression);
     }
 
 
     public void endVisit(final ASTMathElseIfExpression astMathElseIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
-        symbol.setCondition((MathExpressionSymbol) astMathElseIfExpression.getCondition().getSymbol().get());
-        for (ASTMathExpression astMathExpression : astMathElseIfExpression.getBody().getMathExpressions())
-            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbol().get());
+        symbol.setCondition((MathExpressionSymbol) astMathElseIfExpression.getCondition().getSymbolOpt().get());
+        for (ASTExpression astMathExpression : astMathElseIfExpression.getBodyList())
+            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseIfExpression);
     }
 
 
     public void endVisit(final ASTMathElseExpression astMathElseExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
-        for (ASTMathExpression astMathExpression : astMathElseExpression.getBody().getMathExpressions())
-            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbol().get());
+        for (ASTExpression astMathExpression : astMathElseExpression.getBodyList())
+            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseExpression);
     }
 
-    public void endVisit(final ASTMathParenthesisExpression astMathParenthesisExpression) {
-        MathParenthesisExpressionSymbol symbol = new MathParenthesisExpressionSymbol();
-        symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathParenthesisExpression.getMathExpression().getSymbol().get());
-        addToScopeAndLinkWithNode(symbol, astMathParenthesisExpression);
-    }
-
-
-    public void endVisit(final ASTMathPreMinusExpression astMathPreMinusExpression) {
+    public void endVisit(final ASTMinusPrefixExpression astMathPreMinusExpression) {
         MathPreOperatorExpressionSymbol symbol = new MathPreOperatorExpressionSymbol();
-        symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathPreMinusExpression.getMathExpression().getSymbol().get());
+        symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathPreMinusExpression.getExpression().getSymbolOpt().get());
         symbol.setOperator("-");
         addToScopeAndLinkWithNode(symbol, astMathPreMinusExpression);
     }
-
-    List<Integer> createDimension(Optional<ASTDimension> dim) {
-        // dims are 1x1, just a value
-        if (!dim.isPresent()) {
-            return Arrays.asList(1, 1);
-        }
-
-        List<Integer> l = new ArrayList<>();
-        /*
-        for (ASTArithmeticExpression d : dim.get().getArithmeticExpressions()) {
-            if (d.getPlusMinusExpression() != null
-                    && d.getPlusMinusExpression().getMultDivModExpression() != null
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression() != null
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression().parenthesisAritExpressionIsPresent()
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression()
-                    .getParenthesisAritExpression().isPresent()
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression()
-                    .getParenthesisAritExpression().get().getMathPrimaryExpression()
-                    .isPresent()
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression()
-                    .getParenthesisAritExpression().get().getMathPrimaryExpression()
-                    .get().getNumber().isPresent()
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression()
-                    .getParenthesisAritExpression().get().getMathPrimaryExpression()
-                    .get().getNumber().get().getUnitNumber().isPresent()
-                    && d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression()
-                    .getParenthesisAritExpression().get().getMathPrimaryExpression()
-                    .get().getNumber().get().getUnitNumber().get().getNumber().isPresent()) {
-                int i = d.getPlusMinusExpression().getMultDivModExpression().getUnaryOpExpression()
-                        .getParenthesisAritExpression().get().getMathPrimaryExpression()
-                        .get().getNumber().get().getUnitNumber().get().getNumber().get().intValue();
-                l.add(i);
-            }
-        }*/
-
-        return l;
-    }
-
 
     /**
      * calculate the rational value of the double number given by his argument
@@ -704,14 +642,8 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         return Rational.valueOf(num, denom);
     }
 
-
-    // Override generated methods
-  /*  @Override
-    public void visit(ASTMathStatement ast) {
-    }
-*/
-    public void visit(ASTMathStatements ast) {
-        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
-    }
+//    public void visit(ASTExpressions ast) {
+//        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
+//    }
 }
 

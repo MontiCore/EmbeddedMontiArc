@@ -21,7 +21,6 @@
 package de.monticore.lang.math._symboltable;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.emf._ast.ASTECNode;
 import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
@@ -31,9 +30,9 @@ import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 public class MathSymbolTableCreatorHelper {
     public static void setOperatorLeftRightExpression(IArithmeticExpression symbol, ASTNode leftExpressionSymbol, ASTNode rightExpressionSymbol, String operator) {
         if (rightExpressionSymbol != null) {
-            setOperatorLeftRightExpression(symbol, (MathExpressionSymbol) leftExpressionSymbol.getSymbol().get(), (MathExpressionSymbol) rightExpressionSymbol.getSymbol().get(), operator);
+            setOperatorLeftRightExpression(symbol, (MathExpressionSymbol) leftExpressionSymbol.getSymbolOpt().get(), (MathExpressionSymbol) rightExpressionSymbol.getSymbol().get(), operator);
         } else {
-            setOperatorLeftRightExpression(symbol, (MathExpressionSymbol) leftExpressionSymbol.getSymbol().get(), null, operator);
+            setOperatorLeftRightExpression(symbol, (MathExpressionSymbol) leftExpressionSymbol.getSymbolOpt().get(), null, operator);
         }
     }
 
