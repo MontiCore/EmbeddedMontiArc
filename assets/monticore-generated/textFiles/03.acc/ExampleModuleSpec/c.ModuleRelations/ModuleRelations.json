@@ -1,0 +1,176 @@
+{
+  "elements": [
+    {
+      "id": 1,
+      "name": "monticoregenerator",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticoregenerator"
+      }
+    },
+    {
+      "id": 2,
+      "name": "monticoremaven",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticoremaven"
+      }
+    },
+    {
+      "id": 3,
+      "name": "monticorecli",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticorecli"
+      }
+    },
+    {
+      "id": 4,
+      "name": "monticoregrammar",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticoregrammar"
+      }
+    },
+    {
+      "id": 5,
+      "name": "monticoreemfruntime",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticoreemfruntime"
+      }
+    },
+    {
+      "id": 6,
+      "name": "monticoretemplateclassgenerator",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticoretemplateclassgenerator"
+      }
+    },
+    {
+      "id": 7,
+      "name": "monticoreruntime",
+      "type": "Module",
+      "attributes": {
+        "simpleName": "monticoreruntime"
+      }
+    }
+  ],
+  "links": [
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 1,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 1,
+      "target": 5,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 1,
+      "target": 4,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {
+        "reliesOnModule": 1
+      },
+      "source": 1,
+      "target": 3,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 2,
+      "target": 1,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 2,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 3,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 3,
+      "target": 5,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 4,
+      "target": 5,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 5,
+      "target": 7,
+      "name": "MergedLink"
+    },
+    {
+      "forwardLinks": {
+        "reliesOnModule": 1
+      },
+      "backwardLinks": {},
+      "source": 6,
+      "target": 7,
+      "name": "MergedLink"
+    }
+  ]
+}

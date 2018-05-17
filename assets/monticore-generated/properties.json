@@ -1,0 +1,30 @@
+{
+ "main": {
+   "defaultFile" : "textFiles/02.merged/Merged.od",
+   "showAllDropdownElements" : false,
+   "dropdownElements" : ["01.extraction/Java.od", "01.extraction/Container.od", "01.extraction/Template.od", "02.merged/Merged.od"]
+ },
+ "textual": {
+   "extensions" : ["od", "txt"]
+ },
+ "graph" : {
+   "tabs" : {
+     "Artifacts" : {
+       "rootType" : "Directory",
+       "linkList" : ["contains"],
+       "flatTypes" : ["Directory", "JavaSourceFile", "FreemarkerTemplate"]
+     },
+     "Types" : {
+       "rootType" : "Pkg",
+       "linkList" : ["subPkg", "javaTypes"],
+       "flatTypes" : ["Pkg", "JavaClass", "JavaInterface", "JavaEnum"]
+     }
+   }, 
+   "hierarchy" : {
+     "groupItemType" : "Directory",
+     "subGroupItemType" : ["Directory"],
+     "groupChildLinkTypes" : ["artifacts", "contains"],
+     "groupCrossLinkTypes" : ["reliesOn", "reliesOnJavaArtifact", "reliesOnTemplate"]
+   }
+  }
+}
