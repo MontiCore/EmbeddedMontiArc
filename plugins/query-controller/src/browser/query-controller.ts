@@ -23,6 +23,11 @@ export interface QueryHandler {
     canHandle(uri: URI): number;
 
     /**
+     * Returns true if another handler can be applied after this one. Otherwise false.
+     */
+    isChainable(): boolean;
+
+    /**
      * Handles the given uri.
      */
     handle(uri: URI): Promise<void>;
@@ -70,8 +75,10 @@ export class QueryController implements FrontendApplicationContribution {
     protected async handleContributionsStarted(): Promise<void> {
         const uri = new URI(window.location.href);
         const contributions = await this.getSortedContributions(uri);
-        const contribution = contributions.pop();
 
-        if (contribution) return contribution.handle(uri);
+        for (const contribution of contributions) {
+            if (contribution.isChainable()) await contribution.handle(uri);
+            else return contribution.handle(uri);
+        }
     }
 }

@@ -24,6 +24,10 @@ export class OpenFileQueryHandler implements QueryHandler {
         return uri.hasQueryParam("openFile") ? 100 : 0;
     }
 
+    public isChainable(): boolean {
+        return true;
+    }
+
     public async handle(uri: URI): Promise<void> {
         const root = uri.getQueryParam("root");
         const openFile = uri.getQueryParam("openFile");

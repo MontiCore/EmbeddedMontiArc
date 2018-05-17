@@ -35,6 +35,10 @@ export class ModeController implements QueryHandler {
         return uri.hasQueryParam("mode") ? 500 : 0;
     }
 
+    public isChainable(): boolean {
+        return false;
+    }
+
     public async handle(uri: URI): Promise<void> {
         for (const contribution of this.provider.getContributions()) {
             if (contribution.canHandle(uri)) return contribution.handle(uri);

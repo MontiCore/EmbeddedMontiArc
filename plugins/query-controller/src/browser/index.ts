@@ -5,3 +5,7 @@
  */
 
 export * from "./query-controller";
+export * from "./open-file-query-handler";
+export * from "./hide-controls-query-handler";
+
+export * from "./mode";

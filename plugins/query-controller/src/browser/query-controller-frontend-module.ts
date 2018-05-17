@@ -9,6 +9,7 @@ import { bindContributionProvider } from "@theia/core/lib/common";
 import { QueryController, QueryHandler } from "./query-controller";
 import { FrontendApplicationContribution } from "@theia/core/lib/browser";
 import { OpenFileQueryHandler } from "./open-file-query-handler";
+import { HideControlsQueryHandler } from "./hide-controls-query-handler";
 
 export default new ContainerModule(bind => {
     bindContributionProvider(bind, QueryHandler);
@@ -21,5 +22,10 @@ export default new ContainerModule(bind => {
     bind(OpenFileQueryHandler).toSelf().inSingletonScope();
     bind(QueryHandler).toDynamicValue(
         ctx => ctx.container.get(OpenFileQueryHandler)
+    ).inSingletonScope();
+
+    bind(HideControlsQueryHandler).toSelf().inSingletonScope();
+    bind(QueryHandler).toDynamicValue(
+        ctx => ctx.container.get(HideControlsQueryHandler)
     ).inSingletonScope();
 });
