@@ -9,11 +9,14 @@ class testing_wholeNumberPort{
 public:
 int wholeIn;
 int wholeOut;
+int wholeNumberStaticVar;
 void init()
 {
+wholeNumberStaticVar=0;
 }
 void execute()
 {
+int wholeNumberVar;
 }
 
 };

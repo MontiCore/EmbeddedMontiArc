@@ -3,4 +3,9 @@ package testing;
 component WholeNumberPort{
     port in Z wholeIn,
          out Z wholeOut;
+
+    implementation Math{
+        Z wholeNumberVar;
+        static Z wholeNumberStaticVar = 0;
+    }
 }
