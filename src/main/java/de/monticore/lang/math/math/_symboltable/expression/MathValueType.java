@@ -20,13 +20,12 @@
  */
 package de.monticore.lang.math.math._symboltable.expression;
 
-/*
-    WARNING: THIS FILE COULD NOT EASILY BE MERGED. BETTER DISCARD ALL CHANGES IN THIS FILE
-    IT IS JUST A PLACEHOLDER FOR THE SYMBOLS TO COMPILE BEFORE MERGE TO MASTER
- */
-import de.monticore.lang.math._ast.ASTAssignmentType;
-import de.monticore.lang.math._ast.ASTDimension;
-import de.monticore.lang.math._ast.ASTElementType;
+import de.monticore.lang.math.math._ast.ASTAssignmentType;
+import de.monticore.lang.math.math._ast.ASTDimension;
+import de.monticore.lang.math.math._ast.ASTMathArithmeticExpression;
+import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,12 +71,12 @@ public class MathValueType extends MathExpressionSymbol {
     }
 
     public boolean isRationalType() {
-        return false; // type.isIsRational();
+        return type.isIsRational();
     }
 
 
     public boolean isComplexType() {
-        return false; // type.isIsComplex();
+        return type.isIsComplex();
     }
 
     public boolean isStatic() {
@@ -100,9 +99,9 @@ public class MathValueType extends MathExpressionSymbol {
         else if (isComplexType()) {
             result += "C";
         }
-//        if (type.getRange().isPresent()) {
-//            result += type.getRange().get().toString();
-//        }
+        if (type.getRange().isPresent()) {
+            result += type.getRange().get().toString();
+        }
         if (dimensions.size() > 0) {
             int counter = 0;
             result += "^{";
@@ -120,31 +119,31 @@ public class MathValueType extends MathExpressionSymbol {
     public static MathValueType convert(ASTAssignmentType type) {
         MathValueType mathValueType = new MathValueType();
 
-//        mathValueType.setProperties(type.getMatrixProperty());
-//
-//        if (type.commonMatrixTypeIsPresent()) {
-//            //TODO type
-//            ASTCommonMatrixType commonMatrixType = type.getCommonMatrixType().get();
-//            mathValueType.setType(commonMatrixType.getElementType());
-//
-//            for (ASTCommonDimensionElement astCommonDimensionElement : commonMatrixType.getCommonDimension().getCommonDimensionElements()) {
-//                if (astCommonDimensionElement.getName().isPresent()) {
-//                    mathValueType.addDimension(new MathNameExpressionSymbol(astCommonDimensionElement.getName().get()));
-//                } else if (astCommonDimensionElement.getUnitNumber().isPresent()) {
-//                    mathValueType.addDimension(new MathNumberExpressionSymbol(astCommonDimensionElement.getUnitNumber().get().getNumber().get()));
-//                }
-//            }
-//        } else if (type.getElementType().isPresent()) {
-//            //TODO type
-//            mathValueType.setType(type.getElementType().get());
-//
-//            if (type.getDim().isPresent()) {
-//                ASTDimension astDimension = type.getDim().get();
-//                for (ASTMathArithmeticExpression astMathArithmeticExpression : astDimension.getMathArithmeticExpressions()) {
-//                    mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbol().get());
-//                }
-//            }
-//        }
+        mathValueType.setProperties(type.getMatrixProperty());
+
+        if (type.commonMatrixTypeIsPresent()) {
+            //TODO type
+            ASTCommonMatrixType commonMatrixType = type.getCommonMatrixType().get();
+            mathValueType.setType(commonMatrixType.getElementType());
+
+            for (ASTCommonDimensionElement astCommonDimensionElement : commonMatrixType.getCommonDimension().getCommonDimensionElements()) {
+                if (astCommonDimensionElement.getName().isPresent()) {
+                    mathValueType.addDimension(new MathNameExpressionSymbol(astCommonDimensionElement.getName().get()));
+                } else if (astCommonDimensionElement.getUnitNumber().isPresent()) {
+                    mathValueType.addDimension(new MathNumberExpressionSymbol(astCommonDimensionElement.getUnitNumber().get().getNumber().get()));
+                }
+            }
+        } else if (type.getElementType().isPresent()) {
+            //TODO type
+            mathValueType.setType(type.getElementType().get());
+
+            if (type.getDim().isPresent()) {
+                ASTDimension astDimension = type.getDim().get();
+                for (ASTMathArithmeticExpression astMathArithmeticExpression : astDimension.getMathArithmeticExpressions()) {
+                    mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbol().get());
+                }
+            }
+        }
 
         return mathValueType;
     }

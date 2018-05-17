@@ -30,5 +30,4 @@ script If
     else
       result = 0;
     end
-
 end
