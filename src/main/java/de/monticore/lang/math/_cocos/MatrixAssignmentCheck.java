@@ -42,15 +42,15 @@ import java.util.List;
 public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoCo {
     @Override
     public void check(ASTMathAssignmentExpression assignment) {
-        Symbol symbol = assignment.getEnclosingScope().get()
-                .resolve(assignment.getName().get(),new MathExpressionSymbolKind()).get();
+        Symbol symbol = assignment.getEnclosingScopeOpt().get()
+                .resolve(assignment.getName(),new MathExpressionSymbolKind()).get();
         if (!((MathValueSymbol)symbol).getType().getProperties().isEmpty()) {
             checkMatrixOperation(assignment, (MathValueSymbol) symbol);
         }
     }
 
     private void checkMatrixOperation(ASTMathAssignmentExpression assignment, MathValueSymbol symbol) {
-        MathExpressionSymbol expressionSymbol = ((MathExpressionSymbol)assignment.getMathExpression().getSymbol().get());
+        MathExpressionSymbol expressionSymbol = ((MathExpressionSymbol)assignment.getExpression().getSymbolOpt().get());
         List<String> expProps = symbol.getType().getProperties();
         ArrayList<MatrixProperties> props = new ArrayList<>();
         MathArithmeticExpressionSymbol arithmeticExpressionSymbol = new MathArithmeticExpressionSymbol();
@@ -61,7 +61,7 @@ public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoC
     }
 
     private ArrayList<MatrixProperties> getMatrixProperties(ASTMathAssignmentExpression assignment, MathExpressionSymbol expressionSymbol, ArrayList<MatrixProperties> props, MathArithmeticExpressionSymbol arithmeticExpressionSymbol) {
-        switch (assignment.getMathAssignmentOperator().getOperator().get()) {
+        switch (assignment.getMathAssignmentOperator().getOperator()) {
             case "=":{
                 props = solveEquation(assignment, expressionSymbol, props);
                 break; }

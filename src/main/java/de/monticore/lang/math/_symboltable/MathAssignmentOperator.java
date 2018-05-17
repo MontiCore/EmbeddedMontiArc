@@ -45,6 +45,6 @@ public class MathAssignmentOperator {
     }
 
     public static MathAssignmentOperator convert(ASTMathAssignmentOperator astMathAssignmentOperator) {
-        return new MathAssignmentOperator(astMathAssignmentOperator.getOperator().get());
+        return new MathAssignmentOperator(astMathAssignmentOperator.getOperator());
     }
 }

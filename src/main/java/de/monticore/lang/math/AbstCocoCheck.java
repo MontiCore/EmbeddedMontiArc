@@ -64,7 +64,7 @@ public abstract class AbstCocoCheck {
                 this.globalScope = new GlobalScope(mp, fam);
 
                 ResolvingConfiguration ResolvingConfiguration = new ResolvingConfiguration();
-                ResolvingConfiguration.addTopScopeResolvers(mathlang.getResolvers());
+                ResolvingConfiguration.addDefaultFilters (mathlang.getResolvingFilters());
                 Optional<MathSymbolTableCreator> stc = mathlang.getSymbolTableCreator(ResolvingConfiguration, globalScope);
                 if (stc.isPresent()) {
                     stc.get().createFromAST(root.get());

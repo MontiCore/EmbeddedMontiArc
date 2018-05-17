@@ -21,14 +21,13 @@
 package de.monticore.lang.math._cocos;
 
 
+import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationExpression;
+import de.monticore.lang.math._matrixprops.MatrixProperties;
 import de.monticore.lang.math._matrixprops.PropertyChecker;
 import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbolKind;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
-import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationExpression;
-import de.monticore.lang.math._matrixprops.MatrixProperties;
-import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Symbol;
@@ -46,17 +45,17 @@ import java.util.List;
 public class MatrixAssignmentDeclarationCheck implements MathASTMathAssignmentDeclarationExpressionCoCo {
     @Override
     public void check(ASTMathAssignmentDeclarationExpression assignment) {
-        if (!assignment.getType().getMatrixProperty().isEmpty()) {
+        if (!assignment.getType().getMatrixPropertyList().isEmpty()) {
             checkMatrixOperation(assignment);
         }
     }
 
     private void checkMatrixOperation(ASTMathAssignmentDeclarationExpression assignment) {
-        MathExpressionSymbol value = ((MathExpressionSymbol)assignment.getMathExpression().getSymbol().get());
-        List<String> expProps = assignment.getType().getMatrixProperty();
+        MathExpressionSymbol value = ((MathExpressionSymbol) assignment.getExpression().getSymbolOpt().get());
+        List<String> expProps = assignment.getType().getMatrixPropertyList();
         ArrayList<MatrixProperties> props = new ArrayList<>();
-        if (assignment.getMathAssignmentOperator().getOperator().get().equals("=")) {
-            if (value.isValueExpression()) props = ((MathMatrixArithmeticValueSymbol)value).getMatrixProperties();
+        if (assignment.getMathAssignmentOperator().getOperator().equals("=")) {
+            if (value.isValueExpression()) props = ((MathMatrixArithmeticValueSymbol) value).getMatrixProperties();
             if (value.isArithmeticExpression() || value instanceof MathMatrixArithmeticExpressionSymbol)
                 props = PropertyChecker.checkProps((IArithmeticExpression) value);
             compareArrays(assignment, expProps, props);
@@ -68,10 +67,10 @@ public class MatrixAssignmentDeclarationCheck implements MathASTMathAssignmentDe
         for (int i = 0; i < props.size(); i++) props_String.add(props.get(i).toString());
         if (!props_String.containsAll(expProps))
             Log.error("Matrix does not fullfill given properties");
-        else{
+        else {
             Symbol symbol = assignment.getEnclosingScope().get()
                     .resolve(assignment.getName(), new MathExpressionSymbolKind()).get();
-            ((MathValueSymbol)symbol).setMatrixProperties(props);
+            ((MathValueSymbol) symbol).setMatrixProperties(props);
         }
     }
 }
