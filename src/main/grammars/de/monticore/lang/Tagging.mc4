@@ -38,10 +38,10 @@ grammar Tagging extends de.monticore.common.Common {
         return name + (intLiteral.isPresent() ? "[" + intLiteral.get().getValue() + "]" : "");
     };
 
- QualifiedNameWithArray = ( NameWithArray || ".")+;
+ QualifiedNameWithArray = parts:( NameWithArray || ".")+;
  ast QualifiedNameWithArray =
     method public String toString(){
-        return de.se_rwth.commons.Joiners.DOT.join(getNameWithArrays());
+        return de.se_rwth.commons.Joiners.DOT.join(getParts());
     };
 
 
@@ -55,19 +55,19 @@ grammar Tagging extends de.monticore.common.Common {
 	  };
 
 	// this one is only defined here, to get Parser Tags
-	NameScope implements Scope = QualifiedNameWithArray;
+	NameScope implements Scope = qualifiedName:QualifiedNameWithArray;
 	ast NameScope =
 	  method public String getQualifiedNameString() {
-       return getQualifiedNameWithArray().toString();
+       return getQualifiedName().toString();
      }
 	  method public String getScopeKind() {
   	  return "NameScope";
   	};
 
-	ConnectorScope extends NameScope = source:QualifiedNameWithArray "->" QualifiedNameWithArray;
+	ConnectorScope extends NameScope = source:QualifiedNameWithArray "->" qualifiedName:QualifiedNameWithArray;
   ast ConnectorScope =
     method public String getQualifiedNameString() {
-       return getQualifiedNameWithArray().toString();
+       return getQualifiedName().toString();
      }
     method public String getScopeKind() {
       return "ConnectorScope";
