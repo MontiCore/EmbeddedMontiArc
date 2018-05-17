@@ -66,7 +66,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
         final String rootCmp = // if-else does not work b/c of final (required by streams)
                 (unit.getTagBody().getTargetModel().isPresent()) ?
                         Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModel().get())
-                                .getQualifiedName().toString()) :
+                                .getQualifiedNameString()) :
                         packageName;
 
         for (ASTTag element : unit.getTagBody().getTags()) {
@@ -78,7 +78,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
                     .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
-                            s.getQualifiedName().toString()), PortSymbol.KIND))
+                            s.getQualifiedNameString()), PortSymbol.KIND))
                     .filter(Optional::isPresent) // if the symbol is not present, does not mean that the symbol
                     .map(Optional::get)          // is not available at all, maybe it will be loaded later
                     .collect(Collectors.toList());
