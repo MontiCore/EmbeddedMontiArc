@@ -122,11 +122,16 @@ public class MathValueType extends MathExpressionSymbol {
 
         ASTElementType commonType = new ASTElementType();
         String rangeAsString;
-        ASTRanges range = type.getElementType().getRanges();
-        if (type.getElementType().getRanges().isPresentStep())
-            rangeAsString = String.format("(%s:%s:%s)", range.getMin(), range.getStep(), range.getMax());
-        else
-            rangeAsString = String.format("(%s:%s)", range.getMin(), range.getMax());
+        if (type.getElementType().getRangesOpt().isPresent()) {
+            ASTRanges range = type.getElementType().getRangesOpt().get();
+            if (type.getElementType().getRanges().isPresentStep())
+                rangeAsString = String.format("(%s:%s:%s)", range.getMin(), range.getStep(), range.getMax());
+            else
+                rangeAsString = String.format("(%s:%s)", range.getMin(), range.getMax());
+        } else {
+            // assume range infinite
+            rangeAsString = "(oo:oo)";
+        }
         commonType.setTElementType(type.getElementType().getName() + rangeAsString);
 
         mathValueType.setType(commonType);
