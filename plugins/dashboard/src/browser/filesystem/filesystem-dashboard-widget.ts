@@ -14,7 +14,8 @@ import { SelectableDashboardItem } from "../dashboard-selection";
 import { DemosDashboardWidget } from "../demos/demos-dashboard-widget";
 import { FileSystemDashboardQueue } from "./filesystem-dashboard-queue";
 
-export const CONTROL_ITEM_CLASS = "elysium-dashboard-item elysium-dashboard-icon-plus";
+const CONTROL_ITEM_CLASS = "elysium-dashboard-item elysium-dashboard-icon-plus";
+const DASHBOARD_BUSY_CLASS = "elysium-dashboard-busy";
 
 @injectable()
 export class FileSystemDashboardWidget extends BaseDashboardWidget {
@@ -47,10 +48,19 @@ export class FileSystemDashboardWidget extends BaseDashboardWidget {
         if (this.props.controlContextMenu) this.contextMenuRenderer.render(this.props.controlContextMenu, event);
     }
 
-    protected async handleItemEvent(event: MouseEvent, item: DashboardItem): Promise<void> {
-        await super.handleItemEvent(event, item);
+    protected async handleItemClickEvent(event: MouseEvent, item: DashboardItem): Promise<void> {
+        await super.handleItemClickEvent(event, item);
         this.model.selectItem(<Readonly<SelectableDashboardItem>>item);
-        if (this.props.itemContextMenu) this.contextMenuRenderer.render(this.props.itemContextMenu, event);
+        if (this.props.itemContextMenu && !this.queue.isBusy()) this.contextMenuRenderer.render(this.props.itemContextMenu, event);
+    }
+
+    protected async handleItemMouseOverEvent(event: MouseEvent, item: DashboardItem): Promise<void> {
+        await super.handleItemMouseOverEvent(event, item);
+
+        const element = event.toElement;
+
+        if (this.queue.isBusy()) element.classList.add(DASHBOARD_BUSY_CLASS);
+        else element.classList.remove(DASHBOARD_BUSY_CLASS);
     }
 
     protected async handleCloneEvent(uri: string): Promise<void> {

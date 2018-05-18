@@ -10,6 +10,10 @@ import { injectable } from "inversify";
 export class FileSystemDashboardQueue {
     protected queue: Set<string> = new Set<string>();
 
+    public isBusy(): boolean {
+        return this.queue.size > 0;
+    }
+
     public isQueued(uri: string): boolean {
         return this.queue.has(uri);
     }

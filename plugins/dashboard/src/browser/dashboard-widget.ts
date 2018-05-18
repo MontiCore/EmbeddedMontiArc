@@ -92,7 +92,8 @@ export abstract class BaseDashboardWidget extends VirtualWidget {
         const caption = this.renderDashboardItemCaption(item);
         const options = {
             className: item.iconClass,
-            onclick: async (event: MouseEvent) => await this.handleItemEvent(event, item)
+            onclick: async (event: MouseEvent) => await this.handleItemClickEvent(event, item),
+            onmouseover: async (event: MouseEvent) => await this.handleItemMouseOverEvent(event, item)
         };
 
         return h.li(options, caption);
@@ -110,7 +111,11 @@ export abstract class BaseDashboardWidget extends VirtualWidget {
         Widget.detach(this);
     }
 
-    protected async handleItemEvent(event: MouseEvent | KeyboardEvent, item: DashboardItem): Promise<void> {
+    protected async handleItemClickEvent(event: MouseEvent | KeyboardEvent, item: DashboardItem): Promise<void> {
+        event.stopPropagation();
+    }
+
+    protected async handleItemMouseOverEvent(event: MouseEvent | KeyboardEvent, item: DashboardItem): Promise<void> {
         event.stopPropagation();
     }
 }

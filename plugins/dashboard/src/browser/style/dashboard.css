@@ -71,3 +71,8 @@
 .p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item.elysium-dashboard-icon-loader .elysium-dashboard-item-caption {
     transform:translate(0%,-50%) rotateZ(35deg);
 }
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item.elysium-dashboard-busy {
+    cursor:default !important;
+    background-color:rgba(0,0,0,0) !important;
+}

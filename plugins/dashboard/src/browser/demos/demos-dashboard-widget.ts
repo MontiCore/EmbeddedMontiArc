@@ -38,8 +38,8 @@ export class DemosDashboardWidget extends BaseDashboardWidget {
         Widget.detach(this);
     }
 
-    protected async handleItemEvent(event: MouseEvent, item: DashboardItem): Promise<void> {
-        await super.handleItemEvent(event, item);
+    protected async handleItemClickEvent(event: MouseEvent, item: DashboardItem): Promise<void> {
+        await super.handleItemClickEvent(event, item);
 
         const options = {
             title: "Workspace Name",
