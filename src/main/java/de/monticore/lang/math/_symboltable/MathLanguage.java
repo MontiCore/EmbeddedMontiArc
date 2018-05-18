@@ -48,7 +48,7 @@ public class MathLanguage extends MathLanguageTOP{
         //addResolver(CommonResolvingFilter.create(AssignmentSymbol.KIND));
         //addResolver(CommonResolvingFilter.create(MathVariableDeclarationSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(MathExpressionSymbol.KIND));
-        addResolver(CommonResolvingFilter.create(MathStatementsSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(MathStatementsSymbol.KIND));
 
         setModelNameCalculator(new MathModelNameCalculator());
     }

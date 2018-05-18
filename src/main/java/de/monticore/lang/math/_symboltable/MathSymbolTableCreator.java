@@ -94,11 +94,11 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
     public void visit(final ASTMathScript script) {
-        MathScriptSymbol mathScriptSymbol = new MathScriptSymbol(
-                script.getName()
-        );
-
+        MathScriptSymbol mathScriptSymbol = new MathScriptSymbol(script.getName());
         addToScopeAndLinkWithNode(mathScriptSymbol, script);
+        // create legacy ast node
+        ASTMathStatements ast = new ASTMathStatements(script.getExpressionList());
+        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
     }
 
     public void endVisit(final ASTMathScript script) {
@@ -641,9 +641,5 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         }
         return Rational.valueOf(num, denom);
     }
-
-//    public void visit(ASTExpressions ast) {
-//        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
-//    }
 }
 

@@ -22,9 +22,9 @@ package de.monticore.lang.math._symboltable;
 
 //import de.monticore.lang.math._ast.ASTMathStatement;
 
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._ast.ASTMathExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTMathStatements;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -49,8 +49,8 @@ public class MathStatementsSymbol extends CommonSymbol {
     public List<MathExpressionSymbol> getMathExpressionSymbols() {
         if (mathExpressionSymbols == null) {
             mathExpressionSymbols = new ArrayList<>();
-            for (ASTMathExpression astMathExpression : astMathStatements.getMathExpressions()) {
-                mathExpressionSymbols.add((MathExpressionSymbol) astMathExpression.getSymbol().get());
+            for (ASTExpression astMathExpression : astMathStatements.getMathExpressions()) {
+                mathExpressionSymbols.add((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
             }
         }
         return mathExpressionSymbols;
@@ -62,7 +62,7 @@ public class MathStatementsSymbol extends CommonSymbol {
             MathExpressionSymbol curExpression = mathExpressionSymbols.get(i);
             if (referenceMathExpression.equals(curExpression)) {
                 mathExpressionSymbols.add(i, mathExpressionToAdd);
-                Log.debug(mathExpressionToAdd.getTextualRepresentation(),"addMathExpressionBefore:");
+                Log.debug(mathExpressionToAdd.getTextualRepresentation(), "addMathExpressionBefore:");
                 return;
             }
         }
