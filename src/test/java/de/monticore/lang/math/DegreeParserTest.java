@@ -26,10 +26,10 @@ import java.io.IOException;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.math._ast.ASTAssignmentType;
+import de.monticore.lang.math._ast.ASTElementType;
 import de.monticore.lang.math._ast.ASTMathDeclarationExpression;
 import de.monticore.lang.math._ast.ASTMathStatements;
 import de.monticore.lang.math._parser.MathParser;
-import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import org.junit.Test;
 
 /**
@@ -42,15 +42,14 @@ public class DegreeParserTest {
   @Test
   public void testElementType() throws IOException {
     MathParser parser = new MathParser();
-    parser.setParserTarget(MCConcreteParser.ParserExecution.EOF);
-    ASTElementType ast = parser.parseString_ElementType("Q(-90°:90°)").orElse(null);
+    ASTElementType ast = parser.parse_StringElementType("Q(-90°:90°)").orElse(null);
     assertNotNull(ast);
   }
 
   @Test
   public void testMathDeclarationExpression() throws IOException {
     MathParser parser = new MathParser();
-    ASTMathDeclarationExpression ast = parser.parseString_MathDeclarationExpression("Q(-90°:90°)^{2} x;").orElse(null);
+    ASTMathDeclarationExpression ast = parser.parse_StringMathDeclarationExpression("Q(-90°:90°)^{2} x;").orElse(null);
     assertNotNull(ast);
   }
 }

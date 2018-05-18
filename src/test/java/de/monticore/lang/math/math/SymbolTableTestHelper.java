@@ -20,9 +20,13 @@
  */
 package de.monticore.lang.math.math;
 
+import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.math._ast.ASTMathCompilationUnit;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 
@@ -36,7 +40,11 @@ public class SymbolTableTestHelper {
         ASTMathCompilationUnit ast = mathLanguage.getParser().parse_String(content).orElse(null);
         assertNotNull(ast);
 
-        MathSymbolTableCreator stc = mathLanguage.getSymbolTableCreator();
+        ResolvingConfiguration resolvingConfig = new ResolvingConfiguration();
+        resolvingConfig.addDefaultFilters(mathLanguage.getResolvingFilters());
+
+        MutableScope scope = (MutableScope) ast.getSpannedScopeOpt().orElse(null);
+        MathSymbolTableCreator stc = mathLanguage.getSymbolTableCreator(resolvingConfig, scope).orElse(null);
         ast.accept(stc);
     }
 
