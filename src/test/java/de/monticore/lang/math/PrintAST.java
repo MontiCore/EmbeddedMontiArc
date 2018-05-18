@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.math.math;
+package de.monticore.lang.math;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.math._ast.ASTMathNode;

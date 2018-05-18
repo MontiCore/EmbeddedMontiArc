@@ -20,33 +20,26 @@
  */
 package de.monticore.lang.math;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.commonexpressions._ast.ASTPlusExpression;
 import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._parser.MathParser;
-import de.monticore.lang.math._visitor.MathVisitor;
 import de.monticore.lang.matrix._ast.ASTMathMatrixValueExplicitExpression;
-import de.monticore.lang.monticar.commonexpressions._ast.ASTCommonAdditionExpression;
-import de.se_rwth.commons.Joiners;
-import org.jscience.mathematics.number.Rational;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import de.monticore.lang.numberunit._ast.*;
+import static de.monticore.lang.math.PrintAST.printAST;
+import static org.junit.Assert.*;
 
 /**
  * Created by michaelvonwenckstern on 11.02.17.
  */
 public class ASTTest {
+
+    // old ---------------------------------------------------------------------
+
     @Test
     public void testElementType() throws IOException {
         MathParser parser = new MathParser();
@@ -71,48 +64,6 @@ public class ASTTest {
     }
 
     @Test
-    public void testArithmeticExpression4() throws IOException {
-        MathParser parser = new MathParser();
-        ASTMathAssignmentExpression ast = parser.parse_StringMathAssignmentExpression("v = (1+m/s);").orElse(null);
-        assertNotNull(ast);
-
-        final List<ASTNode> numbers = new ArrayList<>();
-        final List<Boolean> div = new ArrayList<>();
-        final List<String> names = new ArrayList<>();
-        MathVisitor visitor = new MathVisitor() {
-
-            public void visit(ASTComplexNumber node) {
-                numbers.add(node);
-            }
-
-            public void visit(ASTUnitNumber node) {
-                numbers.add(node);
-            }
-
-            public void visit(ASTMathMatrixNameExpression node) {
-                names.add(node.getName());
-            }
-
-            public void visit(ASTMathAssignmentExpression node) {
-                if (node.getNameOpt().isPresent())
-                    names.add(node.getNameOpt().get());
-                else if(node.getMathDottedNameExpressionOpt().isPresent())
-                    names.add(Joiners.DOT.join(node.getMathDottedNameExpressionOpt().get().getNameList()));
-                else if(node.getMathMatrixNameExpressionOpt().isPresent())
-                    names.add(node.getMathMatrixNameExpressionOpt().get().getName());//TOdo add access info?
-            }
-
-        };
-        ast.accept(visitor);
-
-        assertEquals(1, numbers.size()); //the 1
-        assertEquals(3, names.size());
-        assertEquals(1, div.size()); // so that we are sure to have exactly one infix / AST
-
-        assertTrue(names.containsAll(Arrays.asList("v", "m", "s")));
-    }
-
-    @Test
     public void testMatrix() throws IOException {
         MathParser parser = new MathParser();
         ASTMathMatrixValueExplicitExpression ast = parser.parse_StringMathMatrixValueExplicitExpression("[1 2; 3 4]").orElse(null);
@@ -126,4 +77,210 @@ public class ASTTest {
         ASTMathCompilationUnit ast = parser.parse("src/test/resources/Calculations/add1.m").orElse(null);
         assertNotNull(ast);
     }
+
+    // new ---------------------------------------------------------------
+
+    @BeforeClass
+    public static void init() {
+        Log.enableFailQuick(false);
+    }
+
+    @Test
+    public void ASTComplexTest1() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<de.monticore.numberunit._ast.ASTComplexNumber> ast = parser.parse_StringComplexNumber("1+2i");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTComplexTest2() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathScript> ast = parser.parse_StringMathScript("script a Q^2+1i a; end");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+        assertFalse(ast.get().getExpressionList().isEmpty());
+    }
+
+    @Test
+    public void ASTForTest1() throws Exception {
+        MathParser parser = new MathParser();
+        // Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b 1 + c end"); // works
+        // Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b c end"); // works
+        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b c + 1 end"); // does not work
+        //      Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b 1=1+hallo+3 end");
+        System.out.println(printAST(ast.get()));
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTForTest2() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b a++; for c= 1 b= a+c; end d= 4+a end");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTIfTest1() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathConditionalExpression> ast = parser.parse_StringMathConditionalExpression("if (a == b) b=a+1; end ");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTMatrix1Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathMatrixValueExplicitExpression> ast = parser.parse_StringMathMatrixValueExplicitExpression("[1,2,3;4,5,6] ");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTMatrix2Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathMatrixValueExplicitExpression> ast = parser.parse_StringMathMatrixValueExplicitExpression("[1 2 3;4 5 6] ");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTMatrixTest3() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathMatrixValueExplicitExpression> ast = parser.parse_StringMathMatrixValueExplicitExpression("[1+3i, 4+5i ;8 9] ");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTDeclaration1Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathDeclarationExpression> ast = parser.parse_StringMathDeclarationExpression("Q^{1,2} a");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTDeclaration2Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathDeclarationExpression> ast = parser.parse_StringMathDeclarationExpression("N(1:2:6)^1 a");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+  /*  @Test
+    public void ASTDeclarationInvalidTest() throws Exception {
+        //A is no ElementType
+        MathParser parser = new MathParser();
+        Optional<ASTMathDeclarationExpression> ast = parser.parse_StringMathDeclarationExpression("A(1:2:6)^1 a");
+        assertFalse(ast.isPresent());
+        assertTrue(parser.hasErrors());
+    }*/
+
+    @Test
+    public void ASTAssignmentDeclaration1Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Q(1:2:6)^1 a = 1+2*4");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTAssignmentDeclaration2Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Z^{3,7} nsu1je = [1,2;3,4]");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+   /* @Test
+    public void ASTAssignmentDeclarationInvalid1Test() throws Exception {
+        //E is no ElementType
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("E^{3,7} nsu1je = [1,2;3,4]");
+        assertFalse(ast.isPresent());
+        assertTrue(parser.hasErrors());
+    }*/
+
+    @Test
+    public void ASTAssignmentDeclarationInvalid2Test() throws Exception {
+        //== is not allowed
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Q^{3,7} nsu1je == [1,2;3,4]");
+        assertFalse(ast.isPresent());
+        assertTrue(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTAssignmentDeclarationInvalid3Test() throws Exception {
+        //name is missing
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Q^3 = [1 2 3]");
+        assertFalse(ast.isPresent());
+        assertTrue(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTAssignment1Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentExpression> ast = parser.parse_StringMathAssignmentExpression("A = [1,2,2]");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTAssignment2Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentExpression> ast = parser.parse_StringMathAssignmentExpression("A.r = 3:4:5");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTAssignment3Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("B(1:3) a = [4;6]");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+        System.out.println(printAST(ast.get()));
+    }
+
+
+    @Test
+    public void ASTNameExpressionTest1() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTNameExpression> ast = parser.parse_StringNameExpression("Z");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTAssignment4Test() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathDeclarationExpression> ast = parser.parse_StringMathDeclarationExpression("Z^1 a");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTDottedNameExpressionTest1() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathDottedNameExpression> ast = parser.parse_StringMathDottedNameExpression("name.name2");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
+
+    @Test
+    public void ASTTest() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathCompilationUnit> ast = parser.parse_StringMathCompilationUnit("script S\n" +
+                "Q^2 a = a+b\n" +
+                " end");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+        System.out.println(printAST(ast.get()));
+    }
+
 }
