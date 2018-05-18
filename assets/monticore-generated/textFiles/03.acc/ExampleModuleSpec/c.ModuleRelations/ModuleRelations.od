@@ -1,0 +1,60 @@
+objectdiagram ModuleRelations {
+
+  monticoregenerator:Module {
+    simpleName = "monticoregenerator";
+  }
+
+  monticoremaven:Module {
+    simpleName = "monticoremaven";
+  }
+
+  monticorecli:Module {
+    simpleName = "monticorecli";
+  }
+
+  monticoregrammar:Module {
+    simpleName = "monticoregrammar";
+  }
+
+  monticoreemfruntime:Module {
+    simpleName = "monticoreemfruntime";
+  }
+
+  monticoretemplateclassgenerator:Module {
+    simpleName = "monticoretemplateclassgenerator";
+  }
+
+  monticoreruntime:Module {
+    simpleName = "monticoreruntime";
+  }
+
+  link reliesOnModule monticoregenerator -> monticoreruntime ;
+
+  link reliesOnModule monticoregenerator -> monticoreemfruntime ;
+
+  link reliesOnModule monticoregenerator -> monticoregrammar ;
+
+  link reliesOnModule monticoregenerator -> monticorecli ;
+
+  link reliesOnModule monticoremaven -> monticoregenerator ;
+
+  link reliesOnModule monticoremaven -> monticoreruntime ;
+
+  link reliesOnModule monticorecli -> monticoregenerator ;
+
+  link reliesOnModule monticorecli -> monticoreruntime ;
+
+  link reliesOnModule monticorecli -> monticoreemfruntime ;
+
+  link reliesOnModule monticoregrammar -> monticoreruntime ;
+
+  link reliesOnModule monticoregrammar -> monticoreemfruntime ;
+
+  link reliesOnModule monticoregrammar -> monticoregenerator ;
+
+  link reliesOnModule monticoreemfruntime -> monticoreruntime ;
+
+  link reliesOnModule monticoretemplateclassgenerator -> monticoreruntime ;
+
+  link reliesOnModule monticoreruntime -> monticoregenerator ;
+}

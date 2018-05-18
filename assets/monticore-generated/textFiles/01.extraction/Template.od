@@ -1,0 +1,444 @@
+objectdiagram Template {
+
+  @(Main.ftl):FreeMarkerTemplate{
+    simpleName = "Main";
+    fullName = "sources/monticore-cli/src/test/resources/monticore/Main.ftl";
+  };
+
+  @(Grammar.ftl):FreeMarkerTemplate{
+    simpleName = "Grammar";
+    fullName = "sources/monticore-cli/src/test/resources/monticore/Grammar.ftl";
+  };
+
+  @(Main.ftl!2):FreeMarkerTemplate{
+    simpleName = "Main";
+    fullName = "sources/monticore-cli/target/test-classes/monticore/Main.ftl";
+  };
+
+  @(AstBuilder.ftl):FreeMarkerTemplate{
+    simpleName = "AstBuilder";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstBuilder.ftl";
+  };
+
+  @(AstImports.ftl):FreeMarkerTemplate{
+    simpleName = "AstImports";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstImports.ftl";
+  };
+
+  @(BuilderAttribute.ftl):FreeMarkerTemplate{
+    simpleName = "BuilderAttribute";
+    fullName = "sources/monticore-generator/src/main/resources/ast/BuilderAttribute.ftl";
+  };
+
+  @(ParametersDeclaration.ftl):FreeMarkerTemplate{
+    simpleName = "ParametersDeclaration";
+    fullName = "sources/monticore-generator/src/main/resources/ast/ParametersDeclaration.ftl";
+  };
+
+  @(ClassMethod.ftl):FreeMarkerTemplate{
+    simpleName = "ClassMethod";
+    fullName = "sources/monticore-generator/src/main/resources/ast/ClassMethod.ftl";
+  };
+
+  @(AstBuilderAttributeSetter.ftl):FreeMarkerTemplate{
+    simpleName = "AstBuilderAttributeSetter";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstBuilderAttributeSetter.ftl";
+  };
+
+  @(TypesHelper.java):JavaSourceFile{
+    simpleName = "TypesHelper";
+    fullName = "sources/monticore-grammar/src/main/java/de/monticore/types/TypesHelper.java";
+  };
+
+  @(AstClass.ftl):FreeMarkerTemplate{
+    simpleName = "AstClass";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstClass.ftl";
+  };
+
+  @(AstSuperTypes.ftl):FreeMarkerTemplate{
+    simpleName = "AstSuperTypes";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstSuperTypes.ftl";
+  };
+
+  @(Attribute.ftl):FreeMarkerTemplate{
+    simpleName = "Attribute";
+    fullName = "sources/monticore-generator/src/main/resources/ast/Attribute.ftl";
+  };
+
+  @(Constructor.ftl):FreeMarkerTemplate{
+    simpleName = "Constructor";
+    fullName = "sources/monticore-generator/src/main/resources/ast/Constructor.ftl";
+  };
+
+  @(AstEnum.ftl):FreeMarkerTemplate{
+    simpleName = "AstEnum";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstEnum.ftl";
+  };
+
+  @(AstInterface.ftl):FreeMarkerTemplate{
+    simpleName = "AstInterface";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstInterface.ftl";
+  };
+
+  @(AstInterfaceContent.ftl):FreeMarkerTemplate{
+    simpleName = "AstInterfaceContent";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstInterfaceContent.ftl";
+  };
+
+  @(AstExtendedInterfaces.ftl):FreeMarkerTemplate{
+    simpleName = "AstExtendedInterfaces";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstExtendedInterfaces.ftl";
+  };
+
+  @(AstMill.ftl):FreeMarkerTemplate{
+    simpleName = "AstMill";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstMill.ftl";
+  };
+
+  @(AstMillForSuper.ftl):FreeMarkerTemplate{
+    simpleName = "AstMillForSuper";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstMillForSuper.ftl";
+  };
+
+  @(AstNodeFactory.ftl):FreeMarkerTemplate{
+    simpleName = "AstNodeFactory";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstNodeFactory.ftl";
+  };
+
+  @(AstSuperInterfaces.ftl):FreeMarkerTemplate{
+    simpleName = "AstSuperInterfaces";
+    fullName = "sources/monticore-generator/src/main/resources/ast/AstSuperInterfaces.ftl";
+  };
+
+  @(Class.ftl):FreeMarkerTemplate{
+    simpleName = "Class";
+    fullName = "sources/monticore-generator/src/main/resources/ast/Class.ftl";
+  };
+
+  @(ClassContent.ftl):FreeMarkerTemplate{
+    simpleName = "ClassContent";
+    fullName = "sources/monticore-generator/src/main/resources/ast/ClassContent.ftl";
+  };
+
+  @(ErrorIfNull.ftl):FreeMarkerTemplate{
+    simpleName = "ErrorIfNull";
+    fullName = "sources/monticore-generator/src/main/resources/ast/ErrorIfNull.ftl";
+  };
+
+  @(EmptyMethodBody.ftl):FreeMarkerTemplate{
+    simpleName = "EmptyMethodBody";
+    fullName = "sources/monticore-generator/src/main/resources/ast/EmptyMethodBody.ftl";
+  };
+
+  @(ConstructorParametersDeclaration.ftl):FreeMarkerTemplate{
+    simpleName = "ConstructorParametersDeclaration";
+    fullName = "sources/monticore-generator/src/main/resources/ast/ConstructorParametersDeclaration.ftl";
+  };
+
+  @(ConstructorParametersDeclaration2.ftl):FreeMarkerTemplate{
+    simpleName = "ConstructorParametersDeclaration2";
+    fullName = "sources/monticore-generator/src/main/resources/ast/ConstructorParametersDeclaration2.ftl";
+  };
+
+  @(Interface.ftl):FreeMarkerTemplate{
+    simpleName = "Interface";
+    fullName = "sources/monticore-generator/src/main/resources/ast/Interface.ftl";
+  };
+
+  @(AstNodeFactory.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstNodeFactory";
+    fullName = "sources/monticore-generator/src/main/resources/ast_emf/AstNodeFactory.ftl";
+  };
+
+  @(EPackage.ftl):FreeMarkerTemplate{
+    simpleName = "EPackage";
+    fullName = "sources/monticore-generator/src/main/resources/ast_emf/EPackage.ftl";
+  };
+
+  @(Constant.ftl):FreeMarkerTemplate{
+    simpleName = "Constant";
+    fullName = "sources/monticore-generator/src/main/resources/ast/Constant.ftl";
+  };
+
+  @(EPackageImpl.ftl):FreeMarkerTemplate{
+    simpleName = "EPackageImpl";
+    fullName = "sources/monticore-generator/src/main/resources/ast_emf/EPackageImpl.ftl";
+  };
+
+  @(MCParser.ftl):FreeMarkerTemplate{
+    simpleName = "MCParser";
+    fullName = "sources/monticore-generator/src/main/resources/parser/MCParser.ftl";
+  };
+
+  @(MCParserMethods.ftl):FreeMarkerTemplate{
+    simpleName = "MCParserMethods";
+    fullName = "sources/monticore-generator/src/main/resources/parser/MCParserMethods.ftl";
+  };
+
+  @(Parser.ftl):FreeMarkerTemplate{
+    simpleName = "Parser";
+    fullName = "sources/monticore-generator/src/main/resources/parser/Parser.ftl";
+  };
+
+  @(ParserHeader.ftl):FreeMarkerTemplate{
+    simpleName = "ParserHeader";
+    fullName = "sources/monticore-generator/src/main/resources/parser/ParserHeader.ftl";
+  };
+
+  @(LexerMember.ftl):FreeMarkerTemplate{
+    simpleName = "LexerMember";
+    fullName = "sources/monticore-generator/src/main/resources/parser/LexerMember.ftl";
+  };
+
+  @(SymbolMill.ftl):FreeMarkerTemplate{
+    simpleName = "SymbolMill";
+    fullName = "sources/monticore-generator/src/main/resources/symboltable/SymbolMill.ftl";
+  };
+
+  @(Attribute.ftl!2):FreeMarkerTemplate{
+    simpleName = "Attribute";
+    fullName = "sources/monticore-generator/src/main/resources/symboltable/mill/Attribute.ftl";
+  };
+
+  @(Method.ftl):FreeMarkerTemplate{
+    simpleName = "Method";
+    fullName = "sources/monticore-generator/src/main/resources/symboltable/mill/Method.ftl";
+  };
+
+  @(AstBuilder.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstBuilder";
+    fullName = "sources/monticore-generator/target/classes/ast/AstBuilder.ftl";
+  };
+
+  @(AstBuilderAttributeSetter.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstBuilderAttributeSetter";
+    fullName = "sources/monticore-generator/target/classes/ast/AstBuilderAttributeSetter.ftl";
+  };
+
+  @(AstClass.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstClass";
+    fullName = "sources/monticore-generator/target/classes/ast/AstClass.ftl";
+  };
+
+  @(AstEnum.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstEnum";
+    fullName = "sources/monticore-generator/target/classes/ast/AstEnum.ftl";
+  };
+
+  @(AstInterface.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstInterface";
+    fullName = "sources/monticore-generator/target/classes/ast/AstInterface.ftl";
+  };
+
+  @(AstInterfaceContent.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstInterfaceContent";
+    fullName = "sources/monticore-generator/target/classes/ast/AstInterfaceContent.ftl";
+  };
+
+  @(AstMill.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstMill";
+    fullName = "sources/monticore-generator/target/classes/ast/AstMill.ftl";
+  };
+
+  @(AstMillForSuper.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstMillForSuper";
+    fullName = "sources/monticore-generator/target/classes/ast/AstMillForSuper.ftl";
+  };
+
+  @(AstNodeFactory.ftl!3):FreeMarkerTemplate{
+    simpleName = "AstNodeFactory";
+    fullName = "sources/monticore-generator/target/classes/ast/AstNodeFactory.ftl";
+  };
+
+  @(AstSuperTypes.ftl!2):FreeMarkerTemplate{
+    simpleName = "AstSuperTypes";
+    fullName = "sources/monticore-generator/target/classes/ast/AstSuperTypes.ftl";
+  };
+
+  @(BuilderAttribute.ftl!2):FreeMarkerTemplate{
+    simpleName = "BuilderAttribute";
+    fullName = "sources/monticore-generator/target/classes/ast/BuilderAttribute.ftl";
+  };
+
+  @(Class.ftl!2):FreeMarkerTemplate{
+    simpleName = "Class";
+    fullName = "sources/monticore-generator/target/classes/ast/Class.ftl";
+  };
+
+  @(ClassMethod.ftl!2):FreeMarkerTemplate{
+    simpleName = "ClassMethod";
+    fullName = "sources/monticore-generator/target/classes/ast/ClassMethod.ftl";
+  };
+
+  @(Constructor.ftl!2):FreeMarkerTemplate{
+    simpleName = "Constructor";
+    fullName = "sources/monticore-generator/target/classes/ast/Constructor.ftl";
+  };
+
+  @(ConstructorParametersDeclaration.ftl!2):FreeMarkerTemplate{
+    simpleName = "ConstructorParametersDeclaration";
+    fullName = "sources/monticore-generator/target/classes/ast/ConstructorParametersDeclaration.ftl";
+  };
+
+  @(ConstructorParametersDeclaration2.ftl!2):FreeMarkerTemplate{
+    simpleName = "ConstructorParametersDeclaration2";
+    fullName = "sources/monticore-generator/target/classes/ast/ConstructorParametersDeclaration2.ftl";
+  };
+
+  @(Interface.ftl!2):FreeMarkerTemplate{
+    simpleName = "Interface";
+    fullName = "sources/monticore-generator/target/classes/ast/Interface.ftl";
+  };
+
+  @(AstNodeFactory.ftl!4):FreeMarkerTemplate{
+    simpleName = "AstNodeFactory";
+    fullName = "sources/monticore-generator/target/classes/ast_emf/AstNodeFactory.ftl";
+  };
+
+  @(EPackage.ftl!2):FreeMarkerTemplate{
+    simpleName = "EPackage";
+    fullName = "sources/monticore-generator/target/classes/ast_emf/EPackage.ftl";
+  };
+
+  @(EPackageImpl.ftl!2):FreeMarkerTemplate{
+    simpleName = "EPackageImpl";
+    fullName = "sources/monticore-generator/target/classes/ast_emf/EPackageImpl.ftl";
+  };
+
+  @(MCParser.ftl!2):FreeMarkerTemplate{
+    simpleName = "MCParser";
+    fullName = "sources/monticore-generator/target/classes/parser/MCParser.ftl";
+  };
+
+  @(Parser.ftl!2):FreeMarkerTemplate{
+    simpleName = "Parser";
+    fullName = "sources/monticore-generator/target/classes/parser/Parser.ftl";
+  };
+
+  @(SymbolMill.ftl!2):FreeMarkerTemplate{
+    simpleName = "SymbolMill";
+    fullName = "sources/monticore-generator/target/classes/symboltable/SymbolMill.ftl";
+  };
+
+  @(TopA.ftl):FreeMarkerTemplate{
+    simpleName = "TopA";
+    fullName = "sources/monticore-runtime/src/test/java/de/monticore/generating/templateengine/templates/TopA.ftl";
+  };
+
+  @(A.ftl):FreeMarkerTemplate{
+    simpleName = "A";
+    fullName = "sources/monticore-runtime/src/test/java/de/monticore/generating/templateengine/templates/A.ftl";
+  };
+
+  @(TopA.ftl!2):FreeMarkerTemplate{
+    simpleName = "TopA";
+    fullName = "sources/monticore-runtime/target/test-classes/de/monticore/generating/templateengine/templates/TopA.ftl";
+  };
+
+  @(Setup.ftl):FreeMarkerTemplate{
+    simpleName = "Setup";
+    fullName = "sources/monticore-templateclassgenerator/src/main/resources/typesafety/setup/Setup.ftl";
+  };
+
+  @(SetupAssignments.ftl):FreeMarkerTemplate{
+    simpleName = "SetupAssignments";
+    fullName = "sources/monticore-templateclassgenerator/src/main/resources/typesafety/setup/SetupAssignments.ftl";
+  };
+
+  @(Setup.ftl!2):FreeMarkerTemplate{
+    simpleName = "Setup";
+    fullName = "sources/monticore-templateclassgenerator/target/classes/typesafety/setup/Setup.ftl";
+  };
+
+  @(SetupAssignments.ftl!2):FreeMarkerTemplate{
+    simpleName = "SetupAssignments";
+    fullName = "sources/monticore-templateclassgenerator/target/classes/typesafety/setup/SetupAssignments.ftl";
+  };
+
+  link reliesOnTemplate @(Main.ftl) -> @(Grammar.ftl);
+  link reliesOnTemplate @(Main.ftl!2) -> @(Grammar.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl) -> @(AstImports.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl) -> @(BuilderAttribute.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl) -> @(ParametersDeclaration.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl) -> @(ClassMethod.ftl);
+  link reliesOnJavaArtifact @(AstBuilderAttributeSetter.ftl) -> @(TypesHelper.java);
+  link reliesOnTemplate @(AstClass.ftl) -> @(AstImports.ftl);
+  link reliesOnTemplate @(AstClass.ftl) -> @(AstSuperTypes.ftl);
+  link reliesOnTemplate @(AstClass.ftl) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstClass.ftl) -> @(Constructor.ftl);
+  link reliesOnTemplate @(AstClass.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstEnum.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstInterface.ftl) -> @(AstInterfaceContent.ftl);
+  link reliesOnTemplate @(AstInterfaceContent.ftl) -> @(AstExtendedInterfaces.ftl);
+  link reliesOnTemplate @(AstInterfaceContent.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstMill.ftl) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstMill.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstMillForSuper.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstSuperTypes.ftl) -> @(AstSuperInterfaces.ftl);
+  link reliesOnJavaArtifact @(BuilderAttribute.ftl) -> @(TypesHelper.java);
+  link reliesOnTemplate @(Class.ftl) -> @(ClassContent.ftl);
+  link reliesOnTemplate @(ClassMethod.ftl) -> @(ErrorIfNull.ftl);
+  link reliesOnTemplate @(ClassMethod.ftl) -> @(EmptyMethodBody.ftl);
+  link reliesOnTemplate @(Constructor.ftl) -> @(ParametersDeclaration.ftl);
+  link reliesOnTemplate @(Constructor.ftl) -> @(EmptyMethodBody.ftl);
+  link reliesOnJavaArtifact @(ConstructorParametersDeclaration.ftl) -> @(TypesHelper.java);
+  link reliesOnJavaArtifact @(ConstructorParametersDeclaration2.ftl) -> @(TypesHelper.java);
+  link reliesOnTemplate @(Interface.ftl) -> @(AstInterface.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl!2) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(EPackage.ftl) -> @(Constant.ftl);
+  link reliesOnTemplate @(EPackage.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(EPackageImpl.ftl) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(MCParser.ftl) -> @(MCParserMethods.ftl);
+  link reliesOnTemplate @(Parser.ftl) -> @(ParserHeader.ftl);
+  link reliesOnTemplate @(Parser.ftl) -> @(LexerMember.ftl);
+  link reliesOnTemplate @(SymbolMill.ftl) -> @(Attribute.ftl!2);
+  link reliesOnTemplate @(SymbolMill.ftl) -> @(Method.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl!2) -> @(AstImports.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl!2) -> @(BuilderAttribute.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl!2) -> @(ParametersDeclaration.ftl);
+  link reliesOnTemplate @(AstBuilder.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnJavaArtifact @(AstBuilderAttributeSetter.ftl!2) -> @(TypesHelper.java);
+  link reliesOnTemplate @(AstClass.ftl!2) -> @(AstImports.ftl);
+  link reliesOnTemplate @(AstClass.ftl!2) -> @(AstSuperTypes.ftl);
+  link reliesOnTemplate @(AstClass.ftl!2) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstClass.ftl!2) -> @(Constructor.ftl);
+  link reliesOnTemplate @(AstClass.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstEnum.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstInterface.ftl!2) -> @(AstInterfaceContent.ftl);
+  link reliesOnTemplate @(AstInterfaceContent.ftl!2) -> @(AstExtendedInterfaces.ftl);
+  link reliesOnTemplate @(AstInterfaceContent.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstMill.ftl!2) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstMill.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstMillForSuper.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl!3) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl!3) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(AstSuperTypes.ftl!2) -> @(AstSuperInterfaces.ftl);
+  link reliesOnJavaArtifact @(BuilderAttribute.ftl!2) -> @(TypesHelper.java);
+  link reliesOnTemplate @(Class.ftl!2) -> @(ClassContent.ftl);
+  link reliesOnTemplate @(ClassMethod.ftl!2) -> @(ErrorIfNull.ftl);
+  link reliesOnTemplate @(ClassMethod.ftl!2) -> @(EmptyMethodBody.ftl);
+  link reliesOnTemplate @(Constructor.ftl!2) -> @(ParametersDeclaration.ftl);
+  link reliesOnTemplate @(Constructor.ftl!2) -> @(EmptyMethodBody.ftl);
+  link reliesOnJavaArtifact @(ConstructorParametersDeclaration.ftl!2) -> @(TypesHelper.java);
+  link reliesOnJavaArtifact @(ConstructorParametersDeclaration2.ftl!2) -> @(TypesHelper.java);
+  link reliesOnTemplate @(Interface.ftl!2) -> @(AstInterface.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl!4) -> @(Attribute.ftl);
+  link reliesOnTemplate @(AstNodeFactory.ftl!4) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(EPackage.ftl!2) -> @(Constant.ftl);
+  link reliesOnTemplate @(EPackage.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(EPackageImpl.ftl!2) -> @(ClassMethod.ftl);
+  link reliesOnTemplate @(MCParser.ftl!2) -> @(MCParserMethods.ftl);
+  link reliesOnTemplate @(Parser.ftl!2) -> @(ParserHeader.ftl);
+  link reliesOnTemplate @(Parser.ftl!2) -> @(LexerMember.ftl);
+  link reliesOnTemplate @(SymbolMill.ftl!2) -> @(Attribute.ftl!2);
+  link reliesOnTemplate @(SymbolMill.ftl!2) -> @(Method.ftl);
+  link reliesOnTemplate @(TopA.ftl) -> @(A.ftl);
+  link reliesOnTemplate @(TopA.ftl!2) -> @(A.ftl);
+  link reliesOnTemplate @(Setup.ftl) -> @(SetupAssignments.ftl);
+  link reliesOnTemplate @(SetupAssignments.ftl) -> @(SetupAssignments.ftl);
+  link reliesOnTemplate @(Setup.ftl!2) -> @(SetupAssignments.ftl);
+  link reliesOnTemplate @(SetupAssignments.ftl!2) -> @(SetupAssignments.ftl);
+}
