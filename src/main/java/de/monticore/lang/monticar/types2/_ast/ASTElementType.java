@@ -36,7 +36,11 @@ public class ASTElementType extends ASTElementTypeTOP {
     public  ASTElementType (String tElementType,
         boolean isBoolean, boolean isComplex, boolean isRational,
                                boolean isWholeNumber, boolean isNaturalNumber) {
-        super(tElementType, isBoolean, isComplex, isRational, isWholeNumber, isNaturalNumber);
+        super(Optional.ofNullable(tElementType), isWholeNumber, isRational, isComplex, isBoolean, isNaturalNumber);
+    }
+
+    public ASTElementType(Optional<String> tElementType, boolean isWholeNumber, boolean isRational, boolean isComplex, boolean isBoolean, boolean isNatural) {
+        super(tElementType, isWholeNumber, isRational, isComplex, isBoolean, isNatural);
     }
 
     public ASTElementType() {
@@ -65,7 +69,7 @@ public class ASTElementType extends ASTElementTypeTOP {
 
         String r = tElementType.substring(1).trim();
         try {
-            range = rangesParser.parseString_Range(r);
+            range = rangesParser.parse_StringRange(r);
         } catch (IOException e) {
             e.printStackTrace(); // no error should occur since it is a string
 

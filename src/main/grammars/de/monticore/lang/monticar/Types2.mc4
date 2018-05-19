@@ -36,14 +36,14 @@ grammar Types2 extends de.monticore.lang.monticar.Literals2, de.monticore.lang.N
   UnitNumberTypeArgument implements PrintType, TypeArgument  = UnitNumber;
 
   ast UnitNumberResolution= method public String printType(){return "UnitNumberResolution";};
-  UnitNumberResolution implements PrintType, Resolution, TypeArgument = Name | UnitNumber;
+  UnitNumberResolution implements PrintType, Resolution, TypeArgument = (Name | UnitNumber);
 
      /*========================================================================*/
         /*============================== OPTIONS =================================*/
         /*========================================================================*/
 
         concept antlr {
-            parser java {
+            parserjava {
                 /**
                  * Counts the number of LT of type parameters and type arguments.
                  * It is used in semantic predicates to ensure the right number
@@ -64,7 +64,7 @@ grammar Types2 extends de.monticore.lang.monticar.Literals2, de.monticore.lang.N
         ast QualifiedName =
             method public String toString(){
               return de.se_rwth.commons.Names.getQualifiedName(
-                  this.getParts());
+                  this.getPartsList());
             };
 
         ast PrimitiveType =

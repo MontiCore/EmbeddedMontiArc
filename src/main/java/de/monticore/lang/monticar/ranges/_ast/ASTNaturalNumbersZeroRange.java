@@ -34,8 +34,8 @@ public class ASTNaturalNumbersZeroRange extends ASTNaturalNumbersZeroRangeTOP {
     public ASTNaturalNumbersZeroRange() {
         super();
 
-        setStartValue(new ASTUnitNumberResolution(null,new ASTUnitNumber(Rational.ZERO, Unit.ONE)));
-        setStepValue(new ASTUnitNumberResolution(null,new ASTUnitNumber(Rational.ONE, Unit.ONE)));
+        setStartValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ZERO, Unit.ONE))));
+        setStepValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ONE, Unit.ONE))));
         setEndValue("oo");
         //null,new ASTUnitNumber(Rational.ONE, null), new ASTUnitNumber(Rational.ONE, null), "oo", null, false, false);
 

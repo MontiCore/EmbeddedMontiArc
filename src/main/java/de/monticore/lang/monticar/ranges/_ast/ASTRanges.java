@@ -30,7 +30,7 @@ public class ASTRanges extends ASTRangesTOP {
     @Override
     public String toString() {
         return String.format("[%s]",
-                getRanges().stream()
+                getRangeList().stream()
                         .map(ASTRange::toString).collect(Collectors.joining(", ")));
     }
 

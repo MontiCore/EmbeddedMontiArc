@@ -36,8 +36,7 @@ public class Types2ParserTest {
   @Test
   public void testDegreeElementType() throws IOException {
     Types2Parser parser = new Types2Parser();
-    parser.setParserTarget(MCConcreteParser.ParserExecution.EOF);
-    ASTElementType ast = parser.parseString_ElementType("Q(-90°:90°)").orElse(null);
+    ASTElementType ast = parser.parse_StringElementType("Q(-90°:90°)").orElse(null);
     assertNotNull(ast);
   }
 }

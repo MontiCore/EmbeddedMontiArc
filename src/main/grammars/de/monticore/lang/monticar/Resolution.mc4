@@ -27,8 +27,8 @@ grammar Resolution extends de.monticore.lang.monticar.Literals2{
         return "implement TypeName!";
     };
    interface ResolutionDeclaration;
-   ast Resolution= method public Optional<String> getName(){
-    return Optional.Empty;
+   ast Resolution= method public Optional<String> getNameOpt(){
+    return Optional.empty();
    };
    interface Resolution;
    NameArgument implements TypeArgument=Name;

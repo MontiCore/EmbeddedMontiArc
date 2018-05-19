@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.common2._ast;
 
+import java.util.Optional;
+
 /**
  * Created by Sascha on 04.07.2017.
  */
@@ -34,7 +36,7 @@ public class ASTParameter extends ASTParameterTOP {
             ,
                            de.monticore.lang.monticar.common2._ast.ASTNameWithArray nameWithArray
             ,
-                           de.monticore.lang.monticar.common2._ast.ASTValue defaultValue
+                           Optional<ASTValue> defaultValue
     ) {
         super(adaptableKeyword, type, nameWithArray, defaultValue);
     }

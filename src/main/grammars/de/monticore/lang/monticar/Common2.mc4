@@ -29,7 +29,7 @@ ast Stereotype =
           return (getStereoValue(name) != null);
         }
         method public boolean containsStereoValue(String name, String value) {
-          for (ASTStereoValue sv : values) {
+          for (ASTStereoValue sv : getValuesList()) {
             if (sv.getName() != null && sv.getName().equals(name)
                 && sv.getValue() != null && sv.getValue().equals(value)) {
               return true;
@@ -38,7 +38,7 @@ ast Stereotype =
           return false;
         }
         method public ASTStereoValue getStereoValue(String name) {
-          for (ASTStereoValue sv : values) {
+          for (ASTStereoValue sv : getValuesList()) {
             if (sv.getName() != null && sv.getName().equals(name)) {
               return sv;
             }

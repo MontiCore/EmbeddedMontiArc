@@ -38,40 +38,40 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
         super();
     }
 
-    public ASTUnitNumberResolution(String name, de.monticore.lang.numberunit._ast.ASTUnitNumber unitNumber) {
+    public ASTUnitNumberResolution(Optional<String> name, Optional<ASTUnitNumber> unitNumber) {
         super(name, unitNumber);
     }
 
     public void setNumber(Rational number) {
-        if (!getUnitNumber().isPresent()) {
+        if (!getUnitNumberOpt().isPresent()) {
             setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(number, Unit.ONE));
         }
-        getUnitNumber().get().setNumber(number);
+        getUnitNumberOpt().get().setNumber(number);
     }
 
     public void setUnit(Unit unit) {
-        if (!getUnitNumber().isPresent()) {
+        if (!getUnitNumberOpt().isPresent()) {
             setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(Rational.ZERO, unit));
         }
-        getUnitNumber().get().setUnit(unit);
+        getUnitNumberOpt().get().setUnit(unit);
     }
 
     public Optional<Rational> getNumber() {
-        return getUnitNumber().get().getNumber();
+        return getUnitNumberOpt().get().getNumber();
     }
 
     public Optional<Unit> getUnit() {
-        return getUnitNumber().get().getUnit();
+        return getUnitNumberOpt().get().getUnit();
     }
 
     public String doResolution(List<ResolutionDeclarationSymbol> resolutionDeclarationSymbolList) {
-        if (getName().isPresent()) {
+        if (getNameOpt().isPresent()) {
             for (ResolutionDeclarationSymbol resDeclSym : resolutionDeclarationSymbolList) {
 
-                if (resDeclSym.getNameToResolve().equals(getName().get())) {
+                if (resDeclSym.getNameToResolve().equals(getNameOpt().get())) {
 
                     Log.debug(resDeclSym.getASTResolution().toString(), "Found ResolutionDeclarationSymbol:");
-                    ASTUnitNumber toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber().get();
+                    ASTUnitNumber toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumberOpt().get();
 
 
                     Log.debug("" + toSet.getNumber().get().intValue(), "ToSet Number:");
@@ -79,8 +79,8 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
                     setNumber(toSet.getNumber().get());
                     setUnit(toSet.getUnit().get());
                     Log.debug("" + getNumber().get().intValue(), "PortResolution Number:");
-                    Log.debug(getName().get(),"Name:");
-                    return getName().get();
+                    Log.debug(getNameOpt().get(),"Name:");
+                    return getNameOpt().get();
                 }
             }
 

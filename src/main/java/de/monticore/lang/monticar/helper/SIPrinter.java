@@ -71,9 +71,9 @@
 //
 //    s.push(numerator.getNumerator());
 //
-//    if (numerator.getExponent().isPresent()) {
+//    if (numerator.getExponentOpt().isPresent()) {
 //      s.push("^");
-//      s.push(printLiteral(numerator.getExponent().get()));
+//      s.push(printLiteral(numerator.getExponentOpt().get()));
 //    }
 //  }
 //
@@ -84,9 +84,9 @@
 //    }
 //    s.push(denominator.getDenominator());
 //
-//    if (denominator.getDenominatorExponent().isPresent()) {
+//    if (denominator.getDenominatorExponentOpt().isPresent()) {
 //      s.push("^");
-//      s.push(printLiteral(denominator.getDenominatorExponent().get()));
+//      s.push(printLiteral(denominator.getDenominatorExponentOpt().get()));
 //    }
 //  }
 //}

@@ -97,7 +97,7 @@ public class SIUnitRangesSymbolReference extends SIUnitRangesSymbol implements M
     }
 
     public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(ASTRanges astType) {
-        return constructSIUnitRangesSymbolReference(astType.getRanges());
+        return constructSIUnitRangesSymbolReference(astType.getRangeList());
     }
 
     public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(List<ASTRange> astRanges) {

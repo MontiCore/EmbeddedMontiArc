@@ -36,8 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import de.monticore.lang.numberunit._ast.*;
-
 public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreatorTOP {
 
     private static int id = 0;
@@ -51,7 +49,7 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
     public void visit(ASTStreamUnitsCompilationUnit node) {
         Log.debug("Building Symboltable for Stream: " + node.getComponentStreamUnits().getName(),
                 StreamUnitsSymbolTableCreator.class.getSimpleName());
-        String compilationUnitPackage = Names.getQualifiedName(node.getPackage());
+        String compilationUnitPackage = Names.getQualifiedName(node.getPackageList());
         ArtifactScope artifactScope = new ArtifactScope(
                 Optional.empty(),
                 compilationUnitPackage,
@@ -79,14 +77,14 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
     @Override
     public void visit(ASTNamedStreamUnits node) {
         NamedStreamUnitsSymbol streamSymbol = new NamedStreamUnitsSymbol(node.getName(), id);
-        for (ASTStreamInstruction streamInstruction : node.getStream().getStreamInstructions()) {
-            if (streamInstruction.getStreamValue().isPresent()) {
-                streamSymbol.add(handleStreamValue(streamInstruction.getStreamValue().get()));
-            } else if (streamInstruction.getStreamCompare().isPresent()) {
-                ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompare().get();
+        for (ASTStreamInstruction streamInstruction : node.getStream().getStreamInstructionList()) {
+            if (streamInstruction.getStreamValueOpt().isPresent()) {
+                streamSymbol.add(handleStreamValue(streamInstruction.getStreamValueOpt().get()));
+            } else if (streamInstruction.getStreamCompareOpt().isPresent()) {
+                ASTStreamCompare astStreamCompare = streamInstruction.getStreamCompareOpt().get();
                 streamSymbol.add(new StreamCompare(new StreamValuePrecision(astStreamCompare.getLeft()),
                         astStreamCompare.getOperator(), new StreamValuePrecision(astStreamCompare.getRight())));
-            } else if (streamInstruction.getStreamArrayValues().isPresent()) {
+            } else if (streamInstruction.getStreamArrayValuesOpt().isPresent()) {
                 streamSymbol.add(handleStreamArrayValues(streamInstruction));
             }
         }
@@ -95,34 +93,34 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
 
     private IStreamValue handleStreamValue(ASTStreamValue streamValue) {
         IStreamValue result = null;
-        if (streamValue.getPrecisionNumber().isPresent()) {
-            ASTPrecisionNumber num = streamValue.getPrecisionNumber().get();
-            if (num.getPrecision().isPresent()) {
-                result = new StreamValuePrecision(num.getUnitNumber(), num.getPrecision().get().getUnitNumber());
+        if (streamValue.getPrecisionNumberOpt().isPresent()) {
+            ASTPrecisionNumber num = streamValue.getPrecisionNumberOpt().get();
+            if (num.getPrecisionOpt().isPresent()) {
+                result = new StreamValuePrecision(num.getUnitNumber(), num.getPrecisionOpt().get().getUnitNumber());
             } else {
                 result = (new StreamValuePrecision(num.getUnitNumber()));
             }
-        } else if (streamValue.getName().isPresent()) {
-            result = (new StreamValuePrecision(streamValue.getName().get()));
-        } else if (streamValue.getSignedLiteral().isPresent()) {
-            ASTSignedLiteral signedLiteral = streamValue.getSignedLiteral().get();
+        } else if (streamValue.getNameOpt().isPresent()) {
+            result = (new StreamValuePrecision(streamValue.getNameOpt().get()));
+        } else if (streamValue.getSignedLiteralOpt().isPresent()) {
+            ASTSignedLiteral signedLiteral = streamValue.getSignedLiteralOpt().get();
             result = (new StreamValuePrecision(signedLiteral));
-        } else if (streamValue.getDontCare().isPresent()) {
+        } else if (streamValue.getDontCareOpt().isPresent()) {
             result = (new StreamValuePrecision("-"));
-        } else if (streamValue.getValueAtTick().isPresent()) {
-            ASTValueAtTick valueAtTick = streamValue.getValueAtTick().get();
+        } else if (streamValue.getValueAtTickOpt().isPresent()) {
+            ASTValueAtTick valueAtTick = streamValue.getValueAtTickOpt().get();
             result = (new StreamValueAtTick(valueAtTick));
         }
         return result;
     }
 
     private StreamValues handleStreamArrayValues(ASTStreamInstruction streamInstruction) {
-        ASTStreamArrayValues streamArrayValues = streamInstruction.getStreamArrayValues().get();
+        ASTStreamArrayValues streamArrayValues = streamInstruction.getStreamArrayValues();
         StreamValues result = null;
-        if (streamArrayValues.getMatrixPair().isPresent()) {
-            result = handleMatrixPair(streamArrayValues.getMatrixPair().get());
-        } else if (streamArrayValues.getValuePair().isPresent()) {
-            result = new StreamValues(handleValuePair(streamArrayValues.getValuePair().get()));
+        if (streamArrayValues.getMatrixPairOpt().isPresent()) {
+            result = handleMatrixPair(streamArrayValues.getMatrixPairOpt().get());
+        } else if (streamArrayValues.getValuePairOpt().isPresent()) {
+            result = new StreamValues(handleValuePair(streamArrayValues.getValuePairOpt().get()));
         }
         return result;
     }
@@ -130,14 +128,14 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
     private StreamValues handleMatrixPair(ASTMatrixPair matrixPair) {
         //handle all rows
         StreamValues streamValues = new StreamValues();
-        for (int row = 0; row < matrixPair.getValuePairs().size(); ++row) {
-            streamValues.add(handleValuePair(matrixPair.getValuePairs().get(row)));
+        for (int row = 0; row < matrixPair.getValuePairList().size(); ++row) {
+            streamValues.add(handleValuePair(matrixPair.getValuePairList().get(row)));
         }
         return streamValues;
     }
 
     private List<IStreamValue> handleValuePair(ASTValuePair valuePair) {
-        List<ASTStreamValue> streamValues = valuePair.getStreamValues();
+        List<ASTStreamValue> streamValues = valuePair.getStreamValueList();
         List<IStreamValue> currentList = new ArrayList<>();
         //handle the elements of each row
         for (int i = 0; i < streamValues.size(); ++i) {

@@ -60,21 +60,21 @@ public class TestParserTest {
     @Test
     public void testA() throws IOException {
         TestParser parser = new TestParser();
-        ASTA ast = parser.parseString_A("A.*;").orElse(null);
+        ASTA ast = parser.parse_StringA("A.*;").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testC() throws IOException {
         TestParser parser = new TestParser();
-        ASTC ast = parser.parseString_C("C;").orElse(null);
+        ASTC ast = parser.parse_StringC("C;").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testD() throws IOException {
         TestParser parser = new TestParser();
-        ASTD ast = parser.parseString_D("D;").orElse(null);
+        ASTD ast = parser.parse_StringD("D;").orElse(null);
         assertNotNull(ast);
     }
 

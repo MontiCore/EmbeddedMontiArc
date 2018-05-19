@@ -198,21 +198,21 @@ public class SIParserTest {
     @Test
     public void testRange1() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10 m/s : 2 m/s : 20 m/s)").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10 m/s : 2 m/s : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRange2() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10  : 2 m/s : 20 m/s)").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10  : 2 m/s : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRange3() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(oo  : oo)").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(oo  : oo)").orElse(null);
         assertNotNull(ast);
     }
 
@@ -222,7 +222,7 @@ public class SIParserTest {
     @Test
     public void testRangeFloatPrecision() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10  : f : 20 m/s)").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10  : f : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
 
@@ -233,7 +233,7 @@ public class SIParserTest {
     @Test
     public void testRangeDoublePrecision() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10  : d : 20 m/s)").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10  : d : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
 
@@ -243,7 +243,7 @@ public class SIParserTest {
     @Test
     public void testRangeMissingUnit1() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10 : 0.1 : 45 km)").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10 : 0.1 : 45 km)").orElse(null);
         assertNotNull(ast);
     }
 
@@ -251,7 +251,7 @@ public class SIParserTest {
     @Test
     public void testRangeMissingUnit2() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10 : 0.1 km : 45 )").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10 : 0.1 km : 45 )").orElse(null);
         assertNotNull(ast);
     }
 
@@ -259,14 +259,14 @@ public class SIParserTest {
     @Test
     public void testRangeMissingUnit3() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRange ast = parser.parseString_Range("(10 km: 0.1 : 45 )").orElse(null);
+        ASTRange ast = parser.parse_StringRange("(10 km: 0.1 : 45 )").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRangeDegreeUnit1() throws IOException{
         Types2Parser parser = new Types2Parser();
-        ASTElementType ast = parser.parseString_ElementType("Q(10 deg: 0.1 : 45 )").orElse(null);
+        ASTElementType ast = parser.parse_StringElementType("Q(10 deg: 0.1 : 45 )").orElse(null);
         assertNotNull(ast);
 
     }
@@ -275,7 +275,7 @@ public class SIParserTest {
     @Test
     public void testRangeDegreeUnit2() throws IOException{
         Types2Parser parser = new Types2Parser();
-        ASTElementType ast = parser.parseString_ElementType("Q(-90°:0.001°:90°)").orElse(null);
+        ASTElementType ast = parser.parse_StringElementType("Q(-90°:0.001°:90°)").orElse(null);
         assertNotNull(ast);
 
     }
@@ -283,14 +283,14 @@ public class SIParserTest {
     @Test
     public void testRange7() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRanges ast = parser.parseString_Ranges("[(0 : 0.05 : 10) (10 : 0.1 : 45 km)]").orElse(null);
+        ASTRanges ast = parser.parse_StringRanges("[(0 : 0.05 : 10) (10 : 0.1 : 45 km)]").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRange8() throws IOException {
         RangesParser parser = new RangesParser();
-        ASTRanges ast = parser.parseString_Ranges("[(0 km : 0.05 m : 10km) (10km : 0.1m : 45 km)]").orElse(null);
+        ASTRanges ast = parser.parse_StringRanges("[(0 km : 0.05 m : 10km) (10km : 0.1m : 45 km)]").orElse(null);
         assertNotNull(ast);
     }
 */

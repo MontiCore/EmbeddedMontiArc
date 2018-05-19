@@ -52,7 +52,7 @@ public class StreamSymbolTableCreator extends StreamSymbolTableCreatorTOP {
   public void visit(ASTStreamCompilationUnit node) {
     Log.debug("Building Symboltable for Stream: " + node.getComponentStream().getName(),
         StreamSymbolTableCreator.class.getSimpleName());
-    String compilationUnitPackage = Names.getQualifiedName(node.getPackage());
+    String compilationUnitPackage = Names.getQualifiedName(node.getPackageList());
     ArtifactScope artifactScope = new ArtifactScope(
         Optional.empty(),
         compilationUnitPackage,
@@ -80,7 +80,7 @@ public class StreamSymbolTableCreator extends StreamSymbolTableCreatorTOP {
   @Override
   public void visit(ASTNamedStream node) {
     NamedStreamSymbol streamSymbol = new NamedStreamSymbol(node.getName(), id);
-    for (ASTSignedLiteral num : node.getStream().getSignedLiterals()) {
+    for (ASTSignedLiteral num : node.getStream().getSignedLiteralList()) {
       if (num instanceof ASTSignedDoubleLiteral) {
         if (((ASTSignedDoubleLiteral) num).isNegative()) {
           streamSymbol.add(Double.parseDouble("-" + ((ASTSignedDoubleLiteral) num).getSource()));

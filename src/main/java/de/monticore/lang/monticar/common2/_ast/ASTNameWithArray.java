@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.monticar.common2._ast;
 
+import java.util.Optional;
+
 /**
  * Created by Sascha on 04.07.2017.
  */
@@ -29,14 +31,14 @@ public class ASTNameWithArray extends ASTNameWithArrayTOP {
         super();
     }
 
-    protected ASTNameWithArray(String name, de.monticore.lang.monticar.common2._ast.ASTArrayDeclaration arrayDeclaration) {
+    protected ASTNameWithArray(String name, Optional<ASTArrayDeclaration> arrayDeclaration) {
         super(name, arrayDeclaration);
     }
 
     @Override
     public String getName() {
-        if (getArrayDeclaration().isPresent()) {
-            return name + "[" + getArrayDeclaration().get().getIntLiteral().toString() + "]";
+        if (getArrayDeclarationOpt().isPresent()) {
+            return name + "[" + getArrayDeclarationOpt().get().getIntLiteral().toString() + "]";
         }
         return name;
     }

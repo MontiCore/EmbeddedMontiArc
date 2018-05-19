@@ -135,26 +135,6 @@ public class CommonMCTypeScope extends CommonScope {
     }
 
     @Override
-    @Deprecated
-    public Optional<? extends Symbol> resolve(final SymbolPredicate predicate) {
-        Optional<? extends Symbol> resolvedSymbol = super.resolve(predicate);
-
-        if (!resolvedSymbol.isPresent()) {
-            final MCTypeSymbol spanningSymbol = getSpanningSymbol().get();
-            final Optional<? extends MCTypeReference<? extends MCTypeSymbol>> optSuperClass = spanningSymbol.getSuperClass();
-
-            if (optSuperClass.isPresent()) {
-                final MCTypeSymbol superClass = optSuperClass.get().getReferencedSymbol();
-
-                Log.trace("Continue in scope of super class " + superClass.getName(), CommonMCTypeScope.class.getSimpleName());
-                resolvedSymbol = superClass.getSpannedScope().resolve(predicate);
-            }
-        }
-
-        return resolvedSymbol;
-    }
-
-    @Override
     public <T extends Symbol> Optional<T> resolveImported(String name, SymbolKind kind, AccessModifier modifier) {
         final Collection<T> resolvedSymbols = resolveManyLocally(new ResolvingInfo(getResolvingFilters()), name, kind, modifier, x -> true);
 

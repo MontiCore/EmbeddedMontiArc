@@ -22,6 +22,8 @@ package de.monticore.lang.monticar.streamunits._ast;
 
 import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
+import java.util.Optional;
+
 /**
  * @author Sascha Schneiders
  */
@@ -29,7 +31,7 @@ public class ASTValueAtTick extends ASTValueAtTickTOP {
     public ASTValueAtTick() {
     }
 
-    public ASTValueAtTick(String name, ASTUnitNumber value, ASTUnitNumber lowerBound, ASTUnitNumber upperBound) {
+    public ASTValueAtTick(String name, Optional<ASTUnitNumber> value, Optional<ASTUnitNumber> lowerBound, Optional<ASTUnitNumber> upperBound) {
         super(name, value, lowerBound, upperBound);
     }
 
@@ -37,13 +39,13 @@ public class ASTValueAtTick extends ASTValueAtTickTOP {
     public String toString() {
         String result = "";
         result += name + "(";
-        if (valueIsPresent()) {
+        if (getValueOpt().isPresent()) {
             result += value.get().getNumber().get().intValue();
         } else {
-            if (lowerBoundIsPresent()) {
+            if (getLowerBoundOpt().isPresent()) {
                 result += lowerBound.get().getNumber().get().intValue();
             }
-            if (upperBoundIsPresent()) {
+            if (getUpperBoundOpt().isPresent()) {
                 result += ":" + upperBound.get().getNumber().get().intValue();
             }
         }

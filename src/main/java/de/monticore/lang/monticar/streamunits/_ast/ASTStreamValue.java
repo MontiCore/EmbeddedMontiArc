@@ -20,6 +20,10 @@
  */
 package de.monticore.lang.monticar.streamunits._ast;
 
+import de.monticore.lang.monticar.literals2._ast.ASTSignedLiteral;
+
+import java.util.Optional;
+
 /**
  * @author Sascha Schneiders
  */
@@ -30,26 +34,26 @@ public class ASTStreamValue extends ASTStreamValueTOP {
 
 
     protected ASTStreamValue(
-            String name
-            , de.monticore.lang.monticar.streamunits._ast.ASTPrecisionNumber precisionNumber
-            , de.monticore.lang.monticar.literals2._ast.ASTSignedLiteral signedLiteral
-            , de.monticore.lang.monticar.streamunits._ast.ASTDontCare dontCare
-            , de.monticore.lang.monticar.streamunits._ast.ASTValueAtTick valueAtTick) {
+            Optional<String> name
+            , Optional<ASTPrecisionNumber> precisionNumber
+            , Optional<ASTSignedLiteral> signedLiteral
+            , Optional<ASTDontCare> dontCare
+            , Optional<ASTValueAtTick> valueAtTick) {
         super(name, precisionNumber, signedLiteral, dontCare, valueAtTick);
     }
 
     @Override
     public String toString() {
         String result = "";
-        if (valueAtTickIsPresent())
+        if (getValueAtTickOpt().isPresent())
             result += valueAtTick.get().toString();
-        else if (nameIsPresent()) {
+        else if (getNameOpt().isPresent()) {
             result += name;
-        } else if (precisionNumberIsPresent()) {
+        } else if (getPrecisionNumberOpt().isPresent()) {
             result += precisionNumber.get().toString();
-        } else if (dontCareIsPresent()) {
+        } else if (getDontCareOpt().isPresent()) {
             result += "-";
-        } else if (signedLiteralIsPresent()) {
+        } else if (getSignedLiteralOpt().isPresent()) {
             result += signedLiteral.get().toString();
         }
         return result;
