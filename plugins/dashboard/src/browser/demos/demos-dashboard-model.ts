@@ -8,7 +8,7 @@ import { inject, injectable, postConstruct } from "inversify";
 import { BaseDashboardModel } from "../dashboard-model";
 import { DashboardItem } from "../dashboard";
 import { Event, Emitter } from "@theia/core/lib/common";
-import { DemosDownloader } from "@elysium/downloader/lib/browser/demos-downloader";
+import { DemosDownloader, DemosDownloadConfig } from "@elysium/downloader/lib/browser/demos-downloader";
 import { FileSystem } from "@theia/filesystem/lib/common";
 
 @injectable()
@@ -28,12 +28,12 @@ export class DemosDashboardModel extends BaseDashboardModel {
     }
 
     public async clone(uri: string, item: DashboardItem): Promise<void> {
+        const config: DemosDownloadConfig = { localURI: uri, demo: item.name };
+
         await this.fileSystem.createFolder(uri);
 
         this.fireClone(uri);
-
-        await this.downloader.download(uri, item.name);
-
+        await this.downloader.download(config);
         this.fireCloned(uri);
     }
 

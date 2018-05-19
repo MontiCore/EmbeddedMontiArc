@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/downloader",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plugin for the Implementation of Workspace Download Procedures.",
   "keywords": [
     "Elysium IDE"
@@ -19,7 +19,6 @@
   },
   "scripts": {},
   "dependencies": {
-    "github-api": "^3.0.0",
     "jszip": "^3.1.5",
     "@theia/core": "^0.3.8",
     "@theia/filesystem": "^0.3.8"
