@@ -22,9 +22,9 @@ export class FileSystemDashboardWidget extends BaseDashboardWidget {
     @inject(DashboardProps) public readonly props: DashboardProps;
     @inject(FileSystemDashboardModel) public readonly model: FileSystemDashboardModel;
     @inject(ContextMenuRenderer) public readonly contextMenuRenderer: ContextMenuRenderer;
+    @inject(FileSystemDashboardQueue) public readonly queue: FileSystemDashboardQueue;
 
     @inject(DemosDashboardWidget) protected readonly demosWidget: DemosDashboardWidget;
-    @inject(FileSystemDashboardQueue) protected readonly queue: FileSystemDashboardQueue;
 
     @postConstruct()
     protected init(): void {
