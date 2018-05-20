@@ -64,20 +64,20 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathMatrixNameExpression implements Expression<300> =
         Name "(" MathMatrixAccessExpression ")";
 
-//Boolean expressions
+    //Boolean expressions
     MathTrueExpression implements Expression<240> =
     	"true";
     MathFalseExpression implements Expression<240> =
     	"false";
 
-//for loop
+    //for loop
     MathForLoopExpression implements Expression<40> =
     	"for" head:MathForLoopHead body:Expression+ "end";
 
     MathForLoopHead =
     	Name "=" (NameExpression | Expression);
 
-//if  and else conditions
+    //if  and else conditions
     MathConditionalExpression implements Expression<40> =
     	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
@@ -93,41 +93,35 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathElseExpression =
     	"else" body:Expression+ ;
 
-//Assignments
-     AssignmentType =
-        matrixProperty:Name* ElementType dim:Dimension?;
-
-// R^2 for vector or R^{3,4} for Matrix
-     Dimension =
-         	"^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
-
-     MathDeclarationExpression implements Expression<305> =
+    MathDeclarationExpression implements Expression<305> =
         type:AssignmentType Name;
 
-     MathAssignmentDeclarationExpression implements Expression<305> =
+    MathAssignmentDeclarationExpression implements Expression<306> =
         type:AssignmentType Name MathAssignmentOperator (Expression);
 
-     MathAssignmentExpression implements Expression<200> =
+    MathAssignmentExpression implements Expression<200> =
         (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression);
 
-     MathAssignmentOperator =
+    MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
 
-//Element Types WholeNumberNumber="Z" Rational:"Q" Complex:"C" Boolean:"B" Natural:"N"
-     ElementType implements Type, TypeArgument =
-             // ZQCBN |
-             Name |
-             Ranges;
+    // type definitions
+    NumberSpace = whole:"Z" | rational:"Q" | complex:"C" | boolean:"B" |natural:"N";
 
+    Range = "(" min:Expression ":" (step:Expression ":")? max:Expression ")";
 
-     Ranges = /* ZQCBN? */ ("(" min:Expression ":" step:Expression ":" max:Expression ")" |
-                     "(" min:Expression ":" max:Expression ")")
-          ;
+    // R^2 for vector or R^{3,4} for Matrix
+    Dimension =
+        "^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
 
-    //ZQCBN = { _input.LT(1).getText().matches("Z|Q|C|B|N") }?
-    //          Name ;
+    ElementType implements Type, TypeArgument =
+        NumberSpace Range? Dimension?;
 
-//Expression for all Numbers with units
+    //Assignments
+    AssignmentType =
+        matrixProperty:Name* ElementType;
+
+    //Expression for all Numbers with units
     NumberExpression implements Expression<291> =
         NumberWithUnit;
 
