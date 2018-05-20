@@ -80,6 +80,14 @@
             <groupId>de.monticore.lang</groupId>
             <artifactId>math</artifactId>
             <version>${Math.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>math</artifactId>
+            <version>${Math.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
