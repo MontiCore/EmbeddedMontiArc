@@ -69,7 +69,7 @@ export class QueryController implements FrontendApplicationContribution {
             if (priority > 0) handlers.splice(priority, 0, contribution);
         }
 
-        return handlers;
+        return handlers.reverse();
     }
 
     protected async handleContributionsStarted(): Promise<void> {
