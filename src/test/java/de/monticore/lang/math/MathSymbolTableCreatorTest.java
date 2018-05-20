@@ -245,9 +245,9 @@ public class MathSymbolTableCreatorTest {
         final MathValueSymbol test = symTab.<MathValueSymbol>resolve
                 ("symtab.SymtabTest.test", MathValueSymbol.KIND).orElse(null);
         assertNotNull(test);
-        Log.info(test.getTextualRepresentation(),"Test:");
-        Log.info(test.getValue().getClass().getName(),"AST:");
-        Log.info(((MathArithmeticExpressionSymbol)test.getValue()).getLeftExpression().getTextualRepresentation(),"AST:");
+        Log.info(test.getTextualRepresentation(), "Test:");
+        Log.info(test.getValue().getClass().getName(), "AST:");
+        Log.info(((MathArithmeticExpressionSymbol) test.getValue()).getLeftExpression().getTextualRepresentation(), "AST:");
 
         //checks (j) == (i)
         /*assertTrue(matrix.getValue() instanceof LogicalExpression);

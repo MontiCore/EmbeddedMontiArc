@@ -1,21 +1,20 @@
 /**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * <p>
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.monticore.lang.math._symboltable;
@@ -133,8 +132,8 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
         symbol.setType(MathValueType.convert(assignmentDeclarationExpression.getType()));
         Log.info(assignmentDeclarationExpression.toString(), "AST:");
-        symbol.setValue((MathExpressionSymbol) assignmentDeclarationExpression.getExpression().getSymbolOpt().get());
-
+        if (assignmentDeclarationExpression.getExpression().getSymbolOpt().isPresent())
+            symbol.setValue((MathExpressionSymbol) assignmentDeclarationExpression.getExpression().getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, assignmentDeclarationExpression);
     }
 
@@ -171,10 +170,15 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         JSValue jsValue = new JSValue();
         if (astMathNumberExpression.getNumberWithUnit().isPresentUn()) {
             handleUnitNumber(astMathNumberExpression, jsValue);
-        }
-        if (astMathNumberExpression.getNumberWithUnit().isComplexNumber()) {
-            jsValue.setRealNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getComplexNumber().get().getRealNumber()));
-            jsValue.setImagNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getComplexNumber().get().getImagineNumber()));
+        } else {
+            if (astMathNumberExpression.getNumberWithUnit().isComplexNumber()) {
+                jsValue.setRealNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getComplexNumber().get().getRealNumber()));
+                jsValue.setImagNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getComplexNumber().get().getImagineNumber()));
+            } else if (astMathNumberExpression.getNumberWithUnit().getNumber().isPresent()) {
+                jsValue.setRealNumber(doubleToRational(astMathNumberExpression.getNumberWithUnit().getNumber().get()));
+            } else {
+                Log.error("Number contains neither a complex number nor a number with unit nor a normal number.", astMathNumberExpression.get_SourcePositionStart());
+            }
         }
         symbol.setValue(jsValue);
         addToScopeAndLinkWithNode(symbol, astMathNumberExpression);
@@ -317,10 +321,13 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     public void endVisit(final ASTMathVectorExpression astExpr) {
         MathMatrixVectorExpressionSymbol symbol = new MathMatrixVectorExpressionSymbol();
-        symbol.setStart((MathExpressionSymbol) astExpr.getStart());
-        symbol.setEnd((MathExpressionSymbol) astExpr.getEnd());
+        if (astExpr.getStart().getSymbolOpt().isPresent())
+            symbol.setStart((MathExpressionSymbol) astExpr.getStart().getSymbolOpt().get());
+        if (astExpr.getEnd().getSymbolOpt().isPresent())
+            symbol.setEnd((MathExpressionSymbol) astExpr.getEnd().getSymbolOpt().get());
         if (astExpr.getStepsOpt().isPresent())
-            symbol.setStep((MathExpressionSymbol) astExpr.getStepsOpt().get());
+            if (astExpr.getSteps().getSymbolOpt().isPresent())
+                symbol.setStep((MathExpressionSymbol) astExpr.getSteps().getSymbolOpt().get());
 
         addToScopeAndLinkWithNode(symbol, astExpr);
     }
@@ -617,6 +624,28 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathPreMinusExpression.getExpression().getSymbolOpt().get());
         symbol.setOperator("-");
         addToScopeAndLinkWithNode(symbol, astMathPreMinusExpression);
+    }
+
+    public void endVisit(final ASTStatement astNode) {
+        linkChildNodeSymbolWithNode(astNode, astNode.getExpression());
+    }
+
+    public void endVisit(final ASTBracketExpression astNode) {
+        linkChildNodeSymbolWithNode(astNode, astNode.getExpression());
+    }
+
+    /**
+     * used for ASTNodes that wrap a single expression such as
+     * e.g. MathStatement, BracketExpression ect
+     *
+     * @param parent Parent AST Node
+     * @param child  Child AST Node
+     */
+    protected void linkChildNodeSymbolWithNode(ASTExpression parent, ASTExpression child) {
+        visit(child);
+        if (child.getSymbolOpt().isPresent()) {
+            addToScopeAndLinkWithNode(child.getSymbolOpt().get(), parent);
+        }
     }
 
     /**
