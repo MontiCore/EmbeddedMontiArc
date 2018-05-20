@@ -24,6 +24,7 @@
   "devDependencies": {
     "@theia/core": "^0.3.8",
     "@elysium/core": "^0.1.0",
-    "@theia/filesystem": "^0.3.8"
+    "@theia/filesystem": "^0.3.8",
+    "@elysium/downloader": "^0.1.0"
   }
 }
