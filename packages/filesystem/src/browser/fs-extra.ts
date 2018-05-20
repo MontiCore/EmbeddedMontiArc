@@ -87,11 +87,12 @@ export async function writeFile(fname: string, data: any, encoding: string | nul
 
 export async function mkdirp(p: string): Promise<void> {
     const uri = new URI(p);
-    const uris = uri.getSubURIs();
+    const uris = uri.allLocations;
+    const reversedURIS = uris.reverse();
 
-    for (const u of uris) {
+    for (const reversedURI of reversedURIS) {
         try {
-            await mkdir(u.toString(), 0x1a4);
+            await mkdir(reversedURI.toString(true), 0x1a4);
         } catch (error) {
             if (error.code !== "EEXIST") throw error;
         }

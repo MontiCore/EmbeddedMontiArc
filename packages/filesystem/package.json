@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/filesystem",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Elysium VFS emulating a FileSystem for Theia based on BrowserFS.",
   "keywords": [
     "Elysium IDE"

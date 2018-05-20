@@ -13,7 +13,22 @@ export default class URI extends URIBase {
     }
 
     /**
-     * return a Map with the query params and their respective keys
+     * Return a new uri with a query formed from the given query params map.
+     */
+    public setQueryParams(params: Map<string, string>): URI {
+        let query = '';
+
+        params.forEach((value, key) => {
+            query += `&${key}=${value}`;
+        });
+
+        query = query.slice(1);
+
+        return this.withQuery(query) as URI;
+    }
+
+    /**
+     * Return a Map with the query params and their respective keys
      */
     public getQueryParams(): Map<string, string> {
         const queryParams = new Map();
@@ -28,34 +43,16 @@ export default class URI extends URIBase {
     }
 
     /**
-     * return whether the key is in the query params
+     * Return whether the key is in the query params
      */
     public hasQueryParam(key: string): boolean {
         return this.getQueryParams().has(key);
     }
 
     /**
-     * return the value of a key in the query params
+     * Return the value of a key in the query params
      */
     public getQueryParam(key: string): string | undefined {
         return this.getQueryParams().get(key);
-    }
-
-    /**
-     * return an array of sub uris relative to the current uri.
-     */
-    public getSubURIs(): URI[] {
-        let parentURI = '';
-        const uris: URI[] = [];
-
-        uris.push(this);
-
-        while (this.parent.toString() !== parentURI) {
-            parentURI = this.parent.toString();
-
-            uris.push(new URI(parentURI));
-        }
-
-        return uris.reverse();
     }
 }

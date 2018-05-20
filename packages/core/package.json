@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/core",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Elysium Core extending the Core of Theia.",
   "keywords": [
     "Elysium IDE"
