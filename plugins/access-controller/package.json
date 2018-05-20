@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@elysium/access-controller",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Plugin which enables embedding and controlling the IDE in the embedded context.",
   "keywords": [
     "Elysium IDE"
@@ -22,7 +22,8 @@
     "@theia/core": "^0.3.8",
     "@theia/filesystem": "^0.3.8",
     "@theia/editor": "^0.3.8",
-    "@theia/workspace": "^0.3.8"
+    "@theia/workspace": "^0.3.8",
+    "@theia/monaco": "^0.3.8"
   },
   "devDependencies": {}
 }

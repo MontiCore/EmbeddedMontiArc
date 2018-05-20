@@ -10,6 +10,7 @@ import { FileSystem } from "@theia/filesystem/lib/common";
 import { EditorManager } from "@theia/editor/lib/browser";
 import URI from "@theia/core/lib/common/uri";
 import { WorkspaceServer } from "@theia/workspace/lib/common";
+import { MonacoLanguages } from "@theia/monaco/lib/browser/monaco-languages";
 
 /**
  * `AccessContribution` which enables the internal or external use of the FileSystem.
@@ -62,5 +63,19 @@ export class WorkspaceAccessContribution implements AccessContribution {
 
     public fetch(): object {
         return this.workspace;
+    }
+}
+
+/**
+ * `AccessContribution` which enables the internal or external access to `MonacoLanguages`.
+ */
+@injectable()
+export class MonacoLanguagesAccessContribution implements AccessContribution {
+    @inject(MonacoLanguages) protected readonly monacoLanguages: MonacoLanguages;
+
+    public readonly id: string = "monacoLanguages";
+
+    public fetch(): object {
+        return this.monacoLanguages;
     }
 }
