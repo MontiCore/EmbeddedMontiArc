@@ -109,7 +109,7 @@ public class ASTNumberWithUnit extends ASTNumberWithUnitTOP {
   }
 
   protected Unit siUnit(ASTSIUnit siUnit) {
-    if (siUnit.isEmptyTimeDivs()) {
+    if (!siUnit.isEmptyTimeDivs()) {
       return Unit.valueOf(siUnit.getSiUnitDimensionless().getName().replace("deg", "°"));
     }
     String s = toString(siUnit.getSIUnitBasicList().get(0));
