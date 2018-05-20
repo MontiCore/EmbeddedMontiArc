@@ -23,8 +23,7 @@ package de.monticore.lang.math._symboltable.expression;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTDimension;
-import de.monticore.lang.math._ast.ASTRanges;
-import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.lang.math._ast.ASTElementType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +69,11 @@ public class MathValueType extends MathExpressionSymbol {
     }
 
     public boolean isRationalType() {
-        return type.isIsRational();
+        return type.getNumberSpace().isPresentRational();
     }
 
-
     public boolean isComplexType() {
-        return type.isIsComplex();
+        return type.getNumberSpace().isPresentComplex();
     }
 
     public boolean isStatic() {
@@ -98,8 +96,8 @@ public class MathValueType extends MathExpressionSymbol {
         else if (isComplexType()) {
             result += "C";
         }
-        if (type.getRange().isPresent()) {
-            result += type.getRange().get().toString();
+        if (type.getRangeOpt().isPresent()) {
+            result += type.getRangeOpt().get().toString();
         }
         if (dimensions.size() > 0) {
             int counter = 0;
@@ -120,24 +118,10 @@ public class MathValueType extends MathExpressionSymbol {
 
         mathValueType.setProperties(type.getMatrixPropertyList());
 
-        ASTElementType commonType = new ASTElementType();
-        String rangeAsString;
-        if (type.getElementType().getRangesOpt().isPresent()) {
-            ASTRanges range = type.getElementType().getRangesOpt().get();
-            if (type.getElementType().getRanges().isPresentStep())
-                rangeAsString = String.format("(%s:%s:%s)", range.getMin(), range.getStep(), range.getMax());
-            else
-                rangeAsString = String.format("(%s:%s)", range.getMin(), range.getMax());
-        } else {
-            // assume range infinite
-            rangeAsString = "(oo:oo)";
-        }
-        commonType.setTElementType(type.getElementType().getName() + rangeAsString);
+        mathValueType.setType(type.getElementType());
 
-        mathValueType.setType(commonType);
-
-        if (type.getDimOpt().isPresent()) {
-            ASTDimension astDimension = type.getDimOpt().get();
+        if (type.getElementType().getDimensionOpt().isPresent()) {
+            ASTDimension astDimension = type.getElementType().getDimensionOpt().get();
             for (ASTExpression astMathArithmeticExpression : astDimension.getMatrixDimList()) {
                 mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbolOpt().get());
             }
