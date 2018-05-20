@@ -2,6 +2,11 @@ package de.monticore.lang;
 
 grammar MathOpt extends de.monticore.lang.Math
 {
+    MathOptCompilationUnit = MathCompilationUnit;
+
+    symbol scope MathOptScript =
+        "script" Name (Expression)+ "end";
+
     enum OptimizationType = MINIMIZATION: "minimize" | MAXIMIZATION: "maximize";
 
     OptimizationCompareOperator = operator:"==" | operator:"<=" | operator:">=";
