@@ -1,7 +1,7 @@
 # Edit config only
 . ./config
 
-. ./clean.ps1
+#. ./clean.ps1
 
 . ./tools.ps1
 

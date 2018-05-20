@@ -8,7 +8,7 @@ function clean($item) {
 }
 
 clean $ext
-clean $targetDir
+clean $targetDir*
 clean $targetName
 
 if(!$cacheDownload) {
