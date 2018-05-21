@@ -32,10 +32,16 @@ grammar Tagging extends de.monticore.common.Common {
  fragment token Recursion = '{' (~('{' | '}' | '"') | String | Recursion)+ '}';
  fragment token TagToken = (~('"' | '{' | '}' | ';'))+;
 
- NameWithArray = (Name ("[" IntLiteral "]")?);
+ NameWithArray = (Name ("[" start:IntLiteral (( ":" step:IntLiteral )? ":" end:IntLiteral )?"]")?);
  ast NameWithArray =
     method public String toString(){
-        return name + (intLiteral.isPresent() ? "[" + intLiteral.get().getValue() + "]" : "");
+        String arrayPart = "";
+
+        arrayPart += start.isPresent() ? "" + start.get().getValue() : "";
+        arrayPart += step.isPresent() ? ":" + step.get().getValue() : "";
+        arrayPart += end.isPresent() ? ":" + end.get().getValue() : "";
+
+        return name + (arrayPart.equals("") ? "" : "[" + arrayPart + "]");
     };
 
  QualifiedNameWithArray = parts:( NameWithArray || ".")+;
