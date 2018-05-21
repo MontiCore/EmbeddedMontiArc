@@ -8,22 +8,19 @@ import { injectable, inject } from "inversify";
 import { AccessContribution } from "./access-controller";
 import { FileSystem } from "@theia/filesystem/lib/common";
 import { EditorManager } from "@theia/editor/lib/browser";
-import URI from "@theia/core/lib/common/uri";
 import { WorkspaceServer } from "@theia/workspace/lib/common";
 import { MonacoLanguages } from "@theia/monaco/lib/browser/monaco-languages";
+import { FrontendApplicationStateService } from "@theia/core/lib/browser/frontend-application-state";
+import { FileUri } from "@theia/core/lib/node/file-uri";
 
 /**
  * `AccessContribution` which enables the internal or external use of the FileSystem.
  */
 @injectable()
 export class FileSystemAccessContribution implements AccessContribution {
-    @inject(FileSystem) protected readonly fileSystem: FileSystem;
+    @inject(FileSystem) public readonly contribution: FileSystem;
 
     public readonly id: string = "filesystem";
-
-    public fetch(): object {
-        return this.fileSystem;
-    }
 }
 
 /**
@@ -31,25 +28,18 @@ export class FileSystemAccessContribution implements AccessContribution {
  */
 @injectable()
 export class EditorManagerAccessContribution implements AccessContribution {
-    @inject(EditorManager) protected readonly editorManager: EditorManager;
+    @inject(EditorManager) public readonly contribution: EditorManager;
 
     public readonly id: string = "editorManager";
-
-    public fetch(): object {
-        return this.editorManager;
-    }
 }
 
 /**
  * `AccessContribution` which enables the internal or external creation of URI objects.
  */
 @injectable()
-export class URIFactoryAccessContribution implements AccessContribution {
-    public readonly id: string = "uriFactory";
-
-    public fetch(): object {
-        return { "create": (uri: string) => new URI(uri) };
-    }
+export class FileURIAccessContribution implements AccessContribution {
+    public readonly contribution: object = FileUri;
+    public readonly id: string = "fileURI";
 }
 
 /**
@@ -57,13 +47,9 @@ export class URIFactoryAccessContribution implements AccessContribution {
  */
 @injectable()
 export class WorkspaceAccessContribution implements AccessContribution {
-    @inject(WorkspaceServer) protected readonly workspace: WorkspaceServer;
+    @inject(WorkspaceServer) public readonly contribution: WorkspaceServer;
 
     public readonly id: string = "workspace";
-
-    public fetch(): object {
-        return this.workspace;
-    }
 }
 
 /**
@@ -71,11 +57,17 @@ export class WorkspaceAccessContribution implements AccessContribution {
  */
 @injectable()
 export class MonacoLanguagesAccessContribution implements AccessContribution {
-    @inject(MonacoLanguages) protected readonly monacoLanguages: MonacoLanguages;
+    @inject(MonacoLanguages) public readonly contribution: MonacoLanguages;
 
     public readonly id: string = "monacoLanguages";
+}
 
-    public fetch(): object {
-        return this.monacoLanguages;
-    }
+/**
+ * `AccessContribution` which enables the internal or external access to `FrontendApplicationStateService`.
+ */
+@injectable()
+export class FrontendApplicationStateServiceAccessContribution implements AccessContribution {
+    @inject(FrontendApplicationStateService) public readonly contribution: FrontendApplicationStateService;
+
+    public readonly id: string = "frontendApplicationStateService";
 }

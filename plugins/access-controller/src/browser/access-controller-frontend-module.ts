@@ -11,7 +11,10 @@ import { FrontendApplicationContribution } from "@theia/core/lib/browser";
 import {
     FileSystemAccessContribution,
     EditorManagerAccessContribution,
-    URIFactoryAccessContribution, WorkspaceAccessContribution, MonacoLanguagesAccessContribution
+    FileURIAccessContribution,
+    WorkspaceAccessContribution,
+    MonacoLanguagesAccessContribution,
+    FrontendApplicationStateServiceAccessContribution
 } from "./access-contributions";
 
 export default new ContainerModule(bind => {
@@ -32,9 +35,9 @@ export default new ContainerModule(bind => {
         ctx => ctx.container.get(EditorManagerAccessContribution)
     ).inSingletonScope();
 
-    bind(URIFactoryAccessContribution).toSelf().inSingletonScope();
+    bind(FileURIAccessContribution).toSelf().inSingletonScope();
     bind(AccessContribution).toDynamicValue(
-        ctx => ctx.container.get(URIFactoryAccessContribution)
+        ctx => ctx.container.get(FileURIAccessContribution)
     ).inSingletonScope();
 
     bind(WorkspaceAccessContribution).toSelf().inSingletonScope();
@@ -45,5 +48,10 @@ export default new ContainerModule(bind => {
     bind(MonacoLanguagesAccessContribution).toSelf().inSingletonScope();
     bind(AccessContribution).toDynamicValue(
         ctx => ctx.container.get(MonacoLanguagesAccessContribution)
+    ).inSingletonScope();
+
+    bind(FrontendApplicationStateServiceAccessContribution).toSelf().inSingletonScope();
+    bind(AccessContribution).toDynamicValue(
+        ctx => ctx.container.get(FrontendApplicationStateServiceAccessContribution)
     ).inSingletonScope();
 });

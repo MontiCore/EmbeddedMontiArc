@@ -20,9 +20,9 @@ export interface AccessContribution {
     readonly id: string;
 
     /**
-     * Fetches the API for external or internal access.
+     * The API for external or internal use.
      */
-    fetch(): object;
+    readonly contribution: object;
 }
 
 /**
@@ -38,7 +38,7 @@ export class AccessController implements FrontendApplicationContribution {
         (window as any).api = {};
 
         for (const contribution of this.provider.getContributions()) {
-            (window as any).api[contribution.id] = contribution.fetch();
+            (window as any).api[contribution.id] = contribution.contribution;
         }
     }
     // tslint:enable:no-any
