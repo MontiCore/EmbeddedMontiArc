@@ -19,27 +19,28 @@
  * *******************************************************************************
  */
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 import drawing.TraceabilityTagSchema.IsTraceableSymbol;
 import drawing.TraceabilityTagSchema.TraceabilityTagSchema;
 import drawing.TraceabilityTagSchema.TraceableSymbol;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Created by Michael von Wenckstern on 30.05.2016.
@@ -68,6 +69,54 @@ public class TagTest {
     public void setup() {
         Log.getFindings().clear();
         Log.enableFailQuick(true);
+    }
+
+    @Test
+    public void testArraySyntax(){
+        String modelPath = "src/test/resources";
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(modelPath);
+        TraceabilityTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol instanceArrayComp = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("arrays.instanceArrayComp",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(instanceArrayComp);
+
+        List<String> taggedSimpleSubcomps = instanceArrayComp.getSubComponents().stream()
+                .filter(subc -> !taggingResolver.getTags(subc,TraceableSymbol.KIND).isEmpty())
+                .map(Symbol::getFullName)
+                .collect(Collectors.toList());
+
+        List<String> taggedNestedSubcomps = instanceArrayComp.getSubComponents().stream()
+                .flatMap(subc -> subc.getSubComponents().stream())
+                .filter(subc -> !taggingResolver.getTags(subc,TraceableSymbol.KIND).isEmpty())
+                .map(Symbol::getFullName)
+                .collect(Collectors.toList());
+
+        Set<String> allTaggedSymbols = new HashSet<>();
+        allTaggedSymbols.addAll(taggedNestedSubcomps);
+        allTaggedSymbols.addAll(taggedSimpleSubcomps);
+
+        List<String> positiveNames = new ArrayList<>();
+        positiveNames.add("arrays.instanceArrayComp.simpleSubcomps[1]");
+        positiveNames.add("arrays.instanceArrayComp.simpleSubcomps[3]");
+
+        positiveNames.add("arrays.instanceArrayComp.nestedSubcomps[5].simpleSubcomps[4]");
+
+
+        for(int i = 4; i <= 8; i += 3 ){
+            positiveNames.add("arrays.instanceArrayComp.simpleSubcomps[" + i + "]");
+        }
+
+        for(int i = 20; i <= 30 ; i++){
+            positiveNames.add("arrays.instanceArrayComp.simpleSubcomps[" + i + "]");
+        }
+
+        positiveNames.add("arrays.instanceArrayComp.nestedSubcomps[1].simpleSubcomps[1]");
+        positiveNames.add("arrays.instanceArrayComp.nestedSubcomps[1].simpleSubcomps[4]");
+        positiveNames.add("arrays.instanceArrayComp.nestedSubcomps[3].simpleSubcomps[1]");
+        positiveNames.add("arrays.instanceArrayComp.nestedSubcomps[3].simpleSubcomps[4]");
+
+        assertEquals(positiveNames.size(),allTaggedSymbols.size());
+        positiveNames.forEach(name -> assertTrue(allTaggedSymbols.contains(name)));
     }
 
     @Test

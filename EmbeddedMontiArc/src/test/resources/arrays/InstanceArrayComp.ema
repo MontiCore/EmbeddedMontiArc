@@ -1,0 +1,6 @@
+package arrays;
+
+component InstanceArrayComp{
+    instance SimpleComp simpleSubcomps[100];
+    instance NestedArraySubcomp nestedSubcomps[5];
+}

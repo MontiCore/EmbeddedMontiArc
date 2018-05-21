@@ -1,0 +1,5 @@
+package arrays;
+
+component NestedArraySubcomp{
+    instance SimpleComp simpleSubcomps[5];
+}

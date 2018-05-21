@@ -36,7 +36,7 @@
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
-    <tagging.version>0.0.1</tagging.version>
+    <tagging.version>0.0.2</tagging.version>
     <ema.version>0.0.5</ema.version>
     <junit.version>4.12</junit.version>
     <wagon.provider.version>2.6</wagon.provider.version>
