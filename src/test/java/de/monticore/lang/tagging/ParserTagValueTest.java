@@ -25,6 +25,7 @@ import de.monticore.lang.tagging._ast.ASTTag;
 import de.monticore.lang.tagging._ast.ASTTagElement;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._parser.TaggingParser;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -78,29 +80,4 @@ public class ParserTagValueTest {
 //    System.out.println(tags.getTags().size());
     //    System.out.println(tags.getTags().get(0).getTagValue().length());
   }*/
-
-  @Test
-  public void testArrayTagging() throws IOException {
-    TaggingParser parser = new TaggingParser();
-    ASTTaggingUnit taggingUnit = parser.parse("src/test/resources/array/Array.tag").get();
-
-    List<ASTTag> tags = taggingUnit.getTagBody().getTags();
-
-    List<ASTScope> taggedElements = tags.stream()
-            .map(ASTTag::getScopes)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
-
-    Set<String> nameStrings = taggedElements.stream()
-            .map(ASTScope::getQualifiedNameString)
-            .collect(Collectors.toSet());
-
-    assertTrue(nameStrings.size() == 5);
-    assertTrue(nameStrings.contains("InstanceArrayComp.subcomps[1]"));
-    assertTrue(nameStrings.contains("InstanceArrayComp.subcomps[5]"));
-    assertTrue(nameStrings.contains("PortArrayComp.arrayIn[1]"));
-    assertTrue(nameStrings.contains("PortArrayComp.arrayIn[3]"));
-    assertTrue(nameStrings.contains("Comp.subCompInst[6].portArray[4]"));
-  }
-
 }
