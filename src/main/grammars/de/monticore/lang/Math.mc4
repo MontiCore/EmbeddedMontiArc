@@ -106,8 +106,6 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
 
     // type definitions
-    NumberSpace = whole:"Z" | rational:"Q" | complex:"C" | boolean:"B" |natural:"N";
-
     Range = "(" min:Expression ":" (step:Expression ":")? max:Expression ")";
 
     // R^2 for vector or R^{3,4} for Matrix
@@ -115,7 +113,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         "^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
 
     ElementType implements Type, TypeArgument =
-        NumberSpace Range? Dimension?;
+        Name Range? Dimension?;
 
     //Assignments
     AssignmentType =

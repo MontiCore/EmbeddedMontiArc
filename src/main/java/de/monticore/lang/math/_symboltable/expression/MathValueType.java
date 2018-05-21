@@ -69,11 +69,11 @@ public class MathValueType extends MathExpressionSymbol {
     }
 
     public boolean isRationalType() {
-        return type.getNumberSpace().isPresentRational();
+        return type.getName().contentEquals("Q");
     }
 
     public boolean isComplexType() {
-        return type.getNumberSpace().isPresentComplex();
+        return type.getName().contentEquals("C");
     }
 
     public boolean isStatic() {
