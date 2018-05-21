@@ -1,20 +1,21 @@
 /**
- * ******************************************************************************
- * MontiCAR Modeling Family, www.se-rwth.de
- * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- * All rights reserved.
- * <p>
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.monticore.lang.math;
@@ -247,15 +248,13 @@ public class ASTTest {
         System.out.println(printAST(ast.get()));
     }
 
-
-//  This should not be allowed???
-//    @Test
-//    public void ASTNameExpressionTest1() throws Exception {
-//        MathParser parser = new MathParser();
-//        Optional<ASTNameExpression> ast = parser.parse_StringNameExpression("Z");
-//        assertTrue(ast.isPresent());
-//        assertFalse(parser.hasErrors());
-//    }
+    @Test
+    public void ASTNameExpressionTest1() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTNameExpression> ast = parser.parse_StringNameExpression("Z");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+    }
 
     @Test
     public void ASTAssignment4Test() throws Exception {
@@ -287,7 +286,21 @@ public class ASTTest {
     @Test
     public void MathMatrixValueExplicitExpressionMinusTest() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Z^{2,2} A = [1 -1; -1 -1]");
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Z^{2,2} A = [-1, -1; -1, -1]");
+        assertTrue(ast.isPresent());
+        assertFalse(parser.hasErrors());
+        Log.debug(PrintAST.printAST(ast.get()), "MathMatrixValueExplicitExpression");
+        ASTMathMatrixValueExplicitExpression matrix = ((ASTMathMatrixValueExplicitExpression) ast.get().getExpression());
+        // assert that result has dimentsions {2,2}
+        assertEquals(2, matrix.getMathMatrixAccessExpressionList().size());
+        for (ASTMathMatrixAccessExpression accessExpr : matrix.getMathMatrixAccessExpressionList())
+            assertEquals(2, accessExpr.getMathMatrixAccessList().size());
+    }
+
+    @Test
+    public void MathMatrixValueExplicitExpressionTest() throws Exception {
+        MathParser parser = new MathParser();
+        Optional<ASTMathAssignmentDeclarationExpression> ast = parser.parse_StringMathAssignmentDeclarationExpression("Z^{2,2} A = [1, 1; 1, 1]");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
         Log.debug(PrintAST.printAST(ast.get()), "MathMatrixValueExplicitExpression");
