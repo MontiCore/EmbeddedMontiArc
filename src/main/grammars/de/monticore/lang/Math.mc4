@@ -30,7 +30,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         MathScript;
 
     symbol scope MathScript =
-        "script" Name (Expression)+ "end";
+        "script" Name (Expression ";"?)+ "end";
 
     //Arithmetic expressions for matrices
 
@@ -72,7 +72,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
     //for loop
     MathForLoopExpression implements Expression<40> =
-    	"for" head:MathForLoopHead body:Expression+ "end";
+    	"for" head:MathForLoopHead (Expression ";"?)+ "end";
 
     MathForLoopHead =
     	Name "=" (NameExpression | Expression);
@@ -85,22 +85,22 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
 
     MathIfExpression =
-    	"if" condition:Expression body:Expression+ ;
+    	"if" condition:Expression (Expression ";"?)+ ;
 
     MathElseIfExpression =
-    	"elseif" condition:Expression body:Expression+ ;
+    	"elseif" condition:Expression (Expression ";"?)+ ;
 
     MathElseExpression =
-    	"else" body:Expression+ ;
+    	"else" (Expression ";"?)+ ;
 
     MathDeclarationExpression implements Expression<305> =
-        type:AssignmentType Name;
+        type:AssignmentType Name ";"?;
 
     MathAssignmentDeclarationExpression implements Expression<306> =
-        type:AssignmentType Name MathAssignmentOperator (Expression);
+        type:AssignmentType Name MathAssignmentOperator (Expression) ";"?;
 
     MathAssignmentExpression implements Expression<200> =
-        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression);
+        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression) ";"?;
 
     MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
@@ -126,5 +126,4 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     NameExpression implements Expression<295> =
         Name;
 
-    Statement implements Expression<5> = Expression ";" ; // to not write down every time ";"?
  }

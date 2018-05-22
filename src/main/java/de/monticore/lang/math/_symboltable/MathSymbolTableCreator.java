@@ -1,20 +1,21 @@
 /**
- * ******************************************************************************
- * MontiCAR Modeling Family, www.se-rwth.de
- * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- * All rights reserved.
- * <p>
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.monticore.lang.math._symboltable;
@@ -108,7 +109,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         MathForLoopExpressionSymbol symbol = new MathForLoopExpressionSymbol();
 
         symbol.setForLoopHead((MathForLoopHeadSymbol) astMathForLoopExpression.getHead().getSymbolOpt().get());
-        for (ASTExpression astMathExpression : astMathForLoopExpression.getBodyList())
+        for (ASTExpression astMathExpression : astMathForLoopExpression.getExpressionList())
             symbol.addForLoopBody((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathForLoopExpression);
     }
@@ -597,7 +598,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathIfExpression astMathIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
         symbol.setCondition((MathExpressionSymbol) astMathIfExpression.getCondition().getSymbolOpt().get());
-        for (ASTExpression astMathExpression : astMathIfExpression.getBodyList())
+        for (ASTExpression astMathExpression : astMathIfExpression.getExpressionList())
             symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathIfExpression);
     }
@@ -606,7 +607,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathElseIfExpression astMathElseIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
         symbol.setCondition((MathExpressionSymbol) astMathElseIfExpression.getCondition().getSymbolOpt().get());
-        for (ASTExpression astMathExpression : astMathElseIfExpression.getBodyList())
+        for (ASTExpression astMathExpression : astMathElseIfExpression.getExpressionList())
             symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseIfExpression);
     }
@@ -614,7 +615,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     public void endVisit(final ASTMathElseExpression astMathElseExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
-        for (ASTExpression astMathExpression : astMathElseExpression.getBodyList())
+        for (ASTExpression astMathExpression : astMathElseExpression.getExpressionList())
             symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseExpression);
     }
@@ -624,10 +625,6 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         symbol.setMathExpressionSymbol((MathExpressionSymbol) astMathPreMinusExpression.getExpression().getSymbolOpt().get());
         symbol.setOperator("-");
         addToScopeAndLinkWithNode(symbol, astMathPreMinusExpression);
-    }
-
-    public void endVisit(final ASTStatement astNode) {
-        linkChildNodeSymbolWithNode(astNode, astNode.getExpression());
     }
 
     public void endVisit(final ASTBracketExpression astNode) {
