@@ -2,11 +2,12 @@ const Express                                           = require("express");
 const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
-const {AutoPilotSimulation, ClusteringSimulation}       = require("./simulations");
+const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
 const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization} = require("./visualizations");
-const {AutoPilotReporting, ClusteringReporting, PumpReporting}         = require("./reportings");
+const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
+const {PacmanGeneration}                                = require("./generations");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
 const ModelUpdater                                      = require("./models-updater");
@@ -26,6 +27,8 @@ App.use("/r", Express.static(Path.resolve(PATHS.REPORTING, "report")));
 App.use("/c", Express.static(PATHS.CLUSTER_FIDDLE));
 App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
+App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
+App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
 
@@ -352,6 +355,41 @@ App.post("/services/pump/reportWS", function(request, response) {
 
 App.post("/services/pump/simulate", function(request, response) {
 
+});
+
+App.post("/services/pacman/report", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/r/report.html?ide=false");
+        response.end();
+    }
+
+    PacManReporting.execute(onExecuted);
+});
+
+App.post("/services/pacman/play", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/pp");
+        response.end();
+    }
+    onExecuted();
+});
+
+App.post("/services/pacman/emam2wasmGen", function(request, response) {
+    function onExecuted() {
+        response.end();
+    }
+
+    var tab = request.body.tab;
+
+    PacmanGeneration.execute(onExecuted, tab);
+});
+
+App.post("/services/pacman/simulate", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/ps/simulation.html");
+        response.end();
+    }
+    PacManSimulation.execute(onExecuted);
 });
 
 module.exports = App;

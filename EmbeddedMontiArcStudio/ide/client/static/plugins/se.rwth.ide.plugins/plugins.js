@@ -1057,3 +1057,15 @@ var plugins = [
 	"plugins/se.rwth.viewverification/viewverification",
     "plugins/se.rwth.models.updater/models.updater"
 ];
+
+if (reponame == "PacMan") {
+    plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
+    console.log(plugins);
+plugins.push(
+        "plugins/se.rwth.pacman.play/play",
+        "plugins/se.rwth.emam2wasm.generate/generate",
+        "plugins/se.rwth.simulate/simulate",
+        "plugins/se.rwth.report/report",
+	"plugins/se.rwth.models.updater/models.updater"
+    );
+}

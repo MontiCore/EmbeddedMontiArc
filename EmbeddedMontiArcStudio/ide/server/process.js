@@ -10,7 +10,7 @@ class Process {
 
 	spawn(file, args, options) {
 		options = options || {};
-		options.env = { JAVA_HOME: PATHS.JDK };
+		options.env = { JAVA_HOME: PATHS.JDK, NUMBER_OF_PROCESSORS: 1, PROGRAMFILES: "C:\Program Files" };
 
 		const process = ChildProcess.spawn(file, args, options);
 

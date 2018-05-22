@@ -39,6 +39,11 @@ var Dashboard = (function() {
                 reponame: "Pump",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Pump/v&url=/m/pump.zip&openFile=/model/pumpStationExample/PumpStation.ema"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "PacMan",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/PacMan/v&url=/m/pacman.zip&openFile=/de/rwth/pacman/PacManWrapper.emam"
             }];
         },
 

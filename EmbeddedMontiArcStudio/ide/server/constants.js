@@ -27,6 +27,8 @@ PATHS.SIMULATION     = Path.resolve(PATHS.HOME, "apache-tomcat-9.0.5");
 PATHS.VISUALIZATION  = Path.resolve(PATHS.HOME, "visualisation");
 PATHS.TEST_RESULTS   = Path.resolve(PATHS.HOME, "testResults");
 PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
+PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
+PATHS.PACMAN_SIMULATE= Path.resolve(PATHS.HOME, "pacman");
 
 PATHS.VIEWVERIFICATION = Path.resolve(PATHS.HOME, "viewverification");
 PATHS.VIEWVERIFICATION_RESULT = Path.resolve(PATHS.VIEWVERIFICATION, "result");
@@ -61,6 +63,7 @@ const BATCHES = {};
 BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
+BATCHES.PACMAN     = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -90,6 +93,12 @@ BATCHES.PUMP.VIEWVERIFICATION.ALL    = Path.resolve(PATHS.SCRIPTS, "pump", "veri
 BATCHES.PUMP.VIEWVERIFICATION.SINGLE = Path.resolve(PATHS.SCRIPTS, "pump", "verifyDesign.bat");
 BATCHES.PUMP.VISUALIZATION       = Path.resolve(PATHS.SCRIPTS, "pump", "visualize.bat");
 BATCHES.PUMP.REPORTING           		= Path.resolve(PATHS.SCRIPTS, "pump", "report.bat");
+
+BATCHES.PACMAN.PLAY    		 		= {};
+BATCHES.PACMAN.EMAM2WASM_GEN 		= Path.resolve(PATHS.SCRIPTS, "pacman", "emam2wasmGen.bat");
+BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report.bat");
+BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
+
 
 /*
  * OPTIONS

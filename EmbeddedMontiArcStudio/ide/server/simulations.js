@@ -180,7 +180,29 @@ class ClusteringSimulation {
     }
 }
 
+class PacManSimulation {
+    constructor() {
+        this.logger = Log.getLogger("PACMAN");
+        this.process = null;
+        this.logger.level = "debug";
+    }
+
+    execute(callback) {
+        this.logger.info("Executing PacMan...");
+
+        const onExit = () => {
+            this.logger.info("...PacMan executed");
+            callback();
+        };
+
+        Process.spawn(BATCHES.PACMAN.SIMULATION, [], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "pacman")
+        }).on("exit", onExit);
+    }
+}
+
 module.exports = {
     AutoPilotSimulation: new AutoPilotSimulation(),
-    ClusteringSimulation: new ClusteringSimulation()
+    ClusteringSimulation: new ClusteringSimulation(),
+    PacManSimulation: new PacManSimulation()
 };

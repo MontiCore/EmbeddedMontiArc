@@ -26,6 +26,10 @@ function onAutopilotZipped() {
 }
 
 function onPumpZipped() {
+	Archiver.zip("pacman", onPacManZipped);
+}
+
+function onPacManZipped() {
 	Archiver.zip("autopilot", onAutopilotZipped);
 }
 
