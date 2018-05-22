@@ -34,6 +34,10 @@ public class Variable {
     List<String> properties = new ArrayList<>();
     Optional<String> customTypeName = Optional.empty();
 
+    public void setArray(boolean array) {
+        isArray = array;
+    }
+
     public Variable() {
 
     }
@@ -241,7 +245,7 @@ public class Variable {
             isArray = true;
             Log.debug("set isArray to true of v: " + getName(), "VARIABLE");
         } else {
-            isArray = false;
+            //keep array status until explicitly changed
         }
     }
 }

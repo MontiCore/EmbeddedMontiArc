@@ -25,6 +25,19 @@ public class GenerationTest extends AbstractSymtabTest {
 
 
     @Test
+    public void testSingleElemArray() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.singleElemArray", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testSingleElemArray");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "testSingleElemArray/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
     public void testBasicConstantAssignment() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
