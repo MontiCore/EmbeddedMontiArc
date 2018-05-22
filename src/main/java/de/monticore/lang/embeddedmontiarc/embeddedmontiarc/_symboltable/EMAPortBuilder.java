@@ -35,6 +35,7 @@ public class EMAPortBuilder {
     protected Optional<MCTypeReference> typeReference = Optional.empty();
     protected Optional<EMAConstantValue> constantValue = Optional.empty();
     protected Optional<ASTNode> astNode = Optional.empty();
+    protected Optional<Boolean> config = Optional.empty();
 
     public static PortSymbol clone(PortSymbol port) {
         if (port.isConstant())
@@ -43,12 +44,17 @@ public class EMAPortBuilder {
                     .buildConstantPort();
         else {
             return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming())
-                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).build();
+                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig()).build();
         }
     }
 
     public EMAPortBuilder setDirection(boolean incoming) {
         this.incoming = Optional.of(Boolean.valueOf(incoming));
+        return this;
+    }
+
+    public EMAPortBuilder setConfig(boolean config) {
+        this.config = Optional.of(config);
         return this;
     }
 
@@ -79,6 +85,8 @@ public class EMAPortBuilder {
             p.setTypeReference(this.typeReference.get());
             if (astNode.isPresent())
                 p.setAstNode(astNode.get());
+            if (config.isPresent())
+                p.setConfig(config.get());
             return p;
         }
         Log.error("not all parameters have been set before to build the port symbol");
@@ -96,6 +104,8 @@ public class EMAPortBuilder {
         p.setConstantValue(constantValue.get());
         if (astNode.isPresent())
             p.setAstNode(astNode.get());
+        if (config.isPresent())
+            p.setConfig(config.get());
         return p;
     }
 }
