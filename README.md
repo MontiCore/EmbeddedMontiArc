@@ -13,7 +13,7 @@
         <img src="https://api.codeclimate.com/v1/badges/4a5e4f9dc76d2a39b607/maintainability"/>
     </a>
     <a href="https://github.com/EmbeddedMontiArc/Documentation/blob/master/reposlides/18.05.17.OnlineIDE.pdf">
-        <img src="https://img.shields.io/badge/PDF-05.17.2018-brightgreen.svg"/>
+        <img src="https://img.shields.io/badge/PDF-2018--05--17-brightgreen.svg"/>
     </a>
 </p>
 

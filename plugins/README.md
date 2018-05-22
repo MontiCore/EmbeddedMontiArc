@@ -1,6 +1,6 @@
 # <p align="center">Plugins</p>
 <p align="center">
-    <img src="https://img.shields.io/badge/Last_Updated-05.16.2018-blue.svg?longCache=true&style=flat-square"/>
+    <img src="https://img.shields.io/badge/Last_Updated-2018--05--16-blue.svg?longCache=true&style=flat-square"/>
 </p>
 
 ## Description

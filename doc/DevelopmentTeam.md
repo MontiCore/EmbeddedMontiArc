@@ -1,6 +1,6 @@
 # <p align="center">Elysian Fields</p>
 <p align="center">
-    <img src="https://img.shields.io/badge/Last_Updated-04.21.2018-blue.svg?longCache=true&style=flat-square"/>
+    <img src="https://img.shields.io/badge/Last_Updated-2018--04--21-blue.svg?longCache=true&style=flat-square"/>
 </p>
 
 ## Core Team
