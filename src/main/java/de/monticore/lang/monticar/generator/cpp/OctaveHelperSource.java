@@ -13,6 +13,7 @@ public class OctaveHelperSource {
             "#include <octave/interpreter.h>\n" +
             "#include <stdarg.h>\n" +
             "#include <initializer_list>\n" +
+            "#include \"octave/builtin-defun-decls.h\"\n" +
             "class Helper\n" +
             "{\n" +
             "public:\n" +
@@ -221,10 +222,9 @@ public class OctaveHelperSource {
             "            A(i,i) = sqrt(curVal);\n" +
             "        }\n" +
             "        return A;\n" +
-            "        }\n" +
             "    }\n" +
             "\n" +
-            "    static Matrix invertDiagMatrix(mat A){\n" +
+            "    static Matrix invertDiagMatrix(Matrix A){\n" +
             "        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));\n" +
             "    for(int i=0;i<rows;++i){\n" +
             "        double curVal = A(i,i);\n" +

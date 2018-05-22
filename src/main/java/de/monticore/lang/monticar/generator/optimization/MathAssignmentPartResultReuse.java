@@ -2,10 +2,9 @@ package de.monticore.lang.monticar.generator.optimization;
 
 import de.monticore.lang.math.math._symboltable.MathAssignmentOperator;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathAssignmentExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverterMethodGeneration;

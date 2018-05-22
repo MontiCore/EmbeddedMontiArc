@@ -64,6 +64,22 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_FLAG_ALGEBRAIC = Option.builder("a")
+            .longOpt("flag-use-algebraic")
+            .desc("optional flag indicating if algebraic optimizations should be on")
+            .hasArg(false)
+            .required(false)
+            .build();
+
+
+    public static final Option OPTION_FLAG_THREADING = Option.builder("a")
+            .longOpt("flag-use-threading")
+            .desc("optional flag indicating if threading optimizations should be on")
+            .hasArg(false)
+            .required(false)
+            .build();
+
+
     public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
             .longOpt("flag-generate-autopilot-adapter")
             .desc("optional flag indicating if autopilot adapter should be generated")
@@ -107,6 +123,8 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_AUTOPILOT_ADAPTER);
         options.addOption(OPTION_FLAG_CHECK_MODEL_DIR);
         options.addOption(OPTION_FLAG_SERVER_WRAPPER);
+        options.addOption(OPTION_FLAG_ALGEBRAIC);
+        options.addOption(OPTION_FLAG_THREADING);
         return options;
     }
 
@@ -131,6 +149,8 @@ public final class GeneratorCppCli {
         ExpandedComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
 
         GeneratorCPP g = new GeneratorCPP();
+        g.setUseAlgebraicOptimizations(false);
+        g.setUseThreadingOptimization(false);
         g.setModelsDirPath(modelsDirPath);
         g.setGenerationTargetPath(outputPath);
         g.setGenerateTests(cliArgs.hasOption(OPTION_FLAG_TESTS.getOpt()));
@@ -140,6 +160,9 @@ public final class GeneratorCppCli {
         g.setCheckModelDir(cliArgs.hasOption(OPTION_FLAG_CHECK_MODEL_DIR.getLongOpt()));
         g.setGenerateServerWrapper(cliArgs.hasOption(OPTION_FLAG_SERVER_WRAPPER.getLongOpt()));
         g.setGenerateAutopilotAdapter(cliArgs.hasOption(OPTION_FLAG_AUTOPILOT_ADAPTER.getLongOpt()));
+
+        g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
+        g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
         try {
             if (componentSymbol != null) {
                 g.generateFiles(componentSymbol, symTab);
@@ -156,7 +179,7 @@ public final class GeneratorCppCli {
     private static ExpandedComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
         ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(rootModelName).orElse(null);
         if (componentSymbol == null) {
-            Log.debug("could not resolve component " + rootModelName,"ERROR");
+            Log.error("could not resolve component " + rootModelName);
             //System.exit(1);
             return null;
         }

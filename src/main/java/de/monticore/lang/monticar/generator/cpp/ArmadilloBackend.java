@@ -76,6 +76,8 @@ public class ArmadilloBackend implements MathBackend {
         for (int c = 1; !(c + "").equals(powerOfNumber); ++c) {
             result += "*" + matrixName;
         }*/
+
+        System.out.println(mathExpressionSymbol.getTextualRepresentation());
         Log.error("Break down power of into smaller multiplications, this is not fully supported by this backend");
         return null;
     }
@@ -100,5 +102,10 @@ public class ArmadilloBackend implements MathBackend {
     public String getDivisionEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
         return ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getLeftExpression(), new ArrayList<>()) + "/" +
                 ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getRightExpression(), new ArrayList<>());
+    }
+
+    @Override
+    public boolean usesZeroBasedIndexing() {
+        return true;
     }
 }

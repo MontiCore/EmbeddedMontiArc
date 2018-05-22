@@ -1,0 +1,11 @@
+package test;
+
+component SingleElemArray{
+    port in Q arrayPort[1];
+
+    component SubComp{
+
+    }
+
+    instance SubComp arrayComp[1];
+}
