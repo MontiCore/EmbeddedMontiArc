@@ -2,7 +2,6 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
@@ -27,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,23 +101,16 @@ public class GenerationTest extends AbstractSymtabTest {
         middlewareGenerator.add(new CPPGenImpl(), "cpp");
 
         List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        //known errors:
-        //wayOut(1-1, i-1)
-        //wayout[1-1,i-1]
-        //Helper::getDoubleFromOctaveListFirstResult(Fasin(Helper::convertToOctaveValueList(deltaY/dist),1)
-        //=> Fasin(deltaY/dist) => std::sin(...)
-        //...
-        fixKnownErrors(files);
-
 
         testFilesAreEqual(files, "Planner/src/", generationTargetPath);
 
     }
 
-    @Ignore
     @Test
     public void testBaSystem() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
@@ -127,27 +118,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         EmbeddedMontiArcMathCoCos.createChecker().checkAll((ASTComponent) componentSymbol.getAstNode().orElse(null));
 
-        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
-        componentInstanceSymbol.getSubComponents().stream()
-                .flatMap(sc -> sc.getPorts().stream())
-                .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
-
-        List<ConnectorSymbol> stopCommConnectors = componentInstanceSymbol.getConnectors()
-                .stream()
-                .filter(con -> con.getTarget().startsWith("stopCommQuality") || con.getSource().startsWith("stopCommQuality"))
-                .sorted(Comparator.comparing(ConnectorSymbol::getName))
-                .collect(Collectors.toList());
-
-        for (ConnectorSymbol con : stopCommConnectors) {
-            String indexString = con.getName().replaceAll(".*\\[(\\d+)\\].*", "$1");
-            if (con.getSource().startsWith("stopCommQuality")) {
-                con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol("/v" + indexString + "/comm/in/slowDown" + indexString, "std_msgs/Bool", "data"));
-                con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol("/v" + indexString + "/comm/in/slowDown" + indexString, "std_msgs/Bool", "data"));
-            } else {
-                con.getSourcePort().setMiddlewareSymbol(new RosConnectionSymbol("/sim/comm/slowDown" + indexString, "std_msgs/Bool", "data"));
-                con.getTargetPort().setMiddlewareSymbol(new RosConnectionSymbol("/sim/comm/slowDown" + indexString, "std_msgs/Bool", "data"));
-            }
-        }
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/system/src/";
@@ -157,7 +128,6 @@ public class GenerationTest extends AbstractSymtabTest {
         distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-        fixKnownErrors(files);
 
         testFilesAreEqual(files, "system/src/", generationTargetPath);
     }
@@ -177,7 +147,6 @@ public class GenerationTest extends AbstractSymtabTest {
         //middlewareGenerator.add(new RosCppGenImpl(),"roscpp");
 
         List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        fixKnownErrors(files);
     }
 
     //TODO:add once true and false work
@@ -197,44 +166,9 @@ public class GenerationTest extends AbstractSymtabTest {
         //middlewareGenerator.add(new RosCppGenImpl(),"roscpp");
 
         List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        fixKnownErrors(files);
     }
 
-    private void fixKnownErrors(List<File> files) throws IOException {
-        //known errors:
-        //wayOut(1-1, i-1)
-        //=> wayOut[1-1,i-1]
-        //Helper::getDoubleFromOctaveListFirstResult(Fasin(Helper::convertToOctaveValueList(deltaY/dist),1)
-        //=> Fasin(deltaY/dist) => std::sin(...)
-        //...
-        for (File f : files) {
-            Path path = Paths.get(f.getAbsolutePath());
-            Charset charset = StandardCharsets.UTF_8;
-            String content = new String(Files.readAllBytes(path), charset);
-            /*content = content.replace("#include \"octave/builtin-defun-decls.h\"","#include <cmath>");
-            content = content.replaceAll("\\(Helper::getDoubleFromOctaveListFirstResult\\(([\\w|/]*)\\(Helper::convertToOctaveValueList\\(([\\w|/|\\(|\\)|,| |-]*)\\),1\\)\\)\\)","$1($2)");
-            content = content.replaceAll("(\\w+)\\(([\\w]+\\-1)\\)","$1[$2]");
-            content = content.replace("LaneletPaircurLaneletPair", "ba_util_LaneletPair curLaneletPair");
-            content = content.replace("Fasin","std::asin");
-            content = content.replace("Fsin","std::sin");
-            content = content.replace("Fcos","std::cos");
-            content = content.replace("Fabs","std::abs");
 
-            content = content.replace("Col<int> counter=Col<int>(1);" , "Col<int> counter=Col<int>(n);");
-            content = content.replace("colvec tmpLine;","colvec tmpLine = colvec(4);");*/
-
-            content = content
-                    //.replace("-1-1", "-1") //not present in emam2cpp master
-                    .replace("double lIndex", "int lIndex")
-                    .replace("double indexIn", "int indexIn")
-                    .replace("colvec counter", "Col<int> counter=Col<int>(n)")
-                    .replace("colvec indexLookup;","Col<int> indexLookup=Col<int>(1);")
-                    .replace("int curIndex = indexLookup(i, 1);","int curIndex = indexLookup(i-1, 1-1);")
-            ;
-
-            Files.write(path, content.getBytes(charset));
-        }
-    }
 
     @Test
     public void testMiddlewareGenerator() throws IOException {
