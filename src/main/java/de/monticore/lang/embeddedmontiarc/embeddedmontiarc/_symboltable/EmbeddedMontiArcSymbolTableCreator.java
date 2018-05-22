@@ -20,69 +20,26 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.getGlobalScope;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
-
-import com.google.common.collect.Lists;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
-import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
-import org.jscience.mathematics.number.Rational;
-
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
-import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
 import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
-import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ranges._ast.ASTRanges;
 import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
-import de.monticore.lang.monticar.resolution._ast.ASTResolutionDeclaration;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbolReference;
-import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbolReference;
-import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;
-import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
-import de.monticore.lang.monticar.types2._ast.ASTComplexArrayType;
-import de.monticore.lang.monticar.types2._ast.ASTComplexReferenceType;
 import de.monticore.lang.monticar.types2._ast.ASTImportStatement;
 import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
 import de.monticore.lang.monticar.types2._ast.ASTType;
-import de.monticore.lang.monticar.types2._ast.ASTTypeNameResolutionDeclaration;
-import de.monticore.lang.monticar.types2._ast.ASTTypeParameters;
-import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
-import de.monticore.lang.monticar.types2._ast.ASTWildcardType;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.ImportStatement;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.TypeSymbol;
-import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.symboltable.types.references.TypeReference;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 import java.util.*;
 
@@ -381,21 +338,6 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     @Override
     public void visit(ASTMontiArcAutoConnect node) {
         autoConnectionTrafo.transform(node, componentStack.peek());
-    }
-
-    private void addConfigPort(ComponentSymbol componentSymbol,ASTComponent astComponent, MCFieldSymbol parameterSymbol,ASTParameter astParameter) {
-        ASTPort tmpASTPort = ASTPort.getBuilder()
-                .name(parameterSymbol.getName())
-                .type(astParameter.getType())
-                .incoming(true)
-                .outgoing(false)
-                .adaptableKeyword(ASTAdaptableKeyword.getBuilder().build())
-                .build();
-
-        ASTInterface tmpInterface = EmbeddedMontiArcNodeFactory.createASTInterface();
-        tmpInterface.setPorts(Lists.newArrayList(tmpASTPort));
-
-        astComponent.getBody().getElements().add(tmpInterface);
     }
 
     @Override

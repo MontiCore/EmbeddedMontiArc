@@ -101,6 +101,7 @@ public class EMAPortHelper {
         ps.setNameDependsOn(pas.getNameDependsOn());
         ps.setTypeReference(typeRef);
         ps.setDirection(isIncoming);
+        ps.setConfig(node.adaptableKeywordIsPresent());
 
         symbolTableCreator.addToScopeAndLinkWithNode(ps, node);
     }
