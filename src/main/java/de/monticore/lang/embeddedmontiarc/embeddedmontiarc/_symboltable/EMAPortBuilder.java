@@ -22,6 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantValue;
+import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
@@ -36,6 +37,7 @@ public class EMAPortBuilder {
     protected Optional<EMAConstantValue> constantValue = Optional.empty();
     protected Optional<ASTNode> astNode = Optional.empty();
     protected Optional<Boolean> config = Optional.empty();
+    protected Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
 
     public static PortSymbol clone(PortSymbol port) {
         if (port.isConstant())
@@ -44,7 +46,7 @@ public class EMAPortBuilder {
                     .buildConstantPort();
         else {
             return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming())
-                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig()).build();
+                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig()).setMiddlewareSymbol(port.getMiddlewareSymbol()).build();
         }
     }
 
@@ -72,6 +74,11 @@ public class EMAPortBuilder {
         this.astNode = astNode;
         return this;
     }
+    public EMAPortBuilder setMiddlewareSymbol(Optional<MiddlewareSymbol> middlewareSymbol){
+        this.middlewareSymbol = middlewareSymbol;
+        return this;
+    }
+
 
     public EMAPortBuilder setTypeReference(MCTypeReference typeReference) {
         this.typeReference = Optional.of(typeReference);
@@ -87,6 +94,8 @@ public class EMAPortBuilder {
                 p.setAstNode(astNode.get());
             if (config.isPresent())
                 p.setConfig(config.get());
+            if(middlewareSymbol.isPresent())
+                p.setMiddlewareSymbol(middlewareSymbol.get());
             return p;
         }
         Log.error("not all parameters have been set before to build the port symbol");
@@ -106,6 +115,8 @@ public class EMAPortBuilder {
             p.setAstNode(astNode.get());
         if (config.isPresent())
             p.setConfig(config.get());
+        if(middlewareSymbol.isPresent())
+            p.setMiddlewareSymbol(middlewareSymbol.get());
         return p;
     }
 }

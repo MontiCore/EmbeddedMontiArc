@@ -27,6 +27,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
+import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -54,13 +56,15 @@ public class PortSymbol extends CommonSymbol implements ElementInstance {
   private boolean incoming;
 
   private boolean config = false;
-  
+
   private MCTypeReference<? extends MCTypeSymbol> typeReference;
   
   private MutableScope locallyDefinedStreams = new CommonScope();
   
   protected Optional<String> nameDependsOn = Optional.empty();
-  
+
+  private Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
+
   /**
    * use {@link #builder()}
    */
@@ -288,5 +292,17 @@ public class PortSymbol extends CommonSymbol implements ElementInstance {
 
   public boolean isConfig(){
     return config;
+  }
+
+  public void setMiddlewareSymbol(MiddlewareSymbol middlewareSymbol){
+    this.middlewareSymbol = Optional.of(middlewareSymbol);
+  }
+
+  public Optional<MiddlewareSymbol> getMiddlewareSymbol(){
+    return middlewareSymbol;
+  }
+
+  public boolean isRosPort(){
+    return getMiddlewareSymbol().isPresent() && getMiddlewareSymbol().get().isKindOf(RosConnectionSymbol.KIND);
   }
 }
