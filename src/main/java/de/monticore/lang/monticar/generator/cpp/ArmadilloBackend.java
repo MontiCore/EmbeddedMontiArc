@@ -116,7 +116,7 @@ public class ArmadilloBackend implements MathBackend {
 
     @Override
     public String getWholeNumberColumnVectorTypeName() {
-        return "icol";
+        return "ivec";
     }
 
     @Override
