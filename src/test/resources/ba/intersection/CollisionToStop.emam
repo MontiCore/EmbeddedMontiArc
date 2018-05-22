@@ -8,10 +8,10 @@ component CollisionToStop<N1 n = 2,N1 x = 1>{
           out B stopOut[n];
 
     implementation Math{
-        Z^{n,1} counter;
-        Z^{x,1} indexLookup;
+        Z^{n} counter;
+        Z^{x} indexLookup;
         for i = 1:n
-            counter(i,1) = 0;
+            counter(i) = 0;
         end
 
         Z k = 1;
@@ -19,13 +19,13 @@ component CollisionToStop<N1 n = 2,N1 x = 1>{
         for i = 1:maxI
             Z minJ = i + 1;
             for j = minJ:n
-                counter(i,1) = counter(i,1) + 1;
-                counter(j,1) = counter(j,1) + 1;
+                counter(i) = counter(i) + 1;
+                counter(j) = counter(j) + 1;
                 //always stop the last one to arrive at the collision point
                 if aIsFasterIn(k)
-                    indexLookup(k,1) = j;
+                    indexLookup(k) = j;
                 else
-                    indexLookup(k,1) = i;
+                    indexLookup(k) = i;
                 end
                 k = k + 1;
             end
@@ -39,7 +39,7 @@ component CollisionToStop<N1 n = 2,N1 x = 1>{
         if active
             for i = 1:x
                 if collisionIn(i)
-                    Z curIndex = indexLookup(i,1);
+                    Z curIndex = indexLookup(i);
                     stopOut(curIndex) = true;
                 end
             end
