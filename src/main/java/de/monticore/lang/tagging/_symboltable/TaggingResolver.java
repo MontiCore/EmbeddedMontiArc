@@ -37,8 +37,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.tagging._ast.ASTTaggingUnit;
+import de.monticore.lang.tagging._ast.*;
 import de.monticore.lang.tagging._parser.TaggingParser;
+import de.monticore.lang.tagging.helper.RangeFixer;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
@@ -130,6 +131,7 @@ public class TaggingResolver implements Scope {
           }
           if (ast.isPresent()) {
             // todo check package conformity
+            RangeFixer.fixTaggingUnit(ast.get());
             foundModels.add(ast.get());
           }
         });

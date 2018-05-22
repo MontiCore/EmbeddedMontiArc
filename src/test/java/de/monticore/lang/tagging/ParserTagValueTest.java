@@ -20,9 +20,23 @@
  */
 package de.monticore.lang.montiarc.tagging;
 
+import de.monticore.lang.tagging._ast.ASTScope;
+import de.monticore.lang.tagging._ast.ASTTag;
+import de.monticore.lang.tagging._ast.ASTTagElement;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._parser.TaggingParser;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by MichaelvonWenckstern on 13.06.2016.
@@ -65,5 +79,5 @@ public class ParserTagValueTest {
     tags.getTagBody().getTags().forEach(t -> t.getTagElements().forEach(e -> System.out.println(e.getName() + ": " + e.getTagValue().orElse(""))));
 //    System.out.println(tags.getTags().size());
     //    System.out.println(tags.getTags().get(0).getTagValue().length());
-  } */
+  }*/
 }
