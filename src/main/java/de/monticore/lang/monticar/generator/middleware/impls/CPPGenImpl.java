@@ -9,6 +9,11 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +39,8 @@ public class CPPGenImpl implements GeneratorImpl {
         files.add(generatorCPP.generateFile(generateCMake(componentInstanceSymbol)));
         files.addAll(generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver));
 
+        fixKnownErrors(files);
+
         return files;
     }
 
@@ -48,5 +55,22 @@ public class CPPGenImpl implements GeneratorImpl {
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         cmake.setFileContent(TemplateHelper.getCmakeCppTemplate().replace("${compName}", name));
         return cmake;
+    }
+
+    private void fixKnownErrors(List<File> files) throws IOException {
+        for (File f : files) {
+            Path path = Paths.get(f.getAbsolutePath());
+            Charset charset = StandardCharsets.UTF_8;
+            String content = new String(Files.readAllBytes(path), charset);
+
+            content = content
+                    //Matrix access problems
+                    .replace("int curIndex = indexLookup(i);","int curIndex = indexLookup(i-1);")
+                    .replace("-1-1", "-1") //not present in emam2cpp master
+                    .replace("] ;","];")
+            ;
+
+            Files.write(path, content.getBytes(charset));
+        }
     }
 }
