@@ -1,21 +1,20 @@
 /**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * <p>
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.monticore.lang.math._symboltable;
@@ -415,57 +414,47 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astMathArithmeticModuloExpression);
     }
 
-//    // does not exist
-//    public void endVisit(final AST ASTMathArithmeticPowerOfExpression astMathArithmeticPowerOfExpression) {
-//        MathExpressionSymbol newSymbol = null;
-//        Log.info(((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(0).getSymbolOpt().get()).getTextualRepresentation(), "Whole Left Expression:");
-//        if (astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).getSymbolOpt().isPresent()) {
-//            MathExpressionSymbol expSymbol = ((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().get(1).
-//                    getSymbolOpt().get()).getRealMathExpressionSymbol();
-//            boolean useInverse = false;
-//            boolean useSqrtm = false;
-//            if (expSymbol.getTextualRepresentation().startsWith("-")) {
-//                useInverse = true;
-//                if (expSymbol.getTextualRepresentation().startsWith("-0.5")) {
-//                    useSqrtm = true;
-//                }
-//            } else if (expSymbol.getTextualRepresentation().equals("0.5")) {
-//                useSqrtm = true;
-//            }
-//
-//            if (useInverse) {
-//                MathMatrixNameExpressionSymbol symbolInv = convertToInternalExpression((MathExpressionSymbol)
-//                        astMathArithmeticPowerOfExpression.getMathArithmeticExpressions().
-//                                get(0).getSymbolOpt().get(), "inv");
-//                if (useSqrtm) {
-//                    MathMatrixNameExpressionSymbol symbolSqrtm = convertToInternalExpression(symbolInv, "sqrtm");
-//                    newSymbol = symbolSqrtm;
-//                    //System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
-//                } else {
-//                    //TODO add detection for normal numbers as these should not be inverted by calling inv
-//                    //newSymbol = symbolInv;
-//                    //System.out.println("SymbolInv: " + symbolInv.getTextualRepresentation());
-//
-//                }
-//            } else if (useSqrtm) {
-//                newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
-//                        getMathArithmeticExpressions().get(0).getSymbolOpt().get(), "sqrtm");
-//
-//                //System.out.println("SymbolSqrtm2: " + newSymbol.getTextualRepresentation());
-//            }
-//        }
-//        if (newSymbol == null) {
-//            MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
-//
-//            MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticPowerOfExpression.
-//                    getMathArithmeticExpressions().get(0), astMathArithmeticPowerOfExpression.
-//                    getMathArithmeticExpressions().get(1), "^");
-//            newSymbol = symbol;
-//        }
-//        //System.out.println("newSymbol is: " + newSymbol.getTextualRepresentation());
-//        addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
-//
-//    }
+    public void endVisit(final ASTMathArithmeticPowerOfExpression astMathArithmeticPowerOfExpression) {
+        MathExpressionSymbol newSymbol = null;
+        Log.info(((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getLeftExpression().getSymbolOpt().get()).getTextualRepresentation(), "Whole Left Expression:");
+        if (astMathArithmeticPowerOfExpression.getRightExpression().getSymbolOpt().isPresent()) {
+            MathExpressionSymbol expSymbol = ((MathExpressionSymbol) astMathArithmeticPowerOfExpression.getRightExpression().getSymbolOpt().get()).getRealMathExpressionSymbol();
+            boolean useInverse = false;
+            boolean useSqrtm = false;
+            if (expSymbol.getTextualRepresentation().startsWith("-")) {
+                useInverse = true;
+                if (expSymbol.getTextualRepresentation().startsWith("-0.5")) {
+                    useSqrtm = true;
+                }
+            } else if (expSymbol.getTextualRepresentation().equals("0.5")) {
+                useSqrtm = true;
+            }
+            if (useInverse) {
+                MathMatrixNameExpressionSymbol symbolInv = convertToInternalExpression((MathExpressionSymbol)
+                        astMathArithmeticPowerOfExpression.getLeftExpression().getSymbolOpt().get(), "inv");
+                if (useSqrtm) {
+                    newSymbol = convertToInternalExpression(symbolInv, "sqrtm");
+                    //System.out.println("SymbolSqrtm: " + symbolSqrtm.getTextualRepresentation());
+                } else {
+                    //TODO add detection for normal numbers as these should not be inverted by calling inv
+                    //newSymbol = symbolInv;
+                    //System.out.println("SymbolInv: " + symbolInv.getTextualRepresentation());
+
+                }
+            } else if (useSqrtm) {
+                newSymbol = convertToInternalExpression((MathExpressionSymbol) astMathArithmeticPowerOfExpression.
+                        getLeftExpression().getSymbolOpt().get(), "sqrtm");
+            }
+        }
+        if (newSymbol == null) {
+            MathArithmeticExpressionSymbol symbol = new MathArithmeticExpressionSymbol();
+            MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astMathArithmeticPowerOfExpression.
+                    getLeftExpression(), astMathArithmeticPowerOfExpression.
+                    getRightExpression(), "^");
+            newSymbol = symbol;
+        }
+        addToScopeAndLinkWithNode(newSymbol, astMathArithmeticPowerOfExpression);
+    }
 
     private MathMatrixNameExpressionSymbol convertToInternalExpression(MathExpressionSymbol mathExpressionSymbol, String functionName) {
         MathMatrixNameExpressionSymbol symbol2 = new MathMatrixNameExpressionSymbol(functionName);

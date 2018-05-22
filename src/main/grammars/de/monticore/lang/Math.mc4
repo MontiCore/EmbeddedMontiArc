@@ -126,4 +126,10 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     NameExpression implements Expression<295> =
         Name;
 
+    // overwrite power of expression
+    BinaryXorExpression implements Expression <110> = "----- will not be used ---- this removes BinaryXorExpression";
+
+    MathArithmeticPowerOfExpression implements Expression <190> =
+     	leftExpression:Expression operator:"^" rightExpression:Expression;
+
  }
