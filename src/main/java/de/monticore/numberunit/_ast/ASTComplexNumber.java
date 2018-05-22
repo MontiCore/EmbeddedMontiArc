@@ -48,7 +48,7 @@ public class ASTComplexNumber extends ASTComplexNumberTOP {
     }
 
     public double getImagineNumber() {
-        if (this.isPresentNegRe()) {
+        if (this.isPresentNegIm()) {
             return -1*Double.parseDouble(print(this.getIm()));
         }
         else {
