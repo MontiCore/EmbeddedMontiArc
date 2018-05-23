@@ -25,11 +25,11 @@ grammar NumberUnit extends de.monticore.literals.Literals {
 
    ;
 
-   // Inf = "oo"; (use Name to not generate a "oo" token which would clash with other tokens later)
-   Inf =
+   Inf = "oo"; // (use Name to not generate a "oo" token which would clash with other tokens later)
+   /* Inf =
       { _input.LT(1).getText().equals("oo") }?
       Name
-   ;
+   ; */ // yes but this makes "x = -y" not parsable
 
 
    ComplexNumber =

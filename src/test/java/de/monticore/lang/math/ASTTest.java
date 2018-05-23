@@ -311,4 +311,10 @@ public class ASTTest {
             assertEquals(2, accessExpr.getMathMatrixAccessList().size());
     }
 
+    @Test
+    public void minusAssignmentTest() throws Exception {
+        MathParser parser = new MathParser();
+        ASTMathAssignmentExpression ast = parser.parse_StringMathAssignmentExpression("x = -y;").orElse(null);
+        assertNotNull(ast);
+    }
 }
