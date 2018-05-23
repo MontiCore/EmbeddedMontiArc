@@ -1,0 +1,24 @@
+package de.rwth.cmplib.advancedLibrary.trigger;
+
+// u1 = Einschaltschwelle
+// u2 = Ausschaltschwelle
+component SchmittTrigger<T>(T u1, T u2) {
+    port
+        in T inValue,
+        out B outValue;
+
+    implementation Math {
+        static B memoryValue=false; // default value on start
+
+        if (memoryValue && inValue <= u2)
+            outValue = false;
+        end
+
+        if (!memoryValue && inValue >= u1)
+            outValue = true;
+        end
+
+        memoryValue=outValue; // store current tick value for next tick
+
+    }
+}

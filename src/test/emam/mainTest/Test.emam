@@ -1,5 +1,6 @@
 package mainTest;
 
+import de.rwth.cmplib.advancedLibrary.trigger.*;
 import de.rwth.cmplib.basicLibrary.*;
 
 component Test {
