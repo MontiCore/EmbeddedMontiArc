@@ -1,0 +1,11 @@
+package mainTest;
+
+import de.rwth.cmplib.basicLibrary.*;
+
+component Test {
+
+    instance AndTest andtestInstance;
+    instance Not notInstance;
+    instance OrTest ortestInstance;
+
+}
