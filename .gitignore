@@ -28,7 +28,6 @@ jdk/
 lib/
 mingw64/
 nodejs/
-pacman/
 paper/
 precompiled/
 reporting/
@@ -52,3 +51,16 @@ model/clustering/
 /emam2cpp.jar
 /externallibs/lapack_win64_MT.dll
 /externallibs/libopenblas.dll
+/pacman/audio/*.ogg
+/pacman/audio/*.mp3
+/pacman/BD_Cartoon_Shout-webfont.ttf
+/pacman/LICENSE
+/pacman/index.html
+/pacman/modernizr-1.5.min.js
+/pacman/pacManWrapper.html
+/pacman/pacManWrapper.js
+/pacman/pacManWrapper.wasm
+/pacman/pacManWrapper_wrapper.js
+/pacman/pacman.js
+/pacman/simulation.html
+/pacman/simulation.js
