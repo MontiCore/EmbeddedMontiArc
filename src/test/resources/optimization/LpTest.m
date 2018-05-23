@@ -30,7 +30,7 @@ script LpTest
     Q^{n, 1} b = [50; 60];
 
     // cost matrix
-    Q ^{m, n} c = [3 2; 1 5; 5 4];
+    Q ^{m, n} c = [3, 2; 1, 5; 5, 4];
 
     // minimization problem
     minimize(Q^{m, n} x)

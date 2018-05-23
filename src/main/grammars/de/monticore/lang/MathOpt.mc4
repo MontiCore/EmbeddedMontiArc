@@ -15,10 +15,10 @@ grammar MathOpt extends de.monticore.lang.Math
         type:AssignmentType?  Name;
 
     OptimizationSimpleConditionExpression =
-        left:Expression operator:OptimizationCompareOperator right:Expression;
+        left:Expression operator:OptimizationCompareOperator right:Expression ";"?;
 
     OptimizationBoundsConditionExpression =
-        lower:Expression "<=" expr:Expression "<=" upper:Expression;
+        lower:Expression "<=" expr:Expression "<=" upper:Expression ";"?;
 
     OptimizationConditionExpression =
         (simpleCondition:OptimizationSimpleConditionExpression | boundedCondition:OptimizationBoundsConditionExpression | forLoopCondition:OptimizationForLoopExpression);
