@@ -43,7 +43,7 @@ import static org.junit.Assert.*;
 
 public class MathSymbolTableCreatorTest {
 
-    private static Scope symTab;
+    protected static Scope symTab;
 
     @BeforeClass
     public static void setUpClass() {
