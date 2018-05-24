@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.math._symboltable;
 
-import de.monticore.assignmentexpressions._ast.ASTAssignmentExpression;
 import de.monticore.assignmentexpressions._ast.ASTDecSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
@@ -30,7 +29,6 @@ import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._matrixprops.MatrixPropertiesIdentifier;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.math.legacy.AssignmentExpressionHelper;
 import de.monticore.lang.matrix._ast.ASTMathMatrixAccess;
 import de.monticore.lang.matrix._ast.ASTMathMatrixAccessExpression;
 import de.monticore.lang.matrix._ast.ASTMathMatrixValueExplicitExpression;
@@ -98,41 +96,24 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
     public void visit(final ASTMathScript script) {
-        // replace unwanted ast nodes
-        replaceInvalidAstNodes(script.getExpressionList());
-
-        // create legacy ast node
-        ASTMathStatements ast = new ASTMathStatements(script.getExpressionList());
-
         MathScriptSymbol mathScriptSymbol = new MathScriptSymbol(script.getName());
         addToScopeAndLinkWithNode(mathScriptSymbol, script);
-        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
     }
 
-    private void replaceInvalidAstNodes(List<ASTExpression> list) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof ASTAssignmentExpression) {
-                ASTMathAssignmentExpression mathAssignment = AssignmentExpressionHelper.getInstance().convert((ASTAssignmentExpression) list.get(i));
-                list.set(i, mathAssignment);
-            }
-        }
+    public void visit(ASTMathStatements ast) {
+        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
     }
 
     public void endVisit(final ASTMathScript script) {
         removeCurrentScope();
     }
 
-    public void visit(final ASTMathForLoopExpression ast) {
-        // replace unwanted ast nodes
-        replaceInvalidAstNodes(ast.getExpressionList());
-    }
-
     public void endVisit(final ASTMathForLoopExpression astMathForLoopExpression) {
         MathForLoopExpressionSymbol symbol = new MathForLoopExpressionSymbol();
 
         symbol.setForLoopHead((MathForLoopHeadSymbol) astMathForLoopExpression.getHead().getSymbolOpt().get());
-        for (ASTExpression astMathExpression : astMathForLoopExpression.getExpressionList())
-            symbol.addForLoopBody((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
+        for (ASTStatement astStatement : astMathForLoopExpression.getBody().getStatementList())
+            symbol.addForLoopBody((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathForLoopExpression);
     }
 
@@ -607,41 +588,26 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astMathConditionalExpression);
     }
 
-    public void visit(final ASTMathIfExpression ast) {
-        // replace unwanted ast nodes
-        replaceInvalidAstNodes(ast.getExpressionList());
-    }
-
     public void endVisit(final ASTMathIfExpression astMathIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
         symbol.setCondition((MathExpressionSymbol) astMathIfExpression.getCondition().getSymbolOpt().get());
-        for (ASTExpression astMathExpression : astMathIfExpression.getExpressionList())
-            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
+        for (ASTStatement astStatement : astMathIfExpression.getBody().getStatementList())
+            symbol.addBodyExpression((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathIfExpression);
-    }
-
-    public void visit(final ASTMathElseIfExpression ast) {
-        // replace unwanted ast nodes
-        replaceInvalidAstNodes(ast.getExpressionList());
     }
 
     public void endVisit(final ASTMathElseIfExpression astMathElseIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
         symbol.setCondition((MathExpressionSymbol) astMathElseIfExpression.getCondition().getSymbolOpt().get());
-        for (ASTExpression astMathExpression : astMathElseIfExpression.getExpressionList())
-            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
+        for (ASTStatement astStatement : astMathElseIfExpression.getBody().getStatementList())
+            symbol.addBodyExpression((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseIfExpression);
-    }
-
-    public void visit(final ASTMathElseExpression ast) {
-        // replace unwanted ast nodes
-        replaceInvalidAstNodes(ast.getExpressionList());
     }
 
     public void endVisit(final ASTMathElseExpression astMathElseExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
-        for (ASTExpression astMathExpression : astMathElseExpression.getExpressionList())
-            symbol.addBodyExpression((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
+        for (ASTStatement astStatement : astMathElseExpression.getBody().getStatementList())
+            symbol.addBodyExpression((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseExpression);
     }
 
@@ -658,7 +624,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     /**
      * used for ASTNodes that wrap a single expression such as
-     * e.g. MathStatement, BracketExpression ect
+     * e.g. BracketExpression ect
      *
      * @param parent Parent AST Node
      * @param child  Child AST Node

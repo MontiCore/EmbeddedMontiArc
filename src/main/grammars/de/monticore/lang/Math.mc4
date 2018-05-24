@@ -29,8 +29,12 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
         (ImportStatement)* // to import later on other scripts/functions
         MathScript;
 
+    interface Statement;
+
+    MathStatements = (Statement ";")+;
+
     symbol scope MathScript =
-        "script" Name (Expression ";"?)+ "end";
+        "script" Name statements:MathStatements "end";
 
     //Arithmetic expressions for matrices
 
@@ -71,39 +75,43 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	"false";
 
     //for loop
-    MathForLoopExpression implements Expression<40> =
-    	"for" head:MathForLoopHead (Expression ";"?)+ "end";
+    MathForLoopExpression implements Statement =
+    	"for" head:MathForLoopHead body:MathStatements "end";
 
     MathForLoopHead =
     	Name "=" (NameExpression | Expression);
 
     //if  and else conditions
-    MathConditionalExpression implements Expression<40> =
+    MathConditionalExpression implements Statement =
     	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
-    MathConditionalExpressionShort implements Expression<40> =
-    	Expression "?" trueCase:Expression+ ":" falseCase:Expression+;
+    MathConditionalExpressionShort implements Statement =
+    	Expression "?" trueCase:MathStatements ":" falseCase:MathStatements;
 
     MathIfExpression =
-    	"if" condition:Expression (Expression ";"?)+ ;
+    	"if" condition:Expression body:MathStatements ;
 
     MathElseIfExpression =
-    	"elseif" condition:Expression (Expression ";"?)+ ;
+    	"elseif" condition:Expression body:MathStatements ;
 
     MathElseExpression =
-    	"else" (Expression ";"?)+ ;
+    	"else" body:MathStatements ;
 
-    MathDeclarationExpression implements Expression<305> =
+    MathDeclarationExpression implements Statement =
         type:AssignmentType Name ";"?;
 
-    MathAssignmentDeclarationExpression implements Expression<306> =
+    MathAssignmentDeclarationExpression implements Statement =
         type:AssignmentType Name MathAssignmentOperator (Expression) ";"?;
 
-    MathAssignmentExpression implements Expression<200> =
+    MathAssignmentExpression implements Statement =
         (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression) ";"?;
 
     MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
+
+    // IncSuffixExpression implements Statement;
+
+    // DecSuffixExpression implements Statement;
 
     // type definitions
     Range = "(" min:Expression ":" (step:Expression ":")? max:Expression ")";
@@ -129,4 +137,13 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathArithmeticPowerOfExpression implements Expression <190> =
      	leftExpression:Expression operator:"^" rightExpression:Expression;
 
- }
+
+    // override symbols - can be only done with upcoming Monticore Version 5.0.1
+    // implement Statement
+    IncSuffixExpression implements Expression <220>, Statement =
+    	Expression "++";
+
+    DecSuffixExpression implements Expression <220>, Statement =
+    	Expression "--";
+
+}

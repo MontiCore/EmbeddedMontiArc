@@ -24,6 +24,7 @@ package de.monticore.lang.math._symboltable;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTMathStatements;
+import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -49,8 +50,8 @@ public class MathStatementsSymbol extends CommonSymbol {
     public List<MathExpressionSymbol> getMathExpressionSymbols() {
         if (mathExpressionSymbols == null) {
             mathExpressionSymbols = new ArrayList<>();
-            for (ASTExpression astMathExpression : astMathStatements.getMathExpressions()) {
-                mathExpressionSymbols.add((MathExpressionSymbol) astMathExpression.getSymbolOpt().get());
+            for (ASTStatement astStatement : astMathStatements.getStatementList()) {
+                mathExpressionSymbols.add((MathExpressionSymbol) astStatement.getSymbolOpt().get());
             }
         }
         return mathExpressionSymbols;
