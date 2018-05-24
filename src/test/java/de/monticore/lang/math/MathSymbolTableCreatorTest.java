@@ -266,6 +266,28 @@ public class MathSymbolTableCreatorTest {
         testJSValue(numberExpressionSymbol.getValue(), "3/1", "4/1");
     }
 
+    @Test
+    public void testVectorDimension() {
+        final MathValueSymbol vec = symTab.<MathValueSymbol>resolve("symtab.SymtabTest.vec", MathValueSymbol.KIND).orElse(null);
+        doTestVectorDimension(vec);
+    }
+
+    @Test
+    public void testVectorDimensionWithoutBracket() {
+        final MathValueSymbol vec1 = symTab.<MathValueSymbol>resolve("symtab.SymtabTest.vec1", MathValueSymbol.KIND).orElse(null);
+        doTestVectorDimension(vec1);
+    }
+
+    protected void doTestVectorDimension(MathValueSymbol vec) {
+        // math value symbol
+        assertNotNull(vec);
+        // type symbol
+        assertNotNull(vec.getType());
+        // dimension symbol
+        assertEquals(1, vec.getType().getDimensions().size());
+        assertNotNull(vec.getType().getDimensions().get(0));
+    }
+
     public static void testJSValue(JSValue jsValue, String realPart, String complexPart) {
         testJSValue(jsValue, realPart);
         assertTrue(jsValue.getImagNumber().isPresent());

@@ -24,6 +24,7 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTDimension;
 import de.monticore.lang.math._ast.ASTElementType;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,8 +123,16 @@ public class MathValueType extends MathExpressionSymbol {
 
         if (type.getElementType().getDimensionOpt().isPresent()) {
             ASTDimension astDimension = type.getElementType().getDimensionOpt().get();
+            if (astDimension.getVecDimOpt().isPresent())
+                if (astDimension.getVecDimOpt().get().getSymbolOpt().isPresent())
+                    mathValueType.addDimension((MathExpressionSymbol) astDimension.getVecDimOpt().get().getSymbolOpt().get());
+                else
+                    Log.error(String.format("%s: Dimension symbol not present.", astDimension.toString()), astDimension.get_SourcePositionStart());
             for (ASTExpression astMathArithmeticExpression : astDimension.getMatrixDimList()) {
-                mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbolOpt().get());
+                if (astMathArithmeticExpression.getSymbolOpt().isPresent())
+                    mathValueType.addDimension((MathExpressionSymbol) astMathArithmeticExpression.getSymbolOpt().get());
+                else
+                    Log.error(String.format("%s: Dimension symbol not present.", astDimension.toString()), astDimension.get_SourcePositionStart());
             }
         }
 
