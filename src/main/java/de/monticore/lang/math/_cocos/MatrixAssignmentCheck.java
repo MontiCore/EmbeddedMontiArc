@@ -87,7 +87,7 @@ public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoC
         else if (expressionSymbol instanceof MathMatrixArithmeticValueSymbol)
             props = ((MathMatrixArithmeticValueSymbol) expressionSymbol).getMatrixProperties();
         else if (expressionSymbol instanceof MathNameExpressionSymbol){
-            Symbol sym = assignment.getEnclosingScope().get()
+            Symbol sym = assignment.getEnclosingScopeOpt().get()
                     .resolve(((MathNameExpressionSymbol) expressionSymbol).getNameToResolveValue(),new MathExpressionSymbolKind()).get();
             props = ((MathValueSymbol) sym).getMatrixProperties();
         }

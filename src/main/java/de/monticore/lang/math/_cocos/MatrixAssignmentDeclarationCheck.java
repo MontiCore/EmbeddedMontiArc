@@ -68,7 +68,7 @@ public class MatrixAssignmentDeclarationCheck implements MathASTMathAssignmentDe
         if (!props_String.containsAll(expProps))
             Log.error("Matrix does not fullfill given properties");
         else {
-            Symbol symbol = assignment.getEnclosingScope().get()
+            Symbol symbol = assignment.getEnclosingScopeOpt().get()
                     .resolve(assignment.getName(), new MathExpressionSymbolKind()).get();
             ((MathValueSymbol) symbol).setMatrixProperties(props);
         }
