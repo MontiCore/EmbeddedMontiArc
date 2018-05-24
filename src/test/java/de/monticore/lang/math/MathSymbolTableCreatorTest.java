@@ -34,6 +34,7 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -42,6 +43,14 @@ import static org.junit.Assert.*;
 
 public class MathSymbolTableCreatorTest {
 
+    private static Scope symTab;
+
+    @BeforeClass
+    public static void setUpClass() {
+        // only create symTab once
+        symTab = createSymTab("src/test/resources");
+    }
+
     // this is a very simple test and only supports one use case
     // it does not even support right now
     // Q(0 : 10 km)^{3,1} j
@@ -49,8 +58,6 @@ public class MathSymbolTableCreatorTest {
     // project
     @Test
     public void test0() {
-        Scope symTab = createSymTab("src/test/resources");
-
         //Q(0 km : 10 km)^{3,1} j = [ 2 mm; 3 cm;4 km ];
         final MathValueSymbol j = symTab.<MathValueSymbol>resolve
                 ("symtab.SymtabTest0.j", MathValueSymbol.KIND).orElse(null);
@@ -77,8 +84,6 @@ public class MathSymbolTableCreatorTest {
      */
     @Test
     public void test1() {
-        Scope symTab = createSymTab("src/test/resources");
-
         //Q a = 2+7*5+4%3;
         final MathValueSymbol mathSymbol1 = symTab.<MathValueSymbol>resolve("symtab.SymtabTest.a", MathValueSymbol.KIND).orElse(null);
         assertNotNull(mathSymbol1);
@@ -108,8 +113,6 @@ public class MathSymbolTableCreatorTest {
      */
     @Test
     public void test2() {
-        Scope symTab = createSymTab("src/test/resources");
-
         //Q^{2,2} m1 = [23, 44; 22, 222] + [ 1, 2; 3,4] * [3,4;5,6] - [7,8;9,10].*[22,1;2,3];
         final MathValueSymbol mathSymbol1 = symTab.<MathValueSymbol>resolve("symtab.SymtabTest.m1", MathValueSymbol.KIND).orElse(null);
         assertNotNull(mathSymbol1);
@@ -138,8 +141,6 @@ public class MathSymbolTableCreatorTest {
      */
     @Test
     public void test3() {
-        Scope symTab = createSymTab("src/test/resources");
-
         //Q b = -7;
         final MathValueSymbol mathSymbol1 = symTab.<MathValueSymbol>resolve("symtab.SymtabTest.b", MathValueSymbol.KIND).orElse(null);
         assertNotNull(mathSymbol1);
@@ -171,8 +172,6 @@ public class MathSymbolTableCreatorTest {
      */
     @Test
     public void test4() {
-        Scope symTab = createSymTab("src/test/resources");
-
         //Rational h = 2 km + 7 m * 3 m ^ 3;
         final MathValueSymbol mathSymbol1 = symTab.<MathValueSymbol>resolve("symtab.SymtabTest.h", MathValueSymbol.KIND).orElse(null);
         assertNotNull(mathSymbol1);
@@ -192,8 +191,6 @@ public class MathSymbolTableCreatorTest {
      */
     @Test
     public void testComplexMatrix() {
-        Scope symTab = createSymTab("src/test/resources");
-
         //C(0:10)^{2,2} matrix = [3+5i -6-5i; -3+2i 3-8i];
         final MathValueSymbol matrix = symTab.<MathValueSymbol>resolve
                 ("matrix.ComplexNumber.matrix", MathValueSymbol.KIND).orElse(null);
@@ -233,7 +230,6 @@ public class MathSymbolTableCreatorTest {
      */
     @Test
     public void test6() {
-        Scope symTab = createSymTab("src/test/resources");
         //B bool = j == i';
         //        final MathValueSymbol matrix = symTab.<MathValueSymbol>resolve
         //                ("symtab.SymtabTest.bool", MathValueSymbol.KIND).orElse(null);
@@ -261,7 +257,6 @@ public class MathSymbolTableCreatorTest {
 
     @Test
     public void testComplexAssignmentTest() {
-        Scope symTab = createSymTab("src/test/resources");
         final MathValueSymbol complexNumber = symTab.<MathValueSymbol>resolve
                 ("symtab.ComplexAssignmentTest.A", MathValueSymbol.KIND).orElse(null);
         assertNotNull(complexNumber);
