@@ -22,6 +22,11 @@ package de.monticore.lang.mathopt._symboltable;
 
 import de.monticore.lang.math.LogConfig;
 import de.monticore.lang.math._symboltable.MathLanguage;
+import de.monticore.symboltable.MutableScope;
+import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.SymbolTableCreator;
+
+import java.util.Optional;
 
 /**
  * @author Christoph Richter
@@ -38,4 +43,8 @@ public class MathOptLanguage extends MathOptLanguageTOP {
         return new MathOptModelLoader(this);
     }
 
+    @Override
+    public Optional<MathOptSymbolTableCreator> getSymbolTableCreator(ResolvingConfiguration resolvingConfiguration, MutableScope mutableScope) {
+        return Optional.of(new MathOptSymbolTableCreator(resolvingConfiguration, mutableScope));
+    }
 }

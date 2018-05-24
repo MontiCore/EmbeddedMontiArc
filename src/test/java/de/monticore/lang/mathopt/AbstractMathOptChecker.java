@@ -86,7 +86,7 @@ public abstract class AbstractMathOptChecker {
                 ResolvingConfiguration.addDefaultFilters(lang.getResolvingFilters());
                 Optional<MathOptSymbolTableCreator> stc = lang.getSymbolTableCreator(ResolvingConfiguration, globalScope);
                 if (stc.isPresent()) {
-                    stc.get().createFromAST(root.get());
+                    stc.get().createFromAST(root.get().getMathCompilationUnit());
                 }
                 return root.get();
             }

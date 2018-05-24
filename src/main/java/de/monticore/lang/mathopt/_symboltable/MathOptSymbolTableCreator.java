@@ -22,23 +22,17 @@ package de.monticore.lang.mathopt._symboltable;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
+import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathForLoopExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueType;
 import de.monticore.lang.mathopt._ast.*;
-import de.monticore.symboltable.ArtifactScope;
-import de.monticore.symboltable.ImportStatement;
+import de.monticore.lang.mathopt._visitor.MathOptVisitor;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
-import de.monticore.types.types._ast.ASTImportStatement;
-import de.se_rwth.commons.Names;
-import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Creates a hand written symbol table for MontiMathOpt
@@ -46,32 +40,7 @@ import java.util.Optional;
  *
  * @author Christoph Richter
  */
-public class MathOptSymbolTableCreator extends MathOptSymbolTableCreatorTOP {
-
-    @Override
-    public void visit(final ASTMathOptCompilationUnit compilationUnit) {
-        Log.debug("Building Symboltable for Script: " + compilationUnit.getMathCompilationUnit().getMathScript().getName(),
-                MathOptSymbolTableCreator.class.getSimpleName());
-
-        // imports
-        List<ImportStatement> imports = new ArrayList<>();
-        for (ASTImportStatement astImportStatement : compilationUnit.getMathCompilationUnit().getImportStatementList()) {
-            String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportList());
-            ImportStatement importStatement = new ImportStatement(qualifiedImport,
-                    astImportStatement.isStar());
-            imports.add(importStatement);
-        }
-        String package2 = "";
-        if (compilationUnit.getMathCompilationUnit().isPresentPackage()) {
-            package2 = Names.getQualifiedName(compilationUnit.getMathCompilationUnit().getPackage().getPartList());
-        }
-        ArtifactScope artifactScope = new ArtifactScope(
-                Optional.empty(),
-                package2,
-                imports);
-        //this.currentImports = imports;
-        putOnStack(artifactScope);
-    }
+public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements MathOptVisitor {
 
     public MathOptSymbolTableCreator(ResolvingConfiguration resolvingConfig, MutableScope enclosingScope) {
         super(resolvingConfig, enclosingScope);
@@ -79,6 +48,11 @@ public class MathOptSymbolTableCreator extends MathOptSymbolTableCreatorTOP {
 
     public MathOptSymbolTableCreator(ResolvingConfiguration resolvingConfig, Deque<MutableScope> scopeStack) {
         super(resolvingConfig, scopeStack);
+    }
+
+    @Override
+    public MathOptVisitor getRealThis() {
+        return this;
     }
 
     public void endVisit(final ASTOptimizationVariableDeclarationExpression astExpression) {
