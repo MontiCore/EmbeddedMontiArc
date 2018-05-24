@@ -76,7 +76,7 @@ public class MathOptimizationExpressionSymbolTest {
 
     @Test
     public void getObjectiveExpression() {
-        assertTrue(minimizationTestSymbol.getObjectiveExpression().getTextualRepresentation().contentEquals("Q optimization.MinimizationTest.y = x^2"));
+        assertEquals("Q optimization.MinimizationTest.y = x^2", minimizationTestSymbol.getObjectiveExpression().getTextualRepresentation());
     }
 
     @Test
