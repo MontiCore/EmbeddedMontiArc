@@ -43,11 +43,13 @@ import de.monticore.types.types._ast.ASTImportStatement;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import java.util.Optional;
+
+import static de.monticore.lang.numberunit.Rationals.doubleToRational;
 
 /**
  * @author math-group
@@ -666,29 +668,6 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         if (child.getSymbolOpt().isPresent()) {
             addToScopeAndLinkWithNode(child.getSymbolOpt().get(), parent);
         }
-    }
-
-    /**
-     * calculate the rational value of the double number given by his argument
-     *
-     * @param value double number
-     * @return rational number
-     */
-    public Rational doubleToRational(double value) {
-        //String tmp = Double.toString(value);
-        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-        df.setMaximumFractionDigits(340); //340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
-        String tmp = df.format(value);
-        String[] rational = tmp.split("\\.");
-        long denom = 1;
-        long num = Long.valueOf(rational[0] + "");
-        if (rational.length > 1) {
-            // calc denominator
-            denom = (long) Math.pow(10, rational[1].length());
-            // calc numerator
-            num = Long.valueOf(rational[0] + "" + rational[1]);
-        }
-        return Rational.valueOf(num, denom);
     }
 }
 
