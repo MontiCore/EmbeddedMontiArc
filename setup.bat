@@ -1,0 +1,3 @@
+setlocal
+call EmbeddedMontiArcStudio\emam2wasm\scripts\setup
+endlocal

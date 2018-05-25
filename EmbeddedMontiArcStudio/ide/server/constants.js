@@ -98,6 +98,7 @@ BATCHES.PACMAN.PLAY    		 		= {};
 BATCHES.PACMAN.EMAM2WASM_GEN 		= Path.resolve(PATHS.SCRIPTS, "pacman", "emam2wasmGen.bat");
 BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report.bat");
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
+BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
 
 /*

@@ -95,8 +95,17 @@ class PumpVisualization extends AbstractVisualization {
     }
 }
 
+class PacManVisualization extends AbstractVisualization {
+    constructor() {
+        super("pacman", BATCHES.PACMAN.VISUALIZATION);
+        this.logger = Log.getLogger("PACMAN VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
 	PumpVisualization: new PumpVisualization(),
-	ClusteringVisualization: new ClusteringVisualization()
+	ClusteringVisualization: new ClusteringVisualization(),
+    PacManVisualization: new PacManVisualization()
 };

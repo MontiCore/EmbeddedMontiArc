@@ -3,7 +3,7 @@ const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
 const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization} = require("./visualizations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
@@ -390,6 +390,15 @@ App.post("/services/pacman/simulate", function(request, response) {
         response.end();
     }
     PacManSimulation.execute(onExecuted);
+});
+
+App.post("/services/pacman/visualize", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/de.rwth.pacman.PacManWrapper.html");
+		response.end();
+	}
+
+	PacManVisualization.execute(onExecuted);
 });
 
 module.exports = App;

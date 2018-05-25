@@ -1048,7 +1048,21 @@ var plugins = [
     "plugins/se.rwth.api.url/url.js",
     "plugins/se.rwth.api.window/window.js",
     "plugins/se.rwth.api.switch/switch",
-    "plugins/se.rwth.api.ide/ide",
+    "plugins/se.rwth.api.ide/ide"
+];
+
+if (reponame == "PacMan") {
+    plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
+plugins.push(
+    "plugins/se.rwth.pacman.play/play",
+    "plugins/se.rwth.emam2wasm.generate/generate",
+    "plugins/se.rwth.simulate/simulate",
+    "plugins/se.rwth.visualize/visualize",
+    "plugins/se.rwth.report/report",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
+} else {
+    plugins.push(
 	"plugins/se.rwth.simulate/simulate",
     "plugins/se.rwth.visualize/visualize",
     "plugins/se.rwth.report/report",
@@ -1056,16 +1070,5 @@ var plugins = [
     "plugins/se.rwth.test/test",
 	"plugins/se.rwth.viewverification/viewverification",
     "plugins/se.rwth.models.updater/models.updater"
-];
-
-if (reponame == "PacMan") {
-    plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
-    console.log(plugins);
-plugins.push(
-        "plugins/se.rwth.pacman.play/play",
-        "plugins/se.rwth.emam2wasm.generate/generate",
-        "plugins/se.rwth.simulate/simulate",
-        "plugins/se.rwth.report/report",
-	"plugins/se.rwth.models.updater/models.updater"
     );
 }
