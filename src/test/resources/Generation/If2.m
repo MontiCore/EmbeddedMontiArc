@@ -29,6 +29,6 @@ script If2
     result = -1;
   else
     result = 0;
-  end
+  end;
 
 end

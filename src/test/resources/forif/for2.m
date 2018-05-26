@@ -23,7 +23,7 @@ script for2
   for i = c
    for j = c
      y+=j*i;
-    end
+    end;
    x+=1;
-  end
+  end;
 end

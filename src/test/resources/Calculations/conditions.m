@@ -26,6 +26,5 @@ script conditions
         A(r+2,c*3) = -1;
      else
         A(r, c) = 0;
-
-     end
+     end;
 end

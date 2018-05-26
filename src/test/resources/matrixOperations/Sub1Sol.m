@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Sub1Sol
-[1 1 1]
+    Q^{1,3} A = [1 1 1];
 end

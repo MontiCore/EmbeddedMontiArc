@@ -74,8 +74,8 @@ for n = 1:2
         d1 = 1;
     else
         d1 = 2;
-    end
-end
+    end;
+end;
 
 
 end

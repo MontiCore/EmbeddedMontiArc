@@ -30,7 +30,7 @@ script ForLoop2
    for j = c
      y+=j*i;
      z += c(x+0);
-    end
+    end;
    x+=1;
-  end
+  end;
 end

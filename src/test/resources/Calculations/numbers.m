@@ -20,7 +20,7 @@
 package calculations;
 
 script numbers
-    1mm
-    5cm
-    1000A + 600J
+    Q a = 1mm;
+    Q b = 5cm;
+    Q c = 1000A + 600J;
 end

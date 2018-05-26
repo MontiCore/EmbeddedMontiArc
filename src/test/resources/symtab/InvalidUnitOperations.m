@@ -36,7 +36,7 @@ Q(0 km/h : 100m/s)^{3} matrix = [1 m/s, 2 km/h ,3 m/s^2]; // unit error
 
 Q(0 : 7000 m)^{3,4} matrix1 = [1 mm 2 mm 3 mm 4 cm ;5 dm 6 m 7 km 8 in;9 ft 10 m 11 nm 12 cm];
 Q(-20 m/s : 100 km/h)^{3,4} matrix2 = [1 m/s 2 km/h 3 m/s 4 m/s; 5 m/s 6 m/s 7 km/h 8 m/s; 9 m/s 10 m/s 11 m/s 12 km/h];
-matrix1 + matrix2 // unit error
+Q^{3,4} res = matrix1 + matrix2; // unit error
 
 end
 

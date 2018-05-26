@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Add1
-  [1 2] + [3 4]
+  N^{1, 2} x = [1 2] + [3 4];
 end

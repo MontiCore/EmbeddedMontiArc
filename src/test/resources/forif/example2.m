@@ -25,5 +25,5 @@ script example2
     Q x = 0;
     for i = c
       x += i * i;
-    end
+    end;
 end

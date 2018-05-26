@@ -100,7 +100,7 @@ public class ASTTest {
         Optional<ASTMathScript> ast = parser.parse_StringMathScript("script a Q^2+1i a; end");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
-        assertFalse(ast.get().getExpressionList().isEmpty());
+        assertFalse((ast.get().getStatements().getStatementList().isEmpty()));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class ASTTest {
         MathParser parser = new MathParser();
         // Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b 1 + c end"); // works
         // Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b c end"); // works
-        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b c + 1 end"); // does not work
+        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b d = c + 1; end"); // does not work
         //      Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b 1=1+hallo+3 end");
         System.out.println(printAST(ast.get()));
         assertTrue(ast.isPresent());
@@ -118,7 +118,7 @@ public class ASTTest {
     @Test
     public void ASTForTest2() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b a++; for c= 1 b= a+c; end d= 4+a end");
+        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b a++; for c= 1 b= a+c; end; d= 4+a; end");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -276,7 +276,7 @@ public class ASTTest {
     public void ASTTest() throws Exception {
         MathParser parser = new MathParser();
         Optional<ASTMathCompilationUnit> ast = parser.parse_StringMathCompilationUnit("script S\n" +
-                "Q^2 a = a+b\n" +
+                "Q^2 a = a+b;\n" +
                 " end");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
@@ -314,7 +314,7 @@ public class ASTTest {
     @Test
     public void minusAssignmentTest() throws Exception {
         MathParser parser = new MathParser();
-        ASTMathAssignmentExpression ast = parser.parse_StringMathAssignmentExpression("x = -y;").orElse(null);
+        ASTMathAssignmentExpression ast = parser.parse_StringMathAssignmentExpression("x = -y").orElse(null);
         assertNotNull(ast);
     }
 }

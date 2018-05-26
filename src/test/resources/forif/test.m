@@ -21,7 +21,7 @@ package forif;
 
 script test
     if a == f
-      c = t + e
-      a++
-   end
+      c = t + e;
+      a++;
+    end;
 end

@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script SolEquSol
-[3/11; 1/11; 7/22]
+    Q^{3} A = [3/11; 1/11; 7/22];
 end

@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script UnaryArit
-[1 4 5] + -[1 3 6].^5
+    Q^{1,3} A = [1 4 5] + -[1 3 6].^5;
 end

@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Mul1Sol
-[5 6; 7 8]
+    Q^{2,2} A = [5 6; 7 8];
 end

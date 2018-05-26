@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Mul2Sol
-[17;39]
+    Q^{2} A = [17;39];
 end
