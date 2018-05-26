@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/EmbeddedMontiArc/MontiMathOpt.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/MontiMath)
+
 # MontiMathOpt
 
 MontiMathOpt extends the math description language MontiMath(https://github.com/EmbeddedMontiArc/MontiMath) by optimization features.
