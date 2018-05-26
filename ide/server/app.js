@@ -28,6 +28,8 @@ App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
 App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
 App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
+App.use("/mp", Express.static(PATHS.SUPERMARIO_PLAY));
+App.use("/ms", Express.static(PATHS.SUPERMARIO_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
