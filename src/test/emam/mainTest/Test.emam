@@ -6,6 +6,8 @@ import de.rwth.cmplib.basicLibrary.*;
 component Test {
 
     instance AndTest andtestInstance;
+    instance DelayTest dtI;
+    instance GreaterEqualsTest greaterequalstestInstance;
     instance Not notInstance;
     instance OrTest ortestInstance;
 
