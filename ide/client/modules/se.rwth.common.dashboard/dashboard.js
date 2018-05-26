@@ -43,7 +43,7 @@ var Dashboard = (function() {
                 username: "EmbeddedMontiArcStudio",
                 reponame: "SuperMario",
                 branchname: "",
-                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/SuperMario/v&url=/m/supermario.zip&openFile=/de/rwth/pacman/SuperMarioWrapper.emam"
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/SuperMario/v&url=/m/supermario.zip&openFile=/de/rwth/supermario/SuperMarioWrapper.emam"
             }];
         },
 

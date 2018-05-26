@@ -201,8 +201,6 @@ App.post("/services/pacman/simulate", function(request, response) {
     PacManSimulation.execute(onExecuted);
 });
 
-#############
-
 App.post("/services/supermario/report", function(request, response) {
     function onExecuted() {
         Chrome.open(URLS.SHARED + "/r/report.html?ide=false");
