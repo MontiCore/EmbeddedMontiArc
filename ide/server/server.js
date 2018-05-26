@@ -15,10 +15,17 @@ function onServerStarted(error) {
 	else Chrome.open(URLS.SHARED);
 }
 
-function onPacManZipped() {
+
+
+
+function onSuperMarioZipped() {
 	const Server = App.listen(PORTS.SHARED, onServerStarted);
 
 	Server.timeout = 30 * 60 * 1000;
+}
+
+function onPacManZipped() {
+	Archiver.zip("supermario", onSuperMarioZipped);
 }
 
 function onClusteringZipped() {
