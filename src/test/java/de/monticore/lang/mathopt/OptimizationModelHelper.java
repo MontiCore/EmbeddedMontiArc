@@ -21,6 +21,7 @@
 package de.monticore.lang.mathopt;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.mathopt._ast.ASTMathOptCompilationUnit;
 import de.monticore.lang.mathopt._ast.ASTOptimizationExpression;
 import de.monticore.lang.mathopt._cocos.MathOptCoCoChecker;
@@ -66,7 +67,7 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
     public MathOptimizationExpressionSymbol getMathOptimizationExpressionSymbolFromTestScript(String pathToModel, int index) {
         // get all math expressions in script
         ASTMathOptCompilationUnit root = loadModel(pathToModel);
-        List<ASTExpression> mathExpressions = root.getMathCompilationUnit().getMathScript().getExpressionList();
+        List<ASTStatement> mathExpressions = root.getMathCompilationUnit().getMathScript().getStatements().getStatementList();
         // delete non MathOptimizationExpressionSymbols
         mathExpressions.removeIf(astMathExpression -> !(astMathExpression instanceof ASTOptimizationExpression));
         return (MathOptimizationExpressionSymbol) mathExpressions.get(index).getSymbolOpt().orElse(null);

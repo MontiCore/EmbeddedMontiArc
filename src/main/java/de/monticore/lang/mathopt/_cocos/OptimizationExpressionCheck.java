@@ -22,6 +22,7 @@ package de.monticore.lang.mathopt._cocos;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.mathopt._ast.ASTOptimizationExpression;
+import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveFunction;
 
 /**
  * Context Conditions for optimization statement
@@ -41,7 +42,7 @@ public class OptimizationExpressionCheck implements MathOptASTOptimizationExpres
      *
      * @param objFunc AST objective function expression
      */
-    private void checkObjectiveFunctionReturnVariable(ASTExpression objFunc) {
+    private void checkObjectiveFunctionReturnVariable(ASTOptimizationObjectiveFunction objFunc) {
         // TODO check return variable dimension
     }
 

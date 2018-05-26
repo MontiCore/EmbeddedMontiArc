@@ -26,6 +26,6 @@ script ForLoopConditionTest
         for i = 1:3
             x(i) >= 0;
             0 <= x(i) <= 1;
-        end
-    end
+        end;
+    end;
 end

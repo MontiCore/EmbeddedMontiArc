@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.mathopt._symboltable;
 
-import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.commonexpressions._ast.ASTLessEqualExpression;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
@@ -31,6 +31,7 @@ import de.monticore.lang.mathopt._ast.*;
 import de.monticore.lang.mathopt._visitor.MathOptVisitor;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
 
@@ -72,35 +73,57 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         addToScopeAndLinkWithNode(symbol, astExpression);
     }
 
-    public void endVisit(final ASTOptimizationConditionExpression astExpression) {
-
+    public void endVisit(final ASTOptimizationSimpleConditionExpression ast) {
         MathExpressionSymbol symbol = null;
-
-        if (astExpression.getSimpleConditionOpt().isPresent()) {
-            ASTOptimizationSimpleConditionExpression simpleExpr = astExpression.getSimpleConditionOpt().get();
-            MathExpressionSymbol left = (MathExpressionSymbol) simpleExpr.getLeft().getSymbolOpt().orElse(null);
-            MathExpressionSymbol right = (MathExpressionSymbol) simpleExpr.getRight().getSymbolOpt().orElse(null);
-            String operator = simpleExpr.getOperator().getOperator();
-            if ((!operator.isEmpty()) && (left != null) && (right != null)) {
-                symbol = new MathOptimizationConditionSymbol(left, operator, right);
-            }
-        } else if (astExpression.getBoundedConditionOpt().isPresent()) {
-            ASTOptimizationBoundsConditionExpression boundExpr = astExpression.getBoundedConditionOpt().get();
-            MathExpressionSymbol lower = (MathExpressionSymbol) boundExpr.getLower().getSymbolOpt().orElse(null);
-            MathExpressionSymbol expr = (MathExpressionSymbol) boundExpr.getExpr().getSymbolOpt().orElse(null);
-            MathExpressionSymbol upper = (MathExpressionSymbol) boundExpr.getUpper().getSymbolOpt().orElse(null);
+        if (ast.getLeft() instanceof ASTLessEqualExpression) {
+            ASTLessEqualExpression leq = (ASTLessEqualExpression) ast.getLeft();
+            MathExpressionSymbol lower = (MathExpressionSymbol) leq.getLeftExpression().getSymbolOpt().orElse(null);
+            MathExpressionSymbol expr = (MathExpressionSymbol) leq.getRightExpression().getSymbolOpt().orElse(null);
+            MathExpressionSymbol upper = (MathExpressionSymbol) ast.getRight().getSymbolOpt().orElse(null);
             if ((lower != null) && (expr != null) && (upper != null)) {
                 symbol = new MathOptimizationConditionSymbol(lower, expr, upper);
             }
+        } else {
+            MathExpressionSymbol left = (MathExpressionSymbol) ast.getLeft().getSymbolOpt().orElse(null);
+            MathExpressionSymbol right = (MathExpressionSymbol) ast.getRight().getSymbolOpt().orElse(null);
+            String operator = ast.getOperator().getOperator();
+            if ((!operator.isEmpty()) && (left != null) && (right != null)) {
+                symbol = new MathOptimizationConditionSymbol(left, operator, right);
+            }
+        }
+        if (symbol != null)
+            addToScopeAndLinkWithNode(symbol, ast);
+    }
+
+    public void endVisit(final ASTOptimizationConditionExpression astExpression) {
+        MathExpressionSymbol symbol = null;
+        if (astExpression.getSimpleConditionOpt().isPresent() && astExpression.getSimpleConditionOpt().isPresent()) {
+            symbol = (MathExpressionSymbol) astExpression.getSimpleCondition().getSymbolOpt().get();
+        } else if (astExpression.getBoundedConditionOpt().isPresent() && astExpression.getBoundedCondition().getSymbolOpt().isPresent()) {
+            symbol = (MathExpressionSymbol) astExpression.getBoundedCondition().getSymbolOpt().get();
         } else if (astExpression.getForLoopConditionOpt().isPresent()) {
             ASTOptimizationForLoopExpression loopExpr = astExpression.getForLoopConditionOpt().get();
             if (loopExpr.getSymbolOpt().isPresent()) {
                 symbol = (MathExpressionSymbol) loopExpr.getSymbolOpt().get();
             }
         }
-
         if (symbol != null)
             addToScopeAndLinkWithNode(symbol, astExpression);
+    }
+
+    public void endVisit(final ASTOptimizationObjectiveFunction ast) {
+        MathExpressionSymbol symbol;
+        if (ast.getExpressionOpt().isPresent() && ast.getExpression().getSymbolOpt().isPresent()) {
+            symbol = (MathExpressionSymbol) ast.getExpression().getSymbolOpt().get();
+        } else if (ast.getStatementOpt().isPresent() && ast.getStatement().getSymbolOpt().isPresent()) {
+            symbol = (MathExpressionSymbol) ast.getStatement().getSymbolOpt().get();
+        } else {
+            symbol = null;
+            Log.error(String.format("Can not find symbol for %s", ast.toString()), ast.get_SourcePositionStart());
+        }
+        if (symbol != null) {
+            addToScopeAndLinkWithNode(symbol, ast);
+        }
     }
 
     public void endVisit(final ASTOptimizationExpression astMathOptimizationExpression) {
@@ -109,9 +132,8 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         if (astMathOptimizationExpression.getOptimizationVariable().getSymbolOpt().isPresent()) {
             symbol.setOptimizationVariable((MathValueSymbol) astMathOptimizationExpression.getOptimizationVariable().getSymbolOpt().get());
         }
-        ASTExpression objective = astMathOptimizationExpression.getObjectiveFunction();
-        if (objective.getSymbolOpt().isPresent()) {
-            symbol.setObjectiveExpression((MathExpressionSymbol) objective.getSymbolOpt().get());
+        if (astMathOptimizationExpression.getObjectiveFunction().getSymbolOpt().isPresent()) {
+            symbol.setObjectiveExpression((MathExpressionSymbol) astMathOptimizationExpression.getObjectiveFunction().getSymbolOpt().get());
         }
         for (ASTOptimizationConditionExpression condition : astMathOptimizationExpression.getConstraintList()) {
             if (condition.getSymbolOpt().isPresent()) {

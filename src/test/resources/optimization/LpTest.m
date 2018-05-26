@@ -26,14 +26,14 @@ script LpTest
     Q n = 2;
 
     // define A, b
-    Q^{m, 1} A = [45; 60; 35];
-    Q^{n, 1} b = [50; 60];
+    Q^{3, 1} A = [45; 60; 35];
+    Q^{2, 1} b = [50; 60];
 
     // cost matrix
     Q ^{m, n} c = [3, 2; 1, 5; 5, 4];
 
     // minimization problem
-    minimize(Q^{m, n} x)
+    minimize(Q^{3, 2} x)
         Q y = c(1,1) * x(1,1) + c(2,1) * x(2,1) + c(3,1) * x(3,1) + c(1,2) * x(1,2) + c(2,2) * x(2,2) + c(3,2) * x(3,2);
     subject to
         // sum(X, 2) == A;
@@ -45,5 +45,5 @@ script LpTest
         x(1,2) + x(2,2) + x(3,2) == b(2);
         //
         x >= 0;
-    end
+    end;
 end

@@ -26,19 +26,19 @@ script ExistingOptimizationVariable
         Q y = 2 * x + 1;
     subject to
         -1 <= x <= 1;
-    end
+    end;
     // 2. matrix
     Q^{3,3} a = zeros(3,3);
     minimize(a)
         Q b = a * a';
     subject to
         -10 <= x <= 10;
-    end
+    end;
     // 3. substituted
     Q squared = a * a;
     minimize(a)
         Q b = squared * squared';
     subject to
         -10 <= x <= 10;
-    end
+    end;
 end
