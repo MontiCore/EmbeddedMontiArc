@@ -22,7 +22,7 @@
 package de.monticore.lang;
 
 grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions , de.monticore.CommonExpressions,
-        de.monticore.common.Common, de.monticore.lang.Matrix {
+        de.monticore.common.Common, de.monticore.lang.Matrix, de.monticore.lang.MatrixExpressions {
 
     MathCompilationUnit =
         ("package" package:QualifiedName ";")?
@@ -35,32 +35,6 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
     symbol scope MathScript =
         "script" Name statements:MathStatements "end";
-
-    //Arithmetic expressions for matrices
-
-    MathArithmeticMatrixLeftDivideExpression implements Expression<160> =
-    	Expression "\\" Expression;
-
-    MathArithmeticMatrixTransposeExpression implements Expression<270> =
-    	Expression ".\'";
-
-    MathArithmeticMatrixComplexTransposeExpression implements Expression<270> =
-    	Expression "\'";
-
-    MathArithmeticMatrixSolutionExpression implements Expression<260> =
-    	Expression "\\\\" Expression;
-
-    MathArithmeticMatrixEEPowExpression implements Expression<290> =
-    	Expression ".^" Expression;
-
-    MathArithmeticMatrixEEMultExpression implements Expression<280> =
-    	Expression "." "*" Expression;
-
-    MathArithmeticMatrixEERightDivideExpression implements Expression<250> =
-    	Expression "./" Expression;
-
-    MathArithmeticMatrixEELeftDivideExpression implements Expression<250> =
-    	Expression ".\\" Expression;
 
     MathDottedNameExpression implements Expression<300> =
         Name "." Name;

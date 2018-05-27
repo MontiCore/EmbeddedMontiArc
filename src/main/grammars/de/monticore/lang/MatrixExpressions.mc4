@@ -1,0 +1,28 @@
+package de.monticore.lang;
+
+component grammar MatrixExpressions extends de.monticore.ExpressionsBasis {
+    //Arithmetic expressions for matrices
+    MathArithmeticMatrixLeftDivideExpression implements Expression<160> =
+    	Expression "\\" Expression;
+
+    MathArithmeticMatrixTransposeExpression implements Expression<270> =
+    	Expression ".\'";
+
+    MathArithmeticMatrixComplexTransposeExpression implements Expression<270> =
+    	Expression "\'";
+
+    MathArithmeticMatrixSolutionExpression implements Expression<260> =
+    	Expression "\\\\" Expression;
+
+    MathArithmeticMatrixEEPowExpression implements Expression<290> =
+    	Expression ".^" Expression;
+
+    MathArithmeticMatrixEEMultExpression implements Expression<280> =
+    	Expression "." "*" Expression;
+
+    MathArithmeticMatrixEERightDivideExpression implements Expression<250> =
+    	Expression "./" Expression;
+
+    MathArithmeticMatrixEELeftDivideExpression implements Expression<250> =
+    	Expression ".\\" Expression;
+}

@@ -33,6 +33,7 @@ import de.monticore.lang.matrix._ast.ASTMathMatrixAccess;
 import de.monticore.lang.matrix._ast.ASTMathMatrixAccessExpression;
 import de.monticore.lang.matrix._ast.ASTMathMatrixValueExplicitExpression;
 import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
+import de.monticore.lang.matrixexpressions._ast.*;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
