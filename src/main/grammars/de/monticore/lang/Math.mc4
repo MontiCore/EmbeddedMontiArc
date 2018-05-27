@@ -82,10 +82,10 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	Name "=" (NameExpression | Expression);
 
     //if  and else conditions
-    MathConditionalExpression implements Statement =
+    MathIfStatement implements Statement =
     	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
-    MathConditionalExpressionShort implements Statement =
+    MathIfStatementShort implements Statement =
     	Expression "?" trueCase:MathStatements ":" falseCase:MathStatements;
 
     MathIfExpression =
@@ -97,13 +97,13 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     MathElseExpression =
     	"else" body:MathStatements ;
 
-    MathDeclarationExpression implements Statement =
+    MathDeclarationStatement implements Statement =
         type:AssignmentType Name ";"?;
 
-    MathAssignmentDeclarationExpression implements Statement =
+    MathAssignmentDeclarationStatement implements Statement =
         type:AssignmentType Name MathAssignmentOperator (Expression) ";"?;
 
-    MathAssignmentExpression implements Statement =
+    MathAssignmentStatement implements Statement =
         (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression) ";"?;
 
     MathAssignmentOperator =

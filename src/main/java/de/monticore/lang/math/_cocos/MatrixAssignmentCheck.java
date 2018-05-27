@@ -23,7 +23,7 @@ package de.monticore.lang.math._cocos;
 
 import de.monticore.lang.math._matrixprops.PropertyChecker;
 import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._ast.ASTMathAssignmentExpression;
+import de.monticore.lang.math._ast.ASTMathAssignmentStatement;
 import de.monticore.lang.math._matrixprops.MatrixProperties;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
@@ -39,9 +39,9 @@ import java.util.List;
  * Matrix Properties Coco
  */
 
-public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoCo {
+public class MatrixAssignmentCheck implements MathASTMathAssignmentStatementCoCo {
     @Override
-    public void check(ASTMathAssignmentExpression assignment) {
+    public void check(ASTMathAssignmentStatement assignment) {
         Symbol symbol = assignment.getEnclosingScopeOpt().get()
                 .resolve(assignment.getName(),new MathExpressionSymbolKind()).get();
         if (!((MathValueSymbol)symbol).getType().getProperties().isEmpty()) {
@@ -49,7 +49,7 @@ public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoC
         }
     }
 
-    private void checkMatrixOperation(ASTMathAssignmentExpression assignment, MathValueSymbol symbol) {
+    private void checkMatrixOperation(ASTMathAssignmentStatement assignment, MathValueSymbol symbol) {
         MathExpressionSymbol expressionSymbol = ((MathExpressionSymbol)assignment.getExpression().getSymbolOpt().get());
         List<String> expProps = symbol.getType().getProperties();
         ArrayList<MatrixProperties> props = new ArrayList<>();
@@ -60,7 +60,7 @@ public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoC
         compareArrays(symbol, expProps, props);
     }
 
-    private ArrayList<MatrixProperties> getMatrixProperties(ASTMathAssignmentExpression assignment, MathExpressionSymbol expressionSymbol, ArrayList<MatrixProperties> props, MathArithmeticExpressionSymbol arithmeticExpressionSymbol) {
+    private ArrayList<MatrixProperties> getMatrixProperties(ASTMathAssignmentStatement assignment, MathExpressionSymbol expressionSymbol, ArrayList<MatrixProperties> props, MathArithmeticExpressionSymbol arithmeticExpressionSymbol) {
         switch (assignment.getMathAssignmentOperator().getOperator()) {
             case "=":{
                 props = solveEquation(assignment, expressionSymbol, props);
@@ -81,7 +81,7 @@ public class MatrixAssignmentCheck implements MathASTMathAssignmentExpressionCoC
         return props;
     }
 
-    private ArrayList<MatrixProperties> solveEquation(ASTMathAssignmentExpression assignment, MathExpressionSymbol expressionSymbol, ArrayList<MatrixProperties> props) {
+    private ArrayList<MatrixProperties> solveEquation(ASTMathAssignmentStatement assignment, MathExpressionSymbol expressionSymbol, ArrayList<MatrixProperties> props) {
         if (expressionSymbol instanceof IArithmeticExpression)
             props = PropertyChecker.checkProps(((IArithmeticExpression) expressionSymbol));
         else if (expressionSymbol instanceof MathMatrixArithmeticValueSymbol)

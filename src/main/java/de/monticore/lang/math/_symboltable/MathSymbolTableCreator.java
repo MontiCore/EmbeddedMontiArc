@@ -125,13 +125,13 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astMathForLoopHead);
     }
 
-    public void endVisit(final ASTMathDeclarationExpression declarationExpression) {
+    public void endVisit(final ASTMathDeclarationStatement declarationExpression) {
         MathValueSymbol symbol = new MathValueSymbol(declarationExpression.getName());
         symbol.setType(MathValueType.convert(declarationExpression.getType()));
         addToScopeAndLinkWithNode(symbol, declarationExpression);
     }
 
-    public void endVisit(final ASTMathAssignmentDeclarationExpression assignmentDeclarationExpression) {
+    public void endVisit(final ASTMathAssignmentDeclarationStatement assignmentDeclarationExpression) {
         MathValueSymbol symbol = new MathValueSymbol(assignmentDeclarationExpression.getName());
 
         symbol.setType(MathValueType.convert(assignmentDeclarationExpression.getType()));
@@ -141,7 +141,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, assignmentDeclarationExpression);
     }
 
-    public void endVisit(final ASTMathAssignmentExpression assignmentExpression) {
+    public void endVisit(final ASTMathAssignmentStatement assignmentExpression) {
         MathAssignmentExpressionSymbol symbol = new MathAssignmentExpressionSymbol();
         //TODO change value
         if (assignmentExpression.getNameOpt().isPresent()) {
@@ -574,18 +574,18 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astMathCompareNotEqualExpression);
     }
 
-    public void endVisit(final ASTMathConditionalExpression astMathConditionalExpression) {
+    public void endVisit(final ASTMathIfStatement ASTMathIfStatement) {
         MathConditionalExpressionsSymbol symbol = new MathConditionalExpressionsSymbol();
 
-        symbol.setIfConditionalExpression((MathConditionalExpressionSymbol) astMathConditionalExpression.getMathIfExpression().getSymbolOpt().get());
-        for (ASTMathElseIfExpression astMathElseIfExpression : astMathConditionalExpression.getMathElseIfExpressionList()) {
+        symbol.setIfConditionalExpression((MathConditionalExpressionSymbol) ASTMathIfStatement.getMathIfExpression().getSymbolOpt().get());
+        for (ASTMathElseIfExpression astMathElseIfExpression : ASTMathIfStatement.getMathElseIfExpressionList()) {
             symbol.addElseIfConditionalExpression((MathConditionalExpressionSymbol) astMathElseIfExpression.getSymbolOpt().get());
         }
 
-        if (astMathConditionalExpression.getMathElseExpressionOpt().isPresent()) {
-            symbol.setElseConditionalExpression((MathConditionalExpressionSymbol) astMathConditionalExpression.getMathElseExpressionOpt().get().getSymbolOpt().get());
+        if (ASTMathIfStatement.getMathElseExpressionOpt().isPresent()) {
+            symbol.setElseConditionalExpression((MathConditionalExpressionSymbol) ASTMathIfStatement.getMathElseExpressionOpt().get().getSymbolOpt().get());
         }
-        addToScopeAndLinkWithNode(symbol, astMathConditionalExpression);
+        addToScopeAndLinkWithNode(symbol, ASTMathIfStatement);
     }
 
     public void endVisit(final ASTMathIfExpression astMathIfExpression) {
