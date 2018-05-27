@@ -146,4 +146,6 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     DecSuffixExpression implements Expression <220>, Statement =
     	Expression "--";
 
+    // remove incompatible expressions
+    BinaryXorExpression implements Expression <110> = "----- will not be used ---- this removes BinaryXorExpression";
 }
