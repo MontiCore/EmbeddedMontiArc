@@ -5,6 +5,8 @@
 
 # MontiMath
 
-* **please use new version of grammer** based on new MontiCore featues: https://github.com/EmbeddedMontiArc/MontiMath/tree/nina-improve_grammar/src/main/grammars/de/monticore/lang
-  * some refactorings of AST methods are still needed
-  * new grammars not using the new MontiCore features are **likely not to be accepted**
+Changes since version 0.0.12:
+
+   - A script only contains a List of Statements
+   - Statements **MUST** be separated by ";"
+   - Arithmetic expressions, variable name expressions and value expressions are no Statements.

@@ -31,8 +31,7 @@ script example1
                 A(r+2,c*3) = -1;
             else
               A(r, c) = 0;
-            end
-
-        end
-    end
+            end;
+        end;
+    end;
 end

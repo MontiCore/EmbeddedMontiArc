@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Add1Sol
-[4 6]
+    Q^{1,2} A = [4 6];
 end

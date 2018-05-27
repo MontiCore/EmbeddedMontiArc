@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Add2Sol
-[8 N 13 N]
+    Q^{1,2} A = [8 N 13 N];
 end

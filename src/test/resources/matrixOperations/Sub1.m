@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Sub1
-[9 23 7] - [8 22 6]
+    Q^{1,3} A = [9 23 7] - [8 22 6];
 end
