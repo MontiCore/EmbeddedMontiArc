@@ -1,4 +1,4 @@
 image: maven:3-jdk-8
 
 build:
-  script: "mvn install -B"
+  script: "mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean install --settings settings.xml"
