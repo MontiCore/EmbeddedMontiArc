@@ -11,7 +11,7 @@
 Publications
 ----
 * **[KRRvW17] E. Kusmenko, A. Roth, B. Rumpe, M. von Wenckstern:
-  [Modeling Architectures of Cyber Physical Systems](http://www.se-rwth.de/publications/Systematic-Language-Extension-Mechanisms-for-the-MontiArc-Architecture-Description-Language.pdf).
+  [Modeling Architectures of Cyber Physical Systems](http://www.se-rwth.de/publications/Modeling-Architectures-of-Cyber-Physical-Systems.pdf).
   In: Modelling Foundations and Applications (ECMFA’17),
       Held as Part of STAF 2017, pages 34-50.
       Springer International Publishing, 2017.** (Main Publication for EmbeddedMontiArc's concrete syntax)
