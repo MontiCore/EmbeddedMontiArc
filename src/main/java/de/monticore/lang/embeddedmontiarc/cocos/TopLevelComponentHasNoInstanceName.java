@@ -35,7 +35,7 @@ public class TopLevelComponentHasNoInstanceName
    */
   @Override
   public void check(ASTComponent node) {
-    if (!node.symbolIsPresent()) {
+    if (!node.getSymbolOpt().isPresent()) {
       Log.error(String.format(
           "0xE51E8 Symbol of component \"%s\" is missing. " +
               "The context condition \"%s\" can't be checked that way.",

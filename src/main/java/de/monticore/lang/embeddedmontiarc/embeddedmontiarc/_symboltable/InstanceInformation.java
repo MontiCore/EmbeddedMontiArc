@@ -121,9 +121,9 @@ public class InstanceInformation {
     }
 
     private static int handleSimpleReferenceType(ASTSimpleReferenceType simpleReferenceType, int index) {
-        if (simpleReferenceType.getTypeArguments().isPresent()) {
+        if (simpleReferenceType.getTypeArgumentsOpt().isPresent()) {
             int counter = 0;
-            for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArguments().get().getTypeArguments()) {
+            for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
                 int result = handleSimpleReferenceType(astTypeArgument, index, counter);
                 if (result != -1 && counter == index)
                     return result;
@@ -147,7 +147,7 @@ public class InstanceInformation {
             }
 
         } else if (astTypeArgument instanceof ASTUnitNumberResolution) {
-            if (((ASTUnitNumberResolution) astTypeArgument).getUnitNumber().isPresent()) {
+            if (((ASTUnitNumberResolution) astTypeArgument).getUnitNumberOpt().isPresent()) {
                 if (counter == index)
                     result = ((ASTUnitNumberResolution) astTypeArgument).getNumber().get().intValue();
             }
@@ -160,13 +160,13 @@ public class InstanceInformation {
     public static String getInstanceNameFromASTSubComponent(ASTSubComponent subComponent, int index) {
         if (subComponent.getType() instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) subComponent.getType();
-            if (simpleReferenceType.getTypeArguments().isPresent()) {
+            if (simpleReferenceType.getTypeArgumentsOpt().isPresent()) {
                 int counter = 0;
-                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArguments().get().getTypeArguments()) {
+                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
                     if (astTypeArgument instanceof ASTUnitNumberResolution) {
-                        if (((ASTUnitNumberResolution) astTypeArgument).getName().isPresent()) {
+                        if (((ASTUnitNumberResolution) astTypeArgument).getNameOpt().isPresent()) {
                             if (counter == index)
-                                return ((ASTUnitNumberResolution) astTypeArgument).getName().get();
+                                return ((ASTUnitNumberResolution) astTypeArgument).getNameOpt().get();
                             ++counter;
                         }
 
@@ -181,12 +181,12 @@ public class InstanceInformation {
     public static void setInstanceNumberInASTSubComponent(ASTSubComponent subComponent, String nameToSet, int numberToSet) {
         if (subComponent.getType() instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) subComponent.getType();
-            if (simpleReferenceType.getTypeArguments().isPresent()) {
+            if (simpleReferenceType.getTypeArgumentsOpt().isPresent()) {
                 int counter = 0;
-                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArguments().get().getTypeArguments()) {
+                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
                     if (astTypeArgument instanceof ASTUnitNumberResolution) {
-                        if ((((ASTUnitNumberResolution) astTypeArgument).getName().isPresent())) {
-                            String name = ((ASTUnitNumberResolution) astTypeArgument).getName().get();
+                        if ((((ASTUnitNumberResolution) astTypeArgument).getNameOpt().isPresent())) {
+                            String name = ((ASTUnitNumberResolution) astTypeArgument).getNameOpt().get();
                             if (name.equals(nameToSet))
                                 ((ASTUnitNumberResolution) astTypeArgument).setNumber(Rational.valueOf("" + numberToSet));
                             ++counter;
@@ -202,7 +202,7 @@ public class InstanceInformation {
     @Override
     public String toString() {
         String subComponentString = "";
-        for (ASTSubComponentInstance astSubComponentInstance : astSubComponent.getInstances()) {
+        for (ASTSubComponentInstance astSubComponentInstance : astSubComponent.getInstancesList()) {
             subComponentString += " " + astSubComponentInstance;
         }
         return "ComponentName: " + getCompName() + " " + subComponentString;

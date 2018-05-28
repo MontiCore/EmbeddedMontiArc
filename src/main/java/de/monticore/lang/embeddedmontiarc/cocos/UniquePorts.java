@@ -44,10 +44,10 @@ public class UniquePorts implements EmbeddedMontiArcASTInterfaceCoCo {
   @Override
   public void check(ASTInterface node) {
     List<String> usedNames = new ArrayList<>();
-    for (ASTPort port : node.getPorts()) {
+    for (ASTPort port : node.getPortsList()) {
       String name = "";
-      if (port.getName().isPresent()) {
-        name = port.getName().get();
+      if (port.getNameOpt().isPresent()) {
+        name = port.getNameOpt().get();
       }
       else {
         // calc implicit name

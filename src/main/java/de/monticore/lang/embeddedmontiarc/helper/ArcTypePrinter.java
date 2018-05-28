@@ -78,9 +78,9 @@ public class ArcTypePrinter {
         String result = "";
         if (subComponent.getType() instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType referenceType = (ASTSimpleReferenceType) subComponent.getType();
-            String compNameWithoutPackage = referenceType.getNames().get(referenceType.getNames().size() - 1);
-            if (referenceType.getTypeArguments().isPresent()) {
-                for (ASTTypeArgument typeArguments : referenceType.getTypeArguments().get().getTypeArguments()) {
+            String compNameWithoutPackage = referenceType.getNameList().get(referenceType.getNameList().size() - 1);
+            if (referenceType.getTypeArgumentsOpt().isPresent()) {
+                for (ASTTypeArgument typeArguments : referenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
                     Log.debug(typeArguments.toString(), "typeArgs");
                     if (typeArguments instanceof ASTUnitNumberTypeArgument) {
                         ASTUnitNumberTypeArgument unitNumberTypeArgument = (ASTUnitNumberTypeArgument) typeArguments;

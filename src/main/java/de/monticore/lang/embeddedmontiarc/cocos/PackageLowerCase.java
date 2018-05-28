@@ -39,7 +39,7 @@ public class PackageLowerCase implements EmbeddedMontiArcASTEMACompilationUnitCo
    */
   @Override
   public void check(ASTEMACompilationUnit node) {
-    String pack = Names.getQualifiedName(node.getPackage());
+    String pack = Names.getQualifiedName(node.getPackageList());
     if (pack.toUpperCase().equals(pack)) {
       Log.error("0xAC003 The package must be lower case", node.get_SourcePositionStart());
     }

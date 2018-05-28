@@ -202,7 +202,7 @@ public class SymbolPrinter {
 
         ip.indent();
 
-        printPorts(cmp.getPorts(), ip);
+        printPorts(cmp.getPortsList(), ip);
 
         cmp.getSubComponents().stream().forEachOrdered(a -> {
             ip.print("component ");
@@ -266,7 +266,7 @@ public class SymbolPrinter {
 
         ip.indent();
 
-        printPorts(inst.getPorts(), ip);
+        printPorts(inst.getPortsList(), ip);
 
         inst.getSubComponents().stream().forEachOrdered(a -> printExpandedComponentInstance(a, ip, true));
 

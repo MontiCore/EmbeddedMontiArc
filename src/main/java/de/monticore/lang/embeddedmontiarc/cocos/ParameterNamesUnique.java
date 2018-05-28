@@ -35,7 +35,7 @@ public class ParameterNamesUnique implements EmbeddedMontiArcASTComponentCoCo {
 
 
   public void check(ASTComponent node) {
-    List<ASTParameter> parameters = node.getParameters();
+    List<ASTParameter> parameters = node.getParameterList();
 
     List<String> parameterNames = new ArrayList<>();
     for (ASTParameter parameter : parameters) {

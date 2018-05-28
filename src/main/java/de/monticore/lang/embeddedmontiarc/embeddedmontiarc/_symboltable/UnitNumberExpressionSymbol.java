@@ -46,10 +46,10 @@ public class UnitNumberExpressionSymbol extends CommonSymbol implements TextualE
     @Override
     public String getTextualRepresentation() {
         String result = "";
-        if (unitNumberExpression.getTUnitNumber().isPresent()) {
-            result += unitNumberExpression.getTUnitNumber().get();
+        if (unitNumberExpression.getTUnitNumberOpt().isPresent()) {
+            result += unitNumberExpression.getTUnitNumber();
         } else {
-            result += unitNumberExpression.getTUnitInf().get();
+            result += unitNumberExpression.getTUnitInf();
 
         }
 

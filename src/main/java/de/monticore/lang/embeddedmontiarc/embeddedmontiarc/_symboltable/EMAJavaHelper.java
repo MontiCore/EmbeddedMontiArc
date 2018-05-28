@@ -74,28 +74,28 @@ public class EMAJavaHelper {
 
             ASTTypeParameters astTypeParameters = optionalTypeParameters;
             for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters
-                    .getTypeVariableDeclarations()) {
-                if (astTypeParameter.resolutionDeclarationIsPresent()) {
+                    .getTypeVariableDeclarationsList()) {
+                if (astTypeParameter.getResolutionDeclarationOpt().isPresent()) {
                     //Not handled here
                     // new type parameter
 
                     // TypeParameters/TypeVariables are seen as type declarations.
                     // For each variable instantiate a MontiCarTypeSymbol.
                     //TODO FIX if not present
-                    if (astTypeParameter.getResolutionDeclaration().get().getTypeName() != null) {
-                        final String typeVariableName = astTypeParameter.getResolutionDeclaration().get().getTypeName();
+                    if (astTypeParameter.getResolutionDeclaration().getTypeName() != null) {
+                        final String typeVariableName = astTypeParameter.getResolutionDeclaration().getTypeName();
 
                         addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
-                    } else if (astTypeParameter.getResolutionDeclaration().get() instanceof ASTNamingResolution) {
+                    } else if (astTypeParameter.getResolutionDeclaration() instanceof ASTNamingResolution) {
 
-                        final String typeVariableName = astTypeParameter.getResolutionDeclaration().get().getName();
+                        final String typeVariableName = astTypeParameter.getResolutionDeclaration().getName();
                         addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
                     } else {
-                        Log.debug(astTypeParameter.getResolutionDeclaration().get().toString(), "Resolution Declaration");
+                        Log.debug(astTypeParameter.getResolutionDeclaration().toString(), "Resolution Declaration");
                         Log.debug("0xADTYPA Case not handled", "Implementation Missing");
                     }
                 } else {
-                    final String typeVariableName = astTypeParameter.getNamingResolution().get().getName();
+                    final String typeVariableName = astTypeParameter.getNamingResolution().getName();
                     addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
                 }
 
@@ -115,7 +115,7 @@ public class EMAJavaHelper {
         // }
         // Treat type bounds are implemented interfaces, even though the
         // first bound might be a class. See also JLS7.
-        List<ASTType> types = new ArrayList<ASTType>(astTypeParameter.getUpperBounds());
+        List<ASTType> types = new ArrayList<ASTType>(astTypeParameter.getUpperBoundsList());
 
         addInterfacesToTypeEMA(javaTypeVariableSymbol, types, currentScope);
 
@@ -153,11 +153,11 @@ public class EMAJavaHelper {
             } else if (astInterfaceType instanceof ASTComplexReferenceType) {
                 ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astInterfaceType;
                 for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
-                        .getSimpleReferenceTypes()) {
+                        .getSimpleReferenceTypeList()) {
                     // TODO javaInterfaceTypeSymbolReference.getEnclosingScope().resolve("Boolean", MCTypeSymbol.KIND).get()
                     //    javaInterfaceTypeSymbolReference.getEnclosingScope().resolve("Boolean", MCTypeSymbol.KIND))
-                    if (astSimpleReferenceType.getTypeArguments().isPresent()) {
-                        for (ASTTypeArgument argument : astSimpleReferenceType.getTypeArguments().get().getTypeArguments()) {
+                    if (astSimpleReferenceType.getTypeArgumentsOpt().isPresent()) {
+                        for (ASTTypeArgument argument : astSimpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
 
                             if (!handleSimpleReferenceType(argument, 0, actualTypeArguments,
                                     javaInterfaceTypeSymbolReference.getEnclosingScope(), false, false, null) &&
@@ -186,7 +186,7 @@ public class EMAJavaHelper {
                                                        final boolean isLowerBound, final boolean isUpperBound, @Nullable ActualTypeArgument typeArgument) {
         if (argument instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType simpleArg = (ASTSimpleReferenceType) argument;
-            String name = simpleArg.getNames().stream().collect(Collectors.joining("."));
+            String name = simpleArg.getNameList().stream().collect(Collectors.joining("."));
             Optional<MCTypeSymbol> symbol = symbolTable.resolve(name, MCTypeSymbol.KIND);
             if (symbol.isPresent() && symbol.get().getEnclosingScope() != null) {
                 if (typeArgument == null) {
@@ -196,9 +196,9 @@ public class EMAJavaHelper {
 
                     actualTypeArguments.add(typeArgument);
                 }
-                if (simpleArg.getTypeArguments().isPresent()) {
+                if (simpleArg.getTypeArgumentsOpt().isPresent()) {
                     List<ActualTypeArgument> actualTypeArguments2 = new ArrayList<>();
-                    for (ASTTypeArgument astTypeArgument : simpleArg.getTypeArguments().get().getTypeArguments()) {
+                    for (ASTTypeArgument astTypeArgument : simpleArg.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
                         handleSimpleReferenceType(astTypeArgument, 0, actualTypeArguments2, symbolTable, false, false, typeArgument);
                     }
                     typeArgument.getType().setActualTypeArguments(actualTypeArguments2);
@@ -207,17 +207,17 @@ public class EMAJavaHelper {
             return true;
         } else if (argument instanceof ASTComplexReferenceType) {
             ASTComplexReferenceType complexArg = (ASTComplexReferenceType) argument;
-            complexArg.getSimpleReferenceTypes().stream().forEachOrdered(t ->
+            complexArg.getSimpleReferenceTypeList().stream().forEachOrdered(t ->
                     handleSimpleReferenceType(t, dim, actualTypeArguments, symbolTable, isLowerBound, isUpperBound, null)
             );
             return true;
         } else if (argument instanceof ASTWildcardType) {
             ASTWildcardType wildArg = (ASTWildcardType) argument;
-            if (wildArg.getLowerBound().isPresent()) {
-                return handleSimpleReferenceType(wildArg.getLowerBound().get(), dim, actualTypeArguments,
+            if (wildArg.getLowerBoundOpt().isPresent()) {
+                return handleSimpleReferenceType(wildArg.getLowerBound(), dim, actualTypeArguments,
                         symbolTable, true, false, null);
-            } else if (wildArg.getUpperBound().isPresent()) {
-                return handleSimpleReferenceType(wildArg.getUpperBound().get(), dim, actualTypeArguments,
+            } else if (wildArg.getUpperBoundOpt().isPresent()) {
+                return handleSimpleReferenceType(wildArg.getUpperBound(), dim, actualTypeArguments,
                         symbolTable, false, true, null);
             }
         } else if (argument instanceof ASTComplexArrayType) {

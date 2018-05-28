@@ -82,7 +82,7 @@ public class ParserTest {
   @Test
   public void testParsing1() throws IOException{
     EmbeddedMontiArcParser parser = new EmbeddedMontiArcParser();
-    ASTRanges ast = parser.parseString_Ranges("[(0 km : 0.05 m : 10 km) (10 km : 0.1 m : 45 km)]").orElse(null);
+    ASTRanges ast = parser.parse_StringRanges("[(0 km : 0.05 m : 10 km) (10 km : 0.1 m : 45 km)]").orElse(null);
     assertNotNull(ast);
   }
 
@@ -93,7 +93,7 @@ public class ParserTest {
   @Test
   public void testParsing2() throws IOException{
     EmbeddedMontiArcParser parser = new EmbeddedMontiArcParser();
-    ASTRanges ast = parser.parseString_Ranges("[(0 : 0.05 : 10) (10 : 0.1 : 45 km)]").orElse(null);
+    ASTRanges ast = parser.parse_StringRanges("[(0 : 0.05 : 10) (10 : 0.1 : 45 km)]").orElse(null);
     assertNotNull(ast);
   }
 

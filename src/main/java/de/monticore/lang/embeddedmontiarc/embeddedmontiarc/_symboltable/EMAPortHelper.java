@@ -49,12 +49,12 @@ public class EMAPortHelper {
     public static void portCreationIntLiteralPresent(ASTPort node, PortArraySymbol pas, String name,
                                                      MCTypeReference<? extends MCTypeSymbol> typeRef,
                                                      EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        // int num = node.getIntLiteral().get().getValue();
+        // int num = node.getIntLiteral().getValue();
         Log.debug(node.toString(), "ASTPort");
         int num = 0;
-        if (node.getUnitNumberResolution().isPresent()
-                && node.getUnitNumberResolution().get().getUnitNumber().isPresent()) {
-            num = node.getUnitNumberResolution().get().getNumber().get().intValue();
+        if (node.getUnitNumberResolutionOpt().isPresent()
+                && node.getUnitNumberResolution().getUnitNumberOpt().isPresent()) {
+            num = node.getUnitNumberResolution().getNumber().get().intValue();
         } else {
             Log.debug("No UnitNumberResolution/UnitNumber present!", "ASTPort");
         }
@@ -75,7 +75,7 @@ public class EMAPortHelper {
     public static void portCreation(ASTPort node, PortArraySymbol pas, String name,
                                     MCTypeReference<? extends MCTypeSymbol> typeRef,
                                     EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        if (node.getUnitNumberResolution().isPresent()) {
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
             portCreationIntLiteralPresent(node, pas, name, typeRef, symbolTableCreator);
         } else {
             // create PortSymbol with same content as PortArraySymbol
@@ -108,8 +108,8 @@ public class EMAPortHelper {
 
     public static String doPortResolution(ASTPort node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         String name = null;
-        if (node.getUnitNumberResolution().isPresent()) {
-            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution().get();
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
+            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
             name = unitNumberResolution
                     .doResolution(symbolTableCreator.componentStack.
                             peek().getResolutionDeclarationSymbols());
@@ -145,15 +145,15 @@ public class EMAPortHelper {
                                                      EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         List<String> names = new ArrayList<String>();
         String name = "";
-        if (portName.getCompName().isPresent()) {
-            name += portName.getCompName().get();
-            if (portName.getCompArray().isPresent()) {
-                if (portName.getCompArray().get().getIntLiteral().isPresent()) {
-                    name += "[" + portName.getCompArray().get().getIntLiteral().get().getNumber().toString()
+        if (portName.getCompNameOpt().isPresent()) {
+            name += portName.getCompName();
+            if (portName.getCompArrayOpt().isPresent()) {
+                if (portName.getCompArray().getIntLiteralOpt().isPresent()) {
+                    name += "[" + portName.getCompArray().getIntLiteral().getNumber().toString()
                             + "]";
                     name += ".";
                     names.add(name);
-                } else if (portName.getCompArray().get().getLowerbound().isPresent()) {
+                } else if (portName.getCompArray().getLowerboundOpt().isPresent()) {
                     names = getmnCompNameParts(name, portName);
                 } else {
                     int size = countComponentArrayInstances(name, symbolTableCreator);
@@ -164,7 +164,7 @@ public class EMAPortHelper {
                     }
                 }
             } else {
-                names.add(portName.getCompName().get() + ".");
+                names.add(portName.getCompName() + ".");
             }
         } else {
             names.add("");
@@ -174,8 +174,8 @@ public class EMAPortHelper {
 
     public static List<String> getmnCompNameParts(String name, ASTQualifiedNameWithArray portName) {
         List<String> names = new ArrayList<String>();
-        int lower = portName.getCompArray().get().getLowerbound().get().getNumber().get().intValue();
-        int upper = portName.getCompArray().get().getUpperbound().get().getNumber().get().intValue();
+        int lower = portName.getCompArray().getLowerbound().getNumber().get().intValue();
+        int upper = portName.getCompArray().getUpperbound().getNumber().get().intValue();
         for (int i = lower; i <= upper; ++i) {
             String instanceName = name;
             instanceName += "[" + i + "].";
@@ -190,21 +190,21 @@ public class EMAPortHelper {
         List<String> names = new ArrayList<String>();
         String name = "";
         // ignore for now
-        if (portName.getCompName().isPresent())
-            name += portName.getCompName().get() + ".";
+        if (portName.getCompNameOpt().isPresent())
+            name += portName.getCompName() + ".";
         name = portName.getPortName();
-        if (portName.getPortArray().isPresent()) {
-            if (portName.getPortArray().get().getIntLiteral().isPresent()) {
+        if (portName.getPortArrayOpt().isPresent()) {
+            if (portName.getPortArray().getIntLiteralOpt().isPresent()) {
                 name += "["
-                        + portName.getPortArray().get().getIntLiteral().get().getNumber().get().intValue()
+                        + portName.getPortArray().getIntLiteral().getNumber().get().intValue()
                         + "]";
                 names.add(name);
-            } else if (portName.getPortArray().get().getLowerbound().isPresent()) {
+            } else if (portName.getPortArray().getLowerboundOpt().isPresent()) {
                 names = getmnPortNameParts(name, portName);
             } else {
                 Log.debug(portName.toString(), "PortName:");
-                int size = countPortArrayInstances(name, portName.getCompName().orElse(null),
-                        portName.getCompArray().orElse(null), symbolTableCreator);
+                int size = countPortArrayInstances(name, portName.getCompNameOpt().orElse(null),
+                        portName.getCompArrayOpt().orElse(null), symbolTableCreator);
 
                 Log.debug("Size" + size, "PortNameParts");
                 for (int i = 1; i <= size; ++i) {
@@ -224,8 +224,8 @@ public class EMAPortHelper {
 
     public static List<String> getmnPortNameParts(String name, ASTQualifiedNameWithArray portName) {
         List<String> names = new ArrayList<String>();
-        int lower = portName.getPortArray().get().getLowerbound().get().getNumber().get().intValue();
-        int upper = portName.getPortArray().get().getUpperbound().get().getNumber().get().intValue();
+        int lower = portName.getPortArray().getLowerbound().getNumber().get().intValue();
+        int upper = portName.getPortArray().getUpperbound().getNumber().get().intValue();
         for (int i = lower; i <= upper; ++i) {
             String instanceName = name;
             instanceName += "[" + i + "]";
@@ -234,13 +234,14 @@ public class EMAPortHelper {
         }
         return names;
     }
+    
 
     public static String getNameArrayPart(ASTArrayAccess arrayPart) {
         String result = "";
-        if (arrayPart.getIntLiteral().isPresent())
-            result += "[" + arrayPart.getIntLiteral().get().getNumber().get().intValue() + "]";
+        if (arrayPart.getIntLiteralOpt().isPresent())
+            result += "[" + arrayPart.getIntLiteral().getNumber().get().intValue() + "]";
         // Not handled here change handling this case after refactoring
-        /* else if (arrayPart.getLowerbound().isPresent() && arrayPart.getUpperbound().isPresent()) {
+        /* else if (arrayPart.getLowerboundOpt().isPresent() && arrayPart.getUpperBoundOpt().isPresent()) {
          * } */
         return result;
     }
@@ -308,7 +309,7 @@ public class EMAPortHelper {
 
         Log.info("" + sourceNames.size(), "SourcePorts");
         int counter = 0, targetnum = 0;
-        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrays()) {
+        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
             counter = 0;
             targetnum = 0;
             for (String sourceName : sourceNames) {
@@ -341,7 +342,7 @@ public class EMAPortHelper {
         ConstantPortSymbol constantPortSymbol = ConstantPortSymbol.createConstantPortSymbol(node,
                 symbolTableCreator);
         symbolTableCreator.addToScope(constantPortSymbol);
-        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrays()) {
+        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
             counter = 0;
             targetnum = 0;
             List<String> targetNames = getPortName(target, symbolTableCreator);
@@ -362,16 +363,16 @@ public class EMAPortHelper {
     }
 
     public static void doConnectorResolution(ASTConnector node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        if (node.getUnitNumberResolution().isPresent()) {
-            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution().get();
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
+            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
             ASTUnitNumber toSet = null;
-            if (unitNumberResolution.getUnitNumber().isPresent()) {
-                toSet = unitNumberResolution.getUnitNumber().get();
-            } else if (unitNumberResolution.getName().isPresent()) {
+            if (unitNumberResolution.getUnitNumberOpt().isPresent()) {
+                toSet = unitNumberResolution.getUnitNumber();
+            } else if (unitNumberResolution.getNameOpt().isPresent()) {
 
                 ResolutionDeclarationSymbol resDeclSym = symbolTableCreator.componentStack.peek()
-                        .getResolutionDeclarationSymbol(unitNumberResolution.getName().get()).get();
-                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber().get();
+                        .getResolutionDeclarationSymbol(unitNumberResolution.getNameOpt().get()).get();
+                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber();
             }
 
             unitNumberResolution.setUnit(toSet.getUnit().get());
@@ -384,9 +385,9 @@ public class EMAPortHelper {
     public static int handleSizeResolution(ASTSubComponent node, int index) {
         int counter = 0;
         if (node.getType() instanceof ASTSimpleReferenceType) {
-            if (((ASTSimpleReferenceType) node.getType()).getTypeArguments().isPresent()) {
+            if (((ASTSimpleReferenceType) node.getType()).getTypeArgumentsOpt().isPresent()) {
                 for (ASTTypeArgument typeArgument : ((ASTSimpleReferenceType) node.getType())
-                        .getTypeArguments().get().getTypeArguments()) {
+                        .getTypeArgumentsOpt().get().getTypeArgumentsList()) {
                     if (typeArgument instanceof ASTUnitNumberTypeArgument) {
                         Log.debug("" + ((ASTUnitNumberTypeArgument) typeArgument).getUnitNumber().getNumber()
                                 .get().intValue(), "New Resolution Value:");

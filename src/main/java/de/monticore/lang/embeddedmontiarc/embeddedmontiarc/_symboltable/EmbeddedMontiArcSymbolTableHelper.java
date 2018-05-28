@@ -58,26 +58,26 @@ public class EmbeddedMontiArcSymbolTableHelper {
                                                         ComponentSymbolReference componentSymbolReference,
                                                         EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
 
-        if (node.getUnitNumberResolution().isPresent()) {
-            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution().get();
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
+            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
             ASTUnitNumber toSet = null;
-            if (unitNumberResolution.getUnitNumber().isPresent()) {
-                toSet = unitNumberResolution.getUnitNumber().get();
+            if (unitNumberResolution.getUnitNumberOpt().isPresent()) {
+                toSet = unitNumberResolution.getUnitNumber();
 
-            } else if (unitNumberResolution.getName().isPresent()) {
+            } else if (unitNumberResolution.getNameOpt().isPresent()) {
 
                 ResolutionDeclarationSymbol resDeclSym = symbolTableCreator.
                         componentStack.peek()
-                        .getResolutionDeclarationSymbol(unitNumberResolution.getName().get()).get();
+                        .getResolutionDeclarationSymbol(unitNumberResolution.getNameOpt().get()).get();
                 Log.debug(resDeclSym.getASTResolution().toString(), "Found ResolutionDeclarationSymbol:");
-                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber().get();
+                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber();
 
                 Log.debug("" + toSet.getNumber().get().intValue(), "ToSet Number:");
             }
-            node.getUnitNumberResolution().get().setUnit(toSet.getUnit().get());
-            node.getUnitNumberResolution().get().setNumber(toSet.getNumber().get());
+            node.getUnitNumberResolution().setUnit(toSet.getUnit().get());
+            node.getUnitNumberResolution().setNumber(toSet.getNumber().get());
 
-            Log.debug("" + node.getUnitNumberResolution().get().getNumber().get().intValue(),
+            Log.debug("" + node.getUnitNumberResolution().getNumber().get().intValue(),
                     "SubComponentResolution Number:");
         }
     }
@@ -143,11 +143,11 @@ public class EmbeddedMontiArcSymbolTableHelper {
                                                    ASTComponent node,
                                                    EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters
-                .getTypeVariableDeclarations()) {
-            if (astTypeParameter.resolutionDeclarationIsPresent() && astTypeParameter
-                    .getResolutionDeclaration().get() instanceof ASTTypeNameResolutionDeclaration) {
+                .getTypeVariableDeclarationsList()) {
+            if (astTypeParameter.getResolutionDeclarationOpt().isPresent() && astTypeParameter
+                    .getResolutionDeclaration() instanceof ASTTypeNameResolutionDeclaration) {
                 Log.debug(astTypeParameter.toString(), "Resolution Declaration:");
-                ASTResolutionDeclaration astResDecl = astTypeParameter.getResolutionDeclaration().get();
+                ASTResolutionDeclaration astResDecl = astTypeParameter.getResolutionDeclaration();
 
                 ResolutionDeclarationSymbolReference resDeclSymRef;
                 resDeclSymRef = ResolutionDeclarationSymbolReference.constructResolutionDeclSymbolRef(
@@ -168,7 +168,7 @@ public class EmbeddedMontiArcSymbolTableHelper {
     public static void setParametersOfComponent(final ComponentSymbol componentSymbol, ASTComponent cmp
             , EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         Log.debug(componentSymbol.toString(), "ComponentPreParam");
-        for (ASTParameter astParameter : cmp.getParameters()) {
+        for (ASTParameter astParameter : cmp.getParameterList()) {
             final String paramName = astParameter.getName();
             Log.debug(astParameter.toString(), "ASTParam");
             int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astParameter.getType());

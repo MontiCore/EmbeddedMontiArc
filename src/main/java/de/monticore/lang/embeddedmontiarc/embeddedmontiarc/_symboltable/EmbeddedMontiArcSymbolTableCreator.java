@@ -93,12 +93,12 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     public void visit(ASTEMACompilationUnit compilationUnit) {
         Log.debug("Building Symboltable for Component: " + compilationUnit.getComponent().getName(),
                 EmbeddedMontiArcSymbolTableCreator.class.getSimpleName());
-        compilationUnitPackage = Names.getQualifiedName(compilationUnit.getPackage());
+        compilationUnitPackage = Names.getQualifiedName(compilationUnit.getPackageList());
 
         // imports
         List<ImportStatement> imports = new ArrayList<>();
-        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatements()) {
-            String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportList());
+        for (ASTImportStatement astImportStatement : compilationUnit.getImportStatementList()) {
+            String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportListList());
             ImportStatement importStatement = new ImportStatement(qualifiedImport,
                     astImportStatement.isStar());
             imports.add(importStatement);
@@ -146,7 +146,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         ASTType astType = node.getType();
         StringBuilder typeName = new StringBuilder();
         MCTypeReference<? extends MCTypeSymbol> typeRef = initTypeRef(node, typeName, astType, this);
-        String name = node.getName().orElse(StringTransformations.uncapitalize(typeName.toString()));
+        String name = node.getNameOpt().orElse(StringTransformations.uncapitalize(typeName.toString()));
         /* Log.debug(nameTO, "NameResolution:"); Log.debug(name, "Full Name:");
          * Log.debug(node.getType().toString(), "Node:"); Log.debug("" +
          * currentScope().get().toString(), "Scope:"); */
@@ -167,11 +167,11 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         ASTQualifiedNameWithArray portName;
         List<String> sourceNames = null;
         boolean isConstant = false;
-        if (node.getSource().isPresent()) {
-            portName = node.getSource().get();
+        if (node.getSourceOpt().isPresent()) {
+            portName = node.getSource();
 
             sourceNames = getPortName(portName, this);
-            // Log.debug(node.getSource().get().toString(),"port content");
+            // Log.debug(node.getSource().toString(),"port content");
         } else {
             isConstant = true;
             // Log.debug(node.getSI_Unit().get().toString(), "port content else ");
@@ -220,21 +220,21 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         /* for (ASTExpression arg : node.getArguments()) { String value = new JavaDSLPrettyPrinter(new
          * IndentPrinter()).prettyprint(arg); value = value.replace("\"", "\\\"").replace("\n", "");
          * configArgs.add(new ValueSymbol<>(value, Kind.Expression)); } */
-        for (ASTExpression astExpression : node.getArguments())
+        for (ASTExpression astExpression : node.getArgumentsList())
             componentTypeReference.addArgument(astExpression);
         componentTypeReference.fixResolutions(this);
         // instances
 
-        if (!node.getInstances().isEmpty()) {
+        if (!node.getInstancesList().isEmpty()) {
             // create instances of the referenced components.
-            for (ASTSubComponentInstance i : node.getInstances()) {
+            for (ASTSubComponentInstance i : node.getInstancesList()) {
                 // For generic type resolution Example: <N1 n=4> with instance being <6> to change value of
                 // n accordingly
                 doSubComponentInstanceResolution(i, componentTypeReference, this);
                 Log.debug(node.getType().toString(), "Pre Handle Size:");
 
-                if (i.getUnitNumberResolution().isPresent()) {
-                    int size = i.getUnitNumberResolution().get().getNumber().get().intValue();
+                if (i.getUnitNumberResolutionOpt().isPresent()) {
+                    int size = i.getUnitNumberResolution().getNumber().get().intValue();
 
                     Log.debug(node.getType().toString(), "First: ");
                     Log.debug(node.getType().toString(), "Second: ");
@@ -298,8 +298,8 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         // Log.debug(component.toString(),"ComponentPostParam");
 
         // super component
-        if (node.getSuperComponent().isPresent()) {
-            ASTReferenceType superCompRef = node.getSuperComponent().get();
+        if (node.getSuperComponentOpt().isPresent()) {
+            ASTReferenceType superCompRef = node.getSuperComponent();
             String superCompName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(superCompRef);
 
             ComponentSymbolReference ref = new ComponentSymbolReference(superCompName,

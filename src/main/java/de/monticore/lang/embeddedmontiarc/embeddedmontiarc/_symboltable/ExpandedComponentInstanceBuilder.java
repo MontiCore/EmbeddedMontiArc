@@ -70,8 +70,8 @@ public class ExpandedComponentInstanceBuilder {
     public static ExpandedComponentInstanceSymbol clone(ExpandedComponentInstanceSymbol inst) {
         return new ExpandedComponentInstanceBuilder().setName(inst.getName())
                 .setSymbolReference(inst.getComponentType())
-                //.addPorts(inst.getPorts().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
-                .addPorts(inst.getPorts()) // is cloned in build method
+                //.addPorts(inst.getPortsList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
+                .addPorts(inst.getPortsList()) // is cloned in build method
                 .addConnectors(inst.getConnectors().stream().map(c -> ConnectorBuilder.clone(c)).collect(Collectors.toList()))
                 .addSubComponents(inst.getSubComponents().stream().map(s -> ExpandedComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
@@ -222,7 +222,7 @@ public class ExpandedComponentInstanceBuilder {
 
         mapTypeArguments.forEach((k, v) -> {
             // 1) replace port generics
-            inst.getPorts().stream()
+            inst.getPortsList().stream()
                     //          .filter(p -> p.getTypeReference().getReferencedSymbol().getFullName().equals(k.getFullName()))
                     .filter(p -> p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()))
                     .forEachOrdered(p -> p.setTypeReference((MCTypeReference<? extends MCTypeSymbol>) v.getType()));

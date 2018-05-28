@@ -85,7 +85,7 @@ public class TypesPrinterImpl {
 
 
     protected String doPrintTypeParameters(ASTTypeParameters params) {
-        return params != null && params.getTypeVariableDeclarations() != null && !params.getTypeVariableDeclarations().isEmpty() ? "<" + this.doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarations()) + ">" : "";
+        return params != null && params.getTypeVariableDeclarationsList() != null && !params.getTypeVariableDeclarationsList().isEmpty() ? "<" + this.doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarationsList()) + ">" : "";
     }
 
 
@@ -106,11 +106,11 @@ public class TypesPrinterImpl {
     protected String doPrintTypeVariableDeclaration(ASTTypeVariableDeclaration decl) {
         StringBuilder ret = new StringBuilder();
         if (decl != null) {
-            ret.append(decl.getNamingResolution().get().getName());
-            if (decl.getUpperBounds() != null && !decl.getUpperBounds().isEmpty()) {
+            ret.append(decl.getNamingResolution().getName());
+            if (decl.getUpperBoundsList() != null && !decl.getUpperBoundsList().isEmpty()) {
                 String sep = " extends ";
 
-                for (Iterator var4 = decl.getUpperBounds().iterator(); var4.hasNext(); sep = " & ") {
+                for (Iterator var4 = decl.getUpperBoundsList().iterator(); var4.hasNext(); sep = " & ") {
                     ASTType type = (ASTType) var4.next();
                     ret.append(sep + this.doPrintType(type));
                 }
@@ -158,12 +158,12 @@ public class TypesPrinterImpl {
     }
 
     protected String doPrintSimpleReferenceType(ASTSimpleReferenceType type) {
-        return type != null ? (type.getTypeArguments().isPresent() ? Names.getQualifiedName(type.getNames()) + this.doPrintTypeArguments((ASTTypeArguments) type.getTypeArguments().get()) : Names.getQualifiedName(type.getNames())) : "";
+        return type != null ? (type.getTypeArgumentsOpt().isPresent() ? Names.getQualifiedName(type.getNameList()) + this.doPrintTypeArguments((ASTTypeArguments) type.getTypeArgumentsOpt().get()) : Names.getQualifiedName(type.getNameList())) : "";
     }
 
     protected String doPrintComplexReferenceType(ASTComplexReferenceType type) {
         String ret = "";
-        return type != null && type.getSimpleReferenceTypes() != null ? this.doPrintSimpleReferenceTypeList(type.getSimpleReferenceTypes()) : ret;
+        return type != null && type.getSimpleReferenceTypeList() != null ? this.doPrintSimpleReferenceTypeList(type.getSimpleReferenceTypeList()) : ret;
     }
 
     protected String doPrintSimpleReferenceTypeList(List<ASTSimpleReferenceType> argList) {
@@ -181,7 +181,7 @@ public class TypesPrinterImpl {
     }
 
     protected String doPrintTypeArguments(ASTTypeArguments args) {
-        return args != null && args.getTypeArguments() != null && !args.getTypeArguments().isEmpty() ? "<" + this.doPrintTypeArgumentList(args.getTypeArguments()) + ">" : "";
+        return args != null && args.getTypeArgumentsList() != null && !args.getTypeArgumentsList().isEmpty() ? "<" + this.doPrintTypeArgumentList(args.getTypeArgumentsList()) + ">" : "";
     }
 
     protected String doPrintTypeArgumentList(List<ASTTypeArgument> argList) {
@@ -202,10 +202,10 @@ public class TypesPrinterImpl {
         StringBuilder ret = new StringBuilder();
         if (type != null) {
             ret.append("?");
-            if (type.getUpperBound().isPresent()) {
-                ret.append(" extends " + this.doPrintType((ASTType) type.getUpperBound().get()));
-            } else if (type.getLowerBound().isPresent()) {
-                ret.append(" super " + this.doPrintType((ASTType) type.getLowerBound().get()));
+            if (type.getUpperBoundOpt().isPresent()) {
+                ret.append(" extends " + this.doPrintType((ASTType) type.getUpperBound()));
+            } else if (type.getLowerBoundOpt().isPresent()) {
+                ret.append(" super " + this.doPrintType((ASTType) type.getLowerBound()));
             }
         }
 
@@ -217,11 +217,11 @@ public class TypesPrinterImpl {
     }
 
     protected String doPrintSimpleReferenceTypeWithoutTypeArguments(ASTSimpleReferenceType type) {
-        return type != null ? Names.getQualifiedName(type.getNames()) : "";
+        return type != null ? Names.getQualifiedName(type.getNameList()) : "";
     }
 
     protected String doPrintComplexReferenceTypeWithoutTypeArguments(ASTComplexReferenceType type) {
-        return type != null && type.getSimpleReferenceTypes() != null ? this.doPrintSimpleReferenceTypeListWithoutTypeArguments(type.getSimpleReferenceTypes()) : "";
+        return type != null && type.getSimpleReferenceTypeList() != null ? this.doPrintSimpleReferenceTypeListWithoutTypeArguments(type.getSimpleReferenceTypeList()) : "";
     }
 
     protected String doPrintSimpleReferenceTypeListWithoutTypeArguments(List<ASTSimpleReferenceType> argList) {

@@ -348,7 +348,7 @@ public class ConnectorSymbol extends CommonSymbol implements ElementInstance {
     }
 
     private static void printPossibleErrorMessage(Optional<PortSymbol> port, ExpandedComponentInstanceSymbol inst2, Optional<String> instance, Optional<String> instancePort) {
-        Iterator<PortSymbol> portsIter = inst2.getPorts().iterator();
+        Iterator<PortSymbol> portsIter = inst2.getPortsList().iterator();
         if (!port.isPresent()) {
             while (portsIter.hasNext()) {
                 String curName = portsIter.next().getName();

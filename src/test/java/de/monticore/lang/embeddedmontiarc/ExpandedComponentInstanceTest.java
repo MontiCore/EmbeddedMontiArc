@@ -58,7 +58,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
 
-        assertEquals(inst.getPorts().size(), 3);
+        assertEquals(inst.getPortsList().size(), 3);
         assertTrue(inst.getPort("in1[1]").isPresent()); // from a.Sub2
         assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
 
@@ -76,7 +76,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
 
-        assertEquals(inst.getPorts().size(), 3);
+        assertEquals(inst.getPortsList().size(), 3);
         //assertTrue(inst.getPort("in1").isPresent()); // from a.Sub2
         //assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
 
@@ -99,7 +99,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
         // test whether T is replaced by Integer
-        inst.getPorts().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
+        inst.getPortsList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
         ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
                 "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -156,7 +156,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
         // test whether T is replaced by Integer
-    /*    inst.getPorts().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
+    /*    inst.getPortsList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
         ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
                 "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);

@@ -285,7 +285,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
   }
   
   public boolean hasPorts() {
-    return !getPorts().isEmpty();
+    return !getPortsList().isEmpty();
   }
   
   /**
@@ -293,7 +293,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
    *
    * @return ports of this component.
    */
-  public Collection<PortSymbol> getPorts() {
+  public Collection<PortSymbol> getPortsList() {
     Collection<PortSymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
         .<PortSymbol> resolveLocally(PortSymbol.KIND);
     /* for (PortSymbol portSymbol : symbols) { System.out.println(portSymbol.toString()); } */
@@ -433,7 +433,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     List<PortSymbol> result = new ArrayList<PortSymbol>();
     
     // own ports
-    result.addAll(getPorts());
+    result.addAll(getPortsList());
     
     // ports from super components
     Optional<ComponentSymbolReference> superCompOpt = getSuperComponent();

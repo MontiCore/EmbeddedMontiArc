@@ -47,12 +47,12 @@ public class TypeParameterNamesUnique implements EmbeddedMontiArcASTComponentCoC
         }
 
         List<String> typeParameterNames = new ArrayList<>();
-        for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarations()) {
+        for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarationsList()) {
 
-            if (typeParameter.getNamingResolution().isPresent() && typeParameterNames.contains(typeParameter.getNamingResolution().get().getName())) {
+            if (typeParameter.getNamingResolutionOpt().isPresent() && typeParameterNames.contains(typeParameter.getNamingResolution().getName())) {
                 Log.error(String.format(
                         "0x35F1A The formal type parameter name \"%s\" is not unique",
-                        typeParameter.getNamingResolution().get().getName()), typeParameter.get_SourcePositionStart());
+                        typeParameter.getNamingResolution().getName()), typeParameter.get_SourcePositionStart());
             } else {
                 //typeParameterNames.add(typeParameter.getNamingResolution().get().getName());
             }

@@ -103,13 +103,13 @@ public class ConstantPortSymbol extends PortSymbol {
     public static ConstantPortSymbol createConstantPortSymbol(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         ConstantPortSymbol constantPortSymbol = new ConstantPortSymbol();
 
-        if (node.getUnitNumberResolution().isPresent()) {
-            constantPortSymbol.initConstantPortSymbol(node.getUnitNumberResolution().get().getUnitNumber().get());
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
+            constantPortSymbol.initConstantPortSymbol(node.getUnitNumberResolution().getUnitNumber());
             String typeName;
             typeName = "UnitNumberResolution";
             constantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));
-        } else if (node.getBoolLiteral().isPresent()) {
-            constantPortSymbol.initConstantPortSymbol(node.getBoolLiteral().get());
+        } else if (node.getBoolLiteralOpt().isPresent()) {
+            constantPortSymbol.initConstantPortSymbol(node.getBoolLiteral());
             String typeName;
             typeName = "B";
             constantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));

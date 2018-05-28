@@ -73,7 +73,7 @@ public class InPortUniqueSender implements EmbeddedMontiArcASTComponentCoCo {
     
     private void checkConnectors() {
       for (ASTConnector connector : node.getConnectors()) {
-        for (ASTQualifiedNameWithArray target : connector.getTargets().getQualifiedNameWithArrays()) {
+        for (ASTQualifiedNameWithArray target : connector.getTargets().getQualifiedNameWithArrayList()) {
           checkTarget(target);
         }
       }

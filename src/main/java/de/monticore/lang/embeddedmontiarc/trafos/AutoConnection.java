@@ -144,7 +144,7 @@ public class AutoConnection {
             astConnector.set_SourcePositionEnd(auto.get().get_SourcePositionEnd());
         }
         // add node to arc elements
-        node.getBody().getElements().add(astConnector);
+        node.getBody().getElementList().add(astConnector);
     }
 
     /**
@@ -153,7 +153,7 @@ public class AutoConnection {
      * exist.
      */
     public static Optional<ASTMontiArcAutoConnect> resolveAutoconnect(ASTComponent comp) {
-        for (ASTElement element : comp.getBody().getElements()) {
+        for (ASTElement element : comp.getBody().getElementList()) {
             if (element instanceof ASTMontiArcAutoConnect) {
                 return Optional.of((ASTMontiArcAutoConnect) element);
             }
