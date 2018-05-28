@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;

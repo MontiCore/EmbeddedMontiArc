@@ -25,7 +25,7 @@ import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;

@@ -24,7 +24,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 //import de.monticore.types.types._ast.ASTReferenceType;
 //import de.monticore.types.types._ast.ASTType;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
 import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
 import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
