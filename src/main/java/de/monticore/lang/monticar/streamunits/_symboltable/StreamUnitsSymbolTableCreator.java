@@ -24,8 +24,8 @@
 
 package de.monticore.lang.monticar.streamunits._symboltable;
 
-import de.monticore.lang.monticar.literals2._ast.ASTSignedLiteral;
 import de.monticore.lang.monticar.streamunits._ast.*;
+import de.monticore.literals.literals._ast.ASTSignedLiteral;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;

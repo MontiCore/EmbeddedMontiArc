@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.streamunits._ast;
 
-import de.monticore.lang.monticar.literals2._ast.ASTSignedLiteral;
+import de.monticore.literals.literals._ast.ASTSignedLiteral;
 
 import java.util.Optional;
 
