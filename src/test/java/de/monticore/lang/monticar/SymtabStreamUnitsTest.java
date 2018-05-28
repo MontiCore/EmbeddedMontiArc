@@ -22,8 +22,6 @@ package de.monticore.lang.monticar;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
-import de.monticore.lang.monticar.streamunits._ast.ASTValueAtTick;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;

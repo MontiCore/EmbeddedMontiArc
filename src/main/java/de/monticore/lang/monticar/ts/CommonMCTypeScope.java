@@ -20,15 +20,10 @@
  */
 package de.monticore.lang.monticar.ts;
 
-import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.ScopeSpanningSymbol;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
-import de.monticore.symboltable.SymbolPredicate;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.*;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.resolving.ResolvingInfo;
-import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -36,9 +31,7 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static de.monticore.symboltable.modifiers.AccessModifier.ALL_INCLUSION;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.PACKAGE_LOCAL;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.PRIVATE;
-import static de.monticore.symboltable.modifiers.BasicAccessModifier.PROTECTED;
+import static de.monticore.symboltable.modifiers.BasicAccessModifier.*;
 
 /**
  * @author Pedram Mir Seyed Nazari
@@ -50,15 +43,15 @@ public class CommonMCTypeScope extends CommonScope {
     }
 
     @Override
-    public void setSpanningSymbol(ScopeSpanningSymbol symbol) {
-        checkArgument(symbol instanceof MCTypeSymbol);
-        super.setSpanningSymbol(symbol);
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public Optional<? extends MCTypeSymbol> getSpanningSymbol() {
         return (Optional<? extends MCTypeSymbol>) super.getSpanningSymbol();
+    }
+
+    @Override
+    public void setSpanningSymbol(ScopeSpanningSymbol symbol) {
+        checkArgument(symbol instanceof MCTypeSymbol);
+        super.setSpanningSymbol(symbol);
     }
 
     @Override

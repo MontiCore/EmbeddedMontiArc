@@ -37,157 +37,8 @@ public class ASTRange extends ASTRangeTOP {
         fixUnits();
     }
 
-    public void fixUnits() {
-        if (start.isPresent()) {
-            if (!start.get().getUnit().isPresent()) {
-
-            }
-        }
-    }
-
     public ASTRange() {
         super();
-    }
-
-
-    @Override
-    public String toString() {
-        return String.format("(%s %s %s : %s)", // (start : step : end)
-                getStartOpt().isPresent() ? getStartOpt().get().toString() : getStartInfOpt().get(),
-
-                getStepOpt().isPresent() ? ":" : "",
-                getStepOpt().isPresent() ? getStepOpt().get().toString() : "",
-
-                getEndOpt().isPresent() ? getEndOpt().get().toString() : getEndInfOpt().get()
-        );
-    }
-
-    public void setStartValue(String infStr) {
-        this.startInf = Optional.of(infStr);
-    }
-
-
-    public void setEndValue(String infStr) {
-        this.endInf = Optional.of(infStr);
-    }
-
-    public void setStartValue(ASTUnitNumberResolution start) {
-        this.start = Optional.of(start);
-    }
-
-    public void setStepValue(ASTUnitNumberResolution step) {
-        this.step = Optional.of(step);
-    }
-
-    public void setEndValue(ASTUnitNumberResolution end) {
-        this.end = Optional.of(end);
-    }
-
-    public Rational getStartValue() {
-        return getStartOpt().get().getNumber().get();
-    }
-
-    public Rational getEndValue() {
-        return getEndOpt().get().getNumber().get();
-    }
-
-    public Rational getStepValue() {
-        return getStepOpt().get().getNumber().get();
-    }
-
-    public Unit getStartUnit() {
-        return (getStartOpt().isPresent()) ? getStartOpt().get().getUnit().get() : getUnit(getStartInfOpt().get());
-    }
-
-    public Unit getEndUnit() {
-        return (getEndOpt().isPresent()) ? getEndOpt().get().getUnit().get() : getUnit(getEndInfOpt().get());
-    }
-
-
-    public Unit getStepUnit() {
-        return getStepOpt().get().getUnit().get();
-    }
-
-    public void setStartUnit(Unit unit) {
-        if (getStartOpt().isPresent()) getStartOpt().get().setUnit(unit);
-        else
-            this.startInf = Optional.of(addUnitTo(this.startInf.get(), unit));
-    }
-
-    public void setEndUnit(Unit unit) {
-        if (getEndOpt().isPresent()) getEndOpt().get().setUnit(unit);
-        else
-            this.endInf = Optional.of(addUnitTo(this.endInf.get(), unit));
-    }
-
-    public void setStepUnit(Unit unit) {
-        getStepOpt().get().setUnit(unit);
-    }
-
-
-    public boolean hasStartUnit() {
-        return (getStartOpt().isPresent() && !getStartOpt().get().getUnit().equals(Unit.ONE)) || (getStartInfOpt().isPresent() && !getUnit(getStartInfOpt().get()).equals(Unit.ONE));
-    }
-
-    public boolean hasStepUnit() {
-        return getStepOpt().isPresent() && !getStepOpt().get().getUnit().equals(Unit.ONE);
-    }
-
-    public boolean hasEndUnit() {
-        return (getEndOpt().isPresent() && !getEndOpt().get().getUnit().equals(Unit.ONE)) || (getEndInfOpt().isPresent() && !getUnit(getEndInfOpt().get()).equals(Unit.ONE));
-    }
-
-    public boolean hasNoLowerLimit() {
-        return !getStartOpt().isPresent();
-    }
-
-    public boolean hasNoUpperLimit() {
-        return !getEndOpt().isPresent();
-    }
-
-
-    /**
-     * checks if the provided Rational is in our range
-     *
-     * @param number the Rational to check
-     */
-    public boolean isInRange(Rational number) {
-        if (getStepOpt().isPresent() && !hasNoUpperLimit() && !hasNoLowerLimit()) {
-            Rational cur = getStartValue();
-            boolean check = true;
-            while (check) {
-                if (number.compareTo(cur) == 0) {
-                    return true;
-                }
-                int endCompResult = cur.compareTo(getEndValue());
-                if (endCompResult > 0 || endCompResult == 0) {
-                    check = false;
-                }
-                cur.plus(getStepValue());
-            }
-        } else {
-            if (number.compareTo(getStartValue()) >= 0 &&
-                    number.compareTo(getEndValue()) <= 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Currently only checks if the range is the same.
-     * TODO add steps checking support if this precision is required
-     * unit support is not considered (must be fixed)
-     */
-    public boolean hasCommonElements(ASTRange range) {
-        if (getStartValue().compareTo(range.getStartValue()) <= 0) {
-            if (getEndValue().compareTo(range.getStartValue()) >= 0) {
-                return true;
-            }
-        } else if (getStartValue().compareTo(range.getEndValue()) < 0) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -255,6 +106,150 @@ public class ASTRange extends ASTRangeTOP {
                 curRange.getStepOpt().get().setUnit(unitIdentifier);
             }
         }
+    }
+
+    public void fixUnits() {
+        if (start.isPresent()) {
+            if (!start.get().getUnit().isPresent()) {
+
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%s %s %s : %s)", // (start : step : end)
+                getStartOpt().isPresent() ? getStartOpt().get().toString() : getStartInfOpt().get(),
+
+                getStepOpt().isPresent() ? ":" : "",
+                getStepOpt().isPresent() ? getStepOpt().get().toString() : "",
+
+                getEndOpt().isPresent() ? getEndOpt().get().toString() : getEndInfOpt().get()
+        );
+    }
+
+    public void setStartValue(String infStr) {
+        this.startInf = Optional.of(infStr);
+    }
+
+    public void setEndValue(String infStr) {
+        this.endInf = Optional.of(infStr);
+    }
+
+    public Rational getStartValue() {
+        return getStartOpt().get().getNumber().get();
+    }
+
+    public void setStartValue(ASTUnitNumberResolution start) {
+        this.start = Optional.of(start);
+    }
+
+    public Rational getEndValue() {
+        return getEndOpt().get().getNumber().get();
+    }
+
+    public void setEndValue(ASTUnitNumberResolution end) {
+        this.end = Optional.of(end);
+    }
+
+    public Rational getStepValue() {
+        return getStepOpt().get().getNumber().get();
+    }
+
+    public void setStepValue(ASTUnitNumberResolution step) {
+        this.step = Optional.of(step);
+    }
+
+    public Unit getStartUnit() {
+        return (getStartOpt().isPresent()) ? getStartOpt().get().getUnit().get() : getUnit(getStartInfOpt().get());
+    }
+
+    public void setStartUnit(Unit unit) {
+        if (getStartOpt().isPresent()) getStartOpt().get().setUnit(unit);
+        else
+            this.startInf = Optional.of(addUnitTo(this.startInf.get(), unit));
+    }
+
+    public Unit getEndUnit() {
+        return (getEndOpt().isPresent()) ? getEndOpt().get().getUnit().get() : getUnit(getEndInfOpt().get());
+    }
+
+    public void setEndUnit(Unit unit) {
+        if (getEndOpt().isPresent()) getEndOpt().get().setUnit(unit);
+        else
+            this.endInf = Optional.of(addUnitTo(this.endInf.get(), unit));
+    }
+
+    public Unit getStepUnit() {
+        return getStepOpt().get().getUnit().get();
+    }
+
+    public void setStepUnit(Unit unit) {
+        getStepOpt().get().setUnit(unit);
+    }
+
+    public boolean hasStartUnit() {
+        return (getStartOpt().isPresent() && !getStartOpt().get().getUnit().equals(Unit.ONE)) || (getStartInfOpt().isPresent() && !getUnit(getStartInfOpt().get()).equals(Unit.ONE));
+    }
+
+    public boolean hasStepUnit() {
+        return getStepOpt().isPresent() && !getStepOpt().get().getUnit().equals(Unit.ONE);
+    }
+
+    public boolean hasEndUnit() {
+        return (getEndOpt().isPresent() && !getEndOpt().get().getUnit().equals(Unit.ONE)) || (getEndInfOpt().isPresent() && !getUnit(getEndInfOpt().get()).equals(Unit.ONE));
+    }
+
+    public boolean hasNoLowerLimit() {
+        return !getStartOpt().isPresent();
+    }
+
+    public boolean hasNoUpperLimit() {
+        return !getEndOpt().isPresent();
+    }
+
+    /**
+     * checks if the provided Rational is in our range
+     *
+     * @param number the Rational to check
+     */
+    public boolean isInRange(Rational number) {
+        if (getStepOpt().isPresent() && !hasNoUpperLimit() && !hasNoLowerLimit()) {
+            Rational cur = getStartValue();
+            boolean check = true;
+            while (check) {
+                if (number.compareTo(cur) == 0) {
+                    return true;
+                }
+                int endCompResult = cur.compareTo(getEndValue());
+                if (endCompResult > 0 || endCompResult == 0) {
+                    check = false;
+                }
+                cur.plus(getStepValue());
+            }
+        } else {
+            if (number.compareTo(getStartValue()) >= 0 &&
+                    number.compareTo(getEndValue()) <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Currently only checks if the range is the same.
+     * TODO add steps checking support if this precision is required
+     * unit support is not considered (must be fixed)
+     */
+    public boolean hasCommonElements(ASTRange range) {
+        if (getStartValue().compareTo(range.getStartValue()) <= 0) {
+            if (getEndValue().compareTo(range.getStartValue()) >= 0) {
+                return true;
+            }
+        } else if (getStartValue().compareTo(range.getEndValue()) < 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -24,8 +24,8 @@ package de.monticore.lang.monticar.ts;/*
  * http://www.se-rwth.de/
  */
 
-import de.monticore.symboltable.Symbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.symboltable.Symbol;
 
 /**
  * @author Pedram Mir Seyed Nazari

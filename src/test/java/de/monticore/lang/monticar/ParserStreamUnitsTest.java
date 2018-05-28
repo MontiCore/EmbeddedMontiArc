@@ -20,14 +20,15 @@
  */
 package de.monticore.lang.monticar;
 
-import static org.junit.Assert.assertTrue;
+import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
+import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
+import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,12 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
-import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
-import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.runtime.RecognitionException;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Robert Heim / Michael von Wenckstern
@@ -133,8 +129,7 @@ public class ParserStreamUnitsTest {
                         Log.enableFailQuick(false);
                     }
                     streamCompilationUnit = parser.parse(file.toString());
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     if (!expectingError) {
                         Log.error("Exception during test", e);
                     }
@@ -142,8 +137,7 @@ public class ParserStreamUnitsTest {
                 if (!expectingError && (parser.hasErrors() || !streamCompilationUnit.isPresent())) {
                     modelsInError.add(file.toString());
                     Log.error("There were unexpected parser errors");
-                }
-                else {
+                } else {
                     Log.getFindings().clear();
                 }
                 Log.enableFailQuick(ParserStreamUnitsTest.ENABLE_FAIL_QUICK);

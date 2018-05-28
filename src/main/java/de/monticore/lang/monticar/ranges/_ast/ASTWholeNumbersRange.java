@@ -21,8 +21,8 @@
 package de.monticore.lang.monticar.ranges._ast;
 
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import org.jscience.mathematics.number.Rational;
-import de.monticore.lang.numberunit._ast.*;
 
 import javax.measure.unit.Unit;
 

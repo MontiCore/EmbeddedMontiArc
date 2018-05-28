@@ -20,16 +20,19 @@
  */
 package de.monticore.lang.monticar;
 
-import de.monticore.lang.monticar.ranges._parser.RangesParser;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.monticore.lang.monticar.ranges._parser.RangesParser;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._parser.Types2Parser;
 import de.se_rwth.commons.logging.Log;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Michael von Wenckstern, Sascha Schneiders
@@ -53,148 +56,149 @@ public class SIParserTest {
     public void clear() {
         Log.getFindings().clear();
     }
-/*
-    @Test
-    public void testM2() throws IOException {
-        SIParser parser = new SIParser();
-        ASTUnitNumber ast = parser.parseString_UnitNumber("-0.9").orElse(null);
-        assertNotNull(ast);
 
-        assertEquals(Rational.valueOf(-9, 10), ast.getNumber());
-        assertEquals(Unit.ONE, ast.getUnit());
-    }
+    /*
+        @Test
+        public void testM2() throws IOException {
+            SIParser parser = new SIParser();
+            ASTUnitNumber ast = parser.parseString_UnitNumber("-0.9").orElse(null);
+            assertNotNull(ast);
 
-    @Test
-    public void testM1() throws IOException {
-        SIParser parser = new SIParser();
-        ASTUnitNumber ast = parser.parseString_UnitNumber("-0.5 kg*m^2/s^3").orElse(null);
-        assertNotNull(ast);
-
-        assertEquals(Rational.valueOf(-1, 2), ast.getNumber());
-        assertEquals(Unit.valueOf("kg*m^2/s^3"), ast.getUnit());
-    }
-
-    @Test
-    public void test0() throws IOException {
-        SIParser parser = new SIParser();
-        ASTUnitNumber ast = parser.parseString_UnitNumber("8/3 kg*m^2/s^3").orElse(null);
-        assertNotNull(ast);
-
-        assertEquals(Rational.valueOf(8, 3), ast.getNumber());
-        assertEquals(Unit.valueOf("kg*m^2/s^3"), ast.getUnit());
-    }
-
-    @Test
-    public void test1() throws IOException {
-        SIParser parser = new SIParser();
-        ASTUnitNumber ast = parser.parseString_UnitNumber("8 kg*m^2/s^3").orElse(null);
-        assertNotNull(ast);
-
-        assertEquals(Rational.valueOf(8, 1), ast.getNumber());
-        assertEquals(Unit.valueOf("kg*m^2/s^3"), ast.getUnit());
-    }
-
-    // "x = m/s" is an expression and should not be parsed as unit number
-    @Ignore
-    @Test
-    public void test2() {
-        SIParser parser = new SIParser();
-        try {
-            parser.parseString_UnitNumber("m/s");
-        } catch (Exception e) {
-        } finally {
-            // need to have a parser recognition error on the token TUnitNumber
-            assertTrue(Log.getErrorCount() > 0);
+            assertEquals(Rational.valueOf(-9, 10), ast.getNumber());
+            assertEquals(Unit.ONE, ast.getUnit());
         }
-    }
 
-    //
-    //@Ignore
-    @Test
-    public void testE2() {
-        SIParser parser = new SIParser();
-        try {
-            parser.parseString_UnitNumber("1");
-        } catch (Exception e) {
-        } finally {
-            assertTrue(Log.getErrorCount() == 0);
+        @Test
+        public void testM1() throws IOException {
+            SIParser parser = new SIParser();
+            ASTUnitNumber ast = parser.parseString_UnitNumber("-0.5 kg*m^2/s^3").orElse(null);
+            assertNotNull(ast);
+
+            assertEquals(Rational.valueOf(-1, 2), ast.getNumber());
+            assertEquals(Unit.valueOf("kg*m^2/s^3"), ast.getUnit());
         }
-    }
 
-    // "x = s^2" is an expression and should not be parsed as unit number
-    @Ignore
-    @Test
-    public void test3() {
-        SIParser parser = new SIParser();
-        try {
-            parser.parseString_UnitNumber("s^2");
-        } catch (Exception e) {
-        } finally {
-            // need to have a parser recognition error on the token TUnitNumber
-            assertTrue(Log.getErrorCount() > 0);
+        @Test
+        public void test0() throws IOException {
+            SIParser parser = new SIParser();
+            ASTUnitNumber ast = parser.parseString_UnitNumber("8/3 kg*m^2/s^3").orElse(null);
+            assertNotNull(ast);
+
+            assertEquals(Rational.valueOf(8, 3), ast.getNumber());
+            assertEquals(Unit.valueOf("kg*m^2/s^3"), ast.getUnit());
         }
-    }
 
-    @Test
-    public void test4() throws IOException {
-        SIParser parser = new SIParser();
-        ASTComplexNumber ast = parser.parseString_ComplexNumber("-7/3 -0.5i").orElse(null);
-        assertNotNull(ast);
+        @Test
+        public void test1() throws IOException {
+            SIParser parser = new SIParser();
+            ASTUnitNumber ast = parser.parseString_UnitNumber("8 kg*m^2/s^3").orElse(null);
+            assertNotNull(ast);
 
-        assertEquals(Rational.valueOf(-7, 3), ast.getReal());
-        assertEquals(Rational.valueOf(-1, 2), ast.getImg());
-    }
+            assertEquals(Rational.valueOf(8, 1), ast.getNumber());
+            assertEquals(Unit.valueOf("kg*m^2/s^3"), ast.getUnit());
+        }
 
-    @Test
-    public void test5() throws IOException {
-        SIParser parser = new SIParser();
-        ASTComplexNumber ast = parser.parseString_ComplexNumber("1-2i").orElse(null);
-        assertNotNull(ast);
+        // "x = m/s" is an expression and should not be parsed as unit number
+        @Ignore
+        @Test
+        public void test2() {
+            SIParser parser = new SIParser();
+            try {
+                parser.parseString_UnitNumber("m/s");
+            } catch (Exception e) {
+            } finally {
+                // need to have a parser recognition error on the token TUnitNumber
+                assertTrue(Log.getErrorCount() > 0);
+            }
+        }
 
-        assertEquals(Rational.valueOf(1, 1), ast.getReal());
-        assertEquals(Rational.valueOf(-2, 1), ast.getImg());
-    }
+        //
+        //@Ignore
+        @Test
+        public void testE2() {
+            SIParser parser = new SIParser();
+            try {
+                parser.parseString_UnitNumber("1");
+            } catch (Exception e) {
+            } finally {
+                assertTrue(Log.getErrorCount() == 0);
+            }
+        }
 
-    @Test
-    public void test6() throws IOException {
-        SIParser parser = new SIParser();
-        ASTComplexNumber ast = parser.parseString_ComplexNumber("1 -2i").orElse(null);
-        assertNotNull(ast);
+        // "x = s^2" is an expression and should not be parsed as unit number
+        @Ignore
+        @Test
+        public void test3() {
+            SIParser parser = new SIParser();
+            try {
+                parser.parseString_UnitNumber("s^2");
+            } catch (Exception e) {
+            } finally {
+                // need to have a parser recognition error on the token TUnitNumber
+                assertTrue(Log.getErrorCount() > 0);
+            }
+        }
 
-        assertEquals(Rational.valueOf(1, 1), ast.getReal());
-        assertEquals(Rational.valueOf(-2, 1), ast.getImg());
-    }
+        @Test
+        public void test4() throws IOException {
+            SIParser parser = new SIParser();
+            ASTComplexNumber ast = parser.parseString_ComplexNumber("-7/3 -0.5i").orElse(null);
+            assertNotNull(ast);
 
-    @Test
-    public void test7() throws IOException {
-        SIParser parser = new SIParser();
-        ASTComplexNumber ast = parser.parseString_ComplexNumber("1  -  2i").orElse(null);
-        assertNotNull(ast);
+            assertEquals(Rational.valueOf(-7, 3), ast.getReal());
+            assertEquals(Rational.valueOf(-1, 2), ast.getImg());
+        }
 
-        assertEquals(Rational.valueOf(1, 1), ast.getReal());
-        assertEquals(Rational.valueOf(-2, 1), ast.getImg());
-    }
+        @Test
+        public void test5() throws IOException {
+            SIParser parser = new SIParser();
+            ASTComplexNumber ast = parser.parseString_ComplexNumber("1-2i").orElse(null);
+            assertNotNull(ast);
 
-    @Test
-    public void test8() throws IOException {
-        SIParser parser = new SIParser();
-        ASTComplexNumber ast = parser.parseString_ComplexNumber("-7/3 -1/2i").orElse(null);
-        assertNotNull(ast);
+            assertEquals(Rational.valueOf(1, 1), ast.getReal());
+            assertEquals(Rational.valueOf(-2, 1), ast.getImg());
+        }
 
-        assertEquals(Rational.valueOf(-7, 3), ast.getReal());
-        assertEquals(Rational.valueOf(-1, 2), ast.getImg());
-    }
+        @Test
+        public void test6() throws IOException {
+            SIParser parser = new SIParser();
+            ASTComplexNumber ast = parser.parseString_ComplexNumber("1 -2i").orElse(null);
+            assertNotNull(ast);
 
-    @Test
-    public void test9() throws IOException {
-        SIParser parser = new SIParser();
-        ASTComplexNumber ast = parser.parseString_ComplexNumber("-0.5-0.5i").orElse(null);
-        assertNotNull(ast);
+            assertEquals(Rational.valueOf(1, 1), ast.getReal());
+            assertEquals(Rational.valueOf(-2, 1), ast.getImg());
+        }
 
-        assertEquals(Rational.valueOf(-1, 2), ast.getReal());
-        assertEquals(Rational.valueOf(-1, 2), ast.getImg());
-    }
-*/
+        @Test
+        public void test7() throws IOException {
+            SIParser parser = new SIParser();
+            ASTComplexNumber ast = parser.parseString_ComplexNumber("1  -  2i").orElse(null);
+            assertNotNull(ast);
+
+            assertEquals(Rational.valueOf(1, 1), ast.getReal());
+            assertEquals(Rational.valueOf(-2, 1), ast.getImg());
+        }
+
+        @Test
+        public void test8() throws IOException {
+            SIParser parser = new SIParser();
+            ASTComplexNumber ast = parser.parseString_ComplexNumber("-7/3 -1/2i").orElse(null);
+            assertNotNull(ast);
+
+            assertEquals(Rational.valueOf(-7, 3), ast.getReal());
+            assertEquals(Rational.valueOf(-1, 2), ast.getImg());
+        }
+
+        @Test
+        public void test9() throws IOException {
+            SIParser parser = new SIParser();
+            ASTComplexNumber ast = parser.parseString_ComplexNumber("-0.5-0.5i").orElse(null);
+            assertNotNull(ast);
+
+            assertEquals(Rational.valueOf(-1, 2), ast.getReal());
+            assertEquals(Rational.valueOf(-1, 2), ast.getImg());
+        }
+    */
     @Test
     public void testRange1() throws IOException {
         RangesParser parser = new RangesParser();
@@ -264,7 +268,7 @@ public class SIParserTest {
     }
 
     @Test
-    public void testRangeDegreeUnit1() throws IOException{
+    public void testRangeDegreeUnit1() throws IOException {
         Types2Parser parser = new Types2Parser();
         ASTElementType ast = parser.parse_StringElementType("Q(10 deg: 0.1 : 45 )").orElse(null);
         assertNotNull(ast);
@@ -273,7 +277,7 @@ public class SIParserTest {
 
 
     @Test
-    public void testRangeDegreeUnit2() throws IOException{
+    public void testRangeDegreeUnit2() throws IOException {
         Types2Parser parser = new Types2Parser();
         ASTElementType ast = parser.parse_StringElementType("Q(-90°:0.001°:90°)").orElse(null);
         assertNotNull(ast);

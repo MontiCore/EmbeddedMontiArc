@@ -34,6 +34,7 @@ public class NamedStreamUnitsSymbol extends NamedStreamUnitsSymbolTOP {
 
     protected boolean expected = true;
     protected int id = 0;
+    protected List<StreamInstruction> timeValues = new ArrayList<>();
 
     protected NamedStreamUnitsSymbol(String name) {
         super(name);
@@ -50,13 +51,11 @@ public class NamedStreamUnitsSymbol extends NamedStreamUnitsSymbolTOP {
         addAll(timedValues);
     }
 
-    protected List<StreamInstruction> timeValues = new ArrayList<>();
-
     public void add(StreamValueAtTick valueAtTick) {
         timeValues.add(new StreamInstruction(valueAtTick));
     }
 
-    public void add(IStreamValue streamValue){
+    public void add(IStreamValue streamValue) {
         streamValue.visit(this);
     }
 

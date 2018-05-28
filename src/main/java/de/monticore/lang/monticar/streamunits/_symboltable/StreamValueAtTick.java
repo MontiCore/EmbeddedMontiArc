@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.streamunits._symboltable;
 
-import de.monticore.lang.monticar.streamunits._ast.ASTStreamValue;
 import de.monticore.lang.monticar.streamunits._ast.ASTValueAtTick;
 import org.jscience.mathematics.number.Rational;
 

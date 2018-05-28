@@ -23,6 +23,6 @@ package de.monticore.lang.monticar.types2._ast;
 /**
  * @author Sascha
  */
-public interface ASTPrintType extends ASTPrintTypeTOP{
+public interface ASTPrintType extends ASTPrintTypeTOP {
     String printType();
 }

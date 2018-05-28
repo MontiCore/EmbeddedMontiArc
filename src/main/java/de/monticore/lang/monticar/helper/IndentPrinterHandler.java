@@ -32,10 +32,6 @@ import java.util.regex.Pattern;
  * @author Sascha Schneiders
  */
 public class IndentPrinterHandler {
-    protected Map<Class, Function<Object, String>> functions;
-    protected ArrayList<Object> params;
-    protected ArrayList<String> groups;
-
     // \{(\d)(?:\s*:\s*'([^']+)')?(?:\s*:\s*'([^']+)')?(?:\s*:\s*'([^']+)')?\}
     // this finds (and groups it):
     // {0}
@@ -43,6 +39,9 @@ public class IndentPrinterHandler {
     // {2 : 'before' : 'endVal'}
     // {3 : 'before' : 'middle' : 'endVal'}
     protected final static Pattern pattern = Pattern.compile("\\{(\\d)(?:\\s*:\\s*'([^']+)')?(?:\\s*:\\s*'([^']+)')?(?:\\s*:\\s*'([^']+)')?\\}");
+    protected Map<Class, Function<Object, String>> functions;
+    protected ArrayList<Object> params;
+    protected ArrayList<String> groups;
 
     protected IndentPrinterHandler(ArrayList<String> groups, ArrayList<Object> params, Map<Class, Function<Object, String>> functions) {
         this.groups = groups;

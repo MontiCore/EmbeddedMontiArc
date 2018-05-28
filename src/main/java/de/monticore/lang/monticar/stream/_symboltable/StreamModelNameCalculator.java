@@ -20,15 +20,15 @@
  */
 package de.monticore.lang.monticar.stream._symboltable;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableSet;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
+
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Helps loading inner components, by mapping their full-qualified names to the full-qualified name
@@ -42,46 +42,45 @@ import de.se_rwth.commons.Splitters;
  * @author Robert Heim, Michael von Wenckstern
  */
 public class StreamModelNameCalculator
-    extends de.monticore.CommonModelNameCalculator {
+        extends de.monticore.CommonModelNameCalculator {
 
-  @Override
-  public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
-    final Set<String> calculatedModelNames = new LinkedHashSet<>();
+    @Override
+    public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
+        final Set<String> calculatedModelNames = new LinkedHashSet<>();
 
-    if (ComponentStreamSymbol.KIND.isKindOf(kind)) {
-      calculatedModelNames.addAll(calculateModelNameForComponent(name));
-    }
-    else if (NamedStreamSymbol.KIND.isKindOf(kind)) {
-      calculatedModelNames.addAll(calculateModelNameForPort(name));
-    }
+        if (ComponentStreamSymbol.KIND.isKindOf(kind)) {
+            calculatedModelNames.addAll(calculateModelNameForComponent(name));
+        } else if (NamedStreamSymbol.KIND.isKindOf(kind)) {
+            calculatedModelNames.addAll(calculateModelNameForPort(name));
+        }
 
-    return calculatedModelNames;
-  }
-
-  protected Set<String> calculateModelNameForComponent(String name) {
-    List<String> parts = Splitters.DOT.splitToList(name);
-    Set<String> ret = new LinkedHashSet<>();
-
-    for (int i = 0; i < parts.size(); i++) {
-      char[] c = parts.get(i).toCharArray();
-      if (Character.isUpperCase(c[0])) {
-        ret.add(Joiners.DOT.join(parts.subList(0, i + 1)));
-      }
+        return calculatedModelNames;
     }
 
-    return Collections.unmodifiableSet(ret);
-  }
+    protected Set<String> calculateModelNameForComponent(String name) {
+        List<String> parts = Splitters.DOT.splitToList(name);
+        Set<String> ret = new LinkedHashSet<>();
 
-  protected Set<String> calculateModelNameForPort(String name) {
-    List<String> parts = Splitters.DOT.splitToList(name);
-    if (parts.size() > 1) {
-      String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
-      return ImmutableSet.<String>builder()
-          .addAll(calculateModelNameForComponent(modelName))
-          .build();
+        for (int i = 0; i < parts.size(); i++) {
+            char[] c = parts.get(i).toCharArray();
+            if (Character.isUpperCase(c[0])) {
+                ret.add(Joiners.DOT.join(parts.subList(0, i + 1)));
+            }
+        }
+
+        return Collections.unmodifiableSet(ret);
     }
-    return ImmutableSet.of();
-  }
+
+    protected Set<String> calculateModelNameForPort(String name) {
+        List<String> parts = Splitters.DOT.splitToList(name);
+        if (parts.size() > 1) {
+            String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
+            return ImmutableSet.<String>builder()
+                    .addAll(calculateModelNameForComponent(modelName))
+                    .build();
+        }
+        return ImmutableSet.of();
+    }
 
 
 }

@@ -35,6 +35,11 @@ import java.util.Optional;
  */
 public class MCASTTypeSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final MCASTTypeSymbolKind KIND;
+
+    static {
+        KIND = MCASTTypeSymbolKind.INSTANCE;
+    }
+
     protected ASTType astType = null;
 
     public MCASTTypeSymbol(String name) {
@@ -78,9 +83,5 @@ public class MCASTTypeSymbol extends CommonSymbol implements MCTypeSymbol {
 
     public Scope getSpannedScope() {
         return null;
-    }
-
-    static {
-        KIND = MCASTTypeSymbolKind.INSTANCE;
     }
 }

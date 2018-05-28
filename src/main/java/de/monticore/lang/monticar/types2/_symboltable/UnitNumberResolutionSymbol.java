@@ -43,12 +43,12 @@ public class UnitNumberResolutionSymbol extends CommonSymbol implements MCTypeSy
         this.unitNumberResolution = astUnitNumberResolution;
     }
 
-    public void setUnitNumberResolution(ASTUnitNumberResolution unitNumberResolution) {
-        this.unitNumberResolution = unitNumberResolution;
-    }
-
     public ASTUnitNumberResolution getUnitNumberResolution() {
         return unitNumberResolution;
+    }
+
+    public void setUnitNumberResolution(ASTUnitNumberResolution unitNumberResolution) {
+        this.unitNumberResolution = unitNumberResolution;
     }
 
     @Override

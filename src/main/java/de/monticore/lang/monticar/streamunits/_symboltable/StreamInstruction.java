@@ -55,6 +55,10 @@ public class StreamInstruction {
         return streamValue;
     }
 
+    public void setStreamValue(Optional<StreamValuePrecision> streamValue) {
+        this.streamValue = streamValue;
+    }
+
     public void setStreamValue(StreamValuePrecision streamValue) {
         this.streamValue = Optional.of(streamValue);
     }
@@ -63,16 +67,12 @@ public class StreamInstruction {
         return streamCompare;
     }
 
-    public void setStreamCompare(StreamCompare streamCompare) {
-        this.streamCompare = Optional.of(streamCompare);
-    }
-
-    public void setStreamValue(Optional<StreamValuePrecision> streamValue) {
-        this.streamValue = streamValue;
-    }
-
     public void setStreamCompare(Optional<StreamCompare> streamCompare) {
         this.streamCompare = streamCompare;
+    }
+
+    public void setStreamCompare(StreamCompare streamCompare) {
+        this.streamCompare = Optional.of(streamCompare);
     }
 
     public Optional<StreamValueAtTick> getStreamValueAtTick() {

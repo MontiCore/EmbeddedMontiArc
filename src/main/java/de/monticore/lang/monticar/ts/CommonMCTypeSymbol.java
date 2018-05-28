@@ -40,9 +40,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public abstract class CommonMCTypeSymbol<T extends MCTypeSymbol, V extends MCTypeReference<T>>
         extends CommonScopeSpanningSymbol implements MCTypeSymbol {
 
-    private V superClass;
     private final List<V> interfaces = new ArrayList<>();
-
+    private V superClass;
     private boolean isFormalTypeParameter = false;
 
     protected CommonMCTypeSymbol(String name) {
@@ -97,12 +96,12 @@ public abstract class CommonMCTypeSymbol<T extends MCTypeSymbol, V extends MCTyp
         return superTypes;
     }
 
-    public void setFormalTypeParameter(boolean formalTypeParameter) {
-        this.isFormalTypeParameter = formalTypeParameter;
-    }
-
     @Override
     public boolean isFormalTypeParameter() {
         return isFormalTypeParameter;
+    }
+
+    public void setFormalTypeParameter(boolean formalTypeParameter) {
+        this.isFormalTypeParameter = formalTypeParameter;
     }
 }

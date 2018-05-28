@@ -44,6 +44,25 @@ public class SIUnitRangesSymbolReference extends SIUnitRangesSymbol implements M
         super(name, ranges);
     }
 
+    public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(ASTRange astType) {
+        String name = "SIUnitRangesType";
+        List<ASTRange> ranges = new ArrayList<ASTRange>();
+        ranges.add(astType);
+        astType.setupSIUnitRanges(ranges);
+        return new SIUnitRangesSymbolReference(name, ranges);
+    }
+
+    public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(ASTRanges astType) {
+        return constructSIUnitRangesSymbolReference(astType.getRangeList());
+    }
+
+    public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(List<ASTRange> astRanges) {
+        for (ASTRange astRange : astRanges) {
+            astRange.setupSIUnitRanges(astRanges);
+        }
+        return new SIUnitRangesSymbolReference("SIUnitRangesType", astRanges);
+    }
+
     @Override
     public SIUnitRangesSymbol getReferencedSymbol() {
         return this;
@@ -86,24 +105,5 @@ public class SIUnitRangesSymbolReference extends SIUnitRangesSymbol implements M
 
     @Override
     public void setActualTypeArguments(List<ActualTypeArgument> list) {
-    }
-
-    public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(ASTRange astType) {
-        String name = "SIUnitRangesType";
-        List<ASTRange> ranges = new ArrayList<ASTRange>();
-        ranges.add(astType);
-        astType.setupSIUnitRanges(ranges);
-        return new SIUnitRangesSymbolReference(name, ranges);
-    }
-
-    public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(ASTRanges astType) {
-        return constructSIUnitRangesSymbolReference(astType.getRangeList());
-    }
-
-    public static SIUnitRangesSymbolReference constructSIUnitRangesSymbolReference(List<ASTRange> astRanges) {
-        for (ASTRange astRange : astRanges) {
-            astRange.setupSIUnitRanges(astRanges);
-        }
-        return new SIUnitRangesSymbolReference("SIUnitRangesType", astRanges);
     }
 }

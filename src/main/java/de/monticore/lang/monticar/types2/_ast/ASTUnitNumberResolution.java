@@ -21,14 +21,13 @@
 package de.monticore.lang.monticar.types2._ast;
 
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
 import javax.measure.unit.Unit;
 import java.util.List;
 import java.util.Optional;
-
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 /**
  * Created by Sascha on 01.06.2017.
@@ -42,6 +41,10 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
         super(name, unitNumber);
     }
 
+    public Optional<Rational> getNumber() {
+        return getUnitNumberOpt().get().getNumber();
+    }
+
     public void setNumber(Rational number) {
         if (!getUnitNumberOpt().isPresent()) {
             setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(number, Unit.ONE));
@@ -49,19 +52,15 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
         getUnitNumberOpt().get().setNumber(number);
     }
 
+    public Optional<Unit> getUnit() {
+        return getUnitNumberOpt().get().getUnit();
+    }
+
     public void setUnit(Unit unit) {
         if (!getUnitNumberOpt().isPresent()) {
             setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(Rational.ZERO, unit));
         }
         getUnitNumberOpt().get().setUnit(unit);
-    }
-
-    public Optional<Rational> getNumber() {
-        return getUnitNumberOpt().get().getNumber();
-    }
-
-    public Optional<Unit> getUnit() {
-        return getUnitNumberOpt().get().getUnit();
     }
 
     public String doResolution(List<ResolutionDeclarationSymbol> resolutionDeclarationSymbolList) {
@@ -79,7 +78,7 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
                     setNumber(toSet.getNumber().get());
                     setUnit(toSet.getUnit().get());
                     Log.debug("" + getNumber().get().intValue(), "PortResolution Number:");
-                    Log.debug(getNameOpt().get(),"Name:");
+                    Log.debug(getNameOpt().get(), "Name:");
                     return getNameOpt().get();
                 }
             }
@@ -89,7 +88,7 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
     }
 
     @Override
-    public String printType(){
+    public String printType() {
         return "UnitNumberResolution";
     }
 }

@@ -39,23 +39,23 @@ import static org.junit.Assert.assertNotNull;
  */
 public class TestParserTest {
 
-        static boolean failQuick;
+    static boolean failQuick;
 
-        @BeforeClass
-        public static void startUp() {
-            failQuick = Log.isFailQuickEnabled();
-            Log.enableFailQuick(false);
-        }
+    @BeforeClass
+    public static void startUp() {
+        failQuick = Log.isFailQuickEnabled();
+        Log.enableFailQuick(false);
+    }
 
-        @AfterClass
-        public static void tearDown() {
-            Log.enableFailQuick(failQuick);
-        }
+    @AfterClass
+    public static void tearDown() {
+        Log.enableFailQuick(failQuick);
+    }
 
-        @Before
-        public void clear() {
-            Log.getFindings().clear();
-        }
+    @Before
+    public void clear() {
+        Log.getFindings().clear();
+    }
 
     @Test
     public void testA() throws IOException {
@@ -86,5 +86,5 @@ public class TestParserTest {
         assertNotNull(ast);
     }*/
 
-    }
+}
 

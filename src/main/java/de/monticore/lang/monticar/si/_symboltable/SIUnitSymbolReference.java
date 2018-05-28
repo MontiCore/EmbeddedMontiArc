@@ -22,11 +22,12 @@ package de.monticore.lang.monticar.si._symboltable;
 
 
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 import java.util.List;
+
 /**
  * @author Sascha Schneiders
  */

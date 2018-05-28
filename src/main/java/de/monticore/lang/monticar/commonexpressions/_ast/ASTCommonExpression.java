@@ -20,19 +20,9 @@
  */
 package de.monticore.lang.monticar.commonexpressions._ast;
 
-import de.monticore.ast.Comment;
-import de.monticore.lang.monticar.commonexpressions._visitor.CommonExpressionsVisitor;
-import de.monticore.lang.monticar.mcexpressions._visitor.MCExpressionsVisitor;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
-
-import java.util.List;
-import java.util.Optional;
-
 /**
  * @author Sascha Schneiders
  */
-public interface ASTCommonExpression extends ASTCommonExpressionTOP{
+public interface ASTCommonExpression extends ASTCommonExpressionTOP {
 
 }

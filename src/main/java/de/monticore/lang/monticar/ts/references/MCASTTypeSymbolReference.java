@@ -23,7 +23,6 @@ package de.monticore.lang.monticar.ts.references;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.MutableScope;
-import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 
@@ -44,6 +43,11 @@ public class MCASTTypeSymbolReference extends MCASTTypeSymbol implements MCTypeR
 
     public MCASTTypeSymbolReference(String name, MutableScope enclosingScope, ASTType astType) {
         super(name, enclosingScope, astType);
+    }
+
+    public static MCASTTypeSymbolReference constructReference(String name, MutableScope enclosingScope, ASTType astType) {
+        MCASTTypeSymbolReference astTypeSymbolRef = new MCASTTypeSymbolReference(name, enclosingScope, astType);
+        return astTypeSymbolRef;
     }
 
     public MCASTTypeSymbol getReferencedSymbol() {
@@ -87,10 +91,5 @@ public class MCASTTypeSymbolReference extends MCASTTypeSymbol implements MCTypeR
 
     @Override
     public void setActualTypeArguments(List<ActualTypeArgument> list) {
-    }
-
-    public static MCASTTypeSymbolReference constructReference(String name, MutableScope enclosingScope, ASTType astType) {
-        MCASTTypeSymbolReference astTypeSymbolRef = new MCASTTypeSymbolReference(name, enclosingScope, astType);
-        return astTypeSymbolRef;
     }
 }

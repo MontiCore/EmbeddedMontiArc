@@ -49,12 +49,12 @@ public abstract class CommonMCFieldSymbol<T extends MCTypeReference<? extends MC
         this.type = type;
     }
 
-    public void setParameter(boolean isParameter) {
-        this.isParameter = isParameter;
-    }
-
     @Override
     public boolean isParameter() {
         return isParameter;
+    }
+
+    public void setParameter(boolean isParameter) {
+        this.isParameter = isParameter;
     }
 }

@@ -30,12 +30,12 @@ import java.util.Optional;
  * Created by michaelvonwenckstern on 11.02.17.
  */
 public class ASTElementType extends ASTElementTypeTOP {
-    protected Optional<ASTRange> range = Optional.empty();
     protected static RangesParser rangesParser = new RangesParser();
+    protected Optional<ASTRange> range = Optional.empty();
 
-    public  ASTElementType (String tElementType,
-        boolean isBoolean, boolean isComplex, boolean isRational,
-                               boolean isWholeNumber, boolean isNaturalNumber) {
+    public ASTElementType(String tElementType,
+                          boolean isBoolean, boolean isComplex, boolean isRational,
+                          boolean isWholeNumber, boolean isNaturalNumber) {
         super(Optional.ofNullable(tElementType), isWholeNumber, isRational, isComplex, isBoolean, isNaturalNumber);
     }
 
@@ -53,11 +53,11 @@ public class ASTElementType extends ASTElementTypeTOP {
 
     /**
      token TElementType =
-      ('Z' | 'Q' | 'C') Space*
-        '(' Space* (TUnitNumber | TUnitInf) Space* ':'
-            (Space* TUnitNumber Space* ':')?
-            Space*
-    */
+     ('Z' | 'Q' | 'C') Space*
+     '(' Space* (TUnitNumber | TUnitInf) Space* ':'
+     (Space* TUnitNumber Space* ':')?
+     Space*
+     */
     @Override
     public void setTElementType(String tElementType) {
         super.setTElementType(tElementType);
