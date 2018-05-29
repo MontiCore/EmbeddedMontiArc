@@ -28,9 +28,9 @@
 
     <!-- == PROJECT COORDINATES ============================================= -->
 
-  <groupId>de.monticore.lang</groupId>
-  <artifactId>math</artifactId>
-  <version>0.0.13-SNAPSHOT</version>
+    <groupId>de.monticore.lang</groupId>
+    <artifactId>math</artifactId>
+    <version>0.0.13-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
