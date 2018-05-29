@@ -28,13 +28,15 @@ public class ASTParameter extends ASTParameterTOP {
         super();
     }
 
-    protected ASTParameter(de.monticore.lang.monticar.types2._ast.ASTType type
+    protected ASTParameter(de.monticore.lang.monticar.common2._ast.ASTAdaptableKeyword adaptableKeyword
+            ,
+                           de.monticore.lang.monticar.types2._ast.ASTType type
             ,
                            de.monticore.lang.monticar.common2._ast.ASTNameWithArray nameWithArray
             ,
                            de.monticore.lang.monticar.common2._ast.ASTValue defaultValue
     ) {
-        super(type, nameWithArray, defaultValue);
+        super(adaptableKeyword, type, nameWithArray, defaultValue);
     }
 
 

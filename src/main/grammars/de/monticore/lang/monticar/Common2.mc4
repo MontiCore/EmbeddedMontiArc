@@ -101,11 +101,14 @@ ast Stereotype =
   /**
   * Parameters are used in configurable components.
   *
+  * @attribute AdaptableKeyword should the parameter be adaptable at runtime
   * @attribute Type the type of the parameter
   * @attribute name the name of the parameter
   */
   Parameter =
-    Type NameWithArray ("=" (defaultValue:Value))?;
+    AdaptableKeyword? Type NameWithArray ("=" (defaultValue:Value))?;
+
+    AdaptableKeyword = "adaptable";
 
     /** TODO rename/refactor after everything that uses this works correctly**/
   QualifiedNameWithArray=
