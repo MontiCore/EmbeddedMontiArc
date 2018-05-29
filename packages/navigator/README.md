@@ -1,5 +1,4 @@
-# <p align="center">Navigator</p>
-
+# Navigator
 <p align="center">
     <img src="https://img.shields.io/badge/Package_Version-0.1.0-blue.svg?longCache=true&style=flat-square"/>
 </p>

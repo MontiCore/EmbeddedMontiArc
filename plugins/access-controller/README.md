@@ -1,4 +1,4 @@
-# <p align="center">Access-Controller</p>
+# Access-Controller
 <p align="center">
     <img src="https://img.shields.io/badge/Plugin_Version-0.1.2-blue.svg?longCache=true&style=flat-square"/>
 </p>

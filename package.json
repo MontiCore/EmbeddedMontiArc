@@ -5,7 +5,7 @@
   "description": "An Online IDE for the Development on Domain-Specific Languages in the Browser based on Theia IDE.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/EmbeddedMontiArc/Elysium.git"
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
   },
   "keywords": [
     "Elysium IDE",
@@ -17,9 +17,9 @@
   "author": "SE RWTH",
   "contributors": [],
   "bugs": {
-    "url": "https://github.com/EmbeddedMontiArc/Elysium/issues"
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
   },
-  "homepage": "https://github.com/EmbeddedMontiArc/Elysium",
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
   "workspaces": [
     "packages/*",
     "plugins/*",
