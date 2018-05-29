@@ -24,5 +24,5 @@ script ForLoop
 
     for i = 1:2:9
         sum += sum * i;
-    end
+    end;
 end

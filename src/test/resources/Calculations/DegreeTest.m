@@ -45,7 +45,7 @@ script DegreeTest
      Q globalOrientation = orientation*(M_PI/180);
      if (globalOrientation > M_PI)
          globalOrientation -= 2 * M_PI;
-     end
+     end;
 
      Q orientedDistance = distance;
      Q angleTowardsTrajectory = atan(orientedDistance / 2);
@@ -61,7 +61,7 @@ script DegreeTest
          orientationOfTrajectory = -angle;
      else
          orientationOfTrajectory = angle;
-     end
+     end;
      Q angleTrajectoryAndCarDirection = orientationOfTrajectory - globalOrientation;
 
      //the resulting angle is the angle needed to steer the car parallel to the trajectory
@@ -73,7 +73,7 @@ script DegreeTest
          finalAngle -= 2 * M_PI;
      elseif (finalAngle < -M_PI)
           finalAngle += 2 * M_PI;
-     end
+     end;
 
      newSteeringAngle = finalAngle*(180/M_PI);
 
@@ -83,6 +83,6 @@ script DegreeTest
             angle = minSteeringAngle;
         elseif angle > maxSteeringAngle
             angle = maxSteeringAngle;
-        end
+        end;
         newSteeringAngle = -angle;
 end

@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Transpose2Sol
-[1 3 5;2 4 6]
+    Q^{2,3} A = [1 3 5;2 4 6];
 end

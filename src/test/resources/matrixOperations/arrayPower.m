@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script ArrayPower
-([1 2].^3 + [5 4]') .* [3 4]
+    Q^{1,2} A = ([1 2].^3 + [5 4]') .* [3 4];
 end

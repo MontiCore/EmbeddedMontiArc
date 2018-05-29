@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script Sub2Sol
-[-31 N 28 N 22 N; -50 N -2 N 2 N]
+    Q^{2,3} A = [-31 N 28 N 22 N; -50 N -2 N 2 N];
 end

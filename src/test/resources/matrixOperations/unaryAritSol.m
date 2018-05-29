@@ -20,5 +20,5 @@
 package matrixOperations;
 
 script UnaryAritSol
-[0 -239 -7771]
+    Q^{1,3} A = [0, -239, -7771];
 end

@@ -29,5 +29,5 @@ script If
       result = -1;
     else
       result = 0;
-    end
+    end;
 end

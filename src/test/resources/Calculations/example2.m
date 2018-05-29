@@ -28,7 +28,7 @@ script example2
     for i = c
       for j = c
         y+=c(x)*j+i;
-      end
+      end;
       x+=1;
-    end
+    end;
 end

@@ -27,6 +27,6 @@ script ForLoop3
   for i = 0:2
     for j = 0:2
       Cmat += A(i,j);
-    end
-  end
+    end;
+  end;
 end
