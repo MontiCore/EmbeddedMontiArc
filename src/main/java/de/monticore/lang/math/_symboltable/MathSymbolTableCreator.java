@@ -142,6 +142,14 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, assignmentDeclarationExpression);
     }
 
+    public void endVisit(final ASTMathTrueExpression trueExpression){
+        trueExpression.setSymbol(new MathBooleanExpressionSymbol(true));
+    }
+
+    public void endVisit(final ASTMathFalseExpression falseExpression){
+        falseExpression.setSymbol(new MathBooleanExpressionSymbol(false));
+    }
+
     public void endVisit(final ASTMathAssignmentStatement assignmentExpression) {
         MathAssignmentExpressionSymbol symbol = new MathAssignmentExpressionSymbol();
         //TODO change value
