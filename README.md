@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="doc/images/elysium.svg"/>
-    <img src="doc/images/quote.svg" width="718"/>
+    <img src="doc/images/elysium.png" width="100%"/>
+    <img src="doc/images/quote.png" width="100%"/>
 </p>
 <p align="center">
     <img src="https://img.shields.io/badge/Theia_Version-a52fab7d14e6d556647b5e202749a48aefd65cfe-blue.svg?longCache=true&style=flat-square"/>
@@ -116,7 +116,7 @@ would normally need a server component. A representation of this extension can b
 Figure 1.
 
 <p align="center">
-    <img src="doc/images/binding-layer.svg" width="520"/>
+    <img src="doc/images/binding-layer.png" width="520"/>
 </p>
 <p align="center">
     Figure 1. Representation of the binding layer between Elysium and Theia.
@@ -127,12 +127,12 @@ Figure 1.
 | :--------------------: | :--------------------: | :--------------------: | :--------------------: | :--------------------: | :---: |
 | 57+ :heavy_check_mark: | 52+ :heavy_check_mark: | 11+ :heavy_check_mark: | 44+ :heavy_check_mark: | 16+ :heavy_check_mark: | :x:   |
 
-Coming Soon:
-__Tested with__
+~~Coming Soon:
+__Tested with__~~
 
 ![https://www.browserstack.com](doc/images/browser-stack.png)
 
-| ![PC](doc/images/pc.svg) | ![Smartphones](doc/images/smartphone.svg) | ![Tablets](doc/images/tablet.svg) |
+| ![PC](doc/images/pc.png) | ![Smartphones](doc/images/smartphone.png) | ![Tablets](doc/images/tablet.png) |
 | :----------------------: | :---------------------------------------: | :-------------------------------: |
 | :heavy_check_mark:       | :x:                                       | :x:                               |
 

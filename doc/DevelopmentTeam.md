@@ -1,4 +1,4 @@
-# <p align="center">Elysian Fields</p>
+# Elysian Fields
 <p align="center">
     <img src="https://img.shields.io/badge/Last_Updated-2018--04--21-blue.svg?longCache=true&style=flat-square"/>
 </p>

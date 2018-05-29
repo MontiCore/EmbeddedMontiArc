@@ -1,7 +1,7 @@
-# <p align="center">Getting Started<p>
+# Getting Started
 
 ## Prerequisites
-| ![https://yarnpkg.com](images/yarn.svg) | ![https://nodejs.org](images/nodejs.svg) |
+| ![https://yarnpkg.com](images/yarn.png) | ![https://nodejs.org](images/nodejs.png) |
 | :----: | :-----: |
 | 1.5.1+ | 0.12.0+ |
 

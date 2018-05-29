@@ -1,5 +1,4 @@
-# <p align="center">Core</p>
-
+# Core
 <p align="center">
     <img src="https://img.shields.io/badge/Package_Version-0.1.2-blue.svg?longCache=true&style=flat-square"/>
 </p>

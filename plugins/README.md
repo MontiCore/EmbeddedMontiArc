@@ -1,4 +1,4 @@
-# <p align="center">Plugins</p>
+# Plugins
 <p align="center">
     <img src="https://img.shields.io/badge/Last_Updated-2018--05--16-blue.svg?longCache=true&style=flat-square"/>
 </p>
