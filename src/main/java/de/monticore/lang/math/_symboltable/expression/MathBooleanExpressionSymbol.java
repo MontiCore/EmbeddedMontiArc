@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.math.math._symboltable.expression;
+package de.monticore.lang.math._symboltable.expression;
 
 public class MathBooleanExpressionSymbol extends MathValueExpressionSymbol {
     private boolean value;
