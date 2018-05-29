@@ -1,0 +1,1 @@
+This maven plugin performs stream tests on EMAM components.
