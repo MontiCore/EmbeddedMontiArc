@@ -21,8 +21,10 @@ tags{
     tag system.intersectionController.cutoffTime with RosConnection;
     tag system.intersectionController.isActive with RosConnection;
 
-    tag system.intersectionController.stop[1] with RosConnection = {topic = (/sim/comm/slowDown1, std_msgs/Bool), msgField = data};
-    tag system.intersectionController.stop[2] with RosConnection = {topic = (/sim/comm/slowDown2, std_msgs/Bool), msgField = data};
+    tag system.intersectionController.stop[1] with RosConnection =
+        {topic = (/sim/comm/slowDown1, std_msgs/Bool), msgField = data};
+    tag system.intersectionController.stop[2] with RosConnection =
+        {topic = (/sim/comm/slowDown2, std_msgs/Bool), msgField = data};
 
 
     //collisionDetection
