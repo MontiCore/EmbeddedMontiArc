@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="doc/images/elysium.png"/>
-    <img src="doc/images/quote.png" width="718"/>
+    <img src="doc/images/elysium.png" width="100%"/>
+    <img src="doc/images/quote.png" width="100%"/>
 </p>
 <p align="center">
     <img src="https://img.shields.io/badge/Theia_Version-a52fab7d14e6d556647b5e202749a48aefd65cfe-blue.svg?longCache=true&style=flat-square"/>
@@ -127,8 +127,8 @@ Figure 1.
 | :--------------------: | :--------------------: | :--------------------: | :--------------------: | :--------------------: | :---: |
 | 57+ :heavy_check_mark: | 52+ :heavy_check_mark: | 11+ :heavy_check_mark: | 44+ :heavy_check_mark: | 16+ :heavy_check_mark: | :x:   |
 
-~~Coming Soon:~~
-__Tested with__
+~~Coming Soon:
+__Tested with__~~
 
 ![https://www.browserstack.com](doc/images/browser-stack.png)
 
