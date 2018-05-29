@@ -22,23 +22,26 @@ package de.monticore.lang.monticar;
 /**
  * Grammar for common elements that should be imported from somewhere else in future.
  */
-grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Literals2{
+grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.lang.monticar.Literals2, de.monticore.lang.monticar.Common2{
 
   StreamUnitsCompilationUnit =
     ("package" package:(Name& || ".")+ ";")?
     ComponentStreamUnits;
 
-  symbol scope ComponentStreamUnits = "stream" Name "for" componentName:Name  "{"
+  symbol scope ComponentStreamUnits = "stream" Name "for" componentName:Name /*typeParams:TypeParameters?*/  "{"
     NamedStreamUnits+
   "}";
-
+  //Name enforcement
   symbol scope NamedStreamUnits = Name ":" Stream ";" ;
 
   Stream = (StreamInstruction | "tick" )+;
-  StreamInstruction = StreamValue | StreamCompare;
-  StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick;
+  StreamInstruction = StreamValue | StreamCompare | StreamArrayValues;
+  StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick ;
   ValueAtTick = Name "(" (value:UnitNumber|lowerBound:UnitNumber ":" upperBound:UnitNumber ) ")";
   DontCare = "-";
+  StreamArrayValues = "[" (ValuePair | MatrixPair)"]" ;
+  ValuePair = (StreamValue | ",")+;
+  MatrixPair = ValuePair (";" ValuePair)+ ;
   ast StreamCompare = method public ASTStreamValue getLeft(){}
                       method public ASTStreamValue getRight(){}
                       method public String getOperator(){};

@@ -29,6 +29,7 @@ public class StreamInstruction {
     protected Optional<StreamValuePrecision> streamValue = Optional.empty();
     protected Optional<StreamCompare> streamCompare = Optional.empty();
     protected Optional<StreamValueAtTick> streamValueAtTick = Optional.empty();
+    protected Optional<StreamValues> streamValues = Optional.empty();
 
     public StreamInstruction() {
 
@@ -40,6 +41,10 @@ public class StreamInstruction {
 
     public StreamInstruction(StreamValueAtTick valueAtTick) {
         this.streamValueAtTick = Optional.of(valueAtTick);
+    }
+
+    public StreamInstruction(StreamValues valuesAtTick) {
+        this.streamValues = Optional.of(valuesAtTick);
     }
 
     public StreamInstruction(StreamCompare streamCompare) {
@@ -76,5 +81,13 @@ public class StreamInstruction {
 
     public void setStreamValueAtTick(Optional<StreamValueAtTick> streamValueAtTick) {
         this.streamValueAtTick = streamValueAtTick;
+    }
+
+    public Optional<StreamValues> getStreamValues() {
+        return streamValues;
+    }
+
+    public void setStreamValues(Optional<StreamValues> streamValues) {
+        this.streamValues = streamValues;
     }
 }

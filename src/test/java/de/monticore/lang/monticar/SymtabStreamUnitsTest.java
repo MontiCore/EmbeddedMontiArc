@@ -22,6 +22,7 @@ package de.monticore.lang.monticar;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.streamunits._ast.ASTValueAtTick;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
 import de.monticore.symboltable.GlobalScope;
@@ -33,9 +34,7 @@ import org.junit.Test;
 import java.nio.file.Paths;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Sascha on 16.05.2017.
@@ -137,6 +136,44 @@ public class SymtabStreamUnitsTest {
             assertEquals(">", (instruction.getStreamCompare().get()).getOperator().toString());
         }
 
+
+    }
+
+    @Test
+    public void testResolveMatrixStream() {
+        Scope symTab = createSymTab("src/test/resources/unitstreams/streams");
+
+        NamedStreamUnitsSymbol namedStreamSymbol = symTab.<NamedStreamUnitsSymbol>resolve(
+                "emamtest.TestMatrixStream.direction", NamedStreamUnitsSymbol.KIND).orElse(null);
+        assertNotNull(namedStreamSymbol);
+        StreamInstruction streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(0);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        StreamValues streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("1", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 2).toString());
+
+
+        streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(1);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("1", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 2).toString());
+
+
+        streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
+        assertTrue(streamInstruction.getStreamValues().isPresent());
+        streamValues = streamInstruction.getStreamValues().get();
+        assertEquals(1, streamValues.getRowDimension());
+        assertEquals(3, streamValues.getColumnDimension());
+        assertEquals("0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("1", streamValues.getStreamValue(0, 2).toString());
 
     }
 

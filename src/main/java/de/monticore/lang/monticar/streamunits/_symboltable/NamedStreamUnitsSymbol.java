@@ -56,6 +56,10 @@ public class NamedStreamUnitsSymbol extends NamedStreamUnitsSymbolTOP {
         timeValues.add(new StreamInstruction(valueAtTick));
     }
 
+    public void add(IStreamValue streamValue){
+        streamValue.visit(this);
+    }
+
     public void add(StreamValuePrecision value) {
         timeValues.add(new StreamInstruction(value));
     }
@@ -65,6 +69,9 @@ public class NamedStreamUnitsSymbol extends NamedStreamUnitsSymbolTOP {
         timeValues.add(new StreamInstruction(compare));
     }
 
+    public void add(StreamValues values) {
+        timeValues.add(new StreamInstruction(values));
+    }
 
     public void add(Object value, Object precision) {
         timeValues.add(new StreamInstruction(new StreamValuePrecision(value, precision)));

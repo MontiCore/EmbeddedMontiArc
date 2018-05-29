@@ -22,6 +22,7 @@ package de.monticore.lang.monticar;
 
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.symboltable.MutableScope;
+import org.jscience.mathematics.number.Rational;
 
 public final class Utils {
 
@@ -46,5 +47,13 @@ public final class Utils {
             s.setPackageName("java.lang");
             scope.add(s);
         }
+    }
+
+    public static String getRationalString(Rational rational) {
+        String valueString = rational.toString();
+        if (rational.getDivisor().toString().equals("1")) {
+            valueString = rational.getDividend().toString();
+        }
+        return valueString;
     }
 }

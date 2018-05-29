@@ -20,10 +20,14 @@
  */
 package de.monticore.lang.monticar.streamunits._symboltable;
 
+import de.monticore.lang.monticar.Utils;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import org.jscience.mathematics.number.Rational;
+
 /**
  * @author Sascha Schneiders
  */
-public class StreamValuePrecision {
+public class StreamValuePrecision implements IStreamValue {
     protected Object value;
     protected Object precision;
 
@@ -62,9 +66,37 @@ public class StreamValuePrecision {
 
     @Override
     public String toString() {
-        if (precision != null) {
-            return value.toString() + " +/- " + precision.toString();
+        String valueString = value.toString();
+        if (value instanceof Rational) {
+            Rational rational = (Rational) value;
+            valueString = Utils.getRationalString(rational);
+        } else if (value instanceof ASTUnitNumber) {
+            ASTUnitNumber unitNumber = (ASTUnitNumber) value;
+            if (unitNumber.getNumber().isPresent()) {
+                valueString = Utils.getRationalString(unitNumber.getNumber().get());
+            }
         }
-        return value.toString();
+
+
+        if (precision != null) {
+            String precisionString = precision.toString();
+            return valueString + " +/- " + precisionString;
+        }
+        return valueString;
+    }
+
+    @Override
+    public boolean isStreamValuePrecision() {
+        return true;
+    }
+
+    @Override
+    public boolean isStreamValueDontCare() {
+        return value.equals("-");
+    }
+
+    @Override
+    public void visit(NamedStreamUnitsSymbol streamUnitsSymbol) {
+        streamUnitsSymbol.add(this);
     }
 }

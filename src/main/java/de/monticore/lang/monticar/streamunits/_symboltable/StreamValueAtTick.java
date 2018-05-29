@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * @author Sascha Schneiders
  */
-public class StreamValueAtTick {
+public class StreamValueAtTick implements IStreamValue {
     protected String name;
     protected Optional<Rational> singleValue = Optional.empty();
     protected Optional<Rational> lowerBound = Optional.empty();
@@ -80,5 +80,15 @@ public class StreamValueAtTick {
 
     public void setUpperBound(Optional<Rational> upperBound) {
         this.upperBound = upperBound;
+    }
+
+    @Override
+    public boolean isStreamValueAtTick() {
+        return true;
+    }
+
+    @Override
+    public void visit(NamedStreamUnitsSymbol streamUnitsSymbol) {
+        streamUnitsSymbol.add(this);
     }
 }
