@@ -19,14 +19,7 @@
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
     <emadl.version>0.2.0-SNAPSHOT</emadl.version>
-    <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-    <Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
-    <Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
-    <Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <CNNArch.version>0.2.0-SNAPSHOT</CNNArch.version>
     <CNNTrain.version>0.2.0-SNAPSHOT</CNNTrain.version>
-    <Math.version>0.0.11-SNAPSHOT</Math.version>
-    <Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
     <embedded-montiarc-math-generator>0.0.9-SNAPSHOT</embedded-montiarc-math-generator>
     
         <!-- .. Libraries .................................................. -->
@@ -102,101 +95,9 @@
         </dependency>
 
         <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>${Common-MontiCar.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>common-monticar</artifactId>
-            <version>${Common-MontiCar.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc</artifactId>
-            <version>${Embedded-MontiArc.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc</artifactId>
-            <version>${Embedded-MontiArc.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-behaviour</artifactId>
-            <version>${Embedded-MontiArc-Behaviour.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-behaviour</artifactId>
-            <version>${Embedded-MontiArc-Behaviour.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math</artifactId>
-            <version>${Math.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>math</artifactId>
-            <version>${Math.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>embedded-montiarc-math</artifactId>
-            <version>${Embedded-MontiArc-Math.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-generator</artifactId>
             <version>${embedded-montiarc-math-generator}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-arch</artifactId>
-            <version>${CNNArch.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-arch</artifactId>
-            <version>${CNNArch.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
