@@ -378,10 +378,10 @@
     <activeProfile>alwaysActiveProfile</activeProfile>
     <activeProfile>anotherAlwaysActiveProfile</activeProfile>
   </activeProfiles>
-  -->
+ 
   <activeProfiles>
   <activeProfile>github</activeProfile>
   </activeProfiles>
-  
+   -->
   
 </settings>
