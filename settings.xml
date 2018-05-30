@@ -190,12 +190,11 @@
 	  <mirrorOf>eclipse</mirrorOf>
       <url>https://repo.eclipse.org/content/groups/releases/</url>
     </mirror>
-    <mirror>
-      <!-- this sends everything to the specified nexus repository -->
+    <!-- <mirror>
       <id>se-nexus</id>
       <mirrorOf>external:*</mirrorOf>
       <url>https://nexus.se.rwth-aachen.de/content/groups/montiarc</url>
-    </mirror>
+    </mirror> -->
 
 	 
 	<!--
