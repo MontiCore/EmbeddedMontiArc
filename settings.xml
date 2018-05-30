@@ -15,20 +15,7 @@
    | specification in this list marked as active will be used.
    |-->
   <proxies>
-    <!-- proxy
-     | Specification for one proxy, to be used in connecting to the network.
-     |
-    <proxy>
-      <id>optional</id>
-      <active>true</active>
-      <protocol>http</protocol>
-      <username>proxyuser</username>
-      <password>proxypass</password>
-      <host>proxy.host.net</host>
-      <port>80</port>
-      <nonProxyHosts>local.net|some.host.com</nonProxyHosts>
-    </proxy>
-    -->
+   
   </proxies>
 
   <!-- servers
@@ -50,9 +37,15 @@
   </servers>
 
   <mirrors>
+    <mirror>
+      <id>se-nexus</id>
+      <mirrorOf>external:*,!github,!eclipse,!maven-central</mirrorOf>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/montiarc</url>
+    </mirror>
+    
 	 <mirror>
       <id>github</id>
-      <mirrorOf>*</mirrorOf>
+      <mirrorOf>github</mirrorOf>
       <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
     </mirror>
     
@@ -67,13 +60,6 @@
 	  <mirrorOf>eclipse</mirrorOf>
       <url>https://repo.eclipse.org/content/groups/releases/</url>
     </mirror>
-    
-    <mirror>
-      <id>se-nexus</id>
-      <mirrorOf>external:*,!github,!eclipse,!maven-central</mirrorOf>
-      <url>https://nexus.se.rwth-aachen.de/content/groups/montiarc</url>
-    </mirror>
-
 	 
 	<!--
 	<mirror>
@@ -228,11 +214,24 @@
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
+        <repository>
+      <id>github</id>
+      <name>github</name>
+      <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+    </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
           <id>central</id>
           <url>http://central</url>
+          <releases><enabled /></releases>
+          <snapshots><enabled /></snapshots>
+        </pluginRepository>
+        
+        <pluginRepository>
+          <id>github</id>
+          <name>github</name>
+          <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </pluginRepository>
