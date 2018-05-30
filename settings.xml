@@ -127,6 +127,12 @@
       <password>repopwd</password>
     </server>
     -->
+    <server>
+      <id>se-nexus</id>
+      <username>ss16-mvw</username>
+      <password>eQYMf3AM</password>
+    </server> 
+
      <server>
       <id>github</id>
       <username>travisbuilduser</username>
@@ -184,6 +190,13 @@
 	  <mirrorOf>eclipse</mirrorOf>
       <url>https://repo.eclipse.org/content/groups/releases/</url>
     </mirror>
+    <mirror>
+      <!-- this sends everything to the specified nexus repository -->
+      <id>se-nexus</id>
+      <mirrorOf>external:*</mirrorOf>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/montiarc</url>
+    </mirror>
+
 	 
 	<!--
 	<mirror>
@@ -327,7 +340,34 @@
         </pluginRepository>
       </pluginRepositories>
     </profile>
-	</profiles>
+    <profile>
+      <id>se-nexus</id>
+      <!-- enable snapshots for the built in central repo to direct -->
+      <!-- all requests to nexus via the mirror -->
+      <repositories>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled /></releases>
+          <snapshots><enabled /></snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
+          <releases><enabled /></releases>
+          <snapshots><enabled /></snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <!-- make the profile active by default -->
+    <activeProfile>se-nexus</activeProfile>
+  </activeProfiles>
+
 	
 	
 
