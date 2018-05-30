@@ -18,8 +18,9 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.embeddedmontiarc.tagging;
+package de.monticore.lang.embeddedmontiarc.tagging.middleware.ros;
 
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.tagging._symboltable.TagKind;
 
 import java.util.Optional;

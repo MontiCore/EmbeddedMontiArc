@@ -21,18 +21,15 @@
 package de.monticore.lang.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.AdaptableSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.adaptable.AdaptableSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TaggingTest extends AbstractTaggingResolverTest {
 

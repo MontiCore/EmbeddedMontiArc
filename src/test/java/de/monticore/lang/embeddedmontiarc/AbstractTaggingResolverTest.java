@@ -40,7 +40,7 @@ package de.monticore.lang.embeddedmontiarc;
  * *******************************************************************************
  */
 
-import de.monticore.lang.embeddedmontiarc.tagging.AdaptableTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.adaptable.AdaptableTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 

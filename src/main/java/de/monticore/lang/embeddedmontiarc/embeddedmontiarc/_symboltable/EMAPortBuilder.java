@@ -22,8 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantValue;
-import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
-import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 

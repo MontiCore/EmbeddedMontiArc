@@ -21,7 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.middleware.ros;
 
 import de.monticore.lang.embeddedmontiarc.AbstractSymtabTest;
-import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 

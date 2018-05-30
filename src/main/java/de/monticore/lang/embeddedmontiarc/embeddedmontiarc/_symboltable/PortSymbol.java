@@ -20,15 +20,9 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
-import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -37,6 +31,12 @@ import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Symboltable entry for ports.

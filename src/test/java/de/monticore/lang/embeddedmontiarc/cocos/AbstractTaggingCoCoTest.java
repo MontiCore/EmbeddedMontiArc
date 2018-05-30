@@ -25,7 +25,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.middleware.ros.AbstractTaggingResolverTest;
-import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;

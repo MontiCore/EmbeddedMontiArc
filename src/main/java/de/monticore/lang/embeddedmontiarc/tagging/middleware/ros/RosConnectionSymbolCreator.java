@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.embeddedmontiarc.tagging;
+package de.monticore.lang.embeddedmontiarc.tagging.middleware.ros;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.tagging._ast.*;
