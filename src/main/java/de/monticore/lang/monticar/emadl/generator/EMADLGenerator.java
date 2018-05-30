@@ -154,10 +154,15 @@ public class EMADLGenerator {
                                      ExpandedComponentInstanceSymbol componentInstanceSymbol,
                                      Scope symtab){
         allInstances.add(componentInstanceSymbol);
-        ASTComponent astComponent = (ASTComponent) componentInstanceSymbol.getComponentType().getReferencedSymbol().getAstNode().get();
+        ComponentSymbol componentSymbol = componentInstanceSymbol.getComponentType().getReferencedSymbol();
+
+        /* remove the following two lines if the component symbol full name bug with generic variables is fixed */
+        componentSymbol.setFullName(null);
+        componentSymbol.getFullName();
+        /* */
 
         Optional<ArchitectureSymbol> architecture = componentInstanceSymbol.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
-        Optional<MathStatementsSymbol> mathStatements = astComponent.getSpannedScope().get().resolve("MathStatements", MathStatementsSymbol.KIND);
+        Optional<MathStatementsSymbol> mathStatements = componentSymbol.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
 
         EMADLCocos.checkAll(componentInstanceSymbol);
 
@@ -217,16 +222,6 @@ public class EMADLGenerator {
         //insert network attribute
         component = component.replaceFirst("public:",
                 "public:\n" + predictorClassName + " " + networkVariableName + ";");
-
-        /*
-        Pattern initPattern = Pattern.compile("void init\\(.*\\)\n\\{");
-        Matcher matcher = initPattern.matcher(component);
-        matcher.find();
-        String initMethodString = matcher.group(0);
-
-        //insert attribute initialization
-        component = component.replaceFirst("\\Q" + initMethodString,
-                initMethodString + "\n" + networkVariableName + " = " + predictorClassName + "();");*/
 
         //insert execute method
         component = component.replaceFirst("void execute\\(\\)\\s\\{\\s\\}",

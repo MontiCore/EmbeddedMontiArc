@@ -30,8 +30,8 @@ component LeNet{
 }
 ```
 ```
-component VGG16(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component VGG16<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -64,8 +64,8 @@ component VGG16(Z(2:oo) classes){
 }
 ```
 ```
-component ResNet34(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component ResNet34<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -107,8 +107,8 @@ component ResNet34(Z(2:oo) classes){
 }
 ```
 ```
-component Alexnet(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component Alexnet<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
           out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -153,8 +153,8 @@ component Alexnet(Z(2:oo) classes){
 }
 ```
 ```
-component ResNeXt50(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component ResNeXt50<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {

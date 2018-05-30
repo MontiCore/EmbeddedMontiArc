@@ -8,14 +8,13 @@
 #include "CNNTranslator.h"
 using namespace arma;
 class cifar10_cifar10Classifier_net{
+const int classes = 10;
 public:
 CNNPredictor_cifar10_cifar10Classifier_net _cnn_;
-double classes;
 cube data;
 colvec softmax;
-void init(double classes)
+void init()
 {
-this->classes = classes;
 data = cube(3, 32, 32);
 softmax=colvec(classes);
 }

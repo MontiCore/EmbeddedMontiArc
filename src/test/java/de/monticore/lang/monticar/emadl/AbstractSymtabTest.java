@@ -24,6 +24,8 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguageFamily;
+import de.monticore.lang.monticar.emadl.generator.AbstractSymtab;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -40,17 +42,9 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertTrue;
 
 public class AbstractSymtabTest {
-    protected static Scope createSymTab(String... modelPath) {
-        ModelingLanguageFamily fam = new EMADLLanguageFamily();
+    protected static TaggingResolver createSymTab(String... modelPath) {
 
-        final ModelPath mp = new ModelPath();
-        for (String m : modelPath) {
-            mp.addEntry(Paths.get(m));
-        }
-        GlobalScope scope = new GlobalScope(mp, fam);
-
-        LogConfig.init();
-        return scope;
+        return AbstractSymtab.createSymTabAndTaggingResolver(modelPath);
     }
 
     public static void checkFilesAreEqual(Path generationPath, Path resultsPath, List<String> fileNames) {

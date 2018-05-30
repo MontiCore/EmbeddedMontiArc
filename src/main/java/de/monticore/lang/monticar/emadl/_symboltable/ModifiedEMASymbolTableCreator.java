@@ -20,14 +20,21 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
+import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
+import de.monticore.symboltable.Scope;
+import de.monticore.symboltable.Symbol;
+import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Collection;
 import java.util.Deque;
+import java.util.Optional;
 
 public class ModifiedEMASymbolTableCreator extends EmbeddedMontiArcSymbolTableCreator {
 

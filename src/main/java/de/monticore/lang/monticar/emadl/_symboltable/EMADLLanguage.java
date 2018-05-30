@@ -24,6 +24,7 @@ import de.monticore.EmbeddingModelingLanguage;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.math.math._symboltable.MathLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
@@ -58,10 +59,10 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
         List<ResolvingFilter<? extends Symbol>> ret =
                 new ArrayList<>(super.getResolvingFilters());
         ret.add(new PortArraySymbol2IODeclarationSymbolTypeFilter());
-        ret.add(new ResolutionDeclarationSymbol2VariableSymbolTypeFilter());
+        //ret.add(new ResolutionDeclarationSymbol2VariableSymbolTypeFilter());
 
         ret.add(new PortArraySymbol2MathVariableDeclarationSymbolTypeFilter());
-        ret.add(new ResolutionDeclarationSymbol2VariableSymbolTypeFilter());
+        ret.add(new ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter());
         return ret;
     }
 

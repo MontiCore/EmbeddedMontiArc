@@ -16,8 +16,8 @@ cifar10_cifar10Classifier_calculateClass calculateClass;
 void init()
 {
 image = cube(3, 32, 32);
-net.init(10);
-calculateClass.init(10);
+net.init();
+calculateClass.init();
 }
 void execute()
 {

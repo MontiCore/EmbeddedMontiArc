@@ -26,7 +26,9 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbo
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
+import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
+import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -53,23 +55,44 @@ public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentI
     }
 
     public void addVariableSymbolsToInstance(ExpandedComponentInstanceSymbol instance){
-        for (int i = 0; i < instance.getArguments().size(); i++){
-            if (!(instance.getArguments().get(i) instanceof ASTMathNumberExpression)){
+        //add generics
+        for (ResolutionDeclarationSymbol sym : instance.getResolutionDeclarationSymbols()){
+            if (sym.getASTResolution() instanceof ASTUnitNumberResolution){
+                ASTUnitNumberResolution numberResolution = (ASTUnitNumberResolution) sym.getASTResolution();
+                VariableSymbol genericsParam = new VariableSymbol.Builder()
+                        .name(sym.getNameToResolve())
+                        .type(VariableType.ARCHITECTURE_PARAMETER)
+                        .build();
+                genericsParam.setExpression(ArchSimpleExpressionSymbol.of(numberResolution.getNumber().get()));
+                instance.getSpannedScope().getAsMutableScope().add(genericsParam);
+            }
+            else {
                 Log.error("Argument type error. Arguments of a CNN component " +
-                                "that are not numbers are not supported."
+                                "that are not numbers are currently not supported."
+                        , sym.getSourcePosition());
+            }
+        }
+
+        //add configuration parameters
+        for (int i = 0; i < instance.getArguments().size(); i++){
+            if (instance.getArguments().get(i) instanceof ASTMathNumberExpression){
+                ASTMathNumberExpression exp = (ASTMathNumberExpression) instance.getArguments().get(i);
+
+                MCFieldSymbol emaParam = instance.getComponentType().getConfigParameters().get(i);
+                VariableSymbol archParam = new VariableSymbol.Builder()
+                        .name(emaParam.getName())
+                        .type(VariableType.ARCHITECTURE_PARAMETER)
+                        .build();
+                archParam.setExpression(ArchSimpleExpressionSymbol.of(
+                        exp.getNumber().getUnitNumber().get().getNumber().get()));
+
+                instance.getSpannedScope().getAsMutableScope().add(archParam);
+            }
+            else {
+                Log.error("Argument type error. Arguments of a CNN component " +
+                                "that are not numbers are currently not supported."
                         , instance.getArguments().get(i).get_SourcePositionStart());
             }
-            ASTMathNumberExpression exp = (ASTMathNumberExpression) instance.getArguments().get(i);
-
-            MCFieldSymbol emaParam = instance.getComponentType().getConfigParameters().get(i);
-            VariableSymbol archParam = new VariableSymbol.Builder()
-                    .name(emaParam.getName())
-                    .type(VariableType.ARCHITECTURE_PARAMETER)
-                    .build();
-            archParam.setExpression(ArchSimpleExpressionSymbol.of(
-                    exp.getNumber().getUnitNumber().get().getNumber().get()));
-
-            instance.getSpannedScope().getAsMutableScope().add(archParam);
         }
     }
 

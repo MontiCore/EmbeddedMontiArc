@@ -6,13 +6,12 @@
 #include "armadillo"
 using namespace arma;
 class cifar10_cifar10Classifier_calculateClass{
+const int n = 10;
 public:
-double n;
 colvec inputVector;
 double maxIndex;
-void init(double n)
+void init()
 {
-this->n = n;
 inputVector=colvec(n);
 }
 void execute()
