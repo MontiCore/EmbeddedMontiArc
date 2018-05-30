@@ -349,7 +349,7 @@
 </plugin>
         </plugins>
     </build>
-
+<!--
     <distributionManagement>
         <repository>
             <id>internal.repo</id>
@@ -361,4 +361,16 @@
             <url>file://${project.build.directory}/external-dependencies</url>
         </snapshotRepository>
     </distributionManagement>
+    -->
+  <distributionManagement>
+    <repository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/montiarc/</url>
+    </repository>
+    <snapshotRepository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/montiarc/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
