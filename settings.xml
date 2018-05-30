@@ -160,14 +160,14 @@
       <!-- all requests to nexus via the mirror -->
       <repositories>
         <repository>
-          <id>central</id>
-          <url>http://central</url>
+          <id>eclipse</id>
+          <url>https://repo.eclipse.org/content/groups/releases/</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
-		<repository>
-          <id>eclipse</id>
-          <url>https://repo.eclipse.org/content/groups/releases/</url>
+        <repository>
+          <id>central</id>
+          <url>http://central</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
@@ -209,29 +209,28 @@
       <!-- all requests to nexus via the mirror -->
       <repositories>
         <repository>
+            <id>github</id>
+            <name>github</name>
+            <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+        </repository>
+        <repository>
           <id>central</id>
           <url>http://central</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
-        <repository>
-      <id>github</id>
-      <name>github</name>
-      <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
-    </repository>
       </repositories>
       <pluginRepositories>
-        <pluginRepository>
-          <id>central</id>
-          <url>http://central</url>
-          <releases><enabled /></releases>
-          <snapshots><enabled /></snapshots>
-        </pluginRepository>
-        
         <pluginRepository>
           <id>github</id>
           <name>github</name>
           <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
+          <releases><enabled /></releases>
+          <snapshots><enabled /></snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>central</id>
+          <url>http://central</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </pluginRepository>
