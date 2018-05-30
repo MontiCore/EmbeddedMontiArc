@@ -27,13 +27,10 @@ import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 
 import static de.monticore.lang.monticar.emadl.ParserTest.ENABLE_FAIL_QUICK;
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 
 public class InstanceTest extends AbstractSymtabTest {
 

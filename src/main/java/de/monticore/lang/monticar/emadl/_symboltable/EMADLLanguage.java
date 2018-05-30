@@ -29,7 +29,6 @@ import de.monticore.lang.math.math._symboltable.MathLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl.adapter.PortArraySymbol2IODeclarationSymbolTypeFilter;
-import de.monticore.lang.monticar.emadl.adapter.ResolutionDeclarationSymbol2VariableSymbolTypeFilter;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;
