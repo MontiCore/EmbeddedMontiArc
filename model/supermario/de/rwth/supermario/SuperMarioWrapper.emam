@@ -1,6 +1,6 @@
 package de.rwth.supermario;
 
-include de.rwth.supermario.haller.controller;
+import de.rwth.supermario.haller.controller;
 
 component SuperMarioWrapper {
     ports 

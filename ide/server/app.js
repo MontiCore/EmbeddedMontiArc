@@ -214,7 +214,7 @@ App.post("/services/supermario/report", function(request, response) {
 
 App.post("/services/supermario/play", function(request, response) {
     function onExecuted() {
-        Chrome.open(URLS.SHARED + "/pp");
+        Chrome.open(URLS.SHARED + "/mp");
         response.end();
     }
     onExecuted();
@@ -232,7 +232,7 @@ App.post("/services/supermario/emam2wasmGen", function(request, response) {
 
 App.post("/services/supermario/simulate", function(request, response) {
     function onExecuted() {
-        Chrome.open(URLS.SHARED + "/ps/simulation.html");
+        Chrome.open(URLS.SHARED + "/ms/simulation.html");
         response.end();
     }
     SuperMarioSimulation.execute(onExecuted);

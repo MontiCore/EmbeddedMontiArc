@@ -24,7 +24,7 @@ define(function(require, exports, module) {
 		function onUpdated() {
             var project = localStorage.getItem("reponame").toLowerCase();
 
-            messageIndex = UICustom.message("Starting Pacman - This might take a few minutes...");
+            messageIndex = UICustom.message("Starting Super Mario - This might take a few minutes...");
 
             window.fetch("/services/" + project + "/play", {
                 "method": "post"
@@ -42,10 +42,10 @@ define(function(require, exports, module) {
                 var parent = Layout.getElement("barTools");
 
                 var exmarkLabel = new UI.label({
-                    "class": "icon-pacman-play",
+                    "class": "icon-supermario-play",
                     "height": 14,
                     "width": 22,
-                    "tooltip": "Play Pacman",
+                    "tooltip": "Play Super Mario",
                     "visible": true
                 });
 
