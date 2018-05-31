@@ -15,8 +15,7 @@ installation:
   stage: installation
   image: node:9.9.0
   script:
-    - apt-get update -yq
-    - apt-get install -y build-essential
+    - apk update && apk add yarn python g++ make && rm -rf /var/cache/apk/*
     - yarn install && yarn run download
 
 build:
