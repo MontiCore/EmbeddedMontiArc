@@ -1,1 +1,28 @@
-This section is about the
+\subsection{Stream Testing}
+To address \textbf{RQ1} and \textbf{RQ3} we assigned two groups the task to model a Controller for PacMan and SuperMario respectively and interview the results afterwards. In the future we will refer to the groups as \textit{group A} and \textit{group B}. Group A consists of one subject who is familiar with EmbeddedMontiArc and group B consists of two subjects who have no experience with EmbeddedMontiArc. These groups were selected random among the students of a computer science seminar. 
+EmbeddedMontiArc comes along with stream tests in order to check a component against a condition as stated in the previous chapter.
+We can use those tests to define the conditions the controllers need to fulfill. Those conditions are taken from use cases. For PacMan the most general acceptance test would be to never let the PacMan die. Due to the fact that stream tests cannot be defined unlimited and that this test might be hard to implement we defined the following deterministic tests for PacMan and SuperMario. We first state those for PacMan:
+
+\begin{itemize}
+	\item Given the scenario in fig. 12 (PacMan läuft weg), the PacMan must be controlled to the left (in order to not die)
+	\item Given the scenario in fig. 13 (Geister sind essbar), the PacMan should be controlled toward the yellow ghost.
+	\item Given the scenario in fig. 14 (Zwei Wege sind gleichwertig, einer hat einen Cookie drin) the PacMan should navigate to the cookie.
+\end{itemize}
+
+Those scenarios can be tested easily within a few ticks via stream testing.
+
+For SuperMario we defined the following tests:
+\begin{itemize}
+	\item Test 1
+	\item Test 2
+\end{itemize}
+For example the stream test of test 1 is shown fig...
+
+The two groups were then assigned to use these tests as a guideline to develop their controllers.
+
+\subsection{Preparations}
+The Code of the PacMan emulator (Link?) and SuperMario emulator (Link?) we used was available in Html5 and JavaScript. C\&C-Components in EmbeddedMontiArc can be translated to C++ code and then to a webassembly which uses JavaScript (see \cite{bertram2017component}). This JavaScript file can be given inputs according to the component and calculates the outputs on execution. To combine these two files, there is an additional interface needed to extract the information for the inputs out of the emulator and then give the calculated outputs into the emulator.
+For the purpose of implementing the controllers the subjects were assigned to use the EmbeddedMontiArcStudio.
+EmbeddedMontiArcStudioV1.6.2 did neither support a simulator of PacMan nor of a simulator SuperMario. So an additional step to awnser RQ2 \textit{Is it possible to integrate other simulators in a recent amount of work} it for the groups to integrate the simulators into the EmbeddedMontiArcStudio.
+In order to be able to do so, group A is instructed by an expert (Jean-Marc) which files need modification and what to add. After that group A instructed group B the same way.
+
