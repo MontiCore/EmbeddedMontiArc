@@ -6,8 +6,8 @@
     <img src="https://img.shields.io/badge/Theia_Version-a52fab7d14e6d556647b5e202749a48aefd65cfe-blue.svg?longCache=true&style=flat-square"/>
 </p>
 <p align="center">
-    <a href="https://travis-ci.org/EmbeddedMontiArc/Elysium">
-        <img src="https://travis-ci.org/EmbeddedMontiArc/Elysium.svg?branch=master"/>
+    <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/commits/master">
+        <img alt="pipeline status" src="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/badges/master/pipeline.svg" />
     </a>
     <a href="https://codeclimate.com/github/EmbeddedMontiArc/Elysium/maintainability">
         <img src="https://api.codeclimate.com/v1/badges/4a5e4f9dc76d2a39b607/maintainability"/>
