@@ -13,9 +13,11 @@ if __name__ == "__main__":
        batch_size = 64,
 num_epoch = 10,
 load_checkpoint = False,
+context = 'gpu',
 normalize = True,
 optimizer = 'adam',
 optimizer_params = {
+    'weight_decay': 1.0E-4,
     'learning_rate': 0.01,
     'learning_rate_decay': 0.8,
     'step_size': 1000}

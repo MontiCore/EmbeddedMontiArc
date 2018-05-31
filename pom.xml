@@ -16,7 +16,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
     <emadl.version>0.2.1-SNAPSHOT</emadl.version>
-    <CNNTrain.version>0.2.0-SNAPSHOT</CNNTrain.version>
+    <CNNTrain.version>0.2.1-SNAPSHOT</CNNTrain.version>
     <cnnarch-generator.version>0.2.1-SNAPSHOT</cnnarch-generator.version>
     <embedded-montiarc-math-generator>0.0.9-SNAPSHOT</embedded-montiarc-math-generator>
     
