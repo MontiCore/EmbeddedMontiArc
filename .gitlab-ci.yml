@@ -11,18 +11,18 @@ cache:
 
 installation:
   stage: installation
-  image: node:10.3.0
+  image: node:9.9.0
   script:
     - apt-get update -yq
-    - apt-get install build-essential
+    - apt-get install -y build-essential
     - yarn install && yarn run download
 
 build:
   stage: build
-  image: node:10.3.0
+  image: node:9.9.0
   script: yarn run build
 
 documentation:
   stage: documentation
-  image: node:10.3.0
+  image: node:9.9.0
   script: yarn run documentation
