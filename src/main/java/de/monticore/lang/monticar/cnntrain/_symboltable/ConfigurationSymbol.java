@@ -31,6 +31,7 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
     private LoadCheckpointSymbol loadCheckpoint;
     private NormalizeSymbol normalize;
     private OptimizerSymbol optimizer;
+    private TrainContextSymbol trainContext;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
@@ -78,5 +79,12 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         this.normalize = normalize;
     }
 
+    public TrainContextSymbol getTrainContext() {
+        return trainContext;
+    }
+
+    public void setTrainContext(TrainContextSymbol trainContext) {
+        this.trainContext = trainContext;
+    }
 
 }

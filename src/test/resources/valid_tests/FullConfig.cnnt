@@ -2,6 +2,7 @@ configuration FullConfig{
      num_epoch : 5
      batch_size : 100
      load_checkpoint: true
+     context:cpu
      normalize: true
      optimizer:rmsprop{
          learning_rate:0.001

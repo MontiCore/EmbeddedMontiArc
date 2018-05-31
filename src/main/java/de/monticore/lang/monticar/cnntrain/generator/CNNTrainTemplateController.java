@@ -104,6 +104,13 @@ public class CNNTrainTemplateController {
         return getConfiguration().getNormalize();
     }
 
+    public TrainContextSymbol getContext() {
+        if (getConfiguration().getTrainContext() == null) {
+            return null;
+        }
+        return getConfiguration().getTrainContext();
+    }
+
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
             return null;

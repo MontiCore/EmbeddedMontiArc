@@ -143,6 +143,17 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         configuration.setNormalize(symbol);
     }
 
+    @Override
+    public void visit(ASTTrainContextEntry node) {
+        TrainContextSymbol symbol = new TrainContextSymbol();
+        if (node.getValue().cpuIsPresent()){
+            symbol.setValue(node.getValue().getCpu().get());
+        }
+        else {
+            symbol.setValue(node.getValue().getGpu().get());
+        }
+        configuration.setTrainContext(symbol);
+    }
 
     @Override
     public void endVisit(ASTLRPolicyValue node) {
