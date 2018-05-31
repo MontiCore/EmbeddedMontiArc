@@ -1,11 +1,11 @@
 <p align="center">
-    <img src="doc/images/elysium.png" width="100%"/>
-    <img src="doc/images/quote.png" width="100%"/>
+    <img src="doc/images/elysium.png"/>
+    <img src="doc/images/quote.png" width="718"/>
 </p>
 <p align="center">
-    <img src="https://img.shields.io/badge/Theia_Version-a52fab7d14e6d556647b5e202749a48aefd65cfe-blue.svg?longCache=true&style=flat-square"/>
-</p>
-<p align="center">
+    <a href="https://github.com/theia-ide/theia">
+        <img src="https://img.shields.io/badge/Theia_Version-a52fab7d14e6d556647b5e202749a48aefd65cfe-blue.svg?longCache=true&style=flat-square"/>
+    </a>
     <a href="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/commits/master">
         <img alt="pipeline status" src="https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/badges/master/pipeline.svg" />
     </a>
