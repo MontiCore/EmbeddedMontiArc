@@ -19,7 +19,7 @@
 
 package de.monticore.lang.monticar;
 
-grammar Resolution extends de.monticore.literals.Literals{
+grammar Resolution extends de.monticore.NumberUnit, de.monticore.literals.Literals, de.monticore.ExpressionsBasis, de.monticore.lang.monticar.PrintType {
     ast ResolutionDeclaration = method public String getName(){
         return "implement Name!";
     }
@@ -43,10 +43,40 @@ grammar Resolution extends de.monticore.literals.Literals{
    };
    NameResolution implements Resolution = Name;
    NameResolutionDeclaration implements ResolutionDeclaration = Name ("=" Resolution);
+   ast NamingResolution= method public String getTypeName(){
+     return null;
+   };
+   NamingResolution implements ResolutionDeclaration = Name;
 
+   ast TypeNameResolutionDeclaration = method public String getTypeName(){
+       return getType().toString();
+   };
+   TypeNameResolutionDeclaration implements ResolutionDeclaration = Type Name ("=" Resolution);//TODO investigate issues related to this
 
-   /*** Put here due to intergrammar dependencies***/
+    ast UnitNumberTypeArgument= method public String printType(){return "UnitNumberTypeArgument";};
+      UnitNumberTypeArgument implements PrintType, TypeArgument<100>  = NumberWithUnit;
 
-   /** ASTTypeArgument represents a type argument (generics).*/
-   interface TypeArgument;
+   ast UnitNumberResolution= method public String printType(){return "UnitNumberResolution";};
+   UnitNumberResolution implements PrintType, Resolution = (Name | NumberWithUnit);
+
+    // TODO: Same as UnitNumberExpression implements Expression = NumberWithUnit;
+    UnitNumberExpression implements Expression = NumberWithUnit;
+    UnitNumberResolutionExpression implements Expression = UnitNumberResolution;
+
+    // TODO: Is redundant to TypeNameResolutionDeclaration think about removing this
+   ast UnitNumberResolutionDeclaration = method public String getTypeName(){
+               return getType().toString();
+   };
+   UnitNumberResolutionDeclaration implements ResolutionDeclaration = Type name:Name ("=" NumberWithUnit)?;
+
+    /*   ast MultiplicationResolution= method public String getTypeName(){
+                       return "MultiplicationResolution";
+           }
+           method public String getName(){return null;};
+       MultiplicationResolution implements ResolutionDeclaration, TypeArgument = ResolutionDeclaration "*" ResolutionDeclaration;
+       ast AdditionResolution = method public String getTypeName(){
+                        return "AdditionResolution";
+       }method public String getName(){return null;};
+       AdditionResolution implements ResolutionDeclaration, TypeArgument = ResolutionDeclaration "+" ResolutionDeclaration;
+   */
 }

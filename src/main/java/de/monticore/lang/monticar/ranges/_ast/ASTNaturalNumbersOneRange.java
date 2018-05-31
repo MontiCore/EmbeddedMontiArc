@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.monticar.ranges._ast;
 
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import org.jscience.mathematics.number.Rational;
 
 import javax.measure.unit.Unit;
@@ -32,8 +32,8 @@ import javax.measure.unit.Unit;
 public class ASTNaturalNumbersOneRange extends ASTNaturalNumbersOneRangeTOP {
     public ASTNaturalNumbersOneRange() {
         super();
-        setStartValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ONE, Unit.ONE))));
-        setStepValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ONE, Unit.ONE))));
+        setStartValue("1");
+        setStepValue("1");
         setEndValue("oo");
         //null,new ASTUnitNumber(Rational.ONE, null), new ASTUnitNumber(Rational.ONE, null), "oo", null, false, false);
 

@@ -23,6 +23,7 @@ package de.monticore.lang.monticar;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.streamunits._symboltable.*;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -77,7 +78,8 @@ public class SymtabStreamUnitsTest {
         assertNotNull(namedStreamSymbol);
         StreamInstruction instruction = (StreamInstruction) namedStreamSymbol.getValue(0);
 
-        assertEquals("1/2 ", (instruction.getStreamValue().get()).getPrecision().toString());
+        ASTNumberWithUnit percision = (ASTNumberWithUnit) instruction.getStreamValue().get().getPrecision();
+        assertEquals(0.5, percision.getNumber().get(), 0);
         assertFalse(instruction.getStreamCompare().isPresent());
     }
 
@@ -149,9 +151,9 @@ public class SymtabStreamUnitsTest {
         StreamValues streamValues = streamInstruction.getStreamValues().get();
         assertEquals(1, streamValues.getRowDimension());
         assertEquals(3, streamValues.getColumnDimension());
-        assertEquals("1", streamValues.getStreamValue(0, 0).toString());
-        assertEquals("0", streamValues.getStreamValue(0, 1).toString());
-        assertEquals("0", streamValues.getStreamValue(0, 2).toString());
+        assertEquals("1.0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 2).toString());
 
 
         streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(1);
@@ -159,9 +161,9 @@ public class SymtabStreamUnitsTest {
         streamValues = streamInstruction.getStreamValues().get();
         assertEquals(1, streamValues.getRowDimension());
         assertEquals(3, streamValues.getColumnDimension());
-        assertEquals("0", streamValues.getStreamValue(0, 0).toString());
-        assertEquals("1", streamValues.getStreamValue(0, 1).toString());
-        assertEquals("0", streamValues.getStreamValue(0, 2).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("1.0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 2).toString());
 
 
         streamInstruction = (StreamInstruction) namedStreamSymbol.getValue(2);
@@ -169,9 +171,9 @@ public class SymtabStreamUnitsTest {
         streamValues = streamInstruction.getStreamValues().get();
         assertEquals(1, streamValues.getRowDimension());
         assertEquals(3, streamValues.getColumnDimension());
-        assertEquals("0", streamValues.getStreamValue(0, 0).toString());
-        assertEquals("0", streamValues.getStreamValue(0, 1).toString());
-        assertEquals("1", streamValues.getStreamValue(0, 2).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 0).toString());
+        assertEquals("0.0", streamValues.getStreamValue(0, 1).toString());
+        assertEquals("1.0", streamValues.getStreamValue(0, 2).toString());
 
     }
 

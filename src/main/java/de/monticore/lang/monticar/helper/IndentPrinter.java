@@ -33,6 +33,7 @@ public class IndentPrinter {
     protected StringBuilder linebuffer;
     protected StringBuilder writtenbuffer;
     private int optionalBreakPosition;
+
     public IndentPrinter() {
         this(new StringBuilder());
     }

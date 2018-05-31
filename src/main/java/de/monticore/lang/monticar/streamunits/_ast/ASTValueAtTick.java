@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.streamunits._ast;
 
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class ASTValueAtTick extends ASTValueAtTickTOP {
     public ASTValueAtTick() {
     }
 
-    public ASTValueAtTick(String name, Optional<ASTUnitNumber> value, Optional<ASTUnitNumber> lowerBound, Optional<ASTUnitNumber> upperBound) {
+    public ASTValueAtTick(String name, Optional<ASTNumberWithUnit> value, Optional<ASTNumberWithUnit> lowerBound, Optional<ASTNumberWithUnit> upperBound) {
         super(name, value, lowerBound, upperBound);
     }
 

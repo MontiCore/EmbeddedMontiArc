@@ -22,7 +22,7 @@ package de.monticore.lang.monticar.si._symboltable;
 
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 import org.jscience.mathematics.number.Rational;
@@ -31,6 +31,8 @@ import javax.measure.unit.Unit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static de.monticore.numberunit.Rationals.doubleToRational;
 
 /**
  * @author Sascha Schneiders
@@ -41,10 +43,10 @@ public class SIUnitSymbol extends CommonSymbol implements MCTypeSymbol {
     Unit unit;
     Rational number;
 
-    protected SIUnitSymbol(String name, ASTUnitNumber astUnitNumber) {
+    protected SIUnitSymbol(String name, ASTNumberWithUnit ASTNumberWithUnit) {
         super(name, KIND);
-        this.unit = astUnitNumber.getUnit().orElse(null);
-        this.number = astUnitNumber.getNumber().orElse(null);
+        this.unit = ASTNumberWithUnit.getUnit();
+        this.number = doubleToRational(ASTNumberWithUnit.getNumber().get());
     }
 
     public Unit getUnit() {

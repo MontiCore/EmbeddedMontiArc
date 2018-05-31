@@ -18,12 +18,11 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.types2._ast;
+package de.monticore.lang.monticar.resolution._ast;
 
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 
 import javax.measure.unit.Unit;
 import java.util.List;
@@ -37,30 +36,30 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
         super();
     }
 
-    public ASTUnitNumberResolution(Optional<String> name, Optional<ASTUnitNumber> unitNumber) {
+    public ASTUnitNumberResolution(Optional<String> name, Optional<ASTNumberWithUnit> unitNumber) {
         super(name, unitNumber);
     }
 
-    public Optional<Rational> getNumber() {
-        return getUnitNumberOpt().get().getNumber();
+    public Optional<Double> getNumber() {
+        return getNumberWithUnitOpt().get().getNumber();
     }
 
-    public void setNumber(Rational number) {
-        if (!getUnitNumberOpt().isPresent()) {
-            setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(number, Unit.ONE));
+    public void setNumber(Double number) {
+        if (!getNumberWithUnitOpt().isPresent()) {
+            setNumberWithUnit(new ASTNumberWithUnit(Optional.empty(), Optional.empty(), Optional.empty()));
         }
-        getUnitNumberOpt().get().setNumber(number);
+        getNumberWithUnitOpt().get().setNumber(number);
     }
 
-    public Optional<Unit> getUnit() {
-        return getUnitNumberOpt().get().getUnit();
+    public Unit getUnit() {
+        return getNumberWithUnitOpt().get().getUnit();
     }
 
     public void setUnit(Unit unit) {
-        if (!getUnitNumberOpt().isPresent()) {
-            setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(Rational.ZERO, unit));
+        if (!getNumberWithUnitOpt().isPresent()) {
+            setNumberWithUnit(new ASTNumberWithUnit(Optional.empty(), Optional.empty(), Optional.empty()));
         }
-        getUnitNumberOpt().get().setUnit(unit);
+        getNumberWithUnitOpt().get().setUnit(unit);
     }
 
     public String doResolution(List<ResolutionDeclarationSymbol> resolutionDeclarationSymbolList) {
@@ -70,13 +69,13 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
                 if (resDeclSym.getNameToResolve().equals(getNameOpt().get())) {
 
                     Log.debug(resDeclSym.getASTResolution().toString(), "Found ResolutionDeclarationSymbol:");
-                    ASTUnitNumber toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumberOpt().get();
+                    ASTNumberWithUnit toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getNumberWithUnitOpt().get();
 
 
                     Log.debug("" + toSet.getNumber().get().intValue(), "ToSet Number:");
 
                     setNumber(toSet.getNumber().get());
-                    setUnit(toSet.getUnit().get());
+                    setUnit(toSet.getUnit());
                     Log.debug("" + getNumber().get().intValue(), "PortResolution Number:");
                     Log.debug(getNameOpt().get(), "Name:");
                     return getNameOpt().get();

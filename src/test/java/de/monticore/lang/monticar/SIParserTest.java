@@ -21,7 +21,6 @@
 package de.monticore.lang.monticar;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ranges._parser.RangesParser;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._parser.Types2Parser;
 import de.se_rwth.commons.logging.Log;
@@ -61,7 +60,7 @@ public class SIParserTest {
         @Test
         public void testM2() throws IOException {
             SIParser parser = new SIParser();
-            ASTUnitNumber ast = parser.parseString_UnitNumber("-0.9").orElse(null);
+            ASTNumberWithUnit ast = parser.parseString_NumberWithUnit("-0.9").orElse(null);
             assertNotNull(ast);
 
             assertEquals(Rational.valueOf(-9, 10), ast.getNumber());
@@ -71,7 +70,7 @@ public class SIParserTest {
         @Test
         public void testM1() throws IOException {
             SIParser parser = new SIParser();
-            ASTUnitNumber ast = parser.parseString_UnitNumber("-0.5 kg*m^2/s^3").orElse(null);
+            ASTNumberWithUnit ast = parser.parseString_NumberWithUnit("-0.5 kg*m^2/s^3").orElse(null);
             assertNotNull(ast);
 
             assertEquals(Rational.valueOf(-1, 2), ast.getNumber());
@@ -81,7 +80,7 @@ public class SIParserTest {
         @Test
         public void test0() throws IOException {
             SIParser parser = new SIParser();
-            ASTUnitNumber ast = parser.parseString_UnitNumber("8/3 kg*m^2/s^3").orElse(null);
+            ASTNumberWithUnit ast = parser.parseString_NumberWithUnit("8/3 kg*m^2/s^3").orElse(null);
             assertNotNull(ast);
 
             assertEquals(Rational.valueOf(8, 3), ast.getNumber());
@@ -91,7 +90,7 @@ public class SIParserTest {
         @Test
         public void test1() throws IOException {
             SIParser parser = new SIParser();
-            ASTUnitNumber ast = parser.parseString_UnitNumber("8 kg*m^2/s^3").orElse(null);
+            ASTNumberWithUnit ast = parser.parseString_NumberWithUnit("8 kg*m^2/s^3").orElse(null);
             assertNotNull(ast);
 
             assertEquals(Rational.valueOf(8, 1), ast.getNumber());
@@ -104,10 +103,10 @@ public class SIParserTest {
         public void test2() {
             SIParser parser = new SIParser();
             try {
-                parser.parseString_UnitNumber("m/s");
+                parser.parseString_NumberWithUnit("m/s");
             } catch (Exception e) {
             } finally {
-                // need to have a parser recognition error on the token TUnitNumber
+                // need to have a parser recognition error on the token TNumberWithUnit
                 assertTrue(Log.getErrorCount() > 0);
             }
         }
@@ -118,7 +117,7 @@ public class SIParserTest {
         public void testE2() {
             SIParser parser = new SIParser();
             try {
-                parser.parseString_UnitNumber("1");
+                parser.parseString_NumberWithUnit("1");
             } catch (Exception e) {
             } finally {
                 assertTrue(Log.getErrorCount() == 0);
@@ -131,10 +130,10 @@ public class SIParserTest {
         public void test3() {
             SIParser parser = new SIParser();
             try {
-                parser.parseString_UnitNumber("s^2");
+                parser.parseString_NumberWithUnit("s^2");
             } catch (Exception e) {
             } finally {
-                // need to have a parser recognition error on the token TUnitNumber
+                // need to have a parser recognition error on the token TNumberWithUnit
                 assertTrue(Log.getErrorCount() > 0);
             }
         }
@@ -201,21 +200,21 @@ public class SIParserTest {
     */
     @Test
     public void testRange1() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10 m/s : 2 m/s : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRange2() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10  : 2 m/s : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRange3() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(oo  : oo)").orElse(null);
         assertNotNull(ast);
     }
@@ -225,7 +224,7 @@ public class SIParserTest {
      */
     @Test
     public void testRangeFloatPrecision() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10  : f : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
@@ -236,7 +235,7 @@ public class SIParserTest {
      */
     @Test
     public void testRangeDoublePrecision() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10  : d : 20 m/s)").orElse(null);
         assertNotNull(ast);
     }
@@ -246,7 +245,7 @@ public class SIParserTest {
      */
     @Test
     public void testRangeMissingUnit1() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10 : 0.1 : 45 km)").orElse(null);
         assertNotNull(ast);
     }
@@ -254,7 +253,7 @@ public class SIParserTest {
 
     @Test
     public void testRangeMissingUnit2() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10 : 0.1 km : 45 )").orElse(null);
         assertNotNull(ast);
     }
@@ -262,7 +261,7 @@ public class SIParserTest {
 
     @Test
     public void testRangeMissingUnit3() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRange ast = parser.parse_StringRange("(10 km: 0.1 : 45 )").orElse(null);
         assertNotNull(ast);
     }
@@ -286,14 +285,14 @@ public class SIParserTest {
 /*
     @Test
     public void testRange7() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRanges ast = parser.parse_StringRanges("[(0 : 0.05 : 10) (10 : 0.1 : 45 km)]").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testRange8() throws IOException {
-        RangesParser parser = new RangesParser();
+        Types2Parser parser = new Types2Parser();
         ASTRanges ast = parser.parse_StringRanges("[(0 km : 0.05 m : 10km) (10km : 0.1m : 45 km)]").orElse(null);
         assertNotNull(ast);
     }

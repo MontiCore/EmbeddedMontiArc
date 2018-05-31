@@ -22,7 +22,7 @@ package de.monticore.lang.monticar;
 /**
  * Grammar for common elements that should be imported from somewhere else in future.
  */
-grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.literals.Literals, de.monticore.lang.monticar.Common2{
+grammar StreamUnits extends de.monticore.NumberUnit, de.monticore.literals.Literals, de.monticore.common.Common{
 
   StreamUnitsCompilationUnit =
     ("package" package:(Name& || ".")+ ";")?
@@ -37,7 +37,7 @@ grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.literals.
   Stream = (StreamInstruction | "tick" )+;
   StreamInstruction = StreamValue | StreamCompare | StreamArrayValues;
   StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick ;
-  ValueAtTick = Name "(" (value:UnitNumber|lowerBound:UnitNumber ":" upperBound:UnitNumber ) ")";
+  ValueAtTick = Name "(" (value:NumberWithUnit|lowerBound:NumberWithUnit ":" upperBound:NumberWithUnit ) ")";
   DontCare = "-";
   StreamArrayValues = "[" (ValuePair | MatrixPair)"]" ;
   ValuePair = (StreamValue | ",")+;
@@ -51,6 +51,6 @@ grammar StreamUnits extends de.monticore.lang.NumberUnit, de.monticore.literals.
   StreamCompareSmallerEqual implements StreamCompare = left:StreamValue operator:"<=" right:StreamValue;
   StreamCompareBiggerEqual implements StreamCompare = left:StreamValue operator:">=" right:StreamValue;
 
-  PrecisionNumber = UnitNumber (Precision)?;
-  Precision = "+" "/" "-" UnitNumber;
+  PrecisionNumber = NumberWithUnit (Precision)?;
+  Precision = "+" "/" "-" NumberWithUnit;
 }

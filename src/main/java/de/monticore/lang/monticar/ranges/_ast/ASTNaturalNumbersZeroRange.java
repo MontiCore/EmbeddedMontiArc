@@ -20,21 +20,14 @@
  */
 package de.monticore.lang.monticar.ranges._ast;
 
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
-import org.jscience.mathematics.number.Rational;
-
-import javax.measure.unit.Unit;
-
 /**
  * @author Sascha
  */
 public class ASTNaturalNumbersZeroRange extends ASTNaturalNumbersZeroRangeTOP {
     public ASTNaturalNumbersZeroRange() {
         super();
-
-        setStartValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ZERO, Unit.ONE))));
-        setStepValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ONE, Unit.ONE))));
+        setStartValue("0");
+        setStepValue("1");
         setEndValue("oo");
         //null,new ASTUnitNumber(Rational.ONE, null), new ASTUnitNumber(Rational.ONE, null), "oo", null, false, false);
 

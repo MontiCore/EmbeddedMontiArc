@@ -21,10 +21,10 @@
 package de.monticore.lang.monticar.ts.references;
 
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.monticore.types.types._ast.ASTType;
 
 import java.util.Collections;
 import java.util.List;

@@ -21,10 +21,10 @@
 package de.monticore.lang.monticar.ts;
 
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
+import de.monticore.types.types._ast.ASTType;
 
 import java.util.Collections;
 import java.util.List;

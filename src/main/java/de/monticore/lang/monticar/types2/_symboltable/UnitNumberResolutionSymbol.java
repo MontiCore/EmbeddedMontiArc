@@ -20,9 +20,9 @@
  */
 package de.monticore.lang.monticar.types2._symboltable;
 
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 

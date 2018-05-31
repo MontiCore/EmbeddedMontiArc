@@ -18,31 +18,11 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.common2._ast;
-
-import java.util.Optional;
+package de.monticore.lang.monticar.printtype._ast;
 
 /**
- * Created by Sascha on 04.07.2017.
+ * @author Sascha
  */
-public class ASTParameter extends ASTParameterTOP {
-    protected ASTParameter() {
-        super();
-    }
-
-    protected ASTParameter(de.monticore.lang.monticar.common2._ast.ASTAdaptableKeyword adaptableKeyword
-            ,
-                           de.monticore.lang.monticar.types2._ast.ASTType type
-            ,
-                           de.monticore.lang.monticar.common2._ast.ASTNameWithArray nameWithArray
-            ,
-                           Optional<ASTValue> defaultValue
-    ) {
-        super(adaptableKeyword, type, nameWithArray, defaultValue);
-    }
-
-
-    public String getName() {
-        return getNameWithArray().getName();
-    }
+public interface ASTPrintType extends ASTPrintTypeTOP {
+    String printType();
 }

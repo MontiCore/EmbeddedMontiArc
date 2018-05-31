@@ -18,28 +18,28 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.common2._ast;
+package de.monticore.lang.monticar.types2._ast;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-/**
- * Created by Sascha on 04.07.2017.
- */
-public class ASTNameWithArray extends ASTNameWithArrayTOP {
+public class ASTDimension extends ASTDimensionTOP {
 
-    protected ASTNameWithArray() {
-        super();
+    public ASTDimension() {
     }
 
-    protected ASTNameWithArray(String name, Optional<ASTArrayDeclaration> arrayDeclaration) {
-        super(name, arrayDeclaration);
+    public ASTDimension(List<ASTExpression> matrixDims, Optional<ASTExpression> vecDim) {
+        super(matrixDims, vecDim);
     }
 
-    @Override
-    public String getName() {
-        if (getArrayDeclarationOpt().isPresent()) {
-            return name + "[" + getArrayDeclarationOpt().get().getIntLiteral().toString() + "]";
-        }
-        return name;
+    public List<ASTExpression> getDimensionList() {
+        List<ASTExpression> result = new ArrayList<>();
+        result.addAll(getMatrixDimList());
+        if (getVecDimOpt().isPresent())
+            result.add(getVecDim());
+        return result;
     }
 }

@@ -25,6 +25,8 @@ import org.jscience.mathematics.number.Rational;
 
 import java.util.Optional;
 
+import static de.monticore.numberunit.Rationals.doubleToRational;
+
 /**
  * @author Sascha Schneiders
  */
@@ -41,11 +43,11 @@ public class StreamValueAtTick implements IStreamValue {
     public StreamValueAtTick(ASTValueAtTick valueAtTick) {
         this.name = valueAtTick.getName();
         if (valueAtTick.getValueOpt().isPresent())
-            this.singleValue = Optional.of(valueAtTick.getValueOpt().get().getNumber().get());
+            this.singleValue = Optional.of(doubleToRational(valueAtTick.getValueOpt().get().getNumber().get()));
         if (valueAtTick.getLowerBoundOpt().isPresent())
-            this.lowerBound = Optional.of(valueAtTick.getLowerBoundOpt().get().getNumber().get());
+            this.lowerBound = Optional.of(doubleToRational(valueAtTick.getLowerBoundOpt().get().getNumber().get()));
         if (valueAtTick.getUpperBoundOpt().isPresent())
-            this.upperBound = Optional.of(valueAtTick.getUpperBoundOpt().get().getNumber().get());
+            this.upperBound = Optional.of(doubleToRational(valueAtTick.getUpperBoundOpt().get().getNumber().get()));
 
     }
 

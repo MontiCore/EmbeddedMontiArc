@@ -20,21 +20,14 @@
  */
 package de.monticore.lang.monticar.ranges._ast;
 
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
-import org.jscience.mathematics.number.Rational;
-
-import javax.measure.unit.Unit;
-
 /**
  * @author Sascha
  */
 public class ASTWholeNumbersRange extends ASTWholeNumbersRangeTOP {
     public ASTWholeNumbersRange() {
         super();
-
         setStartValue("-oo");
-        setStepValue(new ASTUnitNumberResolution(null, java.util.Optional.of(new ASTUnitNumber(Rational.ONE, Unit.ONE))));
+        setStepValue("1");
         setEndValue("oo");
         //null,new ASTUnitNumber(Rational.ONE, null), new ASTUnitNumber(Rational.ONE, null), "oo", null, false, false);
 

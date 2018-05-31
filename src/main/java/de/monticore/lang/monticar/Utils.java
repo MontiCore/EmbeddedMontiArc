@@ -37,8 +37,8 @@ public final class Utils {
                 "Z",
                 "RangesType",
                 "RangeType",
-                "UnitNumberResolution",
-                "UnitNumberTypeArgument",
+                "NumberWithUnitResolution",
+                "NumberWithUnitTypeArgument",
                 "AssignmentType",
                 "CommonMatrixType"
         };

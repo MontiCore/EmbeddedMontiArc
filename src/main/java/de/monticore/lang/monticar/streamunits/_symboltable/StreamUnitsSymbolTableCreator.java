@@ -96,9 +96,9 @@ public class StreamUnitsSymbolTableCreator extends StreamUnitsSymbolTableCreator
         if (streamValue.getPrecisionNumberOpt().isPresent()) {
             ASTPrecisionNumber num = streamValue.getPrecisionNumberOpt().get();
             if (num.getPrecisionOpt().isPresent()) {
-                result = new StreamValuePrecision(num.getUnitNumber(), num.getPrecisionOpt().get().getUnitNumber());
+                result = new StreamValuePrecision(num.getNumberWithUnit(), num.getPrecisionOpt().get().getNumberWithUnit());
             } else {
-                result = (new StreamValuePrecision(num.getUnitNumber()));
+                result = (new StreamValuePrecision(num.getNumberWithUnit()));
             }
         } else if (streamValue.getNameOpt().isPresent()) {
             result = (new StreamValuePrecision(streamValue.getNameOpt().get()));
