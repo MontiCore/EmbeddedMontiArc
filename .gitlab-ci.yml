@@ -8,22 +8,22 @@ cache:
     - node_modules/
     - theia/
     - docs/
-    - packages/*/lib/
-    - plugins/*/lib/
+    - packages/**/lib/
+    - plugins/**/lib/
 
 installation:
   stage: installation
-  image: node:9.9.0
+  image: node:9-alpine
   script:
     - apk update && apk add yarn python g++ make && rm -rf /var/cache/apk/*
     - yarn install && yarn run download
 
 build:
   stage: build
-  image: node:9.9.0
+  image: node:9-alpine
   script: yarn run build
 
 documentation:
   stage: documentation
-  image: node:9.9.0
+  image: node:9-alpine
   script: yarn run documentation
