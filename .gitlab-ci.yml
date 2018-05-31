@@ -1,13 +1,15 @@
 stages:
   - installation
   - build
-  - deployment
   - documentation
 
 cache:
   paths:
     - node_modules/
     - theia/
+    - docs/
+    - packages/*/lib/
+    - plugins/*/lib/
 
 installation:
   stage: installation
