@@ -110,9 +110,15 @@ class CNNCreator_CifarClassifierNetwork:
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
-              context=mx.gpu(),
+              context='gpu',
               checkpoint_period=5,
               normalize=True):
+        if context == 'gpu':
+            mx_context = mx.gpu()
+        elif context == 'cpu':
+            mx_context = mx.cpu()
+        else:
+            logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
 
         if 'weight_decay' in optimizer_params:
             optimizer_params['wd'] = optimizer_params['weight_decay']
@@ -133,13 +139,13 @@ class CNNCreator_CifarClassifierNetwork:
         train_iter, test_iter, data_mean, data_std = self.load_data(batch_size)
         if self.module == None:
             if normalize:
-                self.construct(context, data_mean, data_std)
+                self.construct(mx_context, data_mean, data_std)
             else:
-                self.construct(context)
+                self.construct(mx_context)
 
         begin_epoch = 0
         if load_checkpoint:
-            begin_epoch = self.load(context)
+            begin_epoch = self.load(mx_context)
         else:
             if os.path.isdir(self._model_dir_):
                 shutil.rmtree(self._model_dir_)
