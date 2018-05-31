@@ -6,6 +6,6 @@
 ## Description
 To be written.
 
-## Application Programming Interface
+<!-- ## Application Programming Interface
 The API documentation for this module can be found
-[here](https://embeddedmontiarc.github.io/Elysium/plugins/query-controller/docs).
+[here](https://embeddedmontiarc.github.io/Elysium/plugins/query-controller/docs). -->

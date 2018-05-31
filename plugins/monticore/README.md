@@ -13,6 +13,6 @@ To be written.
 ## References
 To be added.
 
-## Application Programming Interface
+<!-- ## Application Programming Interface
 The API documentation for this module can be found
-[here](https://embeddedmontiarc.github.io/Elysium/plugins/monticore/docs).
+[here](https://embeddedmontiarc.github.io/Elysium/plugins/monticore/docs). -->
