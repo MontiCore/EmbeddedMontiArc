@@ -1,6 +1,9 @@
 \documentclass[review]{elsarticle}
 
+\usepackage{float}
 \usepackage{lineno,hyperref}
+\usepackage{graphicx}
+\usepackage{listings}
 \modulolinenumbers[5]
 
 \bibliographystyle{elsarticle-num}
@@ -9,13 +12,13 @@
 
 \begin{frontmatter}
 
-\title{EmbeddedMontiArc: Implementation Case Studies}
+\title{EmbeddedMontiArc: A Implementation Case Study}
 \tnotetext[mytitlenote]{}
 
 %% Group authors per affiliation:
 \author{Haller, Heithoff, Sezer}
 \address{RWTH Aachen}
-\fntext[myfootnote]{Since 1880.}
+
 
 
 \begin{abstract}
@@ -30,6 +33,8 @@
 
 \linenumbers
 
+
+\newpage
 \section{Introduction}
 \input{introduction}
 
@@ -49,12 +54,8 @@
 \input{conclusion}
 
 
-Just some random citations to make latex happy...
-\cite{Feynman1963118,Dirac1953888}
-
-
+\newpage
 \section*{References}
-
 \bibliography{bibliography}
 
 \end{document}
