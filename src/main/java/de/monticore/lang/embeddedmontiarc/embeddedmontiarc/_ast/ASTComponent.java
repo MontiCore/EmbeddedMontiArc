@@ -21,8 +21,8 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast;
 
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
-import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTTypeParameters;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.types.types._ast.ASTTypeParameters;
 
 import java.util.ArrayList;
 import java.util.List;

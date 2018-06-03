@@ -25,16 +25,15 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ranges._ast.ASTRanges;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbolReference;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
-import de.monticore.lang.monticar.types2._ast.*;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.monticore.types.types._ast.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -136,7 +135,7 @@ public class EMATypeHelper {
             }
             List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
             for (ASTTypeArgument astTypeArgument : astSimpleReferenceType.getTypeArgumentsOpt().get()
-                    .getTypeArgumentsList()) {
+                    .getTypeArgumentList()) {
                 if (astTypeArgument instanceof ASTWildcardType) {
                     ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
 
@@ -286,7 +285,7 @@ public class EMATypeHelper {
                 return;
             }
             setActualTypeArguments(typeReference,
-                    astSimpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList(), symbolTableCreator);
+                    astSimpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentList(), symbolTableCreator);
         } else if (astType instanceof ASTComplexReferenceType) {
             ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astType;
             for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType

@@ -25,14 +25,14 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
+import de.monticore.types.types._ast.ASTTypeArgument;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.MutableScope;
 import de.se_rwth.commons.logging.Log;
 
@@ -53,7 +53,7 @@ public class EMAPortHelper {
         Log.debug(node.toString(), "ASTPort");
         int num = 0;
         if (node.getUnitNumberResolutionOpt().isPresent()
-                && node.getUnitNumberResolution().getUnitNumberOpt().isPresent()) {
+                && node.getUnitNumberResolution().getNumberWithUnitOpt().isPresent()) {
             num = node.getUnitNumberResolution().getNumber().get().intValue();
         } else {
             Log.debug("No UnitNumberResolution/UnitNumber present!", "ASTPort");
@@ -110,8 +110,7 @@ public class EMAPortHelper {
         String name = null;
         if (node.getUnitNumberResolutionOpt().isPresent()) {
             ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
-            name = unitNumberResolution
-                    .doResolution(symbolTableCreator.componentStack.
+            name = unitNumberResolution.doResolution(symbolTableCreator.componentStack.
                             peek().getResolutionDeclarationSymbols());
 
         }
@@ -365,17 +364,17 @@ public class EMAPortHelper {
     public static void doConnectorResolution(ASTConnector node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         if (node.getUnitNumberResolutionOpt().isPresent()) {
             ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
-            ASTUnitNumber toSet = null;
-            if (unitNumberResolution.getUnitNumberOpt().isPresent()) {
-                toSet = unitNumberResolution.getUnitNumber();
+            ASTNumberWithUnit toSet = null;
+            if (unitNumberResolution.getNumberWithUnitOpt().isPresent()) {
+                toSet = unitNumberResolution.getNumberWithUnit();
             } else if (unitNumberResolution.getNameOpt().isPresent()) {
 
                 ResolutionDeclarationSymbol resDeclSym = symbolTableCreator.componentStack.peek()
                         .getResolutionDeclarationSymbol(unitNumberResolution.getNameOpt().get()).get();
-                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber();
+                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getNumberWithUnit();
             }
 
-            unitNumberResolution.setUnit(toSet.getUnit().get());
+            unitNumberResolution.setUnit(toSet.getUnit());
             unitNumberResolution.setNumber(toSet.getNumber().get());
         }
 
@@ -387,12 +386,12 @@ public class EMAPortHelper {
         if (node.getType() instanceof ASTSimpleReferenceType) {
             if (((ASTSimpleReferenceType) node.getType()).getTypeArgumentsOpt().isPresent()) {
                 for (ASTTypeArgument typeArgument : ((ASTSimpleReferenceType) node.getType())
-                        .getTypeArgumentsOpt().get().getTypeArgumentsList()) {
+                        .getTypeArgumentsOpt().get().getTypeArgumentList()) {
                     if (typeArgument instanceof ASTUnitNumberTypeArgument) {
-                        Log.debug("" + ((ASTUnitNumberTypeArgument) typeArgument).getUnitNumber().getNumber()
+                        Log.debug("" + ((ASTUnitNumberTypeArgument) typeArgument).getNumberWithUnit().getNumber()
                                 .get().intValue(), "New Resolution Value:");
                         if (counter == index)
-                            return ((ASTUnitNumberTypeArgument) typeArgument).getUnitNumber().getNumber().get()
+                            return ((ASTUnitNumberTypeArgument) typeArgument).getNumberWithUnit().getNumber().get()
                                     .intValue();
                         ++counter;
                     }

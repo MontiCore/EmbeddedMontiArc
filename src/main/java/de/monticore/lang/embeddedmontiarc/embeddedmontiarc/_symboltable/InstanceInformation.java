@@ -22,13 +22,12 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponentInstance;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolutionDeclaration;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
 import de.monticore.symboltable.Symbol;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTTypeArgument;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
@@ -73,7 +72,7 @@ public class InstanceInformation {
     }
 
     public int getInstanceNumberForPortName(String portName) {
-        Symbol symbol = getASTSubComponent().getSymbol().get();
+        Symbol symbol = getASTSubComponent().getSymbolOpt().get();
         ComponentInstanceSymbol componentInstanceSymbol = (ComponentInstanceSymbol) symbol;
         Log.debug(componentInstanceSymbol.getComponentType().toString(), "ComponentInstanceSymbol");
         Log.debug(portName, "PortName");
@@ -123,7 +122,7 @@ public class InstanceInformation {
     private static int handleSimpleReferenceType(ASTSimpleReferenceType simpleReferenceType, int index) {
         if (simpleReferenceType.getTypeArgumentsOpt().isPresent()) {
             int counter = 0;
-            for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
+            for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentList()) {
                 int result = handleSimpleReferenceType(astTypeArgument, index, counter);
                 if (result != -1 && counter == index)
                     return result;
@@ -141,13 +140,13 @@ public class InstanceInformation {
     public static int handleSimpleReferenceType(ASTTypeArgument astTypeArgument, int index, int counter) {
         int result = -1;
         if (astTypeArgument instanceof ASTUnitNumberTypeArgument) {
-            if (((ASTUnitNumberTypeArgument) astTypeArgument).getUnitNumber().getNumber().isPresent()) {
+            if (((ASTUnitNumberTypeArgument) astTypeArgument).getNumberWithUnit().getNumber().isPresent()) {
                 if (counter == index)
-                    result = ((ASTUnitNumberTypeArgument) astTypeArgument).getUnitNumber().getNumber().get().intValue();
+                    result = ((ASTUnitNumberTypeArgument) astTypeArgument).getNumberWithUnit().getNumber().get().intValue();
             }
 
         } else if (astTypeArgument instanceof ASTUnitNumberResolution) {
-            if (((ASTUnitNumberResolution) astTypeArgument).getUnitNumberOpt().isPresent()) {
+            if (((ASTUnitNumberResolution) astTypeArgument).getNumberWithUnitOpt().isPresent()) {
                 if (counter == index)
                     result = ((ASTUnitNumberResolution) astTypeArgument).getNumber().get().intValue();
             }
@@ -162,7 +161,7 @@ public class InstanceInformation {
             ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) subComponent.getType();
             if (simpleReferenceType.getTypeArgumentsOpt().isPresent()) {
                 int counter = 0;
-                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
+                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentList()) {
                     if (astTypeArgument instanceof ASTUnitNumberResolution) {
                         if (((ASTUnitNumberResolution) astTypeArgument).getNameOpt().isPresent()) {
                             if (counter == index)
@@ -183,12 +182,12 @@ public class InstanceInformation {
             ASTSimpleReferenceType simpleReferenceType = (ASTSimpleReferenceType) subComponent.getType();
             if (simpleReferenceType.getTypeArgumentsOpt().isPresent()) {
                 int counter = 0;
-                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
+                for (ASTTypeArgument astTypeArgument : simpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentList()) {
                     if (astTypeArgument instanceof ASTUnitNumberResolution) {
                         if ((((ASTUnitNumberResolution) astTypeArgument).getNameOpt().isPresent())) {
                             String name = ((ASTUnitNumberResolution) astTypeArgument).getNameOpt().get();
                             if (name.equals(nameToSet))
-                                ((ASTUnitNumberResolution) astTypeArgument).setNumber(Rational.valueOf("" + numberToSet));
+                                ((ASTUnitNumberResolution) astTypeArgument).setNumber(Double.valueOf(numberToSet));
                             ++counter;
                         }
 

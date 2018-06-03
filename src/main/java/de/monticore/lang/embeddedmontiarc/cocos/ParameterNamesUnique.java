@@ -40,13 +40,13 @@ public class ParameterNamesUnique implements EmbeddedMontiArcASTComponentCoCo {
     List<String> parameterNames = new ArrayList<>();
     for (ASTParameter parameter : parameters) {
 
-      if (parameterNames.contains(parameter.getName())) {
-        Log.error(String.format("0xC4A61 Parameter name \"%s\" not unique", parameter.getName()),
+      if (parameterNames.contains(parameter.getNameWithArray().getName())) {
+        Log.error(String.format("0xC4A61 Parameter name \"%s\" not unique", parameter.getNameWithArray().getName()),
             parameter.get_SourcePositionStart());
       }
 
       else {
-        parameterNames.add(parameter.getName());
+        parameterNames.add(parameter.getNameWithArray().getName());
       }
     }
   }

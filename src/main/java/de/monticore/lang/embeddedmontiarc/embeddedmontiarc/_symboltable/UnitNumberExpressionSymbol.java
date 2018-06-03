@@ -22,6 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.monticar.interfaces.TextualExpression;
 import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
@@ -46,13 +47,15 @@ public class UnitNumberExpressionSymbol extends CommonSymbol implements TextualE
     @Override
     public String getTextualRepresentation() {
         String result = "";
-        if (unitNumberExpression.getTUnitNumberOpt().isPresent()) {
-            result += unitNumberExpression.getTUnitNumber();
+        ASTNumberWithUnit num = unitNumberExpression.getNumberWithUnit();
+        if (num.getComplexNumber().isPresent()) {
+            result += String.format("%si%s", num.getComplexNumber().get().getRealNumber(), num.getComplexNumber().get().getImagineNumber());
+        } else if (num.getNumber().isPresent()) {
+            result += Double.toString(num.getNumber().get());
         } else {
-            result += unitNumberExpression.getTUnitInf();
-
+            result += num.toString();
         }
-
+        result += num.getUnit().toString();
         return result;
     }
 }

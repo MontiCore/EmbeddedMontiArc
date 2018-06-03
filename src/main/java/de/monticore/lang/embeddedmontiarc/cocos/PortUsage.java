@@ -55,7 +55,7 @@ public class PortUsage implements EmbeddedMontiArcASTComponentCoCo {
 
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol entry = (ComponentSymbol) node.getSymbol().get();
+    ComponentSymbol entry = (ComponentSymbol) node.getSymbolOpt().get();
 
     // %%%%%%%%%%%%%%%% CV5 %%%%%%%%%%%%%%%%
     if (entry.isDecomposed()) {

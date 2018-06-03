@@ -20,7 +20,8 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
+import de.monticore.lang.monticar.printtype._ast.ASTPrintType;
+import de.monticore.types.types._ast.*;
 import de.monticore.lang.monticar.types2._ast.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -63,19 +64,7 @@ public class TypesPrinterImpl {
             return ((ASTPrintType) type).printType();
         } else if (type instanceof ASTElementType) {
             ASTElementType t = (ASTElementType) type;
-            if (t.isIsBoolean()) {
-                return "B";
-            }
-            if (t.isIsRational()) {
-                return "Q";
-            }
-            if (t.isIsComplex()) {
-                return "C";
-            }
-            if (t.isIsWholeNumberNumber()) {
-                return "Z";
-            }
-            throw new UnsupportedOperationException("unknown ElementType: " + t);
+            return t.getName();
         }
 
         Log.info(type.toString(), "Type:");
@@ -85,7 +74,7 @@ public class TypesPrinterImpl {
 
 
     protected String doPrintTypeParameters(ASTTypeParameters params) {
-        return params != null && params.getTypeVariableDeclarationsList() != null && !params.getTypeVariableDeclarationsList().isEmpty() ? "<" + this.doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarationsList()) + ">" : "";
+        return params != null && params.getTypeVariableDeclarationList() != null && !params.getTypeVariableDeclarationList().isEmpty() ? "<" + this.doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarationList()) + ">" : "";
     }
 
 
@@ -106,11 +95,11 @@ public class TypesPrinterImpl {
     protected String doPrintTypeVariableDeclaration(ASTTypeVariableDeclaration decl) {
         StringBuilder ret = new StringBuilder();
         if (decl != null) {
-            ret.append(decl.getNamingResolution().getName());
-            if (decl.getUpperBoundsList() != null && !decl.getUpperBoundsList().isEmpty()) {
+            ret.append(decl.getName());
+            if (decl.getUpperBoundList() != null && !decl.getUpperBoundList().isEmpty()) {
                 String sep = " extends ";
 
-                for (Iterator var4 = decl.getUpperBoundsList().iterator(); var4.hasNext(); sep = " & ") {
+                for (Iterator var4 = decl.getUpperBoundList().iterator(); var4.hasNext(); sep = " & ") {
                     ASTType type = (ASTType) var4.next();
                     ret.append(sep + this.doPrintType(type));
                 }
@@ -181,7 +170,7 @@ public class TypesPrinterImpl {
     }
 
     protected String doPrintTypeArguments(ASTTypeArguments args) {
-        return args != null && args.getTypeArgumentsList() != null && !args.getTypeArgumentsList().isEmpty() ? "<" + this.doPrintTypeArgumentList(args.getTypeArgumentsList()) + ">" : "";
+        return args != null && args.getTypeArgumentList() != null && !args.getTypeArgumentList().isEmpty() ? "<" + this.doPrintTypeArgumentList(args.getTypeArgumentList()) + ">" : "";
     }
 
     protected String doPrintTypeArgumentList(List<ASTTypeArgument> argList) {

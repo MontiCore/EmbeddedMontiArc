@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
+import de.monticore.types.types._ast.*;
 import de.monticore.lang.monticar.types2._ast.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;

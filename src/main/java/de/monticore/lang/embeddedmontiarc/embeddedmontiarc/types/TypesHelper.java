@@ -22,9 +22,8 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
+import de.monticore.types.types._ast.*;
 import de.se_rwth.commons.Names;
-import de.monticore.lang.monticar.types2._ast.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +48,7 @@ public class TypesHelper {
 
     public static ASTTypeArgument getReferenceTypeFromOptional(ASTType type) {
         Preconditions.checkArgument(isOptional(type));
-        return (ASTTypeArgument) ((ASTTypeArguments) ((ASTSimpleReferenceType) type).getTypeArgumentsOpt().get()).getTypeArgumentsList().get(0);
+        return (ASTTypeArgument) ((ASTTypeArguments) ((ASTSimpleReferenceType) type).getTypeArgumentsOpt().get()).getTypeArgumentList().get(0);
     }
 
     public static ASTSimpleReferenceType getSimpleReferenceTypeFromOptional(ASTType type) {
@@ -65,7 +64,7 @@ public class TypesHelper {
 
     public static String getReferenceNameFromOptional(ASTType type) {
         Preconditions.checkArgument(isOptional(type));
-        ASTTypeArgument reference = (ASTTypeArgument) ((ASTTypeArguments) ((ASTSimpleReferenceType) type).getTypeArgumentsOpt().get()).getTypeArgumentsList().get(0);
+        ASTTypeArgument reference = (ASTTypeArgument) ((ASTTypeArguments) ((ASTSimpleReferenceType) type).getTypeArgumentsOpt().get()).getTypeArgumentList().get(0);
         if (reference instanceof ASTWildcardType && ((ASTWildcardType) reference).getUpperBoundOpt().isPresent()) {
             reference = (ASTTypeArgument) ((ASTWildcardType) reference).getUpperBound();
         }
@@ -77,7 +76,7 @@ public class TypesHelper {
 
     public static String getQualifiedReferenceNameFromOptional(ASTType type) {
         Preconditions.checkArgument(isOptional(type));
-        ASTTypeArgument reference = (ASTTypeArgument) ((ASTTypeArguments) ((ASTSimpleReferenceType) type).getTypeArgumentsOpt().get()).getTypeArgumentsList().get(0);
+        ASTTypeArgument reference = (ASTTypeArgument) ((ASTTypeArguments) ((ASTSimpleReferenceType) type).getTypeArgumentsOpt().get()).getTypeArgumentList().get(0);
         if (reference instanceof ASTWildcardType && ((ASTWildcardType) reference).getUpperBoundOpt().isPresent()) {
             reference = (ASTTypeArgument) ((ASTWildcardType) reference).getUpperBound();
         }
@@ -92,7 +91,7 @@ public class TypesHelper {
             return false;
         } else {
             ASTSimpleReferenceType simpleRefType = (ASTSimpleReferenceType) type;
-            return Names.getQualifiedName(simpleRefType.getNameList()).equals(simpleRefTypeName) && simpleRefType.getTypeArgumentsOpt().isPresent() && ((ASTTypeArguments) simpleRefType.getTypeArgumentsOpt().get()).getTypeArgumentsList().size() == 1;
+            return Names.getQualifiedName(simpleRefType.getNameList()).equals(simpleRefTypeName) && simpleRefType.getTypeArgumentsOpt().isPresent() && ((ASTTypeArguments) simpleRefType.getTypeArgumentsOpt().get()).getTypeArgumentList().size() == 1;
         }
     }
 
@@ -105,7 +104,7 @@ public class TypesHelper {
             return Optional.empty();
         } else {
             ASTSimpleReferenceType simpleRefType = (ASTSimpleReferenceType) type;
-            ASTTypeArgument typeArgument = (ASTTypeArgument) ((ASTTypeArguments) simpleRefType.getTypeArgumentsOpt().get()).getTypeArgumentsList().get(0);
+            ASTTypeArgument typeArgument = (ASTTypeArgument) ((ASTTypeArguments) simpleRefType.getTypeArgumentsOpt().get()).getTypeArgumentList().get(0);
             return !(typeArgument instanceof ASTSimpleReferenceType) ? Optional.empty() : Optional.of((ASTSimpleReferenceType) typeArgument);
         }
     }

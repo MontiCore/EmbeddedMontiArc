@@ -252,9 +252,6 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
         referencedComponent.orElse(this).isInnerComponent = isInnerComponent;
     }
 
-    /**
-     * @param typeParameter generic type parameter to add
-     */
     public void addFormalTypeParameter(MCTypeSymbol formalTypeParameter) {
         if (referencedComponent.isPresent()) {
             referencedComponent.get().addFormalTypeParameter(formalTypeParameter);
@@ -383,8 +380,6 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * Returns a list of all incoming ports that also contains ports from a super component.
      *
-     * @param loader        used to load full version of super component (if needed)
-     * @param deserializers used to load full version of super component (if needed)
      * @return list of all incoming ports.
      */
     public List<PortSymbol> getAllIncomingPorts() {
@@ -416,8 +411,6 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * Returns a list of all outgoing ports that also contains ports from a super component.
      *
-     * @param loader        used to load full version of super component (if needed)
-     * @param deserializers used to load full version of super component (if needed)
      * @return list of all outgoing ports.
      */
     public List<PortSymbol> getAllOutgoingPorts() {
@@ -622,7 +615,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
             referencedComponent.get().addParameter(astParameter);
         else {
             EMAVariable param = new EMAVariable();
-            param.setName(astParameter.getName());
+            param.setName(astParameter.getNameWithArray().getName());
             param.setType(astParameter.getType());
             parameters.add(param);
         }

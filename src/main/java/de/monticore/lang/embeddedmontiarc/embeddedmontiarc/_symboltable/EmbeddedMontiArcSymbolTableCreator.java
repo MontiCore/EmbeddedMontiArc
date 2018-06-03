@@ -20,23 +20,23 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
-import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._ast.ASTImportStatement;
-import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.*;
 import de.monticore.symboltable.modifiers.BasicAccessModifier;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
+import de.monticore.types.types._ast.ASTImportStatement;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -98,7 +98,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         // imports
         List<ImportStatement> imports = new ArrayList<>();
         for (ASTImportStatement astImportStatement : compilationUnit.getImportStatementList()) {
-            String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportListList());
+            String qualifiedImport = Names.getQualifiedName(astImportStatement.getImportList());
             ImportStatement importStatement = new ImportStatement(qualifiedImport,
                     astImportStatement.isStar());
             imports.add(importStatement);
@@ -124,11 +124,11 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
             return;
         }
         // creates all instances which are created through the top level component
-        Log.debug("endVisit of " + node.getComponent().getSymbol().get().getFullName(),
+        Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(),
                 "SymbolTableCreator:"); // ,"MontiArcSymbolTableCreator");
         // new Error().printStackTrace();
         instanceSymbolCreator.createInstances(
-                (ComponentSymbol) (Log.errorIfNull(node.getComponent().getSymbol().orElse(null))));
+                (ComponentSymbol) (Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))));
     }
 
 

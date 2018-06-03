@@ -22,16 +22,12 @@ package de.monticore.lang.embeddedmontiarc.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
-//import de.monticore.types.types._ast.ASTReferenceType;
-//import de.monticore.types.types._ast.ASTType;
-import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
-import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTSimpleReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.types.types._ast.ASTTypeArgument;
 import de.se_rwth.commons.logging.Log;
-//import de.se_rwth.commons.logging.Log;
 
 /**
  * TODO: Implement
@@ -80,18 +76,18 @@ public class ArcTypePrinter {
             ASTSimpleReferenceType referenceType = (ASTSimpleReferenceType) subComponent.getType();
             String compNameWithoutPackage = referenceType.getNameList().get(referenceType.getNameList().size() - 1);
             if (referenceType.getTypeArgumentsOpt().isPresent()) {
-                for (ASTTypeArgument typeArguments : referenceType.getTypeArgumentsOpt().get().getTypeArgumentsList()) {
+                for (ASTTypeArgument typeArguments : referenceType.getTypeArgumentsOpt().get().getTypeArgumentList()) {
                     Log.debug(typeArguments.toString(), "typeArgs");
                     if (typeArguments instanceof ASTUnitNumberTypeArgument) {
                         ASTUnitNumberTypeArgument unitNumberTypeArgument = (ASTUnitNumberTypeArgument) typeArguments;
-                        if (unitNumberTypeArgument.getUnitNumber().getNumber().isPresent()) {
-                            compNameWithoutPackage += "_"+unitNumberTypeArgument.getUnitNumber().getNumber().get().intValue()+"_";
+                        if (unitNumberTypeArgument.getNumberWithUnit().getNumber().isPresent()) {
+                            compNameWithoutPackage += "_" + unitNumberTypeArgument.getNumberWithUnit().getNumber().get().intValue() + "_";
                             return compNameWithoutPackage;
                         } else
                             Log.debug("0xPRSUCONA1", "No Number present!");
                     } else {
 
-                        Log.debug("No further information","0xPRSUCONA Case not handled!");
+                        Log.debug("No further information", "0xPRSUCONA Case not handled!");
 
                     }
                 }

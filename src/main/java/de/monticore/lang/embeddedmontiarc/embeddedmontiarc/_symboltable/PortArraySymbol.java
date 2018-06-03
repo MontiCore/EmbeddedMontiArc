@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.*;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -99,7 +99,7 @@ public class PortArraySymbol extends PortSymbol {
             int oldSize = portSymbols.size();
             if (size == 0) {
                 size = oldSize;
-                ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).setNumber(Rational.valueOf("" + oldSize));
+                ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).setNumber(Double.valueOf(oldSize));
             }
             Log.debug(componentSymbolReference.toString(), "FullName:");
             Log.debug(oldSize + "", "old Port Size:");

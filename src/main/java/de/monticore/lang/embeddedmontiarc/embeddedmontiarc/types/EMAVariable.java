@@ -20,8 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
-import de.monticore.lang.monticar.common2._ast.ASTParameter;
-import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.types.types._ast.ASTType;
 
 /**
  * @author Sascha Schneiders
@@ -30,9 +29,10 @@ public class EMAVariable {
     protected ASTType type;
     protected String name;
 
-    public EMAVariable(){
+    public EMAVariable() {
 
     }
+
     public EMAVariable(ASTType type, String name) {
         this.type = type;
         this.name = name;

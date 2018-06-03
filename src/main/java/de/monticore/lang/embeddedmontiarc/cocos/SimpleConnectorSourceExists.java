@@ -42,7 +42,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
    */
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol symbol = (ComponentSymbol) node.getSymbol().orElse(null);
+    ComponentSymbol symbol = (ComponentSymbol) node.getSymbolOpt().orElse(null);
     
     if (null == symbol) {
       Log.error(String.format("0x9AF6C ASTComponent node \"%s\" has no symbol. Did you forget to "
