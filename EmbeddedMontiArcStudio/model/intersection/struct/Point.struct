@@ -1,0 +1,6 @@
+package intersection.struct;
+
+struct Point{
+    Q posX;
+    Q posY;
+}

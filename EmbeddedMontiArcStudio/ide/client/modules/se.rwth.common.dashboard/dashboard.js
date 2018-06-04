@@ -44,6 +44,11 @@ var Dashboard = (function() {
                 reponame: "PacMan",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/PacMan/v&url=/m/pacman.zip&openFile=/de/rwth/pacman/PacManWrapper.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "Intersection",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Intersection/v&url=/m/intersection.zip&openFile=/System.emam"
             }];
         },
 
