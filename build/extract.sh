@@ -13,14 +13,22 @@ while read line; do
 
 	if [[ ${line:0:2} = '**' ]]; then
 		link=${line:3}
-		# extract filename
+
+		#get filename
 		filename=${link##*/}
+		# if dependencies.txt does not contain name, use curl to get it
+		if [[ ! $filename = *".zip" ]]; then
+			filename=$(curl -sI  $link | grep -o -E 'filename=.*$' | sed -e 's/filename=//' | sed -e 's/\"//g' | tr -d "\r")
+		fi
+
 		if [ ! -z "$filename" ]; then
 			filename=${dl}${filename}
 		    # if file does exist, extract
 			if [ -f ${filename} ]; then
 				echo "Extracting "${filename}" to "${dir}
-				unzip -q -o -d ${dir} ${filename} 
+				unzip -q -o -d ${dir} ${filename}
+			else
+				echo "File not found! ${filename}"
 			fi
 		fi
 	fi
