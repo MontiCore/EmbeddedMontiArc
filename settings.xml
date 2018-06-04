@@ -40,7 +40,7 @@
     <mirror>
       <id>se-nexus</id>
       <mirrorOf>external:*,!github,!eclipse,!maven-central</mirrorOf>
-      <url>https://nexus.se.rwth-aachen.de/content/groups/montiarc</url>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/embeddedmontiarc</url>
     </mirror>
     
 	 <mirror>
