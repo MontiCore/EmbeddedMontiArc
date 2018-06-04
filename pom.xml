@@ -183,48 +183,13 @@
 
     </dependencies>
 
-
-    <!-- == PROJECT BUILD SETTINGS =========================================== -->
+   <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.1</version>
-                <configuration>
-                    <altDeploymentRepository>
-                        internal.repo::default::file://${project.build.directory}/external-dependencies
-                    </altDeploymentRepository>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
-                <configuration>
-                    <server>github</server>
-                    <message>Maven artifacts for ${project.version} ${project.artifactId}
-                    </message>  <!-- git commit message -->
-                    <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-                    <outputDirectory>${project.build.directory}/external-dependencies
-                    </outputDirectory> <!-- matches distribution management repository url above -->
-                    <branch>refs/heads/master</branch>                       <!-- remote branch name -->
-                    <includes>
-                        <include>**/*</include>
-                    </includes>
-                    <repositoryName>external-dependencies</repositoryName>      <!-- github repo name -->
-                    <repositoryOwner>EmbeddedMontiArc</repositoryOwner>    <!-- github username  -->
-                    <merge>true</merge>
-                </configuration>
-                <executions>
-                    <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- MontiCore Generation -->
@@ -234,7 +199,7 @@
                 <version>${monticore.plugin}</version>
                 <configuration>
                     <skip>false</skip>
-                    <script>script.groovy</script>
+                    <script>de/monticore/monticore_noemf.groovy</script>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -348,7 +313,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+                 <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
@@ -372,22 +337,10 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+</plugin>
         </plugins>
     </build>
-
+<!--
     <distributionManagement>
         <repository>
             <id>internal.repo</id>
@@ -399,4 +352,20 @@
             <url>file://${project.build.directory}/external-dependencies</url>
         </snapshotRepository>
     </distributionManagement>
+    -->
+ <!-- == DISTRIBUTION ==================================================== -->
+
+  <distributionManagement>
+    <repository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+
 </project>
+
