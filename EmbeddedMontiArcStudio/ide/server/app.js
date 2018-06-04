@@ -2,7 +2,7 @@ const Express                                           = require("express");
 const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
-const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
+const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, IntersectionSimulation} = require("./simulations");
 const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
@@ -399,6 +399,15 @@ App.post("/services/pacman/visualize", function(request, response) {
 	}
 
 	PacManVisualization.execute(onExecuted);
+});
+
+App.post("/services/intersection/simulate", function(request, response) {
+	function onExecuted() {
+		logger.info("Intersection service callback");
+		response.end();
+	}
+
+	IntersectionSimulation.execute(onExecuted);
 });
 
 module.exports = App;

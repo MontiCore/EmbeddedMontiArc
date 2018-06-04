@@ -14,7 +14,6 @@ class AutoPilotSimulation {
 
         const onStdOut = (buffer) => {
             const data = buffer.toString();
-
             if(data.indexOf("World is initialling") > -1) {
                 this.logger.info("...Simulation has been started.");
                 process.stdout.removeListener("data", onStdOut);
@@ -24,7 +23,7 @@ class AutoPilotSimulation {
 
         const onTimeout = () => {
             this.logger.info("Starting Simulation...");
-            process = Process.spawn(BATCHES.AUTOPILOT.SIMULATION.START, [], {
+            process = Process.spawn("bash", ["-c",BATCHES.AUTOPILOT.SIMULATION.START], {
                 cwd: Path.resolve(PATHS.SCRIPTS, "autopilot")
             });
             process.stdout.on("data", onStdOut);
@@ -66,7 +65,7 @@ class AutoPilotSimulation {
             }
         };
 
-        const process = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":8080"]).on("exit", onNetstatExit);
+        const process = Process.spawn("bash", ["-c", "netstat", "-ano", '|', "grep", ":8080"]).on("exit", onNetstatExit);
 
         process.stdout.on("data", onNetstatOut);
     }
@@ -136,9 +135,9 @@ class AutoPilotSimulation {
             callback();
         };
 
-		const server = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
-        const db = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":5432"]).on("exit", onNetstatExit);
-		const rmi = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":10101"]).on("exit", onNetstatExit);
+		const server = Process.spawn("bash", ["-c", "netstat", "-ano", '|', "grep", ":80"]).on("exit", onNetstatExit);
+        const db = Process.spawn("bash", ["-c", "netstat", "-ano", '|', "grep", ":5432"]).on("exit", onNetstatExit);
+		const rmi = Process.spawn("bash", ["-c", "netstat", "-ano", '|', "grep", ":10101"]).on("exit", onNetstatExit);
 
 		server.stdout.on("data", onNetstatOut);
         db.stdout.on("data", onNetstatOut);
@@ -201,8 +200,41 @@ class PacManSimulation {
     }
 }
 
+class IntersectionSimulation {
+	constructor() {
+		this.logger = Log.getLogger("INTERSECTION");
+		this.logger.level = "debug"
+	}
+
+	execute(callback) {
+		this.logger.info("Executing Intersection...");
+		
+		const onExit = () => {
+			this.logger.info("...Intersection executed");
+		};
+
+		let process = null;		
+
+        process = Process.spawn("bash", ["-c", BATCHES.INTERSECTION.SIMULATION], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "intersection")
+        }).on("exit", onExit);
+        //process.stdout.on("data", onStdOut);
+
+        /*process = Process.spawn("bash", ["-c",BATCHES.AUTOPILOT.SIMULATION.START], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "autopilot")
+        });*/
+
+
+
+		//Process.spawn(BATCHES.INTERSECTION.SIMULATION, [],{
+		//	cwd: Path.resolve(PATHS.SCRIPTS, "intersection")
+		//}).on("exit", onExit);
+	}
+}
+
 module.exports = {
     AutoPilotSimulation: new AutoPilotSimulation(),
     ClusteringSimulation: new ClusteringSimulation(),
-    PacManSimulation: new PacManSimulation()
+    PacManSimulation: new PacManSimulation(),
+	IntersectionSimulation: new IntersectionSimulation()
 };
