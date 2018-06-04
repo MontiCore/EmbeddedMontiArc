@@ -18,30 +18,17 @@ cache:
 
 
 stages:
-  - clean
-  - generate
-  - compile
   - test
   - deploy
 
-clean:
-  stage: clean
-  script: "mvn $MAVEN_CLI_OPTS clean -s settings.xml"
-
-generate:
-  stage: generate
-  script: "mvn $MAVEN_CLI_OPTS generate-sources -s settings.xml"
-
-compile:
-  stage: compile
-  script: "mvn $MAVEN_CLI_OPTS compiler:compile -s settings.xml"
-
 test:
   stage: test
-  script: "mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B test --settings settings.xml"
+  script: "mvn $MAVEN_CLI_OPTS clean test --settings settings.xml"
+  except:
+  - master
 
 deploy:
   stage: deploy
-  script: "mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml"
+  script: "mvn $MAVEN_CLI_OPTS clean deploy --settings settings.xml"
   only:
   - master
