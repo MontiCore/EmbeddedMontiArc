@@ -39,11 +39,12 @@
   <mirrors>
     <mirror>
       <id>se-nexus</id>
-      <mirrorOf>external:*,!github,!eclipse,!maven-central</mirrorOf>
-      <url>https://nexus.se.rwth-aachen.de/content/groups/embeddedmontiarc</url>
+      <!-- <mirrorOf>external:*,!github,!eclipse,!maven-central</mirrorOf> -->
+      <mirrorOf>external:*</mirrorOf>
+      <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
     </mirror>
     
-	 <mirror>
+	<!-- <mirror>
       <id>github</id>
       <mirrorOf>github</mirrorOf>
       <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
@@ -59,7 +60,7 @@
       <id>eclipse</id>
 	  <mirrorOf>eclipse</mirrorOf>
       <url>https://repo.eclipse.org/content/groups/releases/</url>
-    </mirror>
+    </mirror> -->
 	 
 	<!--
 	<mirror>
