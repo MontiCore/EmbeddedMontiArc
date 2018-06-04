@@ -1,7 +1,7 @@
 mkdir -p ${targetDir}
 
 echo "Copy extracted dependencies to build"
-mv ${ext}* ${targetDir}
+mv -v ${ext}* ${targetDir}
 
 echo "Copy project items to build"
 for item in ${packingItems}; do
