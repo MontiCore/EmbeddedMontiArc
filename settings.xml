@@ -208,11 +208,11 @@
       <!-- enable snapshots for the built in central repo to direct -->
       <!-- all requests to nexus via the mirror -->
       <repositories>
-        <repository>
+        <!-- <repository>
             <id>github</id>
             <name>github</name>
             <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
-        </repository>
+        </repository> -->
         <repository>
           <id>central</id>
           <url>http://central</url>
@@ -221,13 +221,13 @@
         </repository>
       </repositories>
       <pluginRepositories>
-        <pluginRepository>
+        <!-- <pluginRepository>
           <id>github</id>
           <name>github</name>
           <url>https://raw.githubusercontent.com/EmbeddedMontiArc/external-dependencies/master/</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
-        </pluginRepository>
+        </pluginRepository> -->
         <pluginRepository>
           <id>central</id>
           <url>http://central</url>
