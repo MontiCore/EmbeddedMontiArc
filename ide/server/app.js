@@ -2,11 +2,12 @@ const Express                                                       = require("e
 const Path                                                          = require("path");
 const {PATHS, URLS, OPTIONS}                                        = require("./constants");
 const Chrome                                                        = require("./chrome");
-const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
+const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, SuperMarioSimulation} = require("./simulations");
 const {AutoPilotVisualization, ClusteringVisualization}             = require("./visualizations");
-const {AutoPilotReporting, ClusteringReporting, PacManReporting}    = require("./reportings");
+const {AutoPilotReporting, ClusteringReporting, PacManReporting, SuperMarioReporting}    = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}                 = require("./reportings");
 const {PacmanGeneration}                                            = require("./generations");
+const {SuperMarioGeneration}                                        = require("./generations");
 const Log                                                           = require("log4js");
 const {AutoPilotTest, ClusteringTest}                               = require("./tests");
 const ModelUpdater                                                  = require("./models-updater");
@@ -227,7 +228,7 @@ App.post("/services/supermario/emam2wasmGen", function(request, response) {
 
     var tab = request.body.tab;
 
-    PacmanGeneration.execute(onExecuted, tab);
+    SuperMarioGeneration.execute(onExecuted, tab);
 });
 
 App.post("/services/supermario/simulate", function(request, response) {
