@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;

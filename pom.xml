@@ -8,21 +8,21 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-generator</artifactId>
-  <version>0.0.12-SNAPSHOT</version>
+  <version>0.0.13-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.4.08.11.2017</monticore.version>
+    <monticore.version>5.0.0</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-	<SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
+	<SIUnit.version>0.0.13-SNAPSHOT</SIUnit.version>
 	<Common-MontiCar.version>0.0.13-SNAPSHOT</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.17-SNAPSHOT</Embedded-MontiArc.version>
-	<Embedded-MontiArc-Behaviour.version>0.0.11</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.11</Math.version>
+	<Embedded-MontiArc-Behaviour.version>0.0.13-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+    <Math.version>0.0.13-SNAPSHOT</Math.version>
 	<Embedded-MontiArc-Math.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Math.version>
     <tagging.version>0.0.2</tagging.version>
     <!-- .. Libraries .................................................. -->

@@ -3,14 +3,14 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.math.math._ast.ASTAssignmentType;
+import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Optional;
@@ -102,7 +102,7 @@ public class PortConverter {
             if (astType instanceof ASTAssignmentType) {
                 ASTAssignmentType astAssignmentType = (ASTAssignmentType) astType;
                 //if (astAssignmentType.getMatrixProperty().size() > 0) Log.error(astType.toString());
-                variable.addProperties(astAssignmentType.getMatrixProperty());
+                variable.addProperties(astAssignmentType.getMatrixPropertyList());
             }
         }
     }

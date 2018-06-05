@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Generator;

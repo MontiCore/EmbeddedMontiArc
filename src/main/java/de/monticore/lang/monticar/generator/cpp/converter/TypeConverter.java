@@ -3,11 +3,10 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.math.math._ast.ASTAssignmentType;
-import de.monticore.lang.math.math._ast.ASTDimension;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathValueType;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
+import de.monticore.lang.math._ast.ASTAssignmentType;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueType;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
@@ -16,9 +15,10 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.types2._ast.ASTDimension;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.types.types._ast.ASTType;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -43,7 +43,7 @@ public class TypeConverter {
 
     public static String getVariableTypeNameForMathLanguageTypeName(MathValueType mathValueType) {
         if (mathValueType.getDimensions().size() == 0) {
-            if (mathValueType.getType().isIsWholeNumberNumber()) {
+            if (mathValueType.getType().isWholeNumber()) {
                 return "int";//use int for now add range check if bigger number is required
             }
             return "double";
@@ -126,7 +126,7 @@ public class TypeConverter {
 
     public static VariableType getRealVariableType(ASTCommonMatrixType astCommonMatrixType) {
         VariableType variableType;
-        List<ASTCommonDimensionElement> dimensionElements = astCommonMatrixType.getCommonDimension().getCommonDimensionElements();
+        List<ASTCommonDimensionElement> dimensionElements = astCommonMatrixType.getCommonDimension().getCommonDimensionElementList();
         if (dimensionElements.size() == 1) {
             variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         } else if (dimensionElements.size() == 2) {
@@ -146,8 +146,8 @@ public class TypeConverter {
 
     public static boolean isVectorDimension(ASTCommonDimensionElement astCommonDimensionElement) {
         boolean result = false;
-        if (astCommonDimensionElement.getUnitNumber().isPresent()) {
-            ASTUnitNumber unitNumber = astCommonDimensionElement.getUnitNumber().get();
+        if (astCommonDimensionElement.getNumberWithUnitOpt().isPresent()) {
+            ASTNumberWithUnit unitNumber = astCommonDimensionElement.getNumberWithUnitOpt().get();
             if (unitNumber.getNumber().isPresent()) {
                 result = unitNumber.getNumber().get().intValue() == 1;
             }
@@ -212,11 +212,11 @@ public class TypeConverter {
 
     public static void handleCommonMatrixType(Variable variable, ASTCommonMatrixType astCommonMatrixType) {
         for (ASTCommonDimensionElement astCommonDimensionElement :
-                astCommonMatrixType.getCommonDimension().getCommonDimensionElements()) {
-            if (astCommonDimensionElement.getName().isPresent())
-                variable.addDimensionalInformation(astCommonDimensionElement.getName().get());
-            else if (astCommonDimensionElement.getUnitNumber().isPresent())
-                variable.addDimensionalInformation(astCommonDimensionElement.getUnitNumber().get().getNumber().get().getDividend() + "");
+                astCommonMatrixType.getCommonDimension().getCommonDimensionElementList()) {
+            if (astCommonDimensionElement.getNameOpt().isPresent())
+                variable.addDimensionalInformation(astCommonDimensionElement.getNameOpt().get());
+            else if (astCommonDimensionElement.getNumberWithUnitOpt().isPresent())
+                variable.addDimensionalInformation(astCommonDimensionElement.getNumberWithUnitOpt().get().getNumber().get() + "");
             else {
                 Log.error("Case not handled;");
             }
@@ -230,10 +230,10 @@ public class TypeConverter {
 
     public static void handleAssignmentType(Variable variable, ASTAssignmentType astAssignmentType) {
         //TODO Add MatrixProperties to MathInformation
-        if (astAssignmentType.getDim().isPresent()) {
-            ASTDimension astDimension = astAssignmentType.getDim().get();
-            variable.addDimensionalInformation(((MathExpressionSymbol) astDimension.getMathArithmeticExpressions().get(0).getSymbol().get()).getTextualRepresentation());
-            variable.addDimensionalInformation(((MathExpressionSymbol) astDimension.getMathArithmeticExpressions().get(1).getSymbol().get()).getTextualRepresentation());
+        if (astAssignmentType.getElementType().getDimensionOpt().isPresent()) {
+            ASTDimension astDimension = astAssignmentType.getElementType().getDimensionOpt().get();
+            variable.addDimensionalInformation(((MathExpressionSymbol) astDimension.getDimensionList().get(0).getSymbolOpt().get()).getTextualRepresentation());
+            variable.addDimensionalInformation(((MathExpressionSymbol) astDimension.getDimensionList().get(1).getSymbolOpt().get()).getTextualRepresentation());
         }
     }
 
@@ -263,15 +263,15 @@ public class TypeConverter {
 
     public static String getTypeNameMontiCar(ASTElementType elementType) {
         String result = null;
-        if (elementType.isIsRational()) {
+        if (elementType.isRational()) {
             result = "Q";
-        } else if (elementType.isIsBoolean()) {
+        } else if (elementType.isBoolean()) {
             result = "B";
-        } else if (elementType.isIsComplex()) {
+        } else if (elementType.isComplex()) {
             result = "C";
-        } else if (elementType.isIsWholeNumberNumber()) {
+        } else if (elementType.isWholeNumber()) {
             result = "Z";
-        } else if (elementType.isIsNatural()) {
+        } else if (elementType.isNaturalNumber()) {
             result = "N";
         } else {
             Log.error("Case not handled!");

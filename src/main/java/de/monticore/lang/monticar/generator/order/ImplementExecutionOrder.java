@@ -80,7 +80,7 @@ public class ImplementExecutionOrder {
             ExpandedComponentInstanceSymbol inst2 = (ExpandedComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
             ExpandedComponentInstanceSymbol inst3 = (ExpandedComponentInstanceSymbol) ps.getEnclosingScope().getSpanningSymbol().get();
             if (!dependencies.containsKey(inst2) && pt.isIncoming()) {
-                Collection<PortSymbol> ports = inst3.getPorts().stream()
+                Collection<PortSymbol> ports = inst3.getPortsList().stream()
                         .filter(po -> po.equals(ps)).collect(Collectors.toList());
                 //Log.info(inst2.toString(), "Added to dependencies");
                 dependencies.put(inst2, ports);
@@ -135,7 +135,7 @@ public class ImplementExecutionOrder {
                 b += 1;
                 Log.info(subInst.toString(), "Instance after Tagging:");
                 Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
-                        .filter(c -> subInst.getPorts().contains(connectorSourcePort(inst, c)))
+                        .filter(c -> subInst.getPortsList().contains(connectorSourcePort(inst, c)))
                         .collect(Collectors.toList());
                 if (!subInst.getComponentType().getConfigParameters().isEmpty()) {
                     dependencies.put(subInst, new ArrayList<PortSymbol>());
@@ -258,7 +258,7 @@ public class ImplementExecutionOrder {
      */
     private static ExpandedComponentInstanceSymbol dependencyPortsDeletion(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
         Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
-                .filter(c -> inst.getPorts().contains(connectorSourcePort(inst, c)))
+                .filter(c -> inst.getPortsList().contains(connectorSourcePort(inst, c)))
                 .collect(Collectors.toList());
         for (ConnectorSymbol c : connects) {
             PortSymbol pt = connectorTargetPort(inst, c);
