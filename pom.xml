@@ -30,21 +30,21 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math</artifactId>
-  <version>0.0.12-SNAPSHOT</version>
+  <version>0.0.12</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.4-SNAPSHOT</monticore.version>
+    <monticore.version>4.5.4.08.11.2017</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-	<Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
-	<Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.11-SNAPSHOT</Math.version>
+	<Common-MontiCar.version>0.0.12</Common-MontiCar.version>
+	<Embedded-MontiArc.version>0.0.15</Embedded-MontiArc.version>
+	<Embedded-MontiArc-Behaviour.version>0.0.11</Embedded-MontiArc-Behaviour.version>
+    <Math.version>0.0.11</Math.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -52,7 +52,7 @@
 	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>4.5.3.1</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -377,22 +377,10 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-</plugin>
+			</plugin>
         </plugins>
     </build>
-<!--
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </repository>
-        <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
+
  <!-- == DISTRIBUTION ==================================================== -->
 
   <distributionManagement>
