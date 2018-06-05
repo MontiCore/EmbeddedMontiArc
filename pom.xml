@@ -149,16 +149,9 @@
 
     </dependencies>
 
-   <!-- == PROJECT BUILD SETTINGS =========================================== -->
+    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>${wagon.provider.version}</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
