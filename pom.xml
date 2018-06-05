@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc</artifactId>
-  <version>0.0.13-SNAPSHOT</version>
+  <version>0.0.16-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -39,13 +39,13 @@
 
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.4-SNAPSHOT</monticore.version>
+    <monticore.version>4.5.4.08.11.2017</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<languages.version>4.0.1-SNAPSHOT</languages.version>
     <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-    <struct.version>0.0.10-SNAPSHOT</struct.version>
-    <Common-MontiCar.version>0.0.12-SNAPSHOT</Common-MontiCar.version>
+    <struct.version>0.0.11</struct.version>
+    <Common-MontiCar.version>0.0.13-SNAPSHOT</Common-MontiCar.version>
     <tagging.version>0.0.2</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -205,16 +205,7 @@
     </dependency>
 
   </dependencies>
-
-
-  <!-- == BUILD INFRASTRUCTURE ============================================
-
-  <ciManagement>
-    <system>Jenkins CI</system>
-    <url>http://ci.se.rwth-aachen.de/view/montiarc/</url>
-  </ciManagement>
--->
-   <!-- == PROJECT BUILD SETTINGS =========================================== -->
+    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
         <plugins>
@@ -368,22 +359,10 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-</plugin>
+			</plugin>
         </plugins>
     </build>
-<!--
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </repository>
-        <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
+
  <!-- == DISTRIBUTION ==================================================== -->
 
   <distributionManagement>
@@ -396,6 +375,5 @@
       <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
 
 </project>
