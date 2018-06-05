@@ -20,34 +20,18 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.TypeHelper;
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.symboltable.types.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.measure.unit.SystemOfUnits;
-import javax.measure.unit.Unit;
-import java.util.Arrays;
-import java.util.Collection;
-
-import de.monticore.lang.numberunit._ast.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SymtabTest extends AbstractSymtabTest {
 

@@ -10,7 +10,7 @@ component Max<T,N1 n=2> {
 
 	    for i=1:n
 	        maxVal=max(maxVal,in1(i));
-	    end
+	    end;
 	    out1=maxVal;
 	}
 }

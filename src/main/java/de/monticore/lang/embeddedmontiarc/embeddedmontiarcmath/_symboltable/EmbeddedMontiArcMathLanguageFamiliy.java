@@ -27,7 +27,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
-import de.monticore.lang.math.math._symboltable.MathLanguage;
+import de.monticore.lang.math._symboltable.MathLanguage;
 
 public class EmbeddedMontiArcMathLanguageFamiliy extends ModelingLanguageFamily {
 

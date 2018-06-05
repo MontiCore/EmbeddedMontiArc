@@ -21,27 +21,25 @@
 // created by Michael von Wenckstern
 
 
-
-
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
-
-import java.util.Deque;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.CommonEmbeddedMontiArcMathDelegatorVisitor;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathDelegatorVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
-import de.monticore.lang.math.math._symboltable.MathSymbolTableCreator;
+import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Deque;
+
 public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
         implements EmbeddedMontiArcMathVisitor {
 
     // TODO doc
-    private final CommonEmbeddedMontiArcMathDelegatorVisitor visitor = new CommonEmbeddedMontiArcMathDelegatorVisitor();
+    private final EmbeddedMontiArcMathDelegatorVisitor visitor = new EmbeddedMontiArcMathDelegatorVisitor();
 
     private EmbeddedMontiArcSymbolTableCreator emaSTC;
 
@@ -59,13 +57,12 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         this.emaSTC = new EmbeddedMontiArcSymbolTableCreator(resolvingConfig, scopeStack);
 
-        visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarcmath__visitor_EmbeddedMontiArcMathVisitor(new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack));
-        visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarc__visitor_EmbeddedMontiArcVisitor(emaSTC);
-        visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarcbehavior__visitor_EmbeddedMontiArcBehaviorVisitor(
-                new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
-        visitor.set_de_monticore_lang_math_math__visitor_MathVisitor(new MathSymbolTableCreator(resolvingConfig, scopeStack));
+        visitor.setEmbeddedMontiArcMathVisitor(new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack));
+        visitor.setEmbeddedMontiArcVisitor(emaSTC);
+        visitor.setEmbeddedMontiArcBehaviorVisitor(new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
+        visitor.setMathVisitor(new MathSymbolTableCreator(resolvingConfig, scopeStack));
         //visitor.set_de_monticore_java_javadsl__visitor_JavaDSLVisitor(new JavaSymbolTableCreator(resolvingConfig, scopeStack));
-     }
+    }
 
     /**
      * Creates the symbol table starting from the <code>rootNode</code> and

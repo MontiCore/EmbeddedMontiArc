@@ -17,7 +17,7 @@ component SimilarityImageMatrixAdapter<N1 n, N1 m>{
                 counter = counter + 1;
                 imgMatrix(counter, 3) = bluePixels(i,j);
                 counter = counter + 1;
-            end
-        end
+            end;
+        end;
     }
 }

@@ -20,9 +20,9 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter;
 
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
+import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 import de.se_rwth.commons.logging.Log;

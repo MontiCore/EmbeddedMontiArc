@@ -20,18 +20,11 @@
 package de.monticore.lang.embeddedmontiarc;
 
 
-grammar EmbeddedMontiArcMath extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior, de.monticore.lang.math.Math{
+grammar EmbeddedMontiArcMath extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior, de.monticore.lang.Math{
     EMAMCompilationUnit = EMACompilationUnit;
-
-
 
     BehaviorEmbedding =  MathStatements;
 
     BehaviorName = "Math";
 
-    token NEWLINETOKEN =
-             ('\r' '\n' |
-             '\r' |
-             '\n' ):
-           ;
 }

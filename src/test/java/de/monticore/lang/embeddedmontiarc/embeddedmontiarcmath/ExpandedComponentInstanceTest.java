@@ -20,11 +20,11 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Ignore;
@@ -49,7 +49,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
 
-        assertEquals(inst.getPorts().size(), 3);
+        assertEquals(inst.getPortsList().size(), 3);
         assertTrue(inst.getPort("in1").isPresent()); // from a.Sub2
         assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
         assertTrue(inst.getPort("percentage").isPresent()); // from b.SuperSamePackage

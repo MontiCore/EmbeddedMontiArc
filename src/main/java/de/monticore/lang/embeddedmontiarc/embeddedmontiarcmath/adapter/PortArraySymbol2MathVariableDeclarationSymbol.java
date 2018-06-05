@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
+import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.symboltable.resolving.SymbolAdapter;
