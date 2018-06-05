@@ -1,4 +1,4 @@
-package de.rwth.supermario;
+package de.rwth.supermario.haller;
 
 
 component Controller {
@@ -7,7 +7,7 @@ component Controller {
         out Z(0 : 1 : 3) newPacManDirection;
         
     //Replace this with your own custom controller
-    instance Controller controller;
+    // instance Controller controller;
     
     
 }
