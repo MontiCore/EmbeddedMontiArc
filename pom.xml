@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang</groupId>
     <artifactId>math</artifactId>
-    <version>0.0.13-SNAPSHOT</version>
+    <version>0.0.13</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -40,7 +40,7 @@
         <monticore.version>5.0.1-SNAPSHOT</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-        <Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
+        <Common-MontiCar.version>0.0.12</Common-MontiCar.version>
         <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -182,8 +182,7 @@
         </dependency>
 
     </dependencies>
-
-   <!-- == PROJECT BUILD SETTINGS =========================================== -->
+    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
         <plugins>
@@ -337,22 +336,10 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-</plugin>
+			</plugin>
         </plugins>
     </build>
-<!--
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </repository>
-        <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
+
  <!-- == DISTRIBUTION ==================================================== -->
 
   <distributionManagement>
@@ -368,4 +355,3 @@
 
 
 </project>
-
