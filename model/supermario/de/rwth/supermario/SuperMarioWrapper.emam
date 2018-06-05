@@ -3,8 +3,11 @@ package de.rwth.supermario;
 import de.rwth.supermario.haller.Controller;
 
 component SuperMarioWrapper {
-    ports 
-        in Z^{22,19} view,
+    ports   // x, y
+        in Z^{22,22} view,
+        in Z^{1,1} marioPosition,
+        in Z^{500,500} enemyPositions,
+        in 
         out Z(0 : 1 : 3) newPacManDirection;
         
     //Replace this with your own custom controller
