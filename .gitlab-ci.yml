@@ -23,12 +23,12 @@ stages:
 
 test:
   stage: test
-  script: "mvn $MAVEN_CLI_OPTS clean install --settings settings.xml"
+  script: "mvn $MAVEN_CLI_OPTS clean install -U --settings settings.xml"
   except:
   - master
 
 deploy:
   stage: deploy
-  script: "mvn $MAVEN_CLI_OPTS clean install deploy --settings settings.xml"
+  script: "mvn $MAVEN_CLI_OPTS clean install -U deploy --settings settings.xml"
   only:
   - master
