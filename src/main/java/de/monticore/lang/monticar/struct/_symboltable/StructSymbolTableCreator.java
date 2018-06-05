@@ -71,6 +71,7 @@ public class StructSymbolTableCreator extends StructSymbolTableCreatorTOP {
 
     @Override
     public void endVisit(ASTStructCompilationUnit node) {
+        super.endVisit(node);
         coCoChecker.checkAll(node);
     }
 
