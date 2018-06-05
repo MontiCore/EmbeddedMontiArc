@@ -29,9 +29,6 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-//import de.monticore.types.types._ast.ASTTypeParameters;
-//import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
-
 /**
  * @author (last commit) Crispin Kirchner
  */
@@ -42,20 +39,18 @@ public class TypeParameterNamesUnique implements EmbeddedMontiArcASTComponentCoC
      */
     @Override
     public void check(ASTComponent node) {
-        ASTTypeParameters typeParameters = node.getGenericTypeParameters();
-        if (typeParameters == null) {
-            return;
-        }
+        if (node.getGenericTypeParametersOpt().isPresent()) {
+            ASTTypeParameters typeParameters = node.getGenericTypeParametersOpt().get();
+            List<String> typeParameterNames = new ArrayList<>();
+            for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarationList()) {
 
-        List<String> typeParameterNames = new ArrayList<>();
-        for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarationList()) {
-
-            if (typeParameterNames.contains(typeParameter.getName())) {
-                Log.error(String.format(
-                        "0x35F1A The formal type parameter name \"%s\" is not unique",
-                        typeParameter.getName()), typeParameter.get_SourcePositionStart());
-            } else {
-                //typeParameterNames.add(typeParameter.getNamingResolution().get().getName());
+                if (typeParameterNames.contains(typeParameter.getName())) {
+                    Log.error(String.format(
+                            "0x35F1A The formal type parameter name \"%s\" is not unique",
+                            typeParameter.getName()), typeParameter.get_SourcePositionStart());
+                } else {
+                    //typeParameterNames.add(typeParameter.getNamingResolution().get().getName());
+                }
             }
         }
     }

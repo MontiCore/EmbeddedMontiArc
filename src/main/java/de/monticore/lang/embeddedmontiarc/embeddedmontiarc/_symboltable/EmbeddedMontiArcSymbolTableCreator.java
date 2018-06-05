@@ -283,13 +283,17 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         component.setPackageName(componentPackageName);
 
         // Handle ResolutionDeclaration of stuff like <N1 n=5>
-        handleResolutionDeclaration(component, node.getGenericTypeParameters(), currentScope().get(),
-                node, this);
+        if (node.getGenericTypeParametersOpt().isPresent()) {
+            handleResolutionDeclaration(component, node.getGenericTypeParametersOpt().get(), currentScope().get(),
+                    node, this);
+        }
 
         Log.debug(component.toString(), "ComponentPreGeneric");
         // generic type parameters
-        EMAJavaHelper.addTypeParametersToType(component, node.getGenericTypeParameters(),
-                currentScope().get());
+        if (node.getGenericTypeParametersOpt().isPresent()) {
+            EMAJavaHelper.addTypeParametersToType(component, node.getGenericTypeParametersOpt().get(),
+                    currentScope().get());
+        }
 
         Log.debug(component.toString(), "ComponentPostGeneric");
         // parameters

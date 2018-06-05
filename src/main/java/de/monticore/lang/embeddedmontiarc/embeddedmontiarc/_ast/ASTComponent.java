@@ -35,38 +35,13 @@ import java.util.stream.Collectors;
  * @author Robert Heim, Michael von Wenckstern
  */
 public class ASTComponent extends ASTComponentTOP {
-    /**
-     * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent
-     * @param name
-     * @param genericTypeParameters
-     * @param parameters
-     * @param superComponent
-     * @param nEWLINETOKENs
-     * @param body
-     */
-    public ASTComponent(String name, ASTTypeParameters genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, List<String> nEWLINETOKENs, ASTComponentBody body) {
-        super();
-    }
-
-    protected ASTComponent(
-            String name
-            ,
-            ASTTypeParameters genericTypeParameters
-            ,
-            List<ASTParameter> parameters
-            ,
-            ASTReferenceType superComponent
-            ,
-            java.util.List<String> nEWLINETOKENs,
-
-            ASTComponentBody body
-
-    ) {
-        super(name, genericTypeParameters, parameters, java.util.Optional.ofNullable(superComponent), nEWLINETOKENs, body);
-    }
 
     public ASTComponent() {
         super();
+    }
+
+    public ASTComponent(String name, Optional<ASTTypeParameters> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body) {
+        super(name, genericTypeParameters, parameters, superComponent, body);
     }
 
     // do not use symbol table, since symbol table must not be created
