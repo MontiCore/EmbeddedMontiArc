@@ -199,16 +199,7 @@
     </dependency>
 
   </dependencies>
-
-
-  <!-- == BUILD INFRASTRUCTURE ============================================
-
-  <ciManagement>
-    <system>Jenkins CI</system>
-    <url>http://ci.se.rwth-aachen.de/view/montiarc/</url>
-  </ciManagement>
--->
-   <!-- == PROJECT BUILD SETTINGS =========================================== -->
+    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
         <plugins>
@@ -362,22 +353,10 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-</plugin>
+			</plugin>
         </plugins>
     </build>
-<!--
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </repository>
-        <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
+
  <!-- == DISTRIBUTION ==================================================== -->
 
   <distributionManagement>
@@ -390,6 +369,5 @@
       <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
 
 </project>
