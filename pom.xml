@@ -164,6 +164,31 @@
       <scope>provided</scope>
     </dependency>
     
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>tagging</artifactId>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+    
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>montiarc-fe</artifactId>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>montiarc.languages</groupId>-->
+      <!--<artifactId>montiarc-fe</artifactId>-->
+      <!--<classifier>${grammars.classifier}</classifier>-->
+      <!--<version>${languages.version}</version>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>de.monticore</groupId>-->
+      <!--<artifactId>javaDSL</artifactId>-->
+      <!--<version>${javadsl.version}</version>-->
+    <!--</dependency>-->
+    
     <!-- .. Test Libraries ............................................... -->
     <dependency>
       <groupId>junit</groupId>
@@ -193,137 +218,128 @@
     </dependency>
     
   </dependencies>
-   <!-- == PROJECT BUILD SETTINGS =========================================== -->
+  
+  
+  <!-- == BUILD INFRASTRUCTURE ============================================ 
+  
+  <ciManagement>
+  <system>Jenkins CI</system>
+  <url>http://ci.se.rwth-aachen.de/view/montiarc/</url>
+</ciManagement>
+-->
+<!-- == PROJECT BUILD SETTINGS =========================================== -->
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-            </plugin>
-
-            <!-- MontiCore Generation -->
-            <plugin>
-                <groupId>de.monticore.mojo</groupId>
-                <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
-                <configuration>
-                    <skip>false</skip>
-                    <script>de/monticore/monticore_noemf.groovy</script>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4-runtime</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Other Configuration -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin}</version>
-                <configuration>
-                    <useIncrementalCompilation>true</useIncrementalCompilation>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${assembly.plugin}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>de.monticore</groupId>
-                        <artifactId>mc-assemblies</artifactId>
-                        <version>${mc.grammars.assembly.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>grammars</id>
-                        <configuration>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
-                            <descriptorRefs>
-                                <descriptorRef>grammars-assembly</descriptorRef>
-                            </descriptorRefs>
-                            <formats>
-                                <format>jar</format>
-                            </formats>
-                        </configuration>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Source Jar Configuration -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${source.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>create source jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                        <configuration>
-                            <excludeResources>false</excludeResources>
-                            <includes>
-                                <include>**/*.java</include>
-                                <include>**/*.ftl</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- to add copyright information automatically-->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <header>${project.baseUri}/src/license/se/license.txt</header>
-                    <properties>
-                        <owner>Michael von Wenckstern</owner>
-                        <email>vonwenckstern@se-rwth.de</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/license/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                        <phase>process-sources</phase>
-                    </execution>
-                </executions>
-            </plugin>
-                 <plugin>
+<build>
+  <plugins>
+  
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.1</version>
+      </plugin>
+    <!-- MontiCore Generation -->
+    <plugin>
+      <groupId>de.monticore.mojo</groupId>
+      <artifactId>monticore-maven-plugin</artifactId>
+      <version>${monticore.plugin}</version>
+      <executions>
+        <execution>
+          <goals>
+            <goal>generate</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+    
+    <!-- Other Configuration -->
+    <plugin>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>${compiler.plugin}</version>
+      <configuration>
+        <useIncrementalCompilation>true</useIncrementalCompilation>
+        <source>${java.version}</source>
+        <target>${java.version}</target>
+      </configuration>
+    </plugin>
+    
+    <plugin>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <version>${assembly.plugin}</version>
+      <dependencies>
+        <dependency>
+          <groupId>de.monticore</groupId>
+          <artifactId>mc-assemblies</artifactId>
+          <version>${mc.grammars.assembly.version}</version>
+        </dependency>
+      </dependencies>
+      <executions>
+        <execution>
+          <id>grammars</id>
+          <configuration>
+            <finalName>${project.artifactId}-${project.version}</finalName>
+            <descriptorRefs>
+              <descriptorRef>grammars-assembly</descriptorRef>
+            </descriptorRefs>
+            <formats>
+              <format>jar</format>
+            </formats>
+          </configuration>
+          <phase>package</phase>
+          <goals>
+            <goal>single</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+    
+    <!-- Source Jar Configuration -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-source-plugin</artifactId>
+      <version>${source.plugin}</version>
+      <executions>
+        <execution>
+          <id>create source jar</id>
+          <phase>package</phase>
+          <goals>
+            <goal>jar-no-fork</goal>
+          </goals>
+          <configuration>
+            <excludeResources>false</excludeResources>
+            <includes>
+              <include>**/*.java</include>
+              <include>**/*.ftl</include>
+            </includes>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+    <plugin>
+      <groupId>com.mycila</groupId>
+      <artifactId>license-maven-plugin</artifactId>
+      <version>3.0</version>
+      <configuration>
+        <header>${project.baseUri}/src/license/se/license.txt</header>
+        <properties>
+          <owner>Michael von Wenckstern</owner>
+          <email>vonwenckstern@se-rwth.de</email>
+        </properties>
+        <excludes>
+          <exclude>**/README</exclude>
+          <exclude>src/test/resources/**</exclude>
+          <exclude>src/main/resources/**</exclude>
+          <exclude>src/license/**</exclude>
+        </excludes>
+      </configuration>
+      <executions>
+        <execution>
+          <goals>
+            <goal>format</goal>
+          </goals>
+          <phase>process-sources</phase>
+        </execution>
+      </executions>
+    </plugin>
+	  <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
@@ -347,10 +363,11 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-			</plugin>
-        </plugins>
-    </build>
+</plugin>
+  </plugins>
+</build>
 
+ 
  <!-- == DISTRIBUTION ==================================================== -->
 
   <distributionManagement>
@@ -363,6 +380,4 @@
       <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
-
 </project>
