@@ -8,9 +8,12 @@ apache-tomcat-9.0.5/webapps/ROOT/
 apache-tomcat-9.0.5/bin/*.log
 
 model/*.zip
+model/pump/
 
 visualisation/SVG
 visualisation/modelEMA
+
+distributed-simulator/
 
 reporting/report/data/**
 
