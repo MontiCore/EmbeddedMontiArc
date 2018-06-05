@@ -56,22 +56,26 @@ grammar Ranges extends de.monticore.lang.monticar.PrintType, de.monticore.Common
      * an example of a later-on use case is:
      *   "ports in [(0 : 0.05 : 10) (10 : 0.1 : 45°)] steering;"
     */
-    interface RangeType extends PrintType;
     ast Ranges = method public String printType(){
         return "RangesType";
     };
 
-    Ranges implements PrintType, TypeArgument="[" Range+ "]";
+    Ranges implements Type, PrintType, TypeArgument="[" Range+ "]";
 
     /** Range is something like "(-3 m/s^2 : 0.1 m/s^2 : 3 m/s^2)"
       *  this represents a datatype of acceleration going from -3 m/s^2 to +3 m/s^2 in a step size of 0.1 m/s^2
      */
-    RangeStepResolution implements Resolution  = (UnitNumberResolution | ["f"] | ["d"]);
+    RangeStepResolution implements Resolution  = (UnitNumberResolution | Name);
     ast Range = method public String printType(){
             return "RangeType";
     };
     Range implements Type, TypeArgument, PrintType = "(" min:UnitNumberResolution ":" (step:RangeStepResolution ":")? max:UnitNumberResolution ")";
 
+    interface RangeType extends PrintType;
+    ast NamedRange= method public String printType(){return "RangeType";};
+    NamedRange astextends ASTRange implements RangeType = Name;
+
+    /* no good idea to block thoose literals
     ast NaturalNumbersOneRange= method public String printType(){return "RangeType";};
     ast NaturalNumbersZeroRange= method public String printType(){return "RangeType";};
     ast WholeNumbersRange= method public String printType(){return "RangeType";};
@@ -79,5 +83,6 @@ grammar Ranges extends de.monticore.lang.monticar.PrintType, de.monticore.Common
     NaturalNumbersOneRange astextends ASTRange implements RangeType = "N1";
     NaturalNumbersZeroRange astextends ASTRange implements RangeType = "N0";
     WholeNumbersRange  astextends ASTRange implements RangeType = "Z";
+    */
 
 }
