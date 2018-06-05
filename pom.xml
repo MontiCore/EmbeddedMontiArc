@@ -32,7 +32,6 @@
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
-        <wagon.provider.version>2.6</wagon.provider.version>
         <!-- .. SE-Libraries .................................................. -->
         <monticore.version>4.5.4.08.11.2017</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
@@ -160,13 +159,6 @@
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>${wagon.provider.version}</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
