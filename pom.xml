@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc</artifactId>
-  <version>0.0.12</version>
+  <version>0.0.15</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
