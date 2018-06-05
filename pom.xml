@@ -57,7 +57,7 @@
     <antlr.version>4.5.1</antlr.version>
     <jsr305.version>3.0.0</jsr305.version>
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
+    <monticore.plugin>4.5.3.1</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -163,31 +163,6 @@
       <classifier>${grammars.classifier}</classifier>
       <scope>provided</scope>
     </dependency>
-    
-    <!--<dependency>-->
-      <!--<groupId>montiarc.languages</groupId>-->
-      <!--<artifactId>tagging</artifactId>-->
-      <!--<version>${languages.version}</version>-->
-    <!--</dependency>-->
-    
-    <!--<dependency>-->
-      <!--<groupId>montiarc.languages</groupId>-->
-      <!--<artifactId>montiarc-fe</artifactId>-->
-      <!--<version>${languages.version}</version>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>montiarc.languages</groupId>-->
-      <!--<artifactId>montiarc-fe</artifactId>-->
-      <!--<classifier>${grammars.classifier}</classifier>-->
-      <!--<version>${languages.version}</version>-->
-    <!--</dependency>-->
-
-    <!--<dependency>-->
-      <!--<groupId>de.monticore</groupId>-->
-      <!--<artifactId>javaDSL</artifactId>-->
-      <!--<version>${javadsl.version}</version>-->
-    <!--</dependency>-->
     
     <!-- .. Test Libraries ............................................... -->
     <dependency>
@@ -372,22 +347,10 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-</plugin>
+			</plugin>
         </plugins>
     </build>
-<!--
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </repository>
-        <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </snapshotRepository>
-    </distributionManagement>
-    -->
+
  <!-- == DISTRIBUTION ==================================================== -->
 
   <distributionManagement>
