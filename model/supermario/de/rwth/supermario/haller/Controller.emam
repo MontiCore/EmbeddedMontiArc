@@ -1,0 +1,13 @@
+package de.rwth.supermario.haller;
+
+
+component Controller {
+    ports 
+        in Z^{22,19} view,
+        out Z(0 : 1 : 3) newPacManDirection;
+        
+    //Replace this with your own custom controller
+    // instance Controller controller;
+    
+    
+}

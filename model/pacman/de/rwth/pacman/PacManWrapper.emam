@@ -1,5 +1,5 @@
 package de.rwth.pacman;
-import de.rwth.pacman.heithoff.Controller;
+import de.rwth.pacman.haller.Controller;
 import de.rwth.pacman.structs.Ghost;
 
 // UP    = 0
