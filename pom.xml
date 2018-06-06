@@ -53,11 +53,6 @@
       <artifactId>Tagging</artifactId>
       <version>${tagging.version}</version>
     </dependency>
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-logging</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>com.google.guava</groupId>
