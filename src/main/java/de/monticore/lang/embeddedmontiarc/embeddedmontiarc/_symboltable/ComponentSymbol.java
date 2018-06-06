@@ -53,7 +53,7 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
  *
  * @author Robert Heim
  */
-public class ComponentSymbol extends CommonScopeSpanningSymbol {
+public class ComponentSymbol extends CommonScopeSpanningSymbol implements ElementInstance{
   
   public static final ComponentKind KIND = new ComponentKind();
   
