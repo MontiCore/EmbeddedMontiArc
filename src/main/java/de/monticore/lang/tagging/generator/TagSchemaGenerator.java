@@ -31,8 +31,6 @@ import java.util.Map;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
-import de.monticore.generating.templateengine.ITemplateControllerFactory;
-import de.monticore.io.FileReaderWriter;
 import de.monticore.lang.tagging.helper.UnitKinds;
 import de.monticore.lang.tagschema._ast.ASTSimpleTagType;
 import de.monticore.lang.tagschema._ast.ASTTagSchemaUnit;
@@ -48,10 +46,6 @@ import de.se_rwth.commons.logging.Log;
  */
 public class TagSchemaGenerator extends GeneratorEngine {
 
-  public TagSchemaGenerator(GeneratorSetup generatorSetup, ITemplateControllerFactory templateControllerFactory, FileReaderWriter fileHandler) {
-    super(generatorSetup, templateControllerFactory, fileHandler);
-  }
-
   public TagSchemaGenerator(GeneratorSetup generatorSetup) {
     super(generatorSetup);
   }
@@ -64,8 +58,8 @@ public class TagSchemaGenerator extends GeneratorEngine {
 
     try {
 
-      GeneratorSetup setup = new GeneratorSetup(
-          getPathFromRelativePath(Paths.get(outputFolder)).toFile());
+      GeneratorSetup setup = new GeneratorSetup();
+      setup.setOutputDirectory(getPathFromRelativePath(Paths.get(outputFolder)).toFile());
       setup.setTracing(true);
       TagSchemaGenerator generator = new TagSchemaGenerator(setup);
 

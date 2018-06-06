@@ -42,8 +42,8 @@ public class GeneratorTest {
 
   @Test
   public void testSimpleTagType() throws Exception {
-    GeneratorSetup setup = new GeneratorSetup(
-        getPathFromRelativePath("src/test/resources").toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources").toFile());
         //getPathFromRelativePath("target/generated-sources/monticore/sourcecode").toFile());
     setup.setTracing(true);
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
@@ -71,8 +71,8 @@ public class GeneratorTest {
     b = Unit.valueOf("s").isCompatible(Power.UNIT);
     Measure<? extends Number, Power> milliWatt = Measure.valueOf(7, (Unit<Power>)Unit.valueOf("mW"));
     System.out.println();*/
-    GeneratorSetup setup = new GeneratorSetup(
-        getPathFromRelativePath("src/test/resources/generator").toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator").toFile());
     setup.setTracing(true);
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
@@ -85,8 +85,8 @@ public class GeneratorTest {
 
   @Test
   public void testLatencyTag() throws Exception {
-    GeneratorSetup setup = new GeneratorSetup(
-            getPathFromRelativePath("src/test/resources/generator").toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator").toFile());
     setup.setTracing(true);
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
@@ -99,8 +99,8 @@ public class GeneratorTest {
 
   @Test
   public void testTransCostTag() throws Exception {
-    GeneratorSetup setup = new GeneratorSetup(
-            getPathFromRelativePath("src/test/resources/generator").toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator").toFile());
     setup.setTracing(true);
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
@@ -113,8 +113,8 @@ public class GeneratorTest {
 
   @Test
   public void testCompPowerTag() throws Exception {
-    GeneratorSetup setup = new GeneratorSetup(
-            getPathFromRelativePath("src/test/resources/generator").toFile());
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator").toFile());
     setup.setTracing(true);
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
