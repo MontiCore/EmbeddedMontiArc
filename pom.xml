@@ -38,8 +38,8 @@
     <monticore.java.version>4.3.3</monticore.java.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
     <se-commons.version>1.7.6</se-commons.version>
-	<montiview>0.0.6</montiview>
-	<embeddedmontiarc>0.0.12</embeddedmontiarc>
+	<montiview>0.0.3</montiview>
+	<embeddedmontiarc>0.0.3.1</embeddedmontiarc>
     
     <!-- generator -->
     <groovy.version>2.3.0</groovy.version>
