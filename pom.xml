@@ -156,37 +156,6 @@
                 <version>2.8.1</version>
             </plugin>
 
-            <!-- MontiCore Generation -->
-            <plugin>
-                <groupId>de.monticore.mojo</groupId>
-                <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
-                <configuration>
-                    <skip>false</skip>
-                    <script>de/monticore/monticore_noemf.groovy</script>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4-runtime</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Other Configuration -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -196,36 +165,6 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${assembly.plugin}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>de.monticore</groupId>
-                        <artifactId>mc-assemblies</artifactId>
-                        <version>${mc.grammars.assembly.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>grammars</id>
-                        <configuration>
-                            <finalName>${project.artifactId}-${project.version}</finalName>
-                            <descriptorRefs>
-                                <descriptorRef>grammars-assembly</descriptorRef>
-                            </descriptorRefs>
-                            <formats>
-                                <format>jar</format>
-                            </formats>
-                        </configuration>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!-- Source Jar Configuration -->
@@ -281,13 +220,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
-                <configuration>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.3.0</version>
                 <configuration>
                 </configuration>
             </plugin>
