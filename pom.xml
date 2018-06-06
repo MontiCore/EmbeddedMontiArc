@@ -45,7 +45,7 @@
 	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3</monticore.plugin>
+    <monticore.plugin>4.5.3.1</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
