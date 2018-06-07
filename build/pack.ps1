@@ -1,4 +1,4 @@
-$targetDir = "$targetDir $date"
+$targetDir = "$targetDir.$date"
 
 if(!(Test-Path -path $targetDir)) {
   New-Item -ItemType directory -Path $targetDir
