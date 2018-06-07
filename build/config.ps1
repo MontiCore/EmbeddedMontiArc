@@ -1,4 +1,4 @@
-$date = "{0:yyyy-MM-dd HH.mm}" -f (get-date)
+$date = "{dd.HH.mm}" -f (get-date)
 # The Folder which will be present after self-extracting
 $targetDir = "EMAStudio"
 # The name of the self-extracting archive
