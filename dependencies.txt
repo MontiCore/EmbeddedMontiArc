@@ -12,10 +12,10 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/apache-tomcat-9.0.5.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/chrome.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/externallibs.zip
+//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/externallibs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/jdk.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/lib.zip
+//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/lib.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/mingw64.zip
 //** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/nodejs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/precompiled.zip
@@ -31,6 +31,8 @@
 ** https://rwth-aachen.sciebo.de/s/S33ljBAUAjvp9Th/download
 //nodejs-linux.zip
 ** https://rwth-aachen.sciebo.de/s/pEmwwJfHdgmRcSS/download
+//RosSimulationFramework.zip
+** https://rwth-aachen.sciebo.de/s/J0UFMxtOMqzH0rJ/download
 
 * EmbeddedMontiArcStudio/distributed-simulator/
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
