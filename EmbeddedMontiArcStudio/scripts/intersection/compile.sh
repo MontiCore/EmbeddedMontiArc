@@ -9,6 +9,8 @@ cd $ROS_SIM_HOME
 
 mkdir target/build
 cd target/build
+#fix for missing armadillo.h; To be replaced by FindArmadillo.cmake
+export CXXFLAGS=-isystem\ "$ARMADILLO_HOME/include"
 cmake ../src
 make -j4
 

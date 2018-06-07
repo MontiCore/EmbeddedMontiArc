@@ -24,7 +24,7 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/visualisation.zip
 
 //armadillo-8.500.1-linux.zip
-** https://rwth-aachen.sciebo.de/s/fWLBHSEWbKaTr8Q/download
+** https://rwth-aachen.sciebo.de/s/srGonQ9UkFZVVND/download
 //chrome-linux.zip
 ** https://rwth-aachen.sciebo.de/s/Xn221UBWMkNxMvQ/download
 //jdk-linux.zip
