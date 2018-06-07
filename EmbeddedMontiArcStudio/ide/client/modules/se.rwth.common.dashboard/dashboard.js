@@ -48,7 +48,7 @@ var Dashboard = (function() {
                 username: "EmbeddedMontiArcStudio",
                 reponame: "Intersection",
                 branchname: "",
-                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Intersection/v&url=/m/intersection.zip&openFile=/System.emam"
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Intersection/v&url=/m/intersection.zip&openFile=/ba/System.emam"
             }];
         },
 
