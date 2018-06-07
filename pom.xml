@@ -131,207 +131,163 @@
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
-      </plugin>
+    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
-      <!-- Unit Tests -->
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven.surefire.plugin.version}</version>
-        <configuration>
-          <skipTests>${skip.unit.tests}</skipTests>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${junit.platform.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.engine.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-
-      <!-- Integration / Acceptance Tests -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>${maven.failsafe.plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${junit.platform.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.engine.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <!-- Integration Tests -->
-          <execution>
-            <id>integration-test</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <skipITs>${skip.integration.tests}</skipITs>
-              <includes>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
-          </execution>
-          <!-- Acceptance Tests -->
-          <execution>
-            <id>acceptance-test</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <skipITs>${skip.acceptance.tests}</skipITs>
-              <includes>
-                <include>**/*AT.java</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.eluder.coveralls</groupId>
-        <artifactId>coveralls-maven-plugin</artifactId>
-        <version>4.3.0</version>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.version}</version>
-        <configuration>
-          <excludes>
-            <exclude>de/monticore/lang/monticar/cli/**/*</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <id>prepare-agent</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-        </executions>
-
-      </plugin>
-    </plugins>
-  </build>
-
-  <profiles>
-    <profile>
-      <id>unit-test</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <build.profile.id>unit-test</build.profile.id>
-        <skip.unit.tests>false</skip.unit.tests>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>integration-test</id>
-      <properties>
-        <build.profile.id>integration-test</build.profile.id>
-        <skip.integration.tests>false</skip.integration.tests>
-      </properties>
-      <!-- Source and resource directories for Integration Tests -->
-      <build>
+    <build>
         <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>${maven.build.helper.version}</version>
-            <executions>
-              <execution>
-                <id>add-integration-test-sources</id>
-                <phase>generate-test-sources</phase>
-                <goals>
-                  <goal>add-test-source</goal>
-                </goals>
-                <configuration>
-                  <sources>
-                    <source>${integration.tests.sources}</source>
-                  </sources>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-        <testResources>
-          <testResource>
-            <directory>${integration.tests.resources}</directory>
-            <filtering>true</filtering>
-          </testResource>
-        </testResources>
-      </build>
-    </profile>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.1</version>
+            </plugin>
 
-    <profile>
-      <id>acceptance-test</id>
-      <properties>
-        <build.profile.id>acceptance-test</build.profile.id>
-        <skip.acceptance.tests>false</skip.acceptance.tests>
-      </properties>
-      <!-- Source and resource directories for Acceptance Tests -->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>${maven.build.helper.version}</version>
-            <executions>
-              <execution>
-                <id>add-acceptance-test-sources</id>
-                <phase>generate-test-sources</phase>
-                <goals>
-                  <goal>add-test-source</goal>
-                </goals>
+            <!-- MontiCore Generation -->
+            <plugin>
+                <groupId>de.monticore.mojo</groupId>
+                <artifactId>monticore-maven-plugin</artifactId>
+                <version>${monticore.plugin}</version>
                 <configuration>
-                  <sources>
-                    <source>${acceptance.tests.sources}</source>
-                  </sources>
+                    <skip>false</skip>
+                    <script>de/monticore/monticore_noemf.groovy</script>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4</artifactId>
+                        <version>4.7.1</version>
+                    </dependency>
+                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4-runtime</artifactId>
+                        <version>4.7.1</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Other Configuration -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin}</version>
+                <configuration>
+                    <useIncrementalCompilation>true</useIncrementalCompilation>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${assembly.plugin}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.monticore</groupId>
+                        <artifactId>mc-assemblies</artifactId>
+                        <version>${mc.grammars.assembly.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>grammars</id>
+                        <configuration>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>grammars-assembly</descriptorRef>
+                            </descriptorRefs>
+                            <formats>
+                                <format>jar</format>
+                            </formats>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Source Jar Configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${source.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>create source jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                        <configuration>
+                            <excludeResources>false</excludeResources>
+                            <includes>
+                                <include>**/*.java</include>
+                                <include>**/*.ftl</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- to add copyright information automatically-->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <header>${project.baseUri}/src/license/se/license.txt</header>
+                    <properties>
+                        <owner>Michael von Wenckstern</owner>
+                        <email>vonwenckstern@se-rwth.de</email>
+                    </properties>
+                    <excludes>
+                        <exclude>**/README</exclude>
+                        <exclude>src/test/resources/**</exclude>
+                        <exclude>src/main/resources/**</exclude>
+                        <exclude>src/license/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
+                 <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <configuration>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.3.0</version>
+                <configuration>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <format>xml</format>
+                    <maxmem>256m</maxmem>
+                    <!-- aggregated reports for multi-module projects -->
+                    <aggregate>true</aggregate>
+                </configuration>
+			</plugin>
         </plugins>
-        <testResources>
-          <testResource>
-            <directory>${acceptance.tests.resources}</directory>
-            <filtering>true</filtering>
-          </testResource>
-        </testResources>
-      </build>
-    </profile>
-  </profiles>
+    </build>
 
  <!-- == DISTRIBUTION ==================================================== -->
 
