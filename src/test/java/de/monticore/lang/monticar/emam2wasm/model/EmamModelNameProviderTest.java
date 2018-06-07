@@ -22,7 +22,9 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled
 class EmamModelNameProviderTest {
 
   private static final Path MODEL_PATH = Paths.get("src/test/resources/parser/models");
