@@ -38,9 +38,9 @@
     <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
     <maven.build.helper.version>3.0.0</maven.build.helper.version>
 
-    <skip.unit.tests>true</skip.unit.tests>
-    <skip.integration.tests>true</skip.integration.tests>
-    <skip.acceptance.tests>true</skip.acceptance.tests>
+    <skip.unit.tests>false</skip.unit.tests>
+    <skip.integration.tests>false</skip.integration.tests>
+    <skip.acceptance.tests>false</skip.acceptance.tests>
     <integration.tests.sources>src/integration-test/java</integration.tests.sources>
     <integration.tests.resources>src/integration-test/resources</integration.tests.resources>
     <acceptance.tests.sources>src/acceptance-test/java</acceptance.tests.sources>
