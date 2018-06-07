@@ -1,4 +1,4 @@
-package intersection.struct;
+package ba.struct;
 
 component RectToPoints{
     ports in Rectangle rect,

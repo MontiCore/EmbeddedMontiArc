@@ -1,4 +1,4 @@
-package intersection.struct;
+package ba.struct;
 
 struct Rectangle{
     Point pointA;

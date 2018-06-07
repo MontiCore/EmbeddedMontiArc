@@ -1,4 +1,4 @@
-package intersection.util;
+package ba.util;
 
 component LineIntersection{
     ports in Q^{4,1} lineA,

@@ -1,4 +1,4 @@
-package intersection;
+package ba;
 conforms to de.monticore.lang.monticar.generator.roscpp.RosToEmamTagSchema;
 
 tags{

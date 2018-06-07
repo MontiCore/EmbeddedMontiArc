@@ -1,4 +1,4 @@
-package intersection.util;
+package ba.util;
 
 component TrajectoryToLines<N1 m = 10, N1 m1 = 9>{
     ports in Q^{3,m} trajectoryIn,

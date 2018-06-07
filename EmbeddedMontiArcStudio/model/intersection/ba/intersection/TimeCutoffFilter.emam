@@ -1,4 +1,4 @@
-package intersection.intersection;
+package ba.intersection;
 
 component TimeCutoffFilter<N1 m = 10>(adaptable Q timeCutoff){
     ports in B collisionIn,

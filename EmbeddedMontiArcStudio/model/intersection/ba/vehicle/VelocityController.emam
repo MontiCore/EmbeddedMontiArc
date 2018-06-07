@@ -1,4 +1,4 @@
-package intersection.vehicle;
+package ba.vehicle;
 
 component VelocityController(adaptable Q holdTimeIn){
     ports in Q maxVelIn,

@@ -1,9 +1,9 @@
-package intersection;
-import intersection.intersection.IntersectionController;
-import intersection.util.CommQuality;
-import intersection.vehicle.VelocityController;
-import intersection.collision.CollisionDetection;
-import intersection.struct.Rectangle;
+package ba;
+import ba.intersection.IntersectionController;
+import ba.util.CommQuality;
+import ba.vehicle.VelocityController;
+import ba.collision.CollisionDetection;
+import ba.struct.Rectangle;
 
 component System{
     ports

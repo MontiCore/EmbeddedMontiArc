@@ -1,4 +1,4 @@
-package intersection.util;
+package ba.util;
 
 component MultiOr<N1 x = 2>{
     ports in B boolIn[x],

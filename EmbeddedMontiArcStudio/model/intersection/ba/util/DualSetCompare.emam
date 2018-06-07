@@ -1,4 +1,4 @@
-package intersection.util;
+package ba.util;
 //TODO: n2 = n(n+1)/2
 //TODO: EMAM2Cpp does not work with matrix generics
 //TODO: EMAM2Cpp does not work when T is first generic, n and n2 are not present in generated code

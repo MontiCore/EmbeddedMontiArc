@@ -1,6 +1,6 @@
-package intersection.collision;
-import intersection.struct.Rectangle;
-import intersection.struct.RectToPoints;
+package ba.collision;
+import ba.struct.Rectangle;
+import ba.struct.RectToPoints;
 
 component RectToLines{
     ports in Rectangle rect,

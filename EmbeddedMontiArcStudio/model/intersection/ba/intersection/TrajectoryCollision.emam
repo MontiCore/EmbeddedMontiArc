@@ -1,7 +1,7 @@
-package intersection.intersection;
-import intersection.util.TrajectoryToLines;
-import intersection.util.LineIntersection;
-import intersection.util.DualSetCompareMatrix;
+package ba.intersection;
+import ba.util.TrajectoryToLines;
+import ba.util.LineIntersection;
+import ba.util.DualSetCompareMatrix;
 
 //TODO: m1 = m -1, m2 = m1(m1+1)/2
 component TrajectoryCollision<N1 m = 10, N1 m1 = 9, N1 m2 = 45>{

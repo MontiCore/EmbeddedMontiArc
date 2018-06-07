@@ -1,5 +1,5 @@
-package intersection.collision;
-import intersection.struct.Point;
+package ba.collision;
+import ba.struct.Point;
 
 component PointsToLine{
     ports in Point pointA,
