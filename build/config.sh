@@ -5,7 +5,7 @@ targetDir="EMAStudio"
 # The name of the self-extracting archive
 targetName="EmbeddedMontiArcStudio.zip"
 # Project items or dirs that need to be included
-packingItems=("ide.sh setup.bat EmbeddedMontiArcStudio")
+packingItems=("ide.sh setup.sh EmbeddedMontiArcStudio")
 # Set to 0 to remove downloads in clean phase
 cacheDownload=1
 
