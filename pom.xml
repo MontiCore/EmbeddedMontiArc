@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-arch</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -41,7 +41,7 @@
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-        <Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
+        <Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
         <Math.version>0.0.11-SNAPSHOT</Math.version>
 
         <!-- .. Libraries .................................................. -->

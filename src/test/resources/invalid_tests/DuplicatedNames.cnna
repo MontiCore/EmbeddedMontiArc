@@ -1,6 +1,6 @@
 architecture DuplicatedNames(inputs=10, inputs=10, classes=2){
-    def input Q(-oo:+oo)^{inputs} in
-    def output Q(0:1)^{classes} out
+    def input Q(-oo:+oo)^{inputs} in1
+    def output Q(0:1)^{classes} out1
 
     def fc(){
         FullyConnected(units=64) ->
@@ -12,9 +12,9 @@ architecture DuplicatedNames(inputs=10, inputs=10, classes=2){
         Tanh()
     }
 
-    in ->
+    in1 ->
     fc() ->
     FullyConnected(units=classes) ->
     Softmax() ->
-    out
+    out1
 }

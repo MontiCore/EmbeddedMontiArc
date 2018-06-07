@@ -1,11 +1,11 @@
 architecture MissingIO2(inputs=10, classes=2){
-    def input Q(-oo:+oo)^{inputs} in[2]
-    def output Q(0:1)^{classes} out[2]
+    def input Q(-oo:+oo)^{inputs} in1[2]
+    def output Q(0:1)^{classes} out1[2]
 
-    in[0] ->
+    in1[0] ->
     FullyConnected(units=64, no_bias=true) ->
     Tanh() ->
     FullyConnected(units=classes, no_bias=true) ->
     Softmax() ->
-    out[0]
+    out1[0]
 }
