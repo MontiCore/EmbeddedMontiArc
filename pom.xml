@@ -33,6 +33,9 @@
     <junit.engine.version>5.1.0</junit.engine.version>
     <jacoco.version>0.8.1</jacoco.version>
 
+    <monticore.version>4.5.4.08.11.2017</monticore.version>
+    <se-commons.version>1.7.7</se-commons.version>
+    <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
     <monticore.plugin>4.5.3</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
