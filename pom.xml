@@ -19,8 +19,8 @@
 
     <spring.version>2.0.0.RELEASE</spring.version>
     <freemarker.version>2.3.23</freemarker.version>
-    <emam2cpp.version>0.0.8-SNAPSHOT</emam2cpp.version>
-    <embedded-montiarc.version>0.0.11-SNAPSHOT</embedded-montiarc.version>
+    <emam2cpp.version>0.0.8</emam2cpp.version>
+    <embedded-montiarc.version>0.0.2</embedded-montiarc.version>
     <grammars.classifier>grammars</grammars.classifier>
 
     <logback.version>1.2.3</logback.version>
