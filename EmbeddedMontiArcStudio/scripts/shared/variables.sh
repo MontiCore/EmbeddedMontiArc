@@ -1,8 +1,11 @@
-pushd `pwd`
+pushd `pwd` > /dev/null
 cd ..
 cd ..
+if !([[ -v USER_HOME ]])
+then export USER_HOME=~
+fi
 export HOME=`pwd`
-popd
+popd  > /dev/null
 export SIMULATION_URL=http://localhost:8080/
 export JAVA_HOME=${HOME}/jdk-linux
 export TOMCAT_HOME=${HOME}/apache-tomcat-9.0.5
@@ -21,6 +24,12 @@ export CHROME=${HOME}/chrome-linux/google-chrome
 export TESTS_CPP_DIR=${HOME}/tests-cpp
 export TEST_EXEC_DIR=${HOME}/exec
 export ARMADILLO_HOME=${HOME}/armadillo-8.500.1-linux
+export MXNET_HOME=${USER_HOME}/incubator-mxnet
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${MXNET_HOME}/lib
+export DATA_DIR=${HOME}/data
+export CLASSIFIER_CPP=${HOME}/build/cpp
+export CLASSIFIER_TRAIN=${HOME}/build/train
+export CLASSIFIER_TARGET=${HOME}/classifier
 #CLUSTERER_CPP_DIR=${HOME}/clusterer-cpp
 export CLUSTERER_EXEC_DIR=${HOME}/exec
 export VERIFICATION_HOME=${HOME}/viewverification

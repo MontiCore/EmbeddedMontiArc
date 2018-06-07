@@ -2,8 +2,8 @@ const Express                                           = require("express");
 const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
-const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, IntersectionSimulation} = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
+const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, IntersectionSimulation, ClassifierSimulation} = require("./simulations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization, ClassifierVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
@@ -283,13 +283,13 @@ App.post("/services/pump/viewverification/single", function(request, response) {
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
 			}
-		}  
+		}
 		else {
 			alert('No matching files found');
-		} 
+		}
 		response.end();
     }
-	
+
     PumpVerification.execute("model\\pump" + body.name.replace(/\//g, "\\"), onExecuted);
 });
 
@@ -317,10 +317,10 @@ App.post("/services/pump/viewverification/all", function(request, response) {
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
 			}
-		}  
+		}
 		else {
 			alert('No matching files found');
-		} 
+		}
 		response.end();
 	}
 
@@ -408,6 +408,15 @@ App.post("/services/intersection/simulate", function(request, response) {
 	}
 
 	IntersectionSimulation.execute(onExecuted);
+});
+
+App.post("/services/classifier/simulate", function(request, response) {
+	function onExecuted() {
+		logger.info("Classifier service callback");
+		response.end();
+	}
+
+	ClassifierSimulation.execute(onExecuted);
 });
 
 module.exports = App;

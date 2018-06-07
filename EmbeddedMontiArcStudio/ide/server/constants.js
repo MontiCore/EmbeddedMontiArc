@@ -11,7 +11,8 @@ const findPort = require("find-port-sync");
 const PATHS = {};
 
 PATHS.HOME           = Path.resolve(__dirname, "..", "..");
-PATHS.ARMADILLO      = Path.resolve(PATHS.HOME, "armadillo");
+PATHS.ARMADILLO      = Path.resolve(PATHS.HOME, "armadillo-8.500.1-linux");
+PATHS.MXNET      = Path.resolve(PATHS.HOME, "incubator-mxnet");
 PATHS.CHROME         = Path.resolve(PATHS.HOME, "chrome-linux");
 PATHS.CLUSTER_FIDDLE = Path.resolve(PATHS.HOME, "cluster-fiddle");
 PATHS.IDE            = Path.resolve(PATHS.HOME, "ide");
@@ -53,6 +54,7 @@ const JARS = {};
 JARS.EMAM2EMA     = Path.resolve(PATHS.VISUALIZATION, "emam2ema.jar");
 JARS.SVGGENERATOR = Path.resolve(PATHS.VISUALIZATION, "embeddedmontiarc-svggenerator.jar");
 JARS.EMAM2CPP     = Path.resolve(PATHS.HOME, "emam2cpp.jar");
+JARS.EMADL2CPP    = Path.resolve(PATHS.HOME, "emadl2cpp.jar");
 JARS.REPORTING    = Path.resolve(PATHS.REPORTING, "reporting.jar");
 
 JARS.VIEWVERIFICATION = Path.resolve(PATHS.VIEWVERIFICATION, "view-verification-0.0.2-SNAPSHOT-jar-with-dependencies");
@@ -66,6 +68,7 @@ BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
 BATCHES.INTERSECTION = {};
+BATCHES.CLASSIFIER = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.sh");
@@ -103,6 +106,9 @@ BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.ba
 BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
 BATCHES.INTERSECTION.SIMULATION				= Path.resolve(PATHS.SCRIPTS, "intersection","simulation.sh");
+
+BATCHES.CLASSIFIER.BUILD 		= Path.resolve(PATHS.SCRIPTS, "classifier", "build.sh");
+BATCHES.CLASSIFIER.EXECUTE       		= Path.resolve(PATHS.SCRIPTS, "classifier", "execute.sh");
 
 /*
  * OPTIONS

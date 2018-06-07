@@ -1,0 +1,1 @@
+source "../shared/variables.sh"

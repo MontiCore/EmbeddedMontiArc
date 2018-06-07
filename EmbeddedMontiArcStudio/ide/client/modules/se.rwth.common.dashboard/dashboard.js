@@ -49,6 +49,11 @@ var Dashboard = (function() {
                 reponame: "Intersection",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Intersection/v&url=/m/intersection.zip&openFile=/System.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "Classifier",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Classifier/v&url=/m/classifier.zip&openFile=/cifar10/Main.emadl"
             }];
         },
 
