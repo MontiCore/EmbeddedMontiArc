@@ -15,7 +15,15 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-	<Embedded-MontiArc-Math.version>0.0.12</Embedded-MontiArc-Math.version>
+    <monticore.version>4.5.4-SNAPSHOT</monticore.version>
+    <se-commons.version>1.7.7</se-commons.version>
+    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
+	<SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
+	<Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
+	<Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
+	<Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+    <Math.version>0.0.11-SNAPSHOT</Math.version>
+	<Embedded-MontiArc-Math.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Math.version>
     <tagging.version>0.0.1</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -24,7 +32,7 @@
 	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3.1</monticore.plugin>
+    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -39,6 +47,7 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <github.global.server>github</github.global.server>
   </properties>
 
   <dependencies>
@@ -53,6 +62,11 @@
       <artifactId>Tagging</artifactId>
       <version>${tagging.version}</version>
     </dependency>
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-logging</artifactId>
+      <version>${se-commons.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -61,10 +75,124 @@
     </dependency>
 
     <!-- MontiCore Dependencies -->
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <version>${monticore.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-grammar</artifactId>
+      <version>${monticore.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.se_rwth.commons</groupId>
+      <artifactId>se-commons-groovy</artifactId>
+      <version>${se-commons.version}</version>
+    </dependency>
+
+	<dependency>
+		<groupId>de.monticore.lang</groupId>
+		<artifactId>NumberUnit</artifactId>
+		<version>${SIUnit.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>de.monticore.lang</groupId>
+		<artifactId>NumberUnit</artifactId>
+		<version>${SIUnit.version}</version>
+		<classifier>${grammars.classifier}</classifier>
+		<scope>provided</scope>
+	</dependency>
+
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>common-monticar</artifactId>
+      <version>${Common-MontiCar.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>common-monticar</artifactId>
+      <version>${Common-MontiCar.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>embedded-montiarc</artifactId>
+      <version>${Embedded-MontiArc.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>embedded-montiarc</artifactId>
+      <version>${Embedded-MontiArc.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>embedded-montiarc-behaviour</artifactId>
+      <version>${Embedded-MontiArc-Behaviour.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>embedded-montiarc-behaviour</artifactId>
+      <version>${Embedded-MontiArc-Behaviour.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+	
 	 <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiarc-math</artifactId>
       <version>${Embedded-MontiArc-Math.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>embedded-montiarc-math</artifactId>
+      <version>${Embedded-MontiArc-Math.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>math</artifactId>
+      <version>${Math.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>math</artifactId>
+      <version>${Math.version}</version>
+      <classifier>${grammars.classifier}</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>montiarc.verification</groupId>
+      <artifactId>montiarc-execution-order</artifactId>
+      <version>4.0.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -84,6 +212,14 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore</groupId>
+      <artifactId>monticore-runtime</artifactId>
+      <version>${monticore.version}</version>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
 
