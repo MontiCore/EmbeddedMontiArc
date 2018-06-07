@@ -3,7 +3,7 @@ const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
 const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, IntersectionSimulation} = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization, IntersectionVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
@@ -408,6 +408,15 @@ App.post("/services/intersection/simulate", function(request, response) {
 	}
 
 	IntersectionSimulation.execute(onExecuted);
+});
+
+App.post("/services/intersection/visualize", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/ba.system.html");
+		response.end();
+	}
+
+	IntersectionVisualization.execute(onExecuted);
 });
 
 module.exports = App;

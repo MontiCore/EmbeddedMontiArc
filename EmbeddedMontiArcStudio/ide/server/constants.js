@@ -71,7 +71,7 @@ BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.sh");
 BATCHES.AUTOPILOT.SIMULATION.START_DISTR 	= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start_distr.bat");
 BATCHES.AUTOPILOT.SIMULATION.STOP  			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.stop.bat");
-BATCHES.AUTOPILOT.VISUALIZATION    			= Path.resolve(PATHS.SCRIPTS, "autopilot", "visualize.bat");
+BATCHES.AUTOPILOT.VISUALIZATION    			= Path.resolve(PATHS.SCRIPTS, "autopilot", "visualize.sh");
 BATCHES.AUTOPILOT.REPORTING        			= Path.resolve(PATHS.SCRIPTS, "autopilot", "report.bat");
 BATCHES.AUTOPILOT.REPORTING_STREAM 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "reportWithStreams.bat");
 BATCHES.AUTOPILOT.TEST             			= {};
@@ -103,6 +103,7 @@ BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.ba
 BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
 BATCHES.INTERSECTION.SIMULATION				= Path.resolve(PATHS.SCRIPTS, "intersection","simulation.sh");
+BATCHES.INTERSECTION.VISUALIZATION			= Path.resolve(PATHS.SCRIPTS, "intersection","visualize.sh");
 
 /*
  * OPTIONS
