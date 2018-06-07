@@ -348,16 +348,18 @@
     </profile>
   </profiles>
 
+ <!-- == DISTRIBUTION ==================================================== -->
+
   <distributionManagement>
     <repository>
-      <id>internal.repo</id>
-      <name>Temporary Staging Repository</name>
-      <url>file://${project.build.directory}/external-dependencies</url>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>internal.repo</id>
-      <url>file://${project.build.directory}/external-dependencies</url>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
+
 
 </project>
