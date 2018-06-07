@@ -1,13 +1,16 @@
-ROS_SIM_HOME=/home/alexander/sppSimulator/
-
+#!/bin/bash
 echo "Starting simulation..."
 cd ../shared
 source variables.sh
 source /opt/ros/kinetic/setup.sh
-cd $ROS_SIM_HOME
-
-echo DISPLAY=$DISPLAY
+cd ../intersection
 
 #Hack to enable graphical output  
 export DISPLAY=":0"
-./allSteps.sh
+
+set -e
+
+./clean.sh
+./generateCode.sh
+./compile.sh
+./startSimulation.sh
