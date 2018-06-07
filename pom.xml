@@ -33,6 +33,9 @@
     <junit.engine.version>5.1.0</junit.engine.version>
     <jacoco.version>0.8.1</jacoco.version>
 
+    <assembly.plugin>2.5.4</assembly.plugin>
+    <compiler.plugin>3.3</compiler.plugin>
+    <source.plugin>2.4</source.plugin>
     <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
     <maven.surefire.plugin.version>2.19.1</maven.surefire.plugin.version>
     <maven.failsafe.plugin.version>2.19.1</maven.failsafe.plugin.version>
