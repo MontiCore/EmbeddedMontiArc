@@ -33,6 +33,7 @@
     <junit.engine.version>5.1.0</junit.engine.version>
     <jacoco.version>0.8.1</jacoco.version>
 
+    <monticore.plugin>4.5.3</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
