@@ -48,7 +48,9 @@ import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.E
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.initTypeRef;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.getGlobalScope;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper.*;
-
+//import de.monticore.common.common._ast.ASTStereoValue;
+//import de.monticore.types.TypesHelper;
+//import de.monticore.types.types._ast.*;
 
 /**
  * Visitor that creats the symboltable of an EmbeddedMontiArc AST.
@@ -337,7 +339,6 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     public void visit(ASTMontiArcAutoConnect node) {
         autoConnectionTrafo.transform(node, componentStack.peek());
     }
-
 
     @Override
     public void endVisit(ASTComponent node) {

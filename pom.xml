@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc</artifactId>
-  <version>0.0.16-SNAPSHOT</version>
+    <version>0.0.17-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -45,8 +45,8 @@
 	<languages.version>4.0.1-SNAPSHOT</languages.version>
     <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
     <struct.version>0.0.11</struct.version>
-    <Common-MontiCar.version>0.0.12</Common-MontiCar.version>
-
+    <Common-MontiCar.version>0.0.13-SNAPSHOT</Common-MontiCar.version>
+    <tagging.version>0.0.2</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -78,6 +78,12 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.7.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.monticore.lang</groupId>
+      <artifactId>Tagging</artifactId>
+      <version>${tagging.version}</version>
     </dependency>
 
     <dependency>
