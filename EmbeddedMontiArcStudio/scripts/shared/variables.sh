@@ -40,3 +40,5 @@ export RMI=${DISTR_SIM}/RMIModelServer
 export RMI_PATH=${EXTERNAL_LIBS}":"${LIB_DIR}":"${MINGW_HOME}/bin":"${DLL_DIR}":"${JAVA_HOME}/bin":"${OCTAVE_HOME}/bin":"
 export WASM_HOME=${HOME}/emam2wasm
 export PACMAN_HOME=${HOME}/pacman
+export ROS_SIM_HOME=${HOME}/RosSimulationFramework
+export ROS_CACHE_TIMEOUT=-1.0

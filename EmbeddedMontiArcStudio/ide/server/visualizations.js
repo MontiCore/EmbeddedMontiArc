@@ -59,7 +59,7 @@ class AbstractVisualization {
 
         this.kill();
         this.logger.info("Running Visualization...");
-        this.process = Process.spawn(this.batch, [], {
+        this.process = Process.spawn("bash", ["-c",this.batch], {
             cwd: Path.resolve(PATHS.SCRIPTS, this.project)
         });
         this.process.on("exit", onExit);
@@ -103,9 +103,18 @@ class PacManVisualization extends AbstractVisualization {
     }
 }
 
+class IntersectionVisualization extends AbstractVisualization {
+    constructor() {
+        super("intersection", BATCHES.INTERSECTION.VISUALIZATION);
+        this.logger = Log.getLogger("INTERSECTION VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
 	PumpVisualization: new PumpVisualization(),
 	ClusteringVisualization: new ClusteringVisualization(),
-    PacManVisualization: new PacManVisualization()
+    PacManVisualization: new PacManVisualization(),
+	IntersectionVisualization: new IntersectionVisualization()
 };
