@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc.helper;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberTypeArgument;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTType;

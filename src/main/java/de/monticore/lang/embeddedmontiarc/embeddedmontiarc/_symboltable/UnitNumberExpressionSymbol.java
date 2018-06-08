@@ -21,10 +21,12 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.monticar.interfaces.TextualExpression;
-import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
+
+import java.text.DecimalFormat;
 
 /**
  * Only used for getting expression value
@@ -51,7 +53,8 @@ public class UnitNumberExpressionSymbol extends CommonSymbol implements TextualE
         if (num.getComplexNumber().isPresent()) {
             result += String.format("%si%s", num.getComplexNumber().get().getRealNumber(), num.getComplexNumber().get().getImagineNumber());
         } else if (num.getNumber().isPresent()) {
-            result += Double.toString(num.getNumber().get());
+            DecimalFormat format = new DecimalFormat("0.#");
+            result += format.format(num.getNumber().get());
         } else {
             result += num.toString();
         }

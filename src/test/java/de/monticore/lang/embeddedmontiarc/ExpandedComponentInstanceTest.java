@@ -27,6 +27,7 @@ import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -40,6 +41,13 @@ import static org.junit.Assert.*;
  * @author Michael von Wenckstern
  */
 public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
+
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
+    }
 
     @Test
     public void testFAS() throws Exception {

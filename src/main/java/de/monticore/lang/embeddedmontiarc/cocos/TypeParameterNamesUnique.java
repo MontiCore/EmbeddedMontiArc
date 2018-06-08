@@ -22,8 +22,8 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
-import de.monticore.types.types._ast.ASTTypeParameters;
-import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -40,14 +40,14 @@ public class TypeParameterNamesUnique implements EmbeddedMontiArcASTComponentCoC
     @Override
     public void check(ASTComponent node) {
         if (node.getGenericTypeParametersOpt().isPresent()) {
-            ASTTypeParameters typeParameters = node.getGenericTypeParametersOpt().get();
+            ASTTypeParameters2 typeParameters = node.getGenericTypeParametersOpt().get();
             List<String> typeParameterNames = new ArrayList<>();
-            for (ASTTypeVariableDeclaration typeParameter : typeParameters.getTypeVariableDeclarationList()) {
+            for (ASTTypeVariableDeclaration2 typeParameter : typeParameters.getTypeVariableDeclaration2List()) {
 
-                if (typeParameterNames.contains(typeParameter.getName())) {
+                if (typeParameter.getNamingResolutionOpt().isPresent() && typeParameterNames.contains(typeParameter.getNamingResolution().getName())) {
                     Log.error(String.format(
                             "0x35F1A The formal type parameter name \"%s\" is not unique",
-                            typeParameter.getName()), typeParameter.get_SourcePositionStart());
+                            typeParameter.getNamingResolution().getName()), typeParameter.get_SourcePositionStart());
                 } else {
                     //typeParameterNames.add(typeParameter.getNamingResolution().get().getName());
                 }

@@ -224,7 +224,7 @@ public class ExpandedComponentInstanceBuilder {
             // 1) replace port generics
             inst.getPortsList().stream()
                     //          .filter(p -> p.getTypeReference().getReferencedSymbol().getFullName().equals(k.getFullName()))
-                    .filter(p -> p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()))
+                    .filter( p -> p.getTypeReference().existsReferencedSymbol() ? p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()) : false)
                     .forEachOrdered(p -> p.setTypeReference((MCTypeReference<? extends MCTypeSymbol>) v.getType()));
 
             // 2) propagate component instance definition generics

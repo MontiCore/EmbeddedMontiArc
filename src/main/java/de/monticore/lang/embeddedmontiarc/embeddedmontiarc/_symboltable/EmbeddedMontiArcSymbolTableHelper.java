@@ -30,27 +30,27 @@ import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTAdaptableKeyword;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.resolution._ast.ASTResolutionDeclaration;
-import de.monticore.lang.monticar.resolution._parser.ResolutionParser;
+import de.monticore.lang.monticar.resolution._ast.ASTTypeNameResolutionDeclaration;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbolReference;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeNameResolutionDeclaration;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
-import de.monticore.types.types._ast.ASTTypeParameters;
-import de.monticore.types.types._ast.ASTTypeVariableDeclaration;
 import de.se_rwth.commons.logging.Log;
+import org.jscience.mathematics.number.Rational;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
+import static de.monticore.numberunit.Rationals.doubleToRational;
 
 
 /**
@@ -100,11 +100,11 @@ public class EmbeddedMontiArcSymbolTableHelper {
             }
         } else {
             for (int i = 0; i < componentSymbolReference.getResolutionDeclarationSymbols().size(); ++i) {
-                Double numberToSetTo = ((ASTUnitNumberResolution) componentSymbolReference
+                Rational numberToSetTo = doubleToRational(((ASTUnitNumberResolution) componentSymbolReference
                         .getReferencedSymbol().getResolutionDeclarationSymbols().get(i).getASTResolution())
-                        .getNumber().get();
+                        .getNumber().get());
                 ((ASTUnitNumberResolution) componentSymbolReference.getResolutionDeclarationSymbols().get(i)
-                        .getASTResolution()).setNumber(numberToSetTo);
+                        .getASTResolution()).setNumber(numberToSetTo.doubleValue());
             }
         }
     }
@@ -144,32 +144,27 @@ public class EmbeddedMontiArcSymbolTableHelper {
 
 
     public static void handleResolutionDeclaration(ComponentSymbol typeSymbol,
-                                                   ASTTypeParameters astTypeParameters, Scope currentScope,
+                                                   ASTTypeParameters2 astTypeParameters, Scope currentScope,
                                                    ASTComponent node,
                                                    EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters.getTypeVariableDeclarationList()) {
-            ResolutionParser parser = new ResolutionParser();
-            try {
-                Optional<ASTResolutionDeclaration> astResDeclOpt = parser.parse_StringResolutionDeclaration(astTypeParameter.getName());
-                if (astResDeclOpt.isPresent()) {
-                    Log.debug(astTypeParameter.toString(), "Resolution Declaration:");
-                    ASTResolutionDeclaration astResDecl = astResDeclOpt.get();
-                    ResolutionDeclarationSymbolReference resDeclSymRef;
-                    resDeclSymRef = ResolutionDeclarationSymbolReference.constructResolutionDeclSymbolRef(
-                            ((ASTTypeNameResolutionDeclaration) astResDecl).getName(),
-                            ((ASTTypeNameResolutionDeclaration) astResDecl).getResolution());
+        for (ASTTypeVariableDeclaration2 astTypeParameter : astTypeParameters.getTypeVariableDeclaration2List()) {
+            if (astTypeParameter.getResolutionDeclarationOpt().isPresent() && astTypeParameter
+                    .getResolutionDeclaration() instanceof ASTTypeNameResolutionDeclaration) {
+                Log.debug(astTypeParameter.toString(), "Resolution Declaration:");
+                ASTResolutionDeclaration astResDecl = astTypeParameter.getResolutionDeclaration();
 
-                    Log.debug(resDeclSymRef.getNameToResolve(),
-                            "Added ResolutionDeclarationSymbol with name: ");
-                    typeSymbol.addResolutionDeclarationSymbol(resDeclSymRef);
-                    // TODO Resolution maybe link with node
-                    symbolTableCreator.addToScopeAndLinkWithNode(resDeclSymRef,
-                            astTypeParameter);
-                }
-            } catch (IOException e) {
-                // handle silently -> do nothing
+                ResolutionDeclarationSymbolReference resDeclSymRef;
+                resDeclSymRef = ResolutionDeclarationSymbolReference.constructResolutionDeclSymbolRef(
+                        astResDecl.getName(),
+                        ((ASTTypeNameResolutionDeclaration) astResDecl).getResolution());
+
+                Log.debug(resDeclSymRef.getNameToResolve(),
+                        "Added ResolutionDeclarationSymbol with name: ");
+                typeSymbol.addResolutionDeclarationSymbol(resDeclSymRef);
+                // TODO Resolution maybe link with node
+                symbolTableCreator.addToScopeAndLinkWithNode(resDeclSymRef,
+                        astTypeParameter);
             }
-
         }
     }
 

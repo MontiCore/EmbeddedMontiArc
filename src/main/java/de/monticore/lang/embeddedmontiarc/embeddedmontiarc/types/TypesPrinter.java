@@ -20,12 +20,11 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.monticore.types.types._ast.*;
-import de.monticore.lang.monticar.types2._ast.*;
-import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -69,16 +68,16 @@ public class TypesPrinter {
         return getInstance().doPrintTypeWithoutTypeArguments(type);
     }
 
-    public static String printTypeParameters(ASTTypeParameters params) {
+    public static String printTypeParameters(ASTTypeParameters2 params) {
         return getInstance().doPrintTypeParameters(params);
     }
 
-    public static String printTypeVariableDeclarationList(List<ASTTypeVariableDeclaration> decl) {
+    public static String printTypeVariableDeclarationList(List<ASTTypeVariableDeclaration2> decl) {
         return getInstance().doPrintTypeVariableDeclarationList(decl);
     }
 
 
-    public static String printTypeVariableDeclaration(ASTTypeVariableDeclaration decl) {
+    public static String printTypeVariableDeclaration(ASTTypeVariableDeclaration2 decl) {
         return getInstance().doPrintTypeVariableDeclaration(decl);
     }
 

@@ -21,15 +21,19 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
+import de.monticore.lang.monticar.resolution._ast.ASTNamingResolution;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.types._ast.*;
+import de.se_rwth.commons.logging.Log;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -61,17 +65,39 @@ public class EMAJavaHelper {
     // see ComponentSymbol addFormalTypeParameters etc.
     protected static List<MCTypeSymbol> addTypeParametersToType(
             ComponentSymbol typeSymbol,
-            ASTTypeParameters optionalTypeParameters, Scope currentScope) {
+            ASTTypeParameters2 optionalTypeParameters, Scope currentScope) {
 
-        ASTTypeParameters astTypeParameters = optionalTypeParameters;
-        for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters.getTypeVariableDeclarationList()) {
-            final String typeVariableName = astTypeParameter.getName();
-            addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
+        ASTTypeParameters2 astTypeParameters = optionalTypeParameters;
+        for (ASTTypeVariableDeclaration2 astTypeParameter : astTypeParameters.getTypeVariableDeclaration2List()) {
+            if (astTypeParameter.getResolutionDeclarationOpt().isPresent()) {
+                //Not handled here
+                // new type parameter
+
+                // TypeParameters/TypeVariables are seen as type declarations.
+                // For each variable instantiate a MontiCarTypeSymbol.
+                //TODO FIX if not present
+                if (astTypeParameter.getResolutionDeclaration().getTypeName() != null) {
+                    final String typeVariableName = astTypeParameter.getResolutionDeclaration().getTypeName();
+
+                    addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
+                } else if (astTypeParameter.getResolutionDeclaration() instanceof ASTNamingResolution) {
+
+                    final String typeVariableName = astTypeParameter.getResolutionDeclaration().getName();
+                    addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
+                } else {
+                    Log.debug(astTypeParameter.getResolutionDeclaration().toString(), "Resolution Declaration");
+                    Log.debug("0xADTYPA Case not handled", "Implementation Missing");
+                }
+            } else {
+                final String typeVariableName = astTypeParameter.getNamingResolution().getName();
+                addFormalTypeParameter(typeVariableName, astTypeParameter, currentScope, typeSymbol);
+            }
         }
         return typeSymbol.getFormalTypeParameters();
     }
 
-    private static void addFormalTypeParameter(String typeVariableName, ASTTypeVariableDeclaration astTypeParameter, Scope currentScope, ComponentSymbol typeSymbol) {
+    private static void addFormalTypeParameter(String typeVariableName, ASTTypeVariableDeclaration2
+            astTypeParameter, Scope currentScope, ComponentSymbol typeSymbol) {
         MontiCarTypeSymbol javaTypeVariableSymbol = jSymbolFactory.createTypeVariable(typeVariableName);
         // TODO implement
         // // init type parameter
@@ -83,7 +109,7 @@ public class EMAJavaHelper {
         // }
         // Treat type bounds are implemented interfaces, even though the
         // first bound might be a class. See also JLS7.
-        List<ASTType> types = new ArrayList<ASTType>(astTypeParameter.getUpperBoundList());
+        List<ASTType> types = new ArrayList<ASTType>(astTypeParameter.getUpperBoundsList());
 
         addInterfacesToTypeEMA(javaTypeVariableSymbol, types, currentScope);
 

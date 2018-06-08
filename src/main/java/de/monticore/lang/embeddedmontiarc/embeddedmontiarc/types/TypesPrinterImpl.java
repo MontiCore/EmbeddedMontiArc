@@ -21,8 +21,10 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
 import de.monticore.lang.monticar.printtype._ast.ASTPrintType;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.monticore.types.types._ast.*;
-import de.monticore.lang.monticar.types2._ast.*;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
@@ -73,18 +75,18 @@ public class TypesPrinterImpl {
     }
 
 
-    protected String doPrintTypeParameters(ASTTypeParameters params) {
-        return params != null && params.getTypeVariableDeclarationList() != null && !params.getTypeVariableDeclarationList().isEmpty() ? "<" + this.doPrintTypeVariableDeclarationList(params.getTypeVariableDeclarationList()) + ">" : "";
+    protected String doPrintTypeParameters(ASTTypeParameters2 params) {
+        return params != null && params.getTypeVariableDeclaration2List() != null && !params.getTypeVariableDeclaration2List().isEmpty() ? "<" + this.doPrintTypeVariableDeclarationList(params.getTypeVariableDeclaration2List()) + ">" : "";
     }
 
 
-    protected String doPrintTypeVariableDeclarationList(List<ASTTypeVariableDeclaration> decl) {
+    protected String doPrintTypeVariableDeclarationList(List<ASTTypeVariableDeclaration2> decl) {
         StringBuilder ret = new StringBuilder();
         if (decl != null) {
             String sep = "";
 
             for (Iterator var4 = decl.iterator(); var4.hasNext(); sep = ", ") {
-                ASTTypeVariableDeclaration d = (ASTTypeVariableDeclaration) var4.next();
+                ASTTypeVariableDeclaration2 d = (ASTTypeVariableDeclaration2) var4.next();
                 ret.append(sep + this.doPrintTypeVariableDeclaration(d));
             }
         }
@@ -92,14 +94,14 @@ public class TypesPrinterImpl {
         return ret.toString();
     }
 
-    protected String doPrintTypeVariableDeclaration(ASTTypeVariableDeclaration decl) {
+    protected String doPrintTypeVariableDeclaration(ASTTypeVariableDeclaration2 decl) {
         StringBuilder ret = new StringBuilder();
         if (decl != null) {
-            ret.append(decl.getName());
-            if (decl.getUpperBoundList() != null && !decl.getUpperBoundList().isEmpty()) {
+            ret.append(decl.getNamingResolution().getName());
+            if (decl.getUpperBoundsList() != null && !decl.getUpperBoundsList().isEmpty()) {
                 String sep = " extends ";
 
-                for (Iterator var4 = decl.getUpperBoundList().iterator(); var4.hasNext(); sep = " & ") {
+                for (Iterator var4 = decl.getUpperBoundsList().iterator(); var4.hasNext(); sep = " & ") {
                     ASTType type = (ASTType) var4.next();
                     ret.append(sep + this.doPrintType(type));
                 }

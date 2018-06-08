@@ -38,7 +38,7 @@ public class ConnectorEndPointCorrectlyQualified
     private void checkEndpointCorrectlyQualified(ASTQualifiedNameWithArray name,
                                                  Predicate<Integer> predicate, String errorMessage) {
         int i = 0;
-        if (name.getCompName() != null)
+        if (name.getCompNameOpt().isPresent())
             ++i;
         if (name.getPortName() != null)
             ++i;

@@ -25,15 +25,15 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
-import de.monticore.types.types._ast.ASTTypeArgument;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberTypeArgument;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.types.types._ast.ASTSimpleReferenceType;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberTypeArgument;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.MutableScope;
+import de.monticore.types.types._ast.ASTSimpleReferenceType;
+import de.monticore.types.types._ast.ASTTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ public class EMAPortHelper {
         if (node.getUnitNumberResolutionOpt().isPresent()) {
             ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
             name = unitNumberResolution.doResolution(symbolTableCreator.componentStack.
-                            peek().getResolutionDeclarationSymbols());
+                    peek().getResolutionDeclarationSymbols());
 
         }
         return name;
@@ -233,7 +233,7 @@ public class EMAPortHelper {
         }
         return names;
     }
-    
+
 
     public static String getNameArrayPart(ASTArrayAccess arrayPart) {
         String result = "";
@@ -398,7 +398,6 @@ public class EMAPortHelper {
                 }
             }
         }
-
         return -1;
     }
 }

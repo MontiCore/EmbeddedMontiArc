@@ -52,6 +52,7 @@ public class SymtabTest extends AbstractSymtabTest {
     public static void setUp() {
         // ensure an empty log
         Log.getFindings().clear();
+        Log.enableFailQuick(false);
     }
 
     /**

@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast;
 
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.types.types._ast.ASTReferenceType;
-import de.monticore.types.types._ast.ASTTypeParameters;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class ASTComponent extends ASTComponentTOP {
         super();
     }
 
-    public ASTComponent(String name, Optional<ASTTypeParameters> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body) {
+    public ASTComponent(String name, Optional<ASTTypeParameters2> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body) {
         super(name, genericTypeParameters, parameters, superComponent, body);
     }
 
