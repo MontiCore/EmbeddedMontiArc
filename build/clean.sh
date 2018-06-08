@@ -1,5 +1,11 @@
 source config.sh
 
+if [ -z $ext ] || [ -z $build ] || [ -z $targetDir ] || [ -z $targetName ] || [ -z $dl ]
+then
+	echo "ERROR: Variables are unset. Aborting!"
+	exit 1
+fi
+
 rm -rf ${ext}
 rm -rf ${build}"/"${targetDir}*
 rm -rf ${build}"/"${targetName}
