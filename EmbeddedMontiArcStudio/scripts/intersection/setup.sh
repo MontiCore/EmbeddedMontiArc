@@ -12,4 +12,19 @@ apt-get install -y python-rosinstall python-rosinstall-generator python-wstool b
 echo "Installing Simulation Framework dependencies"
 apt-get install -y ros-kinetic-geodesy ros-kinetic-tf2-geometry-msgs python-catkin-tools libpugixml-dev qt5-default cmake
 
+echo "Compiling framework"
+pushd `pwd` > /dev/null
 
+curDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROS_SIM_HOME=$curDir/../../RosSimulationFramework/
+
+cd $ROS_SIM_HOME
+cd catkin_ws
+
+source /opt/ros/kinetic/setup.bash
+
+catkin --init
+catkin clean -y
+catkin build
+
+popd
