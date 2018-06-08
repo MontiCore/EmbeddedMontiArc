@@ -33,3 +33,6 @@ while read line; do
 		fi
 	fi
 done <../dependencies.txt
+
+echo "Fixing execute bit"
+find $ext -name "*.sh" -print0 | xargs -0 chmod -v +x

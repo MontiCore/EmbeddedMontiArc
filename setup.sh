@@ -1,7 +1,4 @@
 #!/bin/bash
-echo "Fixing execute bit of scripts"
-curDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-find $curDir -name "*.sh" -print0 | xargs -0 chmod +x
 
 echo "Installing dependencies!"
 if [ "$EUID" -ne 0 ]
