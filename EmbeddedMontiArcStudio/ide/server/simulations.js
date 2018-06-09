@@ -233,58 +233,37 @@ class IntersectionSimulation {
 }
 
 class ClassifierSimulation {
-  constructor() {
-		this.logger = Log.getLogger("CLASSIFIER");
-		this.logger.level = "debug"
-	}
+    constructor() {
+        this.logger = Log.getLogger("CLASSIFIER");
+        this.process = null;
+        this.logger.level = "debug";
+    }
 
-	execute(callback) {
-		this.logger.info("Executing Classifier...");
+    prepare(callback) {
+        this.logger.info("Generating, compiling and training Classifier...");
 
-		const onExit = () => {
-			this.logger.info("...Classifier executed");
-		};
+        const onExit = () => {
+            this.logger.info("...Classifier built");
+            callback();
+        };
 
-		let process = null;
-
-        process = Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.BUILD], {
+        Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.SIMULATION.BUILD], {
             cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
         }).on("exit", onExit);
-      }
- /*
+    }
 
-  constructor() {
-      this.logger = Log.getLogger("CLASSIFIER");
-      this.process = null;
-      this.logger.level = "debug";
-  }
+    execute(callback) {
+        this.logger.info("Executing Classifier...");
 
-  prepare(callback) {
-      this.logger.info("Generating Classifier...");
+        const onExit = () => {
+            this.logger.info("...Classifier executed");
+            callback();
+        };
 
-      const onExit = () => {
-          this.logger.info("...Classifier generated");
-          callback();
-      };
-
-      Process.spawn(BATCHES.CLASSIFIER.BUILD, [], {
-          cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
-      }).on("exit", onExit);
-  }
-
-  execute(callback) {
-      this.logger.info("Executing Classifier...");
-
-      const onExit = () => {
-          this.logger.info("...Classifier executed");
-          callback();
-      };
-
-      Process.spawn(BATCHES.CLASSIFIER.EXECUTE, [], {
-          cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
-      }).on("exit", onExit);
-  }
-  */
+        Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.SIMULATION.EXECUTE], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
+        }).on("exit", onExit);
+    }
 }
 
 module.exports = {

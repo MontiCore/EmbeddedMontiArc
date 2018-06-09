@@ -1,11 +1,10 @@
+pushd `pwd` > /dev/null
 source "../shared/variables.sh"
 source ${USER_HOME}/mxnet/bin/activate
 if [ -e "${CLASSIFIER_TARGET}/model/cifar10_main_net/net_newest-symbol.json" ];
 then
   echo "Skipping training."
 else
-  pushd `pwd` > /dev/null
-
   echo "Creating HDF5 dataset from image files.."
   mkdir -p ${CLASSIFIER_TRAIN}/data/cifar10_main_net
   python ${HOME}/scripts/classifier/imgDir-to-h5.py --in_port data --out_port softmax --data_path ${DATA_DIR} --target_path ${CLASSIFIER_TRAIN}/data/cifar10_main_net
@@ -16,5 +15,5 @@ else
   mkdir -p ${CLASSIFIER_TARGET}/model/cifar10_main_net
   cp ${CLASSIFIER_TRAIN}/model/cifar10_main_net/net_newest-symbol.json ${CLASSIFIER_TARGET}/model/cifar10_main_net/net_newest-symbol.json
   cp ${CLASSIFIER_TRAIN}/model/cifar10_main_net/net_newest-0000.params ${CLASSIFIER_TARGET}/model/cifar10_main_net/net_newest-0000.params
-  popd  > /dev/null
 fi
+popd  > /dev/null

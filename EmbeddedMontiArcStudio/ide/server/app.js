@@ -25,6 +25,7 @@ Logger.level = "debug";
 App.use("/m", Express.static(PATHS.MODELS));
 App.use("/r", Express.static(Path.resolve(PATHS.REPORTING, "report")));
 App.use("/c", Express.static(PATHS.CLUSTER_FIDDLE));
+App.use("/classifier", Express.static(PATHS.CLASSIFIER));
 App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
 App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
@@ -33,6 +34,7 @@ App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC))
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
+App.use("/services/classifier/simulate/classify", FileUpload());
 App.use("/services", Express.json());
 
 App.post("/services/:project/update-models", function(request, response) {
@@ -183,9 +185,9 @@ App.post("/services/autopilot/viewverification/single", function(request, respon
 });
 
 App.post("/services/clustering/simulate", function(request, response) {
-	function onPrepared() {
+	  function onPrepared() {
         Chrome.open(URLS.SHARED + "/c");
-	    response.end();
+	      response.end();
     }
 
     ClusteringSimulation.prepare(onPrepared);
@@ -411,12 +413,40 @@ App.post("/services/intersection/simulate", function(request, response) {
 });
 
 App.post("/services/classifier/simulate", function(request, response) {
-	function onExecuted() {
-		logger.info("Classifier service callback");
-		response.end();
+	function onPrepared() {
+		Chrome.open(URLS.SHARED + "/classifier");
+	  response.end();
 	}
 
-	ClassifierSimulation.execute(onExecuted);
+	ClassifierSimulation.prepare(onPrepared)
+});
+
+App.post("/services/classifier/simulate/classify", function(request, response) {
+    const image = request.files.file;
+    const imagePath = Path.join(PATHS.EXEC, "img.png");
+    const resultPath = Path.join(PATHS.EXEC, "class.txt");
+
+    function onCopyFile() {
+        response.end();
+    }
+
+    function onExecuted() {
+        FileSystem.copyFile(resultPath, Path.join(PATHS.CLASSIFIER, "class.txt"), onCopyFile);
+    }
+
+    function onImageRead(error, image) {
+        if(error) return response.end();
+
+        image.write(imagePath);
+        ClassifierSimulation.execute(onExecuted);
+    }
+
+    function onMV(error) {
+        if(error) response.end();
+        else Jimp.read(imagePath, onImageRead);
+    }
+
+    image.mv(imagePath, onMV);
 });
 
 App.post("/services/intersection/visualize", function(request, response) {

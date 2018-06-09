@@ -15,6 +15,7 @@ PATHS.ARMADILLO      = Path.resolve(PATHS.HOME, "armadillo-8.500.1-linux");
 PATHS.MXNET      = Path.resolve(PATHS.HOME, "incubator-mxnet");
 PATHS.CHROME         = Path.resolve(PATHS.HOME, "chrome-linux");
 PATHS.CLUSTER_FIDDLE = Path.resolve(PATHS.HOME, "cluster-fiddle");
+PATHS.CLASSIFIER     = Path.resolve(PATHS.HOME, "classifier");
 PATHS.IDE            = Path.resolve(PATHS.HOME, "ide");
 PATHS.JDK            = Path.resolve(PATHS.HOME, "java-linux");
 PATHS.MINGW          = Path.resolve(PATHS.HOME, "mingw64");
@@ -108,8 +109,9 @@ BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "vi
 BATCHES.INTERSECTION.SIMULATION				= Path.resolve(PATHS.SCRIPTS, "intersection","simulation.sh");
 BATCHES.INTERSECTION.VISUALIZATION			= Path.resolve(PATHS.SCRIPTS, "intersection","visualize.sh");
 
-BATCHES.CLASSIFIER.BUILD 		= Path.resolve(PATHS.SCRIPTS, "classifier", "build.sh");
-BATCHES.CLASSIFIER.EXECUTE       		= Path.resolve(PATHS.SCRIPTS, "classifier", "execute.sh");
+BATCHES.CLASSIFIER.SIMULATION          		= {};
+BATCHES.CLASSIFIER.SIMULATION.BUILD 		= Path.resolve(PATHS.SCRIPTS, "classifier", "build.sh");
+BATCHES.CLASSIFIER.SIMULATION.EXECUTE 	= Path.resolve(PATHS.SCRIPTS, "classifier", "execute.sh");
 
 /*
  * OPTIONS

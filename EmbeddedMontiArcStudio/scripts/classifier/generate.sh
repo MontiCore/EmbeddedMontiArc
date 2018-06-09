@@ -1,6 +1,6 @@
+pushd `pwd` > /dev/null
 source "../shared/variables.sh"
 echo "Generating files.."
-pushd `pwd` > /dev/null
 cd ${HOME}
 java -jar emadl2cpp.jar -m model/classifier -r cifar10.Main -o ${CLASSIFIER_CPP}
 
