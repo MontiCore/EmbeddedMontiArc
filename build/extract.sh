@@ -36,3 +36,7 @@ done <../dependencies.txt
 
 echo "Fixing execute bit"
 find $ext -name "*.sh" -print0 | xargs -0 chmod -v +x
+
+echo "Fixing armadillo include name"
+find $ext -name "armadillo" -exec cp -v "{}" "{}.h" \;
+find $ext -name "armadillo.h" | sed 's/\.h$//' | xargs -i{} cp -v "{}.h" "{}" 
