@@ -31,6 +31,10 @@
 ** https://rwth-aachen.sciebo.de/s/S33ljBAUAjvp9Th/download
 //nodejs-linux.zip
 ** https://rwth-aachen.sciebo.de/s/pEmwwJfHdgmRcSS/download
+//emadl2cpp.zip
+** https://rwth-aachen.sciebo.de/s/IchSL3JogHOVErf/download
+//cifar10 images
+** https://rwth-aachen.sciebo.de/s/cWGjj6SMfRN56CX/download
 //RosSimulationFramework.zip
 ** https://rwth-aachen.sciebo.de/s/J0UFMxtOMqzH0rJ/download
 

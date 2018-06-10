@@ -16,6 +16,10 @@ function onServerStarted(error) {
 }
 
 function onIntersectionZipped(){
+	Archiver.zip("classifier", onClassifierZipped);
+}
+
+function onClassifierZipped(){
 	Archiver.zip("clustering", onClusteringZipped);
 }
 

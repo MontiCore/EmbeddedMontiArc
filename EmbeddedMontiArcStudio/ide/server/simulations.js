@@ -208,12 +208,12 @@ class IntersectionSimulation {
 
 	execute(callback) {
 		this.logger.info("Executing Intersection...");
-		
+
 		const onExit = () => {
 			this.logger.info("...Intersection executed");
 		};
 
-		let process = null;		
+		let process = null;
 
         process = Process.spawn("bash", ["-c", BATCHES.INTERSECTION.SIMULATION], {
             cwd: Path.resolve(PATHS.SCRIPTS, "intersection")
@@ -232,9 +232,44 @@ class IntersectionSimulation {
 	}
 }
 
+class ClassifierSimulation {
+    constructor() {
+        this.logger = Log.getLogger("CLASSIFIER");
+        this.process = null;
+        this.logger.level = "debug";
+    }
+
+    prepare(callback) {
+        this.logger.info("Generating, compiling and training Classifier...");
+
+        const onExit = () => {
+            this.logger.info("...Classifier built");
+            callback();
+        };
+
+        Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.SIMULATION.BUILD], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
+        }).on("exit", onExit);
+    }
+
+    execute(callback) {
+        this.logger.info("Executing Classifier...");
+
+        const onExit = () => {
+            this.logger.info("...Classifier executed");
+            callback();
+        };
+
+        Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.SIMULATION.EXECUTE], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
+        }).on("exit", onExit);
+    }
+}
+
 module.exports = {
     AutoPilotSimulation: new AutoPilotSimulation(),
     ClusteringSimulation: new ClusteringSimulation(),
     PacManSimulation: new PacManSimulation(),
-	IntersectionSimulation: new IntersectionSimulation()
+	IntersectionSimulation: new IntersectionSimulation(),
+  ClassifierSimulation: new ClassifierSimulation()
 };
