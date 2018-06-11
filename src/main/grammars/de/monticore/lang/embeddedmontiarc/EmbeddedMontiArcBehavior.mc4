@@ -29,11 +29,6 @@ component grammar EmbeddedMontiArcBehavior extends de.monticore.lang.embeddedmon
   external BehaviorEmbedding;
   external BehaviorName;
   
-  BehaviorImplementation implements Element = NEWLINETOKEN* "implementation" BehaviorName NEWLINETOKEN*  "{" NEWLINETOKEN* behavior:BehaviorEmbedding NEWLINETOKEN*  "}" NEWLINETOKEN*;
+  BehaviorImplementation implements Element = "implementation" BehaviorName "{" behavior:BehaviorEmbedding "}";
 
-token NEWLINETOKEN =
-         ('\r' '\n' |
-         '\r' |
-         '\n' ):
-       ;
 }
