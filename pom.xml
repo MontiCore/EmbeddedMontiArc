@@ -28,24 +28,24 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>struct</artifactId>
-    <version>0.0.12-SNAPSHOT</version>
+    <version>0.0.13-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
         <!-- .. SE-Libraries .................................................. -->
-        <monticore.version>4.5.4.08.11.2017</monticore.version>
+        <monticore.version>5.0.0</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.8</mc.grammars.assembly.version>
-        <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-        <Common-MontiCar.version>0.0.12</Common-MontiCar.version>
-        <enumlang.version>0.0.11</enumlang.version>
+        <SIUnit.version>0.0.13-SNAPSHOT</SIUnit.version>
+        <Common-MontiCar.version>0.0.13-SNAPSHOT</Common-MontiCar.version>
+        <enumlang.version>0.0.13-SNAPSHOT</enumlang.version>
         <!-- .. Libraries .................................................. -->
         <junit.version>4.12</junit.version>
         <logback.version>1.1.2</logback.version>
         <jscience.version>4.3.1</jscience.version>
-        <antlr.version>4.5.1</antlr.version>
+        <antlr.version>4.7.1</antlr.version>
         <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>4.5.3.1</monticore.plugin>
+        <monticore.plugin>5.0.0</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>

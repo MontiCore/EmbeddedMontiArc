@@ -33,7 +33,7 @@ public class StructFieldsHaveUniqueNames implements StructASTStructCoCo {
     @Override
     public void check(ASTStruct node) {
         Set<String> fieldNames = new HashSet<>();
-        List<ASTStructFieldDefinition> structFieldDefinitions = node.getStructFieldDefinitions();
+        List<ASTStructFieldDefinition> structFieldDefinitions = node.getStructFieldDefinitionList();
         for (ASTStructFieldDefinition field : structFieldDefinitions) {
             if (!fieldNames.add(field.getName())) {
                 Log.error(

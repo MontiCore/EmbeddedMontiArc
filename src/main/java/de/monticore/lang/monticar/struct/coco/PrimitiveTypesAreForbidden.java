@@ -20,11 +20,11 @@
  */
 package de.monticore.lang.monticar.struct.coco;
 
-import de.monticore.lang.monticar.types2._ast.ASTPrimitiveType;
-import de.monticore.lang.monticar.types2._cocos.Types2ASTPrimitiveTypeCoCo;
+import de.monticore.types.types._ast.ASTPrimitiveType;
+import de.monticore.types.types._cocos.TypesASTPrimitiveTypeCoCo;
 import de.se_rwth.commons.logging.Log;
 
-public class PrimitiveTypesAreForbidden implements Types2ASTPrimitiveTypeCoCo {
+public class PrimitiveTypesAreForbidden implements TypesASTPrimitiveTypeCoCo {
     @Override
     public void check(ASTPrimitiveType node) {
         Log.error(
