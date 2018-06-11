@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math</artifactId>
-  <version>0.0.13-SNAPSHOT</version>
+  <version>0.0.14-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -42,7 +42,7 @@
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
 	<Common-MontiCar.version>0.0.12</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.15</Embedded-MontiArc.version>
+	<Embedded-MontiArc.version>0.0.17-SNAPSHOT</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.11</Embedded-MontiArc-Behaviour.version>
     <Math.version>0.0.11</Math.version>
     <!-- .. Libraries .................................................. -->
@@ -213,15 +213,15 @@
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
     </dependency>
-  
+
     <dependency>
       <groupId>org.jscience</groupId>
       <artifactId>jscience</artifactId>
       <version>${jscience.version}</version>
     </dependency>
-  
+
   </dependencies>
-  
+
 
    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
