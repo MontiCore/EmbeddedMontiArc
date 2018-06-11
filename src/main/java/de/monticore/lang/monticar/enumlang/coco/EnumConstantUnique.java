@@ -32,7 +32,7 @@ public class EnumConstantUnique implements EnumLangASTEnumDeclarationCoCo {
     @Override
     public void check(ASTEnumDeclaration node) {
         Set<String> names = new HashSet<>();
-        for (ASTEnumConstantDeclaration ecd : node.getEnumConstantDeclarations()) {
+        for (ASTEnumConstantDeclaration ecd : node.getEnumConstantDeclarationList()) {
             if (!names.add(ecd.getName())) {
                 Log.error(
                         "Enum constants must be unique",
