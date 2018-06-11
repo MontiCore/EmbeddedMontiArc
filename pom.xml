@@ -41,7 +41,6 @@
         <monticore.version>5.0.0</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-        <SIUnit.version>0.0.13-SNAPSHOT</SIUnit.version>
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
@@ -118,19 +117,6 @@
       <version>${se-commons.version}</version>
     </dependency>
 
-	<dependency>
-		<groupId>de.monticore.lang</groupId>
-		<artifactId>NumberUnit</artifactId>
-		<version>${SIUnit.version}</version>
-	</dependency>
-
-	<dependency>
-		<groupId>de.monticore.lang</groupId>
-		<artifactId>NumberUnit</artifactId>
-		<version>${SIUnit.version}</version>
-		<classifier>${grammars.classifier}</classifier>
-		<scope>provided</scope>
-	</dependency>
     <!-- .. Test Libraries ............................................... -->
     <dependency>
       <groupId>junit</groupId>
