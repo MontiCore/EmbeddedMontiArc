@@ -7,6 +7,9 @@ num_epoch = ${tc.numEpoch},
 <#if (tc.loadCheckpoint)??>
 load_checkpoint = ${tc.loadCheckpoint.value?string("True","False")},
 </#if>
+<#if (tc.context)??>
+context = '${tc.context.value}',
+</#if>
 <#if (tc.normalize)??>
 normalize = ${tc.normalize.value?string("True","False")},
 </#if>
