@@ -23,12 +23,15 @@ public class UnZip
             }
 
             //get the zip file content
-            ZipInputStream zis =
-                    new ZipInputStream(new FileInputStream(zipFile));
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
             //get the zipped file list entry
             ZipEntry ze = zis.getNextEntry();
 
             while(ze!=null){
+
+                if(ze.isDirectory()){
+                    ze = zis.getNextEntry();
+                }
 
                 String fileName = ze.getName();
                 File newFile = new File(outputFolder + File.separator + fileName);
@@ -36,7 +39,6 @@ public class UnZip
                 System.out.println("file unzip : "+ newFile.getAbsoluteFile());
 
                 //create all non exists folders
-                //else you will hit FileNotFoundException for compressed folder
                 new File(newFile.getParent()).mkdirs();
 
                 FileOutputStream fos = new FileOutputStream(newFile);
@@ -60,27 +62,5 @@ public class UnZip
             ex.printStackTrace();
         }
     }
-}
 
-// TODO: try to use this code to extract an archive
-//public class UnzipFile {
-//    public static void main(String[] args) throws IOException {
-//        String fileZip = "compressed.zip";
-//        byte[] buffer = new byte[1024];
-//        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-//        ZipEntry zipEntry = zis.getNextEntry();
-//        while(zipEntry != null){
-//            String fileName = zipEntry.getName();
-//            File newFile = new File("unzipTest/" + fileName);
-//            FileOutputStream fos = new FileOutputStream(newFile);
-//            int len;
-//            while ((len = zis.read(buffer)) > 0) {
-//                fos.write(buffer, 0, len);
-//            }
-//            fos.close();
-//            zipEntry = zis.getNextEntry();
-//        }
-//        zis.closeEntry();
-//        zis.close();
-//    }
-//}
+}
