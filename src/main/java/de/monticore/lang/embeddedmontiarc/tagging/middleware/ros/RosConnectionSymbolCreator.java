@@ -56,25 +56,25 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
     }
 
     public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
-        if (unit.getQualifiedNames().stream()
+        if (unit.getQualifiedNameList().stream()
                 .map(q -> q.toString())
                 .filter(n -> n.endsWith("RosToEmamTagSchema"))
                 .count() == 0) {
             return; // the tagging model is not conform to the traceability tagging schema
         }
-        final String packageName = Joiners.DOT.join(unit.getPackage());
+        final String packageName = Joiners.DOT.join(unit.getPackageList());
         final String rootCmp = // if-else does not work b/c of final (required by streams)
-                (unit.getTagBody().getTargetModel().isPresent()) ?
-                        Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModel().get())
+                (unit.getTagBody().getTargetModelOpt().isPresent()) ?
+                        Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModelOpt().get())
                                 .getQualifiedNameString()) :
                         packageName;
 
-        for (ASTTag element : unit.getTagBody().getTags()) {
-            List<ASTTagElement> tagElements = element.getTagElements().stream()
+        for (ASTTag element : unit.getTagBody().getTagList()) {
+            List<ASTTagElement> tagElements = element.getTagElementList().stream()
                     .filter(t -> t.getName().equals("RosConnection"))
                     .collect(Collectors.toList());
             // after that point we can throw error messages
-            List<Symbol> ports = element.getScopes().stream()
+            List<Symbol> ports = element.getScopeList().stream()
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
                     .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
@@ -85,7 +85,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
 
             //Empty tags
             tagElements.stream()
-                    .filter(t -> !t.tagValueIsPresent())
+                    .filter(t -> !t.getTagValueOpt().isPresent())
                     .forEachOrdered(tag -> {
                         ports.stream()
                                 .forEachOrdered(s -> {
@@ -100,8 +100,8 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
 
             //Tags with TagValue
             tagElements.stream()
-                    .filter(t -> t.getTagValue().isPresent())
-                    .map(t -> matchRegexPattern(t.getTagValue().get()))
+                    .filter(t -> t.getTagValueOpt().isPresent())
+                    .map(t -> matchRegexPattern(t.getTagValueOpt().get()))
                     .filter(r -> r != null)
                     .forEachOrdered(m ->
                             ports.stream()

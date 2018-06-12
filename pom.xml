@@ -45,7 +45,7 @@
 	<languages.version>4.0.1-SNAPSHOT</languages.version>
     <struct.version>0.0.14-SNAPSHOT</struct.version>
     <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
-    <tagging.version>0.0.2</tagging.version>
+    <tagging.version>0.0.3-SNAPSHOT</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
