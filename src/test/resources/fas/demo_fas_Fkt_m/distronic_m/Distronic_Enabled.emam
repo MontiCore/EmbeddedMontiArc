@@ -11,7 +11,7 @@ component Distronic_Enabled {
 		out (-oo:d:oo) BrakeForce_Distronic_pc,
 		out (-oo:d:oo) Decelerator_pc;
 	
-	instance SwitchMultiport3<(-oo:d:oo)> switch1;
+	instance SwitchMultiport<(-oo:d:oo)> switch1;
 	instance SwitchB<(-oo:d:oo)> switch2;
 	instance Multiplication<(-oo:d:oo)> mult1, mult2, mult3;
 	instance PlusMinusPlus<(-oo:d:oo)> pmp1;

@@ -15,6 +15,11 @@ public class LinalgBackend implements MathBackend {
     }
 
     @Override
+    public String getCubeTypeName() {
+        return null;
+    }
+
+    @Override
     public String getMatrixInitString(int sizeN, int sizeM) {
         return "(" + sizeN + "," + sizeM + ");\n";
     }
@@ -82,5 +87,11 @@ public class LinalgBackend implements MathBackend {
     public String getDivisionEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
         Log.error("Not supported yet");
         return null;
+    }
+
+    @Override
+    public boolean usesZeroBasedIndexing() {
+        // TODO: check this! Do not know this backend...
+        return false;
     }
 }

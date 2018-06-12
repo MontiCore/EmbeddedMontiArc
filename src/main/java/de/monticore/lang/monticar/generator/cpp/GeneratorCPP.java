@@ -9,13 +9,18 @@ import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.MathCommandRegister;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +31,11 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class GeneratorCPP implements Generator {
-
+    public static GeneratorCPP currentInstance;
     private Path modelsDirPath;
     private boolean isGenerateTests = false;
+    private boolean isGenerateAutopilotAdapter = false;
+    private boolean isGenerateServerWrapper = false;
     private final List<BluePrintCPP> bluePrints = new ArrayList<>();
 
     protected String generationTargetPath = "./target/generated-sources-cpp/";
@@ -39,12 +46,15 @@ public class GeneratorCPP implements Generator {
     protected MathCommandRegister mathCommandRegister;
     protected boolean generateMainClass = false;
     protected boolean generateSimulatorInterface = false;
+    protected boolean checkModelDir = false;
 
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
         useOctaveBackend();
         TypeConverter.clearTypeSymbols();
+        currentInstance = this;
     }
+
 
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
@@ -52,6 +62,7 @@ public class GeneratorCPP implements Generator {
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
+        //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
     public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
@@ -141,20 +152,38 @@ public class GeneratorCPP implements Generator {
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
-        if (isGenerateTests()) {
-            TestsGeneratorCPP g = new TestsGeneratorCPP(this);
-            fileContents.addAll(g.generateStreamTests(symtab));
+        fileContents.addAll(handleTestAndCheckDir(symtab));
+        if (isGenerateAutopilotAdapter()) {
+            fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
+        }
+        if (isGenerateServerWrapper()) {
+            fileContents.addAll(getServerWrapperFiles(componentSymbol));
         }
         //System.out.println(fileContents);
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
         }
+        List<File> files = saveFilesToDisk(fileContents);
+
+        return files;
+    }
+
+    public List<File> saveFilesToDisk(List<FileContent> fileContents) throws IOException {
         List<File> files = new ArrayList<>();
         for (FileContent fileContent : fileContents) {
-
             files.add(generateFile(fileContent));
         }
         return files;
+    }
+
+    public List<FileContent> handleTestAndCheckDir(Scope symtab) {
+        List<FileContent> fileContents = new ArrayList<>();
+        if (isGenerateTests() || isCheckModelDir()) {
+            TestsGeneratorCPP g = new TestsGeneratorCPP(this);
+            List<FileContent> fileConts = g.generateStreamTests(symtab);
+            fileContents.addAll(fileConts);
+        }
+        return fileContents;
     }
 
     public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol,
@@ -275,6 +304,30 @@ public class GeneratorCPP implements Generator {
         isGenerateTests = generateTests;
     }
 
+    public boolean isGenerateAutopilotAdapter() {
+        return isGenerateAutopilotAdapter;
+    }
+
+    public void setGenerateAutopilotAdapter(boolean generateAutopilotAdapter) {
+        isGenerateAutopilotAdapter = generateAutopilotAdapter;
+    }
+
+    public boolean isGenerateServerWrapper() {
+        return isGenerateServerWrapper;
+    }
+
+    public void setGenerateServerWrapper(boolean generateServerWrapper) {
+        isGenerateServerWrapper = generateServerWrapper;
+    }
+
+    public boolean isCheckModelDir() {
+        return checkModelDir;
+    }
+
+    public void setCheckModelDir(boolean checkModelDir) {
+        this.checkModelDir = checkModelDir;
+    }
+
     public List<BluePrintCPP> getBluePrints() {
         return Collections.unmodifiableList(bluePrints);
     }
@@ -282,5 +335,41 @@ public class GeneratorCPP implements Generator {
     private static List<FileContent> generateTypes(Collection<MCTypeSymbol> typeSymbols) {
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
         return tg.generateTypes(typeSymbols);
+    }
+
+    private static List<FileContent> getAutopilotAdapterFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+        List<FileContent> result = new ArrayList<>();
+        result.add(FileUtil.getResourceAsFile("/template/autopilotadapter/AutopilotAdapter.h", "AutopilotAdapter.h"));
+        result.add(generateAutopilotAdapter(componentSymbol));
+        return result;
+    }
+
+    private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
+        return generateWrapper(componentSymbol, "AutopilotAdapter.cpp");
+    }
+
+    private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+        List<FileContent> result = new ArrayList<>();
+        String[] filesToCopy = new String[]{
+                "Makefile",
+                "model.proto"
+        };
+        for (String file : filesToCopy) {
+            String resourcePath = String.format("/template/serverwrapper/%s", file);
+            result.add(FileUtil.getResourceAsFile(resourcePath, file));
+        }
+        result.add(generateServerWrapper(componentSymbol));
+        return result;
+    }
+
+    private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
+        return generateWrapper(componentSymbol, "server.cc");
+    }
+    
+     private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
+        ServerWrapperViewModel vm = new ServerWrapperViewModel();
+        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        String fileContents = AllTemplates.generateServerWrapper(vm);
+        return new FileContent(fileContents, name);
     }
 }

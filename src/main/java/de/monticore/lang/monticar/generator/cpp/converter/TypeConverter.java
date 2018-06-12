@@ -18,14 +18,10 @@ import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This is used to convert port types to their cpp equivalent
@@ -51,8 +47,12 @@ public class TypeConverter {
                 return "int";//use int for now add range check if bigger number is required
             }
             return "double";
+        } else if (mathValueType.getDimensions().size() == 1) {
+            return MathConverter.curBackend.getColumnVectorTypeName();
         } else if (mathValueType.getDimensions().size() == 2) {
             return MathConverter.curBackend.getMatrixTypeName();
+        } else if (mathValueType.getDimensions().size() == 3) {
+            return MathConverter.curBackend.getCubeTypeName();
         }
         Log.error("TypeConverter Case not handled!");
         return null;
@@ -127,15 +127,16 @@ public class TypeConverter {
     public static VariableType getRealVariableType(ASTCommonMatrixType astCommonMatrixType) {
         VariableType variableType;
         List<ASTCommonDimensionElement> dimensionElements = astCommonMatrixType.getCommonDimension().getCommonDimensionElements();
-        if (dimensionElements.size() == 2) {
+        if (dimensionElements.size() == 1) {
+            variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        } else if (dimensionElements.size() == 2) {
             if (isVectorDimension(dimensionElements.get(0)))
                 variableType = new VariableType("CommonRowVectorType", MathConverter.curBackend.getRowVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-            else if (isVectorDimension(dimensionElements.get(1))) {
-                variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-            } else {
+            else {
                 variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
-
             }
+        } else if (dimensionElements.size() == 3) {
+            variableType = new VariableType("CommonCubeType", MathConverter.curBackend.getCubeTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         } else {
             variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         }
@@ -144,7 +145,14 @@ public class TypeConverter {
     }
 
     public static boolean isVectorDimension(ASTCommonDimensionElement astCommonDimensionElement) {
-        return astCommonDimensionElement.getUnitNumber().get().getNumber().get().intValue() == 1;
+        boolean result = false;
+        if (astCommonDimensionElement.getUnitNumber().isPresent()) {
+            ASTUnitNumber unitNumber = astCommonDimensionElement.getUnitNumber().get();
+            if (unitNumber.getNumber().isPresent()) {
+                result = unitNumber.getNumber().get().intValue() == 1;
+            }
+        }
+        return result;
     }
 
     public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
@@ -171,7 +179,7 @@ public class TypeConverter {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
                     if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
-                        variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                        variableType = getRealVariableTypeFromPortSymbol(portSymbol);
                     }
                     handleCommonMatrixType(variable, portSymbol);
                 } else if (typeNameMontiCar.equals("AssignmentType")) {
@@ -184,6 +192,17 @@ public class TypeConverter {
             }
         }
         return Optional.empty();
+    }
+
+    private static VariableType getRealVariableTypeFromPortSymbol(PortSymbol portSymbol) {
+        VariableType variableType;
+        Optional<ASTCommonMatrixType> astCommonMatrixType = PortConverter.getCommonMatrixTypeFromPortSymbol(portSymbol);
+        if (astCommonMatrixType.isPresent()) {
+            variableType = getRealVariableType(astCommonMatrixType.get());
+        } else {
+            variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+        }
+        return variableType;
     }
 
     public static void handleCommonMatrixType(Variable variable, PortSymbol portSymbol) {
@@ -242,23 +261,24 @@ public class TypeConverter {
         }
     }
 
-    public static String getTypeNameMontiCar(ASTElementType elementType){
-        if(elementType.isIsRational()){
-            return "Q";
-        }else if(elementType.isIsBoolean()){
-            return "B";
-        }else if(elementType.isIsComplex()){
-            return "C";
-        }else if(elementType.isIsWholeNumberNumber()){
-            return "Z";
-        }else if(elementType.isIsNatural()){
-            return "N";
-        } else{
+    public static String getTypeNameMontiCar(ASTElementType elementType) {
+        String result = null;
+        if (elementType.isIsRational()) {
+            result = "Q";
+        } else if (elementType.isIsBoolean()) {
+            result = "B";
+        } else if (elementType.isIsComplex()) {
+            result = "C";
+        } else if (elementType.isIsWholeNumberNumber()) {
+            result = "Z";
+        } else if (elementType.isIsNatural()) {
+            result = "N";
+        } else {
             Log.error("Case not handled!");
-            return null;
         }
+        return result;
     }
-    
+
     public static VariableType getVariableTypeForTargetLanguageTypeName(String targetLanguageTypeName) {
         VariableType type = new VariableType();
         type.setTypeNameTargetLanguage(targetLanguageTypeName);

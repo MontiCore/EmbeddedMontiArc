@@ -20,8 +20,6 @@ matOut=Matrix(1000,200);
 }
 void execute()
 {
-Matrix a = mat1;
-Matrix b = mat1;
 matOut = mat1*(mat2+mat4);
 }
 

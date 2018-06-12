@@ -2,10 +2,9 @@ package de.monticore.lang.monticar.generator.optimization;
 
 import de.monticore.lang.math.math._symboltable.MathAssignmentOperator;
 import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathAssignmentExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverterMethodGeneration;
@@ -23,7 +22,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
     MathStatementsSymbol currentMathStatementsSymbol = null;
     List<MathExpressionSymbol> encounteredSymbolInstances = new ArrayList<>();
     Map<MathExpressionSymbol, String> symbolMap = new HashMap();
-    int currentId = 0;
+    public static int currentId = 0;
     MathExpressionSymbol startMathExpressionSymbol = null;
 
     @Override
@@ -37,7 +36,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
         } else if (mathExpressionSymbol.isMatrixExpression()) {
             optimize((MathMatrixExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
-            Log.debug(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "Symbol not handled");
+            Log.debug(mathExpressionSymbol.getClass().getName() + " " + mathExpressionSymbol.getTextualRepresentation(), "optimize Symbol not handled");
         }
     }
 
@@ -69,7 +68,7 @@ public class MathAssignmentPartResultReuse implements MathOptimizationRule {
 
     public void optimize(MathMatrixNameExpressionSymbol mathExpressionSymbol, List<MathExpressionSymbol> precedingExpressions) {
         if (encounteredSymbolInstances.contains(mathExpressionSymbol)) {
-            Log.debug("Found Same Symbol", "MathAssignmentPartResuktReuses");
+            Log.debug("Found Same Symbol", "MathAssignmentPartResultReuses");
             String name = "";
             if (!symbolMap.containsKey(mathExpressionSymbol)) {
                 symbolMap.put(mathExpressionSymbol, name = getReplacementName(currentId++));

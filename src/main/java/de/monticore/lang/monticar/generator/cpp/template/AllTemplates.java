@@ -1,7 +1,9 @@
 package de.monticore.lang.monticar.generator.cpp.template;
 
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.EnumViewModel;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.StructViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.TestsMainEntryViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
@@ -18,8 +20,11 @@ public final class AllTemplates {
 
     private static final Template COMPONENT_STREAM_TEST;
     private static final Template TESTS_MAIN_ENTRY;
+    private static final Template TESTS_MAIN_ENTRY_ARMADILLO;
     private static final Template STRUCT;
     private static final Template ENUM;
+    private static final Template AUTOPILOT_ADAPTER;
+    private static final Template SERVER_WRAPPER;
 
     static {
         Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
@@ -30,8 +35,11 @@ public final class AllTemplates {
         try {
             COMPONENT_STREAM_TEST = conf.getTemplate("/test/ComponentStreamTest.ftl");
             TESTS_MAIN_ENTRY = conf.getTemplate("/test/TestsMainEntry.ftl");
+            TESTS_MAIN_ENTRY_ARMADILLO = conf.getTemplate("/test/TestsMainEntryArmadillo.ftl");
             STRUCT = conf.getTemplate("/type/Struct.ftl");
             ENUM = conf.getTemplate("/type/Enum.ftl");
+            AUTOPILOT_ADAPTER = conf.getTemplate("/autopilotadapter/AutopilotAdapter.ftl");
+            SERVER_WRAPPER = conf.getTemplate("/serverwrapper/ServerWrapper.ftl");
         } catch (IOException e) {
             String msg = "could not load templates";
             Log.error(msg, e);
@@ -46,8 +54,11 @@ public final class AllTemplates {
         return generate(COMPONENT_STREAM_TEST, viewModel);
     }
 
-    public static String generateMainEntry(TestsMainEntryViewModel viewModel) {
-        return generate(TESTS_MAIN_ENTRY, viewModel);
+    public static String generateMainEntry(TestsMainEntryViewModel viewModel, boolean backendOctave) {
+        if (backendOctave)
+            return generate(TESTS_MAIN_ENTRY, viewModel);
+        else
+            return generate(TESTS_MAIN_ENTRY_ARMADILLO, viewModel);
     }
 
     public static String generateStruct(StructViewModel viewModel) {
@@ -56,6 +67,14 @@ public final class AllTemplates {
 
     public static String generateEnum(EnumViewModel viewModel) {
         return generate(ENUM, viewModel);
+    }
+
+    public static String generateAutopilotAdapter(AutopilotAdapterViewModel viewModel) {
+        return generate(AUTOPILOT_ADAPTER, viewModel);
+    }
+
+    public static String generateServerWrapper(ServerWrapperViewModel viewModel) {
+        return generate(SERVER_WRAPPER, viewModel);
     }
 
     private static String generate(Template template, ViewModelBase viewModelBase) {

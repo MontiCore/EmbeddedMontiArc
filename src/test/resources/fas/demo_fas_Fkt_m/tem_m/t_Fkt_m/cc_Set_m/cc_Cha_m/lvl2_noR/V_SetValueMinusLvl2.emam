@@ -19,7 +19,7 @@ component V_SetValueMinusLvl2 {
 	//Tag auf >=20 setzen
 	instance SwitchM<(-oo:d:oo)> switch4;
 	//Tag auf !=0 setzen
-	instance SwitchM2<(-oo:d:oo)> switch5;
+	instance SwitchM<(-oo:d:oo)> switch5;
 	instance Mod<(-oo:d:oo)> mod1;
 	
 	connect trigger -> greater1.in1, switch1.in1;

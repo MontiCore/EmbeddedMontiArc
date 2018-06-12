@@ -6,7 +6,6 @@ package de.monticore.lang.monticar.generator.cpp;
 public class OctaveHelperSource {
     public static String octaveHelperSourceCode = "#ifndef HELPER_H\n" +
             "#define HELPER_H\n" +
-            "#define _GLIBCXX_USE_CXX11_ABI 0\n" +
             "#include <iostream>\n" +
             "#include <octave/oct.h>\n" +
             "#include <octave/octave.h>\n" +
@@ -14,6 +13,7 @@ public class OctaveHelperSource {
             "#include <octave/interpreter.h>\n" +
             "#include <stdarg.h>\n" +
             "#include <initializer_list>\n" +
+            "#include \"octave/builtin-defun-decls.h\"\n" +
             "class Helper\n" +
             "{\n" +
             "public:\n" +
@@ -213,6 +213,24 @@ public class OctaveHelperSource {
             "    \n" +
             "    static int getIntFromOctaveListFirstResult(octave_value_list list){\n" +
             "        return list(0).int_value();\n" +
+            "    }\n" +
+            "\n" +
+            "    static Matrix getSqrtMatrixDiag(Matrix A){\n" +
+            "        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));\n" +
+            "        for(int i=0;i<rows;++i){\n" +
+            "            double curVal = A(i,i);\n" +
+            "            A(i,i) = sqrt(curVal);\n" +
+            "        }\n" +
+            "        return A;\n" +
+            "    }\n" +
+            "\n" +
+            "    static Matrix invertDiagMatrix(Matrix A){\n" +
+            "        int rows = Helper::getDoubleFromOctaveListFirstResult(Fsize(Helper::convertToOctaveValueList(A),0));\n" +
+            "    for(int i=0;i<rows;++i){\n" +
+            "        double curVal = A(i,i);\n" +
+            "        A(i,i) = 1/curVal;\n" +
+            "    }\n" +
+            "    return A;\n" +
             "    }\n" +
             "};\n" +
             "\n" +

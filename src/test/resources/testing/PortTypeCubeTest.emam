@@ -1,0 +1,10 @@
+package testing;
+
+component PortTypeCubeTest {
+    ports in Q^{3, 224, 224} cubeIn,
+          out Q^{3, 224, 224} cubeOut;
+
+    implementation Math{
+            cubeOut = cubeIn;
+    }
+}

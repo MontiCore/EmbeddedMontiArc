@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Sascha Schneiders
- *         Handles code generation for a component and its "subsymbols"
+ * Handles code generation for a component and its "subsymbols"
  */
 public class ComponentConverter {
 
@@ -57,6 +57,7 @@ public class ComponentConverter {
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
+
 
         //generate execute method
         ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
@@ -95,11 +96,19 @@ public class ComponentConverter {
         Method method = new Method("init", "void");
         bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
+            String oldName = v.getName();
+            if (v.isArray()) {
+                if (!v.getName().contains("[")) {
+                    v.setName(v.getName() + "[1]");
+                }
+            }
             if (v.isStaticVariable()) {
                 generateInitStaticVariablePart(method, v, bluePrint);
             } else {
                 generateInitNonStaticVariable(method, v, bluePrint);
             }
+            if (v.isArray())
+                v.setName(oldName);
         }
         for (Variable v : bluePrint.getVariables()) {
             Log.info("Variable: " + v.getName(), "initBluePrintCreate:");
@@ -118,8 +127,8 @@ public class ComponentConverter {
             String parameterString = "";
             int i = 0;
             for (ASTExpression var : subComponent.getArguments()) {
-                Log.debug(var.toString(),"ComponentConverter");
-                if(i > 0)
+                Log.debug(var.toString(), "ComponentConverter");
+                if (i > 0)
                     parameterString += ", ";
                 i++;
                 parameterString += getExpressionParameterConversion(var);
@@ -163,6 +172,7 @@ public class ComponentConverter {
     }
 
     public static void generateInitNonStaticVariable(Method method, Variable v, BluePrintCPP bluePrint) {
+        Log.info("v: " + v.getName(), "generateInitNonStaticVariable");
         if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
             if (v.isParameterVariable()) {
                 method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
@@ -181,12 +191,19 @@ public class ComponentConverter {
                 method.addParameter(v);
             } else
                 method.addInstruction(new TargetCodeInstruction(MathConverter.getColumnVectorInitLine(v, bluePrint)));
-        }else if(v.getVariableType().getTypeNameTargetLanguage().equals("double")){
-            //TODO: check backend for typeNameTargetLanguage?
-            if (v.isParameterVariable()){
-                method.addInstruction(new TargetCodeInstruction("this->" + v.getNameTargetLanguageFormat() + " = " + v.getNameTargetLanguageFormat() +";\n"));
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals("double")) {
+            //TODO: check backend for typeNameTargetLanguage? and handle additional types here
+            if (v.isParameterVariable()) {
+                method.addInstruction(new TargetCodeInstruction("this->" + v.getNameTargetLanguageFormat() + " = " + v.getNameTargetLanguageFormat() + ";\n"));
                 method.addParameter(v);
             }
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName())) {
+            if (v.isParameterVariable()) {
+                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
+                method.addParameter(v);
+            } else
+                method.addInstruction(new TargetCodeInstruction(MathConverter.getCubeTypeInitLine(v, bluePrint)));
+
         }
     }
 
@@ -211,7 +228,8 @@ public class ComponentConverter {
         return parameterString;
     }
 
-    public static BluePrint convertComponentSymbolToBluePrint(ExpandedComponentInstanceSymbol componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
+    public static BluePrint convertComponentSymbolToBluePrint(ExpandedComponentInstanceSymbol
+                                                                      componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         return convertComponentSymbolToBluePrint(componentSymbol, null, includeStrings, generatorCPP);
     }
 

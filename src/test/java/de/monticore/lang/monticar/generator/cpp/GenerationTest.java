@@ -25,6 +25,19 @@ public class GenerationTest extends AbstractSymtabTest {
 
 
     @Test
+    public void testSingleElemArray() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.singleElemArray", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testSingleElemArray");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "testSingleElemArray/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
     public void testBasicConstantAssignment() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
@@ -350,7 +363,13 @@ public class GenerationTest extends AbstractSymtabTest {
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.matrixModifier", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier");
+        generatorCPP.setUseAlgebraicOptimizations(false);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MatrixModifier/l0");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+
+        generatorCPP = new GeneratorCPP();
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MatrixModifier/l1");
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
 
@@ -358,11 +377,23 @@ public class GenerationTest extends AbstractSymtabTest {
     public void testMathUnitInstancing() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit4", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MatrixModifier/l0");
         generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MatrixModifier/l1");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.setUseAlgebraicOptimizations(false);
+        generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MatrixModifier/l2");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+        generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MatrixModifier/l3");
+        generatorCPP.generateFiles(componentSymbol, symtab);
+
     }
 
     @Test

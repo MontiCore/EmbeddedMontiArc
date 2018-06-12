@@ -166,7 +166,7 @@ public class LanguageUnitCPP extends LanguageUnit {
             for (Instruction instruction : method.getInstructions()) {
                 if (instruction instanceof ConnectInstructionCPP) {
                     ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
-                    Log.info("v1:" + connectInstructionCPP.getVariable1().getName() + "v2:" + connectInstructionCPP.getVariable2().getName(), "Instruction:");
+                    Log.info("v1: " + connectInstructionCPP.getVariable1().getName() + "v2: " + connectInstructionCPP.getVariable2().getName(), "Instruction:");
                 } else if (instruction instanceof ExecuteInstruction) {
                     ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
 

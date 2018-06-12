@@ -9,7 +9,7 @@ using namespace arma;
 class detection_objectDetector6_spectralClusterer_1__kMeansClustering{
 const int n = 2500;
 const int amountVectors = 4;
-const int maximumClusters = 4;
+const int maximumClusters = 1;
 public:
 mat vectors;
 mat clusters;

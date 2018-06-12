@@ -10,18 +10,18 @@ class detection_objectDetector4_spectralClusterer_1__normalizedLaplacian{
 const int n = 2500;
 public:
 mat degree;
-mat W;
+mat similarity;
 mat nLaplacian;
 void init()
 {
 degree=mat(n,n);
-W=mat(n,n);
+similarity=mat(n,n);
 nLaplacian=mat(n,n);
 }
 void execute()
 {
-auto _I_3 = (HelperA::getSqrtMat((HelperA::invertDiagMatrix(degree))));
-nLaplacian = _I_3*W*_I_3;
+auto _I_0 = (HelperA::getSqrtMatDiag((HelperA::invertDiagMatrix(degree))));
+nLaplacian = _I_0*similarity*_I_0;
 }
 
 };

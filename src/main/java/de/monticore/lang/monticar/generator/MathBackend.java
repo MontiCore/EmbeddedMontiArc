@@ -9,6 +9,8 @@ import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpre
 public interface MathBackend {
     String getMatrixTypeName();
 
+    String getCubeTypeName();
+
     String getMatrixInitString(int sizeN, int sizeM);
 
     String getRowVectorTypeName();
@@ -34,5 +36,12 @@ public interface MathBackend {
     String getPowerOfEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString);
 
     String getDivisionEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString);
+
+    /**
+     * Does the backend use 0-based or 1-based indexing for matrix element access?
+     *
+     * @return whether the backend uses zero based indexing (true) or one based indexing (false)
+     */
+    boolean usesZeroBasedIndexing();
 
 }

@@ -18,6 +18,7 @@ TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
             <@renderPortCheck outputPortName=outputPortName check=check.outputPortName2Check[outputPortName] />
         </#list>
     </#list>
+    std::cout << "${stream.name}: success\n";
 }
 </#list>
 

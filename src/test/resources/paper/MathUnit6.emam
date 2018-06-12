@@ -5,7 +5,7 @@ component MathUnit6{
           in Q(-oo:oo)^{1000,200} mat2[6],
           in Q(-oo:oo)^{200,10} mat3[6],
           in Q(-oo:oo)^{10,100} mat4[6],
-          in Q factor[6],
+          in Q(-oo:oo)^{100, 50000} mat5[6],
           out Q(-oo:oo)^{1000,100} matOut1[6];
 
     instance MatrixModifier matrixModifier[6];
@@ -13,7 +13,7 @@ component MathUnit6{
     connect mat2[:]-> matrixModifier[:].mat2;
     connect mat3[:]-> matrixModifier[:].mat3;
     connect mat4[:]-> matrixModifier[:].mat4;
-    connect factor[:]-> matrixModifier[:].factor;
+    connect mat5[:]-> matrixModifier[:].mat5;
     connect matrixModifier[:].matOut -> matOut1[:];
 
 

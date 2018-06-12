@@ -50,7 +50,7 @@ public class MathKMeansCommand extends MathCommand {
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression(OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "kmeans", "ColumnVector", valueListString, "FirstResult", false));
+        MathStringExpression stringExpression = new MathStringExpression(OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "kmeans", "ColumnVector", valueListString, "FirstResult", false),mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
@@ -68,7 +68,7 @@ public class MathKMeansCommand extends MathCommand {
         valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
         //OctaveHelper.getCallOctaveFunction(mathExpressionSymbol, "sum","Double", valueListString));
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
-        MathStringExpression stringExpression = new MathStringExpression("HelperA::getKMeansClusters"+valueListString);
+        MathStringExpression stringExpression = new MathStringExpression("HelperA::getKMeansClusters"+valueListString,mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
         newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
 
         mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);

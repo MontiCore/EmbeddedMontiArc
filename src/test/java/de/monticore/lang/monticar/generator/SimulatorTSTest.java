@@ -13,8 +13,8 @@ public class SimulatorTSTest extends AbstractSymtab{
 
     @Test
     public void resolveModelDoorStatus() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("doors.doorStatus",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.doors.doorStatus",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -22,8 +22,8 @@ public class SimulatorTSTest extends AbstractSymtab{
 
     @Test
     public void resolveModelGameOverTrigger() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("feature.gameOverTrigger",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.feature.gameOverTrigger",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -31,8 +31,8 @@ public class SimulatorTSTest extends AbstractSymtab{
 
     @Test
     public void resolveModelBrakeLightsControl() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("lights.brakeLightsControl",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.lights.brakeLightsControl",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -40,8 +40,8 @@ public class SimulatorTSTest extends AbstractSymtab{
 
     @Test
     public void resolveModelIndicatorStatus() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("lights.indicatorStatus",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.lights.indicatorStatus",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -49,8 +49,8 @@ public class SimulatorTSTest extends AbstractSymtab{
 
     @Test
     public void resolveModelsLightTimer() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("lights.lightTimer",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.lights.lightTimer",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -60,8 +60,8 @@ public class SimulatorTSTest extends AbstractSymtab{
     @Ignore
     @Test
     public void resolveModel() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("main.sDCS",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.main.sDCS",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -69,8 +69,8 @@ public class SimulatorTSTest extends AbstractSymtab{
 
     @Test
     public void resolveModelsConstantVelocity() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("movement.constantVelocity",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.movement.constantVelocity",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);
@@ -80,8 +80,8 @@ public class SimulatorTSTest extends AbstractSymtab{
     @Ignore
     @Test
     public void resolveModelsSteeringControl() {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/simulator-ts/visualization");
-        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("movement.steeringControl",
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol instanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("simulatorts.visualization.movement.steeringControl",
                 ExpandedComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(instanceSymbol);

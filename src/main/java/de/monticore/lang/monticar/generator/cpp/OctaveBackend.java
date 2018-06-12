@@ -10,9 +10,17 @@ import de.se_rwth.commons.logging.Log;
  * @author Sascha Schneiders
  */
 public class OctaveBackend implements MathBackend {
+    public static final String NAME = "OctaveBackend";
+
     @Override
     public String getMatrixTypeName() {
         return "Matrix";
+    }
+
+    @Override
+    public String getCubeTypeName() {
+        Log.info("Cube Type not supported by currentBackend. ", getBackendName());
+        return null;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class OctaveBackend implements MathBackend {
 
     @Override
     public String getBackendName() {
-        return "OctaveBackend";
+        return NAME;
     }
 
     @Override
@@ -84,5 +92,8 @@ public class OctaveBackend implements MathBackend {
         return OctaveHelper.getCallOctaveFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), "ldivide", valueListString, false);
     }
 
-
+    @Override
+    public boolean usesZeroBasedIndexing() {
+        return false;
+    }
 }

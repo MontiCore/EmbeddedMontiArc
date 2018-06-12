@@ -6,7 +6,6 @@ package de.monticore.lang.monticar.generator.cpp;
 public class ArmadilloHelperSource {
     public static String armadilloHelperSourceCode = "#ifndef HELPERA_H\n" +
             "#define HELPERA_H\n" +
-            "#define _GLIBCXX_USE_CXX11_ABI 0\n" +
             "#include <iostream>\n" +
             "#include \"armadillo.h\"\n" +
             "#include <stdarg.h>\n" +
@@ -30,7 +29,7 @@ public class ArmadilloHelperSource {
             "static mat getKMeansClusters(mat A, int k){\n" +
             "mat clusters;\n" +
             "kmeans(clusters,A.t(),k,random_subset,20,true);\n" +
-            "printf(\"cluster centroid calculation done\\n\");\n" +
+            "/*printf(\"cluster centroid calculation done\\n\");\n" +
             "std::ofstream myfile;\n" +
             "     myfile.open(\"data after cluster.txt\");\n" +
             "     myfile << A;\n" +
@@ -39,14 +38,14 @@ public class ArmadilloHelperSource {
             "\t std::ofstream myfile2;\n" +
             "     myfile2.open(\"cluster centroids.txt\");\n" +
             "     myfile2 << clusters;\n" +
-            "     myfile2.close();\n" +
+            "     myfile2.close();*/\n" +
             "mat indexedData=getKMeansClustersIndexData(A.t(), clusters);\n" +
             "\n" +
-            "std::ofstream myfile3;\n" +
+            "/*std::ofstream myfile3;\n" +
             "     myfile3.open(\"data after index.txt\");\n" +
             "     myfile3 << indexedData;\n" +
             "     myfile3.close();\n" +
-            "\t \n" +
+            "\t */\n" +
             "return indexedData;\n" +
             "}\n" +
             "\n" +
@@ -83,9 +82,18 @@ public class ArmadilloHelperSource {
             "}\n" +
             "\n" +
             "static mat getSqrtMat(mat A){\n" +
-            "cx_mat result=sqrtmat(A);\n" +
-            "return real(result);\n" +
+            "    cx_mat result=sqrtmat(A);\n" +
+            "    return real(result);\n" +
             "}\n" +
+            "\n" +
+            "static mat getSqrtMatDiag(mat A){\n" +
+            "for(int i=0;i<A.n_rows;++i){\n" +
+            "    double curVal = A(i,i);\n" +
+            "    A(i,i) = sqrt(curVal);\n" +
+            "}\n" +
+            "return A;\n" +
+            "}\n" +
+            "\n" +
             "static mat invertDiagMatrix(mat A){\n" +
             "for(int i=0;i<A.n_rows;++i){\n" +
             "    double curVal = A(i,i);\n" +

@@ -1,10 +1,12 @@
 package de.monticore.lang.monticar.generator.cpp;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.StreamViewModel;
@@ -25,27 +27,21 @@ import de.monticore.lang.monticar.streamunits._visitor.StreamUnitsVisitor;
 import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.math3.geometry.spherical.oned.ArcsSet;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public final class TestsGeneratorCPP {
 
-    public static final String TESTS_DIRECTORY_NAME = "test";
+    public static final String TESTS_DIRECTORY_NAME = "/test";
 
     private final GeneratorCPP generator;
     private List<BluePrintCPP> bluePrints;
-    private Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
+    public static Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
     private Set<String> testedComponents;
     private List<FileContent> files;
     private TestsMainEntryViewModel viewModelForMain;
+    public static Set<String> availableComponents;
 
     TestsGeneratorCPP(GeneratorCPP generator) {
         this.generator = Log.errorIfNull(generator);
@@ -53,17 +49,24 @@ public final class TestsGeneratorCPP {
 
     public List<FileContent> generateStreamTests(Scope symTab) {
         bluePrints = new ArrayList<>(generator.getBluePrints());
+        findStreams(symTab);
+        findComponents(symTab);
+
         if (bluePrints.isEmpty()) {
             Log.warn("no blue prints were generated");
-            return Collections.emptyList();
+            //return Collections.emptyList();
         }
-        findStreams(symTab);
         return generateFiles();
     }
 
     private void findStreams(Scope symTab) {
         StreamScanner scanner = new StreamScanner(generator.getModelsDirPath(), symTab);
         availableStreams = new HashMap<>(scanner.scan());
+    }
+
+    public void findComponents(Scope symTab) {
+        ComponentScanner componentScanner = new ComponentScanner(generator.getModelsDirPath(), symTab, "emam");
+        availableComponents = componentScanner.scan();
     }
 
     private List<FileContent> generateFiles() {
@@ -79,9 +82,79 @@ public final class TestsGeneratorCPP {
                 Log.warn("no symbol info for blue print " + b.getName() + " (package: " + b.getPackageName() + ")");
             }
         }
-        files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
-        files.add(getCatchLib());
+        if (generator.isGenerateTests()) {
+            boolean isOctaveBackend = true;
+            if (!MathConverter.curBackend.getBackendName().equals(OctaveBackend.NAME))
+                isOctaveBackend = false;
+            files.add(new FileContent(AllTemplates.generateMainEntry(viewModelForMain, isOctaveBackend), TESTS_DIRECTORY_NAME + "/tests_main.cpp"));
+            files.add(getCatchLib());
+        }
+        //files.add(new FileContent(getTestedComponentsString(), TESTS_DIRECTORY_NAME + "/testedComponents.txt"));
+        if (generator.isCheckModelDir()) {
+            files.add(new FileContent(getExistingComponentStreamNames(), "/reporting/" + "existingStreams.txt"));
+            files.add(new FileContent(getExistingComponentNames(), "/reporting/" + "existingComponents.txt"));
+            files.add(new FileContent(getComponentNamesThatHaveTests(), "/reporting/" + "testComponents.txt"));
+        }
         return files;
+    }
+
+    private String getExistingComponentNames() {
+        String result = "Components:\n";
+        for (String s : availableComponents) {
+            result += "    " + s + "\n";
+        }
+        return result;
+    }
+
+    private String getExistingComponentStreamNames() {
+        String result = "";
+        for (ComponentSymbol k : availableStreams.keySet()) {
+            result += "Streams for component " + k.getFullName() + ":\n";
+            Iterator<ComponentStreamUnitsSymbol> iter = availableStreams.get(k).iterator();
+            while (iter.hasNext()) {
+                ComponentStreamUnitsSymbol cus = iter.next();
+                result += "    " + cus.getFullName();
+                result += "\n";
+            }
+        }
+        return result;
+    }
+
+    private String getComponentNamesThatHaveTests() {
+        String result = "";
+        for (ComponentSymbol k : availableStreams.keySet()) {
+            result += getSmallStartingName(k.getFullName()) + "\n";
+        }
+        return result;
+    }
+
+    private String getSmallStartingName(String name) {
+        String result = "";
+        String splits[] = name.split("\\.");
+
+        for (int i = 0; i < splits.length - 1; ++i) {
+            result += splits[i] + ".";
+        }
+
+        result += getStringFirstLetterSmall(splits[splits.length - 1]);
+        return result;
+    }
+
+    private String getStringFirstLetterSmall(String name) {
+        String result = "";
+        String firstLetter = "" + name.charAt(0);
+        firstLetter = firstLetter.toLowerCase();
+        result += firstLetter;
+        result += name.substring(1);
+        return result;
+    }
+
+    private String getTestedComponentsString() {
+        String result = "";
+        for (String t : testedComponents) {
+            result += t + "\n";
+        }
+        return result;
     }
 
     private void processBluePrint(BluePrintCPP b, ExpandedComponentInstanceSymbol s) {
@@ -96,6 +169,7 @@ public final class TestsGeneratorCPP {
         if (streamsForComponent == null || streamsForComponent.isEmpty()) {
             return;
         }
+        //this.componentStreamNames.put(cs.getFullName(), streamsForComponent.toString());
         ComponentStreamTestViewModel viewModel = getStreamViewModel(b, cs, streamsForComponent);
         String genTestCode = AllTemplates.generateComponentStreamTest(viewModel);
         files.add(new FileContent(genTestCode, getFileName(viewModel)));
@@ -195,9 +269,10 @@ public final class TestsGeneratorCPP {
     }
 
     private static FileContent getCatchLib() {
-        InputStream resource = TestsGeneratorCPP.class.getResourceAsStream("/vendor/catch.hpp");
-        String body = new Scanner(resource, "UTF-8").useDelimiter("\\A").next();
-        return new FileContent(body, TESTS_DIRECTORY_NAME + "/catch.hpp");
+        return FileUtil.getResourceAsFile(
+                "/vendor/catch.hpp",
+                TESTS_DIRECTORY_NAME + "/catch.hpp"
+        );
     }
 
     private static String getFileName(ComponentStreamTestViewModel viewModel) {

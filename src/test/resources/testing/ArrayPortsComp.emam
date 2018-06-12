@@ -1,0 +1,5 @@
+package testing;
+component ArrayPortsComp{
+    ports in Q arrayPort1[1],
+             in Q arrayPort2[2];
+}

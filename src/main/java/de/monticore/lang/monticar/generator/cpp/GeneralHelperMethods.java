@@ -34,12 +34,12 @@ public class GeneralHelperMethods {
      * @return
      */
     public static String getTargetLanguageVariableInstanceName(String name) {
-        String nameChanged = ""; int indexSecond = 0;
+        String nameChanged = "";
+        int indexSecond = 0;
         while (true) {
             int indexFirst = name.indexOf("[", indexSecond);
-            if (indexFirst != -1)
-                nameChanged += name.substring(0, indexFirst);
             if (indexFirst != -1) {
+                nameChanged += name.substring(0, indexFirst);
                 indexSecond = name.indexOf("]", indexFirst + 1);
                 if (indexSecond != -1) {
                     String subString = name.substring(indexFirst + 1, indexSecond++);
@@ -53,7 +53,7 @@ public class GeneralHelperMethods {
             } else
                 break;
         }
-        if (indexSecond != -1 && name.length() > indexSecond)
+        if (indexSecond != -1 && name.length() > nameChanged.length())
             nameChanged += name.substring(indexSecond);
         if (nameChanged.equals(""))
             return name;
