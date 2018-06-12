@@ -21,9 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import com.google.common.collect.Lists;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponentInstance;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.monticar.ValueSymbol;
@@ -41,7 +39,6 @@ import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
 import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
 import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
@@ -191,25 +188,25 @@ public class EmbeddedMontiArcSymbolTableHelper {
             componentSymbol.addConfigParameter(parameterSymbol);
             componentSymbol.addParameter(astParameter);
 
-            if (astParameter.adaptableKeywordIsPresent())
+            if (astParameter.getAdaptableKeywordOpt().isPresent())
                 addConfigPort(cmp, parameterSymbol, astParameter);
         }
         Log.debug(componentSymbol.toString(), "ComponentPostParam");
     }
 
     public static void addConfigPort(ASTComponent astComponent, MCFieldSymbol parameterSymbol, ASTParameter astParameter) {
-        ASTPort tmpASTPort = ASTPort.getBuilder()
-                .name(parameterSymbol.getName())
-                .type(astParameter.getType())
-                .incoming(true)
-                .outgoing(false)
-                .adaptableKeyword(ASTAdaptableKeyword.getBuilder().build())
+        ASTPort tmpASTPort = EmbeddedMontiArcMill.portBuilder()
+                .setName(parameterSymbol.getName())
+                .setType(astParameter.getType())
+                .setIncoming(true)
+                .setOutgoing(false)
+                .setAdaptableKeyword(EmbeddedMontiArcMill.adaptableKeywordBuilder().build())
                 .build();
 
         ASTInterface tmpInterface = EmbeddedMontiArcNodeFactory.createASTInterface();
-        tmpInterface.setPorts(Lists.newArrayList(tmpASTPort));
+        tmpInterface.setPortsList(Lists.newArrayList(tmpASTPort));
 
-        astComponent.getBody().getElements().add(tmpInterface);
+        astComponent.getBody().getElementList().add(tmpInterface);
     }
 
     public static boolean needsInstanceCreation(ASTComponent node, ComponentSymbol symbol,

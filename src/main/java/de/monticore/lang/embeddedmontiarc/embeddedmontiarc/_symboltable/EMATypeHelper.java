@@ -31,6 +31,7 @@ import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.monticore.types.types._ast.*;
@@ -205,6 +206,8 @@ public class EMATypeHelper {
             addTypeArgumentsToTypeSymbol(typeReference, astComplexArrayType.getComponentType(), symbolTableCreator);
             int dimension = astComplexArrayType.getDimensions();
             typeReference.setDimension(dimension);
+        } else if (astType instanceof ASTElementType) {
+            return typeReference;
         } else {
             String name = typeReference.getName();
             assert typeReference.getEnclosingScope() instanceof MutableScope;
