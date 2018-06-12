@@ -33,7 +33,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class TaggingTest extends AbstractTaggingResolverTest {
-    /*
+
     @Test
     public void testRosConnectionParsing() {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
@@ -101,5 +101,5 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertTrue(tagOut1.getMsgField().isPresent());
         assertTrue(tagOut1.getMsgField().get().equals("msgField1"));
 
-    }*/
+    }
 }
