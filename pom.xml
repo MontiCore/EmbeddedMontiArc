@@ -9,7 +9,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-roscpp-generator</artifactId>
-  <version>0.0.1c-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -20,12 +20,14 @@
     <se-commons.version>1.7.7</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
     <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-    <Common-MontiCar.version>0.0.10-SNAPSHOT</Common-MontiCar.version>
-    <Embedded-MontiArc.version>0.0.11c-SNAPSHOT</Embedded-MontiArc.version>
+    <Common-MontiCar.version>0.0.13-SNAPSHOT</Common-MontiCar.version>
+    <Embedded-MontiArc.version>0.0.17-SNAPSHOT</Embedded-MontiArc.version>
     <Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.11-SNAPSHOT</Math.version>
-    <Embedded-MontiArc-Math.version>0.0.11c-SNAPSHOT</Embedded-MontiArc-Math.version>
-    <tagging.version>0.0.1</tagging.version>
+    <Math.version>0.0.11</Math.version>
+    <Embedded-MontiArc-Math.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Math.version>
+    <Embedded-montiarc-math-generator.version>0.0.11-SNAPSHOT</Embedded-montiarc-math-generator.version>
+    <Embedded-montiarc-math-rosmsg-generator.version>0.0.2-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
+    <tagging.version>0.0.2</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -78,13 +80,13 @@
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiarc-math-generator</artifactId>
-      <version>0.0.7-SNAPSHOT</version>
+      <version>${Embedded-montiarc-math-generator.version}</version>
     </dependency>
 
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiarc-math-rosmsg-generator</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${Embedded-montiarc-math-rosmsg-generator.version}</version>
     </dependency>
 
     <dependency>
@@ -264,39 +266,8 @@
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.8.1</version>
-        <configuration>
-          <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/external-dependencies
-          </altDeploymentRepository>
-        </configuration>
       </plugin>
-      <plugin>
-        <groupId>com.github.github</groupId>
-        <artifactId>site-maven-plugin</artifactId>
-        <version>0.12</version>
-        <configuration>
-          <server>github</server>
-          <message>Maven artifacts for ${project.version} ${project.artifactId}</message>  <!-- git commit message -->
-          <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-          <outputDirectory>${project.build.directory}/external-dependencies
-          </outputDirectory> <!-- matches distribution management repository url above -->
-          <branch>refs/heads/master</branch>                       <!-- remote branch name -->
-          <includes>
-            <include>**/*</include>
-          </includes>
-          <repositoryName>external-dependencies</repositoryName>      <!-- github repo name -->
-          <repositoryOwner>EmbeddedMontiArc</repositoryOwner>    <!-- github username  -->
-          <merge>true</merge>
-        </configuration>
-        <executions>
-          <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
-          <execution>
-            <goals>
-              <goal>site</goal>
-            </goals>
-            <phase>deploy</phase>
-          </execution>
-        </executions>
-      </plugin>
+
       <!-- MontiCore Generation -->
       <plugin>
         <groupId>de.monticore.mojo</groupId>
@@ -321,36 +292,6 @@
           <target>${java.version}</target>
         </configuration>
       </plugin>
-
-      <!--plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>${assembly.plugin}</version>
-        <dependencies>
-          <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>mc-assemblies</artifactId>
-            <version>${mc.grammars.assembly.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>grammars</id>
-            <configuration>
-              <finalName>${project.artifactId}-${project.version}</finalName>
-              <descriptorRefs>
-                <descriptorRef>grammars-assembly</descriptorRef>
-              </descriptorRefs>
-              <formats>
-                <format>jar</format>
-              </formats>
-            </configuration>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin -->
 
       <!-- Source Jar Configuration -->
       <plugin>
@@ -405,13 +346,12 @@
 
   <distributionManagement>
     <repository>
-      <id>internal.repo</id>
-      <name>Temporary Staging Repository</name>
-      <url>file://${project.build.directory}/external-dependencies</url>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>internal.repo</id>
-      <url>file://${project.build.directory}/external-dependencies</url>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 </project>
