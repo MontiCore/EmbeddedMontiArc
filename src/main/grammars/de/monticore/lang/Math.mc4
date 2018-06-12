@@ -22,7 +22,7 @@
 package de.monticore.lang;
 
 grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions , de.monticore.CommonExpressions,
-        de.monticore.common.Common, de.monticore.lang.Matrix, de.monticore.lang.MatrixExpressions {
+        de.monticore.common.Common, de.monticore.lang.Matrix, de.monticore.lang.MatrixExpressions, de.monticore.lang.monticar.Types2 {
 
     MathCompilationUnit =
         ("package" package:QualifiedName ";")?
@@ -80,20 +80,6 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
     MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
-
-    // IncSuffixExpression implements Statement;
-
-    // DecSuffixExpression implements Statement;
-
-    // type definitions
-    Range = "(" min:Expression ":" (step:Expression ":")? max:Expression ")";
-
-    // R^2 for vector or R^{3,4} for Matrix
-    Dimension =
-        "^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
-
-    ElementType implements Type, TypeArgument =
-        Name Range? Dimension?;
 
     //Assignments
     AssignmentType =

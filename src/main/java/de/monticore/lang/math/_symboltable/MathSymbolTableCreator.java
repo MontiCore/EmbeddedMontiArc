@@ -48,7 +48,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.lang.numberunit.Rationals.doubleToRational;
+import static de.monticore.numberunit.Rationals.doubleToRational;
+
 
 /**
  * @author math-group

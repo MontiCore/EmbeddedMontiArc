@@ -24,6 +24,7 @@ import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._parser.MathParser;
 import de.monticore.lang.matrix._ast.ASTMathMatrixAccessExpression;
 import de.monticore.lang.matrix._ast.ASTMathMatrixValueExplicitExpression;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;

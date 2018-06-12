@@ -22,8 +22,8 @@ package de.monticore.lang.math._symboltable.expression;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
-import de.monticore.lang.math._ast.ASTDimension;
-import de.monticore.lang.math._ast.ASTElementType;
+import de.monticore.lang.monticar.types2._ast.ASTDimension;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

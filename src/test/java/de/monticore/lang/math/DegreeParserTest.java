@@ -26,10 +26,10 @@ import java.io.IOException;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.math._ast.ASTAssignmentType;
-import de.monticore.lang.math._ast.ASTElementType;
 import de.monticore.lang.math._ast.ASTMathDeclarationStatement;
 import de.monticore.lang.math._ast.ASTMathStatements;
 import de.monticore.lang.math._parser.MathParser;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import org.junit.Test;
 
 /**
