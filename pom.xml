@@ -28,7 +28,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>enum</artifactId>
-    <version>0.0.12-SNAPSHOT</version>
+    <version>0.0.12</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
     <properties>
