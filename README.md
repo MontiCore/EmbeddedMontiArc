@@ -1,0 +1,1 @@
+This generator generates caffe2 networks from the cnnarch language.
