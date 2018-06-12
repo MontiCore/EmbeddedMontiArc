@@ -7,16 +7,12 @@ function clean($item) {
   }
 }
 
-clean $ext
 clean $targetDir*
 clean $targetName
 
 if(!$cacheDownload) {
+  clean $ext
   clean $dl
   clean "curl"
   clean "7z"
 }
-
-
-
-
