@@ -234,7 +234,7 @@ public class ExpandedComponentInstanceBuilder {
                             s.getActualTypeArguments().stream()
                                     // replace this filtered type arguments with the value we want to replace
                                     //                  .map(a -> a.getType().getReferencedSymbol().getFullName().equals(k.getFullName()) ? v : a)
-                                    .map(a -> a.getType().getReferencedSymbol().getName().equals(k.getName()) ? v : a)
+                                    .map(a -> (a.getType().existsReferencedSymbol() ? (a.getType().getReferencedSymbol().getName().equals(k.getName()) ? v : a) : a))
                                     .collect(Collectors.toList())
                     ));
 

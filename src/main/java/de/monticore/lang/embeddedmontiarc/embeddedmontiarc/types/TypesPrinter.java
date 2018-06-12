@@ -141,10 +141,12 @@ public class TypesPrinter {
                 int index = targetName.indexOf("[Optional[");
                 index += "Optional[".length();
                 int endIndex = targetName.indexOf("/", index);
-                String bracketNumber = targetName.substring(index, endIndex);
-                int endOfInnerBracket = targetName.indexOf("]", endIndex + 1);
-                int endOfSecondBracket = targetName.indexOf("]", endOfInnerBracket + 1);
-                return targetName.substring(0, index) + bracketNumber + "]" + targetName.substring(endOfSecondBracket + 1, targetName.length());
+                if (endIndex >= 0) {
+                    String bracketNumber = targetName.substring(index, endIndex);
+                    int endOfInnerBracket = targetName.indexOf("]", endIndex + 1);
+                    int endOfSecondBracket = targetName.indexOf("]", endOfInnerBracket + 1);
+                    return targetName.substring(0, index) + bracketNumber + "]" + targetName.substring(endOfSecondBracket + 1, targetName.length());
+                }
             } else {
                 return targetName.replaceAll("Optional\\[", "");
             }
