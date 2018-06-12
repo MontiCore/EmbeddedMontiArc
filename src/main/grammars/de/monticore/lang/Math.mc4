@@ -31,8 +31,6 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
     interface Statement;
 
-    MathStatements = (Statement ";")+;
-
     symbol scope MathScript =
         "script" Name statements:MathStatements "end";
 
@@ -72,13 +70,13 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	"else" body:MathStatements ;
 
     MathDeclarationStatement implements Statement =
-        type:AssignmentType Name ";"?;
+        type:AssignmentType Name ";";
 
     MathAssignmentDeclarationStatement implements Statement =
-        type:AssignmentType Name MathAssignmentOperator (Expression) ";"?;
+        type:AssignmentType Name MathAssignmentOperator (Expression) ";";
 
     MathAssignmentStatement implements Statement =
-        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression) ";"?;
+        (Name | MathMatrixNameExpression | MathDottedNameExpression) MathAssignmentOperator (Expression) ";";
 
     MathAssignmentOperator =
         operator:"=" | operator:"+=" | operator:"-=" | operator:"*=" | operator:"/=";
