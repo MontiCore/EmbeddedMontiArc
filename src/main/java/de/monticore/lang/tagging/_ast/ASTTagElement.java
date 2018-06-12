@@ -20,8 +20,11 @@
  */
 package de.monticore.lang.tagging._ast;
 
+import java.util.Optional;
+
 public class ASTTagElement extends ASTTagElementTOP {
-  protected  ASTTagElement (String name, String tagValue) {
+
+  protected ASTTagElement(String name, Optional<String> tagValue) {
     super(name, tagValue);
   }
 

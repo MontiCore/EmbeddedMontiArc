@@ -101,8 +101,8 @@ public class TagSchemaGenerator extends GeneratorEngine {
         String.format("Could not load tagschema '%s'", tagSchemaLocation.toString()));
 
     List<String> tagTypeNames = new ArrayList<>();
-    String packageName = Joiners.DOT.join(tagSchemaUnit.getPackage());
-    List<ASTTagType> tagTypes = tagSchemaUnit.getTagTypes();
+    String packageName = Joiners.DOT.join(tagSchemaUnit.getPackageList());
+    List<ASTTagType> tagTypes = tagSchemaUnit.getTagTypeList();
     for (ASTTagType tagType : tagTypes) {
       generateTagType(tagType, tagSchemaUnit, packageName, symbolScopeMap);
       tagTypeNames.add(tagType.getName());
@@ -129,18 +129,18 @@ public class TagSchemaGenerator extends GeneratorEngine {
   protected void generateValuedTagType(ASTValuedTagType valuedTagType, ASTTagSchemaUnit tagSchemaUnit, String packageName, Map<String, String> symbolScopeMap) {
     String dataType = null;
     boolean isUnit = false;
-    if (valuedTagType.getBoolean().isPresent()) {
+    if (valuedTagType.getBooleanOpt().isPresent()) {
       dataType = "Boolean";
     }
-    else if (valuedTagType.getNumber().isPresent()) {
+    else if (valuedTagType.getNumberOpt().isPresent()) {
       dataType = "Number";
     }
-    else if (valuedTagType.getString().isPresent()) {
+    else if (valuedTagType.getStringOpt().isPresent()) {
       dataType = "String";
     }
-    else if (valuedTagType.getUnitKind().isPresent()) {
+    else if (valuedTagType.getUnitKindOpt().isPresent()) {
       isUnit = true;
-      dataType = valuedTagType.getUnitKind().get();
+      dataType = valuedTagType.getUnitKindOpt().get();
       if (!UnitKinds.contains(dataType)) {
         Log.error(String.format("Unit kind '%s' is not supported. Currently the following unit kinds are available '%s'",
             dataType, UnitKinds.available()), valuedTagType.get_SourcePositionStart());
@@ -152,7 +152,7 @@ public class TagSchemaGenerator extends GeneratorEngine {
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), valuedTagType.getName() + "Symbol.java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), valuedTagType.getName(), dataType, isUnit);
     String importSymbols = "de.monticore.lang.montiarc._symboltable.*";
-    String scopeSymbol = valuedTagType.getScope().get().getScopeIdentifiers().get(0).getScopeName();
+    String scopeSymbol = valuedTagType.getScopeOpt().get().getScopeIdentifierList().get(0).getScopeName();
     String nameScopeType = Log.errorIfNull(symbolScopeMap.get(scopeSymbol), String.format("For the scope symbol '%s' is no scope type defined.", scopeSymbol));
     generate("templates.de.monticore.lang.tagschema.ValuedTagTypeCreator",
         Paths.get(createPackagePath(packageName).toString(),tagSchemaUnit.getName(),  valuedTagType.getName() + "SymbolCreator.java"),
@@ -174,7 +174,7 @@ public class TagSchemaGenerator extends GeneratorEngine {
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), simpleTagType.getName() + "Symbol.java"),
         tagSchemaUnit, packageName, tagSchemaUnit.getName(), simpleTagType.getName());
     String importSymbols = "de.monticore.lang.montiarc._symboltable.*";
-    String scopeSymbol = simpleTagType.getScope().get().getScopeIdentifiers().get(0).getScopeName();
+    String scopeSymbol = simpleTagType.getScopeOpt().get().getScopeIdentifierList().get(0).getScopeName();
     String nameScopeType = Log.errorIfNull(symbolScopeMap.get(scopeSymbol), String.format("For the scope symbol '%s' is no scope type defined.", scopeSymbol));
     generate("templates.de.monticore.lang.tagschema.SimpleTagTypeCreator",
         Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), simpleTagType.getName() + "SymbolCreator.java"),

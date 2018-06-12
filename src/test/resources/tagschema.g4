@@ -2247,7 +2247,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal {'
 (LCURLY)// End of 'ASTTerminal'
 
-  ( tmp4=tagType{addToIteratedAttributeIfNotNull(_aNode.getTagTypes(), _localctx.tmp4.ret);}) + 
+  ( tmp4=tagType{addToIteratedAttributeIfNotNull(_aNode.getTagTypeList(), _localctx.tmp4.ret);}) +
   
   
  // Start of 'ASTTerminal }'

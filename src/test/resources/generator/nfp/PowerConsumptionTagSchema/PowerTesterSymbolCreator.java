@@ -51,14 +51,14 @@ public class PowerTesterSymbolCreator implements TagSymbolCreator {
                 .getQualifiedNameString()) :
             packageName;
 
-    for (ASTTag element : unit.getTagBody().getTags()) {
+    for (ASTTag element : unit.getTagBody().getTagList()) {
       element.getTagElements().stream()
           .filter(t -> t.getName().equals("PowerTester"))
           .filter(t -> t.getTagValue().isPresent())
           .map(t -> checkContent(t.getTagValue().get()))
           .filter(v -> v != null)
           .forEachOrdered(v ->
-              element.getScopes().stream()
+              element.getScopeList().stream()
                 .filter(this::checkScope)
                 .map(s -> (ASTNameScope) s)
                 .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(

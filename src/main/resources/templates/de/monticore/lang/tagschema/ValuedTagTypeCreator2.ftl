@@ -97,7 +97,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
 
     for (ASTTagElement element : unit.getTagBody().getTagElements()) {
       if (element instanceof ASTTargetElement) {
-          ((ASTTargetElement) element).getTags().stream()
+          ((ASTTargetElement) element).getTagList().stream()
               .filter(t -> t.getName().equals("${tagTypeName}"))
               .filter(this::checkASTTagKind)
               .map(t -> (ASTValuedTag) t)
@@ -113,7 +113,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
               .map(v -> (ASTNumericTagValue)v.getTagValue())
             </#if>
               .forEachOrdered(v ->
-                  ((ASTTargetElement) element).getScopes().stream()
+                  ((ASTTargetElement) element).getScopeList().stream()
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
                     .map(s -> getGlobalScope(gs).<${scopeSymbol}>resolveDown(
