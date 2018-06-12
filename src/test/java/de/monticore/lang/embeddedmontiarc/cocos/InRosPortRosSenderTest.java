@@ -27,7 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class InRosPortRosSenderTest extends AbstractTaggingCoCoTest{
-
+    /*
     @BeforeClass
     public static void init() {
         Log.enableFailQuick(false);
@@ -62,4 +62,5 @@ public class InRosPortRosSenderTest extends AbstractTaggingCoCoTest{
     public static void finish(){
         Log.getFindings().clear();
     }
+    */
 }

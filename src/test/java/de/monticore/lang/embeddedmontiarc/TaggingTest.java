@@ -25,6 +25,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymb
 import de.monticore.lang.embeddedmontiarc.tagging.adaptable.AdaptableSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -33,6 +34,7 @@ import static org.junit.Assert.*;
 
 public class TaggingTest extends AbstractTaggingResolverTest {
 
+    /*
     @Test
     public void testAdaptableSymbolParsing(){
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
@@ -53,5 +55,5 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertTrue(in1.isConfig());
         assertFalse(in2.isConfig());
     }
-
+    */
 }
