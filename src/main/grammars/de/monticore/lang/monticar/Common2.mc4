@@ -22,7 +22,7 @@ package de.monticore.lang.monticar;
 /**
  * Grammar for common elements that should be imported from somewhere else in future.
  */
-grammar Common2 extends de.monticore.common.Common, de.monticore.lang.monticar.Types2 {
+grammar Common2 extends de.monticore.lang.monticar.Types2 {
 
   /**
   * Use this interface to embedd values.
