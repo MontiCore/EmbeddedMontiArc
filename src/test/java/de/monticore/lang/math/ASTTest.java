@@ -100,7 +100,7 @@ public class ASTTest {
         Optional<ASTMathScript> ast = parser.parse_StringMathScript("script a Q^2+1i a; end");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
-        assertFalse((ast.get().getStatements().getStatementList().isEmpty()));
+        assertFalse((ast.get().getStatementsList().isEmpty()));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ASTTest {
     @Test
     public void ASTForTest2() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b a++; for c= 1 b= a+c; end; d= 4+a; end");
+        Optional<ASTMathForLoopExpression> ast = parser.parse_StringMathForLoopExpression("for a = b a++; for c= 1 b= a+c; end d= 4+a; end");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -158,7 +158,7 @@ public class ASTTest {
     @Test
     public void ASTDeclaration1Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathDeclarationStatement> ast = parser.parse_StringMathDeclarationStatement("Q^{1,2} a");
+        Optional<ASTMathDeclarationStatement> ast = parser.parse_StringMathDeclarationStatement("Q^{1,2} a;");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -166,7 +166,7 @@ public class ASTTest {
     @Test
     public void ASTDeclaration2Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathDeclarationStatement> ast = parser.parse_StringMathDeclarationStatement("N(1:2:6)^1 a");
+        Optional<ASTMathDeclarationStatement> ast = parser.parse_StringMathDeclarationStatement("N(1:2:6)^1 a;");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -183,7 +183,7 @@ public class ASTTest {
     @Test
     public void ASTAssignmentDeclaration1Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Q(1:2:6)^1 a = 1+2*4");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Q(1:2:6)^1 a = 1+2*4;");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -191,7 +191,7 @@ public class ASTTest {
     @Test
     public void ASTAssignmentDeclaration2Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Z^{3,7} nsu1je = [1,2;3,4]");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Z^{3,7} nsu1je = [1,2;3,4];");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -209,7 +209,7 @@ public class ASTTest {
     public void ASTAssignmentDeclarationInvalid2Test() throws Exception {
         //== is not allowed
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Q^{3,7} nsu1je == [1,2;3,4]");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Q^{3,7} nsu1je == [1,2;3,4];");
         assertFalse(ast.isPresent());
         assertTrue(parser.hasErrors());
     }
@@ -218,7 +218,7 @@ public class ASTTest {
     public void ASTAssignmentDeclarationInvalid3Test() throws Exception {
         //name is missing
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Q^3 = [1 2 3]");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Q^3 = [1 2 3];");
         assertFalse(ast.isPresent());
         assertTrue(parser.hasErrors());
     }
@@ -226,7 +226,7 @@ public class ASTTest {
     @Test
     public void ASTAssignment1Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentStatement> ast = parser.parse_StringMathAssignmentStatement("A = [1,2,2]");
+        Optional<ASTMathAssignmentStatement> ast = parser.parse_StringMathAssignmentStatement("A = [1,2,2];");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -234,7 +234,7 @@ public class ASTTest {
     @Test
     public void ASTAssignment2Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentStatement> ast = parser.parse_StringMathAssignmentStatement("A.r = 3:4:5");
+        Optional<ASTMathAssignmentStatement> ast = parser.parse_StringMathAssignmentStatement("A.r = 3:4:5;");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -242,7 +242,7 @@ public class ASTTest {
     @Test
     public void ASTAssignment3Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("B(1:3) a = [4;6]");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("B(1:3) a = [4;6];");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
         System.out.println(printAST(ast.get()));
@@ -259,7 +259,7 @@ public class ASTTest {
     @Test
     public void ASTAssignment4Test() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathDeclarationStatement> ast = parser.parse_StringMathDeclarationStatement("Z^1 a");
+        Optional<ASTMathDeclarationStatement> ast = parser.parse_StringMathDeclarationStatement("Z^1 a;");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
     }
@@ -286,7 +286,7 @@ public class ASTTest {
     @Test
     public void MathMatrixValueExplicitExpressionMinusTest() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Z^{2,2} A = [-1, -1; -1, -1]");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Z^{2,2} A = [-1, -1; -1, -1];");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
         Log.debug(PrintAST.printAST(ast.get()), "MathMatrixValueExplicitExpression");
@@ -300,7 +300,7 @@ public class ASTTest {
     @Test
     public void MathMatrixValueExplicitExpressionTest() throws Exception {
         MathParser parser = new MathParser();
-        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Z^{2,2} A = [1, 1; 1, 1]");
+        Optional<ASTMathAssignmentDeclarationStatement> ast = parser.parse_StringMathAssignmentDeclarationStatement("Z^{2,2} A = [1, 1; 1, 1];");
         assertTrue(ast.isPresent());
         assertFalse(parser.hasErrors());
         Log.debug(PrintAST.printAST(ast.get()), "MathMatrixValueExplicitExpression");
@@ -314,7 +314,7 @@ public class ASTTest {
     @Test
     public void minusAssignmentTest() throws Exception {
         MathParser parser = new MathParser();
-        ASTMathAssignmentStatement ast = parser.parse_StringMathAssignmentStatement("x = -y").orElse(null);
+        ASTMathAssignmentStatement ast = parser.parse_StringMathAssignmentStatement("x = -y;").orElse(null);
         assertNotNull(ast);
     }
 }

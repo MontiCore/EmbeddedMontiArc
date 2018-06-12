@@ -24,5 +24,5 @@ script for1
     Z y = 0;
     for i = x
       y += i;
-    end;
+    end
 end

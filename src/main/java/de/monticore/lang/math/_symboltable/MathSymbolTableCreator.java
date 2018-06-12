@@ -99,10 +99,10 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void visit(final ASTMathScript script) {
         MathScriptSymbol mathScriptSymbol = new MathScriptSymbol(script.getName());
         addToScopeAndLinkWithNode(mathScriptSymbol, script);
-    }
-
-    public void visit(ASTMathStatements ast) {
-        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", ast), ast);
+        // also add math statements symbol
+        ASTMathStatements astMathStatements = new ASTMathStatements();
+        astMathStatements.statements = script.getStatementsList();
+        addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", astMathStatements), astMathStatements);
     }
 
     public void endVisit(final ASTMathScript script) {
@@ -113,7 +113,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         MathForLoopExpressionSymbol symbol = new MathForLoopExpressionSymbol();
 
         symbol.setForLoopHead((MathForLoopHeadSymbol) astMathForLoopExpression.getHead().getSymbolOpt().get());
-        for (ASTStatement astStatement : astMathForLoopExpression.getBody().getStatementList())
+        for (ASTStatement astStatement : astMathForLoopExpression.getBodyList())
             symbol.addForLoopBody((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathForLoopExpression);
     }
@@ -600,7 +600,7 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathIfExpression astMathIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
         symbol.setCondition((MathExpressionSymbol) astMathIfExpression.getCondition().getSymbolOpt().get());
-        for (ASTStatement astStatement : astMathIfExpression.getBody().getStatementList())
+        for (ASTStatement astStatement : astMathIfExpression.getBodyList())
             symbol.addBodyExpression((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathIfExpression);
     }
@@ -608,14 +608,14 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     public void endVisit(final ASTMathElseIfExpression astMathElseIfExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
         symbol.setCondition((MathExpressionSymbol) astMathElseIfExpression.getCondition().getSymbolOpt().get());
-        for (ASTStatement astStatement : astMathElseIfExpression.getBody().getStatementList())
+        for (ASTStatement astStatement : astMathElseIfExpression.getBodyList())
             symbol.addBodyExpression((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseIfExpression);
     }
 
     public void endVisit(final ASTMathElseExpression astMathElseExpression) {
         MathConditionalExpressionSymbol symbol = new MathConditionalExpressionSymbol();
-        for (ASTStatement astStatement : astMathElseExpression.getBody().getStatementList())
+        for (ASTStatement astStatement : astMathElseExpression.getBodyList())
             symbol.addBodyExpression((MathExpressionSymbol) astStatement.getSymbolOpt().get());
         addToScopeAndLinkWithNode(symbol, astMathElseExpression);
     }
