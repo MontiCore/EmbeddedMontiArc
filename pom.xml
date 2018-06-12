@@ -244,6 +244,7 @@
                                 <include>**/*.java</include>
                                 <include>**/*.ftl</include>
                             </includes>
+                            <attach>false</attach>
                         </configuration>
                     </execution>
                 </executions>
