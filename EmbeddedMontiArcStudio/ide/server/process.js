@@ -31,6 +31,15 @@ class Process {
 
 		this.logger.error(data);
 	}
+
+	kill(pid,killSubProcess = false){
+		//Care: process is an global object
+		if(killSubProcess){
+			process.kill(-Math.abs(pid),"SIGKILL");
+		}else{
+			process.kill(Math.abs(pid),"SIGKILL");
+		}
+	}
 }
 
 module.exports = new Process();

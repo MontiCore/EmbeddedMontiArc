@@ -203,7 +203,8 @@ class PacManSimulation {
 class IntersectionSimulation {
 	constructor() {
 		this.logger = Log.getLogger("INTERSECTION");
-		this.logger.level = "debug"
+        this.logger.level = "debug"
+        this.curProcess = null;
 	}
 
 	execute(callback) {
@@ -211,25 +212,22 @@ class IntersectionSimulation {
 
 		const onExit = () => {
 			this.logger.info("...Intersection executed");
-		};
+        };
 
-		let process = null;
-
-        process = Process.spawn("bash", ["-c", BATCHES.INTERSECTION.SIMULATION], {
-            cwd: Path.resolve(PATHS.SCRIPTS, "intersection")
+        this.curProcess = Process.spawn("bash", ["-c", BATCHES.INTERSECTION.SIMULATION], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "intersection"),
+            detached: true
         }).on("exit", onExit);
-        //process.stdout.on("data", onStdOut);
-
-        /*process = Process.spawn("bash", ["-c",BATCHES.AUTOPILOT.SIMULATION.START], {
-            cwd: Path.resolve(PATHS.SCRIPTS, "autopilot")
-        });*/
-
-
-
-		//Process.spawn(BATCHES.INTERSECTION.SIMULATION, [],{
-		//	cwd: Path.resolve(PATHS.SCRIPTS, "intersection")
-		//}).on("exit", onExit);
-	}
+        this.logger.info("spawned!");
+    }
+    
+    exit(){
+        if(this.curProcess != null){
+            this.logger.info("Killing process!");
+            Process.kill(this.curProcess.pid,true);
+            this.curProcess = null;
+        }
+    }
 }
 
 class ClassifierSimulation {

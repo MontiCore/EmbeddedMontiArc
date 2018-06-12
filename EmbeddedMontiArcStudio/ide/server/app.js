@@ -18,6 +18,7 @@ const FileSystem                                        = require("fs");
 const App = Express();
 const Logger = Log.getLogger("APPLICATION");
 
+var curSimulator;
 
 Logger.level = "debug";
 
@@ -405,11 +406,23 @@ App.post("/services/pacman/visualize", function(request, response) {
 
 App.post("/services/intersection/simulate", function(request, response) {
 	function onExecuted() {
-		logger.info("Intersection service callback");
 		response.end();
 	}
 
-	IntersectionSimulation.execute(onExecuted);
+	function onExit(){
+		curSimulator = null;
+		response.end();
+	}
+	curSimulator = IntersectionSimulation;
+	curSimulator.execute(onExecuted);
+	//curSimulator.process.on("exit",onExit);
+});
+
+App.post("/services/intersection/stop", function(request, response) {
+	if(curSimulator != null){
+		curSimulator.exit();
+	}
+	response.end();
 });
 
 App.post("/services/classifier/simulate", function(request, response) {
