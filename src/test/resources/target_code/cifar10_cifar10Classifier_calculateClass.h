@@ -18,10 +18,10 @@ void execute()
 {
 maxIndex = 0;
 double maxValue = inputVector(0);
-for( auto i=1;i<=(n-1);++i){
+for( auto i=2;i<=n;++i){
 if((inputVector(i) > maxValue)){
-maxIndex = i;
-maxValue = inputVector(i);
+maxIndex = i-1;
+maxValue = inputVector(i-1) ;
 }
 }
 }
