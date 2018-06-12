@@ -216,7 +216,6 @@
                             <formats>
                                 <format>jar</format>
                             </formats>
-                            <attach>false</attach>
                         </configuration>
                         <phase>package</phase>
                         <goals>
@@ -244,7 +243,6 @@
                                 <include>**/*.java</include>
                                 <include>**/*.ftl</include>
                             </includes>
-                            <attach>false</attach>
                         </configuration>
                     </execution>
                 </executions>
