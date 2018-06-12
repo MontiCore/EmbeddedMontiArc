@@ -10,6 +10,6 @@ component Not<T> {
 	        out1=1;
 	    else
 	        out1=0;
-	    end;
+	    end
 	}
 }

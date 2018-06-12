@@ -23,7 +23,7 @@ package de.monticore.lang.embeddedmontiarc;
 grammar EmbeddedMontiArcMath extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior, de.monticore.lang.Math{
     EMAMCompilationUnit = EMACompilationUnit;
 
-    BehaviorEmbedding =  MathStatements;
+    BehaviorEmbedding =  Statement+;
 
     BehaviorName = "Math";
 

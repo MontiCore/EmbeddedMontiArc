@@ -13,6 +13,6 @@ component Switch<T=B> { // if no generic is given, then default type B is taken
 	        out1=in1;
 	    else
 	        out1=in3;
-	    end;
+	    end
 	}
 }

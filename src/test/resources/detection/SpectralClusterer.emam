@@ -13,8 +13,8 @@ component SpectralClusterer<N1 n, N1 k, N1 maximumClusters>{
             /*for i=1:size(degree,1)
                 for j=1:size(degree,2)
                     nLaplacian(i,j) = W(i,j) / (sqrt(degree(i,i)) * sqrt(degree(j,j)));
-                end;
-            end;*/
+                end
+            end*/
             nLaplacian = degree^-0.5 * W * degree^-0.5;
 
         }

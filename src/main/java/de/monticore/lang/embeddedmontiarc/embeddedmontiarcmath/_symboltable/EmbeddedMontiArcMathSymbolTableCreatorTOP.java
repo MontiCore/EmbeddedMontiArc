@@ -21,7 +21,10 @@
 
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTBehaviorEmbedding;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
+import de.monticore.lang.math._ast.ASTMathStatements;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import de.monticore.symboltable.MutableScope;
@@ -86,5 +89,12 @@ public class EmbeddedMontiArcMathSymbolTableCreatorTOP extends de.monticore.symb
 
   }
 
+  @Override
+  public void visit(ASTBehaviorEmbedding node) {
+    // create a math statements symbol here
+    ASTMathStatements astMathStatements = new ASTMathStatements();
+    astMathStatements.statements = node.getStatementList();
+    addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", astMathStatements), node);
+  }
 
 }

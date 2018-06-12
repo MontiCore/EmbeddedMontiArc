@@ -9,7 +9,7 @@ component Addmatrix{
     implementation Math{
         for x = 1:5
             c(x) = a(x) + b(x);
-        end;
+        end
     }
 
 }

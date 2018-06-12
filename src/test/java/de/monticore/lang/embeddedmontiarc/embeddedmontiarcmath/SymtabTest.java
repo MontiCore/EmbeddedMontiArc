@@ -25,11 +25,15 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.TypeHelper;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbolKind;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -165,4 +169,14 @@ public class SymtabTest extends AbstractSymtabTest {
 
   }
   */
+
+  @Test
+  public void testMathStatementsSymbol() {
+    Scope symTab = createSymTab("src/test/resources/");
+    ComponentSymbol component = symTab.<ComponentSymbol>resolve("test.Add", ComponentSymbol.KIND).orElse(null);
+    MathStatementsSymbol statements = (MathStatementsSymbol) component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND).orElse(null);
+    assertNotNull(statements);
+    assertEquals(1, statements.getMathExpressionSymbols().size());
+    assertEquals(MathAssignmentExpressionSymbol.class,  statements.getMathExpressionSymbols().get(0).getClass());
+  }
 }
