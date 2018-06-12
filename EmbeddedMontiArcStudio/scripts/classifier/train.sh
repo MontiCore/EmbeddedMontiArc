@@ -1,9 +1,9 @@
 pushd `pwd` > /dev/null
 source "../shared/variables.sh"
 source ${USER_HOME}/mxnet/bin/activate
-if [ -e "${CLASSIFIER_TARGET}/model/cifar10_main_net/net_newest-symbol.json" ];
+if [ -d "${CLASSIFIER_TARGET}/model" ]
 then
-  echo "Skipping training."
+  echo "Trained model already exists. Skipping training."
 else
   echo "Creating HDF5 dataset from image files.."
   mkdir -p ${CLASSIFIER_TRAIN}/data/cifar10_main_net
