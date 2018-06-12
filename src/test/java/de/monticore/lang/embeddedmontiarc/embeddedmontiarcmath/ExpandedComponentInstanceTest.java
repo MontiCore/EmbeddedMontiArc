@@ -77,9 +77,9 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
             Log.info(astExpression.toString(), "info:");
         }
         Iterator<ExpandedComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
-        MathMatrixArithmeticValueSymbol symbol1 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbol().get();
-        MathMatrixArithmeticValueSymbol symbol2 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbol().get();
-        MathMatrixArithmeticValueSymbol symbol3 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbol().get();
+        MathMatrixArithmeticValueSymbol symbol1 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
+        MathMatrixArithmeticValueSymbol symbol2 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
+        MathMatrixArithmeticValueSymbol symbol3 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
         assertEquals("[(0, 1, 2, 3)]", symbol1.getTextualRepresentation());
         assertEquals("[(0, 5, 4, 4)]", symbol2.getTextualRepresentation());
         assertEquals("[(1, 2, 7, 9)]", symbol3.getTextualRepresentation());

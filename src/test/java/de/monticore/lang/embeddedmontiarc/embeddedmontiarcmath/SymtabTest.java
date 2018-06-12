@@ -154,7 +154,7 @@ public class SymtabTest extends AbstractSymtabTest {
     MathStatementsSymbol symbol=symTab.<MathStatementsSymbol>resolve("adapterTest.A.MathStatements", MathStatementsSymbol.KIND).orElse(null);
     assertNotNull(symbol);
     for(ASTMathStatement statement:symbol.getAstMathStatements().getMathStatements()){
-     // System.out.println(statement.getSymbol().toString());
+     // System.out.println(statement.getSymbolOpt().toString());
     }
   }
 
