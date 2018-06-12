@@ -20,21 +20,21 @@
  */
 package de.monticore.lang.monticar.si._symboltable;
 
-
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.modifiers.AccessModifier;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 import java.util.List;
+
 /**
  * @author Sascha Schneiders
  */
 public class SIUnitSymbolReference extends SIUnitSymbol implements MCTypeReference<SIUnitSymbol> {
     protected int dimension = 0;
 
-    public SIUnitSymbolReference(final String name, ASTUnitNumber astUnitNumber) {
-        super(name, astUnitNumber);
+    public SIUnitSymbolReference(final String name, ASTNumberWithUnit ASTNumberWithUnit) {
+        super(name, ASTNumberWithUnit);
     }
 
     @Override

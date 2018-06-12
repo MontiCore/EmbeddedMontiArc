@@ -34,6 +34,12 @@ public class ResolutionDeclarationSymbolReference extends ResolutionDeclarationS
         super(name, nameToResolve, astResolution);
     }
 
+    public static ResolutionDeclarationSymbolReference constructResolutionDeclSymbolRef(String nameToResolve,
+                                                                                        ASTResolution astResolution) {
+
+        return new ResolutionDeclarationSymbolReference("ResolutionDeclarationSymbol", nameToResolve, astResolution);
+    }
+
     @Override
     public ResolutionDeclarationSymbol getReferencedSymbol() {
         return this;
@@ -57,12 +63,5 @@ public class ResolutionDeclarationSymbolReference extends ResolutionDeclarationS
     @Override
     public void setAccessModifier(AccessModifier accessModifier) {
         this.getReferencedSymbol().setAccessModifier(accessModifier);
-    }
-
-
-    public static ResolutionDeclarationSymbolReference constructResolutionDeclSymbolRef(String nameToResolve,
-                                                                                        ASTResolution astResolution) {
-
-        return new ResolutionDeclarationSymbolReference("ResolutionDeclarationSymbol", nameToResolve, astResolution);
     }
 }

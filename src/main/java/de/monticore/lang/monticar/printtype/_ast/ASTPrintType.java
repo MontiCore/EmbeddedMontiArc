@@ -18,13 +18,11 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.commonexpressions;
-
-import de.monticore.lang.monticar.commonexpressions._ast.ASTCommonExpression;
+package de.monticore.lang.monticar.printtype._ast;
 
 /**
- * @author Sascha Schneiders
+ * @author Sascha
  */
-public interface CommonExpressionHandler {
-    void handleExpression(ASTCommonExpression astCommonExpression);
+public interface ASTPrintType extends ASTPrintTypeTOP {
+    String printType();
 }

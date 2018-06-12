@@ -20,11 +20,6 @@
  */
 package de.monticore.lang.monticar;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Collection;
-
 import de.monticore.lang.monticar.stream._symboltable.ComponentStreamSymbol;
 import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.symboltable.Scope;
@@ -32,6 +27,11 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for symbol table of MontiArc.

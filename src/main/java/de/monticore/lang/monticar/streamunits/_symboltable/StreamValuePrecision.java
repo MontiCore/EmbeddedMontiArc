@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.streamunits._symboltable;
 
 import de.monticore.lang.monticar.Utils;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import org.jscience.mathematics.number.Rational;
 
 /**
@@ -70,10 +70,10 @@ public class StreamValuePrecision implements IStreamValue {
         if (value instanceof Rational) {
             Rational rational = (Rational) value;
             valueString = Utils.getRationalString(rational);
-        } else if (value instanceof ASTUnitNumber) {
-            ASTUnitNumber unitNumber = (ASTUnitNumber) value;
-            if (unitNumber.getNumber().isPresent()) {
-                valueString = Utils.getRationalString(unitNumber.getNumber().get());
+        } else if (value instanceof ASTNumberWithUnit) {
+            ASTNumberWithUnit NumberWithUnit = (ASTNumberWithUnit) value;
+            if (NumberWithUnit.getNumber().isPresent()) {
+                valueString = Double.toString(NumberWithUnit.getNumber().get());
             }
         }
 

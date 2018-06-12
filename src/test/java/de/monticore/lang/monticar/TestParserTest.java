@@ -39,42 +39,42 @@ import static org.junit.Assert.assertNotNull;
  */
 public class TestParserTest {
 
-        static boolean failQuick;
+    static boolean failQuick;
 
-        @BeforeClass
-        public static void startUp() {
-            failQuick = Log.isFailQuickEnabled();
-            Log.enableFailQuick(false);
-        }
+    @BeforeClass
+    public static void startUp() {
+        failQuick = Log.isFailQuickEnabled();
+        Log.enableFailQuick(false);
+    }
 
-        @AfterClass
-        public static void tearDown() {
-            Log.enableFailQuick(failQuick);
-        }
+    @AfterClass
+    public static void tearDown() {
+        Log.enableFailQuick(failQuick);
+    }
 
-        @Before
-        public void clear() {
-            Log.getFindings().clear();
-        }
+    @Before
+    public void clear() {
+        Log.getFindings().clear();
+    }
 
     @Test
     public void testA() throws IOException {
         TestParser parser = new TestParser();
-        ASTA ast = parser.parseString_A("A.*;").orElse(null);
+        ASTA ast = parser.parse_StringA("A.*;").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testC() throws IOException {
         TestParser parser = new TestParser();
-        ASTC ast = parser.parseString_C("C;").orElse(null);
+        ASTC ast = parser.parse_StringC("C;").orElse(null);
         assertNotNull(ast);
     }
 
     @Test
     public void testD() throws IOException {
         TestParser parser = new TestParser();
-        ASTD ast = parser.parseString_D("D;").orElse(null);
+        ASTD ast = parser.parse_StringD("D;").orElse(null);
         assertNotNull(ast);
     }
 
@@ -86,5 +86,5 @@ public class TestParserTest {
         assertNotNull(ast);
     }*/
 
-    }
+}
 

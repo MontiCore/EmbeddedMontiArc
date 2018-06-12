@@ -46,7 +46,7 @@ package de.monticore.lang.monticar;
  * Grammar does not use Literals, since we do not want to have 6
  * different ASTs for numbers
  */
-grammar Ranges extends de.monticore.lang.monticar.Types2, de.monticore.lang.NumberUnit, de.monticore.lang.monticar.MCExpressions  {
+grammar Ranges extends de.monticore.lang.monticar.PrintType, de.monticore.CommonExpressions, de.monticore.lang.monticar.Resolution {
 
     /**
      * steering in the range from 0° to 10° has a resolution of 0.05° and
@@ -60,21 +60,22 @@ grammar Ranges extends de.monticore.lang.monticar.Types2, de.monticore.lang.Numb
         return "RangesType";
     };
 
-    Ranges implements PrintType, TypeArgument="["
-                                Range+
-                            "]";
+    Ranges implements Type, PrintType, TypeArgument="[" Range+ "]";
 
     /** Range is something like "(-3 m/s^2 : 0.1 m/s^2 : 3 m/s^2)"
       *  this represents a datatype of acceleration going from -3 m/s^2 to +3 m/s^2 in a step size of 0.1 m/s^2
      */
+    RangeStepResolution implements Resolution  = (UnitNumberResolution | Name);
+    ast Range = method public String printType(){
+            return "RangeType";
+    };
+    Range implements Type, TypeArgument, PrintType = "(" min:UnitNumberResolution ":" (step:RangeStepResolution ":")? max:UnitNumberResolution ")";
+
     interface RangeType extends PrintType;
-    ast Range= method public String printType(){return "RangeType";};
-    Range implements PrintType, TypeArgument=
-       (["Z"] | ["Q"] | ["C"])? "("?
-           (startInf:TUnitInf | start:UnitNumberResolution)
-           (":" (step:UnitNumberResolution| ["f"] | ["d"] ))?
-           ":" (endInf:TUnitInf | end:UnitNumberResolution) ")"?
-       ;
+    ast NamedRange= method public String printType(){return "RangeType";};
+    NamedRange astextends ASTRange implements RangeType = Name;
+
+    /* no good idea to block thoose literals
     ast NaturalNumbersOneRange= method public String printType(){return "RangeType";};
     ast NaturalNumbersZeroRange= method public String printType(){return "RangeType";};
     ast WholeNumbersRange= method public String printType(){return "RangeType";};
@@ -82,7 +83,6 @@ grammar Ranges extends de.monticore.lang.monticar.Types2, de.monticore.lang.Numb
     NaturalNumbersOneRange astextends ASTRange implements RangeType = "N1";
     NaturalNumbersZeroRange astextends ASTRange implements RangeType = "N0";
     WholeNumbersRange  astextends ASTRange implements RangeType = "Z";
-
-    UnitNumberExpression implements Expression = TUnitNumber | TUnitInf;
+    */
 
 }

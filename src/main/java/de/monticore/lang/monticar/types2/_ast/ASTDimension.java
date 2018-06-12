@@ -18,26 +18,28 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.ranges._ast;
+package de.monticore.lang.monticar.types2._ast;
 
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import org.jscience.mathematics.number.Rational;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 
-import de.monticore.lang.numberunit._ast.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-import javax.measure.unit.Unit;
+public class ASTDimension extends ASTDimensionTOP {
 
-/**
- * @author Sascha
- */
-public class ASTNaturalNumbersZeroRange extends ASTNaturalNumbersZeroRangeTOP {
-    public ASTNaturalNumbersZeroRange() {
-        super();
+    public ASTDimension() {
+    }
 
-        setStartValue(new ASTUnitNumberResolution(null,new ASTUnitNumber(Rational.ZERO, Unit.ONE)));
-        setStepValue(new ASTUnitNumberResolution(null,new ASTUnitNumber(Rational.ONE, Unit.ONE)));
-        setEndValue("oo");
-        //null,new ASTUnitNumber(Rational.ONE, null), new ASTUnitNumber(Rational.ONE, null), "oo", null, false, false);
+    public ASTDimension(List<ASTExpression> matrixDims, Optional<ASTExpression> vecDim) {
+        super(matrixDims, vecDim);
+    }
 
+    public List<ASTExpression> getDimensionList() {
+        List<ASTExpression> result = new ArrayList<>();
+        result.addAll(getMatrixDimList());
+        if (getVecDimOpt().isPresent())
+            result.add(getVecDim());
+        return result;
     }
 }

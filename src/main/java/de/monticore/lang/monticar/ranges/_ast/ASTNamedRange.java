@@ -18,21 +18,29 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.commonexpressions._ast;
-
-import de.monticore.ast.Comment;
-import de.monticore.lang.monticar.commonexpressions._visitor.CommonExpressionsVisitor;
-import de.monticore.lang.monticar.mcexpressions._visitor.MCExpressionsVisitor;
-import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.SourcePosition;
-
-import java.util.List;
-import java.util.Optional;
+package de.monticore.lang.monticar.ranges._ast;
 
 /**
- * @author Sascha Schneiders
+ * @author Christoph Richter
  */
-public interface ASTCommonExpression extends ASTCommonExpressionTOP{
+public class ASTNamedRange extends ASTNamedRangeTOP {
 
+    public ASTNamedRange() {
+    }
+
+    public ASTNamedRange(String name) {
+        super(name);
+    }
+
+    public boolean isNaturalNumbersOneRange() {
+        return getName().contentEquals("N1");
+    }
+
+    public boolean isNaturalNumbersZeroRange() {
+        return getName().contentEquals("N0");
+    }
+
+    public boolean isWholeNumbersRange() {
+        return getName().contentEquals("Z");
+    }
 }

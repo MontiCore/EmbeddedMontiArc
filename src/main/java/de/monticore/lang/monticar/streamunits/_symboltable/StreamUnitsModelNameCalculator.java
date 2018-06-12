@@ -42,46 +42,45 @@ import java.util.Set;
  * @author Robert Heim, Michael von Wenckstern
  */
 public class StreamUnitsModelNameCalculator
-    extends de.monticore.CommonModelNameCalculator {
+        extends de.monticore.CommonModelNameCalculator {
 
-  @Override
-  public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
-    final Set<String> calculatedModelNames = new LinkedHashSet<>();
+    @Override
+    public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
+        final Set<String> calculatedModelNames = new LinkedHashSet<>();
 
-    if (ComponentStreamUnitsSymbol.KIND.isKindOf(kind)) {
-      calculatedModelNames.addAll(calculateModelNameForComponent(name));
-    }
-    else if (NamedStreamUnitsSymbol.KIND.isKindOf(kind)) {
-      calculatedModelNames.addAll(calculateModelNameForPort(name));
-    }
+        if (ComponentStreamUnitsSymbol.KIND.isKindOf(kind)) {
+            calculatedModelNames.addAll(calculateModelNameForComponent(name));
+        } else if (NamedStreamUnitsSymbol.KIND.isKindOf(kind)) {
+            calculatedModelNames.addAll(calculateModelNameForPort(name));
+        }
 
-    return calculatedModelNames;
-  }
-
-  protected Set<String> calculateModelNameForComponent(String name) {
-    List<String> parts = Splitters.DOT.splitToList(name);
-    Set<String> ret = new LinkedHashSet<>();
-
-    for (int i = 0; i < parts.size(); i++) {
-      char[] c = parts.get(i).toCharArray();
-      if (Character.isUpperCase(c[0])) {
-        ret.add(Joiners.DOT.join(parts.subList(0, i + 1)));
-      }
+        return calculatedModelNames;
     }
 
-    return Collections.unmodifiableSet(ret);
-  }
+    protected Set<String> calculateModelNameForComponent(String name) {
+        List<String> parts = Splitters.DOT.splitToList(name);
+        Set<String> ret = new LinkedHashSet<>();
 
-  protected Set<String> calculateModelNameForPort(String name) {
-    List<String> parts = Splitters.DOT.splitToList(name);
-    if (parts.size() > 1) {
-      String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
-      return ImmutableSet.<String>builder()
-          .addAll(calculateModelNameForComponent(modelName))
-          .build();
+        for (int i = 0; i < parts.size(); i++) {
+            char[] c = parts.get(i).toCharArray();
+            if (Character.isUpperCase(c[0])) {
+                ret.add(Joiners.DOT.join(parts.subList(0, i + 1)));
+            }
+        }
+
+        return Collections.unmodifiableSet(ret);
     }
-    return ImmutableSet.of();
-  }
+
+    protected Set<String> calculateModelNameForPort(String name) {
+        List<String> parts = Splitters.DOT.splitToList(name);
+        if (parts.size() > 1) {
+            String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
+            return ImmutableSet.<String>builder()
+                    .addAll(calculateModelNameForComponent(modelName))
+                    .build();
+        }
+        return ImmutableSet.of();
+    }
 
 
 }

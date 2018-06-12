@@ -18,11 +18,17 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.types2._ast;
+package de.monticore.numberunit;
 
-/**
- * @author Sascha
- */
-public interface ASTPrintType extends ASTPrintTypeTOP{
-    String printType();
+import de.monticore.literals.literals._ast.ASTLiteralsNode;
+import de.monticore.literals.prettyprint.LiteralsPrettyPrinterConcreteVisitor;
+import de.monticore.prettyprint.IndentPrinter;
+
+public class PrintHelper {
+
+  public static String print(ASTLiteralsNode ast) {
+    IndentPrinter ip = new IndentPrinter();
+    LiteralsPrettyPrinterConcreteVisitor visitor = new LiteralsPrettyPrinterConcreteVisitor(ip);
+    return visitor.prettyprint(ast);
+  }
 }

@@ -21,10 +21,10 @@
 package de.monticore.lang.monticar.ts;
 
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
-import de.monticore.lang.monticar.types2._ast.ASTType;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
+import de.monticore.types.types._ast.ASTType;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +35,11 @@ import java.util.Optional;
  */
 public class MCASTTypeSymbol extends CommonSymbol implements MCTypeSymbol {
     public static final MCASTTypeSymbolKind KIND;
+
+    static {
+        KIND = MCASTTypeSymbolKind.INSTANCE;
+    }
+
     protected ASTType astType = null;
 
     public MCASTTypeSymbol(String name) {
@@ -78,9 +83,5 @@ public class MCASTTypeSymbol extends CommonSymbol implements MCTypeSymbol {
 
     public Scope getSpannedScope() {
         return null;
-    }
-
-    static {
-        KIND = MCASTTypeSymbolKind.INSTANCE;
     }
 }

@@ -20,133 +20,203 @@
  */
 package de.monticore.lang.monticar.ranges._ast;
 
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.ranges._parser.RangesParser;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
 import javax.measure.unit.Unit;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import de.monticore.lang.numberunit._ast.*;
+import static de.monticore.numberunit.Rationals.doubleToRational;
 
 /**
  * @author Michael von Wenckstern, Sascha Schneiders
  */
 public class ASTRange extends ASTRangeTOP {
-    public ASTRange(String startInf, ASTUnitNumberResolution start, ASTUnitNumberResolution step, String endInf, ASTUnitNumberResolution end, boolean z, boolean q, boolean c, boolean d, boolean f) {
-        super(startInf, start, step, endInf, end, z, q, c, d, f);
-        fixUnits();
+
+    public ASTRange() {
     }
 
-    public void fixUnits() {
-        if (start.isPresent()) {
-            if (!start.get().getUnit().isPresent()) {
+    public ASTRange(ASTUnitNumberResolution min, Optional<ASTRangeStepResolution> step, ASTUnitNumberResolution max) {
+        super(min, step, max);
+    }
 
+    /**
+     * returns the first Unit which is present in all of these Ranges
+     */
+    private static Unit getUnitIdentifier(List<ASTRange> ranges) {
+        Unit unitIdentifier = null;
+        for (ASTRange curRange : ranges) {
+            Log.debug(curRange.toString(), "Ranges");
+        }
+        for (ASTRange curRange : ranges) {
+            if (curRange.hasStartUnit()) {
+                unitIdentifier = curRange.getStartUnit();
+                break;
+            } else if (curRange.hasEndUnit()) {
+                unitIdentifier = curRange.getEndUnit();
+                break;
+            }
+        }
+        return unitIdentifier;
+    }
+
+    public static Unit calculateUnitIdentifier(Unit unitIdentifier, List<ASTRange> ranges) {
+        if (unitIdentifier == null) {
+            for (ASTRange curRange : ranges) {
+                if (curRange.getStepOpt().isPresent() && curRange.hasStepUnit()) {
+                    unitIdentifier = curRange.getStepUnit();
+                    break;
+                }
+            }
+        }
+        return unitIdentifier;
+    }
+
+    /**
+     * for propagating the units: (0 : 10 m) will become (0 m : 10 m)
+     */
+    public static void setupSIUnitRanges(List<ASTRange> ranges) {
+        Unit unitIdentifier = getUnitIdentifier(ranges);
+
+        unitIdentifier = calculateUnitIdentifier(unitIdentifier, ranges);
+        if (unitIdentifier == null) {
+            Log.debug("Null", "Unitidentifier");
+        }
+        Log.debug("PRE SET " + ranges.size(), "LOC");
+        if (unitIdentifier != null)
+            updateUnitRanges(unitIdentifier, ranges);
+    }
+
+    public static void updateUnitRanges(Unit unitIdentifier, List<ASTRange> ranges) {
+        for (ASTRange curRange : ranges) {
+            Log.debug(curRange.toString() + "", "INFO");
+            if (!curRange.hasStartUnit()) {
+                curRange.getMin().setUnit(unitIdentifier);
+            }
+            if (!curRange.hasEndUnit()) {
+                curRange.getMax().setUnit(unitIdentifier);
+            }
+            if (curRange.getStepOpt().isPresent() && !curRange.hasStepUnit()) {
+                curRange.getStepOpt().get().getUnitNumberResolution().setUnit(unitIdentifier);
             }
         }
     }
 
-    public ASTRange() {
-        super();
-    }
-
-
     @Override
     public String toString() {
         return String.format("(%s %s %s : %s)", // (start : step : end)
-                getStart().isPresent() ? getStart().get().toString() : getStartInf().get(),
+                getMin().toString(),
 
-                getStep().isPresent() ? ":" : "",
-                getStep().isPresent() ? getStep().get().toString() : "",
+                getStepOpt().isPresent() ? ":" : "",
+                getStepOpt().isPresent() ? getStepOpt().get().toString() : "",
 
-                getEnd().isPresent() ? getEnd().get().toString() : getEndInf().get()
+                getMax().toString()
         );
     }
 
-    public void setStartValue(String infStr) {
-        this.startInf = Optional.of(infStr);
+    private ASTUnitNumberResolution readValue(String value) {
+        ASTUnitNumberResolution result = null;
+        try {
+            RangesParser parser = new RangesParser();
+            Optional<ASTUnitNumberResolution> number = null;
+            number = parser.parse_StringUnitNumberResolution(value);
+            if (number.isPresent())
+                result = number.get();
+        } catch (IOException e) {
+            Log.error(String.format("Can not read value: %s", value), e);
+        }
+        return result;
     }
 
+    public void setStartValue(String infStr) {
+        setMin(readValue(infStr));
+    }
 
     public void setEndValue(String infStr) {
-        this.endInf = Optional.of(infStr);
+        setMax(readValue((infStr)));
     }
 
-    public void setStartValue(ASTUnitNumberResolution start) {
-        this.start = Optional.of(start);
-    }
-
-    public void setStepValue(ASTUnitNumberResolution step) {
-        this.step = Optional.of(step);
-    }
-
-    public void setEndValue(ASTUnitNumberResolution end) {
-        this.end = Optional.of(end);
+    public void setStepValue(String infStr) {
+        getStep().setUnitNumberResolution(readValue(infStr));
     }
 
     public Rational getStartValue() {
-        return getStart().get().getNumber().get();
+        return doubleToRational(getMin().getNumber().get());
+    }
+
+    public void setStartValue(ASTUnitNumberResolution start) {
+        setMin(start);
     }
 
     public Rational getEndValue() {
-        return getEnd().get().getNumber().get();
+        return doubleToRational(getMax().getNumber().get());
+    }
+
+    public void setEndValue(ASTUnitNumberResolution end) {
+        setMax(end);
     }
 
     public Rational getStepValue() {
-        return getStep().get().getNumber().get();
+        return doubleToRational(getStep().getUnitNumberResolution().getNumber().get());
+    }
+
+    public void setStepValue(ASTUnitNumberResolution step) {
+        getStep().setUnitNumberResolution(step);
     }
 
     public Unit getStartUnit() {
-        return (getStart().isPresent()) ? getStart().get().getUnit().get() : getUnit(getStartInf().get());
-    }
-
-    public Unit getEndUnit() {
-        return (getEnd().isPresent()) ? getEnd().get().getUnit().get() : getUnit(getEndInf().get());
-    }
-
-
-    public Unit getStepUnit() {
-        return getStep().get().getUnit().get();
+        return getMin().getUnit();
     }
 
     public void setStartUnit(Unit unit) {
-        if (getStart().isPresent()) getStart().get().setUnit(unit);
-        else
-            this.startInf = Optional.of(addUnitTo(this.startInf.get(), unit));
+        getMin().setUnit(unit);
+    }
+
+    public Unit getEndUnit() {
+        return getMax().getUnit();
     }
 
     public void setEndUnit(Unit unit) {
-        if (getEnd().isPresent()) getEnd().get().setUnit(unit);
-        else
-            this.endInf = Optional.of(addUnitTo(this.endInf.get(), unit));
+        getMax().setUnit(unit);
+    }
+
+    public Unit getStepUnit() {
+        return getStepOpt().get().getUnitNumberResolution().getUnit();
     }
 
     public void setStepUnit(Unit unit) {
-        getStep().get().setUnit(unit);
+        getStepOpt().get().getUnitNumberResolution().setUnit(unit);
     }
 
-
     public boolean hasStartUnit() {
-        return (getStart().isPresent() && !getStart().get().getUnit().equals(Unit.ONE)) || (getStartInf().isPresent() && !getUnit(getStartInf().get()).equals(Unit.ONE));
+        return !getMin().getUnit().equals(Unit.ONE);
     }
 
     public boolean hasStepUnit() {
-        return getStep().isPresent() && !getStep().get().getUnit().equals(Unit.ONE);
+        return getStepOpt().isPresent() && getStep().getUnitNumberResolutionOpt().isPresent() && !getStep().getUnitNumberResolution().getUnit().equals(Unit.ONE);
     }
 
     public boolean hasEndUnit() {
-        return (getEnd().isPresent() && !getEnd().get().getUnit().equals(Unit.ONE)) || (getEndInf().isPresent() && !getUnit(getEndInf().get()).equals(Unit.ONE));
+        return !getMax().getUnit().equals(Unit.ONE);
     }
 
     public boolean hasNoLowerLimit() {
-        return !getStart().isPresent();
+        boolean noLimit = false;
+        if (getMin().getNumberWithUnit().isPresentNum())
+            noLimit = getMin().getNumberWithUnit().getNum().isPresentNegInf();
+        return noLimit;
     }
 
     public boolean hasNoUpperLimit() {
-        return !getEnd().isPresent();
+        boolean noLimit = false;
+        if (getMax().getNumberWithUnit().isPresentNum())
+            noLimit = getMax().getNumberWithUnit().getNum().isPresentInf();
+        return noLimit;
     }
-
 
     /**
      * checks if the provided Rational is in our range
@@ -154,7 +224,7 @@ public class ASTRange extends ASTRangeTOP {
      * @param number the Rational to check
      */
     public boolean isInRange(Rational number) {
-        if (getStep().isPresent() && !hasNoUpperLimit() && !hasNoLowerLimit()) {
+        if (getStepOpt().isPresent() && !hasNoUpperLimit() && !hasNoLowerLimit()) {
             Rational cur = getStartValue();
             boolean check = true;
             while (check) {
@@ -190,73 +260,6 @@ public class ASTRange extends ASTRangeTOP {
             return true;
         }
         return false;
-    }
-
-    /**
-     * returns the first Unit which is present in all of these Ranges
-     */
-    private static Unit getUnitIdentifier(List<ASTRange> ranges) {
-        Unit unitIdentifier = null;
-        for (ASTRange curRange : ranges) {
-            Log.debug(curRange.toString(), "Ranges");
-        }
-        for (ASTRange curRange : ranges) {
-            if (curRange.hasStartUnit()) {
-                unitIdentifier = curRange.getStartUnit();
-                break;
-            } else if (curRange.hasEndUnit()) {
-                unitIdentifier = curRange.getEndUnit();
-                break;
-            }
-        }
-        return unitIdentifier;
-    }
-
-    public static Unit calculateUnitIdentifier(Unit unitIdentifier, List<ASTRange> ranges) {
-        if (unitIdentifier == null) {
-            for (ASTRange curRange : ranges) {
-                if (curRange.getStep().isPresent() && curRange.hasStepUnit()) {
-                    unitIdentifier = curRange.getStepUnit();
-                    break;
-                }
-            }
-        }
-        return unitIdentifier;
-    }
-
-    /**
-     * for propagating the units: (0 : 10 m) will become (0 m : 10 m)
-     */
-    public static void setupSIUnitRanges(List<ASTRange> ranges) {
-        Unit unitIdentifier = getUnitIdentifier(ranges);
-
-        unitIdentifier = calculateUnitIdentifier(unitIdentifier, ranges);
-        if (unitIdentifier == null) {
-            Log.debug("Null", "Unitidentifier");
-        }
-        Log.debug("PRE SET " + ranges.size(), "LOC");
-        if (unitIdentifier != null)
-            updateUnitRanges(unitIdentifier, ranges);
-    }
-
-    public static void updateUnitRanges(Unit unitIdentifier, List<ASTRange> ranges) {
-        for (ASTRange curRange : ranges) {
-            Log.debug(curRange.toString() + "", "INFO");
-            if (!curRange.hasStartUnit() && curRange.getStart().isPresent()) {
-                curRange.getStart().get().setUnit(unitIdentifier);
-            } else if (curRange.getStartInf().isPresent()) {
-                curRange.setStartUnit(unitIdentifier);
-            }
-
-            if (curRange.getEnd().isPresent() && curRange.getEnd().isPresent()) {
-                curRange.getEnd().get().setUnit(unitIdentifier);
-            } else if (curRange.getEndInf().isPresent()) {
-                curRange.setEndUnit(unitIdentifier);
-            }
-            if (curRange.getStep().isPresent() && !curRange.hasStepUnit()) {
-                curRange.getStep().get().setUnit(unitIdentifier);
-            }
-        }
     }
 
     /**
@@ -301,7 +304,7 @@ public class ASTRange extends ASTRangeTOP {
     public boolean isN1Range() {
         if (!hasNoLowerLimit())
             return false;
-        else if (!getStart().get().getNumber().equals(1))
+        else if (!getMin().getNumber().equals(1))
             return false;
         if (!hasNoUpperLimit())
             return false;
@@ -312,13 +315,12 @@ public class ASTRange extends ASTRangeTOP {
     public boolean isN0Range() {
         if (!hasNoLowerLimit())
             return false;
-        else if (!getStart().get().getNumber().equals(0))
+        else if (!getMin().getNumber().equals(0))
             return false;
         if (!hasNoUpperLimit())
             return false;
         return true;
     }
-
 
     public boolean isZRange() {
         if (!hasNoLowerLimit())
@@ -334,8 +336,8 @@ public class ASTRange extends ASTRangeTOP {
             unit = getStartUnit();
         } else if (hasEndUnit()) {
             unit = getEndUnit();
-        } else if (step.isPresent() && step.get().getUnit().isPresent() && !step.get().getUnit().equals(Unit.ONE)) {
-            unit = step.get().getUnit().get();
+        } else if (step.isPresent() && step.get().getUnitNumberResolution().getNumberWithUnit().getUnit().equals(Unit.ONE)) {
+            unit = getStepUnit();
         }
         Log.debug("No Unit present", "ASTRange:");
         return unit;

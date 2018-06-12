@@ -21,54 +21,39 @@
 package de.monticore.lang.monticar.types2._ast;
 
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
-import de.monticore.lang.monticar.ranges._parser.RangesParser;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
- * Created by michaelvonwenckstern on 11.02.17.
+ * @author Christoph Richter
  */
 public class ASTElementType extends ASTElementTypeTOP {
-    protected Optional<ASTRange> range = Optional.empty();
-    protected static RangesParser rangesParser = new RangesParser();
-
-    public  ASTElementType (String tElementType,
-        boolean isBoolean, boolean isComplex, boolean isRational,
-                               boolean isWholeNumber, boolean isNaturalNumber) {
-        super(tElementType, isBoolean, isComplex, isRational, isWholeNumber, isNaturalNumber);
-    }
 
     public ASTElementType() {
-        super();
     }
 
-    public Optional<ASTRange> getRange() {
-        return range;
+    public ASTElementType(String name, Optional<ASTRange> range, Optional<ASTDimension> dimension) {
+        super(name, range, dimension);
     }
 
-    /**
-     token TElementType =
-      ('Z' | 'Q' | 'C') Space*
-        '(' Space* (TUnitNumber | TUnitInf) Space* ':'
-            (Space* TUnitNumber Space* ':')?
-            Space*
-    */
-    @Override
-    public void setTElementType(String tElementType) {
-        super.setTElementType(tElementType);
-
-        isWholeNumberNumber = tElementType.startsWith("Z");
-        isRational = tElementType.startsWith("Q");
-        isComplex = tElementType.startsWith("C");
-        isBoolean = false;
-
-        String r = tElementType.substring(1).trim();
-        try {
-            range = rangesParser.parseString_Range(r);
-        } catch (IOException e) {
-            e.printStackTrace(); // no error should occur since it is a string
-
-        }
+    public boolean isBoolean() {
+        return getName().contentEquals("B") || getName().contentEquals("Boolean");
     }
+
+    public boolean isNaturalNumber() {
+        return getName().contentEquals("N");
+    }
+
+    public boolean isWholeNumber() {
+        return getName().contentEquals("Z");
+    }
+
+    public boolean isRational() {
+        return getName().contentEquals("Q");
+    }
+
+    public boolean isComplex() {
+        return getName().contentEquals("C");
+    }
+
 }

@@ -25,18 +25,14 @@ package de.monticore.lang.monticar.helper;
  */
 public class IndentPrinter {
 
-    public static IndentPrinterGroup groups(String... groups) {
-        return new IndentPrinterGroup(groups);
-    }
-
     protected int indent;
     protected String spacer;
     protected String sp;
     protected int maxlinelength;
     protected boolean optionalBreak;
-    private int optionalBreakPosition;
     protected StringBuilder linebuffer;
     protected StringBuilder writtenbuffer;
+    private int optionalBreakPosition;
 
     public IndentPrinter() {
         this(new StringBuilder());
@@ -59,9 +55,17 @@ public class IndentPrinter {
         this.addLine(startContent);
     }
 
+    public static IndentPrinterGroup groups(String... groups) {
+        return new IndentPrinterGroup(groups);
+    }
+
     public String getContent() {
         this.flushBuffer();
         return this.writtenbuffer.toString();
+    }
+
+    public int getIndentLength() {
+        return this.sp.length();
     }
 
     public void setIndentLength(int l) {
@@ -74,10 +78,6 @@ public class IndentPrinter {
         for (i = 0; i < this.indent; ++i) {
             this.spacer = this.spacer + this.sp;
         }
-    }
-
-    public int getIndentLength() {
-        return this.sp.length();
     }
 
     protected void doPrint(String s) {

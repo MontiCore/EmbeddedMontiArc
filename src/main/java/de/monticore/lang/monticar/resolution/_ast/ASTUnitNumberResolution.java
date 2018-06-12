@@ -18,17 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.types2._ast;
+package de.monticore.lang.monticar.resolution._ast;
 
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 
 import javax.measure.unit.Unit;
 import java.util.List;
 import java.util.Optional;
-
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 /**
  * Created by Sascha on 01.06.2017.
@@ -38,49 +36,49 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
         super();
     }
 
-    public ASTUnitNumberResolution(String name, de.monticore.lang.numberunit._ast.ASTUnitNumber unitNumber) {
+    public ASTUnitNumberResolution(Optional<String> name, Optional<ASTNumberWithUnit> unitNumber) {
         super(name, unitNumber);
     }
 
-    public void setNumber(Rational number) {
-        if (!getUnitNumber().isPresent()) {
-            setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(number, Unit.ONE));
+    public Optional<Double> getNumber() {
+        return getNumberWithUnitOpt().get().getNumber();
+    }
+
+    public void setNumber(Double number) {
+        if (!getNumberWithUnitOpt().isPresent()) {
+            setNumberWithUnit(new ASTNumberWithUnit(Optional.empty(), Optional.empty(), Optional.empty()));
         }
-        getUnitNumber().get().setNumber(number);
+        getNumberWithUnitOpt().get().setNumber(number);
+    }
+
+    public Unit getUnit() {
+        return getNumberWithUnitOpt().get().getUnit();
     }
 
     public void setUnit(Unit unit) {
-        if (!getUnitNumber().isPresent()) {
-            setUnitNumber(new de.monticore.lang.numberunit._ast.ASTUnitNumber(Rational.ZERO, unit));
+        if (!getNumberWithUnitOpt().isPresent()) {
+            setNumberWithUnit(new ASTNumberWithUnit(Optional.empty(), Optional.empty(), Optional.empty()));
         }
-        getUnitNumber().get().setUnit(unit);
-    }
-
-    public Optional<Rational> getNumber() {
-        return getUnitNumber().get().getNumber();
-    }
-
-    public Optional<Unit> getUnit() {
-        return getUnitNumber().get().getUnit();
+        getNumberWithUnitOpt().get().setUnit(unit);
     }
 
     public String doResolution(List<ResolutionDeclarationSymbol> resolutionDeclarationSymbolList) {
-        if (getName().isPresent()) {
+        if (getNameOpt().isPresent()) {
             for (ResolutionDeclarationSymbol resDeclSym : resolutionDeclarationSymbolList) {
 
-                if (resDeclSym.getNameToResolve().equals(getName().get())) {
+                if (resDeclSym.getNameToResolve().equals(getNameOpt().get())) {
 
                     Log.debug(resDeclSym.getASTResolution().toString(), "Found ResolutionDeclarationSymbol:");
-                    ASTUnitNumber toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber().get();
+                    ASTNumberWithUnit toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getNumberWithUnitOpt().get();
 
 
                     Log.debug("" + toSet.getNumber().get().intValue(), "ToSet Number:");
 
                     setNumber(toSet.getNumber().get());
-                    setUnit(toSet.getUnit().get());
+                    setUnit(toSet.getUnit());
                     Log.debug("" + getNumber().get().intValue(), "PortResolution Number:");
-                    Log.debug(getName().get(),"Name:");
-                    return getName().get();
+                    Log.debug(getNameOpt().get(), "Name:");
+                    return getNameOpt().get();
                 }
             }
 
@@ -89,7 +87,7 @@ public class ASTUnitNumberResolution extends ASTUnitNumberResolutionTOP {
     }
 
     @Override
-    public String printType(){
+    public String printType() {
         return "UnitNumberResolution";
     }
 }

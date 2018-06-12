@@ -18,29 +18,39 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.common2._ast;
+package de.monticore.numberunit._ast;
+
+import java.util.Optional;
+
+import static de.monticore.numberunit.PrintHelper.print;
 
 /**
- * Created by Sascha on 04.07.2017.
+ * Created by MichaelvonWenckstern on 08.01.2018.
  */
-public class ASTParameter extends ASTParameterTOP {
-    protected ASTParameter() {
+public class ASTComplexNumber extends ASTComplexNumberTOP {
+    public ASTComplexNumber(
+            de.monticore.literals.literals._ast.ASTNumericLiteral real, de.monticore.literals.literals._ast.ASTNumericLiteral im,
+            ASTI i, Optional<String> negRe, Optional<String> negIm) {
+        super(real, im, i, negRe, negIm);
+    }
+
+    public ASTComplexNumber() {
         super();
     }
 
-    protected ASTParameter(de.monticore.lang.monticar.common2._ast.ASTAdaptableKeyword adaptableKeyword
-            ,
-                           de.monticore.lang.monticar.types2._ast.ASTType type
-            ,
-                           de.monticore.lang.monticar.common2._ast.ASTNameWithArray nameWithArray
-            ,
-                           de.monticore.lang.monticar.common2._ast.ASTValue defaultValue
-    ) {
-        super(adaptableKeyword, type, nameWithArray, defaultValue);
+    public double getRealNumber() {
+        if (this.isPresentNegRe()) {
+            return -1 * Double.parseDouble(print(this.getReal()));
+        } else {
+            return Double.parseDouble(print(this.getReal()));
+        }
     }
 
-
-    public String getName() {
-        return getNameWithArray().getName();
+    public double getImagineNumber() {
+        if (this.isPresentNegIm()) {
+            return -1 * Double.parseDouble(print(this.getIm()));
+        } else {
+            return Double.parseDouble(print(this.getIm()));
+        }
     }
 }
