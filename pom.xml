@@ -216,6 +216,7 @@
                             <formats>
                                 <format>jar</format>
                             </formats>
+                            <attach>false</attach>
                         </configuration>
                         <phase>package</phase>
                         <goals>
