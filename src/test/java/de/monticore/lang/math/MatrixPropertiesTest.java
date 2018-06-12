@@ -20,7 +20,10 @@
  */
 package de.monticore.lang.math;
 
+import de.monticore.assignmentexpressions._ast.ASTAssignmentExpression;
+import de.monticore.lang.math._ast.ASTMathAssignmentDeclarationStatement;
 import de.monticore.lang.math._matrixprops.MatrixProperties;
+import de.monticore.lang.math._parser.MathParser;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Scope;
@@ -28,6 +31,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -169,6 +173,13 @@ public class MatrixPropertiesTest extends MathSymbolTableCreatorTest {
         ArrayList<MatrixProperties> properties = symbol.getMatrixProperties();
         assertTrue(m7.getValue() instanceof MathMatrixArithmeticValueSymbol);
         assertFalse(properties.contains(MatrixProperties.Square));
+    }
+
+    @Test
+    public void testStaticProperty() throws IOException {
+        MathParser parser = new MathParser();
+        ASTMathAssignmentDeclarationStatement ast = parser.parse_StringMathAssignmentDeclarationStatement("static Q someValue = 1;").orElse(null);
+        assertNotNull(ast);
     }
 
 }
