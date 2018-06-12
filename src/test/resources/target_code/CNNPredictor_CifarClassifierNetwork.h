@@ -28,8 +28,8 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const vector<float> &data,
-                 vector<float> &softmax){
+    void predict(const std::vector<float> &data,
+                 std::vector<float> &softmax){
         MXPredSetInput(handle, "data", data.data(), data.size());
         //MXPredSetInput(handle, "data", data.data(), data.size());
 
