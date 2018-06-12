@@ -206,11 +206,11 @@
     <distributionManagement>
         <repository>
             <id>se-nexus</id>
-            <url>https://nexus.se.rwth-aachen.de/content/repositories/cnnarch2mxnet-releases/</url>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
         </repository>
         <snapshotRepository>
             <id>se-nexus</id>
-            <url>https://nexus.se.rwth-aachen.de/content/repositories/cnnarch2mxnet-snapshots/</url>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
