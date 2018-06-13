@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    main.consumes = ["Plugin", "ui", "layout", "ui.custom", "models.updater"];
+    main.consumes = ["Plugin", "ui", "layout", "ui.custom", "tabManager", "models.updater", "fs"];
     main.provides = ["nfpverification"];
     return main;
 
@@ -8,8 +8,10 @@ define(function(require, exports, module) {
         var UI = imports.ui;
         var Layout = imports.layout;
 		var UICustom = imports["ui.custom"];
+		var TabManager = imports.tabManager";
 		var ModelsUpdater = imports["models.updater"];
-
+		var FileSystem = imports.fs;
+		
         var plugin = new Plugin("SE RWTH", main.consumes);
         var pluginInformation = { "nfpverification": plugin };
 
@@ -45,6 +47,11 @@ define(function(require, exports, module) {
                 "method": "post",
                 "body": JSON.stringify({ name: path })
             }).then(onNFPResponse);
+        }
+		
+		function onReadFile(error, content) {
+		    if(error) console.error(error);
+		    else ModelsUpdater.update(onSingleUpdated);//handleContent(content); 
         }
 		
 		function handleTab1(tab) {

@@ -7,7 +7,7 @@ const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacMa
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
-const {NFPVerificatorTest1, NFPVerificatorTest2} = require("./nfpverification");
+const {NFPVerificatorTest} = require("./nfpverification");
 const {PacmanGeneration}                                = require("./generations");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
@@ -424,7 +424,7 @@ App.post("/services/nfpverification/test1", function(request, response) {
 		response.end();
 	}
 
-	NFPVerificatorTest1.execute(body.name.replace(/\//g, ".").substring(0,body.name.length-4), onUpdated);	
+	NFPVerificatorTest.execute1(body.name.replace(/\//g, ".").substring(0,body.name.length-4), onUpdated);	
 });
 
 App.post("/services/nfpverification/test2", function(request, response) {
@@ -448,6 +448,6 @@ App.post("/services/nfpverification/test2", function(request, response) {
 		response.end();
 	}
 		
-	NFPVerificatorTest2.execute("model\\nfpverification" + body.name.replace(/\//g, "\\"),onUpdated);
+	NFPVerificatorTest.execute2(body.name.replace(/\//g, "."),onUpdated);
 });
 module.exports = App;

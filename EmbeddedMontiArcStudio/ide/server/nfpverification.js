@@ -4,50 +4,56 @@ const Log = require("log4js");
 const Path = require("path");
 
 class AbstractNFPVerification {
-	constructor(project, batch) {
+	constructor(project) {
         this.logger = null;
         this.process = null;
         this.project = project;
-        this.batch = batch;
+        this.batch = null;
     }
 
-    execute(streamName, callback) {
+    execute1(streamName, callback) {
         const onExit = () => {
             this.logger.info("...NFPVerification terminated.");
             callback();
         };
 
         this.kill();
-        this.logger.info("Running NFPVerification for %s...", streamName);
-        this.process = Process.spawn(this.batch, [streamName], {
+        this.logger.info("Running NFPVerification with rule 1 for %s...", streamName);
+        this.process = Process.spawn(BATCHES.NFPVERIFICATION.TEST1, [streamName], {
             cwd: Path.resolve(PATHS.SCRIPTS, this.project)
         });
         this.process.on("exit", onExit);
         return this.process;
     }
 
+	execute2(streamName, callback) {
+        const onExit = () => {
+            this.logger.info("...NFPVerification terminated.");
+            callback();
+        };
+
+        this.kill();
+        this.logger.info("Running NFPVerification with rule 2 for %s...", streamName);
+        this.process = Process.spawn(BATCHES.NFPVERIFICATION.TEST2, [streamName], {
+            cwd: Path.resolve(PATHS.SCRIPTS, this.project)
+        });
+        this.process.on("exit", onExit);
+        return this.process;
+    }
+	
     kill() {
         if(this.process) this.process.kill();
     }
 }
 
-class NFPVerificatorTest1 extends AbstractNFPVerification {
+class NFPVerificatorTest extends AbstractNFPVerification {
     constructor() {
-        super("nfpverification", BATCHES.NFPVERIFICATION.TEST1);
-        this.logger = Log.getLogger("NFPVerification WITH RULE 1");
-        this.logger.level = "debug";
-    }
-}
-
-class NFPVerificatorTest2 extends AbstractNFPVerification {
-    constructor() {
-        super("nfpverification", BATCHES.NFPVERIFICATION.TEST2);
-        this.logger = Log.getLogger("NFPVerification WITH RULE 2");
+        super("nfpverification");
+        this.logger = Log.getLogger("Start NFPVerification");
         this.logger.level = "debug";
     }
 }
 
 module.exports = {
-	NFPVerificatorTest1: new NFPVerificatorTest1(),
-	NFPVerificatorTest2: new NFPVerificatorTest2()
+	NFPVerificatorTest: new NFPVerificatorTest()
 };
