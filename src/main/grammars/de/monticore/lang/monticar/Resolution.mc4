@@ -19,7 +19,7 @@
 
 package de.monticore.lang.monticar;
 
-grammar Resolution extends de.monticore.NumberUnit, de.monticore.literals.Literals, de.monticore.ExpressionsBasis, de.monticore.lang.monticar.PrintType {
+grammar Resolution extends de.monticore.NumberUnit, de.monticore.literals.Literals, de.monticore.CommonExpressions, de.monticore.lang.monticar.PrintType {
     ast ResolutionDeclaration = method public String getName(){
         return "implement Name!";
     }

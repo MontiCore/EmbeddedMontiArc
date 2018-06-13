@@ -61,10 +61,6 @@ grammar Common2 extends de.monticore.lang.monticar.Types2 {
   ArrayDeclaration = "[" intLiteral:UnitNumberResolution "]" ;
 
     ast CommonMatrixType= method public String printType(){return "CommonMatrixType";};
-    CommonMatrixType implements PrintType, Type = ElementType CommonDimension;
-
-    CommonDimension = "^" "{" (CommonDimensionElement || ",")+ "}";
-    CommonDimensionElement = Name& | NumberWithUnit;
-
+    CommonMatrixType implements PrintType, Type = ElementType Dimension;
 
 }
