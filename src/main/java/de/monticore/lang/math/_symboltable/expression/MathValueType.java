@@ -121,8 +121,8 @@ public class MathValueType extends MathExpressionSymbol {
 
         mathValueType.setType(type.getElementType());
 
-        if (type.getElementType().getDimensionOpt().isPresent()) {
-            ASTDimension astDimension = type.getElementType().getDimensionOpt().get();
+        if (type.getDimensionOpt().isPresent()) {
+            ASTDimension astDimension = type.getDimensionOpt().get();
             if (astDimension.getVecDimOpt().isPresent())
                 if (astDimension.getVecDimOpt().get().getSymbolOpt().isPresent())
                     mathValueType.addDimension((MathExpressionSymbol) astDimension.getVecDimOpt().get().getSymbolOpt().get());

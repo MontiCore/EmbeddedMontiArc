@@ -83,7 +83,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
     //Assignments
     AssignmentType =
-        matrixProperty:Name* ElementType;
+        matrixProperty:Name* ElementType dimension:Dimension?;
 
     //Expression for all Numbers with units
     NumberExpression implements Expression<291> =

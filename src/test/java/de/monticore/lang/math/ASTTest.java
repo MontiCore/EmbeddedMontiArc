@@ -54,8 +54,8 @@ public class ASTTest {
         ast = parser.parse_StringElementType("Q(10 km : 20 km : 30 km)").orElse(null);
         assertNotNull(ast);
 
-        ast = parser.parse_StringElementType("Q(10 km : 20 km : 30 km)^{10, 15}").orElse(null);
-        assertNotNull(ast);
+        ASTAssignmentType astAssignmetType = parser.parse_StringAssignmentType("Q(10 km : 20 km : 30 km)^{10, 15}").orElse(null);
+        assertNotNull(astAssignmetType);
     }
 
     @Test
