@@ -21,19 +21,15 @@ sudo apt-get install -y libopenblas-dev liblapack-dev
 sudo apt-get install -y libopencv-dev
 sudo apt-get install -y python-dev python-setuptools python-pip libgfortran3
 sudo apt-get install -y python3-pip
+sudo apt-get install -y git 
 
 yes | sudo pip3 install virtualenv
 virtualenv -p /usr/bin/python2.7 ~/mxnet
 source ~/mxnet/bin/activate
 
 cd ~
-if cd incubator-mxnet
-then
-    git pull
-else
-    git clone --recursive https://github.com/apache/incubator-mxnet
-    cd incubator-mxnet
-fi
+git clone --recursive https://github.com/apache/incubator-mxnet
+cd incubator-mxnet
 make clean
 case $yn in
     [Yy]* ) make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1 USE_CPP_PACKAGE=1; break;;

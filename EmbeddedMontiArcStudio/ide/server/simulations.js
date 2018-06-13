@@ -220,7 +220,7 @@ class IntersectionSimulation {
         }).on("exit", onExit);
         this.logger.info("spawned!");
     }
-    
+
     exit(){
         if(this.curProcess != null){
             this.logger.info("Killing process!");
@@ -246,6 +246,19 @@ class ClassifierSimulation {
         };
 
         Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.SIMULATION.BUILD], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
+        }).on("exit", onExit);
+    }
+
+    rebuild(callback) {
+        this.logger.info("Generating, compiling and training Classifier...");
+
+        const onExit = () => {
+            this.logger.info("...Classifier built");
+            callback();
+        };
+
+        Process.spawn("bash", ["-c", BATCHES.CLASSIFIER.SIMULATION.REBUILD], {
             cwd: Path.resolve(PATHS.SCRIPTS, "classifier")
         }).on("exit", onExit);
     }

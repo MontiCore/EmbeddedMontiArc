@@ -36,7 +36,7 @@
 //cifar10 images
 ** https://rwth-aachen.sciebo.de/s/cWGjj6SMfRN56CX/download
 // trained classifier model
-** https://rwth-aachen.sciebo.de/s/gorZbVTNeNg8gPN/download
+** https://rwth-aachen.sciebo.de/s/DDreNWVUQrFbUMy/download
 //RosSimulationFramework.zip
 ** https://rwth-aachen.sciebo.de/s/J0UFMxtOMqzH0rJ/download
 

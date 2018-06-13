@@ -462,6 +462,24 @@ App.post("/services/classifier/simulate/classify", function(request, response) {
     image.mv(imagePath, onMV);
 });
 
+App.post("/services/classifier/rebuild", function(request, response) {
+	function onPrepared() {
+		Chrome.open(URLS.SHARED + "/classifier");
+		response.end();
+	}
+
+	ClassifierSimulation.rebuild(onPrepared);
+});
+
+App.post("/services/classifier/visualize", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/cifar10.main.html");
+		response.end();
+	}
+
+	ClassifierVisualization.execute(onExecuted);
+});
+
 App.post("/services/intersection/visualize", function(request, response) {
 	function onExecuted() {
 		Chrome.open(URLS.SHARED + "/v/ba.system.html");

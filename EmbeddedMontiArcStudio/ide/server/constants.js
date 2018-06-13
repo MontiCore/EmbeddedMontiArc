@@ -112,6 +112,9 @@ BATCHES.INTERSECTION.VISUALIZATION			= Path.resolve(PATHS.SCRIPTS, "intersection
 BATCHES.CLASSIFIER.SIMULATION          		= {};
 BATCHES.CLASSIFIER.SIMULATION.BUILD 		= Path.resolve(PATHS.SCRIPTS, "classifier", "build.sh");
 BATCHES.CLASSIFIER.SIMULATION.EXECUTE 	= Path.resolve(PATHS.SCRIPTS, "classifier", "execute.sh");
+BATCHES.CLASSIFIER.SIMULATION.REBUILD   = Path.resolve(PATHS.SCRIPTS, "classifier", "rebuild.sh");
+BATCHES.CLASSIFIER.VISUALIZATION			= Path.resolve(PATHS.SCRIPTS, "classifier","visualize.sh");
+
 
 /*
  * OPTIONS

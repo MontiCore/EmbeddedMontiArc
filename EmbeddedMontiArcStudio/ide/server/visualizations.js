@@ -17,7 +17,7 @@ const Path = require("path");
 		this.logger("Preparing Visualization...");
 		FileSystem.access(outputPath, onAccess);
 	}
-	
+
 	generate(input, modelPath, outputPath, callback) {
 		const onPrepared = (error) => {
 			if(error) this.logger.error("An error occurred while generating the Visualization: %j.", error);
@@ -111,10 +111,19 @@ class IntersectionVisualization extends AbstractVisualization {
     }
 }
 
+class ClassifierVisualization extends AbstractVisualization {
+    constructor() {
+        super("classifier", BATCHES.CLASSIFIER.VISUALIZATION);
+        this.logger = Log.getLogger("CLASSIFIER VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
 	PumpVisualization: new PumpVisualization(),
 	ClusteringVisualization: new ClusteringVisualization(),
     PacManVisualization: new PacManVisualization(),
-	IntersectionVisualization: new IntersectionVisualization()
+	IntersectionVisualization: new IntersectionVisualization(),
+	ClassifierVisualization: new ClassifierVisualization
 };

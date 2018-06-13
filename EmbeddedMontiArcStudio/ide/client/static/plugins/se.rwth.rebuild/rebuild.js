@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
     main.consumes = ["Plugin", "ui", "layout", "ui.custom", "tabManager", "models.updater"];
-    main.provides = ["stop"];
+    main.provides = ["rebuild"];
     return main;
 
     function main(options, imports, register) {
@@ -12,23 +12,23 @@ define(function(require, exports, module) {
 		var ModelsUpdater = imports["models.updater"];
 
         var plugin = new Plugin("SE RWTH", main.consumes);
-        var pluginInformation = { "stop": plugin };
+        var pluginInformation = { "rebuild": plugin };
 
         var loaded = false;
 		var messageIndex = -1;
 
-		function onStopResponse() {
+		function onRebuildResponse() {
 			UICustom.done(messageIndex);
 		}
 
 		function onClick() {
             var project = localStorage.getItem("reponame").toLowerCase();
 
-            messageIndex = UICustom.message("Stopping Simulation");
+            messageIndex = UICustom.message("Rebuilding Project..");
 
-            window.fetch("/services/" + project + "/stop", {
+            window.fetch("/services/" + project + "/rebuild", {
                 "method": "post"
-            }).then(onStopResponse);
+            }).then(onRebuildResponse);
 		}
 
         function onLoad() {
@@ -39,22 +39,16 @@ define(function(require, exports, module) {
             } else {
                 var parent = Layout.getElement("barTools");
 
-                if(project == "intersection") {
-                  var backDivider = new UI.divider({
-                      "class": "c9-divider-double menudivider"
-                  });
-
-                  var playLabel = new UI.label({
-                      "class": "icon-stop",
-                      "height": 14,
-                      "width": 22,
-                      "tooltip": "Stop simulator",
-                      "visible": true
-                  });
-
-				          playLabel.addEventListener("click", onClick);
-                  UI.insertByIndex(parent, playLabel, 0, plugin);
-                  UI.insertByIndex(parent, backDivider, 10, plugin);
+                if(project == "classifier") {
+                    var rebuildLabel = new UI.label({
+                        "class": "icon-rebuild",
+                        "height": 14,
+                        "width": 22,
+                        "tooltip": "Rebuild Project",
+                        "visible": true
+                    });
+                    rebuildLabel.addEventListener("click", onClick);
+                    UI.insertByIndex(parent, rebuildLabel, 0, plugin);
                 }
             }
         }

@@ -1064,6 +1064,7 @@ plugins.push(
 } else {
     plugins.push(
 	"plugins/se.rwth.simulate/simulate",
+  "plugins/se.rwth.rebuild/rebuild",
     "plugins/se.rwth.visualize/visualize",
     "plugins/se.rwth.report/report",
     "plugins/se.rwth.reportWithStreams/reportWithStreams",
