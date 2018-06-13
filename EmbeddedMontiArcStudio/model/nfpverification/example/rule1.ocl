@@ -1,0 +1,13 @@
+package example;
+
+import example.CnCExt;
+import example.NFPExt;
+
+ocl rule1 {
+    context Cmp cmp inv:
+            let
+                selectedVals = cmp.CType;
+                aggregatedValue = max(cmp.compPower, 0W);
+            in
+                aggregatedValue < min(selectedVals.compTypePower, +oo W);
+}

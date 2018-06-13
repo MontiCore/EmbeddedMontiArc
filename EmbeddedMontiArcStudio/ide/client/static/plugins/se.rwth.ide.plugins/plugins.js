@@ -1063,6 +1063,11 @@ plugins.push(
     "plugins/se.rwth.report/report",
     "plugins/se.rwth.models.updater/models.updater"
     );
+} else if (reponame == "NFPVerification") {
+plugins.push(
+    "plugins/se.rwth.nfpverification/nfpverification",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
 } else {
     plugins.push(
 	"plugins/se.rwth.simulate/simulate",

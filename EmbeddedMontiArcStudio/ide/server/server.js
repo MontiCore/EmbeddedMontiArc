@@ -30,7 +30,12 @@ function onPumpZipped() {
 }
 
 function onPacManZipped() {
+	Archiver.zip("nfpverification", onNFPZipped);
+}
+
+function onNFPZipped() {
 	Archiver.zip("autopilot", onAutopilotZipped);
 }
 
 Archiver.zip("pump", onPumpZipped);
+

@@ -44,6 +44,11 @@ var Dashboard = (function() {
                 reponame: "PacMan",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/PacMan/v&url=/m/pacman.zip&openFile=/de/rwth/pacman/PacManWrapper.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "NFPVerification",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/NFPVerification/v&url=/m/nfpverification.zip&openFile=/example/negative/Sensors.ema"
             }];
         },
 

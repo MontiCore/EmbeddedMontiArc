@@ -7,6 +7,7 @@ const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacMa
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
+const {NFPVerificatorTest1, NFPVerificatorTest2} = require("./nfpverification");
 const {PacmanGeneration}                                = require("./generations");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
@@ -31,6 +32,7 @@ App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
 App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
+App.use("/nfp", Express.static(PATHS.NFPVERIFICATION))
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
 App.use("/services", Express.json());
@@ -401,4 +403,51 @@ App.post("/services/pacman/visualize", function(request, response) {
 	PacManVisualization.execute(onExecuted);
 });
 
+App.post("/services/nfpverification/test1", function(request, response) {
+	const body = request.body;
+	
+	function doNothing(){}
+	
+	function onUpdated() {
+		var targetfolder = "witnesses_example.rule1_" + body.name.replace(/\//g, "."); 
+		var files = FileSystem.readdirSync(Path.resolve(PATHS.MODELS.NFPVERIFICATION.TARGET, targetfolder))
+		
+		if (files.length > 0) {
+			for (i = 0; i < files.length; i++) {
+				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS.NFPVERIFICATION.TARGET, targetfolder), files[i], doNothing);
+			}
+		}  
+		else {
+			alert('No matching files found');
+		} 
+		Chrome.open(URLS.SHARED + "/nfp/result.html");
+		response.end();
+	}
+
+	NFPVerificatorTest1.execute(body.name.replace(/\//g, ".").substring(0,body.name.length-4), onUpdated);	
+});
+
+App.post("/services/nfpverification/test2", function(request, response) {
+	const body = request.body;
+	
+	function doNothing(){}
+	
+	function onUpdated() {
+		var targetfolder = "witnesses_example.rule2_" + body.name.replace(/\//g, "."); 
+		var files = FileSystem.readdirSync(Path.resolve(PATHS.MODELS.NFPVERIFICATION.TARGET, targetfolder))
+		
+		if (files.length > 0) {
+			for (i = 0; i < files.length; i++) {
+				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS.NFPVERIFICATION.TARGET, targetfolder), files[i], doNothing);
+			}
+		}  
+		else {
+			alert('No matching files found');
+		} 
+		Chrome.open(URLS.SHARED + "/nfp/result.html");
+		response.end();
+	}
+		
+	NFPVerificatorTest2.execute("model\\nfpverification" + body.name.replace(/\//g, "\\"),onUpdated);
+});
 module.exports = App;

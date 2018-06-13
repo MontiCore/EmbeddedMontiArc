@@ -25,6 +25,7 @@ PATHS.SCRIPTS        = Path.resolve(PATHS.HOME, "scripts");
 PATHS.VIDEOS         = Path.resolve(PATHS.HOME, "videos");
 PATHS.SIMULATION     = Path.resolve(PATHS.HOME, "apache-tomcat-9.0.5");
 PATHS.VISUALIZATION  = Path.resolve(PATHS.HOME, "visualisation");
+PATHS.NFPVERIFICATION = Path.resolve(PATHS.HOME, "nfpverification");
 PATHS.TEST_RESULTS   = Path.resolve(PATHS.HOME, "testResults");
 PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
 PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
@@ -33,6 +34,9 @@ PATHS.PACMAN_SIMULATE= Path.resolve(PATHS.HOME, "pacman");
 PATHS.VIEWVERIFICATION = Path.resolve(PATHS.HOME, "viewverification");
 PATHS.VIEWVERIFICATION_RESULT = Path.resolve(PATHS.VIEWVERIFICATION, "result");
 PATHS.VIEWVERIFICATION_OUTPUT = Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG");
+
+PATHS.MODELS.NFPVERIFICATION = Path.resolve(PATHS.MODELS, "nfpverification");
+PATHS.MODELS.NFPVERIFICATION.TARGET =  Path.resolve(PATHS.MODEL, "target");
 
 
 /*
@@ -64,6 +68,7 @@ BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
+BATCHES.NFPVERIFICATION = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -100,6 +105,8 @@ BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
 BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
+BATCHES.NFPVERIFICATION.TEST1		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule1.bat");
+BATCHES.NFPVERIFICATION.TEST2 		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule2.bat");
 
 /*
  * OPTIONS
