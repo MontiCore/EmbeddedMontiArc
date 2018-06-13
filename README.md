@@ -1,6 +1,6 @@
 # EmbeddedMontiArcStudio
 
-**Latest release:** https://rwth-aachen.sciebo.de/s/Wli0nHabWAYTgl3
+**Latest release:** https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc
 
 [![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
 
@@ -13,6 +13,7 @@ For stable releases later than version 1.4 please insert the EmbeddedMontiArcLog
 
 Release History
 =======
+* **[v1.7.0:](https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc)** Added IDE support for tags
 * **[v1.6.5:](https://rwth-aachen.sciebo.de/s/Wli0nHabWAYTgl3)** Added PacMan example and BumperBot View Verification example
 * **[v1.5.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.1)** Updated SVG-Visualization (using new and better algorithm)
 * **[v1.5.1:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.1)** Fixes issues [#5](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/5) and [#12](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/12)
