@@ -11,7 +11,7 @@ grammar MathOpt extends de.monticore.lang.Math
     OptimizationVariableDeclarationExpression =
         type:AssignmentType?  Name;
 
-    OptimizationObjectiveFunction = (Statement | Expression);
+    OptimizationObjectiveFunction = (Statement | Expression) ";"?;
 
     OptimizationSimpleConditionExpression =
         left:Expression operator:OptimizationCompareOperator right:Expression ";"?;
@@ -25,6 +25,8 @@ grammar MathOpt extends de.monticore.lang.Math
     OptimizationForLoopExpression =
         "for" head:MathForLoopHead body:OptimizationConditionExpression+ "end" ";"?;
 
+    OptimizationObjectiveValue = type:ElementType Name "=";
+
     OptimizationExpression implements Statement =
-        optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclarationExpression ")" objectiveFunction:OptimizationObjectiveFunction "subject to" constraint:OptimizationConditionExpression* "end";
+        objectiveValue:OptimizationObjectiveValue? optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclarationExpression ")" objectiveFunction:OptimizationObjectiveFunction "subject to" constraint:OptimizationConditionExpression* "end";
 }

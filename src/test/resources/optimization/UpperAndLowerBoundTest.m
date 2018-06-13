@@ -20,8 +20,8 @@
 package optimization;
 
 script UpperAndLowerBoundTest
-    minimize(Q x)
-        Q y = x;
+    Q y = minimize(Q x)
+        x;
     subject to
         0 <= x <= 1;
         x >= -1;
