@@ -7,7 +7,9 @@ import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.Helper;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,6 +25,12 @@ import static org.junit.Assert.assertNotNull;
  */
 public class GenerationTest extends AbstractSymtabTest {
 
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
+    }
 
     @Test
     public void testSingleElemArray() throws IOException {

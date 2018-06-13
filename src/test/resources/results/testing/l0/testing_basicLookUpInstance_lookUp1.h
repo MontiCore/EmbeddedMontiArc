@@ -5,11 +5,12 @@
 #endif
 #include "octave/oct.h"
 class testing_basicLookUpInstance_lookUp1{
+const int n = 4;
 public:
-RowVector lookuptable;
+Matrix lookuptable;
 double in1;
 double out1;
-void init(RowVector lookuptable)
+void init(Matrix lookuptable)
 {
 this->lookuptable=lookuptable;
 }

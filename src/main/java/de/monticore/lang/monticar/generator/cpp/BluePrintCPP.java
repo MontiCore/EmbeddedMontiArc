@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Instance
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -61,9 +62,14 @@ public class BluePrintCPP extends BluePrint {
                 Log.info(subComponent.toString(), "InfoKK:");
                 //}
                 if (number == -1) {
-                    Log.info(subComponent.toString(), "No number added for" + resolutionDeclarationSymbol.getNameToResolve());
-                    ++index;
-                    break;
+                    // try with ast
+                    if (resolutionDeclarationSymbol.getASTResolution() instanceof ASTUnitNumberResolution) {
+                        number = ((ASTUnitNumberResolution) resolutionDeclarationSymbol.getASTResolution()).getNumber().get().intValue();
+                    } else {
+                        Log.info(subComponent.toString(), "No number added for" + resolutionDeclarationSymbol.getNameToResolve());
+                        ++index;
+                        break;
+                    }
                 }
                 fixSubComponentInstanceNumbers(componentSymbol, resolutionDeclarationSymbol.getNameToResolve(), number, index);
                 Variable constVar = new Variable();

@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTNameExpression;
+import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueType;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
@@ -214,13 +215,17 @@ public class TypeConverter {
     public static void handleCommonMatrixType(Variable variable, ASTCommonMatrixType astCommonMatrixType) {
         for (ASTExpression astCommonDimensionElement :
                 astCommonMatrixType.getDimension().getDimensionList()) {
-            if (astCommonDimensionElement instanceof ASTNameExpression)
+            if (astCommonDimensionElement.getSymbolOpt().isPresent() && astCommonDimensionElement.getSymbolOpt().get() instanceof MathExpressionSymbol)
+                variable.addDimensionalInformation(((MathExpressionSymbol) astCommonDimensionElement.getSymbolOpt().get()).getTextualRepresentation());
+            else if (astCommonDimensionElement instanceof ASTNameExpression)
                 variable.addDimensionalInformation(((ASTNameExpression) astCommonDimensionElement).getName());
             else if (astCommonDimensionElement instanceof ASTNumberWithUnit)
-                variable.addDimensionalInformation(((ASTNumberWithUnit) astCommonDimensionElement).getNumber().get() + "");
-            else {
+                variable.addDimensionalInformation(String.valueOf(((ASTNumberWithUnit) astCommonDimensionElement).getNumber().get().intValue()));
+            else if (astCommonDimensionElement instanceof ASTNumberExpression)
+                variable.addDimensionalInformation(String.valueOf(((ASTNumberExpression) astCommonDimensionElement).getNumberWithUnit().getNumber().get().intValue()));
+            else
                 Log.error("Case not handled;");
-            }
+
         }
     }
 
@@ -302,6 +307,9 @@ public class TypeConverter {
         // TODO: the type mappings below have been adjusted to make the tests pass. they are, however, wrong.
         addNonPrimitiveVariableType("Z", "double", "");
         addNonPrimitiveVariableType("C", "double", "");
+        addNonPrimitiveVariableType("N1", "int", "");
+        addNonPrimitiveVariableType("N0", "int", "");
+        addNonPrimitiveVariableType("N", "int", "");
         addNonPrimitiveVariableType("UnitNumberResolution", "double", "");
         addNonPrimitiveVariableType("CommonMatrixType", "Matrix", "octave/oct");
         addNonPrimitiveVariableType("AssignmentType", "Matrix", "octave/oct");
