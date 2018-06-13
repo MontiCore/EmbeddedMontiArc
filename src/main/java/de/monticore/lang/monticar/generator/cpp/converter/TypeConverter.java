@@ -1,13 +1,14 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math._ast.ASTAssignmentType;
+import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueType;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.VariableType;
@@ -17,8 +18,8 @@ import de.monticore.lang.monticar.generator.cpp.viewmodel.Utils;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTDimension;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.types.types._ast.ASTType;
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
+import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -126,7 +127,7 @@ public class TypeConverter {
 
     public static VariableType getRealVariableType(ASTCommonMatrixType astCommonMatrixType) {
         VariableType variableType;
-        List<ASTCommonDimensionElement> dimensionElements = astCommonMatrixType.getCommonDimension().getCommonDimensionElementList();
+        List<ASTExpression> dimensionElements = astCommonMatrixType.getDimension().getDimensionList();
         if (dimensionElements.size() == 1) {
             variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
         } else if (dimensionElements.size() == 2) {
@@ -144,10 +145,10 @@ public class TypeConverter {
         return variableType;
     }
 
-    public static boolean isVectorDimension(ASTCommonDimensionElement astCommonDimensionElement) {
+    public static boolean isVectorDimension(ASTExpression astCommonDimensionElement) {
         boolean result = false;
-        if (astCommonDimensionElement.getNumberWithUnitOpt().isPresent()) {
-            ASTNumberWithUnit unitNumber = astCommonDimensionElement.getNumberWithUnitOpt().get();
+        if (astCommonDimensionElement instanceof ASTNumberWithUnit) {
+            ASTNumberWithUnit unitNumber = (ASTNumberWithUnit) astCommonDimensionElement;
             if (unitNumber.getNumber().isPresent()) {
                 result = unitNumber.getNumber().get().intValue() == 1;
             }
@@ -211,12 +212,12 @@ public class TypeConverter {
     }
 
     public static void handleCommonMatrixType(Variable variable, ASTCommonMatrixType astCommonMatrixType) {
-        for (ASTCommonDimensionElement astCommonDimensionElement :
-                astCommonMatrixType.getCommonDimension().getCommonDimensionElementList()) {
-            if (astCommonDimensionElement.getNameOpt().isPresent())
-                variable.addDimensionalInformation(astCommonDimensionElement.getNameOpt().get());
-            else if (astCommonDimensionElement.getNumberWithUnitOpt().isPresent())
-                variable.addDimensionalInformation(astCommonDimensionElement.getNumberWithUnitOpt().get().getNumber().get() + "");
+        for (ASTExpression astCommonDimensionElement :
+                astCommonMatrixType.getDimension().getDimensionList()) {
+            if (astCommonDimensionElement instanceof ASTNameExpression)
+                variable.addDimensionalInformation(((ASTNameExpression) astCommonDimensionElement).getName());
+            else if (astCommonDimensionElement instanceof ASTNumberWithUnit)
+                variable.addDimensionalInformation(((ASTNumberWithUnit) astCommonDimensionElement).getNumber().get() + "");
             else {
                 Log.error("Case not handled;");
             }
@@ -230,8 +231,8 @@ public class TypeConverter {
 
     public static void handleAssignmentType(Variable variable, ASTAssignmentType astAssignmentType) {
         //TODO Add MatrixProperties to MathInformation
-        if (astAssignmentType.getElementType().getDimensionOpt().isPresent()) {
-            ASTDimension astDimension = astAssignmentType.getElementType().getDimensionOpt().get();
+        if (astAssignmentType.getDimensionOpt().isPresent()) {
+            ASTDimension astDimension = astAssignmentType.getDimensionOpt().get();
             variable.addDimensionalInformation(((MathExpressionSymbol) astDimension.getDimensionList().get(0).getSymbolOpt().get()).getTextualRepresentation());
             variable.addDimensionalInformation(((MathExpressionSymbol) astDimension.getDimensionList().get(1).getSymbolOpt().get()).getTextualRepresentation());
         }
