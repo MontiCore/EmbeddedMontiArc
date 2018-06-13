@@ -24,7 +24,9 @@ Usage:
 
 Changelog:
 ====
-
+* Added IDE support for Tags
+* Added new project PacMan
+* Added new project Pump
 * Fixes issue [#14](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/14) 
 
 What's under the Hood:
