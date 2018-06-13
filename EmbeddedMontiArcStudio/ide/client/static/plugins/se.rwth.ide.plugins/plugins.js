@@ -1064,6 +1064,7 @@ plugins.push(
     "plugins/se.rwth.models.updater/models.updater"
     );
 } else if (reponame == "NFPVerification") {
+ //   plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
 plugins.push(
     "plugins/se.rwth.nfpverification/nfpverification",
     "plugins/se.rwth.models.updater/models.updater"

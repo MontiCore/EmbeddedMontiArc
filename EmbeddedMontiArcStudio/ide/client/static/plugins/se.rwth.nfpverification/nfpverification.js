@@ -8,7 +8,7 @@ define(function(require, exports, module) {
         var UI = imports.ui;
         var Layout = imports.layout;
 		var UICustom = imports["ui.custom"];
-		var TabManager = imports.tabManager";
+		var TabManager = imports.tabManager;
 		var ModelsUpdater = imports["models.updater"];
 		var FileSystem = imports.fs;
 		
