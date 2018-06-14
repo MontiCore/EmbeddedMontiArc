@@ -32,8 +32,8 @@ public class ASTElementType extends ASTElementTypeTOP {
     public ASTElementType() {
     }
 
-    public ASTElementType(String name, Optional<ASTRange> range, Optional<ASTDimension> dimension) {
-        super(name, range, dimension);
+    public ASTElementType(String name, Optional<ASTRange> range) {
+        super(name, range);
     }
 
     public boolean isBoolean() {
