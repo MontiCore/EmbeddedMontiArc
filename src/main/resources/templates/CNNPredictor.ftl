@@ -28,8 +28,8 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(${tc.join(tc.architectureInputs, ", ", "const vector<float> &", "")},
-                 ${tc.join(tc.architectureOutputs, ", ", "vector<float> &", "")}){
+    void predict(${tc.join(tc.architectureInputs, ", ", "const std::vector<float> &", "")},
+                 ${tc.join(tc.architectureOutputs, ", ", "std::vector<float> &", "")}){
 <#list tc.architectureInputs as inputName>
         MXPredSetInput(handle, "data", ${inputName}.data(), ${inputName}.size());
         //MXPredSetInput(handle, "${inputName}", ${inputName}.data(), ${inputName}.size());
