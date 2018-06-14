@@ -40,8 +40,7 @@
         <monticore.version>5.0.1-SNAPSHOT</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
-        <Common-MontiCar.version>0.0.12</Common-MontiCar.version>
-        <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
+        <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
@@ -116,20 +115,6 @@
             <groupId>de.monticore</groupId>
             <artifactId>monticore-grammar</artifactId>
             <version>${monticore.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
@@ -282,6 +267,18 @@
                                 <include>**/*.ftl</include>
                             </includes>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

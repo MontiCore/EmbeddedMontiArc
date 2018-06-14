@@ -23,8 +23,11 @@ package de.monticore.lang.math._symboltable;
 import de.monticore.assignmentexpressions._ast.ASTDecSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTIncSuffixExpression;
 import de.monticore.assignmentexpressions._ast.ASTMinusPrefixExpression;
+import de.monticore.assignmentexpressions._visitor.AssignmentExpressionsVisitor;
 import de.monticore.commonexpressions._ast.*;
+import de.monticore.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressionsbasis._visitor.ExpressionsBasisVisitor;
 import de.monticore.lang.math._ast.*;
 import de.monticore.lang.math._matrixprops.MatrixPropertiesIdentifier;
 import de.monticore.lang.math._symboltable.expression.*;
@@ -33,7 +36,11 @@ import de.monticore.lang.matrix._ast.ASTMathMatrixAccess;
 import de.monticore.lang.matrix._ast.ASTMathMatrixAccessExpression;
 import de.monticore.lang.matrix._ast.ASTMathMatrixValueExplicitExpression;
 import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
+import de.monticore.lang.matrix._visitor.MatrixVisitor;
 import de.monticore.lang.matrixexpressions._ast.*;
+import de.monticore.lang.matrixexpressions._visitor.MatrixExpressionsVisitor;
+import de.monticore.lang.monticar.types2._ast.ASTDimension;
+import de.monticore.lang.monticar.types2._visitor.Types2Visitor;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
 import de.monticore.symboltable.MutableScope;
@@ -48,7 +55,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.lang.numberunit.Rationals.doubleToRational;
+import static de.monticore.numberunit.Rationals.doubleToRational;
+
 
 /**
  * @author math-group
@@ -142,11 +150,11 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, assignmentDeclarationExpression);
     }
 
-    public void endVisit(final ASTMathTrueExpression trueExpression){
+    public void endVisit(final ASTMathTrueExpression trueExpression) {
         trueExpression.setSymbol(new MathBooleanExpressionSymbol(true));
     }
 
-    public void endVisit(final ASTMathFalseExpression falseExpression){
+    public void endVisit(final ASTMathFalseExpression falseExpression) {
         falseExpression.setSymbol(new MathBooleanExpressionSymbol(false));
     }
 
@@ -628,21 +636,47 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
     public void endVisit(final ASTBracketExpression astNode) {
-        linkChildNodeSymbolWithNode(astNode, astNode.getExpression());
+        MathParenthesisExpressionSymbol symbol = new MathParenthesisExpressionSymbol();
+        if (astNode.getExpression().getSymbolOpt().isPresent()) {
+            symbol.setMathExpressionSymbol((MathExpressionSymbol) astNode.getExpression().getSymbolOpt().get());
+        }
+        addToScopeAndLinkWithNode(symbol, astNode);
     }
 
-    /**
-     * used for ASTNodes that wrap a single expression such as
-     * e.g. BracketExpression ect
-     *
-     * @param parent Parent AST Node
-     * @param child  Child AST Node
-     */
-    protected void linkChildNodeSymbolWithNode(ASTExpression parent, ASTExpression child) {
-        visit(child);
-        if (child.getSymbolOpt().isPresent()) {
-            addToScopeAndLinkWithNode(child.getSymbolOpt().get(), parent);
+    public void endVisit(final ASTDimension node) {
+        for (ASTExpression astExpr : node.getDimensionList()) {
+            handle(astExpr);
         }
+    }
+
+    @Override
+    public void setRealThis(ExpressionsBasisVisitor realThis) {
+
+    }
+
+    @Override
+    public void setRealThis(Types2Visitor realThis) {
+
+    }
+
+    @Override
+    public void setRealThis(AssignmentExpressionsVisitor realThis) {
+
+    }
+
+    @Override
+    public void setRealThis(CommonExpressionsVisitor realThis) {
+
+    }
+
+    @Override
+    public void setRealThis(MatrixVisitor realThis) {
+
+    }
+
+    @Override
+    public void setRealThis(MatrixExpressionsVisitor realThis) {
+
     }
 }
 

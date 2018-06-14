@@ -22,8 +22,8 @@ package de.monticore.lang.math._symboltable.expression;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._ast.ASTAssignmentType;
-import de.monticore.lang.math._ast.ASTDimension;
-import de.monticore.lang.math._ast.ASTElementType;
+import de.monticore.lang.monticar.types2._ast.ASTDimension;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -121,8 +121,8 @@ public class MathValueType extends MathExpressionSymbol {
 
         mathValueType.setType(type.getElementType());
 
-        if (type.getElementType().getDimensionOpt().isPresent()) {
-            ASTDimension astDimension = type.getElementType().getDimensionOpt().get();
+        if (type.getDimensionOpt().isPresent()) {
+            ASTDimension astDimension = type.getDimensionOpt().get();
             if (astDimension.getVecDimOpt().isPresent())
                 if (astDimension.getVecDimOpt().get().getSymbolOpt().isPresent())
                     mathValueType.addDimension((MathExpressionSymbol) astDimension.getVecDimOpt().get().getSymbolOpt().get());
