@@ -1,0 +1,17 @@
+package test;
+
+component PacmanInputControl{
+    port out Boolean moveDown,
+        out Boolean moveUp,
+        out Boolean moveLeft,
+        out Boolean moveRight;
+
+    connect true -> initDone;
+
+    implementation Application{
+        set port moveDown  to "s";
+        set port moveUp    to "w";
+        set port moveLeft  to "a";
+        set port moveRight to "d";
+    }
+}
