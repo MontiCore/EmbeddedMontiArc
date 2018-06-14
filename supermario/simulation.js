@@ -1,11 +1,14 @@
-var UPDIRECTION    = 0,
-    DOWNDIRECTION  = 1,
-    LEFTDIRECTION  = 2,
-    RIGHTDIRECTION = 3,
-    UNIT           = "cm";
+var KEY = {
+	UP: 38,
+	DOWN: 40,
+	LEFT: 37,
+	RIGHT: 39,
+	SHOOT: 17,
+}
 
 
-function startSimulation () {
+
+function startSimulation() {
     //PACMAN.startNewGame();
     try {
         window.setInterval(doSimulationStep, 500);
@@ -20,17 +23,8 @@ function startSimulation () {
 }
 
 function pressKey(dir) {
-    var keyCode;
-    if(dir == DOWNDIRECTION)
-            keyCode = KEY.ARROW_DOWN;
-    else if(dir == UPDIRECTION)
-        keyCode = KEY.ARROW_UP;
-    else if(dir == LEFTDIRECTION)
-        keyCode = KEY.ARROW_LEFT;
-    else if(dir == RIGHTDIRECTION)
-        keyCode = KEY.ARROW_RIGHT;
-    else
-        keyCode = KEY.ARROW_LEFT;
+    var keyCode = dir;
+
 
     // document.dispatchEvent(new KeyboardEvent('keydown',{'keyCode':keyCode}));
     var keyboardEvent = new KeyboardEvent('keydown', {bubbles:true});
@@ -39,6 +33,62 @@ function pressKey(dir) {
     document.body.dispatchEvent(keyboardEvent);
 }
 
-function doSimulationStep(){
+function sendPlayerData(){
+
+	var player = FSM.player;
+	var marioPos = [player.left, player.top];
+	var marioVel = [player.xvel, player.yvel];
+	var marioHeight = player.height;
+	
+	setMarioPosition(marioPos);
+	setMarioVelocity(marioVel);
+	setMarioHeight(marioHeight);
+	
+	console.log(player);
+}
+
+function sendEnvironmentData(){
+	var solid = FSM.GroupHolder.group.solid;
+	
+	
+	var nextObstacles = extractNextObstaclePositions(solid);
+	var nextEnemies = extractNextObstaclePositions(solid);
+	var nextHole = extractNextHolePosition(solid);
+	
+	
+	setNextObstaclePositions(nextObstaclePositions);
+	setNextEnemyPositions(nextEnemyPositions);
+	setNextHole(nextHole);
+	
+
+}
+
+function getCommands(){
+	var dir = getMarioDirection();
+	var jump = getMarioJump();
+	var shoot = getMarioShoot();
+	
+	if(dir==1)
+		pressKey(KEY.RIGHT);
+	else
+		if(dir==-1)
+			pressKey(KEY.RIGHT);
+		
+	if(jump==true)
+		pressKey(KEY.UP);
+	
+	if(shoot==true)
+		pressKey(KEY.CONTROL);
+	
+	
 	
 }
+
+function doSimulationStep(){
+	sendPlayerData();
+	sendEnvironmentData();
+	
+	getCommands();
+}
+
+

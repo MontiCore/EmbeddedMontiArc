@@ -4,11 +4,13 @@ import de.rwth.supermario.haller.Controller;
 
 component SuperMarioWrapper {
     ports   //x,y
-        in Z^{1,1} marioPosition,
-        in Z^{5,5} nextEnemyPositions,
-        in Z^{5,5} nextObstaclePositions,
+        in Z^{2} marioPosition,
+        in Z^{2} marioVelocity,
+        in Z marioHeight,
+        in Z^{5,2} nextEnemyPositions,
+        in Z^{5,2} nextObstaclePositions,
         in Z nextHole,
-        in Z^{5,5} nextLootCrates,
+        in Z^{5,2} nextLootCrates,
         out Z(-1 : 1 : 1) marioDirection,
         out B marioJump,
         out B marioShoot;
