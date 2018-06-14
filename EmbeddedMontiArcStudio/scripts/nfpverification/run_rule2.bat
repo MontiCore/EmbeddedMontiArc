@@ -22,9 +22,11 @@ REM @echo off
 call "..\shared\variables.bat"
 setlocal ENABLEDELAYEDEXPANSION
 
-REM set jar= "%NFPVERIFICATION_HOME%\ocl_ema2java-4.0.2-jar-with-dependencies.jar"
-if exist "%NFPVERIFICATION_HOME%" rmdir "%NFPVERIFICATION_HOME%" /s /q
-mkdir %NFPVERIFICATION_HOME%
+if exist "%HOME%\nfpverification\results\" rmdir "%HOME%\nfpverification\results\" /s /q
+mkdir %HOME%\nfpverification\results\
+
+
+set jar= "%NFPVERIFICATION_HOME%\ocl_ema2java-4.0.3-SNAPSHOT-jar-with-dependencies.jar"
 
 set parent_dir= "%HOME%\model\nfpverification"
 set target= "%HOME%\model\nfpverification\target"
@@ -33,7 +35,7 @@ set ocl= "example.rule2"
 
 
 
-REM "%JAVA_HOME%\bin\java.exe" -jar %JAR% %parent_dir% %1 %ocl% %target%
+"%JAVA_HOME%\bin\java.exe" -jar %JAR% %parent_dir% %1 %ocl% %target%
 
 REM "%JAVA_HOME%\bin\java.exe" -jar "%VERIFICATION_HOME%\view-verification-0.0.2-SNAPSHOT-jar-with-dependencies.jar" ^
 REM 	%HOME%\model\pump\model\pumpStationExample\PumpStation.ema ^
@@ -41,20 +43,20 @@ REM 	%target% ^
 REM 	%NFPVERIFICATION_HOME%\results
 
 
-set text=""
+REM set text=""
 
-for /f "tokens=*" %%a in (%HOME%\model\nfpverification\target\witnesses_example.rule2_%1\__WITNESS_OVERVIEW__.txt) do (
-   set text=!text!^<p^>%%a^</p^>
-)
+REM for /f "tokens=*" %%a in (%HOME%\model\nfpverification\target\witnesses_example.rule2_%1\__WITNESS_OVERVIEW__.txt) do (
+REM    set text=!text!^<p^>%%a^</p^>
+REM )
 
-set output="%text:"= %"
+REM set output="%text:"= %"
 
-(echo %output%) >> %NFPVERIFICATION_HOME%\temp.txt 
+REM (echo %output%) >> %NFPVERIFICATION_HOME%\temp.txt 
 
-(
-echo ^<!DOCTYPE html^>
-echo   ^<html^>^<body^>^<header^>Witness Overview^</header^>^
-type  %NFPVERIFICATION_HOME%\temp.txt
-echo   ^</body^>^</html^>
-) >> %NFPVERIFICATION_HOME%\result.html 
+REM (
+REM echo ^<!DOCTYPE html^>
+REM echo   ^<html^>^<body^>^<header^>Witness Overview^</header^>^
+REM type  %NFPVERIFICATION_HOME%\temp.txt
+REM echo   ^</body^>^</html^>
+REM ) >> %NFPVERIFICATION_HOME%\result.html 
 

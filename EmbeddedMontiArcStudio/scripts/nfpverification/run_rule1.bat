@@ -21,7 +21,10 @@
 @echo off
 call "..\shared\variables.bat"
 
-set jar= "%NFPVERIFICATION_HOME%\ocl_ema2java-4.0.2-jar-with-dependencies.jar"
+if exist "%HOME%\nfpverification\results\" rmdir "%HOME%\nfpverification\results\" /s /q
+mkdir %HOME%\nfpverification\results\
+
+set jar= "%NFPVERIFICATION_HOME%\ocl_ema2java-4.0.3-SNAPSHOT-jar-with-dependencies.jar"
 
 set parent_dir= "%HOME%\model\nfpverification"
 set target= "%HOME%\model\nfpverification\target"
