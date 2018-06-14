@@ -25,6 +25,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTBehaviorE
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
 import de.monticore.lang.math._ast.ASTMathStatements;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.monticar.common2._visitor.Common2Visitor;
 import de.se_rwth.commons.logging.Log;
 
 import de.monticore.symboltable.MutableScope;
@@ -97,4 +98,8 @@ public class EmbeddedMontiArcMathSymbolTableCreatorTOP extends de.monticore.symb
     addToScopeAndLinkWithNode(new MathStatementsSymbol("MathStatements", astMathStatements), node);
   }
 
+  @Override
+  public void setRealThis(Common2Visitor realThis) {
+
+  }
 }

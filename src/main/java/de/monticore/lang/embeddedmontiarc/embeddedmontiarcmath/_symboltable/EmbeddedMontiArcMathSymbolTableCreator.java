@@ -28,7 +28,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathDelegatorVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.monticar.types2._visitor.Types2Visitor;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Scope;
@@ -58,7 +57,8 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         this.emaSTC = new EmbeddedMontiArcSymbolTableCreator(resolvingConfig, scopeStack);
 
-        visitor.setEmbeddedMontiArcMathVisitor(new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack));
+        EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
+        visitor.setEmbeddedMontiArcMathVisitor(emamSTC);
         visitor.setEmbeddedMontiArcVisitor(emaSTC);
         visitor.setEmbeddedMontiArcBehaviorVisitor(new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
         MathSymbolTableCreator mathSTC = new MathSymbolTableCreator(resolvingConfig, scopeStack);
@@ -69,7 +69,8 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
         visitor.setMatrixExpressionsVisitor(mathSTC);
         visitor.setMatrixVisitor(mathSTC);
         visitor.setTypes2Visitor(mathSTC);
-        
+        visitor.setCommon2Visitor(emamSTC);
+
         //visitor.set_de_monticore_java_javadsl__visitor_JavaDSLVisitor(new JavaSymbolTableCreator(resolvingConfig, scopeStack));
     }
 
