@@ -21,10 +21,12 @@
 package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -34,14 +36,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class CNNArchGenerator {
+public class CNNArch2MxNet implements CNNArchGenerator {
 
     private String generationTargetPath;
 
-    public CNNArchGenerator() {
+    public CNNArch2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
@@ -77,6 +80,11 @@ public class CNNArchGenerator {
         catch (IOException e){
             Log.error(e.toString());
         }
+    }
+
+    @Override
+    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames) {
+        return null;
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.

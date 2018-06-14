@@ -127,7 +127,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>de.monticore.lang.monticar.cnnarch.generator.CNNArchGeneratorCli</mainClass>
+                  <mainClass>de.monticore.lang.monticar.cnnarch.generator.CNNArch2MxNetCli</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>

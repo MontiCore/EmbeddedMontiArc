@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch;
 
-import de.monticore.lang.monticar.cnnarch.generator.CNNArchGeneratorCli;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArch2MxNetCli;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testCifar10Classifier() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
-        CNNArchGeneratorCli.main(args);
+        CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
@@ -62,7 +62,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testAlexnetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
-        CNNArchGeneratorCli.main(args);
+        CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
@@ -78,7 +78,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testGeneratorVGG16() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "VGG16", "-o", "./target/generated-sources-cnnarch/"};
-        CNNArchGeneratorCli.main(args);
+        CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
@@ -95,7 +95,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testThreeInputCNNGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
-        CNNArchGeneratorCli.main(args);
+        CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
 
@@ -103,7 +103,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();;
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
-        CNNArchGeneratorCli.main(args);
+        CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
 
@@ -111,7 +111,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
-        CNNArchGeneratorCli.main(args);
+        CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().size() == 3);
     }
 }
