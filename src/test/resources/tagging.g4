@@ -2465,7 +2465,7 @@ setActiveASTNode(_aNode);
 
   (
   
-   tmp0=scope{addToIteratedAttributeIfNotNull(_aNode.getScopes(), _localctx.tmp0.ret);}  
+   tmp0=scope{addToIteratedAttributeIfNotNull(_aNode.getScopeList(), _localctx.tmp0.ret);}
   
   (
   
@@ -2473,7 +2473,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal ,'
 (COMMA)// End of 'ASTTerminal'
 
-   tmp1=scope{addToIteratedAttributeIfNotNull(_aNode.getScopes(), _localctx.tmp1.ret);}  
+   tmp1=scope{addToIteratedAttributeIfNotNull(_aNode.getScopeList(), _localctx.tmp1.ret);}
   
   
 )*
@@ -2485,7 +2485,7 @@ setActiveASTNode(_aNode);
 
   (
   
-   tmp2=tag{addToIteratedAttributeIfNotNull(_aNode.getTags(), _localctx.tmp2.ret);}  
+   tmp2=tag{addToIteratedAttributeIfNotNull(_aNode.getTagList(), _localctx.tmp2.ret);}
   
   (
   
@@ -2493,7 +2493,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal ,'
 (COMMA)// End of 'ASTTerminal'
 
-   tmp3=tag{addToIteratedAttributeIfNotNull(_aNode.getTags(), _localctx.tmp3.ret);}  
+   tmp3=tag{addToIteratedAttributeIfNotNull(_aNode.getTagList(), _localctx.tmp3.ret);}
   
   
 )*
@@ -2596,7 +2596,7 @@ setActiveASTNode(_aNode);
 
   (
   
-   tmp1=tag{addToIteratedAttributeIfNotNull(_aNode.getTags(), _localctx.tmp1.ret);}  
+   tmp1=tag{addToIteratedAttributeIfNotNull(_aNode.getTagList(), _localctx.tmp1.ret);}
   
   (
   
@@ -2604,7 +2604,7 @@ setActiveASTNode(_aNode);
  // Start of 'ASTTerminal ,'
 (COMMA)// End of 'ASTTerminal'
 
-   tmp2=tag{addToIteratedAttributeIfNotNull(_aNode.getTags(), _localctx.tmp2.ret);}  
+   tmp2=tag{addToIteratedAttributeIfNotNull(_aNode.getTagList(), _localctx.tmp2.ret);}
   
   
 )*

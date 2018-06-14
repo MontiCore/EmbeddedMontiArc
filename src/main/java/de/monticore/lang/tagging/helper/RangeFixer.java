@@ -22,7 +22,6 @@ package de.monticore.lang.tagging.helper;
 
 import com.google.common.collect.Lists;
 import de.monticore.lang.tagging._ast.*;
-import de.monticore.literals.literals._ast.ASTIntLiteral;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,14 +35,14 @@ public class RangeFixer {
 
     public static void fixTaggingUnit(ASTTaggingUnit astTaggingUnit) {
         //Replace all range syntax scopes with expanded versions
-        astTaggingUnit.getTagBody().getTags()
+        astTaggingUnit.getTagBody().getTagList()
                 .forEach(tag -> {
-                    List<ASTScope> fixedScopes = tag.getScopes().stream()
+                    List<ASTScope> fixedScopes = tag.getScopeList().stream()
                             .map(RangeFixer::expandScopeWithRange)
                             .flatMap(Collection::stream)
                             .collect(Collectors.toList());
 
-                    tag.setScopes(fixedScopes);
+                    tag.setScopeList(fixedScopes);
                 });
     }
 
@@ -52,22 +51,22 @@ public class RangeFixer {
             ASTNameScope nameScope = (ASTNameScope) scope;
             List<ASTQualifiedNameWithArray> qualifiedNames = new ArrayList<>();
             //add empty start name
-            qualifiedNames.add(ASTQualifiedNameWithArray.getBuilder().build());
+            qualifiedNames.add(TaggingMill.qualifiedNameWithArrayBuilder().build());
 
-            for (ASTNameWithArray part : nameScope.getQualifiedName().getParts()) {
+            for (ASTNameWithArray part : nameScope.getQualifiedName().getPartsList()) {
                 List<ASTNameWithArray> expandedParts = expandRangeInPart(part);
                 List<ASTQualifiedNameWithArray> expandedNames = new ArrayList<>();
                 for (ASTNameWithArray ep : expandedParts) {
                     for (ASTQualifiedNameWithArray name : qualifiedNames) {
                         ASTQualifiedNameWithArray tmpName = name.deepClone();
-                        tmpName.getParts().add(ep);
+                        tmpName.getPartsList().add(ep);
                         expandedNames.add(tmpName);
                     }
                 }
                 qualifiedNames = expandedNames;
             }
 
-            return qualifiedNames.stream().map(name -> ASTNameScope.getBuilder().qualifiedName(name).build()).collect(Collectors.toList());
+            return qualifiedNames.stream().map(name -> TaggingMill.nameScopeBuilder().setQualifiedName(name).build()).collect(Collectors.toList());
 
         } else {
             return Lists.newArrayList(scope);
@@ -76,20 +75,20 @@ public class RangeFixer {
 
     public static List<ASTNameWithArray> expandRangeInPart(ASTNameWithArray part) {
         //Not a range
-        if (!part.getStart().isPresent() || !part.getEnd().isPresent()) {
+        if (!part.getStartOpt().isPresent() || !part.getEndOpt().isPresent()) {
             return Lists.newArrayList(part);
         }
 
         List<ASTNameWithArray> result = new ArrayList<>();
 
-        int step = part.getStep().isPresent() ? part.getStep().get().getValue() : 1;
-        int start = part.getStart().get().getValue();
-        int end = part.getEnd().get().getValue();
+        int step = part.getStepOpt().isPresent() ? part.getStepOpt().get().getValue() : 1;
+        int start = part.getStartOpt().get().getValue();
+        int end = part.getEndOpt().get().getValue();
 
         for (int i = start; i <= end; i += step) {
-            ASTNameWithArray tmpNameWithArray = ASTNameWithArray.getBuilder()
-                    .name(part.getName())
-                    .start(ASTIntLiteral.getBuilder().source("" + i).build())
+            ASTNameWithArray tmpNameWithArray = TaggingMill.nameWithArrayBuilder()
+                    .setName(part.getName())
+                    .setStart(TaggingMill.intLiteralBuilder().setSource("" + i).build())
                     .build();
             result.add(tmpNameWithArray);
         }

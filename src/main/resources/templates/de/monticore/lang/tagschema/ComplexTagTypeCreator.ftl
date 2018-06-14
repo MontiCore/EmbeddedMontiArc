@@ -55,14 +55,14 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
                 .getQualifiedName().toString()) :
             packageName;
 
-     for (ASTTag element : unit.getTagBody().getTags()) {
+     for (ASTTag element : unit.getTagBody().getTagList()) {
             element.getTagElements().stream()
               .filter(t -> t.getName().equals("${tagTypeName}"))
               .filter(t -> !t.getTagValue().isPresent())
               .map(t -> matchRegexPattern(t.getTagValue().get()))
               .filter(r -> r != null)
               .forEachOrdered(m ->
-                  element.getScopes().stream()
+                  element.getScopeList().stream()
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
                     .map(s -> getGlobalScope(gs).<${scopeSymbol}>resolveDown(

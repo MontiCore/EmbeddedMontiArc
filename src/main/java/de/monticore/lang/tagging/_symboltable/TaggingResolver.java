@@ -223,11 +223,6 @@ public class TaggingResolver implements Scope {
   }
 
   @Override
-  public Optional<? extends Symbol> resolve(SymbolPredicate symbolPredicate) {
-    return globalScope.resolve(symbolPredicate);
-  }
-
-  @Override
   public <T extends Symbol> Optional<T> resolveDown(String s, SymbolKind symbolKind) {
     return globalScope.resolveDown(s, symbolKind);
   }
@@ -260,12 +255,6 @@ public class TaggingResolver implements Scope {
   @Override
   public Map<String, Collection<Symbol>> getLocalSymbols() {
     return globalScope.getLocalSymbols();
-  }
-
-  /** @deprecated */
-  @Override
-  public Map<String, Collection<Symbol>> getSymbols() {
-    return globalScope.getSymbols();
   }
 
   @Override

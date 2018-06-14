@@ -54,7 +54,7 @@ public class CompPowerSymbolCreator implements TagSymbolCreator {
                 .getQualifiedNameString()) :
             packageName;
 
-    for (ASTTag element : unit.getTagBody().getTags()) {
+    for (ASTTag element : unit.getTagBody().getTagList()) {
       element.getTagElements().stream()
           .filter(t -> t.getName().equals("CompPower"))
           .filter(t -> t.getTagValue().isPresent())
@@ -62,7 +62,7 @@ public class CompPowerSymbolCreator implements TagSymbolCreator {
           .filter(v -> v != null)
           .filter(this::checkUnit)
           .forEachOrdered(v ->
-              element.getScopes().stream()
+              element.getScopeList().stream()
                 .filter(this::checkScope)
                 .map(s -> (ASTNameScope) s)
                 .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(

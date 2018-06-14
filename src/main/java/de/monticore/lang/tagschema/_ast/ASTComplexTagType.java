@@ -20,6 +20,8 @@
  */
 package de.monticore.lang.tagschema._ast;
 
+import java.util.Optional;
+
 /**
  * Created by MichaelvonWenckstern on 28.06.2016.
  */
@@ -28,8 +30,8 @@ public class ASTComplexTagType extends ASTComplexTagTypeTOP {
     super();
   }
 
-  public ASTComplexTagType (String name, ASTScope scope, String complexTagDef) {
-    super(name, scope, complexTagDef);
+  public ASTComplexTagType(String name, Optional<ASTScope> scope, String complexTag) {
+    super(name, scope, complexTag);
   }
 
   public void setComplexTag(String complexTag) {

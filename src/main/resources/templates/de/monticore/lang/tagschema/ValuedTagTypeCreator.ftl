@@ -62,7 +62,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
                 .getQualifiedNameString()) :
             packageName;
 
-    for (ASTTag element : unit.getTagBody().getTags()) {
+    for (ASTTag element : unit.getTagBody().getTagList()) {
       element.getTagElements().stream()
           .filter(t -> t.getName().equals("${tagTypeName}"))
           .filter(t -> t.getTagValue().isPresent())
@@ -72,7 +72,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
           .filter(this::checkUnit)
         </#if>
           .forEachOrdered(v ->
-              element.getScopes().stream()
+              element.getScopeList().stream()
                 .filter(this::checkScope)
                 .map(s -> (ASTNameScope) s)
                 .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(

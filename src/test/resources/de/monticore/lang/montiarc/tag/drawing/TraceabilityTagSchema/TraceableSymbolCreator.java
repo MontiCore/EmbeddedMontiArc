@@ -46,12 +46,12 @@ public class TraceableSymbolCreator implements TagSymbolCreator {
                 .getQualifiedName().toString()) :
             packageName;
 
-     for (ASTTag element : unit.getTagBody().getTags()) {
+     for (ASTTag element : unit.getTagBody().getTagList()) {
             element.getTagElements().stream()
               .filter(t -> t.getName().equals("Traceable"))
               .filter(t -> !t.getTagValue().isPresent()) // only marker tag with no value
               .forEachOrdered(t ->
-                  element.getScopes().stream()
+                  element.getScopeList().stream()
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
                     .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(

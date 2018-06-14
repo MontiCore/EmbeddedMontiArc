@@ -21,131 +21,124 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <!-- == PROJECT COORDINATES ============================================= -->
-  <groupId>de.monticore.lang</groupId>
-  <artifactId>Tagging</artifactId>
-  <version>0.0.2</version>
+    <!-- == PROJECT COORDINATES ============================================= -->
+    <groupId>de.monticore.lang</groupId>
+    <artifactId>Tagging</artifactId>
+    <version>0.0.3-SNAPSHOT</version>
 
-  <!-- == PROJECT DEPENDENCIES ============================================= -->
+    <!-- == PROJECT DEPENDENCIES ============================================= -->
 
-   <properties>
+    <properties>
 
-    <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>4.5.4.08.11.2017</monticore.version>
-    <se-commons.version>1.7.7</se-commons.version>
-    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
+        <!-- .. SE-Libraries .................................................. -->
+        <monticore.version>5.0.0</monticore.version>
+        <se-commons.version>1.7.7</se-commons.version>
+        <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 
-    <!-- .. Libraries .................................................. -->
-    <guava.version>18.0</guava.version>
-    <junit.version>4.12</junit.version>
-    <logback.version>1.1.2</logback.version>
-	<jscience.version>4.3.1</jscience.version>
+        <!-- .. Libraries .................................................. -->
+        <guava.version>18.0</guava.version>
+        <junit.version>4.12</junit.version>
+        <logback.version>1.1.2</logback.version>
+        <jscience.version>4.3.1</jscience.version>
 
-    <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
-    <assembly.plugin>2.5.4</assembly.plugin>
-    <compiler.plugin>3.3</compiler.plugin>
-    <source.plugin>2.4</source.plugin>
-    <shade.plugin>2.4.3</shade.plugin>
+        <!-- .. Plugins ....................................................... -->
+        <monticore.plugin>5.0.0</monticore.plugin>
+        <assembly.plugin>2.5.4</assembly.plugin>
+        <compiler.plugin>3.3</compiler.plugin>
+        <source.plugin>2.4</source.plugin>
+        <shade.plugin>2.4.3</shade.plugin>
 
-    <!-- Classifiers -->
-    <grammars.classifier>grammars</grammars.classifier>
-    <cli.classifier>cli</cli.classifier>
+        <!-- Classifiers -->
+        <grammars.classifier>grammars</grammars.classifier>
+        <cli.classifier>cli</cli.classifier>
 
-    <!-- .. Misc .......................................................... -->
-    <java.version>1.8</java.version>
+        <!-- .. Misc .......................................................... -->
+        <java.version>1.8</java.version>
 
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <github.global.server>github</github.global.server>
-  </properties>
-  
-  <dependencies>
-      <dependency>
-          <groupId>org.antlr</groupId>
-          <artifactId>antlr4-runtime</artifactId>
-          <version>4.7.1</version>
-      </dependency>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <github.global.server>github</github.global.server>
+    </properties>
 
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-logging</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.1</version>
+        </dependency>
 
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-logging</artifactId>
+            <version>${se-commons.version}</version>
+        </dependency>
 
-    <!-- MontiCore Dependencies -->
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-grammar</artifactId>
-      <version>${monticore.version}</version>
-    </dependency>
+        <!-- MontiCore Dependencies -->
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-runtime</artifactId>
+            <version>${monticore.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-grammar</artifactId>
-      <version>${monticore.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-grammar</artifactId>
+            <version>${monticore.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.se_rwth.commons</groupId>
-      <artifactId>se-commons-groovy</artifactId>
-      <version>${se-commons.version}</version>
-    </dependency>
-	
-	<dependency>
-		<groupId>org.jscience</groupId>
-		<artifactId>jscience</artifactId>
-		<version>4.3.1</version>
-	</dependency>
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-grammar</artifactId>
+            <version>${monticore.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
 
-    <!-- .. Test Libraries ............................................... -->
-    <!-- .. Test Libraries ............................................... -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
+        <dependency>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-groovy</artifactId>
+            <version>${se-commons.version}</version>
+        </dependency>
 
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
+        <!-- .. Test Libraries ............................................... -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
-    </dependency>
+        <dependency>
+            <groupId>de.monticore</groupId>
+            <artifactId>monticore-runtime</artifactId>
+            <version>${monticore.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
 
-    <dependency>
-      <groupId>org.jscience</groupId>
-      <artifactId>jscience</artifactId>
-      <version>${jscience.version}</version>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
 
-   <!-- == PROJECT BUILD SETTINGS =========================================== -->
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>${jscience.version}</version>
+        </dependency>
+    </dependencies>
+
+    <!-- == PROJECT BUILD SETTINGS =========================================== -->
 
     <build>
         <plugins>
@@ -275,7 +268,7 @@
                     </execution>
                 </executions>
             </plugin>
-                 <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
@@ -299,34 +292,34 @@
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
                 </configuration>
-</plugin>
+            </plugin>
         </plugins>
     </build>
-<!--
+    <!--
+        <distributionManagement>
+            <repository>
+                <id>internal.repo</id>
+                <name>Temporary Staging Repository</name>
+                <url>file://${project.build.directory}/external-dependencies</url>
+            </repository>
+            <snapshotRepository>
+                <id>internal.repo</id>
+                <url>file://${project.build.directory}/external-dependencies</url>
+            </snapshotRepository>
+        </distributionManagement>
+        -->
+    <!-- == DISTRIBUTION ==================================================== -->
+
     <distributionManagement>
         <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-    -->
- <!-- == DISTRIBUTION ==================================================== -->
-
-  <distributionManagement>
-    <repository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 
 
 </project>
