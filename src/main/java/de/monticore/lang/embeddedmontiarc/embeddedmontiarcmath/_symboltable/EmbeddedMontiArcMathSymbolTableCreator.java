@@ -39,7 +39,7 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
         implements EmbeddedMontiArcMathVisitor {
 
     // TODO doc
-    private final EmbeddedMontiArcMathDelegatorVisitor visitor = new EmbeddedMontiArcMathDelegatorVisitor();
+    private EmbeddedMontiArcMathDelegatorVisitor visitor = new EmbeddedMontiArcMathDelegatorVisitor();
 
     private EmbeddedMontiArcSymbolTableCreator emaSTC;
 
@@ -54,7 +54,7 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
         initSuperSTC(resolvingConfig);
     }
 
-    private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
+    protected void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         this.emaSTC = new EmbeddedMontiArcSymbolTableCreator(resolvingConfig, scopeStack);
 
         EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
@@ -106,4 +106,11 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
         }
     }
 
+    protected EmbeddedMontiArcMathDelegatorVisitor getVisitor() {
+        return visitor;
+    }
+
+    protected void setVisitor(EmbeddedMontiArcMathDelegatorVisitor visitor) {
+        this.visitor = visitor;
+    }
 }
