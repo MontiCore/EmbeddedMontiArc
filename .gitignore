@@ -1,15 +1,9 @@
-target/
-*.tex.bak
-*.aux
-*.log
-*.out
-*.synctex.gz
-*.synctex(busy)
-*.toc
-*.bbl
-*.blg
-*.blx
-*.spl
+target
+nppBackup
+.project
+.settings
+.classpath
+.idea
+.git
 
-.idea/
-main.pdf
+*.iml
