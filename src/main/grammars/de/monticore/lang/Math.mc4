@@ -32,7 +32,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     interface Statement;
 
     symbol scope MathScript =
-        "script" Name statements:MathStatements "end";
+        "script" Name statements:Statement* "end";
 
     MathDottedNameExpression implements Expression<300> =
         Name "." Name;
@@ -48,7 +48,7 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
 
     //for loop
     MathForLoopExpression implements Statement =
-    	"for" head:MathForLoopHead body:MathStatements "end";
+    	"for" head:MathForLoopHead body:Statement* "end";
 
     MathForLoopHead =
     	Name "=" (NameExpression | Expression);
@@ -58,16 +58,16 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     	MathIfExpression MathElseIfExpression* MathElseExpression? "end";
 
     MathIfStatementShort implements Statement =
-    	Expression "?" trueCase:MathStatements ":" falseCase:MathStatements;
+    	Expression "?" trueCase:Statement* ":" falseCase:Statement*;
 
     MathIfExpression =
-    	"if" condition:Expression body:MathStatements ;
+    	"if" condition:Expression body:Statement* ;
 
     MathElseIfExpression =
-    	"elseif" condition:Expression body:MathStatements ;
+    	"elseif" condition:Expression body:Statement* ;
 
     MathElseExpression =
-    	"else" body:MathStatements ;
+    	"else" body:Statement* ;
 
     MathDeclarationStatement implements Statement =
         type:AssignmentType Name ";";
@@ -113,10 +113,10 @@ grammar Math extends de.monticore.NumberUnit, de.monticore.AssignmentExpressions
     // override symbols - can be only done with upcoming Monticore Version 5.0.1
     // implement Statement
     IncSuffixExpression implements Expression <220>, Statement =
-    	Expression "++";
+    	Expression "++" ";" ;
 
     DecSuffixExpression implements Expression <220>, Statement =
-    	Expression "--";
+    	Expression "--" ";" ;
 
     // remove incompatible expressions
     BinaryXorExpression implements Expression <110> = "----- will not be used ---- this removes BinaryXorExpression";

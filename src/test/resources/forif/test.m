@@ -23,5 +23,5 @@ script test
     if a == f
       c = t + e;
       a++;
-    end;
+    end
 end

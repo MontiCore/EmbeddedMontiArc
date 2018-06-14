@@ -49,7 +49,7 @@ public class DegreeParserTest {
   @Test
   public void testMathDeclarationExpression() throws IOException {
     MathParser parser = new MathParser();
-    ASTMathDeclarationStatement ast = parser.parse_StringMathDeclarationStatement("Q(-90°:90°)^{2} x").orElse(null);
+    ASTMathDeclarationStatement ast = parser.parse_StringMathDeclarationStatement("Q(-90°:90°)^{2} x;").orElse(null);
     assertNotNull(ast);
   }
 }
