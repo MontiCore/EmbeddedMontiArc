@@ -148,7 +148,7 @@ public class EMAPortHelper {
             name += portName.getCompName();
             if (portName.getCompArrayOpt().isPresent()) {
                 if (portName.getCompArray().getIntLiteralOpt().isPresent()) {
-                    name += "[" + portName.getCompArray().getIntLiteral().getNumber().toString()
+                    name += "[" + portName.getCompArray().getIntLiteral().getNumber().get().intValue()
                             + "]";
                     name += ".";
                     names.add(name);
