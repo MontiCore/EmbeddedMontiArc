@@ -39,7 +39,6 @@ import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
 import de.monticore.lang.matrix._visitor.MatrixVisitor;
 import de.monticore.lang.matrixexpressions._ast.*;
 import de.monticore.lang.matrixexpressions._visitor.MatrixExpressionsVisitor;
-import de.monticore.lang.monticar.common2._visitor.Common2Visitor;
 import de.monticore.lang.monticar.types2._ast.ASTDimension;
 import de.monticore.lang.monticar.types2._visitor.Types2Visitor;
 import de.monticore.symboltable.ArtifactScope;
@@ -637,26 +636,16 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
     }
 
     public void endVisit(final ASTBracketExpression astNode) {
-        linkChildNodeSymbolWithNode(astNode, astNode.getExpression());
+        MathParenthesisExpressionSymbol symbol = new MathParenthesisExpressionSymbol();
+        if (astNode.getExpression().getSymbolOpt().isPresent()) {
+            symbol.setMathExpressionSymbol((MathExpressionSymbol) astNode.getExpression().getSymbolOpt().get());
+        }
+        addToScopeAndLinkWithNode(symbol, astNode);
     }
 
     public void endVisit(final ASTDimension node) {
         for (ASTExpression astExpr : node.getDimensionList()) {
             handle(astExpr);
-        }
-    }
-
-    /**
-     * used for ASTNodes that wrap a single expression such as
-     * e.g. BracketExpression ect
-     *
-     * @param parent Parent AST Node
-     * @param child  Child AST Node
-     */
-    protected void linkChildNodeSymbolWithNode(ASTExpression parent, ASTExpression child) {
-        visit(child);
-        if (child.getSymbolOpt().isPresent()) {
-            addToScopeAndLinkWithNode(child.getSymbolOpt().get(), parent);
         }
     }
 
