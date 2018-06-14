@@ -39,6 +39,8 @@ import de.monticore.lang.matrix._ast.ASTMathVectorExpression;
 import de.monticore.lang.matrix._visitor.MatrixVisitor;
 import de.monticore.lang.matrixexpressions._ast.*;
 import de.monticore.lang.matrixexpressions._visitor.MatrixExpressionsVisitor;
+import de.monticore.lang.monticar.common2._visitor.Common2Visitor;
+import de.monticore.lang.monticar.types2._ast.ASTDimension;
 import de.monticore.lang.monticar.types2._visitor.Types2Visitor;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.ImportStatement;
@@ -636,6 +638,12 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
 
     public void endVisit(final ASTBracketExpression astNode) {
         linkChildNodeSymbolWithNode(astNode, astNode.getExpression());
+    }
+
+    public void endVisit(final ASTDimension node) {
+        for (ASTExpression astExpr : node.getDimensionList()) {
+            handle(astExpr);
+        }
     }
 
     /**
