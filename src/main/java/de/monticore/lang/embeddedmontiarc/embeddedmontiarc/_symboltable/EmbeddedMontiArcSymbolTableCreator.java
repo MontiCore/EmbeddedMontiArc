@@ -25,9 +25,9 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberExpression;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolutionExpression;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarSymbolFactory;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -145,6 +145,9 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
         String nameTO = doPortResolution(node, this);
         ASTType astType = node.getType();
+        if (node.getType() instanceof ASTCommonMatrixType) {
+            getRealThis().handle((ASTCommonMatrixType) node.getType());
+        }
         StringBuilder typeName = new StringBuilder();
         MCTypeReference<? extends MCTypeSymbol> typeRef = initTypeRef(node, typeName, astType, this);
         String name = node.getNameOpt().orElse(StringTransformations.uncapitalize(typeName.toString()));
