@@ -45,7 +45,10 @@ class CDVisualization extends AbstractOCLVerification {
         this.kill();
         this.logger.info("OCL CLI is visualizing CD...");
 
-        this.process = Process.spawn(this.batch, [], {
+        // For testing purposes. cdString should have text of tab
+        var cdString = "package cd; classdiagram EmbeddedMontiArc { public class CTDef { String cType; } }";
+
+        this.process = Process.spawn(this.batch, [cdString], {
             cwd: Path.resolve(PATHS.SCRIPTS, this.project)
         });
         this.process.on("exit", onExit);
