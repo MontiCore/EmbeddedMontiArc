@@ -26,6 +26,7 @@ PATHS.VIDEOS         = Path.resolve(PATHS.HOME, "videos");
 PATHS.SIMULATION     = Path.resolve(PATHS.HOME, "apache-tomcat-9.0.5");
 PATHS.VISUALIZATION  = Path.resolve(PATHS.HOME, "visualisation");
 PATHS.NFPVERIFICATION = Path.resolve(PATHS.HOME, "nfpverification");
+PATHS.OCLVERIFICATION = Path.resolve(PATHS.HOME, "oclverification");
 PATHS.TEST_RESULTS   = Path.resolve(PATHS.HOME, "testResults");
 PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
 PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
@@ -70,6 +71,7 @@ BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
 BATCHES.NFPVERIFICATION = {};
+BATCHES.OCLVERIFICATION = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -108,6 +110,8 @@ BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "vi
 
 BATCHES.NFPVERIFICATION.TEST1		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule1.bat");
 BATCHES.NFPVERIFICATION.TEST2 		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule2.bat");
+
+BATCHES.OCLVERIFICATION.VISUALIZECD 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "visualizeCD.bat");
 
 /*
  * OPTIONS

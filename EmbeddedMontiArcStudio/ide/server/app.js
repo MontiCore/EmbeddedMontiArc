@@ -8,6 +8,7 @@ const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} 
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
 const {NFPVerificatorTest} = require("./nfpverification");
+const {CDVisualization} = require("./oclverification");
 const {PacmanGeneration}                                = require("./generations");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
@@ -25,6 +26,7 @@ Logger.level = "debug";
 
 App.use("/m", Express.static(PATHS.MODELS));
 App.use("/r", Express.static(Path.resolve(PATHS.REPORTING, "report")));
+App.use("/ocl", Express.static(PATHS.OCLVERIFICATION));
 App.use("/c", Express.static(PATHS.CLUSTER_FIDDLE));
 App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
@@ -497,4 +499,16 @@ App.post("/services/nfpverification/test2", function(request, response) {
 		
 	NFPVerificatorTest.execute2(body.name.replace(/\//g, ".").substring(1,body.name.length-4),onUpdated);
 });
+
+App.post("/services/oclverification/visualizeCD", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/ocl/visualizeCD.html?ide=false");
+        response.end();
+    }
+
+    var tab = request.body.tab;
+
+    CDVisualization.execute(onExecuted, tab);
+});
+
 module.exports = App;

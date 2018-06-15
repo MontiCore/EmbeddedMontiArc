@@ -19,7 +19,7 @@ define(function(require, exports, module) {
 		var messageIndex = -1;
 		
 		
-		function onNFPResponse() {
+		function onOCLResponse() {
 			UICustom.done(messageIndex);
 		}
 
@@ -29,11 +29,11 @@ define(function(require, exports, module) {
             messageIndex = UICustom.message("Visualizing CD - This might take a moment...");
 			var tab = TabManager.focussedTab;
 			var path = tab.path;
-            window.fetch("/services/" + project + "/test1", {
+            window.fetch("/services/" + project + "/visualizeCD", {
                 "headers": { "Content-Type": "application/json" },
                 "method": "post",
                 "body": JSON.stringify({ name: path })
-            }).then(onNFPResponse);
+            }).then(onOCLResponse);
         }
 
 		function onUpdatedOCL() {
@@ -42,11 +42,11 @@ define(function(require, exports, module) {
             messageIndex = UICustom.message("Checking OCL - This might take a moment...");
 			var tab = TabManager.focussedTab;
 			var path = tab.path;
-            window.fetch("/services/" + project + "/test2", {
+            window.fetch("/services/" + project + "/checkOCL", {
                 "headers": { "Content-Type": "application/json" },
                 "method": "post",
                 "body": JSON.stringify({ name: path })
-            }).then(onNFPResponse);
+            }).then(onOCLResponse);
         }
 		
 		function onReadFile(error, content) {
