@@ -34,16 +34,10 @@ script LpTest
 
     // minimization problem
     minimize(Q^{3, 2} x)
-     c(1,1) * x(1,1) + c(2,1) * x(2,1) + c(3,1) * x(3,1) + c(1,2) * x(1,2) + c(2,2) * x(2,2) + c(3,2) * x(3,2);
+        sum(c .* x);
     subject to
-        // sum(X, 2) == A;
-        x(1,1) + x(1,2) == A(1);
-        x(2,1) + x(2,2) == A(2);
-        x(3,1) + x(3,2) == A(3);
-        // sum(X, 1) == b;
-        x(1,1) + x(2,1) + x(3,1) == b(1);
-        x(1,2) + x(2,2) + x(3,2) == b(2);
-        //
+        sum(x, 2) == A;
+        sum(x, 1) == b;
         x >= 0;
     end
 end

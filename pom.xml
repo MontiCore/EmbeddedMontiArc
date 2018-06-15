@@ -205,36 +205,6 @@
                     </altDeploymentRepository>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
-                <configuration>
-                    <server>github</server>
-                    <message>Maven artifacts for ${project.version} ${project.artifactId}
-                    </message>  <!-- git commit message -->
-                    <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-                    <outputDirectory>${project.build.directory}/external-dependencies
-                    </outputDirectory> <!-- matches distribution management repository url above -->
-                    <branch>refs/heads/master</branch>                       <!-- remote branch name -->
-                    <includes>
-                        <include>**/*</include>
-                    </includes>
-                    <repositoryName>external-dependencies</repositoryName>      <!-- github repo name -->
-                    <repositoryOwner>EmbeddedMontiArc</repositoryOwner>    <!-- github username  -->
-                    <merge>true</merge>
-                </configuration>
-                <executions>
-                    <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>deploy</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- MontiCore Generation -->
             <plugin>
                 <groupId>de.monticore.mojo</groupId>
@@ -326,33 +296,6 @@
                                 <include>**/*.ftl</include>
                             </includes>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- to add copyright information automatically-->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <header>${project.baseUri}/src/license/se/license.txt</header>
-                    <properties>
-                        <owner>Christoph Richter</owner>
-                        <email>christoph.richter@rwth.aachen.de</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/license/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                        <phase>process-sources</phase>
                     </execution>
                 </executions>
             </plugin>
