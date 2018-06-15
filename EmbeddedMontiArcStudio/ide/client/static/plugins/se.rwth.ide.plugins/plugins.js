@@ -1063,12 +1063,17 @@ plugins.push(
     "plugins/se.rwth.report/report",
     "plugins/se.rwth.models.updater/models.updater"
     );
-} else if (reponame == "NFPVerification") {
- //   plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
+} else if (reponame == "OCLVerification") {
 plugins.push(
-    "plugins/se.rwth.nfpverification/nfpverification",
+    "plugins/se.rwth.oclverification/oclverification",
     "plugins/se.rwth.models.updater/models.updater"
     );
+} else if (reponame == "NFPVerification") {
+   //   plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
+  plugins.push(
+      "plugins/se.rwth.nfpverification/nfpverification",
+      "plugins/se.rwth.models.updater/models.updater"
+      );
 } else {
     plugins.push(
 	"plugins/se.rwth.simulate/simulate",
