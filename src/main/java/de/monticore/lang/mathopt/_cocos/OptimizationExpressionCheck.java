@@ -23,6 +23,12 @@ package de.monticore.lang.mathopt._cocos;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.mathopt._ast.ASTOptimizationExpression;
 import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveFunction;
+import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveValue;
+import de.se_rwth.commons.logging.Log;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Context Conditions for optimization statement
@@ -31,19 +37,25 @@ import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveFunction;
  */
 public class OptimizationExpressionCheck implements MathOptASTOptimizationExpressionCoCo {
 
+    private Set<String> supportedReturnTypes = new HashSet<>(Arrays.asList("Q"));
 
     @Override
     public void check(ASTOptimizationExpression node) {
-        checkObjectiveFunctionReturnVariable(node.getObjectiveFunction());
+        checkObjectiveFunctionReturnVariable(node);
     }
 
     /**
-     * Checks if the return value of the objective function is scalar
+     * Checks if the return value of the objective function has the correct type
      *
-     * @param objFunc AST objective function expression
+     * @param node ASTOptimizationExpression
      */
-    private void checkObjectiveFunctionReturnVariable(ASTOptimizationObjectiveFunction objFunc) {
-        // TODO check return variable dimension
+    private void checkObjectiveFunctionReturnVariable(ASTOptimizationExpression node) {
+        if (node.getObjectiveValueOpt().isPresent()) {
+            ASTOptimizationObjectiveValue astObjectiveValue = node.getObjectiveValueOpt().get();
+            if (!supportedReturnTypes.contains(astObjectiveValue.getType().getName())) {
+                Log.error(String.format("0x8E75E9 Objective value type \"%s\" is not supported as return value.", astObjectiveValue.getType().getName()));
+            }
+        }
     }
 
 }
