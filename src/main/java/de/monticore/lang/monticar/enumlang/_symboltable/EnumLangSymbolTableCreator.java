@@ -46,7 +46,7 @@ public class EnumLangSymbolTableCreator extends EnumLangSymbolTableCreatorTOP {
     @Override
     public void visit(ASTEnumLangCompilationUnit node) {
         coCoChecker.checkAll(node);
-        String packageQualifiedName = Names.getQualifiedName(node.getPackage());
+        String packageQualifiedName = Names.getQualifiedName(node.getPackageList());
         ArtifactScope artifactScope = new ArtifactScope(packageQualifiedName, Collections.emptyList());
         putOnStack(artifactScope);
     }
