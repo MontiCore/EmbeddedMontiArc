@@ -6,7 +6,7 @@ component Delay<T>(T value) {
 		out T out1;
 	
 	implementation Math {
-	   static T prev = value;
+	   T prev = value;
 	   out1 = prev;
 	   prev = in1;
 	}

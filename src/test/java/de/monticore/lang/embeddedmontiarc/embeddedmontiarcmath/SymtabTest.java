@@ -20,34 +20,22 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.TypeHelper;
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.MathVariableDeclarationSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbolKind;
+import de.monticore.lang.math._symboltable.expression.MathAssignmentExpressionSymbol;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.resolving.ResolvingFilter;
-import de.monticore.symboltable.types.TypeSymbol;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import javax.measure.unit.SystemOfUnits;
-import javax.measure.unit.Unit;
-import java.util.Arrays;
-import java.util.Collection;
-
-import de.monticore.lang.numberunit._ast.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SymtabTest extends AbstractSymtabTest {
 
@@ -170,7 +158,7 @@ public class SymtabTest extends AbstractSymtabTest {
     MathStatementsSymbol symbol=symTab.<MathStatementsSymbol>resolve("adapterTest.A.MathStatements", MathStatementsSymbol.KIND).orElse(null);
     assertNotNull(symbol);
     for(ASTMathStatement statement:symbol.getAstMathStatements().getMathStatements()){
-     // System.out.println(statement.getSymbol().toString());
+     // System.out.println(statement.getSymbolOpt().toString());
     }
   }
 
@@ -181,4 +169,14 @@ public class SymtabTest extends AbstractSymtabTest {
 
   }
   */
+
+  @Test
+  public void testMathStatementsSymbol() {
+    Scope symTab = createSymTab("src/test/resources/");
+    ComponentSymbol component = symTab.<ComponentSymbol>resolve("test.Add", ComponentSymbol.KIND).orElse(null);
+    MathStatementsSymbol statements = (MathStatementsSymbol) component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND).orElse(null);
+    assertNotNull(statements);
+    assertEquals(1, statements.getMathExpressionSymbols().size());
+    assertEquals(MathAssignmentExpressionSymbol.class,  statements.getMathExpressionSymbols().get(0).getClass());
+  }
 }
