@@ -21,7 +21,9 @@
 package de.monticore.lang.mathopt._symboltable;
 
 import de.monticore.lang.mathopt.OptimizationModelHelper;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -40,6 +42,11 @@ public class MathOptimizationExpressionSymbolTest {
 
     // helper
     private OptimizationModelHelper helper;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        Log.enableFailQuick(false);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -82,7 +89,7 @@ public class MathOptimizationExpressionSymbolTest {
     @Test
     public void getSubjectToExpressions() {
         assertTrue(minimizationTestSymbol.getSubjectToExpressions().get(0).getTextualRepresentation().replace(" ", "").contentEquals("x<=1"));
-        assertTrue(lpTestSymbol.getSubjectToExpressions().size() == 6);
+        assertTrue(lpTestSymbol.getSubjectToExpressions().size() == 3);
         assertTrue(upperAndLowerBoundTestSymbol.getSubjectToExpressions().size() == 2);
         assertTrue(forLoopConditionTestSymbol.getSubjectToExpressions().size() >= 1);
     }
