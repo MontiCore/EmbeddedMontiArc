@@ -49,6 +49,11 @@ var Dashboard = (function() {
                 reponame: "NFPVerification",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/NFPVerification/v&url=/m/nfpverification.zip&openFile=/example/negative/Sensors.ema"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "OCLVerification",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/OCLVerification/v&url=/m/oclverification.zip&openFile=/cd/EmbeddedMontiArc.cd"
             }];
         },
 

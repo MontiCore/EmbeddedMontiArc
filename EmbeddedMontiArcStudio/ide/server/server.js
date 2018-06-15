@@ -15,26 +15,32 @@ function onServerStarted(error) {
 	else Chrome.open(URLS.SHARED);
 }
 
-function onClusteringZipped() {
+
+function onOCLZipped() {
 	const Server = App.listen(PORTS.SHARED, onServerStarted);
 
 	Server.timeout = 30 * 60 * 1000;
+}
+
+function onClusteringZipped() {
+	Archiver.zip("oclverification", onOCLZipped);
+
 }
 
 function onAutopilotZipped() {
 	Archiver.zip("clustering", onClusteringZipped);
 }
 
-function onPumpZipped() {
-	Archiver.zip("pacman", onPacManZipped);
+function onNFPZipped() {
+	Archiver.zip("autopilot", onAutopilotZipped);
 }
 
 function onPacManZipped() {
 	Archiver.zip("nfpverification", onNFPZipped);
 }
 
-function onNFPZipped() {
-	Archiver.zip("autopilot", onAutopilotZipped);
+function onPumpZipped() {
+	Archiver.zip("pacman", onPacManZipped);
 }
 
 Archiver.zip("pump", onPumpZipped);
