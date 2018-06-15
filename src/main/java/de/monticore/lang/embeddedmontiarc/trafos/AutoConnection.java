@@ -20,28 +20,27 @@
  */
 package de.monticore.lang.embeddedmontiarc.trafos;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcConstants;
-import de.monticore.lang.embeddedmontiarc.helper.AutoconnectMode;
-import de.monticore.lang.embeddedmontiarc.helper.PortCompatibilityChecker;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.helper.AutoconnectMode;
+import de.monticore.lang.embeddedmontiarc.helper.PortCompatibilityChecker;
 import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
+import de.monticore.numberunit._parser.NumberUnitParser;
+import de.monticore.symboltable.MutableScope;
 import de.se_rwth.commons.logging.Log;
+import org.jscience.mathematics.number.Rational;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.jscience.mathematics.number.Rational;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 
 /**
  * Creates further connectors depending on the auto connect mode (type, port, off)
@@ -57,8 +56,8 @@ public class AutoConnection {
         ASTQualifiedNameWithArray astQNWA = EmbeddedMontiArcNodeFactory.createASTQualifiedNameWithArray();
         ASTArrayAccess PortArray = EmbeddedMontiArcNodeFactory.createASTArrayAccess();
         ASTArrayAccess CompArray = EmbeddedMontiArcNodeFactory.createASTArrayAccess();
-        ASTUnitNumber PortIntLiteral = EmbeddedMontiArcNodeFactory.createASTUnitNumber();
-        ASTUnitNumber CompIntLiteral = EmbeddedMontiArcNodeFactory.createASTUnitNumber();
+        ASTNumberWithUnit PortIntLiteral = EmbeddedMontiArcNodeFactory.createASTNumberWithUnit();
+        ASTNumberWithUnit CompIntLiteral = EmbeddedMontiArcNodeFactory.createASTNumberWithUnit();
 
         String pattern = "([^\\[\\.]+)(\\[(\\d+)\\])?(\\.([^\\[\\.]+)(\\[(\\d+)\\])?)?";
         Pattern r = Pattern.compile(pattern);
@@ -67,7 +66,7 @@ public class AutoConnection {
             astQNWA.setPortName(m.group(1));
             if (m.group(2) != null) {
                 //PortIntLiteral.getIntLiteral().setSource(m.group(3));
-                PortIntLiteral.setNumber(Rational.valueOf(m.group(3)));
+                PortIntLiteral.setNumber(Rational.valueOf(m.group(3)).doubleValue());
                 //TODO check if missing causes error PortArray.setIntLiteral(PortIntLiteral);
                 astQNWA.setPortArray(PortArray);
             }
@@ -75,14 +74,23 @@ public class AutoConnection {
             astQNWA.setCompName(m.group(2));
             if (m.group(2) != null) {
                 //CompIntLiteral.getIntLiteral().setSource(m.group(3));
-                CompIntLiteral.setNumber(Rational.valueOf(m.group(3)));
+                CompIntLiteral.setNumber(Rational.valueOf(m.group(3)).doubleValue());
                 //TODO check if missing causes error CompArray.setIntLiteral(CompIntLiteral);
                 astQNWA.setCompArray(CompArray);
             }
             astQNWA.setPortName(m.group(5));
             if (m.group(6) != null) {
                 //PortIntLiteral.getIntLiteral().setSource(m.group(7));
-                PortIntLiteral.setTUnitNumber(m.group(7));
+                NumberUnitParser parser = new NumberUnitParser();
+                try {
+                    Optional<ASTNumberWithUnit> portIntLitOpt = parser.parse_StringNumberWithUnit(m.group(7));
+                    if (portIntLitOpt.isPresent())
+                        PortIntLiteral = portIntLitOpt.get();
+                    else
+                        Log.error(String.format("Can not read number with unit: %s", m.group(7)));
+                } catch (IOException e) {
+                    Log.error(String.format("Can not read number with unit: %s", m.group(7), e));
+                }
                 //TODO check if missing causes error PortArray.setIntLiteral(PortIntLiteral);
                 astQNWA.setPortArray(PortArray);
             }
@@ -136,7 +144,7 @@ public class AutoConnection {
         targets.add(target);
 
         astConnector.setSource(source);
-        astConnector.setTargets(new ASTConnectorTargets(targets, new ArrayList<String>()));
+        astConnector.setTargets(new ASTConnectorTargets(targets));
 
         Optional<ASTMontiArcAutoConnect> auto = resolveAutoconnect(node);
         if (auto.isPresent()) {
@@ -144,7 +152,7 @@ public class AutoConnection {
             astConnector.set_SourcePositionEnd(auto.get().get_SourcePositionEnd());
         }
         // add node to arc elements
-        node.getBody().getElements().add(astConnector);
+        node.getBody().getElementList().add(astConnector);
     }
 
     /**
@@ -153,7 +161,7 @@ public class AutoConnection {
      * exist.
      */
     public static Optional<ASTMontiArcAutoConnect> resolveAutoconnect(ASTComponent comp) {
-        for (ASTElement element : comp.getBody().getElements()) {
+        for (ASTElement element : comp.getBody().getElementList()) {
             if (element instanceof ASTMontiArcAutoConnect) {
                 return Optional.of((ASTMontiArcAutoConnect) element);
             }

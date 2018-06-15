@@ -35,7 +35,7 @@ public class SourceTargetNumberMatch implements EmbeddedMontiArcASTConnectorCoCo
 
         sourceNum = getSourceNum(node);
 
-        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrays()) {
+        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
 
             targetNum = getTargetNum(target);
 
@@ -47,14 +47,14 @@ public class SourceTargetNumberMatch implements EmbeddedMontiArcASTConnectorCoCo
 
     private int getSourceNum(ASTConnector node){
         int sourceNum = 0, sourceComp = 0, sourcePort = 0;
-        if (node.getSource().isPresent()) {
-            if (node.getSource().get().getCompArray().isPresent()){
-                if (node.getSource().get().getCompArray().get().getLowerbound().isPresent())
-                    sourceComp = node.getSource().get().getCompArray().get().getUpperbound().get().getNumber().get().intValue() - node.getSource().get().getCompArray().get().getLowerbound().get().getNumber().get().intValue() + 1;
+        if (node.getSourceOpt().isPresent()) {
+            if (node.getSource().getCompArrayOpt().isPresent()){
+                if (node.getSource().getCompArray().getLowerboundOpt().isPresent())
+                    sourceComp = node.getSource().getCompArray().getUpperbound().getNumber().get().intValue() - node.getSource().getCompArray().getLowerbound().getNumber().get().intValue() + 1;
             }else sourceComp = 1;
-            if (node.getSource().get().getPortArray().isPresent()){
-                if (node.getSource().get().getPortArray().get().getLowerbound().isPresent())
-                    sourcePort = node.getSource().get().getPortArray().get().getUpperbound().get().getNumber().get().intValue() - node.getSource().get().getPortArray().get().getLowerbound().get().getNumber().get().intValue() + 1;
+            if (node.getSource().getPortArrayOpt().isPresent()){
+                if (node.getSource().getPortArray().getLowerboundOpt().isPresent())
+                    sourcePort = node.getSource().getPortArray().getUpperbound().getNumber().get().intValue() - node.getSource().getPortArray().getLowerbound().getNumber().get().intValue() + 1;
             }else sourcePort = 1;
             sourceNum = sourceComp * sourcePort;
         }
@@ -63,13 +63,13 @@ public class SourceTargetNumberMatch implements EmbeddedMontiArcASTConnectorCoCo
 
     private int getTargetNum(ASTQualifiedNameWithArray target){
         int targetNum = 0, targetComp = 0, targetPort = 0;
-        if (target.getCompArray().isPresent()){
-            if (target.getCompArray().get().getLowerbound().isPresent())
-                targetComp = target.getCompArray().get().getUpperbound().get().getNumber().get().intValue() - target.getCompArray().get().getLowerbound().get().getNumber().get().intValue() + 1;
+        if (target.getCompArrayOpt().isPresent()){
+            if (target.getCompArray().getLowerboundOpt().isPresent())
+                targetComp = target.getCompArray().getUpperbound().getNumber().get().intValue() - target.getCompArray().getLowerbound().getNumber().get().intValue() + 1;
         }else targetComp = 1;
-        if (target.getPortArray().isPresent()){
-            if (target.getPortArray().get().getLowerbound().isPresent())
-                targetPort = target.getPortArray().get().getUpperbound().get().getNumber().get().intValue() - target.getPortArray().get().getLowerbound().get().getNumber().get().intValue() + 1;
+        if (target.getPortArrayOpt().isPresent()){
+            if (target.getPortArray().getLowerboundOpt().isPresent())
+                targetPort = target.getPortArray().getUpperbound().getNumber().get().intValue() - target.getPortArray().getLowerbound().getNumber().get().intValue() + 1;
         }else targetPort = 1;
         targetNum = targetComp * targetPort;
         return targetNum;

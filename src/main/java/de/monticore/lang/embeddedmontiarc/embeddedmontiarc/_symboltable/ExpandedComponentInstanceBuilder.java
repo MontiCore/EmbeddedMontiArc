@@ -21,7 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
@@ -70,8 +70,8 @@ public class ExpandedComponentInstanceBuilder {
     public static ExpandedComponentInstanceSymbol clone(ExpandedComponentInstanceSymbol inst) {
         return new ExpandedComponentInstanceBuilder().setName(inst.getName())
                 .setSymbolReference(inst.getComponentType())
-                //.addPorts(inst.getPorts().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
-                .addPorts(inst.getPorts()) // is cloned in build method
+                //.addPorts(inst.getPortsList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
+                .addPorts(inst.getPortsList()) // is cloned in build method
                 .addConnectors(inst.getConnectors().stream().map(c -> ConnectorBuilder.clone(c)).collect(Collectors.toList()))
                 .addSubComponents(inst.getSubComponents().stream().map(s -> ExpandedComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
@@ -222,9 +222,9 @@ public class ExpandedComponentInstanceBuilder {
 
         mapTypeArguments.forEach((k, v) -> {
             // 1) replace port generics
-            inst.getPorts().stream()
+            inst.getPortsList().stream()
                     //          .filter(p -> p.getTypeReference().getReferencedSymbol().getFullName().equals(k.getFullName()))
-                    .filter(p -> p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()))
+                    .filter( p -> p.getTypeReference().existsReferencedSymbol() ? p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()) : false)
                     .forEachOrdered(p -> p.setTypeReference((MCTypeReference<? extends MCTypeSymbol>) v.getType()));
 
             // 2) propagate component instance definition generics
@@ -234,7 +234,7 @@ public class ExpandedComponentInstanceBuilder {
                             s.getActualTypeArguments().stream()
                                     // replace this filtered type arguments with the value we want to replace
                                     //                  .map(a -> a.getType().getReferencedSymbol().getFullName().equals(k.getFullName()) ? v : a)
-                                    .map(a -> a.getType().getReferencedSymbol().getName().equals(k.getName()) ? v : a)
+                                    .map(a -> (a.getType().existsReferencedSymbol() ? (a.getType().getReferencedSymbol().getName().equals(k.getName()) ? v : a) : a))
                                     .collect(Collectors.toList())
                     ));
 

@@ -25,16 +25,16 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.ranges._ast.ASTRanges;
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbolReference;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
 import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
-import de.monticore.lang.monticar.types2._ast.*;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
+import de.monticore.types.types._ast.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class EMATypeHelper {
         Log.debug(typeName.toString(), "TypeName:");
 
         SIUnitRangesSymbolReference ref = SIUnitRangesSymbolReference
-                .constructSIUnitRangesSymbolReference(astType.getRanges());
+                .constructSIUnitRangesSymbolReference(astType.getRangeList());
         return ref;
     }
 
@@ -119,7 +119,7 @@ public class EMATypeHelper {
         } else if (node.getType() instanceof ASTRanges) {
             return initTypeRefASTRanges(typeName, (ASTRanges) astType);
         }
-        Log.debug(node.getName().get() + " " + astType.toString(), "info");
+        Log.debug(node.getNameOpt().get() + " " + astType.toString(), "info");
         return initTypeRefGeneralType(typeName, astType, symbolTableCreator);
     }
 
@@ -131,26 +131,26 @@ public class EMATypeHelper {
                                                                                        EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         if (astType instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-            if (!astSimpleReferenceType.getTypeArguments().isPresent()) {
+            if (!astSimpleReferenceType.getTypeArgumentsOpt().isPresent()) {
                 return typeReference;
             }
             List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
-            for (ASTTypeArgument astTypeArgument : astSimpleReferenceType.getTypeArguments().get()
-                    .getTypeArguments()) {
+            for (ASTTypeArgument astTypeArgument : astSimpleReferenceType.getTypeArgumentsOpt().get()
+                    .getTypeArgumentList()) {
                 if (astTypeArgument instanceof ASTWildcardType) {
                     ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
 
                     // Three cases can occur here: lower bound, upper bound, no bound
-                    if (astWildcardType.lowerBoundIsPresent() || astWildcardType.upperBoundIsPresent()) {
+                    if (astWildcardType.getLowerBoundOpt().isPresent() || astWildcardType.getUpperBoundOpt().isPresent()) {
                         // We have a bound.
                         // Examples: Set<? extends Number>, Set<? super Integer>
 
                         // new bound
-                        boolean lowerBound = astWildcardType.lowerBoundIsPresent();
+                        boolean lowerBound = astWildcardType.getLowerBoundOpt().isPresent();
                         ASTType typeBound = lowerBound
-                                ? astWildcardType.getLowerBound().get()
+                                ? astWildcardType.getLowerBound()
                                 : astWildcardType
-                                .getUpperBound().get();
+                                .getUpperBound();
 
                         int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
                         MCTypeReference<? extends MCTypeSymbol> typeBoundSymbolReference = new MontiCarTypeSymbolReference(
@@ -195,7 +195,7 @@ public class EMATypeHelper {
         } else if (astType instanceof ASTComplexReferenceType) {
             ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astType;
             for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
-                    .getSimpleReferenceTypes()) {
+                    .getSimpleReferenceTypeList()) {
                 // TODO
                 /* ASTComplexReferenceType represents types like class or interface types which always have
                  * ASTSimpleReferenceType as qualification. For example: a.b.c<Arg>.d.e<Arg> */
@@ -206,6 +206,8 @@ public class EMATypeHelper {
             addTypeArgumentsToTypeSymbol(typeReference, astComplexArrayType.getComponentType(), symbolTableCreator);
             int dimension = astComplexArrayType.getDimensions();
             typeReference.setDimension(dimension);
+        } else if (astType instanceof ASTElementType) {
+            return typeReference;
         } else {
             String name = typeReference.getName();
             assert typeReference.getEnclosingScope() instanceof MutableScope;
@@ -224,16 +226,16 @@ public class EMATypeHelper {
                 ASTWildcardType astWildcardType = (ASTWildcardType) astTypeArgument;
 
                 // Three cases can occur here: lower bound, upper bound, no bound
-                if (astWildcardType.lowerBoundIsPresent() || astWildcardType.upperBoundIsPresent()) {
+                if (astWildcardType.getLowerBoundOpt().isPresent() || astWildcardType.getUpperBoundOpt().isPresent()) {
                     // We have a bound.
                     // Examples: Set<? extends Number>, Set<? super Integer>
 
                     // new bound
-                    boolean lowerBound = astWildcardType.lowerBoundIsPresent();
+                    boolean lowerBound = astWildcardType.getLowerBoundOpt().isPresent();
                     ASTType typeBound = lowerBound
-                            ? astWildcardType.getLowerBound().get()
+                            ? astWildcardType.getLowerBound()
                             : astWildcardType
-                            .getUpperBound().get();
+                            .getUpperBound();
                     int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(typeBound);
                     MCTypeReference<? extends MCTypeSymbol> typeBoundSymbolReference = new MontiCarTypeSymbolReference(
                             ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(typeBound),
@@ -281,16 +283,16 @@ public class EMATypeHelper {
                                                     ASTType astType, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         if (astType instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;
-            if (!astSimpleReferenceType.getTypeArguments().isPresent()) {
+            if (!astSimpleReferenceType.getTypeArgumentsOpt().isPresent()) {
                 // Log.error("Not TypeArgs present");
                 return;
             }
             setActualTypeArguments(typeReference,
-                    astSimpleReferenceType.getTypeArguments().get().getTypeArguments(), symbolTableCreator);
+                    astSimpleReferenceType.getTypeArgumentsOpt().get().getTypeArgumentList(), symbolTableCreator);
         } else if (astType instanceof ASTComplexReferenceType) {
             ASTComplexReferenceType astComplexReferenceType = (ASTComplexReferenceType) astType;
             for (ASTSimpleReferenceType astSimpleReferenceType : astComplexReferenceType
-                    .getSimpleReferenceTypes()) {
+                    .getSimpleReferenceTypeList()) {
                 // TODO
                 /* ASTComplexReferenceType represents types like class or interface types which always have
                  * ASTSimpleReferenceType as qualification. For example: a.b.c<Arg>.d.e<Arg> */

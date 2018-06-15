@@ -20,10 +20,6 @@
  */
 package de.monticore.lang.embeddedmontiarc.helper;
 
-import de.monticore.lang.monticar.mcexpressions._ast.ASTArrayExpression;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
-import de.monticore.lang.monticar.ranges._ast.ASTUnitNumberExpression;
-
 /**
  * @author Sascha Schneiders
  */

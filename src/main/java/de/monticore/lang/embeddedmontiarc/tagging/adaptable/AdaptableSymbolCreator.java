@@ -45,24 +45,24 @@ import java.util.stream.Collectors;
 public class AdaptableSymbolCreator implements TagSymbolCreator {
 
   public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
-    if (unit.getQualifiedNames().stream()
+    if (unit.getQualifiedNameList().stream()
             .map(q -> q.toString())
             .filter(n -> n.endsWith("AdaptableTagSchema"))
             .count() == 0) {
       return; // the tagging model is not conform to the traceability tagging schema
     }
-    final String packageName = Joiners.DOT.join(unit.getPackage());
+    final String packageName = Joiners.DOT.join(unit.getPackageList());
     final String rootCmp = // if-else does not work b/c of final (required by streams)
-            (unit.getTagBody().getTargetModel().isPresent()) ?
-                    Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModel().get())
+            (unit.getTagBody().getTargetModelOpt().isPresent()) ?
+                    Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModelOpt().get())
                             .getQualifiedNameString().toString()) :
                     packageName;
 
-    for (ASTTag element : unit.getTagBody().getTags()) {
-      element.getTagElements().stream()
+    for (ASTTag element : unit.getTagBody().getTagList()) {
+      element.getTagElementList().stream()
               .filter(t -> t.getName().equals("Adaptable")) // after that point we can throw error messages
               .forEachOrdered(b ->
-                      element.getScopes().stream()
+                      element.getScopeList().stream()
                               .filter(this::checkScope)
                               .map(s -> (ASTNameScope) s)
                               .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol

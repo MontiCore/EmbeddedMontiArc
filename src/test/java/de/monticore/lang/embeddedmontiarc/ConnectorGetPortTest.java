@@ -32,7 +32,7 @@ public class ConnectorGetPortTest extends AbstractSymtabTest {
 
     @Ignore
     @Test
-    public void testGetPorts() throws Exception {
+    public void testgetPortsList() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
         ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
                 "fas.demo_fas_Fkt_m.fAS", ExpandedComponentInstanceSymbol.KIND).orElse(null);

@@ -21,18 +21,20 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.*;
-
-//import de.monticore.literals.literals._ast.*;
-import de.monticore.lang.monticar.literals2._ast.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantBoolean;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantSIUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantValue;
+import de.monticore.literals.literals._ast.ASTBooleanLiteral;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
 import javax.measure.unit.Unit;
 
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
-
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.initTypeRefGeneralType;
+import static de.monticore.numberunit.Rationals.doubleToRational;
+
+//import de.monticore.literals.literals._ast.*;
 
 /**
  * The ConstantPortSymbol is a port which has a constant value assigned and is used
@@ -71,9 +73,9 @@ public class ConstantPortSymbol extends PortSymbol {
     /**
      * initializes ConstantPort from a UnitNumberLiteral
      */
-    public void initConstantPortSymbol(ASTUnitNumber si_unit) {
-        Unit unit = si_unit.getUnit().get();
-        Rational rational = si_unit.getNumber().get();
+    public void initConstantPortSymbol(ASTNumberWithUnit si_unit) {
+        Unit unit = si_unit.getUnit();
+        Rational rational = doubleToRational(si_unit.getNumber().get());
 
         setConstantValue(new EMAConstantSIUnit(rational, unit));
     }
@@ -103,13 +105,13 @@ public class ConstantPortSymbol extends PortSymbol {
     public static ConstantPortSymbol createConstantPortSymbol(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         ConstantPortSymbol constantPortSymbol = new ConstantPortSymbol();
 
-        if (node.getUnitNumberResolution().isPresent()) {
-            constantPortSymbol.initConstantPortSymbol(node.getUnitNumberResolution().get().getUnitNumber().get());
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
+            constantPortSymbol.initConstantPortSymbol(node.getUnitNumberResolution().getNumberWithUnit());
             String typeName;
             typeName = "UnitNumberResolution";
             constantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));
-        } else if (node.getBoolLiteral().isPresent()) {
-            constantPortSymbol.initConstantPortSymbol(node.getBoolLiteral().get());
+        } else if (node.getBoolLiteralOpt().isPresent()) {
+            constantPortSymbol.initConstantPortSymbol(node.getBoolLiteral());
             String typeName;
             typeName = "B";
             constantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));

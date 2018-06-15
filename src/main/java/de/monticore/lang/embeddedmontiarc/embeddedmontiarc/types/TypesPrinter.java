@@ -20,12 +20,11 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types;
 
-import de.monticore.lang.monticar.resolution._ast.ASTTypeArgument;
-import de.monticore.lang.monticar.types2._ast.*;
-import de.se_rwth.commons.Names;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
+import de.monticore.types.types._ast.*;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -69,16 +68,16 @@ public class TypesPrinter {
         return getInstance().doPrintTypeWithoutTypeArguments(type);
     }
 
-    public static String printTypeParameters(ASTTypeParameters params) {
+    public static String printTypeParameters(ASTTypeParameters2 params) {
         return getInstance().doPrintTypeParameters(params);
     }
 
-    public static String printTypeVariableDeclarationList(List<ASTTypeVariableDeclaration> decl) {
+    public static String printTypeVariableDeclarationList(List<ASTTypeVariableDeclaration2> decl) {
         return getInstance().doPrintTypeVariableDeclarationList(decl);
     }
 
 
-    public static String printTypeVariableDeclaration(ASTTypeVariableDeclaration decl) {
+    public static String printTypeVariableDeclaration(ASTTypeVariableDeclaration2 decl) {
         return getInstance().doPrintTypeVariableDeclaration(decl);
     }
 
@@ -142,10 +141,12 @@ public class TypesPrinter {
                 int index = targetName.indexOf("[Optional[");
                 index += "Optional[".length();
                 int endIndex = targetName.indexOf("/", index);
-                String bracketNumber = targetName.substring(index, endIndex);
-                int endOfInnerBracket = targetName.indexOf("]", endIndex + 1);
-                int endOfSecondBracket = targetName.indexOf("]", endOfInnerBracket + 1);
-                return targetName.substring(0, index) + bracketNumber + "]" + targetName.substring(endOfSecondBracket + 1, targetName.length());
+                if (endIndex >= 0) {
+                    String bracketNumber = targetName.substring(index, endIndex);
+                    int endOfInnerBracket = targetName.indexOf("]", endIndex + 1);
+                    int endOfSecondBracket = targetName.indexOf("]", endOfInnerBracket + 1);
+                    return targetName.substring(0, index) + bracketNumber + "]" + targetName.substring(endOfSecondBracket + 1, targetName.length());
+                }
             } else {
                 return targetName.replaceAll("Optional\\[", "");
             }

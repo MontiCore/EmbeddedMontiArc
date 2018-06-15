@@ -22,12 +22,12 @@ package de.monticore.lang.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantSIUnit;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
@@ -52,6 +52,7 @@ public class SymtabTest extends AbstractSymtabTest {
     public static void setUp() {
         // ensure an empty log
         Log.getFindings().clear();
+        Log.enableFailQuick(false);
     }
 
     /**
@@ -695,8 +696,8 @@ public class SymtabTest extends AbstractSymtabTest {
         }
         assertEquals(2, inst.getSubComponents().size());
         Iterator<ComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
-        UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) iterator.next().getComponentType().getArguments().get(0).getSymbol().get();
-        UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) iterator.next().getComponentType().getArguments().get(0).getSymbol().get();
+        UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) iterator.next().getComponentType().getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) iterator.next().getComponentType().getArguments().get(0).getSymbolOpt().get();
         assertEquals("5", symbol1.getTextualRepresentation());
         assertEquals("1", symbol2.getTextualRepresentation());
     }

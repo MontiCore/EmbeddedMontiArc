@@ -45,8 +45,8 @@ public class SymbolPrinter {
      * help function for nested type arguments such as List<NewType<String, List<String>>>
      */
     public static String printTypeParameters(ActualTypeArgument arg) {
-        String ret = arg.getType().getReferencedSymbol().getFullName();
-//    String ret = arg.getType().getName();
+        // String ret = arg.getType().getReferencedSymbol().getFullName();
+        String ret = arg.getType().getName();
         if (arg.getType().getActualTypeArguments() != null && !arg.getType().getActualTypeArguments().isEmpty()) {
             ret += "<" + arg.getType().getActualTypeArguments().stream().
                     map(a -> printWildCardPrefix(a) + printTypeParameters(a) + printArrayDimensions(a)).collect(Collectors.joining(",")) + ">";
@@ -202,7 +202,7 @@ public class SymbolPrinter {
 
         ip.indent();
 
-        printPorts(cmp.getPorts(), ip);
+        printPorts(cmp.getPortsList(), ip);
 
         cmp.getSubComponents().stream().forEachOrdered(a -> {
             ip.print("component ");
@@ -266,7 +266,7 @@ public class SymbolPrinter {
 
         ip.indent();
 
-        printPorts(inst.getPorts(), ip);
+        printPorts(inst.getPortsList(), ip);
 
         inst.getSubComponents().stream().forEachOrdered(a -> printExpandedComponentInstance(a, ip, true));
 

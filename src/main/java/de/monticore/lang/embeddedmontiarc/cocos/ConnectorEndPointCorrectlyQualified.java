@@ -38,7 +38,7 @@ public class ConnectorEndPointCorrectlyQualified
     private void checkEndpointCorrectlyQualified(ASTQualifiedNameWithArray name,
                                                  Predicate<Integer> predicate, String errorMessage) {
         int i = 0;
-        if (name.getCompName() != null)
+        if (name.getCompNameOpt().isPresent())
             ++i;
         if (name.getPortName() != null)
             ++i;
@@ -61,14 +61,14 @@ public class ConnectorEndPointCorrectlyQualified
      */
     @Override
     public void check(ASTConnector node) {
-        if (node.getSource().isPresent()) {
-            checkEndPointMaximallyTwiceQualified(node.getSource().get());
+        if (node.getSourceOpt().isPresent()) {
+            checkEndPointMaximallyTwiceQualified(node.getSource());
         } else {
-            if (!node.getUnitNumberResolution().isPresent() && !node.getBoolLiteral().isPresent())
+            if (!node.getUnitNumberResolutionOpt().isPresent() && !node.getBoolLiteralOpt().isPresent())
                 Log.error("Error Connector has no valid source or constant " + node.toString());
         }
 
-        for (ASTQualifiedNameWithArray name : node.getTargets().getQualifiedNameWithArrays()) {
+        for (ASTQualifiedNameWithArray name : node.getTargets().getQualifiedNameWithArrayList()) {
             checkEndPointMaximallyTwiceQualified(name);
         }
     }

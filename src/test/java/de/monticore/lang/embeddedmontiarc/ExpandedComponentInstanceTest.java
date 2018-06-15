@@ -21,12 +21,13 @@
 package de.monticore.lang.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -40,6 +41,13 @@ import static org.junit.Assert.*;
  * @author Michael von Wenckstern
  */
 public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
+
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
+    }
 
     @Test
     public void testFAS() throws Exception {
@@ -58,7 +66,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
 
-        assertEquals(inst.getPorts().size(), 3);
+        assertEquals(inst.getPortsList().size(), 3);
         assertTrue(inst.getPort("in1[1]").isPresent()); // from a.Sub2
         assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
 
@@ -76,7 +84,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
 
-        assertEquals(inst.getPorts().size(), 3);
+        assertEquals(inst.getPortsList().size(), 3);
         //assertTrue(inst.getPort("in1").isPresent()); // from a.Sub2
         //assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
 
@@ -99,7 +107,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
         // test whether T is replaced by Integer
-        inst.getPorts().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
+        inst.getPortsList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
         ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
                 "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -156,7 +164,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertNotNull(inst);
         System.out.println(inst);
         // test whether T is replaced by Integer
-    /*    inst.getPorts().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
+    /*    inst.getPortsList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
         ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
                 "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -186,8 +194,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
             Log.info(astExpression.toString(), "info:");
         }
         Iterator<ExpandedComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
-        UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) iterator.next().getArguments().get(0).getSymbol().get();
-        UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) iterator.next().getArguments().get(0).getSymbol().get();
+        UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
+        UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
         assertEquals("5", symbol1.getTextualRepresentation());
         assertEquals("1", symbol2.getTextualRepresentation());
     }

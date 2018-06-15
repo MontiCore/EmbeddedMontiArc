@@ -42,15 +42,15 @@ public class DefaultParametersHaveCorrectOrder
 
   @Override
   public void check(ASTComponent node ) {
-    List<ASTParameter> params = node.getParameters();
+    List<ASTParameter> params = node.getParameterList();
     boolean foundDefaultParameter = false;
     for (ASTParameter param : params) {
 
       if (!foundDefaultParameter) {
-        foundDefaultParameter = param.getDefaultValue().isPresent();
+        foundDefaultParameter = param.getDefaultValueOpt().isPresent();
       }
       else {
-        if (foundDefaultParameter && !param.getDefaultValue().isPresent()) {
+        if (foundDefaultParameter && !param.getDefaultValueOpt().isPresent()) {
           Log.error("0xAC005 There are non default parameters after a default parameter",
               node.get_SourcePositionStart());
         }

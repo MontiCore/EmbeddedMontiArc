@@ -22,9 +22,9 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
@@ -127,7 +127,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     public boolean hasPorts() {
-        return !getPorts().isEmpty();
+        return !getPortsList().isEmpty();
     }
 
     public List<ResolutionDeclarationSymbol> getResolutionDeclarationSymbols() {
@@ -156,7 +156,7 @@ public class ExpandedComponentInstanceSymbol
         Log.debug(toString(), "Current Instance");
         //TODO fix to work for more than one arguments
 
-        for (PortSymbol portSymbolMain : getPorts()) {
+        for (PortSymbol portSymbolMain : getPortsList()) {
             int counter = 1;
             InstanceInformation info = InstancingRegister.getInstanceInformation(getName()).orElse(null);
             int number = -1;
@@ -167,7 +167,7 @@ public class ExpandedComponentInstanceSymbol
             } else {
                 Log.info("No instance information for " + portSymbolMain.getName(), "Missing:");
             }
-            for (PortSymbol portSymbol : getPorts()) {
+            for (PortSymbol portSymbol : getPortsList()) {
                 if (portSymbol.getName().startsWith(portSymbolMain.getNameWithoutArrayBracketPart() + "[") && portSymbol.isPartOfPortArray()) {
                     if (number > -1 && counter > number) {
                         scope.remove(portSymbol);
@@ -190,14 +190,14 @@ public class ExpandedComponentInstanceSymbol
     }
 
     /**
-     * ExpandedComponentInstanceSymbol::getPorts() may return different
-     * results than ComponentSymbol::getPorts()
+     * ExpandedComponentInstanceSymbol::getPortsList() may return different
+     * results than ComponentSymbol::getPortsList()
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
      * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
      * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
      */
-    public Collection<PortSymbol> getPorts() {
+    public Collection<PortSymbol> getPortsList() {
         return getSpannedScope().<PortSymbol>resolveLocally(PortSymbol.KIND);
     }
 
@@ -210,7 +210,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     public Collection<PortSymbol> getIncomingPorts() {
-        return getPorts().stream().filter(PortSymbol::isIncoming).collect(Collectors.toList());
+        return getPortsList().stream().filter(PortSymbol::isIncoming).collect(Collectors.toList());
     }
 
     public Optional<PortSymbol> getIncomingPort(String name) {
@@ -219,7 +219,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     public Collection<PortSymbol> getOutgoingPorts() {
-        return getPorts().stream().filter(PortSymbol::isOutgoing).collect(Collectors.toList());
+        return getPortsList().stream().filter(PortSymbol::isOutgoing).collect(Collectors.toList());
     }
 
     public Optional<PortSymbol> getOutgoingPort(String name) {
@@ -245,8 +245,8 @@ public class ExpandedComponentInstanceSymbol
     }
 
     /**
-     * ExpandedComponentInstanceSymbol::getPorts() may return different
-     * results than ComponentSymbol::getPorts()
+     * ExpandedComponentInstanceSymbol::getPortsList() may return different
+     * results than ComponentSymbol::getPortsList()
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
      * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
@@ -276,7 +276,7 @@ public class ExpandedComponentInstanceSymbol
     }*/
 
     public boolean containsPort(PortSymbol portSymbol) {
-        for (PortSymbol symbol : getPorts())
+        for (PortSymbol symbol : getPortsList())
             if (symbol.equals(portSymbol))
                 return true;
         return false;

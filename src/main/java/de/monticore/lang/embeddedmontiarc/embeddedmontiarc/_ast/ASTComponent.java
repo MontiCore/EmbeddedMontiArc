@@ -21,11 +21,12 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast;
 
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
-import de.monticore.lang.monticar.types2._ast.ASTReferenceType;
-import de.monticore.lang.monticar.types2._ast.ASTTypeParameters;
+import de.monticore.types.types._ast.ASTReferenceType;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -34,36 +35,21 @@ import java.util.stream.Collectors;
  * @author Robert Heim, Michael von Wenckstern
  */
 public class ASTComponent extends ASTComponentTOP {
-    /**
-     * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent
-     */
+
     public ASTComponent() {
         super();
     }
 
-    protected ASTComponent(
-            String name
-            ,
-            ASTTypeParameters genericTypeParameters
-            ,
-            List<ASTParameter> parameters
-            ,
-            ASTReferenceType superComponent
-            ,
-            java.util.List<String> nEWLINETOKENs,
-
-            ASTComponentBody body
-
-    ) {
-        super(name, genericTypeParameters, parameters, superComponent, nEWLINETOKENs, body);
+    public ASTComponent(String name, Optional<ASTTypeParameters2> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body) {
+        super(name, genericTypeParameters, parameters, superComponent, body);
     }
 
     // do not use symbol table, since symbol table must not be created
-    public List<ASTPort> getPorts() {
+    public List<ASTPort> getPortsList() {
         List<ASTPort> ret = new ArrayList<>();
-        for (ASTElement element : this.getBody().getElements()) {
+        for (ASTElement element : this.getBody().getElementList()) {
             if (element instanceof ASTInterface) {
-                ret.addAll(((ASTInterface) element).getPorts());
+                ret.addAll(((ASTInterface) element).getPortsList());
             }
         }
         return ret;
@@ -71,19 +57,19 @@ public class ASTComponent extends ASTComponentTOP {
 
     // do not use symbol table, since symbol table must not be created
     public List<ASTConnector> getConnectors() {
-        return this.getBody().getElements().stream().filter(a -> a instanceof ASTConnector).
+        return this.getBody().getElementList().stream().filter(a -> a instanceof ASTConnector).
                 map(a -> (ASTConnector) a).collect(Collectors.toList());
     }
 
     // do not use symbol table, since symbol table must not be created
     public List<ASTSubComponent> getSubComponents() {
-        return this.getBody().getElements().stream().filter(a -> a instanceof ASTSubComponent).
+        return this.getBody().getElementList().stream().filter(a -> a instanceof ASTSubComponent).
                 map(a -> (ASTSubComponent) a).collect(Collectors.toList());
     }
 
     // do not use symbol table, since symbol table must not be created
     public List<ASTComponent> getInnerComponents() {
-        return this.getBody().getElements().stream().filter(a -> a instanceof ASTComponent).
+        return this.getBody().getElementList().stream().filter(a -> a instanceof ASTComponent).
                 map(a -> (ASTComponent) a).collect(Collectors.toList());
     }
 }

@@ -51,7 +51,7 @@ public class EmbeddedMontiArcArtifactScope extends ArtifactScope  {
   protected <T extends Symbol> Collection<T> continueWithEnclosingScope(ResolvingInfo resolvingInfo, String name, SymbolKind kind, AccessModifier modifier, Predicate<Symbol> predicate) {
     final Collection<T> result = new LinkedHashSet<>();
 
-    if (checkIfContinueWithEnclosing(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
+    if (checkIfContinueWithEnclosingScope(resolvingInfo.areSymbolsFound()) && (getEnclosingScope().isPresent())) {
       if (!(enclosingScope instanceof GlobalScope)) {
         Log.warn("0xA1039 An artifact scope should have the global scope as enclosing scope or no "
             + "enclosing scope at all.");

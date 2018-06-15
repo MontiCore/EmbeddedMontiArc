@@ -43,7 +43,7 @@ import java.util.stream.Collectors;*/
   public void check(ASTComponent node) {
     final List<String> usedNames = new ArrayList<String>();
 
-    for (ASTMontiArcInvariant inv : node.getBody().getElements().stream()
+    for (ASTMontiArcInvariant inv : node.getBody().getElementList().stream()
         .filter(a -> a instanceof ASTMontiArcInvariant).map(a -> (ASTMontiArcInvariant) a)
         .collect(Collectors.toList())) {
 

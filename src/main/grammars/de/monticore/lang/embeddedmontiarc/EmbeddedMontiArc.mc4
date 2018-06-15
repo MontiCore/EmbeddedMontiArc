@@ -24,16 +24,16 @@ package de.monticore.lang.embeddedmontiarc;
  *
  * @author Michael von Wenckstern, Nina Pichler, Sascha Schneiders, Sining Wang, Yu Qiao
  */
-grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticore.lang.monticar.Ranges {
+grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
 
   /** ASTEMACompilationUnit represents the complete component
    * @attribute package          The package declaration of this component
    * @attribute importStatements List of imported elements
    * @attribute Component the root component of the component
    */
-  EMACompilationUnit =NEWLINETOKEN*
-    ("package" package:(Name& || ".")+ ";")? NEWLINETOKEN*
-    (ImportStatement NEWLINETOKEN*)*
+  EMACompilationUnit =
+    ("package" package:(Name& || ".")+ ";")?
+    (ImportStatement )*
     Component;
 
 
@@ -82,10 +82,10 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
   */
   
   symbol scope Component implements Element =
-   NEWLINETOKEN* "component" Name
-    genericTypeParameters:TypeParameters // TypeParameters is optional itself
-    ( NEWLINETOKEN* "(" NEWLINETOKEN* (Parameter || ",")+  NEWLINETOKEN*")" NEWLINETOKEN*)? NEWLINETOKEN*
-    ("implements" superComponent:ReferenceType)? NEWLINETOKEN*
+    "component" Name
+    genericTypeParameters:TypeParameters2?
+    (  "("  (Parameter || ",")+  ")" )?
+    ("implements" superComponent:ReferenceType)?
     body:ComponentBody;
 
 
@@ -96,9 +96,9 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
   * @attribute elements list of architectural elements
   */
   ComponentBody =
-    ("{" NEWLINETOKEN*
+    ("{"
       Element*
-    "}" NEWLINETOKEN*);
+    "}" );
     
   /**
   * An Interface defines an interface of a component 
@@ -107,9 +107,9 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
   *   this interface
   */
   Interface implements Element =
-    NEWLINETOKEN* ("port"|"ports")
-    ports:(Port || ",")+ ";" NEWLINETOKEN*;
-  
+     ("port"|"ports")
+    ports:(Port || ",")+ ";" ;
+
  /**a
   * An incoming port is used to receive messages, an 
   * outgoing port is used to send messages of a specific 
@@ -124,8 +124,8 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
    * declaration later on
    */
    Port =
-          NEWLINETOKEN*(AdaptableKeyword? incoming:["in"] | outgoing:["out"])
-           Type   (Name? | Name ( "[" UnitNumberResolution "]" )?) NEWLINETOKEN*;
+          AdaptableKeyword? (incoming:["in"] | outgoing:["out"])
+          Type (Name? | Name ( "[" UnitNumberResolution "]" )?) ;
 
 
   /**
@@ -140,10 +140,10 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
     *   created
     */
     SubComponent implements Element =
-      NEWLINETOKEN* "instance"
+       "instance"
       type:ReferenceType
       ("(" arguments:(Expression || ",")+ ")" )?
-      instances:(SubComponentInstance || ",")* ";" NEWLINETOKEN*;
+      instances:(SubComponentInstance || ",")* ";" ;
 
 
   /**
@@ -160,7 +160,7 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
   // TODO better/more intuitive name? e.g. "refConnector" (not really good...)
   SubComponentInstance =
     Name
-    ("[" UnitNumberResolution "]")? NEWLINETOKEN*;
+    ("[" UnitNumberResolution "]")? ;
 
   /**
   * A connector connects one source port with one or many
@@ -172,10 +172,10 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
   *   instance names
   */
   Connector implements Element=
-    NEWLINETOKEN* "connect" (source:QualifiedNameWithArray  | (boolLiteral:BooleanLiteral) | (stringLiteral:StringLiteral)| UnitNumberResolution) "->"
-    targets:ConnectorTargets ";" NEWLINETOKEN*;
+     "connect" (source:QualifiedNameWithArray  | (boolLiteral:BooleanLiteral) | (stringLiteral:StringLiteral)| UnitNumberResolution) "->"
+    targets:ConnectorTargets ";" ;
 
-   ConnectorTargets = (QualifiedNameWithArray (",")? NEWLINETOKEN* )+;
+   ConnectorTargets = (QualifiedNameWithArray (",")?  )+;
 
   /* ======================================================*/
   /* ============ From OLD MARC Grammar ==================*/
@@ -198,8 +198,8 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
   * @attribute off do not use autoconnection (default)
   */
   MontiArcAutoConnect implements MontiArcConfig = 
-    NEWLINETOKEN* "autoconnect"
-    (["type"] | ["port"] | ["off"]) ";" NEWLINETOKEN*;
+    "autoconnect"
+    (["type"] | ["port"] | ["off"]) ";";
      
   /**
    * AutoInstantiate is used to automatically instantiate inner components.
@@ -209,19 +209,6 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2, de.monticor
    * @attribute off do not use autoinstantiate (default)
    */
    MontiArcAutoInstantiate implements MontiArcConfig =
-     NEWLINETOKEN* "autoinstantiate"
-     (["on"] | ["off"]) ";" NEWLINETOKEN*;
-
-
-
-   //TODO investigate what is wrong with monticore
-   //this is needed otherwise something with the generated parser is wrong
-   Ranges implements PrintType,TypeArgument=
-   	"[" Range+ "]";
-
-token NEWLINETOKEN =
-         ('\r' '\n' |
-         '\r' |
-         '\n' ):
-       ;
+     "autoinstantiate"
+     (["on"] | ["off"]) ";";
 }

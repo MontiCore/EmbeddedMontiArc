@@ -28,17 +28,17 @@ import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTAdaptableKeyword;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.resolution._ast.ASTResolutionDeclaration;
+import de.monticore.lang.monticar.resolution._ast.ASTTypeNameResolutionDeclaration;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbolReference;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.lang.monticar.ts.references.MontiCarTypeSymbolReference;
-import de.monticore.lang.monticar.types2._ast.ASTTypeNameResolutionDeclaration;
-import de.monticore.lang.monticar.types2._ast.ASTTypeParameters;
-import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.lang.monticar.types2._ast.ASTTypeParameters2;
+import de.monticore.lang.monticar.types2._ast.ASTTypeVariableDeclaration2;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.types.TypeSymbol;
 import de.monticore.symboltable.types.references.TypeReference;
@@ -46,6 +46,8 @@ import de.se_rwth.commons.logging.Log;
 import org.jscience.mathematics.number.Rational;
 
 import java.util.List;
+
+import static de.monticore.numberunit.Rationals.doubleToRational;
 
 
 /**
@@ -58,26 +60,26 @@ public class EmbeddedMontiArcSymbolTableHelper {
                                                         ComponentSymbolReference componentSymbolReference,
                                                         EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
 
-        if (node.getUnitNumberResolution().isPresent()) {
-            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution().get();
-            ASTUnitNumber toSet = null;
-            if (unitNumberResolution.getUnitNumber().isPresent()) {
-                toSet = unitNumberResolution.getUnitNumber().get();
+        if (node.getUnitNumberResolutionOpt().isPresent()) {
+            ASTUnitNumberResolution unitNumberResolution = node.getUnitNumberResolution();
+            ASTNumberWithUnit toSet = null;
+            if (unitNumberResolution.getNumberWithUnitOpt().isPresent()) {
+                toSet = unitNumberResolution.getNumberWithUnit();
 
-            } else if (unitNumberResolution.getName().isPresent()) {
+            } else if (unitNumberResolution.getNameOpt().isPresent()) {
 
                 ResolutionDeclarationSymbol resDeclSym = symbolTableCreator.
                         componentStack.peek()
-                        .getResolutionDeclarationSymbol(unitNumberResolution.getName().get()).get();
+                        .getResolutionDeclarationSymbol(unitNumberResolution.getNameOpt().get()).get();
                 Log.debug(resDeclSym.getASTResolution().toString(), "Found ResolutionDeclarationSymbol:");
-                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getUnitNumber().get();
+                toSet = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getNumberWithUnit();
 
                 Log.debug("" + toSet.getNumber().get().intValue(), "ToSet Number:");
             }
-            node.getUnitNumberResolution().get().setUnit(toSet.getUnit().get());
-            node.getUnitNumberResolution().get().setNumber(toSet.getNumber().get());
+            node.getUnitNumberResolution().setUnit(toSet.getUnit());
+            node.getUnitNumberResolution().setNumber(toSet.getNumber().get());
 
-            Log.debug("" + node.getUnitNumberResolution().get().getNumber().get().intValue(),
+            Log.debug("" + node.getUnitNumberResolution().getNumber().get().intValue(),
                     "SubComponentResolution Number:");
         }
     }
@@ -91,15 +93,15 @@ public class EmbeddedMontiArcSymbolTableHelper {
                     .getASTResolution() instanceof ASTUnitNumberResolution) {
                 Log.debug(size + "", "Set new Resolution");
                 ((ASTUnitNumberResolution) componentSymbolReference.getResolutionDeclarationSymbols()
-                        .get(index).getASTResolution()).setNumber(Rational.valueOf("" + size));
+                        .get(index).getASTResolution()).setNumber(Double.valueOf(size));
             }
         } else {
             for (int i = 0; i < componentSymbolReference.getResolutionDeclarationSymbols().size(); ++i) {
-                Rational numberToSetTo = ((ASTUnitNumberResolution) componentSymbolReference
+                Rational numberToSetTo = doubleToRational(((ASTUnitNumberResolution) componentSymbolReference
                         .getReferencedSymbol().getResolutionDeclarationSymbols().get(i).getASTResolution())
-                        .getNumber().get();
+                        .getNumber().get());
                 ((ASTUnitNumberResolution) componentSymbolReference.getResolutionDeclarationSymbols().get(i)
-                        .getASTResolution()).setNumber(numberToSetTo);
+                        .getASTResolution()).setNumber(numberToSetTo.doubleValue());
             }
         }
     }
@@ -139,19 +141,18 @@ public class EmbeddedMontiArcSymbolTableHelper {
 
 
     public static void handleResolutionDeclaration(ComponentSymbol typeSymbol,
-                                                   ASTTypeParameters astTypeParameters, Scope currentScope,
+                                                   ASTTypeParameters2 astTypeParameters, Scope currentScope,
                                                    ASTComponent node,
                                                    EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        for (ASTTypeVariableDeclaration astTypeParameter : astTypeParameters
-                .getTypeVariableDeclarations()) {
-            if (astTypeParameter.resolutionDeclarationIsPresent() && astTypeParameter
-                    .getResolutionDeclaration().get() instanceof ASTTypeNameResolutionDeclaration) {
+        for (ASTTypeVariableDeclaration2 astTypeParameter : astTypeParameters.getTypeVariableDeclaration2List()) {
+            if (astTypeParameter.getResolutionDeclarationOpt().isPresent() && astTypeParameter
+                    .getResolutionDeclaration() instanceof ASTTypeNameResolutionDeclaration) {
                 Log.debug(astTypeParameter.toString(), "Resolution Declaration:");
-                ASTResolutionDeclaration astResDecl = astTypeParameter.getResolutionDeclaration().get();
+                ASTResolutionDeclaration astResDecl = astTypeParameter.getResolutionDeclaration();
 
                 ResolutionDeclarationSymbolReference resDeclSymRef;
                 resDeclSymRef = ResolutionDeclarationSymbolReference.constructResolutionDeclSymbolRef(
-                        ((ASTTypeNameResolutionDeclaration) astResDecl).getName(),
+                        astResDecl.getName(),
                         ((ASTTypeNameResolutionDeclaration) astResDecl).getResolution());
 
                 Log.debug(resDeclSymRef.getNameToResolve(),
@@ -168,8 +169,8 @@ public class EmbeddedMontiArcSymbolTableHelper {
     public static void setParametersOfComponent(final ComponentSymbol componentSymbol, ASTComponent cmp
             , EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         Log.debug(componentSymbol.toString(), "ComponentPreParam");
-        for (ASTParameter astParameter : cmp.getParameters()) {
-            final String paramName = astParameter.getName();
+        for (ASTParameter astParameter : cmp.getParameterList()) {
+            final String paramName = astParameter.getNameWithArray().getName();
             Log.debug(astParameter.toString(), "ASTParam");
             int dimension = TypesHelper.getArrayDimensionIfArrayOrZero(astParameter.getType());
 
@@ -187,25 +188,25 @@ public class EmbeddedMontiArcSymbolTableHelper {
             componentSymbol.addConfigParameter(parameterSymbol);
             componentSymbol.addParameter(astParameter);
 
-            if (astParameter.adaptableKeywordIsPresent())
+            if (astParameter.getAdaptableKeywordOpt().isPresent())
                 addConfigPort(cmp, parameterSymbol, astParameter);
         }
         Log.debug(componentSymbol.toString(), "ComponentPostParam");
     }
 
     public static void addConfigPort(ASTComponent astComponent, MCFieldSymbol parameterSymbol, ASTParameter astParameter) {
-        ASTPort tmpASTPort = ASTPort.getBuilder()
-                .name(parameterSymbol.getName())
-                .type(astParameter.getType())
-                .incoming(true)
-                .outgoing(false)
-                .adaptableKeyword(ASTAdaptableKeyword.getBuilder().build())
+        ASTPort tmpASTPort = EmbeddedMontiArcMill.portBuilder()
+                .setName(parameterSymbol.getName())
+                .setType(astParameter.getType())
+                .setIncoming(true)
+                .setOutgoing(false)
+                .setAdaptableKeyword(EmbeddedMontiArcMill.adaptableKeywordBuilder().build())
                 .build();
 
         ASTInterface tmpInterface = EmbeddedMontiArcNodeFactory.createASTInterface();
-        tmpInterface.setPorts(Lists.newArrayList(tmpASTPort));
+        tmpInterface.setPortsList(Lists.newArrayList(tmpASTPort));
 
-        astComponent.getBody().getElements().add(tmpInterface);
+        astComponent.getBody().getElementList().add(tmpInterface);
     }
 
     public static boolean needsInstanceCreation(ASTComponent node, ComponentSymbol symbol,
