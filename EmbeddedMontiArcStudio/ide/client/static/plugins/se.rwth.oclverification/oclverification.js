@@ -27,12 +27,11 @@ define(function(require, exports, module) {
             var project = localStorage.getItem("reponame").toLowerCase();
 
             messageIndex = UICustom.message("Visualizing CD - This might take a moment...");
-			var tab = TabManager.focussedTab;
-			var path = tab.path;
+			var path = TabManager.focussedTab.path;
             window.fetch("/services/" + project + "/visualizeCD", {
                 "headers": { "Content-Type": "application/json" },
                 "method": "post",
-                "body": JSON.stringify({ name: path })
+                "body": JSON.stringify({ path: path })
             }).then(onOCLResponse);
         }
 

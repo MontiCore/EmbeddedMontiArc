@@ -36,7 +36,7 @@ class CDVisualization extends AbstractOCLVerification {
         this.logger.level = "debug";
     }
 
-    execute(callback, tab) {
+    execute(callback, path) {
         const onExit = () => {
             this.logger.info("...OCL CLI has finished.");
             callback();
