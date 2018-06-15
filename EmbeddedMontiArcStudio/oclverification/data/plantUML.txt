@@ -1,0 +1,10 @@
+@startuml
+class A
+class B extends A
+class C
+class D extends B
+A "*" <--> "0..1" B
+C "0..1" <--> "*" D
+A <-- "*" D
+@enduml
+
