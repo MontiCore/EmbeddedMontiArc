@@ -64,7 +64,7 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
     public MathOptimizationExpressionSymbol getMathOptimizationExpressionSymbolFromTestScript(String pathToModel, int index) {
         // get all math expressions in script
         ASTMathOptCompilationUnit root = loadModel(pathToModel);
-        List<ASTStatement> mathExpressions = root.getMathCompilationUnit().getMathScript().getStatements().getStatementList();
+        List<ASTStatement> mathExpressions = root.getMathCompilationUnit().getMathScript().getStatementsList();
         // delete non MathOptimizationExpressionSymbols
         mathExpressions.removeIf(astMathExpression -> !(astMathExpression instanceof ASTOptimizationExpression));
         return (MathOptimizationExpressionSymbol) mathExpressions.get(index).getSymbolOpt().orElse(null);

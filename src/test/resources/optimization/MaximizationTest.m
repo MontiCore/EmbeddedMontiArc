@@ -20,9 +20,9 @@
 package optimization;
 
 script MaximizationTest
-    maximize(Q x)
-        Q y = x^2;
+    Q y = maximize(Q x)
+        x^2;
     subject to
         x <= 1;
-    end;
+    end
 end

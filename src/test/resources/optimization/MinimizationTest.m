@@ -21,8 +21,8 @@ package optimization;
 
 script MinimizationTest
     minimize(Q x)
-        Q y = x^2;
+        x^2;
     subject to
         x <= 1;
-    end;
+    end
 end

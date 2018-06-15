@@ -33,7 +33,6 @@ script LpTest
     Q ^{m, n} c = [3, 2; 1, 5; 5, 4];
 
     // minimization problem
-    Q yOpt = 
     minimize(Q^{3, 2} x)
      c(1,1) * x(1,1) + c(2,1) * x(2,1) + c(3,1) * x(3,1) + c(1,2) * x(1,2) + c(2,2) * x(2,2) + c(3,2) * x(3,2);
     subject to

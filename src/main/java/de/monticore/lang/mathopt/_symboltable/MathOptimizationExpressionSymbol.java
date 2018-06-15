@@ -107,7 +107,7 @@ public class MathOptimizationExpressionSymbol extends MathExpressionSymbol {
         for (MathExpressionSymbol symbol : subjectToExpressions) {
             result.append(symbol.getTextualRepresentation()).append(";\n");
         }
-        result.append("end;");
+        result.append("end");
         return result.toString();
     }
     // endregion
