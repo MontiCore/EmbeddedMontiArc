@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator;
 
 
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 
 import java.util.HashSet;
 

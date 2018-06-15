@@ -1,10 +1,10 @@
 package de.monticore.lang.monticar.generator.optimization;
 
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.expression.*;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

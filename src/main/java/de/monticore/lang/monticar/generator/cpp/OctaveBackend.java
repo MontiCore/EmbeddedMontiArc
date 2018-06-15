@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.monticar.generator.MathBackend;
 import de.se_rwth.commons.logging.Log;
 

@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.math.math._symboltable.expression.MathConditionalExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathConditionalExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
 import java.util.List;
 

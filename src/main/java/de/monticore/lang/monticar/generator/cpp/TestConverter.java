@@ -22,28 +22,28 @@ public class TestConverter {
         fileContentString += getDefaultContent(symbol);
         ASTComponentStreamUnits ast = (ASTComponentStreamUnits) symbol.getAstNode().get();
         int executionCounter = 0;
-        int executionAmount = ast.getNamedStreamUnitss().get(0).getStream().getStreamInstructions().size();
+        int executionAmount = ast.getNamedStreamUnitsList().get(0).getStream().getStreamInstructionList().size();
         while (executionCounter < executionAmount) {
-            for (ASTNamedStreamUnits astNamedStreamUnit : ast.getNamedStreamUnitss()) {
+            for (ASTNamedStreamUnits astNamedStreamUnit : ast.getNamedStreamUnitsList()) {
                 fileContentString += getFileContentStringFor(instanceSymbol, astNamedStreamUnit, executionCounter);
             }
             fileContentString += "testInstance.execute();\n";
-            for (ASTNamedStreamUnits astNamedStreamUnit : ast.getNamedStreamUnitss()) {
+            for (ASTNamedStreamUnits astNamedStreamUnit : ast.getNamedStreamUnitsList()) {
                 String portName = astNamedStreamUnit.getName();
                 if (!instanceSymbol.getPort(portName).get().isIncoming()) {
-                    if (astNamedStreamUnit.getStream().getStreamInstructions().size() > 0) {
-                        ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructions().get(executionCounter);
-                        if (streamInstruction.getStreamValue().isPresent() && streamInstruction.getStreamValue().get().getPrecisionNumber().isPresent()) {
-                            ASTPrecisionNumber precisionNumber = streamInstruction.getStreamValue().get().getPrecisionNumber().get();
-                            if (precisionNumber.getPrecision().isPresent()) {
-                                fileContentString += "if(testInstance." + portName + ">" + "(" + MathConverter.getConvertedUnitNumber(precisionNumber.getUnitNumber()) + "-" + MathConverter.getConvertedUnitNumber(precisionNumber.getPrecision().get().getUnitNumber()) + ")";
-                                fileContentString += "&& testInstance." + portName + "<" + "(" + MathConverter.getConvertedUnitNumber(precisionNumber.getUnitNumber()) + "+" + MathConverter.getConvertedUnitNumber(precisionNumber.getPrecision().get().getUnitNumber()) + ")";
+                    if (astNamedStreamUnit.getStream().getStreamInstructionList().size() > 0) {
+                        ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructionList().get(executionCounter);
+                        if (streamInstruction.getStreamValueOpt().isPresent() && streamInstruction.getStreamValueOpt().get().getPrecisionNumberOpt().isPresent()) {
+                            ASTPrecisionNumber precisionNumber = streamInstruction.getStreamValueOpt().get().getPrecisionNumberOpt().get();
+                            if (precisionNumber.getPrecisionOpt().isPresent()) {
+                                fileContentString += "if(testInstance." + portName + ">" + "(" + MathConverter.getConvertedUnitNumber(precisionNumber.getNumberWithUnit()) + "-" + MathConverter.getConvertedUnitNumber(precisionNumber.getPrecisionOpt().get().getNumberWithUnit()) + ")";
+                                fileContentString += "&& testInstance." + portName + "<" + "(" + MathConverter.getConvertedUnitNumber(precisionNumber.getNumberWithUnit()) + "+" + MathConverter.getConvertedUnitNumber(precisionNumber.getPrecisionOpt().get().getNumberWithUnit()) + ")";
                                 fileContentString += "){";
                                 fileContentString += "printf(\"Mismatch at executionStep " + executionCounter + "\");\n";
                                 fileContentString += "octave_quit();\n";
                                 fileContentString += "}\n";
                             } else {
-                                fileContentString += "if(testInstance." + portName + "!=" + MathConverter.getConvertedUnitNumber(precisionNumber.getUnitNumber()) + "){";
+                                fileContentString += "if(testInstance." + portName + "!=" + MathConverter.getConvertedUnitNumber(precisionNumber.getNumberWithUnit()) + "){";
                                 fileContentString += "printf(\"Mismatch at executionStep " + executionCounter + "\");\n";
                                 fileContentString += "octave_quit();\n";
                                 fileContentString += "}\n";
@@ -88,11 +88,11 @@ public class TestConverter {
         String fileContentString = "";
         String portName = astNamedStreamUnit.getName();
         if (instanceSymbol.getPort(portName).get().isIncoming()) {
-            if (astNamedStreamUnit.getStream().getStreamInstructions().size() > 0) {
-                ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructions().get(executionCounter);
-                if (streamInstruction.getStreamValue().isPresent() && streamInstruction.getStreamValue().get().getPrecisionNumber().isPresent())
+            if (astNamedStreamUnit.getStream().getStreamInstructionList().size() > 0) {
+                ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructionList().get(executionCounter);
+                if (streamInstruction.getStreamValueOpt().isPresent() && streamInstruction.getStreamValueOpt().get().getPrecisionNumberOpt().isPresent())
                     fileContentString += "testInstance." + portName + "=" + MathConverter.getConvertedUnitNumber(streamInstruction.
-                            getStreamValue().get().getPrecisionNumber().get().getUnitNumber()) + ";";
+                            getStreamValueOpt().get().getPrecisionNumberOpt().get().getNumberWithUnit()) + ";";
             }
         }
         return fileContentString;

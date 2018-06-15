@@ -21,7 +21,7 @@ nLaplacian=mat(n,n);
 }
 void execute()
 {
-auto _I_0 = (HelperA::getSqrtMatDiag((HelperA::invertDiagMatrix(degree))));
+auto _I_0 = (HelperA::getSqrtMat((inv(degree))));
 nLaplacian = _I_0*similarity*_I_0;
 }
 

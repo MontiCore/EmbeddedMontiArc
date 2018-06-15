@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.math.math._symboltable.MathForLoopHeadSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
+import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 import de.monticore.lang.monticar.generator.Variable;
 import de.se_rwth.commons.logging.Log;
 
