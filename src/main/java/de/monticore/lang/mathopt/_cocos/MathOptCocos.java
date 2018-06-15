@@ -28,6 +28,7 @@ public class MathOptCocos {
 
     public static MathOptCoCoChecker createChecker() {
         return new MathOptCoCoChecker()
-                .addCoCo(new OptimizationExpressionCheck());
+                .addCoCo(new OptimizationStatementCheck())
+                .addCoCo(new OptimizationStatementCheck());
     }
 }

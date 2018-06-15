@@ -8,25 +8,25 @@ grammar MathOpt extends de.monticore.lang.Math
 
     OptimizationCompareOperator = operator:"==" | operator:"<=" | operator:">=";
 
-    OptimizationVariableDeclarationExpression =
+    OptimizationVariableDeclaration =
         type:AssignmentType?  Name;
 
     OptimizationObjectiveFunction = (Statement | Expression) ";"?;
 
-    OptimizationSimpleConditionExpression =
+    OptimizationSimpleCondition =
         left:Expression operator:OptimizationCompareOperator right:Expression ";"?;
 
-    OptimizationBoundsConditionExpression =
+    OptimizationBoundsCondition =
         lower:Expression "<=" expr:Expression "<=" upper:Expression ";"?;
 
-    OptimizationConditionExpression =
-        (simpleCondition:OptimizationSimpleConditionExpression | boundedCondition:OptimizationBoundsConditionExpression | forLoopCondition:OptimizationForLoopExpression);
+    OptimizationCondition =
+        (simpleCondition:OptimizationSimpleCondition | boundedCondition:OptimizationBoundsCondition | forLoopCondition:OptimizationForLoop);
 
-    OptimizationForLoopExpression =
-        "for" head:MathForLoopHead body:OptimizationConditionExpression+ "end" ";"?;
+    OptimizationForLoop =
+        "for" head:MathForLoopHead body:OptimizationCondition+ "end" ";"?;
 
     OptimizationObjectiveValue = type:ElementType Name "=";
 
-    OptimizationExpression implements Statement =
-        objectiveValue:OptimizationObjectiveValue? optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclarationExpression ")" objectiveFunction:OptimizationObjectiveFunction "subject to" constraint:OptimizationConditionExpression* "end";
+    OptimizationStatement implements Statement =
+        objectiveValue:OptimizationObjectiveValue? optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclaration ")" objectiveFunction:OptimizationObjectiveFunction "subject to" constraint:OptimizationCondition* "end";
 }

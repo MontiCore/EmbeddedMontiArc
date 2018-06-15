@@ -22,10 +22,10 @@ package de.monticore.lang.mathopt;
 
 import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.mathopt._ast.ASTMathOptCompilationUnit;
-import de.monticore.lang.mathopt._ast.ASTOptimizationExpression;
+import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
 import de.monticore.lang.mathopt._cocos.MathOptCoCoChecker;
 import de.monticore.lang.mathopt._cocos.MathOptCocos;
-import de.monticore.lang.mathopt._symboltable.MathOptimizationExpressionSymbol;
+import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
 
 import java.util.List;
 
@@ -43,14 +43,14 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
     }
 
     // optimization expression symbols
-    private MathOptimizationExpressionSymbol minimizationTestSymbol;
-    private MathOptimizationExpressionSymbol maximizationTestSymbol;
-    private MathOptimizationExpressionSymbol lpTestSymbol;
-    private MathOptimizationExpressionSymbol upperAndLowerBoundTestSymbol;
-    private MathOptimizationExpressionSymbol forLoopConditionTestSymbol;
-    private MathOptimizationExpressionSymbol existingOptimizationVarScalar;
-    private MathOptimizationExpressionSymbol existingOptimizationVarMatrix;
-    private MathOptimizationExpressionSymbol existingOptimizationVarSubstituted;
+    private MathOptimizationStatementSymbol minimizationTestSymbol;
+    private MathOptimizationStatementSymbol maximizationTestSymbol;
+    private MathOptimizationStatementSymbol lpTestSymbol;
+    private MathOptimizationStatementSymbol upperAndLowerBoundTestSymbol;
+    private MathOptimizationStatementSymbol forLoopConditionTestSymbol;
+    private MathOptimizationStatementSymbol existingOptimizationVarScalar;
+    private MathOptimizationStatementSymbol existingOptimizationVarMatrix;
+    private MathOptimizationStatementSymbol existingOptimizationVarSubstituted;
 
     private OptimizationModelHelper() {
 
@@ -61,95 +61,95 @@ public class OptimizationModelHelper extends AbstractMathOptChecker {
         return MathOptCocos.createChecker();
     }
 
-    public MathOptimizationExpressionSymbol getMathOptimizationExpressionSymbolFromTestScript(String pathToModel, int index) {
+    public MathOptimizationStatementSymbol getMathOptimizationStatementSymbolFromTestScript(String pathToModel, int index) {
         // get all math expressions in script
         ASTMathOptCompilationUnit root = loadModel(pathToModel);
         List<ASTStatement> mathExpressions = root.getMathCompilationUnit().getMathScript().getStatementsList();
-        // delete non MathOptimizationExpressionSymbols
-        mathExpressions.removeIf(astMathExpression -> !(astMathExpression instanceof ASTOptimizationExpression));
-        return (MathOptimizationExpressionSymbol) mathExpressions.get(index).getSymbolOpt().orElse(null);
+        // delete non MathOptimizationStatementSymbols
+        mathExpressions.removeIf(astMathExpression -> !(astMathExpression instanceof ASTOptimizationStatement));
+        return (MathOptimizationStatementSymbol) mathExpressions.get(index).getSymbolOpt().orElse(null);
     }
 
-    public MathOptimizationExpressionSymbol getMinimizationTestSymbol() {
+    public MathOptimizationStatementSymbol getMinimizationTestSymbol() {
         if (minimizationTestSymbol == null)
-            minimizationTestSymbol = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/MinimizationTest.m", 0);
+            minimizationTestSymbol = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/MinimizationTest.m", 0);
         return minimizationTestSymbol;
     }
 
-    public MathOptimizationExpressionSymbol getMaximizationTestSymbol() {
+    public MathOptimizationStatementSymbol getMaximizationTestSymbol() {
         if (maximizationTestSymbol == null)
-            maximizationTestSymbol = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/MaximizationTest.m", 0);
+            maximizationTestSymbol = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/MaximizationTest.m", 0);
         return maximizationTestSymbol;
     }
 
-    public MathOptimizationExpressionSymbol getLpTestSymbol() {
+    public MathOptimizationStatementSymbol getLpTestSymbol() {
         if (lpTestSymbol == null)
-            lpTestSymbol = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/LpTest.m", 0);
+            lpTestSymbol = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/LpTest.m", 0);
         return lpTestSymbol;
     }
 
-    public MathOptimizationExpressionSymbol getUpperAndLowerBoundTestSymbol() {
+    public MathOptimizationStatementSymbol getUpperAndLowerBoundTestSymbol() {
         if (upperAndLowerBoundTestSymbol == null) {
-            upperAndLowerBoundTestSymbol = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/UpperAndLowerBoundTest.m", 0);
+            upperAndLowerBoundTestSymbol = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/UpperAndLowerBoundTest.m", 0);
         }
         return upperAndLowerBoundTestSymbol;
     }
 
-    public MathOptimizationExpressionSymbol getForLoopConditionTestSymbol() {
+    public MathOptimizationStatementSymbol getForLoopConditionTestSymbol() {
         if (forLoopConditionTestSymbol == null) {
-            forLoopConditionTestSymbol = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/ForLoopConditionTest.m", 0);
+            forLoopConditionTestSymbol = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ForLoopConditionTest.m", 0);
         }
         return forLoopConditionTestSymbol;
     }
 
-    public MathOptimizationExpressionSymbol getExistingOptimizationVarScalar() {
+    public MathOptimizationStatementSymbol getExistingOptimizationVarScalar() {
         if (existingOptimizationVarScalar == null) {
-            existingOptimizationVarScalar = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 0);
+            existingOptimizationVarScalar = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 0);
         }
         return existingOptimizationVarScalar;
     }
 
-    public MathOptimizationExpressionSymbol getExistingOptimizationVarMatrix() {
+    public MathOptimizationStatementSymbol getExistingOptimizationVarMatrix() {
         if (existingOptimizationVarMatrix == null)
-            existingOptimizationVarMatrix = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 1);
+            existingOptimizationVarMatrix = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 1);
         return existingOptimizationVarMatrix;
     }
 
-    public MathOptimizationExpressionSymbol getExistingOptimizationVarSubstituted() {
+    public MathOptimizationStatementSymbol getExistingOptimizationVarSubstituted() {
         if (existingOptimizationVarSubstituted == null)
-            existingOptimizationVarSubstituted = getMathOptimizationExpressionSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 2);
+            existingOptimizationVarSubstituted = getMathOptimizationStatementSymbolFromTestScript("src/test/resources/optimization/ExistingOptimizationVariable.m", 2);
         return existingOptimizationVarSubstituted;
     }
 
-    protected void setMinimizationTestSymbol(MathOptimizationExpressionSymbol minimizationTestSymbol) {
+    protected void setMinimizationTestSymbol(MathOptimizationStatementSymbol minimizationTestSymbol) {
         this.minimizationTestSymbol = minimizationTestSymbol;
     }
 
-    protected void setMaximizationTestSymbol(MathOptimizationExpressionSymbol maximizationTestSymbol) {
+    protected void setMaximizationTestSymbol(MathOptimizationStatementSymbol maximizationTestSymbol) {
         this.maximizationTestSymbol = maximizationTestSymbol;
     }
 
-    protected void setLpTestSymbol(MathOptimizationExpressionSymbol lpTestSymbol) {
+    protected void setLpTestSymbol(MathOptimizationStatementSymbol lpTestSymbol) {
         this.lpTestSymbol = lpTestSymbol;
     }
 
-    protected void setUpperAndLowerBoundTestSymbol(MathOptimizationExpressionSymbol upperAndLowerBoundTestSymbol) {
+    protected void setUpperAndLowerBoundTestSymbol(MathOptimizationStatementSymbol upperAndLowerBoundTestSymbol) {
         this.upperAndLowerBoundTestSymbol = upperAndLowerBoundTestSymbol;
     }
 
-    protected void setForLoopConditionTestSymbol(MathOptimizationExpressionSymbol forLoopConditionTestSymbol) {
+    protected void setForLoopConditionTestSymbol(MathOptimizationStatementSymbol forLoopConditionTestSymbol) {
         this.forLoopConditionTestSymbol = forLoopConditionTestSymbol;
     }
 
-    protected void setExistingOptimizationVarScalar(MathOptimizationExpressionSymbol existingOptimizationVarScalar) {
+    protected void setExistingOptimizationVarScalar(MathOptimizationStatementSymbol existingOptimizationVarScalar) {
         this.existingOptimizationVarScalar = existingOptimizationVarScalar;
     }
 
-    protected void setExistingOptimizationVarMatrix(MathOptimizationExpressionSymbol existingOptimizationVarMatrix) {
+    protected void setExistingOptimizationVarMatrix(MathOptimizationStatementSymbol existingOptimizationVarMatrix) {
         this.existingOptimizationVarMatrix = existingOptimizationVarMatrix;
     }
 
-    protected void setExistingOptimizationVarSubstituted(MathOptimizationExpressionSymbol existingOptimizationVarSubstituted) {
+    protected void setExistingOptimizationVarSubstituted(MathOptimizationStatementSymbol existingOptimizationVarSubstituted) {
         this.existingOptimizationVarSubstituted = existingOptimizationVarSubstituted;
     }
 }

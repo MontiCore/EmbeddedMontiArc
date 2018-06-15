@@ -30,7 +30,7 @@ import java.util.List;
  * @author Christoph Richter
  */
 
-public class MathOptimizationExpressionSymbol extends MathExpressionSymbol {
+public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
     //region fields
 
     /**
@@ -55,11 +55,11 @@ public class MathOptimizationExpressionSymbol extends MathExpressionSymbol {
     // region constructor
 
 
-    public MathOptimizationExpressionSymbol() {
+    public MathOptimizationStatementSymbol() {
         super();
     }
 
-    public MathOptimizationExpressionSymbol(String name) {
+    public MathOptimizationStatementSymbol(String name) {
         super(name);
     }
 

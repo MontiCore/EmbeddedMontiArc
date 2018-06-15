@@ -21,7 +21,7 @@
 package de.monticore.lang.mathopt._cocos;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.mathopt._ast.ASTOptimizationExpression;
+import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
 import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveFunction;
 import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveValue;
 import de.se_rwth.commons.logging.Log;
@@ -35,21 +35,21 @@ import java.util.Set;
  *
  * @author Christoph Richter
  */
-public class OptimizationExpressionCheck implements MathOptASTOptimizationExpressionCoCo {
+public class OptimizationStatementCheck implements MathOptASTOptimizationStatementCoCo {
 
     private Set<String> supportedReturnTypes = new HashSet<>(Arrays.asList("Q"));
 
     @Override
-    public void check(ASTOptimizationExpression node) {
+    public void check(ASTOptimizationStatement node) {
         checkObjectiveFunctionReturnVariable(node);
     }
 
     /**
      * Checks if the return value of the objective function has the correct type
      *
-     * @param node ASTOptimizationExpression
+     * @param node ASTOptimizationStatement
      */
-    private void checkObjectiveFunctionReturnVariable(ASTOptimizationExpression node) {
+    private void checkObjectiveFunctionReturnVariable(ASTOptimizationStatement node) {
         if (node.getObjectiveValueOpt().isPresent()) {
             ASTOptimizationObjectiveValue astObjectiveValue = node.getObjectiveValueOpt().get();
             if (!supportedReturnTypes.contains(astObjectiveValue.getType().getName())) {

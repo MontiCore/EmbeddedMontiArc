@@ -28,17 +28,17 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MathOptimizationExpressionSymbolTest {
+public class MathOptimizationStatementSymbolTest {
 
     // fields
-    protected MathOptimizationExpressionSymbol minimizationTestSymbol;
-    protected MathOptimizationExpressionSymbol maximizationTestSymbol;
-    protected MathOptimizationExpressionSymbol lpTestSymbol;
-    protected MathOptimizationExpressionSymbol upperAndLowerBoundTestSymbol;
-    protected MathOptimizationExpressionSymbol forLoopConditionTestSymbol;
-    protected MathOptimizationExpressionSymbol existingOptimizationVarScalar;
-    protected MathOptimizationExpressionSymbol existingOptimizationVarMatrix;
-    protected MathOptimizationExpressionSymbol existingOptimizationVarSubstituted;
+    protected MathOptimizationStatementSymbol minimizationTestSymbol;
+    protected MathOptimizationStatementSymbol maximizationTestSymbol;
+    protected MathOptimizationStatementSymbol lpTestSymbol;
+    protected MathOptimizationStatementSymbol upperAndLowerBoundTestSymbol;
+    protected MathOptimizationStatementSymbol forLoopConditionTestSymbol;
+    protected MathOptimizationStatementSymbol existingOptimizationVarScalar;
+    protected MathOptimizationStatementSymbol existingOptimizationVarMatrix;
+    protected MathOptimizationStatementSymbol existingOptimizationVarSubstituted;
 
     // helper
     private OptimizationModelHelper helper;

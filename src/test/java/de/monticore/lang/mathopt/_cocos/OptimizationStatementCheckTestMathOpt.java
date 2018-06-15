@@ -19,7 +19,7 @@
  */
 package de.monticore.lang.mathopt._cocos;
 
-import de.monticore.lang.mathopt._ast.ASTOptimizationExpression;
+import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -33,17 +33,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests if OptimizationExpressionCheck works correctly
+ * Tests if OptimizationStatementCheck works correctly
  *
  * @author Christoph Richter
  */
-public class OptimizationExpressionCheckTestMathOpt extends AbstractMathOptCocoTest {
+public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTest {
 
-    private static OptimizationExpressionCheck coco;
+    private static OptimizationStatementCheck coco;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        coco = new OptimizationExpressionCheck();
+        coco = new OptimizationStatementCheck();
         Log.enableFailQuick(false);
     }
 
@@ -60,7 +60,7 @@ public class OptimizationExpressionCheckTestMathOpt extends AbstractMathOptCocoT
     @Test
     public void checkValidReturnValue() throws IOException {
         // create ast node
-        ASTOptimizationExpression ast = getParser().parse_StringOptimizationExpression("Q y = minimize(Q x) x^2; subject to x >= 0; end").orElse(null);
+        ASTOptimizationStatement ast = getParser().parse_StringOptimizationStatement("Q y = minimize(Q x) x^2; subject to x >= 0; end").orElse(null);
         assertNotNull(ast);
         // attach symbol
         initializeSymbol(ast);
@@ -72,7 +72,7 @@ public class OptimizationExpressionCheckTestMathOpt extends AbstractMathOptCocoT
     @Test
     public void checkInvalidReturnValue() throws IOException {
         // create ast node
-        ASTOptimizationExpression ast = getParser().parse_StringOptimizationExpression("C y = minimize(Q x) x^2; subject to x >= 0; end").orElse(null);
+        ASTOptimizationStatement ast = getParser().parse_StringOptimizationStatement("C y = minimize(Q x) x^2; subject to x >= 0; end").orElse(null);
         assertNotNull(ast);
         // attach symbol
         initializeSymbol(ast);
