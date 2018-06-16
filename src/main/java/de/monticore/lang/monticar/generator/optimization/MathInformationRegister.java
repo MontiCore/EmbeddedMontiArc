@@ -1,9 +1,9 @@
 package de.monticore.lang.monticar.generator.optimization;
 
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathValueSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;

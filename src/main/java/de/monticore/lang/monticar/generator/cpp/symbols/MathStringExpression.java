@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp.symbols;
 
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 
 import java.util.ArrayList;
 import java.util.List;

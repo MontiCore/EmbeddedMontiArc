@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.math.math._symboltable.expression.*;
-import de.monticore.lang.math.math._symboltable.matrix.*;
+import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.MathCommand;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
@@ -54,6 +54,8 @@ public class MathFunctionFixer {
             if (mathValueExpressionSymbol.isNumberExpression()) {
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNameExpression()) {
+                notHandled = false;
+            } else if (((MathValueExpressionSymbol)mathExpressionSymbol).isBooleanExpression()){
                 notHandled = false;
             }
         } else if (mathExpressionSymbol.getExpressionID() == MathChainedExpression.ID) {

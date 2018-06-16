@@ -12,7 +12,7 @@ double paramD;
 double paramDecayCoefficient;
 double error;
 double control;
-double isPrevErrorSpecified;
+bool isPrevErrorSpecified;
 double prevError;
 double acc;
 void init()

@@ -3,6 +3,8 @@ package de.monticore.lang.monticar.generator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -16,6 +18,13 @@ import static org.junit.Assert.assertNotNull;
  * @author Sascha Schneiders
  */
 public class MathOptimizerTest extends AbstractSymtabTest {
+
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
+    }
 
     @Test
     public void testRightMultiplicationAdditionRewrite() throws IOException {
@@ -309,7 +318,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
 
     @Ignore
     @Test
-    public void testMathAssignmentOptimization1Octave() throws IOException{
+    public void testMathAssignmentOptimization1Octave() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -321,7 +330,7 @@ public class MathOptimizerTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testMathAssignmentOptimization1Armadillo() throws IOException{
+    public void testMathAssignmentOptimization1Armadillo() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.normalizedLaplacianInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);

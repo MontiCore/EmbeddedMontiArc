@@ -1,11 +1,10 @@
 package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.printtype._ast.ASTPrintType;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.lang.monticar.types2._ast.ASTPrintType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -33,6 +32,10 @@ public class Variable {
     List<String> dimensionalInformation = new ArrayList<>();
     List<String> properties = new ArrayList<>();
     Optional<String> customTypeName = Optional.empty();
+
+    public void setArray(boolean array) {
+        isArray = array;
+    }
 
     public Variable() {
 
@@ -241,7 +244,7 @@ public class Variable {
             isArray = true;
             Log.debug("set isArray to true of v: " + getName(), "VARIABLE");
         } else {
-            isArray = false;
+            //keep array status until explicitly changed
         }
     }
 }

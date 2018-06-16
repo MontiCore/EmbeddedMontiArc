@@ -1,13 +1,13 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathParenthesisExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathValueExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathParenthesisExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;

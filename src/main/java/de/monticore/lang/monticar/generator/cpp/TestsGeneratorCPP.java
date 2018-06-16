@@ -15,19 +15,14 @@ import de.monticore.lang.monticar.generator.cpp.viewmodel.check.BooleanOutputPor
 import de.monticore.lang.monticar.generator.cpp.viewmodel.check.ComponentCheckViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.check.IOutputPortCheck;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.check.RangeOutputPortCheck;
-import de.monticore.lang.monticar.literals2._ast.ASTBooleanLiteral;
-import de.monticore.lang.monticar.streamunits._ast.ASTNamedStreamUnits;
-import de.monticore.lang.monticar.streamunits._ast.ASTPrecisionNumber;
-import de.monticore.lang.monticar.streamunits._ast.ASTStream;
-import de.monticore.lang.monticar.streamunits._ast.ASTStreamInstruction;
-import de.monticore.lang.monticar.streamunits._ast.ASTStreamValue;
+import de.monticore.lang.monticar.streamunits._ast.*;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._symboltable.NamedStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._visitor.StreamUnitsVisitor;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.literals.literals._ast.ASTBooleanLiteral;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.math3.geometry.spherical.oned.ArcsSet;
 
 import java.util.*;
 
@@ -200,7 +195,7 @@ public final class TestsGeneratorCPP {
             vm.setInputPortName2Value(new HashMap<>());
             vm.setOutputPortName2Check(new HashMap<>());
             for (Map.Entry<PortSymbol, ASTStream> kv : port2NamedStream.entrySet()) {
-                ASTStreamInstruction nextInstruction = kv.getValue().getStreamInstructions().get(i);
+                ASTStreamInstruction nextInstruction = kv.getValue().getStreamInstructionList().get(i);
                 processInstruction(vm, nextInstruction, kv.getKey());
             }
             result.add(vm);
@@ -210,7 +205,7 @@ public final class TestsGeneratorCPP {
 
     private static Map<PortSymbol, ASTStream> getPort2NamedStream(ComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
         Map<PortSymbol, ASTStream> port2NamedStream = new HashMap<>();
-        for (PortSymbol port : cs.getPorts()) {
+        for (PortSymbol port : cs.getPortsList()) {
             NamedStreamUnitsSymbol namedStreamForPort = stream.getNamedStream(port.getName()).orElse(null);
             if (namedStreamForPort != null && namedStreamForPort.getAstNode().isPresent()) {
                 ASTNamedStreamUnits node = (ASTNamedStreamUnits) namedStreamForPort.getAstNode().get();
@@ -223,7 +218,7 @@ public final class TestsGeneratorCPP {
     private static int getStreamLengths(Map<PortSymbol, ASTStream> port2NamedStream, ComponentStreamUnitsSymbol stream) {
         int streamLength = -1;
         for (ASTStream ns : port2NamedStream.values()) {
-            int l = ns.getStreamInstructions().size();
+            int l = ns.getStreamInstructionList().size();
             if (streamLength == -1) {
                 streamLength = l;
             } else if (streamLength != l) {
@@ -241,8 +236,8 @@ public final class TestsGeneratorCPP {
     }
 
     private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, PortSymbol port) {
-        if (nextInstruction.getStreamValue().isPresent()) {
-            ASTStreamValue sv = nextInstruction.getStreamValue().get();
+        if (nextInstruction.getStreamValueOpt().isPresent()) {
+            ASTStreamValue sv = nextInstruction.getStreamValueOpt().get();
             String portName = port.getName();
             if (port.isIncoming()) {
                 processIncomingPort(vm, sv, portName);
@@ -298,14 +293,14 @@ public final class TestsGeneratorCPP {
 
         @Override
         public void visit(ASTPrecisionNumber node) {
-            ASTUnitNumber unitNumber = node.getUnitNumber();
+            ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
             if (!unitNumber.getNumber().isPresent()) {
                 return;
             }
             double baseValue = unitNumber.getNumber().get().doubleValue();
-            if (node.getPrecision().isPresent()
-                    && node.getPrecision().get().getUnitNumber().getNumber().isPresent()) {
-                double delta = node.getPrecision().get().getUnitNumber().getNumber().get().doubleValue();
+            if (node.getPrecisionOpt().isPresent()
+                    && node.getPrecisionOpt().get().getNumberWithUnit().getNumber().isPresent()) {
+                double delta = node.getPrecisionOpt().get().getNumberWithUnit().getNumber().get().doubleValue();
                 result = RangeOutputPortCheck.from(baseValue - delta, baseValue + delta);
             } else {
                 result = RangeOutputPortCheck.from(baseValue, baseValue);
@@ -328,7 +323,7 @@ public final class TestsGeneratorCPP {
 
         @Override
         public void visit(ASTPrecisionNumber node) {
-            ASTUnitNumber unitNumber = node.getUnitNumber();
+            ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
             if (!unitNumber.getNumber().isPresent()) {
                 return;
             }

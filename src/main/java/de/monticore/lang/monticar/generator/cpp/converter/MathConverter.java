@@ -1,15 +1,15 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.*;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.MathBackend;
 import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.cpp.OctaveBackend;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -114,12 +114,12 @@ public class MathConverter {
         return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
     }
 
-    public static String getConvertedUnitNumber(ASTUnitNumber unitNumber) {
+    public static String getConvertedUnitNumber(ASTNumberWithUnit unitNumber) {
         if (!unitNumber.getNumber().isPresent()) {
             Log.error("Number should be present");
         }
-        if (unitNumber.getNumber().get().getDivisor().intValue() == 1) {
-            return "" + unitNumber.getNumber().get().getDividend().intValue();
+        if ((unitNumber.getNumber().get() %  1) == 0) {
+            return "" + unitNumber.getNumber().get().intValue();
         } else {
             return "" + unitNumber.getNumber().get().doubleValue();
         }
