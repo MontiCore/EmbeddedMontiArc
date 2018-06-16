@@ -1,10 +1,10 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathValueExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 

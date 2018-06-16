@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.optimization;
 
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
 import java.util.List;
 

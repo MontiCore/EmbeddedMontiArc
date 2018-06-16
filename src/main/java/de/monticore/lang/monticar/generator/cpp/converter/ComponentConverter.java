@@ -1,10 +1,11 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
-import de.monticore.lang.math.math._symboltable.*;
-import de.monticore.lang.math.math._symboltable.expression.*;
-import de.monticore.lang.math.math._symboltable.matrix.*;
+import de.monticore.lang.math._symboltable.*;
+import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
@@ -13,11 +14,12 @@ import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
-import de.monticore.lang.monticar.mcexpressions._ast.ASTExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Sascha Schneiders
@@ -76,8 +78,17 @@ public class ComponentConverter {
             var.setIsParameterVariable(true);
         }
         //add ports as variables to blueprint
-        for (PortSymbol port : componentSymbol.getPorts()) {
-            bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+        for (PortSymbol port : componentSymbol.getPortsList()) {
+            //Config ports might already be added from adaptable Parameters
+            if(!port.isConfig()) {
+                bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+            }else{
+                Set<String> paramNames = componentSymbol.getParameters().stream().map(EMAVariable::getName).collect(Collectors.toSet());
+                if(!paramNames.contains(port.getName())){
+                    //The port was not created by an adaptable parameter with the same name -> add
+                    bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+                }
+            }
         }
     }
 
@@ -198,9 +209,9 @@ public class ComponentConverter {
 
     public static String getExpressionParameterConversion(ASTExpression var) {
         String parameterString = "";
-        if (var.getSymbol().isPresent()) {
+        if (var.getSymbolOpt().isPresent()) {
             boolean handled = false;
-            MathExpressionSymbol symbol = (MathExpressionSymbol) var.getSymbol().get();
+            MathExpressionSymbol symbol = (MathExpressionSymbol) var.getSymbolOpt().get();
             if (symbol.isMatrixExpression()) {
                 MathMatrixExpressionSymbol mathMatrixExpressionSymbol = (MathMatrixExpressionSymbol) symbol;
                 if (mathMatrixExpressionSymbol.isValueExpression()) {

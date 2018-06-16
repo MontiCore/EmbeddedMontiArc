@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 
 import java.util.ArrayList;
 import java.util.List;

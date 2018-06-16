@@ -6,6 +6,8 @@ import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
@@ -19,6 +21,12 @@ import static org.junit.Assert.assertNotNull;
  */
 public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
 
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
+    }
 
     @Test
     public void testBasicConstantAssignment() throws IOException {

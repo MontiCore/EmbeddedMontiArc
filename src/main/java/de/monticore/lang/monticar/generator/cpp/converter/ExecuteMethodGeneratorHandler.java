@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.math.math._symboltable.MathForLoopHeadSymbol;
-import de.monticore.lang.math.math._symboltable.expression.*;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
+import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
@@ -143,9 +143,9 @@ public class ExecuteMethodGeneratorHandler {
         String result = "";
         if (mathValueType.isRationalType()) {
             result = handleRationalType(mathValueType);
-        } else if (mathValueType.getType().isIsWholeNumberNumber()) {
+        } else if (mathValueType.getType().isWholeNumber()) {
             result = handleWholeNumberType(mathValueType);
-        } else if (mathValueType.getType().isIsBoolean()) {
+        } else if (mathValueType.getType().isBoolean()) {
             result = handleBooleanType(mathValueType);
         } else {
             Log.info(mathValueType.getTextualRepresentation(), "Representation:");

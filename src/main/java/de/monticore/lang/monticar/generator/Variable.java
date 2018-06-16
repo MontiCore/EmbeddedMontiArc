@@ -1,11 +1,10 @@
 package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
-import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.printtype._ast.ASTPrintType;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.lang.monticar.types2._ast.ASTPrintType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

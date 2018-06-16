@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 
 /**
  * @author Sascha Schneiders

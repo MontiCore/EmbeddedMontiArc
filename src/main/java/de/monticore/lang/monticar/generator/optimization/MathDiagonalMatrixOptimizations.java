@@ -1,11 +1,11 @@
 package de.monticore.lang.monticar.generator.optimization;
 
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math.math._symboltable.expression.*;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixAccessSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.se_rwth.commons.logging.Log;
 
@@ -86,8 +86,7 @@ public class MathDiagonalMatrixOptimizations implements MathOptimizationRule {
         }
         if (mathExpressionSymbol.isMathMatrixAccessOperatorSymbolPresent()) {
             optimize(mathExpressionSymbol.getMathMatrixAccessOperatorSymbol(), precedingExpressions);
-        } else if (mathExpressionSymbol.isASTMathMatrixNamePresent() && mathExpressionSymbol.getAstMathMatrixNameExpression().getEndOperator().isPresent())
-            Log.debug("Not handled: EndOperator", "optimizeMathMatrixNameExpr");
+        }
     }
 
     private boolean isDiagonalMatrix(MathMatrixNameExpressionSymbol mathExpressionSymbol) {

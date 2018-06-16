@@ -35,28 +35,28 @@ public class TagDelaySymbolCreator implements TagSymbolCreator {
     }
 
     public void create(ASTTaggingUnit unit, TaggingResolver gs) {
-        if (unit.getQualifiedNames().stream()
+        if (unit.getQualifiedNameList().stream()
                 .map(q -> q.toString())
                 .filter(n -> n.endsWith("TagDelayTagSchema"))
                 .count() == 0) {
             return; // the tagging model is not conform to the TagExecutionOrderTagSchema tagging schema
         }
-        final String packageName = Joiners.DOT.join(unit.getPackage());
+        final String packageName = Joiners.DOT.join(unit.getPackageList());
         final String rootCmp = // if-else does not work b/cpp of final (required by streams)
-                (unit.getTagBody().getTargetModel().isPresent()) ?
+                (unit.getTagBody().getTargetModelOpt().isPresent()) ?
                         Joiners.DOT.join(packageName,
-                                unit.getTagBody().getTargetModel().get()
+                                unit.getTagBody().getTargetModelOpt().get()
                                         .getQualifiedNameString()) :
                         packageName;
 
-        for (ASTTag element : unit.getTagBody().getTags()) {
-            element.getTagElements().stream()
+        for (ASTTag element : unit.getTagBody().getTagList()) {
+            element.getTagElementList().stream()
                     .filter(t -> t.getName().equals("TagDelay"))
-                    .filter(t -> t.getTagValue().isPresent())
-                    .map(t -> checkContent(t.getTagValue().get()))
+                    .filter(t -> t.getTagValueOpt().isPresent())
+                    .map(t -> checkContent(t.getTagValueOpt().get()))
                     .filter(v -> v != null)
                     .forEachOrdered(v ->
-                            element.getScopes().stream()
+                            element.getScopeList().stream()
                                     .filter(this::checkScope)
                                     .map(s -> (ASTNameScope) s)
                                     .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(
@@ -80,7 +80,7 @@ public class TagDelaySymbolCreator implements TagSymbolCreator {
 
             String[] parts = s.split(",");
             for (String i : parts) {
-                ast.add(parser.parseString_NumericTagValue(i));
+                ast.add(parser.parse_StringNumericTagValue(i));
             }
 
             Log.enableFailQuick(enableFailQuick);
@@ -88,7 +88,7 @@ public class TagDelaySymbolCreator implements TagSymbolCreator {
                 throw new Exception("Error occured during parsing.");
             }
         } catch (Exception e) {
-            Log.error(String.format("0xT0014 Could not parse %s with TagValueParser#parseString_NumericTagValue.",
+            Log.error(String.format("0xT0014 Could not parse %s with TagValueParser#parse_StringNumericTagValue.",
                     s), e);
             return null;
         }
