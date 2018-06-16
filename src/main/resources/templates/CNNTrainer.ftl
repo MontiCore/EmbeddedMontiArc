@@ -1,0 +1,37 @@
+import logging
+import mxnet as mx
+<#list configurations as config>
+import CNNCreator_${config.instanceName}
+</#list>
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger()
+    handler = logging.FileHandler("train.log","w", encoding=None, delay="true")
+    logger.addHandler(handler)
+
+<#list configurations as config>
+    ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
+    ${config.instanceName}.train(
+<#if (config.batchSize)??>
+        batch_size = ${config.batchSize},
+</#if>
+<#if (config.loadCheckpoint)??>
+        load_checkpoint = ${config.loadCheckpoint.value?string("True","False")},
+</#if>
+<#if (config.context)??>
+        context = '${config.context.value}',
+</#if>
+<#if (config.normalize)??>
+        normalize = ${config.normalize.value?string("True","False")},
+</#if>
+<#if (config.configuration.optimizer)??>
+        optimizer = '${config.optimizerName}',
+        optimizer_params = {
+<#list config.optimizerParams?keys as param>
+            '${param}': ${config.optimizerParams[param]}<#sep>,
+</#list>
+        }
+</#if>
+    )
+</#list>

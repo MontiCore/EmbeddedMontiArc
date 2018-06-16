@@ -35,10 +35,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class CNNArch2MxNet implements CNNArchGenerator {
 
@@ -83,8 +80,21 @@ public class CNNArch2MxNet implements CNNArchGenerator {
     }
 
     @Override
-    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames) {
-        return null;
+    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName) {
+        int numberOfNetworks = configurations.size();
+        if (configurations.size() != instanceNames.size()){
+            throw new IllegalStateException(
+                    "The number of configurations and the number of instances for generation of the CNNTrainer is not equal. " +
+                    "This should have been checked previously.");
+        }
+        List<ConfigurationData> configDataList = new ArrayList<>();
+        for(int i = 0; i < numberOfNetworks; i++){
+            configDataList.add(new ConfigurationData(configurations.get(i), instanceNames.get(i)));
+        }
+        Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
+        return Collections.singletonMap(
+                "CNNTrainer_" + mainComponentName + ".py",
+                TemplateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl"));
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
@@ -112,15 +122,13 @@ public class CNNArch2MxNet implements CNNArchGenerator {
 
     private void checkValidGeneration(ArchitectureSymbol architecture){
         if (architecture.getInputs().size() > 1){
-            Log.warn("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the generator. " +
-                            "The generated code will not work correctly."
+            Log.error("This cnn architecture has multiple inputs, " +
+                            "which is currently not supported by the generator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().size() > 1){
-            Log.warn("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the generator. " +
-                            "The generated code will not work correctly."
+            Log.error("This cnn architecture has multiple outputs, " +
+                            "which is currently not supported by the generator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
@@ -151,5 +159,4 @@ public class CNNArch2MxNet implements CNNArchGenerator {
             writer.close();
         }
     }
-
 }

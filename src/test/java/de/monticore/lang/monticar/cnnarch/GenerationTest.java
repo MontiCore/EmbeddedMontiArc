@@ -20,15 +20,23 @@
  */
 package de.monticore.lang.monticar.cnnarch;
 
+import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArch2MxNet;
 import de.monticore.lang.monticar.cnnarch.generator.CNNArch2MxNetCli;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -113,5 +121,41 @@ public class GenerationTest extends AbstractSymtabTest{
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
         CNNArch2MxNetCli.main(args);
         assertTrue(Log.getFindings().size() == 3);
+    }
+
+    @Test
+    public void testCNNTrainerGeneration() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        List<ConfigurationSymbol> configurations = new ArrayList<>();
+        List<String> instanceNames = Arrays.asList("main_net1", "main_net2");
+
+        final ModelPath mp = new ModelPath(Paths.get("src/test/resources/valid_tests"));
+        GlobalScope scope = new GlobalScope(mp, new CNNTrainLanguage());
+
+        CNNTrainCompilationUnitSymbol compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("Network1", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("Network2", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        CNNArch2MxNet generator = new CNNArch2MxNet();
+        Map<String,String> trainerMap = generator.generateTrainer(configurations, instanceNames, "main");
+
+        for (String fileName : trainerMap.keySet()){
+            FileWriter writer = new FileWriter(generator.getGenerationTargetPath() + fileName);
+            writer.write(trainerMap.get(fileName));
+            writer.close();
+        }
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_main.py"));
     }
 }

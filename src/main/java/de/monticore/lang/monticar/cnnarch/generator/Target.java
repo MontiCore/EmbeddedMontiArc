@@ -31,26 +31,7 @@ public enum Target {
     CPP{
         @Override
         public String toString() {
-            return ".cpp";
+            return ".h";
         }
     };
-
-    public static Target fromString(String target){
-        switch (target.toLowerCase()){
-            case "python":
-                return PYTHON;
-
-            case "py":
-                return PYTHON;
-
-            case "cpp":
-                return CPP;
-
-            case "c++":
-                return CPP;
-
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
 }
