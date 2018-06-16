@@ -39,7 +39,7 @@ public interface CNNArchGenerator {
 
     void generate(Scope scope, String rootModelName);
 
-    Map<String,String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames);
+    Map<String,String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName);
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     Map<String, String> generateStrings(ArchitectureSymbol architecture);
