@@ -1,0 +1,9 @@
+package ocl;
+
+import cd.DefaultTypes.*;
+import cd.EmbeddedMontiArc.*;
+
+context Port p inv:
+        p.name().charAt(0).isLowerCase();
+
+

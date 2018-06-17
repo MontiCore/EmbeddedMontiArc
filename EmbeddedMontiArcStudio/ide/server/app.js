@@ -8,7 +8,7 @@ const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} 
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
 const {NFPVerificatorTest} = require("./nfpverification");
-const {CDVisualization} = require("./oclverification");
+const {CDVisualization, OCLChecking} = require("./oclverification");
 const {PacmanGeneration}                                = require("./generations");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
@@ -508,6 +508,14 @@ App.post("/services/oclverification/visualizeCD", function(request, response) {
 
     var path = request.body.path;
     CDVisualization.execute(onExecuted, path, FileSystem);
+});
+App.post("/services/oclverification/checkOCL", function(request, response) {
+    function onExecuted() {
+        response.end();
+    }
+
+    var path = request.body.path;
+    OCLChecking.execute(onExecuted, path);
 });
 
 module.exports = App;

@@ -41,12 +41,15 @@ classdiagram DefaultTypes {
   class Double implements Number;
   class Float implements Number;
   class Boolean;
-  class Character;
+  class Character{
+    Boolean isLowerCase();
+  }
   class String {
-    boolean contains(String s);
+    Boolean contains(String s);
     String replaceAll(String s1, String s2);
     String replace(String s1, String s2);
-    boolean endsWith(String s);
+    Boolean endsWith(String s);
+    Character charAt(Integer i);
   }
 
   // support for units comes with the jscience library

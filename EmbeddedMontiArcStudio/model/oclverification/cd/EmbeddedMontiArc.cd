@@ -10,7 +10,9 @@ classdiagram EmbeddedMontiArc {
     String name;
   }
 
-  public class Cmp {}
+  public class Cmp {
+    Port getPorts();
+  }
 
 
   public interface PortDef {

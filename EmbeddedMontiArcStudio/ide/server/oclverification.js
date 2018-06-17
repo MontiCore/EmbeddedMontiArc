@@ -31,7 +31,7 @@ class AbstractOCLVerification {
 }
 
 class CDVisualization extends AbstractOCLVerification {
-    constructor(fs) {
+    constructor() {
         super("oclverification", BATCHES.OCLVERIFICATION.VISUALIZECD);
         this.logger = Log.getLogger("Start OCLVerification");
         this.logger.level = "debug";
@@ -59,6 +59,43 @@ class CDVisualization extends AbstractOCLVerification {
     }
 }
 
+class OCLChecking extends AbstractOCLVerification {
+    constructor() {
+        super("oclverification", BATCHES.OCLVERIFICATION.CHECKOCL);
+        this.logger = Log.getLogger("Start OCLVerification");
+        this.logger.level = "debug";
+    }
+
+    qualifyName(name) {
+        var qualifiedName = name;
+        qualifiedName = qualifiedName.replace(/\//g,".");
+        qualifiedName = qualifiedName.replace(/\.ocl$/,"");
+        if (qualifiedName.indexOf(".") == 0) {
+            qualifiedName = qualifiedName.substring(1);
+        }
+        return qualifiedName;
+    }
+
+    execute(callback, path, FileSystem) {
+        const onExit = () => {
+            this.logger.info("...OCL CLI has finished.");
+            callback();
+        };
+
+        this.kill();
+        this.logger.info("OCL CLI is checking OCL types...");
+
+        var qualifiedName = this.qualifyName(path);
+
+        this.process = Process.spawn(this.batch, [qualifiedName], {
+            cwd: Path.resolve(PATHS.SCRIPTS, this.project)
+        });
+        this.process.on("exit", onExit);
+        return this.process;
+    }
+}
+
 module.exports = {
-	CDVisualization: new CDVisualization()
+	CDVisualization: new CDVisualization(),
+	OCLChecking: new OCLChecking()
 };

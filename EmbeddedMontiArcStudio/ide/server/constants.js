@@ -112,6 +112,7 @@ BATCHES.NFPVERIFICATION.TEST1		= Path.resolve(PATHS.SCRIPTS, "nfpverification", 
 BATCHES.NFPVERIFICATION.TEST2 		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule2.bat");
 
 BATCHES.OCLVERIFICATION.VISUALIZECD 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "visualizeCD.bat");
+BATCHES.OCLVERIFICATION.CHECKOCL 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "checkOCL.bat");
 
 /*
  * OPTIONS

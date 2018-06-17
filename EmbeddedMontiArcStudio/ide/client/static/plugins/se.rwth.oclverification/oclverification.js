@@ -44,7 +44,7 @@ define(function(require, exports, module) {
             window.fetch("/services/" + project + "/checkOCL", {
                 "headers": { "Content-Type": "application/json" },
                 "method": "post",
-                "body": JSON.stringify({ name: path })
+                "body": JSON.stringify({ path: path })
             }).then(onOCLResponse);
         }
 		
@@ -77,7 +77,7 @@ define(function(require, exports, module) {
 		function onClickOCL() {
             var tab = TabManager.focussedTab;
 
-            if(tab) handleTab2(tab);
+            if(tab) handleTabOCL(tab);
 		}
 		
         function onLoad() {
