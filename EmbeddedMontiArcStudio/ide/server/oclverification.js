@@ -4,7 +4,7 @@ const {BATCHES, PATHS} = require("./constants");
 const Path = require("path");
 
 class AbstractOCLVerification {
-    constructor(project, batch) {
+    constructor(project, batch, fs) {
         this.logger = null;
         this.process = null;
         this.project = project;
@@ -27,16 +27,17 @@ class AbstractOCLVerification {
 
         return packageName + "." + modelName;
     }
+
 }
 
 class CDVisualization extends AbstractOCLVerification {
-    constructor() {
-        super("oclverification", BATCHES.OCLVERIFICATION.VISUALIZECD );
+    constructor(fs) {
+        super("oclverification", BATCHES.OCLVERIFICATION.VISUALIZECD);
         this.logger = Log.getLogger("Start OCLVerification");
         this.logger.level = "debug";
     }
 
-    execute(callback, path) {
+    execute(callback, path, FileSystem) {
         const onExit = () => {
             this.logger.info("...OCL CLI has finished.");
             callback();
@@ -45,8 +46,10 @@ class CDVisualization extends AbstractOCLVerification {
         this.kill();
         this.logger.info("OCL CLI is visualizing CD...");
 
-        // For testing purposes. cdString should have text of tab
-        var cdString = "package cd; classdiagram EmbeddedMontiArc { public class CTDef { String cType; } }";
+        var fullPath = PATHS.MODELS + "/oclverification" + path;
+        this.logger.info("Reading model: " + fullPath);
+        var cdString = FileSystem.readFileSync(fullPath, "UTF-8");
+        cdString = cdString.replace(/(?:\r\n|\r|\n)/g, ' ');
 
         this.process = Process.spawn(this.batch, [cdString], {
             cwd: Path.resolve(PATHS.SCRIPTS, this.project)

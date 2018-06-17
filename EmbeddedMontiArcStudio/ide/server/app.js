@@ -507,8 +507,7 @@ App.post("/services/oclverification/visualizeCD", function(request, response) {
     }
 
     var path = request.body.path;
-
-    CDVisualization.execute(onExecuted, path);
+    CDVisualization.execute(onExecuted, path, FileSystem);
 });
 
 module.exports = App;

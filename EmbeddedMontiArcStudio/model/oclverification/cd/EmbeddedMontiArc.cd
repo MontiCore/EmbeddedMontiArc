@@ -46,7 +46,7 @@ classdiagram EmbeddedMontiArc {
 
   association [0..1] Cmp (parent) <-> (subs) Cmp [*];
 
-  association [1] Cmp -> Port [*] <<ordered>>;
+  association [1] Cmp -> Port [*] ;
   association [1] CTDef -> PortDef [*];
 
   association srcDef [1] ConDef -> PortDef [1];
