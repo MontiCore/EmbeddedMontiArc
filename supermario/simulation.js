@@ -41,19 +41,20 @@ function extractNextObstaclePositions(_solid){
 	var currentPos = 0;
 	
 	var playerY = -1;
-	if(FSM.Player.resting != null){
-		playerY = FSM.Player.resting[y];
+	if(typeof FSM.player.resting != 'undefined'){
+		playerY = FSM.player.resting.y;
 	}
 	
-	for(entry in _solid){
+	for(entryNr in _solid){
+		var entry = _solid[entryNr];
 		//var isObstacle = false;
 		
-		if(entry[y] > playerY && entry[y]-entry[height] <= playerY){
+		if(entry.y > playerY && entry.y-entry.height <= playerY){
 			//isObstacle = true;
 		
 		
-			positions[currentPos][0] = entry[x];
-			positions[currentPos][1] = entry[y] - playerY;
+			positions[currentPos][0] = entry.x;
+			positions[currentPos][1] = entry.y - playerY;
 			currentPos++;
 		}
 		
@@ -71,10 +72,12 @@ function extractNextEnemyPositions(){
 	var currentPos = 0;
 	var characters = FSM.GroupHolder.groups.Character;
 	
-	for(entry in characters){
-		if(entry[thing] == "Goomba" || entry[thing] == "Koopa"){
-			positions[currentPos][0] = entry[x];
-			positions[currentPos][1] = entry[y]-entry[height];
+	for(entryNr in characters){
+		var entry = characters[entryNr]; 
+		//console.log(entry)
+		if(entry.thing == "Goomba" || entry.thing == "Koopa"){
+			positions[currentPos][0] = entry.x;
+			positions[currentPos][1] = entry.y-entry.height;
 			currentPos++;
 		}
 		
@@ -92,10 +95,10 @@ function extractNextHolePosition(_solid){
 	var screenWidth = FSM.canvas.width;
 	var ret = -1;
 	
-	for(entry in _solid){
-	
-		if(entry[thing] =="Floor"){
-			var holePos = entry[x] + entry[width];
+	for(entryNr in _solid){
+		var entry = _solid[entryNr];
+		if(entry.thing =="Floor"){
+			var holePos = entry.x + entry.width;
 			if(holePos <= screenWidth){
 				ret = holePos;
 			}
@@ -109,11 +112,15 @@ function extractNextHolePosition(_solid){
 function sendPlayerData(){
 
 	var player = FSM.player;
-	var marioPos = math.matrix([player.left, player.top]);
-	var marioVel = math.matrix([player.xvel, player.yvel]);
-	var marioHeight = math.matrix([player.height]);
+	//var marioPos = math.matrix([player.left, player.top]);
+	//var marioVel = math.matrix([player.xvel, player.yvel]);
+	//var marioHeight = math.matrix([player.height]);
 	
-	console.log("Player: "+player);
+	var marioPos = "[["+player.left+","+player.top+"]]";
+	var marioVel = "[["+player.xvel+","+player.yvel+"]]";
+	var marioHeight = String(player.height);
+	
+	console.log("Player: "+marioPos);
 	
 	setMarioPosition(marioPos);
 	setMarioVelocity(marioVel);
@@ -122,21 +129,47 @@ function sendPlayerData(){
 	
 }
 
+function makeJSStringFromArray(_array){
+	var out = "";
+	
+	if(Array.isArray(_array)){
+		//console.log(_array)
+		
+		out = "[";
+		for (entry in _array){
+			//console.log(_array[entry])
+			out = out + makeJSStringFromArray(_array[entry])+",";
+		}
+		out = out.slice(0, -1);
+		out += "]";
+	}else{
+		out = String(_array);
+	}
+	
+	return out;
+}
+
 function sendEnvironmentData(){
-	var solid = FSM.GroupHolder.group.Solid;
+	var solid = FSM.GroupHolder.groups.Solid;
 	
 	
-	var nextObstacles = math.matrix(extractNextObstaclePositions(solid));
-	var nextEnemies = math.matrix(extractNextObstaclePositions(solid));
-	var nextHole = math.matrix(extractNextHolePosition());
+	var nextObstacles = extractNextObstaclePositions(solid);
+	var nextEnemies = extractNextEnemyPositions();
+	var nextHole = extractNextHolePosition(solid);
+	
+	console.log(makeJSStringFromArray(nextObstacles));
+	
+	var obstArray = makeJSStringFromArray(nextObstacles);
+	var enemArray = makeJSStringFromArray(nextEnemies);
 	
 	
-	console.log("Obstacles: "+nextObstacles);
-	console.log("Enemies: " +nextEnemies);
+	
+	console.log("Obstacles: "+obstArray);
+	console.log("Enemies: " +enemArray);
 	console.log("Hole: "+nextHole);
 	
-	setNextObstaclePositions(nextObstaclePositions);
-	setNextEnemyPositions(nextEnemyPositions);
+	setNextObstaclePositions(obstArray);
+	setNextEnemyPositions(enemArray);
 	setNextHole(nextHole);
 	
 	
@@ -159,8 +192,6 @@ function getCommands(){
 	
 	if(shoot==true)
 		pressKey(KEY.CONTROL);
-	
-	
 	
 }
 
