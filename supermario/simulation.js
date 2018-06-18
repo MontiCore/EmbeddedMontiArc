@@ -7,7 +7,6 @@ var KEY = {
 }
 
 
-
 function startSimulation() {
     //PACMAN.startNewGame();
     try {
@@ -52,9 +51,11 @@ function extractNextObstaclePositions(_solid){
 		if(entry.y > playerY && entry.y-entry.height <= playerY){
 			//isObstacle = true;
 		
-		
-			positions[currentPos][0] = entry.x;
-			positions[currentPos][1] = entry.y - playerY;
+			//positions[currentPos][0] = entry.x;
+			//positions[currentPos][1] = entry.y - playerY;
+			
+			positions[currentPos][0] = FSM.player.left - entry.left;
+			positions[currentPos][1] = FSM.player.top - entry.top;
 			currentPos++;
 		}
 		
@@ -76,8 +77,11 @@ function extractNextEnemyPositions(){
 		var entry = characters[entryNr]; 
 		//console.log(entry)
 		if(entry.thing == "Goomba" || entry.thing == "Koopa"){
-			positions[currentPos][0] = entry.x;
-			positions[currentPos][1] = entry.y-entry.height;
+			//positions[currentPos][0] = entry.x;
+			//positions[currentPos][1] = entry.y-entry.height;
+			
+			positions[currentPos][0] = entry.left-FSM.player.left;
+			positions[currentPos][1] = entry.top-FSM.player.top;
 			currentPos++;
 		}
 		
@@ -98,7 +102,8 @@ function extractNextHolePosition(_solid){
 	for(entryNr in _solid){
 		var entry = _solid[entryNr];
 		if(entry.thing =="Floor"){
-			var holePos = entry.x + entry.width;
+			//var holePos = (entry.left + entry.width) - FSM.player.left;
+			holePos = (entry.right) - FSM.player.left;
 			if(holePos <= screenWidth){
 				ret = holePos;
 			}
@@ -121,6 +126,10 @@ function sendPlayerData(){
 	var marioHeight = String(player.height);
 	
 	console.log("Player: "+marioPos);
+	
+	if(typeof FSM.player.resting != 'undefined'){
+		console.log(FSM.player.resting);
+	}
 	
 	setMarioPosition(marioPos);
 	setMarioVelocity(marioVel);
