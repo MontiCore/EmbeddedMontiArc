@@ -7,6 +7,7 @@ set HOME=%CD%
 popd
 
 cd ..\..\oclverification
+del %CD%\data\result.txt
 
 set PROJECT_PATH="%HOME%\model\oclverification"
 set OCL_MODEL=%1
@@ -16,6 +17,6 @@ set OCL_MODEL=%1
     -path ^
     %PROJECT_PATH% ^
     -ocl ^
-    %OCL_MODEL%
+    %OCL_MODEL% >> data/result.txt
 
 endlocal

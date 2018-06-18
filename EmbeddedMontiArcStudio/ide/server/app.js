@@ -507,15 +507,17 @@ App.post("/services/oclverification/visualizeCD", function(request, response) {
     }
 
     var path = request.body.path;
-    CDVisualization.execute(onExecuted, path, FileSystem);
+    CDVisualization.execute(path, onExecuted);
 });
+
 App.post("/services/oclverification/checkOCL", function(request, response) {
-    function onExecuted() {
-        response.end();
+    function onExecuted(result) {
+        response.send(result);
     }
 
+
     var path = request.body.path;
-    OCLChecking.execute(onExecuted, path);
+    OCLChecking.execute(path, onExecuted);
 });
 
 module.exports = App;

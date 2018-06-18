@@ -17,10 +17,56 @@ define(function(require, exports, module) {
 
         var loaded = false;
 		var messageIndex = -1;
+		var oclResults = "";
+
+
+		function openPanel() {
+		    var panes = TabManager.getPanes();
+		    var pane = panes[0];
+		    var options = {};
+			var url = location.protocol + "//" + location.host + "/test.html";
+
+		    options.pane = pane.vsplit(true);
+		    options.value = url;
+		    options.editorType = "urlview";
+		    options.active = false;
+
+		    TabManager.open(options, onTabOpen);
+        }
+
+        function handleTabOpen(tab) {
+		    var document = tab.document;
+		    var session = document.getSession();
+		    var iframe = session.iframe;
+
+		    function onLoad() {
+                iframe.contentWindow.writeResults(oclResults);
+            }
+
+		    tab.title = "OCL correctness:";
+		    iframe.style.marginTop = "1px";
+		    iframe.style.height = "calc(100% - 1px)";
+		    iframe.onload = onLoad;
+        }
+
+        function onTabOpen(error, tab) {
+		    if(error) console.error("An error occurred while opening the tab:", error);
+		    else handleTabOpen(tab);
+        }
 		
-		
-		function onOCLResponse() {
+		function onCDResponse() {
 			UICustom.done(messageIndex);
+		}
+
+		function onOCLResponse(response) {
+            function onThen(results) {
+                oclResults = results;
+
+                UICustom.done(messageIndex);
+                openPanel();
+            }
+
+            response.text().then(onThen);
 		}
 
 		function onUpdatedCD() {
@@ -32,7 +78,7 @@ define(function(require, exports, module) {
                 "headers": { "Content-Type": "application/json" },
                 "method": "post",
                 "body": JSON.stringify({ path: path })
-            }).then(onOCLResponse);
+            }).then(onCDResponse);
         }
 
 		function onUpdatedOCL() {

@@ -2,9 +2,10 @@ const Process = require("./process");
 const Log = require("log4js");
 const {BATCHES, PATHS} = require("./constants");
 const Path = require("path");
+const FileSystem = require("fs");
 
 class AbstractOCLVerification {
-    constructor(project, batch, fs) {
+    constructor(project, batch) {
         this.logger = null;
         this.process = null;
         this.project = project;
@@ -37,7 +38,7 @@ class CDVisualization extends AbstractOCLVerification {
         this.logger.level = "debug";
     }
 
-    execute(callback, path, FileSystem) {
+    execute(path, callback) {
         const onExit = () => {
             this.logger.info("...OCL CLI has finished.");
             callback();
@@ -76,10 +77,12 @@ class OCLChecking extends AbstractOCLVerification {
         return qualifiedName;
     }
 
-    execute(callback, path, FileSystem) {
+    execute(path, callback) {
         const onExit = () => {
             this.logger.info("...OCL CLI has finished.");
-            callback();
+            var fullPath = PATHS.OCLVERIFICATION + "/data/result.txt";
+            var result = FileSystem.readFileSync(fullPath, "UTF-8");
+            callback(result);
         };
 
         this.kill();
