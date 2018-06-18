@@ -13,7 +13,7 @@ set QUALIFIEDNAME=%2
 echo "Projectname: %PROJECTNAME% \n"
 echo "Modelname  : %QUALIFIEDNAME%"
 
-if exist "%WASM_HOME%\%PROJECTNAME%" rmdir "%WASM_HOME%\pacman" /s /q
+if exist "%WASM_HOME%\%PROJECTNAME%" rmdir "%WASM_HOME%\%PROJECTNAME%" /s /q
 mkdir "%WASM_HOME%\%PROJECTNAME%"
 cd %WASM_HOME%
 "%JAVA_HOME%\bin\java.exe" -jar emam2wasm.jar ^

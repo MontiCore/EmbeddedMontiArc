@@ -183,6 +183,8 @@ function sendEnvironmentData(){
 	setNextEnemyPositions(enemArray);
 	setNextHole(nextHole);
 	
+	setNextLootCrates("[[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1]]");
+	
 	
 
 }

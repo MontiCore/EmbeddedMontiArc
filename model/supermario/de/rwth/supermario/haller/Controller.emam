@@ -17,8 +17,8 @@ component Controller {
         
     implementation Math{
         
-        marioJump = true;
-        //marioDirection = 1;
+       marioJump = true;
+       //marioDirection = 1;
         
     }
 }
