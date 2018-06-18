@@ -20,6 +20,10 @@ function execute() {
     return math.format(Module.getMarioJump(), {notation: 'fixed'})
   ;
   }
+  function getMarioDown() {
+    return math.format(Module.getMarioDown(), {notation: 'fixed'})
+  ;
+  }
   function getMarioShoot() {
     return math.format(Module.getMarioShoot(), {notation: 'fixed'})
   ;

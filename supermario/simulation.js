@@ -191,18 +191,22 @@ function getCommands(){
 	var dir = getMarioDirection();
 	var jump = getMarioJump();
 	var shoot = getMarioShoot();
+	var down = getMarioDown();
 	
 	if(dir==1)
 		pressKey(KEY.RIGHT);
 	else
 		if(dir==-1)
-			pressKey(KEY.RIGHT);
+			pressKey(KEY.LEFT);
 		
 	if(jump==true)
 		pressKey(KEY.UP);
 	
 	if(shoot==true)
 		pressKey(KEY.CONTROL);
+	
+	if(down==true)
+		pressKey(KEY.DOWN);
 	
 }
 

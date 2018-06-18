@@ -227,6 +227,21 @@
             </td>
             <td>
               <div class="label">
+                marioDown:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-marioDown" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">B</div>
+            </td>
+            <td>
+              <div class="label">
                 marioShoot:
               </div>
             </td>
@@ -279,6 +294,7 @@
 
       document.getElementById("outport-field-marioDirection").value = getMarioDirection();
       document.getElementById("outport-field-marioJump").value = getMarioJump();
+      document.getElementById("outport-field-marioDown").value = getMarioDown();
       document.getElementById("outport-field-marioShoot").value = getMarioShoot();
     }
     catch (err) {
@@ -311,6 +327,7 @@
   function clearOutportFields() {
     document.getElementById("outport-field-marioDirection").value = "";
     document.getElementById("outport-field-marioJump").value = "";
+    document.getElementById("outport-field-marioDown").value = "";
     document.getElementById("outport-field-marioShoot").value = "";
   }
 
