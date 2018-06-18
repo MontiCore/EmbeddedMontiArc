@@ -60,7 +60,7 @@ define(function(require, exports, module) {
 
 		function onOCLResponse(response) {
             function onThen(results) {
-                oclResults = results;
+                oclResults = "<pre>" + results + "</pre>";
 
                 UICustom.done(messageIndex);
                 openPanel();
