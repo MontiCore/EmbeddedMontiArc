@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarchcaffe2.generator;
+package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Convolution;
@@ -27,12 +27,12 @@ import de.monticore.lang.monticar.cnnarch.predefined.Pooling;
 
 import java.util.*;
 
-public class LayerNameCreatorCaffe2 {
+public class LayerNameCreator {
 
     private Map<ArchitectureElementSymbol, String> elementToName = new HashMap<>();
     private Map<String, ArchitectureElementSymbol> nameToElement = new HashMap<>();
 
-    public LayerNameCreatorCaffe2(ArchitectureSymbol architecture) {
+    public LayerNameCreator(ArchitectureSymbol architecture) {
         name(architecture.getBody(), 1, new ArrayList<>());
     }
 

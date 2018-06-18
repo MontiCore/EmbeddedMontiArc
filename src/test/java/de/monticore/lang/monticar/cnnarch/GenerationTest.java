@@ -20,15 +20,23 @@
  */
 package de.monticore.lang.monticar.cnnarch;
 
-import de.monticore.lang.monticar.cnnarchcaffe2.generator.CNNArchGeneratorCliCaffe2;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArch2Caffe2;
+import de.monticore.lang.monticar.cnnarch.generator.CNNArch2Caffe2Cli;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -45,7 +53,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testCifar10Classifier() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "CifarClassifierNetwork", "-o", "./target/generated-sources-cnnarch/"};
-        CNNArchGeneratorCliCaffe2.main(args);
+        CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
@@ -62,7 +70,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testAlexnetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "Alexnet", "-o", "./target/generated-sources-cnnarch/"};
-        CNNArchGeneratorCliCaffe2.main(args);
+        CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
@@ -78,7 +86,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testGeneratorVGG16() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "VGG16", "-o", "./target/generated-sources-cnnarch/"};
-        CNNArchGeneratorCliCaffe2.main(args);
+        CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
         checkFilesAreEqual(
@@ -95,7 +103,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testThreeInputCNNGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ThreeInputCNN_M14"};
-        CNNArchGeneratorCliCaffe2.main(args);
+        CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
 
@@ -103,7 +111,7 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();;
         String[] args = {"-m", "src/test/resources/architectures", "-r", "ResNeXt50"};
-        CNNArchGeneratorCliCaffe2.main(args);
+        CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
 
@@ -111,7 +119,43 @@ public class GenerationTest extends AbstractSymtabTest{
     public void testMultipleOutputs() throws IOException, TemplateException {
         Log.getFindings().clear();
         String[] args = {"-m", "src/test/resources/valid_tests", "-r", "MultipleOutputs"};
-        CNNArchGeneratorCliCaffe2.main(args);
+        CNNArch2Caffe2Cli.main(args);
         assertTrue(Log.getFindings().size() == 3);
+    }
+
+    @Test
+    public void testCNNTrainerGeneration() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        List<ConfigurationSymbol> configurations = new ArrayList<>();
+        List<String> instanceNames = Arrays.asList("main_net1", "main_net2");
+
+        final ModelPath mp = new ModelPath(Paths.get("src/test/resources/valid_tests"));
+        GlobalScope scope = new GlobalScope(mp, new CNNTrainLanguage());
+
+        CNNTrainCompilationUnitSymbol compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("Network1", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("Network2", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        CNNArch2Caffe2 generator = new CNNArch2Caffe2();
+        Map<String,String> trainerMap = generator.generateTrainer(configurations, instanceNames, "main");
+
+        for (String fileName : trainerMap.keySet()){
+            FileWriter writer = new FileWriter(generator.getGenerationTargetPath() + fileName);
+            writer.write(trainerMap.get(fileName));
+            writer.close();
+        }
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_main.py"));
     }
 }

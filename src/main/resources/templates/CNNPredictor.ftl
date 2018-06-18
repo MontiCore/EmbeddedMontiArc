@@ -1,4 +1,4 @@
-CAFFE2
+<#-- CAFFE2 -->
 
 #ifndef ${tc.fileNameWithoutEnding?upper_case}
 #define ${tc.fileNameWithoutEnding?upper_case}

@@ -18,38 +18,34 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarchcaffe2.generator;
+package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Sigmoid;
 import de.monticore.lang.monticar.cnnarch.predefined.Softmax;
-import de.se_rwth.commons.logging.Log;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
-public class CNNArchTemplateControllerCaffe2 {
+public class CNNArchTemplateController {
 
     public static final String FTL_FILE_ENDING = ".ftl";
     public static final String TEMPLATE_ELEMENTS_DIR_PATH = "elements/";
     public static final String TEMPLATE_CONTROLLER_KEY = "tc";
     public static final String ELEMENT_DATA_KEY = "element";
 
-    private LayerNameCreatorCaffe2 nameManager;
-    private Configuration freemarkerConfig = TemplateConfigurationCaffe2.get();
+    private LayerNameCreator nameManager;
     private ArchitectureSymbol architecture;
 
+    //temporary attributes. They are set after calling process()
     private Writer writer;
     private String mainTemplateNameWithoutEnding;
-    private TargetCaffe2 targetCaffe2Language;
-    private ArchitectureElementDataCaffe2 dataElement;
+    private Target targetLanguage;
+    private ArchitectureElementData dataElement;
 
-    public CNNArchTemplateControllerCaffe2(ArchitectureSymbol architecture) {
+
+    public CNNArchTemplateController(ArchitectureSymbol architecture) {
         setArchitecture(architecture);
     }
 
@@ -57,23 +53,15 @@ public class CNNArchTemplateControllerCaffe2 {
         return mainTemplateNameWithoutEnding + "_" + getFullArchitectureName();
     }
 
-    public TargetCaffe2 getTargetCaffe2Language(){
-        return targetCaffe2Language;
-    }
-
-    public void setTargetCaffe2Language(TargetCaffe2 targetCaffe2Language) {
-        this.targetCaffe2Language = targetCaffe2Language;
-    }
-
-    public ArchitectureElementDataCaffe2 getCurrentElement() {
+    public ArchitectureElementData getCurrentElement() {
         return dataElement;
     }
 
     public void setCurrentElement(ArchitectureElementSymbol layer) {
-        this.dataElement = new ArchitectureElementDataCaffe2(getName(layer), layer, this);
+        this.dataElement = new ArchitectureElementData(getName(layer), layer, this);
     }
 
-    public void setCurrentElement(ArchitectureElementDataCaffe2 dataElement) {
+    public void setCurrentElement(ArchitectureElementData dataElement) {
         this.dataElement = dataElement;
     }
 
@@ -83,7 +71,7 @@ public class CNNArchTemplateControllerCaffe2 {
 
     public void setArchitecture(ArchitectureSymbol architecture) {
         this.architecture = architecture;
-        this.nameManager = new LayerNameCreatorCaffe2(architecture);
+        this.nameManager = new LayerNameCreator(architecture);
     }
 
     public String getName(ArchitectureElementSymbol layer){
@@ -137,29 +125,14 @@ public class CNNArchTemplateControllerCaffe2 {
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer){
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
-
-        try {
-            Template template = freemarkerConfig.getTemplate(templatePath);
-            Map<String, Object> ftlContext = new HashMap<>();
-            ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
-            ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
-
-            this.writer = writer;
-            template.process(ftlContext, writer);
-            this.writer = null;
-        }
-        catch (IOException e) {
-            Log.error("Freemarker could not find template " + templatePath + " :\n" + e.getMessage());
-            System.exit(1);
-        }
-        catch (TemplateException e){
-            Log.error("An exception occured in template " + templatePath + " :\n" + e.getMessage());
-            System.exit(1);
-        }
+        Map<String, Object> ftlContext = new HashMap<>();
+        ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
+        ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
+        TemplateConfiguration.processTemplate(ftlContext, templatePath, writer);
     }
 
     public void include(IOSymbol ioElement, Writer writer){
-        ArchitectureElementDataCaffe2 previousElement = getCurrentElement();
+        ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(ioElement);
 
         if (ioElement.isAtomic()){
@@ -178,7 +151,7 @@ public class CNNArchTemplateControllerCaffe2 {
     }
 
     public void include(LayerSymbol layer, Writer writer){
-        ArchitectureElementDataCaffe2 previousElement = getCurrentElement();
+        ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(layer);
 
         if (layer.isAtomic()){
@@ -196,7 +169,7 @@ public class CNNArchTemplateControllerCaffe2 {
     }
 
     public void include(CompositeElementSymbol compositeElement, Writer writer){
-        ArchitectureElementDataCaffe2 previousElement = getCurrentElement();
+        ArchitectureElementData previousElement = getCurrentElement();
         setCurrentElement(compositeElement);
 
         for (ArchitectureElementSymbol element : compositeElement.getElements()){
@@ -225,22 +198,20 @@ public class CNNArchTemplateControllerCaffe2 {
         include(architectureElement, writer);
     }
 
-    public Map.Entry<String,String> process(String templateNameWithoutEnding, TargetCaffe2 targetCaffe2Language){
+    public Map.Entry<String,String> process(String templateNameWithoutEnding, Target targetLanguage){
         StringWriter writer = new StringWriter();
         this.mainTemplateNameWithoutEnding = templateNameWithoutEnding;
-        this.targetCaffe2Language = targetCaffe2Language;
+        this.targetLanguage = targetLanguage;
+        this.writer = writer;
+
         include("", templateNameWithoutEnding, writer);
-
-        String fileEnding = targetCaffe2Language.toString();
-        if (targetCaffe2Language == TargetCaffe2.CPP){
-            fileEnding = ".h";
-        }
+        String fileEnding = targetLanguage.toString();
         String fileName = getFileNameWithoutEnding() + fileEnding;
-
         Map.Entry<String,String> fileContent = new AbstractMap.SimpleEntry<>(fileName, writer.toString());
 
         this.mainTemplateNameWithoutEnding = null;
-        this.targetCaffe2Language = null;
+        this.targetLanguage = null;
+        this.writer = null;
         return fileContent;
     }
 

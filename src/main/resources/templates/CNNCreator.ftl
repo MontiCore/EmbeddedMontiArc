@@ -1,5 +1,4 @@
 <#-- CAFFE2 -->
-CAFFE2
 
 import mxnet as mx
 import logging

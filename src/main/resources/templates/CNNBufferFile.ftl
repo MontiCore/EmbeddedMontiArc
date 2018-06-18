@@ -1,3 +1,5 @@
+//CAFFE2
+
 #ifndef CNNBUFFERFILE_H
 #define CNNBUFFERFILE_H
 

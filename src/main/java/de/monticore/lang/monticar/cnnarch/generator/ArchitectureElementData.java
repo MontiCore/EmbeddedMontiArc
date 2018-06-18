@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarchcaffe2.generator;
+package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureElementSymbol;
@@ -30,13 +30,13 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArchitectureElementDataCaffe2 {
+public class ArchitectureElementData {
     
     private String name;
     private ArchitectureElementSymbol element;
-    private CNNArchTemplateControllerCaffe2 templateController;
+    private CNNArchTemplateController templateController;
 
-    public ArchitectureElementDataCaffe2(String name, ArchitectureElementSymbol element, CNNArchTemplateControllerCaffe2 templateController) {
+    public ArchitectureElementData(String name, ArchitectureElementSymbol element, CNNArchTemplateController templateController) {
         this.name = name;
         this.element = element;
         this.templateController = templateController;
@@ -58,11 +58,11 @@ public class ArchitectureElementDataCaffe2 {
         this.element = element;
     }
 
-    public CNNArchTemplateControllerCaffe2 getTemplateController() {
+    public CNNArchTemplateController getTemplateController() {
         return templateController;
     }
 
-    public void setTemplateController(CNNArchTemplateControllerCaffe2 templateController) {
+    public void setTemplateController(CNNArchTemplateController templateController) {
         this.templateController = templateController;
     }
 

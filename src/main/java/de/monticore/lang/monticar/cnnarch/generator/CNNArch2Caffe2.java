@@ -18,13 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarchcaffe2.generator;
+package de.monticore.lang.monticar.cnnarch.generator;
 
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -33,15 +35,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-public class CNNArchGeneratorCaffe2 {
+public class CNNArch2Caffe2 implements CNNArchGenerator{
 
     private String generationTargetPath;
 
-    public CNNArchGeneratorCaffe2() {
+    public CNNArch2Caffe2() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
@@ -79,22 +79,40 @@ public class CNNArchGeneratorCaffe2 {
         }
     }
 
+    @Override
+    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName) {
+        int numberOfNetworks = configurations.size();
+        if (configurations.size() != instanceNames.size()){
+            throw new IllegalStateException(
+                    "The number of configurations and the number of instances for generation of the CNNTrainer is not equal. " +
+                    "This should have been checked previously.");
+        }
+        List<ConfigurationData> configDataList = new ArrayList<>();
+        for(int i = 0; i < numberOfNetworks; i++){
+            configDataList.add(new ConfigurationData(configurations.get(i), instanceNames.get(i)));
+        }
+        Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
+        return Collections.singletonMap(
+                "CNNTrainer_" + mainComponentName + ".py",
+                TemplateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl"));
+    }
+
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
         Map<String, String> fileContentMap = new HashMap<>();
-        CNNArchTemplateControllerCaffe2 archTc = new CNNArchTemplateControllerCaffe2(architecture);
+        CNNArchTemplateController archTc = new CNNArchTemplateController(architecture);
         Map.Entry<String, String> temp;
 
-        temp = archTc.process("CNNPredictor", TargetCaffe2.CPP);
+        temp = archTc.process("CNNPredictor", Target.CPP);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
-        temp = archTc.process("CNNCreator", TargetCaffe2.PYTHON);
+        temp = archTc.process("CNNCreator", Target.PYTHON);
         fileContentMap.put(temp.getKey(), temp.getValue());
 
-        temp = archTc.process("execute", TargetCaffe2.CPP);
+        temp = archTc.process("execute", Target.CPP);
         fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
 
-        temp = archTc.process("CNNBufferFile", TargetCaffe2.CPP);
+        temp = archTc.process("CNNBufferFile", Target.CPP);
         fileContentMap.put("CNNBufferFile.h", temp.getValue());
 
         checkValidGeneration(architecture);
@@ -104,15 +122,13 @@ public class CNNArchGeneratorCaffe2 {
 
     private void checkValidGeneration(ArchitectureSymbol architecture){
         if (architecture.getInputs().size() > 1){
-            Log.warn("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the generator. " +
-                            "The generated code will not work correctly."
+            Log.error("This cnn architecture has multiple inputs, " +
+                            "which is currently not supported by the generator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().size() > 1){
-            Log.warn("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the generator. " +
-                            "The generated code will not work correctly."
+            Log.error("This cnn architecture has multiple outputs, " +
+                            "which is currently not supported by the generator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
@@ -125,7 +141,7 @@ public class CNNArchGeneratorCaffe2 {
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public void generateFiles(ArchitectureSymbol architecture) throws IOException{
-        CNNArchTemplateControllerCaffe2 archTc = new CNNArchTemplateControllerCaffe2(architecture);
+        CNNArchTemplateController archTc = new CNNArchTemplateController(architecture);
         Map<String, String> fileContentMap = generateStrings(architecture);
 
         for (String fileName : fileContentMap.keySet()){
@@ -143,5 +159,4 @@ public class CNNArchGeneratorCaffe2 {
             writer.close();
         }
     }
-
 }

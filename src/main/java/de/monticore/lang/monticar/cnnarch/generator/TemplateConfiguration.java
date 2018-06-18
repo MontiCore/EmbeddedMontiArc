@@ -18,23 +18,29 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarchcaffe2.generator;
+package de.monticore.lang.monticar.cnnarch.generator;
 
+import de.se_rwth.commons.logging.Log;
 import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
-public class TemplateConfigurationCaffe2 {
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Map;
 
-    private static TemplateConfigurationCaffe2 instance;
+public class TemplateConfiguration {
+
+    private static TemplateConfiguration instance;
     private Configuration configuration;
 
-    private TemplateConfigurationCaffe2() {
+    private TemplateConfiguration() {
         configuration = new Configuration(Configuration.VERSION_2_3_23);
-        configuration.setClassForTemplateLoading(TemplateConfigurationCaffe2.class, "/templates"); //YEVERINO
+        configuration.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        configuration.setLocalizedLookup(false); //YEVERINO
-        configuration.clearTemplateCache(); //YEVERINO
     }
 
     public Configuration getConfiguration() {
@@ -43,9 +49,30 @@ public class TemplateConfigurationCaffe2 {
 
     public static Configuration get(){
         if (instance == null){
-            instance = new TemplateConfigurationCaffe2();
+            instance = new TemplateConfiguration();
         }
         return instance.getConfiguration();
+    }
+
+    public static void processTemplate(Map<String, Object> ftlContext, String templatePath, Writer writer){
+        try{
+            Template template = TemplateConfiguration.get().getTemplate(templatePath);
+            template.process(ftlContext, writer);
+        }
+        catch (IOException e) {
+            Log.error("Freemarker could not find template " + templatePath + " :\n" + e.getMessage());
+            System.exit(1);
+        }
+        catch (TemplateException e){
+            Log.error("An exception occured in template " + templatePath + " :\n" + e.getMessage());
+            System.exit(1);
+        }
+    }
+
+    public static String processTemplate(Map<String, Object> ftlContext, String templatePath){
+        StringWriter writer = new StringWriter();
+        processTemplate(ftlContext, templatePath, writer);
+        return writer.toString();
     }
 
 }

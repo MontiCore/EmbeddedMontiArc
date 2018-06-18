@@ -18,14 +18,14 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarchcaffe2.generator;
+package de.monticore.lang.monticar.cnnarch.generator;
 
 import org.apache.commons.cli.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class CNNArchGeneratorCliCaffe2 {
+public class CNNArch2Caffe2Cli {
 
     public static final Option OPTION_MODELS_PATH = Option.builder("m")
             .longOpt("models-dir")
@@ -48,7 +48,7 @@ public class CNNArchGeneratorCliCaffe2 {
             .required(false)
             .build();
 
-    private CNNArchGeneratorCliCaffe2() {
+    private CNNArch2Caffe2Cli() {
     }
 
     public static void main(String[] args) {
@@ -84,7 +84,7 @@ public class CNNArchGeneratorCliCaffe2 {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        CNNArchGeneratorCaffe2 generator = new CNNArchGeneratorCaffe2();
+        CNNArch2Caffe2 generator = new CNNArch2Caffe2();
         if (outputPath != null){
             generator.setGenerationTargetPath(outputPath);
         }

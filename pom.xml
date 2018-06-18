@@ -8,14 +8,14 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-caffe2-generator</artifactId>
-  <version>0.2.1-SNAPSHOT</version>
+  <version>0.2.2-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <CNNArch.version>0.2.1-SNAPSHOT</CNNArch.version>
+      <CNNArch.version>0.2.2-SNAPSHOT</CNNArch.version>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -24,7 +24,6 @@
         <jscience.version>4.3.1</jscience.version>
 
         <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
@@ -102,23 +101,6 @@
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.8.1</version>
-        <configuration>
-          <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/external-dependencies</altDeploymentRepository>
-        </configuration>
-      </plugin>
-
-      <!-- MontiCore Generation -->
-      <plugin>
-        <groupId>de.monticore.mojo</groupId>
-        <artifactId>monticore-maven-plugin</artifactId>
-        <version>${monticore.plugin}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- Other Configuration -->
@@ -145,7 +127,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>de.monticore.lang.monticar.cnnarchcaffe2.generator.CNNArchGeneratorCliCaffe2</mainClass>
+                  <mainClass>de.monticore.lang.monticar.cnnarch.generator.CNNArch2Caffe2Cli</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>
@@ -206,16 +188,15 @@
     </plugins>
   </build>
 
-
-  <distributionManagement>
-    <repository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>se-nexus</id>
-      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
 
