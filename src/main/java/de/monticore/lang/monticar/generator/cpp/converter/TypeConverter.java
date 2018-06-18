@@ -47,6 +47,8 @@ public class TypeConverter {
         if (mathValueType.getDimensions().size() == 0) {
             if (mathValueType.getType().isWholeNumber()) {
                 return "int";//use int for now add range check if bigger number is required
+            } else if(mathValueType.getType().isBoolean()){
+                return "bool";
             }
             return "double";
         } else if (mathValueType.getDimensions().size() == 1) {

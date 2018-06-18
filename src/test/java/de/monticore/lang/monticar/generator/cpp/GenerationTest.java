@@ -33,6 +33,20 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    public void testBooleanVariableComp() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.booleanVariableComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testBooleanVariableComp");
+        generatorCPP.useArmadilloBackend();
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "testBooleanVariableComp/";
+        testFilesAreEqual(files, restPath);
+    }
+  
+    @Test
     public void testSingleElemArray() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
