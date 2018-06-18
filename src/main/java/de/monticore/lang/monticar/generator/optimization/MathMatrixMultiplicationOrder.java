@@ -44,7 +44,7 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
             optimize((MathForLoopExpressionSymbol) mathExpressionSymbol, precedingExpressions);
         } else {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
-            Log.error("Optimizer Case not handled!");
+            Log.debug("Optimizer case not handled", "Case not handled!");
         }
     }
 
@@ -94,7 +94,7 @@ public class MathMatrixMultiplicationOrder implements MathOptimizationRule {
             optimize((MathMatrixNameExpressionSymbol) matrixExpressionSymbol, precedingExpressions);
         } else {
             Log.info(matrixExpressionSymbol.getClass().getName(), "Symbol name:");
-            Log.error("Optimizer Case not handled!");
+            Log.debug("Optimizer case not handled", "Case not handled!");
 
         }
     }

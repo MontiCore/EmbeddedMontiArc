@@ -162,12 +162,12 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
     }
 
     private static String tryFix(String result, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
-        result=fixDoubleOffset(result,mathMatrixAccessOperatorSymbol,"]");
-        result=fixDoubleOffset(result,mathMatrixAccessOperatorSymbol,")");
+        result = fixDoubleOffset(result, mathMatrixAccessOperatorSymbol, "]");
+        result = fixDoubleOffset(result, mathMatrixAccessOperatorSymbol, ")");
         return result;
     }
 
-    private static String fixDoubleOffset(String result,MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol,String endPart){
+    private static String fixDoubleOffset(String result, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, String endPart) {
         String fixingTestString = (result.substring(0, result.length() - 3) + endPart);
         Log.info("Checking Possible Fixing Test String: " + fixingTestString, "MathMatrixAccessOperatorSymbol");
         if (fixingTestString.equals(mathMatrixAccessOperatorSymbol.getTextualRepresentation())) {
@@ -227,7 +227,7 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         } else {
             Log.info(mathMatrixExpressionSymbol.getTextualRepresentation(), "Symbol:");
             Log.info(mathMatrixExpressionSymbol.getClass().getName(), "Symbol Name:");
-            Log.error("0xMAMAEXSY Case not handled!");
+            Log.debug("0xMAMAEXSY", "Case not handled");
         }
         return result;
     }

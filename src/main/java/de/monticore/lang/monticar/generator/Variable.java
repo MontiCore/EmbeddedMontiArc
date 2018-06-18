@@ -132,7 +132,7 @@ public class Variable {
             setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(this.type.getTypeNameMontiCar(), this, type).get());
         } else {
             Log.info(type.getClass().getName(), "ASTType:");
-            Log.error("Case not handled!");
+            Log.debug("setTypeNameMontiCar","Case not handled");
         }
     }
 

@@ -57,7 +57,8 @@ public class ExecuteMethodGenerator {
             result = ExecuteMethodGeneratorHandler.generateExecuteCode((MathParenthesisExpressionSymbol) mathExpressionSymbol, includeStrings);
         } else {
             Log.info(mathExpressionSymbol.getTextualRepresentation(), "Symbol:");
-            Log.error("Case not handled!");
+            Log.debug("ExecuteMethodGenerator", "Case not handled!");
+
         }
         return result;
     }

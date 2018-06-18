@@ -159,7 +159,8 @@ public class OctaveHelper {
             String typeName = variable.getVariableType().getTypeNameTargetLanguage();
             return typeName.substring(0, 1).toUpperCase() + typeName.substring(1);
         } else {
-            Log.error("OctaveHelper Case not handled!");
+
+            Log.debug("Not supported yet","Case not handled OctaveHelper");
         }
         return null;
     }
@@ -172,7 +173,7 @@ public class OctaveHelper {
         if (mathExpressionSymbol.isMatrixNameExpression()) {
             return getOctaveFunctionTypeName((MathMatrixNameExpressionSymbol) mathExpressionSymbol);
         } else {
-            Log.error("Case not handeld!");
+            Log.debug("Not supported yet","Case not handled OctaveHelper");
             return null;
         }
     }
@@ -199,7 +200,7 @@ public class OctaveHelper {
 
         } else {
             Log.info(mathExpressionSymbol.getTextualRepresentation(), "Symbol:");
-            Log.error("FunctionTypeName not handled!");
+            Log.debug("FunctionTypeName not handled!", "Case not handled");
         }
 
         return result;

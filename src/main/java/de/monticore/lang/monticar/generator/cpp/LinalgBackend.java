@@ -61,31 +61,31 @@ public class LinalgBackend implements MathBackend {
 
     @Override
     public String getPowerOfString(MathArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
-        Log.error("Not supported yet");
+        Log.debug("Not supported yet","Not Implemented");
         return null;
     }
 
     @Override
     public String getPowerOfString(MathArithmeticExpressionSymbol mathExpressionSymbol, String valueListString, String seperator) {
-        Log.error("Not supported yet");
+        Log.debug("Not supported yet","Not Implemented");
         return null;
     }
 
     @Override
     public String getPowerOfString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
-        Log.error("Not supported yet");
+        Log.debug("Not supported yet","Not Implemented");
         return null;
     }
 
     @Override
     public String getPowerOfEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
-        Log.error("Not supported yet");
+        Log.debug("Not supported yet","Not Implemented");
         return null;
     }
 
     @Override
     public String getDivisionEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
-        Log.error("Not supported yet");
+        Log.debug("Not supported yet","Not Implemented");
         return null;
     }
 

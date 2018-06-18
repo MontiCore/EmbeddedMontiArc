@@ -66,7 +66,7 @@ public class MathFunctionFixer {
         if (notHandled) {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
             Log.info(mathExpressionSymbol.getTextualRepresentation(), "Symbol:");
-            Log.error("Case not handled!");
+            Log.debug("Not supported yet","Case not handled");
         }
     }
 
