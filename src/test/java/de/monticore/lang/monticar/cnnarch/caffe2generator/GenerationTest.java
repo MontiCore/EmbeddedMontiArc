@@ -18,11 +18,9 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch;
+package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.monticar.cnnarch.generator.CNNArch2Caffe2;
-import de.monticore.lang.monticar.cnnarch.generator.CNNArch2Caffe2Cli;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;

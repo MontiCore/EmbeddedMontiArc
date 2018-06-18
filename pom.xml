@@ -127,7 +127,7 @@
             <configuration>
               <archive>
                 <manifest>
-                  <mainClass>de.monticore.lang.monticar.cnnarch.generator.CNNArch2Caffe2Cli</mainClass>
+                  <mainClass>de.monticore.lang.monticar.cnnarch.caffe2generator.CNNArch2Caffe2Cli</mainClass>
                 </manifest>
               </archive>
               <descriptorRefs>

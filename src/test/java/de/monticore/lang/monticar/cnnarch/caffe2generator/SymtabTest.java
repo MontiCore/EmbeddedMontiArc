@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch;
+package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.monticore.lang.monticar.cnnarch._parser.CNNArchParser;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;

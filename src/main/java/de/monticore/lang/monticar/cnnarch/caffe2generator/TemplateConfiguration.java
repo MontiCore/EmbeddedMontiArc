@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.se_rwth.commons.logging.Log;
 import freemarker.template.Configuration;

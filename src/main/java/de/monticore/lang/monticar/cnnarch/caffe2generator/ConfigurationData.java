@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.caffe2generator;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.*;
 
