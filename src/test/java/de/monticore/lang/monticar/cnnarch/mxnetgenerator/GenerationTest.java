@@ -18,11 +18,9 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch;
+package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.io.paths.ModelPath;
-import de.monticore.lang.monticar.cnnarch.generator.CNNArch2MxNet;
-import de.monticore.lang.monticar.cnnarch.generator.CNNArch2MxNetCli;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;

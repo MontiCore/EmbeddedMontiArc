@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 //can be removed
 public enum Target {

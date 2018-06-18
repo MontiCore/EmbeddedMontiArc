@@ -18,7 +18,7 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
@@ -123,18 +123,18 @@ public class CNNArch2MxNet implements CNNArchGenerator {
     private void checkValidGeneration(ArchitectureSymbol architecture){
         if (architecture.getInputs().size() > 1){
             Log.error("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the generator. "
+                            "which is currently not supported by the mxnetgenerator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().size() > 1){
             Log.error("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the generator. "
+                            "which is currently not supported by the mxnetgenerator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
                 architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
             Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the generator."
+                            "which is currently not supported by the mxnetgenerator."
                     , architecture.getSourcePosition());
         }
     }
