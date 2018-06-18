@@ -1,7 +1,7 @@
 package InstanceTest;
 
 component CalculateClassB{
-    ports in Q(0:1)^{1,10} probabilities,
+    ports in Q(0:1)^{10} probabilities,
           out Z(0:9) digit;
 
     implementation Math{

@@ -1,8 +1,8 @@
 package InstanceTest;
 
-component NetworkB(Z classes, Z convChannels){
+component NetworkB<Z classes = 10> (Z convChannels){
     ports in Z(0:255)^{1,28,28} data,
-         out Q(0:1)^{classes,1,1} predictions;
+         out Q(0:1)^{classes} predictions;
 
     implementation CNN {
 

@@ -1,6 +1,6 @@
 package cifar10;
 
-component ArgMax(Z(1:oo) n){
+component ArgMax<Z(1:oo) n = 2>{
     ports in Q^{n} inputVector,
           out Z(0:oo) maxIndex;
 

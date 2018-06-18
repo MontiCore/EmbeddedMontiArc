@@ -25,8 +25,6 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static de.monticore.lang.monticar.emadl.ParserTest.ENABLE_FAIL_QUICK;
 
 public class AllCoCoTest extends AbstractCoCoTest {

@@ -1,7 +1,3 @@
-[![Build Status](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiArcDL.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/EmbeddedMontiArcDL)
-[![Coverage Status](https://coveralls.io/repos/github/EmbeddedMontiArc/EmbeddedMontiArcDL/badge.svg?branch=master)](https://coveralls.io/github/EmbeddedMontiArc/EmbeddedMontiArcDL?branch=master)
-[![Build Status](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/EmbeddedMontiArc/EmbeddedMontiArcDL/tree/master)
-
 # EmbeddedMontiArcDL
 Embeds [CNNArch](https://github.com/EmbeddedMontiArc/CNNArchLang), [CNNTrain](https://github.com/EmbeddedMontiArc/CNNTrainLang) and MontiMath into EmbeddedMontiArc.
 
@@ -30,8 +26,8 @@ component LeNet{
 }
 ```
 ```
-component VGG16(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component VGG16<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -64,8 +60,8 @@ component VGG16(Z(2:oo) classes){
 }
 ```
 ```
-component ResNet34(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component ResNet34<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -107,8 +103,8 @@ component ResNet34(Z(2:oo) classes){
 }
 ```
 ```
-component Alexnet(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component Alexnet<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
           out Q(0:1)^{classes} predictions;
 
     implementation CNN {
@@ -153,8 +149,8 @@ component Alexnet(Z(2:oo) classes){
 }
 ```
 ```
-component ResNeXt50(Z(2:oo) classes){
-    ports in Z(0:255)^{3, 224, 224} image,
+component ResNeXt50<Z(1:oo) channels=3, Z(1:oo) height=224, Z(1:oo) width=224, Z(2:oo) classes=1000>{
+    ports in Z(0:255)^{channels, height, width} image,
          out Q(0:1)^{classes} predictions;
 
     implementation CNN {
