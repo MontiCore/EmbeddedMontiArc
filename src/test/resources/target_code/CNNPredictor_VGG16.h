@@ -13,8 +13,8 @@ class CNNPredictor_VGG16{
 public:
     const std::string json_file = "model/VGG16/VGG16_newest-symbol.json";
     const std::string param_file = "model/VGG16/VGG16_newest-0000.params";
-    const std::vector<std::string> input_keys = {"data"};
     //const std::vector<std::string> input_keys = {"data"};
+    const std::vector<std::string> input_keys = {"data"};
     const std::vector<std::vector<mx_uint>> input_shapes = {{1,3,224,224}};
     const bool use_gpu = false;
 
