@@ -48,16 +48,17 @@ function extractNextObstaclePositions(_solid){
 		var entry = _solid[entryNr];
 		//var isObstacle = false;
 		
-		if(entry.y > playerY && entry.y-entry.height <= playerY){
+		if(entry.y > playerY && entry.y-entry.height <= playerY && (entry.left - FSM.player.left > 0)){
 			//isObstacle = true;
 		
 			//positions[currentPos][0] = entry.x;
 			//positions[currentPos][1] = entry.y - playerY;
 			
-			positions[currentPos][0] = FSM.player.left - entry.left;
-			positions[currentPos][1] = FSM.player.top - entry.top;
+			positions[currentPos][0] = entry.left - FSM.player.left;
+			positions[currentPos][1] = (entry.top - FSM.player.top)* -1;
 			currentPos++;
 		}
+		
 		
 		if(currentPos >= 5){
 			break;
@@ -65,7 +66,6 @@ function extractNextObstaclePositions(_solid){
 	}
 	
 	return positions;
-	
 }
 
 function extractNextEnemyPositions(){
@@ -105,7 +105,9 @@ function extractNextHolePosition(_solid){
 			//var holePos = (entry.left + entry.width) - FSM.player.left;
 			holePos = (entry.right) - FSM.player.left;
 			if(holePos <= screenWidth){
-				ret = holePos;
+				if((ret == -1  ||  holePos < ret) && holePos > 0){
+					ret = holePos;
+				}
 			}
 		}
 	}
