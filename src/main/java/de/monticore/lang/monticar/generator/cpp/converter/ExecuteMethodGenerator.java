@@ -10,7 +10,11 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 
 /**
+ * Generates a execute method for math symbols.
+ * Can be extended by setSuccessors() to handle unknown symbols. Implements chain-of-responsibility pattern.
+ *
  * @author Sascha Schneiders
+ * @author Christoph Richter implemented chain-of-responsibility pattern
  */
 public class ExecuteMethodGenerator extends BaseExecuteMethodGeneratorHandler {
 
