@@ -24,6 +24,24 @@ import static simulation.vehicle.VehicleActuatorType.*;
  */
 public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject {
 
+    /** Type of the vehicle as physical object */
+    PhysicalObjectType physicalObjectType;
+
+    /** Indicator whether the vehicle has collided with another object */
+    private boolean collision;
+
+    /** Error of the object */
+    private boolean error;
+
+    /** Indicator whether the vehicle is fully initialized or not */
+    private boolean physicalVehicleInitialized = false;
+
+    /** Unique ID */
+    private final long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
+
+    /** The vehicle */
+    private final Vehicle simulationVehicle;
+
     /** x_cm bar of formula */
     private RealVector localPos;
 
@@ -45,7 +63,6 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
     /** I ^-1 of formula */
     private RealMatrix inertiaInverse;
 
-
     /** A of formula */
     private RealMatrix rotationMatrix;
 
@@ -57,24 +74,6 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
 
     /** tau of formula */
     private RealVector angularMomentumDeriv;
-
-    /** Type of the vehicle as physical object */
-    PhysicalObjectType physicalObjectType;
-
-    /** Indicator whether the vehicle has collided with another object */
-    private boolean collision;
-
-    /** Error of the object */
-    private boolean error;
-
-    /** Indicator whether the vehicle is fully initialized or not */
-    private boolean physicalVehicleInitialized = false;
-
-    /** Unique ID */
-    private final long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
-
-    /** The vehicle */
-    private final Vehicle simulationVehicle;
 
     /**
      * Constructor for a physical vehicle that is standing at its position
@@ -88,6 +87,41 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
         // Default values
         physicalVehicleInitialized = false;
 
+        // Set default simulationVehicle object with optional bus and controller, might be changed via PhysicalVehicleBuilder
+        this.simulationVehicle = new Vehicle(controllerBus, controller, navigation);
+
+        // By default vehicle is not in collision or computational error and has default car object type
+        //ToDo set physicalObjectType when physics type is choosen
+        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_DEFAULT;
+        collision = false;
+        error = false;
+
+        // Set optional components
+        // ToDO is this necessary
+        setOptionalComponents(controllerBus, controller, navigation);
+
+        Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
+    }
+
+    /**
+     * Function that initializes the modelica physics computations when the physicalVehicle is created
+     * Should only be called by builder
+     */
+    void initModelicaPhysics(){
+        //ToDo set physicalObjectType
+        // Initialize physics components in vehicle class
+        simulationVehicle.initModelicaPhysics();
+        physicalVehicleInitialized = true;
+    }
+
+    /**
+     * Function that initializes the massPoint physics computations when the physicalVehicle is created
+     * Should only be called by builder
+     */
+    void initMassPointPhysics() {
+        //ToDo set physicalObjectType
+        // Initialize physics components in vehicle class
+        simulationVehicle.initMassPointPhysics();
         // PhysicalVehicle is standing, no velocity, acceleration, force
         velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -105,43 +139,12 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
         // Center of mass in local coordinate system is initialized with 0
         localPos = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
 
-        // By default vehicle is not in collision or computational error and has default car object type
-        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_DEFAULT;
-        collision = false;
-        error = false;
-
-        // Set default simulationVehicle object with optional bus and controller, might be changed via PhysicalVehicleBuilder
-        this.simulationVehicle = new Vehicle(controllerBus, controller, navigation);
-
         // Center of car geometry position
         double groundZ = WorldModel.getInstance().getGround(0.0, 0.0, 0.0).doubleValue();
         setGlobalPos(0.0, 0.0, (groundZ + 0.5 * simulationVehicle.getHeight() + simulationVehicle.getWheelRadius()));
-        
+
         // Put rotation values in matrix
         setGlobalRotation(0.0, 0.0, 0.0);
-
-        // Initialize physicalVehicle based on current values
-        initPhysicalVehicle(controllerBus, controller, navigation);
-        physicalVehicleInitialized = true;
-
-        Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
-    }
-
-    /**
-     * Function that initializes the physicalVehicle when it is created
-     * Should only be called by constructor or builder
-     *
-     * @param controllerBus Optional bus for the controller of the vehicle
-     * @param controller Optional controller of the vehicle
-     * @param navigation Optional navigation of the vehicle
-     */
-    void initPhysicalVehicle(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
-        Log.finest("PhysicalVehicle: initPhysicalVehicle - PhysicalVehicle at start: " + this);
-
-        // Set controllerBus and controller to the vehicle
-        simulationVehicle.setControllerBus(controllerBus);
-        simulationVehicle.setController(controller);
-        simulationVehicle.setNavigation(navigation);
 
         // Initialize values for physicalVehicle after constructor or builder
         initLocalPos();
@@ -153,8 +156,20 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
         // This initializes wheel mass point positions correctly before first update
         calcMassPointCenterDiff();
         calcMassPointPosition();
+        physicalVehicleInitialized = true;
+    }
 
-        Log.finest("PhysicalVehicle: initPhysicalVehicle - PhysicalVehicle at end: " + this);
+    /**
+     * Function that sets the optional components of the physical vehicle
+     *
+     * @param controllerBus Optional bus for the controller of the vehicle
+     * @param controller Optional controller of the vehicle
+     * @param navigation Optional navigation of the vehicle
+     */
+    void setOptionalComponents(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
+        simulationVehicle.setControllerBus(controllerBus);
+        simulationVehicle.setController(controller);
+        simulationVehicle.setNavigation(navigation);
     }
 
     /**
@@ -668,6 +683,15 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
      */
     public RealVector getAngularMomentumDeriv() {
         return angularMomentumDeriv.copy();
+    }
+
+    /**
+     * Function that returns if the physicalVehicle is initialized
+     *
+     * @return Value of physicalVehicleInitialized
+     */
+    public boolean getPhysicalVehicleInitialized() {
+        return physicalVehicleInitialized;
     }
 
     /**

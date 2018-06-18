@@ -97,9 +97,6 @@ public class Vehicle {
     /** Indicator whether the constant bus data was sent */
     private boolean constantBusDataSent;
 
-    /** Representation of wheel mass points, indexed data */
-    private MassPoint[] wheelMassPoints = new MassPoint[4];
-
     /** Motor of vehicle */
     private VehicleActuator motor;
 
@@ -151,6 +148,9 @@ public class Vehicle {
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
 
+    /** Representation of wheel mass points, indexed data */
+    private MassPoint[] wheelMassPoints = new MassPoint[4];
+
     /**
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
@@ -200,6 +200,24 @@ public class Vehicle {
     }
 
     /**
+     * Function that initializes the physics components of the modelica physics in the vehicle class
+     * Should only be called by physicalVehicle.initModelicaPhysics
+     */
+    void initModelicaPhysics(){
+        //Create FMUWrappers
+    }
+
+    /**
+     * Function that initializes the physics components of the massPoint physics in the vehicle class
+     * Should only be called by physicalVehicle.initMassPointPhysics
+     */
+    void initMassPointPhysics(){
+        // Create Mass Points
+        createMassPoints(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
+
+    }
+
+    /**
      * Function that sets wheel properties to the vehicle
      *
      * @param massFront          Sum of mass for both front wheels
@@ -214,7 +232,17 @@ public class Vehicle {
         this.wheelRadius = wheelRadius;
         this.wheelDistLeftRight = wheelDistLeftRight;
         this.wheelDistFrontBack = wheelDistFrontBack;
+    }
 
+    /**
+     * Function that creates the mass points of the vehicle
+     * *
+     * @param massFront          Sum of mass for both front wheels
+     * @param massBack           Sum of mass for both back wheels
+     * @param wheelDistLeftRight Distance between left and right wheels
+     * @param wheelDistFrontBack Distance between front and back wheels
+     */
+    void createMassPoints(double massFront, double massBack,  double wheelDistLeftRight, double wheelDistFrontBack) {
         // Create mass points with incomplete information
         RealVector localPosFrontLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
         RealVector localPosFrontRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});

@@ -73,12 +73,32 @@ public class PhysicalVehicleBuilder {
     public PhysicalVehicle buildPhysicalVehicle(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
         Log.finest("PhysicalVehicleBuilder: buildPhysicalVehicle - PhysicalVehicle at start: " + physicalVehicle);
 
-        physicalVehicle.initPhysicalVehicle(controllerBus, controller, navigation);
+        physicalVehicle.setOptionalComponents(controllerBus, controller, navigation);
+        if(!physicalVehicle.getPhysicalVehicleInitialized()){
+            physicalVehicle.initMassPointPhysics();
+        }
         PhysicalVehicle result = physicalVehicle;
         resetPhysicalVehicle();
 
         Log.finest("PhysicalVehicleBuilder: buildPhysicalVehicle - Returned physicalVehicle: " + result + " , reset physicalVehicle in builder:" + physicalVehicle);
         return result;
+    }
+
+    /**
+     * Function that initializes the physicalVehicle that is currently build in the builder class
+     *
+     * @param
+     * @return PhysicalVehicle that was built with the builder
+     */
+    public PhysicalVehicleBuilder initPhysicalVehicle(boolean useOldPhysics) {
+        Log.finest("PhysicalVehicleBuilder: initPhysicalVehicle - PhysicalVehicle at start: " + physicalVehicle);
+        if(useOldPhysics){
+            physicalVehicle.initMassPointPhysics();
+        }else{
+            physicalVehicle.initModelicaPhysics();
+        }
+        Log.finest("PhysicalVehicleBuilder: initPhysicalVehicle - PhysicalVehicle at end: " + physicalVehicle);
+        return getInstance();
     }
 
     /**
@@ -111,6 +131,7 @@ public class PhysicalVehicleBuilder {
         setGlobalPos(data.posX, data.posY, data.posY);
         setGlobalRotation(data.rotX, data.rotY, data.rotZ);
         setWheelProperties(data.massFront, data.massBack, data.wheelRadius, data.wheelDistLeftRight, data.wheelDistFrontBack);
+        createMassPoints(data.massFront, data.massBack, data.wheelDistLeftRight, data.wheelDistFrontBack);
 
         for (VehicleActuator a : data.actuators) {
             setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
@@ -228,6 +249,22 @@ public class PhysicalVehicleBuilder {
         return getInstance();
     }
 
+    /**
+     * Function that creates the Mass Points to the physicalVehicle that is currently built in the builder class
+     *
+     * @param massFront Sum of mass for both front wheels
+     * @param massBack Sum of mass for both back wheels
+     * @param wheelDistLeftRight Distance between left and right wheels
+     * @param wheelDistFrontBack Distance between front and back wheels
+     * @return PhysicalVehicleBuilder singleton class
+     *
+     */
+    public PhysicalVehicleBuilder createMassPoints(double massFront, double massBack, double wheelDistLeftRight, double wheelDistFrontBack) {
+        Log.finest("PhysicalVehicleBuilder: createMassPoints - PhysicalVehicle at start: " + physicalVehicle);
+        physicalVehicle.getSimulationVehicle().createMassPoints(massFront, massBack, wheelDistLeftRight, wheelDistFrontBack);
+        Log.finest("PhysicalVehicleBuilder: createMassPoints - PhysicalVehicle at end: " + physicalVehicle);
+        return getInstance();
+    }
     /**
      * Function that sets the max approximate velocity to the physicalVehicle that is currently built in the builder class
      *
