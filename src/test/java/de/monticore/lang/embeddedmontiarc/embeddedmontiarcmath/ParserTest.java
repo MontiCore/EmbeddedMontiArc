@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.se_rwth.commons.logging.Log;
@@ -45,6 +47,17 @@ import org.junit.Test;
  * @author Robert Heim, Michael von Wenckstern
  */
 public class ParserTest {
+
+  private MCConcreteParser parser;
+
+  protected MCConcreteParser getParser() {
+    return parser;
+  }
+
+  protected void setParser(MCConcreteParser parser) {
+    this.parser = parser;
+  }
+
   public static final boolean ENABLE_FAIL_QUICK = false;
   private static List<String> expectedParseErrorModels = Arrays.asList(
       "src/test/resources/arc/context/a/CG12false.arc",
@@ -69,6 +82,7 @@ public class ParserTest {
     // ensure an empty log
     Log.getFindings().clear();
     Log.enableFailQuick(ENABLE_FAIL_QUICK);
+    parser = new EmbeddedMontiArcMathParser();
   }
 
 //  @Test
@@ -88,7 +102,7 @@ public class ParserTest {
   }
 
   private void test(String fileEnding) throws IOException {
-    ParseTest parserTest = new ParseTest("." + fileEnding);
+    ParseTest parserTest = new ParseTest("." + fileEnding, parser);
     Files.walkFileTree(Paths.get("src/test/resources"), parserTest);
 
     if (!parserTest.getModelsInError().isEmpty()) {
@@ -115,12 +129,15 @@ public class ParserTest {
 
     private String fileEnding;
 
+    private MCConcreteParser parser;
+
     private List<String> modelsInError = new ArrayList<>();
 
     private int testCount = 0;
 
-    public ParseTest(String fileEnding) {
+    public ParseTest(String fileEnding, MCConcreteParser parser) {
       super();
+      this.parser = parser;
       this.fileEnding = fileEnding;
     }
 
@@ -146,10 +163,9 @@ public class ParserTest {
 
         Log.debug("Parsing file " + file.toString(), "ParserTest");
         testCount++;
-        Optional<ASTEMAMCompilationUnit> maModel = Optional.empty();
+        Optional<? extends ASTNode> maModel = Optional.empty();
         boolean expectingError = ParserTest.expectedParseErrorModels.contains(file.toString());
 
-        EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
         try {
           if (expectingError) {
             Log.enableFailQuick(false);
