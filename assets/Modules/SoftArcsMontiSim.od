@@ -28098,4 +28098,4 @@ objectdiagram SoftArcsMontiSim {
   link artifact SimulationLanguage -> @(WindStrengthKind.java);
   link artifact SimulationLanguage -> @(WindStrengthResolvingFilter.java);
   link artifact SimulationLanguage -> @(WindStrengthSymbol.java);
-};
+}

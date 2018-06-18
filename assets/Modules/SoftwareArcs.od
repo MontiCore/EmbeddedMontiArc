@@ -61255,4 +61255,4 @@ objectdiagram SoftwareArcs {
   link artifact MontiSim -> @(WindStrengthKind.java);
   link artifact MontiSim -> @(WindStrengthResolvingFilter.java);
   link artifact MontiSim -> @(WindStrengthSymbol.java);
-};
+}
