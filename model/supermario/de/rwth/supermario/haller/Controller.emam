@@ -15,9 +15,12 @@ component Controller {
         out B marioDown,
         out B marioShoot;
         
-    implementation Math{
+    implementation Math {
         
+       marioDirection = 1;
        marioJump = true;
+       marioDown = false;
+       marioShoot = false;
        //marioDirection = 1;
         
     }
