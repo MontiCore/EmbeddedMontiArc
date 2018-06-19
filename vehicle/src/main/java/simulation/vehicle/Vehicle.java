@@ -30,8 +30,7 @@ import static simulation.vehicle.VehicleActuatorType.*;
  */
 public class Vehicle {
 
-    // Default average values for vehicle constructor
-
+    /** Default average values for vehicle constructor */
     /** Length of the vehicle in meters */
     public static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
 
@@ -89,11 +88,8 @@ public class Vehicle {
     /** Average tire pressure for car wheels in bar */
     public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
 
-    // Variables of the car
 
-    /** M of formula */
-    private double mass;
-
+    /**Attributes of the car */
     /** Indicator whether the constant bus data was sent */
     private boolean constantBusDataSent;
 
@@ -112,24 +108,6 @@ public class Vehicle {
     /** Status logging module */
     private StatusLogger statusLogger;
 
-    /** Dimensions of vehicle in meters */
-    private double length, width, height;
-
-    /** Estimated maximum total velocity of vehicle */
-    private double approxMaxTotalVelocity;
-
-    /** Maximum temporary allowed velocity of vehicle */
-    private double maxTemporaryAllowedVelocity;
-
-    /** Radius of vehicle wheels in meters */
-    private double wheelRadius;
-
-    /** Track of the vehicle wheels */
-    private double wheelDistLeftRight;
-
-    /** Wheelbase of the vehicle wheels */
-    private double wheelDistFrontBack;
-
     /** List of all the sensors of the vehicle */
     private List<Sensor> sensorList;
 
@@ -147,6 +125,27 @@ public class Vehicle {
 
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
+
+    /** M of formula */
+    private double mass;
+
+    /** Dimensions of vehicle in meters */
+    private double length, width, height;
+
+    /** Estimated maximum total velocity of vehicle */
+    private double approxMaxTotalVelocity;
+
+    /** Maximum temporary allowed velocity of vehicle */
+    private double maxTemporaryAllowedVelocity;
+
+    /** Radius of vehicle wheels in meters */
+    private double wheelRadius;
+
+    /** Track of the vehicle wheels */
+    private double wheelDistLeftRight;
+
+    /** Wheelbase of the vehicle wheels */
+    private double wheelDistFrontBack;
 
     /** Representation of wheel mass points, indexed data */
     private MassPoint[] wheelMassPoints = new MassPoint[4];

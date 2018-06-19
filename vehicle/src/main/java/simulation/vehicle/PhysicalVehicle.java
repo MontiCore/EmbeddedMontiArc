@@ -42,6 +42,8 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
     /** The vehicle */
     private final Vehicle simulationVehicle;
 
+
+    /** Attributes used for massPoint physics */
     /** x_cm bar of formula */
     private RealVector localPos;
 
@@ -75,6 +77,9 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
     /** tau of formula */
     private RealVector angularMomentumDeriv;
 
+
+    /** Attributes used for modelica physics */
+
     /**
      * Constructor for a physical vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
@@ -91,8 +96,6 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
         this.simulationVehicle = new Vehicle(controllerBus, controller, navigation);
 
         // By default vehicle is not in collision or computational error and has default car object type
-        //ToDo set physicalObjectType when physics type is choosen
-        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_DEFAULT;
         collision = false;
         error = false;
 
@@ -108,7 +111,9 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
      * Should only be called by builder
      */
     void initModelicaPhysics(){
-        //ToDo set physicalObjectType
+        //Set physicalObjectType to indicate that modelica physics is used
+        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5;
+
         // Initialize physics components in vehicle class
         simulationVehicle.initModelicaPhysics();
         physicalVehicleInitialized = true;
@@ -119,9 +124,12 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
      * Should only be called by builder
      */
     void initMassPointPhysics() {
-        //ToDo set physicalObjectType
+        //Set physicalObjectType to indicate that massPoint physics is used
+        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_DEFAULT;
+
         // Initialize physics components in vehicle class
         simulationVehicle.initMassPointPhysics();
+
         // PhysicalVehicle is standing, no velocity, acceleration, force
         velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});

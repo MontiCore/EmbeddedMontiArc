@@ -40,6 +40,13 @@
             <version>1.0.1</version>
         </dependency>
 
+        <!-- Vehicle has dependency to fmu-wrapper-->
+        <dependency>
+            <groupId>org.siani.javafmi</groupId>
+            <artifactId>fmu-wrapper</artifactId>
+            <version>2.24.0</version>
+        </dependency>
+
     </dependencies>
 
 
