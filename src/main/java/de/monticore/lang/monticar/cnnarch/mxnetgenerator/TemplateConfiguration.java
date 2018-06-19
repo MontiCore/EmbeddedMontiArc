@@ -38,7 +38,7 @@ public class TemplateConfiguration {
 
     private TemplateConfiguration() {
         configuration = new Configuration(Configuration.VERSION_2_3_23);
-        configuration.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/");
+        configuration.setClassForTemplateLoading(TemplateConfiguration.class, "/templates/mxnet/");
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     }
