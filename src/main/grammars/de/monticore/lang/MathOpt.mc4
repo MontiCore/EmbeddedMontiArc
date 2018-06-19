@@ -25,7 +25,7 @@ grammar MathOpt extends de.monticore.lang.Math
     OptimizationForLoop =
         "for" head:MathForLoopHead body:OptimizationCondition+ "end" ";"?;
 
-    OptimizationObjectiveValue = type:ElementType Name "=";
+    OptimizationObjectiveValue = type:ElementType? Name "=";
 
     OptimizationStatement implements Statement =
         objectiveValue:OptimizationObjectiveValue? optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclaration ")" objectiveFunction:OptimizationObjectiveFunction "subject to" constraint:OptimizationCondition* "end";
