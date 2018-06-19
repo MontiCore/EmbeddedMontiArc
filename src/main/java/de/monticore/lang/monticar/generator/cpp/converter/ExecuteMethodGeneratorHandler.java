@@ -101,11 +101,11 @@ public class ExecuteMethodGeneratorHandler {
         String colvecString;
         String cubeString;
 
-        if(type.isIsRational()){
+        if(type.isRational()){
             matString = MathConverter.curBackend.getMatrixTypeName();
             colvecString = MathConverter.curBackend.getColumnVectorTypeName();
             cubeString = MathConverter.curBackend.getCubeTypeName();
-        }else if(type.isIsWholeNumberNumber()){
+        }else if(type.isWholeNumber()){
             matString = MathConverter.curBackend.getWholeNumberMatrixTypeName();
             colvecString = MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
             cubeString = MathConverter.curBackend.getWholeNumberCubeTypeName();
@@ -117,36 +117,22 @@ public class ExecuteMethodGeneratorHandler {
         String result = "";
         List<MathExpressionSymbol> dims = mathValueSymbol.getType().getDimensions();
         if (dims.size() == 1) {
-            MathExpressionSymbol rows = dims.get(0);
             if (typeString.equals(colvecString)) {
-                result = "=" + colvecString + "(" + ExecuteMethodGenerator.
-                        generateExecuteCode(rows, includeStrings) + ")";
+                result = "=" + TypeConverter.getDimensionString(TypeConverter.getColvecAccessString(type),dims,includeStrings);
             }
         } else if (dims.size() == 2) {
-            MathExpressionSymbol rows = dims.get(0);
-            MathExpressionSymbol cols = dims.get(1);
-
             if (typeString.equals(matString)) {
-                result = "=" + matString + "(" + ExecuteMethodGenerator.
-                        generateExecuteCode(rows, includeStrings) + "," + ExecuteMethodGenerator.
-                        generateExecuteCode(cols, includeStrings) + ")";
+                result = "=" + TypeConverter.getDimensionString(TypeConverter.getMatAccessString(type),dims,includeStrings);
             }
         } else if (dims.size() == 3) {
-            MathExpressionSymbol rows = dims.get(0);
-            MathExpressionSymbol cols = dims.get(1);
-            MathExpressionSymbol slices = dims.get(2);
-
             if (typeString.equals(cubeString)) {
-                result = "=" + cubeString + "(" + ExecuteMethodGenerator.
-                        generateExecuteCode(rows, includeStrings) + "," + ExecuteMethodGenerator.
-                        generateExecuteCode(cols, includeStrings) + "," + ExecuteMethodGenerator.
-                        generateExecuteCode(slices, includeStrings) + ")";
+                result = "=" + TypeConverter.getDimensionString(TypeConverter.getCubeAccessString(type),dims,includeStrings);
             }
         }
         return result;
     }
 
-       public static String generateExecuteCode(MathValueSymbol mathValueSymbol, List<String> includeStrings) {
+    public static String generateExecuteCode(MathValueSymbol mathValueSymbol, List<String> includeStrings) {
         String result = "";
         String type = generateExecuteCode(mathValueSymbol.getType(), includeStrings);
         result += type + " " + mathValueSymbol.getName();
