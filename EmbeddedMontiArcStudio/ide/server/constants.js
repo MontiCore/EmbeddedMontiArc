@@ -25,8 +25,6 @@ PATHS.SCRIPTS        = Path.resolve(PATHS.HOME, "scripts");
 PATHS.VIDEOS         = Path.resolve(PATHS.HOME, "videos");
 PATHS.SIMULATION     = Path.resolve(PATHS.HOME, "apache-tomcat-9.0.5");
 PATHS.VISUALIZATION  = Path.resolve(PATHS.HOME, "visualisation");
-PATHS.NFPVERIFICATION = Path.resolve(PATHS.HOME, "nfpverification");
-PATHS.OCLVERIFICATION = Path.resolve(PATHS.HOME, "oclverification");
 PATHS.TEST_RESULTS   = Path.resolve(PATHS.HOME, "testResults");
 PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
 PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
@@ -35,10 +33,6 @@ PATHS.PACMAN_SIMULATE= Path.resolve(PATHS.HOME, "pacman");
 PATHS.VIEWVERIFICATION = Path.resolve(PATHS.HOME, "viewverification");
 PATHS.VIEWVERIFICATION_RESULT = Path.resolve(PATHS.VIEWVERIFICATION, "result");
 PATHS.VIEWVERIFICATION_OUTPUT = Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG");
-
-PATHS.NFPVERIFICATION_RESULT = Path.resolve(PATHS.NFPVERIFICATION, "result");
-//PATHS.MODELS.NFPVERIFICATION = Path.resolve(PATHS.MODELS, "nfpverification");
-PATHS.MODELS.NFPVERIFICATION_TARGET = Path.resolve(PATHS.MODELS, "nfpverification\\target");
 
 
 /*
@@ -70,8 +64,6 @@ BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
-BATCHES.NFPVERIFICATION = {};
-BATCHES.OCLVERIFICATION = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -105,14 +97,10 @@ BATCHES.PUMP.REPORTING           		= Path.resolve(PATHS.SCRIPTS, "pump", "report
 BATCHES.PACMAN.PLAY    		 		= {};
 BATCHES.PACMAN.EMAM2WASM_GEN 		= Path.resolve(PATHS.SCRIPTS, "pacman", "emam2wasmGen.bat");
 BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report.bat");
+BATCHES.PACMAN.REPORTING_STREAM     = Path.resolve(PATHS.SCRIPTS, "pacman", "reportWithStreams.bat");
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
-BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
+BATCHES.PACMAN.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
-BATCHES.NFPVERIFICATION.TEST1		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule1.bat");
-BATCHES.NFPVERIFICATION.TEST2 		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule2.bat");
-
-BATCHES.OCLVERIFICATION.VISUALIZECD 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "visualizeCD.bat");
-BATCHES.OCLVERIFICATION.CHECKOCL 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "checkOCL.bat");
 
 /*
  * OPTIONS

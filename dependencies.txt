@@ -19,7 +19,9 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/mingw64.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/nodejs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/precompiled.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/reporting.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/reporting.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/emam2wasm.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/pacman.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/visualisation.zip
 // new dependencies here: https://rwth-aachen.sciebo.de/apps/files/?dir=/EmbeddedMontiArc/dependencies&fileid=1238725838

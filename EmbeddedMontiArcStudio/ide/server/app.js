@@ -5,10 +5,8 @@ const Chrome                                            = require("./chrome");
 const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
 const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
-const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
+const {AutoPilotReportingWS, ClusteringReportingWS, PacManReportingWS} = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
-const {NFPVerificatorTest} = require("./nfpverification");
-const {CDVisualization, OCLChecking} = require("./oclverification");
 const {PacmanGeneration}                                = require("./generations");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
@@ -26,7 +24,6 @@ Logger.level = "debug";
 
 App.use("/m", Express.static(PATHS.MODELS));
 App.use("/r", Express.static(Path.resolve(PATHS.REPORTING, "report")));
-App.use("/ocl", Express.static(PATHS.OCLVERIFICATION));
 App.use("/c", Express.static(PATHS.CLUSTER_FIDDLE));
 App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
@@ -34,7 +31,6 @@ App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
 App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
-App.use("/nfp", Express.static(PATHS.NFPVERIFICATION_RESULT))
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
 App.use("/services", Express.json());
@@ -370,6 +366,15 @@ App.post("/services/pacman/report", function(request, response) {
     PacManReporting.execute(onExecuted);
 });
 
+App.post("/services/pacman/reportWS", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/r/report.html?ide=false&streams=true");
+        response.end();
+    }
+
+    PacManReportingWS.execute(onExecuted);
+});
+
 App.post("/services/pacman/play", function(request, response) {
     function onExecuted() {
         Chrome.open(URLS.SHARED + "/pp");
@@ -403,121 +408,6 @@ App.post("/services/pacman/visualize", function(request, response) {
 	}
 
 	PacManVisualization.execute(onExecuted);
-});
-
-App.post("/services/nfpverification/test1", function(request, response) {
-	const body = request.body;
-	
-	function doNothing(){}
-	
-	function onUpdated() {
-		var targetfolder = "witnesses_example.rule1_" + body.name.replace(/\//g, ".").substring(1,body.name.length-4); 
-		var files = FileSystem.readdirSync(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder))
-		
-		if (files.length > 0) {
-			for (i = 0; i < files.length; i++) {
-				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
-			}
-			
-			/*var txtFile = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt");
-			/*var file = new FileReader(txtFile);
-
-			file.open("r"); // open file with read access
-			var str = "<!DOCTYPE html> \n <html><body><header>Witness Overview</header> \n";
-			while (!file.eof) {
-				// read each line of text
-				str += "<a href="+">" + file.readln() + "</a> <br> \n";
-			}
-			file.close();
-			str += "</body></html>"
-
-			//var file = FileSystem.readFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt"), doNothing);
-			var file = new FileReader();
-			file.readAsText(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt"), doNothing);
-			var fileparts = file..split("\n");
-			var str = "<!DOCTYPE html> \n <html><body><header>Witness Overview</header> \n";
-			while (!file.eof) {
-				// read each line of text
-				str += "<a href="+">" + file.readln() + "</a> <br> \n";
-			}
-			str += "</body></html>"
-			//var file2 = Path.resolve(PATHS.NFPVERIFICATION_RESULT,"result.html");
-			
-			FileSystem.writeFile(Path.resolve(PATHS.NFPVERIFICATION_RESULT,"result.html"), str, doNothing);
-			*/
-		}  
-		else {
-			alert('No matching files found');
-		} 
-
-		Chrome.open(URLS.SHARED + "/nfp/result.html");
-		response.end();
-	}
-
-	NFPVerificatorTest.execute1(body.name.replace(/\//g, ".").substring(1,body.name.length-4), onUpdated);	
-});
-
-App.post("/services/nfpverification/test2", function(request, response) {
-	const body = request.body;
-	
-	function doNothing(){}
-	
-	function onUpdated() {
-		var targetfolder = "witnesses_example.rule2_" + body.name.replace(/\//g, ".").substring(1,body.name.length-4); 
-		var files = FileSystem.readdirSync(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder))
-		
-		if (files.length > 0) {
-			for (i = 0; i < files.length; i++) {
-				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
-			}
-			/*
-			var txtFile = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt");
-			var file = new File(txtFile);
-
-			file.open("r"); // open file with read access
-			var str = "<!DOCTYPE html> \n <html><body><header>Witness Overview</header> \n";
-			while (!file.eof) {
-				// read each line of text
-				str += "<a href="+">" + file.readln() + "</a> <br> \n";
-			}
-			file.close();
-			str += "</body></html>"
-			
-			var file2 = new File(Path.resolve(PATHS.NFPVERIFICATION_RESULT,"result.html"));
-			
-			file2.open("w");
-			file2.write(str);
-			file2.close();*/
-		}
-		else {
-			alert('No matching files found');
-		}
-
-		Chrome.open(URLS.SHARED + "/nfp/result.html");
-		response.end();
-	}
-		
-	NFPVerificatorTest.execute2(body.name.replace(/\//g, ".").substring(1,body.name.length-4),onUpdated);
-});
-
-App.post("/services/oclverification/visualizeCD", function(request, response) {
-    function onExecuted() {
-        Chrome.open(URLS.SHARED + "/ocl/visualizeCD.html?ide=false");
-        response.end();
-    }
-
-    var path = request.body.path;
-    CDVisualization.execute(path, onExecuted);
-});
-
-App.post("/services/oclverification/checkOCL", function(request, response) {
-    function onExecuted(result) {
-        response.send(result);
-    }
-
-
-    var path = request.body.path;
-    OCLChecking.execute(path, onExecuted);
 });
 
 module.exports = App;

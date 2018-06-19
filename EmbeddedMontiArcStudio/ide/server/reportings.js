@@ -79,11 +79,20 @@ class PacManReporting extends AbstractReporting {
     }
 }
 
+class PacManReportingWS extends AbstractReporting {
+    constructor() {
+        super("pacman", BATCHES.PACMAN.REPORTING_STREAM);
+        this.logger = Log.getLogger("PACMAN REPORTING WITH STREAMS");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
     AutoPilotReporting: new AutoPilotReporting(),
     AutoPilotReportingWS: new AutoPilotReportingWS,
     ClusteringReporting: new ClusteringReporting(),
     ClusteringReportingWS: new ClusteringReportingWS(),
     PumpReporting: new PumpReporting(),
-    PacManReporting: new PacManReporting()
+    PacManReporting: new PacManReporting(),
+    PacManReportingWS: new PacManReportingWS()
 };

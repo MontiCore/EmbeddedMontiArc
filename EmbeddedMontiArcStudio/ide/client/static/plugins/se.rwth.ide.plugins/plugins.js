@@ -1044,8 +1044,6 @@ var plugins = [
     "plugins/se.rwth.language.cd/cd",
     "plugins/se.rwth.language.ocl/ocl",
     "plugins/se.rwth.language.embeddedmontiview/embeddedmontiview",
-    "plugins/se.rwth.language.tagging/tagging",
-    "plugins/se.rwth.language.tagschema/tagschema",
     "plugins/se.rwth.ide.ui/ui",
     "plugins/se.rwth.api.url/url.js",
     "plugins/se.rwth.api.window/window.js",
@@ -1061,19 +1059,9 @@ plugins.push(
     "plugins/se.rwth.simulate/simulate",
     "plugins/se.rwth.visualize/visualize",
     "plugins/se.rwth.report/report",
+    "plugins/se.rwth.reportWithStreams/reportWithStreams",
     "plugins/se.rwth.models.updater/models.updater"
     );
-} else if (reponame == "OCLVerification") {
-plugins.push(
-    "plugins/se.rwth.oclverification/oclverification",
-    "plugins/se.rwth.models.updater/models.updater"
-    );
-} else if (reponame == "NFPVerification") {
-   //   plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
-  plugins.push(
-      "plugins/se.rwth.nfpverification/nfpverification",
-      "plugins/se.rwth.models.updater/models.updater"
-      );
 } else {
     plugins.push(
 	"plugins/se.rwth.simulate/simulate",
