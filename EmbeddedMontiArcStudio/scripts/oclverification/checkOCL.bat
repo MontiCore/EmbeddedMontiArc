@@ -17,6 +17,6 @@ set OCL_MODEL=%1
     -path ^
     %PROJECT_PATH% ^
     -ocl ^
-    %OCL_MODEL% >> data/result.txt
+    %OCL_MODEL% > data/result.txt 2>&1
 
 endlocal

@@ -18,9 +18,15 @@ define(function(require, exports, module) {
         var loaded = false;
 		var messageIndex = -1;
 		var oclResults = "";
+		var consoleTab;
 
 
 		function openPanel() {
+		    if(consoleTab) {
+		        consoleTab.close();
+		    }
+
+
 		    var panes = TabManager.getPanes();
 		    var pane = panes[0];
 		    var options = {};
@@ -31,7 +37,7 @@ define(function(require, exports, module) {
 		    options.editorType = "urlview";
 		    options.active = false;
 
-		    TabManager.open(options, onTabOpen);
+		    consoleTab = TabManager.open(options, onTabOpen);
         }
 
         function handleTabOpen(tab) {
