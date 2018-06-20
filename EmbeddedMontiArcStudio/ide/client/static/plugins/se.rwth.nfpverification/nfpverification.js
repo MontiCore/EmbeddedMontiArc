@@ -26,10 +26,10 @@ define(function(require, exports, module) {
 		function onUpdated() {
             var project = localStorage.getItem("reponame").toLowerCase();
 
-            messageIndex = UICustom.message("Generating NFPVerification Test1 - This might take a moment...");
+            messageIndex = UICustom.message("Generating NFPVerification Test - This might take a moment...");
 			var tab = TabManager.focussedTab;
 			var path = tab.path;
-            window.fetch("/services/" + project + "/test1", {
+            window.fetch("/services/" + project + "/test", {
                 "headers": { "Content-Type": "application/json" },
                 "method": "post",
                 "body": JSON.stringify({ name: path })
@@ -71,7 +71,7 @@ define(function(require, exports, module) {
 				
 				
 				nfpLabel.addEventListener("click", onClick);
-                UI.insertByIndex(parent, nfpLabel1, 0, plugin);
+                UI.insertByIndex(parent, nfpLabel, 0, plugin);
             }
         }
 

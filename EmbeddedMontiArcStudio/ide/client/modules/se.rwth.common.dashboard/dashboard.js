@@ -48,7 +48,7 @@ var Dashboard = (function() {
                 username: "EmbeddedMontiArcStudio",
                 reponame: "NFPVerification",
                 branchname: "",
-                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/NFPVerification/v&url=/m/nfpverification.zip&openFile=/example/negative/Sensors.ema"
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/NFPVerification/v&url=/m/nfpverification.zip&openFile=/example/model/Sensors.ema"
             }, {
                 username: "EmbeddedMontiArcStudio",
                 reponame: "OCLVerification",

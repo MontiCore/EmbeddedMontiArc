@@ -409,8 +409,7 @@ App.post("/services/pacman/visualize", function(request, response) {
 		response.end();
 	}
 
-	PacManVisualization.execute(onExecuted);
-});
+	PacManVisualization.execute(onExecuted);});
 
 App.post("/services/nfpverification/test", function(request, response) {
 	const body = request.body;
@@ -418,7 +417,7 @@ App.post("/services/nfpverification/test", function(request, response) {
 	function doNothing(){}
 	
 	function onUpdated() {
-		var targetfolder = "witnesses_" + body.name.replace(/\//g, ".").substring(1,body.name.length-4)_example.model.Sensors; 
+		var targetfolder = "witnesses_" + body.name.replace(/\//g, ".").substring(1,body.name.length-4) + "_example.model.Sensors"; 
 		var files = FileSystem.readdirSync(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder))
 		
 		if (files.length > 0) {
@@ -427,15 +426,21 @@ App.post("/services/nfpverification/test", function(request, response) {
 			}		
 			var txtFile = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt");
 			var file = FileSystem.readFileSync(txtFile, "UTF-8");
+			//file = file.replace(/(?:\r\n|\r|\n)/g, '\n');
 			var fileParts = file.split("\n");
+			//var str = "";
 			var str = "<!DOCTYPE html> \n <html><body><header>Witness Overview</header> \n";
 			for (i = 0; i < fileParts.length; i++) {
-				var lineParts = fileParts.split(" ");
-				str += "<a href="+URLS.SHARED + "/nfp/" + lineParts[1] + ".html>" + fileParts[i] + "</a> <br> \n";
+				var txt = fileParts[i].replace(/\t/g, '&emsp;');
+				txt = txt.replace(/\ /g, '&nbsp;'); 
+				var lineParts = fileParts[i].replace(/\t/g, ' ').split(" ");
+				var comp = lineParts[1]
+				str += "<a href="+URLS.SHARED + "/nfp/" + comp + ".html>" + txt + "</a> <br> \n";
+				//lineParts[1]; fileParts[i]
 			}
 			str += "</body></html>"
 
-			FileSystem.writeFile(Path.resolve(PATHS.NFPVERIFICATION_RESULT,"result.html"), str, doNothing);
+			FileSystem.appendFile(Path.resolve(PATHS.NFPVERIFICATION_RESULT,"result.html"), str, doNothing);
 		}  
 		else {
 			alert('No matching files found');

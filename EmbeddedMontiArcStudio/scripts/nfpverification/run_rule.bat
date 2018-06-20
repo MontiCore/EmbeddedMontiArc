@@ -36,6 +36,13 @@ REM set ocl= "example.rule1"
 if exist "%NFPVERIFICATION_HOME%\results\" rmdir "%NFPVERIFICATION_HOME%\results\" /s /q
 mkdir %NFPVERIFICATION_HOME%\results\
 
+
+cd "%HOME%\model\nfpverification\example"
+
+for /r . %%g in (*.tag) do (
+xcopy /s/y %%g "%HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors\"
+)
+
 cd %HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors
 
 for /r . %%g in (*.ema) do (
@@ -45,8 +52,14 @@ set file=!file:~0,-4!
    --input "!file!" ^
    --modelPath "%HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors" ^
    --recursiveDrawing "true" ^
-   --outputPath "%NFPVERIFICATION_HOME%\results\" 
+   --outputPath "%NFPVERIFICATION_HOME%\results\\" 
 )
+
+(
+echo ^<^!DOCTYPE html^>^ 
+echo ^<^html^>^<^body^>^<^header^>^Witness Overview^<^/header^>^
+)>> %NFPVERIFICATION_HOME%\results\result.html
+
 
 
 

@@ -23,9 +23,9 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/emam2wasm.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/pacman.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/visualisation.zip
 // new dependencies here: https://rwth-aachen.sciebo.de/apps/files/?dir=/EmbeddedMontiArc/dependencies&fileid=1238725838
 ** https://rwth-aachen.sciebo.de/remote.php/webdav/EmbeddedMontiArc/dependencies/oclverification.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.20.visualisation&files=visualisation.zip
 
 * EmbeddedMontiArcStudio/distributed-simulator/
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
