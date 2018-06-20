@@ -10,7 +10,7 @@ class testing_subpackage10_myComponent10_behaviorGeneration_calcMotionCmds_isDri
 public:
 double currentPositionX;
 double currentPositionY;
-double trimmedTrajectoryLength;
+int trimmedTrajectoryLength;
 Matrix trimmedTrajectoryX;
 Matrix trimmedTrajectoryY;
 bool result;

@@ -16,7 +16,7 @@ double currentPositionX;
 double currentPositionY;
 double currentDirectionX;
 double currentDirectionY;
-double trimmedTrajectoryLength;
+int trimmedTrajectoryLength;
 Matrix trimmedTrajectoryX;
 Matrix trimmedTrajectoryY;
 double desiredDirectionX;

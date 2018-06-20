@@ -10,7 +10,7 @@ class testing_subpackage9_myComponent9_calcMotionCmds_isDriveToFirstPosition{
 public:
 double currentPositionX;
 double currentPositionY;
-double trimmedTrajectoryLength;
+int trimmedTrajectoryLength;
 Matrix trimmedTrajectoryX;
 Matrix trimmedTrajectoryY;
 bool result;

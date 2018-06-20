@@ -17,7 +17,7 @@ double compass;
 double currentEngine;
 double currentSteering;
 double currentBrakes;
-double trajectory_length;
+int trajectory_length;
 Matrix trajectory_x;
 Matrix trajectory_y;
 double engine;

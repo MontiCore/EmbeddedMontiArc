@@ -11,9 +11,9 @@ double param2;
 double param3;
 void init(double param1, double param2, double param3)
 {
-this->param1 = param1;
-this->param2 = param2;
-this->param3 = param3;
+this->param1=param1;
+this->param2=param2;
+this->param3=param3;
 }
 void execute()
 {

@@ -24,6 +24,7 @@ import de.monticore.types.types._ast.ASTType;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This is used to convert port types to their cpp equivalent
@@ -129,24 +130,27 @@ public class TypeConverter {
     }
 
     public static VariableType getRealVariableType(ASTCommonMatrixType astCommonMatrixType) {
+        ASTElementType type = astCommonMatrixType.getElementType();
+
         VariableType variableType;
         List<ASTExpression> dimensionElements = astCommonMatrixType.getDimension().getDimensionList();
         if (dimensionElements.size() == 1) {
-            variableType = new VariableType("CommonColumnVectorType", MathConverter.curBackend.getColumnVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            variableType = new VariableType("CommonColumnVectorType", getColvecAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
         } else if (dimensionElements.size() == 2) {
             if (isVectorDimension(dimensionElements.get(0)))
-                variableType = new VariableType("CommonRowVectorType", MathConverter.curBackend.getRowVectorTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                variableType = new VariableType("CommonRowVectorType", getRowAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
             else {
-                variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+                variableType = new VariableType("CommonMatrixType", getMatAccessString(type) , MathConverter.curBackend.getIncludeHeaderName());
             }
         } else if (dimensionElements.size() == 3) {
-            variableType = new VariableType("CommonCubeType", MathConverter.curBackend.getCubeTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            variableType = new VariableType("CommonCubeType", getCubeAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
         } else {
-            variableType = new VariableType("CommonMatrixType", MathConverter.curBackend.getMatrixTypeName(), MathConverter.curBackend.getIncludeHeaderName());
+            variableType = new VariableType("CommonMatrixType", getMatAccessString(type), MathConverter.curBackend.getIncludeHeaderName());
         }
-
         return variableType;
     }
+
+
 
     public static boolean isVectorDimension(ASTExpression astCommonDimensionElement) {
         boolean result = false;
@@ -307,7 +311,7 @@ public class TypeConverter {
         addNonPrimitiveVariableType("B", "bool", "");
         addNonPrimitiveVariableType("Q", "double", "");
         // TODO: the type mappings below have been adjusted to make the tests pass. they are, however, wrong.
-        addNonPrimitiveVariableType("Z", "double", "");
+        addNonPrimitiveVariableType("Z", "int", "");
         addNonPrimitiveVariableType("C", "double", "");
         addNonPrimitiveVariableType("N1", "int", "");
         addNonPrimitiveVariableType("N0", "int", "");
@@ -316,5 +320,57 @@ public class TypeConverter {
         addNonPrimitiveVariableType("CommonMatrixType", "Matrix", "octave/oct");
         addNonPrimitiveVariableType("AssignmentType", "Matrix", "octave/oct");
 
+    }
+
+    public static String getColvecAccessString(ASTElementType type){
+        if(type.isRational()){
+            return MathConverter.curBackend.getColumnVectorTypeName();
+        }else if(type.isWholeNumber()){
+            return MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
+        }else{
+            Log.error("0x7f4dc: Type not supported");
+            return null;
+        }
+    }
+
+    private static String getRowAccessString(ASTElementType type) {
+        if(type.isRational()){
+            return MathConverter.curBackend.getRowVectorTypeName();
+        }else if(type.isWholeNumber()){
+            return MathConverter.curBackend.getWholeNumberRowVectorTypeName();
+        }else{
+            Log.error("0x7f4dc: Type not supported");
+            return null;
+        }
+    }
+
+    public static String getMatAccessString(ASTElementType type){
+        if(type.isRational()){
+            return MathConverter.curBackend.getMatrixTypeName();
+        }else if(type.isWholeNumber()){
+            return MathConverter.curBackend.getWholeNumberMatrixTypeName();
+        }else{
+            Log.error("0xa7674: Type not supported");
+            return null;
+        }
+    }
+
+    public static String getCubeAccessString(ASTElementType type){
+        if(type.isRational()){
+            return MathConverter.curBackend.getCubeTypeName();
+        }else if(type.isWholeNumber()){
+            return MathConverter.curBackend.getWholeNumberCubeTypeName();
+        }else{
+            Log.error("0x1d06c: Type not supported");
+            return null;
+        }
+    }
+
+    public static String getDimensionString(String accessString, List<MathExpressionSymbol> dims, List<String> includeString){
+        String dimsString = dims.stream()
+                .map(dim -> ExecuteMethodGenerator.generateExecuteCode(dim,includeString))
+                .collect(Collectors.joining(","));
+
+        return accessString + "(" + dimsString + ")";
     }
 }

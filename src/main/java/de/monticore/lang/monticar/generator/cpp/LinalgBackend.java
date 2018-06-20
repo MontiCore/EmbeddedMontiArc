@@ -94,4 +94,28 @@ public class LinalgBackend implements MathBackend {
         // TODO: check this! Do not know this backend...
         return false;
     }
+
+    @Override
+    public String getWholeNumberRowVectorTypeName() {
+        Log.error("Not supported yet");
+        return null;
+    }
+
+    @Override
+    public String getWholeNumberColumnVectorTypeName() {
+        Log.error("Not supported yet");
+        return null;
+    }
+
+    @Override
+    public String getWholeNumberMatrixTypeName() {
+        Log.error("Not supported yet");
+        return null;
+    }
+
+    @Override
+    public String getWholeNumberCubeTypeName() {
+        Log.error("Not supported yet");
+        return null;
+    }
 }

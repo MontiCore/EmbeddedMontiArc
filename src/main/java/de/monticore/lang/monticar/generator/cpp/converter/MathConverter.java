@@ -128,4 +128,53 @@ public class MathConverter {
     public static String getCubeTypeInitLine(Variable v, BluePrintCPP bluePrint) {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
+
+    public static String getWholeNumberMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
+    }
+
+    public static String getWholeNumberRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
+    }
+
+    public static String getWholeNumberColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
+        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
+    }
+
+    public static String getWholeNumberCubeInitLine(Variable v, BluePrintCPP bluePrint) {
+        return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getWholeNumberCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
+    }
+
+    public static String getInitLine(Variable v,BluePrintCPP bluePrint) {
+        String initLine = null;
+        if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
+            initLine = MathConverter.getMatrixInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getRowVectorTypeName())) {
+            initLine = MathConverter.getRowVectorInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getColumnVectorTypeName())) {
+            initLine = MathConverter.getColumnVectorInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName())) {
+            initLine = MathConverter.getCubeTypeInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberMatrixTypeName())) {
+            initLine = MathConverter.getWholeNumberMatrixInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberRowVectorTypeName())) {
+            initLine = MathConverter.getWholeNumberRowVectorInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberColumnVectorTypeName())) {
+            initLine = MathConverter.getWholeNumberColumnVectorInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberCubeTypeName())) {
+            initLine = MathConverter.getWholeNumberCubeInitLine(v, bluePrint);
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals("double")) {
+            initLine = "";
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals("bool")) {
+            initLine = "";
+        } else if (v.getVariableType().getTypeNameTargetLanguage().equals("int")) {
+            initLine = "";
+        }
+
+        if(initLine == null) {
+            Log.error("0x3b097: Type not supported");
+        }
+
+        return initLine;
+    }
 }

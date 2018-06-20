@@ -12,7 +12,7 @@ double currentPositionX;
 double currentPositionY;
 double currentDirectionX;
 double currentDirectionY;
-double plannedTrajectoryLength;
+int plannedTrajectoryLength;
 Matrix plannedTrajectoryX;
 Matrix plannedTrajectoryY;
 double desiredDirectionX;
