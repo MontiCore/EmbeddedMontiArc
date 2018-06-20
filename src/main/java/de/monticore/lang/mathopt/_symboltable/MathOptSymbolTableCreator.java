@@ -56,6 +56,11 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         return this;
     }
 
+    @Override
+    public void setRealThis(MathOptVisitor realThis) {
+
+    }
+
     public void endVisit(final ASTOptimizationVariableDeclaration astExpression) {
         MathValueSymbol symbol = new MathValueSymbol(astExpression.getName());
         if (astExpression.getTypeOpt().isPresent())
