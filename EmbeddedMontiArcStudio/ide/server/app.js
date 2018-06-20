@@ -9,6 +9,7 @@ const {AutoPilotReportingWS, ClusteringReportingWS, PacManReportingWS} = require
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
 const {PacmanGeneration}                                = require("./generations");
 const {NFPVerificatorTest} = require("./nfpverification");
+const {CDVisualization, OCLChecking} = require("./oclverification");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
 const ModelUpdater                                      = require("./models-updater");
@@ -33,6 +34,7 @@ App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
 App.use("/nfp", Express.static(PATHS.NFPVERIFICATION_RESULT))
+App.use("/ocl", Express.static(PATHS.OCLVERIFICATION));
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
 App.use("/services", Express.json());
@@ -423,6 +425,7 @@ App.post("/services/nfpverification/test", function(request, response) {
 		if (files.length > 0) {
 			for (i = 0; i < files.length; i++) {
 				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
+				//FileSystem.writeFileSync(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
 			}		
 			var txtFile = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt");
 			var file = FileSystem.readFileSync(txtFile, "UTF-8");
@@ -453,5 +456,24 @@ App.post("/services/nfpverification/test", function(request, response) {
 	NFPVerificatorTest.execute(body.name.replace(/\//g, ".").substring(1,body.name.length-4), onUpdated);	
 });
 
+App.post("/services/oclverification/visualizeCD", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/ocl/visualizeCD.html?ide=false");
+        response.end();
+    }
+
+    var path = request.body.path;
+    CDVisualization.execute(path, onExecuted);
+});
+
+App.post("/services/oclverification/checkOCL", function(request, response) {
+    function onExecuted(result) {
+        response.send(result);
+    }
+
+
+    var path = request.body.path;
+    OCLChecking.execute(path, onExecuted);
+});
 
 module.exports = App;

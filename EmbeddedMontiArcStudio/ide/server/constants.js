@@ -30,6 +30,7 @@ PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
 PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
 PATHS.PACMAN_SIMULATE= Path.resolve(PATHS.HOME, "pacman");
 PATHS.NFPVERIFICATION = Path.resolve(PATHS.HOME, "nfpverification");
+PATHS.OCLVERIFICATION = Path.resolve(PATHS.HOME, "oclverification");
 
 PATHS.VIEWVERIFICATION = Path.resolve(PATHS.HOME, "viewverification");
 PATHS.VIEWVERIFICATION_RESULT = Path.resolve(PATHS.VIEWVERIFICATION, "result");
@@ -66,6 +67,7 @@ BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
 BATCHES.NFPVERIFICATION = {};
+BATCHES.OCLVERIFICATION = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -104,6 +106,9 @@ BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.ba
 BATCHES.PACMAN.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
 BATCHES.NFPVERIFICATION.TEST		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule.bat");
+
+BATCHES.OCLVERIFICATION.VISUALIZECD 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "visualizeCD.bat");
+BATCHES.OCLVERIFICATION.CHECKOCL 	= Path.resolve(PATHS.SCRIPTS, "oclverification", "checkOCL.bat");
 
 /*
  * OPTIONS

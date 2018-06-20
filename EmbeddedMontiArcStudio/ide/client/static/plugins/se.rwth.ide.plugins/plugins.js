@@ -1062,12 +1062,16 @@ plugins.push(
     "plugins/se.rwth.reportWithStreams/reportWithStreams",
     "plugins/se.rwth.models.updater/models.updater"
     );
+} else if (reponame == "OCLVerification") {
+plugins.push(
+    "plugins/se.rwth.oclverification/oclverification",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
 } else if (reponame == "NFPVerification") {
   plugins.push(
       "plugins/se.rwth.nfpverification/nfpverification",
       "plugins/se.rwth.models.updater/models.updater"
       );
-
 } else {
     plugins.push(
 	"plugins/se.rwth.simulate/simulate",

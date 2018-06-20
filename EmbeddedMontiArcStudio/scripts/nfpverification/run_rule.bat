@@ -18,7 +18,7 @@
 @REM *******************************************************************************
 @REM
 setlocal ENABLEDELAYEDEXPANSION
-@echo off
+REM @echo off
 call "..\shared\variables.bat"
 
 if exist "%HOME%\nfpverification\results\" rmdir "%HOME%\nfpverification\results\" /s /q
@@ -40,25 +40,16 @@ mkdir %NFPVERIFICATION_HOME%\results\
 cd "%HOME%\model\nfpverification\example"
 
 for /r . %%g in (*.tag) do (
-xcopy /s/y %%g "%HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors\"
+xcopy /s/y %%g "%HOME%\model\nfpverification\target\witnesses_%1_example.model.Sensors\"
 )
 
-cd %HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors
+cd "%HOME%\model\nfpverification\target\witnesses_%1_example.model.Sensors"
 
 for /r . %%g in (*.ema) do (
-set file=%%~nxg 
-set file=!file:~0,-4!
-"%JAVA_HOME%\bin\java.exe" -jar "%SVG_HOME%\embeddedmontiarc-svggenerator.jar" ^
-   --input "!file!" ^
-   --modelPath "%HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors" ^
-   --recursiveDrawing "true" ^
-   --outputPath "%NFPVERIFICATION_HOME%\results\\" 
+call "%HOME%\scripts\nfpverification\visualize" %%~nxg %1
 )
 
-(
-echo ^<^!DOCTYPE html^>^ 
-echo ^<^html^>^<^body^>^<^header^>^Witness Overview^<^/header^>^
-)>> %NFPVERIFICATION_HOME%\results\result.html
+REM ()>> %NFPVERIFICATION_HOME%\results\result.html
 
 
 
