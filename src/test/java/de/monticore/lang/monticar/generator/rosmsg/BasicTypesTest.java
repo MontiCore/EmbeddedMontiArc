@@ -59,7 +59,7 @@ public class BasicTypesTest extends AbstractSymtabTest {
         ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.matrixTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        Map<String, RosMsg> portToMsg = component.getPorts().stream()
+        Map<String, RosMsg> portToMsg = component.getPortsList().stream()
                 .collect(Collectors.toMap(CommonSymbol::getName, p -> GeneratorRosMsg.getRosType("std_msgs", p.getTypeReference())));
 
         assertTrue(portToMsg.get("in1").getName().equals("std_msgs/Float64MultiArray"));
