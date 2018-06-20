@@ -1,18 +1,19 @@
 package de.monticore.lang.monticar.generator.optimization;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
-import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
-import de.monticore.lang.monticar.generator.cpp.converter.PortConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class stores information of already encountered math information
@@ -38,7 +39,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountRows(String name) {
-        return getAmount(name,1);
+        return getAmount(name, 1);
     }
 
     public int getAmountRows(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
@@ -109,7 +110,7 @@ public class MathInformationRegister {
                     result = Integer.valueOf(var.getDimensionalInformation().get(dimension));
                 } catch (Exception ex) {
                     // TODO resolve name return bluePrint.
-                    Log.info("getAmount "+ex.getMessage(),"Not handled:");
+                    Log.info("getAmount " + ex.getMessage(), "Not handled:");
                     result = 1;
                 }
             } else
@@ -119,7 +120,7 @@ public class MathInformationRegister {
     }
 
     public int getAmountColumns(String name) {
-        return getAmount(name,0);
+        return getAmount(name, 0);
     }
 
     public int getAmountColumns(String name, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol) {
@@ -184,5 +185,19 @@ public class MathInformationRegister {
             }
         }*/
         return v.getNameTargetLanguageFormat();
+    }
+
+    public Optional<Double> tryGetDoubleValue(MathExpressionSymbol symbol) {
+        Optional<Double> result = Optional.empty();
+        if (symbol.isValueExpression()) {
+            if (((MathValueExpressionSymbol) symbol).isNumberExpression()) {
+                // is number
+                MathNumberExpressionSymbol numberSymbol = (MathNumberExpressionSymbol) symbol;
+                result = Optional.of(numberSymbol.getValue().getRealNumber().doubleValue());
+            } else {
+                // TODO resolve variable
+            }
+        }
+        return result;
     }
 }
