@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.monticar.generator.BaseMathFunctionFixerHandler;
 import de.monticore.lang.monticar.generator.MathCommand;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
@@ -14,8 +15,46 @@ import de.se_rwth.commons.logging.Log;
 /**
  * @author Sascha Schneiders
  */
-public class MathFunctionFixer {
-    public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
+
+    private static MathFunctionFixer ourInstance = new MathFunctionFixer();
+
+    public static MathFunctionFixer getInstance() {
+        return ourInstance;
+    }
+
+    private MathFunctionFixer() {
+    }
+
+    @Override
+    public String getRole() {
+        return "MathFunctionFixer";
+    }
+
+    @Override
+    protected boolean canFixMathSymbol(MathExpressionSymbol mathExpressionSymbol) {
+        boolean canHandle = false;
+        if (mathExpressionSymbol == null
+                || mathExpressionSymbol.isAssignmentExpression()
+                || mathExpressionSymbol.isMatrixExpression()
+                || mathExpressionSymbol.isArithmeticExpression()
+                || mathExpressionSymbol.isForLoopExpression()
+                || mathExpressionSymbol.isCompareExpression()
+                || mathExpressionSymbol.isAssignmentDeclarationExpression()
+                || mathExpressionSymbol.isParenthesisExpression()
+                || mathExpressionSymbol.isConditionalsExpression()
+                || mathExpressionSymbol.isConditionalExpression()
+                || mathExpressionSymbol.isPreOperatorExpression()
+                || mathExpressionSymbol.isValueExpression()
+                || (mathExpressionSymbol.getExpressionID() == MathStringExpression.ID)
+                || (mathExpressionSymbol.getExpressionID() == MathChainedExpression.ID)) {
+            canHandle = true;
+        }
+        return canHandle;
+    }
+
+    @Override
+    protected void doFixMathFunction(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         boolean notHandled = true;
         if (mathExpressionSymbol == null) {
             notHandled = false;
@@ -55,7 +94,7 @@ public class MathFunctionFixer {
                 notHandled = false;
             } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isNameExpression()) {
                 notHandled = false;
-            } else if (((MathValueExpressionSymbol)mathExpressionSymbol).isBooleanExpression()){
+            } else if (((MathValueExpressionSymbol) mathExpressionSymbol).isBooleanExpression()) {
                 notHandled = false;
             }
         } else if (mathExpressionSymbol.getExpressionID() == MathChainedExpression.ID) {
@@ -68,8 +107,12 @@ public class MathFunctionFixer {
         if (notHandled) {
             Log.info(mathExpressionSymbol.getClass().getName(), "Symbol name:");
             Log.info(mathExpressionSymbol.getTextualRepresentation(), "Symbol:");
-            Log.debug("Not supported yet","Case not handled");
+            Log.debug("Not supported yet", "Case not handled");
         }
+    }
+
+    public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
+        getInstance().doFixMathFunction(mathExpressionSymbol, bluePrintCPP);
     }
 
     public static void fixMathFunctions(MathPreOperatorExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
