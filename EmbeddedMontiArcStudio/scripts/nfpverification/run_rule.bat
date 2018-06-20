@@ -17,7 +17,7 @@
 @REM  License along with this project. If not, see <http://www.gnu.org/licenses/>.
 @REM *******************************************************************************
 @REM
-
+setlocal ENABLEDELAYEDEXPANSION
 @echo off
 call "..\shared\variables.bat"
 
@@ -28,12 +28,25 @@ set jar= "%NFPVERIFICATION_HOME%\ocl_ema2java-4.0.3-SNAPSHOT-jar-with-dependenci
 
 set parent_dir= "%HOME%\model\nfpverification"
 set target= "%HOME%\model\nfpverification\target"
-REM set model= "example.negative.Sensors"
-set ocl= "example.rule1"
+set model= "example.model.Sensors"
+REM set ocl= "example.rule1"
 
+"%JAVA_HOME%\bin\java.exe" -jar %JAR% %parent_dir% %model% %1 %target%
 
+if exist "%NFPVERIFICATION_HOME%\results\" rmdir "%NFPVERIFICATION_HOME%\results\" /s /q
+mkdir %NFPVERIFICATION_HOME%\results\
 
-"%JAVA_HOME%\bin\java.exe" -jar %JAR% %parent_dir% %1 %ocl% %target%
+cd %HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors
+
+for /r . %%g in (*.ema) do (
+set file=%%~nxg 
+set file=!file:~0,-4!
+"%JAVA_HOME%\bin\java.exe" -jar "%SVG_HOME%\embeddedmontiarc-svggenerator.jar" ^
+   --input "!file!" ^
+   --modelPath "%HOME%\model\nfpverification\target\witnesses_%1_example.negative.Sensors" ^
+   --recursiveDrawing "true" ^
+   --outputPath "%NFPVERIFICATION_HOME%\results\" 
+)
 
 
 

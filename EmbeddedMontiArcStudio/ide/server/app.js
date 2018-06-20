@@ -8,6 +8,7 @@ const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} 
 const {AutoPilotReportingWS, ClusteringReportingWS, PacManReportingWS} = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
 const {PacmanGeneration}                                = require("./generations");
+const {NFPVerificatorTest} = require("./nfpverification");
 const Log                                               = require("log4js");
 const {AutoPilotTest, ClusteringTest}                   = require("./tests");
 const ModelUpdater                                      = require("./models-updater");
@@ -31,6 +32,7 @@ App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
 App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
+App.use("/nfp", Express.static(PATHS.NFPVERIFICATION_RESULT))
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
 App.use("/services", Express.json());
@@ -409,5 +411,42 @@ App.post("/services/pacman/visualize", function(request, response) {
 
 	PacManVisualization.execute(onExecuted);
 });
+
+App.post("/services/nfpverification/test", function(request, response) {
+	const body = request.body;
+	
+	function doNothing(){}
+	
+	function onUpdated() {
+		var targetfolder = "witnesses_" + body.name.replace(/\//g, ".").substring(1,body.name.length-4)_example.model.Sensors; 
+		var files = FileSystem.readdirSync(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder))
+		
+		if (files.length > 0) {
+			for (i = 0; i < files.length; i++) {
+				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
+			}		
+			var txtFile = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt");
+			var file = FileSystem.readFileSync(txtFile, "UTF-8");
+			var fileParts = file.split("\n");
+			var str = "<!DOCTYPE html> \n <html><body><header>Witness Overview</header> \n";
+			for (i = 0; i < fileParts.length; i++) {
+				var lineParts = fileParts.split(" ");
+				str += "<a href="+URLS.SHARED + "/nfp/" + lineParts[1] + ".html>" + fileParts[i] + "</a> <br> \n";
+			}
+			str += "</body></html>"
+
+			FileSystem.writeFile(Path.resolve(PATHS.NFPVERIFICATION_RESULT,"result.html"), str, doNothing);
+		}  
+		else {
+			alert('No matching files found');
+		} 
+
+		Chrome.open(URLS.SHARED + "/nfp/result.html");
+		response.end();
+	}
+
+	NFPVerificatorTest.execute(body.name.replace(/\//g, ".").substring(1,body.name.length-4), onUpdated);	
+});
+
 
 module.exports = App;

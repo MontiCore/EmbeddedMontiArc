@@ -1,4 +1,4 @@
-package example.negative.units;
+package example.model.units;
 
 component Controller {
     port

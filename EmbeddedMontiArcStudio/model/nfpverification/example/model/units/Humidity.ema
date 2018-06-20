@@ -1,4 +1,4 @@
-package example.positive.units;
+package example.model.units;
 
 component Humidity {
     port

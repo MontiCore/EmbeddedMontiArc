@@ -29,12 +29,13 @@ PATHS.TEST_RESULTS   = Path.resolve(PATHS.HOME, "testResults");
 PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
 PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
 PATHS.PACMAN_SIMULATE= Path.resolve(PATHS.HOME, "pacman");
+PATHS.NFPVERIFICATION = Path.resolve(PATHS.HOME, "nfpverification");
 
 PATHS.VIEWVERIFICATION = Path.resolve(PATHS.HOME, "viewverification");
 PATHS.VIEWVERIFICATION_RESULT = Path.resolve(PATHS.VIEWVERIFICATION, "result");
 PATHS.VIEWVERIFICATION_OUTPUT = Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG");
 
-
+PATHS.NFPVERIFICATION_RESULT = Path.resolve(PATHS.NFPVERIFICATION, "result");
 /*
  * EXECUTABLES
  */
@@ -64,6 +65,7 @@ BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
+BATCHES.NFPVERIFICATION = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
 BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
@@ -101,6 +103,7 @@ BATCHES.PACMAN.REPORTING_STREAM     = Path.resolve(PATHS.SCRIPTS, "pacman", "rep
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
 BATCHES.PACMAN.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
 
+BATCHES.NFPVERIFICATION.TEST		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule.bat");
 
 /*
  * OPTIONS

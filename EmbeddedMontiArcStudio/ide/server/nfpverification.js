@@ -11,36 +11,20 @@ class AbstractNFPVerification {
         this.batch = null;
     }
 
-    execute1(streamName, callback) {
+    execute(streamName, callback) {
         const onExit = () => {
             this.logger.info("...NFPVerification terminated.");
             callback();
         };
 
         this.kill();
-        this.logger.info("Running NFPVerification with rule 1 for %s...", streamName);
-        this.process = Process.spawn(BATCHES.NFPVERIFICATION.TEST1, [streamName], {
+        this.logger.info("Running NFPVerification for Sensors with %S...", streamName);
+        this.process = Process.spawn(BATCHES.NFPVERIFICATION.TEST, [streamName], {
             cwd: Path.resolve(PATHS.SCRIPTS, this.project)
         });
         this.process.on("exit", onExit);
         return this.process;
     }
-
-	execute2(streamName, callback) {
-        const onExit = () => {
-            this.logger.info("...NFPVerification terminated.");
-            callback();
-        };
-
-        this.kill();
-        this.logger.info("Running NFPVerification with rule 2 for %s...", streamName);
-        this.process = Process.spawn(BATCHES.NFPVERIFICATION.TEST2, [streamName], {
-            cwd: Path.resolve(PATHS.SCRIPTS, this.project)
-        });
-        this.process.on("exit", onExit);
-        return this.process;
-    }
-	
     kill() {
         if(this.process) this.process.kill();
     }

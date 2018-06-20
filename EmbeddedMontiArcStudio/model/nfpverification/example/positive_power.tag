@@ -2,7 +2,7 @@ package example;
 
 conforms to nfp.TagPowerTagSchema;
 
-tags TagPower for positive {
+tags TagPower for model {
 
     tag sensors with PowerCmpInst= 300 mW;
 	tag sensors.s_control1 with PowerCmpInst = 100 mW;

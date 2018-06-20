@@ -1,6 +1,6 @@
-package example.negative;
+package example.model;
 
-import example.negative.units.*;
+import example.model.units.*;
 
 component Sensors {
     port

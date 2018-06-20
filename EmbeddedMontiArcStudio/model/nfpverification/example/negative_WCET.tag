@@ -2,7 +2,7 @@ package example;
 
 conforms to nfp.TagLatencyTagSchema;
 
-tags TagLatency for negative {
+tags TagLatency for model {
 
     tag sensors with LatencyCmpInst = 1 s;
 	tag sensors.s_control1 with LatencyCmpInst = 50 ms;
