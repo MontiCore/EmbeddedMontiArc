@@ -9,7 +9,7 @@ public:
 double param1;
 void init(double param1)
 {
-this->param1 = param1;
+this->param1=param1;
 }
 void execute()
 {
