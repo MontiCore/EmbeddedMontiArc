@@ -42,6 +42,10 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
      */
     private MathValueSymbol optimizationVariable;
     /**
+     * Variable which will store the result of the optimization
+     */
+    private MathValueSymbol objectiveValue;
+    /**
      * The expression which should be minimized / maximized
      */
     private MathExpressionSymbol objectiveExpression;
@@ -95,6 +99,18 @@ public class MathOptimizationStatementSymbol extends MathExpressionSymbol {
 
     public List<MathExpressionSymbol> getSubjectToExpressions() {
         return subjectToExpressions;
+    }
+
+    public MathValueSymbol getObjectiveValue() {
+        return objectiveValue;
+    }
+
+    public void setObjectiveValue(MathValueSymbol objectiveValue) {
+        this.objectiveValue = objectiveValue;
+    }
+
+    public boolean hasReturnValue() {
+        return objectiveValue != null;
     }
 
     // endregion

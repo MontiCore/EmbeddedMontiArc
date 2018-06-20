@@ -61,6 +61,16 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
 
     }
 
+    public void endVisit(final ASTOptimizationObjectiveValue node) {
+        MathValueSymbol symbol = new MathValueSymbol(node.getName());
+        if (node.getTypeOpt().isPresent()) {
+            MathValueType type = new MathValueType();
+            type.setType(node.getType());
+            symbol.setType(type);
+        }
+        addToScopeAndLinkWithNode(symbol, node);
+    }
+
     public void endVisit(final ASTOptimizationVariableDeclaration astExpression) {
         MathValueSymbol symbol = new MathValueSymbol(astExpression.getName());
         if (astExpression.getTypeOpt().isPresent())
@@ -134,6 +144,9 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
     public void endVisit(final ASTOptimizationStatement astMathOptimizationStatement) {
         MathOptimizationStatementSymbol symbol = new MathOptimizationStatementSymbol();
         symbol.setOptimizationType(astMathOptimizationStatement.getOptimizationType().toString());
+        if (astMathOptimizationStatement.getObjectiveValueOpt().isPresent()) {
+            symbol.setObjectiveValue((MathValueSymbol) astMathOptimizationStatement.getObjectiveValue().getSymbolOpt().get());
+        }
         if (astMathOptimizationStatement.getOptimizationVariable().getSymbolOpt().isPresent()) {
             symbol.setOptimizationVariable((MathValueSymbol) astMathOptimizationStatement.getOptimizationVariable().getSymbolOpt().get());
         }

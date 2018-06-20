@@ -94,4 +94,11 @@ public class MathOptimizationStatementSymbolTest {
         assertTrue(forLoopConditionTestSymbol.getSubjectToExpressions().size() >= 1);
     }
 
+    @Test
+    public void getObjectiveValue() {
+        assertEquals(false, minimizationTestSymbol.hasReturnValue());
+        assertEquals("y", maximizationTestSymbol.getObjectiveValue().getName());
+        assertEquals("Q", maximizationTestSymbol.getObjectiveValue().getType().getType().getName());
+    }
+
 }
