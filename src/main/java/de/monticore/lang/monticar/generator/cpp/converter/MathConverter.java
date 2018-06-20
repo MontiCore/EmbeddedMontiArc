@@ -146,35 +146,35 @@ public class MathConverter {
     }
 
     public static String getInitLine(Variable v,BluePrintCPP bluePrint) {
-        String tmpInst = null;
+        String initLine = null;
         if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
-            tmpInst = MathConverter.getMatrixInitLine(v, bluePrint);
+            initLine = MathConverter.getMatrixInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getRowVectorTypeName())) {
-            tmpInst = MathConverter.getRowVectorInitLine(v, bluePrint);
+            initLine = MathConverter.getRowVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getColumnVectorTypeName())) {
-            tmpInst = MathConverter.getColumnVectorInitLine(v, bluePrint);
+            initLine = MathConverter.getColumnVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName())) {
-            tmpInst = MathConverter.getCubeTypeInitLine(v, bluePrint);
+            initLine = MathConverter.getCubeTypeInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberMatrixTypeName())) {
-            tmpInst = MathConverter.getWholeNumberMatrixInitLine(v, bluePrint);
+            initLine = MathConverter.getWholeNumberMatrixInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberRowVectorTypeName())) {
-            tmpInst = MathConverter.getWholeNumberRowVectorInitLine(v, bluePrint);
+            initLine = MathConverter.getWholeNumberRowVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberColumnVectorTypeName())) {
-            tmpInst = MathConverter.getWholeNumberColumnVectorInitLine(v, bluePrint);
+            initLine = MathConverter.getWholeNumberColumnVectorInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberCubeTypeName())) {
-            tmpInst = MathConverter.getWholeNumberCubeInitLine(v, bluePrint);
+            initLine = MathConverter.getWholeNumberCubeInitLine(v, bluePrint);
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals("double")) {
-            tmpInst = "";
+            initLine = "";
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals("bool")) {
-            tmpInst = "";
+            initLine = "";
         } else if (v.getVariableType().getTypeNameTargetLanguage().equals("int")) {
-            tmpInst = "";
+            initLine = "";
         }
 
-        if(tmpInst == null) {
+        if(initLine == null) {
             Log.error("0x3b097: Type not supported");
         }
 
-        return tmpInst;
+        return initLine;
     }
 }
