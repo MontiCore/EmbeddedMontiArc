@@ -33,20 +33,29 @@ import java.nio.file.Paths;
 
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
-        ModelingLanguageFamily fam = new ModelingLanguageFamily();
+        ModelingLanguageFamily fam = getModelingLanguageFamily();
+        final ModelPath mp = getModelPath(modelPath);
 
-        fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
-
-        fam.addModelingLanguage(new StreamLanguage());
-        fam.addModelingLanguage(new StructLanguage());
-        final ModelPath mp = new ModelPath();
-        for (String m : modelPath) {
-            mp.addEntry(Paths.get(m));
-        }
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
         LogConfig.init();
         return scope;
+    }
+
+    protected static ModelingLanguageFamily getModelingLanguageFamily() {
+        ModelingLanguageFamily fam = new ModelingLanguageFamily();
+        fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+        fam.addModelingLanguage(new StreamLanguage());
+        fam.addModelingLanguage(new StructLanguage());
+        return fam;
+    }
+
+    protected static ModelPath getModelPath(String... modelPath) {
+        ModelPath mp = new ModelPath();
+        for (String m : modelPath) {
+            mp.addEntry(Paths.get(m));
+        }
+        return mp;
     }
 }
