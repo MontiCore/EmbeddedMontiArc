@@ -1,22 +1,19 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
-import de.monticore.lang.math._symboltable.*;
-import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
-import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
-import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
-import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -173,65 +170,11 @@ public class ComponentConverter {
 
     public static void generateInitNonStaticVariable(Method method, Variable v, BluePrintCPP bluePrint) {
         Log.info("v: " + v.getName(), "generateInitNonStaticVariable");
-        if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getMatrixInitLine(v, bluePrint)));
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getRowVectorTypeName())) {
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getRowVectorInitLine(v, bluePrint)));
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getColumnVectorTypeName())) {
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getColumnVectorInitLine(v, bluePrint)));
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals("double")) {
-            //TODO: check backend for typeNameTargetLanguage? and handle additional types here
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + v.getNameTargetLanguageFormat() + " = " + v.getNameTargetLanguageFormat() + ";\n"));
-                method.addParameter(v);
-            }
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getCubeTypeName())) {
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getCubeTypeInitLine(v, bluePrint)));
-
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberMatrixTypeName())){
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else {
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberMatrixInitLine(v, bluePrint)));
-            }
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberRowVectorTypeName())){
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else {
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberRowVectorInitLine(v, bluePrint)));
-            }
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberColumnVectorTypeName())){
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else {
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberColumnVectorInitLine(v, bluePrint)));
-            }
-        } else if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getWholeNumberCubeTypeName())){
-            if (v.isParameterVariable()) {
-                method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
-                method.addParameter(v);
-            } else {
-                method.addInstruction(new TargetCodeInstruction(MathConverter.getWholeNumberCubeInitLine(v, bluePrint)));
-            }
+        if(v.isParameterVariable()){
+            method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
+            method.addParameter(v);
+        }else {
+            method.addInstruction(new TargetCodeInstruction(MathConverter.getInitLine(v,bluePrint)));
         }
     }
 

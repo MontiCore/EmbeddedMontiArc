@@ -97,35 +97,19 @@ public class ExecuteMethodGeneratorHandler {
 
     public static String addInitializationString(MathValueSymbol mathValueSymbol, String typeString, List<String> includeStrings) {
         ASTElementType type = mathValueSymbol.getType().getType();
-        String matString;
-        String colvecString;
-        String cubeString;
-
-        if(type.isRational()){
-            matString = MathConverter.curBackend.getMatrixTypeName();
-            colvecString = MathConverter.curBackend.getColumnVectorTypeName();
-            cubeString = MathConverter.curBackend.getCubeTypeName();
-        }else if(type.isWholeNumber()){
-            matString = MathConverter.curBackend.getWholeNumberMatrixTypeName();
-            colvecString = MathConverter.curBackend.getWholeNumberColumnVectorTypeName();
-            cubeString = MathConverter.curBackend.getWholeNumberCubeTypeName();
-        }else{
-            Log.error("Initialization not handled!");
-            return "";
-        }
 
         String result = "";
         List<MathExpressionSymbol> dims = mathValueSymbol.getType().getDimensions();
         if (dims.size() == 1) {
-            if (typeString.equals(colvecString)) {
+            if (typeString.equals(TypeConverter.getColvecAccessString(type))) {
                 result = "=" + TypeConverter.getDimensionString(TypeConverter.getColvecAccessString(type),dims,includeStrings);
             }
         } else if (dims.size() == 2) {
-            if (typeString.equals(matString)) {
+            if (typeString.equals(TypeConverter.getMatAccessString(type))) {
                 result = "=" + TypeConverter.getDimensionString(TypeConverter.getMatAccessString(type),dims,includeStrings);
             }
         } else if (dims.size() == 3) {
-            if (typeString.equals(cubeString)) {
+            if (typeString.equals(TypeConverter.getCubeAccessString(type))) {
                 result = "=" + TypeConverter.getDimensionString(TypeConverter.getCubeAccessString(type),dims,includeStrings);
             }
         }
