@@ -8,29 +8,23 @@
 
 
 * EmbeddedMontiArcStudio/
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/armadillo-8.200.2.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/apache-tomcat-9.0.5.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/chrome.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/externallibs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/jdk.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/lib.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/mingw64.zip
-//** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/nodejs.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/precompiled.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/reporting.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
-** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/visualisation.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.20.visualisation&files=visualisation.zip
+
 
 //armadillo-8.500.1-linux.zip
-** https://rwth-aachen.sciebo.de/s/srGonQ9UkFZVVND/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-armadillo-linux&files=armadillo-8.500.1-linux.zip
 //chrome-linux.zip
-** https://rwth-aachen.sciebo.de/s/Xn221UBWMkNxMvQ/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-chrome-linux&files=chrome-linux.zip
 //jdk-linux.zip
-** https://rwth-aachen.sciebo.de/s/S33ljBAUAjvp9Th/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-jdk-linux&files=jdk-linux.zip
 //nodejs-linux.zip
-** https://rwth-aachen.sciebo.de/s/pEmwwJfHdgmRcSS/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-nodejs-linux&files=nodejs-linux.zip
 //emadl2cpp.zip
 ** https://rwth-aachen.sciebo.de/s/IchSL3JogHOVErf/download
 //cifar10 images
@@ -38,7 +32,7 @@
 // trained classifier model
 ** https://rwth-aachen.sciebo.de/s/DDreNWVUQrFbUMy/download
 //RosSimulationFramework.zip
-** https://rwth-aachen.sciebo.de/s/J0UFMxtOMqzH0rJ/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-RosSimulationFramework&files=RosSimulationFramework.zip
 
 * EmbeddedMontiArcStudio/distributed-simulator/
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
