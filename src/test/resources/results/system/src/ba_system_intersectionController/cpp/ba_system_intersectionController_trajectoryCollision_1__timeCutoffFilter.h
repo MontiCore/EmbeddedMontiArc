@@ -20,7 +20,8 @@ bool collisionOut;
 bool aIsFasterOut;
 void init(double timeCutoff)
 {
-this->timeCutoff = timeCutoff;
+this->timeCutoff=timeCutoff;
+
 colPosIn=mat(2,1);
 trajectoryInA=mat(3,m);
 trajectoryInB=mat(3,m);

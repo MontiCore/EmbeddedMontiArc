@@ -18,7 +18,8 @@ double lastVel;
 double holdFor;
 void init(double holdTimeIn)
 {
-this->holdTimeIn = holdTimeIn;
+this->holdTimeIn=holdTimeIn;
+
 lastVel=0;
 holdFor=0;
 }
