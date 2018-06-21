@@ -25,7 +25,7 @@
         <Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <Math.version>0.0.14-SNAPSHOT</Math.version>
         <Embedded-MontiArc-Math.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Math.version>
-        <Embedded-montiarc-math-generator.version>0.0.15-SNAPSHOT</Embedded-montiarc-math-generator.version>
+        <Embedded-montiarc-math-generator.version>0.0.16-SNAPSHOT</Embedded-montiarc-math-generator.version>
         <Embedded-montiarc-math-roscpp-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <Embedded-montiarc-math-rosmsg-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
         <tagging.version>0.0.3-SNAPSHOT</tagging.version>
