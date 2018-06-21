@@ -12,6 +12,8 @@ import de.monticore.lang.monticar.generator.optimization.MathInformationRegister
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.Optional;
+
 /**
  * @author Sascha Schneiders
  */
@@ -145,7 +147,7 @@ public class MathConverter {
         return String.format("%s = %s(%s, %s, %s);\n", MathInformationRegister.getVariableInitName(v, bluePrint), curBackend.getWholeNumberCubeTypeName(), v.getDimensionalInformation().get(0), v.getDimensionalInformation().get(1), v.getDimensionalInformation().get(2));
     }
 
-    public static String getInitLine(Variable v,BluePrintCPP bluePrint) {
+    public static Optional<String> getInitLine(Variable v, BluePrintCPP bluePrint) {
         String initLine = null;
         if (v.getVariableType().getTypeNameTargetLanguage().equals(MathConverter.curBackend.getMatrixTypeName())) {
             initLine = MathConverter.getMatrixInitLine(v, bluePrint);
@@ -171,10 +173,6 @@ public class MathConverter {
             initLine = "";
         }
 
-        if(initLine == null) {
-            Log.error("0x3b097: Type not supported");
-        }
-
-        return initLine;
+        return Optional.ofNullable(initLine);
     }
 }

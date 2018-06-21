@@ -15,6 +15,7 @@ import de.monticore.lang.monticar.generator.optimization.MathInformationRegister
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -174,7 +175,8 @@ public class ComponentConverter {
             method.addInstruction(new TargetCodeInstruction("this->" + MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + MathInformationRegister.getVariableInitName(v, bluePrint) + ";\n"));
             method.addParameter(v);
         }else {
-            method.addInstruction(new TargetCodeInstruction(MathConverter.getInitLine(v,bluePrint)));
+            Optional<String> initLine = MathConverter.getInitLine(v, bluePrint);
+            initLine.ifPresent(s -> method.addInstruction(new TargetCodeInstruction(s)));
         }
     }
 
