@@ -38,7 +38,7 @@ public class LanguageUnitRosCppAdapter {
         String name = NameHelper.getAdapterName(componentSymbol);
         BluePrintCPP currentBluePrint = new BluePrintCPP(name);
 
-        List<PortSymbol> rosPorts = componentSymbol.getPorts().stream()
+        List<PortSymbol> rosPorts = componentSymbol.getPortsList().stream()
                 .filter(PortSymbol::isRosPort)
                 .collect(Collectors.toList());
 

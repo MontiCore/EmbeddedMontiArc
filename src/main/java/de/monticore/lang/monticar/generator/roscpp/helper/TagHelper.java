@@ -21,7 +21,7 @@ public class TagHelper {
 
     public static Map<PortSymbol, RosConnectionSymbol> resolveTags(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         Map<PortSymbol, RosConnectionSymbol> rosConnectionSymbols = new HashMap<>();
-            componentInstanceSymbol.getPorts().forEach(p -> {
+            componentInstanceSymbol.getPortsList().forEach(p -> {
                 Collection<TagSymbol> tmpTags = taggingResolver.getTags(p, RosConnectionSymbol.KIND);
                 if (tmpTags.size() == 1) {
                     rosConnectionSymbols.put(p, (RosConnectionSymbol) tmpTags.iterator().next());

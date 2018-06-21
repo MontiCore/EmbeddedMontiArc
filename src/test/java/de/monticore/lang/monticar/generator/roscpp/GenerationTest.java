@@ -29,7 +29,7 @@ public class GenerationTest extends AbstractSymtabTest {
         ExpandedComponentInstanceSymbol genericComp = component.getSubComponent("basicGeneric").orElse(null);
         assertNotNull(genericComp);
 
-        genericComp.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol("/name1", "std_msgs/Float64MultiArray")));
+        genericComp.getPortsList().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol("/name1", "std_msgs/Float64MultiArray")));
 
         List<File> files = generatorRosCpp.generateFiles(genericComp, taggingResolver);
 
