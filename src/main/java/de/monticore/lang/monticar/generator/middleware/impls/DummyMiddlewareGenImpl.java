@@ -46,7 +46,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
 
     @Override
     public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.getPorts().stream()
+        return componentInstanceSymbol.getPortsList().stream()
                 .map(PortSymbol::getMiddlewareSymbol)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
