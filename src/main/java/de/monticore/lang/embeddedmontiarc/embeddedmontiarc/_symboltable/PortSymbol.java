@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * Symboltable entry for ports.
  */
-public class PortSymbol extends CommonSymbol implements ElementInstance {
+public class PortSymbol extends CommonSymbol implements EMAElementInstanceSymbol {
   
   public static final EmbeddedPortKind KIND = EmbeddedPortKind.INSTANCE;
   

@@ -88,7 +88,7 @@ import java.util.stream.Collectors;
  *         standard symbol table mechanism
  */
 public class ExpandedComponentInstanceSymbol
-        extends CommonScopeSpanningSymbol implements ElementInstance {
+        extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
 
     public static final EMAExpandedComponentInstanceKind KIND = new EMAExpandedComponentInstanceKind();
 

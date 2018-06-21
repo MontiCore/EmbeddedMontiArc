@@ -36,7 +36,7 @@ import de.monticore.symboltable.types.references.TypeReference;
  *
  * @author Robert Heim
  */
-public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implements ElementInstance {
+public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
 
     public static final EMAComponentInstanceKind KIND = EMAComponentInstanceKind.INSTANCE;
 
