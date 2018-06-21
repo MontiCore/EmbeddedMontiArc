@@ -20,12 +20,5 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import de.monticore.symboltable.Scope;
-
-/**
- * Created by kt on 27.02.2017.
- */
-public interface ElementInstance extends EMAElementSymbol{
-    public String getName();
-    public Scope getEnclosingScope() ;
+public interface EMAElementSymbol {
 }
