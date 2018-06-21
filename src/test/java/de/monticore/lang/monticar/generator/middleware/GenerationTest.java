@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -245,7 +246,7 @@ public class GenerationTest extends AbstractSymtabTest {
                 .forEach(c -> System.out.println("Source = Target:" + c.getSource() + " -> " + c.getTargetPort()));
 
 
-        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
+        componentInstanceSymbol.getPortsList().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
         componentInstanceSymbol.getSubComponents().stream()
                 .flatMap(subc -> subc.getConnectors().stream())
                 .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
