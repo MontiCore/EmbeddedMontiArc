@@ -20,9 +20,8 @@ Look at GenerationTest::testDistributedTargetGenerator. The component is defined
 1. install needed software:
     * ROS Kinetic(http://wiki.ros.org/kinetic/Installation)
     * CMake(https://cmake.org/)
-    * Armadillo( www.arma.sourceforge.net)
-        * Ubuntu package: libarmadillo-dev
-        * creating a copy of the library named armadillo.h might be necessary. Ubuntu location: /usr/include/armadillo 
+    * Armadillo 8 or higher( www.arma.sourceforge.net)
+        * creating a copy of the library named armadillo.h might be necessary.
 1. source your ros environment(http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment , 2.)
 1. a) run src/test/resources/TargetCompilation.sh from **this project's** root
 1. or b) compile a single project by
