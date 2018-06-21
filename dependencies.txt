@@ -26,11 +26,11 @@
 //nodejs-linux.zip
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-nodejs-linux&files=nodejs-linux.zip
 //emadl2cpp.zip
-** https://rwth-aachen.sciebo.de/s/IchSL3JogHOVErf/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.21-emadl2cpp&files=emadl2cpp.zip
 //cifar10 images
-** https://rwth-aachen.sciebo.de/s/cWGjj6SMfRN56CX/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.21-cifar10&files=cifar10.zip
 // trained classifier model
-** https://rwth-aachen.sciebo.de/s/DDreNWVUQrFbUMy/download
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.21-trained-classifier&files=trained-classifier.zip
 //RosSimulationFramework.zip
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-RosSimulationFramework&files=RosSimulationFramework.zip
 
