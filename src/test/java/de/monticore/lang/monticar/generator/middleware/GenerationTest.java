@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.RosConnectionSymbol;
-import de.monticore.lang.embeddedmontiarc.tagging.RosToEmamTagSchema;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.TestConverter;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
@@ -160,9 +160,9 @@ public class GenerationTest extends AbstractSymtabTest {
                 .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
                 .forEach(c -> System.out.println("Source = Target in comp "+c.getComponentInstance().get().getName()+":"+c.getSource() + " -> " + c.getTargetPort()));
 
-        componentInstanceSymbol.getPorts().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
+        componentInstanceSymbol.getPortsList().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
         componentInstanceSymbol.getSubComponents().stream()
-                .flatMap(subc -> subc.getPorts().stream())
+                .flatMap(subc -> subc.getPortsList().stream())
                 .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
 
 

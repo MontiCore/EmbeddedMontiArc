@@ -80,10 +80,10 @@ public class ClusterHelper {
 //    Sub Ros -> Sub Ros: do nothing, wrapper and therefore the mw does not affect this level
 //    Sub Ros -> Sub normal: handled(let comp connect)
     private static ExpandedComponentInstanceSymbol createECISFromCluster(ExpandedComponentInstanceSymbol inst, Set<ExpandedComponentInstanceSymbol> cluster, String clusterName) {
-        Set<PortSymbol> curClusterPorts = cluster.stream().flatMap(ecis -> ecis.getPorts().stream()).collect(Collectors.toSet());
+        Set<PortSymbol> curClusterPorts = cluster.stream().flatMap(ecis -> ecis.getPortsList().stream()).collect(Collectors.toSet());
         Set<PortSymbol> combinedPorts = new HashSet<>();
         combinedPorts.addAll(curClusterPorts);
-        combinedPorts.addAll(inst.getPorts());
+        combinedPorts.addAll(inst.getPortsList());
 
         Set<ConnectorSymbol> tmpConnectiors = inst.getConnectors().stream()
                 //remove all connections that use subcomponents not in cluster
@@ -97,7 +97,7 @@ public class ClusterHelper {
                     return true;
                 })
                 //remove all connections super <-> cluster
-                .filter(c -> !(inst.getPorts().contains(c.getSourcePort()) || (inst.getPorts().contains(c.getTargetPort()))))
+                .filter(c -> !(inst.getPortsList().contains(c.getSourcePort()) || (inst.getPortsList().contains(c.getTargetPort()))))
                 .collect(Collectors.toSet());
 
         Collection<PortSymbol> mwPorts = curClusterPorts.stream()
