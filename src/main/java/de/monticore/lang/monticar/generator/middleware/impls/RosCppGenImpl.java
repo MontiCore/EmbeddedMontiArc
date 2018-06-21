@@ -36,7 +36,7 @@ public class RosCppGenImpl implements GeneratorImpl {
 
     @Override
     public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.getPorts().stream()
+        return componentInstanceSymbol.getPortsList().stream()
                 .filter(PortSymbol::isRosPort)
                 .count() > 0;
     }

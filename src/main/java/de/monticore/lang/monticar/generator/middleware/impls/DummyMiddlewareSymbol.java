@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.tagging.MiddlewareSymbol;
+import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.tagging._symboltable.TagKind;
 
 public class DummyMiddlewareSymbol extends MiddlewareSymbol {
