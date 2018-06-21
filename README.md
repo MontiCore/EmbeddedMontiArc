@@ -1,50 +1,5 @@
 # EMAM2Middleware
 
-## Problems
-This generator needs versions of other EMAM libraries that are not yet distributed via Maven.
-Workaround: Download these branches and build each via 'mvn clean install -U -s settings.xml'
-* EmbeddedMontiArc/RosPort: https://github.com/EmbeddedMontiArc/EmbeddedMontiArc/tree/RosPort
-* EmbeddedMontiArcMath/RosPort: https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath/tree/RosPort
-* EMAM2RosMsg: https://github.com/EmbeddedMontiArc/EMAM2RosMsg
-* EMAM2RosCpp: https://github.com/EmbeddedMontiArc/EMAM2RosCpp
-* EMAM2Cpp/hellwig: https://github.com/EmbeddedMontiArc/EMAM2Cpp/tree/hellwig
-or use this script:
-```bash
-#!/bin/bash
-#fail if any of the commands fail
-set -e
-
-git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArc
-git clone https://github.com/EmbeddedMontiArc/EmbeddedMontiArcMath
-git clone https://github.com/EmbeddedMontiArc/EMAM2RosMsg
-git clone https://github.com/EmbeddedMontiArc/EMAM2RosCpp
-git clone https://github.com/EmbeddedMontiArc/EMAM2Cpp
-
-
-cd EmbeddedMontiArc
-git checkout RosPort
-mvn clean install -U -s settings.xml
-cd ..
-
-cd EmbeddedMontiArcMath
-git checkout RosPort
-mvn clean install -U -s settings.xml
-cd ..
-
-cd EMAM2RosMsg
-mvn clean install -U -s settings.xml
-cd ..
-
-cd EMAM2RosCpp
-mvn clean install -U -s settings.xml
-cd ..
-
-cd EMAM2Cpp
-git checkout hellwig
-mvn clean install -U -s settings.xml
-cd ..
-```
-
 ## Usage
 ### Defining the connection between a component and the middleware
 The connection between middleware and the component is defined as tags on Ports in .tag files.
