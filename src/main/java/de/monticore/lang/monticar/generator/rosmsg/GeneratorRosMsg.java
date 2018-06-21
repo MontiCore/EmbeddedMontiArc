@@ -151,13 +151,13 @@ public class GeneratorRosMsg {
             ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) type).getAstType();
             String tmpMsgName = "";
             String tmpTypeName = "";
-            if (matrixType.getElementType().isIsRational()) {
+            if (matrixType.getElementType().isRational()) {
                 tmpMsgName = "std_msgs/Float64MultiArray";
                 tmpTypeName = "float64";
-            } else if (matrixType.getElementType().isIsWholeNumberNumber()) {
+            } else if (matrixType.getElementType().isWholeNumber()) {
                 tmpMsgName = "std_msgs/Int32MultiArray";
                 tmpTypeName = "int32";
-            } else if (matrixType.getElementType().isIsBoolean()) {
+            } else if (matrixType.getElementType().isBoolean()) {
                 tmpMsgName = "std_msgs/ByteMultiArray";
                 tmpTypeName = "byte";
             } else {
