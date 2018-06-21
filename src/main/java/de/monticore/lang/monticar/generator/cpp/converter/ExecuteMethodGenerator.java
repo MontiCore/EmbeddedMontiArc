@@ -1,23 +1,60 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
-import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
-import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Generates a execute method for math symbols.
+ * Can be extended by setSuccessors() to handle unknown symbols. Implements chain-of-responsibility pattern.
+ *
  * @author Sascha Schneiders
+ * @author Christoph Richter implemented chain-of-responsibility pattern
  */
-public class ExecuteMethodGenerator {
-    public static String generateExecuteCode(MathExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
+public class ExecuteMethodGenerator extends BaseExecuteMethodGeneratorHandler {
+
+    private static ExecuteMethodGenerator ourInstance = new ExecuteMethodGenerator();
+
+    public static ExecuteMethodGenerator getInstance() {
+        return ourInstance;
+    }
+
+    private ExecuteMethodGenerator() {
+    }
+
+    @Override
+    public String getRole() {
+        return "ExecuteMethodGenerator";
+    }
+
+    @Override
+    protected boolean canHandleSymbol(MathExpressionSymbol mathExpressionSymbol) {
+        boolean canHandle = false;
+        if (mathExpressionSymbol == null
+                || mathExpressionSymbol.isAssignmentExpression()
+                || mathExpressionSymbol.isCompareExpression()
+                || mathExpressionSymbol.isForLoopExpression()
+                || mathExpressionSymbol.isMatrixExpression()
+                || mathExpressionSymbol.isConditionalsExpression()
+                || mathExpressionSymbol.isConditionalExpression()
+                || mathExpressionSymbol.isArithmeticExpression()
+                || mathExpressionSymbol.isValueExpression()
+                || mathExpressionSymbol.isMathValueTypeExpression()
+                || mathExpressionSymbol.isPreOperatorExpression()
+                || (mathExpressionSymbol.getExpressionID() == MathStringExpression.ID)
+                || (mathExpressionSymbol.getExpressionID() == MathChainedExpression.ID)
+                || mathExpressionSymbol.isParenthesisExpression()) {
+            canHandle = true;
+        }
+        return canHandle;
+    }
+
+    protected String doGenerateExecuteCode(MathExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
         String result = null;
         //Not needed for execute method
         /*if (mathExpressionSymbol.isAssignmentDeclarationExpression()) {
@@ -61,6 +98,10 @@ public class ExecuteMethodGenerator {
 
         }
         return result;
+    }
+
+    public static String generateExecuteCode(MathExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
+        return getInstance().handleGenerateExecuteCode(mathExpressionSymbol, includeStrings);
     }
 
     /**

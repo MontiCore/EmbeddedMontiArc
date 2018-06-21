@@ -1,15 +1,17 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
-import de.monticore.lang.monticar.generator.Variable;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Sascha Schneiders
+ * @author Christoph Richter
  */
 public class ForLoopHeadConverter {
     public static String getForLoopHeadCode(MathForLoopHeadSymbol mathForLoopHeadSymbol, List<String> includeStrings) {
@@ -36,5 +38,40 @@ public class ForLoopHeadConverter {
             }
         }
         return result;
+    }
+
+    private static MathMatrixVectorExpressionSymbol getLoopMatrixVectorExpressionSymbol(MathForLoopHeadSymbol mathForLoopHeadSymbol) {
+        MathMatrixVectorExpressionSymbol result = null;
+        if (mathForLoopHeadSymbol.getMathExpression().isMatrixExpression()) {
+            MathMatrixExpressionSymbol mathMatrixExpressionSymbol = (MathMatrixExpressionSymbol) mathForLoopHeadSymbol.getMathExpression();
+            if (mathMatrixExpressionSymbol.isMatrixVectorExpression()) {
+                result = (MathMatrixVectorExpressionSymbol) mathMatrixExpressionSymbol;
+            }
+        }
+        return result;
+    }
+
+    public static Optional<MathExpressionSymbol> getForLoopStart(MathForLoopHeadSymbol mathForLoopHeadSymbol) {
+        Optional<MathExpressionSymbol> start = Optional.empty();
+        MathMatrixVectorExpressionSymbol loopExpr = getLoopMatrixVectorExpressionSymbol(mathForLoopHeadSymbol);
+        if (loopExpr != null)
+            start = Optional.ofNullable(loopExpr.getStart());
+        return start;
+    }
+
+    public static Optional<MathExpressionSymbol> getForLoopEnd(MathForLoopHeadSymbol mathForLoopHeadSymbol) {
+        Optional<MathExpressionSymbol> end = Optional.empty();
+        MathMatrixVectorExpressionSymbol loopExpr = getLoopMatrixVectorExpressionSymbol(mathForLoopHeadSymbol);
+        if (loopExpr != null)
+            end = Optional.ofNullable(loopExpr.getEnd());
+        return end;
+    }
+
+    public static Optional<MathExpressionSymbol> getForLoopStep(MathForLoopHeadSymbol mathForLoopHeadSymbol) {
+        Optional<MathExpressionSymbol> end = Optional.empty();
+        MathMatrixVectorExpressionSymbol loopExpr = getLoopMatrixVectorExpressionSymbol(mathForLoopHeadSymbol);
+        if (loopExpr != null)
+            end = loopExpr.getStep();
+        return end;
     }
 }
