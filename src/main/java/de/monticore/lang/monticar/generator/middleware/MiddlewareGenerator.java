@@ -51,6 +51,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .filter(fn -> fn.matches("(\\w+(Adapter_))?(" + name + "\\.h)"))
                 .filter(fn -> !fn.startsWith("IAdapter"))
                 .map(fn -> "#include \"" + fn + "\"")
+                .sorted()
                 .collect(Collectors.joining("\n"));
 
         String addAdapters = filesNames.stream()
@@ -58,6 +59,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .filter(fn -> !fn.startsWith("IAdapter"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
                 .map(fn -> "  adapters.push_back(new " + fn + "());")
+                .sorted()
                 .collect(Collectors.joining("\n"));
 
         String initParams = componentInstanceSymbol.getArguments().stream()
@@ -87,6 +89,7 @@ public class MiddlewareGenerator extends CMakeGenerator {
                 .filter(fn -> fn.matches("(\\w+(Adapter_))?(" + name + "\\.h)"))
                 .filter(fn -> !fn.startsWith("IAdapter"))
                 .map(fn -> fn.substring(0, fn.length() - 2))
+                .sorted()
                 .collect(Collectors.joining(" "));
 
         String content = TemplateHelper.getCoordinatorCmakeListsTemplate()

@@ -1,7 +1,10 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
@@ -66,7 +69,7 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testCppOnlyMiddlewareGeneration() throws IOException{
+    public void testCppOnlyMiddlewareGeneration() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.addComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
@@ -74,11 +77,37 @@ public class GenerationTest extends AbstractSymtabTest {
         MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
         String generationTargetPath = "./target/generated-sources-cmake/CMakeCppOnly/src/";
         middlewareGenerator.setGenerationTargetPath(generationTargetPath);
-        middlewareGenerator.add(new CPPGenImpl(),"cpp");
+        middlewareGenerator.add(new CPPGenImpl(), "cpp");
 
         List<File> files = middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
-        testFilesAreEqual(files,"CMakeCppOnly/src/",generationTargetPath);
+        testFilesAreEqual(files, "CMakeCppOnly/src/", generationTargetPath);
 
+    }
+
+    @Test
+    public void testBaSystem() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ComponentSymbol componentSymbol = taggingResolver.<ComponentSymbol>resolve("ba.System", ComponentSymbol.KIND).orElse(null);
+
+        EmbeddedMontiArcMathCoCos.createChecker().checkAll((ASTComponent) componentSymbol.getAstNode().orElse(null));
+
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        String generationTargetPath = "./target/generated-sources-cmake/system/src/";
+        distributedTargetGenerator.setGenerationTargetPath(generationTargetPath);
+        //distributedTargetGenerator.setGenDebug(true);
+        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+
+        testFilesAreEqual(files, "system/src/", generationTargetPath);
     }
 
     @Test
@@ -143,53 +172,6 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testIntersectionGeneration() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
-
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-        //Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
-
-        componentInstanceSymbol.getConnectors().stream()
-                .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
-                .forEach(c -> System.out.println("Source = Target:"+c.getSource() + " -> " + c.getTargetPort()));
-
-        componentInstanceSymbol.getSubComponents().stream()
-        .flatMap(subc -> subc.getConnectors().stream())
-                .filter(c -> c.getSourcePort().equals(c.getTargetPort()))
-                .forEach(c -> System.out.println("Source = Target in comp "+c.getComponentInstance().get().getName()+":"+c.getSource() + " -> " + c.getTargetPort()));
-
-        componentInstanceSymbol.getPortsList().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
-        componentInstanceSymbol.getSubComponents().stream()
-                .flatMap(subc -> subc.getPortsList().stream())
-                .forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol()));
-
-
-        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
-        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/intersection/src/");
-
-        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
-        distributedTargetGenerator.add(new RosCppGenImpl(), "roscpp");
-
-        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
-
-
-        //Workaround for compiler errors: change
-        //conflictIn(i-1) to conflictIn[i-1]
-        //indexLookupIn(i-1) to indexLookupIn[i-1]
-        for(File f : files) {
-            Path path = Paths.get(f.getAbsolutePath());
-            Charset charset = StandardCharsets.UTF_8;
-            String content = new String(Files.readAllBytes(path), charset);
-            content = content.replace("conflictIn(i-1)", "conflictIn[i-1]");
-            content = content.replace("indexLookupIn(i-1)", "indexLookupIn[i-1]");
-            content = content.replace("Col<int> counter=Col<int>(1);","Col<int> counter=Col<int>(2);");
-            Files.write(path, content.getBytes(charset));
-        }
-    }
-
-    @Test
     public void testParameterInit() throws IOException {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
@@ -199,29 +181,8 @@ public class GenerationTest extends AbstractSymtabTest {
 
         DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
         distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/paramInit/src/");
-        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
-        distributedTargetGenerator.generate(componentInstanceSymbol,taggingResolver);
-    }
-
-    @Ignore
-    @Test
-    public void testsStreamTest() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
-        RosToEmamTagSchema.registerTagTypes(taggingResolver);
-
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.tests.relToAbsTrajectoryInst", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentInstanceSymbol);
-
-
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-emam/intersection/test/");
-        generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
-        generatorCPP.setGenerateTests(false);
-//        generatorCPP.useArmadilloBackend();
-        ComponentStreamUnitsSymbol streamSymbol = taggingResolver.<ComponentStreamUnitsSymbol>resolve("ba.tests.RelToAbsTrajectory", ComponentStreamUnitsSymbol.KIND).orElse(null);
-        assertNotNull(streamSymbol);
-        generatorCPP.generateFiles(componentInstanceSymbol,taggingResolver);
-        generatorCPP.generateFile(TestConverter.generateMainTestFile(streamSymbol,componentInstanceSymbol));
+        distributedTargetGenerator.add(new CPPGenImpl(), "cpp");
+        distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
     }
 
     @Test

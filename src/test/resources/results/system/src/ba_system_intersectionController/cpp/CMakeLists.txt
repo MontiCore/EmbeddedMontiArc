@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project(ba_system_intersectionController LANGUAGES CXX)
+add_library(ba_system_intersectionController ba_system_intersectionController.h)
+target_include_directories(ba_system_intersectionController PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(ba_system_intersectionController PROPERTIES LINKER_LANGUAGE CXX)
+export(TARGETS ba_system_intersectionController FILE ba_system_intersectionController.cmake)

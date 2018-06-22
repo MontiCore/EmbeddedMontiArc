@@ -1,9 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware.helpers;
 
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,12 +15,13 @@ public class TemplateHelper {
         }
 
         String tmpStr = "";
-        String fullFileName = "src/main/resources/de/monticore/lang/monticar/generator/middleware/" + fileName;
+        String resourceFileName = "/de/monticore/lang/monticar/generator/middleware/" + fileName;
+
         try {
-            tmpStr = FileUtils.readFileToString(new File(fullFileName));
+            tmpStr = IOUtils.toString(TemplateHelper.class.getResourceAsStream(resourceFileName));
         } catch (Exception e) {
             //Not recoverable
-            Log.error("Template file not found: " + fullFileName);
+            Log.error("Template file not found: " + resourceFileName);
         }
 
         cache.put(fileName, tmpStr);
