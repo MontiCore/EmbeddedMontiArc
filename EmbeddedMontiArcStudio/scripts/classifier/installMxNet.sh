@@ -31,8 +31,8 @@ git clone --recursive https://github.com/apache/incubator-mxnet
 cd incubator-mxnet
 make clean
 case $yn in
-    [Yy]* ) make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1 USE_CPP_PACKAGE=1; break;;
-    [Nn]* ) make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CPP_PACKAGE=1; break;;
+    [Yy]* ) make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1 USE_CPP_PACKAGE=1;;
+    [Nn]* ) make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CPP_PACKAGE=1;;
     * ) echo "Please answer y or n.";;
 esac
 cd python
