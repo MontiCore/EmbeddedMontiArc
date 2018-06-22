@@ -29,7 +29,6 @@ import de.monticore.symboltable.Symbol;
 import de.monticore.types.types._ast.ASTSimpleReferenceType;
 import de.monticore.types.types._ast.ASTTypeArgument;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,16 +72,16 @@ public class InstanceInformation {
 
     public int getInstanceNumberForPortName(String portName) {
         Symbol symbol = getASTSubComponent().getSymbolOpt().get();
-        ComponentInstanceSymbol componentInstanceSymbol = (ComponentInstanceSymbol) symbol;
-        Log.debug(componentInstanceSymbol.getComponentType().toString(), "ComponentInstanceSymbol");
+        EMAComponentInstantiationSymbol emaComponentInstantiationSymbol = (EMAComponentInstantiationSymbol) symbol;
+        Log.debug(emaComponentInstantiationSymbol.getComponentType().toString(), "EMAComponentInstantiationSymbol");
         Log.debug(portName, "PortName");
-        PortArraySymbol namedArray = componentInstanceSymbol.getComponentType().getPortArray(portName);
+        PortArraySymbol namedArray = emaComponentInstantiationSymbol.getComponentType().getPortArray(portName);
         if (namedArray != null && namedArray.getNameSizeDependsOn().isPresent())
             Log.debug(namedArray.getNameSizeDependsOn().get(), "PortArray Depends On:");
 
         int counter = 0;
-        for (ResolutionDeclarationSymbol resolutionDeclarationSymbol : componentInstanceSymbol.getComponentType().getResolutionDeclarationSymbols()) {
-            if (componentInstanceSymbol.getComponentType().isPortDependentOnResolutionDeclarationSymbol(portName, resolutionDeclarationSymbol.getNameToResolve())) {
+        for (ResolutionDeclarationSymbol resolutionDeclarationSymbol : emaComponentInstantiationSymbol.getComponentType().getResolutionDeclarationSymbols()) {
+            if (emaComponentInstantiationSymbol.getComponentType().isPortDependentOnResolutionDeclarationSymbol(portName, resolutionDeclarationSymbol.getNameToResolve())) {
                 Log.debug("Name: " + portName + " nameToResolve: " + resolutionDeclarationSymbol.getNameToResolve(), "Porty Depends On:");
                 return getInstanceNumberFromASTSubComponent(getASTSubComponent(), counter);
             }

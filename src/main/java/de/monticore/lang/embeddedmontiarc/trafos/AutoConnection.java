@@ -329,7 +329,7 @@ public class AutoConnection {
         }
 
         // check subcomponents incoming ports, b/c they must receive data to do their calculations
-        for (ComponentInstanceSymbol ref : currentComponent.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
             ComponentSymbolReference refType = ref.getComponentType();
             for (PortSymbol port : refType.getIncomingPorts()) {
@@ -371,7 +371,7 @@ public class AutoConnection {
         }
 
         // check subcomponents outputs as they send data to the current component
-        for (ComponentInstanceSymbol ref : currentComponent.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
             ComponentSymbolReference refType = ref.getComponentType();
             for (PortSymbol port : refType.getOutgoingPorts()) {

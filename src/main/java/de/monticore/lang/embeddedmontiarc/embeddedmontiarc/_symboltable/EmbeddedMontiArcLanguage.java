@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
@@ -33,8 +32,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.symboltable.types.JMethodSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-
-import java.util.LinkedHashSet;
 
 /**
  * The MontiArc Language
@@ -54,7 +51,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
         super.initResolvingFilters();
         // is done in generated TOP-language addResolver(new
         // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(ComponentInstanceSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(PortSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(PortArraySymbol.KIND));
         addResolvingFilter(new EMAConnectorResolvingFilter<>(ConnectorSymbol.KIND));

@@ -50,7 +50,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
       return;
     }
     
-    for (ComponentInstanceSymbol instanceSymbol : symbol.getSubComponents()) {
+    for (EMAComponentInstantiationSymbol instanceSymbol : symbol.getSubComponents()) {
       for (ConnectorSymbol connectorSymbol : instanceSymbol.getSimpleConnectors()) {
         
         ComponentSymbolReference typeReference = instanceSymbol.getComponentType();

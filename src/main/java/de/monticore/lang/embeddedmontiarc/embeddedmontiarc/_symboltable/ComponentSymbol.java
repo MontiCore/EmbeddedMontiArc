@@ -469,16 +469,16 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
     /**
      * @return subComponents
      */
-    public Collection<ComponentInstanceSymbol> getSubComponents() {
+    public Collection<EMAComponentInstantiationSymbol> getSubComponents() {
         return referencedComponent.orElse(this).getSpannedScope()
-                .resolveLocally(ComponentInstanceSymbol.KIND);
+                .resolveLocally(EMAComponentInstantiationSymbol.KIND);
     }
 
     /**
      * @param name subcomponent instance name
      * @return subcomponent with the given name, empty optional, if it does not exist
      */
-    public Optional<ComponentInstanceSymbol> getSubComponent(String name) {
+    public Optional<EMAComponentInstantiationSymbol> getSubComponent(String name) {
         // no check for reference required
         return getSubComponents().stream()
                 .filter(p -> p.getName().equals(name))
@@ -489,7 +489,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
      * @param visibility visibility
      * @return subcomponents with the given visibility
      */
-    public Collection<ComponentInstanceSymbol> getSubComponents(AccessModifier visibility) {
+    public Collection<EMAComponentInstantiationSymbol> getSubComponents(AccessModifier visibility) {
         // no check for reference required
         return getSubComponents().stream()
                 .filter(s -> s.getAccessModifier().includes(visibility))

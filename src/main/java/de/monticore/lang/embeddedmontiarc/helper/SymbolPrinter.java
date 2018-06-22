@@ -152,7 +152,7 @@ public class SymbolPrinter {
         return "(" + config.stream().map(a -> a.getValue()).collect(Collectors.joining(",")) + ")";
     }
 
-    public static void printComponentInstance(ComponentInstanceSymbol inst, IndentPrinter ip) {
+    public static void printComponentInstance(EMAComponentInstantiationSymbol inst, IndentPrinter ip) {
         ip.print(inst.getComponentType().getName());
         ip.print(printTypeParameters(inst.getComponentType().getActualTypeArguments()));
         ip.print(printConfigArguments(inst.getConfigArguments()));
@@ -160,7 +160,7 @@ public class SymbolPrinter {
         ip.print(inst.getName());
     }
 
-    public static String printComponentInstance(ComponentInstanceSymbol inst) {
+    public static String printComponentInstance(EMAComponentInstantiationSymbol inst) {
         IndentPrinter ip = new IndentPrinter();
         printComponentInstance(inst, ip);
         return ip.getContent();

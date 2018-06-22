@@ -167,8 +167,8 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
         }
         String instancePort = parts.next();
         Log.debug("" + instancePort, "instancePort");
-        Optional<ComponentInstanceSymbol> inst = cmp.getSpannedScope()
-                .<ComponentInstanceSymbol>resolve(instance, ComponentInstanceSymbol.KIND);
+        Optional<EMAComponentInstantiationSymbol> inst = cmp.getSpannedScope()
+                .<EMAComponentInstantiationSymbol>resolve(instance, EMAComponentInstantiationSymbol.KIND);
         if (!inst.isPresent()) {
             Log.warn(String.format("Could not find instance %s in component %s, cannot resolve port",
                     instance, cmp.getFullName()));

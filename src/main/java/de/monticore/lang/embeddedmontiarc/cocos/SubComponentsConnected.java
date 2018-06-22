@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
@@ -60,7 +60,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
         ComponentSymbol entry = (ComponentSymbol) node.getSymbolOpt().get();
         // Implemented on the symTab as it takes auto-instantiation into account which is not reflected
         // in the AST.
-        for (ComponentInstanceSymbol sub : entry.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol sub : entry.getSubComponents()) {
             // ------- IN PORTS -------
             // in ports must be connected
             // outer.in->sub.in
@@ -135,7 +135,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
         }
     }
 
-    private boolean isConfigPort(ComponentInstanceSymbol instanceSymbol, String relativePortName) {
+    private boolean isConfigPort(EMAComponentInstantiationSymbol instanceSymbol, String relativePortName) {
         String[] tmp = relativePortName.split("\\.");
         String shortName = tmp[tmp.length - 1];
         ComponentSymbol comp = instanceSymbol.getComponentType().getReferencedSymbol();

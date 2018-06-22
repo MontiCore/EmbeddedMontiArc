@@ -270,8 +270,8 @@ public class EMAPortHelper {
             Log.debug("compInstanceName: " + compName, "Resolving");
             Log.debug(compName, "ComponentName");
             if (compName != null) {
-                ComponentInstanceSymbol symbol;
-                symbol = curScope.<ComponentInstanceSymbol>resolve(compName, ComponentInstanceSymbol.KIND)
+                EMAComponentInstantiationSymbol symbol;
+                symbol = curScope.<EMAComponentInstantiationSymbol>resolve(compName, EMAComponentInstantiationSymbol.KIND)
                         .get();
                 for (PortSymbol portSymbol : symbol.getComponentType().getAllPorts()) {
 
@@ -293,7 +293,7 @@ public class EMAPortHelper {
         Log.debug("" + componentName, "RESOLVING");
         while (present) {
             present = curScope
-                    .resolve(componentName + "[" + (counter + 1) + "]", ComponentInstanceSymbol.KIND)
+                    .resolve(componentName + "[" + (counter + 1) + "]", EMAComponentInstantiationSymbol.KIND)
                     .isPresent();
             if (present)
                 ++counter;

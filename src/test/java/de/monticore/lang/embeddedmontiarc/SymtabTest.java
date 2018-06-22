@@ -559,7 +559,7 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicTypeInstance", ComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
-        ComponentInstanceSymbol csInner = symTab.<ComponentInstanceSymbol>resolve("testing.BasicTypeInstance.b1", ComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicTypeInstance.b1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
 
         assertEquals("b1", csInner.getName());
@@ -571,7 +571,7 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicTypeInstance", ComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
-        ComponentInstanceSymbol csInner = symTab.<ComponentInstanceSymbol>resolve("testing.BasicTypeInstance.b1", ComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicTypeInstance.b1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
 
         assertEquals("b1", csInner.getName());
@@ -600,7 +600,7 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         ExpandedComponentInstanceSymbol cs = symTab.<ExpandedComponentInstanceSymbol>resolve("testing.basicResolutionInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
-        //ComponentInstanceSymbol csInner = symTab.<ComponentInstanceSymbol>resolve("testing.BasicResolutionInstance.br1", ComponentInstanceSymbol.KIND).orElse(null);
+        //EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         //assertNotNull(csInner);
 
         Log.debug(cs.getSubComponents().iterator().next().getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Expanded:");
@@ -621,7 +621,7 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicResolutionDefaultInstance", ComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
-        ComponentInstanceSymbol csInner = symTab.<ComponentInstanceSymbol>resolve("testing.BasicResolutionDefaultInstance.br1", ComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionDefaultInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
 
         Log.debug(csInner.getFullName() + " " + csInner.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol(), "Amount ResolutionDeclarationSymbols :");
@@ -645,7 +645,7 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicResolutionInstance", ComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
-        ComponentInstanceSymbol csInner = symTab.<ComponentInstanceSymbol>resolve("testing.BasicResolutionDefaultInstance.br1", ComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionDefaultInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
 
         Log.debug(csInner.getFullName() + " " + csInner.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol(), "Amount ResolutionDeclarationSymbols :");
@@ -695,7 +695,7 @@ public class SymtabTest extends AbstractSymtabTest {
             Log.info(astExpression.toString(), "info:");
         }
         assertEquals(2, inst.getSubComponents().size());
-        Iterator<ComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
+        Iterator<EMAComponentInstantiationSymbol> iterator = inst.getSubComponents().iterator();
         UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) iterator.next().getComponentType().getArguments().get(0).getSymbolOpt().get();
         UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) iterator.next().getComponentType().getArguments().get(0).getSymbolOpt().get();
         assertEquals("5", symbol1.getTextualRepresentation());

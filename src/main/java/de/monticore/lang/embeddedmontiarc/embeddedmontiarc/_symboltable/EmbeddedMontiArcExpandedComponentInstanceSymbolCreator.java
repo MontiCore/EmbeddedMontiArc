@@ -109,7 +109,7 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
         for (ConnectorSymbol connectorSymbol : cmp.getConnectors())
             Log.info(connectorSymbol.toString(), "Building Connector:");
         // add sub components
-        for (ComponentInstanceSymbol inst : cmp.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol inst : cmp.getSubComponents()) {
             //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
             Log.info(inst.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Important:");
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");

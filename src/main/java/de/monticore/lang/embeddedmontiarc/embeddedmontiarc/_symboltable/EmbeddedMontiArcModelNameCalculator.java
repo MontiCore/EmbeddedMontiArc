@@ -60,7 +60,7 @@ public class EmbeddedMontiArcModelNameCalculator
     else if (ConnectorSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForConnector(name));
     }
-    else if (ComponentInstanceSymbol.KIND.isKindOf(kind)) {
+    else if (EMAComponentInstantiationSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponentInstance(name));
     }
     else if (ExpandedComponentInstanceSymbol.KIND.isKindOf(kind)) {

@@ -36,7 +36,7 @@ import de.monticore.symboltable.types.references.TypeReference;
  *
  * @author Robert Heim
  */
-public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
+public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
 
     public static final EMAComponentInstanceKind KIND = EMAComponentInstanceKind.INSTANCE;
 
@@ -50,12 +50,12 @@ public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implement
     private String value = "";
 
     /**
-     * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol
+     * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol
      *
      * @param name
      * @param componentType the referenced component definition
      */
-    public ComponentInstanceSymbol(String name, ComponentSymbolReference componentType) {
+    public EMAComponentInstantiationSymbol(String name, ComponentSymbolReference componentType) {
         super(name, KIND);
         this.componentType = componentType;
 
