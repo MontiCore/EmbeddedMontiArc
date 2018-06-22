@@ -39,3 +39,4 @@ cd python
 yes | pip install -e .
 yes | pip install h5py
 yes | pip install opencv-python
+deactivate
