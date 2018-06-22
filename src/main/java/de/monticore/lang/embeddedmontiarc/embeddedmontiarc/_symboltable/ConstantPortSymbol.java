@@ -42,7 +42,7 @@ import static de.monticore.numberunit.Rationals.doubleToRational;
  *
  * @author Sascha Schneiders
  */
-public class ConstantPortSymbol extends PortSymbol {
+public class ConstantPortSymbol extends EMAPortSymbol {
     EMAConstantValue constantValue;
 
     /**

@@ -208,7 +208,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol subInst1 = comp.getSubComponent("adaptableParameter").orElse(null);
         assertNotNull(subInst1);
 
-        PortSymbol configPort = subInst1.getIncomingPort("param1").orElse(null);
+        EMAPortSymbol configPort = subInst1.getIncomingPort("param1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
 
@@ -222,11 +222,11 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol comp = symtab.<EMAComponentInstanceSymbol>resolve("testing.configPort",EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(comp);
 
-        PortSymbol configPort = comp.getIncomingPort("in1").orElse(null);
+        EMAPortSymbol configPort = comp.getIncomingPort("in1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
 
-        PortSymbol nonConfigPort = comp.getIncomingPort("in2").orElse(null);
+        EMAPortSymbol nonConfigPort = comp.getIncomingPort("in2").orElse(null);
         assertNotNull(nonConfigPort);
         assertFalse(nonConfigPort.isConfig());
     }
@@ -350,8 +350,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
             assertNotNull(connectorSymbol.getSourcePort());
             assertNotNull(connectorSymbol.getTargetPort());
 
-            PortSymbol sourcePort = connectorSymbol.getSourcePort();
-            PortSymbol targetPort = connectorSymbol.getTargetPort();
+            EMAPortSymbol sourcePort = connectorSymbol.getSourcePort();
+            EMAPortSymbol targetPort = connectorSymbol.getTargetPort();
 
             System.out.println("source: " + sourcePort.getFullName());
             System.out.println("target: " + targetPort.getFullName() + "\n");
@@ -475,8 +475,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testLoadingInstancePort() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    PortSymbol port = symTab.<PortSymbol>resolve(
-        "a.sub1.cComp.in1", PortSymbol.KIND).orElse(null);
+    EMAPortSymbol port = symTab.<EMAPortSymbol>resolve(
+        "a.sub1.cComp.in1", EMAPortSymbol.KIND).orElse(null);
     assertNotNull(port);
     System.out.println(port);
   }

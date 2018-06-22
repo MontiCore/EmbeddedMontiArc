@@ -38,7 +38,7 @@ public class EMAPortBuilder {
     protected Optional<Boolean> config = Optional.empty();
     protected Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
 
-    public static PortSymbol clone(PortSymbol port) {
+    public static EMAPortSymbol clone(EMAPortSymbol port) {
         if (port.isConstant())
             return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming()).
                     setTypeReference(port.getTypeReference()).setConstantValue(((ConstantPortSymbol) port).getConstantValue()).setASTNode(port.getAstNode())
@@ -84,9 +84,9 @@ public class EMAPortBuilder {
         return this;
     }
 
-    public PortSymbol build() {
+    public EMAPortSymbol build() {
         if (name.isPresent() && incoming.isPresent() && typeReference.isPresent()) {
-            PortSymbol p = new PortSymbol(this.name.get());
+            EMAPortSymbol p = new EMAPortSymbol(this.name.get());
             p.setDirection(this.incoming.get());
             p.setTypeReference(this.typeReference.get());
             if (astNode.isPresent())

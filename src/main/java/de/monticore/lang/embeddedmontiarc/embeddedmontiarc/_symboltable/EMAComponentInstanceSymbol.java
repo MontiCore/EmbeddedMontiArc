@@ -156,34 +156,34 @@ public class EMAComponentInstanceSymbol
         Log.debug(toString(), "Current Instance");
         //TODO fix to work for more than one arguments
 
-        for (PortSymbol portSymbolMain : getPortsList()) {
+        for (EMAPortSymbol emaPortSymbolMain : getPortsList()) {
             int counter = 1;
             InstanceInformation info = InstancingRegister.getInstanceInformation(getName()).orElse(null);
             int number = -1;
             if (info != null) {
                 Log.debug(info.getInstanceNumberForArgumentIndex(0) + "", "Instance Information");
                 //number = info.getInstanceNumberForArgumentIndex(0);
-                number = info.getInstanceNumberForPortName(portSymbolMain.getNameWithoutArrayBracketPart());
+                number = info.getInstanceNumberForPortName(emaPortSymbolMain.getNameWithoutArrayBracketPart());
             } else {
-                Log.info("No instance information for " + portSymbolMain.getName(), "Missing:");
+                Log.info("No instance information for " + emaPortSymbolMain.getName(), "Missing:");
             }
-            for (PortSymbol portSymbol : getPortsList()) {
-                if (portSymbol.getName().startsWith(portSymbolMain.getNameWithoutArrayBracketPart() + "[") && portSymbol.isPartOfPortArray()) {
+            for (EMAPortSymbol emaPortSymbol : getPortsList()) {
+                if (emaPortSymbol.getName().startsWith(emaPortSymbolMain.getNameWithoutArrayBracketPart() + "[") && emaPortSymbol.isPartOfPortArray()) {
                     if (number > -1 && counter > number) {
-                        scope.remove(portSymbol);
-                        Log.info(portSymbol.getName(), "Removed:");
+                        scope.remove(emaPortSymbol);
+                        Log.info(emaPortSymbol.getName(), "Removed:");
                     }
                     ++counter;
                 }
             }
             for (int i = 1; i <= number; ++i) {
-                if (!getPort(portSymbolMain.getNameWithoutArrayBracketPart() + "[" + i + "]").isPresent()) {
-                    PortSymbol portSymbolNew = new PortSymbol(portSymbolMain.getNameWithoutArrayBracketPart() + "[" + i + "]");
-                    portSymbolNew.setTypeReference(portSymbolMain.getTypeReference());
-                    portSymbolNew.setNameDependsOn(portSymbolMain.getNameDependsOn());
-                    portSymbolNew.setDirection(portSymbolMain.isIncoming());
+                if (!getPort(emaPortSymbolMain.getNameWithoutArrayBracketPart() + "[" + i + "]").isPresent()) {
+                    EMAPortSymbol emaPortSymbolNew = new EMAPortSymbol(emaPortSymbolMain.getNameWithoutArrayBracketPart() + "[" + i + "]");
+                    emaPortSymbolNew.setTypeReference(emaPortSymbolMain.getTypeReference());
+                    emaPortSymbolNew.setNameDependsOn(emaPortSymbolMain.getNameDependsOn());
+                    emaPortSymbolNew.setDirection(emaPortSymbolMain.isIncoming());
 
-                    scope.add(portSymbolNew);
+                    scope.add(emaPortSymbolNew);
                 }
             }
         }
@@ -197,32 +197,32 @@ public class EMAComponentInstanceSymbol
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
      * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
      */
-    public Collection<PortSymbol> getPortsList() {
-        return getSpannedScope().<PortSymbol>resolveLocally(PortSymbol.KIND);
+    public Collection<EMAPortSymbol> getPortsList() {
+        return getSpannedScope().<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND);
     }
 
     public Collection<PortArraySymbol> getPortArrays() {
         return getSpannedScope().<PortArraySymbol>resolveLocally(PortArraySymbol.KIND);
     }
 
-    public Optional<PortSymbol> getPort(String name) {
-        return getSpannedScope().resolveLocally(name, PortSymbol.KIND);
+    public Optional<EMAPortSymbol> getPort(String name) {
+        return getSpannedScope().resolveLocally(name, EMAPortSymbol.KIND);
     }
 
-    public Collection<PortSymbol> getIncomingPorts() {
-        return getPortsList().stream().filter(PortSymbol::isIncoming).collect(Collectors.toList());
+    public Collection<EMAPortSymbol> getIncomingPorts() {
+        return getPortsList().stream().filter(EMAPortSymbol::isIncoming).collect(Collectors.toList());
     }
 
-    public Optional<PortSymbol> getIncomingPort(String name) {
+    public Optional<EMAPortSymbol> getIncomingPort(String name) {
         // no check for reference required
         return getIncomingPorts().stream().filter(p -> p.getName().equals(name)).findFirst();
     }
 
-    public Collection<PortSymbol> getOutgoingPorts() {
-        return getPortsList().stream().filter(PortSymbol::isOutgoing).collect(Collectors.toList());
+    public Collection<EMAPortSymbol> getOutgoingPorts() {
+        return getPortsList().stream().filter(EMAPortSymbol::isOutgoing).collect(Collectors.toList());
     }
 
-    public Optional<PortSymbol> getOutgoingPort(String name) {
+    public Optional<EMAPortSymbol> getOutgoingPort(String name) {
         // no check for reference required
         return getOutgoingPorts().stream().filter(p -> p.getName().equals(name)).findFirst();
     }
@@ -275,9 +275,9 @@ public class EMAComponentInstanceSymbol
 
     }*/
 
-    public boolean containsPort(PortSymbol portSymbol) {
-        for (PortSymbol symbol : getPortsList())
-            if (symbol.equals(portSymbol))
+    public boolean containsPort(EMAPortSymbol emaPortSymbol) {
+        for (EMAPortSymbol symbol : getPortsList())
+            if (symbol.equals(emaPortSymbol))
                 return true;
         return false;
     }
@@ -295,8 +295,8 @@ public class EMAComponentInstanceSymbol
         Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
 
         for (ConnectorSymbol connector : connectors) {
-            PortSymbol sourcePort = connector.getSourcePort();
-            PortSymbol targetPort = connector.getTargetPort();
+            EMAPortSymbol sourcePort = connector.getSourcePort();
+            EMAPortSymbol targetPort = connector.getTargetPort();
             Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
             Optional<EMAComponentInstanceSymbol> targetCmpOpt = targetPort.getComponentInstance();
 
@@ -319,7 +319,7 @@ public class EMAComponentInstanceSymbol
 
         Set<EMAComponentInstanceSymbol> nonIndependentSubComponents = new HashSet<>();
         for (ConnectorSymbol connector : subComponentConnectors) {
-            PortSymbol sourcePort = connector.getSourcePort();
+            EMAPortSymbol sourcePort = connector.getSourcePort();
             Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
             if (sourceCmpOpt.isPresent()) {
                 EMAComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();

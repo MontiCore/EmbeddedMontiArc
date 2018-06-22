@@ -320,7 +320,7 @@ public class AutoConnection {
         // portname, porttypebinding
         Map<String, PorWithGenericBindings> unusedReceivers = new HashMap<>();
         // check outgoing ports, b/c they must receive data from within the component
-        for (PortSymbol receiver : currentComponent.getOutgoingPorts()) {
+        for (EMAPortSymbol receiver : currentComponent.getOutgoingPorts()) {
             if (!currentComponent.hasConnector(receiver.getName())) {
                 unusedReceivers.put(receiver.getName(),
                         PorWithGenericBindings.create(receiver, currentComponent.getFormalTypeParameters(),
@@ -332,7 +332,7 @@ public class AutoConnection {
         for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
             ComponentSymbolReference refType = ref.getComponentType();
-            for (PortSymbol port : refType.getIncomingPorts()) {
+            for (EMAPortSymbol port : refType.getIncomingPorts()) {
                 String portNameInConnector = name + "." + port.getName();
                 if (!currentComponent.hasConnector(portNameInConnector)) {
                     // store the the type parameters' bindings of the referenced component for this reference
@@ -362,7 +362,7 @@ public class AutoConnection {
         // arguments for the subcomponent that the port is defined in>
         Map<String, PorWithGenericBindings> unusedSenders = new HashMap<>();
         // as senders could send to more then one receiver, all senders are added
-        for (PortSymbol sender : currentComponent.getIncomingPorts()) {
+        for (EMAPortSymbol sender : currentComponent.getIncomingPorts()) {
             if (!currentComponent.hasConnectors(sender.getName())) {
                 unusedSenders.put(sender.getName(),
                         PorWithGenericBindings.create(sender, currentComponent.getFormalTypeParameters(),
@@ -374,7 +374,7 @@ public class AutoConnection {
         for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
             ComponentSymbolReference refType = ref.getComponentType();
-            for (PortSymbol port : refType.getOutgoingPorts()) {
+            for (EMAPortSymbol port : refType.getOutgoingPorts()) {
                 String portNameInConnector = name + "." + port.getName();
                 if (!currentComponent.hasConnectors(portNameInConnector)) {
                     // store the the type parameters' bindings of the referenced component for this reference
@@ -391,14 +391,14 @@ public class AutoConnection {
     }
 
     private static class PorWithGenericBindings {
-        PortSymbol port;
+        EMAPortSymbol port;
 
         List<MCTypeSymbol> formalTypeParameters;
 
         List<MCTypeReference<? extends MCTypeSymbol>> typeArguments;
 
         public PorWithGenericBindings(
-                PortSymbol port,
+                EMAPortSymbol port,
                 List<MCTypeSymbol> formalTypeParameters,
                 List<MCTypeReference<? extends MCTypeSymbol>> typeArguments) {
             super();
@@ -407,7 +407,7 @@ public class AutoConnection {
             this.typeArguments = typeArguments;
         }
 
-        public static PorWithGenericBindings create(PortSymbol port,
+        public static PorWithGenericBindings create(EMAPortSymbol port,
                                                     List<MCTypeSymbol> formalTypeParameters,
                                                     List<MCTypeReference<? extends MCTypeSymbol>> typeArguments) {
             return new PorWithGenericBindings(port, formalTypeParameters, typeArguments);

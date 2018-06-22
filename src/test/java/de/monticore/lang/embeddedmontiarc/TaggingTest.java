@@ -21,7 +21,7 @@
 package de.monticore.lang.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.adaptable.AdaptableSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -40,8 +40,8 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         ComponentSymbol componentSymbol = taggingResolver.<ComponentSymbol>resolve("testing.ConfigPortTag",ComponentSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
 
-        PortSymbol in1 = componentSymbol.getIncomingPort("in1").orElse(null);
-        PortSymbol in2 = componentSymbol.getIncomingPort("in2").orElse(null);
+        EMAPortSymbol in1 = componentSymbol.getIncomingPort("in1").orElse(null);
+        EMAPortSymbol in2 = componentSymbol.getIncomingPort("in2").orElse(null);
         assertNotNull(in1);
         assertNotNull(in2);
 

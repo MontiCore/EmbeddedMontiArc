@@ -23,7 +23,7 @@
 
 package de.monticore.lang.embeddedmontiarc.tagging.adaptable;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.monticore.lang.tagging._ast.ASTNameScope;
 import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;
@@ -66,13 +66,13 @@ public class AdaptableSymbolCreator implements TagSymbolCreator {
                               .filter(this::checkScope)
                               .map(s -> (ASTNameScope) s)
                               .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
-                                      s.getQualifiedNameString()), PortSymbol.KIND))
+                                      s.getQualifiedNameString()), EMAPortSymbol.KIND))
                               .filter(Optional::isPresent) // if the symbol is not present, does not mean that the symbol
                               .map(Optional::get)          // is not available at all, maybe it will be loaded later
                               .forEachOrdered(s -> {
                                 tagging.addTag(s, new AdaptableSymbol());
-                                if(s.isKindOf(PortSymbol.KIND)){
-                                  ((PortSymbol)s).setConfig(true);
+                                if(s.isKindOf(EMAPortSymbol.KIND)){
+                                  ((EMAPortSymbol)s).setConfig(true);
                                 }
                               }));
     }
@@ -90,20 +90,20 @@ public class AdaptableSymbolCreator implements TagSymbolCreator {
 
     }
 
-  protected PortSymbol checkKind(Collection<Symbol> symbols) {
-    PortSymbol ret = null;
+  protected EMAPortSymbol checkKind(Collection<Symbol> symbols) {
+    EMAPortSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(PortSymbol.KIND)) {
+      if (symbol.getKind().isSame(EMAPortSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (PortSymbol)symbol;
+        ret = (EMAPortSymbol)symbol;
       }
     }
     if (ret == null) {
-      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'PortSymbol.KIND'.",
+      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'EMAPortSymbol.KIND'.",
           symbols.stream().map(s -> "'" + s.getKind().toString() + "'").collect(Collectors.joining(", "))));
       return null;
     }

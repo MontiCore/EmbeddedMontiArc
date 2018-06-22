@@ -54,8 +54,8 @@ public class EMAComponentBuilder {
     public EMAComponentBuilder() {
     }
 
-    private static final ResolvingFilter<PortSymbol> portResolvingFilter =
-            CommonResolvingFilter.create(PortSymbol.KIND);
+    private static final ResolvingFilter<EMAPortSymbol> portResolvingFilter =
+            CommonResolvingFilter.create(EMAPortSymbol.KIND);
 
     private static final ResolvingFilter<ConnectorSymbol> connectorResolvingFilter =
             CommonResolvingFilter.create(ConnectorSymbol.KIND);
@@ -74,7 +74,7 @@ public class EMAComponentBuilder {
 
     ////////////////////////// ports //////////////////////////////////////////////
 
-    public static EMAComponentBuilder addPort(ComponentSymbol cs, PortSymbol ps) {
+    public static EMAComponentBuilder addPort(ComponentSymbol cs, EMAPortSymbol ps) {
         addResolverIfMissing(cs, portResolvingFilter, ps);
         return getInstance();
     }
@@ -86,31 +86,31 @@ public class EMAComponentBuilder {
         ((MutableScope) cs.getSpannedScope()).add(symbol);
     }
 
-    public static EMAComponentBuilder addPorts(ComponentSymbol cs, PortSymbol... ps) {
-        for (PortSymbol p : ps) {
+    public static EMAComponentBuilder addPorts(ComponentSymbol cs, EMAPortSymbol... ps) {
+        for (EMAPortSymbol p : ps) {
             addPort(cs, p);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder addPorts(ComponentSymbol cs, Collection<PortSymbol> ps) {
+    public static EMAComponentBuilder addPorts(ComponentSymbol cs, Collection<EMAPortSymbol> ps) {
         ps.stream().forEachOrdered(p -> addPort(cs, p));
         return getInstance();
     }
 
-    public static EMAComponentBuilder removePort(ComponentSymbol cs, PortSymbol ps) {
+    public static EMAComponentBuilder removePort(ComponentSymbol cs, EMAPortSymbol ps) {
         ((MutableScope) cs.getSpannedScope()).remove(ps);
         return getInstance();
     }
 
-    public static EMAComponentBuilder removePorts(ComponentSymbol cs, PortSymbol... ps) {
-        for (PortSymbol p : ps) {
+    public static EMAComponentBuilder removePorts(ComponentSymbol cs, EMAPortSymbol... ps) {
+        for (EMAPortSymbol p : ps) {
             removePort(cs, p);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder removePorts(ComponentSymbol cs, Collection<PortSymbol> ps) {
+    public static EMAComponentBuilder removePorts(ComponentSymbol cs, Collection<EMAPortSymbol> ps) {
         ps.stream().forEachOrdered(p -> removePort(cs, p));
         return getInstance();
     }

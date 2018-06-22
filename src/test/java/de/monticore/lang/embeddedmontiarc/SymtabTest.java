@@ -80,7 +80,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
+        EMAPortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
         assertNotNull(port1);
         assertEquals("SIUnitRangesType", port1.getTypeReference().getName());
 
@@ -111,7 +111,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getIncomingPort("speed").orElse(null);
+        EMAPortSymbol port1 = cs.getIncomingPort("speed").orElse(null);
         assertNotNull(port1);
         assertEquals("SIUnitRangesType", port1.getTypeReference().getName());
 
@@ -141,7 +141,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
+        EMAPortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
         assertNotNull(port1);
         assertEquals("SIUnitRangesType", port1.getTypeReference().getName());
 
@@ -176,7 +176,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
+        EMAPortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
         assertNotNull(port1);
         assertEquals("SIUnitRangesType", port1.getTypeReference().getName());
 
@@ -204,7 +204,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
+        EMAPortSymbol port1 = cs.getIncomingPort("distance").orElse(null);
         assertNotNull(port1);
         assertEquals("SIUnitRangesType", port1.getTypeReference().getName());
 
@@ -235,7 +235,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(1, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getOutgoingPort("distance").orElse(null);
+        EMAPortSymbol port1 = cs.getOutgoingPort("distance").orElse(null);
         assertNotNull(port1);
         assertEquals("SIUnitRangesType", port1.getTypeReference().getName());
 
@@ -287,7 +287,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(1, cs.getAllOutgoingPorts().size());
-        PortSymbol port1 = cs.getOutgoingPort("steering").orElse(null);
+        EMAPortSymbol port1 = cs.getOutgoingPort("steering").orElse(null);
         assertNotNull(port1);
         assertEquals("B", port1.getTypeReference().getName());
 
@@ -324,8 +324,8 @@ public class SymtabTest extends AbstractSymtabTest {
         ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.PortArray", ComponentSymbol.KIND).orElse(null);
         assertNotNull("ComponentSymbol is null", cs);
 
-        PortSymbol ps = symTab.<PortSymbol>resolve("testing.PortArray.lightsIn[1]", PortSymbol.KIND).orElse(null);
-        assertNotNull("PortSymbol is null", ps);
+        EMAPortSymbol ps = symTab.<EMAPortSymbol>resolve("testing.PortArray.lightsIn[1]", EMAPortSymbol.KIND).orElse(null);
+        assertNotNull("EMAPortSymbol is null", ps);
         Log.debug(ps.getTypeReference().getReferencedSymbol().toString() + "", "TypeName");
 //check for all names
         assertEquals(5, cs.getAllIncomingPorts().size());
@@ -378,13 +378,13 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(5, cs.getAllIncomingPorts().size());
         for (int i = 1; i <= 5; ++i) {
-            PortSymbol port = cs.getIncomingPort("lightsIn[" + i + "]").orElse(null);
+            EMAPortSymbol port = cs.getIncomingPort("lightsIn[" + i + "]").orElse(null);
             assertEquals(true, port != null);
             assertEquals("B", port.getTypeReference().getName());
         }
         assertEquals(5, cs.getAllOutgoingPorts().size());
         for (int i = 1; i <= 5; ++i) {
-            PortSymbol port = cs.getOutgoingPort("lightsOut[" + i + "]").orElse(null);
+            EMAPortSymbol port = cs.getOutgoingPort("lightsOut[" + i + "]").orElse(null);
             assertEquals(true, port != null);
             assertEquals("B", port.getTypeReference().getName());
         }
@@ -443,14 +443,14 @@ public class SymtabTest extends AbstractSymtabTest {
         ConnectorSymbol conn = cs.getConnectors().iterator().next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
-        PortSymbol source = conn.getSourcePort();
-        assertNotNull("PortSymbol source is null", source);
-        assertTrue("PortSymbol source is notIncoming", source.isIncoming());
-        assertEquals("PortSymbol source name is not correct", source.getName(), "lightsIn[1]");
-        assertEquals("PortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("PortSymbol connector is not correct", source.getComponent().get(), cs);
+        EMAPortSymbol source = conn.getSourcePort();
+        assertNotNull("EMAPortSymbol source is null", source);
+        assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
+        assertEquals("EMAPortSymbol source name is not correct", source.getName(), "lightsIn[1]");
+        assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
 
-        PortSymbol target = conn.getTargetPort();
+        EMAPortSymbol target = conn.getTargetPort();
         assertNotNull("target is null", target);
         assertTrue("target is not incoming", target.isIncoming());
         assertEquals("target name is not correct", target.getName(), "lightsIn[1]");
@@ -483,14 +483,14 @@ public class SymtabTest extends AbstractSymtabTest {
         ConnectorSymbol conn = (ConnectorSymbol) iter.next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
-        PortSymbol source = conn.getSourcePort();
-        assertNotNull("PortSymbol source is null", source);
-        assertTrue("PortSymbol source is notIncoming", source.isIncoming());
-        assertEquals("PortSymbol source name is not correct", source.getName(), "sIn[1]");
-        assertEquals("PortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("PortSymbol connector is not correct", source.getComponent().get(), cs);
+        EMAPortSymbol source = conn.getSourcePort();
+        assertNotNull("EMAPortSymbol source is null", source);
+        assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
+        assertEquals("EMAPortSymbol source name is not correct", source.getName(), "sIn[1]");
+        assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
 
-        PortSymbol target = conn.getTargetPort();
+        EMAPortSymbol target = conn.getTargetPort();
         assertNotNull("target is null", target);
         assertTrue("target is not outcoming", target.isOutgoing());
         assertEquals("target name is not correct", target.getName(), "sOut[2]");
@@ -501,11 +501,11 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
         source = conn.getSourcePort();
-        assertNotNull("PortSymbol source is null", source);
-        assertTrue("PortSymbol source is notIncoming", source.isIncoming());
-        assertEquals("PortSymbol source name is not correct2", source.getName(), "sIn[2]");
-        assertEquals("PortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("PortSymbol connector is not correct", source.getComponent().get(), cs);
+        assertNotNull("EMAPortSymbol source is null", source);
+        assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
+        assertEquals("EMAPortSymbol source name is not correct2", source.getName(), "sIn[2]");
+        assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
 
         target = conn.getTargetPort();
         assertNotNull("target is null", target);
@@ -519,11 +519,11 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
         source = conn.getSourcePort();
-        assertNotNull("PortSymbol source is null", source);
-        assertTrue("PortSymbol source is notIncoming", source.isIncoming());
-        assertEquals("PortSymbol source name is not correct4", source.getName(), "sIn[3]");
-        assertEquals("PortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("PortSymbol connector is not correct", source.getComponent().get(), cs);
+        assertNotNull("EMAPortSymbol source is null", source);
+        assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
+        assertEquals("EMAPortSymbol source name is not correct4", source.getName(), "sIn[3]");
+        assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
 
         target = conn.getTargetPort();
         assertNotNull("target is null", target);
@@ -757,17 +757,17 @@ public class SymtabTest extends AbstractSymtabTest {
                 ComponentSymbol.KIND
         ).orElse(null);
         assertNotNull(cmp);
-        List<PortSymbol> inPorts = new ArrayList<>(cmp.getAllIncomingPorts());
+        List<EMAPortSymbol> inPorts = new ArrayList<>(cmp.getAllIncomingPorts());
         assertEquals(1, inPorts.size());
-        PortSymbol in1 = cmp.getIncomingPort("in1").orElse(null);
+        EMAPortSymbol in1 = cmp.getIncomingPort("in1").orElse(null);
         assertNotNull(in1);
         MCTypeSymbol s1 = in1.getTypeReference().getReferencedSymbol();
         assertNotNull(s1);
         assertEquals("structures.S1", s1.getFullName());
         assertTrue(s1 instanceof StructSymbol);
-        List<PortSymbol> outPorts = new ArrayList<>(cmp.getAllOutgoingPorts());
+        List<EMAPortSymbol> outPorts = new ArrayList<>(cmp.getAllOutgoingPorts());
         assertEquals(1, outPorts.size());
-        PortSymbol out1 = cmp.getOutgoingPort("out1").orElse(null);
+        EMAPortSymbol out1 = cmp.getOutgoingPort("out1").orElse(null);
         assertNotNull(out1);
         MCTypeSymbol s2 = out1.getTypeReference().getReferencedSymbol();
         assertEquals("structures.S2", s2.getFullName());

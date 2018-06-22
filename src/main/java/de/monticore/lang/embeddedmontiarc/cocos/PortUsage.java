@@ -24,7 +24,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 public class PortUsage implements EmbeddedMontiArcASTComponentCoCo {
 
-  private Collection<String> getNames(Collection<PortSymbol> ports) {
+  private Collection<String> getNames(Collection<EMAPortSymbol> ports) {
     return ports.stream().map(p -> p.getName())
         .collect(Collectors.toList());
   }

@@ -61,7 +61,7 @@ public class EMAPortHelper {
         pas.setDimension(num);
         for (int i = 1; i <= num; ++i) {
             String nameWithArray = name + "[" + Integer.toString(i) + "]";
-            PortSymbol sym = new PortSymbol(nameWithArray);
+            EMAPortSymbol sym = new EMAPortSymbol(nameWithArray);
             sym.setNameDependsOn(pas.getNameDependsOn());
             Log.debug(nameWithArray, "nameWithArray");
 
@@ -78,7 +78,7 @@ public class EMAPortHelper {
         if (node.getUnitNumberResolutionOpt().isPresent()) {
             portCreationIntLiteralPresent(node, pas, name, typeRef, symbolTableCreator);
         } else {
-            // create PortSymbol with same content as PortArraySymbol
+            // create EMAPortSymbol with same content as PortArraySymbol
             createPort(node, name, node.isIncoming(), typeRef, pas, symbolTableCreator);
         }
     }
@@ -86,7 +86,7 @@ public class EMAPortHelper {
     public static void createPort(String name, boolean isIncoming,
                                   MCTypeReference<? extends MCTypeSymbol> typeRef,
                                   EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        PortSymbol ps = new PortSymbol(name);
+        EMAPortSymbol ps = new EMAPortSymbol(name);
 
         ps.setTypeReference(typeRef);
         ps.setDirection(isIncoming);
@@ -97,7 +97,7 @@ public class EMAPortHelper {
     public static void createPort(ASTPort node, String name, boolean isIncoming,
                                   MCTypeReference<? extends MCTypeSymbol> typeRef, PortArraySymbol pas,
                                   EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        PortSymbol ps = new PortSymbol(name);
+        EMAPortSymbol ps = new EMAPortSymbol(name);
         ps.setNameDependsOn(pas.getNameDependsOn());
         ps.setTypeReference(typeRef);
         ps.setDirection(isIncoming);
@@ -255,7 +255,7 @@ public class EMAPortHelper {
         }
         while (present) {
             Log.debug(compName, "ComponentName:");
-            present = curScope.resolve(portName + "[" + (counter + 1) + "]", PortSymbol.KIND).isPresent();
+            present = curScope.resolve(portName + "[" + (counter + 1) + "]", EMAPortSymbol.KIND).isPresent();
             if (present)
                 ++counter;
             else {
@@ -273,10 +273,10 @@ public class EMAPortHelper {
                 EMAComponentInstantiationSymbol symbol;
                 symbol = curScope.<EMAComponentInstantiationSymbol>resolve(compName, EMAComponentInstantiationSymbol.KIND)
                         .get();
-                for (PortSymbol portSymbol : symbol.getComponentType().getAllPorts()) {
+                for (EMAPortSymbol emaPortSymbol : symbol.getComponentType().getAllPorts()) {
 
-                    Log.debug(portSymbol.toString(), "PortInfo");
-                    if (portSymbol.getNameWithoutArrayBracketPart().startsWith(portName)) {
+                    Log.debug(emaPortSymbol.toString(), "PortInfo");
+                    if (emaPortSymbol.getNameWithoutArrayBracketPart().startsWith(portName)) {
                         ++counter;
                     }
                 }

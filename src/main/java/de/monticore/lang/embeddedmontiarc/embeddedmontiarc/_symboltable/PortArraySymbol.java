@@ -27,16 +27,14 @@ import de.monticore.symboltable.*;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Symboltable entry for port arrays
  */
-public class PortArraySymbol extends PortSymbol {
+public class PortArraySymbol extends EMAPortSymbol {
     public static final PortArraySymbolKind KIND = PortArraySymbolKind.INSTANCE;
 
     protected Optional<String> nameSizeDependsOn;
@@ -62,9 +60,9 @@ public class PortArraySymbol extends PortSymbol {
         this.dimension = dimension;
     }
 
-    public List<? extends PortSymbol> getConcretePortSymbols() {
+    public List<? extends EMAPortSymbol> getConcretePortSymbols() {
         //TODO fix wrong port return
-        return getEnclosingScope().<PortSymbol>resolveLocally(PortSymbol.KIND)
+        return getEnclosingScope().<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND)
                 .stream().filter(s -> s.getName().startsWith(this.getName()/*+"["*/))
                 .collect(Collectors.toList());
     }
@@ -75,10 +73,10 @@ public class PortArraySymbol extends PortSymbol {
      * @param index
      * @return
      */
-    public Optional<PortSymbol> getPortSymbolWithIndex(int index) {
-        for (PortSymbol portSymbol : getConcretePortSymbols()) {
-            if (portSymbol.getName().contains("[" + index + "]")) {
-                return Optional.of(portSymbol);
+    public Optional<EMAPortSymbol> getPortSymbolWithIndex(int index) {
+        for (EMAPortSymbol emaPortSymbol : getConcretePortSymbols()) {
+            if (emaPortSymbol.getName().contains("[" + index + "]")) {
+                return Optional.of(emaPortSymbol);
             }
         }
         return Optional.ofNullable(null);
@@ -92,9 +90,9 @@ public class PortArraySymbol extends PortSymbol {
             if (resDeclSym.getASTResolution() instanceof ASTUnitNumberResolution) {
                 size = ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).getNumber().get().intValue();
             }
-            List<? extends PortSymbol> portSymbols = getConcretePortSymbols();
+            List<? extends EMAPortSymbol> portSymbols = getConcretePortSymbols();
 
-            PortSymbol firstPort = getPortSymbolWithIndex(1).get();
+            EMAPortSymbol firstPort = getPortSymbolWithIndex(1).get();
 
             int oldSize = portSymbols.size();
             if (size == 0) {
@@ -123,11 +121,11 @@ public class PortArraySymbol extends PortSymbol {
     }
 
     private void createPortSymbolForArrayIndex(ComponentSymbolReference componentSymbolReference, ASTPort node, String name, MCTypeReference<? extends MCTypeSymbol> typeRef) {
-        PortSymbol ps;
+        EMAPortSymbol ps;
         if (name.startsWith("CONSTANTPORT")) {
             ps = new ConstantPortSymbol(name);
         } else {
-            ps = new PortSymbol(name);
+            ps = new EMAPortSymbol(name);
         }
         ps.setNameDependsOn(nameSizeDependsOn);
         ps.setTypeReference(typeRef);
@@ -137,7 +135,7 @@ public class PortArraySymbol extends PortSymbol {
 
         //emastc.addToScopeAndLinkWithNode(ps, node);
 
-        Log.debug(name + " " + componentSymbolReference.getAllIncomingPorts().size(), "Added PortSymbol From PortArray:");
+        Log.debug(name + " " + componentSymbolReference.getAllIncomingPorts().size(), "Added EMAPortSymbol From PortArray:");
     }
 
 

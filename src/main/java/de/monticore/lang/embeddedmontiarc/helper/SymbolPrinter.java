@@ -112,7 +112,7 @@ public class SymbolPrinter {
                 .collect(Collectors.joining(",")) + ">";
     }
 
-    public static void printPort(PortSymbol port, IndentPrinter ip) {
+    public static void printPort(EMAPortSymbol port, IndentPrinter ip) {
         if (port.isIncoming()) {
             ip.print("in ");
         } else {
@@ -126,7 +126,7 @@ public class SymbolPrinter {
         printTags(port, ip);
     }
 
-    public static String printPort(PortSymbol port) {
+    public static String printPort(EMAPortSymbol port) {
         IndentPrinter ip = new IndentPrinter();
         printPort(port, ip);
         return ip.getContent();
@@ -166,13 +166,13 @@ public class SymbolPrinter {
         return ip.getContent();
     }
 
-    public static void printPorts(Collection<PortSymbol> ports, IndentPrinter ip) {
+    public static void printPorts(Collection<EMAPortSymbol> ports, IndentPrinter ip) {
         if (!ports.isEmpty()) {
             ip.println("ports");
             ip.indent();
             int i = 0;
             int s = ports.size();
-            for (PortSymbol p : ports) {
+            for (EMAPortSymbol p : ports) {
                 printPort(p, ip);
                 if (i == s - 1) {
                     ip.println(";");

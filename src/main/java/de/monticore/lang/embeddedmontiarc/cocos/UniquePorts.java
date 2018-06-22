@@ -53,7 +53,7 @@ public class UniquePorts implements EmbeddedMontiArcASTInterfaceCoCo {
         // calc implicit name
         String implicitName = ArcTypePrinter.printType(port.getType());
         // TODO use symTab
-        // PortSymbol entry = ((PortSymbol) port.getSymbolOpt().get());
+        // EMAPortSymbol entry = ((EMAPortSymbol) port.getSymbolOpt().get());
         // String implicitName = entry.getTypeReference().getReferencedSymbol().getName();
         name = StringTransformations.uncapitalize(implicitName);
       }

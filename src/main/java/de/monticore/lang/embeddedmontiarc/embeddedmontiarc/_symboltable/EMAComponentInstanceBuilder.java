@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 public class EMAComponentInstanceBuilder {
     protected Optional<String> name = Optional.empty();
     protected Optional<ComponentSymbolReference> symbolReference = Optional.empty();
-    protected List<PortSymbol> ports = new ArrayList<>();
+    protected List<EMAPortSymbol> ports = new ArrayList<>();
     protected List<EMAComponentInstanceSymbol> subComponents = new ArrayList<>();
     protected List<ConnectorSymbol> connectors = new ArrayList<>();
     protected Set<ResolvingFilter> resolvingFilters = new LinkedHashSet<>();
@@ -100,19 +100,19 @@ public class EMAComponentInstanceBuilder {
         return this;
     }
 
-    public EMAComponentInstanceBuilder addPort(PortSymbol port) {
+    public EMAComponentInstanceBuilder addPort(EMAPortSymbol port) {
         this.ports.add(port);
         return this;
     }
 
-    public EMAComponentInstanceBuilder addPorts(PortSymbol... ports) {
-        for (PortSymbol p : ports) {
+    public EMAComponentInstanceBuilder addPorts(EMAPortSymbol... ports) {
+        for (EMAPortSymbol p : ports) {
             this.addPort(p);
         }
         return this;
     }
 
-    public EMAComponentInstanceBuilder addPorts(Collection<PortSymbol> ports) {
+    public EMAComponentInstanceBuilder addPorts(Collection<EMAPortSymbol> ports) {
         ports.stream().forEachOrdered(p -> this.addPort(p));
         return this;
     }
@@ -136,7 +136,7 @@ public class EMAComponentInstanceBuilder {
         return this;
     }
 
-    public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports) {
+    public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<EMAPortSymbol> ports) {
         List<String> existingPortNames = this.ports.stream().map(p -> p.getName())
                 .collect(Collectors.toList());
         this.addPorts(ports.stream().filter(p ->
@@ -148,12 +148,12 @@ public class EMAComponentInstanceBuilder {
     /**
      * adds ports if they do not exist and replace generics of ports
      */
-    public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports, List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
-        List<PortSymbol> pList = ports.stream().collect(Collectors.toList());
+    public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<EMAPortSymbol> ports, List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
+        List<EMAPortSymbol> pList = ports.stream().collect(Collectors.toList());
         createMap(formalTypeParameters, actualTypeArguments).forEach((k, v) ->
                 ports.stream().filter(p -> p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()))
                         .forEachOrdered(p -> {
-                            PortSymbol pCloned = EMAPortBuilder.clone(p);
+                            EMAPortSymbol pCloned = EMAPortBuilder.clone(p);
                             pCloned.setTypeReference((MCTypeReference<? extends MCTypeSymbol>) v.getType());
                             Collections.replaceAll(pList, p, pCloned);
                         })

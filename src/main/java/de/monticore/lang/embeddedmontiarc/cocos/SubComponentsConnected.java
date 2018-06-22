@@ -25,7 +25,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiA
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  */
 public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo {
 
-    private Collection<String> getNames(Collection<PortSymbol> ports) {
+    private Collection<String> getNames(Collection<EMAPortSymbol> ports) {
         return ports.stream().map(p -> p.getName())
                 .collect(Collectors.toList());
     }
@@ -84,7 +84,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
                 remainingSubIn.removeAll(outerSubSimpleConnectorTargets);
                 if (!remainingSubIn.isEmpty()) {
                     for (String p : remainingSubIn) {
-                        if (PortSymbol.isConstantPortName(p)) {
+                        if (EMAPortSymbol.isConstantPortName(p)) {
 
                         } else if(isConfigPort(sub,p)){
                             //ConfigPorts dont need to be connected!
@@ -139,7 +139,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
         String[] tmp = relativePortName.split("\\.");
         String shortName = tmp[tmp.length - 1];
         ComponentSymbol comp = instanceSymbol.getComponentType().getReferencedSymbol();
-        PortSymbol port = comp.getIncomingPort(shortName).orElse(null);
+        EMAPortSymbol port = comp.getIncomingPort(shortName).orElse(null);
         return port == null ? false : port.isConfig();
     }
 }

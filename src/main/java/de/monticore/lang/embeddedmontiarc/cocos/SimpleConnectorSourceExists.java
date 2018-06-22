@@ -64,7 +64,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
         ComponentSymbol sourceComponent = typeReference.getReferencedSymbol();
         String sourcePort = connectorSymbol.getSource();
         
-        Optional<PortSymbol> outgoingPort = sourceComponent.getOutgoingPort(sourcePort);
+        Optional<EMAPortSymbol> outgoingPort = sourceComponent.getOutgoingPort(sourcePort);
         
         if (!outgoingPort.isPresent()) {
           Log.error(String.format("0xF4D71 Out port \"%s\" is not present in component \"%s\".",
