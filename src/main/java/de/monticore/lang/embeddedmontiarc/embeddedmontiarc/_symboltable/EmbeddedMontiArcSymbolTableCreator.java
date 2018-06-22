@@ -47,7 +47,7 @@ import java.util.*;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortHelper.*;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.addTypeArgumentsToTypeSymbol;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.initTypeRef;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.getGlobalScope;
+import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstanceSymbolCreator.getGlobalScope;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper.*;
 //import de.monticore.common.common._ast.ASTStereoValue;
 //import de.monticore.types.TypesHelper;
@@ -62,7 +62,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
     protected String compilationUnitPackage = "";
 
-    protected EmbeddedMontiArcExpandedComponentInstanceSymbolCreator instanceSymbolCreator = new EmbeddedMontiArcExpandedComponentInstanceSymbolCreator();
+    protected EMAComponentInstanceSymbolCreator instanceSymbolCreator = new EMAComponentInstanceSymbolCreator();
 
     // extra stack of components that is used to determine which components are inner components.
     protected Stack<ComponentSymbol> componentStack = new Stack<>();

@@ -45,11 +45,11 @@ import java.util.stream.Collectors;
 /**
  * Created by Michael von Wenckstern on 23.05.2016.
  */
-public class ExpandedComponentInstanceBuilder {
+public class EMAComponentInstanceBuilder {
     protected Optional<String> name = Optional.empty();
     protected Optional<ComponentSymbolReference> symbolReference = Optional.empty();
     protected List<PortSymbol> ports = new ArrayList<>();
-    protected List<ExpandedComponentInstanceSymbol> subComponents = new ArrayList<>();
+    protected List<EMAComponentInstanceSymbol> subComponents = new ArrayList<>();
     protected List<ConnectorSymbol> connectors = new ArrayList<>();
     protected Set<ResolvingFilter> resolvingFilters = new LinkedHashSet<>();
     //             FormalTypeParameter, ActualTypeArgument (is the binding of formal parameters
@@ -67,67 +67,67 @@ public class ExpandedComponentInstanceBuilder {
         return ret;
     }
 
-    public static ExpandedComponentInstanceSymbol clone(ExpandedComponentInstanceSymbol inst) {
-        return new ExpandedComponentInstanceBuilder().setName(inst.getName())
+    public static EMAComponentInstanceSymbol clone(EMAComponentInstanceSymbol inst) {
+        return new EMAComponentInstanceBuilder().setName(inst.getName())
                 .setSymbolReference(inst.getComponentType())
                 //.addPorts(inst.getPortsList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
                 .addPorts(inst.getPortsList()) // is cloned in build method
                 .addConnectors(inst.getConnectors().stream().map(c -> ConnectorBuilder.clone(c)).collect(Collectors.toList()))
-                .addSubComponents(inst.getSubComponents().stream().map(s -> ExpandedComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
+                .addSubComponents(inst.getSubComponents().stream().map(s -> EMAComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
                 .build();
     }
 
-    public ExpandedComponentInstanceBuilder addResolvingFilter(ResolvingFilter filter) {
+    public EMAComponentInstanceBuilder addResolvingFilter(ResolvingFilter filter) {
         this.resolvingFilters.add(filter);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addResolvingFilters(Set<ResolvingFilter<? extends Symbol>> filters) {
+    public EMAComponentInstanceBuilder addResolvingFilters(Set<ResolvingFilter<? extends Symbol>> filters) {
         for (ResolvingFilter filter : filters) {
             this.addResolvingFilter(filter);
         }
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder setName(String name) {
+    public EMAComponentInstanceBuilder setName(String name) {
         this.name = Optional.of(name);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder setSymbolReference(ComponentSymbolReference symbolReference) {
+    public EMAComponentInstanceBuilder setSymbolReference(ComponentSymbolReference symbolReference) {
         this.symbolReference = Optional.of(symbolReference);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addPort(PortSymbol port) {
+    public EMAComponentInstanceBuilder addPort(PortSymbol port) {
         this.ports.add(port);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addPorts(PortSymbol... ports) {
+    public EMAComponentInstanceBuilder addPorts(PortSymbol... ports) {
         for (PortSymbol p : ports) {
             this.addPort(p);
         }
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addPorts(Collection<PortSymbol> ports) {
+    public EMAComponentInstanceBuilder addPorts(Collection<PortSymbol> ports) {
         ports.stream().forEachOrdered(p -> this.addPort(p));
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addActualTypeArgument(MCTypeSymbol formalTypeParameter, ActualTypeArgument typeArgument) {
+    public EMAComponentInstanceBuilder addActualTypeArgument(MCTypeSymbol formalTypeParameter, ActualTypeArgument typeArgument) {
         this.actualTypeArguments.put(formalTypeParameter, typeArgument);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addActualTypeArguments(List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
+    public EMAComponentInstanceBuilder addActualTypeArguments(List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
         if (formalTypeParameters.size() != actualTypeArguments.size()) {
             Log.debug(formalTypeParameters.toString(), "FormalTypeParameters");
             Log.debug(actualTypeArguments.toString(), "ActualTypeArguments");
             Log.debug("instance has not as many actual type arguments as component definition has formal type parameters. No mapping is possible. Function does nothing.",
-                    ExpandedComponentInstanceBuilder.class.toString());
+                    EMAComponentInstanceBuilder.class.toString());
         } else {
             for (int i = 0; i < formalTypeParameters.size(); i++) {
                 this.addActualTypeArgument(formalTypeParameters.get(i), actualTypeArguments.get(i));
@@ -136,7 +136,7 @@ public class ExpandedComponentInstanceBuilder {
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports) {
+    public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports) {
         List<String> existingPortNames = this.ports.stream().map(p -> p.getName())
                 .collect(Collectors.toList());
         this.addPorts(ports.stream().filter(p ->
@@ -148,7 +148,7 @@ public class ExpandedComponentInstanceBuilder {
     /**
      * adds ports if they do not exist and replace generics of ports
      */
-    public ExpandedComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports, List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
+    public EMAComponentInstanceBuilder addPortsIfNameDoesNotExists(Collection<PortSymbol> ports, List<MCTypeSymbol> formalTypeParameters, List<ActualTypeArgument> actualTypeArguments) {
         List<PortSymbol> pList = ports.stream().collect(Collectors.toList());
         createMap(formalTypeParameters, actualTypeArguments).forEach((k, v) ->
                 ports.stream().filter(p -> p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()))
@@ -162,12 +162,12 @@ public class ExpandedComponentInstanceBuilder {
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addSubComponent(ExpandedComponentInstanceSymbol subCmp) {
+    public EMAComponentInstanceBuilder addSubComponent(EMAComponentInstanceSymbol subCmp) {
         this.subComponents.add(subCmp);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addSubComponentIfNameDoesNotExists(ExpandedComponentInstanceSymbol subCmp) {
+    public EMAComponentInstanceBuilder addSubComponentIfNameDoesNotExists(EMAComponentInstanceSymbol subCmp) {
         List<String> existingSubComponentNames = this.subComponents.stream().map(s -> s.getName())
                 .collect(Collectors.toList());
         if (!existingSubComponentNames.contains(subCmp.getName())) {
@@ -176,19 +176,19 @@ public class ExpandedComponentInstanceBuilder {
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addSubComponents(ExpandedComponentInstanceSymbol... subCmps) {
-        for (ExpandedComponentInstanceSymbol s : subCmps) {
+    public EMAComponentInstanceBuilder addSubComponents(EMAComponentInstanceSymbol... subCmps) {
+        for (EMAComponentInstanceSymbol s : subCmps) {
             this.addSubComponent(s);
         }
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addSubComponents(Collection<ExpandedComponentInstanceSymbol> subCmps) {
+    public EMAComponentInstanceBuilder addSubComponents(Collection<EMAComponentInstanceSymbol> subCmps) {
         subCmps.stream().forEachOrdered(s -> this.addSubComponent(s));
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addSubComponentsIfNameDoesNotExists(Collection<ExpandedComponentInstanceSymbol> subCmps) {
+    public EMAComponentInstanceBuilder addSubComponentsIfNameDoesNotExists(Collection<EMAComponentInstanceSymbol> subCmps) {
         List<String> existingSubComponentNames = this.subComponents.stream().map(s -> s.getName())
                 .collect(Collectors.toList());
         this.addSubComponents(subCmps.stream().filter(s ->
@@ -197,24 +197,24 @@ public class ExpandedComponentInstanceBuilder {
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addConnector(ConnectorSymbol connector) {
+    public EMAComponentInstanceBuilder addConnector(ConnectorSymbol connector) {
         this.connectors.add(connector);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addConnectors(ConnectorSymbol... connectors) {
+    public EMAComponentInstanceBuilder addConnectors(ConnectorSymbol... connectors) {
         for (ConnectorSymbol c : connectors) {
             this.addConnector(c);
         }
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addConnectors(Collection<ConnectorSymbol> connectors) {
+    public EMAComponentInstanceBuilder addConnectors(Collection<ConnectorSymbol> connectors) {
         connectors.stream().forEachOrdered(c -> this.addConnector(c));
         return this;
     }
 
-    protected void exchangeGenerics(ExpandedComponentInstanceSymbol inst,
+    protected void exchangeGenerics(EMAComponentInstanceSymbol inst,
                                     Map<MCTypeSymbol, ActualTypeArgument> mapTypeArguments) {
         Log.debug(inst.toString(), "exchangeGenerics inst");
         // TODO work with full names, but then you got the problem with generics.GenericInstance.Generic.T != generics.SuperGenericComparableComp2.T
@@ -259,10 +259,10 @@ public class ExpandedComponentInstanceBuilder {
         inst.fixWrongPortsInInstances();
     }
 
-    public ExpandedComponentInstanceSymbol build() {
+    public EMAComponentInstanceSymbol build() {
         if (name.isPresent() && symbolReference.isPresent()) {
-            ExpandedComponentInstanceSymbol sym =
-                    new ExpandedComponentInstanceSymbol(this.name.get(),
+            EMAComponentInstanceSymbol sym =
+                    new EMAComponentInstanceSymbol(this.name.get(),
                             this.symbolReference.get());
 
             //TODO add checks that port names and subcomponent names are unique
@@ -285,7 +285,7 @@ public class ExpandedComponentInstanceBuilder {
         throw new Error("not all parameters have been set before to build the expanded component instance symbol");
     }
 
-    public ExpandedComponentInstanceBuilder addConnectorIfNameDoesNotExists(ConnectorSymbol connector) {
+    public EMAComponentInstanceBuilder addConnectorIfNameDoesNotExists(ConnectorSymbol connector) {
         List<String> existingConnectorSources = this.connectors.stream().map(c -> c.getSource())
                 .collect(Collectors.toList());
         List<String> existingConnectorTargets = this.connectors.stream().map(c -> c.getTarget())
@@ -296,15 +296,15 @@ public class ExpandedComponentInstanceBuilder {
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addConnectorsIfNameDoesNotExists(Collection<ConnectorSymbol> connectors) {
+    public EMAComponentInstanceBuilder addConnectorsIfNameDoesNotExists(Collection<ConnectorSymbol> connectors) {
         connectors.stream().forEach(this::addConnectorIfNameDoesNotExists);
         return this;
     }
 
-    public ExpandedComponentInstanceBuilder addResolutionDeclarationSymbols(List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
+    public EMAComponentInstanceBuilder addResolutionDeclarationSymbols(List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
         for (ResolutionDeclarationSymbol symbol : resolutionDeclarationSymbols) {
             if (!this.resolutionDeclarationSymbols.contains(symbol)) {
-                Log.info("name: "+symbol.getNameToResolve() +" astResolution: "+symbol.getASTResolution().toString(),"Added ResolutionDeclarationSymbol To ExpandedComponentInstanceBuilder");
+                Log.info("name: "+symbol.getNameToResolve() +" astResolution: "+symbol.getASTResolution().toString(),"Added ResolutionDeclarationSymbol To EMAComponentInstanceBuilder");
                 this.resolutionDeclarationSymbols.add(symbol);
             }
         }
@@ -316,7 +316,7 @@ public class ExpandedComponentInstanceBuilder {
         return parameters;
     }
 
-    public ExpandedComponentInstanceBuilder addParameters(List<EMAVariable> parameters) {
+    public EMAComponentInstanceBuilder addParameters(List<EMAVariable> parameters) {
         for (EMAVariable parameter : parameters) {
             if (!this.parameters.contains(parameter))
                 this.parameters.add(parameter);
@@ -328,7 +328,7 @@ public class ExpandedComponentInstanceBuilder {
         return arguments;
     }
 
-    public ExpandedComponentInstanceBuilder addArguments(List<ASTExpression> arguments) {
+    public EMAComponentInstanceBuilder addArguments(List<ASTExpression> arguments) {
         for (ASTExpression argument : arguments) {
             if (!this.arguments.contains(argument))
                 this.arguments.add(argument);

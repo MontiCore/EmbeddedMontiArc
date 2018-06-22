@@ -598,7 +598,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testTypeVariableGenericsInstanciation() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol cs = symTab.<ExpandedComponentInstanceSymbol>resolve("testing.basicResolutionInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("testing.basicResolutionInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
         //EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         //assertNotNull(csInner);
@@ -705,7 +705,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testBasicInputPortWrapped() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol cs = symTab.<ExpandedComponentInstanceSymbol>resolve("testing.basicInputPortWrapped", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("testing.basicInputPortWrapped", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
 
         assertEquals(2, cs.getConnectors().size());
@@ -716,7 +716,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testColonTest() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol cs = symTab.<ExpandedComponentInstanceSymbol>resolve("test.a.colonTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("test.a.colonTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
 
         assertEquals(8, cs.getConnectors().size());
@@ -777,7 +777,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSymtabFAS() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol instance = symTab.<ExpandedComponentInstanceSymbol>resolve("fas.demo_fas_Fkt_m.fAS", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol instance = symTab.<EMAComponentInstanceSymbol>resolve("fas.demo_fas_Fkt_m.fAS", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instance);
     }
 }

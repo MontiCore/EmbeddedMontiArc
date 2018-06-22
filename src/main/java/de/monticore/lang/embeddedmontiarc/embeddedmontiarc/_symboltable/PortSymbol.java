@@ -139,16 +139,16 @@ public class PortSymbol extends CommonSymbol implements EMAElementInstanceSymbol
    * @return is optional, b/c a connector can belong to a component symbol or to an expanded
    * component instance symbol
    */
-  public Optional<ExpandedComponentInstanceSymbol> getComponentInstance() {
+  public Optional<EMAComponentInstanceSymbol> getComponentInstance() {
     if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
       return Optional.empty();
     }
     if (!(this.getEnclosingScope().getSpanningSymbol()
-        .get() instanceof ExpandedComponentInstanceSymbol)) {
+        .get() instanceof EMAComponentInstanceSymbol)) {
       return Optional.empty();
     }
     return Optional
-        .of((ExpandedComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+        .of((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
   }
   
   /**
@@ -251,7 +251,7 @@ public class PortSymbol extends CommonSymbol implements EMAElementInstanceSymbol
    * 
    * @return
    */
-  public List<PortSymbol> getTargetConnectedPorts(ExpandedComponentInstanceSymbol topComponent) {
+  public List<PortSymbol> getTargetConnectedPorts(EMAComponentInstanceSymbol topComponent) {
     
     // It does not works for components, when one of them is top component and another not.
     

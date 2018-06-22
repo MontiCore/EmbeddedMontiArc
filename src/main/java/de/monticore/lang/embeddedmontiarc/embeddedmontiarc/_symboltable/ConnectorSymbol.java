@@ -109,7 +109,7 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
             return null;
         }
 
-        // (1) try to load Component.Port or ExpandedComponentInstance.Port
+        // (1) try to load Component.Port or EMAComponentInstance.Port
         String fullSource = Joiners.DOT.join(this.getPackageName(),
                 this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
         Optional<PortSymbol> port = this.getEnclosingScope().<PortSymbol>resolve(fullSource,
@@ -119,14 +119,14 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
         }
 
         if (this.getEnclosingScope().getSpanningSymbol()
-                .get() instanceof ExpandedComponentInstanceSymbol) {
-            Log.info("Connector is embedded in ExpandedComponentInstanceSymbol", "ConnectorSymbol:");
+                .get() instanceof EMAComponentInstanceSymbol) {
+            Log.info("Connector is embedded in EMAComponentInstanceSymbol", "ConnectorSymbol:");
             Log.info(name, "Looking For:");
             String namePort = name;
             if (namePort.contains("."))
                 namePort = namePort.split("\\.")[1];
             PortSymbol portSymbol = connectorSourcePort(
-                    (ExpandedComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get(),
+                    (EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get(),
                     this);
             if (!isSourcePortName)
                 portSymbol = null;
@@ -135,7 +135,7 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
             if (portSymbol != null && portSymbol.getName().equals(namePort))
                 return portSymbol;
             portSymbol = connectorTargetPort(
-                    (ExpandedComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get(),
+                    (EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get(),
                     this);
             if (isSourcePortName)
                 portSymbol = null;
@@ -225,16 +225,16 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
      * @return is optional, b/c a connector can belong to a component symbol or to an expanded
      * component instance symbol
      */
-    public Optional<ExpandedComponentInstanceSymbol> getComponentInstance() {
+    public Optional<EMAComponentInstanceSymbol> getComponentInstance() {
         if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
             return Optional.empty();
         }
         if (!(this.getEnclosingScope().getSpanningSymbol()
-                .get() instanceof ExpandedComponentInstanceSymbol)) {
+                .get() instanceof EMAComponentInstanceSymbol)) {
             return Optional.empty();
         }
         return Optional
-                .of((ExpandedComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+                .of((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
     }
 
     /**
@@ -262,7 +262,7 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
         return getTarget();
     }
 
-    public static PortSymbol connectorSourcePort(ExpandedComponentInstanceSymbol inst,
+    public static PortSymbol connectorSourcePort(EMAComponentInstanceSymbol inst,
                                                  ConnectorSymbol c) {
         Iterator<String> parts = Splitters.DOT.split(c.getSource()).iterator();
         Optional<String> instance = Optional.empty();
@@ -275,7 +275,7 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
             instancePort = Optional.of(parts.next());
             instance = Optional.of(TypesPrinter.FirstLowerCase(instance.get()));
 
-            ExpandedComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
+            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
             port = inst2.getSpannedScope().<PortSymbol>resolve(instancePort.get(), PortSymbol.KIND);
         } else {
             instancePort = instance;
@@ -293,7 +293,7 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
         return null;
     }
 
-    public static PortSymbol connectorTargetPort(ExpandedComponentInstanceSymbol inst,
+    public static PortSymbol connectorTargetPort(EMAComponentInstanceSymbol inst,
                                                  ConnectorSymbol c) {
         Iterator<String> parts = Splitters.DOT.split(c.getTarget()).iterator();
         Optional<String> instance = Optional.empty();
@@ -307,12 +307,12 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
             Log.debug(instancePort.toString(), "instancePort ");
             instance = Optional.of(TypesPrinter.FirstLowerCase(instance.get()));
             Log.debug(instance.toString(), "instance");
-            Optional<ExpandedComponentInstanceSymbol> instOpt2 = inst.getSubComponent(instance.get());
+            Optional<EMAComponentInstanceSymbol> instOpt2 = inst.getSubComponent(instance.get());
             if (!instOpt2.isPresent()) {
                 System.out.println("No component instance with name " + instance.get() + " is present");
                 Log.error("0x1AC013 Target instance is missing");
             }
-            ExpandedComponentInstanceSymbol inst2 = instOpt2.get();
+            EMAComponentInstanceSymbol inst2 = instOpt2.get();
 
             //port = inst2.getSpannedScope().<PortSymbol>resolve(instancePort.get(), PortSymbol.KIND);
             Log.info(instancePort.get(), "Looking for Port");
@@ -343,7 +343,7 @@ public class ConnectorSymbol extends CommonSymbol implements EMAElementInstanceS
         return null;
     }
 
-    private static void printPossibleErrorMessage(Optional<PortSymbol> port, ExpandedComponentInstanceSymbol inst2, Optional<String> instance, Optional<String> instancePort) {
+    private static void printPossibleErrorMessage(Optional<PortSymbol> port, EMAComponentInstanceSymbol inst2, Optional<String> instance, Optional<String> instancePort) {
         Iterator<PortSymbol> portsIter = inst2.getPortsList().iterator();
         if (!port.isPresent()) {
             while (portsIter.hasNext()) {

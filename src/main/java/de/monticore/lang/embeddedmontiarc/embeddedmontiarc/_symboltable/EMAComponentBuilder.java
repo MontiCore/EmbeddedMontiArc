@@ -37,7 +37,7 @@ import java.util.Collection;
  * @author Michael von Wenckstern
  *         This class allows to modify {@see ComponentSymbol},
  *         if you do so the symbol table may not be consistent.
- *         Especially you need to call {@see EmbeddedMontiArcExpandedComponentInstanceSymbolCreator#createInstances}
+ *         Especially you need to call {@see EMAComponentInstanceSymbolCreator#createInstances}
  *         TODO static methods should call a protected doMethod() to allow extending this class
  *         TODO the builder should also be used to create a new ComponentSymbol with a build() method
  */
@@ -69,7 +69,7 @@ public class EMAComponentBuilder {
     private static final ResolvingFilter<MCFieldSymbol> jAttributeResolvingFilter =
             CommonResolvingFilter.create(MCFieldSymbol.KIND);
 
-    private static final ResolvingFilter<EMAComponentInstantiationSymbol> componentInstanceResolvingFilter =
+    private static final ResolvingFilter<EMAComponentInstantiationSymbol> emaComponentInstantiationResolvingFilter =
             CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND);
 
     ////////////////////////// ports //////////////////////////////////////////////
@@ -266,7 +266,7 @@ public class EMAComponentBuilder {
     ////////////////////////// sub components //////////////////////////////////////////////
 
     public static EMAComponentBuilder addSubComponent(ComponentSymbol cs, EMAComponentInstantiationSymbol subComponent) {
-        addResolverIfMissing(cs, componentInstanceResolvingFilter, subComponent);
+        addResolverIfMissing(cs, emaComponentInstantiationResolvingFilter, subComponent);
         return getInstance();
     }
 

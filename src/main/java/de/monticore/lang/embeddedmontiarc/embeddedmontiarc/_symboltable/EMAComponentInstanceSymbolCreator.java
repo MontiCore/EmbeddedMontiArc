@@ -37,11 +37,11 @@ import java.util.Set;
  *
  * @author Michael von Wenckstern
  */
-public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
+public class EMAComponentInstanceSymbolCreator {
 
     protected LinkedHashSet<ComponentSymbol> topComponents = new LinkedHashSet<>();
 
-    public EmbeddedMontiArcExpandedComponentInstanceSymbolCreator() {
+    public EMAComponentInstanceSymbolCreator() {
     }
 
     public static Scope getGlobalScope(final Scope scope) {
@@ -58,20 +58,20 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
     public void createInstances(ComponentSymbol topComponent) {
         if (getGlobalScope(topComponent.getSpannedScope()).resolveDown(
                 Joiners.DOT.join(topComponent.getPackageName(), Character.toLowerCase(topComponent.getName().charAt(0)) +
-                        topComponent.getName().substring(1)), ExpandedComponentInstanceSymbol.KIND).isPresent()) {
+                        topComponent.getName().substring(1)), EMAComponentInstanceSymbol.KIND).isPresent()) {
 //    if (!topComponents.add(topComponent)) {
             System.out.println("instances for top component + " + topComponent.getFullName() +
                     " is already created");
             Log.info("instances for top component + " + topComponent.getFullName() +
                             " is already created",
-                    EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.class.toString());
+                    EMAComponentInstanceSymbolCreator.class.toString());
             return;
         }
 
         if (!topComponent.getFormalTypeParameters().isEmpty()) {
             Log.info("expanded component instance is not created, b/c top level has"
                             + " generic parameters and can, therefore, not be instantiated",
-                    EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.class.toString());
+                    EMAComponentInstanceSymbolCreator.class.toString());
             return;
         }
 
@@ -89,19 +89,19 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
             name = Character.toLowerCase(name.charAt(0)) + "";
         }
 
-        ExpandedComponentInstanceBuilder builder =
+        EMAComponentInstanceBuilder builder =
                 createInstance(topComponent, filters, null)
                         .setName(name);
 
-        final ExpandedComponentInstanceSymbol sym = builder.addResolvingFilters(filters).build();
+        final EMAComponentInstanceSymbol sym = builder.addResolvingFilters(filters).build();
         ((MutableScope) topComponent.getEnclosingScope()).add(sym);
     }
 
-    protected ExpandedComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
+    protected EMAComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
         // TODO resolve generics and parameters
         //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
-        ExpandedComponentInstanceBuilder builder =
-                ExpandedComponentInstanceSymbol.builder()
+        EMAComponentInstanceBuilder builder =
+                EMAComponentInstanceSymbol.builder()
                         .setSymbolReference(new ComponentSymbolReference(cmp.getName(),
                                 cmp.getEnclosingScope()))
                         .addPorts(cmp.getPortsList())

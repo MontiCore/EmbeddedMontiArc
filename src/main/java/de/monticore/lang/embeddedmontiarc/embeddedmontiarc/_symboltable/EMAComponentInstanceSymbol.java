@@ -87,10 +87,10 @@ import java.util.stream.Collectors;
  *         This class is the basic class for instances so that you can resolve them using the
  *         standard symbol table mechanism
  */
-public class ExpandedComponentInstanceSymbol
+public class EMAComponentInstanceSymbol
         extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
 
-    public static final EMAExpandedComponentInstanceKind KIND = new EMAExpandedComponentInstanceKind();
+    public static final EMAComponentInstanceKind KIND = new EMAComponentInstanceKind();
 
     protected ComponentSymbolReference type;
     protected List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
@@ -101,13 +101,13 @@ public class ExpandedComponentInstanceSymbol
     /**
      * use {@link #builder()}
      */
-    protected ExpandedComponentInstanceSymbol(String name, ComponentSymbolReference type) {
+    protected EMAComponentInstanceSymbol(String name, ComponentSymbolReference type) {
         super(name, KIND);
         this.type = type;
     }
 
-    public static ExpandedComponentInstanceBuilder builder() {
-        return new ExpandedComponentInstanceBuilder();
+    public static EMAComponentInstanceBuilder builder() {
+        return new EMAComponentInstanceBuilder();
     }
 
     /**
@@ -148,7 +148,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     public void fixWrongPortsInInstances() {
-        for (ExpandedComponentInstanceSymbol instanceSymbol : getSubComponents()) {
+        for (EMAComponentInstanceSymbol instanceSymbol : getSubComponents()) {
             instanceSymbol.fixWrongPortsInInstances();
 
         }
@@ -190,7 +190,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     /**
-     * ExpandedComponentInstanceSymbol::getPortsList() may return different
+     * EMAComponentInstanceSymbol::getPortsList() may return different
      * results than ComponentSymbol::getPortsList()
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
      * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
@@ -228,7 +228,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     /**
-     * ExpandedComponentInstanceSymbol::getSubComponents() may return different
+     * EMAComponentInstanceSymbol::getSubComponents() may return different
      * results than the union of ComponentSymbol::getSubComponents() and
      * ComponentSymbol::getInnerComponents.
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
@@ -236,16 +236,16 @@ public class ExpandedComponentInstanceSymbol
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
      * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
      */
-    public Collection<ExpandedComponentInstanceSymbol> getSubComponents() {
-        return getSpannedScope().<ExpandedComponentInstanceSymbol>resolveLocally(ExpandedComponentInstanceSymbol.KIND);
+    public Collection<EMAComponentInstanceSymbol> getSubComponents() {
+        return getSpannedScope().<EMAComponentInstanceSymbol>resolveLocally(EMAComponentInstanceSymbol.KIND);
     }
 
-    public Optional<ExpandedComponentInstanceSymbol> getSubComponent(String name) {
-        return getSpannedScope().<ExpandedComponentInstanceSymbol>resolveLocally(name, ExpandedComponentInstanceSymbol.KIND);
+    public Optional<EMAComponentInstanceSymbol> getSubComponent(String name) {
+        return getSpannedScope().<EMAComponentInstanceSymbol>resolveLocally(name, EMAComponentInstanceSymbol.KIND);
     }
 
     /**
-     * ExpandedComponentInstanceSymbol::getPortsList() may return different
+     * EMAComponentInstanceSymbol::getPortsList() may return different
      * results than ComponentSymbol::getPortsList()
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
      * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
@@ -258,7 +258,7 @@ public class ExpandedComponentInstanceSymbol
 
     @Override
     public String toString() {
-        return SymbolPrinter.printExpandedComponentInstance(this);
+        return SymbolPrinter.printEMAComponentInstance(this);
     }
     /*
     @Override
@@ -292,17 +292,17 @@ public class ExpandedComponentInstanceSymbol
         Set<ConnectorSymbol> set = new LinkedHashSet<>();
 
         Collection<ConnectorSymbol> connectors = getConnectors();
-        Collection<ExpandedComponentInstanceSymbol> subComponents = getSubComponents();
+        Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
 
         for (ConnectorSymbol connector : connectors) {
             PortSymbol sourcePort = connector.getSourcePort();
             PortSymbol targetPort = connector.getTargetPort();
-            Optional<ExpandedComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
-            Optional<ExpandedComponentInstanceSymbol> targetCmpOpt = targetPort.getComponentInstance();
+            Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
+            Optional<EMAComponentInstanceSymbol> targetCmpOpt = targetPort.getComponentInstance();
 
             if (sourceCmpOpt.isPresent() && targetCmpOpt.isPresent()) {
-                ExpandedComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
-                ExpandedComponentInstanceSymbol targetCmp = targetCmpOpt.get();
+                EMAComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
+                EMAComponentInstanceSymbol targetCmp = targetCmpOpt.get();
                 if (subComponents.contains(sourceCmp) && subComponents.contains(targetCmp)) {
                     set.add(connector);
                 }
@@ -313,21 +313,21 @@ public class ExpandedComponentInstanceSymbol
     }
 
 
-    public List<ExpandedComponentInstanceSymbol> getIndependentSubComponents() {
-        Collection<ExpandedComponentInstanceSymbol> subComponents = getSubComponents();
+    public List<EMAComponentInstanceSymbol> getIndependentSubComponents() {
+        Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
         List<ConnectorSymbol> subComponentConnectors = getSubComponentConnectors();
 
-        Set<ExpandedComponentInstanceSymbol> nonIndependentSubComponents = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> nonIndependentSubComponents = new HashSet<>();
         for (ConnectorSymbol connector : subComponentConnectors) {
             PortSymbol sourcePort = connector.getSourcePort();
-            Optional<ExpandedComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
+            Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
             if (sourceCmpOpt.isPresent()) {
-                ExpandedComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
+                EMAComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
                 nonIndependentSubComponents.add(sourceCmp);
             }
         }
 
-        List<ExpandedComponentInstanceSymbol> independentSubComponents = new ArrayList<>(subComponents);
+        List<EMAComponentInstanceSymbol> independentSubComponents = new ArrayList<>(subComponents);
         independentSubComponents.removeAll(nonIndependentSubComponents);
         return new ArrayList<>(independentSubComponents);
     }
@@ -351,7 +351,7 @@ public class ExpandedComponentInstanceSymbol
     }
 
     public boolean isSubComponent(String name) {
-        for (ExpandedComponentInstanceSymbol subComponent : getSubComponents()) {
+        for (EMAComponentInstanceSymbol subComponent : getSubComponents()) {
             if (subComponent.getFullName().equals(name))
                 return true;
         }
@@ -375,7 +375,7 @@ public class ExpandedComponentInstanceSymbol
         this.arguments = arguments;
     }
 
-    public Optional<ExpandedComponentInstanceSymbol> getEnclosingComponent() {
-        return (Optional<ExpandedComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
+    public Optional<EMAComponentInstanceSymbol> getEnclosingComponent() {
+        return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
     }
 }

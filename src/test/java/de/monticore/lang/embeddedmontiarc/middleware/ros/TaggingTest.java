@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.middleware.ros;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
@@ -38,7 +38,7 @@ public class TaggingTest extends AbstractTaggingResolverTest {
     public void testRosConnectionParsing() {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("middleware.ros.basicParsing", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("middleware.ros.basicParsing", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         //rosIn
@@ -82,7 +82,7 @@ public class TaggingTest extends AbstractTaggingResolverTest {
     public void testRosConnectionParsingOptionalMsgField() {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("middleware.ros.optionalMsgField", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("middleware.ros.optionalMsgField", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         PortSymbol in1 = component.getPort("in1").orElse(null);

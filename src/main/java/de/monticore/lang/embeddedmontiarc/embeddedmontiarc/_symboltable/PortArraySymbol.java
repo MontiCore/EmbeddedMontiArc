@@ -111,7 +111,7 @@ public class PortArraySymbol extends PortSymbol {
                     createPortSymbolForArrayIndex(componentSymbolReference, (ASTPort) firstPort.getAstNode().get(), this.getName() + "[" + i + "]", firstPort.getTypeReference());
                 }
             }
-            //just add missing ports here and fix actual size after expandedcomponentinstance creation
+            //just add missing ports here and fix actual size after emacomponentinstance creation
             /*for (int i = size + 1; i <= oldSize; ++i) {
                 if (getPortSymbolWithIndex(i).isPresent())
                     getEnclosingScope().getAsMutableScope().remove(getPortSymbolWithIndex(i).get());
