@@ -25,6 +25,6 @@ source /opt/ros/kinetic/setup.bash
 
 catkin init
 catkin clean -y
-catkin build
+catkin build -DCMAKE_BUILD_TYPE=Release
 
 popd
