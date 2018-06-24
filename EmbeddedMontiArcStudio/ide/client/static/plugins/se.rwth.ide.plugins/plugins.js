@@ -1044,6 +1044,8 @@ var plugins = [
     "plugins/se.rwth.language.cd/cd",
     "plugins/se.rwth.language.ocl/ocl",
     "plugins/se.rwth.language.embeddedmontiview/embeddedmontiview",
+    "plugins/se.rwth.language.cnntrainlang/cnntrainlang",
+    "plugins/se.rwth.language.embeddedmontiarcdl/embeddedmontiarcdl",
     "plugins/se.rwth.ide.ui/ui",
     "plugins/se.rwth.api.url/url.js",
     "plugins/se.rwth.api.window/window.js",
