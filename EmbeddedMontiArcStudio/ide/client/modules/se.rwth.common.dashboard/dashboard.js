@@ -44,6 +44,16 @@ var Dashboard = (function() {
                 reponame: "PacMan",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/PacMan/v&url=/m/pacman.zip&openFile=/de/rwth/pacman/PacManWrapper.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "Intersection",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Intersection/v&url=/m/intersection.zip&openFile=/ba/System.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "Classifier",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Classifier/v&url=/m/classifier.zip&openFile=/cifar10/Main.emadl"
             }];
         },
 

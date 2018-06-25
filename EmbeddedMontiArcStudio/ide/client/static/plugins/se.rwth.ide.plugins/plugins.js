@@ -1066,11 +1066,13 @@ plugins.push(
 } else {
     plugins.push(
 	"plugins/se.rwth.simulate/simulate",
+  "plugins/se.rwth.rebuild/rebuild",
     "plugins/se.rwth.visualize/visualize",
     "plugins/se.rwth.report/report",
     "plugins/se.rwth.reportWithStreams/reportWithStreams",
     "plugins/se.rwth.test/test",
 	"plugins/se.rwth.viewverification/viewverification",
-    "plugins/se.rwth.models.updater/models.updater"
+    "plugins/se.rwth.models.updater/models.updater",
+    "plugins/se.rwth.stop/stop"
     );
 }

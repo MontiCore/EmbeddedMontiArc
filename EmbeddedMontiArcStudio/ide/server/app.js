@@ -2,8 +2,8 @@ const Express                                           = require("express");
 const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
-const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
+const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, IntersectionSimulation, ClassifierSimulation} = require("./simulations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization, ClassifierVisualization, IntersectionVisualization} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS}     = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
@@ -18,6 +18,7 @@ const FileSystem                                        = require("fs");
 const App = Express();
 const Logger = Log.getLogger("APPLICATION");
 
+var curSimulator;
 
 Logger.level = "debug";
 
@@ -25,6 +26,7 @@ Logger.level = "debug";
 App.use("/m", Express.static(PATHS.MODELS));
 App.use("/r", Express.static(Path.resolve(PATHS.REPORTING, "report")));
 App.use("/c", Express.static(PATHS.CLUSTER_FIDDLE));
+App.use("/classifier", Express.static(PATHS.CLASSIFIER));
 App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
 App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
@@ -33,6 +35,7 @@ App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC))
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
 
 App.use("/services/clustering/simulate/cluster", FileUpload());
+App.use("/services/classifier/simulate/classify", FileUpload());
 App.use("/services", Express.json());
 
 App.post("/services/:project/update-models", function(request, response) {
@@ -183,9 +186,9 @@ App.post("/services/autopilot/viewverification/single", function(request, respon
 });
 
 App.post("/services/clustering/simulate", function(request, response) {
-	function onPrepared() {
+	  function onPrepared() {
         Chrome.open(URLS.SHARED + "/c");
-	    response.end();
+	      response.end();
     }
 
     ClusteringSimulation.prepare(onPrepared);
@@ -283,13 +286,13 @@ App.post("/services/pump/viewverification/single", function(request, response) {
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
 			}
-		}  
+		}
 		else {
 			alert('No matching files found');
-		} 
+		}
 		response.end();
     }
-	
+
     PumpVerification.execute("model\\pump" + body.name.replace(/\//g, "\\"), onExecuted);
 });
 
@@ -317,10 +320,10 @@ App.post("/services/pump/viewverification/all", function(request, response) {
 				//Close the Source Document
 				//sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
 			}
-		}  
+		}
 		else {
 			alert('No matching files found');
-		} 
+		}
 		response.end();
 	}
 
@@ -399,6 +402,91 @@ App.post("/services/pacman/visualize", function(request, response) {
 	}
 
 	PacManVisualization.execute(onExecuted);
+});
+
+App.post("/services/intersection/simulate", function(request, response) {
+	function onExecuted() {
+		response.end();
+	}
+
+	function onExit(){
+		curSimulator = null;
+		response.end();
+	}
+	curSimulator = IntersectionSimulation;
+	curSimulator.execute(onExecuted);
+	//curSimulator.process.on("exit",onExit);
+});
+
+App.post("/services/intersection/stop", function(request, response) {
+	if(curSimulator != null){
+		curSimulator.exit();
+	}
+	response.end();
+});
+
+App.post("/services/classifier/simulate", function(request, response) {
+	function onPrepared() {
+		Chrome.open(URLS.SHARED + "/classifier");
+	  response.end();
+	}
+
+	ClassifierSimulation.prepare(onPrepared)
+});
+
+App.post("/services/classifier/simulate/classify", function(request, response) {
+    const image = request.files.file;
+    const imagePath = Path.join(PATHS.EXEC, "img.png");
+    const resultPath = Path.join(PATHS.EXEC, "class.txt");
+
+    function onCopyFile() {
+        response.end();
+    }
+
+    function onExecuted() {
+        FileSystem.copyFile(resultPath, Path.join(PATHS.CLASSIFIER, "class.txt"), onCopyFile);
+    }
+
+    function onImageRead(error, image) {
+        if(error) return response.end();
+
+        image.write(imagePath);
+        ClassifierSimulation.execute(onExecuted);
+    }
+
+    function onMV(error) {
+        if(error) response.end();
+        else Jimp.read(imagePath, onImageRead);
+    }
+
+    image.mv(imagePath, onMV);
+});
+
+App.post("/services/classifier/rebuild", function(request, response) {
+	function onPrepared() {
+		Chrome.open(URLS.SHARED + "/classifier");
+		response.end();
+	}
+
+	ClassifierSimulation.rebuild(onPrepared);
+});
+
+App.post("/services/classifier/visualize", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/cifar10.main.html");
+		response.end();
+	}
+
+	ClassifierVisualization.execute(onExecuted);
+});
+
+App.post("/services/intersection/visualize", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/ba.system.html");
+		response.end();
+	}
+
+	IntersectionVisualization.execute(onExecuted);
 });
 
 module.exports = App;

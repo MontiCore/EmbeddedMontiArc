@@ -11,8 +11,16 @@ Logger.level = "debug";
 
 
 function onServerStarted(error) {
-	if(error) Logger.error("An error occurred while starting the server: %j.", error);
+	if(error) Logger.error("An error occurred while stating the server: %j.", error);
 	else Chrome.open(URLS.SHARED);
+}
+
+function onIntersectionZipped(){
+	Archiver.zip("classifier", onClassifierZipped);
+}
+
+function onClassifierZipped(){
+	Archiver.zip("clustering", onClusteringZipped);
 }
 
 function onClusteringZipped() {
@@ -22,7 +30,7 @@ function onClusteringZipped() {
 }
 
 function onAutopilotZipped() {
-	Archiver.zip("clustering", onClusteringZipped);
+	Archiver.zip("intersection",onIntersectionZipped);
 }
 
 function onPumpZipped() {

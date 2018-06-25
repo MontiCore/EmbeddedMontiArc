@@ -11,12 +11,15 @@ const findPort = require("find-port-sync");
 const PATHS = {};
 
 PATHS.HOME           = Path.resolve(__dirname, "..", "..");
-PATHS.ARMADILLO      = Path.resolve(PATHS.HOME, "armadillo");
-PATHS.CHROME         = Path.resolve(PATHS.HOME, "chrome");
+PATHS.ARMADILLO      = Path.resolve(PATHS.HOME, "armadillo-8.500.1-linux");
+PATHS.MXNET      = Path.resolve(PATHS.HOME, "incubator-mxnet");
+PATHS.CHROME         = Path.resolve(PATHS.HOME, "chrome-linux");
 PATHS.CLUSTER_FIDDLE = Path.resolve(PATHS.HOME, "cluster-fiddle");
+PATHS.CLASSIFIER     = Path.resolve(PATHS.HOME, "classifier");
 PATHS.IDE            = Path.resolve(PATHS.HOME, "ide");
-PATHS.JDK            = Path.resolve(PATHS.HOME, "jdk");
+PATHS.JDK            = Path.resolve(PATHS.HOME, "java-linux");
 PATHS.MINGW          = Path.resolve(PATHS.HOME, "mingw64");
+PATHS.GPP            = Path.resolve(PATHS.HOME, "g++-linux");
 PATHS.MODELS         = Path.resolve(PATHS.HOME, "model");
 PATHS.NODEJS         = Path.resolve(PATHS.HOME, "nodejs");
 PATHS.OCTAVE         = Path.resolve(PATHS.HOME, "octave-4.2.1");
@@ -40,9 +43,9 @@ PATHS.VIEWVERIFICATION_OUTPUT = Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG
  */
 const EXECUTABLES = {};
 
-EXECUTABLES.CHROME    = Path.resolve(PATHS.CHROME, "GoogleChromePortable.exe");
-EXECUTABLES.JAVA      = Path.resolve(PATHS.JDK, "bin", "java.exe");
-EXECUTABLES.GPP       = Path.resolve(PATHS.MINGW, "bin", "g++.exe");
+EXECUTABLES.CHROME    = Path.resolve(PATHS.CHROME, "google-chrome");
+EXECUTABLES.JAVA      = Path.resolve(PATHS.JDK, "bin", "java");
+EXECUTABLES.GPP       = Path.resolve(PATHS.GPP, "bin", "g++");
 
 /*
  * JARS
@@ -52,6 +55,7 @@ const JARS = {};
 JARS.EMAM2EMA     = Path.resolve(PATHS.VISUALIZATION, "emam2ema.jar");
 JARS.SVGGENERATOR = Path.resolve(PATHS.VISUALIZATION, "embeddedmontiarc-svggenerator.jar");
 JARS.EMAM2CPP     = Path.resolve(PATHS.HOME, "emam2cpp.jar");
+JARS.EMADL2CPP    = Path.resolve(PATHS.HOME, "emadl2cpp.jar");
 JARS.REPORTING    = Path.resolve(PATHS.REPORTING, "reporting.jar");
 
 JARS.VIEWVERIFICATION = Path.resolve(PATHS.VIEWVERIFICATION, "view-verification-0.0.2-SNAPSHOT-jar-with-dependencies");
@@ -64,12 +68,14 @@ BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
+BATCHES.INTERSECTION = {};
+BATCHES.CLASSIFIER = {};
 
 BATCHES.AUTOPILOT.SIMULATION       			= {};
-BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.bat");
+BATCHES.AUTOPILOT.SIMULATION.START 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start.sh");
 BATCHES.AUTOPILOT.SIMULATION.START_DISTR 	= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.start_distr.bat");
 BATCHES.AUTOPILOT.SIMULATION.STOP  			= Path.resolve(PATHS.SCRIPTS, "autopilot", "simulate.stop.bat");
-BATCHES.AUTOPILOT.VISUALIZATION    			= Path.resolve(PATHS.SCRIPTS, "autopilot", "visualize.bat");
+BATCHES.AUTOPILOT.VISUALIZATION    			= Path.resolve(PATHS.SCRIPTS, "autopilot", "visualize.sh");
 BATCHES.AUTOPILOT.REPORTING        			= Path.resolve(PATHS.SCRIPTS, "autopilot", "report.bat");
 BATCHES.AUTOPILOT.REPORTING_STREAM 			= Path.resolve(PATHS.SCRIPTS, "autopilot", "reportWithStreams.bat");
 BATCHES.AUTOPILOT.TEST             			= {};
@@ -99,6 +105,15 @@ BATCHES.PACMAN.EMAM2WASM_GEN 		= Path.resolve(PATHS.SCRIPTS, "pacman", "emam2was
 BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report.bat");
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
 BATCHES.PACMAN.VISUALIZATION       		= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
+
+BATCHES.INTERSECTION.SIMULATION				= Path.resolve(PATHS.SCRIPTS, "intersection","simulation.sh");
+BATCHES.INTERSECTION.VISUALIZATION			= Path.resolve(PATHS.SCRIPTS, "intersection","visualize.sh");
+
+BATCHES.CLASSIFIER.SIMULATION          		= {};
+BATCHES.CLASSIFIER.SIMULATION.BUILD 		= Path.resolve(PATHS.SCRIPTS, "classifier", "build.sh");
+BATCHES.CLASSIFIER.SIMULATION.EXECUTE 	= Path.resolve(PATHS.SCRIPTS, "classifier", "execute.sh");
+BATCHES.CLASSIFIER.SIMULATION.REBUILD   = Path.resolve(PATHS.SCRIPTS, "classifier", "rebuild.sh");
+BATCHES.CLASSIFIER.VISUALIZATION			= Path.resolve(PATHS.SCRIPTS, "classifier","visualize.sh");
 
 
 /*
