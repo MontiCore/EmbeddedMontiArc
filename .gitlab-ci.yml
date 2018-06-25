@@ -1,0 +1,11 @@
+MasterJob:
+  script:
+  - git clone https://ci-se:${cise}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/ArtifactAnalysis --branch master --single-branch master
+  - cd master
+  - rm ".gitlab-ci.yml"
+  - git add -A
+  - git config --global user.email "ci-se@se-rwth.de"
+  - git config --global user.name "ci-se"
+  - git commit -m "remove .gitlab-ci.yml"
+  - git remote add mine https://ci-se:${cise}@github.com/EmbeddedMontiArc/ArtifactAnalysis
+  - git push -f -u mine
