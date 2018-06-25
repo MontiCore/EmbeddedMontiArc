@@ -11,16 +11,16 @@ component Controller {
         in Z nextHole,
         in Z^{5,2} nextLootCrates,
         out Z(-1 : 1 : 1) marioDirection,
-        out B marioJump,
-        out B marioDown,
-        out B marioShoot;
+        out Z marioJump,
+        out Z marioDown,
+        out Z marioShoot;
         
     implementation Math {
         
        marioDirection = 1;
-       marioJump = true;
-       marioDown = false;
-       marioShoot = false;
+       marioJump = 1; //Don't use "True" -> Open BugReport
+       marioDown = 0;
+       marioShoot = 0;
        //marioDirection = 1;
         
     }

@@ -201,21 +201,26 @@ function getCommands(){
 		if(dir==-1)
 			pressKey(KEY.LEFT);
 		
-	if(jump==true)
+	if(jump==1)
 		pressKey(KEY.UP);
 	
-	if(shoot==true)
+	if(shoot==1)
 		pressKey(KEY.CONTROL);
 	
-	if(down==true)
+	if(down==1)
 		pressKey(KEY.DOWN);
+	
+	//Debug
+	console.log("Jump: "+jump);
+	console.log("Shoot: "+shoot);
+	console.log("Direction: "+dir);
 	
 }
 
 function doSimulationStep(){
 	sendPlayerData();
 	sendEnvironmentData();
-	
+	execute();
 	getCommands();
 }
 

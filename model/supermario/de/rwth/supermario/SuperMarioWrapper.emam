@@ -12,9 +12,9 @@ component SuperMarioWrapper {
         in Z nextHole,
         in Z^{5,2} nextLootCrates,
         out Z(-1 : 1 : 1) marioDirection,
-        out B marioJump,
-        out B marioDown,
-        out B marioShoot;
+        out Z marioJump,
+        out Z marioDown,
+        out Z marioShoot;
         
     //Replace this with your own custom controller
     instance Controller controller;
