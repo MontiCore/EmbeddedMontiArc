@@ -30,6 +30,7 @@ define(function(require, exports, module) {
         }
 
         function instantiateWasm(imports, callback) {
+            console.log(imports);
             function onInstantiate(instance) {
                 callback(instance);
             }
@@ -92,7 +93,59 @@ define(function(require, exports, module) {
             else callbacks.push(callback);
         }
 
+
+        function replaceCommentMatch(match) {
+            var length = match.length;
+            var modMatch = "";
+
+            for (var i = 0; i < length; i++) {
+                modMatch += match[i] === ' ' || match[i] === '\n' ? match[i] : ' ';
+            }
+
+            return modMatch;
+        }
+
+        function removeComments(docValue) {
+            return docValue.replace(/((['"])(?:(?!\2|\\).|\\.)*\2)|\/\/[^\n]*|\/\*(?:[^*]|\*(?!\/))*\*\//g, replaceCommentMatch);
+        }
+
+        function replaceAt(string, index, replacement) {
+            return string.substr(0, index) + replacement + string.substr(index + replacement.length);
+        }
+
+        function doRemoveImplementation(docValue, index) {
+            var bracketCounter = 0;
+            var length = docValue.length;
+            var inBody = false;
+
+            for (var i = index; i < length; i++) {
+                if (docValue[i] === '{') { bracketCounter++; inBody = true; }
+                else if (docValue[i] === '}') bracketCounter--;
+
+                docValue = replaceAt(docValue, i, docValue[i] !== '\n' ? ' ' : '\n');
+
+                if (inBody && bracketCounter === 0) return docValue;
+            }
+
+            return docValue;
+        }
+
+        function removeImplementation(docValue, initial) {
+            var start = docValue.indexOf("implementation", initial || 0);
+            var middle = start === -1 ? -1 : docValue.indexOf("Math", start);
+
+            if (middle === -1) return docValue;
+            else return removeImplementation(doRemoveImplementation(docValue, start), start);
+        }
+
+        function removeNoise(docValue) {
+            return removeImplementation(removeComments(docValue));
+        }
+
+
         function handleParse(docValue, callback) {
+            if (caption === "EmbeddedMontiArcMath") docValue = removeNoise(docValue);
+
             emitter.emit("onParse");
 
             console.debug("Parse");
