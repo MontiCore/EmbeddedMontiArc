@@ -19,8 +19,12 @@ define(function(require, exports, module) {
 		var messageIndex = -1;
 		
 		
-		function onNFPResponse() {
+		function onFinish() {
 			UICustom.done(messageIndex);
+		}
+		
+		function onNFPResponse() {
+			ModelsUpdater.update(onFinish)
 		}
 
 		function onUpdated() {

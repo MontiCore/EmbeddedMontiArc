@@ -1,0 +1,16 @@
+package fas_views;
+
+view FA-75 {
+  component FAS {
+    port
+	  out ? BrakeForce_pc;
+	  
+	  component BrakeAssistant {
+	    port
+		  in ? BrakeForce_pedal_pc;
+	  }
+	  instance BrakeAssistant bAssist;
+	  
+	  effect bAssist.BrakeForce_pedal_pc -> BrakeForce_pc;
+  }
+}

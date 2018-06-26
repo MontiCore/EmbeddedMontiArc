@@ -1,0 +1,39 @@
+package fas_views;
+
+view FA-3 {
+  component FAS {
+    ports
+	  in ? CruiseControl_b,
+	  in ? LeverUp_stat,
+	  in ? LeverDown_stat,
+	  out ? CC_active_b;
+	  
+	  component Tempomat {
+	    ports
+		  in ? CruiseControl_b,
+		  in ? LeverUp_stat,
+		  in ? LeverDown_stat,
+		  out ? CC_active_b,
+		  out ? V_CC_delta_kmh;
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    port
+		  in ? ?;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  connect CruiseControl_b -> tempo.CruiseControl_b;
+	  connect LeverUp_stat -> tempo.LeverUp_stat;
+	  connect LeverDown_stat -> tempo.LeverDown_stat;
+	  
+	  connect tempo.V_CC_delta_kmh -> veloCont;
+	  
+	  connect tempo.CC_active_b -> CC_active_b;
+	  
+	  effect tempo.CruiseControl_b -> tempo.CC_active_b;
+	  effect tempo.LeverUp_stat -> tempo.CC_active_b;
+	  effect tempo.LeverDown_stat -> tempo.CC_active_b;
+  }
+}

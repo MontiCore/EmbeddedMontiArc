@@ -5,5 +5,5 @@ REM PAUSE
 "%JAVA_HOME%\bin\java.exe" -jar "%SVG_HOME%\embeddedmontiarc-svggenerator.jar" ^
    --input "%file%" ^
    --modelPath "%HOME%\model\nfpverification\target\witnesses_%2_example.model.Sensors" ^
-   --recursiveDrawing "true" ^
+   --recursiveDrawing "false" ^
    --outputPath "%NFPVERIFICATION_HOME%\results\\" 

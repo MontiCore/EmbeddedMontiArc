@@ -424,8 +424,28 @@ App.post("/services/nfpverification/test", function(request, response) {
 		
 		if (files.length > 0) {
 			for (i = 0; i < files.length; i++) {
-				ModelUpdater.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
-				//FileSystem.writeFileSync(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
+				/*if(files[i].inclides(".ema")) {
+					var witnessPath = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, files[i]);
+					var witness = FileSystem.readFileSync(witnessPath, "UTF-8");
+					var witnessParts = witness.split("\n");
+					
+					var witnesstxt = "";
+					var changed = false;
+					for (j = 0; j < witnessParts.length; j++) {
+						if(!changed && witnessParts[j].startsWith("component")) {
+							witnesstxt += "component " + files[i].substring(0, files[i].length-4) + " { \n" 
+							changed = true;
+						}
+						else {
+							witnesstxt += witnessParts[j] + "\n"
+						}
+					}
+					
+					FileSystem.appendFile(witnessPath, witnesstxt, doNothing);
+				}*/
+				//ModelUpdater.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
+				//FileSystem.writeFile(Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder), files[i], doNothing);
+				ModelUpdater.update("NFPVerification", files, doNothing)
 			}		
 			var txtFile = Path.resolve(PATHS.MODELS, "nfpverification\\target", targetfolder, "__WITNESS_OVERVIEW__.txt");
 			var file = FileSystem.readFileSync(txtFile, "UTF-8");
