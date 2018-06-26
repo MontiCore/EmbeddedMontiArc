@@ -29,6 +29,7 @@ All examples are given for the middleware ROS and a component named `AddComp` fr
     * Example: `class RosAdapter_tests_a_addComp` in `RosAdapter_tests_a_addComp.h`
 * **Interfaces:** The generated coordinator for the Component contains the interface `IAdapter_{Component.fullQualifiedName}.h` which the new Adapter needs to implement.
     * Example: 
+    
     ```
     #include "IAdapter_tests_a_addComp.h"
     ...
@@ -36,6 +37,7 @@ All examples are given for the middleware ROS and a component named `AddComp` fr
     ```
 * **init method:** The Interface contains the Method ``init({Component.fullQualifiedName}* comp)`` that sets the shared instance of the Component and starts the middleware in this thread.
     * Example:
+   
     ```
     #include "tests_a_addComp.h"
     #include <ros/ros.h>
@@ -50,6 +52,7 @@ All examples are given for the middleware ROS and a component named `AddComp` fr
     ```
 * **tick method:** The Interface contains the Method `tick()` that the coordinator executes in an defined interval(e.g. every 100ms). The middleware needs to publish all outgoing connections in this method. Do not call `component.execute()` here, as the coordinator aleady does that!
     * Example:
+    
     ```
     void tick(){
         //publish the values of the out1 Port of the Component to ROS
@@ -65,6 +68,7 @@ All examples are given for the middleware ROS and a component named `AddComp` fr
     4. The C++ code for the a) Component and b) Coordinator must be linked/included
     5. All includes and the header file for the adapter need to be accessible from the super project
     * Example:
+
     ```
     cmake_minimum_required(VERSION 3.5)
     #see i.
