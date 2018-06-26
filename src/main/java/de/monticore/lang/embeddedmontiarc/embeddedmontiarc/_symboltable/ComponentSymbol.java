@@ -114,9 +114,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
      * @param target target of the connector to get
      * @return a connector with the given target, absent optional, if it does not exist
      */
-    public Optional<ConnectorSymbol> getConnector(String target) {
+    public Optional<EMAConnectorSymbol> getConnector(String target) {
         // no check for reference required
-        for (ConnectorSymbol con : getConnectors()) {
+        for (EMAConnectorSymbol con : getConnectors()) {
             if (con.getTarget().equals(target)) {
                 return Optional.of(con);
             }
@@ -127,9 +127,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
     /**
      * @return connectors of this component
      */
-    public Collection<ConnectorSymbol> getConnectors() {
-        Collection<ConnectorSymbol> c = referencedComponent.orElse(this)
-                .getSpannedScope().<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+    public Collection<EMAConnectorSymbol> getConnectors() {
+        Collection<EMAConnectorSymbol> c = referencedComponent.orElse(this)
+                .getSpannedScope().<EMAConnectorSymbol>resolveLocally(EMAConnectorSymbol.KIND);
 
         return c.stream().sorted((o1, o2) -> o1.getSourcePosition().compareTo(o2.getSourcePosition()))
                 .collect(Collectors.toList());
@@ -139,7 +139,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
      * @param visibility visibility
      * @return connectors with the given visibility
      */
-    public Collection<ConnectorSymbol> getConnectors(AccessModifier visibility) {
+    public Collection<EMAConnectorSymbol> getConnectors(AccessModifier visibility) {
         // no check for reference required
         return getConnectors().stream()
                 .filter(c -> c.getAccessModifier().includes(visibility))
@@ -297,15 +297,15 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
      *
      * @return ports of this component.
      */
-    public Collection<PortArraySymbol> getPortArrays() {
-        Collection<PortArraySymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
-                .<PortArraySymbol>resolveLocally(PortArraySymbol.KIND);
+    public Collection<EMAPortArraySymbol> getPortArrays() {
+        Collection<EMAPortArraySymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
+                .<EMAPortArraySymbol>resolveLocally(EMAPortArraySymbol.KIND);
         return symbols;
     }
 
-    public PortArraySymbol getPortArray(String name) {
+    public EMAPortArraySymbol getPortArray(String name) {
         Log.debug(name, "Looking for Pas:");
-        for (PortArraySymbol pas : getPortArrays()) {
+        for (EMAPortArraySymbol pas : getPortArrays()) {
             Log.debug(pas.getName(), "Cur Pas:");
             if (pas.getName().equals(name)) {
                 Log.debug(pas.getName(), "Found Pas");
@@ -317,12 +317,12 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
 
     public boolean isPortDependentOnResolutionDeclarationSymbol(String portName,
                                                                 String nameToDependentOn) {
-        PortArraySymbol portArraySymbol = getPortArray(portName);
+        EMAPortArraySymbol emaPortArraySymbol = getPortArray(portName);
         Log.debug(portName, "PortName:");
         Log.debug(nameToDependentOn, "Expected NameToDependOn:");
-        if (portArraySymbol.getNameSizeDependsOn().isPresent()) {
-            Log.debug(portArraySymbol.getNameSizeDependsOn().get(), "Actual NameToDependOn:");
-            if (portArraySymbol.getNameSizeDependsOn().get().equals(nameToDependentOn))
+        if (emaPortArraySymbol.getNameSizeDependsOn().isPresent()) {
+            Log.debug(emaPortArraySymbol.getNameSizeDependsOn().get(), "Actual NameToDependOn:");
+            if (emaPortArraySymbol.getNameSizeDependsOn().get().equals(nameToDependentOn))
                 return true;
         }
         return false;

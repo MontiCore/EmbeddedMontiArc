@@ -44,9 +44,9 @@ import java.util.List;
  */
 public class EMAPortHelper {
     /**
-     * creates the PortSymbols that belong to a PortArraySymbol
+     * creates the PortSymbols that belong to a EMAPortArraySymbol
      */
-    public static void portCreationIntLiteralPresent(ASTPort node, PortArraySymbol pas, String name,
+    public static void portCreationIntLiteralPresent(ASTPort node, EMAPortArraySymbol pas, String name,
                                                      MCTypeReference<? extends MCTypeSymbol> typeRef,
                                                      EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         // int num = node.getIntLiteral().getValue();
@@ -72,13 +72,13 @@ public class EMAPortHelper {
         }
     }
 
-    public static void portCreation(ASTPort node, PortArraySymbol pas, String name,
+    public static void portCreation(ASTPort node, EMAPortArraySymbol pas, String name,
                                     MCTypeReference<? extends MCTypeSymbol> typeRef,
                                     EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         if (node.getUnitNumberResolutionOpt().isPresent()) {
             portCreationIntLiteralPresent(node, pas, name, typeRef, symbolTableCreator);
         } else {
-            // create EMAPortSymbol with same content as PortArraySymbol
+            // create EMAPortSymbol with same content as EMAPortArraySymbol
             createPort(node, name, node.isIncoming(), typeRef, pas, symbolTableCreator);
         }
     }
@@ -95,7 +95,7 @@ public class EMAPortHelper {
     }
 
     public static void createPort(ASTPort node, String name, boolean isIncoming,
-                                  MCTypeReference<? extends MCTypeSymbol> typeRef, PortArraySymbol pas,
+                                  MCTypeReference<? extends MCTypeSymbol> typeRef, EMAPortArraySymbol pas,
                                   EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         EMAPortSymbol ps = new EMAPortSymbol(name);
         ps.setNameDependsOn(pas.getNameDependsOn());
@@ -319,7 +319,7 @@ public class EMAPortHelper {
                     Log.info("" + targetName, "target");
                     Log.info("" + sourceName, "source");
 
-                    ConnectorSymbol sym = new ConnectorSymbol(targetName);
+                    EMAConnectorSymbol sym = new EMAConnectorSymbol(targetName);
                     sym.setSource(sourceName);
                     sym.setTarget(targetName);
                     Log.info(sym.getTarget(), "TARGETNAME SET TO");
@@ -338,9 +338,9 @@ public class EMAPortHelper {
             de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node,
             EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         int counter = 0, targetnum = 0;
-        ConstantPortSymbol constantPortSymbol = ConstantPortSymbol.createConstantPortSymbol(node,
+        EMAConstantPortSymbol emaConstantPortSymbol = EMAConstantPortSymbol.createConstantPortSymbol(node,
                 symbolTableCreator);
-        symbolTableCreator.addToScope(constantPortSymbol);
+        symbolTableCreator.addToScope(emaConstantPortSymbol);
         for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
             counter = 0;
             targetnum = 0;
@@ -349,9 +349,9 @@ public class EMAPortHelper {
             String targetName = targetNames.get(counter);
             Log.debug("" + targetName, "target");
 
-            ConnectorSymbol sym = new ConnectorSymbol(targetName);
-            sym.setConstantPortSymbol(constantPortSymbol);
-            sym.setSource(constantPortSymbol.getName());
+            EMAConnectorSymbol sym = new EMAConnectorSymbol(targetName);
+            sym.setEMAConstantPortSymbol(emaConstantPortSymbol);
+            sym.setSource(emaConstantPortSymbol.getName());
             sym.setTarget(targetName);
             Log.debug(sym.getTarget(), "TARGETNAME SET TO");
 

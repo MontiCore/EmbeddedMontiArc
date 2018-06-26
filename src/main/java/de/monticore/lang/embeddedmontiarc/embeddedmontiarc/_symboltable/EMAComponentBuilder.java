@@ -57,8 +57,8 @@ public class EMAComponentBuilder {
     private static final ResolvingFilter<EMAPortSymbol> portResolvingFilter =
             CommonResolvingFilter.create(EMAPortSymbol.KIND);
 
-    private static final ResolvingFilter<ConnectorSymbol> connectorResolvingFilter =
-            CommonResolvingFilter.create(ConnectorSymbol.KIND);
+    private static final ResolvingFilter<EMAConnectorSymbol> connectorResolvingFilter =
+            CommonResolvingFilter.create(EMAConnectorSymbol.KIND);
 
     private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter =
             CommonResolvingFilter.create(ComponentSymbol.KIND);
@@ -117,36 +117,36 @@ public class EMAComponentBuilder {
 
     ////////////////////////// connectors //////////////////////////////////////////////
 
-    public static EMAComponentBuilder addConnector(ComponentSymbol cs, ConnectorSymbol con) {
+    public static EMAComponentBuilder addConnector(ComponentSymbol cs, EMAConnectorSymbol con) {
         addResolverIfMissing(cs, connectorResolvingFilter, con);
         return getInstance();
     }
 
-    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, ConnectorSymbol... con) {
-        for (ConnectorSymbol c : con) {
+    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, EMAConnectorSymbol... con) {
+        for (EMAConnectorSymbol c : con) {
             addConnector(cs, c);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, Collection<ConnectorSymbol> con) {
+    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, Collection<EMAConnectorSymbol> con) {
         con.stream().forEachOrdered(c -> addConnector(cs, c));
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeConnector(ComponentSymbol cs, ConnectorSymbol con) {
+    public static EMAComponentBuilder removeConnector(ComponentSymbol cs, EMAConnectorSymbol con) {
         ((MutableScope) cs.getSpannedScope()).remove(con);
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, ConnectorSymbol... con) {
-        for (ConnectorSymbol c : con) {
+    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, EMAConnectorSymbol... con) {
+        for (EMAConnectorSymbol c : con) {
             removeConnector(cs, c);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, Collection<ConnectorSymbol> con) {
+    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, Collection<EMAConnectorSymbol> con) {
         con.stream().forEachOrdered(c -> removeConnector(cs, c));
         return getInstance();
     }

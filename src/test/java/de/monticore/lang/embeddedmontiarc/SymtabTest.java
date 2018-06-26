@@ -260,9 +260,9 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getConnectors().size());
 
-        ConnectorSymbol connectorSymbol = cs.getConnector("steering").get();
-        assertTrue(connectorSymbol.getSourcePort().isConstant());
-        ConstantPortSymbol cps = (ConstantPortSymbol) connectorSymbol.getSourcePort();
+        EMAConnectorSymbol emaConnectorSymbol = cs.getConnector("steering").get();
+        assertTrue(emaConnectorSymbol.getSourcePort().isConstant());
+        EMAConstantPortSymbol cps = (EMAConstantPortSymbol) emaConnectorSymbol.getSourcePort();
         assertTrue(cps.getConstantValue().isSIUnit());
 
         EMAConstantSIUnit constantSIUnit = (EMAConstantSIUnit) cps.getConstantValue();
@@ -295,11 +295,11 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(1, cs.getConnectors().size());
         assertTrue(cs.getConnector("steering").isPresent());
-        ConnectorSymbol connectorSymbol = cs.getConnector("steering").get();
+        EMAConnectorSymbol emaConnectorSymbol = cs.getConnector("steering").get();
         //check that this is a constant connector
-        assertTrue(connectorSymbol.isConstant());
-        assertTrue(connectorSymbol.getSourcePort().isConstant());
-        ConstantPortSymbol cps = ((ConstantPortSymbol) connectorSymbol.getSourcePort());
+        assertTrue(emaConnectorSymbol.isConstant());
+        assertTrue(emaConnectorSymbol.getSourcePort().isConstant());
+        EMAConstantPortSymbol cps = ((EMAConstantPortSymbol) emaConnectorSymbol.getSourcePort());
 
         assertTrue(cps.getConstantValue().isBoolean());
 
@@ -330,7 +330,7 @@ public class SymtabTest extends AbstractSymtabTest {
 //check for all names
         assertEquals(5, cs.getAllIncomingPorts().size());
         assertEquals(5, cs.getAllOutgoingPorts().size());
-        for (ConnectorSymbol con : cs.getConnectors()) {
+        for (EMAConnectorSymbol con : cs.getConnectors()) {
             Log.debug(con.toString(), "testPortArray");
         }
     }
@@ -346,9 +346,9 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testPortArraySymbol() {
         Scope symTab = createSymTab("src/test/resources");
-        PortArraySymbol pas = symTab.<PortArraySymbol>resolve(
-                "testing.PortArray.lightsIn", PortArraySymbol.KIND).orElse(null);
-        assertNotNull("PortArraySymbol is null", pas);
+        EMAPortArraySymbol pas = symTab.<EMAPortArraySymbol>resolve(
+                "testing.PortArray.lightsIn", EMAPortArraySymbol.KIND).orElse(null);
+        assertNotNull("EMAPortArraySymbol is null", pas);
 
         assertEquals(5, pas.getDimension());
         assertEquals(5, pas.getConcretePortSymbols().size());
@@ -390,7 +390,7 @@ public class SymtabTest extends AbstractSymtabTest {
         }
         assertEquals(5, cs.getConnectors().size());
         for (int i = 1; i <= 5; ++i) {
-            ConnectorSymbol con = cs.getConnector("lightsOut[" + i + "]").orElse(null);
+            EMAConnectorSymbol con = cs.getConnector("lightsOut[" + i + "]").orElse(null);
             assertEquals(true, con != null);
             assertEquals("lightsIn[" + i + "]", con.getSourcePort().getName());
             assertEquals("B", con.getSourcePort().getTypeReference().getName());
@@ -440,7 +440,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         Log.debug("" + cs.getConnectors().size(), "Connectors");
         assertEquals(50, cs.getConnectors().size());
-        ConnectorSymbol conn = cs.getConnectors().iterator().next();
+        EMAConnectorSymbol conn = cs.getConnectors().iterator().next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
         EMAPortSymbol source = conn.getSourcePort();
@@ -480,7 +480,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         assertEquals(3, cs.getConnectors().size());
         Iterator iter = cs.getConnectors().iterator();
-        ConnectorSymbol conn = (ConnectorSymbol) iter.next();
+        EMAConnectorSymbol conn = (EMAConnectorSymbol) iter.next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
         EMAPortSymbol source = conn.getSourcePort();
@@ -497,7 +497,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("target type is not Boolean", target.getTypeReference().getName(), "B");
         assertEquals("testing.ConnectorArraymn", target.getComponent().get().getFullName());
 
-        conn = (ConnectorSymbol) iter.next();
+        conn = (EMAConnectorSymbol) iter.next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
         source = conn.getSourcePort();
@@ -515,7 +515,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("testing.ConnectorArraymn", target.getComponent().get().getFullName());
 
 
-        conn = (ConnectorSymbol) iter.next();
+        conn = (EMAConnectorSymbol) iter.next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
         //for loop to check everything
         source = conn.getSourcePort();
@@ -720,9 +720,9 @@ public class SymtabTest extends AbstractSymtabTest {
         assertNotNull(cs);
 
         assertEquals(8, cs.getConnectors().size());
-        Iterator<ConnectorSymbol> connectorSymbolIter = cs.getConnectors().iterator();
+        Iterator<EMAConnectorSymbol> connectorSymbolIter = cs.getConnectors().iterator();
 
-        ConnectorSymbol cur = connectorSymbolIter.next();
+        EMAConnectorSymbol cur = connectorSymbolIter.next();
         assertEquals("pass.pout1[1]", cur.getSource());
         assertEquals("out1[1]", cur.getTarget());
         cur = connectorSymbolIter.next();

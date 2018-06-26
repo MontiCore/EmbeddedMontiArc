@@ -121,8 +121,8 @@ public class ComponentSymbolReference extends ComponentSymbol implements
                     lastNameStart = emaPortSymbol.getNameWithoutArrayBracketPart();
                     Log.debug(lastNameStart, "Found PortArray:");
                     Log.debug(emaPortSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
-                    PortArraySymbol portArraySymbol = emaPortSymbol.getEnclosingScope().<PortArraySymbol>resolve(lastNameStart, PortArraySymbol.KIND).get();
-                    portArraySymbol.recreatePortArray(resDeclSym, emastc, this);
+                    EMAPortArraySymbol emaPortArraySymbol = emaPortSymbol.getEnclosingScope().<EMAPortArraySymbol>resolve(lastNameStart, EMAPortArraySymbol.KIND).get();
+                    emaPortArraySymbol.recreatePortArray(resDeclSym, emastc, this);
                 }
             }
         }

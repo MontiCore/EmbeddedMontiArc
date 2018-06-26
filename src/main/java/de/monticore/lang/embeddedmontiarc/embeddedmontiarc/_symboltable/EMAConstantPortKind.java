@@ -22,10 +22,10 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class ConstantPortKind implements SymbolKind {
+public class EMAConstantPortKind implements SymbolKind {
 
-    public static final ConstantPortKind INSTANCE = new ConstantPortKind();
-    public ConstantPortKind(){
+    public static final EMAConstantPortKind INSTANCE = new EMAConstantPortKind();
+    public EMAConstantPortKind(){
 
     }
 }

@@ -24,7 +24,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -47,11 +47,11 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
                 .collect(Collectors.toList());
     }
 
-    private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
+    private Collection<String> getSourceNames(Collection<EMAConnectorSymbol> connectors) {
         return connectors.stream().map(c -> c.getSource()).collect(Collectors.toList());
     }
 
-    private Collection<String> getTargetNames(Collection<ConnectorSymbol> connectors) {
+    private Collection<String> getTargetNames(Collection<EMAConnectorSymbol> connectors) {
         return connectors.stream().map(c -> c.getTarget()).collect(Collectors.toList());
     }
 

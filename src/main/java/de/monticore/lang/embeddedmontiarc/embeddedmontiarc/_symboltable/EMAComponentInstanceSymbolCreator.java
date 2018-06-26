@@ -106,8 +106,8 @@ public class EMAComponentInstanceSymbolCreator {
                                 cmp.getEnclosingScope()))
                         .addPorts(cmp.getPortsList())
                         .addConnectors(cmp.getConnectors()).addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols()).addParameters(cmp.getParameters()).addArguments(cmp.getArguments());
-        for (ConnectorSymbol connectorSymbol : cmp.getConnectors())
-            Log.info(connectorSymbol.toString(), "Building Connector:");
+        for (EMAConnectorSymbol emaConnectorSymbol : cmp.getConnectors())
+            Log.info(emaConnectorSymbol.toString(), "Building Connector:");
         // add sub components
         for (EMAComponentInstantiationSymbol inst : cmp.getSubComponents()) {
             //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");

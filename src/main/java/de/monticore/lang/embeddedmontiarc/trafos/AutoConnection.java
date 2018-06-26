@@ -98,7 +98,7 @@ public class AutoConnection {
         return astQNWA;
     }
 
-    public static void addConnectorToAST(ASTComponent node, ConnectorSymbol conEntry) {
+    public static void addConnectorToAST(ASTComponent node, EMAConnectorSymbol conEntry) {
         // create ast node
         ASTConnector astConnector = EmbeddedMontiArcNodeFactory.createASTConnector();
 
@@ -212,7 +212,7 @@ public class AutoConnection {
         Map<String, PorWithGenericBindings> unusedReceivers = getUnusedReceivers(
                 currentComponent);
         for (Entry<String, PorWithGenericBindings> receiverEntry : unusedReceivers.entrySet()) {
-            List<ConnectorSymbol> matches = new LinkedList<>();
+            List<EMAConnectorSymbol> matches = new LinkedList<>();
             for (Entry<String, PorWithGenericBindings> senderEntry : unusedSenders.entrySet()) {
                 handleSenderEntry(receiverEntry, senderEntry, matches, mode);
             }
@@ -221,9 +221,9 @@ public class AutoConnection {
         }
     }
 
-    private void handleReceiverEntry(Entry<String, PorWithGenericBindings> receiverEntry, ComponentSymbol currentComponent, List<ConnectorSymbol> matches, ASTComponent node) {
+    private void handleReceiverEntry(Entry<String, PorWithGenericBindings> receiverEntry, ComponentSymbol currentComponent, List<EMAConnectorSymbol> matches, ASTComponent node) {
         if (matches.size() == 1) {
-            ConnectorSymbol created = matches.iterator().next();
+            EMAConnectorSymbol created = matches.iterator().next();
             // add symbol to components scope
             ((MutableScope) currentComponent.getSpannedScope()).add(created);
 
@@ -245,7 +245,7 @@ public class AutoConnection {
         }
     }
 
-    private void handleSenderEntry(Entry<String, PorWithGenericBindings> receiverEntry, Entry<String, PorWithGenericBindings> senderEntry, List<ConnectorSymbol> matches, AutoconnectMode mode) {
+    private void handleSenderEntry(Entry<String, PorWithGenericBindings> receiverEntry, Entry<String, PorWithGenericBindings> senderEntry, List<EMAConnectorSymbol> matches, AutoconnectMode mode) {
         String receiver = receiverEntry.getKey();
         int indexReceiver = receiver.indexOf('.');
         String sender = senderEntry.getKey();
@@ -299,7 +299,7 @@ public class AutoConnection {
         }
         // create connector entry and add to matched
         if (matched) {
-            ConnectorSymbol conEntry = ConnectorSymbol.builder()
+            EMAConnectorSymbol conEntry = EMAConnectorSymbol.builder()
                     .setSource(sender).setTarget(receiver).build();
             conEntry.setSource(sender);
             conEntry.setTarget(receiver);

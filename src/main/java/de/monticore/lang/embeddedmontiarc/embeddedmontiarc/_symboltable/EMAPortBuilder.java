@@ -41,7 +41,7 @@ public class EMAPortBuilder {
     public static EMAPortSymbol clone(EMAPortSymbol port) {
         if (port.isConstant())
             return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming()).
-                    setTypeReference(port.getTypeReference()).setConstantValue(((ConstantPortSymbol) port).getConstantValue()).setASTNode(port.getAstNode())
+                    setTypeReference(port.getTypeReference()).setConstantValue(((EMAConstantPortSymbol) port).getConstantValue()).setASTNode(port.getAstNode())
                     .buildConstantPort();
         else {
             return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming())
@@ -101,12 +101,12 @@ public class EMAPortBuilder {
         throw new Error("not all parameters have been set before to build the port symbol");
     }
 
-    public ConstantPortSymbol buildConstantPort() {
+    public EMAConstantPortSymbol buildConstantPort() {
         if (typeReference == null) {
             Log.error("not all parameters have been set before to build the port symbol");
             throw new Error("not all parameters have been set before to build the port symbol");
         }
-        ConstantPortSymbol p = new ConstantPortSymbol(name.get());
+        EMAConstantPortSymbol p = new EMAConstantPortSymbol(name.get());
         p.setDirection(this.incoming.get());
         p.setTypeReference(typeReference.get());
         p.setConstantValue(constantValue.get());

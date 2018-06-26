@@ -132,7 +132,7 @@ public class SymbolPrinter {
         return ip.getContent();
     }
 
-    public static void printConnector(ConnectorSymbol con, IndentPrinter ip) {
+    public static void printConnector(EMAConnectorSymbol con, IndentPrinter ip) {
         ip.print(con.getSource());
         ip.print(" -> ");
         ip.print(con.getTarget());
@@ -140,7 +140,7 @@ public class SymbolPrinter {
         printTags(con, ip);
     }
 
-    public static String printConnector(ConnectorSymbol con) {
+    public static String printConnector(EMAConnectorSymbol con) {
         IndentPrinter ip = new IndentPrinter();
         printConnector(con, ip);
         return ip.getContent();

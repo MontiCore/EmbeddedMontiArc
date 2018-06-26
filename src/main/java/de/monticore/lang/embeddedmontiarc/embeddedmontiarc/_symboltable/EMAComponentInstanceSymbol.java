@@ -201,8 +201,8 @@ public class EMAComponentInstanceSymbol
         return getSpannedScope().<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND);
     }
 
-    public Collection<PortArraySymbol> getPortArrays() {
-        return getSpannedScope().<PortArraySymbol>resolveLocally(PortArraySymbol.KIND);
+    public Collection<EMAPortArraySymbol> getPortArrays() {
+        return getSpannedScope().<EMAPortArraySymbol>resolveLocally(EMAPortArraySymbol.KIND);
     }
 
     public Optional<EMAPortSymbol> getPort(String name) {
@@ -252,8 +252,8 @@ public class EMAComponentInstanceSymbol
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
      * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
      */
-    public Collection<ConnectorSymbol> getConnectors() {
-        return getSpannedScope().<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+    public Collection<EMAConnectorSymbol> getConnectors() {
+        return getSpannedScope().<EMAConnectorSymbol>resolveLocally(EMAConnectorSymbol.KIND);
     }
 
     @Override
@@ -288,13 +288,13 @@ public class EMAComponentInstanceSymbol
      *
      * @return
      */
-    public List<ConnectorSymbol> getSubComponentConnectors() {
-        Set<ConnectorSymbol> set = new LinkedHashSet<>();
+    public List<EMAConnectorSymbol> getSubComponentConnectors() {
+        Set<EMAConnectorSymbol> set = new LinkedHashSet<>();
 
-        Collection<ConnectorSymbol> connectors = getConnectors();
+        Collection<EMAConnectorSymbol> connectors = getConnectors();
         Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
 
-        for (ConnectorSymbol connector : connectors) {
+        for (EMAConnectorSymbol connector : connectors) {
             EMAPortSymbol sourcePort = connector.getSourcePort();
             EMAPortSymbol targetPort = connector.getTargetPort();
             Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
@@ -315,10 +315,10 @@ public class EMAComponentInstanceSymbol
 
     public List<EMAComponentInstanceSymbol> getIndependentSubComponents() {
         Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
-        List<ConnectorSymbol> subComponentConnectors = getSubComponentConnectors();
+        List<EMAConnectorSymbol> subComponentConnectors = getSubComponentConnectors();
 
         Set<EMAComponentInstanceSymbol> nonIndependentSubComponents = new HashSet<>();
-        for (ConnectorSymbol connector : subComponentConnectors) {
+        for (EMAConnectorSymbol connector : subComponentConnectors) {
             EMAPortSymbol sourcePort = connector.getSourcePort();
             Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
             if (sourceCmpOpt.isPresent()) {

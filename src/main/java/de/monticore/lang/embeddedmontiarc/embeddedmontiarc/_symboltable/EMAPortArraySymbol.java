@@ -34,15 +34,15 @@ import java.util.stream.Collectors;
 /**
  * Symboltable entry for port arrays
  */
-public class PortArraySymbol extends EMAPortSymbol {
+public class EMAPortArraySymbol extends EMAPortSymbol {
     public static final PortArraySymbolKind KIND = PortArraySymbolKind.INSTANCE;
 
     protected Optional<String> nameSizeDependsOn;
 
-    public PortArraySymbol(String name, String nameSizeDependsOn) {
+    public EMAPortArraySymbol(String name, String nameSizeDependsOn) {
         super(name, KIND);
         this.nameSizeDependsOn = Optional.ofNullable(nameSizeDependsOn);
-        Log.debug(getFullName(), "PortArraySymbol ");
+        Log.debug(getFullName(), "EMAPortArraySymbol ");
         Log.debug(this.nameSizeDependsOn.orElse(null), "set NameSizeDependsOn to:");
     }
 
@@ -123,7 +123,7 @@ public class PortArraySymbol extends EMAPortSymbol {
     private void createPortSymbolForArrayIndex(ComponentSymbolReference componentSymbolReference, ASTPort node, String name, MCTypeReference<? extends MCTypeSymbol> typeRef) {
         EMAPortSymbol ps;
         if (name.startsWith("CONSTANTPORT")) {
-            ps = new ConstantPortSymbol(name);
+            ps = new EMAConstantPortSymbol(name);
         } else {
             ps = new EMAPortSymbol(name);
         }

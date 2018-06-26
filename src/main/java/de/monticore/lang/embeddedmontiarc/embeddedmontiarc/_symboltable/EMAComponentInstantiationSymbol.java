@@ -71,8 +71,8 @@ public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol i
     /**
      * @return connectors of this component
      */
-    public Collection<ConnectorSymbol> getSimpleConnectors() {
-        return getSpannedScope().<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+    public Collection<EMAConnectorSymbol> getSimpleConnectors() {
+        return getSpannedScope().<EMAConnectorSymbol>resolveLocally(EMAConnectorSymbol.KIND);
     }
 
     public String getValue() {

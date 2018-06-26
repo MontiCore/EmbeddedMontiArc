@@ -35,7 +35,7 @@ import java.util.Optional;
 public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponentCoCo {
   
   /**
-   * TODO: either check why ConnectorSymbol has no proper value for sourcePosition, or reimplement
+   * TODO: either check why EMAConnectorSymbol has no proper value for sourcePosition, or reimplement
    * using
    * 
    * @see EmbeddedMontiArcASTComponentCoCo#check(ASTComponent)
@@ -51,7 +51,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
     }
     
     for (EMAComponentInstantiationSymbol instanceSymbol : symbol.getSubComponents()) {
-      for (ConnectorSymbol connectorSymbol : instanceSymbol.getSimpleConnectors()) {
+      for (EMAConnectorSymbol emaConnectorSymbol : instanceSymbol.getSimpleConnectors()) {
         
         ComponentSymbolReference typeReference = instanceSymbol.getComponentType();
         
@@ -62,14 +62,14 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
         }
         
         ComponentSymbol sourceComponent = typeReference.getReferencedSymbol();
-        String sourcePort = connectorSymbol.getSource();
+        String sourcePort = emaConnectorSymbol.getSource();
         
         Optional<EMAPortSymbol> outgoingPort = sourceComponent.getOutgoingPort(sourcePort);
         
         if (!outgoingPort.isPresent()) {
           Log.error(String.format("0xF4D71 Out port \"%s\" is not present in component \"%s\".",
               sourcePort, sourceComponent.getName()),
-              connectorSymbol.getSourcePosition());
+              emaConnectorSymbol.getSourcePosition());
         }
       }
     }

@@ -68,7 +68,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertTrue(inst.getPort("in1[1]").isPresent()); // from a.Sub2
         assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
 
-        for (ConnectorSymbol con : inst.getConnectors()) {
+        for (EMAConnectorSymbol con : inst.getConnectors()) {
             Log.debug(con.toString(), "testComponentSub2");
         }
     }
@@ -86,7 +86,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         //assertTrue(inst.getPort("in1").isPresent()); // from a.Sub2
         //assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
 
-        for (ConnectorSymbol con : inst.getConnectors()) {
+        for (EMAConnectorSymbol con : inst.getConnectors()) {
             Log.debug(con.toString(), "testComponentSub2");
         }
     }
@@ -122,7 +122,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testConnectorInstancing() {
-        ConstantPortSymbol.resetLastID();
+        EMAConstantPortSymbol.resetLastID();
         Scope symTab = createSymTab("src/test/resources");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.connectorInstancing", EMAComponentInstanceSymbol.KIND).orElse(null);
@@ -132,7 +132,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
         assertEquals(3, inst.getConnectors().size());
 
-        ConstantPortSymbol portSymbol = (ConstantPortSymbol) inst.getPort("CONSTANTPORT1").get();
+        EMAConstantPortSymbol portSymbol = (EMAConstantPortSymbol) inst.getPort("CONSTANTPORT1").get();
     }
 
     @Test
@@ -310,8 +310,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
         assertEquals(2, inst.getConnectors().size());
 
-        Iterator<ConnectorSymbol> iter = inst.getConnectors().iterator();
-        ConnectorSymbol cs = iter.next();
+        Iterator<EMAConnectorSymbol> iter = inst.getConnectors().iterator();
+        EMAConnectorSymbol cs = iter.next();
 
         assertEquals("a1.out1", cs.getSource());
         assertEquals("out1", cs.getTarget());

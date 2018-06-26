@@ -54,10 +54,10 @@ public class EmbeddedMontiArcModelNameCalculator
       calculatedModelNames.addAll(calculateModelNameForComponent(name));
     }
     else if (EMAPortSymbol.KIND.isKindOf(kind) ||
-            PortArraySymbol.KIND.isKindOf(kind)) {
+            EMAPortArraySymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForPort(name));
     }
-    else if (ConnectorSymbol.KIND.isKindOf(kind)) {
+    else if (EMAConnectorSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForConnector(name));
     }
     else if (EMAComponentInstantiationSymbol.KIND.isKindOf(kind)) {

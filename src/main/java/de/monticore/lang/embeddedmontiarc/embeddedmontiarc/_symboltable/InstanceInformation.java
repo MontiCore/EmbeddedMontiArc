@@ -75,7 +75,7 @@ public class InstanceInformation {
         EMAComponentInstantiationSymbol emaComponentInstantiationSymbol = (EMAComponentInstantiationSymbol) symbol;
         Log.debug(emaComponentInstantiationSymbol.getComponentType().toString(), "EMAComponentInstantiationSymbol");
         Log.debug(portName, "PortName");
-        PortArraySymbol namedArray = emaComponentInstantiationSymbol.getComponentType().getPortArray(portName);
+        EMAPortArraySymbol namedArray = emaComponentInstantiationSymbol.getComponentType().getPortArray(portName);
         if (namedArray != null && namedArray.getNameSizeDependsOn().isPresent())
             Log.debug(namedArray.getNameSizeDependsOn().get(), "PortArray Depends On:");
 

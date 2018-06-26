@@ -225,7 +225,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         StringBuilder typeName = new StringBuilder();
         MCTypeReference<? extends MCTypeSymbol> typeRef = initTypeRef(node, typeName, astType, this);
         String name = node.getNameOpt().orElse(StringTransformations.uncapitalize(typeName.toString()));
-        PortArraySymbol pas = new PortArraySymbol(name, nameTO);
+        EMAPortArraySymbol pas = new EMAPortArraySymbol(name, nameTO);
 
         pas.setTypeReference(typeRef);
         pas.setDirection(node.isIncoming());

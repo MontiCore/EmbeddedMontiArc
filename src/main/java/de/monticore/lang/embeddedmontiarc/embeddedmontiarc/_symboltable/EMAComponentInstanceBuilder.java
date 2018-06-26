@@ -50,7 +50,7 @@ public class EMAComponentInstanceBuilder {
     protected Optional<ComponentSymbolReference> symbolReference = Optional.empty();
     protected List<EMAPortSymbol> ports = new ArrayList<>();
     protected List<EMAComponentInstanceSymbol> subComponents = new ArrayList<>();
-    protected List<ConnectorSymbol> connectors = new ArrayList<>();
+    protected List<EMAConnectorSymbol> connectors = new ArrayList<>();
     protected Set<ResolvingFilter> resolvingFilters = new LinkedHashSet<>();
     //             FormalTypeParameter, ActualTypeArgument (is the binding of formal parameters
     protected Map<MCTypeSymbol, ActualTypeArgument> actualTypeArguments = new LinkedHashMap<>();
@@ -72,7 +72,7 @@ public class EMAComponentInstanceBuilder {
                 .setSymbolReference(inst.getComponentType())
                 //.addPorts(inst.getPortsList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
                 .addPorts(inst.getPortsList()) // is cloned in build method
-                .addConnectors(inst.getConnectors().stream().map(c -> ConnectorBuilder.clone(c)).collect(Collectors.toList()))
+                .addConnectors(inst.getConnectors().stream().map(c -> EMAConnectorBuilder.clone(c)).collect(Collectors.toList()))
                 .addSubComponents(inst.getSubComponents().stream().map(s -> EMAComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
                 .build();
@@ -197,19 +197,19 @@ public class EMAComponentInstanceBuilder {
         return this;
     }
 
-    public EMAComponentInstanceBuilder addConnector(ConnectorSymbol connector) {
+    public EMAComponentInstanceBuilder addConnector(EMAConnectorSymbol connector) {
         this.connectors.add(connector);
         return this;
     }
 
-    public EMAComponentInstanceBuilder addConnectors(ConnectorSymbol... connectors) {
-        for (ConnectorSymbol c : connectors) {
+    public EMAComponentInstanceBuilder addConnectors(EMAConnectorSymbol... connectors) {
+        for (EMAConnectorSymbol c : connectors) {
             this.addConnector(c);
         }
         return this;
     }
 
-    public EMAComponentInstanceBuilder addConnectors(Collection<ConnectorSymbol> connectors) {
+    public EMAComponentInstanceBuilder addConnectors(Collection<EMAConnectorSymbol> connectors) {
         connectors.stream().forEachOrdered(c -> this.addConnector(c));
         return this;
     }
@@ -270,7 +270,7 @@ public class EMAComponentInstanceBuilder {
             resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
             ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.clone(p))); // must be cloned since we change it if it has generics
-            connectors.stream().forEachOrdered(c -> scope.add(ConnectorBuilder.clone(c)));
+            connectors.stream().forEachOrdered(c -> scope.add(EMAConnectorBuilder.clone(c)));
             subComponents.stream().forEachOrdered(s -> scope.add(s));
 
             sym.setActualTypeArguments(actualTypeArguments.values().stream().collect(Collectors.toList()));
@@ -285,7 +285,7 @@ public class EMAComponentInstanceBuilder {
         throw new Error("not all parameters have been set before to build the expanded component instance symbol");
     }
 
-    public EMAComponentInstanceBuilder addConnectorIfNameDoesNotExists(ConnectorSymbol connector) {
+    public EMAComponentInstanceBuilder addConnectorIfNameDoesNotExists(EMAConnectorSymbol connector) {
         List<String> existingConnectorSources = this.connectors.stream().map(c -> c.getSource())
                 .collect(Collectors.toList());
         List<String> existingConnectorTargets = this.connectors.stream().map(c -> c.getTarget())
@@ -296,7 +296,7 @@ public class EMAComponentInstanceBuilder {
         return this;
     }
 
-    public EMAComponentInstanceBuilder addConnectorsIfNameDoesNotExists(Collection<ConnectorSymbol> connectors) {
+    public EMAComponentInstanceBuilder addConnectorsIfNameDoesNotExists(Collection<EMAConnectorSymbol> connectors) {
         connectors.stream().forEach(this::addConnectorIfNameDoesNotExists);
         return this;
     }

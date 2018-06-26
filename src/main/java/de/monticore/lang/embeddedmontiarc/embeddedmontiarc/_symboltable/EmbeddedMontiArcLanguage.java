@@ -53,8 +53,8 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
         // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAPortSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(PortArraySymbol.KIND));
-        addResolvingFilter(new EMAConnectorResolvingFilter<>(ConnectorSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAPortArraySymbol.KIND));
+        addResolvingFilter(new EMAConnectorResolvingFilter<>(EMAConnectorSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstanceSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(SIUnitSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(SIUnitRangesSymbol.KIND));
