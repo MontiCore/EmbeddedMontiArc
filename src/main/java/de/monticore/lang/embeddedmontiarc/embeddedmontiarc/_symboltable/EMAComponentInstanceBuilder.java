@@ -70,9 +70,9 @@ public class EMAComponentInstanceBuilder {
     public static EMAComponentInstanceSymbol clone(EMAComponentInstanceSymbol inst) {
         return new EMAComponentInstanceBuilder().setName(inst.getName())
                 .setSymbolReference(inst.getComponentType())
-                //.addPorts(inst.getPortsList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
-                .addPorts(inst.getPortsList()) // is cloned in build method
-                .addConnectors(inst.getConnectors().stream().map(c -> EMAConnectorBuilder.clone(c)).collect(Collectors.toList()))
+                //.addPorts(inst.getPortInstanceList().stream().map(p -> EMAPortBuilder.clone(p)).collect(Collectors.toList()))
+                //.addPorts(inst.getPortInstanceList()) // is cloned in build method
+                .addConnectors(inst.getConnectorInstances().stream().map(c -> EMAConnectorBuilder.clone(c)).collect(Collectors.toList()))
                 .addSubComponents(inst.getSubComponents().stream().map(s -> EMAComponentInstanceBuilder.clone(s)).collect(Collectors.toList()))
                 .addResolutionDeclarationSymbols(inst.getResolutionDeclarationSymbols())
                 .build();
@@ -222,7 +222,7 @@ public class EMAComponentInstanceBuilder {
 
         mapTypeArguments.forEach((k, v) -> {
             // 1) replace port generics
-            inst.getPortsList().stream()
+            inst.getPortInstanceList().stream()
                     //          .filter(p -> p.getTypeReference().getReferencedSymbol().getFullName().equals(k.getFullName()))
                     .filter( p -> p.getTypeReference().existsReferencedSymbol() ? p.getTypeReference().getReferencedSymbol().getName().equals(k.getName()) : false)
                     .forEachOrdered(p -> p.setTypeReference((MCTypeReference<? extends MCTypeSymbol>) v.getType()));
@@ -256,7 +256,6 @@ public class EMAComponentInstanceBuilder {
                     }
                 });
         Log.debug("See next lines", "Fixing Wrong Ports");
-        inst.fixWrongPortsInInstances();
     }
 
     public EMAComponentInstanceSymbol build() {

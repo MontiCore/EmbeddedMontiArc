@@ -42,7 +42,7 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertNotNull(component);
 
         //rosIn
-        EMAPortSymbol rosIn = component.getPort("rosIn").orElse(null);
+        EMAPortSymbol rosIn = component.getPortInstance("rosIn").orElse(null);
         assertNotNull(rosIn);
 
         Collection<TagSymbol> tags = symtab.getTags(rosIn, RosConnectionSymbol.KIND);
@@ -54,7 +54,7 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertEquals(tag.getMsgField().get(), "clock.toSec()");
 
         //rosOut
-        EMAPortSymbol rosOut = component.getPort("rosOut").orElse(null);
+        EMAPortSymbol rosOut = component.getPortInstance("rosOut").orElse(null);
         assertNotNull(rosOut);
 
         tags = symtab.getTags(rosOut, RosConnectionSymbol.KIND);
@@ -66,7 +66,7 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         assertEquals(tag.getMsgField().get(), "data");
 
         //emptyTagIn
-        EMAPortSymbol emptyTagIn = component.getPort("emptyTagIn").orElse(null);
+        EMAPortSymbol emptyTagIn = component.getPortInstance("emptyTagIn").orElse(null);
         assertNotNull(emptyTagIn);
 
         tags = symtab.getTags(emptyTagIn, RosConnectionSymbol.KIND);
@@ -85,8 +85,8 @@ public class TaggingTest extends AbstractTaggingResolverTest {
         EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("middleware.ros.optionalMsgField", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        EMAPortSymbol in1 = component.getPort("in1").orElse(null);
-        EMAPortSymbol out1 = component.getPort("out1").orElse(null);
+        EMAPortSymbol in1 = component.getPortInstance("in1").orElse(null);
+        EMAPortSymbol out1 = component.getPortInstance("out1").orElse(null);
 
         assertNotNull(in1);
         assertNotNull(out1);

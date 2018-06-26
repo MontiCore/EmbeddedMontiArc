@@ -53,7 +53,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
 
     public static final ComponentKind KIND = new ComponentKind();
 
-    private final List<EMAAComponentImplementationSymbol> implementations = new ArrayList<>();
+    private final List<EMAComponentImplementationSymbol> implementations = new ArrayList<>();
 
     private boolean isInnerComponent = false;
 
@@ -176,18 +176,18 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
     /**
      * @param impl the implementation to add
      */
-    public void addImplementation(EMAAComponentImplementationSymbol impl) {
+    public void addImplementation(EMAComponentImplementationSymbol impl) {
         referencedComponent.orElse(this).implementations.add(impl);
     }
 
     /**
      * @return implementations
      */
-    public List<EMAAComponentImplementationSymbol> getImplementations() {
+    public List<EMAComponentImplementationSymbol> getImplementations() {
         return ImmutableList.copyOf(referencedComponent.orElse(this).implementations);
     }
 
-    public Optional<EMAAComponentImplementationSymbol> getImplementation(String name) {
+    public Optional<EMAComponentImplementationSymbol> getImplementation(String name) {
         // no check for reference required
         return getImplementations().stream()
                 .filter(i -> i.getName().equals(name))
@@ -198,7 +198,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAEle
      * @param visibility visibility
      * @return implementations with the given visibility
      */
-    public Collection<EMAAComponentImplementationSymbol> getImplementations(
+    public Collection<EMAComponentImplementationSymbol> getImplementations(
             AccessModifier visibility) {
         // no check for reference required
         return getImplementations().stream()

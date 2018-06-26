@@ -43,7 +43,7 @@ public class ConnectorGetPortTest extends AbstractSymtabTest {
     private void testConnectorPorts(EMAComponentInstanceSymbol inst) {
         assertNotNull(inst);
 
-        inst.getConnectors().forEach( con -> {
+        inst.getConnectorInstances().forEach(con -> {
             assertNotEquals(con.getSource(), con.getTarget());
             assertNotEquals(con.getSourcePort().getFullName(), con.getTargetPort().getFullName());
         });

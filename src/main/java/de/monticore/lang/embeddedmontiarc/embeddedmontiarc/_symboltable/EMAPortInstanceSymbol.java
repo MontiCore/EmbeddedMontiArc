@@ -41,15 +41,15 @@ import java.util.stream.Collectors;
 /**
  * Symboltable entry for ports.
  */
-public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
-  
-  public static final EMAPortKind KIND = EMAPortKind.INSTANCE;
-  
+public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementInstanceSymbol {
+
+  public static final EMAPortInstanceKind KIND = EMAPortInstanceKind.INSTANCE;
+
   /**
    * Maps direction incoming to true.
    */
   public static final boolean INCOMING = true;
-  
+
   /**
    * Flags, if this port is incoming.
    */
@@ -58,9 +58,9 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
   private boolean config = false;
 
   private MCTypeReference<? extends MCTypeSymbol> typeReference;
-  
+
   private MutableScope locallyDefinedStreams = new CommonScope();
-  
+
   protected Optional<String> nameDependsOn = Optional.empty();
 
   private Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
@@ -68,11 +68,11 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
   /**
    * use {@link #builder()}
    */
-  protected EMAPortSymbol(String name) {
+  protected EMAPortInstanceSymbol(String name) {
     super(name, KIND);
   }
-  
-  protected EMAPortSymbol(String name, SymbolKind kind) {
+
+  protected EMAPortInstanceSymbol(String name, SymbolKind kind) {
     super(name, kind);
   }
   
@@ -126,10 +126,26 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
     if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
       return Optional.empty();
     }
-
-    return Optional.of((ComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ComponentSymbol)) {
+      return Optional.empty();
+    }
+    return Optional.of(((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get()).getComponentType().getReferencedSymbol());
   }
-
+  
+  /**
+   * returns the expanded component instance which defines the port this is independent from
+   * the component to which the source and target ports belong to
+   *
+   * @return is optional, b/c a connector can belong to a component symbol or to an expanded
+   * component instance symbol
+   */
+  public Optional<EMAComponentInstanceSymbol> getComponentInstance() {
+    if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
+      return Optional.empty();
+    }
+    return Optional
+        .of((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+  }
   
   /**
    * the nonunitstreams.streams are sorted, first they are sorted regarding to the id, and for
@@ -207,63 +223,8 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
     return nameWithOutArrayBracketPart;
   }
   
-  @Deprecated
-  public Optional<String> getNameDependsOn() {
-    return nameDependsOn;
-  }
-  
-  @Deprecated
-  public void setNameDependsOn(Optional<String> nameDependsOn) {
-    
-    this.nameDependsOn = nameDependsOn;
-    Log.debug("compName: " + getName() + "name depends: " + nameDependsOn.toString(),
-        "Set Name Depends On");
-  }
-  
   public boolean isPartOfPortArray() {
     return getName().contains("[") && getName().contains("]");
-  }
-  
-  /**
-   * if model input is; component X { port ...; component A { port in Integer p1, out Integer p2; }
-   * component A a1, a2, a3; connect a1.p2 -> a2.p1, a3.p1; } if I have the port symbol a1.p2 than
-   * this method returns the list of port symbols {a2.p1, a3.p1}
-   * 
-   * @return
-   */
-  public List<EMAPortSymbol> getTargetConnectedPorts(EMAComponentInstanceSymbol topComponent) {
-    
-    // It does not works for components, when one of them is top component and another not.
-    
-    List<EMAPortSymbol> targetPorts = new ArrayList<>();
-    
-    if (!topComponent.getConnectorInstances().equals(null)) {
-      // If the port is Outgoing then return incoming ports of connected components
-      if (this.isOutgoing()) {
-        topComponent.getConnectorInstances().stream()
-            .filter(s -> s.getSourcePort().equals(this))
-            .forEach(s -> targetPorts.add(s.getTargetPort()));
-      }
-      else if (this.isIncoming()) {
-        // If the port is incoming then return outgoing ports of connected components
-        topComponent.getConnectorInstances().stream()
-            .filter(s -> s.getTargetPort().equals(this))
-            .forEach(s -> targetPorts.add(s.getSourcePort()));
-      }
-    }
-    return targetPorts;
-    
-    // TODO: Find the way to get connections from the top element
-  }
-  
-  public static boolean isConstantPortName(String name) {
-    if (name.contains(".")) {
-      String secondPart = name.split("\\.")[1];
-      return secondPart.startsWith("CONSTANTPORT");
-    }
-    else {
-      return name.startsWith("CONSTANTPORT");
-    }
   }
 
   public void setConfig(boolean config){

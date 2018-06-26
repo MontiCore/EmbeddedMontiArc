@@ -708,7 +708,7 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("testing.basicInputPortWrapped", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
 
-        assertEquals(2, cs.getConnectors().size());
+        assertEquals(2, cs.getConnectorInstances().size());
 
     }
 
@@ -719,8 +719,8 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol cs = symTab.<EMAComponentInstanceSymbol>resolve("test.a.colonTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(cs);
 
-        assertEquals(8, cs.getConnectors().size());
-        Iterator<EMAConnectorSymbol> connectorSymbolIter = cs.getConnectors().iterator();
+        assertEquals(8, cs.getConnectorInstances().size());
+        Iterator<EMAConnectorInstanceSymbol> connectorSymbolIter = cs.getConnectorInstances().iterator();
 
         EMAConnectorSymbol cur = connectorSymbolIter.next();
         assertEquals("pass.pout1[1]", cur.getSource());
@@ -796,7 +796,8 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol);
         Scope instanceScope = instanceSymbol.getSpannedScope();
-        EMAPortSymbol portInstanceSymbol = instanceScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
+        EMAPortInstanceSymbol portInstanceSymbol = instanceScope.<EMAPortInstanceSymbol>resolve("top_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
+        assertNotNull(portInstanceSymbol);
 
 
     }

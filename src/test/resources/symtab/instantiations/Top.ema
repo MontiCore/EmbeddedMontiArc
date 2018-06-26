@@ -8,4 +8,7 @@ component Top { // Component Top, ComponentInstance top
 
     instance Sub sub_1; // Component Sub, ComponentInstantiation sub_1
 
+    connect top_in_1 -> sub_1.sub_in_1;
+    connect sub_1.sub_out_1 -> top_out_1;
+
 }

@@ -166,7 +166,7 @@ public class SymbolPrinter {
         return ip.getContent();
     }
 
-    public static void printPorts(Collection<EMAPortSymbol> ports, IndentPrinter ip) {
+    public static void printPorts(Collection<? extends EMAPortSymbol> ports, IndentPrinter ip) {
         if (!ports.isEmpty()) {
             ip.println("ports");
             ip.indent();
@@ -266,11 +266,11 @@ public class SymbolPrinter {
 
         ip.indent();
 
-        printPorts(inst.getPortsList(), ip);
+        printPorts(inst.getPortInstanceList(), ip);
 
         inst.getSubComponents().stream().forEachOrdered(a -> printEMAComponentInstance(a, ip, true));
 
-        inst.getConnectors().stream().forEachOrdered(a -> {
+        inst.getConnectorInstances().stream().forEachOrdered(a -> {
             ip.print("connect ");
             printConnector(a, ip);
             ip.println(";");

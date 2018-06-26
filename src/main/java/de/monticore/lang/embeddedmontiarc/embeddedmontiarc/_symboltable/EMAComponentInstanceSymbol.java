@@ -26,9 +26,7 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
-import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.types.references.ActualTypeArgument;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -127,7 +125,7 @@ public class EMAComponentInstanceSymbol
     }
 
     public boolean hasPorts() {
-        return !getPortsList().isEmpty();
+        return !getPortInstanceList().isEmpty();
     }
 
     public List<ResolutionDeclarationSymbol> getResolutionDeclarationSymbols() {
@@ -147,95 +145,36 @@ public class EMAComponentInstanceSymbol
         return InstancingRegister.getInstanceInformation(getName());
     }
 
-    public void fixWrongPortsInInstances() {
-        for (EMAComponentInstanceSymbol instanceSymbol : getSubComponents()) {
-            instanceSymbol.fixWrongPortsInInstances();
 
-        }
-        MutableScope scope = getSpannedScope().getAsMutableScope();
-        Log.debug(toString(), "Current Instance");
-        //TODO fix to work for more than one arguments
-
-        for (EMAPortSymbol emaPortSymbolMain : getPortsList()) {
-            int counter = 1;
-            InstanceInformation info = InstancingRegister.getInstanceInformation(getName()).orElse(null);
-            int number = -1;
-            if (info != null) {
-                Log.debug(info.getInstanceNumberForArgumentIndex(0) + "", "Instance Information");
-                //number = info.getInstanceNumberForArgumentIndex(0);
-                number = info.getInstanceNumberForPortName(emaPortSymbolMain.getNameWithoutArrayBracketPart());
-            } else {
-                Log.info("No instance information for " + emaPortSymbolMain.getName(), "Missing:");
-            }
-            for (EMAPortSymbol emaPortSymbol : getPortsList()) {
-                if (emaPortSymbol.getName().startsWith(emaPortSymbolMain.getNameWithoutArrayBracketPart() + "[") && emaPortSymbol.isPartOfPortArray()) {
-                    if (number > -1 && counter > number) {
-                        scope.remove(emaPortSymbol);
-                        Log.info(emaPortSymbol.getName(), "Removed:");
-                    }
-                    ++counter;
-                }
-            }
-            for (int i = 1; i <= number; ++i) {
-                if (!getPort(emaPortSymbolMain.getNameWithoutArrayBracketPart() + "[" + i + "]").isPresent()) {
-                    EMAPortSymbol emaPortSymbolNew = new EMAPortSymbol(emaPortSymbolMain.getNameWithoutArrayBracketPart() + "[" + i + "]");
-                    emaPortSymbolNew.setTypeReference(emaPortSymbolMain.getTypeReference());
-                    emaPortSymbolNew.setNameDependsOn(emaPortSymbolMain.getNameDependsOn());
-                    emaPortSymbolNew.setDirection(emaPortSymbolMain.isIncoming());
-
-                    scope.add(emaPortSymbolNew);
-                }
-            }
-        }
-    }
-
-    /**
-     * EMAComponentInstanceSymbol::getPortsList() may return different
-     * results than ComponentSymbol::getPortsList()
-     * "MontiArc provides a structural inheritance mechanism that allows to define a component as
-     * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
-     * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
-     * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
-     */
-    public Collection<EMAPortSymbol> getPortsList() {
-        return getSpannedScope().<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND);
+    public Collection<EMAPortInstanceSymbol> getPortInstanceList() {
+        return getSpannedScope().<EMAPortInstanceSymbol>resolveLocally(EMAPortInstanceSymbol.KIND);
     }
 
     public Collection<EMAPortArraySymbol> getPortArrays() {
         return getSpannedScope().<EMAPortArraySymbol>resolveLocally(EMAPortArraySymbol.KIND);
     }
 
-    public Optional<EMAPortSymbol> getPort(String name) {
-        return getSpannedScope().resolveLocally(name, EMAPortSymbol.KIND);
+    public Optional<EMAPortInstanceSymbol> getPortInstance(String name) {
+        return getSpannedScope().resolveLocally(name, EMAPortInstanceSymbol.KIND);
     }
 
-    public Collection<EMAPortSymbol> getIncomingPorts() {
-        return getPortsList().stream().filter(EMAPortSymbol::isIncoming).collect(Collectors.toList());
+    public Collection<EMAPortInstanceSymbol> getIncomingPortInstances() {
+        return getPortInstanceList().stream().filter(EMAPortInstanceSymbol::isIncoming).collect(Collectors.toList());
     }
 
-    public Optional<EMAPortSymbol> getIncomingPort(String name) {
-        // no check for reference required
-        return getIncomingPorts().stream().filter(p -> p.getName().equals(name)).findFirst();
+    public Optional<EMAPortInstanceSymbol> getIncomingPortInstance(String name) {
+        return getIncomingPortInstances().stream().filter(p -> p.getName().equals(name)).findFirst();
     }
 
-    public Collection<EMAPortSymbol> getOutgoingPorts() {
-        return getPortsList().stream().filter(EMAPortSymbol::isOutgoing).collect(Collectors.toList());
+    public Collection<EMAPortInstanceSymbol> getOutgoingPortInstances() {
+        return getPortInstanceList().stream().filter(EMAPortInstanceSymbol::isOutgoing).collect(Collectors.toList());
     }
 
-    public Optional<EMAPortSymbol> getOutgoingPort(String name) {
-        // no check for reference required
-        return getOutgoingPorts().stream().filter(p -> p.getName().equals(name)).findFirst();
+    public Optional<EMAPortInstanceSymbol> getOutgoingPortInstance(String name) {
+        return getOutgoingPortInstances().stream().filter(p -> p.getName().equals(name)).findFirst();
     }
 
-    /**
-     * EMAComponentInstanceSymbol::getSubComponents() may return different
-     * results than the union of ComponentSymbol::getSubComponents() and
-     * ComponentSymbol::getInnerComponents.
-     * "MontiArc provides a structural inheritance mechanism that allows to define a component as
-     * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
-     * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
-     * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
-     */
+
     public Collection<EMAComponentInstanceSymbol> getSubComponents() {
         return getSpannedScope().<EMAComponentInstanceSymbol>resolveLocally(EMAComponentInstanceSymbol.KIND);
     }
@@ -245,38 +184,25 @@ public class EMAComponentInstanceSymbol
     }
 
     /**
-     * EMAComponentInstanceSymbol::getPortsList() may return different
-     * results than ComponentSymbol::getPortsList()
+     * EMAComponentInstanceSymbol::getPortInstanceList() may return different
+     * results than ComponentSymbol::getPortInstanceList()
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
      * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,
      * inner component type definitions, subcomponents, and connectors are inherited." (p. 42, Ph.D. AH)
      */
-    public Collection<EMAConnectorSymbol> getConnectors() {
-        return getSpannedScope().<EMAConnectorSymbol>resolveLocally(EMAConnectorSymbol.KIND);
+    public Collection<EMAConnectorInstanceSymbol> getConnectorInstances() {
+        return getSpannedScope().<EMAConnectorInstanceSymbol>resolveLocally(EMAConnectorInstanceSymbol.KIND);
     }
 
     @Override
     public String toString() {
         return SymbolPrinter.printEMAComponentInstance(this);
     }
-    /*
-    @Override
-    public void addTag(TagSymbol tag) {
-        Map localSymbols = this.getMutableSpannedScope().getLocalSymbols();
-        if(localSymbols.get(tag.getName()) == null || !((Collection)localSymbols.get(tag.getName())).contains(tag)) {
-            Log.info(this.getMutableSpannedScope().toString(),"Scope Before Add :");
-            this.getMutableSpannedScope().add(tag);
-            Log.info(this.getMutableSpannedScope().toString(),"Scope After Add :");
-            Log.info("size: "+getTags((TagKind) tag.getKind()).size()+" "+getTags().contains(tag)+"","Contains Added Tag:");
-        }else{
-            Log.info(tag.getName(),"Tag was not added:");
-        }
 
-    }*/
 
-    public boolean containsPort(EMAPortSymbol emaPortSymbol) {
-        for (EMAPortSymbol symbol : getPortsList())
+    public boolean containsPort(EMAPortInstanceSymbol emaPortSymbol) {
+        for (EMAPortInstanceSymbol symbol : getPortInstanceList())
             if (symbol.equals(emaPortSymbol))
                 return true;
         return false;
@@ -288,15 +214,15 @@ public class EMAComponentInstanceSymbol
      *
      * @return
      */
-    public List<EMAConnectorSymbol> getSubComponentConnectors() {
-        Set<EMAConnectorSymbol> set = new LinkedHashSet<>();
+    public List<EMAConnectorInstanceSymbol> getSubComponentConnectors() {
+        Set<EMAConnectorInstanceSymbol> set = new LinkedHashSet<>();
 
-        Collection<EMAConnectorSymbol> connectors = getConnectors();
+        Collection<EMAConnectorInstanceSymbol> connectors = getConnectorInstances();
         Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
 
-        for (EMAConnectorSymbol connector : connectors) {
-            EMAPortSymbol sourcePort = connector.getSourcePort();
-            EMAPortSymbol targetPort = connector.getTargetPort();
+        for (EMAConnectorInstanceSymbol connector : connectors) {
+            EMAPortInstanceSymbol sourcePort = connector.getSourcePort();
+            EMAPortInstanceSymbol targetPort = connector.getTargetPort();
             Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
             Optional<EMAComponentInstanceSymbol> targetCmpOpt = targetPort.getComponentInstance();
 
@@ -315,11 +241,11 @@ public class EMAComponentInstanceSymbol
 
     public List<EMAComponentInstanceSymbol> getIndependentSubComponents() {
         Collection<EMAComponentInstanceSymbol> subComponents = getSubComponents();
-        List<EMAConnectorSymbol> subComponentConnectors = getSubComponentConnectors();
+        List<EMAConnectorInstanceSymbol> subComponentConnectors = getSubComponentConnectors();
 
         Set<EMAComponentInstanceSymbol> nonIndependentSubComponents = new HashSet<>();
-        for (EMAConnectorSymbol connector : subComponentConnectors) {
-            EMAPortSymbol sourcePort = connector.getSourcePort();
+        for (EMAConnectorInstanceSymbol connector : subComponentConnectors) {
+            EMAPortInstanceSymbol sourcePort = connector.getSourcePort();
             Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
             if (sourceCmpOpt.isPresent()) {
                 EMAComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
@@ -332,9 +258,6 @@ public class EMAComponentInstanceSymbol
         return new ArrayList<>(independentSubComponents);
     }
 
-    public boolean isTemplateComponent() {
-        return getActualTypeArguments().size() > 0;
-    }
 
     public int getUnitNumberResolutionSubComponents(String name) {
         ASTUnitNumberResolution unitNumberResolution = (ASTUnitNumberResolution) getSubComponents().iterator().next().getComponentType().getReferencedSymbol().getResolutionDeclarationSymbol(name).get().getASTResolution();

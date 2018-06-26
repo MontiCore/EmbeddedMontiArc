@@ -27,17 +27,17 @@ import de.monticore.symboltable.CommonSymbol;
  *
  * @author Robert Heim
  */
-public abstract class EMAAComponentImplementationSymbol
+public abstract class EMAComponentImplementationSymbol
         extends CommonSymbol {
 
-  public static final EMAAComponentImplementationKind KIND = EMAAComponentImplementationKind.INSTANCE;
+  public static final EMAComponentImplementationKind KIND = EMAComponentImplementationKind.INSTANCE;
 
   /**
-   * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAAComponentImplementationSymbol
+   * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentImplementationSymbol
    *
    * @param name
    */
-  public EMAAComponentImplementationSymbol(String name) {
+  public EMAComponentImplementationSymbol(String name) {
     super(name, KIND);
   }
 
