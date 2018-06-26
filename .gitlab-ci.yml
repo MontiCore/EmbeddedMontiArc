@@ -8,7 +8,7 @@ branchJobWindows:
   tags:
   - Windows10
   except:
-  -master
+  - master
 
 masterobWindows:
   stage: windows
