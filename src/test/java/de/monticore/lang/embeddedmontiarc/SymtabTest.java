@@ -780,5 +780,25 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol instance = symTab.<EMAComponentInstanceSymbol>resolve("fas.demo_fas_Fkt_m.fAS", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instance);
     }
+
+    @Test
+    public void testInstantiations() {
+        Scope symTab = createSymTab("src/test/resources");
+
+        ComponentSymbol componentSymbol = symTab.<ComponentSymbol>resolve("symtab.instantiations.Top", ComponentSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        Scope componentScope = componentSymbol.getSpannedScope();
+        EMAPortSymbol portSymbol = componentScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
+        assertNotNull(portSymbol);
+        EMAComponentInstantiationSymbol instantiationSymbol = componentScope.<EMAComponentInstantiationSymbol>resolve("sub_1", EMAComponentInstantiationSymbol.KIND).orElse(null);
+        assertNotNull(instantiationSymbol);
+
+        EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(instanceSymbol);
+        Scope instanceScope = instanceSymbol.getSpannedScope();
+        EMAPortSymbol portInstanceSymbol = instanceScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
+
+
+    }
 }
 

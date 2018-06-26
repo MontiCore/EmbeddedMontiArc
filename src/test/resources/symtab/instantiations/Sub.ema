@@ -1,0 +1,13 @@
+package symtab.instantiations;
+
+component Sub {
+
+    autoinstantiate off;
+
+    ports
+        in Byte sub_in_1,
+        out Byte sub_out_1;
+
+
+
+}
