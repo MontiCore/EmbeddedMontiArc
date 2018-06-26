@@ -237,7 +237,7 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <header>${project.baseUri}/src/license/se/license.txt</header>
+                    <header>${project.baseUri}/license.txt</header>
                     <properties>
                         <owner>Michael von Wenckstern</owner>
                         <email>vonwenckstern@se-rwth.de</email>
