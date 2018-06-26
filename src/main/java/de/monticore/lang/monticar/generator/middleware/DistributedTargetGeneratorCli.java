@@ -44,7 +44,7 @@ public final class DistributedTargetGeneratorCli {
 
     private static final Option OPTION_OUTPUT_PATH = Option.builder("o")
             .longOpt("output-dir")
-            .desc("full path to output directory for tests")
+            .desc("full path to output directory for generated files")
             .hasArg(true)
             .required(true)
             .build();
