@@ -49,48 +49,48 @@
         </dependency>
     </dependencies>
 
+    
+     <!-- == PROJECT BUILD SETTINGS =========================================== -->
+
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>${wagon.provider.version}</version>
-            </extension>
-        </extensions>
         <plugins>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.1</version>
-                <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/external-dependencies</altDeploymentRepository>
-                </configuration>
             </plugin>
+
+            <!-- MontiCore Generation -->
             <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.12</version>
+                <groupId>de.monticore.mojo</groupId>
+                <artifactId>monticore-maven-plugin</artifactId>
+                <version>${monticore.plugin}</version>
                 <configuration>
-                    <server>github</server>
-                    <message>Maven artifacts for ${project.version} ${project.artifactId}</message>
-                    <noJekyll>true</noJekyll>
-                    <outputDirectory>${project.build.directory}/external-dependencies</outputDirectory>
-                    <branch>refs/heads/master</branch>
-                    <includes>
-                        <include>**/*</include>
-                    </includes>
-                    <repositoryName>external-dependencies</repositoryName>
-                    <repositoryOwner>MontiSim</repositoryOwner>
-                    <merge>true</merge>
+                    <skip>false</skip>
+                    <script>de/monticore/monticore_noemf.groovy</script>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4</artifactId>
+                        <version>4.7.1</version>
+                    </dependency>
+                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+                    <dependency>
+                        <groupId>org.antlr</groupId>
+                        <artifactId>antlr4-runtime</artifactId>
+                        <version>4.7.1</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>site</goal>
+                            <goal>generate</goal>
                         </goals>
-                        <phase>deploy</phase>
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Other Configuration -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler.plugin}</version>
@@ -100,6 +100,8 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+            <!-- Source Jar Configuration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -148,7 +150,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+                 <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
@@ -169,44 +171,24 @@
                 <configuration>
                     <format>xml</format>
                     <maxmem>256m</maxmem>
+                    <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>target/**</exclude>
-                        </excludes>
-                    </instrumentation>
                 </configuration>
-            </plugin>
+			</plugin>
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </repository>
-        <snapshotRepository>
-            <id>internal.repo</id>
-            <url>file://${project.build.directory}/external-dependencies</url>
-        </snapshotRepository>
-    </distributionManagement>
+ <!-- == DISTRIBUTION ==================================================== -->
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <format>xml</format>
-                    <instrumentation>
-                        <excludes>
-                            <exclude>target/**</exclude>
-                        </excludes>
-                    </instrumentation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
+  <distributionManagement>
+    <repository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
