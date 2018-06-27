@@ -148,6 +148,7 @@
         <!-- Set file encoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <wagon.provider.version>2.6</wagon.provider.version>
     </properties>
 
     <distributionManagement>

@@ -179,13 +179,19 @@
             <mirrorOf>github2</mirrorOf>
             <url>https://raw.githubusercontent.com/MontiSim/external-dependencies/master/</url>
         </mirror>
-        <!--
         <mirror>
+            <id>se-nexus</id>
+            <mirrorOf>external:*</mirrorOf>
+            <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
+        </mirror>    
+
+        
+<!--         <mirror>
           <id>topobyte</id>
           <mirrorOf>external:*</mirrorOf>
           <url>http://http://mvn.topobyte.de/</url>
         </mirror>
-        -->
+ -->        
     </mirrors>
 
     <!-- profiles
@@ -399,6 +405,26 @@
                 </pluginRepository>
             </pluginRepositories>
         </profile>
+
+        <profile>
+            <id>se-nexus</id>
+            <repositories>
+            <repository>
+              <id>central</id>
+                <url>http://central</url>
+                <releases><enabled /></releases>
+                <snapshots><enabled /></snapshots>
+            </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                  <id>central</id>
+                  <url>http://central</url>
+                  <releases><enabled /></releases>
+                  <snapshots><enabled /></snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
     </profiles>
 
 
@@ -411,6 +437,7 @@
     </activeProfiles>
     -->
     <activeProfiles>
+        <activeProfile>se-nexus</activeProfile>
         <activeProfile>github</activeProfile>
     </activeProfiles>
 
