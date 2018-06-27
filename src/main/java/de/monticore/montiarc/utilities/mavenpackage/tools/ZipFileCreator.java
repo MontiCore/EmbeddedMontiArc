@@ -1,10 +1,9 @@
 package de.monticore.montiarc.utilities.mavenpackage.tools;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.Map;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipFileCreator {
@@ -38,7 +37,7 @@ public class ZipFileCreator {
         FileInputStream fis = new FileInputStream(file);
         ZipEntry zipEntry = new ZipEntry(entryName);
         zos.putNextEntry(zipEntry);
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[2048];
         int length = 0;
         while((length = fis.read(buffer)) >= 0){
             zos.write(buffer, 0, length);
@@ -47,4 +46,52 @@ public class ZipFileCreator {
         fis.close();
     }
 
+
+    public static void ExtractTo(String pathZIP, String pathOUT) throws IOException {
+        InputStream theFile = new FileInputStream(pathZIP);
+        ZipInputStream stream = new ZipInputStream(theFile);
+        byte[] buffer = new byte[2048];
+        if(pathOUT.endsWith("/")){
+            pathOUT = pathOUT.substring(0, pathOUT.length()-1);
+        }
+        try
+        {
+            ZipEntry entry;
+            while((entry = stream.getNextEntry())!=null)
+            {
+
+                String outpath = pathOUT + entry.getName();
+                FileOutputStream output = null;
+                try
+                {
+
+                    File f = new File(outpath);
+                    if(entry.isDirectory()){
+                        f.mkdirs();
+                    }else{
+                        f.getParentFile().mkdirs();
+                        f.createNewFile();
+                    }
+
+                    output = new FileOutputStream(outpath);
+                    int len = 0;
+                    while ((len = stream.read(buffer)) > 0)
+                    {
+                        output.write(buffer, 0, len);
+                    }
+                }
+                finally
+                {
+                    if(output!=null) output.close();
+                }
+            }
+        }
+        finally
+        {
+            // we must always close the zip file.
+            stream.close();
+        }
+
+    }
 }
+
