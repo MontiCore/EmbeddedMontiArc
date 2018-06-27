@@ -1,6 +1,7 @@
 package de.monticore.montiarc.utilities.mavenpackage;
 
 import de.monticore.montiarc.utilities.mavenpackage.tools.SearchFiles;
+import de.monticore.montiarc.utilities.mavenpackage.tools.ZipFileCreator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -61,7 +62,7 @@ public class PackageMojo extends AbstractMojo {
         return filesToPack;
     }
     public void setFilesToPack(String filesToPack){
-        filesToPack = filesToPack.replaceAll(" ", "");
+        filesToPack = filesToPack.replaceAll("\\s", "");
         this.filesToPack = filesToPack;
     }
 
@@ -70,7 +71,18 @@ public class PackageMojo extends AbstractMojo {
     }
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        Map<String, File> allFiles = this.searchFilesToPack();
 
+        try{
+            File outBase = new File(this.pathOut);
+            outBase.mkdirs();
+        }catch (Exception ex){
+            throw new MojoFailureException("Can't create folder "+this.pathOut);
+        }
+
+        if(!ZipFileCreator.Zip(this.pathOut+this.packageName, allFiles)){
+            throw new MojoExecutionException("Error while creating zip file");
+        }
     }
 
     public Map<String,File> searchFilesToPack(){
