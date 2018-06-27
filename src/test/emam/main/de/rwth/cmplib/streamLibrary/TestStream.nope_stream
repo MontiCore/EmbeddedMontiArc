@@ -1,0 +1,7 @@
+package de.rwth.cmplib.streamLibrary;
+
+stream TestStream {
+  compass:              1 tick 2 tick 3;
+  current_direction_x:  0 tick -1 tick 42;
+  current_direction_y:  5 tick 123 tick 3 ;
+}
