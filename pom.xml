@@ -70,37 +70,6 @@
                 <version>2.8.1</version>
             </plugin>
 
-            <!-- MontiCore Generation -->
-            <plugin>
-                <groupId>de.monticore.mojo</groupId>
-                <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.plugin}</version>
-                <configuration>
-                    <skip>false</skip>
-                    <script>de/monticore/monticore_noemf.groovy</script>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                    <!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
-                    <dependency>
-                        <groupId>org.antlr</groupId>
-                        <artifactId>antlr4-runtime</artifactId>
-                        <version>4.7.1</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Other Configuration -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
