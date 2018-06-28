@@ -25,6 +25,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortS
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collection;

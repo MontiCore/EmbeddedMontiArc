@@ -111,7 +111,7 @@ public class EMAConnectorInstanceSymbol extends EMAConnectorSymbol implements EM
         }
 
         // (1) try to load EMAComponentInstance.Port
-        String fullSource = Joiners.DOT.join(this.getPackageName(), this.getEnclosingScope().getSpanningSymbol().get().getName(), name);
+        String fullSource = Joiners.DOT.join(this.getEnclosingScope().getSpanningSymbol().get().getFullName(), name);
         Optional<EMAPortInstanceSymbol> port = this.getEnclosingScope().<EMAPortInstanceSymbol>resolve(fullSource,
                 EMAPortInstanceSymbol.KIND);
         if (port.isPresent()) {

@@ -131,7 +131,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         System.out.println("inst: " + inst.toString());
 
         assertEquals(3, inst.getConnectorInstances().size());
-        //Todo: fix
+        // Todo: make ConstantPorts Instances
         //EMAConstantPortSymbol portSymbol = (EMAConstantPortSymbol) inst.getPortInstance("CONSTANTPORT1").get();
     }
 
@@ -310,8 +310,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
         assertEquals(2, inst.getConnectorInstances().size());
 
-        //Todo: fix
-        /*Iterator<EMAConnectorSymbol> iter = inst.getConnectorInstances().iterator();
+        Iterator<EMAConnectorInstanceSymbol> iter = inst.getConnectorInstances().iterator();
         EMAConnectorSymbol cs = iter.next();
 
         assertEquals("a1.out1", cs.getSource());
@@ -343,7 +342,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertEquals("a1.in1", cs.getTarget());
         assertEquals("testing.subComponentConnector2.a1.in1", cs.getSourcePort().getFullName());
         assertEquals("testing.subComponentConnector2.a1.a1.in1", cs.getTargetPort().getFullName());
-*/
+
     }
 
     private void testConnectorCorrectnessForComponent(EMAComponentInstanceSymbol inst) {

@@ -806,7 +806,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
         EMAComponentInstanceSymbol instanceSymbol2 = componentScope.<EMAComponentInstanceSymbol>resolve("sub_1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol2);
-        Scope instanceScope2 = instanceSymbol.getSpannedScope();
+        Scope instanceScope2 = instanceSymbol2.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol2 = instanceScope2.<EMAPortInstanceSymbol>resolve("sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
         assertNotNull(portInstanceSymbol2);
 
