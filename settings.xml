@@ -64,7 +64,6 @@
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </pluginRepository>
-      </pluginRepositories>
       <pluginRepository>
                     <id>topobyte</id>
                     <url>http://mvn.topobyte.de/</url>
@@ -76,6 +75,8 @@
                     </snapshots>
                 </pluginRepository>
 
+      </pluginRepositories>
+      
     </profile>
   </profiles>
 
