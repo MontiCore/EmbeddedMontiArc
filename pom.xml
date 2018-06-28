@@ -24,6 +24,7 @@
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
+		<java.version>1.8</java.version>
 </properties>
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
