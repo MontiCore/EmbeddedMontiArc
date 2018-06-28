@@ -118,4 +118,17 @@ public class EMAPortBuilder {
             p.setMiddlewareSymbol(middlewareSymbol.get());
         return p;
     }
+
+
+    public static EMAPortInstanceSymbol instantiate(EMAPortSymbol port) {
+        EMAPortInstanceSymbol portInstance = new EMAPortInstanceSymbol(port.getName());
+        portInstance.setDirection(port.isIncoming());
+        portInstance.setTypeReference(port.getTypeReference());
+        if (port.getAstNode().isPresent())
+            portInstance.setAstNode(port.getAstNode().get());
+        portInstance.setConfig(port.isConfig());
+        if(port.getMiddlewareSymbol().isPresent())
+            portInstance.setMiddlewareSymbol(port.getMiddlewareSymbol().get());
+        return portInstance;
+    }
 }

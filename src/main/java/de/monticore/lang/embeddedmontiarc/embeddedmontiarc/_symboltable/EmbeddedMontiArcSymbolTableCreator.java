@@ -38,6 +38,7 @@ import de.monticore.symboltable.types.references.TypeReference;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -119,8 +120,10 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         removeCurrentScope();
 
         // creates all instances which are created through the top level component
-        instanceSymbolCreator.createInstances(
-                (ComponentSymbol) (Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))));
+        ComponentSymbol componentSymbol = (ComponentSymbol) Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null));
+        String instanceName = Character.toLowerCase(componentSymbol.getName().charAt(0)) + componentSymbol.getName().substring(1);
+
+        instanceSymbolCreator.createInstances(componentSymbol, instanceName);
 
         Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(),
                 "SymbolTableCreator:");

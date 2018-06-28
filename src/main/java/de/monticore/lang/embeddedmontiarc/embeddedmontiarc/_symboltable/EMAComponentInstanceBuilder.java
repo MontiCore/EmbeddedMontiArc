@@ -268,8 +268,8 @@ public class EMAComponentInstanceBuilder {
             final MutableScope scope = (MutableScope) sym.getSpannedScope();
             resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
-            ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.clone(p))); // must be cloned since we change it if it has generics
-            connectors.stream().forEachOrdered(c -> scope.add(EMAConnectorBuilder.clone(c)));
+            ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.instantiate(p))); // must be cloned since we change it if it has generics
+            connectors.stream().forEachOrdered(c -> scope.add(EMAConnectorBuilder.instantiate(c)));
             subComponents.stream().forEachOrdered(s -> scope.add(s));
 
             sym.setActualTypeArguments(actualTypeArguments.values().stream().collect(Collectors.toList()));

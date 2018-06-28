@@ -25,8 +25,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class EMAConnectorInstanceKind
-        implements SymbolKind {
+public class EMAConnectorInstanceKind implements SymbolKind {
 
   public static final EMAConnectorInstanceKind INSTANCE = new EMAConnectorInstanceKind();
 

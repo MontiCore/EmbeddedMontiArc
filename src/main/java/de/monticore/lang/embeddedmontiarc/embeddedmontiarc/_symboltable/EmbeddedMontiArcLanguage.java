@@ -55,6 +55,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
         addResolvingFilter(CommonResolvingFilter.create(EMAPortSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAPortArraySymbol.KIND));
         addResolvingFilter(new EMAConnectorResolvingFilter<>(EMAConnectorSymbol.KIND));
+        addResolvingFilter(new EMAConnectorResolvingFilter<>(EMAConnectorInstanceSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstanceSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(SIUnitSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(SIUnitRangesSymbol.KIND));
@@ -67,6 +68,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
         //addResolvingFilter(CommonResolvingFilter.create(ComponentKind.KIND));
         //addResolvingFilter(CommonResolvingFilter.create(TagSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(MontiCarTypeSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAPortInstanceSymbol.KIND));
         setModelNameCalculator(new EmbeddedMontiArcModelNameCalculator());
     }
 

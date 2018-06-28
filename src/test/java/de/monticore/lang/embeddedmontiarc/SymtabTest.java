@@ -790,15 +790,25 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope componentScope = componentSymbol.getSpannedScope();
         EMAPortSymbol portSymbol = componentScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
         assertNotNull(portSymbol);
+        EMAConnectorSymbol connectorSymbol = componentScope.<EMAConnectorSymbol>resolve("top_out_1", EMAConnectorSymbol.KIND).orElse(null);
+        assertNotNull(connectorSymbol);
         EMAComponentInstantiationSymbol instantiationSymbol = componentScope.<EMAComponentInstantiationSymbol>resolve("sub_1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(instantiationSymbol);
+
 
         EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol);
         Scope instanceScope = instanceSymbol.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol = instanceScope.<EMAPortInstanceSymbol>resolve("top_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
         assertNotNull(portInstanceSymbol);
+        EMAConnectorInstanceSymbol connectorInstanceSymbol = instanceScope.<EMAConnectorInstanceSymbol>resolve("top_out_1", EMAConnectorInstanceSymbol.KIND).orElse(null);
+        assertNotNull(connectorInstanceSymbol);
 
+        EMAComponentInstanceSymbol instanceSymbol2 = componentScope.<EMAComponentInstanceSymbol>resolve("sub_1", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(instanceSymbol2);
+        Scope instanceScope2 = instanceSymbol.getSpannedScope();
+        EMAPortInstanceSymbol portInstanceSymbol2 = instanceScope2.<EMAPortInstanceSymbol>resolve("sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
+        assertNotNull(portInstanceSymbol2);
 
     }
 }

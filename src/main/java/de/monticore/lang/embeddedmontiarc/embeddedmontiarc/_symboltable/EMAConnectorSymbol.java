@@ -65,7 +65,7 @@ public class EMAConnectorSymbol extends CommonSymbol implements EMAElementSymbol
     }
 
     protected EMAConnectorSymbol(String name, EMAConnectorInstanceKind kind) {
-        super(TypesPrinter.fixTargetName(name), KIND);
+        super(TypesPrinter.fixTargetName(name), kind);
     }
 
     public static EMAConnectorBuilder builder() {

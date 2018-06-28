@@ -55,11 +55,11 @@ public class EMAComponentInstanceSymbolCreator {
     /**
      * @param topComponent this is the scope where the top-level component is defined in
      */
-    public void createInstances(ComponentSymbol topComponent) {
-        if (getGlobalScope(topComponent.getSpannedScope()).resolveDown(
-                Joiners.DOT.join(topComponent.getPackageName(), Character.toLowerCase(topComponent.getName().charAt(0)) +
-                        topComponent.getName().substring(1)), EMAComponentInstanceSymbol.KIND).isPresent()) {
-//    if (!topComponents.add(topComponent)) {
+    public void createInstances(ComponentSymbol topComponent, String instanceName) {
+        MutableScope enclosingScope = (MutableScope) topComponent.getEnclosingScope();
+        String fullInstanceName = Joiners.DOT.join(topComponent.getPackageName(), instanceName);
+
+        if (enclosingScope.resolveDown(fullInstanceName, EMAComponentInstanceSymbol.KIND).isPresent()) {
             System.out.println("instances for top component + " + topComponent.getFullName() +
                     " is already created");
             Log.info("instances for top component + " + topComponent.getFullName() +
@@ -78,23 +78,13 @@ public class EMAComponentInstanceSymbolCreator {
         final Set<ResolvingFilter<? extends Symbol>> filters =
                 topComponent.getSpannedScope().getResolvingFilters();
 
-        // make first letter to lower case
-        // this is needed so that you can differentiate between ComponentDefinition.Port
-        // and between ComponentInstance.Port (ComponentInstance has small letter and
-        // ComponentDefinition has capital letter)
-        String name = topComponent.getName();
-        if (name.length() > 1) {
-            name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
-        } else {
-            name = Character.toLowerCase(name.charAt(0)) + "";
-        }
 
         EMAComponentInstanceBuilder builder =
                 createInstance(topComponent, filters, null)
-                        .setName(name);
+                        .setName(instanceName);
 
-        final EMAComponentInstanceSymbol sym = builder.addResolvingFilters(filters).build();
-        ((MutableScope) topComponent.getEnclosingScope()).add(sym);
+        final EMAComponentInstanceSymbol instanceSymbol = builder.addResolvingFilters(filters).build();
+        enclosingScope.add(instanceSymbol);
     }
 
     protected EMAComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
@@ -121,6 +111,10 @@ public class EMAComponentInstanceSymbolCreator {
             Log.debug(inst.getInstanceInformation().get().getInstanceNumberForArgumentIndex(0) + "", "InstanceInformation:");
 
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PostSub");
+
+            // Create Component Instance of Instantiation Symbol
+            createInstances(inst.getComponentType().getReferencedSymbol(), inst.getName());
+
         }
 
         // add inherited ports and sub components
