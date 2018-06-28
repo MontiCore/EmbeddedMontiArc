@@ -7,13 +7,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.1</version>
+        <version>${global.version}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>sensors</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>

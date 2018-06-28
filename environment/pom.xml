@@ -7,13 +7,13 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.1</version>
+        <version>${global.version}</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>environment</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <!-- Repository for osm4j -->
     <repositories>
