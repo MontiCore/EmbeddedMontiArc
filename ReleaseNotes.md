@@ -30,6 +30,7 @@ Changelog:
 * Fixes issue [#14](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/14) 
 * Fixed issue [#1] (https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/EmbeddedMontiArcStudio/issues/1)
 * Fixed issue [#2] (https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioBuilder/issues/2)
+* Added new project SuperMario
 
 What's under the Hood:
 ====

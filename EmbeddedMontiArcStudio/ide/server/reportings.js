@@ -87,6 +87,22 @@ class PacManReportingWS extends AbstractReporting {
     }
 }
 
+class SuperMarioReporting extends AbstractReporting {
+    constructor() {
+        super("supermario", BATCHES.SUPERMARIO.REPORTING);
+        this.logger = Log.getLogger("SUPERMARIO REPORTING");
+        this.logger.level = "debug";
+    }
+}
+
+class SuperMarioReportingWS extends AbstractReporting {
+    constructor() {
+        super("supermario", BATCHES.SUPERMARIO.REPORTING_STREAM);
+        this.logger = Log.getLogger("SUPERMARIO REPORTING WITH STREAMS");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
     AutoPilotReporting: new AutoPilotReporting(),
     AutoPilotReportingWS: new AutoPilotReportingWS,
@@ -94,5 +110,7 @@ module.exports = {
     ClusteringReportingWS: new ClusteringReportingWS(),
     PumpReporting: new PumpReporting(),
     PacManReporting: new PacManReporting(),
-    PacManReportingWS: new PacManReportingWS()
+    PacManReportingWS: new PacManReportingWS(),
+    SuperMarioReporting: new SuperMarioReporting(),
+    SuperMarioReportingWS: new SuperMarioReportingWS(),
 };

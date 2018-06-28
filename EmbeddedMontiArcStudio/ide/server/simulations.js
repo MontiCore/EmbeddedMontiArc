@@ -201,8 +201,30 @@ class PacManSimulation {
     }
 }
 
+class SuperMarioSimulation {
+    constructor() {
+        this.logger = Log.getLogger("SUPERMARIO");
+        this.process = null;
+        this.logger.level = "debug";
+    }
+
+    execute(callback) {
+        this.logger.info("Executing SuperMario...");
+
+        const onExit = () => {
+            this.logger.info("...SuperMario executed");
+            callback();
+        };
+
+        Process.spawn(BATCHES.SUPERMARIO.SIMULATION, [], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "supermario")
+        }).on("exit", onExit);
+    }
+}
+
 module.exports = {
     AutoPilotSimulation: new AutoPilotSimulation(),
     ClusteringSimulation: new ClusteringSimulation(),
-    PacManSimulation: new PacManSimulation()
+    PacManSimulation: new PacManSimulation(),
+    SuperMarioSimulation: new SuperMarioSimulation()
 };

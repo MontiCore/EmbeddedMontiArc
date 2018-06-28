@@ -103,9 +103,18 @@ class PacManVisualization extends AbstractVisualization {
     }
 }
 
+class SuperMarioVisualization extends AbstractVisualization {
+    constructor() {
+        super("supermario", BATCHES.SUPERMARIO.VISUALIZATION);
+        this.logger = Log.getLogger("SUPERMARIO VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
 	PumpVisualization: new PumpVisualization(),
 	ClusteringVisualization: new ClusteringVisualization(),
-    PacManVisualization: new PacManVisualization()
+    PacManVisualization: new PacManVisualization(),
+    SuperMarioVisualization: new SuperMarioVisualization()
 };

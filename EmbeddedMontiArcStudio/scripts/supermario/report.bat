@@ -1,12 +1,12 @@
-call "..\shared\variables.bat"
-call "..\pacman\runAllTests.bat"
+cd "..\shared"
+call variables.bat
+cd "..\supermario"
 if exist "%REPORTING_HOME%\report\data" rmdir "%REPORTING_HOME%\report\data" /s /q
 mkdir "%REPORTING_HOME%\report\data"
 cd %REPORTING_HOME%
 "%JAVA_HOME%\bin\java.exe" -jar "reporting.jar" ^
-   "%HOME%\model\pacman" ^
+   "%HOME%\model\supermario" ^
    -tc "true" ^
    -zn "dummy.zip" ^
-   -svg "true" ^
-   -ist "%STREAM_TESTING%\testResults"
+   -svg "true"
 cd "%HOME%\scripts"

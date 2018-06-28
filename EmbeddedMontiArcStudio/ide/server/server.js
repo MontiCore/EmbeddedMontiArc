@@ -35,8 +35,12 @@ function onNFPZipped() {
 	Archiver.zip("autopilot", onAutopilotZipped);
 }
 
-function onPacManZipped() {
+function onSuperMarioZipped() {
 	Archiver.zip("nfpverification", onNFPZipped);
+}
+
+function onPacManZipped() {
+	Archiver.zip("supermario", onSuperMarioZipped);
 }
 
 function onPumpZipped() {

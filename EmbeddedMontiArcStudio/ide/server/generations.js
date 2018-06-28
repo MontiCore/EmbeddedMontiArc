@@ -53,6 +53,15 @@ class PacmanGeneration extends AbstractEMAM2WASM {
     }
 }
 
+class SuperMarioGeneration extends AbstractEMAM2WASM {
+    constructor() {
+        super("supermario", BATCHES.SUPERMARIO.EMAM2WASM_GEN);
+        this.logger = Log.getLogger("SUPERMARIO REPORTING WITH STREAMS");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
     PacmanGeneration: new PacmanGeneration(),
+	SuperMarioGeneration: new SuperMarioGeneration(),
 };

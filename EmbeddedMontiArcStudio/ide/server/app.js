@@ -2,12 +2,12 @@ const Express                                           = require("express");
 const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
-const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation} = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization} = require("./visualizations");
-const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting} = require("./reportings");
-const {AutoPilotReportingWS, ClusteringReportingWS, PacManReportingWS} = require("./reportings");
+const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, SuperMarioSimulation} = require("./simulations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization, SuperMarioVisualization} = require("./visualizations");
+const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting, SuperMarioReporting} = require("./reportings");
+const {AutoPilotReportingWS, ClusteringReportingWS, PacManReportingWS, SuperMarioReportingWS} = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
-const {PacmanGeneration}                                = require("./generations");
+const {PacmanGeneration, SuperMarioGeneration}          = require("./generations");
 const {NFPVerificatorTest} = require("./nfpverification");
 const {CDVisualization, OCLChecking} = require("./oclverification");
 const Log                                               = require("log4js");
@@ -31,6 +31,8 @@ App.use("/v", Express.static(Path.resolve(PATHS.VISUALIZATION, "SVG")));
 App.use("/h", Express.static(PATHS.VIDEOS));
 App.use("/pp", Express.static(PATHS.PACMAN_PLAY));
 App.use("/ps", Express.static(PATHS.PACMAN_SIMULATE));
+App.use("/mp", Express.static(PATHS.SUPERMARIO_PLAY));
+App.use("/ms", Express.static(PATHS.SUPERMARIO_SIMULATE));
 App.use('/',  Express.static(Path.resolve(PATHS.IDE, "client"), OPTIONS.STATIC));
 App.use("/vv", Express.static(Path.resolve(PATHS.VIEWVERIFICATION, "WitnessSVG")));
 App.use("/nfp", Express.static(PATHS.NFPVERIFICATION_RESULT))
@@ -411,7 +413,61 @@ App.post("/services/pacman/visualize", function(request, response) {
 		response.end();
 	}
 
-	PacManVisualization.execute(onExecuted);});
+	PacManVisualization.execute(onExecuted);
+});
+
+App.post("/services/supermario/report", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/r/report.html?ide=false");
+        response.end();
+    }
+
+    SuperMarioReporting.execute(onExecuted);
+});
+
+App.post("/services/supermario/reportWS", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/r/report.html?ide=false&streams=true");
+        response.end();
+    }
+
+    SuperMarioReportingWS.execute(onExecuted);
+});
+
+App.post("/services/supermario/play", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/mp");
+        response.end();
+    }
+    onExecuted();
+});
+
+App.post("/services/supermario/emam2wasmGen", function(request, response) {
+    function onExecuted() {
+        response.end();
+    }
+
+    var tab = request.body.tab;
+
+    SuperMarioGeneration.execute(onExecuted, tab);
+});
+
+App.post("/services/supermario/simulate", function(request, response) {
+    function onExecuted() {
+        Chrome.open(URLS.SHARED + "/ms/simulation.html");
+        response.end();
+    }
+    SuperMarioSimulation.execute(onExecuted);
+});
+
+App.post("/services/supermario/visualize", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/de.rwth.supermario.SuperMarioWrapper.html");
+		response.end();
+	}
+
+	SuperMarioVisualization.execute(onExecuted);
+});
 
 App.post("/services/nfpverification/test", function(request, response) {
 	const body = request.body;

@@ -1,0 +1,27 @@
+package de.rwth.supermario.haller;
+
+
+component Controller {
+    ports   //x,y
+        in Z^{1,2} marioPosition,
+        in Z^{1,2} marioVelocity,
+        in Z marioHeight,
+        in Z^{5,2} nextEnemyPositions,
+        in Z^{5,2} nextObstaclePositions,
+        in Z nextHole,
+        in Z^{5,2} nextLootCrates,
+        out Z(-1 : 1 : 1) marioDirection,
+        out Z marioJump,
+        out Z marioDown,
+        out Z marioShoot;
+        
+    implementation Math {
+        
+       marioDirection = 1;
+       marioJump = 1; //Don't use "True" -> Open BugReport
+       marioDown = 0;
+       marioShoot = 0;
+       //marioDirection = 1;
+        
+    }
+}

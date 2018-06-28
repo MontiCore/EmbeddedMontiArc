@@ -29,6 +29,8 @@ PATHS.TEST_RESULTS   = Path.resolve(PATHS.HOME, "testResults");
 PATHS.EXEC           = Path.resolve(PATHS.HOME, "exec");
 PATHS.PACMAN_PLAY    = Path.resolve(PATHS.HOME, "pacman");
 PATHS.PACMAN_SIMULATE= Path.resolve(PATHS.HOME, "pacman");
+PATHS.SUPERMARIO_PLAY    = Path.resolve(PATHS.HOME, "supermario");
+PATHS.SUPERMARIO_SIMULATE= Path.resolve(PATHS.HOME, "supermario");
 PATHS.NFPVERIFICATION = Path.resolve(PATHS.HOME, "nfpverification");
 PATHS.OCLVERIFICATION = Path.resolve(PATHS.HOME, "oclverification");
 
@@ -66,6 +68,7 @@ BATCHES.AUTOPILOT  = {};
 BATCHES.CLUSTERING = {};
 BATCHES.PUMP = {};
 BATCHES.PACMAN     = {};
+BATCHES.SUPERMARIO = {};
 BATCHES.NFPVERIFICATION = {};
 BATCHES.OCLVERIFICATION = {};
 
@@ -104,6 +107,13 @@ BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report
 BATCHES.PACMAN.REPORTING_STREAM     = Path.resolve(PATHS.SCRIPTS, "pacman", "reportWithStreams.bat");
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
 BATCHES.PACMAN.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
+
+BATCHES.SUPERMARIO.PLAY    		 		= {};
+BATCHES.SUPERMARIO.EMAM2WASM_GEN 		= Path.resolve(PATHS.SCRIPTS, "supermario", "emam2wasmGen.bat");
+BATCHES.SUPERMARIO.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "supermario", "report.bat");
+BATCHES.SUPERMARIO.REPORTING_STREAM     = Path.resolve(PATHS.SCRIPTS, "supermario", "reportWithStreams.bat");
+BATCHES.SUPERMARIO.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "supermario", "simulate.bat");
+BATCHES.SUPERMARIO.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "supermario", "visualize.bat");
 
 BATCHES.NFPVERIFICATION.TEST		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule.bat");
 

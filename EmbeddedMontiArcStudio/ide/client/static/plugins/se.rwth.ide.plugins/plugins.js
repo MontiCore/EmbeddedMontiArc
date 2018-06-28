@@ -1065,6 +1065,17 @@ plugins.push(
     "plugins/se.rwth.reportWithStreams/reportWithStreams",
     "plugins/se.rwth.models.updater/models.updater"
     );
+} else if (reponame == "SuperMario") {
+    plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
+    plugins.push(
+    "plugins/se.rwth.supermario.play/play",
+    "plugins/se.rwth.emam2wasm.generate/generate",
+    "plugins/se.rwth.simulate/simulate",
+    "plugins/se.rwth.visualize/visualize",
+    "plugins/se.rwth.report/report",
+    "plugins/se.rwth.reportWithStreams/reportWithStreams",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
 } else if (reponame == "OCLVerification") {
 plugins.push(
     "plugins/se.rwth.oclverification/oclverification",

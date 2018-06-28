@@ -46,6 +46,11 @@ var Dashboard = (function() {
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/PacMan/v&url=/m/pacman.zip&openFile=/de/rwth/pacman/PacManWrapper.emam"
             }, {
                 username: "EmbeddedMontiArcStudio",
+                reponame: "SuperMario",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/SuperMario/v&url=/m/supermario.zip&openFile=/de/rwth/supermario/SuperMarioWrapper.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
                 reponame: "NFPVerification",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/NFPVerification/v&url=/m/nfpverification.zip&openFile=/example/model/Sensors.ema"

@@ -1,0 +1,1 @@
+call emam2wasmGen_.bat "supermario" de.rwth.supermario.superMarioWrapper

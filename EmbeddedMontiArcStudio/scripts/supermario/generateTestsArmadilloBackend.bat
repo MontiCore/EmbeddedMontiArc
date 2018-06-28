@@ -4,7 +4,7 @@ mkdir "%TEST_EXEC_DIR%"
 if exist "%TESTS_CPP_DIR%" rmdir "%TESTS_CPP_DIR%" /s /q
 mkdir "%TESTS_CPP_DIR%"
 "%JAVA_HOME%\bin\java.exe" -jar "%STREAM_TESTING%\emam2cpp.jar" ^
-   --models-dir="%HOME%\model\pacman" ^
+   --models-dir="%HOME%\model\supermario" ^
    --output-dir="%TESTS_CPP_DIR%" ^
    --root-model=%1 ^
    --flag-generate-tests ^
