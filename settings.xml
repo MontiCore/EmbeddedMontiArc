@@ -45,6 +45,17 @@
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
+        <repository>
+                    <id>topobyte</id>
+                    <url>http://mvn.topobyte.de/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
       </repositories>
       <pluginRepositories>
         <pluginRepository>
