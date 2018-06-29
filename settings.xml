@@ -32,6 +32,11 @@
       <mirrorOf>external:*</mirrorOf>
       <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
     </mirror>	 
+    <mirror>
+      <id>topobyte-repository</id>
+      <mirrorOf>topobyte</mirrorOf>
+      <url>http://mvn.topobyte.de/</url>
+    </mirror>	 
   </mirrors>
 
   <profiles>
@@ -45,6 +50,48 @@
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
+        <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>eclipse</id>
+                    <url>https://repo.eclipse.org/content/groups/releases/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>jcenter</id>
+                    <url>https://jcenter.bintray.com/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
+        <repository>
+                    <id>topobyte</id>
+                    <url>http://mvn.topobyte.de/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+
       </repositories>
       <pluginRepositories>
         <pluginRepository>
@@ -53,7 +100,50 @@
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </pluginRepository>
+        <pluginRepository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>eclipse</id>
+                    <url>https://repo.eclipse.org/content/groups/releases/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>jcenter</id>
+                    <url>https://jcenter.bintray.com/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
+      <pluginRepository>
+                    <id>topobyte</id>
+                    <url>http://mvn.topobyte.de/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+
       </pluginRepositories>
+      
     </profile>
   </profiles>
 
