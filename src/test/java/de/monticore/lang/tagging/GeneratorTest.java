@@ -50,7 +50,7 @@ public class GeneratorTest {
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
     symbolScopeMap.put("Component", "NameScope");
     symbolScopeMap.put("Port", "NameScope");
-    symbolScopeMap.put("ExpandedComponentInstance", "NameScope");
+    symbolScopeMap.put("ComponentInstance", "NameScope");
     symbolScopeMap.put("Connector", "ConnectorScope");
     generator.generate(Paths.get("TraceabilityTagSchema"), Paths.get("src/test/resources/nfp/"), symbolScopeMap);
   }
@@ -78,7 +78,7 @@ public class GeneratorTest {
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
     symbolScopeMap.put("Component", "NameScope");
     symbolScopeMap.put("Port", "NameScope");
-    symbolScopeMap.put("ExpandedComponentInstance", "NameScope");
+    symbolScopeMap.put("ComponentInstance", "NameScope");
     symbolScopeMap.put("Connector", "ConnectorScope");
     generator.generate(Paths.get("PowerConsumptionTagSchema"), Paths.get("src/test/resources/nfp/"), symbolScopeMap);
   }
@@ -92,7 +92,7 @@ public class GeneratorTest {
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
     symbolScopeMap.put("Component", "NameScope");
     symbolScopeMap.put("Port", "NameScope");
-    symbolScopeMap.put("ExpandedComponentInstance", "NameScope");
+    symbolScopeMap.put("ComponentInstance", "NameScope");
     symbolScopeMap.put("Connector", "ConnectorScope");
     generator.generate(Paths.get("LatencyTagSchema"), Paths.get("src/test/resources/nfp/"), symbolScopeMap);
   }
@@ -106,7 +106,7 @@ public class GeneratorTest {
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
     symbolScopeMap.put("Component", "NameScope");
     symbolScopeMap.put("Port", "NameScope");
-    symbolScopeMap.put("ExpandedComponentInstance", "NameScope");
+    symbolScopeMap.put("ComponentInstance", "NameScope");
     symbolScopeMap.put("Connector", "ConnectorScope");
     generator.generate(Paths.get("TransmissionCostsTagSchema"), Paths.get("src/test/resources/nfp/"), symbolScopeMap);
   }
@@ -120,7 +120,7 @@ public class GeneratorTest {
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
     symbolScopeMap.put("Component", "NameScope");
     symbolScopeMap.put("Port", "NameScope");
-    symbolScopeMap.put("ExpandedComponentInstance", "NameScope");
+    symbolScopeMap.put("ComponentInstance", "NameScope");
     symbolScopeMap.put("Connector", "ConnectorScope");
     generator.generate(Paths.get("CompPower"), Paths.get("src/test/resources/nfp/"), symbolScopeMap);
   }

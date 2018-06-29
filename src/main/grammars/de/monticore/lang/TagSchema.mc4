@@ -7,51 +7,40 @@ package de.monticore.lang;
  */
 grammar TagSchema extends de.monticore.common.Common {
 
-  TagSchemaUnit =
-    ("package" package:(Name& || ".")+ ";")? 
-    (ImportStatement)*
-    "tagschema" Name "{" TagType+ "}";
+    TagSchemaUnit =
+      ("package" package:(Name& || ".")+ ";")?
+      (ImportStatement)*
+      "tagschema" Name "{" TagType+ "}";
 	
 	interface TagType;
-  //ComplexTagType | EnumeratedTagType | ValuedTagType | SimpleTagType;
+    //ComplexTagType | EnumeratedTagType | ValuedTagType | SimpleTagType;
+
 	ast TagType =
 	  method public String getName() {
 	    return "undefined";
 	  };
 
-	interface ScopeIdentifier;
+	ScopeIdentifier =
+	    component:"Component" |
+	    componentInstance:"ComponentInstance" |
+	    port:"Port" |
+	    portInstance:"PortInstance" |
+	    connector:"Connector" |
+	    connectorInstance:"ConnectorInstance";
 
 	ast ScopeIdentifier =
 	  method public String getScopeName() {
-	    return "undefined";
+        if(isPresentComponent()) return getComponent();
+        if(isPresentComponentInstance()) return getComponentInstance();
+        if(isPresentPort()) return getPort();
+        if(isPresentPortInstance()) return getPortInstance();
+        if(isPresentConnector()) return getConnector();
+        if(isPresentConnectorInstance()) return getConnectorInstance();
+        return "undefined";
 	  };
 
-	/** maybe this should be moved into the MontiArc grammar, b/c MontiArc knows what is taggable */
-	ComponentScope implements ScopeIdentifier = "Component";
-  ast ComponentScope =
-    method public String getScopeName() {
-      return "Component";
-    };
 
-	PortScope implements ScopeIdentifier = "Port";
-	ast PortScope =
-    method public String getScopeName() {
-      return "Port";
-    };
-
-	ConnectorScope implements ScopeIdentifier = "Connector";
-	ast ConnectorScope =
-    method public String getScopeName() {
-      return "Connector";
-    };
-
-	ComponentInstanceScope implements ScopeIdentifier = "ComponentInstance";
-	ast ComponentInstanceScope =
-    method public String getScopeName() {
-      return "ExpandedComponentInstance";
-    };
-	
-//	ScopeIdentifier = Name;
+    //ScopeIdentifier = Name;
 	
 	Scope = "for" (ScopeIdentifier || ",")+;
 	
