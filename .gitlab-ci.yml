@@ -1,6 +1,7 @@
 stages:
-- windows
 - linux
+- windows
+
 
 masterJobLinux:
   stage: linux
