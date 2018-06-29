@@ -44,7 +44,7 @@
 
       <!-- ..Languages....................................................... -->
       <langcommon.version>0.0.10-SNAPSHOT</langcommon.version>
-      <numberunit.version>0.0.11</numberunit.version>
+      <numberunit.version>0.0.11-SNAPSHOT</numberunit.version>
       <carlang.version>0.0.1-SNAPSHOT</carlang.version>
 
       <!-- Set file encoding -->
