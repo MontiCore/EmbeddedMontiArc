@@ -112,7 +112,7 @@ public class SymbolPrinter {
                 .collect(Collectors.joining(",")) + ">";
     }
 
-    public static void printPort(PortSymbol port, IndentPrinter ip) {
+    public static void printPort(EMAPortSymbol port, IndentPrinter ip) {
         if (port.isIncoming()) {
             ip.print("in ");
         } else {
@@ -126,13 +126,13 @@ public class SymbolPrinter {
         printTags(port, ip);
     }
 
-    public static String printPort(PortSymbol port) {
+    public static String printPort(EMAPortSymbol port) {
         IndentPrinter ip = new IndentPrinter();
         printPort(port, ip);
         return ip.getContent();
     }
 
-    public static void printConnector(ConnectorSymbol con, IndentPrinter ip) {
+    public static void printConnector(EMAConnectorSymbol con, IndentPrinter ip) {
         ip.print(con.getSource());
         ip.print(" -> ");
         ip.print(con.getTarget());
@@ -140,7 +140,7 @@ public class SymbolPrinter {
         printTags(con, ip);
     }
 
-    public static String printConnector(ConnectorSymbol con) {
+    public static String printConnector(EMAConnectorSymbol con) {
         IndentPrinter ip = new IndentPrinter();
         printConnector(con, ip);
         return ip.getContent();
@@ -152,7 +152,7 @@ public class SymbolPrinter {
         return "(" + config.stream().map(a -> a.getValue()).collect(Collectors.joining(",")) + ")";
     }
 
-    public static void printComponentInstance(ComponentInstanceSymbol inst, IndentPrinter ip) {
+    public static void printEMAComponentInstantiation(EMAComponentInstantiationSymbol inst, IndentPrinter ip) {
         ip.print(inst.getComponentType().getName());
         ip.print(printTypeParameters(inst.getComponentType().getActualTypeArguments()));
         ip.print(printConfigArguments(inst.getConfigArguments()));
@@ -160,19 +160,19 @@ public class SymbolPrinter {
         ip.print(inst.getName());
     }
 
-    public static String printComponentInstance(ComponentInstanceSymbol inst) {
+    public static String printEMAComponentInstantiation(EMAComponentInstantiationSymbol inst) {
         IndentPrinter ip = new IndentPrinter();
-        printComponentInstance(inst, ip);
+        printEMAComponentInstantiation(inst, ip);
         return ip.getContent();
     }
 
-    public static void printPorts(Collection<PortSymbol> ports, IndentPrinter ip) {
+    public static void printPorts(Collection<? extends EMAPortSymbol> ports, IndentPrinter ip) {
         if (!ports.isEmpty()) {
             ip.println("ports");
             ip.indent();
             int i = 0;
             int s = ports.size();
-            for (PortSymbol p : ports) {
+            for (EMAPortSymbol p : ports) {
                 printPort(p, ip);
                 if (i == s - 1) {
                     ip.println(";");
@@ -206,7 +206,7 @@ public class SymbolPrinter {
 
         cmp.getSubComponents().stream().forEachOrdered(a -> {
             ip.print("component ");
-            printComponentInstance(a, ip);
+            printEMAComponentInstantiation(a, ip);
             ip.println(";");
         });
 
@@ -257,7 +257,7 @@ public class SymbolPrinter {
         }
     }
 
-    public static void printExpandedComponentInstance(ExpandedComponentInstanceSymbol inst, IndentPrinter ip, boolean skipPackageImport) {
+    public static void printEMAComponentInstance(EMAComponentInstanceSymbol inst, IndentPrinter ip, boolean skipPackageImport) {
         printPackageInfo(inst.getComponentType().getReferencedSymbol(), ip, skipPackageImport);
         ip.print("component /*instance*/ " + inst.getName());
 
@@ -266,11 +266,11 @@ public class SymbolPrinter {
 
         ip.indent();
 
-        printPorts(inst.getPortsList(), ip);
+        printPorts(inst.getPortInstanceList(), ip);
 
-        inst.getSubComponents().stream().forEachOrdered(a -> printExpandedComponentInstance(a, ip, true));
+        inst.getSubComponents().stream().forEachOrdered(a -> printEMAComponentInstance(a, ip, true));
 
-        inst.getConnectors().stream().forEachOrdered(a -> {
+        inst.getConnectorInstances().stream().forEachOrdered(a -> {
             ip.print("connect ");
             printConnector(a, ip);
             ip.println(";");
@@ -280,9 +280,9 @@ public class SymbolPrinter {
         ip.println("}");
     }
 
-    public static String printExpandedComponentInstance(ExpandedComponentInstanceSymbol inst) {
+    public static String printEMAComponentInstance(EMAComponentInstanceSymbol inst) {
         IndentPrinter ip = new IndentPrinter();
-        printExpandedComponentInstance(inst, ip, false);
+        printEMAComponentInstance(inst, ip, false);
         return ip.getContent();
     }
 }

@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import com.google.common.collect.ImmutableSet;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
@@ -33,8 +32,6 @@ import de.monticore.symboltable.resolving.CommonResolvingFilter;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
 import de.monticore.symboltable.types.JMethodSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
-
-import java.util.LinkedHashSet;
 
 /**
  * The MontiArc Language
@@ -54,11 +51,12 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
         super.initResolvingFilters();
         // is done in generated TOP-language addResolver(new
         // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(ComponentInstanceSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(PortSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(PortArraySymbol.KIND));
-        addResolvingFilter(new EMAConnectorResolvingFilter<>(ConnectorSymbol.KIND));
-        addResolvingFilter(CommonResolvingFilter.create(ExpandedComponentInstanceSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAPortSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAPortArraySymbol.KIND));
+        addResolvingFilter(new EMAConnectorResolvingFilter<>(EMAConnectorSymbol.KIND));
+        addResolvingFilter(new EMAConnectorResolvingFilter<>(EMAConnectorInstanceSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstanceSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(SIUnitSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(SIUnitRangesSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(MCTypeSymbol.KIND));
@@ -70,6 +68,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
         //addResolvingFilter(CommonResolvingFilter.create(ComponentKind.KIND));
         //addResolvingFilter(CommonResolvingFilter.create(TagSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(MontiCarTypeSymbol.KIND));
+        addResolvingFilter(CommonResolvingFilter.create(EMAPortInstanceSymbol.KIND));
         setModelNameCalculator(new EmbeddedMontiArcModelNameCalculator());
     }
 

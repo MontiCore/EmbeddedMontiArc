@@ -37,23 +37,23 @@ import static de.monticore.numberunit.Rationals.doubleToRational;
 //import de.monticore.literals.literals._ast.*;
 
 /**
- * The ConstantPortSymbol is a port which has a constant value assigned and is used
+ * The EMAConstantPortSymbol is a port which has a constant value assigned and is used
  * by a ConstantConnector to connect this value to other ports.
  *
  * @author Sascha Schneiders
  */
-public class ConstantPortSymbol extends PortSymbol {
+public class EMAConstantPortSymbol extends EMAPortSymbol {
     EMAConstantValue constantValue;
 
     /**
      * use this constructor for automatic naming of constant ports
      */
-    public ConstantPortSymbol() {
-        super(ConstantPortSymbol.getNextConstantPortName());
+    public EMAConstantPortSymbol() {
+        super(EMAConstantPortSymbol.getNextConstantPortName());
         setDirection(true);
     }
 
-    public ConstantPortSymbol(String name) {
+    public EMAConstantPortSymbol(String name) {
         super(name);
         setDirection(true);
     }
@@ -102,23 +102,23 @@ public class ConstantPortSymbol extends PortSymbol {
         return true;
     }
 
-    public static ConstantPortSymbol createConstantPortSymbol(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        ConstantPortSymbol constantPortSymbol = new ConstantPortSymbol();
+    public static EMAConstantPortSymbol createConstantPortSymbol(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
+        EMAConstantPortSymbol emaConstantPortSymbol = new EMAConstantPortSymbol();
 
         if (node.getUnitNumberResolutionOpt().isPresent()) {
-            constantPortSymbol.initConstantPortSymbol(node.getUnitNumberResolution().getNumberWithUnit());
+            emaConstantPortSymbol.initConstantPortSymbol(node.getUnitNumberResolution().getNumberWithUnit());
             String typeName;
             typeName = "UnitNumberResolution";
-            constantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));
+            emaConstantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));
         } else if (node.getBoolLiteralOpt().isPresent()) {
-            constantPortSymbol.initConstantPortSymbol(node.getBoolLiteral());
+            emaConstantPortSymbol.initConstantPortSymbol(node.getBoolLiteral());
             String typeName;
             typeName = "B";
-            constantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));
+            emaConstantPortSymbol.setTypeReference(initTypeRefGeneralType(typeName, symbolTableCreator));
         } else {
             Log.info("Case not handled", "ConstantPortInit");
         }
 
-        return constantPortSymbol;
+        return emaConstantPortSymbol;
     }
 }

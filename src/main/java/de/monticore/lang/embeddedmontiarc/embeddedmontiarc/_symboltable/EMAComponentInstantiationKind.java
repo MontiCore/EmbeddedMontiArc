@@ -20,12 +20,17 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import de.monticore.symboltable.Scope;
-
 /**
- * Created by kt on 27.02.2017.
+ * Symbol kind of component instances.
+ *
+ * @author Robert Heim
  */
-public interface ElementInstance {
-    public String getName();
-    public Scope getEnclosingScope() ;
+public class EMAComponentInstantiationKind
+    implements de.monticore.symboltable.SymbolKind {
+
+  public static final EMAComponentInstantiationKind INSTANCE = new EMAComponentInstantiationKind();
+
+  protected EMAComponentInstantiationKind() {
+  }
+
 }

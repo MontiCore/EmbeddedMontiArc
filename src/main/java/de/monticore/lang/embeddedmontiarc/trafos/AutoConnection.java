@@ -98,7 +98,7 @@ public class AutoConnection {
         return astQNWA;
     }
 
-    public static void addConnectorToAST(ASTComponent node, ConnectorSymbol conEntry) {
+    public static void addConnectorToAST(ASTComponent node, EMAConnectorSymbol conEntry) {
         // create ast node
         ASTConnector astConnector = EmbeddedMontiArcNodeFactory.createASTConnector();
 
@@ -212,7 +212,7 @@ public class AutoConnection {
         Map<String, PorWithGenericBindings> unusedReceivers = getUnusedReceivers(
                 currentComponent);
         for (Entry<String, PorWithGenericBindings> receiverEntry : unusedReceivers.entrySet()) {
-            List<ConnectorSymbol> matches = new LinkedList<>();
+            List<EMAConnectorSymbol> matches = new LinkedList<>();
             for (Entry<String, PorWithGenericBindings> senderEntry : unusedSenders.entrySet()) {
                 handleSenderEntry(receiverEntry, senderEntry, matches, mode);
             }
@@ -221,9 +221,9 @@ public class AutoConnection {
         }
     }
 
-    private void handleReceiverEntry(Entry<String, PorWithGenericBindings> receiverEntry, ComponentSymbol currentComponent, List<ConnectorSymbol> matches, ASTComponent node) {
+    private void handleReceiverEntry(Entry<String, PorWithGenericBindings> receiverEntry, ComponentSymbol currentComponent, List<EMAConnectorSymbol> matches, ASTComponent node) {
         if (matches.size() == 1) {
-            ConnectorSymbol created = matches.iterator().next();
+            EMAConnectorSymbol created = matches.iterator().next();
             // add symbol to components scope
             ((MutableScope) currentComponent.getSpannedScope()).add(created);
 
@@ -245,7 +245,7 @@ public class AutoConnection {
         }
     }
 
-    private void handleSenderEntry(Entry<String, PorWithGenericBindings> receiverEntry, Entry<String, PorWithGenericBindings> senderEntry, List<ConnectorSymbol> matches, AutoconnectMode mode) {
+    private void handleSenderEntry(Entry<String, PorWithGenericBindings> receiverEntry, Entry<String, PorWithGenericBindings> senderEntry, List<EMAConnectorSymbol> matches, AutoconnectMode mode) {
         String receiver = receiverEntry.getKey();
         int indexReceiver = receiver.indexOf('.');
         String sender = senderEntry.getKey();
@@ -299,7 +299,7 @@ public class AutoConnection {
         }
         // create connector entry and add to matched
         if (matched) {
-            ConnectorSymbol conEntry = ConnectorSymbol.builder()
+            EMAConnectorSymbol conEntry = EMAConnectorSymbol.builder()
                     .setSource(sender).setTarget(receiver).build();
             conEntry.setSource(sender);
             conEntry.setTarget(receiver);
@@ -320,7 +320,7 @@ public class AutoConnection {
         // portname, porttypebinding
         Map<String, PorWithGenericBindings> unusedReceivers = new HashMap<>();
         // check outgoing ports, b/c they must receive data from within the component
-        for (PortSymbol receiver : currentComponent.getOutgoingPorts()) {
+        for (EMAPortSymbol receiver : currentComponent.getOutgoingPorts()) {
             if (!currentComponent.hasConnector(receiver.getName())) {
                 unusedReceivers.put(receiver.getName(),
                         PorWithGenericBindings.create(receiver, currentComponent.getFormalTypeParameters(),
@@ -329,10 +329,10 @@ public class AutoConnection {
         }
 
         // check subcomponents incoming ports, b/c they must receive data to do their calculations
-        for (ComponentInstanceSymbol ref : currentComponent.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
             ComponentSymbolReference refType = ref.getComponentType();
-            for (PortSymbol port : refType.getIncomingPorts()) {
+            for (EMAPortSymbol port : refType.getIncomingPorts()) {
                 String portNameInConnector = name + "." + port.getName();
                 if (!currentComponent.hasConnector(portNameInConnector)) {
                     // store the the type parameters' bindings of the referenced component for this reference
@@ -362,7 +362,7 @@ public class AutoConnection {
         // arguments for the subcomponent that the port is defined in>
         Map<String, PorWithGenericBindings> unusedSenders = new HashMap<>();
         // as senders could send to more then one receiver, all senders are added
-        for (PortSymbol sender : currentComponent.getIncomingPorts()) {
+        for (EMAPortSymbol sender : currentComponent.getIncomingPorts()) {
             if (!currentComponent.hasConnectors(sender.getName())) {
                 unusedSenders.put(sender.getName(),
                         PorWithGenericBindings.create(sender, currentComponent.getFormalTypeParameters(),
@@ -371,10 +371,10 @@ public class AutoConnection {
         }
 
         // check subcomponents outputs as they send data to the current component
-        for (ComponentInstanceSymbol ref : currentComponent.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
             ComponentSymbolReference refType = ref.getComponentType();
-            for (PortSymbol port : refType.getOutgoingPorts()) {
+            for (EMAPortSymbol port : refType.getOutgoingPorts()) {
                 String portNameInConnector = name + "." + port.getName();
                 if (!currentComponent.hasConnectors(portNameInConnector)) {
                     // store the the type parameters' bindings of the referenced component for this reference
@@ -391,14 +391,14 @@ public class AutoConnection {
     }
 
     private static class PorWithGenericBindings {
-        PortSymbol port;
+        EMAPortSymbol port;
 
         List<MCTypeSymbol> formalTypeParameters;
 
         List<MCTypeReference<? extends MCTypeSymbol>> typeArguments;
 
         public PorWithGenericBindings(
-                PortSymbol port,
+                EMAPortSymbol port,
                 List<MCTypeSymbol> formalTypeParameters,
                 List<MCTypeReference<? extends MCTypeSymbol>> typeArguments) {
             super();
@@ -407,7 +407,7 @@ public class AutoConnection {
             this.typeArguments = typeArguments;
         }
 
-        public static PorWithGenericBindings create(PortSymbol port,
+        public static PorWithGenericBindings create(EMAPortSymbol port,
                                                     List<MCTypeSymbol> formalTypeParameters,
                                                     List<MCTypeReference<? extends MCTypeSymbol>> typeArguments) {
             return new PorWithGenericBindings(port, formalTypeParameters, typeArguments);

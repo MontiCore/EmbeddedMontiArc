@@ -23,7 +23,7 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
@@ -43,8 +43,8 @@ public class InRosPortRosSender implements EmbeddedMontiArcASTComponentCoCo {
     private void check(ComponentSymbol symbol) {
         symbol.getConnectors().forEach(connector -> {
 
-            PortSymbol source = null;
-            PortSymbol target = null;
+            EMAPortSymbol source = null;
+            EMAPortSymbol target = null;
             try {
                 source = connector.getSourcePort();
                 target = connector.getTargetPort();

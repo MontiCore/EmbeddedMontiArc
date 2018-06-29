@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 
@@ -44,7 +44,7 @@ public class ComponentWithTypeParametersHasInstance
   public void check(ASTComponent node) {
     ComponentSymbol componentSymbol = (ComponentSymbol) node.getSymbolOpt().get();
 
-    Collection<ComponentInstanceSymbol> subComponents = componentSymbol.getSubComponents();
+    Collection<EMAComponentInstantiationSymbol> subComponents = componentSymbol.getSubComponents();
 
     Set<ComponentSymbol> instantiatedInnerComponents = subComponents
         .stream()

@@ -25,12 +25,12 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
  *
  * @author Robert Heim
  */
-public class EMAAComponentImplementationKind
+public class EMAComponentImplementationKind
     implements de.monticore.symboltable.SymbolKind {
 
-  public static final EMAAComponentImplementationKind INSTANCE = new EMAAComponentImplementationKind();
+  public static final EMAComponentImplementationKind INSTANCE = new EMAComponentImplementationKind();
 
-  protected EMAAComponentImplementationKind() {
+  protected EMAComponentImplementationKind() {
   }
 
 }

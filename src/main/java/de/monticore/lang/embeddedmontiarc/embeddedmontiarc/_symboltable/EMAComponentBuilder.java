@@ -37,7 +37,7 @@ import java.util.Collection;
  * @author Michael von Wenckstern
  *         This class allows to modify {@see ComponentSymbol},
  *         if you do so the symbol table may not be consistent.
- *         Especially you need to call {@see EmbeddedMontiArcExpandedComponentInstanceSymbolCreator#createInstances}
+ *         Especially you need to call {@see EMAComponentInstanceSymbolCreator#createInstances}
  *         TODO static methods should call a protected doMethod() to allow extending this class
  *         TODO the builder should also be used to create a new ComponentSymbol with a build() method
  */
@@ -54,11 +54,11 @@ public class EMAComponentBuilder {
     public EMAComponentBuilder() {
     }
 
-    private static final ResolvingFilter<PortSymbol> portResolvingFilter =
-            CommonResolvingFilter.create(PortSymbol.KIND);
+    private static final ResolvingFilter<EMAPortSymbol> portResolvingFilter =
+            CommonResolvingFilter.create(EMAPortSymbol.KIND);
 
-    private static final ResolvingFilter<ConnectorSymbol> connectorResolvingFilter =
-            CommonResolvingFilter.create(ConnectorSymbol.KIND);
+    private static final ResolvingFilter<EMAConnectorSymbol> connectorResolvingFilter =
+            CommonResolvingFilter.create(EMAConnectorSymbol.KIND);
 
     private static final ResolvingFilter<ComponentSymbol> componentResolvingFilter =
             CommonResolvingFilter.create(ComponentSymbol.KIND);
@@ -69,12 +69,12 @@ public class EMAComponentBuilder {
     private static final ResolvingFilter<MCFieldSymbol> jAttributeResolvingFilter =
             CommonResolvingFilter.create(MCFieldSymbol.KIND);
 
-    private static final ResolvingFilter<ComponentInstanceSymbol> componentInstanceResolvingFilter =
-            CommonResolvingFilter.create(ComponentInstanceSymbol.KIND);
+    private static final ResolvingFilter<EMAComponentInstantiationSymbol> emaComponentInstantiationResolvingFilter =
+            CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND);
 
     ////////////////////////// ports //////////////////////////////////////////////
 
-    public static EMAComponentBuilder addPort(ComponentSymbol cs, PortSymbol ps) {
+    public static EMAComponentBuilder addPort(ComponentSymbol cs, EMAPortSymbol ps) {
         addResolverIfMissing(cs, portResolvingFilter, ps);
         return getInstance();
     }
@@ -86,67 +86,67 @@ public class EMAComponentBuilder {
         ((MutableScope) cs.getSpannedScope()).add(symbol);
     }
 
-    public static EMAComponentBuilder addPorts(ComponentSymbol cs, PortSymbol... ps) {
-        for (PortSymbol p : ps) {
+    public static EMAComponentBuilder addPorts(ComponentSymbol cs, EMAPortSymbol... ps) {
+        for (EMAPortSymbol p : ps) {
             addPort(cs, p);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder addPorts(ComponentSymbol cs, Collection<PortSymbol> ps) {
+    public static EMAComponentBuilder addPorts(ComponentSymbol cs, Collection<EMAPortSymbol> ps) {
         ps.stream().forEachOrdered(p -> addPort(cs, p));
         return getInstance();
     }
 
-    public static EMAComponentBuilder removePort(ComponentSymbol cs, PortSymbol ps) {
+    public static EMAComponentBuilder removePort(ComponentSymbol cs, EMAPortSymbol ps) {
         ((MutableScope) cs.getSpannedScope()).remove(ps);
         return getInstance();
     }
 
-    public static EMAComponentBuilder removePorts(ComponentSymbol cs, PortSymbol... ps) {
-        for (PortSymbol p : ps) {
+    public static EMAComponentBuilder removePorts(ComponentSymbol cs, EMAPortSymbol... ps) {
+        for (EMAPortSymbol p : ps) {
             removePort(cs, p);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder removePorts(ComponentSymbol cs, Collection<PortSymbol> ps) {
+    public static EMAComponentBuilder removePorts(ComponentSymbol cs, Collection<EMAPortSymbol> ps) {
         ps.stream().forEachOrdered(p -> removePort(cs, p));
         return getInstance();
     }
 
     ////////////////////////// connectors //////////////////////////////////////////////
 
-    public static EMAComponentBuilder addConnector(ComponentSymbol cs, ConnectorSymbol con) {
+    public static EMAComponentBuilder addConnector(ComponentSymbol cs, EMAConnectorSymbol con) {
         addResolverIfMissing(cs, connectorResolvingFilter, con);
         return getInstance();
     }
 
-    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, ConnectorSymbol... con) {
-        for (ConnectorSymbol c : con) {
+    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, EMAConnectorSymbol... con) {
+        for (EMAConnectorSymbol c : con) {
             addConnector(cs, c);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, Collection<ConnectorSymbol> con) {
+    public static EMAComponentBuilder addConnectors(ComponentSymbol cs, Collection<EMAConnectorSymbol> con) {
         con.stream().forEachOrdered(c -> addConnector(cs, c));
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeConnector(ComponentSymbol cs, ConnectorSymbol con) {
+    public static EMAComponentBuilder removeConnector(ComponentSymbol cs, EMAConnectorSymbol con) {
         ((MutableScope) cs.getSpannedScope()).remove(con);
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, ConnectorSymbol... con) {
-        for (ConnectorSymbol c : con) {
+    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, EMAConnectorSymbol... con) {
+        for (EMAConnectorSymbol c : con) {
             removeConnector(cs, c);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, Collection<ConnectorSymbol> con) {
+    public static EMAComponentBuilder removeConnectors(ComponentSymbol cs, Collection<EMAConnectorSymbol> con) {
         con.stream().forEachOrdered(c -> removeConnector(cs, c));
         return getInstance();
     }
@@ -265,36 +265,36 @@ public class EMAComponentBuilder {
 
     ////////////////////////// sub components //////////////////////////////////////////////
 
-    public static EMAComponentBuilder addSubComponent(ComponentSymbol cs, ComponentInstanceSymbol subComponent) {
-        addResolverIfMissing(cs, componentInstanceResolvingFilter, subComponent);
+    public static EMAComponentBuilder addSubComponent(ComponentSymbol cs, EMAComponentInstantiationSymbol subComponent) {
+        addResolverIfMissing(cs, emaComponentInstantiationResolvingFilter, subComponent);
         return getInstance();
     }
 
-    public static EMAComponentBuilder addSubComponents(ComponentSymbol cs, ComponentInstanceSymbol... subComponent) {
-        for (ComponentInstanceSymbol s : subComponent) {
+    public static EMAComponentBuilder addSubComponents(ComponentSymbol cs, EMAComponentInstantiationSymbol... subComponent) {
+        for (EMAComponentInstantiationSymbol s : subComponent) {
             addSubComponent(cs, s);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder addSubComponents(ComponentSymbol cs, Collection<ComponentInstanceSymbol> subComponent) {
+    public static EMAComponentBuilder addSubComponents(ComponentSymbol cs, Collection<EMAComponentInstantiationSymbol> subComponent) {
         subComponent.stream().forEachOrdered(s -> addSubComponent(cs, s));
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeSubComponent(ComponentSymbol cs, ComponentInstanceSymbol subComponent) {
+    public static EMAComponentBuilder removeSubComponent(ComponentSymbol cs, EMAComponentInstantiationSymbol subComponent) {
         ((MutableScope) cs.getSpannedScope()).remove(subComponent);
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeSubComponents(ComponentSymbol cs, ComponentInstanceSymbol... subComponent) {
-        for (ComponentInstanceSymbol s : subComponent) {
+    public static EMAComponentBuilder removeSubComponents(ComponentSymbol cs, EMAComponentInstantiationSymbol... subComponent) {
+        for (EMAComponentInstantiationSymbol s : subComponent) {
             removeSubComponent(cs, s);
         }
         return getInstance();
     }
 
-    public static EMAComponentBuilder removeSubComponents(ComponentSymbol cs, Collection<ComponentInstanceSymbol> subComponent) {
+    public static EMAComponentBuilder removeSubComponents(ComponentSymbol cs, Collection<EMAComponentInstantiationSymbol> subComponent) {
         subComponent.stream().forEachOrdered(s -> removeSubComponent(cs, s));
         return getInstance();
     }

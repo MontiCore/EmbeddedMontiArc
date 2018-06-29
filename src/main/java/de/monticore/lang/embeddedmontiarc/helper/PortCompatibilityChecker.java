@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 
@@ -62,10 +62,10 @@ public class PortCompatibilityChecker {
    * @param targetTypeArguments            analog to source, but for the target port.
    * @return
    */
-  public static boolean doPortTypesMatch(PortSymbol sourcePort,
+  public static boolean doPortTypesMatch(EMAPortSymbol sourcePort,
       List<MCTypeSymbol> sourceFormalTypeParameters,
       List<MCTypeReference<? extends MCTypeSymbol>> sourceTypeArguments,
-      PortSymbol targetPort,
+      EMAPortSymbol targetPort,
       List<MCTypeSymbol> targetTypeFormalTypeParameters,
       List<MCTypeReference<? extends MCTypeSymbol>> targetTypeArguments) {
     checkNotNull(sourcePort);

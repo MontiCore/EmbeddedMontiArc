@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.tagging.middleware.ros;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.monticore.lang.tagging._ast.*;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -78,7 +78,7 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
                     .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
-                            s.getQualifiedNameString()), PortSymbol.KIND))
+                            s.getQualifiedNameString()), EMAPortSymbol.KIND))
                     .filter(Optional::isPresent) // if the symbol is not present, does not mean that the symbol
                     .map(Optional::get)          // is not available at all, maybe it will be loaded later
                     .collect(Collectors.toList());
@@ -91,8 +91,8 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                                 .forEachOrdered(s -> {
                                     RosConnectionSymbol tmpSymbol = new RosConnectionSymbol();
                                     tagging.addTag(s, tmpSymbol);
-                                    if (s.isKindOf(PortSymbol.KIND)) {
-                                        PortSymbol p = (PortSymbol) s;
+                                    if (s.isKindOf(EMAPortSymbol.KIND)) {
+                                        EMAPortSymbol p = (EMAPortSymbol) s;
                                         p.setMiddlewareSymbol(tmpSymbol);
                                     }
                                 });
@@ -108,8 +108,8 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                                     .forEachOrdered(s -> {
                                         RosConnectionSymbol tmpSymbol = new RosConnectionSymbol(m.group(1), m.group(2), m.group(4));
                                         tagging.addTag(s, tmpSymbol);
-                                        if (s.isKindOf(PortSymbol.KIND)) {
-                                            PortSymbol p = (PortSymbol) s;
+                                        if (s.isKindOf(EMAPortSymbol.KIND)) {
+                                            EMAPortSymbol p = (EMAPortSymbol) s;
                                             p.setMiddlewareSymbol(tmpSymbol);
                                         }
                                     }));

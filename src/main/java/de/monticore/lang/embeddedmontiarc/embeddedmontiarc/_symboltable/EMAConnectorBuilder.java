@@ -27,42 +27,52 @@ import java.util.Optional;
 /**
  * Created by Michael von Wenckstern on 23.05.2016.
  */
-public class ConnectorBuilder {
+public class EMAConnectorBuilder {
   protected Optional<String> source = Optional.empty();
   protected Optional<String> target = Optional.empty();
-  protected Optional<ConstantPortSymbol> portSymbol = Optional.empty();
+  protected Optional<EMAConstantPortSymbol> portSymbol = Optional.empty();
 
-  public static ConnectorSymbol clone(ConnectorSymbol con) {
-    return new ConnectorBuilder().setSource(con.getSource()).
+  public static EMAConnectorSymbol clone(EMAConnectorSymbol con) {
+    return new EMAConnectorBuilder().setSource(con.getSource()).
         setTarget(con.getTarget()).build();
   }
 
-  public ConnectorBuilder setSource(String source) {
+  public EMAConnectorBuilder setSource(String source) {
     this.source = Optional.of(source);
     return this;
   }
 
-  public ConnectorBuilder setTarget(String target) {
+  public EMAConnectorBuilder setTarget(String target) {
     this.target = Optional.of(target);
     return this;
   }
  
-  public ConnectorBuilder setConstantPortSymbol(ConstantPortSymbol portSymbol) {
+  public EMAConnectorBuilder setConstantPortSymbol(EMAConstantPortSymbol portSymbol) {
     this.portSymbol = Optional.of(portSymbol);
     return this;
   }
 
-  public ConnectorSymbol build() {
+  public EMAConnectorSymbol build() {
     if (source.isPresent() && target.isPresent()) {
-      ConnectorSymbol con = new ConnectorSymbol(this.target.get());
+      EMAConnectorSymbol con = new EMAConnectorSymbol(this.target.get());
       con.setSource(this.source.get());
       con.setTarget(this.target.get());
 	  if(portSymbol.orElse(null) != null) {
-        con.setConstantPortSymbol(portSymbol.get());
+        con.setEMAConstantPortSymbol(portSymbol.get());
 	  }
       return con;
     }
     Log.error("not all parameters have been set before to build the connector symbol");
     throw new Error("not all parameters have been set before to build the connector symbol");
+  }
+
+  public static EMAConnectorInstanceSymbol instantiate(EMAConnectorSymbol connector) {
+    EMAConnectorInstanceSymbol connectorInstance = new EMAConnectorInstanceSymbol(connector.getTarget());
+    connectorInstance.setSource(connector.getSource());
+    connectorInstance.setTarget(connector.getTarget());
+    connectorInstance.setIsConstantConnector(connector.isConstant);
+    connectorInstance.setEMAConstantPortSymbol(connector.emaConstantPortSymbol);
+
+    return connectorInstance;
   }
 }

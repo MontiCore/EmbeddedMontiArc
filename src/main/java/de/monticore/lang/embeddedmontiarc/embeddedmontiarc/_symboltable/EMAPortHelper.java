@@ -44,9 +44,9 @@ import java.util.List;
  */
 public class EMAPortHelper {
     /**
-     * creates the PortSymbols that belong to a PortArraySymbol
+     * creates the PortSymbols that belong to a EMAPortArraySymbol
      */
-    public static void portCreationIntLiteralPresent(ASTPort node, PortArraySymbol pas, String name,
+    public static void portCreationIntLiteralPresent(ASTPort node, EMAPortArraySymbol pas, String name,
                                                      MCTypeReference<? extends MCTypeSymbol> typeRef,
                                                      EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         // int num = node.getIntLiteral().getValue();
@@ -61,7 +61,7 @@ public class EMAPortHelper {
         pas.setDimension(num);
         for (int i = 1; i <= num; ++i) {
             String nameWithArray = name + "[" + Integer.toString(i) + "]";
-            PortSymbol sym = new PortSymbol(nameWithArray);
+            EMAPortSymbol sym = new EMAPortSymbol(nameWithArray);
             sym.setNameDependsOn(pas.getNameDependsOn());
             Log.debug(nameWithArray, "nameWithArray");
 
@@ -72,13 +72,13 @@ public class EMAPortHelper {
         }
     }
 
-    public static void portCreation(ASTPort node, PortArraySymbol pas, String name,
+    public static void portCreation(ASTPort node, EMAPortArraySymbol pas, String name,
                                     MCTypeReference<? extends MCTypeSymbol> typeRef,
                                     EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         if (node.getUnitNumberResolutionOpt().isPresent()) {
             portCreationIntLiteralPresent(node, pas, name, typeRef, symbolTableCreator);
         } else {
-            // create PortSymbol with same content as PortArraySymbol
+            // create EMAPortSymbol with same content as EMAPortArraySymbol
             createPort(node, name, node.isIncoming(), typeRef, pas, symbolTableCreator);
         }
     }
@@ -86,7 +86,7 @@ public class EMAPortHelper {
     public static void createPort(String name, boolean isIncoming,
                                   MCTypeReference<? extends MCTypeSymbol> typeRef,
                                   EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        PortSymbol ps = new PortSymbol(name);
+        EMAPortSymbol ps = new EMAPortSymbol(name);
 
         ps.setTypeReference(typeRef);
         ps.setDirection(isIncoming);
@@ -95,9 +95,9 @@ public class EMAPortHelper {
     }
 
     public static void createPort(ASTPort node, String name, boolean isIncoming,
-                                  MCTypeReference<? extends MCTypeSymbol> typeRef, PortArraySymbol pas,
+                                  MCTypeReference<? extends MCTypeSymbol> typeRef, EMAPortArraySymbol pas,
                                   EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        PortSymbol ps = new PortSymbol(name);
+        EMAPortSymbol ps = new EMAPortSymbol(name);
         ps.setNameDependsOn(pas.getNameDependsOn());
         ps.setTypeReference(typeRef);
         ps.setDirection(isIncoming);
@@ -255,7 +255,7 @@ public class EMAPortHelper {
         }
         while (present) {
             Log.debug(compName, "ComponentName:");
-            present = curScope.resolve(portName + "[" + (counter + 1) + "]", PortSymbol.KIND).isPresent();
+            present = curScope.resolve(portName + "[" + (counter + 1) + "]", EMAPortSymbol.KIND).isPresent();
             if (present)
                 ++counter;
             else {
@@ -270,13 +270,13 @@ public class EMAPortHelper {
             Log.debug("compInstanceName: " + compName, "Resolving");
             Log.debug(compName, "ComponentName");
             if (compName != null) {
-                ComponentInstanceSymbol symbol;
-                symbol = curScope.<ComponentInstanceSymbol>resolve(compName, ComponentInstanceSymbol.KIND)
+                EMAComponentInstantiationSymbol symbol;
+                symbol = curScope.<EMAComponentInstantiationSymbol>resolve(compName, EMAComponentInstantiationSymbol.KIND)
                         .get();
-                for (PortSymbol portSymbol : symbol.getComponentType().getAllPorts()) {
+                for (EMAPortSymbol emaPortSymbol : symbol.getComponentType().getAllPorts()) {
 
-                    Log.debug(portSymbol.toString(), "PortInfo");
-                    if (portSymbol.getNameWithoutArrayBracketPart().startsWith(portName)) {
+                    Log.debug(emaPortSymbol.toString(), "PortInfo");
+                    if (emaPortSymbol.getNameWithoutArrayBracketPart().startsWith(portName)) {
                         ++counter;
                     }
                 }
@@ -293,7 +293,7 @@ public class EMAPortHelper {
         Log.debug("" + componentName, "RESOLVING");
         while (present) {
             present = curScope
-                    .resolve(componentName + "[" + (counter + 1) + "]", ComponentInstanceSymbol.KIND)
+                    .resolve(componentName + "[" + (counter + 1) + "]", EMAComponentInstantiationSymbol.KIND)
                     .isPresent();
             if (present)
                 ++counter;
@@ -319,7 +319,7 @@ public class EMAPortHelper {
                     Log.info("" + targetName, "target");
                     Log.info("" + sourceName, "source");
 
-                    ConnectorSymbol sym = new ConnectorSymbol(targetName);
+                    EMAConnectorSymbol sym = new EMAConnectorSymbol(targetName);
                     sym.setSource(sourceName);
                     sym.setTarget(targetName);
                     Log.info(sym.getTarget(), "TARGETNAME SET TO");
@@ -338,9 +338,9 @@ public class EMAPortHelper {
             de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node,
             EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         int counter = 0, targetnum = 0;
-        ConstantPortSymbol constantPortSymbol = ConstantPortSymbol.createConstantPortSymbol(node,
+        EMAConstantPortSymbol emaConstantPortSymbol = EMAConstantPortSymbol.createConstantPortSymbol(node,
                 symbolTableCreator);
-        symbolTableCreator.addToScope(constantPortSymbol);
+        symbolTableCreator.addToScope(emaConstantPortSymbol);
         for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
             counter = 0;
             targetnum = 0;
@@ -349,9 +349,9 @@ public class EMAPortHelper {
             String targetName = targetNames.get(counter);
             Log.debug("" + targetName, "target");
 
-            ConnectorSymbol sym = new ConnectorSymbol(targetName);
-            sym.setConstantPortSymbol(constantPortSymbol);
-            sym.setSource(constantPortSymbol.getName());
+            EMAConnectorSymbol sym = new EMAConnectorSymbol(targetName);
+            sym.setEMAConstantPortSymbol(emaConstantPortSymbol);
+            sym.setSource(emaConstantPortSymbol.getName());
             sym.setTarget(targetName);
             Log.debug(sym.getTarget(), "TARGETNAME SET TO");
 

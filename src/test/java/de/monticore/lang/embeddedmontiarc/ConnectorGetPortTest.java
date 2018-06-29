@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstanceSymbol;
 import de.monticore.symboltable.Scope;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,16 +34,16 @@ public class ConnectorGetPortTest extends AbstractSymtabTest {
     @Test
     public void testgetPortsList() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "fas.demo_fas_Fkt_m.fAS", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "fas.demo_fas_Fkt_m.fAS", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         testConnectorPorts(inst);
     }
 
-    private void testConnectorPorts(ExpandedComponentInstanceSymbol inst) {
+    private void testConnectorPorts(EMAComponentInstanceSymbol inst) {
         assertNotNull(inst);
 
-        inst.getConnectors().forEach( con -> {
+        inst.getConnectorInstances().forEach(con -> {
             assertNotEquals(con.getSource(), con.getTarget());
             assertNotEquals(con.getSourcePort().getFullName(), con.getTargetPort().getFullName());
         });

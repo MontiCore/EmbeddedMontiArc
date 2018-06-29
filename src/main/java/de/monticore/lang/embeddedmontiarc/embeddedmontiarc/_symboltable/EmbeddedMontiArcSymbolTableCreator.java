@@ -38,6 +38,7 @@ import de.monticore.symboltable.types.references.TypeReference;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
+import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -47,7 +48,7 @@ import java.util.*;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortHelper.*;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.addTypeArgumentsToTypeSymbol;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.initTypeRef;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.getGlobalScope;
+import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstanceSymbolCreator.getGlobalScope;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper.*;
 //import de.monticore.common.common._ast.ASTStereoValue;
 //import de.monticore.types.TypesHelper;
@@ -62,7 +63,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
     protected String compilationUnitPackage = "";
 
-    protected EmbeddedMontiArcExpandedComponentInstanceSymbolCreator instanceSymbolCreator = new EmbeddedMontiArcExpandedComponentInstanceSymbolCreator();
+    protected EMAComponentInstanceSymbolCreator instanceSymbolCreator = new EMAComponentInstanceSymbolCreator();
 
     // extra stack of components that is used to determine which components are inner components.
     protected Stack<ComponentSymbol> componentStack = new Stack<>();
@@ -115,34 +116,110 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     }
 
     public void endVisit(ASTEMACompilationUnit node) {
-        // TODO clean up component types from references to inner components
-        // cleanUpReferences();
-
         // artifact scope
         removeCurrentScope();
 
-        if (aboartVisitComponent) {
-            return;
-        }
         // creates all instances which are created through the top level component
+        ComponentSymbol componentSymbol = (ComponentSymbol) Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null));
+        String instanceName = Character.toLowerCase(componentSymbol.getName().charAt(0)) + componentSymbol.getName().substring(1);
+
+        instanceSymbolCreator.createInstances(componentSymbol, instanceName);
+
         Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(),
-                "SymbolTableCreator:"); // ,"MontiArcSymbolTableCreator");
-        // new Error().printStackTrace();
-        instanceSymbolCreator.createInstances(
-                (ComponentSymbol) (Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))));
+                "SymbolTableCreator:");
     }
 
 
     @Override
-    public void visit(ASTUnitNumberExpression node) {
-        UnitNumberExpressionSymbol symbol = new UnitNumberExpressionSymbol(node);
-
-        addToScopeAndLinkWithNode(symbol, node);
+    public void handle(ASTComponent node) {
+        getRealThis().visit(node);
+        if (!aboartVisitComponent) {
+            getRealThis().traverse(node);
+            getRealThis().endVisit(node);
+        }
     }
+
+
+    @Override
+    public void visit(ASTComponent node) {
+        String componentName = node.getName();
+
+        String componentPackageName = "";
+        if (componentStack.isEmpty()) {
+            // root component (most outer component of the diagram)
+            componentPackageName = compilationUnitPackage;
+        } else {
+            // inner component uses its parents component full name as package
+            componentPackageName = componentStack.peek().getFullName();
+        }
+        ComponentSymbol component = new ComponentSymbol(componentName);
+        component.setImports(currentImports);
+        component.setPackageName(componentPackageName);
+
+        // Handle ResolutionDeclaration of stuff like <N1 n=5>
+        if (node.getGenericTypeParametersOpt().isPresent()) {
+            handleResolutionDeclaration(component, node.getGenericTypeParametersOpt().get(), currentScope().get(),
+                    node, this);
+        }
+
+        Log.debug(component.toString(), "ComponentPreGeneric");
+        // generic type parameters
+        if (node.getGenericTypeParametersOpt().isPresent()) {
+            EMAJavaHelper.addTypeParametersToType(component, node.getGenericTypeParametersOpt().get(),
+                    currentScope().get());
+        }
+
+        Log.debug(component.toString(), "ComponentPostGeneric");
+        // parameters
+        setParametersOfComponent(component, node, this);
+
+        // super component
+        if (node.getSuperComponentOpt().isPresent()) {
+            ASTReferenceType superCompRef = node.getSuperComponent();
+            String superCompName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(superCompRef);
+
+            ComponentSymbolReference ref = new ComponentSymbolReference(superCompName,
+                    currentScope().get());
+            ref.setAccessModifier(BasicAccessModifier.PUBLIC);
+            // actual type arguments
+            addTypeArgumentsToTypeSymbol(ref, superCompRef, this);
+
+            component.setSuperComponent(Optional.of(ref));
+        }
+
+        // check if this component is an inner component
+        if (!componentStack.isEmpty()) {
+            component.setIsInnerComponent(true);
+        }
+        componentStack.push(component);
+        addToScopeAndLinkWithNode(component, node);
+
+        // TODO this is a hack to avoid loading one component symbol twice
+        // --> must be changed in future
+        Collection<Symbol> c = getGlobalScope(currentScope().get())
+                .resolveDownMany(component.getFullName(), ComponentSymbol.KIND);
+        if (c.size() > 1) {
+            aboartVisitComponent = true;
+            component.getEnclosingScope().getAsMutableScope()
+                    .removeSubScope(component.getSpannedScope().getAsMutableScope());
+
+            return;
+        }
+
+        autoConnectionTrafo.transformAtStart(node, component);
+    }
+
+
+    @Override
+    public void endVisit(ASTComponent node) {
+        ComponentSymbol component = componentStack.pop();
+        autoConnectionTrafo.transformAtEnd(node, component);
+        removeCurrentScope();
+    }
+
 
     @Override
     public void visit(ASTPort node) {
-
         String nameTO = doPortResolution(node, this);
         ASTType astType = node.getType();
         if (node.getType() instanceof ASTCommonMatrixType) {
@@ -151,45 +228,13 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         StringBuilder typeName = new StringBuilder();
         MCTypeReference<? extends MCTypeSymbol> typeRef = initTypeRef(node, typeName, astType, this);
         String name = node.getNameOpt().orElse(StringTransformations.uncapitalize(typeName.toString()));
-        /* Log.debug(nameTO, "NameResolution:"); Log.debug(name, "Full Name:");
-         * Log.debug(node.getType().toString(), "Node:"); Log.debug("" +
-         * currentScope().get().toString(), "Scope:"); */
-        PortArraySymbol pas = new PortArraySymbol(name, nameTO);
+        EMAPortArraySymbol pas = new EMAPortArraySymbol(name, nameTO);
 
         pas.setTypeReference(typeRef);
         pas.setDirection(node.isIncoming());
 
         addToScopeAndLinkWithNode(pas, node);
-
         portCreation(node, pas, name, typeRef, this);
-    }
-
-
-    @Override
-    public void visit(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node) {
-        doConnectorResolution(node, this);
-        ASTQualifiedNameWithArray portName;
-        List<String> sourceNames = null;
-        boolean isConstant = false;
-        if (node.getSourceOpt().isPresent()) {
-            portName = node.getSource();
-
-            sourceNames = getPortName(portName, this);
-            // Log.debug(node.getSource().toString(),"port content");
-        } else {
-            isConstant = true;
-            // Log.debug(node.getSI_Unit().get().toString(), "port content else ");
-            constantPortSetup(node, this);
-        }
-        if (!isConstant) {
-            nonConstantPortSetup(sourceNames, node, this);
-        }
-
-    }
-
-    @Override
-    public void visit(ASTMontiArcAutoInstantiate node) {
-        autoInstantiate = node.isOn();
     }
 
 
@@ -261,107 +306,45 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
 
     @Override
-    public void handle(ASTComponent node) {
-        getRealThis().visit(node);
-        if (!aboartVisitComponent) {
-            getRealThis().traverse(node);
-            getRealThis().endVisit(node);
+    public void visit(ASTConnector node) {
+        doConnectorResolution(node, this);
+        ASTQualifiedNameWithArray portName;
+        List<String> sourceNames = null;
+        boolean isConstant = false;
+        if (node.getSourceOpt().isPresent()) {
+            portName = node.getSource();
+            sourceNames = getPortName(portName, this);
+        } else {
+            isConstant = true;
+            constantPortSetup(node, this);
         }
+        if (!isConstant) {
+            nonConstantPortSetup(sourceNames, node, this);
+        }
+
     }
 
 
     @Override
-    public void visit(ASTComponent node) {
-        String componentName = node.getName();
+    public void visit(ASTUnitNumberExpression node) {
+        UnitNumberExpressionSymbol symbol = new UnitNumberExpressionSymbol(node);
 
-        String componentPackageName = "";
-        if (componentStack.isEmpty()) {
-            // root component (most outer component of the diagram)
-            componentPackageName = compilationUnitPackage;
-        } else {
-            // inner component uses its parents component full name as package
-            componentPackageName = componentStack.peek().getFullName();
-        }
-        ComponentSymbol component = new ComponentSymbol(componentName);
-        component.setImports(currentImports);
-        component.setPackageName(componentPackageName);
-
-        // Handle ResolutionDeclaration of stuff like <N1 n=5>
-        if (node.getGenericTypeParametersOpt().isPresent()) {
-            handleResolutionDeclaration(component, node.getGenericTypeParametersOpt().get(), currentScope().get(),
-                    node, this);
-        }
-
-        Log.debug(component.toString(), "ComponentPreGeneric");
-        // generic type parameters
-        if (node.getGenericTypeParametersOpt().isPresent()) {
-            EMAJavaHelper.addTypeParametersToType(component, node.getGenericTypeParametersOpt().get(),
-                    currentScope().get());
-        }
-
-        Log.debug(component.toString(), "ComponentPostGeneric");
-        // parameters
-        // Log.debug(node.getHead().toString(),"ASTComponentHead");
-        setParametersOfComponent(component, node, this);
-        // Log.debug(component.toString(),"ComponentPostParam");
-
-        // super component
-        if (node.getSuperComponentOpt().isPresent()) {
-            ASTReferenceType superCompRef = node.getSuperComponent();
-            String superCompName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(superCompRef);
-
-            ComponentSymbolReference ref = new ComponentSymbolReference(superCompName,
-                    currentScope().get());
-            ref.setAccessModifier(BasicAccessModifier.PUBLIC);
-            // actual type arguments
-            addTypeArgumentsToTypeSymbol(ref, superCompRef, this);
-
-            component.setSuperComponent(Optional.of(ref));
-        }
-
-        // check if this component is an inner component
-        if (!componentStack.isEmpty()) {
-            component.setIsInnerComponent(true);
-        }
-
-        componentStack.push(component);
-
-        addToScopeAndLinkWithNode(component, node);
-
-        // TODO this is a hack to avoid loading one component symbol twice
-        // --> must be changed in future
-        Collection<Symbol> c = getGlobalScope(currentScope().get())
-                .resolveDownMany(component.getFullName(), ComponentSymbol.KIND);
-        if (c.size() > 1) {
-            aboartVisitComponent = true;
-            component.getEnclosingScope().getAsMutableScope()
-                    .removeSubScope(component.getSpannedScope().getAsMutableScope());
-
-            return;
-        }
-
-        autoConnectionTrafo.transformAtStart(node, component);
+        addToScopeAndLinkWithNode(symbol, node);
     }
+
+
+
+    @Override
+    public void visit(ASTMontiArcAutoInstantiate node) {
+        autoInstantiate = node.isOn();
+    }
+
 
     @Override
     public void visit(ASTMontiArcAutoConnect node) {
         autoConnectionTrafo.transform(node, componentStack.peek());
     }
 
-    @Override
-    public void endVisit(ASTComponent node) {
-        ComponentSymbol component = componentStack.pop();
-        autoConnectionTrafo.transformAtEnd(node, component);
 
-        removeCurrentScope();
 
-    }
-
-    public void removeFromScope(Symbol symbol) {
-        currentScope().get().remove(symbol);
-    }
-
-    public MutableScope getCurrentScopeAsMutableScope() {
-        return currentScope().get();
-    }
 }

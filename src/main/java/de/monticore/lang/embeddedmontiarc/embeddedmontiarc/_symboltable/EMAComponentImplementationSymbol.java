@@ -20,12 +20,25 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.symboltable.CommonSymbol;
 
-public class ConstantPortKind implements SymbolKind {
+/**
+ * TODO Do we really need this?
+ *
+ * @author Robert Heim
+ */
+public abstract class EMAComponentImplementationSymbol
+        extends CommonSymbol {
 
-    public static final ConstantPortKind INSTANCE = new ConstantPortKind();
-    public ConstantPortKind(){
+  public static final EMAComponentImplementationKind KIND = EMAComponentImplementationKind.INSTANCE;
 
-    }
+  /**
+   * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentImplementationSymbol
+   *
+   * @param name
+   */
+  public EMAComponentImplementationSymbol(String name) {
+    super(name, KIND);
+  }
+
 }

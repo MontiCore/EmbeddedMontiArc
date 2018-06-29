@@ -23,9 +23,7 @@ package de.monticore.lang.embeddedmontiarc;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Scope;
-import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -52,8 +50,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testFAS() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "fas.demo_fas_Fkt_m.fAS", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "fas.demo_fas_Fkt_m.fAS", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
     }
 
@@ -61,16 +59,16 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testComponentSub2() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "a.sub2", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "a.sub2", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         System.out.println(inst);
 
-        assertEquals(inst.getPortsList().size(), 3);
-        assertTrue(inst.getPort("in1[1]").isPresent()); // from a.Sub2
-        assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
+        assertEquals(inst.getPortInstanceList().size(), 3);
+        assertTrue(inst.getPortInstance("in1[1]").isPresent()); // from a.Sub2
+        assertTrue(inst.getPortInstance("out1").isPresent()); // from a.Sub2
 
-        for (ConnectorSymbol con : inst.getConnectors()) {
+        for (EMAConnectorSymbol con : inst.getConnectorInstances()) {
             Log.debug(con.toString(), "testComponentSub2");
         }
     }
@@ -85,10 +83,10 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         System.out.println(inst);
 
         assertEquals(inst.getPortsList().size(), 3);
-        //assertTrue(inst.getPort("in1").isPresent()); // from a.Sub2
-        //assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
+        //assertTrue(inst.getPortInstance("in1").isPresent()); // from a.Sub2
+        //assertTrue(inst.getPortInstance("out1").isPresent()); // from a.Sub2
 
-        for (ConnectorSymbol con : inst.getConnectors()) {
+        for (EMAConnectorSymbol con : inst.getConnectors()) {
             Log.debug(con.toString(), "testComponentSub2");
         }
     }
@@ -101,47 +99,47 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         ComponentSymbol componentSymbol = symTab.<ComponentSymbol>resolve("generics.SubGeneric", ComponentSymbol.KIND).orElse(null);
 
         assertNotNull(componentSymbol);
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "generics.subGenericInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "generics.subGenericInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst);
         // test whether T is replaced by Integer
-        inst.getPortsList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
+        inst.getPortInstanceList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
-        ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst2 = symTab.<EMAComponentInstanceSymbol>resolve(
+                "generics.superGenericCompInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst2);
         System.out.println(inst2);
         // test whether T is replaced by Integer
-        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPort("tIn").get().getTypeReference().getName());
-        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPort("tOut").get().getTypeReference().getName());
+        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPortInstance("tIn").get().getTypeReference().getName());
+        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPortInstance("tOut").get().getTypeReference().getName());
 
-        assertEquals("B", inst2.getSubComponent("sgc2").get().getPort("tIn").get().getTypeReference().getName());
-        assertEquals("RangeType", inst2.getSubComponent("sgc2").get().getPort("tOut").get().getTypeReference().getName());
+        assertEquals("B", inst2.getSubComponent("sgc2").get().getPortInstance("tIn").get().getTypeReference().getName());
+        assertEquals("RangeType", inst2.getSubComponent("sgc2").get().getPortInstance("tOut").get().getTypeReference().getName());
     }
 
     @Test
     public void testConnectorInstancing() {
-        ConstantPortSymbol.resetLastID();
+        EMAConstantPortSymbol.resetLastID();
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.connectorInstancing", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.connectorInstancing", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println("inst: " + inst.toString());
 
-        assertEquals(3, inst.getConnectors().size());
-
-        ConstantPortSymbol portSymbol = (ConstantPortSymbol) inst.getPort("CONSTANTPORT1").get();
+        assertEquals(3, inst.getConnectorInstances().size());
+        // Todo: make ConstantPorts Instances
+        //EMAConstantPortSymbol portSymbol = (EMAConstantPortSymbol) inst.getPortInstance("CONSTANTPORT1").get();
     }
 
     @Test
     public void testGenericA() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.genericAInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.genericAInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         ComponentSymbolReference symbol = inst.getSubComponents().iterator().next().getComponentType();
         Log.info(symbol.getReferencedSymbol().toString(), "component:");
         Log.debug(inst.getSubComponents().iterator().next().getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Expanded:");
@@ -158,33 +156,33 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources/symtab");
         ComponentSymbol comp = symTab.<ComponentSymbol>resolve("generics.SubGenericValue", ComponentSymbol.KIND).orElse(null);
         assertNotNull(comp);
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "generics.subGenericValueInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "generics.subGenericValueInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst);
         // test whether T is replaced by Integer
-    /*    inst.getPortsList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
+    /*    inst.getPortInstanceList().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
-        ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst2 = symTab.<EMAComponentInstanceSymbol>resolve(
+                "generics.superGenericCompInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst2);
         System.out.println(inst2);
         // test whether T is replaced by Integer
-        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPort("tIn").get().getTypeReference().getName());
-        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPort("tOut").get().getTypeReference().getName());
+        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPortInstance("tIn").get().getTypeReference().getName());
+        assertEquals("RangeType", inst2.getSubComponent("sgc").get().getPortInstance("tOut").get().getTypeReference().getName());
 
-        assertEquals("UnitNumberResolution", inst2.getSubComponent("sgc2").get().getPort("tIn").get().getTypeReference().getName());
-        assertEquals("RangeType", inst2.getSubComponent("sgc2").get().getPort("tOut").get().getTypeReference().getName());
+        assertEquals("UnitNumberResolution", inst2.getSubComponent("sgc2").get().getPortInstance("tIn").get().getTypeReference().getName());
+        assertEquals("RangeType", inst2.getSubComponent("sgc2").get().getPortInstance("tOut").get().getTypeReference().getName());
     */
     }
 
     @Test
     public void testBasicParameterInstance() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.basicParameterInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.basicParameterInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst);
@@ -193,7 +191,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         for (ASTExpression astExpression : inst.getSubComponents().iterator().next().getArguments()) {
             Log.info(astExpression.toString(), "info:");
         }
-        Iterator<ExpandedComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
+        Iterator<EMAComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
         UnitNumberExpressionSymbol symbol1 = (UnitNumberExpressionSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
         UnitNumberExpressionSymbol symbol2 = (UnitNumberExpressionSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
         assertEquals("5", symbol1.getTextualRepresentation());
@@ -204,31 +202,31 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     public void testAdaptableParameterInstance() {
         Scope symtab = createSymTab("src/test/resources");
 
-        ExpandedComponentInstanceSymbol comp = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.adaptableParameterInstance",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol comp = symtab.<EMAComponentInstanceSymbol>resolve("testing.adaptableParameterInstance",EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(comp);
 
-        ExpandedComponentInstanceSymbol subInst1 = comp.getSubComponent("adaptableParameter").orElse(null);
+        EMAComponentInstanceSymbol subInst1 = comp.getSubComponent("adaptableParameter").orElse(null);
         assertNotNull(subInst1);
 
-        PortSymbol configPort = subInst1.getIncomingPort("param1").orElse(null);
+        EMAPortSymbol configPort = subInst1.getIncomingPortInstance("param1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
 
-        assertNull(subInst1.getIncomingPort("param2").orElse(null));
+        assertNull(subInst1.getIncomingPortInstance("param2").orElse(null));
     }
 
     @Test
     public void testConfigPort(){
         Scope symtab = createSymTab("src/test/resources");
 
-        ExpandedComponentInstanceSymbol comp = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.configPort",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol comp = symtab.<EMAComponentInstanceSymbol>resolve("testing.configPort",EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(comp);
 
-        PortSymbol configPort = comp.getIncomingPort("in1").orElse(null);
+        EMAPortSymbol configPort = comp.getIncomingPortInstance("in1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
 
-        PortSymbol nonConfigPort = comp.getIncomingPort("in2").orElse(null);
+        EMAPortSymbol nonConfigPort = comp.getIncomingPortInstance("in2").orElse(null);
         assertNotNull(nonConfigPort);
         assertFalse(nonConfigPort.isConfig());
     }
@@ -236,8 +234,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testExtensionMechanism1() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "a.superCompExtension", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "a.superCompExtension", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst);
@@ -247,8 +245,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testExtensionMechanism2() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "a.superCompGenericExtension", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "a.superCompGenericExtension", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst);
@@ -260,8 +258,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testExtensionMechanism3() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "a.superCompGenericGenericExtensionInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "a.superCompGenericGenericExtensionInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst);
@@ -271,7 +269,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testTypeVariableGenericsInstanciation2() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol csInner = symTab.<ExpandedComponentInstanceSymbol>resolve("testing.basicResolutionInstance.br1", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol csInner = symTab.<EMAComponentInstanceSymbol>resolve("testing.basicResolutionInstance.br1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(csInner);
 
         Log.debug(csInner.getFullName() + " " + csInner.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol(), "Amount ResolutionDeclarationSymbols :");
@@ -293,8 +291,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testConnectorCorrectness() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.subComponentConnector", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.subComponentConnector", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
 
@@ -305,15 +303,15 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testConnectorCorrectness2() {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.subComponentConnector2", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.subComponentConnector2", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
 
-        assertEquals(2, inst.getConnectors().size());
+        assertEquals(2, inst.getConnectorInstances().size());
 
-        Iterator<ConnectorSymbol> iter = inst.getConnectors().iterator();
-        ConnectorSymbol cs = iter.next();
+        Iterator<EMAConnectorInstanceSymbol> iter = inst.getConnectorInstances().iterator();
+        EMAConnectorSymbol cs = iter.next();
 
         assertEquals("a1.out1", cs.getSource());
         assertEquals("out1", cs.getTarget());
@@ -329,10 +327,10 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
         assertEquals(1, inst.getSubComponents().size());
 
-        ExpandedComponentInstanceSymbol inst2 = inst.getSubComponents().iterator().next();
+        EMAComponentInstanceSymbol inst2 = inst.getSubComponents().iterator().next();
 
-        assertEquals(2, inst2.getConnectors().size());
-        iter = inst2.getConnectors().iterator();
+        assertEquals(2, inst2.getConnectorInstances().size());
+        iter = inst2.getConnectorInstances().iterator();
         cs = iter.next();
         assertEquals("a1.out1", cs.getSource());
         assertEquals("out1", cs.getTarget());
@@ -347,13 +345,13 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     }
 
-    private void testConnectorCorrectnessForComponent(ExpandedComponentInstanceSymbol inst) {
-        inst.getConnectors().forEach(connectorSymbol -> {
+    private void testConnectorCorrectnessForComponent(EMAComponentInstanceSymbol inst) {
+        inst.getConnectorInstances().forEach(connectorSymbol -> {
             assertNotNull(connectorSymbol.getSourcePort());
             assertNotNull(connectorSymbol.getTargetPort());
 
-            PortSymbol sourcePort = connectorSymbol.getSourcePort();
-            PortSymbol targetPort = connectorSymbol.getTargetPort();
+            EMAPortSymbol sourcePort = connectorSymbol.getSourcePort();
+            EMAPortSymbol targetPort = connectorSymbol.getTargetPort();
 
             System.out.println("source: " + sourcePort.getFullName());
             System.out.println("target: " + targetPort.getFullName() + "\n");
@@ -368,8 +366,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testGenericInstance() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "generics.genericInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "generics.genericInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
     assertNotNull(inst);
     System.out.println(inst);
@@ -438,47 +436,47 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     //</editor-fold>
  /*
     assertEquals(inst.getSubComponent("gDouble").get().getSubComponent("sc1")
-        .get().getPort("tIn").get().getTypeReference().getName(), "Double");
+        .get().getPortInstance("tIn").get().getTypeReference().getName(), "Double");
     assertEquals(inst.getSubComponent("gDouble").get().getSubComponent("sc1")
-        .get().getPort("tOut").get().getTypeReference().getName(), "String");
+        .get().getPortInstance("tOut").get().getTypeReference().getName(), "String");
 
     assertEquals(inst.getSubComponent("gDouble").get().getSubComponent("sc2")
-        .get().getPort("tIn").get().getTypeReference().getName(), "Double");
+        .get().getPortInstance("tIn").get().getTypeReference().getName(), "Double");
     assertEquals(inst.getSubComponent("gDouble").get().getSubComponent("sc2")
-        .get().getPort("tOut").get().getTypeReference().getName(), "Integer");
+        .get().getPortInstance("tOut").get().getTypeReference().getName(), "Integer");
 
     assertEquals(inst.getSubComponent("gInteger").get().getSubComponent("sc1")
-        .get().getPort("tIn").get().getTypeReference().getName(), "Integer");
+        .get().getPortInstance("tIn").get().getTypeReference().getName(), "Integer");
     assertEquals(inst.getSubComponent("gInteger").get().getSubComponent("sc1")
-        .get().getPort("tOut").get().getTypeReference().getName(), "String");
+        .get().getPortInstance("tOut").get().getTypeReference().getName(), "String");
 
     assertEquals(inst.getSubComponent("gInteger").get().getSubComponent("sc2")
-        .get().getPort("tIn").get().getTypeReference().getName(), "Integer");
+        .get().getPortInstance("tIn").get().getTypeReference().getName(), "Integer");
     assertEquals(inst.getSubComponent("gInteger").get().getSubComponent("sc2")
-        .get().getPort("tOut").get().getTypeReference().getName(), "Integer");
+        .get().getPortInstance("tOut").get().getTypeReference().getName(), "Integer");
   }
 
   @Test
   public void testGenericExtension() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "generics.baseClassGenerics", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "generics.baseClassGenerics", EMAComponentInstanceSymbol.KIND).orElse(null);
 
     assertNotNull(inst);
     System.out.println(inst);
 
-    assertEquals(inst.getPort("boolIn").get().getTypeReference().getName(), "Boolean");
-    assertEquals(inst.getPort("intOut").get().getTypeReference().getName(), "Integer");
-    assertEquals(inst.getPort("sIn1").get().getTypeReference().getName(), "String"); // test if T is replaced by String
-    assertEquals(inst.getPort("sIn2").get().getTypeReference().getName(), "String");
-    assertEquals(inst.getPort("sOut").get().getTypeReference().getName(), "String");
+    assertEquals(inst.getPortInstance("boolIn").get().getTypeReference().getName(), "Boolean");
+    assertEquals(inst.getPortInstance("intOut").get().getTypeReference().getName(), "Integer");
+    assertEquals(inst.getPortInstance("sIn1").get().getTypeReference().getName(), "String"); // test if T is replaced by String
+    assertEquals(inst.getPortInstance("sIn2").get().getTypeReference().getName(), "String");
+    assertEquals(inst.getPortInstance("sOut").get().getTypeReference().getName(), "String");
   }
 
   @Test
   public void testLoadingInstancePort() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    PortSymbol port = symTab.<PortSymbol>resolve(
-        "a.sub1.cComp.in1", PortSymbol.KIND).orElse(null);
+    EMAPortSymbol port = symTab.<EMAPortSymbol>resolve(
+        "a.sub1.cComp.in1", EMAPortSymbol.KIND).orElse(null);
     assertNotNull(port);
     System.out.println(port);
   }
@@ -489,16 +487,16 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     ComponentSymbol cmp = symTab.<ComponentSymbol>resolve(
         "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.CC_On_Off", ComponentSymbol.KIND).orElse(null);
     assertNotNull(cmp);
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.cC_On_Off", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.cC_On_Off", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
 
     symTab = createSymTab("src/test/resources/fas");
     cmp = symTab.<ComponentSymbol>resolve(
         "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.Limiter", ComponentSymbol.KIND).orElse(null);
     assertNotNull(cmp);
-    inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.limiter", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.limiter", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
   }
   */

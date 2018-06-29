@@ -36,9 +36,9 @@ import de.monticore.symboltable.types.references.TypeReference;
  *
  * @author Robert Heim
  */
-public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implements ElementInstance {
+public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol implements EMAElementInstanceSymbol {
 
-    public static final EMAComponentInstanceKind KIND = EMAComponentInstanceKind.INSTANCE;
+    public static final EMAComponentInstantiationKind KIND = EMAComponentInstantiationKind.INSTANCE;
 
     private final ComponentSymbolReference componentType;
 
@@ -50,12 +50,12 @@ public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implement
     private String value = "";
 
     /**
-     * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol
+     * Constructor for de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol
      *
      * @param name
      * @param componentType the referenced component definition
      */
-    public ComponentInstanceSymbol(String name, ComponentSymbolReference componentType) {
+    public EMAComponentInstantiationSymbol(String name, ComponentSymbolReference componentType) {
         super(name, KIND);
         this.componentType = componentType;
 
@@ -71,8 +71,8 @@ public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implement
     /**
      * @return connectors of this component
      */
-    public Collection<ConnectorSymbol> getSimpleConnectors() {
-        return getSpannedScope().<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+    public Collection<EMAConnectorSymbol> getSimpleConnectors() {
+        return getSpannedScope().<EMAConnectorSymbol>resolveLocally(EMAConnectorSymbol.KIND);
     }
 
     public String getValue() {
@@ -106,7 +106,7 @@ public class ComponentInstanceSymbol extends CommonScopeSpanningSymbol implement
 
     @Override
     public String toString() {
-        return SymbolPrinter.printComponentInstance(this);
+        return SymbolPrinter.printEMAComponentInstantiation(this);
     }
 
     public Optional<InstanceInformation> getInstanceInformation(){

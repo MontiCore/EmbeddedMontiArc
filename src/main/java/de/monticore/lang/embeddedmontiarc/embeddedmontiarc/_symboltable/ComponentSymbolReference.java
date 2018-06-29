@@ -26,7 +26,6 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -36,7 +35,6 @@ import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -117,14 +115,14 @@ public class ComponentSymbolReference extends ComponentSymbol implements
         for (ResolutionDeclarationSymbol resDeclSym : getResolutionDeclarationSymbols()) {
             //Log.debug("" + ((ASTUnitNumberResolution) getResolutionDeclarationSymbols().get(count).getASTResolution()).getNumber().get().intValue(), "resolus:");
             String lastNameStart = "";
-            for (PortSymbol portSymbol : getIncomingPorts()) {
-                Log.debug(portSymbol.getName(), "Found Port:");
-                if (!portSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
-                    lastNameStart = portSymbol.getNameWithoutArrayBracketPart();
+            for (EMAPortSymbol emaPortSymbol : getIncomingPorts()) {
+                Log.debug(emaPortSymbol.getName(), "Found Port:");
+                if (!emaPortSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
+                    lastNameStart = emaPortSymbol.getNameWithoutArrayBracketPart();
                     Log.debug(lastNameStart, "Found PortArray:");
-                    Log.debug(portSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
-                    PortArraySymbol portArraySymbol = portSymbol.getEnclosingScope().<PortArraySymbol>resolve(lastNameStart, PortArraySymbol.KIND).get();
-                    portArraySymbol.recreatePortArray(resDeclSym, emastc, this);
+                    Log.debug(emaPortSymbol.getEnclosingScope().toString(), "PortArray enclosing scope:");
+                    EMAPortArraySymbol emaPortArraySymbol = emaPortSymbol.getEnclosingScope().<EMAPortArraySymbol>resolve(lastNameStart, EMAPortArraySymbol.KIND).get();
+                    emaPortArraySymbol.recreatePortArray(resDeclSym, emastc, this);
                 }
             }
         }

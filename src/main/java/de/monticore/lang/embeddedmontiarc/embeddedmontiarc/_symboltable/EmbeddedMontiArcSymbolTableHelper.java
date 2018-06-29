@@ -25,7 +25,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesHelper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.monticar.ValueSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTAdaptableKeyword;
 import de.monticore.lang.monticar.common2._ast.ASTParameter;
 import de.monticore.lang.monticar.resolution._ast.ASTResolutionDeclaration;
 import de.monticore.lang.monticar.resolution._ast.ASTTypeNameResolutionDeclaration;
@@ -114,7 +113,7 @@ public class EmbeddedMontiArcSymbolTableHelper {
                                       ComponentSymbolReference componentTypeReference,
                                       List<ValueSymbol<TypeReference<TypeSymbol>>> configArguments,
                                       EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        ComponentInstanceSymbol instance = new ComponentInstanceSymbol(name,
+        EMAComponentInstantiationSymbol instance = new EMAComponentInstantiationSymbol(name,
                 componentTypeReference);
         for (ValueSymbol<TypeReference<TypeSymbol>> valueSymbol : configArguments)
             configArguments.forEach(v -> instance.addConfigArgument(v));

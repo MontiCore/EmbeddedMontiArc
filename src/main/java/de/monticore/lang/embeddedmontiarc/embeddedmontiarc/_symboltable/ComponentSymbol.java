@@ -49,11 +49,11 @@ import static de.monticore.symboltable.Symbols.sortSymbolsByPosition;
  *
  * @author Robert Heim
  */
-public class ComponentSymbol extends CommonScopeSpanningSymbol {
+public class ComponentSymbol extends CommonScopeSpanningSymbol implements EMAElementSymbol{
 
     public static final ComponentKind KIND = new ComponentKind();
 
-    private final List<EMAAComponentImplementationSymbol> implementations = new ArrayList<>();
+    private final List<EMAComponentImplementationSymbol> implementations = new ArrayList<>();
 
     private boolean isInnerComponent = false;
 
@@ -114,9 +114,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param target target of the connector to get
      * @return a connector with the given target, absent optional, if it does not exist
      */
-    public Optional<ConnectorSymbol> getConnector(String target) {
+    public Optional<EMAConnectorSymbol> getConnector(String target) {
         // no check for reference required
-        for (ConnectorSymbol con : getConnectors()) {
+        for (EMAConnectorSymbol con : getConnectors()) {
             if (con.getTarget().equals(target)) {
                 return Optional.of(con);
             }
@@ -127,9 +127,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * @return connectors of this component
      */
-    public Collection<ConnectorSymbol> getConnectors() {
-        Collection<ConnectorSymbol> c = referencedComponent.orElse(this)
-                .getSpannedScope().<ConnectorSymbol>resolveLocally(ConnectorSymbol.KIND);
+    public Collection<EMAConnectorSymbol> getConnectors() {
+        Collection<EMAConnectorSymbol> c = referencedComponent.orElse(this)
+                .getSpannedScope().<EMAConnectorSymbol>resolveLocally(EMAConnectorSymbol.KIND);
 
         return c.stream().sorted((o1, o2) -> o1.getSourcePosition().compareTo(o2.getSourcePosition()))
                 .collect(Collectors.toList());
@@ -139,7 +139,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param visibility visibility
      * @return connectors with the given visibility
      */
-    public Collection<ConnectorSymbol> getConnectors(AccessModifier visibility) {
+    public Collection<EMAConnectorSymbol> getConnectors(AccessModifier visibility) {
         // no check for reference required
         return getConnectors().stream()
                 .filter(c -> c.getAccessModifier().includes(visibility))
@@ -176,18 +176,18 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * @param impl the implementation to add
      */
-    public void addImplementation(EMAAComponentImplementationSymbol impl) {
+    public void addImplementation(EMAComponentImplementationSymbol impl) {
         referencedComponent.orElse(this).implementations.add(impl);
     }
 
     /**
      * @return implementations
      */
-    public List<EMAAComponentImplementationSymbol> getImplementations() {
+    public List<EMAComponentImplementationSymbol> getImplementations() {
         return ImmutableList.copyOf(referencedComponent.orElse(this).implementations);
     }
 
-    public Optional<EMAAComponentImplementationSymbol> getImplementation(String name) {
+    public Optional<EMAComponentImplementationSymbol> getImplementation(String name) {
         // no check for reference required
         return getImplementations().stream()
                 .filter(i -> i.getName().equals(name))
@@ -198,7 +198,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param visibility visibility
      * @return implementations with the given visibility
      */
-    public Collection<EMAAComponentImplementationSymbol> getImplementations(
+    public Collection<EMAComponentImplementationSymbol> getImplementations(
             AccessModifier visibility) {
         // no check for reference required
         return getImplementations().stream()
@@ -285,10 +285,10 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      *
      * @return ports of this component.
      */
-    public Collection<PortSymbol> getPortsList() {
-        Collection<PortSymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
-                .<PortSymbol>resolveLocally(PortSymbol.KIND);
-        /* for (PortSymbol portSymbol : symbols) { System.out.println(portSymbol.toString()); } */
+    public Collection<EMAPortSymbol> getPortsList() {
+        Collection<EMAPortSymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
+                .<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND);
+        /* for (EMAPortSymbol portSymbol : symbols) { System.out.println(portSymbol.toString()); } */
         return symbols;
     }
 
@@ -297,15 +297,15 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      *
      * @return ports of this component.
      */
-    public Collection<PortArraySymbol> getPortArrays() {
-        Collection<PortArraySymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
-                .<PortArraySymbol>resolveLocally(PortArraySymbol.KIND);
+    public Collection<EMAPortArraySymbol> getPortArrays() {
+        Collection<EMAPortArraySymbol> symbols = referencedComponent.orElse(this).getSpannedScope()
+                .<EMAPortArraySymbol>resolveLocally(EMAPortArraySymbol.KIND);
         return symbols;
     }
 
-    public PortArraySymbol getPortArray(String name) {
+    public EMAPortArraySymbol getPortArray(String name) {
         Log.debug(name, "Looking for Pas:");
-        for (PortArraySymbol pas : getPortArrays()) {
+        for (EMAPortArraySymbol pas : getPortArrays()) {
             Log.debug(pas.getName(), "Cur Pas:");
             if (pas.getName().equals(name)) {
                 Log.debug(pas.getName(), "Found Pas");
@@ -317,12 +317,12 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
 
     public boolean isPortDependentOnResolutionDeclarationSymbol(String portName,
                                                                 String nameToDependentOn) {
-        PortArraySymbol portArraySymbol = getPortArray(portName);
+        EMAPortArraySymbol emaPortArraySymbol = getPortArray(portName);
         Log.debug(portName, "PortName:");
         Log.debug(nameToDependentOn, "Expected NameToDependOn:");
-        if (portArraySymbol.getNameSizeDependsOn().isPresent()) {
-            Log.debug(portArraySymbol.getNameSizeDependsOn().get(), "Actual NameToDependOn:");
-            if (portArraySymbol.getNameSizeDependsOn().get().equals(nameToDependentOn))
+        if (emaPortArraySymbol.getNameSizeDependsOn().isPresent()) {
+            Log.debug(emaPortArraySymbol.getNameSizeDependsOn().get(), "Actual NameToDependOn:");
+            if (emaPortArraySymbol.getNameSizeDependsOn().get().equals(nameToDependentOn))
                 return true;
         }
         return false;
@@ -336,9 +336,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * @return incomingPorts of this component
      */
-    public Collection<PortSymbol> getIncomingPorts() {
+    public Collection<EMAPortSymbol> getIncomingPorts() {
         return referencedComponent.orElse(this).getSpannedScope()
-                .<PortSymbol>resolveLocally(PortSymbol.KIND)
+                .<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND)
                 .stream()
                 .filter(p -> p.isIncoming())
                 .collect(Collectors.toList());
@@ -348,7 +348,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param name port name
      * @return incoming port with the given name, empty optional, if it does not exist
      */
-    public Optional<PortSymbol> getIncomingPort(String name) {
+    public Optional<EMAPortSymbol> getIncomingPort(String name) {
         // no check for reference required
         return getIncomingPorts().stream()
                 .filter(p -> p.getName().equals(name))
@@ -359,7 +359,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param visibility
      * @return incoming ports with the given visibility
      */
-    public Collection<PortSymbol> getIncomingPorts(AccessModifier visibility) {
+    public Collection<EMAPortSymbol> getIncomingPorts(AccessModifier visibility) {
         // no check for reference required
         return getIncomingPorts().stream()
                 .filter(s -> s.getAccessModifier().includes(visibility))
@@ -369,9 +369,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * @return outgoingPorts of this component
      */
-    public Collection<PortSymbol> getOutgoingPorts() {
+    public Collection<EMAPortSymbol> getOutgoingPorts() {
         return referencedComponent.orElse(this).getSpannedScope()
-                .<PortSymbol>resolveLocally(PortSymbol.KIND)
+                .<EMAPortSymbol>resolveLocally(EMAPortSymbol.KIND)
                 .stream()
                 .filter(p -> p.isOutgoing())
                 .collect(Collectors.toList());
@@ -382,7 +382,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      *
      * @return list of all incoming ports.
      */
-    public List<PortSymbol> getAllIncomingPorts() {
+    public List<EMAPortSymbol> getAllIncomingPorts() {
         return referencedComponent.orElse(this).getAllPorts(true);
     }
 
@@ -390,7 +390,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param name port name
      * @return outgoing port with the given name, empty optional, if it does not exist
      */
-    public Optional<PortSymbol> getOutgoingPort(String name) {
+    public Optional<EMAPortSymbol> getOutgoingPort(String name) {
         // no check for reference required
         return getOutgoingPorts().stream()
                 .filter(p -> p.getName().equals(name))
@@ -401,7 +401,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param visibility visibility
      * @return outgoing ports with the given visibility
      */
-    public Collection<PortSymbol> getOutgoingPorts(AccessModifier visibility) {
+    public Collection<EMAPortSymbol> getOutgoingPorts(AccessModifier visibility) {
         // no check for reference required
         return getOutgoingPorts().stream()
                 .filter(s -> s.getAccessModifier().includes(visibility))
@@ -413,12 +413,12 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      *
      * @return list of all outgoing ports.
      */
-    public List<PortSymbol> getAllOutgoingPorts() {
+    public List<EMAPortSymbol> getAllOutgoingPorts() {
         return referencedComponent.orElse(this).getAllPorts(false);
     }
 
-    protected List<PortSymbol> getAllPorts() {
-        List<PortSymbol> result = new ArrayList<PortSymbol>();
+    protected List<EMAPortSymbol> getAllPorts() {
+        List<EMAPortSymbol> result = new ArrayList<EMAPortSymbol>();
 
         // own ports
         result.addAll(getPortsList());
@@ -426,9 +426,9 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
         // ports from super components
         Optional<ComponentSymbolReference> superCompOpt = getSuperComponent();
         if (superCompOpt.isPresent()) {
-            for (PortSymbol superPort : superCompOpt.get().getAllPorts()) {
+            for (EMAPortSymbol superPort : superCompOpt.get().getAllPorts()) {
                 boolean alreadyAdded = false;
-                for (PortSymbol pToAdd : result) {
+                for (EMAPortSymbol pToAdd : result) {
                     if (pToAdd.getName().equals(superPort.getName())) {
                         alreadyAdded = true;
                         break;
@@ -442,7 +442,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
         return result;
     }
 
-    private List<PortSymbol> getAllPorts(boolean isIncoming) {
+    private List<EMAPortSymbol> getAllPorts(boolean isIncoming) {
         return getAllPorts().stream().filter(p -> p.isIncoming() == isIncoming)
                 .collect(Collectors.toList());
     }
@@ -469,16 +469,16 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
     /**
      * @return subComponents
      */
-    public Collection<ComponentInstanceSymbol> getSubComponents() {
+    public Collection<EMAComponentInstantiationSymbol> getSubComponents() {
         return referencedComponent.orElse(this).getSpannedScope()
-                .resolveLocally(ComponentInstanceSymbol.KIND);
+                .resolveLocally(EMAComponentInstantiationSymbol.KIND);
     }
 
     /**
      * @param name subcomponent instance name
      * @return subcomponent with the given name, empty optional, if it does not exist
      */
-    public Optional<ComponentInstanceSymbol> getSubComponent(String name) {
+    public Optional<EMAComponentInstantiationSymbol> getSubComponent(String name) {
         // no check for reference required
         return getSubComponents().stream()
                 .filter(p -> p.getName().equals(name))
@@ -489,7 +489,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
      * @param visibility visibility
      * @return subcomponents with the given visibility
      */
-    public Collection<ComponentInstanceSymbol> getSubComponents(AccessModifier visibility) {
+    public Collection<EMAComponentInstantiationSymbol> getSubComponents(AccessModifier visibility) {
         // no check for reference required
         return getSubComponents().stream()
                 .filter(s -> s.getAccessModifier().includes(visibility))
@@ -646,7 +646,7 @@ public class ComponentSymbol extends CommonScopeSpanningSymbol {
         this.arguments = arguments;
     }
 
-    public void addIncomingPort(PortSymbol symbol) {
+    public void addIncomingPort(EMAPortSymbol symbol) {
         // TODO implement me
     }
 }

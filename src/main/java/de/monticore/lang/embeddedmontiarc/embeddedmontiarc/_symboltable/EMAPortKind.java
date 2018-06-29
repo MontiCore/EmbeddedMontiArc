@@ -25,11 +25,11 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class EmbeddedPortKind implements SymbolKind {
+public class EMAPortKind implements SymbolKind {
 
-  public static final EmbeddedPortKind INSTANCE = new EmbeddedPortKind();
+  public static final EMAPortKind INSTANCE = new EMAPortKind();
 
-  protected EmbeddedPortKind() {
+  protected EMAPortKind() {
   }
 
 }

@@ -37,11 +37,11 @@ import java.util.Set;
  *
  * @author Michael von Wenckstern
  */
-public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
+public class EMAComponentInstanceSymbolCreator {
 
     protected LinkedHashSet<ComponentSymbol> topComponents = new LinkedHashSet<>();
 
-    public EmbeddedMontiArcExpandedComponentInstanceSymbolCreator() {
+    public EMAComponentInstanceSymbolCreator() {
     }
 
     public static Scope getGlobalScope(final Scope scope) {
@@ -55,61 +55,51 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
     /**
      * @param topComponent this is the scope where the top-level component is defined in
      */
-    public void createInstances(ComponentSymbol topComponent) {
-        if (getGlobalScope(topComponent.getSpannedScope()).resolveDown(
-                Joiners.DOT.join(topComponent.getPackageName(), Character.toLowerCase(topComponent.getName().charAt(0)) +
-                        topComponent.getName().substring(1)), ExpandedComponentInstanceSymbol.KIND).isPresent()) {
-//    if (!topComponents.add(topComponent)) {
+    public void createInstances(ComponentSymbol topComponent, String instanceName) {
+        MutableScope enclosingScope = (MutableScope) topComponent.getEnclosingScope();
+        String fullInstanceName = Joiners.DOT.join(topComponent.getPackageName(), instanceName);
+
+        if (enclosingScope.resolveDown(fullInstanceName, EMAComponentInstanceSymbol.KIND).isPresent()) {
             System.out.println("instances for top component + " + topComponent.getFullName() +
                     " is already created");
             Log.info("instances for top component + " + topComponent.getFullName() +
                             " is already created",
-                    EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.class.toString());
+                    EMAComponentInstanceSymbolCreator.class.toString());
             return;
         }
 
         if (!topComponent.getFormalTypeParameters().isEmpty()) {
             Log.info("expanded component instance is not created, b/c top level has"
                             + " generic parameters and can, therefore, not be instantiated",
-                    EmbeddedMontiArcExpandedComponentInstanceSymbolCreator.class.toString());
+                    EMAComponentInstanceSymbolCreator.class.toString());
             return;
         }
 
         final Set<ResolvingFilter<? extends Symbol>> filters =
                 topComponent.getSpannedScope().getResolvingFilters();
 
-        // make first letter to lower case
-        // this is needed so that you can differentiate between ComponentDefinition.Port
-        // and between ComponentInstance.Port (ComponentInstance has small letter and
-        // ComponentDefinition has capital letter)
-        String name = topComponent.getName();
-        if (name.length() > 1) {
-            name = Character.toLowerCase(name.charAt(0)) + name.substring(1);
-        } else {
-            name = Character.toLowerCase(name.charAt(0)) + "";
-        }
 
-        ExpandedComponentInstanceBuilder builder =
+        EMAComponentInstanceBuilder builder =
                 createInstance(topComponent, filters, null)
-                        .setName(name);
+                        .setName(instanceName);
 
-        final ExpandedComponentInstanceSymbol sym = builder.addResolvingFilters(filters).build();
-        ((MutableScope) topComponent.getEnclosingScope()).add(sym);
+        final EMAComponentInstanceSymbol instanceSymbol = builder.addResolvingFilters(filters).build();
+        enclosingScope.add(instanceSymbol);
     }
 
-    protected ExpandedComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
+    protected EMAComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
         // TODO resolve generics and parameters
         //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
-        ExpandedComponentInstanceBuilder builder =
-                ExpandedComponentInstanceSymbol.builder()
+        EMAComponentInstanceBuilder builder =
+                EMAComponentInstanceSymbol.builder()
                         .setSymbolReference(new ComponentSymbolReference(cmp.getName(),
                                 cmp.getEnclosingScope()))
                         .addPorts(cmp.getPortsList())
                         .addConnectors(cmp.getConnectors()).addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols()).addParameters(cmp.getParameters()).addArguments(cmp.getArguments());
-        for (ConnectorSymbol connectorSymbol : cmp.getConnectors())
-            Log.info(connectorSymbol.toString(), "Building Connector:");
+        for (EMAConnectorSymbol emaConnectorSymbol : cmp.getConnectors())
+            Log.info(emaConnectorSymbol.toString(), "Building Connector:");
         // add sub components
-        for (ComponentInstanceSymbol inst : cmp.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol inst : cmp.getSubComponents()) {
             //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
             Log.info(inst.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Important:");
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
@@ -121,6 +111,10 @@ public class EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
             Log.debug(inst.getInstanceInformation().get().getInstanceNumberForArgumentIndex(0) + "", "InstanceInformation:");
 
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PostSub");
+
+            // Create Component Instance of Instantiation Symbol
+            createInstances(inst.getComponentType().getReferencedSymbol(), inst.getName());
+
         }
 
         // add inherited ports and sub components

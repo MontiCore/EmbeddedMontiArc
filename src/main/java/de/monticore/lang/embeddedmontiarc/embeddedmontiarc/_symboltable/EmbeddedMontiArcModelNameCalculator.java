@@ -53,18 +53,18 @@ public class EmbeddedMontiArcModelNameCalculator
     if (ComponentSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponent(name));
     }
-    else if (PortSymbol.KIND.isKindOf(kind) ||
-            PortArraySymbol.KIND.isKindOf(kind)) {
+    else if (EMAPortSymbol.KIND.isKindOf(kind) ||
+            EMAPortArraySymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForPort(name));
     }
-    else if (ConnectorSymbol.KIND.isKindOf(kind)) {
+    else if (EMAConnectorSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForConnector(name));
     }
-    else if (ComponentInstanceSymbol.KIND.isKindOf(kind)) {
+    else if (EMAComponentInstantiationSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponentInstance(name));
     }
-    else if (ExpandedComponentInstanceSymbol.KIND.isKindOf(kind)) {
-      calculatedModelNames.addAll(calculateModelNameForExpandedComponentInstance(name));
+    else if (EMAComponentInstanceSymbol.KIND.isKindOf(kind)) {
+      calculatedModelNames.addAll(calculateModelNameForEMAComponentInstance(name));
     }
 
     return calculatedModelNames;
@@ -90,7 +90,7 @@ public class EmbeddedMontiArcModelNameCalculator
       String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
       return ImmutableSet.<String>builder()
           .addAll(calculateModelNameForComponent(modelName))
-          .addAll(calculateModelNameForExpandedComponentInstance(modelName))
+          .addAll(calculateModelNameForEMAComponentInstance(modelName))
           .build();
     }
     return ImmutableSet.of();
@@ -104,7 +104,7 @@ public class EmbeddedMontiArcModelNameCalculator
     return ImmutableSet.of();
   }
 
-  protected Set<String> calculateModelNameForExpandedComponentInstance(String name) {
+  protected Set<String> calculateModelNameForEMAComponentInstance(String name) {
     List<String> parts = Splitters.DOT.splitToList(name);
     // adds all combinations since instances begin with a small capital latter
     // as packages do also
@@ -133,8 +133,8 @@ public class EmbeddedMontiArcModelNameCalculator
       return ImmutableSet.<String>builder()
           .addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
           .addAll(calculateModelNameForComponent(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
-          .addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
-          .addAll(calculateModelNameForExpandedComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
+          .addAll(calculateModelNameForEMAComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 1))))
+          .addAll(calculateModelNameForEMAComponentInstance(Joiners.DOT.join(parts.subList(0, parts.size() - 2))))
           .build();
     }
     return ImmutableSet.of();

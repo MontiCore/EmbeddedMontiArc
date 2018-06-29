@@ -22,10 +22,10 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -42,16 +42,16 @@ import java.util.stream.Collectors;
  */
 public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo {
 
-    private Collection<String> getNames(Collection<PortSymbol> ports) {
+    private Collection<String> getNames(Collection<EMAPortSymbol> ports) {
         return ports.stream().map(p -> p.getName())
                 .collect(Collectors.toList());
     }
 
-    private Collection<String> getSourceNames(Collection<ConnectorSymbol> connectors) {
+    private Collection<String> getSourceNames(Collection<EMAConnectorSymbol> connectors) {
         return connectors.stream().map(c -> c.getSource()).collect(Collectors.toList());
     }
 
-    private Collection<String> getTargetNames(Collection<ConnectorSymbol> connectors) {
+    private Collection<String> getTargetNames(Collection<EMAConnectorSymbol> connectors) {
         return connectors.stream().map(c -> c.getTarget()).collect(Collectors.toList());
     }
 
@@ -60,7 +60,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
         ComponentSymbol entry = (ComponentSymbol) node.getSymbolOpt().get();
         // Implemented on the symTab as it takes auto-instantiation into account which is not reflected
         // in the AST.
-        for (ComponentInstanceSymbol sub : entry.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol sub : entry.getSubComponents()) {
             // ------- IN PORTS -------
             // in ports must be connected
             // outer.in->sub.in
@@ -84,7 +84,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
                 remainingSubIn.removeAll(outerSubSimpleConnectorTargets);
                 if (!remainingSubIn.isEmpty()) {
                     for (String p : remainingSubIn) {
-                        if (PortSymbol.isConstantPortName(p)) {
+                        if (EMAPortSymbol.isConstantPortName(p)) {
 
                         } else if(isConfigPort(sub,p)){
                             //ConfigPorts dont need to be connected!
@@ -135,11 +135,11 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
         }
     }
 
-    private boolean isConfigPort(ComponentInstanceSymbol instanceSymbol, String relativePortName) {
+    private boolean isConfigPort(EMAComponentInstantiationSymbol instanceSymbol, String relativePortName) {
         String[] tmp = relativePortName.split("\\.");
         String shortName = tmp[tmp.length - 1];
         ComponentSymbol comp = instanceSymbol.getComponentType().getReferencedSymbol();
-        PortSymbol port = comp.getIncomingPort(shortName).orElse(null);
+        EMAPortSymbol port = comp.getIncomingPort(shortName).orElse(null);
         return port == null ? false : port.isConfig();
     }
 }
