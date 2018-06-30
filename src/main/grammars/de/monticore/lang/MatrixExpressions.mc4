@@ -11,9 +11,6 @@ component grammar MatrixExpressions extends de.monticore.ExpressionsBasis {
     MathArithmeticMatrixComplexTransposeExpression implements Expression<270> =
     	Expression "\'";
 
-    MathArithmeticMatrixSolutionExpression implements Expression<260> =
-    	Expression "\\\\" Expression;
-
     MathArithmeticMatrixEEPowExpression implements Expression<290> =
     	Expression ".^" Expression;
 
