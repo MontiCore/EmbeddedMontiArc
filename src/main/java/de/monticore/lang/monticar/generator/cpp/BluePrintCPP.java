@@ -92,7 +92,7 @@ public class BluePrintCPP extends BluePrint {
                 if (number == -1) {
                     //if(resolutionDeclarationSymbol.getNameToResolve().equals(nameToResolve))
                     {
-                        Log.info(resolutionDeclarationSymbol.getNameToResolve(), "Fixed");
+                        Log.info(resolutionDeclarationSymbol.getNameToResolve()+"set number to "+numberToSet+"; oldValue: "+number, "Fixed");
                         InstanceInformation.setInstanceNumberInASTSubComponent(subComponent, nameToResolve, numberToSet);
                         break;
                     }/*else{

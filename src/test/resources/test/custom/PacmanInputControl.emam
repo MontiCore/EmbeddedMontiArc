@@ -1,0 +1,10 @@
+package test.custom;
+
+component PacmanInputControl{
+    port out B moveDown,
+         out B moveUp,
+         out B moveLeft,
+         out B moveRight;
+
+
+}

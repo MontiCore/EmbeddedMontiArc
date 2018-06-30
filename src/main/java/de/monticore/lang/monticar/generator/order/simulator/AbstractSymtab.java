@@ -27,6 +27,7 @@ import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -67,6 +68,7 @@ public class AbstractSymtab {
             mp.addEntry(Paths.get(m));
         }
         LogConfig.init();//TODO comment for debug output
+
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
         return scope;

@@ -1,0 +1,10 @@
+package test.custom;
+
+component PacmanBehaviourStub {
+	port in B moveDown,
+            in B moveUp,
+            in B moveLeft,
+            in B moveRight;
+
+
+}

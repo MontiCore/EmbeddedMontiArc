@@ -1,0 +1,11 @@
+package test.custom;
+
+component NeedsInitComponent {
+	port out B out1;
+
+	implementation Math{
+	    static N lastVal = true;
+	    out1 = lastVal;
+	    lastVal = 0;
+	}
+}

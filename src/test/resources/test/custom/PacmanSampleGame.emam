@@ -1,0 +1,6 @@
+package test.custom;
+
+component PacmanSampleGame{
+
+    instance PacmanMain main;
+}

@@ -102,4 +102,32 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         String restPath = "armadillo/testMath/l0/";
         testFilesAreEqual(files, restPath);
     }
+
+    @Test
+    public void sampleComponentTest() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.custom.sampleComponentInst", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/test/custom/l0");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/test/custom/l0/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
+    public void samplePacmanMain() throws IOException{
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.custom.pacmanSampleGame", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/test/custom/l0");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/test/custom/l0/";
+        testFilesAreEqual(files, restPath);
+    }
 }

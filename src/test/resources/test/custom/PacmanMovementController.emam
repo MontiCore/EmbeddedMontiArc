@@ -1,0 +1,8 @@
+package test.custom;
+
+component PacmanMovementController{
+    port in N pacmanPositionX,
+         in N pacmanPositionY;
+
+
+}

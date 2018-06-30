@@ -1,0 +1,6 @@
+package test.custom;
+
+component PacmanInit{
+    port in B exec;
+
+}

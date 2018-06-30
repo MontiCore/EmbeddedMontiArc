@@ -1,0 +1,5 @@
+package test.custom;
+
+component SampleComponentInst{
+    instance SampleComponent<16,16> inst;
+}
