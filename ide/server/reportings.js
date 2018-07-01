@@ -63,10 +63,26 @@ class ClusteringReportingWS extends AbstractReporting {
     }
 }
 
+class PumpReporting extends AbstractReporting {
+    constructor() {
+        super("pump", BATCHES.PUMP.REPORTING);
+        this.logger = Log.getLogger("PUMP REPORTING");
+        this.logger.level = "debug";
+    }
+}
+
 class PacManReporting extends AbstractReporting {
     constructor() {
         super("pacman", BATCHES.PACMAN.REPORTING);
         this.logger = Log.getLogger("PACMAN REPORTING");
+        this.logger.level = "debug";
+    }
+}
+
+class PacManReportingWS extends AbstractReporting {
+    constructor() {
+        super("pacman", BATCHES.PACMAN.REPORTING_STREAM);
+        this.logger = Log.getLogger("PACMAN REPORTING WITH STREAMS");
         this.logger.level = "debug";
     }
 }
@@ -79,11 +95,22 @@ class SuperMarioReporting extends AbstractReporting {
     }
 }
 
+class SuperMarioReportingWS extends AbstractReporting {
+    constructor() {
+        super("supermario", BATCHES.SUPERMARIO.REPORTING_STREAM);
+        this.logger = Log.getLogger("SUPERMARIO REPORTING WITH STREAMS");
+        this.logger.level = "debug";
+    }
+}
+
 module.exports = {
     AutoPilotReporting: new AutoPilotReporting(),
     AutoPilotReportingWS: new AutoPilotReportingWS,
     ClusteringReporting: new ClusteringReporting(),
     ClusteringReportingWS: new ClusteringReportingWS(),
+    PumpReporting: new PumpReporting(),
+    PacManReporting: new PacManReporting(),
+    PacManReportingWS: new PacManReportingWS(),
     SuperMarioReporting: new SuperMarioReporting(),
-	PacManReporting: new PacManReporting(),
+    SuperMarioReportingWS: new SuperMarioReportingWS(),
 };

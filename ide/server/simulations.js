@@ -70,6 +70,80 @@ class AutoPilotSimulation {
 
         process.stdout.on("data", onNetstatOut);
     }
+
+	startDistr(callback) {
+		let process = null;
+
+		const onSimDone = () => {
+			this.logger.info("Simulation servers stopped!");
+		}
+
+		const onStdOut = (buffer) => {
+            const data = buffer.toString();
+
+            if(data.indexOf("BlueBox-2X Service") > -1) {
+                this.logger.info("Simulation server has been started.");
+                process.stdout.removeListener("data", onStdOut);
+                callback();
+            }else if(data.indexOf("User disconnected") > -1) {
+				this.stopDistr(onSimDone);
+			}
+        };
+
+        const onTimeout = () => {
+            this.logger.info("Starting Distributed Simulation...");
+            process = Process.spawn(BATCHES.AUTOPILOT.SIMULATION.START_DISTR, [], {
+                cwd: Path.resolve(PATHS.SCRIPTS, "autopilot")
+            });
+			process.stdout.on("data", onStdOut);
+        };
+
+        const onStop = () => {
+            setTimeout(onTimeout, 3000);
+        };
+
+		//stop previous server instance if existing, before launching a new server instance
+        this.stopDistr(onStop);
+	}
+
+	stopDistr(callback) {
+		let prToKill = [];
+
+        const onNetstatOut = (chunk) => {
+            let buffer = chunk.toString();
+			const inputs = buffer.split("\r\n");
+			//retrieve the first and last pids
+			let first = inputs[0] || "";
+			let last = "";
+			for(let i=0; i<inputs.length; ++i)
+				if(inputs[i].length > 0) last = inputs[i]; //keep last non-empty input
+
+			//always stop first process, except for the DB (port 5432)
+			const inp = first.match(/:5432/) ? last : first;
+            const matches = inp.match(/.+?(\d+)$/);
+
+			//save process ID to be killed
+			if(matches && matches[1] !== "0")
+				prToKill.push(matches[1]);
+        };
+
+        const onNetstatExit = () => {
+			while(prToKill.length > 0) {
+				let pid = prToKill.pop();
+				this.logger.info("Stopping Simulation Server..." + pid);
+                Process.spawn("taskkill", ["/PID", pid, "/F"]);
+			}
+            callback();
+        };
+
+		const server = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":80"]).on("exit", onNetstatExit);
+        const db = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":5432"]).on("exit", onNetstatExit);
+		const rmi = Process.spawn("cmd", ["/c", "netstat", "-ano", '|', "findstr", ":10101"]).on("exit", onNetstatExit);
+
+		server.stdout.on("data", onNetstatOut);
+        db.stdout.on("data", onNetstatOut);
+		rmi.stdout.on("data", onNetstatOut);
+    }
 }
 
 class ClusteringSimulation {
@@ -152,5 +226,5 @@ module.exports = {
     AutoPilotSimulation: new AutoPilotSimulation(),
     ClusteringSimulation: new ClusteringSimulation(),
     PacManSimulation: new PacManSimulation(),
-	SuperMarioSimulation: new SuperMarioSimulation()
+    SuperMarioSimulation: new SuperMarioSimulation()
 };

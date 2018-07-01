@@ -1,5 +1,7 @@
 package de.rwth.supermario.haller;
 
+import de.rwth.supermario.haller.tools.GetIndexes;
+
 import de.rwth.supermario.haller.environment.Enemy;
 import de.rwth.supermario.haller.environment.EnemyFactory;
 
@@ -22,21 +24,24 @@ component Controller {
         out Z marioDown,
         out Z marioShoot;
         
+    instance GetIndexes indexes;
     
     instance EnemyFactory enemyFactories[5];
-    connect 1 -> enemyFactories[1].i;
+    /*connect 1 -> enemyFactories[1].i;
     connect 2 -> enemyFactories[2].i;
     connect 3 -> enemyFactories[3].i;
     connect 4 -> enemyFactories[4].i;
-    connect 5 -> enemyFactories[5].i;
+    connect 5 -> enemyFactories[5].i;*/
+    connect indexes[:] -> enemyFactories[:].i;
     connect nextEnemyPositions -> enemyFactories[:].nextEnemyPositions;
     
     instance ObstacleFactory obstacleFactories[5];
-    connect 1 -> obstacleFactories[1].i;
+    /*connect 1 -> obstacleFactories[1].i;
     connect 2 -> obstacleFactories[2].i;
     connect 3 -> obstacleFactories[3].i;
     connect 4 -> obstacleFactories[4].i;
-    connect 5 -> obstacleFactories[5].i;
+    connect 5 -> obstacleFactories[5].i;*/
+    connect indexes[:] -> obstacleFactories[:].i;
     connect nextObstaclePositions -> obstacleFactories[:].nextObstaclePositions;
         
     instance Enemy enemies[5];
@@ -62,7 +67,9 @@ component Controller {
         
     implementation Math {
         
-       marioDirection = 1;
+       marioDirection = -1;
+       marioShoot = 1;
+       marioJump = 0;
         
     }
 }

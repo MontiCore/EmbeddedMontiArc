@@ -32,8 +32,9 @@ component EnemyStrategy {
     
     instance OrRelation orR;  //or is a keyword??
     connect enemyWatchers[:].inJumpRange -> orR.input[:];
-    connect orR.output -> jumpAdvice;
     
+    //connect orR.output -> jumpAdvice;
+    connect 0->jumpAdvice;
     connect 1 -> directionAdvice;
     
     

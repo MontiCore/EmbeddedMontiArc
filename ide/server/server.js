@@ -16,25 +16,36 @@ function onServerStarted(error) {
 }
 
 
-
-
-function onSuperMarioZipped() {
+function onOCLZipped() {
 	const Server = App.listen(PORTS.SHARED, onServerStarted);
 
 	Server.timeout = 30 * 60 * 1000;
 }
 
-function onPacManZipped() {
-	Archiver.zip("supermario", onSuperMarioZipped);
-}
-
 function onClusteringZipped() {
-	Archiver.zip("pacman", onPacManZipped);
+	Archiver.zip("oclverification", onOCLZipped);
+
 }
 
 function onAutopilotZipped() {
 	Archiver.zip("clustering", onClusteringZipped);
 }
 
+function onNFPZipped() {
+	Archiver.zip("autopilot", onAutopilotZipped);
+}
 
-Archiver.zip("autopilot", onAutopilotZipped);
+function onSuperMarioZipped() {
+	Archiver.zip("nfpverification", onNFPZipped);
+}
+
+function onPacManZipped() {
+	Archiver.zip("supermario", onSuperMarioZipped);
+}
+
+function onPumpZipped() {
+	Archiver.zip("pacman", onPacManZipped);
+}
+
+Archiver.zip("pump", onPumpZipped);
+

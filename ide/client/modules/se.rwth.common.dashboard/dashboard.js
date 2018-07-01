@@ -36,14 +36,29 @@ var Dashboard = (function() {
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Clustering/v&url=/m/clustering.zip&openFile=/detection/SpectralClusterer.emam"
             }, {
                 username: "EmbeddedMontiArcStudio",
+                reponame: "Pump",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Pump/v&url=/m/pump.zip&openFile=/model/pumpStationExample/PumpStation.ema"
+            }, {
+                username: "EmbeddedMontiArcStudio",
                 reponame: "PacMan",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/PacMan/v&url=/m/pacman.zip&openFile=/de/rwth/pacman/PacManWrapper.emam"
-            },{
+            }, {
                 username: "EmbeddedMontiArcStudio",
                 reponame: "SuperMario",
                 branchname: "",
                 href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/SuperMario/v&url=/m/supermario.zip&openFile=/de/rwth/supermario/SuperMarioWrapper.emam"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "NFPVerification",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/NFPVerification/v&url=/m/nfpverification.zip&openFile=/example/model/Sensors.ema"
+            }, {
+                username: "EmbeddedMontiArcStudio",
+                reponame: "OCLVerification",
+                branchname: "",
+                href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/OCLVerification/v&url=/m/oclverification.zip&openFile=/cd/EmbeddedMontiArc.cd"
             }];
         },
 

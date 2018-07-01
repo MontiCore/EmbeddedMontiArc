@@ -23,6 +23,11 @@ component EnemyFactory {
         x = nextEnemyPositions(i,1);
         y = nextEnemyPositions(i,2);
         
+        //Still jumps with this... (shouldn't)
+        //x = 500;
+        //y = 500;
+        
+        
        /* Enemy2.distX = nextEnemyPositions(2,1);
         Enemy2.distY = nextEnemyPositions(2,2);
         

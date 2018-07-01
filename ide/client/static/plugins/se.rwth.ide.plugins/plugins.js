@@ -1035,6 +1035,7 @@ var plugins = [
     "plugins/c9.ide.services/linked-services-mock",
     "plugins/c9.ide.language.jsonalyzer/mock_collab",
     "plugins/se.rwth.visualization/visualization",
+    "plugins/se.rwth.readme.opener/readme.opener",
     "plugins/se.rwth.vfs/vfs.main",
     "plugins/se.rwth.language.embeddedmontiarc/embeddedmontiarc",
     "plugins/se.rwth.language.montimath/montimath",
@@ -1042,40 +1043,57 @@ var plugins = [
     "plugins/se.rwth.language.streamunits/streamunits",
     "plugins/se.rwth.language.cd/cd",
     "plugins/se.rwth.language.ocl/ocl",
+    "plugins/se.rwth.language.embeddedmontiview/embeddedmontiview",
+    "plugins/se.rwth.language.cnntrainlang/cnntrainlang",
+    "plugins/se.rwth.language.embeddedmontiarcdl/embeddedmontiarcdl",
+    "plugins/se.rwth.language.embeddedmontiarcapplication/embeddedmontiarcapplication",
     "plugins/se.rwth.ide.ui/ui",
     "plugins/se.rwth.api.url/url.js",
     "plugins/se.rwth.api.window/window.js",
     "plugins/se.rwth.api.switch/switch",
-    "plugins/se.rwth.api.ide/ide",
-    "plugins/se.rwth.models.updater/models.updater"
+    "plugins/se.rwth.api.ide/ide"
 ];
 
-console.log(reponame);
-
-if (reponame == "AutoPilot" || reponame == "Clustering"){
-    plugins.push(
-        "plugins/se.rwth.simulate/simulate",
-        "plugins/se.rwth.visualize/visualize",
-        "plugins/se.rwth.report/report",
-        "plugins/se.rwth.reportWithStreams/reportWithStreams",
-        "plugins/se.rwth.test/test"
-    );
-}
-
-if (reponame == "SuperMario") {
-    plugins.push(
-        "plugins/se.rwth.supermario.play/play",
-        "plugins/se.rwth.emam2wasm.generate/generate",
-        "plugins/se.rwth.simulate/simulate",
-        "plugins/se.rwth.report/report"
-    );
-}
-
 if (reponame == "PacMan") {
+    plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
+plugins.push(
+    "plugins/se.rwth.pacman.play/play",
+    "plugins/se.rwth.emam2wasm.generate/generate",
+    "plugins/se.rwth.simulate/simulate",
+    "plugins/se.rwth.visualize/visualize",
+    "plugins/se.rwth.report/report",
+    "plugins/se.rwth.reportWithStreams/reportWithStreams",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
+} else if (reponame == "SuperMario") {
+    plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
     plugins.push(
-        "plugins/se.rwth.pacman.play/play",
-        "plugins/se.rwth.emam2wasm.generate/generate",
-        "plugins/se.rwth.simulate/simulate",
-        "plugins/se.rwth.report/report"
+    "plugins/se.rwth.supermario.play/play",
+    "plugins/se.rwth.emam2wasm.generate/generate",
+    "plugins/se.rwth.simulate/simulate",
+    "plugins/se.rwth.visualize/visualize",
+    "plugins/se.rwth.report/report",
+    "plugins/se.rwth.reportWithStreams/reportWithStreams",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
+} else if (reponame == "OCLVerification") {
+plugins.push(
+    "plugins/se.rwth.oclverification/oclverification",
+    "plugins/se.rwth.models.updater/models.updater"
+    );
+} else if (reponame == "NFPVerification") {
+  plugins.push(
+      "plugins/se.rwth.nfpverification/nfpverification",
+      "plugins/se.rwth.models.updater/models.updater"
+      );
+} else {
+    plugins.push(
+	"plugins/se.rwth.simulate/simulate",
+    "plugins/se.rwth.visualize/visualize",
+    "plugins/se.rwth.report/report",
+    "plugins/se.rwth.reportWithStreams/reportWithStreams",
+    "plugins/se.rwth.test/test",
+	"plugins/se.rwth.viewverification/viewverification",
+    "plugins/se.rwth.models.updater/models.updater"
     );
 }

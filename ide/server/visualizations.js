@@ -87,6 +87,22 @@ class ClusteringVisualization extends AbstractVisualization {
     }
 }
 
+class PumpVisualization extends AbstractVisualization {
+    constructor() {
+        super("pump", BATCHES.PUMP.VISUALIZATION);
+        this.logger = Log.getLogger("PUMP VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
+class PacManVisualization extends AbstractVisualization {
+    constructor() {
+        super("pacman", BATCHES.PACMAN.VISUALIZATION);
+        this.logger = Log.getLogger("PACMAN VISUALIZATION");
+        this.logger.level = "debug";
+    }
+}
+
 class SuperMarioVisualization extends AbstractVisualization {
     constructor() {
         super("supermario", BATCHES.SUPERMARIO.VISUALIZATION);
@@ -97,6 +113,8 @@ class SuperMarioVisualization extends AbstractVisualization {
 
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
+	PumpVisualization: new PumpVisualization(),
 	ClusteringVisualization: new ClusteringVisualization(),
-	SuperMarioVisualization: new SuperMarioVisualization()
+    PacManVisualization: new PacManVisualization(),
+    SuperMarioVisualization: new SuperMarioVisualization()
 };

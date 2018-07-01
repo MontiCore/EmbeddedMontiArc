@@ -20,7 +20,7 @@ component EnemyWatcher {
             //inJumpRange = 0;
             
             //DEBUG
-            inJumpRange = 1;
+            inJumpRange = 0;
         else
             inJumpRange = 0;
         end
