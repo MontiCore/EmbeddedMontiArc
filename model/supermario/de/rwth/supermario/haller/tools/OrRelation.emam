@@ -8,7 +8,7 @@ component OrRelation {
 
     implementation Math {
         Z sum = 0;
-        for i = (1:5)
+        for i = 1:5
             sum = sum + input(i);
         end
         

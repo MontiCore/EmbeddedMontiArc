@@ -1,0 +1,15 @@
+package de.rwth.supermario.haller.actuator;
+
+
+
+component ObstacleStrategy {
+    ports
+        //in Enemy enemies[5],
+
+        in Z^{1,2} marioPosition,
+        out Z jumpAdvice,
+        out Z directionAdvice;
+
+
+    
+}

@@ -16,7 +16,10 @@ component EnemyWatcher {
         Z jumpRangeX = 100;
         Z jumpRangeY =  75;
         
-        if(EnemyDistX < jumpRangeX && EnemyDistY < jumpRangeY)
+        if((abs(EnemyDistX) < jumpRangeX) && (abs(EnemyDistY) < jumpRangeY) && (EnemyDistX != -1))
+            //inJumpRange = 0;
+            
+            //DEBUG
             inJumpRange = 1;
         else
             inJumpRange = 0;

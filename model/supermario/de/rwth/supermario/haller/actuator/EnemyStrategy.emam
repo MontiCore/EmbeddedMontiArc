@@ -26,13 +26,13 @@ component EnemyStrategy {
     connect enemyDistsX[:] ->enemyWatchers[:].EnemyDistX;
     connect enemyDistsY[:] ->enemyWatchers[:].EnemyDistY;
     connect enemyVelX[:] ->enemyWatchers[:].EnemyVelocityX;
-    connect enemyVelY[:] ->enemyWatchers[:].EnemyVelocityX;
+    connect enemyVelY[:] ->enemyWatchers[:].EnemyVelocityY;
     
     
     
-    instance OrRelation or;
-    connect enemyWatchers[:].inJumpRange -> or.input[:];
-    connect or.output -> jumpAdvice;
+    instance OrRelation orR;  //or is a keyword??
+    connect enemyWatchers[:].inJumpRange -> orR.input[:];
+    connect orR.output -> jumpAdvice;
     
     connect 1 -> directionAdvice;
     

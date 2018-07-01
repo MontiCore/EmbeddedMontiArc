@@ -14,7 +14,7 @@ component GetNearest {
         
         //Implement Bubblesort?
         
-        for i = (1:5)
+        for i = 1:5
             //Z ecDist = sqrt(distX * distX + distY * distY); //Euclidic Distance
         
             
