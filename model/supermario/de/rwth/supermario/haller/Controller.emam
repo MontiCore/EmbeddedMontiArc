@@ -1,5 +1,12 @@
 package de.rwth.supermario.haller;
 
+import de.rwth.supermario.haller.environment.Enemy;
+import de.rwth.supermario.haller.environment.EnemyFactory;
+
+import de.rwth.supermario.haller.environment.Obstacle;
+import de.rwth.supermario.haller.environment.ObstacleFactory;
+
+import de.rwth.supermario.haller.actuator.EnemyStrategy;
 
 component Controller {
     ports   //x,y
@@ -15,13 +22,47 @@ component Controller {
         out Z marioDown,
         out Z marioShoot;
         
+    
+    instance EnemyFactory enemyFactories[5];
+    connect 1 -> enemyFactories[1].i;
+    connect 2 -> enemyFactories[2].i;
+    connect 3 -> enemyFactories[3].i;
+    connect 4 -> enemyFactories[4].i;
+    connect 5 -> enemyFactories[5].i;
+    connect nextEnemyPositions -> enemyFactories[:].nextEnemyPositions;
+    
+    instance ObstacleFactory obstacleFactories[5];
+    connect 1 -> obstacleFactories[1].i;
+    connect 2 -> obstacleFactories[2].i;
+    connect 3 -> obstacleFactories[3].i;
+    connect 4 -> obstacleFactories[4].i;
+    connect 5 -> obstacleFactories[5].i;
+    connect nextObstaclePositions -> obstacleFactories[:].nextObstaclePositions;
+        
+    instance Enemy enemies[5];
+    connect enemyFactories[:].x -> enemies[:].distX;
+    connect enemyFactories[:].y -> enemies[:].distY;
+    
+    instance Obstacle obstacles[5];
+    connect obstacleFactories[:].x -> obstacles[:].distX;
+    connect obstacleFactories[:].y -> obstacles[:].distY;
+    
+    instance EnemyStrategy enemyStrat;
+    //connect enemies[:] -> enemyStrat.enemies[:];
+    connect enemies[:].distX ->enemyStrat.enemyDistsX[:];
+    connect enemies[:].distY ->enemyStrat.enemyDistsY[:];
+    connect enemies[:].velX ->enemyStrat.enemyVelX[:];
+    connect enemies[:].velY ->enemyStrat.enemyVelY[:];
+    
+    
+    
+    connect marioPosition -> enemyStrat.marioPosition;
+    connect enemyStrat.jumpAdvice -> marioJump;
+    
+        
     implementation Math {
         
        marioDirection = 1;
-       marioJump = 1; //Don't use "True" -> Open BugReport
-       marioDown = 0;
-       marioShoot = 0;
-       //marioDirection = 1;
         
     }
 }

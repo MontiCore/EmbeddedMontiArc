@@ -1,0 +1,35 @@
+package de.rwth.supermario.haller.environment;
+
+
+component EnemyWatcher {
+    ports
+    
+        in Z EnemyDistX,
+        in Z EnemyDistY,
+        in Z EnemyVelocityX,
+        in Z EnemyVelocityY,
+        
+        out Z movesTowardsPlayer,
+        out Z inJumpRange;
+
+    implementation Math {
+        Z jumpRangeX = 100;
+        Z jumpRangeY =  75;
+        
+        if(EnemyDistX < jumpRangeX && EnemyDistY < jumpRangeY)
+            inJumpRange = 1;
+        else
+            inJumpRange = 0;
+        end
+        
+        
+        //Enemy moving right an left from player
+        if((EnemyVelocityX > 0) != (EnemyDistX > 0))
+            movesTowardsPlayer = 1;
+        else
+            movesTowardsPlayer = 0;
+        end
+        
+        
+    }
+}

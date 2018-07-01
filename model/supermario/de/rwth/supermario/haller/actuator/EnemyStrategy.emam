@@ -1,0 +1,40 @@
+package de.rwth.supermario.haller.actuator;
+
+import de.rwth.supermario.haller.tools.OrRelation;
+import de.rwth.supermario.haller.environment.Enemy;
+import de.rwth.supermario.haller.environment.EnemyWatcher;
+
+component EnemyStrategy {
+    ports
+        //in Enemy enemies[5],
+        in Z enemyDistsX[5],
+        in Z enemyDistsY[5],
+        in Z enemyVelX[5],
+        in Z enemyVelY[5],
+        
+        
+        in Z^{1,2} marioPosition,
+        out Z jumpAdvice,
+        out Z directionAdvice;
+
+
+    instance EnemyWatcher enemyWatchers[5];
+    /*connect enemies[:].distX -> enemyWatchers[:].EnemyDistX;
+    connect enemies[:].distY -> enemyWatchers[:].EnemyDistY;
+    connect enemies[:].velX -> enemyWatchers[:].EnemyVelocityX;
+    connect enemies[:].velY -> enemyWatchers[:].EnemyVelocityY;*/
+    connect enemyDistsX[:] ->enemyWatchers[:].EnemyDistX;
+    connect enemyDistsY[:] ->enemyWatchers[:].EnemyDistY;
+    connect enemyVelX[:] ->enemyWatchers[:].EnemyVelocityX;
+    connect enemyVelY[:] ->enemyWatchers[:].EnemyVelocityX;
+    
+    
+    
+    instance OrRelation or;
+    connect enemyWatchers[:].inJumpRange -> or.input[:];
+    connect or.output -> jumpAdvice;
+    
+    connect 1 -> directionAdvice;
+    
+    
+}

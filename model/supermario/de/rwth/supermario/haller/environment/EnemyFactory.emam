@@ -1,0 +1,40 @@
+package de.rwth.supermario.haller.environment;
+
+
+component EnemyFactory {
+    ports   //x,y
+    
+        in Z^{5,2} nextEnemyPositions,
+        in Z i,
+        
+        out Z x,
+        out Z y;
+        /*out Z Enemy2x,
+        out Z Enemy2y,
+        out Z Enemy3x,
+        out Z Enemy3y,
+        out Z Enemy4x,
+        out Z Enemy4y,
+        out Z Enemy5x,
+        out Z Enemy5y;*/
+
+    implementation Math {
+        
+        x = nextEnemyPositions(i,1);
+        y = nextEnemyPositions(i,2);
+        
+       /* Enemy2.distX = nextEnemyPositions(2,1);
+        Enemy2.distY = nextEnemyPositions(2,2);
+        
+        Enemy3.distX = nextEnemyPositions(3,1);
+        Enemy3.distY = nextEnemyPositions(3,2);
+        
+        Enemy4.distX = nextEnemyPositions(4,1);
+        Enemy4.distY = nextEnemyPositions(4,2);
+        
+        Enemy5.distX = nextEnemyPositions(5,1);
+        Enemy5.distY = nextEnemyPositions(5,2);*/
+        
+    }
+    
+}
