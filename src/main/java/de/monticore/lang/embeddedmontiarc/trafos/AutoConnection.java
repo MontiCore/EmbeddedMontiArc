@@ -22,7 +22,11 @@ package de.monticore.lang.embeddedmontiarc.trafos;
 
 import de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcConstants;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.AutoconnectMode;
 import de.monticore.lang.embeddedmontiarc.helper.PortCompatibilityChecker;
 import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;

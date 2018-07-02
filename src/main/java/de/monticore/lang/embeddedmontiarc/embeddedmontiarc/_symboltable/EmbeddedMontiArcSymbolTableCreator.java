@@ -22,7 +22,12 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
+import de.monticore.lang.embeddedmontiarc.helper.EMAJavaHelper;
 import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
@@ -44,10 +49,10 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortHelper.*;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.addTypeArgumentsToTypeSymbol;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMATypeHelper.initTypeRef;
-import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstanceSymbolCreator.getGlobalScope;
+import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortHelper.*;
+import static de.monticore.lang.embeddedmontiarc.helper.EMATypeHelper.addTypeArgumentsToTypeSymbol;
+import static de.monticore.lang.embeddedmontiarc.helper.EMATypeHelper.initTypeRef;
+import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator.getGlobalScope;
 import static de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableHelper.*;
 //import de.monticore.common.common._ast.ASTStereoValue;
 //import de.monticore.types.TypesHelper;
@@ -65,7 +70,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     protected EMAComponentInstanceSymbolCreator instanceSymbolCreator = new EMAComponentInstanceSymbolCreator();
 
     // extra stack of components that is used to determine which components are inner components.
-    protected Stack<EMAComponentSymbol> componentStack = new Stack<>();
+    public Stack<EMAComponentSymbol> componentStack = new Stack<>();
 
     protected List<ImportStatement> currentImports = new ArrayList<>();
 
@@ -104,7 +109,6 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
                     astImportStatement.isStar());
             imports.add(importStatement);
         }
-        EMAJavaHelper.addJavaDefaultImports(imports);
 
         ArtifactScope artifactScope = new EmbeddedMontiArcArtifactScope(
                 Optional.empty(),

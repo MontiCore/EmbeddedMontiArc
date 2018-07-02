@@ -18,28 +18,11 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.embeddedmontiarc.cocos;
+package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTPortCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
-import de.monticore.symboltable.Symbol;
-import de.se_rwth.commons.logging.Log;
 
-public class OnlyIncomingPortIsConfig implements EmbeddedMontiArcASTPortCoCo {
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAElementSymbol;
 
-    @Override
-    public void check(ASTPort node) {
-        Symbol symbol = node.getSymbol().orElse(null);
-        if(symbol == null) return;
+public interface EMAElementInstanceSymbol extends EMAElementSymbol {
 
-        if(symbol.isKindOf(EMAPortSymbol.KIND)){
-            check((EMAPortSymbol)symbol);
-        }
-    }
-
-    private void check(EMAPortSymbol symbol) {
-        if(symbol.isConfig() && symbol.isOutgoing())
-            Log.error("0x7FF02 Config ports can only be incoming!");
-    }
 }
