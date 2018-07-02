@@ -94,17 +94,17 @@ component Controller {
     connect enemies[:].velY ->enemyStrat.enemyVelY[:];
     
     connect marioPosition -> enemyStrat.marioPosition;
-    connect enemyStrat.jumpAdvice -> marioJump;
+    //connect enemyStrat.jumpAdvice -> marioJump;
     
     instance ObstacleStrategy obstStrat;
     connect obstacleFactories[:].x ->obstStrat.obstDistsX[:];
     connect obstacleFactories[:].y ->obstStrat.obstDistsY[:];
     
-    instance OrRelation_2 OrR;
-    connect  obstStrat.jumpAdvice -> OrR.input[1];
-    connect  enemyStrat.jumpAdvice -> OrR.input[2];
+    instance OrRelation_2 orR;
+    connect  obstStrat.jumpAdvice -> orR.input[1];
+    connect  enemyStrat.jumpAdvice -> orR.input[2];
     
-    connect OrR.output -> marioJump;
+    connect orR.output -> marioJump;
     
     //Without this, visualization fails.
     implementation Math {
