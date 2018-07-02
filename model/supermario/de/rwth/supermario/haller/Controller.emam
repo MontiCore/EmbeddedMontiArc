@@ -1,6 +1,7 @@
 package de.rwth.supermario.haller;
 
 import de.rwth.supermario.haller.tools.GetIndexes;
+import de.rwth.supermario.haller.tools.OrRelation_2;
 
 import de.rwth.supermario.haller.environment.Enemy;
 import de.rwth.supermario.haller.environment.EnemyFactory;
@@ -9,6 +10,7 @@ import de.rwth.supermario.haller.environment.Obstacle;
 import de.rwth.supermario.haller.environment.ObstacleFactory;
 
 import de.rwth.supermario.haller.actuator.EnemyStrategy;
+import de.rwth.supermario.haller.actuator.ObstacleStrategy;
 
 component Controller {
     ports   //x,y
@@ -24,52 +26,91 @@ component Controller {
         out Z marioDown,
         out Z marioShoot;
         
-    instance GetIndexes indexes;
+    //Note: All problems listed here occured with "old" visualisation .jar, shipped with EMAS 1.7.4
+    //With only one instance -> problems with connecting to more than one entity
+    //instance GetIndexes indexes;
+    
+    
+    instance GetIndexes enemyIndexes;
+    instance GetIndexes obstIndexes;
     
     instance EnemyFactory enemyFactories[5];
-    /*connect 1 -> enemyFactories[1].i;
-    connect 2 -> enemyFactories[2].i;
-    connect 3 -> enemyFactories[3].i;
-    connect 4 -> enemyFactories[4].i;
-    connect 5 -> enemyFactories[5].i;*/
-    connect indexes[:] -> enemyFactories[:].i;
-    connect nextEnemyPositions -> enemyFactories[:].nextEnemyPositions;
     
-    instance ObstacleFactory obstacleFactories[5];
-    /*connect 1 -> obstacleFactories[1].i;
-    connect 2 -> obstacleFactories[2].i;
-    connect 3 -> obstacleFactories[3].i;
-    connect 4 -> obstacleFactories[4].i;
-    connect 5 -> obstacleFactories[5].i;*/
-    connect indexes[:] -> obstacleFactories[:].i;
-    connect nextObstaclePositions -> obstacleFactories[:].nextObstaclePositions;
+    //BUG: This only connects the enemyactories, not the obstacles.
+    //connect indexes.index[:] -> enemyFactories[:].index,obstacleFactories[:].index;
+    
+    connect enemyIndexes.index[:] -> enemyFactories[:].index;
+    
+    
+    // //This seems to connect the obstacles, if used with a single index object
+    // connect indexes.index[1] -> obstacleFactories[1].index;
+    // connect indexes.index[2] -> obstacleFactories[2].index;
+    // connect indexes.index[3] -> obstacleFactories[3].index;
+    // connect indexes.index[4] -> obstacleFactories[4].index;
+    // connect indexes.index[5] -> obstacleFactories[5].index;
+    
+
+    connect nextEnemyPositions -> enemyFactories[1].nextEnemyPositions,
+            enemyFactories[2].nextEnemyPositions,
+            enemyFactories[3].nextEnemyPositions,
+            enemyFactories[4].nextEnemyPositions,
+            enemyFactories[5].nextEnemyPositions;
+      
+    //This fails the visualisation      
+    // connect 1 -> enemyFactories[1].index, obstacleFactories[1].index;
+    // connect 2 -> enemyFactories[2].index, obstacleFactories[2].index;
+    // connect 3 -> enemyFactories[3].index, obstacleFactories[3].index;
+    // connect 4 -> enemyFactories[4].index, obstacleFactories[4].index;
+    // connect 5 -> enemyFactories[5].index, obstacleFactories[5].index;
+    
         
     instance Enemy enemies[5];
     connect enemyFactories[:].x -> enemies[:].distX;
     connect enemyFactories[:].y -> enemies[:].distY;
+    
+    
+    instance ObstacleFactory obstacleFactories[5];
+    connect obstIndexes.index[:] -> obstacleFactories[:].index;
+    
+    // //Sounds good, doesn't work.
+    // //connect indexes[:].index -> obstacleFactories[:].index;
+    // //connect nextObstaclePositions -> obstacleFactories[:].nextObstaclePositions;
+    
+    connect nextObstaclePositions -> obstacleFactories[1].nextObstaclePositions,
+            obstacleFactories[2].nextObstaclePositions,
+            obstacleFactories[3].nextObstaclePositions,
+            obstacleFactories[4].nextObstaclePositions,
+            obstacleFactories[5].nextObstaclePositions;
     
     instance Obstacle obstacles[5];
     connect obstacleFactories[:].x -> obstacles[:].distX;
     connect obstacleFactories[:].y -> obstacles[:].distY;
     
     instance EnemyStrategy enemyStrat;
-    //connect enemies[:] -> enemyStrat.enemies[:];
-    connect enemies[:].distX ->enemyStrat.enemyDistsX[:];
-    connect enemies[:].distY ->enemyStrat.enemyDistsY[:];
+    //Don't forward inports!
+    connect enemyFactories[:].x ->enemyStrat.enemyDistsX[:];
+    connect enemyFactories[:].y ->enemyStrat.enemyDistsY[:];
     connect enemies[:].velX ->enemyStrat.enemyVelX[:];
     connect enemies[:].velY ->enemyStrat.enemyVelY[:];
-    
-    
     
     connect marioPosition -> enemyStrat.marioPosition;
     connect enemyStrat.jumpAdvice -> marioJump;
     
-        
+    instance ObstacleStrategy obstStrat;
+    connect obstacleFactories[:].x ->obstStrat.obstDistsX[:];
+    connect obstacleFactories[:].y ->obstStrat.obstDistsY[:];
+    
+    instance OrRelation_2 OrR;
+    connect  obstStrat.jumpAdvice -> OrR.input[1];
+    connect  enemyStrat.jumpAdvice -> OrR.input[2];
+    
+    connect OrR.output -> marioJump;
+    
+    //Without this, visualization fails.
     implementation Math {
         
-       marioDirection = -1;
-       marioShoot = 1;
-       marioJump = 0;
+      marioDirection = 1;
+      //marioJump = 0;
         
     }
 }

@@ -5,7 +5,7 @@ component ObstacleFactory {
     ports   //x,y
     
         in Z^{5,2} nextObstaclePositions,
-        in Z i,
+        in Z index,
         
         out Z x,
         out Z y;
@@ -20,8 +20,8 @@ component ObstacleFactory {
 
     implementation Math {
         
-        x = nextObstaclePositions(i,1);
-        y = nextObstaclePositions(i,2);
+        x = nextObstaclePositions(index,1);
+        y = nextObstaclePositions(index,2);
         
        /* Enemy2.distX = nextEnemyPositions(2,1);
         Enemy2.distY = nextEnemyPositions(2,2);

@@ -1,9 +1,0 @@
-package de.rwth.supermario.haller;
-
-stream Controller_EnemyJumpTest for Controller {
-    //Mario on the same spot, jumping straight up, so an enemy can pass
-    
-    //has the distance to mario
-    nextEnemyPositions:  [[125,0],[-1,-1],[-1,-1],[-1,-1],[-1,-1]] tick [[100,0],[-1,-1],[-1,-1],[-1,-1],[-1,-1]] tick [[75,0],[-1,-1],[-1,-1],[-1,-1],[-1,-1]] tick [[50,0],[-1,-1],[-1,-1],[-1,-1],[-1,-1]] tick [[25,0],[-1,-1],[-1,-1],[-1,-1],[-1,-1]];
-    marioJump:    false tick true tick true tick true tick true tick true;
-}

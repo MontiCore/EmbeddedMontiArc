@@ -1,6 +1,6 @@
 package de.rwth.supermario.haller.actuator;
 
-import de.rwth.supermario.haller.tools.OrRelation;
+import de.rwth.supermario.haller.tools.OrRelation_5;
 import de.rwth.supermario.haller.environment.Enemy;
 import de.rwth.supermario.haller.environment.EnemyWatcher;
 
@@ -19,10 +19,6 @@ component EnemyStrategy {
 
 
     instance EnemyWatcher enemyWatchers[5];
-    /*connect enemies[:].distX -> enemyWatchers[:].EnemyDistX;
-    connect enemies[:].distY -> enemyWatchers[:].EnemyDistY;
-    connect enemies[:].velX -> enemyWatchers[:].EnemyVelocityX;
-    connect enemies[:].velY -> enemyWatchers[:].EnemyVelocityY;*/
     connect enemyDistsX[:] ->enemyWatchers[:].EnemyDistX;
     connect enemyDistsY[:] ->enemyWatchers[:].EnemyDistY;
     connect enemyVelX[:] ->enemyWatchers[:].EnemyVelocityX;
@@ -30,12 +26,10 @@ component EnemyStrategy {
     
     
     
-    instance OrRelation orR;  //or is a keyword??
+    instance OrRelation_5 orR;  //or is a keyword??
     connect enemyWatchers[:].inJumpRange -> orR.input[:];
     
-    //connect orR.output -> jumpAdvice;
-    connect 0->jumpAdvice;
-    connect 1 -> directionAdvice;
+    connect orR.output -> jumpAdvice;
     
     
 }

@@ -5,7 +5,7 @@ component EnemyFactory {
     ports   //x,y
     
         in Z^{5,2} nextEnemyPositions,
-        in Z i,
+        in Z index,
         
         out Z x,
         out Z y;
@@ -20,8 +20,8 @@ component EnemyFactory {
 
     implementation Math {
         
-        x = nextEnemyPositions(i,1);
-        y = nextEnemyPositions(i,2);
+        x = nextEnemyPositions(index,1);
+        y = nextEnemyPositions(index,2);
         
         //Still jumps with this... (shouldn't)
         //x = 500;

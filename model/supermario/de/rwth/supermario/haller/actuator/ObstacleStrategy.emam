@@ -2,14 +2,28 @@ package de.rwth.supermario.haller.actuator;
 
 
 
+import de.rwth.supermario.haller.tools.OrRelation_5;
+import de.rwth.supermario.haller.environment.Obstacle;
+import de.rwth.supermario.haller.environment.ObstacleWatcher;
+
 component ObstacleStrategy {
     ports
         //in Enemy enemies[5],
-
-        in Z^{1,2} marioPosition,
+        in Z obstDistsX[5],
+        in Z obstDistsY[5],
+        
         out Z jumpAdvice,
         out Z directionAdvice;
 
 
+    instance ObstacleWatcher obstacleWatchers[5];
+    connect obstDistsX[:] ->obstacleWatchers[:].ObstacleDistX;
+    connect obstDistsY[:] ->obstacleWatchers[:].ObstacleDistY;
+    
+    instance OrRelation_5 orR;  //or is a keyword??
+    connect obstacleWatchers[:].inJumpRange -> orR.input[:];
+    
+    connect orR.output -> jumpAdvice;
+    
     
 }

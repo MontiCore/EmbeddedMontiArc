@@ -18,6 +18,9 @@ component GetVelocity {
         if(oldDistX != -1)
             velX = distX - oldDistX;
             velY = distY - oldDistY;
+            oldDistX = distX;
+            oldDistY = distY;
+            
         else
             velX = -1;
             velY = -1;

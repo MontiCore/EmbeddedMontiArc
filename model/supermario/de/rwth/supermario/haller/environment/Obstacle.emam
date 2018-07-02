@@ -15,5 +15,7 @@ component Obstacle {
     
     connect distX -> velocity.distX;
     connect distY -> velocity.distY;
+    connect velocity.velX -> velX;
+    connect velocity.velY -> velY;
     
 }

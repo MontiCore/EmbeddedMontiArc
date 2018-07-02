@@ -13,14 +13,14 @@ component EnemyWatcher {
         out Z inJumpRange;
 
     implementation Math {
-        Z jumpRangeX = 100;
-        Z jumpRangeY =  75;
+        Z jumpRangeX = 200;
+        Z jumpRangeY =  100;
         
         if((abs(EnemyDistX) < jumpRangeX) && (abs(EnemyDistY) < jumpRangeY) && (EnemyDistX != -1))
             //inJumpRange = 0;
             
             //DEBUG
-            inJumpRange = 0;
+            inJumpRange = 1;
         else
             inJumpRange = 0;
         end
@@ -32,7 +32,6 @@ component EnemyWatcher {
         else
             movesTowardsPlayer = 0;
         end
-        
         
     }
 }

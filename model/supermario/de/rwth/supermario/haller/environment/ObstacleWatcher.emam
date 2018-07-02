@@ -10,14 +10,11 @@ component ObstacleWatcher {
         out Z inJumpRange;
 
     implementation Math {
-        Z jumpRangeX = 100;
-        Z jumpRangeY =  75;
+        Z jumpRangeX = 75;
+        Z jumpRangeY =  30;
         
-        if((abs(EnemyDistX) < jumpRangeX) && (abs(EnemyDistY) < jumpRangeY) && (EnemyDistX != -1))
-            inJumpRange = 0;
-            
-            //DEBUG
-            //inJumpRange = 1;
+        if((abs(ObstacleDistX) < jumpRangeX) && (abs(ObstacleDistY) < jumpRangeY) && (ObstacleDistX != -1))
+            inJumpRange = 1;
         else
             inJumpRange = 0;
         end

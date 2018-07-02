@@ -10,7 +10,7 @@ var KEY = {
 function startSimulation() {
     //PACMAN.startNewGame();
     try {
-        window.setInterval(doSimulationStep, 500);
+        window.setInterval(doSimulationStep, 100);
     } catch (err) {
         if (err.message === undefined) {
             console.log(err)
@@ -27,6 +27,17 @@ function pressKey(dir) {
 
     // document.dispatchEvent(new KeyboardEvent('keydown',{'keyCode':keyCode}));
     var keyboardEvent = new KeyboardEvent('keydown', {bubbles:true});
+    Object.defineProperty(keyboardEvent, 'keyCode', {get:function(){return keyCode;}});
+    keyboardEvent.keyCode = [keyCode];
+    document.body.dispatchEvent(keyboardEvent);
+}
+
+function releaseKey(dir) {
+    var keyCode = dir;
+
+
+    // document.dispatchEvent(new KeyboardEvent('keydown',{'keyCode':keyCode}));
+    var keyboardEvent = new KeyboardEvent('keyup', {bubbles:true});
     Object.defineProperty(keyboardEvent, 'keyCode', {get:function(){return keyCode;}});
     keyboardEvent.keyCode = [keyCode];
     document.body.dispatchEvent(keyboardEvent);
@@ -195,20 +206,33 @@ function getCommands(){
 	var shoot = getMarioShoot();
 	var down = getMarioDown();
 	
-	if(dir==1)
+	if(dir==1){
+		releaseKey(KEY.LEFT);
 		pressKey(KEY.RIGHT);
-	else
+	}else{
+		releaseKey(KEY.RIGHT);
 		if(dir==-1)
 			pressKey(KEY.LEFT);
+		else{
+			releaseKey(KEY.LEFT);
+			releaseKey(KEY.RIGHT);
+		}
+	}
 		
 	if(jump==1)
 		pressKey(KEY.UP);
+	else
+		releaseKey(KEY.UP);
 	
 	if(shoot==1)
 		pressKey(KEY.CONTROL);
+	else
+		releaseKey(KEY.CONTROL);
 	
 	if(down==1)
 		pressKey(KEY.DOWN);
+	else
+		releaseKey(KEY.DOWN);
 	
 	//Debug
 	console.log("Jump: "+jump);
