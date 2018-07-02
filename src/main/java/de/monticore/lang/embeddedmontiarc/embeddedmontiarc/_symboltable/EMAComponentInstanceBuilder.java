@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
  */
 public class EMAComponentInstanceBuilder {
     protected Optional<String> name = Optional.empty();
-    protected Optional<ComponentSymbolReference> symbolReference = Optional.empty();
+    protected Optional<EMAComponentSymbolReference> symbolReference = Optional.empty();
     protected List<EMAPortSymbol> ports = new ArrayList<>();
     protected List<EMAComponentInstanceSymbol> subComponents = new ArrayList<>();
     protected List<EMAConnectorSymbol> connectors = new ArrayList<>();
@@ -95,7 +95,7 @@ public class EMAComponentInstanceBuilder {
         return this;
     }
 
-    public EMAComponentInstanceBuilder setSymbolReference(ComponentSymbolReference symbolReference) {
+    public EMAComponentInstanceBuilder setSymbolReference(EMAComponentSymbolReference symbolReference) {
         this.symbolReference = Optional.of(symbolReference);
         return this;
     }

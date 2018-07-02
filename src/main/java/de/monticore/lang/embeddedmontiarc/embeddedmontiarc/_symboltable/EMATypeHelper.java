@@ -217,7 +217,7 @@ public class EMATypeHelper {
         return typeReference;
     }
 
-    public static void setActualTypeArguments(ComponentSymbolReference typeReference,
+    public static void setActualTypeArguments(EMAComponentSymbolReference typeReference,
                                               List<ASTTypeArgument> astTypeArguments,
                                               EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
@@ -279,7 +279,7 @@ public class EMATypeHelper {
 
     // TODO references to component symbols should not differ from MontiCarTypeSymbolReference?
     @Deprecated
-    public static void addTypeArgumentsToTypeSymbol(ComponentSymbolReference typeReference,
+    public static void addTypeArgumentsToTypeSymbol(EMAComponentSymbolReference typeReference,
                                                     ASTType astType, EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         if (astType instanceof ASTSimpleReferenceType) {
             ASTSimpleReferenceType astSimpleReferenceType = (ASTSimpleReferenceType) astType;

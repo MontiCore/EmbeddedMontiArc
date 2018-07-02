@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class EMAComponentInstanceSymbolCreator {
 
-    protected LinkedHashSet<ComponentSymbol> topComponents = new LinkedHashSet<>();
+    protected LinkedHashSet<EMAComponentSymbol> topComponents = new LinkedHashSet<>();
 
     public EMAComponentInstanceSymbolCreator() {
     }
@@ -55,7 +55,7 @@ public class EMAComponentInstanceSymbolCreator {
     /**
      * @param topComponent this is the scope where the top-level component is defined in
      */
-    public void createInstances(ComponentSymbol topComponent, String instanceName) {
+    public void createInstances(EMAComponentSymbol topComponent, String instanceName) {
         MutableScope enclosingScope = (MutableScope) topComponent.getEnclosingScope();
         String fullInstanceName = Joiners.DOT.join(topComponent.getPackageName(), instanceName);
 
@@ -87,12 +87,12 @@ public class EMAComponentInstanceSymbolCreator {
         enclosingScope.add(instanceSymbol);
     }
 
-    protected EMAComponentInstanceBuilder createInstance(ComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
+    protected EMAComponentInstanceBuilder createInstance(EMAComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
         // TODO resolve generics and parameters
         //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
         EMAComponentInstanceBuilder builder =
                 EMAComponentInstanceSymbol.builder()
-                        .setSymbolReference(new ComponentSymbolReference(cmp.getName(),
+                        .setSymbolReference(new EMAComponentSymbolReference(cmp.getName(),
                                 cmp.getEnclosingScope()))
                         .addPorts(cmp.getPortsList())
                         .addConnectors(cmp.getConnectors()).addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols()).addParameters(cmp.getParameters()).addArguments(cmp.getArguments());
@@ -118,7 +118,7 @@ public class EMAComponentInstanceSymbolCreator {
         }
 
         // add inherited ports and sub components
-        for (ComponentSymbol superCmp = cmp;
+        for (EMAComponentSymbol superCmp = cmp;
              superCmp.getSuperComponent().isPresent();
              superCmp = superCmp.getSuperComponent().get()) {
 

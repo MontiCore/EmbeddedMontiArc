@@ -23,7 +23,7 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 import de.monticore.lang.embeddedmontiarc.AbstractSymtabTest;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEmbeddedMontiArcNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -49,8 +49,8 @@ public class AbstractCoCoTest extends AbstractSymtabTest {
   protected static ASTEmbeddedMontiArcNode getAstNode(String modelPath, String model) {
     
     Scope symTab = createSymTab(MODEL_PATH + modelPath);
-    ComponentSymbol comp = symTab.<ComponentSymbol> resolve(
-        model, ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol comp = symTab.<EMAComponentSymbol> resolve(
+        model, EMAComponentSymbol.KIND).orElse(null);
     assertNotNull("Could not resolve model " + model, comp);
     
     return (ASTEmbeddedMontiArcNode) comp.getAstNode().get();

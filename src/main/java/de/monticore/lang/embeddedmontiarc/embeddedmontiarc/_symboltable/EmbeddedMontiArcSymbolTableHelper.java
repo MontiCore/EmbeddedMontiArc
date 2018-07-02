@@ -56,7 +56,7 @@ public class EmbeddedMontiArcSymbolTableHelper {
 
 
     public static void doSubComponentInstanceResolution(ASTSubComponentInstance node,
-                                                        ComponentSymbolReference componentSymbolReference,
+                                                        EMAComponentSymbolReference emaComponentSymbolReference,
                                                         EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
 
         if (node.getUnitNumberResolutionOpt().isPresent()) {
@@ -84,22 +84,22 @@ public class EmbeddedMontiArcSymbolTableHelper {
     }
 
     public static void setActualResolutionDeclaration(ASTSubComponent node,
-                                                      ComponentSymbolReference componentSymbolReference) {
+                                                      EMAComponentSymbolReference emaComponentSymbolReference) {
         int index = 0;
         int size = EMAPortHelper.handleSizeResolution(node, index);
-        if (size > 0 && componentSymbolReference.getResolutionDeclarationSymbols().size() > 0) {
-            if (componentSymbolReference.getResolutionDeclarationSymbols().get(index)
+        if (size > 0 && emaComponentSymbolReference.getResolutionDeclarationSymbols().size() > 0) {
+            if (emaComponentSymbolReference.getResolutionDeclarationSymbols().get(index)
                     .getASTResolution() instanceof ASTUnitNumberResolution) {
                 Log.debug(size + "", "Set new Resolution");
-                ((ASTUnitNumberResolution) componentSymbolReference.getResolutionDeclarationSymbols()
+                ((ASTUnitNumberResolution) emaComponentSymbolReference.getResolutionDeclarationSymbols()
                         .get(index).getASTResolution()).setNumber(Double.valueOf(size));
             }
         } else {
-            for (int i = 0; i < componentSymbolReference.getResolutionDeclarationSymbols().size(); ++i) {
-                Rational numberToSetTo = doubleToRational(((ASTUnitNumberResolution) componentSymbolReference
+            for (int i = 0; i < emaComponentSymbolReference.getResolutionDeclarationSymbols().size(); ++i) {
+                Rational numberToSetTo = doubleToRational(((ASTUnitNumberResolution) emaComponentSymbolReference
                         .getReferencedSymbol().getResolutionDeclarationSymbols().get(i).getASTResolution())
                         .getNumber().get());
-                ((ASTUnitNumberResolution) componentSymbolReference.getResolutionDeclarationSymbols().get(i)
+                ((ASTUnitNumberResolution) emaComponentSymbolReference.getResolutionDeclarationSymbols().get(i)
                         .getASTResolution()).setNumber(numberToSetTo.doubleValue());
             }
         }
@@ -110,7 +110,7 @@ public class EmbeddedMontiArcSymbolTableHelper {
      */
 
     public static void createInstance(String name, ASTSubComponent node,
-                                      ComponentSymbolReference componentTypeReference,
+                                      EMAComponentSymbolReference componentTypeReference,
                                       List<ValueSymbol<TypeReference<TypeSymbol>>> configArguments,
                                       EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         EMAComponentInstantiationSymbol instance = new EMAComponentInstantiationSymbol(name,
@@ -139,7 +139,7 @@ public class EmbeddedMontiArcSymbolTableHelper {
     }
 
 
-    public static void handleResolutionDeclaration(ComponentSymbol typeSymbol,
+    public static void handleResolutionDeclaration(EMAComponentSymbol typeSymbol,
                                                    ASTTypeParameters2 astTypeParameters, Scope currentScope,
                                                    ASTComponent node,
                                                    EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
@@ -165,9 +165,9 @@ public class EmbeddedMontiArcSymbolTableHelper {
     }
 
 
-    public static void setParametersOfComponent(final ComponentSymbol componentSymbol, ASTComponent cmp
+    public static void setParametersOfComponent(final EMAComponentSymbol emaComponentSymbol, ASTComponent cmp
             , EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        Log.debug(componentSymbol.toString(), "ComponentPreParam");
+        Log.debug(emaComponentSymbol.toString(), "ComponentPreParam");
         for (ASTParameter astParameter : cmp.getParameterList()) {
             final String paramName = astParameter.getNameWithArray().getName();
             Log.debug(astParameter.toString(), "ASTParam");
@@ -184,13 +184,13 @@ public class EmbeddedMontiArcSymbolTableHelper {
             final MCFieldSymbol parameterSymbol = symbolTableCreator.
                     jSymbolFactory.createFormalParameterSymbol(paramName,
                     (MontiCarTypeSymbolReference) paramTypeSymbol);
-            componentSymbol.addConfigParameter(parameterSymbol);
-            componentSymbol.addParameter(astParameter);
+            emaComponentSymbol.addConfigParameter(parameterSymbol);
+            emaComponentSymbol.addParameter(astParameter);
 
             if (astParameter.getAdaptableKeywordOpt().isPresent())
                 addConfigPort(cmp, parameterSymbol, astParameter);
         }
-        Log.debug(componentSymbol.toString(), "ComponentPostParam");
+        Log.debug(emaComponentSymbol.toString(), "ComponentPostParam");
     }
 
     public static void addConfigPort(ASTComponent astComponent, MCFieldSymbol parameterSymbol, ASTParameter astParameter) {
@@ -208,7 +208,7 @@ public class EmbeddedMontiArcSymbolTableHelper {
         astComponent.getBody().getElementList().add(tmpInterface);
     }
 
-    public static boolean needsInstanceCreation(ASTComponent node, ComponentSymbol symbol,
+    public static boolean needsInstanceCreation(ASTComponent node, EMAComponentSymbol symbol,
                                                 EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         boolean instanceNameGiven = false;// node.getInstanceName().isPresent();
         boolean autoCreationPossible = symbol.getFormalTypeParameters().size() == 0;

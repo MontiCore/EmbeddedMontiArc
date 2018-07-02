@@ -42,7 +42,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
    */
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol symbol = (ComponentSymbol) node.getSymbolOpt().orElse(null);
+    EMAComponentSymbol symbol = (EMAComponentSymbol) node.getSymbolOpt().orElse(null);
     
     if (null == symbol) {
       Log.error(String.format("0x9AF6C ASTComponent node \"%s\" has no symbol. Did you forget to "
@@ -53,7 +53,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
     for (EMAComponentInstantiationSymbol instanceSymbol : symbol.getSubComponents()) {
       for (EMAConnectorSymbol emaConnectorSymbol : instanceSymbol.getSimpleConnectors()) {
         
-        ComponentSymbolReference typeReference = instanceSymbol.getComponentType();
+        EMAComponentSymbolReference typeReference = instanceSymbol.getComponentType();
         
         if (!typeReference.existsReferencedSymbol()) {
           Log.error(String.format("0xBEA8B The component type \"%s\" can't be resolved.",
@@ -61,7 +61,7 @@ public class SimpleConnectorSourceExists implements EmbeddedMontiArcASTComponent
           return;
         }
         
-        ComponentSymbol sourceComponent = typeReference.getReferencedSymbol();
+        EMAComponentSymbol sourceComponent = typeReference.getReferencedSymbol();
         String sourcePort = emaConnectorSymbol.getSource();
         
         Optional<EMAPortSymbol> outgoingPort = sourceComponent.getOutgoingPort(sourcePort);

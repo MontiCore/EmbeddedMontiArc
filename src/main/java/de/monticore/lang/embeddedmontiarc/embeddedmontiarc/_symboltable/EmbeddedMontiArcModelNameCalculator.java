@@ -50,7 +50,7 @@ public class EmbeddedMontiArcModelNameCalculator
   public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
     final Set<String> calculatedModelNames = new LinkedHashSet<>();
 
-    if (ComponentSymbol.KIND.isKindOf(kind)) {
+    if (EMAComponentSymbol.KIND.isKindOf(kind)) {
       calculatedModelNames.addAll(calculateModelNameForComponent(name));
     }
     else if (EMAPortSymbol.KIND.isKindOf(kind) ||

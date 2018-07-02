@@ -82,8 +82,8 @@ public class EMAPortArraySymbol extends EMAPortSymbol {
         return Optional.ofNullable(null);
     }
 
-    public void recreatePortArray(ResolutionDeclarationSymbol resDeclSym, EmbeddedMontiArcSymbolTableCreator emastc, ComponentSymbolReference componentSymbolReference) {
-        Log.debug(componentSymbolReference.toString(), "recreate");
+    public void recreatePortArray(ResolutionDeclarationSymbol resDeclSym, EmbeddedMontiArcSymbolTableCreator emastc, EMAComponentSymbolReference emaComponentSymbolReference) {
+        Log.debug(emaComponentSymbolReference.toString(), "recreate");
         Log.debug(getNameSizeDependsOn().toString(), "String info:");
         if (getNameSizeDependsOn().isPresent() && getNameSizeDependsOn().get().equals(resDeclSym.getNameToResolve())) {
             int size = -1;
@@ -99,14 +99,14 @@ public class EMAPortArraySymbol extends EMAPortSymbol {
                 size = oldSize;
                 ((ASTUnitNumberResolution) resDeclSym.getASTResolution()).setNumber(Double.valueOf(oldSize));
             }
-            Log.debug(componentSymbolReference.toString(), "FullName:");
+            Log.debug(emaComponentSymbolReference.toString(), "FullName:");
             Log.debug(oldSize + "", "old Port Size:");
             Log.debug(size + "", "new Port Size:");
 
             for (int i = 0; i <= size; ++i) {
                 if (oldSize < i) {
                     //Log.debug();
-                    createPortSymbolForArrayIndex(componentSymbolReference, (ASTPort) firstPort.getAstNode().get(), this.getName() + "[" + i + "]", firstPort.getTypeReference());
+                    createPortSymbolForArrayIndex(emaComponentSymbolReference, (ASTPort) firstPort.getAstNode().get(), this.getName() + "[" + i + "]", firstPort.getTypeReference());
                 }
             }
             //just add missing ports here and fix actual size after emacomponentinstance creation
@@ -120,7 +120,7 @@ public class EMAPortArraySymbol extends EMAPortSymbol {
         }
     }
 
-    private void createPortSymbolForArrayIndex(ComponentSymbolReference componentSymbolReference, ASTPort node, String name, MCTypeReference<? extends MCTypeSymbol> typeRef) {
+    private void createPortSymbolForArrayIndex(EMAComponentSymbolReference emaComponentSymbolReference, ASTPort node, String name, MCTypeReference<? extends MCTypeSymbol> typeRef) {
         EMAPortSymbol ps;
         if (name.startsWith("CONSTANTPORT")) {
             ps = new EMAConstantPortSymbol(name);
@@ -135,7 +135,7 @@ public class EMAPortArraySymbol extends EMAPortSymbol {
 
         //emastc.addToScopeAndLinkWithNode(ps, node);
 
-        Log.debug(name + " " + componentSymbolReference.getAllIncomingPorts().size(), "Added EMAPortSymbol From PortArray:");
+        Log.debug(name + " " + emaComponentSymbolReference.getAllIncomingPorts().size(), "Added EMAPortSymbol From PortArray:");
     }
 
 

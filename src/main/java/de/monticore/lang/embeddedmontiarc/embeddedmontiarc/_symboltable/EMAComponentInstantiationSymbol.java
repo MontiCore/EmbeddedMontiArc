@@ -40,7 +40,7 @@ public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol i
 
     public static final EMAComponentInstantiationKind KIND = EMAComponentInstantiationKind.INSTANCE;
 
-    private final ComponentSymbolReference componentType;
+    private final EMAComponentSymbolReference componentType;
 
     /**
      * List of configuration arguments.
@@ -55,7 +55,7 @@ public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol i
      * @param name
      * @param componentType the referenced component definition
      */
-    public EMAComponentInstantiationSymbol(String name, ComponentSymbolReference componentType) {
+    public EMAComponentInstantiationSymbol(String name, EMAComponentSymbolReference componentType) {
         super(name, KIND);
         this.componentType = componentType;
 
@@ -64,7 +64,7 @@ public class EMAComponentInstantiationSymbol extends CommonScopeSpanningSymbol i
     /**
      * @return componentType
      */
-    public ComponentSymbolReference getComponentType() {
+    public EMAComponentSymbolReference getComponentType() {
         return this.componentType;
     }
 

@@ -23,7 +23,7 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.middleware.ros.AbstractTaggingResolverTest;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -39,15 +39,15 @@ import static org.junit.Assert.assertTrue;
 
 public class AbstractTaggingCoCoTest extends AbstractTaggingResolverTest {
 
-    private void resolveTags(TaggingResolver taggingResolver, ComponentSymbol componentSymbol){
-        taggingResolver.getTags(componentSymbol, RosConnectionSymbol.KIND);
-        componentSymbol.getSubComponents().forEach(sub -> resolveTags(taggingResolver,sub.getComponentType().getReferencedSymbol()));
+    private void resolveTags(TaggingResolver taggingResolver, EMAComponentSymbol emaComponentSymbol){
+        taggingResolver.getTags(emaComponentSymbol, RosConnectionSymbol.KIND);
+        emaComponentSymbol.getSubComponents().forEach(sub -> resolveTags(taggingResolver,sub.getComponentType().getReferencedSymbol()));
     }
 
     public void testCoCosOnComponent(String componentName, String... expectedErrors) {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
 
-        ComponentSymbol component = taggingResolver.<ComponentSymbol>resolve(componentName, ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol component = taggingResolver.<EMAComponentSymbol>resolve(componentName, EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         resolveTags(taggingResolver,component);

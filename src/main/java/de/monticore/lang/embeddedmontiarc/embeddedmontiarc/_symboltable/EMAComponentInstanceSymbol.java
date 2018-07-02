@@ -90,7 +90,7 @@ public class EMAComponentInstanceSymbol
 
     public static final EMAComponentInstanceKind KIND = new EMAComponentInstanceKind();
 
-    protected ComponentSymbolReference type;
+    protected EMAComponentSymbolReference type;
     protected List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
     protected List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols;
     protected List<EMAVariable> parameters = new ArrayList<>();
@@ -99,7 +99,7 @@ public class EMAComponentInstanceSymbol
     /**
      * use {@link #builder()}
      */
-    protected EMAComponentInstanceSymbol(String name, ComponentSymbolReference type) {
+    protected EMAComponentInstanceSymbol(String name, EMAComponentSymbolReference type) {
         super(name, KIND);
         this.type = type;
     }
@@ -120,7 +120,7 @@ public class EMAComponentInstanceSymbol
         this.actualTypeArguments = actualTypeArguments;
     }
 
-    public ComponentSymbolReference getComponentType() {
+    public EMAComponentSymbolReference getComponentType() {
         return type;
     }
 
@@ -185,7 +185,7 @@ public class EMAComponentInstanceSymbol
 
     /**
      * EMAComponentInstanceSymbol::getPortInstanceList() may return different
-     * results than ComponentSymbol::getPortInstanceList()
+     * results than EMAComponentSymbol::getPortInstanceList()
      * "MontiArc provides a structural inheritance mechanism that allows to define a component as
      * an extension of another component type (see requirement LRQ1.1.1). The new type inherits the
      * interface as well as the architectural configuration from the supercomponent. Thus, all ports,

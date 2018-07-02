@@ -27,14 +27,11 @@ import de.monticore.lang.monticar.stream._symboltable.NamedStreamSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.monticore.symboltable.CommonScope;
-import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.SymbolKind;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -122,11 +119,11 @@ public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementIn
    * @return is optional, b/c a connector can belong to a component symbol or to an expanded
    * component instance symbol
    */
-  public Optional<ComponentSymbol> getComponent() {
+  public Optional<EMAComponentSymbol> getComponent() {
     if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
       return Optional.empty();
     }
-    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof ComponentSymbol)) {
+    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof EMAComponentSymbol)) {
       return Optional.empty();
     }
     return Optional.of(((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get()).getComponentType().getReferencedSymbol());

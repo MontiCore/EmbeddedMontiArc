@@ -22,7 +22,6 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
-import de.monticore.symboltable.CommonSymbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
@@ -170,7 +169,7 @@ public class EMAConnectorInstanceSymbol extends EMAConnectorSymbol implements EM
      * which the source and target ports belong to
 
      */
-    public Optional<ComponentSymbol> getComponent() {
+    public Optional<EMAComponentSymbol> getComponent() {
         if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
             return Optional.empty();
         }

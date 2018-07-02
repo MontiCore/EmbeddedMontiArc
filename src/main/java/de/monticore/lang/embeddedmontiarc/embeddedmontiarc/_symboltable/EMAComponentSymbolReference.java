@@ -39,20 +39,20 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Represents a reference of {@link ComponentSymbol}.
+ * Represents a reference of {@link EMAComponentSymbol}.
  */
-public class ComponentSymbolReference extends ComponentSymbol implements
-        SymbolReference<ComponentSymbol> {
+public class EMAComponentSymbolReference extends EMAComponentSymbol implements
+        SymbolReference<EMAComponentSymbol> {
 
-    protected final SymbolReference<ComponentSymbol> reference;
+    protected final SymbolReference<EMAComponentSymbol> reference;
     private List<ActualTypeArgument> actualTypeArguments = new ArrayList<>();
 
     private List<ResolutionDeclarationSymbol> resSymbols = new ArrayList<>();
     private List<ASTExpression> arguments = new ArrayList<>();
 
-    public ComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
+    public EMAComponentSymbolReference(final String name, final Scope definingScopeOfReference) {
         super(name);
-        reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
+        reference = new CommonSymbolReference<>(name, EMAComponentSymbol.KIND, definingScopeOfReference);
         if (existsReferencedSymbol()) {
             setReferencedComponent(Optional.of(getReferencedSymbol()));
 
@@ -61,9 +61,9 @@ public class ComponentSymbolReference extends ComponentSymbol implements
     }
 
 
-    public ComponentSymbolReference(final String name, final Scope definingScopeOfReference, EmbeddedMontiArcSymbolTableCreator emastc) {
+    public EMAComponentSymbolReference(final String name, final Scope definingScopeOfReference, EmbeddedMontiArcSymbolTableCreator emastc) {
         super(name);
-        reference = new CommonSymbolReference<>(name, ComponentSymbol.KIND, definingScopeOfReference);
+        reference = new CommonSymbolReference<>(name, EMAComponentSymbol.KIND, definingScopeOfReference);
         if (existsReferencedSymbol()) {
             Log.debug("Loading resolution declarationSymbols", "info");
             setReferencedComponent(Optional.of(getReferencedSymbol()));
@@ -144,13 +144,13 @@ public class ComponentSymbolReference extends ComponentSymbol implements
         return this.actualTypeArguments.size() > 0;
     }
 
-    // no overridden methods of ComponentSymbol as the ComponentSymbol itself checks whether it is a
+    // no overridden methods of EMAComponentSymbol as the EMAComponentSymbol itself checks whether it is a
     // reference or not.
   
   /* Methods of SymbolReference interface */
 
     @Override
-    public ComponentSymbol getReferencedSymbol() {
+    public EMAComponentSymbol getReferencedSymbol() {
         return reference.getReferencedSymbol();
     }
 

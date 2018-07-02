@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.adaptable.AdaptableSymbol;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
@@ -37,11 +37,11 @@ public class TaggingTest extends AbstractTaggingResolverTest {
     public void testAdaptableSymbolParsing(){
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
 
-        ComponentSymbol componentSymbol = taggingResolver.<ComponentSymbol>resolve("testing.ConfigPortTag",ComponentSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
+        EMAComponentSymbol emaComponentSymbol = taggingResolver.<EMAComponentSymbol>resolve("testing.ConfigPortTag",EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull(emaComponentSymbol);
 
-        EMAPortSymbol in1 = componentSymbol.getIncomingPort("in1").orElse(null);
-        EMAPortSymbol in2 = componentSymbol.getIncomingPort("in2").orElse(null);
+        EMAPortSymbol in1 = emaComponentSymbol.getIncomingPort("in1").orElse(null);
+        EMAPortSymbol in2 = emaComponentSymbol.getIncomingPort("in2").orElse(null);
         assertNotNull(in1);
         assertNotNull(in2);
 

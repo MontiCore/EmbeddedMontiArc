@@ -62,9 +62,9 @@ public class EMAJavaHelper {
      * @return MontiCarTypeSymbol list to be added to the scope
      */
     // TODO see JavaSymbolTableCreator.addTypeParameters(...),
-    // see ComponentSymbol addFormalTypeParameters etc.
+    // see EMAComponentSymbol addFormalTypeParameters etc.
     protected static List<MCTypeSymbol> addTypeParametersToType(
-            ComponentSymbol typeSymbol,
+            EMAComponentSymbol typeSymbol,
             ASTTypeParameters2 optionalTypeParameters, Scope currentScope) {
 
         ASTTypeParameters2 astTypeParameters = optionalTypeParameters;
@@ -97,7 +97,7 @@ public class EMAJavaHelper {
     }
 
     private static void addFormalTypeParameter(String typeVariableName, ASTTypeVariableDeclaration2
-            astTypeParameter, Scope currentScope, ComponentSymbol typeSymbol) {
+            astTypeParameter, Scope currentScope, EMAComponentSymbol typeSymbol) {
         MontiCarTypeSymbol javaTypeVariableSymbol = jSymbolFactory.createTypeVariable(typeVariableName);
         // TODO implement
         // // init type parameter

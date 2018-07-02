@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
@@ -88,7 +87,7 @@ public class ComponentScanner {
             }
             Path relativePath = scanner.basePath.relativize(file);
             String modelName = getModelName(relativePath);
-            //ComponentSymbol s = scanner.symTab.<ComponentSymbol>resolve(streamModelName, ComponentSymbol.KIND).orElse(null);
+            //EMAComponentSymbol s = scanner.symTab.<EMAComponentSymbol>resolve(streamModelName, EMAComponentSymbol.KIND).orElse(null);
 
             if (modelName != null) {
                 set.add(modelName);

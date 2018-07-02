@@ -23,7 +23,7 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentInstantiationSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
 import de.se_rwth.commons.logging.Log;
@@ -57,7 +57,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
 
     @Override
     public void check(ASTComponent node) {
-        ComponentSymbol entry = (ComponentSymbol) node.getSymbolOpt().get();
+        EMAComponentSymbol entry = (EMAComponentSymbol) node.getSymbolOpt().get();
         // Implemented on the symTab as it takes auto-instantiation into account which is not reflected
         // in the AST.
         for (EMAComponentInstantiationSymbol sub : entry.getSubComponents()) {
@@ -138,7 +138,7 @@ public class SubComponentsConnected implements EmbeddedMontiArcASTComponentCoCo 
     private boolean isConfigPort(EMAComponentInstantiationSymbol instanceSymbol, String relativePortName) {
         String[] tmp = relativePortName.split("\\.");
         String shortName = tmp[tmp.length - 1];
-        ComponentSymbol comp = instanceSymbol.getComponentType().getReferencedSymbol();
+        EMAComponentSymbol comp = instanceSymbol.getComponentType().getReferencedSymbol();
         EMAPortSymbol port = comp.getIncomingPort(shortName).orElse(null);
         return port == null ? false : port.isConfig();
     }

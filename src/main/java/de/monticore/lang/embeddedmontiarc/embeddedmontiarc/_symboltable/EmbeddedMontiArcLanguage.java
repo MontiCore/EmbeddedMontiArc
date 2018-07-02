@@ -50,7 +50,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
     protected void initResolvingFilters() {
         super.initResolvingFilters();
         // is done in generated TOP-language addResolver(new
-        // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
+        // CommonResolvingFilter<EMAComponentSymbol>(EMAComponentSymbol.class, EMAComponentSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAPortSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAPortArraySymbol.KIND));

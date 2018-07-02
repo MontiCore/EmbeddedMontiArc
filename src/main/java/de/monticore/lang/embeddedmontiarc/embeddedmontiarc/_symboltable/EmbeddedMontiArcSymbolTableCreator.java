@@ -38,7 +38,6 @@ import de.monticore.symboltable.types.references.TypeReference;
 import de.monticore.types.types._ast.ASTImportStatement;
 import de.monticore.types.types._ast.ASTReferenceType;
 import de.monticore.types.types._ast.ASTType;
-import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Names;
 import de.se_rwth.commons.StringTransformations;
 import de.se_rwth.commons.logging.Log;
@@ -66,7 +65,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     protected EMAComponentInstanceSymbolCreator instanceSymbolCreator = new EMAComponentInstanceSymbolCreator();
 
     // extra stack of components that is used to determine which components are inner components.
-    protected Stack<ComponentSymbol> componentStack = new Stack<>();
+    protected Stack<EMAComponentSymbol> componentStack = new Stack<>();
 
     protected List<ImportStatement> currentImports = new ArrayList<>();
 
@@ -120,10 +119,10 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         removeCurrentScope();
 
         // creates all instances which are created through the top level component
-        ComponentSymbol componentSymbol = (ComponentSymbol) Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null));
-        String instanceName = Character.toLowerCase(componentSymbol.getName().charAt(0)) + componentSymbol.getName().substring(1);
+        EMAComponentSymbol emaComponentSymbol = (EMAComponentSymbol) Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null));
+        String instanceName = Character.toLowerCase(emaComponentSymbol.getName().charAt(0)) + emaComponentSymbol.getName().substring(1);
 
-        instanceSymbolCreator.createInstances(componentSymbol, instanceName);
+        instanceSymbolCreator.createInstances(emaComponentSymbol, instanceName);
 
         Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(),
                 "SymbolTableCreator:");
@@ -152,7 +151,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
             // inner component uses its parents component full name as package
             componentPackageName = componentStack.peek().getFullName();
         }
-        ComponentSymbol component = new ComponentSymbol(componentName);
+        EMAComponentSymbol component = new EMAComponentSymbol(componentName);
         component.setImports(currentImports);
         component.setPackageName(componentPackageName);
 
@@ -178,7 +177,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
             ASTReferenceType superCompRef = node.getSuperComponent();
             String superCompName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(superCompRef);
 
-            ComponentSymbolReference ref = new ComponentSymbolReference(superCompName,
+            EMAComponentSymbolReference ref = new EMAComponentSymbolReference(superCompName,
                     currentScope().get());
             ref.setAccessModifier(BasicAccessModifier.PUBLIC);
             // actual type arguments
@@ -197,7 +196,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         // TODO this is a hack to avoid loading one component symbol twice
         // --> must be changed in future
         Collection<Symbol> c = getGlobalScope(currentScope().get())
-                .resolveDownMany(component.getFullName(), ComponentSymbol.KIND);
+                .resolveDownMany(component.getFullName(), EMAComponentSymbol.KIND);
         if (c.size() > 1) {
             aboartVisitComponent = true;
             component.getEnclosingScope().getAsMutableScope()
@@ -212,7 +211,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
     @Override
     public void endVisit(ASTComponent node) {
-        ComponentSymbol component = componentStack.pop();
+        EMAComponentSymbol component = componentStack.pop();
         autoConnectionTrafo.transformAtEnd(node, component);
         removeCurrentScope();
     }
@@ -250,7 +249,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
         String simpleCompName = Names.getSimpleName(referencedCompName);
         Log.debug(referencedCompName, "referencedCompName");
         Log.debug(currentScope().get().toString(), "Scope");
-        ComponentSymbolReference componentTypeReference = new ComponentSymbolReference(
+        EMAComponentSymbolReference componentTypeReference = new EMAComponentSymbolReference(
                 referencedCompName,
                 currentScope().get(), this);
 

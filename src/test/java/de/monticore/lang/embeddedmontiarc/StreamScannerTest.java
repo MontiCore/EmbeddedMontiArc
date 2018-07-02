@@ -23,7 +23,7 @@ package de.monticore.lang.embeddedmontiarc;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
@@ -47,10 +47,10 @@ public class StreamScannerTest {
     public void testMySuperNiceComponent() {
         Scope symTab = createSymTab(BASE_PATH.toString());
         StreamScanner scanner = new StreamScanner(BASE_PATH, symTab);
-        Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> result = scanner.scan();
+        Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> result = scanner.scan();
         Assert.assertNotNull(result);
         Assert.assertFalse(result.isEmpty());
-        ComponentSymbol mySuperNiceComponent = symTab.<ComponentSymbol>resolve("testing.MySuperNiceComponent", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol mySuperNiceComponent = symTab.<EMAComponentSymbol>resolve("testing.MySuperNiceComponent", EMAComponentSymbol.KIND).orElse(null);
         Assert.assertNotNull(mySuperNiceComponent);
         Set<ComponentStreamUnitsSymbol> mySuperNiceStreams = result.get(mySuperNiceComponent);
         Assert.assertNotNull(mySuperNiceStreams);
