@@ -5,9 +5,9 @@ package de.rwth.supermario.haller.actuator;
 component GeneralStrategy {
     ports
         //in Enemy enemies[5],
-
         in Z^{1,2} marioPosition,
         out Z jumpAdvice,
+        out Z crouchAdvice,
         out Z directionAdvice;
 
 
@@ -28,9 +28,11 @@ component GeneralStrategy {
         else
             jumpAdvice = 0;
         end
-        
+    
         directionAdvice = 1;
+            
+        //crouchAdvice = 1;
     }
 
-    
+        
 }

@@ -40,7 +40,5 @@ component Controller {
     
     
     connect  genStrategy.directionAdvice -> marioDirection;
-    
-    
-    //connect 1 -> marioDown;
+    connect  genStrategy.crouchAdvice -> marioDown;
 }
