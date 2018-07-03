@@ -16,7 +16,7 @@ component GeneralStrategy {
         static Z ticksOnSamePosition = 0;
         static Z oldXPos = -1;
         
-        if(oldXPos == marioPosition(1,1))
+        if oldXPos == marioPosition(1,1)
             ticksOnSamePosition = ticksOnSamePosition + 1;
         else
             oldXPos = marioPosition(1,1);
