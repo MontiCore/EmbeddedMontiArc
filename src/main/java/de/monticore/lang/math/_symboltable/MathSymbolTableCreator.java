@@ -257,13 +257,14 @@ public class MathSymbolTableCreator extends MathSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(symbol, astExpr);
     }
 
-    public void endVisit(final ASTMathArithmeticMatrixSolutionExpression astExpr) {
-        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
-        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astExpr.
-                getExpression(0), astExpr.
-                getExpression(1), "\\\\");
-        addToScopeAndLinkWithNode(symbol, astExpr);
-    }
+//        relieved from its painful existance
+//    public void endVisit(final ASTMathArithmeticMatrixSolutionExpression astExpr) {
+//        MathMatrixArithmeticExpressionSymbol symbol = new MathMatrixArithmeticExpressionSymbol();
+//        MathSymbolTableCreatorHelper.setOperatorLeftRightExpression(symbol, astExpr.
+//                getExpression(0), astExpr.
+//                getExpression(1), "\\\\");
+//        addToScopeAndLinkWithNode(symbol, astExpr);
+//    }
 
 //    // does not exist anymore
 //    public void endVisit(final ASTMathArithmeticMatrixPowerOfExpression astMathArithmeticMatrixPowerOfExpression) {
