@@ -1,18 +1,17 @@
 package de.rwth.supermario.haller.environment;
 
 
-component ObstacleWatcher {
+component HoleWatcher {
     ports
     
-        in Z ObstacleDistX,
-        in Z ObstacleDistY,
+        in Z holeDistance,
         
         out Z inJumpRange;
 
     implementation Math {
-        Z jumpRangeX = 128;
+        Z jumpRangeX = 70;
         
-        if((abs(ObstacleDistX) < jumpRangeX) && (ObstacleDistX != -1))
+        if((abs(holeDistance) < jumpRangeX) && (holeDistance != -1))
             inJumpRange = 1;
         else
             inJumpRange = 0;

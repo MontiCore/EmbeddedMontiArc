@@ -1,0 +1,44 @@
+
+package de.rwth.supermario.haller;
+
+import de.rwth.supermario.haller.tools.GetIndexes;
+
+import de.rwth.supermario.haller.environment.Obstacle;
+import de.rwth.supermario.haller.environment.ObstacleFactory;
+import de.rwth.supermario.haller.actuator.ObstacleStrategy;
+
+
+component ObstacleController {
+    ports   //x,y
+        in Z^{5,2} nextObstaclePositions,
+        in Z holeDistance,
+        
+        out Z(-1 : 1 : 1) dirAdvice,
+        out Z jumpAdvice,
+        out Z shootAdvice,
+        out Z crouchAdvice;
+        
+    instance GetIndexes obstIndexes;
+    
+    
+    instance ObstacleFactory obstacleFactories[5];
+    connect obstIndexes.index[:] -> obstacleFactories[:].index;
+    
+    connect nextObstaclePositions -> obstacleFactories[1].nextObstaclePositions,
+            obstacleFactories[2].nextObstaclePositions,
+            obstacleFactories[3].nextObstaclePositions,
+            obstacleFactories[4].nextObstaclePositions,
+            obstacleFactories[5].nextObstaclePositions;
+    
+    instance Obstacle obstacles[5];
+    connect obstacleFactories[:].x -> obstacles[:].distX;
+    connect obstacleFactories[:].y -> obstacles[:].distY;
+    
+    instance ObstacleStrategy obstStrat;
+    connect obstacleFactories[:].x ->obstStrat.obstDistsX[:];
+    connect obstacleFactories[:].y ->obstStrat.obstDistsY[:];
+    connect holeDistance -> obstStrat.holeDistance;
+    
+    connect obstStrat.jumpAdvice -> jumpAdvice;
+    
+}

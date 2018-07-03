@@ -1,0 +1,45 @@
+
+package de.rwth.supermario.haller;
+
+import de.rwth.supermario.haller.tools.GetIndexes;
+
+import de.rwth.supermario.haller.environment.Enemy;
+import de.rwth.supermario.haller.environment.EnemyFactory;
+
+import de.rwth.supermario.haller.actuator.EnemyStrategy;
+
+
+component EnemyController {
+    ports   //x,y
+        in Z^{5,2} nextEnemyPositions,
+
+        out Z(-1 : 1 : 1) dirAdvice,
+        out Z jumpAdvice,
+        out Z shootAdvice,
+        out Z crouchAdvice;
+        
+        
+    instance GetIndexes enemyIndexes;
+    
+    instance EnemyFactory enemyFactories[5];
+    connect enemyIndexes.index[:] -> enemyFactories[:].index;
+    
+    connect nextEnemyPositions -> enemyFactories[1].nextEnemyPositions,
+            enemyFactories[2].nextEnemyPositions,
+            enemyFactories[3].nextEnemyPositions,
+            enemyFactories[4].nextEnemyPositions,
+            enemyFactories[5].nextEnemyPositions;
+            
+    instance Enemy enemies[5];
+    connect enemyFactories[:].x -> enemies[:].distX;
+    connect enemyFactories[:].y -> enemies[:].distY;
+    
+    instance EnemyStrategy enemyStrat;
+    connect enemyFactories[:].x ->enemyStrat.enemyDistsX[:];
+    connect enemyFactories[:].y ->enemyStrat.enemyDistsY[:];
+    connect enemies[:].velX ->enemyStrat.enemyVelX[:];
+    connect enemies[:].velY ->enemyStrat.enemyVelY[:];
+    
+    connect  enemyStrat.jumpAdvice -> jumpAdvice;
+    
+}

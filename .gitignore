@@ -41,6 +41,9 @@ tests-cpp/
 visualisation/
 model/autopilot/
 model/clustering/
+model/cncverification/
+model/nfpverification/
+model/oclverification/
 /*.emscripten
 /.emscripten_cache
 /cluster-fiddle/dropzone.css

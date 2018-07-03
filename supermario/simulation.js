@@ -10,7 +10,7 @@ var KEY = {
 function startSimulation() {
     //PACMAN.startNewGame();
     try {
-        window.setInterval(doSimulationStep, 100);
+        window.setInterval(doSimulationStep, 50);
     } catch (err) {
         if (err.message === undefined) {
             console.log(err)
@@ -126,6 +126,9 @@ function extractNextHolePosition(_solid){
 	return ret;
 	
 }
+
+
+
 
 function sendPlayerData(){
 
