@@ -30,9 +30,9 @@ sim ASTTest {
   pedestrian_density 2.0;
   
   car1(-22, -34.0, 90)->(-1, 0, 10);
-  <v>(123, -94, 201)->(1024, 960, 200);
-  <v> 1000;
-  <v> 1234 (-150, -150) -> (500, 600);
+  vehicle(123, -94, 201)->(1024, 960, 200);
+  vehicle 1000;
+  vehicle 1234 (-150, -150) -> (500, 600);
   
   fixed channel LTE {
     transfer_rate 20 bit/s;
