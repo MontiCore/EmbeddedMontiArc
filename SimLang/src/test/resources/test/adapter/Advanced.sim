@@ -7,6 +7,6 @@ sim Advanced {
   
   pedestrian_density 0;
   
-  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  vehicle car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
   //etc.
 } 
