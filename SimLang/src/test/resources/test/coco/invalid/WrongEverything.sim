@@ -51,7 +51,7 @@ sim WrongEverything {
   pedestrian_density 2.0s;
   pedestrian_density -2;
 
-  car1(-22s, -34.0s, 90s)->(-1s, 0s, 10s);
+  vehicle car1(-22s, -34.0s, 90s)->(-1s, 0s, 10s);
   vehicle(123s, -94s, 201s)->(1024s, 960s, 200s);
   vehicle -1000s;
   vehicle 1234s (-150s, -150s) -> (500s, 600s);

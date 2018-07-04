@@ -61,7 +61,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
                 ) ;
 
   //defined vehicle moving from start to destination pos
-  ExplicitVehicle implements SimulationEntity = Name
+  ExplicitVehicle implements SimulationEntity = "vehicle" Name
               ("(" startX:UnitNumber "," startY:UnitNumber "," startRot:UnitNumber ")"
               "->" 
               "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"
