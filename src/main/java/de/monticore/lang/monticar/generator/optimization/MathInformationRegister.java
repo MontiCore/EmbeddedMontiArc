@@ -1,10 +1,8 @@
 package de.monticore.lang.monticar.generator.optimization;
 
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
@@ -19,6 +17,7 @@ import java.util.Optional;
  * This class stores information of already encountered math information
  *
  * @author Sascha Schneiders
+ * @author Christoph Richter
  */
 public class MathInformationRegister {
     protected List<Variable> variables = new ArrayList<>();//contains in implementation Math section declared Variables
@@ -164,6 +163,7 @@ public class MathInformationRegister {
             var.addDimensionalInformation(dimension.getTextualRepresentation());
         this.variables.add(var);
         var.addProperties(mathValueSymbol.getType().getProperties());
+        this.mathValueSymbols.add(mathValueSymbol);
     }
 
     public Variable getVariable(String name) {
@@ -198,6 +198,76 @@ public class MathInformationRegister {
                 // TODO resolve variable
             }
         }
+        return result;
+    }
+
+    /**
+     * Searches MathValueSymbol in list and returns first matching symbol which contains the type declaration information
+     *
+     * @param symbol Symbol for which type information should be collected
+     * @return returns the first type declaration as symbol
+     */
+    public MathValueSymbol getFullTypeInformation(MathValueSymbol symbol) {
+        MathValueSymbol result = getMathValueSymbol(symbol.getName());
+        if (result == null)
+            result = symbol;
+        return result;
+    }
+
+    /**
+     * Variables are replaced by their definition.
+     *
+     * @param nonAtomarExpression Expression in which the variables will be substituted
+     * @param atomarValueName     Defines the name of the atomar variable after which no more substitution will be made
+     * @return MathExpressionSymbol containing the replaces variables
+     */
+    public MathExpressionSymbol resolveMathExpressionToAtomarExpression(MathExpressionSymbol nonAtomarExpression, String atomarValueName) {
+        MathExpressionSymbol result;
+        if (nonAtomarExpression.isArithmeticExpression()) {
+            // recursively substitute expressions
+            MathArithmeticExpressionSymbol arithmeticSubstituted = (MathArithmeticExpressionSymbol) nonAtomarExpression;
+            MathArithmeticExpressionSymbol arithmeticResult = new MathArithmeticExpressionSymbol();
+            arithmeticResult.setMathOperator(arithmeticSubstituted.getOperator());
+            arithmeticResult.setLeftExpression(resolveMathExpressionToAtomarExpression(arithmeticSubstituted.getLeftExpression(), atomarValueName));
+            arithmeticResult.setRightExpression(resolveMathExpressionToAtomarExpression(arithmeticSubstituted.getRightExpression(), atomarValueName));
+            result = arithmeticResult;
+        } else if (nonAtomarExpression instanceof MathValueSymbol) {
+            // substitute value expr by assigned expr
+            MathValueSymbol valueExpr = (MathValueSymbol) nonAtomarExpression;
+            result = getSubstituteByName(valueExpr.getName(), nonAtomarExpression, atomarValueName);
+        } else if (nonAtomarExpression instanceof MathMatrixNameExpressionSymbol) {
+            MathMatrixNameExpressionSymbol sourceExpr = (MathMatrixNameExpressionSymbol) nonAtomarExpression;
+            MathMatrixNameExpressionSymbol targetExpr;
+            // modifiy access name
+            String accessName = getSubstituteByName(sourceExpr.getNameToAccess(), nonAtomarExpression, atomarValueName).getTextualRepresentation();
+            if (sourceExpr.isMathMatrixAccessOperatorSymbolPresent() && !(accessName.contains("("))) {
+                targetExpr = new MathMatrixNameExpressionSymbol(String.format("(%s)", accessName));
+                // modify access operator
+                MathMatrixAccessOperatorSymbol sourceAccessOperator = sourceExpr.getMathMatrixAccessOperatorSymbol();
+                MathMatrixAccessOperatorSymbol targetAccessOperator = new MathMatrixAccessOperatorSymbol();
+                targetAccessOperator.setMathMatrixAccessSymbols(sourceAccessOperator.getMathMatrixAccessSymbols());
+                targetAccessOperator.setAccessStartSymbol(".at(");
+                targetExpr.setMathMatrixAccessOperatorSymbol(targetAccessOperator);
+                result = targetExpr;
+            } else {
+                result = nonAtomarExpression;
+            }
+        } else if (nonAtomarExpression instanceof IMathNamedExpression) {
+            // substitute value expr by assigned expr
+            result = getSubstituteByName(((IMathNamedExpression) nonAtomarExpression).getNameToAccess(), nonAtomarExpression, atomarValueName);
+        } else {
+            result = nonAtomarExpression;
+        }
+        return result;
+    }
+    
+    private MathExpressionSymbol getSubstituteByName(String name, MathExpressionSymbol expr, String atomarValueName) {
+        MathExpressionSymbol result;
+        MathValueSymbol declaration = getMathValueSymbol(name);
+        if ((declaration != null) && (declaration.getValue() != null) && (!name.contentEquals(atomarValueName)))
+            result = declaration.getValue();
+        else
+            result = expr;
         return result;
     }
 }
