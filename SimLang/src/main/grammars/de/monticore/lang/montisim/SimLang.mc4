@@ -54,7 +54,7 @@ grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.mo
   //
   // Entity Configuration
   //
-  Pedestrians implements SimulationEntity = ("<p>"
+  Pedestrians implements SimulationEntity = ("pedestrian"
                 "(" startX:UnitNumber "," startY:UnitNumber ("," startZ:UnitNumber)? ")"
                 "->" 
                 "(" destX:UnitNumber "," destY:UnitNumber ("," destZ:UnitNumber)? ")"

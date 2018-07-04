@@ -27,7 +27,7 @@ sim MaxModel {
   timeout 12h;
   gravity 12m/s^2;
   
-  <p>(10.0,10.0)->(20.0,20.0,0.0);
+  pedestrian(10.0,10.0)->(20.0,20.0,0.0);
   pedestrian_density 2.0;
   
   car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);

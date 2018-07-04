@@ -26,7 +26,7 @@ sim ASTTest {
   timeout 12h;
   gravity 12m/s^2;
   
-  <p>(10.10, 10.0, 10)->(0, 20.0, 0.0);
+  pedestrian(10.10, 10.0, 10)->(0, 20.0, 0.0);
   pedestrian_density 2.0;
   
   car1(-22, -34.0, 90)->(-1, 0, 10);

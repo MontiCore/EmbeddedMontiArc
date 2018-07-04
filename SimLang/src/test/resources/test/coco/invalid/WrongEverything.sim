@@ -47,7 +47,7 @@ sim WrongEverything {
   gravity 12m;
   gravity -12m;
 
-  <p>(10.10h, 10.0h, 10h)->(0s, 20.0s, 0.0s);
+  pedestrian(10.10h, 10.0h, 10h)->(0s, 20.0s, 0.0s);
   pedestrian_density 2.0s;
   pedestrian_density -2;
 
