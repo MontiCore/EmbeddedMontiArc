@@ -51,9 +51,7 @@ public class ZipFileCreator {
         InputStream theFile = new FileInputStream(pathZIP);
         ZipInputStream stream = new ZipInputStream(theFile);
         byte[] buffer = new byte[2048];
-        if(pathOUT.endsWith("/")){
-            pathOUT = pathOUT.substring(0, pathOUT.length()-1);
-        }
+
         try
         {
             ZipEntry entry;

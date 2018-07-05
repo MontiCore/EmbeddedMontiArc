@@ -77,6 +77,7 @@ public class TestPackageMojo {
         } catch (MojoFailureException e) {
             e.printStackTrace();
         }catch (Exception ex){
+            ex.printStackTrace();
             fail("Exception in execute");
         }
 
@@ -84,12 +85,12 @@ public class TestPackageMojo {
         assertTrue("PackageMojo hasn't created a zip file.", f.exists());
 
         try {
-            File noMainDir = new File("./target/test/test_noMain/");
+            File noMainDir = new File("./target/test/test_noMain");
             if(noMainDir.exists()){
                 noMainDir.delete();
             }
             noMainDir.mkdirs();
-            ZipFileCreator.ExtractTo("./target/test/test_noMain.zip", "./target/test/test_noMain/");
+            ZipFileCreator.ExtractTo("./target/test/test_noMain.zip", "./target/test/test_noMain");
         } catch (IOException e) {
             e.printStackTrace();
             fail("Error while reading zip.");

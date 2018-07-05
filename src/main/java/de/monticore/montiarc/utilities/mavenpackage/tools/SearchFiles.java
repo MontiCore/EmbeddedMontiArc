@@ -39,11 +39,12 @@ public class SearchFiles {
         List<File> lf = searchFiles(path, fileTypes);
         Map<String, File> res = new HashMap<String, File>();
         for (File f: lf) {
-            try {
-                res.put(f.getCanonicalPath().replaceFirst(path.getCanonicalPath(), ""), f);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //try {
+                res.put(path.toURI().relativize(f.toURI()).getPath(), f);
+                //res.put(f.getCanonicalPath().replaceFirst(path.getCanonicalPath(), ""), f);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
         return res;
     }
