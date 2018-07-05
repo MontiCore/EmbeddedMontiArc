@@ -1,0 +1,25 @@
+package de.monticore.lang.monticar.visualization.emam.application;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.Multibinder;
+import de.monticore.lang.monticar.visualization.emam.dependencies.DependenciesServiceImpl;
+import de.monticore.lang.monticar.visualization.emam.executables.ExecutablesServiceImpl;
+import de.monticore.lang.monticar.visualization.emam.models.ModelsServiceImpl;
+import de.monticore.lang.monticar.visualization.emam.options.OptionsServiceImpl;
+import de.monticore.lang.monticar.visualization.emam.paths.PathsServiceImpl;
+import de.monticore.lang.monticar.visualization.emam.url.URLServiceImpl;
+
+public class ApplicationModule extends AbstractModule {
+    @Override
+    public void configure() {
+        Multibinder<ApplicationContribution> contributions =
+                Multibinder.newSetBinder(binder(), ApplicationContribution.class);
+
+        contributions.addBinding().to(DependenciesServiceImpl.class);
+        contributions.addBinding().to(ExecutablesServiceImpl.class);
+        contributions.addBinding().to(OptionsServiceImpl.class);
+        contributions.addBinding().to(URLServiceImpl.class);
+        contributions.addBinding().to(PathsServiceImpl.class);
+        contributions.addBinding().to(ModelsServiceImpl.class);
+    }
+}
