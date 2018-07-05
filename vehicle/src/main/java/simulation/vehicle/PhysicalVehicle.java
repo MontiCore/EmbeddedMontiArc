@@ -100,7 +100,7 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
         error = false;
 
         // Set optional components
-        // ToDO is this necessary
+        // ToDO is this necessary?
         setOptionalComponents(controllerBus, controller, navigation);
 
         Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
@@ -111,12 +111,14 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
      * Should only be called by builder
      */
     void initModelicaPhysics(){
-        //Set physicalObjectType to indicate that modelica physics is used
-        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5;
+        if(!physicalVehicleInitialized) {
+            //Set physicalObjectType to indicate that modelica physics is used
+            physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5;
 
-        // Initialize physics components in vehicle class
-        simulationVehicle.initModelicaPhysics();
-        physicalVehicleInitialized = true;
+            // Initialize physics components in vehicle class
+            simulationVehicle.initModelicaPhysics();
+            physicalVehicleInitialized = true;
+        }
     }
 
     /**
@@ -124,47 +126,50 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
      * Should only be called by builder
      */
     void initMassPointPhysics() {
-        //Set physicalObjectType to indicate that massPoint physics is used
-        physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_DEFAULT;
+        if(!physicalVehicleInitialized) {
+            //Set physicalObjectType to indicate that massPoint physics is used
+            physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_DEFAULT;
 
-        // Initialize physics components in vehicle class
-        simulationVehicle.initMassPointPhysics();
+            // Initialize physics components in vehicle class
+            simulationVehicle.initMassPointPhysics();
 
-        // PhysicalVehicle is standing, no velocity, acceleration, force
-        velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            // PhysicalVehicle is standing, no velocity, acceleration, force
+            velocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+            acceleration = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+            force = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
-        // Init values for matrices
-        localInertiaInverse = MatrixUtils.createRealIdentityMatrix(3);
-        inertiaInverse = MatrixUtils.createRealIdentityMatrix(3);
+            // Init values for matrices
+            localInertiaInverse = MatrixUtils.createRealIdentityMatrix(3);
+            inertiaInverse = MatrixUtils.createRealIdentityMatrix(3);
 
-        // Init values for more vectors and matrices
-        angularVelocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        angularMomentum = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        angularMomentumDeriv = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            // Init values for more vectors and matrices
+            angularVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+            angularMomentum = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+            angularMomentumDeriv = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
-        // Center of mass in local coordinate system is initialized with 0
-        localPos = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            // Center of mass in local coordinate system is initialized with 0
+            localPos = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
-        // Center of car geometry position
-        double groundZ = WorldModel.getInstance().getGround(0.0, 0.0, 0.0).doubleValue();
-        setGlobalPos(0.0, 0.0, (groundZ + 0.5 * simulationVehicle.getHeight() + simulationVehicle.getWheelRadius()));
+            // Center of car geometry position
+            double groundZ = WorldModel.getInstance().getGround(0.0, 0.0, 0.0).doubleValue();
+            setGlobalPos(0.0, 0.0, (groundZ + 0.5 * simulationVehicle.getHeight() + simulationVehicle.getWheelRadius()));
 
-        // Put rotation values in matrix
-        setGlobalRotation(0.0, 0.0, 0.0);
+            // Put rotation values in matrix
+            setGlobalRotation(0.0, 0.0, 0.0);
 
-        // Initialize values for physicalVehicle after constructor or builder
-        initLocalPos();
-        initMassPointLocalCenterDiff();
-        initLocalInertiaInverse();
-        calcInertiaInverse();
-        calcAngularVelocity();
+            // Initialize values for physicalVehicle after constructor or builder
+            initLocalPos();
+            initMassPointLocalCenterDiff();
+            initLocalInertiaInverse();
+            calcInertiaInverse();
+            calcAngularVelocity();
 
-        // This initializes wheel mass point positions correctly before first update
-        calcMassPointCenterDiff();
-        calcMassPointPosition();
-        physicalVehicleInitialized = true;
+            // This initializes wheel mass point positions correctly before first update
+            calcMassPointCenterDiff();
+            calcMassPointPosition();
+
+            physicalVehicleInitialized = true;
+        }
     }
 
     /**
@@ -183,7 +188,7 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
     /**
      * Function that computes the center of mass position in the local coordinate system
      * Based on mass and local positions of mass points
-     * Should only be called by initPhysicalVehicle
+     * Should only be called by initMassPointPhysics
      */
     private void initLocalPos() {
         Log.finest("PhysicalVehicle: initLocalPos - PhysicalVehicle at start: " + this);
@@ -200,7 +205,7 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
     /**
      * Function that computes the localCenterDiff values for all mass points
      * Based on current physicalVehicles local center of mass position
-     * Should only be called by initPhysicalVehicle
+     * Should only be called by initMassPointPhysics
      */
     private void initMassPointLocalCenterDiff() {
         Log.finest("PhysicalVehicle: initMassPointLocalCenterDiff - PhysicalVehicle at start: " + this);
@@ -215,7 +220,7 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
     /**
      * Function that computes the localInertiaInverse values for the physicalVehicle
      * Based on current vehicles mass point information
-     * Should only be called by initPhysicalVehicle
+     * Should only be called by initMassPointPhysics
      */
     private void initLocalInertiaInverse(){
         Log.finest("PhysicalVehicle: initLocalInertiaInverse - PhysicalVehicle at start: " + this);
@@ -309,7 +314,6 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
         if (mp.getType().ordinal() > MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal() || groundContact == 0.0) {
             return forceBrake;
         }
-
         // Individual brake force for each wheel
         double brakeValueActuator = 0.0;
         switch (mp.getType()) {
@@ -582,6 +586,27 @@ public class PhysicalVehicle implements SimulationLoopExecutable, PhysicalObject
      */
     protected void setPhysicalObjectType(PhysicalObjectType physicalObjectType) {
         Log.finest("PhysicalVehicle: setPhysicalObjectType - physicalObjectType: " + physicalObjectType + ", PhysicalVehicle at start: " + this);
+        switch (physicalObjectType) {
+            case PHYSICAL_OBJECT_TYPE_CAR_DEFAULT:
+            case PHYSICAL_OBJECT_TYPE_CAR_1:
+            case PHYSICAL_OBJECT_TYPE_CAR_2:
+            case PHYSICAL_OBJECT_TYPE_CAR_3:
+            case PHYSICAL_OBJECT_TYPE_CAR_4:
+                if (this.physicalObjectType != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5) {
+                    this.physicalObjectType = physicalObjectType;
+                }
+                break;
+            case PHYSICAL_OBJECT_TYPE_CAR_5:
+                //This type cannot be changed to something else
+                break;
+            case PHYSICAL_OBJECT_TYPE_PEDESTRIAN:
+            case PHYSICAL_OBJECT_TYPE_TREE:
+            case PHYSICAL_OBJECT_TYPE_NETWORK_CELL_BASE_STATION:
+            default:
+                //Invalid type
+                Log.warning("PhysicalVehicle: setPhysicalObjectType - invalid type for a physicalVehicle");
+                break;
+        }
         this.physicalObjectType = physicalObjectType;
         Log.finest("PhysicalVehicle: setPhysicalObjectType - physicalObjectType: " + physicalObjectType + ", PhysicalVehicle at end: " + this);
     }

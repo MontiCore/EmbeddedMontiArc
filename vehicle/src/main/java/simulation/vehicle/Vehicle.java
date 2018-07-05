@@ -31,6 +31,38 @@ import static simulation.vehicle.VehicleActuatorType.*;
 public class Vehicle {
 
     /** Default average values for vehicle constructor */
+    /** Minimum acceleration that can be made by the motor */
+    public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN = -1.5;
+
+    /** Maximum acceleration that can be made by the motor */
+    public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX = 3.5;
+
+    /** Rate at which the acceleration of the motor can change */
+    public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE = 2.0;
+
+    /** Minimum acceleration that can be made by the brakes */
+    public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN = 0.0;
+
+    /** Maximum acceleration that can be made by the brakes */
+    public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX = 5.0;
+
+    /** Rate at which the acceleration of the brakes can change */
+    public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE = 5.0;
+
+    /** Minimum steering angle */
+    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MIN = -0.785398;
+
+    /** Maximum steering angle */
+    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MAX = 0.785398;
+
+    /** Rate at which the steering angle can change */
+    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_RATE = 0.5;
+
+    /** Maximum velocity of the vehicle */
+    public static final double VEHICLE_DEFAULT_APPROX_MAX_VELOCITY = 100.0;
+
+
+    /** Default paramter values for massPoint physics*/
     /** Length of the vehicle in meters */
     public static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
 
@@ -39,9 +71,6 @@ public class Vehicle {
 
     /** Height of the vehicle in meters */
     public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
-
-    /** Maximum velocity of the vehicle */
-    public static final double VEHICLE_DEFAULT_APPROX_MAX_VELOCITY = 100.0;
 
     /** Mass of the vehicle's front */
     public static final double VEHICLE_DEFAULT_MASS_FRONT = 950.0;
@@ -58,33 +87,6 @@ public class Vehicle {
     /** Distance between front and back wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK = 2.921;
 
-    /** Minimum acceleration that can be made by the motor */
-    public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN = -1.5;
-
-    /** Maximum acceleration that can be made by the motor */
-    public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX = 3.5;
-
-    /** Rate at which the motor can accelerate */
-    public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE = 2.0;
-
-    /** Minimum acceleration that can be made by the brakes */
-    public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN = 0.0;
-
-    /** Maximum acceleration that can be made by the brakes */
-    public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX = 5.0;
-
-    /** Acceleration rate of the brakes */
-    public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE = 5.0;
-
-    /** Minimum steering angle */
-    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MIN = -0.785398;
-
-    /** Maximum steering angle */
-    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_MAX = 0.785398;
-
-    /** Rate at which the steering angle can change */
-    public static final double VEHICLE_DEFAULT_STEERING_ANGLE_RATE = 0.5;
-
     /** Average tire pressure for car wheels in bar */
     public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
 
@@ -92,6 +94,9 @@ public class Vehicle {
     /**Attributes of the car */
     /** Indicator whether the constant bus data was sent */
     private boolean constantBusDataSent;
+
+    /** Indicator whether the vehicle is fully initialized or not */
+    boolean vehicleInitialized = false;
 
     /** Motor of vehicle */
     private VehicleActuator motor;
@@ -126,17 +131,19 @@ public class Vehicle {
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
 
-    /** M of formula */
-    private double mass;
-
-    /** Dimensions of vehicle in meters */
-    private double length, width, height;
-
     /** Estimated maximum total velocity of vehicle */
     private double approxMaxTotalVelocity;
 
     /** Maximum temporary allowed velocity of vehicle */
     private double maxTemporaryAllowedVelocity;
+
+
+    /** Attributes used for massPoint physics */
+    /** M of formula */
+    private double mass;
+
+    /** Dimensions of vehicle in meters */
+    private double length, width, height;
 
     /** Radius of vehicle wheels in meters */
     private double wheelRadius;
@@ -159,20 +166,17 @@ public class Vehicle {
      * @param navigation Optional navigation of the vehicle
      */
     protected Vehicle(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
-        // Dimensions
-        setDimensions(VEHICLE_DEFAULT_LENGTH, VEHICLE_DEFAULT_WIDTH, VEHICLE_DEFAULT_HEIGHT);
-
         // Approx maximum velocity
         setApproxMaxTotalVelocity(VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
-
-        // Set mass of entire vehicle
-        setWheelProperties(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_RADIUS, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
 
         // When created, maximum temporary allowed velocity is not limited
         maxTemporaryAllowedVelocity = Double.MAX_VALUE;
 
         // When created, the constant bus data is not sent yet
         constantBusDataSent = false;
+
+        // When created, the vehicle is not fully initialized
+        vehicleInitialized = false;
 
         // Actuators
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
@@ -203,7 +207,10 @@ public class Vehicle {
      * Should only be called by physicalVehicle.initModelicaPhysics
      */
     void initModelicaPhysics(){
-        //Create FMUWrappers
+        if(!vehicleInitialized) {
+            //Create FMUWrappers
+            vehicleInitialized = true;
+        }
     }
 
     /**
@@ -211,9 +218,18 @@ public class Vehicle {
      * Should only be called by physicalVehicle.initMassPointPhysics
      */
     void initMassPointPhysics(){
-        // Create Mass Points
-        createMassPoints(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
+        if(!vehicleInitialized) {
+            // Set Dimensions
+            setDimensions(VEHICLE_DEFAULT_LENGTH, VEHICLE_DEFAULT_WIDTH, VEHICLE_DEFAULT_HEIGHT);
 
+            // Set mass of entire vehicle
+            setWheelProperties(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_RADIUS, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
+
+            // Create Mass Points
+            createMassPoints(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
+
+            vehicleInitialized = true;
+        }
     }
 
     /**

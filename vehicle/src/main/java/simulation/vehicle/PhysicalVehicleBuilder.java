@@ -104,37 +104,50 @@ public class PhysicalVehicleBuilder {
     /**
      * Method takes a file that has to contain a valid JSON representation of a car.
      * It returns a @{@link PhysicalVehicleBuilder} instance according to the read JSON contents.
+     * Cannot be executed when the currently build physicalVehicle is already initialized
      *
      * @param file a file containing a valid JSON config for a car
      * @return {@link PhysicalVehicleBuilder} singleton class
      * @throws IOException thrown if the given file could either not be found or accessed/read.
      */
     public PhysicalVehicleBuilder loadPropertiesFromFile(File file) throws IOException {
+        if(!physicalVehicle.getPhysicalVehicleInitialized()) {
+            String jsonContents = new String(Files.readAllBytes(file.toPath()));
+            return loadPropertiesFromJSON(jsonContents);
+        }else{
+            //ToDo warning
+            return getInstance();
+        }
 
-        String jsonContents = new String(Files.readAllBytes(file.toPath()));
-        return loadPropertiesFromJSON(jsonContents);
     }
 
 
     /**
      * Method to load car properties from a JSON String instead of manually setting them via the builder.
      * After loading from file, changes are still possible as usual via the methods the builder provides.
+     * Cannot be executed when the currently build physicalVehicle is already initialized
      *
      * @param json valid json configuration string
      * @return {@link PhysicalVehicleBuilder} singleton class
      */
     public PhysicalVehicleBuilder loadPropertiesFromJSON(String json) {
+        if(!physicalVehicle.getPhysicalVehicleInitialized()) {
+            ParsableVehicleProperties data = new Gson().fromJson(json, ParsableVehicleProperties.class); // contains the whole reviews list
 
-        ParsableVehicleProperties data = new Gson().fromJson(json, ParsableVehicleProperties.class); // contains the whole reviews list
+            for (VehicleActuator a : data.actuators) {
+                setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
+            }
 
-        setDimensions(data.length, data.width, data.height);
-        setGlobalPos(data.posX, data.posY, data.posY);
-        setGlobalRotation(data.rotX, data.rotY, data.rotZ);
-        setWheelProperties(data.massFront, data.massBack, data.wheelRadius, data.wheelDistLeftRight, data.wheelDistFrontBack);
-        createMassPoints(data.massFront, data.massBack, data.wheelDistLeftRight, data.wheelDistFrontBack);
+            //A car from a json file should used for now massPoint physics
+            initPhysicalVehicle(true);
 
-        for (VehicleActuator a : data.actuators) {
-            setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
+            setDimensions(data.length, data.width, data.height);
+            setGlobalPos(data.posX, data.posY, data.posY);
+            setGlobalRotation(data.rotX, data.rotY, data.rotZ);
+            setWheelProperties(data.massFront, data.massBack, data.wheelRadius, data.wheelDistLeftRight, data.wheelDistFrontBack);
+            createMassPoints(data.massFront, data.massBack, data.wheelDistLeftRight, data.wheelDistFrontBack);
+        }else{
+            //ToDo warning
         }
 
         return getInstance();
@@ -143,29 +156,39 @@ public class PhysicalVehicleBuilder {
     /**
      * Stores the currently build car JSON serialized in a File on the mass storage.
      * Be careful, default behavior is to overwrite existing files.
+     * Cannot be executed if the currently build physicalVehicle uses modelica physics
      *
      * @param whereToStore file to store the JSON
      * @return current instance of the Builder
      * @throws IOException thrown if the given path cannot be accessed.
      */
     public PhysicalVehicleBuilder storeJSONInFile(File whereToStore) throws IOException {
+        if(physicalVehicle.getPhysicalVehicleInitialized() && physicalVehicle.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5){
+            //ToDo warning
+            return getInstance();
+        }else{
+            //When the car is not initialized it should be because storing the car reads components of massPoint physics
+            if(!physicalVehicle.getPhysicalVehicleInitialized()){
+                physicalVehicle.initMassPointPhysics();
+            }
+            Gson g = new Gson();
+            PhysicalVehicle v = this.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+            ParsableVehicleProperties carProps = new PhysicalVehicleBuilder.ParsableVehicleProperties(v);
+            String json = g.toJson(carProps, PhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
-        Gson g = new Gson();
-        PhysicalVehicle v = this.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        ParsableVehicleProperties carProps = new PhysicalVehicleBuilder.ParsableVehicleProperties(v);
-        String json = g.toJson(carProps, PhysicalVehicleBuilder.ParsableVehicleProperties.class);
+            FileWriter fooWriter = new FileWriter(whereToStore, false);
 
-        FileWriter fooWriter = new FileWriter(whereToStore, false);
+            fooWriter.write(json);
+            fooWriter.flush();
+            fooWriter.close();
 
-        fooWriter.write(json);
-        fooWriter.flush();
-        fooWriter.close();
-
-        return getInstance();
+            return getInstance();
+        }
     }
 
     /**
      * Function that sets dimensions to the physicalVehicle that is currently built in the builder class
+     * Can only be executed if the currently build physicalVehicle uses massPoint physics
      *
      * @param length Length of the physicalVehicle
      * @param width Width of the physicalVehicle
@@ -174,7 +197,11 @@ public class PhysicalVehicleBuilder {
      */
     public PhysicalVehicleBuilder setDimensions(double length, double width, double height) {
         Log.finest("PhysicalVehicleBuilder: setDimensions - PhysicalVehicle at start: " + physicalVehicle);
-        physicalVehicle.getSimulationVehicle().setDimensions(length, width, height);
+        if(physicalVehicle.getPhysicalVehicleInitialized() && physicalVehicle.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5) {
+            physicalVehicle.getSimulationVehicle().setDimensions(length, width, height);
+        }else{
+            //ToDo warning
+        }
         Log.finest("PhysicalVehicleBuilder: setDimensions - PhysicalVehicle at end: " + physicalVehicle);
 
         return getInstance();
@@ -183,6 +210,8 @@ public class PhysicalVehicleBuilder {
     /**
      * Function that sets the global position to the physicalVehicle that is currently built in the builder class
      * Note: This refers to the cars geometry center position, not the center of mass position
+     * Can only be executed if the currently build physicalVehicle uses massPoint physics
+     *
      * @param x Global x position of physicalVehicle
      * @param y Global y position of physicalVehicle
      * @param z Global z position of physicalVehicle
@@ -190,9 +219,12 @@ public class PhysicalVehicleBuilder {
      *
      */
     public PhysicalVehicleBuilder setGlobalPos(double x, double y, double z) {
-
         Log.finest("PhysicalVehicleBuilder: setGlobalPos - PhysicalVehicle at start: " + physicalVehicle);
-        physicalVehicle.setGlobalPos(x, y, z);
+        if(physicalVehicle.getPhysicalVehicleInitialized() && physicalVehicle.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5) {
+            physicalVehicle.setGlobalPos(x, y, z);
+        }else{
+            //ToDo warning
+        }
         Log.finest("PhysicalVehicleBuilder: setGlobalPos - PhysicalVehicle at end: " + physicalVehicle);
 
         return getInstance();
@@ -200,6 +232,7 @@ public class PhysicalVehicleBuilder {
 
     /**
      * Function that sets the global rotation to the physicalVehicle that is currently built in the builder class
+     * Can only be executed if the currently build physicalVehicle uses massPoint physics
      *
      * @param rotX Global x rotation of physicalVehicle
      * @param rotY Global y rotation of physicalVehicle
@@ -209,7 +242,11 @@ public class PhysicalVehicleBuilder {
      */
     public PhysicalVehicleBuilder setGlobalRotation(double rotX, double rotY, double rotZ) {
         Log.finest("PhysicalVehicleBuilder: setGlobalRotation - PhysicalVehicle at start: " + physicalVehicle);
-        physicalVehicle.setGlobalRotation(rotX, rotY, rotZ);
+        if(physicalVehicle.getPhysicalVehicleInitialized() && physicalVehicle.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5) {
+            physicalVehicle.setGlobalRotation(rotX, rotY, rotZ);
+        }else{
+            //ToDo warning
+        }
         Log.finest("PhysicalVehicleBuilder: setGlobalRotation - PhysicalVehicle at end: " + physicalVehicle);
         return getInstance();
     }
@@ -233,6 +270,7 @@ public class PhysicalVehicleBuilder {
 
     /**
      * Function that sets wheel properties to the physicalVehicle that is currently built in the builder class
+     * Can only be executed if the currently build physicalVehicle uses massPoint physics
      *
      * @param massFront Sum of mass for both front wheels
      * @param massBack Sum of mass for both back wheels
@@ -244,7 +282,11 @@ public class PhysicalVehicleBuilder {
      */
     public PhysicalVehicleBuilder setWheelProperties(double massFront, double massBack, double wheelRadius, double wheelDistLeftRight, double wheelDistFrontBack) {
         Log.finest("PhysicalVehicleBuilder: setWheelProperties - PhysicalVehicle at start: " + physicalVehicle);
-        physicalVehicle.getSimulationVehicle().setWheelProperties(massFront, massBack, wheelRadius, wheelDistLeftRight, wheelDistFrontBack);
+        if(physicalVehicle.getPhysicalVehicleInitialized() && physicalVehicle.getPhysicalObjectType() != PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR_5) {
+            physicalVehicle.getSimulationVehicle().setWheelProperties(massFront, massBack, wheelRadius, wheelDistLeftRight, wheelDistFrontBack);
+        }else{
+            //ToDo warning
+        }
         Log.finest("PhysicalVehicleBuilder: setWheelProperties - PhysicalVehicle at end: " + physicalVehicle);
         return getInstance();
     }
