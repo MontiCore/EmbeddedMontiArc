@@ -1,6 +1,8 @@
 package de.monticore.montiarc.utilities.mavenpackage.tools;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -51,19 +53,25 @@ public class ZipFileCreator {
         InputStream theFile = new FileInputStream(pathZIP);
         ZipInputStream stream = new ZipInputStream(theFile);
         byte[] buffer = new byte[2048];
-
+        if(pathOUT.endsWith("/")){
+            pathOUT = pathOUT.substring(0, pathOUT.length()-1);
+        }
         try
         {
             ZipEntry entry;
             while((entry = stream.getNextEntry())!=null)
             {
 
-                String outpath = pathOUT + entry.getName();
+
+
+                Path path = Paths.get(pathOUT, entry.getName());
+
                 FileOutputStream output = null;
                 try
                 {
 
-                    File f = new File(outpath);
+
+                    File f = path.toFile(); //new File(outpath);
                     if(entry.isDirectory()){
                         f.mkdirs();
                     }else{
@@ -71,7 +79,7 @@ public class ZipFileCreator {
                         f.createNewFile();
                     }
 
-                    output = new FileOutputStream(outpath);
+                    output = new FileOutputStream(path.toFile().getCanonicalPath());
                     int len = 0;
                     while ((len = stream.read(buffer)) > 0)
                     {
