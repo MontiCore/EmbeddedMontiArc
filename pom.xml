@@ -6,6 +6,10 @@
     <artifactId>maven-package</artifactId>
     <packaging>maven-plugin</packaging>
     <version>0.0.1-SNAPSHOT</version>
+
+    <name>maven-package Maven Mojo</name>
+    <url>http://maven.apache.org</url>
+
     <build>
         <plugins>
             <plugin>
@@ -16,10 +20,10 @@
                     <target>8</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
-    <name>maven-package Maven Mojo</name>
-    <url>http://maven.apache.org</url>
+
 
     <dependencies>
         <dependency>

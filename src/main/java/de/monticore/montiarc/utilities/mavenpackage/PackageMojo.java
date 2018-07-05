@@ -5,6 +5,7 @@ import de.monticore.montiarc.utilities.mavenpackage.tools.ZipFileCreator;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Mojo(name = "emam-package")
+@Mojo(name = "emam-package", defaultPhase = LifecyclePhase.PACKAGE)
 public class PackageMojo extends AbstractMojo {
 
     @Parameter(property = "pathMain", defaultValue = "/src/main/emam/")
@@ -43,7 +44,7 @@ public class PackageMojo extends AbstractMojo {
         return this.pathOut;
     }
 
-    @Parameter(name = "packageName", defaultValue = "package.zip")
+    @Parameter(property = "packageName", defaultValue = "package.zip")
     private String packageName;
     public String getPackageName() {
         return packageName;
@@ -56,7 +57,7 @@ public class PackageMojo extends AbstractMojo {
         this.packageName = packageName;
     }
 
-    @Parameter(name = "filesToPack", defaultValue = "ema,emam,stream,struct,enum")
+    @Parameter(property = "filesToPack", defaultValue = "ema,emam,stream,struct,enum")
     private String filesToPack;
     public String getFilesToPack(){
         return filesToPack;
@@ -70,6 +71,7 @@ public class PackageMojo extends AbstractMojo {
         return filesToPack.split(",");
     }
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Map<String, File> allFiles = this.searchFilesToPack();
 
