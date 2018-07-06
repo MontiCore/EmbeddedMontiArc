@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -26,7 +26,7 @@
         <Math.version>0.0.14-SNAPSHOT</Math.version>
         <Embedded-MontiArc-Math.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Math.version>
         <Embedded-montiarc-math-generator.version>0.0.17-SNAPSHOT</Embedded-montiarc-math-generator.version>
-        <Embedded-montiarc-math-roscpp-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
+        <Embedded-montiarc-math-roscpp-generator.version>0.0.4-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <Embedded-montiarc-math-rosmsg-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
         <tagging.version>0.0.3-SNAPSHOT</tagging.version>
         <!-- .. Libraries .................................................. -->
