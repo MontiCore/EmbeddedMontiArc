@@ -7,6 +7,7 @@ import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSch
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
 
 import java.io.File;
@@ -188,5 +189,63 @@ public class TaggingTest extends AbstractSymtabTest {
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
         testFilesAreEqual(files, "matrixTypesComp/", generationTargetPath);
+    }
+
+    @Test
+    public void testMissingTopicName() throws IOException {
+        Log.enableFailQuick(false);
+
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        String relResultPath = "missingTopicName/";
+        String generationTargetPath = "./target/generated-sources-roscpp/" + relResultPath;
+        generatorRosCpp.setGenerationTargetPath(generationTargetPath);
+
+        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.tagging.missingInfo", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        RosConnectionSymbol rosConnectionSymbol = new RosConnectionSymbol((String) null,"std_msgs/Float64","data");
+        component.getPort("missingTopicName").get().setMiddlewareSymbol(rosConnectionSymbol);
+
+        TagHelper.resolveTags(taggingResolver,component);
+        List<File> files = generatorRosCpp.generateFiles(component,taggingResolver);
+
+        assertEquals(files.size(), 0);
+        assertEquals(Log.getErrorCount(),1);
+        assertTrue(Log.getFindings().get(0).getMsg().contains("0x9d80f"));
+
+        Log.getFindings().clear();
+        Log.enableFailQuick(true);
+    }
+
+    @Test
+    public void testMissingTopicType() throws IOException {
+        Log.enableFailQuick(false);
+
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources");
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
+        String relResultPath = "missingTopicType/";
+        String generationTargetPath = "./target/generated-sources-roscpp/" + relResultPath;
+        generatorRosCpp.setGenerationTargetPath(generationTargetPath);
+
+        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.tagging.missingInfo", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        RosConnectionSymbol rosConnectionSymbol = new RosConnectionSymbol("/test",(String) null,"data");
+        component.getPort("missingTopicType").get().setMiddlewareSymbol(rosConnectionSymbol);
+
+        TagHelper.resolveTags(taggingResolver,component);
+        List<File> files = generatorRosCpp.generateFiles(component,taggingResolver);
+
+        assertEquals(files.size(), 0);
+        assertEquals(Log.getErrorCount(),1);
+        assertTrue(Log.getFindings().get(0).getMsg().contains("0x2cc67"));
+
+        Log.getFindings().clear();
+        Log.enableFailQuick(true);
     }
 }

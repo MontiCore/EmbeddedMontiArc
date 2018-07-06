@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSy
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
+import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 
 public class LanguageUnitRosCppAdapter {
 
-    private List<BluePrintCPP> bluePrints = new ArrayList<>();
     private Map<Variable, RosConnectionSymbol> subscribers = new HashMap<>();
     private Map<Variable, RosConnectionSymbol> publishers = new HashMap<>();
     private List<Method> publishMethods = new ArrayList<>();
@@ -29,28 +29,29 @@ public class LanguageUnitRosCppAdapter {
         return additionalPackages;
     }
 
-    public void generateBluePrints(ExpandedComponentInstanceSymbol component) {
-        this.bluePrints.add(generateAdapterBluePrint(component));
-    }
+    public Optional<BluePrintCPP> generateBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
 
-    private BluePrintCPP generateAdapterBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
+        BluePrintCPP currentBluePrint = null;
 
-        String name = NameHelper.getAdapterName(componentSymbol);
-        BluePrintCPP currentBluePrint = new BluePrintCPP(name);
+        if (TagHelper.rosConnectionsValid(componentSymbol)) {
 
-        List<PortSymbol> rosPorts = componentSymbol.getPortsList().stream()
-                .filter(PortSymbol::isRosPort)
-                .collect(Collectors.toList());
+            String name = NameHelper.getAdapterName(componentSymbol);
+            currentBluePrint = new BluePrintCPP(name);
+            List<PortSymbol> rosPorts = componentSymbol.getPortsList().stream()
+                    .filter(PortSymbol::isRosPort)
+                    .collect(Collectors.toList());
 
-        generateFields(componentSymbol, rosPorts, currentBluePrint);
-        generateCallbacks(rosPorts, currentBluePrint);
-        generateConstructor(name, currentBluePrint);
-        generateInit(name, NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName()), currentBluePrint);
-        generatePublishMethods(rosPorts, currentBluePrint);
-        generateTick(currentBluePrint);
-        generateIncludes(componentSymbol, rosPorts, currentBluePrint);
+            generateFields(componentSymbol, rosPorts, currentBluePrint);
+            generateCallbacks(rosPorts, currentBluePrint);
+            generateConstructor(name, currentBluePrint);
+            generateInit(name, NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName()), currentBluePrint);
+            generatePublishMethods(rosPorts, currentBluePrint);
+            generateTick(currentBluePrint);
+            generateIncludes(componentSymbol, rosPorts, currentBluePrint);
+        }
 
-        return currentBluePrint;
+        return Optional.ofNullable(currentBluePrint);
+
     }
 
     private void generateIncludes(ExpandedComponentInstanceSymbol componentSymbol, List<PortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
@@ -276,10 +277,6 @@ public class LanguageUnitRosCppAdapter {
         }
         msgConverts.add(tmpMsgConverter);
         return tmpMsgConverter;
-    }
-
-    public List<BluePrintCPP> getBluePrints() {
-        return bluePrints;
     }
 
     public Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> getUsedRosMsgs() {

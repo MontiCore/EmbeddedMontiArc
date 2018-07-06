@@ -1,0 +1,6 @@
+package tests.tagging;
+
+component MissingInfo{
+    ports in Q missingTopicName,
+          in Q missingTopicType;
+}
