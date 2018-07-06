@@ -85,6 +85,7 @@ public class MainServlet extends HttpServlet {
 
         clearWorkspace(new File("incomingData"));
         clearWorkspace(new File("../emam2wasm/models"));
+        clearWorkspace(new File("../EmbeddedMontiArcStudio/model"));
     }
 
     protected String generateName(){
