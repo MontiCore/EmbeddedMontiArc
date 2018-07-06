@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TagHelper {
     private TagHelper() {
@@ -32,22 +33,29 @@ public class TagHelper {
     }
 
     public static List<File> resolveAndGenerate(GeneratorRosCpp generatorRosCpp, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
-        Map<PortSymbol, RosConnectionSymbol> allRosTags = resolveTags(taggingResolver, componentInstanceSymbol);
-        checkTags(allRosTags);
+        resolveTags(taggingResolver, componentInstanceSymbol);
         return generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
     }
 
-    private static void checkTags(Map<PortSymbol, RosConnectionSymbol> rosTags) {
-        rosTags.forEach((port, tag) -> {
-            if (!tag.getTopicName().isPresent())
-                Log.error("Every topicName needs to be set but " + port.getFullName() + " has a RosConnectionSymbol without one!");
+    public static boolean rosConnectionsValid(ExpandedComponentInstanceSymbol instanceSymbol) {
+        AtomicBoolean result = new AtomicBoolean(true);
 
-            if (!tag.getTopicType().isPresent())
-                Log.error("Every topicType needs to be set but " + port.getFullName() + " has a RosConnectionSymbol without one!");
+        instanceSymbol.getPortsList().stream()
+                .filter(PortSymbol::isRosPort)
+                .forEach(p ->{
+                    RosConnectionSymbol rosConnectionSymbol = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
 
-//            if (!tag.getMsgField().isPresent())
-//                Log.error("Every msgField needs to be set but " + port.getFullName() + " has a RosConnectionSymbol without one!");
-        });
+                    if(!rosConnectionSymbol.getTopicName().isPresent()){
+                        result.set(false);
+                        Log.error("0x9d80f: Port " + p.getFullName() + " has RosConnection but no topic name!");
+                    }
 
+                    if(!rosConnectionSymbol.getTopicType().isPresent()){
+                        result.set(false);
+                        Log.error("0x2cc67: Port " + p.getFullName() + " has RosConnection but no topic type!");
+                    }
+                });
+
+        return result.get();
     }
 }
