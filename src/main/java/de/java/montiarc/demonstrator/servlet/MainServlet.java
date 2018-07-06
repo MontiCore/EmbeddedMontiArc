@@ -58,14 +58,14 @@ public class MainServlet extends HttpServlet {
 
         //Unzip works here, just read file from current dir
         UnZip unZip = new UnZip();
-        unZip.unZipIt("incomingData/source.zip","incomingDataExtracted");
+        unZip.unZipIt("incomingData/source.zip","../emam2wasm/models");
         String modelName = unZip.unZipIt("incomingData/source.zip","../EmbeddedMontiArcStudio/model");
 
         // Compile to C, and run tests
-        compileAndRunTest(modelName);
+        boolean res0 = true; //compileAndRunTest(modelName) == 0;
 
         //Compile sources, emam2wasm
-        compileEMAM();
+        boolean res1 = compileEMAM() == 0;
 
         //Read compiled files and pack them into archive
         ZipMultipleFiles zipOut = new ZipMultipleFiles();
@@ -76,12 +76,23 @@ public class MainServlet extends HttpServlet {
 
 
         // Send response with encoded zipStream
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.setContentType("blob");
-        resp.setStatus(HttpStatus.OK_200);
-        resp.getOutputStream().write(zipStream.toByteArray());
+        if(res0 && res1){
 
-        System.out.println("File sent back with size: " + zipStream.toByteArray().length);
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.setContentType("blob");
+            resp.setStatus(HttpStatus.OK_200);
+            resp.getOutputStream().write(zipStream.toByteArray());
+
+            System.out.println("File sent back with size: " + zipStream.toByteArray().length);
+        } else {
+
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            resp.setContentType("text/plain");
+            //resp.setStatus(HttpStatus.OK_200);
+            resp.sendError(500, "Error during compilation! Check the model!");
+
+        }
+
 
         clearWorkspace(new File("incomingData"));
         clearWorkspace(new File("../emam2wasm/models"));
