@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.http.HttpStatus;
 
-public class ExampleServlet extends HttpServlet {
+public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -57,28 +57,23 @@ public class ExampleServlet extends HttpServlet {
 
 
         //Unzip works here, just read file from current dir
-        // TODO: fix the problem with extracting an archive which contents a folder
         UnZip unZip = new UnZip();
         unZip.unZipIt("incomingData/source.zip","incomingDataExtracted");
+        String modelName = unZip.unZipIt("incomingData/source.zip","../EmbeddedMontiArcStudio/model");
 
-        //Compile sources
+        // Compile to C, and run tests
+        compileAndRunTest(modelName);
 
+        //Compile sources, emam2wasm
         compileEMAM();
 
         //Read compiled files and pack them into archive
-
         ZipMultipleFiles zipOut = new ZipMultipleFiles();
 
         ByteArrayOutputStream zipStream = zipOut.zipItToStream(
                 "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.wasm",
                 "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.js");
 
-//        Read data from file
-//        zipOut.zipItToFile(
-//                "/home/streug/code/demonstrator/mainController.wasm",
-//                "/home/streug/code/demonstrator/mainController.js");
-//        Path path = Paths.get("multiCompressed.zip");
-//        byte[] fileBytes = Files.readAllBytes(path);
 
         // Send response with encoded zipStream
         resp.addHeader("Access-Control-Allow-Origin", "*");
@@ -118,6 +113,34 @@ public class ExampleServlet extends HttpServlet {
 
         Runtime rt = Runtime.getRuntime();
         String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat"};
+        Process proc = rt.exec(commands);
+
+        BufferedReader stdInput = new BufferedReader(new
+                InputStreamReader(proc.getInputStream()));
+
+        BufferedReader stdError = new BufferedReader(new
+                InputStreamReader(proc.getErrorStream()));
+
+        // read the output from the command
+        System.out.println("Here is the standard output of the command:\n");
+        String s = null;
+        while ((s = stdInput.readLine()) != null) {
+            System.out.println(s);
+        }
+
+        // read any errors from the attempted command
+        System.out.println("Here is the standard error of the command (if any):\n");
+        while ((s = stdError.readLine()) != null) {
+            System.out.println(s);
+        }
+
+        return proc.exitValue();
+    }
+
+    protected int compileAndRunTest(String modelName) throws IOException {
+
+        Runtime rt = Runtime.getRuntime();
+        String[] commands = {"C:\\Users\\Administrator\\code\\EmbeddedMontiArcStudio\\compileRunExec.bat", modelName + ".mainController"};
         Process proc = rt.exec(commands);
 
         BufferedReader stdInput = new BufferedReader(new

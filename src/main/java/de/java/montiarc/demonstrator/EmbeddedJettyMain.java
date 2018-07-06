@@ -2,7 +2,7 @@ package de.java.montiarc.demonstrator;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import de.java.montiarc.demonstrator.servlet.ExampleServlet;
+import de.java.montiarc.demonstrator.servlet.MainServlet;
 
 public class EmbeddedJettyMain {
 
@@ -10,7 +10,7 @@ public class EmbeddedJettyMain {
 
         Server server = new Server(7070);
         ServletContextHandler handler = new ServletContextHandler(server, "/receiver");
-        handler.addServlet(ExampleServlet.class, "/");
+        handler.addServlet(MainServlet.class, "/");
         server.start();
 
     }
