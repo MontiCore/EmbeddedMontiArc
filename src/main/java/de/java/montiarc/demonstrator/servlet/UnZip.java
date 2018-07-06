@@ -4,15 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class UnZip
 {
-    public void unZipIt(String zipFile, String outputFolder){
+    public String unZipIt(String zipFile, String outputFolder){
 
         byte[] buffer = new byte[4096];
+        String projectFolderName = "";
 
         try{
 
@@ -40,6 +40,7 @@ public class UnZip
 
                 //create all non exists folders
                 new File(newFile.getParent()).mkdirs();
+                projectFolderName = new File(newFile.getParent()).getName();
 
                 FileOutputStream fos = new FileOutputStream(newFile);
 
@@ -61,6 +62,8 @@ public class UnZip
             System.out.println("Error");
             ex.printStackTrace();
         }
+
+        return projectFolderName;
     }
 
 }
