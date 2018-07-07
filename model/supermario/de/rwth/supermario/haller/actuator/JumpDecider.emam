@@ -13,7 +13,11 @@ component JumpDecider {
         static Z marioAlreadyRestedOnce = 0;
         
         if(marioResting == 0) //We are in the air
-            marioAlreadyRestedOnce = 0;
+            if(jumpAdvice==1)
+                marioAlreadyRestedOnce = 0;
+            else
+                marioAlreadyRestedOnce = 1;
+            end
             marioJump = jumpAdvice;
         else
             if(marioAlreadyRestedOnce == 1)

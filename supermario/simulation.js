@@ -60,7 +60,7 @@ function extractNextObstaclePositions(_solid){
 		var entry = _solid[entryNr];
 		//var isObstacle = false;
 		
-		if(entry.y > playerY && entry.y-entry.height <= playerY && (entry.left - FSM.player.left > -10)){
+		if(entry.y > playerY && entry.y-entry.height <= playerY+10 && ((entry.left - FSM.player.left) > -35)){
 			//isObstacle = true;
 		
 			//positions[currentPos][0] = entry.x;

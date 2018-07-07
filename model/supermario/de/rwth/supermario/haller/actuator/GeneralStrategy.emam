@@ -13,7 +13,7 @@ component GeneralStrategy {
 
     implementation Math {
         //Wait one seconds before being "stuck"
-        Z maxTicks = 1 * tickSize; 
+        Z maxTicks = 0.5 * tickSize; 
   
         static Z ticksOnSamePosition = 0;
         static Z oldXPos = -1;

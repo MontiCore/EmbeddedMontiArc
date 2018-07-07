@@ -10,7 +10,7 @@ component HoleWatcher {
 
     implementation Math {
         //Empirical distance values
-        Z jumpRangeX = 70;
+        Z jumpRangeX = 128;
         
         if((abs(holeDistance) < jumpRangeX) && (holeDistance != -1))
             inJumpRange = 1;
