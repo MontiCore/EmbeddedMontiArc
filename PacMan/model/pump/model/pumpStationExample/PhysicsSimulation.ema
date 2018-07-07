@@ -1,0 +1,12 @@
+package pumpStationExample;
+
+component PhysicsSimulation {
+  ports
+    in Boolean valveOpen,
+    in Boolean valveClose,
+    in Boolean pumpActuatorPort,
+    out Z level1,
+    out Z level2,
+    out Boolean pump,
+    out Z valve;
+}

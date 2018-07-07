@@ -1,0 +1,18 @@
+package pumpStationExample;
+
+component PumpStation {
+
+  autoconnect port;
+
+  instance Environment environment;
+  instance PumpingSystem pumpingSystem;
+  
+  connect environment.button -> pumpingSystem.button;
+  connect environment.level1 -> pumpingSystem.level1;
+  connect environment.pump -> pumpingSystem.pump;
+  connect environment.valve -> pumpingSystem.valve;
+  
+  connect pumpingSystem.pumpActuatorPort -> environment.pumpActuatorPort;
+  connect pumpingSystem.valveOpen -> environment.valveOpen;
+  connect pumpingSystem.valveClose -> environment.valveClose;
+}

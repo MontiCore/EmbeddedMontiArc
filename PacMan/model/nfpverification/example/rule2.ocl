@@ -1,0 +1,14 @@
+package example;
+
+import example.CnCExt;
+import example.NFPExt;
+
+ocl rule2 {
+    context Cmp cmp inv:
+            let
+                selectedVals = cmp.CSubs;
+                aggregatedTags = List{max(s.compPower, 0W) | s in selectedVals};
+                aggregatedValue = sum(aggregatedTags, "W");
+            in
+                aggregatedValue < min(cmp.compPower, +oo W);
+}

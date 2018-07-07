@@ -1,0 +1,27 @@
+package pumpStationExample;
+
+view SimulationInput {
+  component PumpStation {
+  component ValveActuator {
+    ports
+      out Boolean valveOpen,
+      out Boolean valveClose;
+  }
+  instance ValveActuator valveActuator;
+  
+  component PumpActuator {}
+  instance PumpActuator pumpActuator;
+
+  component PhysicsSimulation {
+    ports
+      in Boolean valveOpen,
+      in Boolean valveClose;
+   }
+  instance PhysicsSimulation physicsSimulation;
+   
+   
+  connect valveActuator.valveOpen -> physicsSimulation.valveOpen;
+  connect valveActuator.valveClose -> physicsSimulation.valveClose;
+  connect pumpActuator -> physicsSimulation;
+}
+}
