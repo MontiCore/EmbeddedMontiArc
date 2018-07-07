@@ -28,17 +28,200 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interface that represents a physical object in a 3D environment
+ * Interface that represents a box shaped physical object in a 3D space, that can be rotated.
+ * Any positions and vectors are, if not stated otherwise, expressed in the global coordinate system.
+ * All values are expressed in SI units.
  */
 public interface PhysicalObject {
 
     /**
-     * Function that returns the type of the object
-     * @return Type of the object
+     * Function that returns a copy of the center of mass position vector
+     * @return Position vector of the center of mass
+     */
+    RealVector getPosition();
+
+    /**
+     * Function that sets the center of mass position vector
+     * @param position New position vector of the center of mass
+     */
+    void setPosition(RealVector position);
+
+    /**
+     * Function that returns a copy of the rotation matrix around the center of mass
+     * @return Rotation matrix around the center of mass
+     */
+    RealMatrix getRotation();
+
+    /**
+     * Function that sets the rotation matrix around the center of mass
+     * @param rotation New rotation matrix around the center of mass
+     */
+    void setRotation(RealMatrix rotation);
+
+    /**
+     * Function that returns a copy of the velocity vector of the center of mass
+     * @return Velocity vector of the center of mass
+     */
+    RealVector getVelocity();
+
+    /**
+     * Function that sets the velocity vector of the center of mass
+     * @param velocity New velocity vector of the center of mass
+     */
+    void setVelocity(RealVector velocity);
+
+    /**
+     * Function that returns a copy of the acceleration vector of the center of mass
+     * @return Acceleration vector of the center of mass
+     */
+    RealVector getAcceleration();
+
+    /**
+     * Function that sets the accelerations vector of the center of mass
+     * @param acceleration New acceleration vector of the center of mass
+     */
+    void setAcceleration(RealVector acceleration);
+
+    /**
+     * Function that adds an external force acting on the center of mass
+     * @param force Force vector that acts on the center of mass
+     */
+    void addForce(RealVector force);
+
+    /**
+     * Function that returns the mass of the object
+     * @return Mass of the physical object
+     */
+    double getMass();
+
+    /**
+     * Function that sets the mass of the object
+     * @param mass New mass of the physical object
+     */
+    void setMass(double mass);
+
+    /**
+     * Function that returns the width of the object
+     * @return Width of the object
+     */
+    double getWidth();
+
+    /**
+     * Function that sets the width of the object
+     * @param width New width of the object
+     */
+    void setWidth(double width);
+
+    /**
+     * Function that returns the length of the object
+     * @return Length of the object
+     */
+    double getLength();
+
+    /**
+     * Function that sets the length of the object
+     * @param length New length of the object
+     */
+    void setLength(double length);
+
+    /**
+     * Function that returns the height of the object
+     * @return Height of the object
+     */
+    double getHeight();
+
+    /**
+     * Function that sets the height of the object
+     * @param height New height of the object
+     */
+    void setHeight(double height);
+
+    /**
+     * Function that returns a copy of center of geometry position vector
+     * @return Position vector of the center of geometry
+     */
+    RealVector getGeometryPosition();
+
+    /**
+     * Function that sets the center of geometry position vector.
+     * @param geometryPosition New position vector of the center of geometry
+     */
+    void setGeometryPosition(RealVector geometryPosition);
+
+    /**
+     * Function that returns a copy of the vector pointing from the center of mass position to the center of geometry position
+     * @return Offset vector of the center of mass position to the center of geometry position
+     */
+    RealVector getGeometryPositionOffset();
+
+    /**
+     * Function that sets the vector pointing from the center of mass position to the center of geometry position
+     * @param geometryPositionOffset New offset vector of the center of mass position to the center of geometry position
+     */
+    void setGeometryPositionOffset(RealVector geometryPositionOffset);
+
+    /**
+     * Function that returns the type of the physical object
+     * @return Type of the physical object
      */
     PhysicalObjectType getPhysicalObjectType();
 
     /**
+     * Function that returns the error flag
+     * @return Error flag of the physical object
+     */
+    boolean getError();
+
+    /**
+     * Function that sets the error flag
+     * @param error New Error flag of the physical object
+     */
+    void setError(boolean error);
+
+    /**
+     * Function that returns the collision flag
+     * @return Collision flag of the physical object
+     */
+    boolean getCollision();
+
+    /**
+     * Function that sets the collision flag
+     * @param collision New collision flag of the physical object
+     */
+    void setCollision(boolean collision);
+
+    /**
+     * Function that returns the id of the physical object
+     * @return Id of the physical object
+     */
+    long getId();
+
+    /**
+     * Function that returns a list of pairs of 3D coordinates, indicating a vector on the edges of the physical object
+     * @return List of pairs of 3D points, indicating a vector on the edges of the physical object
+     */
+    List<Map.Entry<RealVector, RealVector>> getBoundaryVectors();
+
+    /**
+     * Function that computes one step of the physical behaviour of the object
+     * @param deltaT Duration of the current simulation step
+     */
+    void computePhysics(double deltaT);
+
+    /**
+     * Function that sets the position of the center of mass and the rotation of the object, in order to place the object on the surface of the world.
+     * given a x,y coordinate and a z rotation
+     * @param posX X component of the position of the physical object
+     * @param posY Y component of the position of the physical object
+     * @param rotZ Z component of the rotation of the physical object
+     */
+    void putOnSurface(double posX, double posY, double rotZ);
+
+
+    /*====================*/
+
+    /**
+     * Marked as deprecated in favour of getGeometryPosition
      * Function that returns a vector with the x, y and z coordinates of the object
      * This refers to the center position of the geometry object (i.e. NOT mass point position)
      * @return Vector with x, y, z coordinates of the object center
@@ -46,117 +229,9 @@ public interface PhysicalObject {
     RealVector getGeometryPos();
 
     /**
+     * Marked as deprecated in favour of getRotation
      * Function that returns a matrix with the rotation of the object
      * @return Matrix with the rotation of the object
      */
     RealMatrix getGeometryRot();
-
-    /**
-     * Function that returns the width of an object. Only meaningful for a box object, otherwise returns 0.0.
-     * @return Width of a box object, otherwise 0.0
-     */
-    double getWidth();
-
-    /**
-     * Function that returns the length of an object. Only meaningful for a box object, otherwise returns 0.0.
-     * @return Length of a box object, otherwise 0.0
-     */
-    double getLength();
-
-    /**
-     * Function that returns the height of an object. Only meaningful for a box object, otherwise returns 0.0.
-     * @return Height of a box object, otherwise 0.0
-     */
-    double getHeight();
-
-    /**
-     * Function that returns the z offset of an object. This is used to represent the wheel radius for vehicles, otherwise 0.0
-     * @return Z offset of an object, i.e. wheel radius for vehicles, otherwise 0.0
-     */
-    double getOffsetZ();
-
-    /**
-     * Function that returns a boolean indicating if an object had a collision
-     * @return Boolean that indicates a collision of that object
-     */
-    boolean getCollision();
-
-    /**
-     * Function that sets collision for this object
-     * @param collision Boolean that indicates a collision of that object
-     */
-    void setCollision(boolean collision);
-
-    /**
-     * Function that returns a boolean indicating if an object had a computational error
-     * @return Boolean that indicates a computational error of that object
-     */
-    boolean getError();
-
-    /**
-     * Function that sets error for this object
-     * @param error Boolean that indicates a computational error of that object
-     */
-    void setError(boolean error);
-
-    /**
-     * Returns the unique ID of the object. Valid IDs are positive numbers.
-     * @return Unique ID
-     */
-    long getId();
-
-    /**
-     * Returns the acceleration of the object
-     * @return Acceleration in m/s^2
-     */
-    RealVector getAcceleration();
-
-    /**
-     * Returns the velocity of the object
-     * @return Velocity in m/s
-     */
-    RealVector getVelocity();
-
-    /**
-     * Returns the steering angle of the object. The steering angle is given in radians. 0 means the car is
-     * driving straight forward, negative values mean the car is steering left and positive values mean the
-     * car is steering right.
-     * @return Steering angle in radians.
-     */
-    double getSteeringAngle();
-
-    /**
-     * Function that returns a list of pairs of 3D points, indicating the beginning and end of a vector in absolute 3D global coordinates
-     * These vectors are checked for overlaps / going under the map in collision detection
-     * @return List of pairs of 3D points, indicating the beginning and end of a vector in absolute 3D global coordinates
-     */
-    List<Map.Entry<RealVector, RealVector>> getBoundaryVectors();
-
-    /**
-     * Returns The Position of the FrontLeftWheel Position for DistanceCalculating. For Objects which are not
-     * PhysicalVehicle's it returns a null Vector.
-     * @return Vector of the Position.
-     */
-    RealVector getFrontLeftWheelGeometryPos();
-
-    /**
-     * Returns The Position of the FrontRightWheel Position for DistanceCalculating. For Objects which are not
-     * PhysicalVehicle's it returns a null Vector.
-     * @return Vector of the Position.
-     */
-    RealVector getFrontRightWheelGeometryPos();
-
-    /**
-     * Returns The Position of the BackLeftWheel Position for DistanceCalculating. For Objects which are not
-     * PhysicalVehicle's it returns a null Vector.
-     * @return Vector of the Position.
-     */
-    RealVector getBackLeftWheelGeometryPos();
-
-    /**
-     * Returns The Position of the BackRightWheel Position for DistanceCalculating. For Objects which are not
-     * PhysicalVehicle's it returns a null Vector.
-     * @return Vector of the Position.
-     */
-    RealVector getBackRightWheelGeometryPos();
 }
