@@ -10,6 +10,7 @@ component ObstacleWatcher {
         out Z inJumpRange;
 
     implementation Math {
+        //Empirical distance values
         Z jumpRangeX = 128;
         
         if((abs(ObstacleDistX) < jumpRangeX) && (ObstacleDistX != -1))

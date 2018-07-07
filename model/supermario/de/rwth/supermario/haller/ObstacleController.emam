@@ -4,12 +4,12 @@ package de.rwth.supermario.haller;
 import de.rwth.supermario.haller.tools.GetIndexes;
 
 import de.rwth.supermario.haller.environment.Obstacle;
-import de.rwth.supermario.haller.environment.ObstacleFactory;
+import de.rwth.supermario.haller.environment.ObstacleSelector;
 import de.rwth.supermario.haller.actuator.ObstacleStrategy;
 
 
 component ObstacleController {
-    ports   //x,y
+    ports
         in Z^{5,2} nextObstaclePositions,
         in Z holeDistance,
         
@@ -18,27 +18,30 @@ component ObstacleController {
         out Z shootAdvice,
         out Z crouchAdvice;
         
+    //Helper component to make the code shorter 
     instance GetIndexes obstIndexes;
     
+    //These selectors select the according x and y positions from the Array
+    instance ObstacleSelector obstacleSelectors[5];
+    connect obstIndexes.index[:] -> obstacleSelectors[:].index;
     
-    instance ObstacleFactory obstacleFactories[5];
-    connect obstIndexes.index[:] -> obstacleFactories[:].index;
-    
-    connect nextObstaclePositions -> obstacleFactories[1].nextObstaclePositions,
-            obstacleFactories[2].nextObstaclePositions,
-            obstacleFactories[3].nextObstaclePositions,
-            obstacleFactories[4].nextObstaclePositions,
-            obstacleFactories[5].nextObstaclePositions;
+    connect nextObstaclePositions -> obstacleSelectors[1].nextObstaclePositions,
+            obstacleSelectors[2].nextObstaclePositions,
+            obstacleSelectors[3].nextObstaclePositions,
+            obstacleSelectors[4].nextObstaclePositions,
+            obstacleSelectors[5].nextObstaclePositions;
     
     instance Obstacle obstacles[5];
-    connect obstacleFactories[:].x -> obstacles[:].distX;
-    connect obstacleFactories[:].y -> obstacles[:].distY;
+    connect obstacleSelectors[:].x -> obstacles[:].distX;
+    connect obstacleSelectors[:].y -> obstacles[:].distY;
     
+    //The values are forwarded into the strategy
     instance ObstacleStrategy obstStrat;
-    connect obstacleFactories[:].x ->obstStrat.obstDistsX[:];
-    connect obstacleFactories[:].y ->obstStrat.obstDistsY[:];
+    connect obstacleSelectors[:].x ->obstStrat.obstDistsX[:];
+    connect obstacleSelectors[:].y ->obstStrat.obstDistsY[:];
     connect holeDistance -> obstStrat.holeDistance;
     
+    //The advice ist passed back
     connect obstStrat.jumpAdvice -> jumpAdvice;
     
 }

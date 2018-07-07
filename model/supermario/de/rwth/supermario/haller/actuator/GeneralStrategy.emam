@@ -4,15 +4,17 @@ package de.rwth.supermario.haller.actuator;
 
 component GeneralStrategy {
     ports
-        //in Enemy enemies[5],
         in Z^{1,2} marioPosition,
+        in Q tickSize,
         out Z jumpAdvice,
         out Z crouchAdvice,
         out Z directionAdvice;
 
 
     implementation Math {
-        Z maxTicks = 20; // *0,1 = 2s
+        //Wait one seconds before being "stuck"
+        Z maxTicks = 1 * tickSize; 
+  
         static Z ticksOnSamePosition = 0;
         static Z oldXPos = -1;
         
@@ -31,7 +33,7 @@ component GeneralStrategy {
     
         directionAdvice = 1;
             
-        //crouchAdvice = 1;
+        crouchAdvice = 0;
     }
 
         

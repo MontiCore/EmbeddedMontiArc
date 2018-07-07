@@ -10,7 +10,7 @@ component Enemy {
         out Z velX,
         out Z velY;
 
-
+    
     instance GetVelocity velocity;
     connect distX -> velocity.distX;
     connect distY -> velocity.distY;

@@ -184,6 +184,36 @@
               </div>
             </td>
           </tr>
+          <tr>
+            <td>
+              <div class="type">Q</div>
+            </td>
+            <td>
+              <div class="label">
+                tickSize:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-tickSize"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                marioResting:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-marioResting"></textarea>
+              </div>
+            </td>
+          </tr>
         </table>
       </div>
       <div class="outports">
@@ -276,6 +306,8 @@
     document.getElementById("inport-field-nextObstaclePositions").value = url.searchParams.get("nextObstaclePositions");
     document.getElementById("inport-field-nextHole").value = url.searchParams.get("nextHole");
     document.getElementById("inport-field-nextLootCrates").value = url.searchParams.get("nextLootCrates");
+    document.getElementById("inport-field-tickSize").value = url.searchParams.get("tickSize");
+    document.getElementById("inport-field-marioResting").value = url.searchParams.get("marioResting");
 
   function exec() {
     clearOutportFields();
@@ -289,6 +321,8 @@
       setNextObstaclePositions(document.getElementById("inport-field-nextObstaclePositions").value);
       setNextHole(document.getElementById("inport-field-nextHole").value);
       setNextLootCrates(document.getElementById("inport-field-nextLootCrates").value);
+      setTickSize(document.getElementById("inport-field-tickSize").value);
+      setMarioResting(document.getElementById("inport-field-marioResting").value);
 
       execute();
 
@@ -322,6 +356,8 @@
     document.getElementById("inport-field-nextObstaclePositions").value = "";
     document.getElementById("inport-field-nextHole").value = "";
     document.getElementById("inport-field-nextLootCrates").value = "";
+    document.getElementById("inport-field-tickSize").value = "";
+    document.getElementById("inport-field-marioResting").value = "";
   }
 
   function clearOutportFields() {

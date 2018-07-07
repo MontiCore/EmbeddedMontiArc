@@ -192,4 +192,32 @@ function execute() {
   }
     Module.setNextLootCrates(array);
 }
+  function setTickSize(_tickSize) {
+  var value = math.eval(_tickSize);
+
+  if (value === undefined) {
+    throw "tickSize: Could not evaluate input";
+  }
+
+  //check type
+  if (math.typeof(value) !== "number") {
+    throw "tickSize: Expected type number";
+  }
+      var value_num = value;
+    Module.setTickSize(value_num);
+}
+  function setMarioResting(_marioResting) {
+  var value = math.eval(_marioResting);
+
+  if (value === undefined) {
+    throw "marioResting: Could not evaluate input";
+  }
+
+  //check type
+  if (math.typeof(value) !== "number") {
+    throw "marioResting: Expected type number";
+  }
+      var value_num = value;
+    Module.setMarioResting(value_num);
+}
 

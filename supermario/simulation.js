@@ -6,11 +6,12 @@ var KEY = {
 	SHOOT: 17,
 }
 
+var supermario_simulator_ticksize = 50;
 
 function startSimulation() {
     //PACMAN.startNewGame();
     try {
-        window.setInterval(doSimulationStep, 50);
+        window.setInterval(doSimulationStep, supermario_simulator_ticksize); 
     } catch (err) {
         if (err.message === undefined) {
             console.log(err)
@@ -59,7 +60,7 @@ function extractNextObstaclePositions(_solid){
 		var entry = _solid[entryNr];
 		//var isObstacle = false;
 		
-		if(entry.y > playerY && entry.y-entry.height <= playerY && (entry.left - FSM.player.left > 0)){
+		if(entry.y > playerY && entry.y-entry.height <= playerY && (entry.left - FSM.player.left > -10)){
 			//isObstacle = true;
 		
 			//positions[currentPos][0] = entry.x;
@@ -138,17 +139,19 @@ function sendPlayerData(){
 	var marioPos = "[["+player.left+","+player.top+"]]";
 	var marioVel = "[["+player.xvel+","+player.yvel+"]]";
 	var marioHeight = String(player.height);
+	var marioResting = 0;
 	
 	console.log("Player: "+marioPos);
 	
 	if(typeof FSM.player.resting != 'undefined'){
 		console.log(FSM.player.resting);
+		marioResting = 1;
 	}
 	
+	setMarioResting(marioResting);
 	setMarioPosition(marioPos);
 	setMarioVelocity(marioVel);
 	setMarioHeight(marioHeight);
-	
 	
 }
 
@@ -190,6 +193,8 @@ function sendEnvironmentData(){
 	console.log("Obstacles: "+obstArray);
 	console.log("Enemies: " +enemArray);
 	console.log("Hole: "+nextHole);
+	
+	setTickSize(1000 / supermario_simulator_ticksize );
 	
 	setNextObstaclePositions(obstArray);
 	setNextEnemyPositions(enemArray);

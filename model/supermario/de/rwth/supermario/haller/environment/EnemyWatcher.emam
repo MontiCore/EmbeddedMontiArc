@@ -13,20 +13,22 @@ component EnemyWatcher {
         out Z inJumpRange;
 
     implementation Math {
-        Z jumpRangeX = 128;
-        Z jumpRangeY =  100;
+        //Empirical distance values
+        //Z jumpRangeX = 128;
+        //Z jumpRangeY =  100;
+        Z jumpRangeX = 150;
+        Z jumpRangeY =  128;
         
+        
+        //Enemy in Jumprange
         if((abs(EnemyDistX) < jumpRangeX) && (abs(EnemyDistY) < jumpRangeY) && (EnemyDistX != -1))
-            //inJumpRange = 0;
-            
-            //DEBUG
             inJumpRange = 1;
         else
             inJumpRange = 0;
         end
         
         
-        //Enemy moving right an left from player
+        //Enemy moving in the opposite direction of the direction to it from mario
         if((EnemyVelocityX > 0) != (EnemyDistX > 0))
             movesTowardsPlayer = 1;
         else
