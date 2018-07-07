@@ -67,19 +67,19 @@ public class MainServlet extends HttpServlet {
         //Compile sources, emam2wasm
         boolean res1 = compileEMAM() == 0;
 
-        //Read compiled files and pack them into archive
-        ZipMultipleFiles zipOut = new ZipMultipleFiles();
-
-        ByteArrayOutputStream zipStream = zipOut.zipItToStream(
-                "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.wasm",
-                "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.js");
-
-
-        // Send response with encoded zipStream
+        // if the compilation was successful then pack data and send back
         if(res0 && res1){
 
+            //Read compiled files and pack them into archive
+            ZipMultipleFiles zipOut = new ZipMultipleFiles();
+
+            ByteArrayOutputStream zipStream = zipOut.zipItToStream(
+                    "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.wasm",
+                    "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.js");
+
+            // Send response with encoded zipStream
             resp.addHeader("Access-Control-Allow-Origin", "*");
-            resp.setContentType("blob");
+//            resp.setContentType("blob");
             resp.setStatus(HttpStatus.OK_200);
             resp.getOutputStream().write(zipStream.toByteArray());
 
@@ -88,11 +88,9 @@ public class MainServlet extends HttpServlet {
 
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setContentType("text/plain");
-            //resp.setStatus(HttpStatus.OK_200);
-            resp.sendError(500, "Error during compilation! Check the model!");
+            resp.sendError(HttpStatus.INTERNAL_SERVER_ERROR_500,"Error during compilation! Check the model!");
 
         }
-
 
         clearWorkspace(new File("incomingData"));
         clearWorkspace(new File("../emam2wasm/models"));
