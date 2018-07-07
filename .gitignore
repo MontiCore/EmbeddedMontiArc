@@ -13,4 +13,4 @@ buildNumber.properties
 
 # Don't track IntelliJ files
 .idea/
-maven-package.iml
+*.iml
