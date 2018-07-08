@@ -14,14 +14,10 @@ component EnemyWatcher {
 
     implementation Math {
         //Empirical distance values
-        //Z jumpRangeX = 128;
-        //Z jumpRangeY =  100;
         Z jumpRangeX = 200;
-        Z jumpRangeY =  32;
         
-        
-        //Enemy in Jumprange
-        if((abs(EnemyDistX) < jumpRangeX) &&/* (abs(EnemyDistY) < jumpRangeY) */ (EnemyDistY > -64) && (EnemyDistX != -1) && (EnemyDistX > 45))
+        //Enemy in Jumprange, and not above, not undefined, stopping to jump while we are over it, so we don't jump much too far. 
+        if((abs(EnemyDistX) < jumpRangeX) && (EnemyDistY > -64) && (EnemyDistX != -1) && (EnemyDistX > 45))
             inJumpRange = 1;
         else
             inJumpRange = 0;
