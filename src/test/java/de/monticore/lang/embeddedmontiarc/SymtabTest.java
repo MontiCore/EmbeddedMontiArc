@@ -788,7 +788,7 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testInstantiations() {
         Scope symTab = EMAModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
 
-        EMAComponentSymbol emaComponentSymbol = symTab.<EMAComponentSymbol>resolve("symtab.instantiations.Top", EMAComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol emaComponentSymbol = EMAModelLoader.loadComponentFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
         assertNotNull(emaComponentSymbol);
         Scope componentScope = emaComponentSymbol.getSpannedScope();
         EMAPortSymbol portSymbol = componentScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
@@ -815,10 +815,5 @@ public class SymtabTest extends AbstractSymtabTest {
 
     }
 
-    @Test
-    public void testModelLoaderMainTxt() {
-        Scope symTab = EMAModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
-
-    }
 }
 

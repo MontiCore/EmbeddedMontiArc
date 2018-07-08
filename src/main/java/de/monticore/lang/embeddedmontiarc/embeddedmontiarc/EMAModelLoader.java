@@ -18,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -29,19 +28,17 @@ public class EMAModelLoader {
 
     public static EMAComponentSymbol loadComponentFromMainTxt(String mainTxt) {
         Scope scope = createSymTabFromMainTxt(mainTxt);
-        EMAComponentSymbol emaComponentSymbol = scope.<EMAComponentSymbol>resolve("symtab.instantiations.Top", EMAComponentSymbol.KIND).orElse(null);
         String mainComponent = parseMainComponent(mainTxt);
-        return null;
 
+        EMAComponentSymbol emaComponentSymbol = scope.<EMAComponentSymbol>resolve(mainComponent, EMAComponentSymbol.KIND).orElse(null);
+
+        if(emaComponentSymbol == null)
+            Log.error("Could not resolve mainComponent form mainTxt: " + mainComponent);
+
+        return emaComponentSymbol;
     }
 
     public static Scope createSymTabFromMainTxt(String mainTxt) {
-
-        /*for (String m : paths) {
-            modelPath.addEntry(Paths.get(m));
-        }
-
-        return createSymTab(modelPath);*/
         String mainComponent = parseMainComponent(mainTxt);
         String mainInstantiation = parseMainInstantiation(mainTxt);
         ModelPath modelPath = parseModelPath(mainTxt);
