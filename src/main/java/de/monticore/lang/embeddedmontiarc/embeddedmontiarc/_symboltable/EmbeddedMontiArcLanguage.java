@@ -50,8 +50,19 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
 
     public static final String FILE_ENDING = "ema";
 
+    private String mainComponent;
+    private String mainInstantiation;
+
     public EmbeddedMontiArcLanguage() {
         super("Embedded MontiArc Language", FILE_ENDING);
+        this.mainComponent = "defaultComponent";
+        this.mainInstantiation = "defaultInstantiation";
+    }
+
+    public EmbeddedMontiArcLanguage(String mainComponent, String mainInstantiation) {
+        super("Embedded MontiArc Language", FILE_ENDING);
+        this.mainComponent = mainComponent;
+        this.mainInstantiation = mainInstantiation;
     }
 
     @Override
@@ -86,5 +97,13 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
     @Override
     protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
         return new EmbeddedMontiArcModelLoader(this);
+    }
+
+    public String getMainComponent() {
+        return mainComponent;
+    }
+
+    public String getMainInstantiation() {
+        return mainInstantiation;
     }
 }

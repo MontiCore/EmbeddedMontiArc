@@ -61,9 +61,6 @@ public class AbstractSymtabTest {
     }
 
 
-    //todo move to main
-  /*  protected static Scope createSymTabFromMainTxt(String mainTxt) {
-        return null;
-    }*/
+
 
 }

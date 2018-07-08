@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.EMAModelLoader;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
@@ -785,7 +786,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
     @Test
     public void testInstantiations() {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = EMAModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
 
         EMAComponentSymbol emaComponentSymbol = symTab.<EMAComponentSymbol>resolve("symtab.instantiations.Top", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(emaComponentSymbol);
@@ -811,6 +812,12 @@ public class SymtabTest extends AbstractSymtabTest {
         Scope instanceScope2 = instanceSymbol2.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol2 = instanceScope2.<EMAPortInstanceSymbol>resolve("sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
         assertNotNull(portInstanceSymbol2);
+
+    }
+
+    @Test
+    public void testModelLoaderMainTxt() {
+        Scope symTab = EMAModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
 
     }
 }
