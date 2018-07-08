@@ -4,6 +4,7 @@
 
 #include "catch.hpp"
 #include "../${viewModel.componentName}.h"
+#include <iostream>
 <#list viewModel.streams as stream>
 TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
     ${viewModel.componentName} component;
@@ -34,5 +35,8 @@ TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
 <#elseif helper.isRangeOutputPortCheck(check)>
     REQUIRE( ${portValue} >= ${check.lowerBound} );
     REQUIRE( ${portValue} <= ${check.upperBound} );
+</#if>
+<#else>
+    std::cout << (${portValue}) << "\n";
 </#if>
 </#macro>
