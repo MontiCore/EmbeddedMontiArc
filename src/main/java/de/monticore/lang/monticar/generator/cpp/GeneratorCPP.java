@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
+import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
@@ -47,6 +48,7 @@ public class GeneratorCPP implements Generator {
     protected boolean generateMainClass = false;
     protected boolean generateSimulatorInterface = false;
     protected boolean checkModelDir = false;
+    protected boolean streamTestGenerationMode = false;
 
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
@@ -55,9 +57,12 @@ public class GeneratorCPP implements Generator {
         currentInstance = this;
     }
 
-
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
+    }
+
+    public void useStreamTestTestGeneration() {
+        streamTestGenerationMode = true;
     }
 
     public void useOctaveBackend() {
@@ -83,13 +88,16 @@ public class GeneratorCPP implements Generator {
 
     @Override
     public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
+        StreamTestGenerator streamTestGenerator = new StreamTestGenerator();//only used when creating streamTestsForAComponent
         LanguageUnitCPP languageUnitCPP = new LanguageUnitCPP();
         languageUnitCPP.setGeneratorCPP(this);
         languageUnitCPP.addSymbolToConvert(componentSymbol);
         if (mathStatementsSymbol != null)
             languageUnitCPP.addSymbolToConvert(mathStatementsSymbol);
-        languageUnitCPP.generateBluePrints();
-
+        if (!streamTestGenerationMode)
+            languageUnitCPP.generateBluePrints();
+        else
+            streamTestGenerator.createStreamTest(componentSymbol);
         BluePrintCPP bluePrintCPP = null;
         for (BluePrint bluePrint : languageUnitCPP.getBluePrints()) {
             if (bluePrint.getOriginalSymbol().equals(componentSymbol)) {
@@ -100,8 +108,11 @@ public class GeneratorCPP implements Generator {
         if (bluePrintCPP != null) {
             bluePrints.add(bluePrintCPP);
         }
-
-        String result = languageUnitCPP.getGeneratedHeader(taggingResolver, bluePrintCPP);
+        String result;
+        if (!streamTestGenerationMode)
+            result = languageUnitCPP.getGeneratedHeader(taggingResolver, bluePrintCPP);
+        else
+            result = streamTestGenerator.getCurrentGeneratedStreamTest().toString();
         return result;
     }
 
@@ -365,8 +376,8 @@ public class GeneratorCPP implements Generator {
     private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
         return generateWrapper(componentSymbol, "server.cc");
     }
-    
-     private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
+
+    private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
         ServerWrapperViewModel vm = new ServerWrapperViewModel();
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateServerWrapper(vm);
