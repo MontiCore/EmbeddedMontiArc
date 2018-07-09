@@ -11,3 +11,14 @@ Main-Component-Instantiation: de.rwth.armin.modeling.autopilot.Autopilot myAutoP
 // They are split by ',' like this: [../../../../../src/test/resources, ../../../../../src/main/resources]
 // The are always relative to main.txt
 Model-Paths: [./]
+
+
+
+// This feature is implemented in EMA version > 0.1.0-SNAPSHOT
+// Additionally when working on with the EMA language, load all your models with the methods:
+//
+// @param mainTxt Path to main.txt
+// loadComponentFromMainTxt(String mainTxt)
+// createSymTabFromMainTxt(String mainTxt)
+//
+// Both located in EmbeddedMontiArcModelLoader
