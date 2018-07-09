@@ -28,4 +28,8 @@ public class StreamTestPort {
     public void setValues(List<StreamTestValue> values) {
         this.values = values;
     }
+
+    public void addValue(StreamTestValue value) {
+        this.values.add(value);
+    }
 }

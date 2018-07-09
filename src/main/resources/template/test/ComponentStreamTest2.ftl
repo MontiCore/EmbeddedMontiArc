@@ -35,7 +35,6 @@ TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
 <#elseif helper.isRangeOutputPortCheck(check)>
     REQUIRE( ${portValue} >= ${check.lowerBound} );
     REQUIRE( ${portValue} <= ${check.upperBound} );
-</#if>
 <#else>
     std::cout << (${portValue}) << "\n";
 </#if>

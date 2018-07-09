@@ -27,6 +27,30 @@ public class StreamTest {
         this.ports.add(port);
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();

@@ -1,10 +1,15 @@
 package de.monticore.lang.monticar.generator.testing;
 
+import alice.tuprolog.Int;
+import de.ma2cfg.helper.Names;
+import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
-import de.monticore.lang.monticar.ts.references.CommonMCTypeReference;
-import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
+import de.monticore.lang.math._ast.ASTNumberExpression;
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
+import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
 
@@ -14,37 +19,110 @@ import java.util.Collection;
 public class StreamTestGenerator {
     protected StreamTest currentGeneratedStreamTest;
 
-    public void createStreamTest(ExpandedComponentInstanceSymbol expandedComponentInstanceSymbol) {
-        //TODO write stream test creation based on input ports with random values in input range
+    int currentPrecisionValueType = 0;// 0: double, 1:int, 2:Boolean
+    double doubleMin, doubleMax;
+    int intMin, intMax;
+
+    public void createStreamTest(ExpandedComponentInstanceSymbol expandedComponentInstanceSymbol, int amountOfValues, String testNamePostFix) {
+        //TODO remove System.out.printlns
         currentGeneratedStreamTest = new StreamTest();
         Collection<PortSymbol> inPorts = expandedComponentInstanceSymbol.getIncomingPorts();
-
+        currentGeneratedStreamTest.setComponentName(Names.FirstUpperCase(expandedComponentInstanceSymbol.getName()));
+        currentGeneratedStreamTest.setPackageName(expandedComponentInstanceSymbol.getPackageName());
+        currentGeneratedStreamTest.setName(currentGeneratedStreamTest.getComponentName() + "Test" + testNamePostFix);
+        System.out.println("Generating StreamTest for component " + currentGeneratedStreamTest.getComponentName());
         for (PortSymbol p : inPorts) {
-            System.out.println(p.getTypeReference().getClass().getName());
-            if (p.getTypeReference().getName().equals("CommonMatrixType")) {
-                //TODO handle commonMatrixType
-                MCASTTypeSymbolReference typeReference = (MCASTTypeSymbolReference) p.getTypeReference();
-                System.out.println(typeReference.getActualTypeArguments().size());
-                if (typeReference.getAstNode().isPresent())
-                    System.out.println(p.getTypeReference().getAstNode().get().getClass().getName());
-            } else if (p.getTypeReference().getName().equals("Q")) {
-                CommonMCTypeReference typeReference = (CommonMCTypeReference) p.getTypeReference();
-                System.out.println(typeReference.getReferencedSymbol().getName());
-                MontiCarTypeSymbol typeSymbol = (MontiCarTypeSymbol) typeReference.getReferencedSymbol();
-                System.out.println(typeSymbol.getFormalTypeParameters().size());
-                System.out.println(typeSymbol.getInterfaces().size());
-                if (typeReference.getAstNode().isPresent())
-                    System.out.println(p.getTypeReference().getAstNode().get().getClass().getName());
-            } else if (p.getTypeReference().getName().equals("Z")) {
-                CommonMCTypeReference typeReference = (CommonMCTypeReference) p.getTypeReference();
-                if (typeReference.getAstNode().isPresent())
-                    System.out.println(p.getTypeReference().getAstNode().get().getClass().getName());
-            } else if (p.getTypeReference().getName().equals("N")) {
-                CommonMCTypeReference typeReference = (CommonMCTypeReference) p.getTypeReference();
-                if (typeReference.getAstNode().isPresent())
-                    System.out.println(p.getTypeReference().getAstNode().get().getClass().getName());
+            if (p.getAstNode().isPresent()) {
+                System.out.println(p.getAstNode().get().getClass().getName());
+                ASTPort astPort = (ASTPort) p.getAstNode().get();
+                System.out.println(astPort.getName());
+                StreamTestPort streamTestPort = new StreamTestPort();
+                streamTestPort.setName(p.getName());
+                doubleMin = -10000000;//Maybe these values should be configurable as parameters later?
+                doubleMax = 10000000;
+                intMin = -10000000;
+                intMax = 10000000;
+
+                int sizeX = 1;
+                int sizeY = 1;
+                int type = 0;// 0: singular value, 1: matrix, 2:Boolean
+                if (astPort.getType() instanceof ASTElementType) {
+                    ASTElementType astElementType = (ASTElementType) astPort.getType();
+                    handleASTElementType(astElementType);
+                } else if (astPort.getType() instanceof ASTCommonMatrixType) {
+                    type = 1;
+                    ASTCommonMatrixType astCommonMatrixType = (ASTCommonMatrixType) astPort.getType();
+                    System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(0).getClass().getName());
+                    System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(1).getClass().getName());
+                    //System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(0).toString());
+                    //System.out.println(astCommonMatrixType.getDimension().getDimensionList().get(1).toString());
+                    ASTNode node1 = astCommonMatrixType.getDimension().getDimensionList().get(0);
+                    ASTNode node2 = astCommonMatrixType.getDimension().getDimensionList().get(1);
+
+                    if (node1 instanceof ASTNumberExpression) {
+                        sizeX = ((ASTNumberExpression) node1).getNumberWithUnit().getNumber().get().intValue();
+                    }
+                    if (node2 instanceof ASTNumberExpression) {
+                        sizeY = ((ASTNumberExpression) node2).getNumberWithUnit().getNumber().get().intValue();
+                    }
+                    handleASTElementType(astCommonMatrixType.getElementType());
+                    //sizeX = astCommonMatrixType.getDimension().getDimensionList().get(0).getClass().getName().toString();
+                    //sizeY = astCommonMatrixType.getDimension().getDimensionList().get(1).toString();
+                }
+                for (int i = 0; i < amountOfValues; ++i) {
+                    StreamTestValue streamTestValue;
+                    if (type == 0) {//singular value
+                        if (currentPrecisionValueType == 0) {
+                            streamTestValue = new BasicStreamTestValue<Double>(getRandomDoubleBetween(doubleMin, doubleMax));
+                        } else if (currentPrecisionValueType == 1) {
+                            streamTestValue = new BasicStreamTestValue<Integer>(getRandomIntegerBetween(intMin, intMax));
+                        } else /*(currentPrecisionValueType == 2)*/ {
+                            streamTestValue = new BasicStreamTestValue<Boolean>(Math.random() > 0.5 ? true : false);
+                        }
+                    } else if (type == 1) {//matrix value
+                        if (currentPrecisionValueType == 0)
+                            streamTestValue = new MatrixStreamTestValue<Double>(getRandomDoubleMatrix(sizeX, sizeY));
+                        else if (currentPrecisionValueType == 1)
+                            streamTestValue = new MatrixStreamTestValue<Integer>(getRandomIntegerMatrix(sizeX, sizeY));
+                        else
+                            streamTestValue = null;//TODO handle Boolean Matrix
+                    } else if (type == 2) {//singular boolean value
+                        streamTestValue = new BasicStreamTestValue<Boolean>(Math.random() > 0.5 ? true : false);
+                    } else {
+                        streamTestValue = null;
+                        Log.debug("PortType Not Handled!", "StreamTestTestGeneration:");
+                    }
+                    streamTestPort.addValue(streamTestValue);
+                }
+
+                currentGeneratedStreamTest.addPort(streamTestPort);
+            } else {
+                //ConstantPorts do not have an ASTNode
+                //Log.debug(p.getName(), "PortSymbol has no ASTNode:");
             }
             System.out.println();
+        }
+    }
+
+    private void handleASTElementType(ASTElementType astElementType) {
+        if (astElementType.getName().equals("Q")) {
+            currentPrecisionValueType = 0;
+        } else if (astElementType.getName().equals("Z")) {
+            currentPrecisionValueType = 1;
+        } else if (astElementType.getName().equals("B")) {
+            currentPrecisionValueType = 2;
+        }
+        if (astElementType.isPresentRange()) {
+            if (astElementType.getRange().getMin().getNumber().isPresent()) {
+                doubleMin = astElementType.getRange().getStartValue().doubleValue();
+                intMin = astElementType.getRange().getStartValue().intValue();
+            }
+            System.out.println("Min: " + doubleMin);
+            if (astElementType.getRange().getMax().getNumber().isPresent()) {
+                doubleMax = astElementType.getRange().getEndValue().doubleValue();
+                intMax = astElementType.getRange().getEndValue().intValue();
+                System.out.println("Max: " + doubleMax);
+            }
         }
     }
 
@@ -52,4 +130,35 @@ public class StreamTestGenerator {
         return currentGeneratedStreamTest;
     }
 
+    public int getRandomIntegerBetween(int min, int max) {
+        return (int) getRandomDoubleBetween(min, max);
+    }
+
+    public Integer[][] getRandomIntegerMatrix(int sizeX, int sizeY) {
+        return getRandomIntegerMatrix(sizeX, sizeY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public Integer[][] getRandomIntegerMatrix(int sizeX, int sizeY, int min, int max) {
+        Integer[][] matrix = new Integer[sizeX][sizeY];
+        for (int i = 0; i < sizeX; ++i)
+            for (int j = 0; j < sizeY; ++j)
+                matrix[i][j] = getRandomIntegerBetween(min, max);
+        return matrix;
+    }
+
+    public double getRandomDoubleBetween(double min, double max) {
+        return Math.random() + min + Math.random() * (max - min);
+    }
+
+    public Double[][] getRandomDoubleMatrix(int sizeX, int sizeY, double min, double max) {
+        Double[][] matrix = new Double[sizeX][sizeY];
+        for (int i = 0; i < sizeX; ++i)
+            for (int j = 0; j < sizeY; ++j)
+                matrix[i][j] = getRandomDoubleBetween(min, max);
+        return matrix;
+    }
+
+    public Double[][] getRandomDoubleMatrix(int sizeX, int sizeY) {
+        return getRandomDoubleMatrix(sizeX, sizeY, Double.MIN_VALUE, Double.MAX_VALUE);
+    }
 }

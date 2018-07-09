@@ -33,7 +33,7 @@ public final class AllTemplates {
         conf.setLogTemplateExceptions(false);
         conf.setClassForTemplateLoading(AllTemplates.class, "/template");
         try {
-            COMPONENT_STREAM_TEST = conf.getTemplate("/test/ComponentStreamTest.ftl");
+            COMPONENT_STREAM_TEST = conf.getTemplate("/test/ComponentStreamTest2.ftl");
             TESTS_MAIN_ENTRY = conf.getTemplate("/test/TestsMainEntry.ftl");
             TESTS_MAIN_ENTRY_ARMADILLO = conf.getTemplate("/test/TestsMainEntryArmadillo.ftl");
             STRUCT = conf.getTemplate("/type/Struct.ftl");
