@@ -55,6 +55,11 @@ import de.se_rwth.commons.logging.Log;
  */
 public class EmbeddedMontiArcModelLoader extends EmbeddedMontiArcModelLoaderTOP {
 
+
+  public EmbeddedMontiArcModelLoader() {
+    super(new EmbeddedMontiArcLanguage());
+  }
+
   public EmbeddedMontiArcModelLoader(EmbeddedMontiArcLanguage language) {
     super(language);
   }
@@ -79,7 +84,7 @@ public class EmbeddedMontiArcModelLoader extends EmbeddedMontiArcModelLoaderTOP 
    * @param mainTxt Path to main.txt
    * @return
    */
-  public static EMAComponentSymbol loadComponentFromMainTxt(String mainTxt) {
+  public EMAComponentSymbol loadComponentFromMainTxt(String mainTxt) {
     Scope scope = createSymTabFromMainTxt(mainTxt);
     String mainComponent = parseMainComponent(mainTxt);
 
@@ -96,7 +101,7 @@ public class EmbeddedMontiArcModelLoader extends EmbeddedMontiArcModelLoaderTOP 
    * @param mainTxt Path to main.txt
    * @return
    */
-  public static Scope createSymTabFromMainTxt(String mainTxt) {
+  public Scope createSymTabFromMainTxt(String mainTxt) {
     String mainComponent = parseMainComponent(mainTxt);
     String mainInstantiation = parseMainInstantiation(mainTxt);
     ModelPath modelPath = parseModelPath(mainTxt);
@@ -111,7 +116,7 @@ public class EmbeddedMontiArcModelLoader extends EmbeddedMontiArcModelLoaderTOP 
     return scope;
   }
 
-  protected static Scope createSymTab(ModelPath modelPath, String mainComponent, String mainInstantiation) {
+  protected Scope createSymTab(ModelPath modelPath, String mainComponent, String mainInstantiation) {
     ModelingLanguageFamily fam = new ModelingLanguageFamily();
     fam.addModelingLanguage(new EmbeddedMontiArcLanguage());
     fam.addModelingLanguage(new StreamLanguage());

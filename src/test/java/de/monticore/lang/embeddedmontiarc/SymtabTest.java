@@ -785,9 +785,10 @@ public class SymtabTest extends AbstractSymtabTest {
 
     @Test
     public void testInstantiations() {
-        Scope symTab = EmbeddedMontiArcModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
+        EmbeddedMontiArcModelLoader loader = new EmbeddedMontiArcModelLoader();
+        Scope symTab = loader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
 
-        EMAComponentSymbol emaComponentSymbol = EmbeddedMontiArcModelLoader.loadComponentFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
+        EMAComponentSymbol emaComponentSymbol = loader.loadComponentFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
         assertNotNull(emaComponentSymbol);
         Scope componentScope = emaComponentSymbol.getSpannedScope();
         EMAPortSymbol portSymbol = componentScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);

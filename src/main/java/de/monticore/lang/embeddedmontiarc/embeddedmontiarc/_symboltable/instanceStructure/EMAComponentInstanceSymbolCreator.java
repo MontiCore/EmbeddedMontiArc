@@ -84,7 +84,8 @@ public class EMAComponentInstanceSymbolCreator {
 
         EMAComponentInstanceBuilder builder =
                 createInstance(topComponent, filters, null, fullInstanceName)
-                        .setName(instanceName);
+                        .setName(instanceName)
+                        .setPackageName(topComponent.getPackageName());
 
         final EMAComponentInstanceSymbol instanceSymbol = builder.addResolvingFilters(filters).build();
         enclosingScope.add(instanceSymbol);

@@ -67,13 +67,14 @@ public class EMAConnectorBuilder {
     throw new Error("not all parameters have been set before to build the connector symbol");
   }
 
-  public static EMAConnectorInstanceSymbol instantiate(EMAConnectorSymbol connector) {
+  public static EMAConnectorInstanceSymbol instantiate(EMAConnectorSymbol connector, String packageName) {
     EMAConnectorInstanceSymbol connectorInstance = new EMAConnectorInstanceSymbol(connector.getTarget());
     connectorInstance.setSource(connector.getSource());
     connectorInstance.setTarget(connector.getTarget());
     connectorInstance.setIsConstantConnector(connector.isConstant);
     connectorInstance.setEMAConstantPortSymbol(connector.emaConstantPortSymbol);
-
+    connectorInstance.setPackageName(packageName);
+    connectorInstance.setFullName(packageName + "." + connectorInstance.getName());
     return connectorInstance;
   }
 }

@@ -275,7 +275,7 @@ public class EMAComponentInstanceBuilder {
             resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
             ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.instantiate(p, sym.getFullName()))); // must be cloned since we change it if it has generics
-            connectors.stream().forEachOrdered(c -> scope.add(EMAConnectorBuilder.instantiate(c)));
+            connectors.stream().forEachOrdered(c -> scope.add(EMAConnectorBuilder.instantiate(c, sym.getFullName())));
             subComponents.stream().forEachOrdered(s -> scope.add(s));
 
             sym.setActualTypeArguments(actualTypeArguments.values().stream().collect(Collectors.toList()));

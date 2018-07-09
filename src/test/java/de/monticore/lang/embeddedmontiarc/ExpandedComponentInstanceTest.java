@@ -315,7 +315,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertEquals(2, inst.getConnectorInstances().size());
 
         Iterator<EMAConnectorInstanceSymbol> iter = inst.getConnectorInstances().iterator();
-        EMAConnectorSymbol cs = iter.next();
+        EMAConnectorInstanceSymbol cs = iter.next();
 
         assertEquals("a1.out1", cs.getSource());
         assertEquals("out1", cs.getTarget());
