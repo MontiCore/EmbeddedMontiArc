@@ -1,5 +1,6 @@
-![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/badges/master/build.svg)
-![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/badges/master/coverage.svg)
+
+[![pipeline status](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/badges/master/pipeline.svg)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/commits/master)
+[![coverage report](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/badges/master/coverage.svg)](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/commits/master)
 
 # MontiMathOpt
 
