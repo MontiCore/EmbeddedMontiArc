@@ -194,8 +194,13 @@ public class MathInformationRegister {
                 // is number
                 MathNumberExpressionSymbol numberSymbol = (MathNumberExpressionSymbol) symbol;
                 result = Optional.of(numberSymbol.getValue().getRealNumber().doubleValue());
-            } else {
-                // TODO resolve variable
+            } else if (symbol instanceof MathValueSymbol) {
+                result = tryGetDoubleValue(((MathValueSymbol) symbol).getValue());
+            } else if (symbol instanceof MathNameExpressionSymbol) {
+                Optional<MathValueSymbol> resolvedSymbol = symbol.getEnclosingScope().resolve(((MathNameExpressionSymbol) symbol).getNameToResolveValue(), MathValueSymbol.KIND);
+                if (resolvedSymbol.isPresent()) {
+                    result = tryGetDoubleValue(resolvedSymbol.get());
+                }
             }
         }
         return result;
@@ -260,7 +265,7 @@ public class MathInformationRegister {
         }
         return result;
     }
-    
+
     private MathExpressionSymbol getSubstituteByName(String name, MathExpressionSymbol expr, String atomarValueName) {
         MathExpressionSymbol result;
         MathValueSymbol declaration = getMathValueSymbol(name);
