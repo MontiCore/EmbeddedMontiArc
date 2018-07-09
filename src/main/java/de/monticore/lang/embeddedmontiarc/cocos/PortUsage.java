@@ -22,9 +22,9 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
@@ -55,7 +55,7 @@ public class PortUsage implements EmbeddedMontiArcASTComponentCoCo {
 
   @Override
   public void check(ASTComponent node) {
-    ComponentSymbol entry = (ComponentSymbol) node.getSymbolOpt().get();
+    EMAComponentSymbol entry = (EMAComponentSymbol) node.getSymbolOpt().get();
 
     // %%%%%%%%%%%%%%%% CV5 %%%%%%%%%%%%%%%%
     if (entry.isDecomposed()) {
@@ -71,7 +71,7 @@ public class PortUsage implements EmbeddedMontiArcASTComponentCoCo {
       if (entry.isInnerComponent()) {
         // ports not connected by the inner component itself might be connected from the parent
         // component or any of the parent's subcomponents' simple connectors
-        ComponentSymbol componentUsingSubComp = (ComponentSymbol) entry.getEnclosingScope()
+        EMAComponentSymbol componentUsingSubComp = (EMAComponentSymbol) entry.getEnclosingScope()
             .getSpanningSymbol().get();
         connectorSources.addAll(getSourceNames(componentUsingSubComp.getConnectors()));
       }

@@ -22,6 +22,10 @@ package de.monticore.lang.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -77,8 +81,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testComponentSub2Sanity() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol inst = symTab.<ComponentSymbol>resolve(
-                "a.Sub2", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol inst = symTab.<EMAComponentSymbol>resolve(
+                "a.Sub2", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(inst);
         System.out.println(inst);
 
@@ -96,9 +100,9 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testSubGenericInstance() throws Exception {
         Scope symTab = createSymTab("src/test/resources/symtab");
-        ComponentSymbol componentSymbol = symTab.<ComponentSymbol>resolve("generics.SubGeneric", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol emaComponentSymbol = symTab.<EMAComponentSymbol>resolve("generics.SubGeneric", EMAComponentSymbol.KIND).orElse(null);
 
-        assertNotNull(componentSymbol);
+        assertNotNull(emaComponentSymbol);
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "generics.subGenericInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
@@ -140,7 +144,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         Scope symTab = createSymTab("src/test/resources");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.genericAInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
-        ComponentSymbolReference symbol = inst.getSubComponents().iterator().next().getComponentType();
+        EMAComponentSymbolReference symbol = inst.getSubComponents().iterator().next().getComponentType();
         Log.info(symbol.getReferencedSymbol().toString(), "component:");
         Log.debug(inst.getSubComponents().iterator().next().getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Expanded:");
 
@@ -154,7 +158,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testSubGenericValueInstance() throws Exception {
         Scope symTab = createSymTab("src/test/resources/symtab");
-        ComponentSymbol comp = symTab.<ComponentSymbol>resolve("generics.SubGenericValue", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol comp = symTab.<EMAComponentSymbol>resolve("generics.SubGenericValue", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(comp);
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "generics.subGenericValueInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
@@ -311,7 +315,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertEquals(2, inst.getConnectorInstances().size());
 
         Iterator<EMAConnectorInstanceSymbol> iter = inst.getConnectorInstances().iterator();
-        EMAConnectorSymbol cs = iter.next();
+        EMAConnectorInstanceSymbol cs = iter.next();
 
         assertEquals("a1.out1", cs.getSource());
         assertEquals("out1", cs.getTarget());
@@ -484,16 +488,16 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testFAS() throws Exception {
     Scope symTab = createSymTab("src/test/resources/fas");
-    ComponentSymbol cmp = symTab.<ComponentSymbol>resolve(
-        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.CC_On_Off", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol cmp = symTab.<EMAComponentSymbol>resolve(
+        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.CC_On_Off", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(cmp);
     EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
         "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.cC_On_Off", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
 
     symTab = createSymTab("src/test/resources/fas");
-    cmp = symTab.<ComponentSymbol>resolve(
-        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.Limiter", ComponentSymbol.KIND).orElse(null);
+    cmp = symTab.<EMAComponentSymbol>resolve(
+        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.Limiter", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(cmp);
     inst = symTab.<EMAComponentInstanceSymbol>resolve(
         "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.limiter", EMAComponentInstanceSymbol.KIND).orElse(null);

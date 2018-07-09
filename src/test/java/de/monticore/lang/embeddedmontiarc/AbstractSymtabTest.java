@@ -23,13 +23,13 @@ package de.monticore.lang.embeddedmontiarc;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.InstanceInformation;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.InstancingRegister;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstancingRegister;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
@@ -37,6 +37,11 @@ import java.nio.file.Paths;
  *
  */
 public class AbstractSymtabTest {
+    /*
+    protected static Scope createSymTab(String mainComponent, String... modelPath) {
+        return null;
+    }*/
+
     protected static Scope createSymTab(String... modelPath) {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         fam.addModelingLanguage(new EmbeddedMontiArcLanguage());
@@ -54,4 +59,8 @@ public class AbstractSymtabTest {
         InstancingRegister.reset();
         return scope;
     }
+
+
+
+
 }

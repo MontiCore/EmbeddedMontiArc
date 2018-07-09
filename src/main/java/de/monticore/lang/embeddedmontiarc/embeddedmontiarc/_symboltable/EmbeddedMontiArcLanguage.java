@@ -21,6 +21,14 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorResolvingFilter;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
@@ -42,6 +50,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
 
     public static final String FILE_ENDING = "ema";
 
+
     public EmbeddedMontiArcLanguage() {
         super("Embedded MontiArc Language", FILE_ENDING);
     }
@@ -50,7 +59,7 @@ public class EmbeddedMontiArcLanguage extends EmbeddedMontiArcLanguageTOP {
     protected void initResolvingFilters() {
         super.initResolvingFilters();
         // is done in generated TOP-language addResolver(new
-        // CommonResolvingFilter<ComponentSymbol>(ComponentSymbol.class, ComponentSymbol.KIND));
+        // CommonResolvingFilter<EMAComponentSymbol>(EMAComponentSymbol.class, EMAComponentSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAComponentInstantiationSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAPortSymbol.KIND));
         addResolvingFilter(CommonResolvingFilter.create(EMAPortArraySymbol.KIND));

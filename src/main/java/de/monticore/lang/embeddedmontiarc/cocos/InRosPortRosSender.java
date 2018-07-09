@@ -22,8 +22,8 @@ package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTComponentCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvedSeveralEntriesException;
@@ -34,13 +34,13 @@ public class InRosPortRosSender implements EmbeddedMontiArcASTComponentCoCo {
     @Override
     public void check(ASTComponent node) {
         Symbol symbol = node.getSymbol().orElse(null);
-        if(symbol.isKindOf(ComponentSymbol.KIND)){
-            check((ComponentSymbol) symbol);
+        if(symbol.isKindOf(EMAComponentSymbol.KIND)){
+            check((EMAComponentSymbol) symbol);
         }
 
     }
 
-    private void check(ComponentSymbol symbol) {
+    private void check(EMAComponentSymbol symbol) {
         symbol.getConnectors().forEach(connector -> {
 
             EMAPortSymbol source = null;

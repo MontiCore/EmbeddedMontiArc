@@ -21,6 +21,8 @@
 package de.monticore.lang.embeddedmontiarc;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantSIUnit;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
@@ -75,8 +77,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSIUnitRangeSimpleUnit() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SIUnitPortTest", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SIUnitPortTest", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
@@ -106,8 +108,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSIUnitRangeMultiUnit() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SIUnitPortMultiUnitTest", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SIUnitPortMultiUnitTest", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
@@ -136,8 +138,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSIUnitRange2() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SIUnitRangeDifferentPrefix", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SIUnitRangeDifferentPrefix", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
@@ -171,8 +173,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSIUnitRangeNoLowerBounds() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SIUnitRangeNoLowerBounds", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SIUnitRangeNoLowerBounds", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
@@ -199,8 +201,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSIUnitRangeNoUpperBounds() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SIUnitRangeNoUpperBounds", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SIUnitRangeNoUpperBounds", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(0, cs.getAllOutgoingPorts().size());
@@ -230,8 +232,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSIUnitRangeConnector() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SIUnitRangeConnector", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SIUnitRangeConnector", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(1, cs.getAllOutgoingPorts().size());
@@ -282,8 +284,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testBooleanConnector() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BooleanConnector", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.BooleanConnector", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(1, cs.getAllIncomingPorts().size());
         assertEquals(1, cs.getAllOutgoingPorts().size());
@@ -321,8 +323,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testPortArray() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.PortArray", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.PortArray", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         EMAPortSymbol ps = symTab.<EMAPortSymbol>resolve("testing.PortArray.lightsIn[1]", EMAPortSymbol.KIND).orElse(null);
         assertNotNull("EMAPortSymbol is null", ps);
@@ -373,8 +375,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testPortArrayAutoConnector() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.LightControlSwitch", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.LightControlSwitch", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(5, cs.getAllIncomingPorts().size());
         for (int i = 1; i <= 5; ++i) {
@@ -409,8 +411,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testComponentArray() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.ComponentArray", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.ComponentArray", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
         //test if amount of SubComponents is correct
         assertEquals(5, cs.getSubComponents().size());
         //test if every SubComponent can be accessed by its corresponding name
@@ -435,8 +437,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testConnectorArray() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.ControlUnit", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.ControlUnit", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         Log.debug("" + cs.getConnectors().size(), "Connectors");
         assertEquals(50, cs.getConnectors().size());
@@ -475,8 +477,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testConnectorArraymn() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.ConnectorArraymn", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.ConnectorArraymn", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
 
         assertEquals(3, cs.getConnectors().size());
         Iterator iter = cs.getConnectors().iterator();
@@ -548,8 +550,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testWrongPortNumber() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.WrongPortNumber", ComponentSymbol.KIND).orElse(null);
-        assertNotNull("ComponentSymbol is null", cs);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.WrongPortNumber", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull("EMAComponentSymbol is null", cs);
         //TODO test for [n:m]
     }
 
@@ -557,7 +559,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testTypeGenerics() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicTypeInstance", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.BasicTypeInstance", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
         EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicTypeInstance.b1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
@@ -569,7 +571,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testTypeGenericsInstanciation() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicTypeInstance", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.BasicTypeInstance", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
         EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicTypeInstance.b1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
@@ -619,7 +621,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testTypeVariableGenericsInstanciationDefault() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicResolutionDefaultInstance", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.BasicResolutionDefaultInstance", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
         EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionDefaultInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
@@ -643,7 +645,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testTypeVariableGenericsInstanciation2() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.BasicResolutionInstance", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.BasicResolutionInstance", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
         EMAComponentInstantiationSymbol csInner = symTab.<EMAComponentInstantiationSymbol>resolve("testing.BasicResolutionDefaultInstance.br1", EMAComponentInstantiationSymbol.KIND).orElse(null);
         assertNotNull(csInner);
@@ -668,7 +670,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testSubComponentDefinitionInstanciation() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("testing.SubComponent", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("testing.SubComponent", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
 
 
@@ -677,7 +679,7 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testBumperBotEmergency() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cs = symTab.<ComponentSymbol>resolve("bumperBotEmergency.BumperBotEmergency", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol cs = symTab.<EMAComponentSymbol>resolve("bumperBotEmergency.BumperBotEmergency", EMAComponentSymbol.KIND).orElse(null);
         assertNotNull(cs);
 
 
@@ -686,8 +688,8 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testComponentGenericsSameComponent() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol inst = symTab.<ComponentSymbol>resolve(
-                "testing.BasicParameterInstance", ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol inst = symTab.<EMAComponentSymbol>resolve(
+                "testing.BasicParameterInstance", EMAComponentSymbol.KIND).orElse(null);
 
         assertNotNull(inst);
         System.out.println(inst.getSubComponents().iterator().next().getComponentType());
@@ -752,9 +754,9 @@ public class SymtabTest extends AbstractSymtabTest {
     @Test
     public void testComponentWithStructPorts() {
         Scope symTab = createSymTab("src/test/resources");
-        ComponentSymbol cmp = symTab.<ComponentSymbol>resolve(
+        EMAComponentSymbol cmp = symTab.<EMAComponentSymbol>resolve(
                 "testing.ComponentWithStructPorts",
-                ComponentSymbol.KIND
+                EMAComponentSymbol.KIND
         ).orElse(null);
         assertNotNull(cmp);
         List<EMAPortSymbol> inPorts = new ArrayList<>(cmp.getAllIncomingPorts());
@@ -783,11 +785,12 @@ public class SymtabTest extends AbstractSymtabTest {
 
     @Test
     public void testInstantiations() {
-        Scope symTab = createSymTab("src/test/resources");
+        EmbeddedMontiArcModelLoader loader = new EmbeddedMontiArcModelLoader();
+        Scope symTab = loader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
 
-        ComponentSymbol componentSymbol = symTab.<ComponentSymbol>resolve("symtab.instantiations.Top", ComponentSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
-        Scope componentScope = componentSymbol.getSpannedScope();
+        EMAComponentSymbol emaComponentSymbol = loader.loadComponentFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
+        assertNotNull(emaComponentSymbol);
+        Scope componentScope = emaComponentSymbol.getSpannedScope();
         EMAPortSymbol portSymbol = componentScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
         assertNotNull(portSymbol);
         EMAConnectorSymbol connectorSymbol = componentScope.<EMAConnectorSymbol>resolve("top_out_1", EMAConnectorSymbol.KIND).orElse(null);
@@ -796,7 +799,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertNotNull(instantiationSymbol);
 
 
-        EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top_1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol);
         Scope instanceScope = instanceSymbol.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol = instanceScope.<EMAPortInstanceSymbol>resolve("top_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
@@ -804,12 +807,19 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAConnectorInstanceSymbol connectorInstanceSymbol = instanceScope.<EMAConnectorInstanceSymbol>resolve("top_out_1", EMAConnectorInstanceSymbol.KIND).orElse(null);
         assertNotNull(connectorInstanceSymbol);
 
-        EMAComponentInstanceSymbol instanceSymbol2 = componentScope.<EMAComponentInstanceSymbol>resolve("sub_1", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol instanceSymbol2 = componentScope.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol2);
         Scope instanceScope2 = instanceSymbol2.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol2 = instanceScope2.<EMAPortInstanceSymbol>resolve("sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
         assertNotNull(portInstanceSymbol2);
 
+
+        EMAComponentInstanceSymbol instanceSymbol3 = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1.sub_2a", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(instanceSymbol3);
+
+        EMAPortInstanceSymbol portInstanceSymbol3 = symTab.<EMAPortInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1.sub_2a.sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
+        assertNotNull(portInstanceSymbol3);
     }
+
 }
 

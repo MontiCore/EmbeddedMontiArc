@@ -20,10 +20,10 @@
  */
 package de.monticore.lang.embeddedmontiarc.cocos;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTSubComponentCoCo;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
@@ -45,8 +45,8 @@ public class ReferencedSubComponentExists implements EmbeddedMontiArcASTSubCompo
     
     Scope scope = node.getEnclosingScope().get();
     
-    Optional<ComponentSymbol> componentSymbol = scope
-        .<ComponentSymbol> resolve(referenceName, ComponentSymbol.KIND);
+    Optional<EMAComponentSymbol> componentSymbol = scope
+        .<EMAComponentSymbol> resolve(referenceName, EMAComponentSymbol.KIND);
     
     if (!componentSymbol.isPresent()) {
       Log.error(String.format("0x069B7 Type \"%s\" could not be resolved", referenceName),

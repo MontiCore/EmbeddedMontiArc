@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.symboltable.Scope;
@@ -52,7 +52,7 @@ public final class StreamScanner {
         this.symTab = Log.errorIfNull(symTab);
     }
 
-    public Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> scan() {
+    public Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> scan() {
         StreamLanguageFileVisitor v = new StreamLanguageFileVisitor(this);
         try {
             Files.walkFileTree(basePath, v);
@@ -65,13 +65,13 @@ public final class StreamScanner {
     private static class StreamLanguageFileVisitor extends SimpleFileVisitor<Path> {
 
         private final StreamScanner scanner;
-        private final Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> mapping = new HashMap<>();
+        private final Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> mapping = new HashMap<>();
 
         StreamLanguageFileVisitor(StreamScanner scanner) {
             this.scanner = scanner;
         }
 
-        Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> getMapping() {
+        Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> getMapping() {
             return Collections.unmodifiableMap(mapping);
         }
 
@@ -96,7 +96,7 @@ public final class StreamScanner {
         }
 
         private void processComponentStreamUnitsSymbol(ComponentStreamUnitsSymbol s, File f) {
-            ComponentSymbol relatedComponent = s.<ComponentSymbol>getComponentSymbol(ComponentSymbol.KIND).orElse(null);
+            EMAComponentSymbol relatedComponent = s.<EMAComponentSymbol>getComponentSymbol(EMAComponentSymbol.KIND).orElse(null);
             if (relatedComponent == null) {
                 Log.warn("could not resolve component for which stream is defined in " + f.getAbsolutePath());
                 return;

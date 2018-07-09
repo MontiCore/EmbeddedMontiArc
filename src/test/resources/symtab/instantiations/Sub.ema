@@ -4,6 +4,8 @@ component Sub {
 
     autoinstantiate off;
 
+    instance Sub2 sub_2a, sub_2b;
+
     ports
         in Byte sub_in_1,
         out Byte sub_out_1;

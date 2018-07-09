@@ -20,7 +20,11 @@
  */
 package de.monticore.lang.embeddedmontiarc.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.helper.IndentPrinter;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
@@ -185,7 +189,7 @@ public class SymbolPrinter {
         }
     }
 
-    public static void printComponent(ComponentSymbol cmp, IndentPrinter ip, boolean skipPackageImport) {
+    public static void printComponent(EMAComponentSymbol cmp, IndentPrinter ip, boolean skipPackageImport) {
         printPackageInfo(cmp, ip, skipPackageImport);
         ip.print("component " + cmp.getName());
         if (cmp.hasFormalTypeParameters()) {
@@ -222,7 +226,7 @@ public class SymbolPrinter {
         ip.println("}");
     }
 
-    public static String printComponent(ComponentSymbol cmp) {
+    public static String printComponent(EMAComponentSymbol cmp) {
         IndentPrinter ip = new IndentPrinter();
         printComponent(cmp, ip, false);
         return ip.getContent();
@@ -243,7 +247,7 @@ public class SymbolPrinter {
 //        }
     }
 
-    public static void printPackageInfo(ComponentSymbol cmp, IndentPrinter ip, boolean skipPackageImport) {
+    public static void printPackageInfo(EMAComponentSymbol cmp, IndentPrinter ip, boolean skipPackageImport) {
         if (!skipPackageImport) {
             if (cmp.getPackageName() != null &&
                     !cmp.getPackageName().isEmpty()) {

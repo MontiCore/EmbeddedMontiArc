@@ -22,7 +22,11 @@ package de.monticore.lang.embeddedmontiarc.trafos;
 
 import de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcConstants;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.AutoconnectMode;
 import de.monticore.lang.embeddedmontiarc.helper.PortCompatibilityChecker;
 import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
@@ -169,11 +173,11 @@ public class AutoConnection {
         return Optional.empty();
     }
 
-    public void transformAtStart(ASTComponent node, ComponentSymbol currentComp) {
+    public void transformAtStart(ASTComponent node, EMAComponentSymbol currentComp) {
         modeStack.push(new ArrayList<>());
     }
 
-    public void transform(ASTMontiArcAutoConnect node, ComponentSymbol currentComp) {
+    public void transform(ASTMontiArcAutoConnect node, EMAComponentSymbol currentComp) {
         List<AutoconnectMode> modes = modeStack.peek();
         // add current mode
         if (node.isPort()) {
@@ -185,7 +189,7 @@ public class AutoConnection {
         }
     }
 
-    public void transformAtEnd(ASTComponent node, ComponentSymbol currentComp) {
+    public void transformAtEnd(ASTComponent node, EMAComponentSymbol currentComp) {
         List<AutoconnectMode> allModes = this.modeStack.peek();
         if (allModes.isEmpty()) {
             allModes.add(EmbeddedMontiArcConstants.DEFAULT_AUTO_CONNECT);
@@ -205,7 +209,7 @@ public class AutoConnection {
      * @param node             component node in the AST
      * @param mode             auto connection mode
      */
-    private void createAutoconnections(ComponentSymbol currentComponent, ASTComponent node,
+    private void createAutoconnections(EMAComponentSymbol currentComponent, ASTComponent node,
                                        AutoconnectMode mode) {
         Map<String, PorWithGenericBindings> unusedSenders = getUnusedSenders(
                 currentComponent);
@@ -221,7 +225,7 @@ public class AutoConnection {
         }
     }
 
-    private void handleReceiverEntry(Entry<String, PorWithGenericBindings> receiverEntry, ComponentSymbol currentComponent, List<EMAConnectorSymbol> matches, ASTComponent node) {
+    private void handleReceiverEntry(Entry<String, PorWithGenericBindings> receiverEntry, EMAComponentSymbol currentComponent, List<EMAConnectorSymbol> matches, ASTComponent node) {
         if (matches.size() == 1) {
             EMAConnectorSymbol created = matches.iterator().next();
             // add symbol to components scope
@@ -316,7 +320,7 @@ public class AutoConnection {
      * types
      */
     private Map<String, PorWithGenericBindings> getUnusedReceivers(
-            ComponentSymbol currentComponent) {
+            EMAComponentSymbol currentComponent) {
         // portname, porttypebinding
         Map<String, PorWithGenericBindings> unusedReceivers = new HashMap<>();
         // check outgoing ports, b/c they must receive data from within the component
@@ -331,7 +335,7 @@ public class AutoConnection {
         // check subcomponents incoming ports, b/c they must receive data to do their calculations
         for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
-            ComponentSymbolReference refType = ref.getComponentType();
+            EMAComponentSymbolReference refType = ref.getComponentType();
             for (EMAPortSymbol port : refType.getIncomingPorts()) {
                 String portNameInConnector = name + "." + port.getName();
                 if (!currentComponent.hasConnector(portNameInConnector)) {
@@ -357,7 +361,7 @@ public class AutoConnection {
      * types
      */
     private Map<String, PorWithGenericBindings> getUnusedSenders(
-            ComponentSymbol currentComponent) {
+            EMAComponentSymbol currentComponent) {
         // portname, <port, formaltypeparameters for the subcomponent that the port is defined in, type
         // arguments for the subcomponent that the port is defined in>
         Map<String, PorWithGenericBindings> unusedSenders = new HashMap<>();
@@ -373,7 +377,7 @@ public class AutoConnection {
         // check subcomponents outputs as they send data to the current component
         for (EMAComponentInstantiationSymbol ref : currentComponent.getSubComponents()) {
             String name = ref.getName();
-            ComponentSymbolReference refType = ref.getComponentType();
+            EMAComponentSymbolReference refType = ref.getComponentType();
             for (EMAPortSymbol port : refType.getOutgoingPorts()) {
                 String portNameInConnector = name + "." + port.getName();
                 if (!currentComponent.hasConnectors(portNameInConnector)) {
