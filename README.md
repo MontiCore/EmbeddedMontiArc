@@ -1,3 +1,5 @@
 # EMAM2RosMsg
+![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosMsg/badges/master/build.svg)
+![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosMsg/badges/master/coverage.svg)
 
-TODO
+Converts EMAM data types to ROS Messages
