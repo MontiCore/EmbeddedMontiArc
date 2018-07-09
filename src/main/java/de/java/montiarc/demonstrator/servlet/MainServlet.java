@@ -65,7 +65,7 @@ public class MainServlet extends HttpServlet {
         boolean res0 = true; //compileAndRunTest(modelName) == 0;
 
         //Compile sources, emam2wasm
-        boolean res1 = compileEMAM() == 0;
+        boolean res1 = compileEMAM(modelName) == 0;
 
         // if the compilation was successful then pack data and send back
         if(res0 && res1){
@@ -119,10 +119,10 @@ public class MainServlet extends HttpServlet {
 
     }
 
-    protected int compileEMAM() throws IOException {
+    protected int compileEMAM(String modelName) throws IOException {
 
         Runtime rt = Runtime.getRuntime();
-        String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat"};
+        String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat",modelName + ".mainController"};
         Process proc = rt.exec(commands);
 
         BufferedReader stdInput = new BufferedReader(new
