@@ -23,14 +23,14 @@ package de.monticore.lang.math._matrixprops;
 
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.linear.*;
-
+import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
+import org.apache.commons.math3.linear.FieldMatrix;
 
 import java.util.ArrayList;
 
 /**
  * Created by Philipp Goerick on 07.07.2017.
- *
+ * <p>
  * Identifies matrix properties
  */
 public class MatrixPropertiesIdentifier {
@@ -39,26 +39,48 @@ public class MatrixPropertiesIdentifier {
 
     private ArrayList<MatrixProperties> props;
 
-    public MatrixPropertiesIdentifier(MathMatrixArithmeticValueSymbol symbol){
+    public MatrixPropertiesIdentifier(MathMatrixArithmeticValueSymbol symbol) {
         this.matrix = ConstructComplexMatrix.constructComplexMatrix(symbol);
         props = new ArrayList<>();
     }
 
     /**
      * Identify the matrix properties
+     *
      * @return matrix element that astMatrix has properties of
      */
-    public ArrayList<MatrixProperties> identifyMatrixProperties(){
-        if (checkPositive(true)) props.add(MatrixProperties.Positive);
-        else if (checkPositive(false)) props.add(MatrixProperties.Negative);
-        if(matrix.isSquare()) squareMatrix();
+    public ArrayList<MatrixProperties> identifyMatrixProperties() {
+        if (canAccessMatrixValues() && checkPositive(true))
+            props.add(MatrixProperties.Positive);
+        else if (canAccessMatrixValues() && checkPositive(false))
+            props.add(MatrixProperties.Negative);
+        if (matrix.isSquare())
+            squareMatrix();
         return props;
+    }
+
+    /**
+     * matrices that contains null values can not be checked
+     */
+    private boolean canAccessMatrixValues() {
+        for (int i = 0; i < matrix.getRowDimension(); i++) {
+            for (int j = 0; j < matrix.getColumnDimension(); j++) {
+                if (matrix.getEntry(i, j) == null) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void squareMatrix() {
         props.add(MatrixProperties.Square);
-        if (identifyNonSingularMatrix()) props.add(MatrixProperties.Invertible);
-        if (identifyNormalMatrix()) NormMatrix();
+        if (canAccessMatrixValues()) {
+            if (identifyNonSingularMatrix())
+                props.add(MatrixProperties.Invertible);
+            if (identifyNormalMatrix())
+                NormMatrix();
+        }
     }
 
     private void NormMatrix() {
@@ -75,10 +97,11 @@ public class MatrixPropertiesIdentifier {
 
     /**
      * check if matrix is diagonal
+     *
      * @return true if diagonal, else false
      */
-    private boolean identifyDiagMatrix(){
-        for (int i = 0; i < matrix.getRowDimension(); i++){
+    private boolean identifyDiagMatrix() {
+        for (int i = 0; i < matrix.getRowDimension(); i++) {
             if (checkColumnDiag(i)) return false;
         }
         return true;
@@ -92,27 +115,28 @@ public class MatrixPropertiesIdentifier {
     }
 
     private boolean diagCondition(int i, int j) {
-        if(i != j){
+        if (i != j) {
             if (checkEntryDiag(i, j)) return true;
         }
         return false;
     }
 
     private boolean checkEntryDiag(int i, int j) {
-        if(!(matrix.getEntry(i,j).equals(Complex.ZERO))) return true;
+        if (!(matrix.getEntry(i, j).equals(Complex.ZERO))) return true;
         return false;
     }
 
     /**
      * checks if matrix is normal
+     *
      * @return true if normal, else false
      */
     private boolean identifyNormalMatrix() {
         FieldMatrix<Complex> conjugate_transpose = matrix.createMatrix(matrix.getRowDimension(), matrix.getColumnDimension());
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             for (int j = 0; j < matrix.getColumnDimension(); j++) {
-                Complex value = matrix.getEntry(i,j).conjugate();
-                conjugate_transpose.setEntry(j,i,value);
+                Complex value = matrix.getEntry(i, j).conjugate();
+                conjugate_transpose.setEntry(j, i, value);
             }
         }
         return matrix.multiply(conjugate_transpose).equals(conjugate_transpose.multiply(matrix));
@@ -120,9 +144,10 @@ public class MatrixPropertiesIdentifier {
 
     /**
      * check if matrix is hermitian
+     *
      * @return true if hermitian, else false
      */
-    private boolean identifyHermitianMatrix(boolean herm){
+    private boolean identifyHermitianMatrix(boolean herm) {
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             if (checkColumnHerm(i, herm)) return false;
         }
@@ -130,7 +155,7 @@ public class MatrixPropertiesIdentifier {
     }
 
     private boolean checkColumnHerm(int i, boolean herm) {
-        for (int j = i; j < matrix.getColumnDimension(); j++){
+        for (int j = i; j < matrix.getColumnDimension(); j++) {
             if (hermCondition(i, herm, j)) return true;
         }
         return false;
@@ -163,18 +188,20 @@ public class MatrixPropertiesIdentifier {
 
     /**
      * Check if matrix is non-singular(invertible) by checking if the determinant is not equal to zero
+     *
      * @return true if invertible, else false
      */
-    private boolean identifyNonSingularMatrix(){
+    private boolean identifyNonSingularMatrix() {
         return !(DeterminantCalculator.getDeterminant(matrix).equals(Complex.ZERO));
     }
 
     /**
      * Check if matrix has only positive values
+     *
      * @param pos if positive or negative should be checked
-     * return true if all values are positive, false else
+     *            return true if all values are positive, false else
      */
-    private boolean checkPositive(boolean pos){
+    private boolean checkPositive(boolean pos) {
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             if (checkColumnPosNeg(i, pos)) return false;
         }
@@ -189,11 +216,10 @@ public class MatrixPropertiesIdentifier {
     }
 
     private boolean posCondition(int i, boolean pos, int j) {
-        if (pos){
-            if (matrix.getEntry(i,j).getReal() < 0) return true;
-        }
-        else if (matrix.getEntry(i,j).getReal() > 0) return true;
-        if (!(matrix.getEntry(i,j).getImaginary() == 0)) return true;
+        if (pos) {
+            if (matrix.getEntry(i, j).getReal() < 0) return true;
+        } else if (matrix.getEntry(i, j).getReal() > 0) return true;
+        if (!(matrix.getEntry(i, j).getImaginary() == 0)) return true;
         return false;
     }
 }
