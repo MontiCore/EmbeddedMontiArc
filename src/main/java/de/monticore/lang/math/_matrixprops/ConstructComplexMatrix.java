@@ -132,8 +132,7 @@ public class ConstructComplexMatrix {
     private static Complex getComplex(MathExpressionSymbol expressionSymbol) {
         if (expressionSymbol.isParenthesisExpression())
             expressionSymbol = ((MathParenthesisExpressionSymbol) expressionSymbol).getMathExpressionSymbol();
-
-        if (((MathValueExpressionSymbol) expressionSymbol).isNumberExpression())
+        if ((expressionSymbol instanceof MathValueExpressionSymbol) && ((MathValueExpressionSymbol) expressionSymbol).isNumberExpression())
             return castToComplex((MathNumberExpressionSymbol) expressionSymbol);
         else if (expressionSymbol.isArithmeticExpression())
             return dissolveMathExpression(expressionSymbol);
