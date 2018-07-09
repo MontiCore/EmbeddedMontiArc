@@ -31,6 +31,8 @@ import java.util.Optional;
  */
 public class InstancingRegister {
     public static List<InstanceInformation> instanceInformation = new ArrayList();
+    public static String mainComponent = "defaultComponent";
+    public static String mainInstantiation = "defaultInstantiation";
 
     public static void addInstanceInformation(InstanceInformation i) {
         instanceInformation.add(i);
@@ -47,5 +49,7 @@ public class InstancingRegister {
 
     public static void reset() {
         instanceInformation.clear();
+        mainComponent = "defaultComponent";
+        mainInstantiation = "defaultInstantiation";
     }
 }

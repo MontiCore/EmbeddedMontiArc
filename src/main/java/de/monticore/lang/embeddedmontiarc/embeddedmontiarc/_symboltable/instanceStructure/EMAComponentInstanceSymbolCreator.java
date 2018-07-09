@@ -83,14 +83,14 @@ public class EMAComponentInstanceSymbolCreator {
 
 
         EMAComponentInstanceBuilder builder =
-                createInstance(topComponent, filters, null)
+                createInstance(topComponent, filters, null, fullInstanceName)
                         .setName(instanceName);
 
         final EMAComponentInstanceSymbol instanceSymbol = builder.addResolvingFilters(filters).build();
         enclosingScope.add(instanceSymbol);
     }
 
-    protected EMAComponentInstanceBuilder createInstance(EMAComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
+    protected EMAComponentInstanceBuilder createInstance(EMAComponentSymbol cmp, final Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols, String packageName) {
         // TODO resolve generics and parameters
         //    System.err.println("create instance for: " + cmp.getName() + " [" + cmp.getFullName() + "]");
         EMAComponentInstanceBuilder builder =
@@ -107,16 +107,13 @@ public class EMAComponentInstanceSymbolCreator {
             Log.info(inst.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Important:");
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
             builder.addSubComponent(
-                    createInstance(inst.getComponentType(), filters, inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols())
-                            .setName(inst.getName())
+                    createInstance(inst.getComponentType(), filters, inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols(), packageName + "." + inst.getName())
+                            .setName(inst.getName()).setPackageName(packageName)
                             .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(),
                                     inst.getComponentType().getActualTypeArguments()).addResolvingFilters(filters).addResolutionDeclarationSymbols(inst.getComponentType().getResolutionDeclarationSymbols()).addParameters(inst.getComponentType().getReferencedSymbol().getParameters()).addArguments(inst.getComponentType().getReferencedSymbol().getArguments()).build());
             Log.debug(inst.getInstanceInformation().get().getInstanceNumberForArgumentIndex(0) + "", "InstanceInformation:");
 
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PostSub");
-
-            // Create Component Instance of Instantiation Symbol
-            createInstances(inst.getComponentType().getReferencedSymbol(), inst.getName());
 
         }
 
@@ -142,7 +139,7 @@ public class EMAComponentInstanceSymbolCreator {
             //Log.debug(superCmp.toString(), "superCmp pre lambda");
             superCmp.getSuperComponent().get().getSubComponents().stream().forEachOrdered(
                     inst -> builder.addSubComponentIfNameDoesNotExists(
-                            createInstance(inst.getComponentType(), filters, null).setName(inst.getName())
+                            createInstance(inst.getComponentType(), filters, null, packageName).setName(inst.getName())
                                     .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(),
                                             inst.getComponentType().getActualTypeArguments())
                                     .addResolvingFilters(filters).addResolutionDeclarationSymbols(inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols()).addParameters(inst.getComponentType().getReferencedSymbol().getParameters()).build())

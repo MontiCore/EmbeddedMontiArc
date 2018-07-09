@@ -26,6 +26,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstancingRegister;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.helper.EMAJavaHelper;
 import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
@@ -124,9 +125,17 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
         // creates all instances which are created through the top level component
         EMAComponentSymbol emaComponentSymbol = (EMAComponentSymbol) Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null));
-        String instanceName = Character.toLowerCase(emaComponentSymbol.getName().charAt(0)) + emaComponentSymbol.getName().substring(1);
 
-        instanceSymbolCreator.createInstances(emaComponentSymbol, instanceName);
+        String mainComponent = InstancingRegister.mainComponent;
+        String mainInstantiation = InstancingRegister.mainInstantiation;
+        if(mainComponent.equals("defaultComponent")) {
+            String instanceName = Character.toLowerCase(emaComponentSymbol.getName().charAt(0)) + emaComponentSymbol.getName().substring(1);
+            instanceSymbolCreator.createInstances(emaComponentSymbol, instanceName);
+        }
+
+        if(mainComponent.equals(emaComponentSymbol.getFullName())) {
+            instanceSymbolCreator.createInstances(emaComponentSymbol, mainInstantiation);
+        }
 
         Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(),
                 "SymbolTableCreator:");

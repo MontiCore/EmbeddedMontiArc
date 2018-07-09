@@ -58,7 +58,7 @@ public class EMAComponentInstanceBuilder {
     protected List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols = new ArrayList<>();
     protected List<EMAVariable> parameters = new ArrayList<>();
     protected List<ASTExpression> arguments = new ArrayList<>();
-
+    protected String packageName = "";
 
     protected static Map<MCTypeSymbol, ActualTypeArgument> createMap(List<MCTypeSymbol> keys, List<ActualTypeArgument> values) {
         Map<MCTypeSymbol, ActualTypeArgument> ret = new LinkedHashMap<>();
@@ -266,10 +266,15 @@ public class EMAComponentInstanceBuilder {
                             this.symbolReference.get());
 
             //TODO add checks that port names and subcomponent names are unique
+            if(!getPackageName().equals("")) {
+                sym.setPackageName(getPackageName());
+                sym.setFullName(getPackageName() + "." + this.name.get());
+            }
+
             final MutableScope scope = (MutableScope) sym.getSpannedScope();
             resolvingFilters.stream().forEachOrdered(f -> scope.addResolver(f));
 
-            ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.instantiate(p))); // must be cloned since we change it if it has generics
+            ports.stream().forEachOrdered(p -> scope.add(EMAPortBuilder.instantiate(p, sym.getFullName()))); // must be cloned since we change it if it has generics
             connectors.stream().forEachOrdered(c -> scope.add(EMAConnectorBuilder.instantiate(c)));
             subComponents.stream().forEachOrdered(s -> scope.add(s));
 
@@ -278,6 +283,9 @@ public class EMAComponentInstanceBuilder {
             sym.setParameters(parameters);
             sym.setArguments(arguments);
             exchangeGenerics(sym, actualTypeArguments);
+
+
+
             Log.debug(sym.toString(), "build end sym");
             return sym;
         }
@@ -333,6 +341,15 @@ public class EMAComponentInstanceBuilder {
             if (!this.arguments.contains(argument))
                 this.arguments.add(argument);
         }
+        return this;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public EMAComponentInstanceBuilder setPackageName(String packageName) {
+        this.packageName = packageName;
         return this;
     }
 }

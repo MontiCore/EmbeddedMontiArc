@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.embeddedmontiarc;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.EMAModelLoader;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.*;
@@ -786,9 +785,9 @@ public class SymtabTest extends AbstractSymtabTest {
 
     @Test
     public void testInstantiations() {
-        Scope symTab = EMAModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
+        Scope symTab = EmbeddedMontiArcModelLoader.createSymTabFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
 
-        EMAComponentSymbol emaComponentSymbol = EMAModelLoader.loadComponentFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
+        EMAComponentSymbol emaComponentSymbol = EmbeddedMontiArcModelLoader.loadComponentFromMainTxt("src/test/resources/symtab/instantiations/main.txt");
         assertNotNull(emaComponentSymbol);
         Scope componentScope = emaComponentSymbol.getSpannedScope();
         EMAPortSymbol portSymbol = componentScope.<EMAPortSymbol>resolve("top_in_1", EMAPortSymbol.KIND).orElse(null);
@@ -799,7 +798,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertNotNull(instantiationSymbol);
 
 
-        EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol instanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top_1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol);
         Scope instanceScope = instanceSymbol.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol = instanceScope.<EMAPortInstanceSymbol>resolve("top_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
@@ -807,12 +806,18 @@ public class SymtabTest extends AbstractSymtabTest {
         EMAConnectorInstanceSymbol connectorInstanceSymbol = instanceScope.<EMAConnectorInstanceSymbol>resolve("top_out_1", EMAConnectorInstanceSymbol.KIND).orElse(null);
         assertNotNull(connectorInstanceSymbol);
 
-        EMAComponentInstanceSymbol instanceSymbol2 = componentScope.<EMAComponentInstanceSymbol>resolve("sub_1", EMAComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol instanceSymbol2 = componentScope.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(instanceSymbol2);
         Scope instanceScope2 = instanceSymbol2.getSpannedScope();
         EMAPortInstanceSymbol portInstanceSymbol2 = instanceScope2.<EMAPortInstanceSymbol>resolve("sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
         assertNotNull(portInstanceSymbol2);
 
+
+        EMAComponentInstanceSymbol instanceSymbol3 = symTab.<EMAComponentInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1.sub_2a", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(instanceSymbol3);
+
+        EMAPortInstanceSymbol portInstanceSymbol3 = symTab.<EMAPortInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1.sub_2a.sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
+        assertNotNull(portInstanceSymbol3);
     }
 
 }
