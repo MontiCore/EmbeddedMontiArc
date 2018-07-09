@@ -6,7 +6,6 @@ masterJobLinux:
   stage: linux
   image: atlassian/default-image:1
   script:
-  - sonar-scanner
   - gcc --help
   - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
   only:
