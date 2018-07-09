@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/EmbeddedMontiArc/MontiMathOpt.svg?branch=master)](https://travis-ci.org/EmbeddedMontiArc/MontiMath)
+![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/badges/master/build.svg)
+![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMathOpt/badges/master/coverage.svg)
 
 # MontiMathOpt
 
