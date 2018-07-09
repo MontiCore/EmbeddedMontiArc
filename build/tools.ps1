@@ -3,7 +3,8 @@ if(!(Test-Path -path ".\curl")) {
   "Getting curl"
   $file = ".\curl.zip"
   $file = [System.IO.Path]::GetFullPath($file)
-  (New-Object System.Net.WebClient).DownloadFile($urlcurl,$file)
+  Import-Module BitsTransfer
+  Start-BitsTransfer -Source $urlcurl -Destination $file
 
   $shell = new-object -com shell.application
   $zip = $shell.NameSpace($file)
