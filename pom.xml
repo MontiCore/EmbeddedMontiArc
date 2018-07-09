@@ -21,8 +21,8 @@
 	<Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.14-SNAPSHOT</Math.version>
-	<Embedded-MontiArc-Math.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Math.version>
+    <Math.version>0.0.17-SNAPSHOT</Math.version>
+	<Embedded-MontiArc-Math.version>0.0.18-SNAPSHOT</Embedded-MontiArc-Math.version>
     <tagging.version>0.0.3-SNAPSHOT</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -36,6 +36,7 @@
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
     <shade.plugin>2.4.3</shade.plugin>
+    <jacoco.plugin>0.8.1</jacoco.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
@@ -262,6 +263,28 @@
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Test coverage -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.plugin}</version>
+        <executions>
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
