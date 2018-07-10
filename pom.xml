@@ -30,7 +30,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math</artifactId>
-  <version>0.0.17-SNAPSHOT</version>
+  <version>0.0.18-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -43,7 +43,7 @@
 	<Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
 	<Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>
 	<Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.16-SNAPSHOT</Math.version>
+    <Math.version>0.0.17-SNAPSHOT</Math.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
@@ -55,6 +55,7 @@
     <compiler.plugin>3.3</compiler.plugin>
     <source.plugin>2.4</source.plugin>
     <shade.plugin>2.4.3</shade.plugin>
+    <jacoco.plugin>0.8.1</jacoco.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
@@ -282,6 +283,28 @@
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Test coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
