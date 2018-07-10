@@ -8,6 +8,8 @@ using namespace arma;
 class test_math_armadilloIndexTest{
 public:
 mat in1;
+int inRow;
+int inCol;
 mat out1;
 mat CONSTANTCONSTANTVECTOR0;
 rowvec CONSTANTCONSTANTVECTOR1;
@@ -41,14 +43,15 @@ b(1-1) = A(1-1);
 b(1-1) = A(2-1, 2-1);
 b(2-1) = out1(4-1, 4-1);
 double x = 0;
-x = A(1-1, 2-1) ;
-x = b(2-1) ;
-x = in1(1-1, 1-1) ;
+x = A(1-1, 2-1);
+x = b(2-1);
+x = in1(1-1, 1-1);
 out1(1-1, 1-1) = in1(1-1, 1-1);
 mat test = (zeros<mat>(4, 4));
 out1 = test;
 out1(1-1) = test(1-1);
 out1(2-1, 2-1) = A(2-1, 2-1);
+double y = A(inRow-1, inCol-1);
 }
 
 };

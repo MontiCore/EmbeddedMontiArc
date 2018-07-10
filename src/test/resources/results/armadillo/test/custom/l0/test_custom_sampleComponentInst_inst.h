@@ -18,7 +18,7 @@ world=imat(tilesMaxX,tilesMaxY);
 }
 void execute()
 {
-int value = world(posX, posY);
+int value = world(posX-1, posY-1);
 }
 
 };

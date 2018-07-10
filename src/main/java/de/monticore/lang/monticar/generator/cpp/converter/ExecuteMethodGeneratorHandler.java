@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import de.monticore.lang.math._symboltable.MathAssignmentOperator;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
@@ -61,8 +62,8 @@ public class ExecuteMethodGeneratorHandler {
             return generateExecuteCode((MathNameExpressionSymbol) mathValueExpressionSymbol, includeStrings);
         } else if (mathValueExpressionSymbol.isNumberExpression()) {
             return generateExecuteCode((MathNumberExpressionSymbol) mathValueExpressionSymbol, includeStrings);
-        }else if(mathValueExpressionSymbol.isBooleanExpression()) {
-            return generateExecuteCode((MathBooleanExpressionSymbol)mathValueExpressionSymbol,includeStrings);
+        } else if (mathValueExpressionSymbol.isBooleanExpression()) {
+            return generateExecuteCode((MathBooleanExpressionSymbol) mathValueExpressionSymbol, includeStrings);
         } else if (mathValueExpressionSymbol.isAssignmentDeclarationExpression()) {
             return generateExecuteCodeDeclaration((MathValueSymbol) mathValueExpressionSymbol, includeStrings);
         } else {
@@ -83,12 +84,17 @@ public class ExecuteMethodGeneratorHandler {
             ComponentConverter.currentBluePrint.addVariable(var);
         } else {
             String type = generateExecuteCode(mathValueSymbol.getType(), includeStrings);
-            result += type + " " + mathValueSymbol.getName();
             if (mathValueSymbol.getValue() != null) {
-                result += " = " + ExecuteMethodGenerator.generateExecuteCode(mathValueSymbol.getValue(), includeStrings);
-            } else if (mathValueSymbol.getValue() == null)
+                MathAssignmentExpressionSymbol assignment = new MathAssignmentExpressionSymbol();
+                assignment.setNameOfMathValue(mathValueSymbol.getName());
+                assignment.setExpressionSymbol(mathValueSymbol.getValue());
+                assignment.setAssignmentOperator(new MathAssignmentOperator("="));
+                result += type + " " + ExecuteMethodGenerator.generateExecuteCode(assignment, includeStrings);
+            } else if (mathValueSymbol.getValue() == null) {
+                result += type + " " + mathValueSymbol.getName();
                 result += addInitializationString(mathValueSymbol, type, includeStrings);
-            result += ";\n";
+                result += ";\n";
+            }
         }
         ComponentConverter.currentBluePrint.getMathInformationRegister().addVariable(mathValueSymbol);
         //result += mathValueSymbol.getTextualRepresentation();
@@ -102,15 +108,15 @@ public class ExecuteMethodGeneratorHandler {
         List<MathExpressionSymbol> dims = mathValueSymbol.getType().getDimensions();
         if (dims.size() == 1) {
             if (typeString.equals(TypeConverter.getColvecAccessString(type))) {
-                result = "=" + TypeConverter.getDimensionString(TypeConverter.getColvecAccessString(type),dims,includeStrings);
+                result = "=" + TypeConverter.getDimensionString(TypeConverter.getColvecAccessString(type), dims, includeStrings);
             }
         } else if (dims.size() == 2) {
             if (typeString.equals(TypeConverter.getMatAccessString(type))) {
-                result = "=" + TypeConverter.getDimensionString(TypeConverter.getMatAccessString(type),dims,includeStrings);
+                result = "=" + TypeConverter.getDimensionString(TypeConverter.getMatAccessString(type), dims, includeStrings);
             }
         } else if (dims.size() == 3) {
             if (typeString.equals(TypeConverter.getCubeAccessString(type))) {
-                result = "=" + TypeConverter.getDimensionString(TypeConverter.getCubeAccessString(type),dims,includeStrings);
+                result = "=" + TypeConverter.getDimensionString(TypeConverter.getCubeAccessString(type), dims, includeStrings);
             }
         }
         return result;
@@ -142,7 +148,6 @@ public class ExecuteMethodGeneratorHandler {
         }
         return result;
     }
-
 
 
     private static String handleRationalType(MathValueType mathValueType) {
@@ -216,7 +221,7 @@ public class ExecuteMethodGeneratorHandler {
         Log.info(mathAssignmentExpressionSymbol.getTextualRepresentation(), "mathAssignmentExpressionSymbol:");
         String result;
         if (mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol() != null) {
-            Log.info(mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol().getTextualRepresentation(),"accessOperatorSymbol:");
+            Log.info(mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol().getTextualRepresentation(), "accessOperatorSymbol:");
             if (MathFunctionFixer.fixForLoopAccess(mathAssignmentExpressionSymbol.getNameOfMathValue(), ComponentConverter.currentBluePrint)) {
 
                 result = mathAssignmentExpressionSymbol.getNameOfMathValue();
@@ -255,26 +260,26 @@ public class ExecuteMethodGeneratorHandler {
         String name = mathAssignmentExpressionSymbol.getNameOfMathValue();
         String op = mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator();
         MathExpressionSymbol assignmentSymbol = mathAssignmentExpressionSymbol.getExpressionSymbol().getRealMathExpressionSymbol();
-        String assignment=mathAssignmentExpressionSymbol.getExpressionSymbol().getTextualRepresentation();
-        Log.info(assignment,"assignment0:");
+        String assignment = mathAssignmentExpressionSymbol.getExpressionSymbol().getTextualRepresentation();
+        Log.info(assignment, "assignment0:");
         if (assignmentSymbol instanceof MathMatrixNameExpressionSymbol) {
             MathMatrixNameExpressionSymbol matrixAssignmentSymbol = (MathMatrixNameExpressionSymbol) assignmentSymbol;
             if (useZeroBasedIndexing(matrixAssignmentSymbol)) {
                 String matrixName = matrixAssignmentSymbol.getNameToAccess();
                 String matrixAccess = ExecuteMethodGenerator.getCorrectAccessString(matrixAssignmentSymbol.getNameToAccess(), matrixAssignmentSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
                 assignment = String.format("%s%s", matrixName, matrixAccess);
-                Log.info(assignment,"assignment1:");
+                Log.info(assignment, "assignment1:");
             } else {
                 assignment = ExecuteMethodGenerator.generateExecuteCode(assignmentSymbol, includeStrings);
-                Log.info(assignment,"assignment2:");
+                Log.info(assignment, "assignment2:");
 
             }
         } else {
             assignment = ExecuteMethodGenerator.generateExecuteCode(assignmentSymbol, includeStrings);
-            Log.info(assignment,"assignment3:");
+            Log.info(assignment, "assignment3:");
 
         }
-        String result = String.format("%s %s %s;\n", name, op, assignment);
+        String result = String.format("%s %s %s;\n", name, op, assignment.trim());
         Log.info(name + " " + op + " " + assignment, "additionalInfo:");
         Log.info("result3: " + result, "MathAssignmentExpressionSymbol");
         return result;
@@ -282,9 +287,14 @@ public class ExecuteMethodGeneratorHandler {
 
     private static boolean useZeroBasedIndexing(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol) {
         boolean isZeroBased = false;
-        if (MathConverter.curBackend.usesZeroBasedIndexing()) {
-            if (!isFunctionCall(mathMatrixNameExpressionSymbol)) {
-                isZeroBased = true;
+        // test if array
+        String name = mathMatrixNameExpressionSymbol.getNameToAccess();
+        Variable variable = ComponentConverter.currentBluePrint.getVariable(name).orElse(null);
+        if (!(variable != null && variable.isArray())) {
+            if (MathConverter.curBackend.usesZeroBasedIndexing()) {
+                if (!isFunctionCall(mathMatrixNameExpressionSymbol)) {
+                    isZeroBased = true;
+                }
             }
         }
         return isZeroBased;
