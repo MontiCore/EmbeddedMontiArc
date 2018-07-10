@@ -182,4 +182,16 @@ public class MatrixPropertiesTest extends MathSymbolTableCreatorTest {
         assertNotNull(ast);
     }
 
+    @Test
+    /**
+     * We are happy if not assertion or exception is triggered
+     * Matrix values can not be resolved.
+     * see https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/MontiMath/issues/3
+     */
+    public void createMatrixBySubmatricesTest() {
+        final MathValueSymbol b = symTab.<MathValueSymbol>resolve("matrix.CreateMatrixBySubmatrices.B", MathValueSymbol.KIND).orElse(null);
+        assertNotNull(b);
+    }
+
+
 }
