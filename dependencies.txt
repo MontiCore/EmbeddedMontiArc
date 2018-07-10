@@ -7,7 +7,7 @@
 // based on the github master branch and this file automatically new self-extracting portable Windows 64 bit releases are created
 
 
-* EmbeddedMontiArcStudio/
+* EmbeddedMontiArcStudio\
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/armadillo-8.200.2.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/apache-tomcat-9.0.5.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/chrome.zip
@@ -29,7 +29,7 @@
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.27.pacman&files=pacman.zip
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.27.supermario&files=supermario.zip
 
-* EmbeddedMontiArcStudio/distributed-simulator/
+* EmbeddedMontiArcStudio\distributed-simulator\
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/RMIModelServer.zip
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/SmartFoxServer_2X.zip
