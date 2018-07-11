@@ -33,4 +33,5 @@ set RMI=%DISTR_SIM%\RMIModelServer
 set RMI_PATH=%EXTERNAL_LIBS%;%LIB_DIR%;%MINGW_HOME%\bin;%DLL_DIR%;%JAVA_HOME%\bin;%OCTAVE_HOME%\bin;
 set WASM_HOME=%HOME%\emam2wasm
 set PACMAN_HOME=%HOME%\pacman
+set SUPERMARIO_HOME=%HOME%\supermario
 set CNCVERIFICATION_HOME=%HOME%\cncverification

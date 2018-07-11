@@ -3,7 +3,7 @@ package de.rwth.supermario;
 import de.rwth.supermario.haller.Controller;
 
 component SuperMarioWrapper {
-    ports   //x,y
+    ports   
         in Z^{1,2} marioPosition,
         in Z^{1,2} marioVelocity,
         in Z marioHeight,
@@ -11,11 +11,14 @@ component SuperMarioWrapper {
         in Z^{5,2} nextObstaclePositions,
         in Z nextHole,
         in Z^{5,2} nextLootCrates,
+        in Q tickSize,
+        in Z marioResting,
         out Z(-1 : 1 : 1) marioDirection,
         out Z marioJump,
         out Z marioDown,
         out Z marioShoot;
         
+
     //Replace this with your own custom controller
     instance Controller controller;
     
@@ -26,10 +29,12 @@ component SuperMarioWrapper {
     connect nextObstaclePositions -> controller.nextObstaclePositions;
     connect nextHole -> controller.nextHole;
     connect nextLootCrates -> controller.nextLootCrates;
-    
+    connect tickSize -> controller.tickSize;
+    connect marioResting -> controller.marioResting;
     
     connect controller.marioJump -> marioJump;
     connect controller.marioDirection -> marioDirection;
     connect controller.marioDown -> marioDown;
     connect controller.marioShoot -> marioShoot;
+    
 }

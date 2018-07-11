@@ -107,7 +107,129 @@ class ClusteringTest {
 
 }
 
+class PacManTest extends AbstractTest {
+    constructor() {
+        super();
+        this.logger = Log.getLogger("PACMAN TEST");
+        this.process = null;
+        this.logger.level = "debug";
+    }
+
+    executeAll(callback) {
+        const onResultsCollected = (collection) => {
+            this.logger.info("...Results collected");
+            callback(collection);
+        };
+
+        const onExit = () => {
+            this.logger.info("...Tests executed.");
+            this.logger.info("Collecting Results...");
+            this.collectResults(onResultsCollected);
+        };
+
+        this.kill();
+        this.logger.info("Running Tests...");
+        this.process = Process.spawn(BATCHES.PACMAN.TEST.ALL, [], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "pacman")
+        });
+        this.process.on("exit", onExit);
+        return this.process;
+    }
+
+    execute(streamName, callback) {
+        const onReadFile = (error, content) => {
+            const collection = "<pre>" + content.toString().trim() + "</pre>";
+
+            this.logger.info("...Results fetched.");
+            callback(collection);
+        };
+
+        const onExit = () => {
+            const path = Path.join(PATHS.TEST_RESULTS, streamName);
+
+            this.logger.info("...Test executed.");
+            this.logger.info("Fetching Results...");
+
+            FileSystem.readFile(path, onReadFile);
+        };
+
+        this.kill();
+        this.logger.info("Running Test for %s...", streamName);
+        this.process = Process.spawn(BATCHES.PACMAN.TEST.SINGLE, [streamName], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "pacman")
+        });
+        this.process.on("exit", onExit);
+        return this.process;
+    }
+
+    kill() {
+        if(this.process) this.process.kill();
+    }
+}
+
+class SuperMarioTest extends AbstractTest {
+    constructor() {
+        super();
+        this.logger = Log.getLogger("SUPERMARIO TEST");
+        this.process = null;
+        this.logger.level = "debug";
+    }
+
+    executeAll(callback) {
+        const onResultsCollected = (collection) => {
+            this.logger.info("...Results collected");
+            callback(collection);
+        };
+
+        const onExit = () => {
+            this.logger.info("...Tests executed.");
+            this.logger.info("Collecting Results...");
+            this.collectResults(onResultsCollected);
+        };
+
+        this.kill();
+        this.logger.info("Running Tests...");
+        this.process = Process.spawn(BATCHES.SUPERMARIO.TEST.ALL, [], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "supermario")
+        });
+        this.process.on("exit", onExit);
+        return this.process;
+    }
+
+    execute(streamName, callback) {
+        const onReadFile = (error, content) => {
+            const collection = "<pre>" + content.toString().trim() + "</pre>";
+
+            this.logger.info("...Results fetched.");
+            callback(collection);
+        };
+
+        const onExit = () => {
+            const path = Path.join(PATHS.TEST_RESULTS, streamName);
+
+            this.logger.info("...Test executed.");
+            this.logger.info("Fetching Results...");
+
+            FileSystem.readFile(path, onReadFile);
+        };
+
+        this.kill();
+        this.logger.info("Running Test for %s...", streamName);
+        this.process = Process.spawn(BATCHES.SUPERMARIO.TEST.SINGLE, [streamName], {
+            cwd: Path.resolve(PATHS.SCRIPTS, "supermario")
+        });
+        this.process.on("exit", onExit);
+        return this.process;
+    }
+
+    kill() {
+        if(this.process) this.process.kill();
+    }
+}
+
 module.exports = {
     AutoPilotTest: new AutoPilotTest(),
-    ClusteringTest: new ClusteringTest()
+    ClusteringTest: new ClusteringTest(),
+    PacManTest: new PacManTest(),
+    SuperMarioTest: new SuperMarioTest()
 };

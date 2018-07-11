@@ -1056,44 +1056,46 @@ var plugins = [
 
 if (reponame == "PacMan") {
     plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
-plugins.push(
-    "plugins/se.rwth.pacman.play/play",
-    "plugins/se.rwth.emam2wasm.generate/generate",
-    "plugins/se.rwth.simulate/simulate",
-    "plugins/se.rwth.visualize/visualize",
-    "plugins/se.rwth.report/report",
-    "plugins/se.rwth.reportWithStreams/reportWithStreams",
-    "plugins/se.rwth.models.updater/models.updater"
+    plugins.push(
+        "plugins/se.rwth.pacman.play/play",
+        "plugins/se.rwth.emam2wasm.generate/generate",
+        "plugins/se.rwth.simulate/simulate",
+        "plugins/se.rwth.visualize/visualize",
+        "plugins/se.rwth.report/report",
+        "plugins/se.rwth.reportWithStreams/reportWithStreams",
+        "plugins/se.rwth.test/test",
+        "plugins/se.rwth.models.updater/models.updater",
     );
 } else if (reponame == "SuperMario") {
     plugins.splice(plugins.indexOf("plugins/se.rwth.simulate/simulate"), plugins.length);
     plugins.push(
-    "plugins/se.rwth.supermario.play/play",
-    "plugins/se.rwth.emam2wasm.generate/generate",
-    "plugins/se.rwth.simulate/simulate",
-    "plugins/se.rwth.visualize/visualize",
-    "plugins/se.rwth.report/report",
-    "plugins/se.rwth.reportWithStreams/reportWithStreams",
-    "plugins/se.rwth.models.updater/models.updater"
+        "plugins/se.rwth.supermario.play/play",
+        "plugins/se.rwth.emam2wasm.generate/generate",
+        "plugins/se.rwth.simulate/simulate",
+        "plugins/se.rwth.visualize/visualize",
+        "plugins/se.rwth.report/report",
+        "plugins/se.rwth.reportWithStreams/reportWithStreams",
+        "plugins/se.rwth.test/test",
+        "plugins/se.rwth.models.updater/models.updater"
     );
 } else if (reponame == "OCLVerification") {
-plugins.push(
-    "plugins/se.rwth.oclverification/oclverification",
-    "plugins/se.rwth.models.updater/models.updater"
+    plugins.push(
+        "plugins/se.rwth.oclverification/oclverification",
+        "plugins/se.rwth.models.updater/models.updater"
     );
 } else if (reponame == "NFPVerification") {
-  plugins.push(
-      "plugins/se.rwth.nfpverification/nfpverification",
-      "plugins/se.rwth.models.updater/models.updater"
-      );
+    plugins.push(
+        "plugins/se.rwth.nfpverification/nfpverification",
+        "plugins/se.rwth.models.updater/models.updater"
+    );
 } else {
     plugins.push(
-	"plugins/se.rwth.simulate/simulate",
-    "plugins/se.rwth.visualize/visualize",
-    "plugins/se.rwth.report/report",
-    "plugins/se.rwth.reportWithStreams/reportWithStreams",
-    "plugins/se.rwth.test/test",
-	"plugins/se.rwth.viewverification/viewverification",
-    "plugins/se.rwth.models.updater/models.updater"
+        "plugins/se.rwth.simulate/simulate",
+        "plugins/se.rwth.visualize/visualize",
+        "plugins/se.rwth.report/report",
+        "plugins/se.rwth.reportWithStreams/reportWithStreams",
+        "plugins/se.rwth.test/test",
+        "plugins/se.rwth.viewverification/viewverification",
+        "plugins/se.rwth.models.updater/models.updater"
     );
 }

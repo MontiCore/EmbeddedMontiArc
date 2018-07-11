@@ -6,4 +6,4 @@ call "..\shared\variables"
    --check-model-dir
 if exist "%STREAM_TESTING%\testInfo" rmdir "%STREAM_TESTING%\testInfo" /s /q
 mkdir %STREAM_TESTING%\testInfo
-xcopy /s %TESTS_CPP_DIR%\reporting %STREAM_TESTING%\testInfo
+xcopy /s /y %TESTS_CPP_DIR%\reporting %STREAM_TESTING%\testInfo

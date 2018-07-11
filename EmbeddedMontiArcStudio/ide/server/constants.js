@@ -107,6 +107,9 @@ BATCHES.PACMAN.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "pacman", "report
 BATCHES.PACMAN.REPORTING_STREAM     = Path.resolve(PATHS.SCRIPTS, "pacman", "reportWithStreams.bat");
 BATCHES.PACMAN.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "pacman", "simulate.bat");
 BATCHES.PACMAN.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "pacman", "visualize.bat");
+BATCHES.PACMAN.TEST                 = {};
+BATCHES.PACMAN.TEST.ALL         	= Path.resolve(PATHS.SCRIPTS, "pacman", "runAllTests.bat");
+BATCHES.PACMAN.TEST.SINGLE      	= Path.resolve(PATHS.SCRIPTS, "pacman", "runAllTestsForComponent.bat");
 
 BATCHES.SUPERMARIO.PLAY    		 		= {};
 BATCHES.SUPERMARIO.EMAM2WASM_GEN 		= Path.resolve(PATHS.SCRIPTS, "supermario", "emam2wasmGen.bat");
@@ -114,6 +117,9 @@ BATCHES.SUPERMARIO.REPORTING        	= Path.resolve(PATHS.SCRIPTS, "supermario",
 BATCHES.SUPERMARIO.REPORTING_STREAM     = Path.resolve(PATHS.SCRIPTS, "supermario", "reportWithStreams.bat");
 BATCHES.SUPERMARIO.SIMULATION			= Path.resolve(PATHS.SCRIPTS, "supermario", "simulate.bat");
 BATCHES.SUPERMARIO.VISUALIZATION       	= Path.resolve(PATHS.SCRIPTS, "supermario", "visualize.bat");
+BATCHES.SUPERMARIO.TEST                 = {};
+BATCHES.SUPERMARIO.TEST.ALL         	= Path.resolve(PATHS.SCRIPTS, "supermario", "runAllTests.bat");
+BATCHES.SUPERMARIO.TEST.SINGLE      	= Path.resolve(PATHS.SCRIPTS, "supermario", "runAllTestsForComponent.bat");
 
 BATCHES.NFPVERIFICATION.TEST		= Path.resolve(PATHS.SCRIPTS, "nfpverification", "run_rule.bat");
 

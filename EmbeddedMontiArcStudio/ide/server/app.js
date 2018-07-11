@@ -11,7 +11,7 @@ const {PacmanGeneration, SuperMarioGeneration}          = require("./generations
 const {NFPVerificatorTest} = require("./nfpverification");
 const {CDVisualization, OCLChecking} = require("./oclverification");
 const Log                                               = require("log4js");
-const {AutoPilotTest, ClusteringTest}                   = require("./tests");
+const {AutoPilotTest, ClusteringTest, PacManTest, SuperMarioTest} = require("./tests");
 const ModelUpdater                                      = require("./models-updater");
 const FileUpload                                        = require("express-fileupload");
 const Jimp                                              = require("jimp");
@@ -416,6 +416,24 @@ App.post("/services/pacman/visualize", function(request, response) {
 	PacManVisualization.execute(onExecuted);
 });
 
+App.post("/services/pacman/test/all", function(request, response) {
+	function onTested(results) {
+		response.send(results);
+	}
+
+	PacManTest.executeAll(onTested);
+});
+
+App.post("/services/pacman/test/single", function(request, response) {
+    const body = request.body;
+
+    function onTested(results) {
+        response.send(results);
+    }
+
+    PacManTest.execute(body.streamName, onTested);
+});
+
 App.post("/services/supermario/report", function(request, response) {
     function onExecuted() {
         Chrome.open(URLS.SHARED + "/r/report.html?ide=false");
@@ -467,6 +485,24 @@ App.post("/services/supermario/visualize", function(request, response) {
 	}
 
 	SuperMarioVisualization.execute(onExecuted);
+});
+
+App.post("/services/supermario/test/all", function(request, response) {
+	function onTested(results) {
+		response.send(results);
+	}
+
+	SuperMarioTest.executeAll(onTested);
+});
+
+App.post("/services/supermario/test/single", function(request, response) {
+    const body = request.body;
+
+    function onTested(results) {
+        response.send(results);
+    }
+
+    SuperMarioTest.execute(body.streamName, onTested);
 });
 
 App.post("/services/nfpverification/test", function(request, response) {

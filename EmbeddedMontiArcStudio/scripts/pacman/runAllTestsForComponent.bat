@@ -1,8 +1,12 @@
+if exist "%STREAM_TESTING%\testResults\" rmdir "%STREAM_TESTING%\testResults\" /s /q
+if exist "%HOME%\testResults\" rmdir "%HOME%\testResults\" /s /q
 mkdir %STREAM_TESTING%\testResults\
+mkdir %HOME%\testResults\
 call generateTestsArmadilloBackend %1
 call compileTestsArmadilloBackendOpenBLAS
 REM start /min runCurrentExecutable %1
 call runCurrentExecutable %1
+xcopy /s /y %STREAM_TESTING%\testResults %HOME%\testResults
 REM :start
 REM  tasklist /FI "windowtitle eq runCurrentExecutable.bat" | findstr "cmd.exe" >nul
 REM if %ERRORLEVEL% == 0 goto loop
