@@ -1,3 +1,6 @@
+cd ..\shared
+call variables
+cd ..\supermario
 if exist "%STREAM_TESTING%\testResults\" rmdir "%STREAM_TESTING%\testResults\" /s /q
 if exist "%HOME%\testResults\" rmdir "%HOME%\testResults\" /s /q
 mkdir %STREAM_TESTING%\testResults\
