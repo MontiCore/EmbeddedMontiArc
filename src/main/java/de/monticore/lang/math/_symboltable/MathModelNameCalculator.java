@@ -50,8 +50,10 @@ public class MathModelNameCalculator extends de.monticore.CommonModelNameCalcula
 
         List<String> parts = Splitters.DOT.splitToList(name);
         String modelName = Joiners.DOT.join(parts.subList(0, parts.size() - 1));
-        calculatedModelNames.add(modelName);
-
+        if (!modelName.isEmpty())
+            calculatedModelNames.add(modelName);
+        else
+            calculatedModelNames.add(name);
         return calculatedModelNames;
     }
 
