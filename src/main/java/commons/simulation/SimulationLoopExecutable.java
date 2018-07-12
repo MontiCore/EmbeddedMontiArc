@@ -27,8 +27,7 @@ package commons.simulation;
  */
 public interface SimulationLoopExecutable {
     /**
-     * Requests the called object to update its state for given time difference
-     *
+     * Function that requests the called object to update its state for given time difference
      * @param timeDiffMs Difference in time measured in milliseconds
      */
     void executeLoopIteration(long timeDiffMs);

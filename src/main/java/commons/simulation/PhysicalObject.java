@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Interface that represents a box shaped physical object in a 3D space, that can be rotated.
  * Any positions and vectors are, if not stated otherwise, expressed in the global coordinate system.
- * All values are expressed in SI units.
+ * All values are, if not stated otherwise, expressed in SI units.
  */
 public interface PhysicalObject {
 
@@ -210,7 +210,7 @@ public interface PhysicalObject {
 
     /**
      * Function that sets the position of the center of mass and the rotation of the object, in order to place the object on the surface of the world.
-     * given a x,y coordinate and a z rotation
+     * given a x, y coordinate and a z rotation
      * @param posX X component of the position of the physical object
      * @param posY Y component of the position of the physical object
      * @param rotZ Z component of the rotation of the physical object
