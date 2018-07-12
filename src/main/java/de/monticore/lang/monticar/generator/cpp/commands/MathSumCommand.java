@@ -9,6 +9,7 @@ import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.StringIndexHelper;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
@@ -76,6 +77,8 @@ public class MathSumCommand extends MathCommand {
             MathFunctionFixer.fixMathFunctions(accessSymbol, bluePrintCPP);
         if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 1) {
             convertAccuSumImplementationArmadillo(mathMatrixNameExpressionSymbol, bluePrintCPP);
+        } else if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 2) {
+            convertSumImplementationArmadillo(mathMatrixNameExpressionSymbol, bluePrintCPP);
         } else if (mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().size() == 4) {
             MathMatrixAccessSymbol func = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(0);
             MathMatrixAccessSymbol sumVar = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(1);
@@ -83,8 +86,18 @@ public class MathSumCommand extends MathCommand {
             MathMatrixAccessSymbol sumEnd = mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols().get(3);
             convertExtendedSumImplementationArmadillo(mathMatrixNameExpressionSymbol, func, sumVar, sumStart, sumEnd, bluePrintCPP);
         } else {
-            Log.error(String.format("No implementation found for sum operation: \"sum(%s)\". Possible syntax is \"sum( X )\" or \"%s\"", mathExpressionSymbol.getTextualRepresentation(), SUM_SYNTAX_EXTENDED));
+            Log.error(String.format("No implementation found for sum operation: \"sum(%s)\". Possible syntax is \"sum( X )\", \"sum(X,dim)\" or \"%s\"", mathExpressionSymbol.getTextualRepresentation(), SUM_SYNTAX_EXTENDED));
         }
+    }
+
+    private void convertSumImplementationArmadillo(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, BluePrintCPP bluePrintCPP) {
+        String valueListString = ExecuteMethodGenerator.generateExecuteCode(mathMatrixNameExpressionSymbol, new ArrayList<>());
+        // correct index for armadillo
+        valueListString = valueListString.substring(0, valueListString.length() - 1) + "-1)";
+        MathStringExpression stringExpression = new MathStringExpression("sum" + valueListString, mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().getMathMatrixAccessSymbols());
+        List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
+        newMatrixAccessSymbols.add(new MathMatrixAccessSymbol(stringExpression));
+        mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixAccessSymbols(newMatrixAccessSymbols);
     }
 
     /**
@@ -192,7 +205,7 @@ public class MathSumCommand extends MathCommand {
         return new Instruction() {
             @Override
             public String getTargetLanguageInstruction() {
-                return String.format("  for (int %s = %s - 1; %s <= %s - 1; %s++)\n", sumVar, sumStart, sumVar, sumEnd, sumVar);
+                return String.format("  for (int %s = %s; %s <= %s; %s++)\n", sumVar, sumStart, sumVar, sumEnd, sumVar);
             }
 
             @Override

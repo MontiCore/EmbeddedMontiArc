@@ -18,42 +18,42 @@ CONSTANTCONSTANTVECTOR0(2,0) = 3;
 double calcSum1(colvec A)
 {
   double res = 0; 
-  for (int i = 1 - 1; i <= 3 - 1; i++)
-    res += A(i);
+  for (int i = 1; i <= 3; i++)
+    res += A(i-1);
   return res;
 }
 double calcSum2(colvec A, double x, int j)
 {
   double res = 0; 
-  for (int i = 1 - 1; i <= 3 - 1; i++)
-    res += A(i)*A(j);
+  for (int i = 1; i <= 3; i++)
+    res += A(i-1)*A(j-1);
   return res;
 }
 double calcSum3(colvec A, double x)
 {
   double res = 0; 
-  for (int j = 1 - 1; j <= 2 - 1; j++)
+  for (int j = 1; j <= 2; j++)
     res += calcSum2(A, x, j);
   return res;
 }
 double calcSum4(colvec A, double x, double y, int j, int k)
 {
   double res = 0; 
-  for (int i = 1 - 1; i <= 3 - 1; i++)
-    res += A(i)*A(j)*A(k);
+  for (int i = 1; i <= 3; i++)
+    res += A(i-1)*A(j-1)*A(k-1);
   return res;
 }
 double calcSum5(colvec A, double x, double y, int k)
 {
   double res = 0; 
-  for (int j = 1 - 1; j <= 2 - 1; j++)
+  for (int j = 1; j <= 2; j++)
     res += calcSum4(A, x, y, j, k);
   return res;
 }
 double calcSum6(colvec A, double x, double y)
 {
   double res = 0; 
-  for (int k = 1 - 1; k <= 1 - 1; k++)
+  for (int k = 1; k <= 1; k++)
     res += calcSum5(A, x, y, k);
   return res;
 }
