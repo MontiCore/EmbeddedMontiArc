@@ -271,7 +271,7 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         return MathConverter.curBackend.usesZeroBasedIndexing()
                 && symbol.isMathMatrixAccessOperatorSymbolPresent()
                 && (!symbol.getNameToAccess().isEmpty())
-                && (!MathCommandRegisterCPP.containsCommandExpression(symbol, input))
+                && (!MathCommandRegisterCPP.containsCommandExpression(symbol, symbol.getNameToAccess() + input))
                 && (!MathFunctionFixer.fixForLoopAccess(symbol.getMathMatrixAccessOperatorSymbol().getMathMatrixNameExpressionSymbol(), ComponentConverter.currentBluePrint))
                 && (!StringValueListExtractorUtil.containsPortName(symbol.getNameToAccess()));
     }
