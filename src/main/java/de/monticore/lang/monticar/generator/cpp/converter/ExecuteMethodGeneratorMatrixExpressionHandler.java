@@ -3,8 +3,10 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.*;
+import de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
+import de.monticore.lang.monticar.generator.cpp.StringValueListExtractorUtil;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -251,12 +253,26 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         result += mathMatrixNameExpressionSymbol.getNameToAccess();
         if (mathMatrixNameExpressionSymbol.isMathMatrixAccessOperatorSymbolPresent()) {
             mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol().setMathMatrixNameExpressionSymbol(mathMatrixNameExpressionSymbol);
-            result += generateExecuteCode(mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
+            String input = generateExecuteCode(mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
+            // fix indexing
+            if (useZeroBasedIndexingForMatrixAccess(mathMatrixNameExpressionSymbol, input))
+                result += StringIndexHelper.modifyContentBetweenBracketsByAdding(input, "-1");
+            else
+                result += input;
         }
         return result;
     }
 
     public static String generateExecuteCode(MathMatrixVectorExpressionSymbol symbol, List<String> includeStrings) {
         return MathConverter.curBackend.getMathMatrixColonVectorString(symbol);
+    }
+
+    private static boolean useZeroBasedIndexingForMatrixAccess(MathMatrixNameExpressionSymbol symbol, String input) {
+        return MathConverter.curBackend.usesZeroBasedIndexing()
+                && symbol.isMathMatrixAccessOperatorSymbolPresent()
+                && (!symbol.getNameToAccess().isEmpty())
+                && (!MathCommandRegisterCPP.containsCommandExpression(symbol, input))
+                && (!MathFunctionFixer.fixForLoopAccess(symbol.getMathMatrixAccessOperatorSymbol().getMathMatrixNameExpressionSymbol(), ComponentConverter.currentBluePrint))
+                && (!StringValueListExtractorUtil.containsPortName(symbol.getNameToAccess()));
     }
 }

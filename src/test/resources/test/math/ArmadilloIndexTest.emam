@@ -50,5 +50,9 @@ component ArmadilloIndexTest{
         // test scalar port matrix access
         Q y = A(inRow, inCol);
 
+        // test scalar matrix access
+        Q^{4} C = [1; 1; 1; 1];
+        y = C(1) * C(4) * (C(1) + C(2) + C(3)) + C(3);
+
     }
 }
