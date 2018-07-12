@@ -6,6 +6,186 @@
  *                 ====
  *                     ====
  *                         ====
+ *                             ====
+ *                                 ====
+ *                                     ====
+ *                                         ====
+ *                                             ====
+ *                                                 ====
+ *                                                     ====
+ *                                                         ====
+ *                                                             ====
+ *                                                                 ******************************************************************************
+ *                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                  All rights reserved.
+ *
+ *                                                                  This project is free software; you can redistribute it and/or
+ *                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                  License as published by the Free Software Foundation; either
+ *                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                  Lesser General Public License for more details.
+ *
+ *                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                 *******************************************************************************
+ *                                                             ====
+ *
+ *                                                             ******************************************************************************
+ *                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                              All rights reserved.
+ *
+ *                                                              This project is free software; you can redistribute it and/or
+ *                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                              License as published by the Free Software Foundation; either
+ *                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                              This library is distributed in the hope that it will be useful,
+ *                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                              Lesser General Public License for more details.
+ *
+ *                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                             *******************************************************************************
+ *                                                         ====
+ *
+ *                                                         ******************************************************************************
+ *                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                          All rights reserved.
+ *
+ *                                                          This project is free software; you can redistribute it and/or
+ *                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                          License as published by the Free Software Foundation; either
+ *                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                          This library is distributed in the hope that it will be useful,
+ *                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                          Lesser General Public License for more details.
+ *
+ *                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                         *******************************************************************************
+ *                                                     ====
+ *
+ *                                                     ******************************************************************************
+ *                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                      All rights reserved.
+ *
+ *                                                      This project is free software; you can redistribute it and/or
+ *                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                      License as published by the Free Software Foundation; either
+ *                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                      This library is distributed in the hope that it will be useful,
+ *                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                      Lesser General Public License for more details.
+ *
+ *                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                     *******************************************************************************
+ *                                                 ====
+ *
+ *                                                 ******************************************************************************
+ *                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                  All rights reserved.
+ *
+ *                                                  This project is free software; you can redistribute it and/or
+ *                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                  License as published by the Free Software Foundation; either
+ *                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                  This library is distributed in the hope that it will be useful,
+ *                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                  Lesser General Public License for more details.
+ *
+ *                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                 *******************************************************************************
+ *                                             ====
+ *
+ *                                             ******************************************************************************
+ *                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                              All rights reserved.
+ *
+ *                                              This project is free software; you can redistribute it and/or
+ *                                              modify it under the terms of the GNU Lesser General Public
+ *                                              License as published by the Free Software Foundation; either
+ *                                              version 3.0 of the License, or (at your option) any later version.
+ *                                              This library is distributed in the hope that it will be useful,
+ *                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                              Lesser General Public License for more details.
+ *
+ *                                              You should have received a copy of the GNU Lesser General Public
+ *                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                             *******************************************************************************
+ *                                         ====
+ *
+ *                                         ******************************************************************************
+ *                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                          All rights reserved.
+ *
+ *                                          This project is free software; you can redistribute it and/or
+ *                                          modify it under the terms of the GNU Lesser General Public
+ *                                          License as published by the Free Software Foundation; either
+ *                                          version 3.0 of the License, or (at your option) any later version.
+ *                                          This library is distributed in the hope that it will be useful,
+ *                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                          Lesser General Public License for more details.
+ *
+ *                                          You should have received a copy of the GNU Lesser General Public
+ *                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                         *******************************************************************************
+ *                                     ====
+ *
+ *                                     ******************************************************************************
+ *                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                      All rights reserved.
+ *
+ *                                      This project is free software; you can redistribute it and/or
+ *                                      modify it under the terms of the GNU Lesser General Public
+ *                                      License as published by the Free Software Foundation; either
+ *                                      version 3.0 of the License, or (at your option) any later version.
+ *                                      This library is distributed in the hope that it will be useful,
+ *                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                      Lesser General Public License for more details.
+ *
+ *                                      You should have received a copy of the GNU Lesser General Public
+ *                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                     *******************************************************************************
+ *                                 ====
+ *
+ *                                 ******************************************************************************
+ *                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                  All rights reserved.
+ *
+ *                                  This project is free software; you can redistribute it and/or
+ *                                  modify it under the terms of the GNU Lesser General Public
+ *                                  License as published by the Free Software Foundation; either
+ *                                  version 3.0 of the License, or (at your option) any later version.
+ *                                  This library is distributed in the hope that it will be useful,
+ *                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                  Lesser General Public License for more details.
+ *
+ *                                  You should have received a copy of the GNU Lesser General Public
+ *                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                 *******************************************************************************
+ *                             ====
+ *
  *                             ******************************************************************************
  *                              MontiCAR Modeling Family, www.se-rwth.de
  *                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -161,6 +341,7 @@ package simulation.network;
 
 import commons.simulation.DiscreteEvent;
 import commons.simulation.SimulationLoopExecutable;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.junit.Test;
 import simulation.network.settings.SettingsSimple;
 import simulation.util.Log;
@@ -193,7 +374,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        vehicle1.setGlobalPos(1000.0, 1000.0, 0.50);
+        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
         List<NetworkNode> nodeList = new LinkedList<>();
@@ -225,7 +406,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        vehicle1.setGlobalPos(1000.0, 1000.0, 0.50);
+        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
         List<NetworkNode> nodeList = new LinkedList<>();
@@ -258,7 +439,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        vehicle1.setGlobalPos(1000.0, 1000.0, 0.50);
+        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
         List<NetworkNode> nodeList = new LinkedList<>();
@@ -300,7 +481,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
         PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        vehicle1.setGlobalPos(1000.0, 1000.0, 0.50);
+        vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
         List<NetworkNode> nodeList = new LinkedList<>();

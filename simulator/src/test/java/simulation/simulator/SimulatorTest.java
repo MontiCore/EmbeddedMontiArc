@@ -6,6 +6,106 @@
  *                 ====
  *                     ====
  *                         ====
+ *                             ====
+ *                                 ====
+ *                                     ====
+ *                                         ====
+ *                                             ====
+ *                                                 ******************************************************************************
+ *                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                  All rights reserved.
+ *
+ *                                                  This project is free software; you can redistribute it and/or
+ *                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                  License as published by the Free Software Foundation; either
+ *                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                  This library is distributed in the hope that it will be useful,
+ *                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                  Lesser General Public License for more details.
+ *
+ *                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                 *******************************************************************************
+ *                                             ====
+ *
+ *                                             ******************************************************************************
+ *                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                              All rights reserved.
+ *
+ *                                              This project is free software; you can redistribute it and/or
+ *                                              modify it under the terms of the GNU Lesser General Public
+ *                                              License as published by the Free Software Foundation; either
+ *                                              version 3.0 of the License, or (at your option) any later version.
+ *                                              This library is distributed in the hope that it will be useful,
+ *                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                              Lesser General Public License for more details.
+ *
+ *                                              You should have received a copy of the GNU Lesser General Public
+ *                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                             *******************************************************************************
+ *                                         ====
+ *
+ *                                         ******************************************************************************
+ *                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                          All rights reserved.
+ *
+ *                                          This project is free software; you can redistribute it and/or
+ *                                          modify it under the terms of the GNU Lesser General Public
+ *                                          License as published by the Free Software Foundation; either
+ *                                          version 3.0 of the License, or (at your option) any later version.
+ *                                          This library is distributed in the hope that it will be useful,
+ *                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                          Lesser General Public License for more details.
+ *
+ *                                          You should have received a copy of the GNU Lesser General Public
+ *                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                         *******************************************************************************
+ *                                     ====
+ *
+ *                                     ******************************************************************************
+ *                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                      All rights reserved.
+ *
+ *                                      This project is free software; you can redistribute it and/or
+ *                                      modify it under the terms of the GNU Lesser General Public
+ *                                      License as published by the Free Software Foundation; either
+ *                                      version 3.0 of the License, or (at your option) any later version.
+ *                                      This library is distributed in the hope that it will be useful,
+ *                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                      Lesser General Public License for more details.
+ *
+ *                                      You should have received a copy of the GNU Lesser General Public
+ *                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                     *******************************************************************************
+ *                                 ====
+ *
+ *                                 ******************************************************************************
+ *                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                  All rights reserved.
+ *
+ *                                  This project is free software; you can redistribute it and/or
+ *                                  modify it under the terms of the GNU Lesser General Public
+ *                                  License as published by the Free Software Foundation; either
+ *                                  version 3.0 of the License, or (at your option) any later version.
+ *                                  This library is distributed in the hope that it will be useful,
+ *                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                  Lesser General Public License for more details.
+ *
+ *                                  You should have received a copy of the GNU Lesser General Public
+ *                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                 *******************************************************************************
+ *                             ====
+ *
  *                             ******************************************************************************
  *                              MontiCAR Modeling Family, www.se-rwth.de
  *                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -164,7 +264,11 @@ import commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.junit.*;
 import commons.simulation.SimulationLoopExecutable;
 import commons.simulation.SimulationLoopNotifiable;
@@ -995,7 +1099,7 @@ public class SimulatorTest {
         sim.registerAndPutObject(physicalVehicle, 10, 20, 0);
 
         //Test object is at desired location
-        RealVector pos = physicalVehicle.getPos();
+        RealVector pos = physicalVehicle.getPosition();
         assertTrue(pos.getEntry(0) == 10);
         assertTrue(pos.getEntry(1) == 20);
 
@@ -1190,30 +1294,144 @@ public class SimulatorTest {
     }
 
     private class SimObject implements SimulationLoopExecutable, PhysicalObject {
-        boolean collision = false;
-        boolean error = false;
-        public void executeLoopIteration(long timeDiffMs) {}
-        public PhysicalObjectType getPhysicalObjectType() {return PhysicalObjectType.PHYSICAL_OBJECT_TYPE_TREE;}
-        public RealVector getGeometryPos() {return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});}
-        public RealMatrix getGeometryRot() {return MatrixUtils.createRealIdentityMatrix(3);}
-        public double getWidth() {return 0;}
-        public double getLength() {return 0;}
-        public double getHeight() {return 0;}
-        public double getOffsetZ() {return 0;}
-        public boolean getCollision() {return collision;}
-        public void setCollision(boolean collision) {this.collision = collision;}
-        public boolean getError() {return error;}
-        public void setError(boolean error) {this.error = error;}
-        public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors() {return new ArrayList<>();}
-        public long getId() {return 0;}
-        public RealVector getAcceleration() {return new ArrayRealVector(new double[] {0.0, 0.0, 0.0});}
-        public RealVector getVelocity() {return new ArrayRealVector(new double[] {0.0, 0.0, 0.0});}
-        public double getSteeringAngle() {return 0;}
-        public RealVector getBackLeftWheelGeometryPos() {return null;}
-        public RealVector getBackRightWheelGeometryPos() {return null;}
-        public RealVector getFrontLeftWheelGeometryPos() {return null;}
-        public RealVector getFrontRightWheelGeometryPos() {return null;}
+        private RealVector position;
+        private RealMatrix rotation;
+        private RealVector velocity;
+        private RealVector acceleration;
+        private RealVector force;
+        private double mass;
+        private double width;
+        private double height;
+        private double length;
+        private RealVector geometryPositionOffset;
+        private PhysicalObjectType physicalObjectType;
+        private boolean error;
+        private boolean collision;
+        private long uniqueId;
 
-
+        public SimObject() {
+            position = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
+            rotation = new BlockRealMatrix(rot.getMatrix());
+            velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            mass = 0.0;
+            width = 0.0;
+            length = 0.0;
+            height = 0.0;
+            geometryPositionOffset = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_TREE;
+            error = false;
+            collision = false;
+        }
+        public RealVector getPosition(){
+            return  position.copy();
+        }
+        public void setPosition(RealVector position){
+            this.position = position.copy();
+        }
+        public RealMatrix getRotation(){
+            return this.rotation.copy();
+        }
+        public void setRotation(RealMatrix rotation){
+            this.rotation = rotation.copy();
+        }
+        public RealVector getVelocity(){
+            return this.velocity.copy();
+        }
+        public void setVelocity(RealVector velocity){
+            this.velocity = velocity.copy();
+        }
+        public RealVector getAcceleration(){
+            return this.acceleration.copy();
+        }
+        public void setAcceleration(RealVector acceleration){
+            this.acceleration = acceleration.copy();
+        }
+        public void addForce(RealVector force){
+            this.force = this.force.add(force);
+        }
+        public double getMass(){
+            return this.mass;
+        }
+        public void setMass(double mass){
+            this.mass = mass;
+        }
+        public double getWidth(){
+            return this.width;
+        }
+        public void setWidth(double width){
+            this.width = width;
+        }
+        public double getLength(){
+            return this.length;
+        }
+        public void setLength(double length){
+            this.length = length;
+        }
+        public double getHeight(){
+            return this.height;
+        }
+        public void setHeight(double height){
+            this.height = height;
+        }
+        public RealVector getGeometryPosition(){
+            return position.add(getGeometryPositionOffset());
+        }
+        public void setGeometryPosition(RealVector geometryPosition){
+            this.position = geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0));
+        }
+        public RealVector getGeometryPositionOffset(){
+            return this.rotation.operate(geometryPositionOffset).copy();
+        }
+        public void setGeometryPositionOffset(RealVector geometryPositionOffset){
+            try {
+                RealVector currentGeometryPosition = getGeometryPosition();
+                RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
+                this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
+                setGeometryPosition(currentGeometryPosition);
+            } catch (Exception e){
+                Log.severe("Tree: setGeometryPositionOffset - Could not set geometryPositionOffset. Rotation matrix inversion failed");
+                e.printStackTrace();
+            }
+        }
+        public PhysicalObjectType getPhysicalObjectType(){
+            return this.physicalObjectType;
+        }
+        public boolean getError(){
+            return this.error;
+        }
+        public void setError(boolean error){
+            this.error = error;
+        }
+        public boolean getCollision(){
+            return this.collision;
+        }
+        public void setCollision(boolean collision){
+            this.collision = collision;
+        }
+        public long getId(){
+            return this.uniqueId;
+        }
+        public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
+            return new ArrayList<>();
+        }
+        public void computePhysics(double deltaT){
+            //No physics computations for trees
+            force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+        }
+        public void putOnSurface(double posX, double posY, double rotZ){
+            // do nothing: this object is never put on the surface of a simulation
+        }
+        public RealVector getGeometryPos(){
+            return  getPosition();
+        }
+        public RealMatrix getGeometryRot(){
+            return getRotation();
+        }
+        public void executeLoopIteration(long timeDiffMs) {
+            // do nothing: trees do not move
+        }
     }
 }

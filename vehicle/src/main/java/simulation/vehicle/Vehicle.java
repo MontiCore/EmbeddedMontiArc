@@ -6,6 +6,226 @@
  *                 ====
  *                     ====
  *                         ====
+ *                             ====
+ *                                 ====
+ *                                     ====
+ *                                         ====
+ *                                             ====
+ *                                                 ====
+ *                                                     ====
+ *                                                         ====
+ *                                                             ====
+ *                                                                 ====
+ *                                                                     ====
+ *                                                                         ******************************************************************************
+ *                                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                          All rights reserved.
+ *
+ *                                                                          This project is free software; you can redistribute it and/or
+ *                                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                                          License as published by the Free Software Foundation; either
+ *                                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                                          This library is distributed in the hope that it will be useful,
+ *                                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                          Lesser General Public License for more details.
+ *
+ *                                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                         *******************************************************************************
+ *                                                                     ====
+ *
+ *                                                                     ******************************************************************************
+ *                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                      All rights reserved.
+ *
+ *                                                                      This project is free software; you can redistribute it and/or
+ *                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                      License as published by the Free Software Foundation; either
+ *                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                      Lesser General Public License for more details.
+ *
+ *                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                     *******************************************************************************
+ *                                                                 ====
+ *
+ *                                                                 ******************************************************************************
+ *                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                  All rights reserved.
+ *
+ *                                                                  This project is free software; you can redistribute it and/or
+ *                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                  License as published by the Free Software Foundation; either
+ *                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                  Lesser General Public License for more details.
+ *
+ *                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                 *******************************************************************************
+ *                                                             ====
+ *
+ *                                                             ******************************************************************************
+ *                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                              All rights reserved.
+ *
+ *                                                              This project is free software; you can redistribute it and/or
+ *                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                              License as published by the Free Software Foundation; either
+ *                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                              This library is distributed in the hope that it will be useful,
+ *                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                              Lesser General Public License for more details.
+ *
+ *                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                             *******************************************************************************
+ *                                                         ====
+ *
+ *                                                         ******************************************************************************
+ *                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                          All rights reserved.
+ *
+ *                                                          This project is free software; you can redistribute it and/or
+ *                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                          License as published by the Free Software Foundation; either
+ *                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                          This library is distributed in the hope that it will be useful,
+ *                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                          Lesser General Public License for more details.
+ *
+ *                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                         *******************************************************************************
+ *                                                     ====
+ *
+ *                                                     ******************************************************************************
+ *                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                      All rights reserved.
+ *
+ *                                                      This project is free software; you can redistribute it and/or
+ *                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                      License as published by the Free Software Foundation; either
+ *                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                      This library is distributed in the hope that it will be useful,
+ *                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                      Lesser General Public License for more details.
+ *
+ *                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                     *******************************************************************************
+ *                                                 ====
+ *
+ *                                                 ******************************************************************************
+ *                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                  All rights reserved.
+ *
+ *                                                  This project is free software; you can redistribute it and/or
+ *                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                  License as published by the Free Software Foundation; either
+ *                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                  This library is distributed in the hope that it will be useful,
+ *                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                  Lesser General Public License for more details.
+ *
+ *                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                 *******************************************************************************
+ *                                             ====
+ *
+ *                                             ******************************************************************************
+ *                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                              All rights reserved.
+ *
+ *                                              This project is free software; you can redistribute it and/or
+ *                                              modify it under the terms of the GNU Lesser General Public
+ *                                              License as published by the Free Software Foundation; either
+ *                                              version 3.0 of the License, or (at your option) any later version.
+ *                                              This library is distributed in the hope that it will be useful,
+ *                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                              Lesser General Public License for more details.
+ *
+ *                                              You should have received a copy of the GNU Lesser General Public
+ *                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                             *******************************************************************************
+ *                                         ====
+ *
+ *                                         ******************************************************************************
+ *                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                          All rights reserved.
+ *
+ *                                          This project is free software; you can redistribute it and/or
+ *                                          modify it under the terms of the GNU Lesser General Public
+ *                                          License as published by the Free Software Foundation; either
+ *                                          version 3.0 of the License, or (at your option) any later version.
+ *                                          This library is distributed in the hope that it will be useful,
+ *                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                          Lesser General Public License for more details.
+ *
+ *                                          You should have received a copy of the GNU Lesser General Public
+ *                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                         *******************************************************************************
+ *                                     ====
+ *
+ *                                     ******************************************************************************
+ *                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                      All rights reserved.
+ *
+ *                                      This project is free software; you can redistribute it and/or
+ *                                      modify it under the terms of the GNU Lesser General Public
+ *                                      License as published by the Free Software Foundation; either
+ *                                      version 3.0 of the License, or (at your option) any later version.
+ *                                      This library is distributed in the hope that it will be useful,
+ *                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                      Lesser General Public License for more details.
+ *
+ *                                      You should have received a copy of the GNU Lesser General Public
+ *                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                     *******************************************************************************
+ *                                 ====
+ *
+ *                                 ******************************************************************************
+ *                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                  All rights reserved.
+ *
+ *                                  This project is free software; you can redistribute it and/or
+ *                                  modify it under the terms of the GNU Lesser General Public
+ *                                  License as published by the Free Software Foundation; either
+ *                                  version 3.0 of the License, or (at your option) any later version.
+ *                                  This library is distributed in the hope that it will be useful,
+ *                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                  Lesser General Public License for more details.
+ *
+ *                                  You should have received a copy of the GNU Lesser General Public
+ *                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                 *******************************************************************************
+ *                             ====
+ *
  *                             ******************************************************************************
  *                              MontiCAR Modeling Family, www.se-rwth.de
  *                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -220,8 +440,6 @@ public class Vehicle {
     /** Maximum velocity of the vehicle */
     public static final double VEHICLE_DEFAULT_APPROX_MAX_VELOCITY = 100.0;
 
-
-    /** Default paramter values for massPoint physics*/
     /** Length of the vehicle in meters */
     public static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
 
@@ -231,14 +449,14 @@ public class Vehicle {
     /** Height of the vehicle in meters */
     public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
 
+    /** Radius of the wheels in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
+
     /** Mass of the vehicle's front */
     public static final double VEHICLE_DEFAULT_MASS_FRONT = 950.0;
 
     /** Mass of the vehicle's back */
     public static final double VEHICLE_DEFAULT_MASS_BACK = 850.0;
-
-    /** Radius of the wheels in meters */
-    public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
 
     /** Distance between the left and the right wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT = 1.62025;
@@ -246,17 +464,8 @@ public class Vehicle {
     /** Distance between front and back wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK = 2.921;
 
-    /** Average tire pressure for car wheels in bar */
-    public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
 
-
-    /**Attributes of the car */
-    /** Indicator whether the constant bus data was sent */
-    private boolean constantBusDataSent;
-
-    /** Indicator whether the vehicle is fully initialized or not */
-    boolean vehicleInitialized = false;
-
+    /**Components */
     /** Motor of vehicle */
     private VehicleActuator motor;
 
@@ -284,6 +493,29 @@ public class Vehicle {
     /** Navigation for vehicle */
     private Optional<FunctionBlockInterface> navigation;
 
+
+    /** Properties */
+    /** M of formula */
+    /** Front mass of the vehicle */
+    private double massFront;
+
+    /** Back mass of the vehicle */
+    private double massBack;
+
+    /** Dimensions of vehicle in meters */
+    private double width, length, height;
+
+    /** Radius of vehicle wheels */
+    private double wheelRadius;
+
+    /** Track of the vehicle wheels */
+    private double wheelDistLeftRight;
+
+    /** Wheelbase of the vehicle wheels */
+    private double wheelDistFrontBack;
+
+
+    /** Internal Attributes */
     /** Last navigation target for vehicle */
     private Optional<IControllerNode> lastNavigationTarget;
 
@@ -297,149 +529,96 @@ public class Vehicle {
     private double maxTemporaryAllowedVelocity;
 
 
-    /** Attributes used for massPoint physics */
-    /** M of formula */
-    private double mass;
+    /** Internal flags */
+    /** Flag whether the constant bus data was sent */
+    private boolean constantBusDataSent;
 
-    /** Dimensions of vehicle in meters */
-    private double length, width, height;
+    /** Flag whether the vehicle is initialized */
+    private boolean vehicleInitialized;
 
-    /** Radius of vehicle wheels in meters */
-    private double wheelRadius;
-
-    /** Track of the vehicle wheels */
-    private double wheelDistLeftRight;
-
-    /** Wheelbase of the vehicle wheels */
-    private double wheelDistFrontBack;
-
-    /** Representation of wheel mass points, indexed data */
-    private MassPoint[] wheelMassPoints = new MassPoint[4];
 
     /**
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
-     *
-     * @param controllerBus Optional bus for the controller of the vehicle
-     * @param controller Optional controller of the vehicle
-     * @param navigation Optional navigation of the vehicle
      */
-    protected Vehicle(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
-        // Approx maximum velocity
-        setApproxMaxTotalVelocity(VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
-
-        // When created, maximum temporary allowed velocity is not limited
-        maxTemporaryAllowedVelocity = Double.MAX_VALUE;
-
-        // When created, the constant bus data is not sent yet
-        constantBusDataSent = false;
-
-        // When created, the vehicle is not fully initialized
-        vehicleInitialized = false;
-
-        // Actuators
+    protected Vehicle() {
+        // Create the motor
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
+        // Create the brakes
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
+        // Create the steering
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_STEERING, VEHICLE_DEFAULT_STEERING_ANGLE_MIN, VEHICLE_DEFAULT_STEERING_ANGLE_MAX, VEHICLE_DEFAULT_STEERING_ANGLE_RATE);
-
-        //Create status logger
-        statusLogger = new StatusLogger();
-
-        // Set components of the vehicle
-        sensorList = new ArrayList<>();
-        this.controllerBus = controllerBus;
-        this.controller = controller;
-        this.navigation = navigation;
+        // Create the status logger
+        this.statusLogger = new StatusLogger();
+        // Create the sensor list
+        this.sensorList = new ArrayList<>();
+        // Create the controller bus
+        this.controllerBus = Optional.empty();
+        // Create the controller
+        this.controller = Optional.empty();
+        // Create the navigation unit
+        this.navigation = Optional.empty();
+        // Set width
+        this.width = VEHICLE_DEFAULT_WIDTH;
+        // Set length
+        this.length = VEHICLE_DEFAULT_LENGTH;
+        // Set height
+        this.height = VEHICLE_DEFAULT_HEIGHT;
+        // Set front mass
+        this.massFront = VEHICLE_DEFAULT_MASS_FRONT;
+        // Set back mass
+        this.massBack = VEHICLE_DEFAULT_MASS_BACK;
+        // Set wheel radius
+        this.wheelRadius = VEHICLE_DEFAULT_WHEEL_RADIUS;
+        // Set track
+        this.wheelDistLeftRight = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        // Set wheel base
+        this.wheelDistFrontBack = VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK;
+        // Initialize last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
-
         // Initialize camera image with empty optional
         cameraImage = Optional.empty();
-
+        // Set approximal maximum velocity
+        this.approxMaxTotalVelocity = VEHICLE_DEFAULT_APPROX_MAX_VELOCITY;
+        // When created, maximum temporary allowed velocity is not limited
+        this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+        // When created, the constant bus data is not sent yet
+        this.constantBusDataSent = false;
+        // When created, the physical vehicle is not initialized
+        this.vehicleInitialized = false;
         Log.finest("Vehicle: Constructor - Vehicle constructed: " + this);
     }
 
     /**
-     * Function that initializes the physics components of the modelica physics in the vehicle class
-     * Should only be called by physicalVehicle.initModelicaPhysics
-     */
-    void initModelicaPhysics(){
-        if(!vehicleInitialized) {
-            //Create FMUWrappers
-            vehicleInitialized = true;
-        }
-    }
-
-    /**
-     * Function that initializes the physics components of the massPoint physics in the vehicle class
-     * Should only be called by physicalVehicle.initMassPointPhysics
-     */
-    void initMassPointPhysics(){
-        if(!vehicleInitialized) {
-            // Set Dimensions
-            setDimensions(VEHICLE_DEFAULT_LENGTH, VEHICLE_DEFAULT_WIDTH, VEHICLE_DEFAULT_HEIGHT);
-
-            // Set mass of entire vehicle
-            setWheelProperties(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_RADIUS, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
-
-            // Create Mass Points
-            createMassPoints(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
-
-            vehicleInitialized = true;
-        }
-    }
-
-    /**
-     * Function that sets wheel properties to the vehicle
+     * Function that returns the current vehicle actuators
      *
-     * @param massFront          Sum of mass for both front wheels
-     * @param massBack           Sum of mass for both back wheels
-     * @param wheelRadius        Radius of wheels
-     * @param wheelDistLeftRight Distance between left and right wheels
-     * @param wheelDistFrontBack Distance between front and back wheels
+     * @param type Type of the vehicle actuator to get
+     * @return Current vehicle actuator object for the type, otherwise null
      */
-    void setWheelProperties(double massFront, double massBack, double wheelRadius, double wheelDistLeftRight, double wheelDistFrontBack) {
-        Log.finest("Vehicle: setWheelProperties - Vehicle at start: " + this);
-        mass = massFront + massBack;
-        this.wheelRadius = wheelRadius;
-        this.wheelDistLeftRight = wheelDistLeftRight;
-        this.wheelDistFrontBack = wheelDistFrontBack;
+    public VehicleActuator getVehicleActuator(VehicleActuatorType type) {
+        switch (type) {
+            case VEHICLE_ACTUATOR_TYPE_MOTOR:
+                return motor;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
+                return brakesFrontLeft;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
+                return brakesFrontRight;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
+                return brakesBackLeft;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
+                return brakesBackRight;
+            case VEHICLE_ACTUATOR_TYPE_STEERING:
+                return steering;
+        }
+
+        return null;
     }
 
     /**
-     * Function that creates the mass points of the vehicle
-     * *
-     * @param massFront          Sum of mass for both front wheels
-     * @param massBack           Sum of mass for both back wheels
-     * @param wheelDistLeftRight Distance between left and right wheels
-     * @param wheelDistFrontBack Distance between front and back wheels
-     */
-    void createMassPoints(double massFront, double massBack,  double wheelDistLeftRight, double wheelDistFrontBack) {
-        // Create mass points with incomplete information
-        RealVector localPosFrontLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
-        RealVector localPosFrontRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
-        RealVector localPosBackLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), -(wheelDistFrontBack / 2), 0.0});
-        RealVector localPosBackRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), -(wheelDistFrontBack / 2), 0.0});
-        RealVector zeroVector = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-        RealVector gravitationVectorFrontWheel = new ArrayRealVector(new double[]{0.0, 0.0, (massFront / 2) * -9.81});
-        RealVector gravitationVectorBackWheel = new ArrayRealVector(new double[]{0.0, 0.0, (massBack / 2) * -9.81});
-
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_FRONT_LEFT, localPosFrontLeft, localPosFrontLeft, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorFrontWheel, (massFront / 2));
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_FRONT_RIGHT, localPosFrontRight, localPosFrontRight, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorFrontWheel, (massFront / 2));
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_BACK_LEFT, localPosBackLeft, localPosBackLeft, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorBackWheel, (massBack / 2));
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_BACK_RIGHT, localPosBackRight, localPosBackRight, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorBackWheel, (massBack / 2));
-
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        Log.finest("Vehicle: setWheelProperties - Vehicle at end: " + this);
-    }
-
-    /**
-     * Function that sets actuator properties to the vehicle
+     * Function that sets the actuator properties
      *
      * @param actuatorType       Type of the actuator
      * @param actuatorValueMin   Minimum allowed value of the actuator
@@ -476,18 +655,292 @@ public class Vehicle {
     }
 
     /**
-     * Function that sets dimensions to the vehicle
+     * Function that returns the status logger of the vehicle
      *
-     * @param length Length of the vehicle
-     * @param width  Width of the vehicle
-     * @param height Height of the vehicle
+     * @return ToDo
      */
-    void setDimensions(double length, double width, double height) {
-        Log.finest("Vehicle: setDimensions - Vehicle at start: " + this);
-        this.length = length;
+    public StatusLogger getStatusLogger() {
+        return statusLogger;
+    }
+
+    /**
+     * Function that sets the status logger of the vehicle
+     *
+     * @param statusLogger ToDo
+     */
+    public void setStatusLogger(StatusLogger statusLogger) {
+        this.statusLogger = statusLogger;
+    }
+
+    /**
+     * Function that returns an optional of the sensor of the requested type
+     * If no such sensor is available return an <code>Optional.empty()</code>
+     *
+     * @param type ToDo
+     * @return ToDo
+     */
+    public Optional<Sensor> getSensorByType(BusEntry type) {
+        for (Sensor sensor : sensorList) {
+            if (sensor.getType() == type) {
+                return Optional.of(sensor);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Function that adds a sensor the the vehicle
+     *
+     * @param sensor ToDo
+     */
+    public void addSensor(Sensor sensor) {
+        this.sensorList.add(sensor);
+    }
+
+    /**
+     * Function that returns the optional controller bus
+     *
+     * @return Optional controller bus of the vehicle
+     */
+    protected Optional<Bus> getControllerBus() {
+        return controllerBus;
+    }
+
+    /**
+     * Function that sets the optional controller bus
+     *
+     * @param controllerBus Optional controller bus of the vehicle
+     */
+    protected void setControllerBus(Optional<Bus> controllerBus) {
+        this.controllerBus = controllerBus;
+    }
+
+    /**
+     * Function that returns the optional controller
+     *
+     * @return Optional controller of the vehicle
+     */
+    protected Optional<FunctionBlockInterface> getController() {
+        return controller;
+    }
+
+    /**
+     * Function that sets the optional controller
+     *
+     * @param controller Optional controller of the vehicle
+     */
+    protected void setController(Optional<FunctionBlockInterface> controller) {
+        this.controller = controller;
+    }
+
+    /**
+     * Function that returns the optional navigation
+     *
+     * @return Optional navigation of the vehicle
+     */
+    public Optional<FunctionBlockInterface> getNavigation() {
+        return navigation;
+    }
+
+    /**
+     * Function that sets the optional navigation
+     *
+     * @param navigation Optional navigation of the vehicle
+     */
+    public void setNavigation(Optional<FunctionBlockInterface> navigation) {
+        this.navigation = navigation;
+    }
+
+    /**
+     * Function that returns the width of the vehicle
+     *
+     * @return Width of the vehicle
+     */
+    public double getWidth() {
+        return width;
+    }
+
+    /**
+     * Function that sets the width of the vehicle
+     *
+     * @param width New width of the vehicle
+     */
+    public void setWidth(double width){
         this.width = width;
-        this.height = height;
-        Log.finest("Vehicle: setDimensions - Vehicle at end: " + this);
+    }
+
+    /**
+     * Function that returns the length of the vehicle
+     *
+     * @return Length of the vehicle
+     */
+    public double getLength() {
+        return length;
+    }
+
+    /**
+     * Function that sets the length of the vehicle
+     *
+     * @param length New length of the vehicle
+     */
+    public void setLength(double length){
+        this.length = length;
+    }
+
+    /**
+     * Function that returns the height of simulated car
+     *
+     * @return Height of the vehicle
+     */
+    public double getHeight() {
+        return height;
+    }
+
+    /**
+     * Function that sets the height of the vehicle
+     *
+     * @param height New height of the vehicle
+     */
+    public void setHeight(double height){
+        if(!vehicleInitialized) {
+            this.height = height;
+        }
+    }
+
+    /**
+     * Function that returns the front mass of the vehicle
+     *
+     * @return Front mass of the vehicle
+     */
+    public double getMassFront() {
+        return massFront;
+    }
+
+    /**
+     * Function that sets the front mass of the vehicle
+     *
+     * @param massFront New front mass of the vehicle
+     */
+    public void setMassFront(double massFront){
+        if(!vehicleInitialized) {
+            this.massFront = massFront;
+        }
+    }
+
+    /**
+     * Function that returns the back mass of the vehicle
+     *
+     * @return Back mass of the vehicle
+     */
+    public double getMassBack() {
+        return massBack;
+    }
+
+    /**
+     * Function that sets the back mass of the vehicle
+     *
+     * @param massBack New back mass of the vehicle
+     */
+    public void setMassBack(double massBack){
+        if(!vehicleInitialized) {
+            this.massBack = massBack;
+        }
+    }
+
+    /**
+     * Function that returns the wheel radius of the vehicle
+     *
+     * @return Wheel radius of the vehicle
+     */
+    public double getWheelRadius() {
+        return wheelRadius;
+    }
+
+    /**
+     * Function that sets the wheel radius of the vehicle
+     *
+     * @param wheelRadius New wheel radius of the vehicle
+     */
+    public void setWheelRadius(double wheelRadius){
+        if(!vehicleInitialized) {
+            this.wheelRadius = wheelRadius;
+        }
+    }
+
+    /**
+     * Function that returns the distance between left and right wheels of the vehicle
+     *
+     * @return Distance between left and right wheels of the vehicle
+     */
+    double getWheelDistLeftRight() {
+        return wheelDistLeftRight;
+    }
+
+    /**
+     * Function that sets the distance between left and right wheels of the vehicle
+     *
+     * @param wheelDistLeftRight New distance between left and right wheels of the vehicle
+     */
+    public void setWheelDistLeftRight(double wheelDistLeftRight){
+        if(!vehicleInitialized) {
+            this.wheelDistLeftRight = wheelDistLeftRight;
+        }
+    }
+
+    /**
+     * Function that returns the distance between front and back wheels of the vehicle
+     *
+     * @return Distance between front and back wheels of the vehicle
+     */
+    double getWheelDistFrontBack() {
+        return wheelDistFrontBack;
+    }
+
+    /**
+     * Function that sets the distance between front and back wheels of the vehicle
+     *
+     * @param wheelDistFrontBack New distance between front and back wheels of the vehicle
+     */
+    public void setWheelDistFrontBack(double wheelDistFrontBack){
+        if(!vehicleInitialized) {
+            this.wheelDistFrontBack = wheelDistFrontBack;
+        }
+    }
+
+    /**
+     * Function that returns the last navigation target of the vehicle
+     *
+     * @return ToDo
+     */
+    public Optional<IControllerNode> getLastNavigationTarget() {
+        return lastNavigationTarget;
+    }
+
+    /**
+     * Function that gets the camera image of the vehicle
+     *
+     * @return Optional of the current camera image
+     */
+    public Optional<Image> getCameraImage() {
+        return cameraImage;
+    }
+
+    /**
+     * Function that sets the camera image
+     *
+     * @param cameraImage Optional of the new camera image to be stored
+     */
+    public void setCameraImage(Optional<Image> cameraImage) {
+        this.cameraImage = cameraImage;
+    }
+
+    /**
+     * Function that returns the maximum approximate velocity of vehicle
+     *
+     * @return Maximum approximate velocity of vehicle
+     */
+    public double getApproxMaxTotalVelocity() {
+        return approxMaxTotalVelocity;
     }
 
     /**
@@ -500,58 +953,44 @@ public class Vehicle {
     }
 
     /**
-     * Function that returns the optional controller bus
+     * Function that returns the maximum temporary allowed velocity of simulated car
      *
-     * @return Optional controller bus of simulated car
+     * @return Maximum temporary allowed velocity
      */
-    protected Optional<Bus> getControllerBus() {
-        return controllerBus;
+    public double getMaxTemporaryAllowedVelocity() {
+        return maxTemporaryAllowedVelocity;
     }
 
     /**
-     * Function that sets the optional controller bus
+     * Function that sets the maximum temporary allowed velocity of simulated car
      *
-     * @param controllerBus Optional controller bus of simulated car
+     * @param maxTemporaryAllowedVelocity New maximum temporary allowed velocity of simulated car
      */
-    protected void setControllerBus(Optional<Bus> controllerBus) {
-        this.controllerBus = controllerBus;
+    public void setMaxTemporaryAllowedVelocity(double maxTemporaryAllowedVelocity) {
+        this.maxTemporaryAllowedVelocity = maxTemporaryAllowedVelocity;
     }
 
     /**
-     * Function that returns the optional controller
+     * Function that sets the vehicle initialized flag to true
+     * Should only be called by initPhysics
      *
-     * @return Optional controller of simulated car
+     * @param vehicleInitialized New value for the vehicle initialized flag
      */
-    protected Optional<FunctionBlockInterface> getController() {
-        return controller;
+    public void setVehicleInitialized(boolean vehicleInitialized){
+        if(vehicleInitialized){
+            this.vehicleInitialized = vehicleInitialized;
+        }
     }
 
-    /**
-     * Function that sets the optional controller
-     *
-     * @param controller Optional controller of simulated car
-     */
-    protected void setController(Optional<FunctionBlockInterface> controller) {
-        this.controller = controller;
-    }
 
-    /**
-     * Function that returns the optional navigation
-     *
-     * @return Optional navigation of simulated car
-     */
-    public Optional<FunctionBlockInterface> getNavigation() {
-        return navigation;
-    }
 
-    /**
-     * Function that sets the optional navigation
-     *
-     * @param navigation Optional navigation of simulated car
-     */
-    public void setNavigation(Optional<FunctionBlockInterface> navigation) {
-        this.navigation = navigation;
-    }
+
+
+
+
+
+
+
 
     /**
      * Function that exchanges data with the controller
@@ -646,199 +1085,6 @@ public class Vehicle {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Function that returns the current vehicle actuators
-     *
-     * @param type Type of the vehicle actuator to get
-     * @return Current vehicle actuator object for the type, otherwise null
-     */
-    public VehicleActuator getVehicleActuator(VehicleActuatorType type) {
-        switch (type) {
-            case VEHICLE_ACTUATOR_TYPE_MOTOR:
-                return motor;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
-                return brakesFrontLeft;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
-                return brakesFrontRight;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
-                return brakesBackLeft;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
-                return brakesBackRight;
-            case VEHICLE_ACTUATOR_TYPE_STEERING:
-                return steering;
-        }
-
-        return null;
-    }
-
-    /**
-     * Function that returns the four wheel mass points of the vehicle
-     *
-     * @return Four wheel mass points of the vehicle
-     */
-    public MassPoint[] getWheelMassPoints() {
-        return wheelMassPoints;
-    }
-
-    /**
-     * Function that sets the four wheel mass points of the vehicle
-     *
-     * @param wheelMassPoints New MassPoint array with four objects of the four wheel mass points
-     */
-    public void setWheelMassPoints(MassPoint[] wheelMassPoints) {
-        this.wheelMassPoints = wheelMassPoints;
-    }
-
-    /**
-     * Function that returns the maximum approximate velocity of vehicle
-     *
-     * @return Maximum approximate velocity of vehicle
-     */
-    public double getApproxMaxTotalVelocity() {
-        return approxMaxTotalVelocity;
-    }
-
-    /**
-     * Function that returns the mass of simulated car
-     *
-     * @return Mass of simulated car
-     */
-    public double getMass() {
-        return mass;
-    }
-
-    /**
-     * Function that returns the length of simulated car
-     *
-     * @return Length of simulated car
-     */
-    public double getLength() {
-        return length;
-    }
-
-    /**
-     * Function that returns the width of simulated car
-     *
-     * @return Width of simulated car
-     */
-    public double getWidth() {
-        return width;
-    }
-
-    /**
-     * Function that returns the height of simulated car
-     *
-     * @return Height of simulated car
-     */
-    public double getHeight() {
-        return height;
-    }
-
-    /**
-     * Function that returns the wheelRadius of simulated car
-     *
-     * @return Wheel radius of simulated car
-     */
-    public double getWheelRadius() {
-        return wheelRadius;
-    }
-
-    /**
-     * Function that returns the distance between left and right wheels of simulated car
-     *
-     * @return Distance between left and right wheels of simulated car
-     */
-    double getWheelDistLeftRight() {
-        return wheelDistLeftRight;
-    }
-
-    /**
-     * Function that returns the distance between front and back wheels of simulated car
-     *
-     * @return Distance between front and back wheels of simulated car
-     */
-    double getWheelDistFrontBack() {
-        return wheelDistFrontBack;
-    }
-
-    /**
-     * Function that returns the maximum temporary allowed velocity of simulated car
-     *
-     * @return Maximum temporary allowed velocity
-     */
-    public double getMaxTemporaryAllowedVelocity() {
-        return maxTemporaryAllowedVelocity;
-    }
-
-    /**
-     * Function that sets the maximum temporary allowed velocity of simulated car
-     *
-     * @param maxTemporaryAllowedVelocity New maximum temporary allowed velocity of simulated car
-     */
-    public void setMaxTemporaryAllowedVelocity(double maxTemporaryAllowedVelocity) {
-        this.maxTemporaryAllowedVelocity = maxTemporaryAllowedVelocity;
-    }
-
-    /**
-     * Function that returns the status logging module of the vehicle
-     *
-     * @return Status logging module of the vehicle
-     */
-    public StatusLogger getStatusLogger() {
-        return statusLogger;
-    }
-
-    /**
-     * Setter for internal fault memory of vehicle
-     *
-     * @param statusLogger Fault memory
-     */
-    public void setStatusLogger(StatusLogger statusLogger) {
-        this.statusLogger = statusLogger;
-    }
-
-    /**
-     * Add a sensor the the vehicle
-     *
-     * @param sensor the sensor to be added
-     */
-    public void addSensor(Sensor sensor) {
-        this.sensorList.add(sensor);
-    }
-
-    /**
-     * Return a optional sensor of the requested type. If no such sensor is available return an <code>Optional.empty()</code>
-     *
-     * @param type the type of the sensor to be requested
-     * @return a concrete sensor
-     */
-    public Optional<Sensor> getSensorByType(BusEntry type) {
-        for (Sensor sensor : sensorList) {
-            if (sensor.getType() == type) {
-                return Optional.of(sensor);
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
-     * Getter function for the camera image
-     *
-     * @return Optional of the current camera image
-     */
-    public Optional<Image> getCameraImage() {
-        return cameraImage;
-    }
-
-    /**
-     * Setter function for the camera image
-     *
-     * @param cameraImage Optional of the new camera image to be stored
-     */
-    public void setCameraImage(Optional<Image> cameraImage) {
-        this.cameraImage = cameraImage;
     }
 
     /**
@@ -978,15 +1224,6 @@ public class Vehicle {
 
         controllerBus.get().setData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString(), trajectoryWithoutAvoiding);
         afterTrajectoryUpdate();
-    }
-
-    /**
-     * Function that returns lastNavigationTarget
-     *
-     * @return Value for lastNavigationTarget
-     */
-    public Optional<IControllerNode> getLastNavigationTarget() {
-        return lastNavigationTarget;
     }
 
     /**
@@ -1161,12 +1398,9 @@ public class Vehicle {
                 " , wheelRadius: " + wheelRadius +
                 " , wheelDistLeftRight: " + wheelDistLeftRight +
                 " , wheelDistFrontBack: " + wheelDistFrontBack +
-                " , mass: " + mass +
+                " , massFront: " + massFront +
+                " , massBack " + massBack +
                 " , constantBusDataSent: " + constantBusDataSent +
-                " , wheelMassPoints[0]: " + wheelMassPoints[0] +
-                " , wheelMassPoints[1]: " + wheelMassPoints[1] +
-                " , wheelMassPoints[2]: " + wheelMassPoints[2] +
-                " , wheelMassPoints[3]: " + wheelMassPoints[3] +
                 " , motor: " + motor +
                 " , brakesFrontLeft: " + brakesFrontLeft +
                 " , brakesFrontRight: " + brakesFrontRight +

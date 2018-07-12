@@ -6,6 +6,106 @@
  *                 ====
  *                     ====
  *                         ====
+ *                             ====
+ *                                 ====
+ *                                     ====
+ *                                         ====
+ *                                             ====
+ *                                                 ******************************************************************************
+ *                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                  All rights reserved.
+ *
+ *                                                  This project is free software; you can redistribute it and/or
+ *                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                  License as published by the Free Software Foundation; either
+ *                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                  This library is distributed in the hope that it will be useful,
+ *                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                  Lesser General Public License for more details.
+ *
+ *                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                 *******************************************************************************
+ *                                             ====
+ *
+ *                                             ******************************************************************************
+ *                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                              All rights reserved.
+ *
+ *                                              This project is free software; you can redistribute it and/or
+ *                                              modify it under the terms of the GNU Lesser General Public
+ *                                              License as published by the Free Software Foundation; either
+ *                                              version 3.0 of the License, or (at your option) any later version.
+ *                                              This library is distributed in the hope that it will be useful,
+ *                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                              Lesser General Public License for more details.
+ *
+ *                                              You should have received a copy of the GNU Lesser General Public
+ *                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                             *******************************************************************************
+ *                                         ====
+ *
+ *                                         ******************************************************************************
+ *                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                          All rights reserved.
+ *
+ *                                          This project is free software; you can redistribute it and/or
+ *                                          modify it under the terms of the GNU Lesser General Public
+ *                                          License as published by the Free Software Foundation; either
+ *                                          version 3.0 of the License, or (at your option) any later version.
+ *                                          This library is distributed in the hope that it will be useful,
+ *                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                          Lesser General Public License for more details.
+ *
+ *                                          You should have received a copy of the GNU Lesser General Public
+ *                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                         *******************************************************************************
+ *                                     ====
+ *
+ *                                     ******************************************************************************
+ *                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                      All rights reserved.
+ *
+ *                                      This project is free software; you can redistribute it and/or
+ *                                      modify it under the terms of the GNU Lesser General Public
+ *                                      License as published by the Free Software Foundation; either
+ *                                      version 3.0 of the License, or (at your option) any later version.
+ *                                      This library is distributed in the hope that it will be useful,
+ *                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                      Lesser General Public License for more details.
+ *
+ *                                      You should have received a copy of the GNU Lesser General Public
+ *                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                     *******************************************************************************
+ *                                 ====
+ *
+ *                                 ******************************************************************************
+ *                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                  All rights reserved.
+ *
+ *                                  This project is free software; you can redistribute it and/or
+ *                                  modify it under the terms of the GNU Lesser General Public
+ *                                  License as published by the Free Software Foundation; either
+ *                                  version 3.0 of the License, or (at your option) any later version.
+ *                                  This library is distributed in the hope that it will be useful,
+ *                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                  Lesser General Public License for more details.
+ *
+ *                                  You should have received a copy of the GNU Lesser General Public
+ *                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                 *******************************************************************************
+ *                             ====
+ *
  *                             ******************************************************************************
  *                              MontiCAR Modeling Family, www.se-rwth.de
  *                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -538,15 +638,6 @@ public class Simulator {
             }
 
             NotificationCenter.getSharedInstance().postNotification(Notification.NOTIFICATION_LOOP_UPCOMING, null);
-        }
-
-        synchronized (simulationObjects) {
-            // Reset forces on every Physical object
-            for(SimulationLoopExecutable object : simulationObjects) {
-                if (object instanceof PhysicalObject) {
-                    PhysicsEngine.resetForces((PhysicalObject) object);
-                }
-            }
         }
 
         synchronized (simulationObjects) {
@@ -1132,127 +1223,38 @@ public class Simulator {
 
             // Set center point of physicalVehicle
             PhysicalVehicle physicalVehicle = (PhysicalVehicle)(physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, physicalVehicle.getGeometryPos().getEntry(2)).doubleValue();
-            physicalVehicle.setGlobalPos(finalPosX, finalPosY, groundZ + physicalVehicle.getOffsetZ() + 0.5 * physicalVehicle.getHeight());
-            physicalVehicle.updateMassPointPositions();
-
-            // Create rotation for Z, needed to get the correct ground values of wheel mass points
-            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, finalRotZ);
-            RealMatrix rotationMatrix = new BlockRealMatrix(rot.getMatrix());
-
-            // Compute rotated positions of wheel mass points with new Z rotation
-            RealVector frontLeft = physicalVehicle.getGeometryPos().add(rotationMatrix.operate(physicalVehicle.getSimulationVehicle().getWheelMassPoints()[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()].getLocalCenterDiff()));
-            RealVector frontRight = physicalVehicle.getGeometryPos().add(rotationMatrix.operate(physicalVehicle.getSimulationVehicle().getWheelMassPoints()[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].getLocalCenterDiff()));
-            RealVector backLeft = physicalVehicle.getGeometryPos().add(rotationMatrix.operate(physicalVehicle.getSimulationVehicle().getWheelMassPoints()[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()].getLocalCenterDiff()));
-            RealVector backRight = physicalVehicle.getGeometryPos().add(rotationMatrix.operate(physicalVehicle.getSimulationVehicle().getWheelMassPoints()[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()].getLocalCenterDiff()));
-
-            // Get all ground values for new mass point X and Y coordinates
-            double frontLeftGroundZ = WorldModel.getInstance().getGround(frontLeft.getEntry(0), frontLeft.getEntry(1), frontLeft.getEntry(2)).doubleValue();
-            double frontRightGroundZ = WorldModel.getInstance().getGround(frontRight.getEntry(0), frontRight.getEntry(1), frontRight.getEntry(2)).doubleValue();
-            double backLeftGroundZ = WorldModel.getInstance().getGround(backLeft.getEntry(0), backLeft.getEntry(1), backLeft.getEntry(2)).doubleValue();
-            double backRightGroundZ = WorldModel.getInstance().getGround(backRight.getEntry(0), backRight.getEntry(1), backRight.getEntry(2)).doubleValue();
-
-            // Store elevated ground values in all vectors
-            frontLeft.setEntry(2, frontLeftGroundZ + physicalVehicle.getSimulationVehicle().getWheelRadius());
-            frontRight.setEntry(2, frontRightGroundZ + physicalVehicle.getSimulationVehicle().getWheelRadius());
-            backLeft.setEntry(2, backLeftGroundZ + physicalVehicle.getSimulationVehicle().getWheelRadius());
-            backRight.setEntry(2, backRightGroundZ + physicalVehicle.getSimulationVehicle().getWheelRadius());
-
-            // Compute relative vectors to estimate angles for rotations around X and Y axis
-            RealVector backFront1 = frontLeft.subtract(backLeft);
-            RealVector backFront2 = frontRight.subtract(backRight);
-            RealVector leftRight1 = frontRight.subtract(frontLeft);
-            RealVector leftRight2 = backRight.subtract(backLeft);
-
-            // Compute all estimation angles between Z plane and relative vectors
-            RealVector planeXYNormVector = new ArrayRealVector(new double[] {0.0, 0.0, 1.0});
-            double angleBackFront1 = 0.0;
-            double angleBackFront2 = 0.0;
-            double angleLeftRight1 = 0.0;
-            double angleLeftRight2 = 0.0;
-
-            double normBackFront1 = backFront1.getNorm() * planeXYNormVector.getNorm();
-            if (normBackFront1 != 0.0) {
-                double dotProduct = backFront1.dotProduct(planeXYNormVector);
-                double sinAngle = Math.abs(dotProduct) / normBackFront1;
-                angleBackFront1 = Math.asin(sinAngle);
-                angleBackFront1 = (dotProduct < 0.0 ? -angleBackFront1 : angleBackFront1);
-            }
-
-            double normBackFront2 = backFront2.getNorm() * planeXYNormVector.getNorm();
-            if (normBackFront2 != 0.0) {
-                double dotProduct = backFront2.dotProduct(planeXYNormVector);
-                double sinAngle = Math.abs(dotProduct) / normBackFront2;
-                angleBackFront2 = Math.asin(sinAngle);
-                angleBackFront2 = (dotProduct < 0.0 ? -angleBackFront2 : angleBackFront2);
-            }
-
-            double normLeftRight1 = leftRight1.getNorm() * planeXYNormVector.getNorm();
-            if (normLeftRight1 != 0.0) {
-                double dotProduct = leftRight1.dotProduct(planeXYNormVector);
-                double sinAngle = Math.abs(dotProduct) / normLeftRight1;
-                angleLeftRight1 = Math.asin(sinAngle);
-                angleLeftRight1 = (dotProduct > 0.0 ? -angleLeftRight1 : angleLeftRight1);
-            }
-
-            double normLeftRight2 = leftRight2.getNorm() * planeXYNormVector.getNorm();
-            if (normLeftRight2 != 0.0) {
-                double dotProduct = leftRight2.dotProduct(planeXYNormVector);
-                double sinAngle = Math.abs(dotProduct) / normLeftRight2;
-                angleLeftRight2 = Math.asin(sinAngle);
-                angleLeftRight2 = (dotProduct > 0.0 ? -angleLeftRight2 : angleLeftRight2);
-            }
-
-            // From vector angles compute and set optimal rotation values based on ground levels
-            double finalRotX = 0.5 * (angleBackFront1 + angleBackFront2);
-            double finalRotY = 0.5 * (angleLeftRight1 + angleLeftRight2);
-
-            // Set optimal angles
-            physicalVehicle.setGlobalRotation(finalRotX, finalRotY, finalRotZ);
-            physicalVehicle.updateMassPointPositions();
+            physicalObject.putOnSurface(finalPosX, finalPosY, finalRotZ);
 
         // Handle Pedestrian
         } else if (physicalObject instanceof Pedestrian) {
             Pedestrian pedestrian = (Pedestrian)(physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, pedestrian.getGeometryPos().getEntry(2)).doubleValue();
-            pedestrian.setPosition(new ArrayRealVector(new double[] {finalPosX, finalPosY, groundZ}));
-            pedestrian.setRotationZ(finalRotZ);
+            pedestrian.putOnSurface(finalPosX, finalPosY, finalRotZ);
 
         // Handle Tree
         } else if (physicalObject instanceof Tree) {
             Tree tree = (Tree)(physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, tree.getGeometryPos().getEntry(2)).doubleValue();
-            tree.setPosition(new ArrayRealVector(new double[] {finalPosX, finalPosY, groundZ + 0.5 * tree.getHeight()}));
-            tree.setRotationZ(finalRotZ);
+            tree.putOnSurface(finalPosX, finalPosY,finalRotZ);
             
         // Handle StreetLantern
         } else if (physicalObject instanceof StreetLantern) {
             StreetLantern streetLantern = (StreetLantern) (physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, streetLantern.getGeometryPos().getEntry(2)).doubleValue();
-            streetLantern.setPosition(new ArrayRealVector(new double[] {finalPosX, finalPosY, groundZ + 0.5 * streetLantern.getHeight()}));
-            streetLantern.setRotationZ(finalRotZ);
+            streetLantern.putOnSurface(finalPosX, finalPosY, finalRotZ);
 
         // Handle RoadWorkSign
         } else if (physicalObject instanceof RoadWorkSign) {
             RoadWorkSign roadWorkSign = (RoadWorkSign) (physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, roadWorkSign.getGeometryPos().getEntry(2)).doubleValue();
-            roadWorkSign.setPosition(new ArrayRealVector(new double[] {finalPosX, finalPosY, groundZ + 0.5 * roadWorkSign.getHeight()}));
-            roadWorkSign.setRotationZ(finalRotZ);
+            roadWorkSign.putOnSurface(finalPosX, finalPosY, finalRotZ);
 
         // Handle House
         } else if (physicalObject instanceof House) {
             House house = (House) (physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, house.getGeometryPos().getEntry(2)).doubleValue();
-            house.setPosition(new ArrayRealVector(new double[] {finalPosX, finalPosY, groundZ + 0.5 * house.getHeight()}));
-            house.setRotationZ(finalRotZ);
+            house.putOnSurface(finalPosX, finalPosY, finalRotZ);
 
 
         // Handle NetworkCellBaseStation
         } else if (physicalObject instanceof NetworkCellBaseStation) {
             NetworkCellBaseStation networkCellBaseStation = (NetworkCellBaseStation)(physicalObject);
-            double groundZ = WorldModel.getInstance().getGround(finalPosX, finalPosY, networkCellBaseStation.getGeometryPos().getEntry(2)).doubleValue();
-            networkCellBaseStation.setPosition(new ArrayRealVector(new double[] {finalPosX, finalPosY, groundZ + 0.5 * networkCellBaseStation.getHeight()}));
-            networkCellBaseStation.setRotationZ(finalRotZ);
+            networkCellBaseStation.putOnSurface(finalPosX, finalPosY, finalRotZ);
         }
     }
 }
