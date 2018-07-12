@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 
 /**
  * @author Sascha Schneiders
@@ -52,4 +53,6 @@ public interface MathBackend {
     String getWholeNumberMatrixTypeName();
 
     String getWholeNumberCubeTypeName();
+
+    String getMathMatrixColonVectorString(MathMatrixVectorExpressionSymbol mathMatrixArithmeticExpressionSymbol);
 }

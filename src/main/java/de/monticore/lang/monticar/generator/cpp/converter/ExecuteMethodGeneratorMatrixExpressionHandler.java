@@ -231,10 +231,12 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
             result = generateExecuteCode((MathMatrixNameExpressionSymbol) mathMatrixExpressionSymbol, includeStrings);
         } else if (mathMatrixExpressionSymbol.isValueExpression()) {
             result = generateExecuteCode((MathMatrixArithmeticValueSymbol) mathMatrixExpressionSymbol, includeStrings);
+        } else if (mathMatrixExpressionSymbol.isMatrixVectorExpression()) {
+            result = generateExecuteCode((MathMatrixVectorExpressionSymbol) mathMatrixExpressionSymbol, includeStrings);
         } else {
             Log.info(mathMatrixExpressionSymbol.getTextualRepresentation(), "Symbol:");
             Log.info(mathMatrixExpressionSymbol.getClass().getName(), "Symbol Name:");
-            Log.debug("0xMAMAEXSY", "Case not handled");
+            Log.error("0xMAMAEXSY: Case not handled");
         }
         return result;
     }
@@ -252,5 +254,9 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
             result += generateExecuteCode(mathMatrixNameExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
         }
         return result;
+    }
+
+    public static String generateExecuteCode(MathMatrixVectorExpressionSymbol symbol, List<String> includeStrings) {
+        return MathConverter.curBackend.getMathMatrixColonVectorString(symbol);
     }
 }

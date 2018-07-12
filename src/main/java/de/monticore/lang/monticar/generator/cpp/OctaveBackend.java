@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.cpp;
 import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 import de.monticore.lang.monticar.generator.MathBackend;
 import de.se_rwth.commons.logging.Log;
 
@@ -125,5 +126,11 @@ public class OctaveBackend implements MathBackend {
     public String getWholeNumberCubeTypeName() {
         Log.warn("Octave does not support whole number matrices. Using real matrix instead!");
         return getCubeTypeName();
+    }
+
+    @Override
+    public String getMathMatrixColonVectorString(MathMatrixVectorExpressionSymbol mathMatrixArithmeticExpressionSymbol) {
+        Log.warn("Not supported.", mathMatrixArithmeticExpressionSymbol.getSourcePosition());
+        return null;
     }
 }
