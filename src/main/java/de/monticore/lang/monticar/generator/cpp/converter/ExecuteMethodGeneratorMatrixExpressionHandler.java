@@ -24,6 +24,8 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
             result = generateExecuteCodeMatrixEEPowerOf(mathMatrixArithmeticExpressionSymbol, includeStrings);
         } else if (mathMatrixArithmeticExpressionSymbol.getMathOperator().equals("./")) {
             result = generateExecuteCodeMatrixEEDivide(mathMatrixArithmeticExpressionSymbol, includeStrings);
+        } else if (mathMatrixArithmeticExpressionSymbol.getMathOperator().equals(".*")) {
+            result = generateExecuteCodeMatrixEEMult(mathMatrixArithmeticExpressionSymbol, includeStrings);
         /*} else if (mathArithmeticExpressionSymbol.getMathOperator().equals("./")) {
             Log.error("reace");
             result += "\"ldivide\"";
@@ -42,6 +44,11 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
         /*result += ")"*/
 
         return result;
+    }
+
+    private static String generateExecuteCodeMatrixEEMult(MathMatrixArithmeticExpressionSymbol mathMatrixArithmeticExpressionSymbol, List<String> includeStrings) {
+        String valueListString = calculateValueListString(mathMatrixArithmeticExpressionSymbol);
+        return MathConverter.curBackend.getMultiplicationEEString(mathMatrixArithmeticExpressionSymbol, valueListString);
     }
 
     public static String calculateValueListString(IArithmeticExpression mathExpressionSymbol) {

@@ -37,6 +37,7 @@ public interface MathBackend {
 
     String getDivisionEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString);
 
+    String getMultiplicationEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString);
     /**
      * Does the backend use 0-based or 1-based indexing for matrix element access?
      *

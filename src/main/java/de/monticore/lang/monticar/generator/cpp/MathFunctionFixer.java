@@ -185,13 +185,8 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
 
     public static void fixMathFunctions(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         fixMathFunctions(mathExpressionSymbol.getLeftExpression(), bluePrintCPP);
-        if (mathExpressionSymbol.getRightExpression() != null) {
+        if (mathExpressionSymbol.getRightExpression() != null)
             fixMathFunctions(mathExpressionSymbol.getRightExpression(), bluePrintCPP);
-            // fix element wise multiplication
-            if (mathExpressionSymbol.getOperator().contentEquals(".*")) {
-                mathExpressionSymbol.setOperator("%");
-            }
-        }
     }
 
     public static void fixMathFunctions(MathMatrixNameExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {

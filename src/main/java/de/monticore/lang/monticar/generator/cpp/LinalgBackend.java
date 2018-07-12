@@ -90,6 +90,12 @@ public class LinalgBackend implements MathBackend {
     }
 
     @Override
+    public String getMultiplicationEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
+        Log.debug("Not supported yet","Not Implemented");
+        return null;
+    }
+
+    @Override
     public boolean usesZeroBasedIndexing() {
         // TODO: check this! Do not know this backend...
         return false;

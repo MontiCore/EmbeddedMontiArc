@@ -93,6 +93,12 @@ public class OctaveBackend implements MathBackend {
     }
 
     @Override
+    public String getMultiplicationEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
+        Log.warn("Backend deprecated");
+        return OctaveHelper.getCallOctaveFunctionFirstResult(mathExpressionSymbol.getLeftExpression(), ".*", valueListString, false);
+    }
+
+    @Override
     public boolean usesZeroBasedIndexing() {
         return false;
     }
