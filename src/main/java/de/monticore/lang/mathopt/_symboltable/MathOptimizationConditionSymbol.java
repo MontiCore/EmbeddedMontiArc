@@ -21,8 +21,10 @@
 package de.monticore.lang.mathopt._symboltable;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -116,6 +118,24 @@ public class MathOptimizationConditionSymbol extends MathExpressionSymbol {
         }
         if (getUpperBound().isPresent()) {
             result = String.format("%s <= %s", result, getUpperBound().get().getTextualRepresentation());
+        }
+        return result;
+    }
+
+    public boolean isMatrixEqualityConstraint(List<MathExpressionSymbol> matrixDimensions) {
+        boolean result = false;
+        if (getLowerBound().isPresent() && getUpperBound().isPresent()) {
+            if (getLowerBound().get().getTextualRepresentation().contentEquals(getUpperBound().get().getTextualRepresentation())) {
+                // resolve type
+                if (getLowerBound().get() instanceof MathNameExpressionSymbol) {
+                    MathNameExpressionSymbol bound = (MathNameExpressionSymbol) getLowerBound().get();
+                    MathValueSymbol resolved = (MathValueSymbol) bound.getEnclosingScope().resolve(bound.getNameToResolveValue(), MathValueSymbol.KIND).orElse(null);
+                    if ((resolved != null) && (resolved.getType() != null) && (!resolved.getType().getDimensions().isEmpty())) {
+                        result = true;
+                        matrixDimensions.addAll(resolved.getType().getDimensions());
+                    }
+                }
+            }
         }
         return result;
     }
