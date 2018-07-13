@@ -86,7 +86,6 @@
                                                 <fileset dir="${basedir}/../simulator/target/classes" />
                                                 <fileset dir="${basedir}/../util/target/classes" />
                                                 <fileset dir="${basedir}/../vehicle/target/classes" />
-                                                <fileset dir="${basedir}/../network/target/classes"/>
                                             </sourcefiles>
                                         </group>
                                     </structure>
