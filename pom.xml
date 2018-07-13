@@ -19,6 +19,7 @@
         <module>simulator</module>
         <module>util</module>
         <module>vehicle</module>
+        <module>report</module>
     </modules>
 <properties>
 		<global.version>1.0.1-SNAPSHOT</global.version>
@@ -26,6 +27,7 @@
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
 		<java.version>1.8</java.version>
+        <jacoco.plugin>0.8.1</jacoco.plugin>
 </properties>
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
@@ -161,11 +163,38 @@
                     <aggregate>true</aggregate>
                 </configuration>
 			</plugin>
+
+            <!-- Test coverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                <append>true</append>
+            </configuration>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                <append>true</append>
+            </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
-
-      <distributionManagement>
+  <distributionManagement>
     <repository>
       <id>se-nexus</id>
       <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
