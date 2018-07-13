@@ -2,9 +2,9 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 import de.monticore.lang.monticar.generator.MathBackend;
 import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
-import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -105,6 +105,12 @@ public class ArmadilloBackend implements MathBackend {
     }
 
     @Override
+    public String getMultiplicationEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString) {
+        return ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getLeftExpression(), new ArrayList<>()) + " % " +
+                ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getRightExpression(), new ArrayList<>());
+    }
+
+    @Override
     public boolean usesZeroBasedIndexing() {
         return true;
     }
@@ -127,5 +133,15 @@ public class ArmadilloBackend implements MathBackend {
     @Override
     public String getWholeNumberCubeTypeName() {
         return "icube";
+    }
+
+    @Override
+    public String getMathMatrixColonVectorString(MathMatrixVectorExpressionSymbol symbol) {
+        String start = ExecuteMethodGenerator.generateExecuteCode(symbol.getStart(), new ArrayList<>());
+        String delta = "1";
+        if (symbol.getStep().isPresent())
+            delta = ExecuteMethodGenerator.generateExecuteCode(symbol.getStep().get(), new ArrayList<>());
+        String end = ExecuteMethodGenerator.generateExecuteCode(symbol.getEnd(), new ArrayList<>());
+        return String.format("regspace<rowvec>(%s, %s, %s)", start, delta, end);
     }
 }

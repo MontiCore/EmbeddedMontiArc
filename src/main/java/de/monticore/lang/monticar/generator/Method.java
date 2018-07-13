@@ -39,6 +39,22 @@ public class Method {
         parameters.add(v);
     }
 
+    public boolean addParameterUnique(Variable v) {
+        boolean added = !containsParameter(v);
+        if (added) {
+            addParameter(v);
+        }
+        return added;
+    }
+
+    private boolean containsParameter(Variable v) {
+        boolean found = false;
+        for (Variable param : getParameters()) {
+            found |= param.getName().contentEquals(v.getName());
+        }
+        return found;
+    }
+
     public List<Variable> getParameters() {
         return parameters;
     }
@@ -61,5 +77,15 @@ public class Method {
 
     public void setInstructions(List<Instruction> instructions) {
         this.instructions = instructions;
+    }
+
+    public String getTargetLanguageMethodCall() {
+        String args = "";
+        int size = getParameters().size();
+        for (int i = 0; i < size - 1; i++) {
+            args += String.format("%s, ", parameters.get(i).getNameTargetLanguageFormat());
+        }
+        args += parameters.get(size - 1).getNameTargetLanguageFormat();
+        return String.format("%s(%s)", name, args);
     }
 }

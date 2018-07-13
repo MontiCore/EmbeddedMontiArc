@@ -130,4 +130,32 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         String restPath = "armadillo/test/custom/l0/";
         testFilesAreEqual(files, restPath);
     }
+
+    @Test
+    public void elementwiseMultTest() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.elementwiseMultTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/testMath/l0/";
+        testFilesAreEqual(files, restPath);
+    }
+
+    @Test
+    public void vectorColonExpressionTest() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.vectorColonExpressionTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/testMath/l0/";
+        testFilesAreEqual(files, restPath);
+    }
 }

@@ -6,6 +6,8 @@ import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol
 
 import java.util.HashSet;
 
+import static de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP.removeBrackets;
+
 /**
  * @author Sascha Schneiders.
  */
@@ -36,7 +38,9 @@ public abstract class MathCommand {
         convert(mathExpressionSymbol, bluePrint);
         if (mathExpressionSymbol instanceof MathMatrixNameExpressionSymbol) {
             MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol = (MathMatrixNameExpressionSymbol) mathExpressionSymbol;
-            targetLanguageCommandNames.add(mathMatrixNameExpressionSymbol.getTextualRepresentation());
+            String s = mathMatrixNameExpressionSymbol.getTextualRepresentation();
+            s = removeBrackets(s);
+            targetLanguageCommandNames.add(s);
         }
     }
 
@@ -53,10 +57,9 @@ public abstract class MathCommand {
     public boolean isTargetLanguageCommand(String command) {
         if (!command.isEmpty())
             for (String s : getTargetLanguageCommandNames())
-                if (s.contains(command))
+                if (s.contentEquals(command))
                     return true;
         return false;
     }
-
 
 }

@@ -228,14 +228,7 @@ public class ExecuteMethodGeneratorHandler {
                 result += ExecuteMethodGenerator.getCorrectAccessString(mathAssignmentExpressionSymbol.getNameOfMathValue(), mathAssignmentExpressionSymbol.getMathMatrixAccessOperatorSymbol(), includeStrings);
                 result += mathAssignmentExpressionSymbol.getAssignmentOperator().getOperator() + " ";
                 String input = ExecuteMethodGenerator.generateExecuteCode(mathAssignmentExpressionSymbol.getExpressionSymbol(), includeStrings) + ";\n";
-                if (MathCommandRegisterCPP.containsCommandExpression(mathAssignmentExpressionSymbol.getExpressionSymbol(), input)) {
-                    result += input;
-                } else {
-                    if (!StringValueListExtractorUtil.containsPortName(input))
-                        result += StringIndexHelper.modifyContentBetweenBracketsByAdding(input, "-1");
-                    else
-                        result += input;
-                }
+                result += input;
                 Log.info("result1: " + result, "MathAssignmentExpressionSymbol");
             } else {
                 /*if (mathAssignmentExpressionSymbol.getNameOfMathValue().equals("eigenVectors")) {
@@ -277,7 +270,6 @@ public class ExecuteMethodGeneratorHandler {
         } else {
             assignment = ExecuteMethodGenerator.generateExecuteCode(assignmentSymbol, includeStrings);
             Log.info(assignment, "assignment3:");
-
         }
         String result = String.format("%s %s %s;\n", name, op, assignment.trim());
         Log.info(name + " " + op + " " + assignment, "additionalInfo:");
