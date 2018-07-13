@@ -175,9 +175,6 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <configuration>
-                <append>true</append>
-            </configuration>
                     </execution>
                     <execution>
                         <id>post-unit-test</id>
@@ -185,9 +182,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                <append>true</append>
-            </configuration>
                     </execution>
                 </executions>
             </plugin>
