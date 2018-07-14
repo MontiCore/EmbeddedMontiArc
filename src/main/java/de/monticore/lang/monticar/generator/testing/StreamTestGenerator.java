@@ -69,6 +69,7 @@ public class StreamTestGenerator {
                     //sizeX = astCommonMatrixType.getDimension().getDimensionList().get(0).getClass().getName().toString();
                     //sizeY = astCommonMatrixType.getDimension().getDimensionList().get(1).toString();
                 }
+                System.out.println("AmountOfValues:"+amountOfValues);
                 for (int i = 0; i < amountOfValues; ++i) {
                     StreamTestValue streamTestValue;
                     if (type == 0) {//singular value
@@ -152,9 +153,11 @@ public class StreamTestGenerator {
 
     public Double[][] getRandomDoubleMatrix(int sizeX, int sizeY, double min, double max) {
         Double[][] matrix = new Double[sizeX][sizeY];
+        System.out.println("Started Generation of random "+sizeX+ "x"+sizeY+" matrix");
         for (int i = 0; i < sizeX; ++i)
             for (int j = 0; j < sizeY; ++j)
                 matrix[i][j] = getRandomDoubleBetween(min, max);
+        System.out.println("Generation of this matrix is done");
         return matrix;
     }
 

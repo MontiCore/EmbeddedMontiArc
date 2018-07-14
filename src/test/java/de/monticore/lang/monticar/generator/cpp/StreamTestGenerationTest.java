@@ -4,6 +4,10 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -63,7 +67,7 @@ public class StreamTestGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useStreamTestTestGeneration("1",2);
+        generatorCPP.useStreamTestTestGeneration("1", 2);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamtest/pacman/");
         generatorCPP.useArmadilloBackend();
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
@@ -79,12 +83,54 @@ public class StreamTestGenerationTest extends AbstractSymtabTest {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/clustering");
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useStreamTestTestGeneration("1");
+        generatorCPP.useStreamTestTestGeneration("1", 1);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamtest/cluster/");
         generatorCPP.useArmadilloBackend();
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
-        List<File> files = generatorCPP.generateFiles(symtab, null, symtab);
-        String restPath = "streamtest/cluster";
+        /*List<File> files = generatorCPP.generateFiles(symtab, null, symtab);
+        String restPath = "streamtest/cluster";*/
+        TaggingResolver streamSymtab = createSymTabAndTaggingResolver("./target/generated-sources-cpp/streamtest/cluster");
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setModelsDirPath(Paths.get("./target/generated-sources-cpp/streamtest/cluster"));
+        generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(streamSymtab));
         //testFilesAreEqual(files, restPath); generated values are random
+    }
+
+    //Create image test manually, as generation for these large matrices takes a lot of time
+    @Ignore
+    @Test
+    public void testStreamTestAutopilotSteam2CPPTestGen() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/autopilot");
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useStreamTestTestGeneration("1", 1);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamtest/autopilot/");
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/emastudio/autopilot"));
+        /*List<File> files = generatorCPP.generateFiles(symtab, null, symtab);
+        String restPath = "streamtest/cluster";*/
+        //TaggingResolver streamSymtab = createSymTabAndTaggingResolver("./target/generated-sources-cpp/streamtest/cluster");
+        generatorCPP.setGenerateTests(true);
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("de.rwth.armin.modeling.autopilot.motion.calculatePidError", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        //generatorCPP.setModelsDirPath(Paths.get("./target/generated-sources-cpp/streamtest/cluster"));
+        // generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(symtab));
+        //testFilesAreEqual(files, restPath); generated values are random
+    }
+
+    @Test
+    public void testCLIExample() throws IOException {
+        // --models-dir="%HOME%\model\autopilot" ^
+        //   --output-dir="%TESTS_CPP_DIR%" ^
+        //   --root-model=%1 ^
+        //   --flag-generate-tests ^
+        //   --flag-use-armadillo-backend
+        String args[] = {"--models-dir=.\\src\\test\\resources\\emastudio\\autopilot",
+                "--output-dir=.\\target\\generated-sources-cpp\\streamtest\\autopilot",
+                "--root-model=de.rwth.armin.modeling.autopilot.common.pID",
+                "--flag-generate-tests",
+                "--flag-use-armadillo-backend"};
+       GeneratorCppCli.main(args);
     }
 }

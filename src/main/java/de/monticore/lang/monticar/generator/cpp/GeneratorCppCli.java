@@ -113,7 +113,7 @@ public final class GeneratorCppCli {
         }
     }
 
-    private static Options getOptions() {
+    public static Options getOptions() {
         Options options = new Options();
         options.addOption(OPTION_MODELS_PATH);
         options.addOption(OPTION_ROOT_MODEL);
@@ -128,19 +128,19 @@ public final class GeneratorCppCli {
         return options;
     }
 
-    private static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
-        CommandLine cliArgs;
+    public static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
+        CommandLine cliArgs = null;
         try {
             cliArgs = parser.parse(options, args);
         } catch (ParseException e) {
             System.err.println("argument parsing exception: " + e.getMessage());
-            System.exit(1);
-            return null;
+            //System.exit(1);
+            //return null;
         }
         return cliArgs;
     }
 
-    private static void runGenerator(CommandLine cliArgs) {
+    public static void runGenerator(CommandLine cliArgs) {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
@@ -171,12 +171,12 @@ public final class GeneratorCppCli {
             }
         } catch (IOException e) {
             Log.error("error during generation", e);
-            System.exit(1);
+            //System.exit(1);
         }
 
     }
 
-    private static ExpandedComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
+    public static ExpandedComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
         ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(rootModelName).orElse(null);
         if (componentSymbol == null) {
             Log.error("could not resolve component " + rootModelName);
