@@ -13,8 +13,8 @@ class CNNPredictor_Alexnet{
 public:
     const std::string json_file = "model/Alexnet/Alexnet_newest-symbol.json";
     const std::string param_file = "model/Alexnet/Alexnet_newest-0000.params";
-    const std::vector<std::string> input_keys = {"data"};
     //const std::vector<std::string> input_keys = {"data"};
+    const std::vector<std::string> input_keys = {"data"};
     const std::vector<std::vector<mx_uint>> input_shapes = {{1,3,224,224}};
     const bool use_gpu = false;
 
@@ -28,8 +28,8 @@ public:
         if(handle) MXPredFree(handle);
     }
 
-    void predict(const vector<float> &data,
-                 vector<float> &predictions){
+    void predict(const std::vector<float> &data,
+                 std::vector<float> &predictions){
         MXPredSetInput(handle, "data", data.data(), data.size());
         //MXPredSetInput(handle, "data", data.data(), data.size());
 
