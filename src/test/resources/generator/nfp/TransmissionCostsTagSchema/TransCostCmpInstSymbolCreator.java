@@ -120,20 +120,20 @@ public class TransCostCmpInstSymbolCreator implements TagSymbolCreator {
     return ast.get();
   }
 
-  protected ExpandedComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
-    ExpandedComponentInstanceSymbol ret = null;
+  protected ComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
+    ComponentInstanceSymbol ret = null;
     for (Symbol symbol : symbols) {
-      if (symbol.getKind().isSame(ExpandedComponentInstanceSymbol.KIND)) {
+      if (symbol.getKind().isSame(ComponentInstanceSymbol.KIND)) {
         if (ret != null) {
           Log.error(String.format("0xA4095 Found more than one symbol: '%s' and '%s'",
               ret, symbol));
           return null;
         }
-        ret = (ExpandedComponentInstanceSymbol)symbol;
+        ret = (ComponentInstanceSymbol)symbol;
       }
     }
     if (ret == null) {
-      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'ExpandedComponentInstanceSymbol.KIND'.",
+      Log.error(String.format("0xT0001 Invalid symbol kinds: %s. tagTypeName expects as symbol kind 'ComponentInstanceSymbol.KIND'.",
           symbols.stream().map(s -> "'" + s.getKind().toString() + "'").collect(Collectors.joining(", "))));
       return null;
     }

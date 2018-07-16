@@ -29,13 +29,13 @@ public class TransmissionCostsTagSchema {
       CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
 
       modelingLanguage.addTagSymbolCreator(new TransCostCmpInstSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TransCostCmpInstSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostCmpInstSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new TransCostCmpSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TransCostCmpSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostCmpSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new TransCostConnSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TransCostConnSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostConnSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new TransCostPortSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(TransCostPortSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostPortSymbol.KIND));
     }
   }
 

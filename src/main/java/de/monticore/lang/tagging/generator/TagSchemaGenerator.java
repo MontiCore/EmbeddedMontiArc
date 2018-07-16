@@ -24,22 +24,21 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.lang.tagging.helper.UnitKinds;
-import de.monticore.lang.tagschema._ast.ASTSimpleTagType;
-import de.monticore.lang.tagschema._ast.ASTTagSchemaUnit;
-import de.monticore.lang.tagschema._ast.ASTTagType;
-import de.monticore.lang.tagschema._ast.ASTValuedTagType;
+import de.monticore.lang.tagschema._ast.*;
 import de.monticore.lang.tagschema._parser.TagSchemaParser;
+import de.monticore.symboltable.ImportStatement;
+import de.monticore.types.types._ast.ASTImportStatement;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
+import org.jscience.physics.amount.Amount;
 
 /**
  * Created by Michael von Wenckstern on 09.06.2016.
@@ -65,9 +64,11 @@ public class TagSchemaGenerator extends GeneratorEngine {
 
       Map<String, String> symbolScopeMap = new LinkedHashMap<>();
       symbolScopeMap.put("Component", "NameScope");
+      symbolScopeMap.put("ComponentInstance", "NameScope");
       symbolScopeMap.put("Port", "NameScope");
-      symbolScopeMap.put("ExpandedComponentInstance", "NameScope");
+      symbolScopeMap.put("PortInstance", "NameScope");
       symbolScopeMap.put("Connector", "ConnectorScope");
+      symbolScopeMap.put("ConnectorInstance", "ConnectorScope");
 
       List<String> list = Splitters.DOT.splitToList(tagSchemaLocation);
       Path pathTagschema = Paths.get(list.get(0));
@@ -124,6 +125,77 @@ public class TagSchemaGenerator extends GeneratorEngine {
     else if (tagType instanceof ASTValuedTagType) {
       generateValuedTagType((ASTValuedTagType) tagType, tagSchemaUnit, packageName, symbolScopeMap);
     }
+    else if (tagType instanceof ASTComplexTagType) {
+      generateComplexTagType((ASTComplexTagType) tagType, tagSchemaUnit, packageName, symbolScopeMap);
+    }
+  }
+
+  protected void generateComplexTagType(ASTComplexTagType complexTagType, ASTTagSchemaUnit tagSchemaUnit, String packageName, Map<String,String> symbolScopeMap) {
+    // extract basic information
+    String complexTagTypeName = complexTagType.getName();
+    List<String> scopeIdentifiers = new LinkedList<>();
+    if (complexTagType.isPresentScope()) {
+      complexTagType.getScope().getScopeIdentifierList().forEach(s -> scopeIdentifiers.add(s.getScopeName()));
+    }
+
+    // extract variables used in the complex type
+    Map<String, String> complexVars = new HashMap<>();
+    String complexTag = complexTagType.getComplexTag();
+    Matcher m = Pattern.compile("\\$\\{(\\w+):(\\w+)\\}").matcher(complexTag);
+    String symbolParams = "";
+    int count = 1;
+    while (m.find()) {
+      String name = m.group(1);
+      String type = m.group(2);
+      if (!UnitKinds.contains(type) && !type.equals("Boolean") && !type.equals("String") && !type.equals("Number")) {
+        Log.error(String.format("Unit kind '%s' is not supported. Currently the following types are available: Boolean, String, Number or '%s' ",
+                type, UnitKinds.available()), complexTagType.get_SourcePositionStart());
+        return;
+      }
+      if (complexVars.containsKey(name)) {
+        Log.error("Variable name: " + name + " in complex tagType: " + complexTagTypeName + " in tagschema: " + tagSchemaUnit.getName() + " is not unique");
+        return;
+      }
+      complexVars.put(name, type);
+      if (UnitKinds.contains(type)) {
+        symbolParams += "Amount.valueOf(m.group(" + count + ")), ";
+      }
+      else if (type.equals("Boolean") || type.equals("Number")) {
+        symbolParams += "m.group(" + count + "), ";
+      }
+      else if (type.equals("String")) {
+        symbolParams += "\"m.group(" + count + ")\", ";
+      }
+      count++;
+    }
+    if (symbolParams.length() > 0) {
+      symbolParams = symbolParams.substring(0, symbolParams.length() - 2);
+    }
+
+
+    // build matching string
+    String complexMatching = "(\\\\d+(?:\\\\.\\\\d+)?(?:m|n|k|d)?m)\\\\s*x\\\\s*(\\\\d+(?:\\\\.\\\\d+)?(?:m|n|k|d)?m)\\\\s*x\\\\s*(\\\\d+(?:\\\\.\\\\d+)?(?:m|n|k|d)?m)";
+
+
+    // generate creator
+    List<String> imports = new LinkedList<String>();
+    for(ASTImportStatement importStatement : tagSchemaUnit.getImportStatementList()) {
+      String importString = Joiners.DOT.join(importStatement.getImportList());
+      if(importStatement.isStar()) importString += ".*";
+      imports.add(importString);
+    }
+    String scopeSymbol = complexTagType.getScopeOpt().get().getScopeIdentifierList().get(0).getScopeName();
+    String nameScopeType = Log.errorIfNull(symbolScopeMap.get(scopeSymbol), String.format("For the scope symbol '%s' is no scope type defined.", scopeSymbol));
+    generate("templates.de.monticore.lang.tagschema.ComplexTagTypeCreator",
+            Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), complexTagTypeName + "SymbolCreator.java"),
+            tagSchemaUnit,
+            packageName, tagSchemaUnit.getName(), complexTagTypeName, imports, scopeSymbol + "Symbol", nameScopeType, complexMatching, complexTag, symbolParams);
+    // generate symbol
+    generate("templates.de.monticore.lang.tagschema.ComplexTagType",
+            Paths.get(createPackagePath(packageName).toString(), tagSchemaUnit.getName(), complexTagType.getName() + "Symbol.java"),
+            tagSchemaUnit,
+            packageName, tagSchemaUnit.getName(), complexTagType.getName(), complexVars, true);
+
   }
 
   protected void generateValuedTagType(ASTValuedTagType valuedTagType, ASTTagSchemaUnit tagSchemaUnit, String packageName, Map<String, String> symbolScopeMap) {

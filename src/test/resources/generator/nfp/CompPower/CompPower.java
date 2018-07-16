@@ -29,9 +29,9 @@ public class CompPower {
       CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
 
       modelingLanguage.addTagSymbolCreator(new CompPowerInstSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(CompPowerInstSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(CompPowerInstSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new CompPowerSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(CompPowerSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(CompPowerSymbol.KIND));
     }
   }
 

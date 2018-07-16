@@ -20,15 +20,12 @@
  */
 package de.monticore.lang.tagging._symboltable;
 
-import de.monticore.lang.tagging._ast.ASTTaggingUnit;
-import de.monticore.symboltable.Scope;
+import de.monticore.ModelingLanguage;
 
-/**
- * Created by Michael von Wenckstern on 31.05.2016.
- *
- * @author Michael von Wenckstern
- */
-public interface TagSymbolCreator {
-  void create(ASTTaggingUnit unit, Scope gs);
+public interface TagableModelingLanguage extends ModelingLanguage {
+
+    default void addTagSymbolCreator(TagSymbolCreator tagSymbolCreator) {
+
+    }
+
 }
-

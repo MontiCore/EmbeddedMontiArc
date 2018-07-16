@@ -26,7 +26,8 @@ grammar TagSchema extends de.monticore.common.Common {
 	    port:"Port" |
 	    portInstance:"PortInstance" |
 	    connector:"Connector" |
-	    connectorInstance:"ConnectorInstance";
+	    connectorInstance:"ConnectorInstance" |
+	    identifier:Name;
 
 	ast ScopeIdentifier =
 	  method public String getScopeName() {
@@ -36,6 +37,7 @@ grammar TagSchema extends de.monticore.common.Common {
         if(isPresentPortInstance()) return getPortInstance();
         if(isPresentConnector()) return getConnector();
         if(isPresentConnectorInstance()) return getConnectorInstance();
+        if(isPresentIdentifier()) return getIdentifier();
         return "undefined";
 	  };
 
@@ -62,14 +64,12 @@ grammar TagSchema extends de.monticore.common.Common {
 	
 //	Reference = Name ":" datatype:Name ("?"|"+"|"*")? ;
 
-//  ComplexTagType  = "tagtype" Name Scope ComplexTagDef;
+
+
 	ComplexTagType implements TagType  = ("private")? "tagtype" Name Scope? complexTag:ComplexTagDef;
+
 	token ComplexTagDef = 'i' 's' WSS* Recursion (WSS* ';');
 	fragment token Recursion = '{' (~('{' | '}' | '"') | String | Recursion)+ '}';
 	fragment token WSS = (' ' | '\t' | '\r' | '\n');
 
-/*	ast ComplexTagType =
-    method public String getName() {
-      return "undefined";
-    };*/
 }

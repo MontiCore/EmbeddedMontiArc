@@ -29,13 +29,13 @@ public class LatencyTagSchema {
       CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
 
       modelingLanguage.addTagSymbolCreator(new LatencyCmpInstSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(LatencyCmpInstSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyCmpInstSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new LatencyCmpSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(LatencyCmpSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyCmpSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new LatencyConnSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(LatencyConnSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyConnSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new LatencyPortSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(LatencyPortSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyPortSymbol.KIND));
     }
   }
 

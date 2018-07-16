@@ -29,13 +29,13 @@ public class PowerConsumptionTagSchema {
       CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
 
       modelingLanguage.addTagSymbolCreator(new PowerConsumptionSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(PowerConsumptionSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerConsumptionSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new PowerTesterSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(PowerTesterSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerTesterSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new PowerIdSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(PowerIdSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerIdSymbol.KIND));
       modelingLanguage.addTagSymbolCreator(new PowerBooleanSymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(PowerBooleanSymbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerBooleanSymbol.KIND));
     }
   }
 

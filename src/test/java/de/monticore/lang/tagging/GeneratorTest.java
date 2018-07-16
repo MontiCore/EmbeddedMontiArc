@@ -29,6 +29,7 @@ import java.util.Map;
 
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.lang.tagging.generator.TagSchemaGenerator;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -125,4 +126,15 @@ public class GeneratorTest {
     generator.generate(Paths.get("CompPower"), Paths.get("src/test/resources/nfp/"), symbolScopeMap);
   }
 
+  @Test
+  public void testSizeTag() throws Exception {
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator/").toFile());
+    setup.setTracing(true);
+    TagSchemaGenerator generator = new TagSchemaGenerator(setup);
+    Map<String, String> symbolScopeMap = new LinkedHashMap<>();
+    symbolScopeMap.put("EMAComponentInstance", "NameScope");
+    generator.generate(Paths.get("PhysicalTags"), Paths.get("src/test/resources/nfp"), symbolScopeMap);
+
+  }
 }

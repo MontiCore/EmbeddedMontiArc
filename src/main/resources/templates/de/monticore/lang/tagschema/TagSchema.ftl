@@ -29,7 +29,7 @@ public class ${schemaName} {
 
       <#list tagTypeNames as tagTypeName>
       modelingLanguage.addTagSymbolCreator(new ${tagTypeName}SymbolCreator());
-      commonModelingLanguage.addResolver(CommonResolvingFilter.create(${tagTypeName}Symbol.KIND));
+      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(${tagTypeName}Symbol.KIND));
       </#list>
     }
   }
