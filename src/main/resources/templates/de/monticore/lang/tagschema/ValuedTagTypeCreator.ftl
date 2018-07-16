@@ -13,9 +13,9 @@ import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
@@ -47,27 +47,26 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
     return s;
   }
 
-  public void create(ASTTaggingUnit unit, Scope gs) {
-    if (unit.getQualifiedNames().stream()
+  public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
+    if (unit.getQualifiedNameList().stream()
         .map(q -> q.toString())
         .filter(n -> n.endsWith("${schemaName}"))
         .count() == 0) {
       return; // the tagging model is not conform to the ${schemaName} tagging schema
     }
-    final String packageName = Joiners.DOT.join(unit.getPackage());
+    final String packageName = Joiners.DOT.join(unit.getPackageList());
     final String rootCmp = // if-else does not work b/c of final (required by streams)
-        (unit.getTagBody().getTargetModel().isPresent()) ?
-            Joiners.DOT.join(packageName,
-                unit.getTagBody().getTargetModel().get()
-                .getQualifiedNameString()) :
+        (unit.getTagBody().getTargetModelOpt().isPresent()) ?
+            Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModelOpt().get())
+                .getQualifiedName().toString()) :
             packageName;
 
     for (ASTTag element : unit.getTagBody().getTagList()) {
-      element.getTagElements().stream()
-          .filter(t -> t.getName().equals("${tagTypeName}"))
-          .filter(t -> t.getTagValue().isPresent())
-          .map(t -> checkContent(t.getTagValue().get()))
-          .filter(v -> v != null)
+           element.getTagElementList().stream()
+              .filter(t -> t.getName().equals("${tagTypeName}"))
+              .filter(t -> !t.getTagValueOpt().isPresent())
+              .map(t -> checkContent(t.getTagValueOpt().get()))
+              .filter(r -> r != null)
         <#if isUnit>
           .filter(this::checkUnit)
         </#if>
@@ -75,18 +74,16 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
               element.getScopeList().stream()
                 .filter(this::checkScope)
                 .map(s -> (ASTNameScope) s)
-                .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(
-                    Joiners.DOT.join(rootCmp, s.getQualifiedName().toString()),
-                    SymbolKind.KIND))
-                .filter(s -> !s.isEmpty())
-                .map(this::checkKind)
-                .filter(s -> s != null)
+                .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
+                        s.getQualifiedName().toString()), ${scopeSymbol}.KIND))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
               <#if isUnit>
-                .forEachOrdered(s -> s.addTag(new ${tagTypeName}Symbol(
+                .forEachOrdered(s -> tagging.addTag(s, new ${tagTypeName}Symbol(
                    NumericLiteral.getValue(v.getNumericLiteral()),
                    Unit.valueOf(v.getUnit()).asType(${dataType}.class)))));
               <#else>
-                .forEachOrdered(s -> s.addTag(new ${tagTypeName}Symbol(v))));
+                .forEachOrdered(s -> tagging.addTag(s, new ${tagTypeName}Symbol(v))));
               </#if>
     }
   }
@@ -118,14 +115,14 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseString_UnitTagValue(s);
+      ast = parser.parseUnitTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
         throw new Exception("Error occured during parsing.");
       }
     } catch (Exception e) {
-      Log.error(String.format("0xT0004 Could not parse '%s' with TagValueParser#parseString_UnitTagValue",
+      Log.error(String.format("0xT0004 Could not parse '%s' with TagValueParser#parseUnitTagValue",
           s), e);
       return null;
     }
@@ -143,14 +140,14 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseString_StringTagValue(s);
+      ast = parser.parseStringTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
         throw new Exception("Error occured during parsing.");
       }
     } catch (Exception e) {
-      Log.error(String.format("0xT0004 Could not parse %s with TagValueParser#parseString_StringTagValue.",
+      Log.error(String.format("0xT0004 Could not parse %s with TagValueParser#parseStringTagValue.",
           s), e);
       return null;
     }
@@ -168,14 +165,14 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseString_BooleanTagValue(s);
+      ast = parser.parseBooleanTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
         throw new Exception("Error occured during parsing.");
       }
     } catch (Exception e) {
-      Log.error(String.format("0xT0004 Could not parse %s with TagValueParser#parseString_BooleanTagValue.",
+      Log.error(String.format("0xT0004 Could not parse %s with TagValueParser#parseBooleanTagValue.",
           s), e);
       return null;
     }
@@ -193,14 +190,14 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseString_NumericTagValue(s);
+      ast = parser.parseNumericTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
         throw new Exception("Error occured during parsing.");
       }
     } catch (Exception e) {
-      Log.error(String.format("0xT0004 Could not parse %s with TagValueParser#parseString_NumericTagValue.",
+      Log.error(String.format("0xT0004 Could not parse %s with TagValueParser#parseNumericTagValue.",
           s), e);
       return null;
     }
