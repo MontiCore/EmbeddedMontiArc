@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
+import de.monticore.lang.tagging.helper.RegexStringHelper;
 import de.monticore.lang.tagging.helper.UnitKinds;
 import de.monticore.lang.tagschema._ast.*;
 import de.monticore.lang.tagschema._parser.TagSchemaParser;
@@ -174,8 +175,7 @@ public class TagSchemaGenerator extends GeneratorEngine {
 
 
     // build matching string
-    String complexMatching = "(\\\\d+(?:\\\\.\\\\d+)?(?:m|n|k|d)?m)\\\\s*x\\\\s*(\\\\d+(?:\\\\.\\\\d+)?(?:m|n|k|d)?m)\\\\s*x\\\\s*(\\\\d+(?:\\\\.\\\\d+)?(?:m|n|k|d)?m)";
-
+    String complexMatching = RegexStringHelper.getMatcher(complexTag);
 
     // generate creator
     List<String> imports = new LinkedList<String>();

@@ -34,7 +34,7 @@ public class SizeSymbolCreator implements TagSymbolCreator {
    * http://www.regexplanet.com/advanced/java/index.html
    */
   public static final Pattern pattern = Pattern.compile(
-    "(\\d+(?:\\.\\d+)?(?:m|n|k|d)?m)\\s*x\\s*(\\d+(?:\\.\\d+)?(?:m|n|k|d)?m)\\s*x\\s*(\\d+(?:\\.\\d+)?(?:m|n|k|d)?m)"
+    "(\\d+(?:\\.\\d+)?(?:n|m|c|d|h|k|M|G|T)?m)\\s*x(\\d+(?:\\.\\d+)?(?:n|m|c|d|h|k|M|G|T)?m)\\s*x(\\d+(?:\\.\\d+)?(?:n|m|c|d|h|k|M|G|T)?m)\\s*"
   );
 
   public static Scope getGlobalScope(final Scope scope) {

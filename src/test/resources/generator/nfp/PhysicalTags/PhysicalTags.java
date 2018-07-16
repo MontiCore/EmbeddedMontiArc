@@ -23,12 +23,12 @@ public class PhysicalTags {
   }
 
   protected void doRegisterTagTypes(TaggingResolver tagging) {
+    tagging.addTagSymbolCreator(new IsPhysicalSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(IsPhysicalSymbol.KIND));
     tagging.addTagSymbolCreator(new WeightSymbolCreator());
     tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(WeightSymbol.KIND));
     tagging.addTagSymbolCreator(new SizeSymbolCreator());
     tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(SizeSymbol.KIND));
-    tagging.addTagSymbolCreator(new IsPhysicalSymbolCreator());
-    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(IsPhysicalSymbol.KIND));
   }
 
   public static void registerTagTypes(TaggingResolver tagging) {
