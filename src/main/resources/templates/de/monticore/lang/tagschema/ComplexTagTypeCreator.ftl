@@ -16,6 +16,7 @@ import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -45,7 +46,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
     return s;
   }
 
-  public void create(ASTTaggingUnit unit, Scope gs) {
+  public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
     if (unit.getQualifiedNameList().stream()
         .map(q -> q.toString())
         .filter(n -> n.endsWith("${schemaName}"))
@@ -69,12 +70,11 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
                   element.getScopeList().stream()
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
-                    .map(s -> getGlobalScope(gs).<${scopeSymbol}>resolveDown(
-                        Joiners.DOT.join(rootCmp, s.getQualifiedName().toString()),
-                        ${scopeSymbol}.KIND))
+                    .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
+                            s.getQualifiedName().toString()), ${scopeSymbol}.KIND))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .forEachOrdered(s -> s.addTag(
+                    .forEachOrdered(s -> tagging.addTag(s,
                         new ${tagTypeName}Symbol(
                           ${symbolParams}
                         ))));

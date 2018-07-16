@@ -3,8 +3,7 @@
 
 package de.monticore.lang.montiarc.tag.drawing.TraceabilityTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
@@ -23,19 +22,15 @@ public class TraceabilityTagSchema {
     return instance;
   }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new IsTraceableSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(IsTraceableSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new TraceableSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TraceableSymbol.KIND));
-    }
+  protected void doRegisterTagTypes(TaggingResolver tagging) {
+    tagging.addTagSymbolCreator(new IsTraceableSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(IsTraceableSymbol.KIND));
+    tagging.addTagSymbolCreator(new TraceableSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(TraceableSymbol.KIND));
   }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
+  public static void registerTagTypes(TaggingResolver tagging) {
+    getInstance().doRegisterTagTypes(tagging);
   }
+
 }

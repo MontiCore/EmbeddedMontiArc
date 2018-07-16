@@ -3,8 +3,7 @@
 
 package nfp.PhysicalTags;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
@@ -23,19 +22,15 @@ public class PhysicalTags {
     return instance;
   }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new WeightSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(WeightSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new SizeSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(SizeSymbol.KIND));
-    }
+  protected void doRegisterTagTypes(TaggingResolver tagging) {
+    tagging.addTagSymbolCreator(new WeightSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(WeightSymbol.KIND));
+    tagging.addTagSymbolCreator(new SizeSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(SizeSymbol.KIND));
   }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
+  public static void registerTagTypes(TaggingResolver tagging) {
+    getInstance().doRegisterTagTypes(tagging);
   }
+
 }

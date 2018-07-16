@@ -129,7 +129,8 @@ public class GeneratorTest {
   @Test
   public void testSizeTag() throws Exception {
     GeneratorSetup setup = new GeneratorSetup();
-    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator/").toFile());
+    //setup.setOutputDirectory(getPathFromRelativePath("src/test/java/").toFile());
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator").toFile());
     setup.setTracing(true);
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();

@@ -15,6 +15,7 @@ import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
@@ -44,7 +45,7 @@ public class SizeSymbolCreator implements TagSymbolCreator {
     return s;
   }
 
-  public void create(ASTTaggingUnit unit, Scope gs) {
+  public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
     if (unit.getQualifiedNameList().stream()
         .map(q -> q.toString())
         .filter(n -> n.endsWith("PhysicalTags"))
@@ -68,12 +69,11 @@ public class SizeSymbolCreator implements TagSymbolCreator {
                   element.getScopeList().stream()
                     .filter(this::checkScope)
                     .map(s -> (ASTNameScope) s)
-                    .map(s -> getGlobalScope(gs).<EMAComponentInstanceSymbol>resolveDown(
-                        Joiners.DOT.join(rootCmp, s.getQualifiedName().toString()),
-                        EMAComponentInstanceSymbol.KIND))
+                    .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
+                            s.getQualifiedName().toString()), EMAComponentInstanceSymbol.KIND))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .forEachOrdered(s -> s.addTag(
+                    .forEachOrdered(s -> tagging.addTag(s,
                         new SizeSymbol(
                           Amount.valueOf(m.group(1)), Amount.valueOf(m.group(2)), Amount.valueOf(m.group(3))
                         ))));

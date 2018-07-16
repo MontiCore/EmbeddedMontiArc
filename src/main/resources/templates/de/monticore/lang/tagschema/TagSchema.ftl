@@ -2,8 +2,7 @@ ${tc.signature("packageName", "schemaName", "tagTypeNames")}
 
 package ${packageName}.${schemaName};
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
@@ -22,19 +21,15 @@ public class ${schemaName} {
     return instance;
   }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      <#list tagTypeNames as tagTypeName>
-      modelingLanguage.addTagSymbolCreator(new ${tagTypeName}SymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(${tagTypeName}Symbol.KIND));
-      </#list>
-    }
+  protected void doRegisterTagTypes(TaggingResolver tagging) {
+    <#list tagTypeNames as tagTypeName>
+    tagging.addTagSymbolCreator(new ${tagTypeName}SymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(${tagTypeName}Symbol.KIND));
+    </#list>
   }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
+  public static void registerTagTypes(TaggingResolver tagging) {
+    getInstance().doRegisterTagTypes(tagging);
   }
+
 }

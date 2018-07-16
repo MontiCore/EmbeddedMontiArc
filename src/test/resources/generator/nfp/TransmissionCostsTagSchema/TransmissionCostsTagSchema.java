@@ -3,8 +3,7 @@
 
 package nfp.TransmissionCostsTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
@@ -23,23 +22,19 @@ public class TransmissionCostsTagSchema {
     return instance;
   }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new TransCostCmpInstSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostCmpInstSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new TransCostCmpSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostCmpSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new TransCostConnSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostConnSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new TransCostPortSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(TransCostPortSymbol.KIND));
-    }
+  protected void doRegisterTagTypes(TaggingResolver tagging) {
+    tagging.addTagSymbolCreator(new TransCostCmpInstSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(TransCostCmpInstSymbol.KIND));
+    tagging.addTagSymbolCreator(new TransCostCmpSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(TransCostCmpSymbol.KIND));
+    tagging.addTagSymbolCreator(new TransCostConnSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(TransCostConnSymbol.KIND));
+    tagging.addTagSymbolCreator(new TransCostPortSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(TransCostPortSymbol.KIND));
   }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
+  public static void registerTagTypes(TaggingResolver tagging) {
+    getInstance().doRegisterTagTypes(tagging);
   }
+
 }

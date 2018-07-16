@@ -3,8 +3,7 @@
 
 package nfp.LatencyTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
@@ -23,23 +22,19 @@ public class LatencyTagSchema {
     return instance;
   }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new LatencyCmpInstSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyCmpInstSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new LatencyCmpSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyCmpSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new LatencyConnSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyConnSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new LatencyPortSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(LatencyPortSymbol.KIND));
-    }
+  protected void doRegisterTagTypes(TaggingResolver tagging) {
+    tagging.addTagSymbolCreator(new LatencyCmpInstSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(LatencyCmpInstSymbol.KIND));
+    tagging.addTagSymbolCreator(new LatencyCmpSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(LatencyCmpSymbol.KIND));
+    tagging.addTagSymbolCreator(new LatencyConnSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(LatencyConnSymbol.KIND));
+    tagging.addTagSymbolCreator(new LatencyPortSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(LatencyPortSymbol.KIND));
   }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
+  public static void registerTagTypes(TaggingResolver tagging) {
+    getInstance().doRegisterTagTypes(tagging);
   }
+
 }

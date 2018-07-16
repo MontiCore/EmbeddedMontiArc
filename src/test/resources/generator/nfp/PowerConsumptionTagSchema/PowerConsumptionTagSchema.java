@@ -3,8 +3,7 @@
 
 package nfp.PowerConsumptionTagSchema;
 
-import de.monticore.CommonModelingLanguage;
-import de.monticore.lang.tagging._symboltable.TagableModelingLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
 /**
@@ -23,23 +22,19 @@ public class PowerConsumptionTagSchema {
     return instance;
   }
 
-  protected void doRegisterTagTypes(TagableModelingLanguage modelingLanguage) {
-    // all ModelingLanguage instances are actually instances of CommonModelingLanguage
-    if(modelingLanguage instanceof CommonModelingLanguage) {
-      CommonModelingLanguage commonModelingLanguage = (CommonModelingLanguage)modelingLanguage;
-
-      modelingLanguage.addTagSymbolCreator(new PowerConsumptionSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerConsumptionSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new PowerTesterSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerTesterSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new PowerIdSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerIdSymbol.KIND));
-      modelingLanguage.addTagSymbolCreator(new PowerBooleanSymbolCreator());
-      commonModelingLanguage.addResolvingFilter(CommonResolvingFilter.create(PowerBooleanSymbol.KIND));
-    }
+  protected void doRegisterTagTypes(TaggingResolver tagging) {
+    tagging.addTagSymbolCreator(new PowerConsumptionSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(PowerConsumptionSymbol.KIND));
+    tagging.addTagSymbolCreator(new PowerTesterSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(PowerTesterSymbol.KIND));
+    tagging.addTagSymbolCreator(new PowerIdSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(PowerIdSymbol.KIND));
+    tagging.addTagSymbolCreator(new PowerBooleanSymbolCreator());
+    tagging.addTagSymbolResolvingFilter(CommonResolvingFilter.create(PowerBooleanSymbol.KIND));
   }
 
-  public static void registerTagTypes(TagableModelingLanguage modelingLanguage) {
-    getInstance().doRegisterTagTypes(modelingLanguage);
+  public static void registerTagTypes(TaggingResolver tagging) {
+    getInstance().doRegisterTagTypes(tagging);
   }
+
 }
