@@ -7,16 +7,15 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.monticore.lang.montiarc._symboltable.*;
-import de.monticore.lang.montiarc._symboltable.ConnectorSymbol;
+
 import de.monticore.lang.tagging._ast.ASTNameScope;
 import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;
 import de.monticore.lang.tagging._ast.ASTTaggingUnit;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.monticore.symboltable.Symbol;
-import de.monticore.symboltable.SymbolKind;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
@@ -39,39 +38,36 @@ public class TransCostPortSymbolCreator implements TagSymbolCreator {
     return s;
   }
 
-  public void create(ASTTaggingUnit unit, Scope gs) {
-    if (unit.getQualifiedNames().stream()
+  public void create(ASTTaggingUnit unit, TaggingResolver tagging) {
+    if (unit.getQualifiedNameList().stream()
         .map(q -> q.toString())
         .filter(n -> n.endsWith("TransmissionCostsTagSchema"))
         .count() == 0) {
       return; // the tagging model is not conform to the TransmissionCostsTagSchema tagging schema
     }
-    final String packageName = Joiners.DOT.join(unit.getPackage());
+    final String packageName = Joiners.DOT.join(unit.getPackageList());
     final String rootCmp = // if-else does not work b/c of final (required by streams)
-        (unit.getTagBody().getTargetModel().isPresent()) ?
-            Joiners.DOT.join(packageName,
-                unit.getTagBody().getTargetModel().get()
-                .getQualifiedNameString()) :
+        (unit.getTagBody().getTargetModelOpt().isPresent()) ?
+            Joiners.DOT.join(packageName, ((ASTNameScope) unit.getTagBody().getTargetModelOpt().get())
+                .getQualifiedName().toString()) :
             packageName;
 
     for (ASTTag element : unit.getTagBody().getTagList()) {
-      element.getTagElements().stream()
-          .filter(t -> t.getName().equals("TransCostPort"))
-          .filter(t -> t.getTagValue().isPresent())
-          .map(t -> checkContent(t.getTagValue().get()))
-          .filter(v -> v != null)
+           element.getTagElementList().stream()
+              .filter(t -> t.getName().equals("TransCostPort"))
+              .filter(t -> !t.getTagValueOpt().isPresent())
+              .map(t -> checkContent(t.getTagValueOpt().get()))
+              .filter(r -> r != null)
           .filter(this::checkUnit)
           .forEachOrdered(v ->
               element.getScopeList().stream()
                 .filter(this::checkScope)
                 .map(s -> (ASTNameScope) s)
-                .map(s -> getGlobalScope(gs).<Symbol>resolveDownMany(
-                    Joiners.DOT.join(rootCmp, s.getQualifiedName().toString()),
-                    SymbolKind.KIND))
-                .filter(s -> !s.isEmpty())
-                .map(this::checkKind)
-                .filter(s -> s != null)
-                .forEachOrdered(s -> s.addTag(new TransCostPortSymbol(
+                .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
+                        s.getQualifiedName().toString()), PortSymbol.KIND))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .forEachOrdered(s -> tagging.addTag(s, new TransCostPortSymbol(
                    NumericLiteral.getValue(v.getNumericLiteral()),
                    Unit.valueOf(v.getUnit()).asType(Power.class)))));
     }
@@ -103,14 +99,14 @@ public class TransCostPortSymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseString_UnitTagValue(s);
+      ast = parser.parseUnitTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
         throw new Exception("Error occured during parsing.");
       }
     } catch (Exception e) {
-      Log.error(String.format("0xT0004 Could not parse '%s' with TagValueParser#parseString_UnitTagValue",
+      Log.error(String.format("0xT0004 Could not parse '%s' with TagValueParser#parseUnitTagValue",
           s), e);
       return null;
     }

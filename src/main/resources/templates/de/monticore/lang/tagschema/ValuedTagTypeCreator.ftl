@@ -1,4 +1,4 @@
-${tc.signature("packageName", "schemaName", "tagTypeName", "importSymbols", "scopeSymbol", "nameScopeType", "dataType", "isUnit")}
+${tc.signature("packageName", "schemaName", "tagTypeName", "imports", "scopeSymbol", "nameScopeType", "dataType", "isUnit")}
 
 package ${packageName}.${schemaName};
 
@@ -6,8 +6,10 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import ${importSymbols};
-import de.monticore.lang.montiarc._symboltable.ConnectorSymbol;
+<#list imports as import>
+import ${import};
+</#list>
+
 import de.monticore.lang.tagging._ast.ASTNameScope;
 import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;

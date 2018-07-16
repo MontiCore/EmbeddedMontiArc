@@ -6,4 +6,5 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 tagschema PhysicalTags {
   tagtype Weight:Mass for EMAComponentInstance;
   tagtype Size for EMAComponentInstance is { ${height:Length}x${width:Length}x${depth:Length} };
+  tagtype IsPhysical for EMAComponentInstance;
 }
