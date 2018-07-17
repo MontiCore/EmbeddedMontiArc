@@ -101,7 +101,7 @@ public class ExecuteMethodGenerator extends BaseExecuteMethodGeneratorHandler {
     }
 
     public static String generateExecuteCode(MathExpressionSymbol mathExpressionSymbol, List<String> includeStrings) {
-        return getInstance().handleGenerateExecuteCode(mathExpressionSymbol, includeStrings);
+        return getInstance().chainHandleGenerateExecuteCode(mathExpressionSymbol, includeStrings);
     }
 
     /**

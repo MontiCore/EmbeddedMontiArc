@@ -112,7 +112,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
     }
 
     public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
-        getInstance().doFixMathFunction(mathExpressionSymbol, bluePrintCPP);
+        getInstance().chainHandleFixMathFunction(mathExpressionSymbol, bluePrintCPP);
     }
 
     public static void fixMathFunctions(MathPreOperatorExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {

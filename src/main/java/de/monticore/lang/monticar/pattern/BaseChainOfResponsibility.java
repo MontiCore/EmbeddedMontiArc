@@ -7,14 +7,28 @@ package de.monticore.lang.monticar.pattern;
  */
 public abstract class BaseChainOfResponsibility<T> {
 
-    private T successor = null;
+    private BaseChainOfResponsibility<T> predecessor = null;
 
-    public T getSuccessor() {
+    private BaseChainOfResponsibility<T> successor = null;
+
+    public BaseChainOfResponsibility<T> getSuccessor() {
         return successor;
     }
 
-    public void setSuccessor(T successor) {
+    protected BaseChainOfResponsibility<T> getPredecessor() {
+        return predecessor;
+    }
+
+    public void setSuccessor(BaseChainOfResponsibility<T> successor) {
         this.successor = successor;
+        successor.predecessor = this;
+    }
+
+    protected BaseChainOfResponsibility<T> getChainStart() {
+        if (predecessor == null)
+            return this;
+        else
+            return predecessor.getChainStart();
     }
 
     public abstract String getRole();
