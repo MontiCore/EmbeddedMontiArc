@@ -20,28 +20,47 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.symboltable.CommonSymbol;
-import de.monticore.symboltable.SymbolKind;
-
-public class TrainContextSymbol extends CommonSymbol {
-
-    public static final TrainContextKind KIND = new TrainContextKind();
-
-    private String value;
-
-    public TrainContextSymbol() {
-        super("", KIND);
-    }
-
-    public TrainContextSymbol(String name, SymbolKind kind) {
-        super(name, kind);
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
+public enum EvalMetric {
+    ACCURACY{
+        @Override
+        public String toString() {
+            return "accuracy";
+        }
+    },
+    CROSS_ENTROPY{
+        @Override
+        public String toString() {
+            return "crossEntropy";
+        }
+    },
+    F1{
+        @Override
+        public String toString() {
+            return "f1";
+        }
+    },
+    MAE{
+        @Override
+        public String toString() {
+            return "mae";
+        }
+    },
+    MSE{
+        @Override
+        public String toString() {
+            return "mse";
+        }
+    },
+    RMSE{
+        @Override
+        public String toString() {
+            return "rmse";
+        }
+    },
+    TOP_K_ACCURACY{
+        @Override
+        public String toString() {
+            return "topKAccuracy";
+        }
     }
 }

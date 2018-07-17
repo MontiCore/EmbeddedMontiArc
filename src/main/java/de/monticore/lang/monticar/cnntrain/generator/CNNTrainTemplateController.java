@@ -77,38 +77,38 @@ public class CNNTrainTemplateController {
     }
 
     public String getNumEpoch() {
-        if (getConfiguration().getNumEpoch() == null) {
+        if (!getConfiguration().getEntryMap().containsKey("num_epoch")) {
             return null;
         }
-        return String.valueOf(getConfiguration().getNumEpoch().getValue());
+        return String.valueOf(getConfiguration().getEntry("num_epoch").getValue());
     }
 
     public String getBatchSize() {
-        if (getConfiguration().getBatchSize() == null) {
+        if (!getConfiguration().getEntryMap().containsKey("batch_size")) {
             return null;
         }
-        return String.valueOf(getConfiguration().getBatchSize().getValue());
+        return String.valueOf(getConfiguration().getEntry("batch_size") .getValue());
     }
 
-    public LoadCheckpointSymbol getLoadCheckpoint() {
-        if (getConfiguration().getLoadCheckpoint() == null) {
+    public Boolean getLoadCheckpoint() {
+        if (!getConfiguration().getEntryMap().containsKey("load_checkpoint")) {
             return null;
         }
-        return getConfiguration().getLoadCheckpoint();
+        return (Boolean) getConfiguration().getEntry("load_checkpoint").getValue().getValue();
     }
 
-    public NormalizeSymbol getNormalize() {
-        if (getConfiguration().getNormalize() == null) {
+    public Boolean getNormalize() {
+        if (!getConfiguration().getEntryMap().containsKey("normalize")) {
             return null;
         }
-        return getConfiguration().getNormalize();
+        return (Boolean) getConfiguration().getEntry("normalize").getValue().getValue();
     }
 
-    public TrainContextSymbol getContext() {
-        if (getConfiguration().getTrainContext() == null) {
+    public String getContext() {
+        if (!getConfiguration().getEntryMap().containsKey("context")) {
             return null;
         }
-        return getConfiguration().getTrainContext();
+        return getConfiguration().getEntry("context").getValue().toString();
     }
 
     public String getOptimizerName() {

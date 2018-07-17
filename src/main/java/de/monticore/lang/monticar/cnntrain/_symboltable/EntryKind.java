@@ -22,9 +22,9 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
-public class LoadCheckpointSymbolKind implements SymbolKind {
+public class EntryKind implements SymbolKind {
 
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.LoadCheckpointSymbolKind";
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.EntryKind";
 
     @Override
     public String getName() {

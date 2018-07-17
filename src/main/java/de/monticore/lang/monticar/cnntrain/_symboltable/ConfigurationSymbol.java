@@ -22,29 +22,20 @@ package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import de.monticore.symboltable.CommonScopeSpanningSymbol;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
 
-    private NumEpochSymbol numEpoch;
-    private BatchSizeSymbol batchSize;
-    private LoadCheckpointSymbol loadCheckpoint;
-    private NormalizeSymbol normalize;
+    private Map<String, EntrySymbol> entryMap = new HashMap<>();
     private OptimizerSymbol optimizer;
-    private TrainContextSymbol trainContext;
 
     public static final ConfigurationSymbolKind KIND = new ConfigurationSymbolKind();
 
     public ConfigurationSymbol()  {
         super("", KIND);
-    }
-
-    public NumEpochSymbol getNumEpoch() {
-        return numEpoch;
-    }
-
-    public void setNumEpoch(NumEpochSymbol numEpoch) {
-        this.numEpoch = numEpoch;
     }
 
     public OptimizerSymbol getOptimizer() {
@@ -55,36 +46,12 @@ public class ConfigurationSymbol extends CommonScopeSpanningSymbol {
         this.optimizer = optimizer;
     }
 
-    public BatchSizeSymbol getBatchSize() {
-        return batchSize;
+    public Map<String, EntrySymbol> getEntryMap() {
+        return entryMap;
     }
 
-    public void setBatchSize(BatchSizeSymbol batchSize) {
-        this.batchSize = batchSize;
-    }
-
-    public LoadCheckpointSymbol getLoadCheckpoint() {
-        return loadCheckpoint;
-    }
-
-    public void setLoadCheckpoint(LoadCheckpointSymbol loadCheckpoint) {
-        this.loadCheckpoint = loadCheckpoint;
-    }
-
-    public NormalizeSymbol getNormalize() {
-        return normalize;
-    }
-
-    public void setNormalize(NormalizeSymbol normalize) {
-        this.normalize = normalize;
-    }
-
-    public TrainContextSymbol getTrainContext() {
-        return trainContext;
-    }
-
-    public void setTrainContext(TrainContextSymbol trainContext) {
-        this.trainContext = trainContext;
+    public EntrySymbol getEntry(String name){
+        return getEntryMap().get(name);
     }
 
 }

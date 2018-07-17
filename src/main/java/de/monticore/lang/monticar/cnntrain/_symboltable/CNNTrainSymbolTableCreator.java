@@ -103,56 +103,99 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void endVisit(ASTNumEpochEntry node) {
-        NumEpochSymbol symbol = new NumEpochSymbol();
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
         Integer value_as_int = node.getValue().getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
-        symbol.setValue(value_as_int);
-        addToScopeAndLinkWithNode(symbol, node);
-        configuration.setNumEpoch(symbol);
+        value.setValue(value_as_int);
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override
     public void endVisit(ASTBatchSizeEntry node) {
-        BatchSizeSymbol symbol = new BatchSizeSymbol();
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
         Integer value_as_int = node.getValue().getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
-        symbol.setValue(value_as_int);
-        addToScopeAndLinkWithNode(symbol, node);
-        configuration.setBatchSize(symbol);
+        value.setValue(value_as_int);
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override
     public void endVisit(ASTLoadCheckpointEntry node) {
-        LoadCheckpointSymbol symbol = new LoadCheckpointSymbol();
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
         if (node.getValue().getTRUE().isPresent()){
-            symbol.setValue(true);
+            value.setValue(true);
         }
         else if (node.getValue().getFALSE().isPresent()){
-           symbol.setValue(false);
+            value.setValue(false);
         }
-         configuration.setLoadCheckpoint(symbol);
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override
     public void endVisit(ASTNormalizeEntry node) {
-        NormalizeSymbol symbol = new NormalizeSymbol();
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
         if (node.getValue().getTRUE().isPresent()){
-            symbol.setValue(true);
+            value.setValue(true);
         }
         else if (node.getValue().getFALSE().isPresent()){
-            symbol.setValue(false);
+            value.setValue(false);
         }
-        configuration.setNormalize(symbol);
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override
     public void visit(ASTTrainContextEntry node) {
-        TrainContextSymbol symbol = new TrainContextSymbol();
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
         if (node.getValue().cpuIsPresent()){
-            symbol.setValue(node.getValue().getCpu().get());
+            value.setValue(Context.CPU);
         }
         else {
-            symbol.setValue(node.getValue().getGpu().get());
+            value.setValue(Context.CPU);
         }
-        configuration.setTrainContext(symbol);
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
+    }
+
+    @Override
+    public void visit(ASTEvalMetricEntry node) {
+        EntrySymbol entry = new EntrySymbol(node.getName());
+        ValueSymbol value = new ValueSymbol();
+        if (node.getValue().getAccuracy().isPresent()){
+            value.setValue(EvalMetric.ACCURACY);
+        }
+        else if (node.getValue().getCrossEntropy().isPresent()){
+            value.setValue(EvalMetric.CROSS_ENTROPY);
+        }
+        else if (node.getValue().getF1().isPresent()){
+            value.setValue(EvalMetric.F1);
+        }
+        else if (node.getValue().getMae().isPresent()){
+            value.setValue(EvalMetric.MAE);
+        }
+        else if (node.getValue().getMse().isPresent()){
+            value.setValue(EvalMetric.MSE);
+        }
+        else if (node.getValue().getRmse().isPresent()){
+            value.setValue(EvalMetric.RMSE);
+        }
+        else if (node.getValue().getTopKAccuracy().isPresent()){
+            value.setValue(EvalMetric.TOP_K_ACCURACY);
+        }
+        entry.setValue(value);
+        addToScopeAndLinkWithNode(entry, node);
+        configuration.getEntryMap().put(node.getName(), entry);
     }
 
     @Override

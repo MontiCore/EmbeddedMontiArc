@@ -21,30 +21,21 @@
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
 import de.monticore.symboltable.CommonSymbol;
-import de.monticore.symboltable.SymbolKind;
 
-import java.util.Optional;
+public class EntrySymbol extends CommonSymbol {
 
-public class LoadCheckpointSymbol extends CommonSymbol {
+    public static final EntryKind KIND = new EntryKind();
+    private ValueSymbol value;
 
-    public static final LoadCheckpointSymbolKind KIND = new LoadCheckpointSymbolKind();
-
-    private boolean value = false;
-
-    public LoadCheckpointSymbol() {
-        super("", KIND);
+    public EntrySymbol(String name) {
+        super(name, KIND);
     }
 
-    public LoadCheckpointSymbol(String name, SymbolKind kind) {
-        super(name, kind);
-    }
-
-    public boolean getValue() {
+    public ValueSymbol getValue() {
         return value;
     }
 
-    public void setValue(boolean value) {
+    public void setValue(ValueSymbol value) {
         this.value = value;
     }
-
 }
