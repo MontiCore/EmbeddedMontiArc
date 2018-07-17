@@ -13,6 +13,9 @@ context = '${tc.context}',
 <#if (tc.normalize)??>
 normalize = ${tc.normalize?string("True","False")},
 </#if>
+<#if (tc.evalMetric)??>
+eval_metric = '${tc.evalMetric}',
+</#if>
 <#if (tc.configuration.optimizer)??>
 optimizer = '${tc.optimizerName}',
 optimizer_params = {

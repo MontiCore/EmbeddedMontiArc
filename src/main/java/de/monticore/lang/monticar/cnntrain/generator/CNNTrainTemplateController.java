@@ -111,6 +111,13 @@ public class CNNTrainTemplateController {
         return getConfiguration().getEntry("context").getValue().toString();
     }
 
+    public String getEvalMetric() {
+        if (!getConfiguration().getEntryMap().containsKey("eval_metric")) {
+            return null;
+        }
+        return getConfiguration().getEntry("eval_metric").getValue().toString();
+    }
+
     public String getOptimizerName() {
         if (getConfiguration().getOptimizer() == null) {
             return null;
