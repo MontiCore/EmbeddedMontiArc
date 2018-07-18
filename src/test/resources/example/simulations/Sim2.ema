@@ -1,0 +1,7 @@
+package example.simulations;
+
+component Sim2 {
+	port
+		in Boolean in1,
+		out Boolean out1;
+}
