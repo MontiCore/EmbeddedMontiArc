@@ -11,15 +11,19 @@ public abstract class BaseMathFunctionFixerHandler extends BaseChainOfResponsibi
 
     protected abstract void doFixMathFunction(MathExpressionSymbol symbol, BluePrintCPP bluePrintCPP);
 
-    public void handleFixMathFunction(MathExpressionSymbol symbol, BluePrintCPP bluePrintCPP) {
+    private void handleFixMathFunction(MathExpressionSymbol symbol, BluePrintCPP bluePrintCPP) {
         if (canFixMathSymbol(symbol)) {
             doFixMathFunction(symbol, bluePrintCPP);
         } else if (getSuccessor() != null) {
-            getSuccessor().handleFixMathFunction(symbol, bluePrintCPP);
+            ((BaseMathFunctionFixerHandler) getSuccessor()).handleFixMathFunction(symbol, bluePrintCPP);
         } else {
             Log.info(symbol.getTextualRepresentation(), "Symbol:");
             Log.debug(getRole(), "Case not handled!");
         }
+    }
+
+    public void chainHandleFixMathFunction(MathExpressionSymbol symbol, BluePrintCPP bluePrintCPP) {
+        ((BaseMathFunctionFixerHandler) getChainStart()).handleFixMathFunction(symbol, bluePrintCPP);
     }
 
 }
