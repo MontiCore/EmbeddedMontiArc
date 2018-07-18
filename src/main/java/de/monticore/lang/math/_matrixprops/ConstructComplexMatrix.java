@@ -51,25 +51,29 @@ public class ConstructComplexMatrix {
 
     private static Complex dissolveMathExpression(MathExpressionSymbol exp) {
         Complex result = null;
-        if (exp.isParenthesisExpression()) {
-            result = dissolveMathExpression(((MathParenthesisExpressionSymbol) exp).getMathExpressionSymbol());
-        } else if (exp.isValueExpression()) {
-            if (((MathValueExpressionSymbol) exp).isNameExpression()) {
-                exp = resolveName((MathNameExpressionSymbol) exp);
-                result = dissolveMathExpression(exp);
-            } else if (exp instanceof MathNumberExpressionSymbol) {
-                result = castToComplex((MathNumberExpressionSymbol) exp);
-            } else {
-                result = dissolveMathExpression(exp);
+        if (exp != null) {
+            if (exp.isParenthesisExpression()) {
+                result = dissolveMathExpression(((MathParenthesisExpressionSymbol) exp).getMathExpressionSymbol());
+            } else if (exp.isValueExpression()) {
+                if (((MathValueExpressionSymbol) exp).isNameExpression()) {
+                    exp = resolveName((MathNameExpressionSymbol) exp);
+                    result = dissolveMathExpression(exp);
+                } else if (exp instanceof MathNumberExpressionSymbol) {
+                    result = castToComplex((MathNumberExpressionSymbol) exp);
+                } else {
+                    result = dissolveMathExpression(exp);
+                }
+            } else if (exp.isMatrixExpression()) {
+                result = null;
+                Log.warn("Can not resolve matrix value. Can not create matrix properties. 0 was returned instead.");
             }
-        } else if (exp.isMatrixExpression()) {
-            result = null;
+            if (exp instanceof MathArithmeticExpressionSymbol) {
+                Complex value1 = dissolveChildExpression(((MathArithmeticExpressionSymbol) exp).getLeftExpression());
+                Complex value2 = dissolveChildExpression(((MathArithmeticExpressionSymbol) exp).getRightExpression());
+                result = getResult((MathArithmeticExpressionSymbol) exp, value1, value2);
+            }
+        } else {
             Log.warn("Can not resolve matrix value. Can not create matrix properties. 0 was returned instead.");
-        }
-        if (exp instanceof MathArithmeticExpressionSymbol) {
-            Complex value1 = dissolveChildExpression(((MathArithmeticExpressionSymbol) exp).getLeftExpression());
-            Complex value2 = dissolveChildExpression(((MathArithmeticExpressionSymbol) exp).getRightExpression());
-            result = getResult((MathArithmeticExpressionSymbol) exp, value1, value2);
         }
         return result;
     }
