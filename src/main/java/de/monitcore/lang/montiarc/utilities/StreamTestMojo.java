@@ -113,9 +113,6 @@ public class StreamTestMojo extends AbstractMojo {
     //</editor-fold>
 
 
-
-
-
     Map<String, MCConcreteParser> parser = new HashMap<>();
     public void createParser(){
 //        EmbeddedMontiArcMathParser parserEMAM = new EmbeddedMontiArcMathParser();
