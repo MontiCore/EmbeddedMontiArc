@@ -11,22 +11,24 @@ grammar MathOpt extends de.monticore.lang.Math
     OptimizationVariableDeclaration =
         type:AssignmentType?  Name;
 
-    OptimizationObjectiveFunction = (Statement | Expression) ";"?;
-
     OptimizationSimpleCondition =
-        left:Expression operator:OptimizationCompareOperator right:Expression ";"?;
+        left:Expression operator:OptimizationCompareOperator right:Expression ";";
 
     OptimizationBoundsCondition =
-        lower:Expression "<=" expr:Expression "<=" upper:Expression ";"?;
+        lower:Expression "<=" expr:Expression "<=" upper:Expression ";";
 
     OptimizationCondition =
         (simpleCondition:OptimizationSimpleCondition | boundedCondition:OptimizationBoundsCondition | forLoopCondition:OptimizationForLoop);
 
     OptimizationForLoop =
-        "for" head:MathForLoopHead body:OptimizationCondition+ "end" ";"?;
+        "for" head:MathForLoopHead body:OptimizationCondition+ "end";
 
     OptimizationObjectiveValue = type:ElementType? Name "=";
 
     OptimizationStatement implements Statement =
-        objectiveValue:OptimizationObjectiveValue? optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclaration ")" objectiveFunction:OptimizationObjectiveFunction "subject to" constraint:OptimizationCondition* "end";
+        objectiveValue:OptimizationObjectiveValue?
+        optimizationType:OptimizationType "(" optimizationVariable:OptimizationVariableDeclaration ")"
+        objectiveFunction:Expression ";"
+        "subject to" constraint:OptimizationCondition*
+        "end";
 }

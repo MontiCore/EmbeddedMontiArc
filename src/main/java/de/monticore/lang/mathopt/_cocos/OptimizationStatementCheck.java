@@ -22,7 +22,6 @@ package de.monticore.lang.mathopt._cocos;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.mathopt._ast.ASTOptimizationStatement;
-import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveFunction;
 import de.monticore.lang.mathopt._ast.ASTOptimizationObjectiveValue;
 import de.se_rwth.commons.logging.Log;
 

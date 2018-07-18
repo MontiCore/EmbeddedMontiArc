@@ -23,10 +23,7 @@ package de.monticore.lang.mathopt._symboltable;
 import de.monticore.commonexpressions._ast.ASTLessEqualExpression;
 import de.monticore.lang.math._symboltable.MathForLoopHeadSymbol;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathForLoopExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathValueSymbol;
-import de.monticore.lang.math._symboltable.expression.MathValueType;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.mathopt._ast.*;
 import de.monticore.lang.mathopt._visitor.MathOptVisitor;
 import de.monticore.symboltable.MutableScope;
@@ -126,21 +123,6 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
             addToScopeAndLinkWithNode(symbol, astExpression);
     }
 
-    public void endVisit(final ASTOptimizationObjectiveFunction ast) {
-        MathExpressionSymbol symbol;
-        if (ast.getExpressionOpt().isPresent() && ast.getExpression().getSymbolOpt().isPresent()) {
-            symbol = (MathExpressionSymbol) ast.getExpression().getSymbolOpt().get();
-        } else if (ast.getStatementOpt().isPresent() && ast.getStatement().getSymbolOpt().isPresent()) {
-            symbol = (MathExpressionSymbol) ast.getStatement().getSymbolOpt().get();
-        } else {
-            symbol = null;
-            Log.error(String.format("Can not find symbol for %s", ast.toString()), ast.get_SourcePositionStart());
-        }
-        if (symbol != null) {
-            addToScopeAndLinkWithNode(symbol, ast);
-        }
-    }
-
     public void endVisit(final ASTOptimizationStatement astMathOptimizationStatement) {
         MathOptimizationStatementSymbol symbol = new MathOptimizationStatementSymbol();
         symbol.setOptimizationType(astMathOptimizationStatement.getOptimizationType().toString());
@@ -168,6 +150,5 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
         }
         addToScopeAndLinkWithNode(symbol, astMathOptimizationStatement);
     }
-
 }
 
