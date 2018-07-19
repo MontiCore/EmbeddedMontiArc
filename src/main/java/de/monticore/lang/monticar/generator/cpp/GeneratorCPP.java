@@ -46,7 +46,7 @@ public class GeneratorCPP implements Generator {
     protected boolean checkModelDir = false;
 
     // CMake
-    private boolean generateCMake = true;
+    private boolean generateCMake = false;
     private CMakeConfig cMakeConfig;
 
     public GeneratorCPP() {
@@ -64,8 +64,7 @@ public class GeneratorCPP implements Generator {
             cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
         }
     }
-
-
+    
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
     }
