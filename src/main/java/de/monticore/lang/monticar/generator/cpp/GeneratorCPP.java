@@ -54,7 +54,6 @@ public class GeneratorCPP implements Generator {
         useOctaveBackend();
         TypeConverter.clearTypeSymbols();
         currentInstance = this;
-        setupCMake();
     }
 
     protected void setupCMake() {
@@ -64,9 +63,10 @@ public class GeneratorCPP implements Generator {
             cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
         }
     }
-    
+
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
+        setupCMake();
     }
 
     public boolean usesArmadilloBackend() {
@@ -75,6 +75,7 @@ public class GeneratorCPP implements Generator {
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
+        setupCMake();
         //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
@@ -407,6 +408,8 @@ public class GeneratorCPP implements Generator {
     }
 
     public void setGenerateCMake(boolean generateCMake) {
+        if (!this.generateCMake && generateCMake)
+            setupCMake();
         this.generateCMake = generateCMake;
     }
 
