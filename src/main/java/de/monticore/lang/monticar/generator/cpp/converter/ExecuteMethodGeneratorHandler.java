@@ -8,7 +8,6 @@ import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
-import de.monticore.lang.monticar.generator.cpp.StringValueListExtractorUtil;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathChainedExpression;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
@@ -111,13 +110,21 @@ public class ExecuteMethodGeneratorHandler {
                 result = "=" + TypeConverter.getDimensionString(TypeConverter.getColvecAccessString(type), dims, includeStrings);
             }
         } else if (dims.size() == 2) {
-            if (typeString.equals(TypeConverter.getMatAccessString(type))) {
+            if (typeIsCompatible(typeString, type, dims)) {
                 result = "=" + TypeConverter.getDimensionString(TypeConverter.getMatAccessString(type), dims, includeStrings);
             }
         } else if (dims.size() == 3) {
             if (typeString.equals(TypeConverter.getCubeAccessString(type))) {
                 result = "=" + TypeConverter.getDimensionString(TypeConverter.getCubeAccessString(type), dims, includeStrings);
             }
+        }
+        return result;
+    }
+
+    private static boolean typeIsCompatible(String typeString, ASTElementType type, List<MathExpressionSymbol> dims) {
+        boolean result = typeString.equals(TypeConverter.getMatAccessString(type));
+        if (!result && (dims.size() == 2) && (dims.get(1).getTextualRepresentation().contentEquals("1"))) {
+            result = typeString.contentEquals("colvec") && TypeConverter.getMatAccessString(type).contentEquals("mat");
         }
         return result;
     }
