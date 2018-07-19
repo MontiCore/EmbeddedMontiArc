@@ -411,7 +411,7 @@ public class GeneratorCPP implements Generator {
         this.generateCMake = generateCMake;
     }
 
-    public CMakeConfig getcMakeConfig() {
+    public CMakeConfig getCMakeConfig() {
         return cMakeConfig;
     }
 
