@@ -138,4 +138,16 @@ public class GeneratorTest {
     generator.generate(Paths.get("PhysicalTags"), Paths.get("src/test/resources/nfp"), symbolScopeMap);
 
   }
+
+  @Test
+  public void testOCL2JavaTag() throws Exception {
+    GeneratorSetup setup = new GeneratorSetup();
+    setup.setOutputDirectory(getPathFromRelativePath("src/test/resources/generator").toFile());
+    setup.setTracing(true);
+    TagSchemaGenerator generator = new TagSchemaGenerator(setup);
+    Map<String, String> symbolScopeMap = new LinkedHashMap<>();
+    symbolScopeMap.put("CDType", "NameScope");
+    generator.generate(Paths.get("OCL2JavaTags"), Paths.get("src/test/resources/tags"), symbolScopeMap);
+
+  }
 }

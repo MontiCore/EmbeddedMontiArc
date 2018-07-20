@@ -66,7 +66,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
     for (ASTTag element : unit.getTagBody().getTagList()) {
            element.getTagElementList().stream()
               .filter(t -> t.getName().equals("${tagTypeName}"))
-              .filter(t -> !t.getTagValueOpt().isPresent())
+              .filter(t -> t.isPresentTagValue)
               .map(t -> checkContent(t.getTagValueOpt().get()))
               .filter(r -> r != null)
         <#if isUnit>
