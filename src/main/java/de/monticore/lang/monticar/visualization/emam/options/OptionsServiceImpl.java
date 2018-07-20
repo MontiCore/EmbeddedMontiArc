@@ -7,6 +7,7 @@ import de.monticore.lang.monticar.visualization.emam.application.ApplicationCont
 import de.monticore.lang.monticar.visualization.emam.events.EventsService;
 import org.apache.commons.cli.*;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
@@ -55,19 +56,19 @@ public class OptionsServiceImpl implements OptionsService, ApplicationContributi
     }
 
     @Override
-    public Object getOption(String option) throws ParseException {
-        return this.commandLine.getParsedOptionValue(option);
+    public String getOptionAsString(String option) {
+        return this.commandLine.getOptionValue(option);
     }
 
     @Override
-    public String getOptionAsString(String option) throws ParseException {
-        return (String)this.getOption(option);
-    }
-
-    @Override
-    public Path getOptionAsPath(String option) throws ParseException {
+    public Path getOptionAsPath(String option) {
         String optionString = this.getOptionAsString(option);
 
-        return Paths.get(optionString);
+        return Paths.get(optionString).toAbsolutePath();
+    }
+
+    @Override
+    public File getOptionAsFile(String option) {
+        return this.getOptionAsPath(option).toFile();
     }
 }
