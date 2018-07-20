@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.cmake;
 
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
 
-import java.util.List;
+import java.util.HashSet;
 
 /**
  * View model which is used by the freemarker template
@@ -17,7 +17,7 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
     // fields
     private String compName;
 
-    private List<CMakeFindModule> moduleDependencies;
+    private HashSet<CMakeFindModule> moduleDependencies;
 
     // methods
 
@@ -29,11 +29,11 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
         this.compName = compName;
     }
 
-    public List<CMakeFindModule> getModuleDependencies() {
+    public HashSet<CMakeFindModule> getModuleDependencies() {
         return moduleDependencies;
     }
 
-    public void setModuleDependencies(List<CMakeFindModule> moduleDependencies) {
+    public void setModuleDependencies(HashSet<CMakeFindModule> moduleDependencies) {
         this.moduleDependencies = moduleDependencies;
     }
 }
