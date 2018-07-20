@@ -13,6 +13,7 @@
 * [**Description**](#description)
 * [**Demonstration**](#demonstration)
 * [**Command Line Interface**](#command-line-interface)
+* [**URL Syntax**](#url-syntax)
 * [**Requirements**](doc/Requirements.md)
 * [**Browser Support**](#browser-support)
 * [**License**](#license)
@@ -31,6 +32,15 @@ To be written.
 | -m    | --model      | Qualified Name of the Main Component Instance.  |
 | -mp   | --modelPath  | Path to the package root of the models.         |
 | -out  | --outputPath | Path to the output directory.                   |
+
+## URL Syntax
+```
+< URL > ::= < Base URL > "#" < Qualified Name of Component Instance > ":" < Visualization Mode > ["&" < Qualified Name of Component harboring the Math Implementation > ":" < Math Mode > [":" < Start Line > [":" < End Line >] ] ]
+
+< Visualization Mode > ::= 0 | 1 | 2 | 3
+
+< Math Mode > ::= 0 | 1
+```
 
 ## Browser Support
 | ![Google Chrome](doc/media/images/chrome.png) | ![Mozilla Firefox](doc/media/images/firefox.png) | ![Safari](doc/media/images/safari.png) | ![Opera](doc/media/images/opera.png) | ![Microsoft Edge](doc/media/images/edge.png) | ![Internet Explorer](doc/media/images/ie.png) |
