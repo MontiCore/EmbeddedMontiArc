@@ -2,15 +2,12 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.Generator;
-import de.monticore.lang.monticar.generator.Helper;
-import de.monticore.lang.monticar.generator.MathCommandRegister;
+import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
-import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -48,6 +45,10 @@ public class GeneratorCPP implements Generator {
     protected boolean generateSimulatorInterface = false;
     protected boolean checkModelDir = false;
 
+    // CMake
+    private boolean generateCMake = false;
+    private CMakeConfig cMakeConfig;
+
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
         useOctaveBackend();
@@ -55,13 +56,26 @@ public class GeneratorCPP implements Generator {
         currentInstance = this;
     }
 
+    protected void setupCMake() {
+        cMakeConfig = new CMakeConfig("");
+        if (usesArmadilloBackend()) {
+            // add dependency on module Armadillo
+            cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        }
+    }
 
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
+        setupCMake();
+    }
+
+    public boolean usesArmadilloBackend() {
+        return MathConverter.curBackend instanceof ArmadilloBackend;
     }
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
+        setupCMake();
         //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
@@ -164,7 +178,23 @@ public class GeneratorCPP implements Generator {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
         }
         List<File> files = saveFilesToDisk(fileContents);
+        //cmake
+        if (generateCMake)
+            files.addAll(generateCMakeFiles(componentSymbol));
 
+        return files;
+    }
+
+    protected List<File> generateCMakeFiles(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        List<File> files = new ArrayList<>();
+        cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        List<FileContent> contents = cMakeConfig.generateCMakeFiles();
+        try {
+            for (FileContent content : contents)
+                files.add(generateFile(content));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return files;
     }
 
@@ -365,11 +395,26 @@ public class GeneratorCPP implements Generator {
     private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
         return generateWrapper(componentSymbol, "server.cc");
     }
-    
-     private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
+
+    private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
         ServerWrapperViewModel vm = new ServerWrapperViewModel();
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateServerWrapper(vm);
         return new FileContent(fileContents, name);
     }
+
+    public boolean isGenerateCMakeEnabled() {
+        return generateCMake;
+    }
+
+    public void setGenerateCMake(boolean generateCMake) {
+        if (!this.generateCMake && generateCMake)
+            setupCMake();
+        this.generateCMake = generateCMake;
+    }
+
+    public CMakeConfig getCMakeConfig() {
+        return cMakeConfig;
+    }
+
 }
