@@ -117,7 +117,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseUnitTagValue(s);
+      ast = parser.parse_StringUnitTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
@@ -142,7 +142,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseStringTagValue(s);
+      ast = parser.parse_StringStringTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
@@ -167,7 +167,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseBooleanTagValue(s);
+      ast = parser.parse_StringBooleanTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
@@ -192,7 +192,7 @@ public class ${tagTypeName}SymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseNumericTagValue(s);
+      ast = parser.parse_StringNumericTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {
