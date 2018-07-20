@@ -1,11 +1,48 @@
-# Project to compose the C&C-visualization with the MontiMath-PrettyPrinter using Hook Points
+# 2D Visualization for EmbeddedMontiArcMath
 
-# Version 1 (Integrate Math Code into C&C visualisation)
-* this is already working: http://www.se-rwth.de/materials/ema_compiler/ObjectDetectorSVG/detection.objectDetector4.spectralClusterer[3].html
-    * see visualization project https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/visualisation
-* this is what we want to have at the end: http://www.se-rwth.de/materials/ema_compiler/ObjectDetectorSimulink/ObjectDetector/webview.html#slwebview:15/SpectralClusterer:31
-    * the MontiMath code should be overlapped nicely ;)
+<p align="center">
+    <a>
+        <img src="https://img.shields.io/badge/Version-0.1.0-blue.svg?longCache=true&style=flat-square"/>
+    </a>
+    <a href="https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.20.visualization-emam&files=visualization-emam.zip">
+        <img src="https://img.shields.io/badge/Download-18.07.20-blue.svg?longCache=true&style=flat-square"/>
+    </a>
+</p>
 
-# Version 2 (Integrate Syntax-Highlighter of EMA and MontiMath)
-* the result should be like: http://www.se-rwth.de/materials/ema_compiler/emaCode/ObjectDetector4.htm
-    * also use hyperlinks to navigate between components
+## Table of Contents
+* [**Description**](#description)
+* [**Demonstration**](#demonstration)
+* [**Command Line Interface**](#command-line-interface)
+* [**Requirements**](doc/Requirements.md)
+* [**Browser Support**](#browser-support)
+* [**License**](#license)
+
+## Description
+To be written.
+
+## Demonstration
+![](doc/media/videos/VisualizationEMAM.mp4)
+
+[Try it out](https://embeddedmontiarc.github.io/VisualizationEMAM/)
+
+## Command Line Interface
+| Short | Long         | Description                                     |
+| :---: | :---:        | :---                                            |
+| -m    | --model      | Qualified Name of the Main Component Instance.  |
+| -mp   | --modelPath  | Path to the package root of the models.         |
+| -out  | --outputPath | Path to the output directory.                   |
+
+## Browser Support
+| ![Google Chrome](doc/media/images/chrome.png) | ![Mozilla Firefox](doc/media/images/firefox.png) | ![Safari](doc/media/images/safari.png) | ![Opera](doc/media/images/opera.png) | ![Microsoft Edge](doc/media/images/edge.png) | ![Internet Explorer](doc/media/images/ie.png) |
+| :--------------------: | :--------------------: | :--------------------: | :--------------------: | :--------------------: | :---: |
+| 57+ :heavy_check_mark: | 52+ :heavy_check_mark: | 11+ :heavy_check_mark: | 44+ :heavy_check_mark: | 16+ :heavy_check_mark: | :x:   |
+
+| ![PC](doc/media/images/pc.png) | ![Smartphones](doc/media/images/smartphone.png) | ![Tablets](doc/media/images/tablet.png) |
+| :----------------------: | :---------------------------------------: | :-------------------------------: |
+| :heavy_check_mark:       | :heavy_check_mark:                        | :heavy_check_mark:                |
+
+
+## License
+Copyright (C) 2018 SE RWTH.
+
+A concrete license is to be discussed.

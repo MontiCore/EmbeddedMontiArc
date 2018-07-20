@@ -9,6 +9,7 @@ import de.monticore.lang.monticar.visualization.emam.dependencies.DependenciesMo
 import de.monticore.lang.monticar.visualization.emam.events.EventsModule;
 import de.monticore.lang.monticar.visualization.emam.events.EventsService;
 import de.monticore.lang.monticar.visualization.emam.executables.ExecutablesModule;
+import de.monticore.lang.monticar.visualization.emam.generator.GeneratorModule;
 import de.monticore.lang.monticar.visualization.emam.models.ModelsModule;
 import de.monticore.lang.monticar.visualization.emam.options.OptionsModule;
 import de.monticore.lang.monticar.visualization.emam.options.OptionsService;
@@ -39,7 +40,10 @@ public class Application {
         try {
             this.configure();
             this.prepare();
-            this.run(args);
+
+            if (args.length == 6) this.run(args);
+            else this.optionsService.printHelp();
+
             this.stop();
         } catch (ParseException exception) {
             this.optionsService.printHelp();
@@ -86,7 +90,7 @@ public class Application {
         Injector injector = Guice.createInjector(
             new ApplicationModule(), new DependenciesModule(), new ExecutablesModule(),
             new OptionsModule(), new PathsModule(), new URLModule(), new ModelsModule(),
-            new EventsModule()
+            new EventsModule(), new GeneratorModule()
         );
         Application application = injector.getInstance(Application.class);
 

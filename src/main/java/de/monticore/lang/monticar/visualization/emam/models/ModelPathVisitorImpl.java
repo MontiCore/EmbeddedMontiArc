@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.visualization.emam.models;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
