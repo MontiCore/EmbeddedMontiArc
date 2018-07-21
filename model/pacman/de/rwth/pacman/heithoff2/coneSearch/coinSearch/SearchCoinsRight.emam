@@ -1,0 +1,35 @@
+package de.rwth.pacman.heithoff2.coneSearch.coinSearch;
+
+component SearchCoinsRight {
+    ports
+      in Z^{22,19} map,
+      in Z(-1m: 19m) currentX,
+      in Z(0m: 22m) currentY,
+      
+      out Z value;
+      
+    implementation Math {
+        value = 0;
+        for i = 1:6
+            Z indexX = round(currentX) + i + 1;
+            if indexX < 18
+                for j = (-i):i
+                    Z indexY = round(currentY) + j + 1;
+                    if (indexY > 0) && (indexY < 21)
+                        Z nextTile = map(indexY, indexX);
+                        if (nextTile == 1) || (nextTile == 4)
+                            Z multBy = 1;
+                            if nextTile == 1
+                                multBy = 10;
+                            elseif nextTile == 4
+                                multBy = 50;
+                            end
+                            Q dist = sqrt(i*i + j*j);
+                            value = value + (multBy/dist);
+                        end
+                    end
+                end
+            end
+        end
+    }
+}

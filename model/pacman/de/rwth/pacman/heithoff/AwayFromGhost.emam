@@ -7,10 +7,10 @@ package de.rwth.pacman.heithoff;
 
 component AwayFromGhost {
     ports
-        in Z(0cm: 342cm) ghostX,
-        in Z(0cm: 426cm) ghostY,
-        in Z(0cm: 342cm) pacManX,
-        in Z(0cm: 426cm) pacManY,
+        in Z(0m: 342cm) ghostX,
+        in Z(0m: 426cm) ghostY,
+        in Z(0m: 342cm) pacManX,
+        in Z(0m: 426cm) pacManY,
       
         out Z(0:1:3) newPacManDirection;
       
