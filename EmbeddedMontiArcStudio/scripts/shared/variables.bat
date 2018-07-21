@@ -35,3 +35,4 @@ set WASM_HOME=%HOME%\emam2wasm
 set PACMAN_HOME=%HOME%\pacman
 set SUPERMARIO_HOME=%HOME%\supermario
 set CNCVERIFICATION_HOME=%HOME%\cncverification
+set VISUALIZATION_EMAM_HOME=%HOME%\visualization-emam

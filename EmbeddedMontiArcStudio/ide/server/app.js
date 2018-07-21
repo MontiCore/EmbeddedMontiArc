@@ -72,7 +72,7 @@ App.post("/services/autopilot/simulate-distr", function(request, response) {
 
 App.post("/services/autopilot/visualize", function(request, response) {
 	function onExecuted() {
-		Chrome.open(URLS.SHARED + "/v/de.rwth.armin.modeling.autopilot.autopilot.html");
+		Chrome.open(URLS.SHARED + "/v/index.html");
 		response.end();
 	}
 
@@ -227,7 +227,7 @@ App.post("/services/clustering/simulate/cluster", function(request, response) {
 
 App.post("/services/clustering/visualize", function(request, response) {
     function onExecuted() {
-        Chrome.open(URLS.SHARED + "/v/detection.spectralClusterer.html");
+        Chrome.open(URLS.SHARED + "/v/index.html");
         response.end();
     }
 
@@ -335,7 +335,7 @@ App.post("/services/pump/viewverification/all", function(request, response) {
 
 App.post("/services/pump/visualize", function(request, response) {
     function onExecuted() {
-        Chrome.open(URLS.SHARED + "/v/pumpStationExample.pumpStation.html");
+        Chrome.open(URLS.SHARED + "/v/index.html");
         response.end();
     }
 
@@ -409,7 +409,7 @@ App.post("/services/pacman/simulate", function(request, response) {
 
 App.post("/services/pacman/visualize", function(request, response) {
 	function onExecuted() {
-		Chrome.open(URLS.SHARED + "/v/de.rwth.pacman.PacManWrapper.html");
+		Chrome.open(URLS.SHARED + "/v/index.html");
 		response.end();
 	}
 
@@ -480,7 +480,7 @@ App.post("/services/supermario/simulate", function(request, response) {
 
 App.post("/services/supermario/visualize", function(request, response) {
 	function onExecuted() {
-		Chrome.open(URLS.SHARED + "/v/de.rwth.supermario.SuperMarioWrapper.html");
+		Chrome.open(URLS.SHARED + "/v/index.html");
 		response.end();
 	}
 
