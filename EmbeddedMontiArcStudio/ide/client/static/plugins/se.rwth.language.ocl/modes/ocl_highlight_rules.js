@@ -7,7 +7,7 @@ define(function(require, exports, module) {
         "void|boolean|byte|short|int|long|char|float|double|extends|super|" +
         "import|public|private|protected|final|abstract|local|derived|readonly|" +
         "static|context|inv|in|pre|post|new|throws|if|then|else|typeif|instanceof|" +
-        "forall|exists|any|let|iterate|isin|implies|this|result|isnew|defined|ocl|" +
+        "forall|exists|any|let|iterate|isin|implies|this|result|isnew|defined|" +
         "package"
     );
 
