@@ -30,6 +30,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.complex.ComplexField;
 import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
 
+import java.util.Optional;
+
 public class ConstructComplexMatrix {
     public static Array2DRowFieldMatrix<Complex> constructComplexMatrix(MathMatrixArithmeticValueSymbol symbol) {
         Complex[][] c = new Complex[symbol.getVectors().size()][symbol.getVectors().get(0).getMathMatrixAccessSymbols().size()];
@@ -144,8 +146,11 @@ public class ConstructComplexMatrix {
     }
 
     private static MathExpressionSymbol resolveName(MathNameExpressionSymbol expressionSymbol) {
-        Symbol symbol = expressionSymbol.getEnclosingScope()
-                .resolve(expressionSymbol.getNameToResolveValue(), expressionSymbol.getKind()).get();
-        return ((MathValueSymbol) symbol).getValue();
+        Optional<Symbol> symbol = expressionSymbol.getEnclosingScope()
+                .resolve(expressionSymbol.getNameToResolveValue(), expressionSymbol.getKind());
+        if (symbol.isPresent())
+            return ((MathValueSymbol) symbol.get()).getValue();
+        else
+            return expressionSymbol;
     }
 }
