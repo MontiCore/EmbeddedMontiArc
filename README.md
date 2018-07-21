@@ -19,7 +19,24 @@
 * [**License**](#license)
 
 ## Description
-To be written.
+Whether textual or graphical models are better for software development in general is still an
+ongoing debate. Nonetheless, textual models have a multitude of advantages compared to their
+graphical peers. Textual models, for instance, can be edited using a simple editor which is
+available on every operating system whereas graphical models more often than not need
+commercial software. Version Control, including the visualization of the differences between
+versions, is easier to implement on textual models than on graphical models due to the sheer
+amount of available programs which are specialized on such a task.
+
+In the context of Component and Connector (C&C) models, however, one can realize a disadvantage
+of textual models. With the increasing size of the models, it often becomes difficult to keep
+the overview on how components are interacting with each other. For a developer using graphical
+models, on the other hand, this task is achieved with ease because she can see the components
+and their connections visually in front of her.
+
+In order to compensate for this fact, this project and [one of its
+dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/visualization)
+generate a visual representation of textual EmbeddedMontiArcMath models showing the
+relationships between components.
 
 ## Demonstration
 ![](doc/media/videos/VisualizationEMAM.mp4)
