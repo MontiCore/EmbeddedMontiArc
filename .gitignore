@@ -26,3 +26,5 @@ build/7z/**
 build/curl/**
 build/EmbeddedMontiArcStudio.exe
 build/EMAStudio.*/**
+
+EmbeddedMontiArcStudio/scripts/shared/setup
