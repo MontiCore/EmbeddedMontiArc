@@ -3,12 +3,20 @@ if(!(Test-Path -path $dl)) {
     New-Item -ItemType directory -Path $dl
 }
 
-cd $dl
 "Downloading dependencies"
-        
-foreach($line in Get-Content "..\..\dependencies.txt") {
 
-    # if line beginns with ** extract link
+foreach($line in Get-Content "..\dependencies.txt") {
+
+    # if line begins with * is extraction directory
+    if($line -match '^\*\s.+'){
+       cd $build
+       $subdir = $line.Remove(0,2)
+       $dir = $dl + $subdir
+       New-Item -ItemType Directory -Force -Path $dir
+       cd $dir
+    }
+
+    # if line begins with ** extract link
     if($line -match '^\*\*.+'){
         $link = $line.Remove(0,3)
 
