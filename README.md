@@ -43,7 +43,7 @@ To be written.
 ```
 
 * after opening an atomic component, you can just add `:2` at the end of the URL to highlight line number `2` for issues.
-* if you add at the end of the URL `:2:4` then you highlight the line numbers `2`, `3`, and `4`
+* if you add `:2:4` at the end of the URL, then you highlight the line numbers `2`, `3`, and `4`.
 
 ## Browser Support
 | ![Google Chrome](doc/media/images/chrome.png) | ![Mozilla Firefox](doc/media/images/firefox.png) | ![Safari](doc/media/images/safari.png) | ![Opera](doc/media/images/opera.png) | ![Microsoft Edge](doc/media/images/edge.png) | ![Internet Explorer](doc/media/images/ie.png) |
