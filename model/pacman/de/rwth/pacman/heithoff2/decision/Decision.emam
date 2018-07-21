@@ -1,5 +1,7 @@
 package de.rwth.pacman.heithoff2.decision;
 
+// Main strategy
+
 component Decision {
     ports
       in B topSafe,
@@ -10,16 +12,16 @@ component Decision {
       in Z bottomValue,
       in Z leftValue,
       in Z rightValue,
-      in Z(-1m: 19m) pacManX,
-      in Z(0m: 22m) pacManY,
+      in Q(-1m: 19m) pacManX,
+      in Q(0m: 22m) pacManY,
       in Z^{22,19} map,
       
       out Z newPacManDirection;
       
-    instance CompareValues compareValues;
-    instance PossibleWays possibleWays;
-    instance VerifyDirection verifyDirection;
-    instance NextIntersection intersection;
+    instance CompareValues compareValues;     // gives back the desired direction
+    instance PossibleWays possibleWays;       // gives back whether certain directions are blocked
+    instance VerifyDirection verifyDirection; // prevent stuttering
+    instance NextIntersection intersection;   // gives back whether an intersection (more than 3 non-blocked paths) is reached
     
     connect pacManX -> possibleWays.pacManX, intersection.pacManX;
     connect pacManY -> possibleWays.pacManY, intersection.pacManY;
