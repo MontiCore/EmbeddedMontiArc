@@ -1,9 +1,11 @@
 package de.rwth.pacman.heithoff2.decision;
 
+// check which directions are not blocked
+
 component PossibleWays {
     ports
-      in Z(-1m: 19m) pacManX,
-      in Z(0m: 22m) pacManY,
+      in Q(-1m: 19m) pacManX,
+      in Q(0m: 22m) pacManY,
       in Z^{22,19} map,
       
       out B topPossible,
