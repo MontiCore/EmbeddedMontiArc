@@ -4,8 +4,8 @@ import de.rwth.pacman.structs.PacManData;
 
 component PacManDataFactory {
     ports
-        in Z(0m: 342cm) X,
-        in Z(0m: 426cm) Y,
+        in Q(0m: 342cm) X,
+        in Q(0m: 426cm) Y,
         in B Eaten,
         in Z(0:oo) Lives,
         in Z(0:oo) Score,

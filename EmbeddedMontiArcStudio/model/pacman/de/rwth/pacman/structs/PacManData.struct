@@ -4,8 +4,8 @@
 package de.rwth.pacman.structs;
 
 struct PacManData {
-        Z(0m: 342cm) x;
-        Z(0m: 426cm) y;
+        Q(0m: 342cm) x;
+        Q(0m: 426cm) y;
         B eaten;
         Z(0:oo) lives; // the simulator also has zero 
                            // but then we are dead, and so the 
