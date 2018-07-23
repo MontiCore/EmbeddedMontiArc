@@ -13,7 +13,7 @@ find_path(${viewModel.packageName}_INCLUDE_DIR
         PATH_SUFFIXES "include"
         PATHS
         <#list viewModel.includePaths as var>
-        \" ${var} \"
+        "${var}"
         </#list>
         )
 </#if>
@@ -23,7 +23,7 @@ find_library(${viewModel.packageName}_LIBRARY
         PATH_SUFFIXES "lib" "lib64" "lib/x86_64-linux-gnu" "examples/lib_win64" "build"
         PATHS
         <#list viewModel.libPaths as var>
-        \" ${var} \"
+        "${var}"
         </#list>
         )
 </#if>
