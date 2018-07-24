@@ -30,5 +30,5 @@ export(TARGETS ${viewModel.compName} FILE ${viewModel.compName}.cmake)
 
 # additional commands end
 <#list viewModel.cmakeCommandListEnd as cmd>
-  ${cmd}
+${cmd}
 </#list>
