@@ -379,7 +379,30 @@ public class GeneratorCPP implements Generator {
         AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateAutopilotAdapter(vm);
+        if (currentInstance.generateCMake)
+            addAutopilotAdapterCMakeConfig();
         return new FileContent(fileContents, "AutopilotAdapter.cpp");
+    }
+
+    private static void addAutopilotAdapterCMakeConfig() {
+        CMakeConfig cmake = currentInstance.cMakeConfig;
+        // add jni
+        cmake.addCMakeCommand("find_package(JNI)");
+        cmake.addCMakeCommand("set(INCLUDE_DIRS ${INCLUDE_DIRS} ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})");
+        // set install dir
+        cmake.addCMakeCommand("IF (WIN32)");
+        cmake.addCMakeCommand("set(CMAKE_INSTALL_PREFIX $ENV{DLL_DIR})");
+        cmake.addCMakeCommand("ELSE()");
+        cmake.addCMakeCommand("set(CMAKE_INSTALL_PREFIX /usr/lib)");
+        cmake.addCMakeCommand("ENDIF()");
+        // create shared lib
+        cmake.addCMakeCommandEnd("add_library(AutopilotAdapter SHARED AutopilotAdapter.cpp ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_include_directories(AutopilotAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_link_libraries(AutopilotAdapter PUBLIC ${LIBS})");
+        cmake.addCMakeCommandEnd("set_target_properties(AutopilotAdapter PROPERTIES LINKER_LANGUAGE CXX)");
+        // install shared lib
+        cmake.addCMakeCommandEnd("install(TARGETS AutopilotAdapter DESTINATION \"./\")");
+        cmake.addCMakeCommandEnd("export(TARGETS AutopilotAdapter FILE de_rwth_armin_modeling_autopilot_autopilotAdapter.cmake)");
     }
 
     private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
