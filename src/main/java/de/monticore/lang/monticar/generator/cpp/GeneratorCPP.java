@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -375,7 +376,10 @@ public class GeneratorCPP implements Generator {
     }
 
     private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
-        return generateWrapper(componentSymbol, "AutopilotAdapter.cpp");
+        AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
+        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        String fileContents = AllTemplates.generateAutopilotAdapter(vm);
+        return new FileContent(fileContents, "AutopilotAdapter.cpp");
     }
 
     private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
