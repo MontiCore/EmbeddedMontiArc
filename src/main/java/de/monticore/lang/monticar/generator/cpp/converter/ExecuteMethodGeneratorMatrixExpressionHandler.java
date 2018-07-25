@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.*;
@@ -300,10 +301,18 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
                     MathExpressionSymbol elemSymbol = elem.getMathExpressionSymbol().get();
                     if (elemSymbol instanceof MathNameExpressionSymbol || elemSymbol instanceof MathMatrixNameExpressionSymbol)
                         return true;
+                    else if (elemSymbol instanceof MathArithmeticExpressionSymbol) {
+                        return arithmeticExpressionContainsVariables((MathArithmeticExpressionSymbol) elemSymbol);
+                    }
                 }
             }
         }
         return false;
+    }
+
+    private static boolean arithmeticExpressionContainsVariables(MathArithmeticExpressionSymbol symbol) {
+        return (symbol.getLeftExpression() instanceof MathNameExpressionSymbol) || (symbol.getLeftExpression() instanceof MathMatrixNameExpressionSymbol)
+                || (symbol.getLeftExpression() instanceof MathNameExpressionSymbol) || (symbol.getLeftExpression() instanceof MathMatrixNameExpressionSymbol);
     }
 
     public static String generateExecuteCode(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, List<String> includeStrings) {
