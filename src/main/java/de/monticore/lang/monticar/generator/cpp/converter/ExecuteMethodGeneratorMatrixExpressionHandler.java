@@ -2,11 +2,9 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.math._symboltable.expression.IArithmeticExpression;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.generator.cpp.MathCommandRegisterCPP;
-import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
-import de.monticore.lang.monticar.generator.cpp.OctaveHelper;
-import de.monticore.lang.monticar.generator.cpp.StringValueListExtractorUtil;
+import de.monticore.lang.monticar.generator.cpp.*;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -244,7 +242,68 @@ public class ExecuteMethodGeneratorMatrixExpressionHandler {
     }
 
     public static String generateExecuteCode(MathMatrixArithmeticValueSymbol mathMatrixArithmeticValueSymbol, List<String> includeStrings) {
-        return MathConverter.getConstantConversion(mathMatrixArithmeticValueSymbol);
+        String result;
+        if (matrixValueContainsVariables(mathMatrixArithmeticValueSymbol)) {
+            result = generateVariableMatrixCode(mathMatrixArithmeticValueSymbol, includeStrings);
+        } else {
+            // if it does not contain any variables
+            result = MathConverter.getConstantConversion(mathMatrixArithmeticValueSymbol);
+        }
+        return result;
+    }
+
+    private static String generateVariableMatrixCode(MathMatrixArithmeticValueSymbol mathMatrixArithmeticValueSymbol, List<String> includeStrings) {
+        String result = "";
+        if (MathConverter.curBackend instanceof ArmadilloBackend) {
+            if ((mathMatrixArithmeticValueSymbol.getVectors().size() == 1) || (mathMatrixArithmeticValueSymbol.getVectors().get(0).getMathMatrixAccessSymbols().size() == 1))
+                result = generateCodeForVecDependentOnVar(mathMatrixArithmeticValueSymbol, includeStrings);
+            else {
+                StringBuilder sb = new StringBuilder();
+                for (MathMatrixAccessOperatorSymbol vec : mathMatrixArithmeticValueSymbol.getVectors()) {
+                    sb.append("{");
+                    for (MathMatrixAccessSymbol elem : vec.getMathMatrixAccessSymbols()) {
+                        sb.append(ExecuteMethodGenerator.generateExecuteCode(elem, includeStrings));
+                        sb.append(",");
+                    }
+                    sb.deleteCharAt(sb.length() - 1);
+                    sb.append("},");
+                }
+                sb.deleteCharAt(sb.length() - 1);
+                result = String.format("%s({%s})", MathConverter.curBackend.getMatrixTypeName(), sb.toString());
+            }
+        } else {
+            Log.error("Not supported backend!");
+        }
+        return result;
+    }
+
+    private static String generateCodeForVecDependentOnVar(MathMatrixArithmeticValueSymbol matVal, List<String> includeStrings) {
+        StringBuilder sb = new StringBuilder();
+        for (MathMatrixAccessOperatorSymbol vec : matVal.getVectors()) {
+            for (MathMatrixAccessSymbol elem : vec.getMathMatrixAccessSymbols()) {
+                sb.append(ExecuteMethodGenerator.generateExecuteCode(elem, includeStrings));
+                sb.append(",");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        String result = String.format("%s({%s})", MathConverter.curBackend.getRowVectorTypeName(), sb.toString());
+        if ((matVal.getVectors().size() > 1) && (matVal.getVectors().get(0).getMathMatrixAccessSymbols().size() == 1)) {
+            result = String.format("(%s.t())", result); // transpose to colvec
+        }
+        return result;
+    }
+
+    private static boolean matrixValueContainsVariables(MathMatrixArithmeticValueSymbol mathMatrixArithmeticValueSymbol) {
+        for (MathMatrixAccessOperatorSymbol vec : mathMatrixArithmeticValueSymbol.getVectors()) {
+            for (MathMatrixAccessSymbol elem : vec.getMathMatrixAccessSymbols()) {
+                if (elem.getMathExpressionSymbol().isPresent()) {
+                    MathExpressionSymbol elemSymbol = elem.getMathExpressionSymbol().get();
+                    if (elemSymbol instanceof MathNameExpressionSymbol || elemSymbol instanceof MathMatrixNameExpressionSymbol)
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static String generateExecuteCode(MathMatrixNameExpressionSymbol mathMatrixNameExpressionSymbol, List<String> includeStrings) {
