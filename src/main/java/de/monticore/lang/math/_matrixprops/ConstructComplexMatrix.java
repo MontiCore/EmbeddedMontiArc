@@ -59,7 +59,7 @@ public class ConstructComplexMatrix {
             } else if (exp.isValueExpression()) {
                 if (((MathValueExpressionSymbol) exp).isNameExpression()) {
                     exp = resolveName((MathNameExpressionSymbol) exp);
-                    if (!lastResolvedName.contentEquals(exp.getName())) {
+                    if ((exp != null) && (!lastResolvedName.contentEquals(exp.getName()))) {
                         result = dissolveMathExpression(exp, exp.getName());
                     } else {
                         result = null;
