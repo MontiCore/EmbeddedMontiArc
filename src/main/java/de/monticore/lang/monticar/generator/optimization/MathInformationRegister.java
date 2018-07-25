@@ -214,8 +214,11 @@ public class MathInformationRegister {
      */
     public MathValueSymbol getFullTypeInformation(MathValueSymbol symbol) {
         MathValueSymbol result = getMathValueSymbol(symbol.getName());
-        if (result == null)
+        if (result == null) {
             result = symbol;
+            // ask symbol table
+            result = (MathValueSymbol) symbol.getEnclosingScope().resolve(symbol.getName(), symbol.getKind()).orElse(null);
+        }
         return result;
     }
 
