@@ -21,7 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
@@ -44,39 +44,38 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Test
     public void testComponentSub2() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "a.sub2", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "a.sub2", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         System.out.println(inst);
-
-        assertEquals(inst.getPortsList().size(), 3);
-        assertTrue(inst.getPort("in1").isPresent()); // from a.Sub2
-        assertTrue(inst.getPort("out1").isPresent()); // from a.Sub2
-        assertTrue(inst.getPort("percentage").isPresent()); // from b.SuperSamePackage
+        assertEquals(inst.getPortInstanceList().size(), 3);
+        assertTrue(inst.getPortInstance("in1").isPresent()); // from a.Sub2
+        assertTrue(inst.getPortInstance("out1").isPresent()); // from a.Sub2
+        assertTrue(inst.getPortInstance("percentage").isPresent()); // from b.SuperSamePackage
     }
 
 
     @Test
     public void testDetection() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "detection.objectDetector", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "detection.objectDetector", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         System.out.println(inst);
-        //TODO add MathStatements to ExpandedComponentInstanceSymbol and print them
+        //TODO add MathStatements to EMAComponentInstanceSymbol and print them
     }
 
     @Test
     public void testLookUp() throws Exception {
         Scope symTab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "testing.basicLookUpInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "testing.basicLookUpInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         assertEquals(3, inst.getSubComponents().size());
         for (ASTExpression astExpression : inst.getSubComponents().iterator().next().getArguments()) {
             Log.info(astExpression.toString(), "info:");
         }
-        Iterator<ExpandedComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
+        Iterator<EMAComponentInstanceSymbol> iterator = inst.getSubComponents().iterator();
         MathMatrixArithmeticValueSymbol symbol1 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
         MathMatrixArithmeticValueSymbol symbol2 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
         MathMatrixArithmeticValueSymbol symbol3 = (MathMatrixArithmeticValueSymbol) iterator.next().getArguments().get(0).getSymbolOpt().get();
@@ -94,8 +93,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testComponentSub1() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "a.sub1", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "a.sub1", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
     System.out.println(inst);
 
@@ -109,8 +108,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     // test for model loader to load instance without loading component
     // definition before
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "a.sub1.cComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "a.sub1.cComp", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
     System.out.println(inst);
   }
@@ -119,8 +118,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   public void testSuperComp1() throws Exception {
     // test for recursive inheritance
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "instance.superComp1", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "instance.superComp1", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
     System.out.println(inst);
 
@@ -135,16 +134,16 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testSubGenericInstance() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "generics.subGenericInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "generics.subGenericInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
     assertNotNull(inst);
     System.out.println(inst);
     // test whether T is replaced by Integer
     inst.getPorts().stream().forEachOrdered(p -> assertEquals(p.getTypeReference().getName(), "Integer"));
 
-    ExpandedComponentInstanceSymbol inst2 = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "generics.superGenericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst2 = symTab.<EMAComponentInstanceSymbol>resolve(
+        "generics.superGenericCompInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
     assertNotNull(inst2);
     System.out.println(inst2);
@@ -159,8 +158,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testGenericInstance() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "generics.genericInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "generics.genericInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
 
     assertNotNull(inst);
     System.out.println(inst);
@@ -252,8 +251,8 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
   @Test
   public void testGenericExtension() throws Exception {
     Scope symTab = createSymTab("src/test/resources/arc/symtab");
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "generics.baseClassGenerics", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "generics.baseClassGenerics", EMAComponentInstanceSymbol.KIND).orElse(null);
 
     assertNotNull(inst);
     System.out.println(inst);
@@ -280,16 +279,16 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     ComponentSymbol cmp = symTab.<ComponentSymbol>resolve(
         "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.CC_On_Off", ComponentSymbol.KIND).orElse(null);
     assertNotNull(cmp);
-    ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.cC_On_Off", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.cC_On_Off", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
 
     symTab = createSymTab("src/test/resources/fas");
     cmp = symTab.<ComponentSymbol>resolve(
         "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.Limiter", ComponentSymbol.KIND).orElse(null);
     assertNotNull(cmp);
-    inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.limiter", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+    inst = symTab.<EMAComponentInstanceSymbol>resolve(
+        "DEMO_FAS.DEMO_FAS.DEMO_FAS_Funktion.limiter", EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(inst);
   }
   */

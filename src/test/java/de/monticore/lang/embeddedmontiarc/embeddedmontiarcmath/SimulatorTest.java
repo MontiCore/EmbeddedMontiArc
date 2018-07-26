@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,9 +32,9 @@ public class SimulatorTest extends AbstractSymtabTest{
     @Test
     public void resolveTest() {
         Scope symtab = createSymTab("src/test/resources");
-        ExpandedComponentInstanceSymbol model = symtab.
-                <ExpandedComponentInstanceSymbol>resolve("simulator.mainController",
-                        ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol model = symtab.
+                <EMAComponentInstanceSymbol>resolve("simulator.mainController",
+                        EMAComponentInstanceSymbol.KIND).orElse(null);
 
         Assert.assertNotNull(model);
     }
