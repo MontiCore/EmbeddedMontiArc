@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.middleware.ros;
 
+import de.monticore.lang.embeddedmontiarc.AbstractTaggingResolverTest;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
@@ -33,8 +34,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-// ToDo: broken with symbol update, fix
-@Ignore
 public class TaggingTest extends AbstractTaggingResolverTest {
 
 

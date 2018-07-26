@@ -21,6 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.tagging.middleware.ros;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.tagging._ast.*;
 import de.monticore.lang.tagging._symboltable.TagSymbolCreator;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -29,6 +30,7 @@ import de.monticore.symboltable.Symbol;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -83,16 +85,31 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                     .map(Optional::get)          // is not available at all, maybe it will be loaded later
                     .collect(Collectors.toList());
 
+            List<Symbol> portInstances = element.getScopeList().stream()
+                    .filter(this::checkScope)
+                    .map(s -> (ASTNameScope) s)
+                    .map(s -> tagging.resolve(Joiners.DOT.join(rootCmp, // resolve down does not try to reload symbol
+                            s.getQualifiedNameString()), EMAPortInstanceSymbol.KIND))
+                    .filter(Optional::isPresent) // if the symbol is not present, does not mean that the symbol
+                    .map(Optional::get)          // is not available at all, maybe it will be loaded later
+                    .collect(Collectors.toList());
+
+            List<Symbol> taggedSymbols = new ArrayList<>(ports);
+            taggedSymbols.addAll(portInstances);
+
             //Empty tags
             tagElements.stream()
                     .filter(t -> !t.getTagValueOpt().isPresent())
                     .forEachOrdered(tag -> {
-                        ports.stream()
+                        taggedSymbols.stream()
                                 .forEachOrdered(s -> {
                                     RosConnectionSymbol tmpSymbol = new RosConnectionSymbol();
                                     tagging.addTag(s, tmpSymbol);
                                     if (s.isKindOf(EMAPortSymbol.KIND)) {
                                         EMAPortSymbol p = (EMAPortSymbol) s;
+                                        p.setMiddlewareSymbol(tmpSymbol);
+                                    }else if(s.isKindOf(EMAPortInstanceSymbol.KIND)){
+                                        EMAPortInstanceSymbol p = (EMAPortInstanceSymbol) s;
                                         p.setMiddlewareSymbol(tmpSymbol);
                                     }
                                 });
@@ -104,12 +121,15 @@ public class RosConnectionSymbolCreator implements TagSymbolCreator {
                     .map(t -> matchRegexPattern(t.getTagValueOpt().get()))
                     .filter(r -> r != null)
                     .forEachOrdered(m ->
-                            ports.stream()
+                            taggedSymbols.stream()
                                     .forEachOrdered(s -> {
                                         RosConnectionSymbol tmpSymbol = new RosConnectionSymbol(m.group(1), m.group(2), m.group(4));
                                         tagging.addTag(s, tmpSymbol);
                                         if (s.isKindOf(EMAPortSymbol.KIND)) {
                                             EMAPortSymbol p = (EMAPortSymbol) s;
+                                            p.setMiddlewareSymbol(tmpSymbol);
+                                        }else if(s.isKindOf(EMAPortInstanceSymbol.KIND)){
+                                            EMAPortInstanceSymbol p = (EMAPortInstanceSymbol) s;
                                             p.setMiddlewareSymbol(tmpSymbol);
                                         }
                                     }));
