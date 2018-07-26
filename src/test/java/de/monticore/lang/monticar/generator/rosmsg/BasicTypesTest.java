@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.Scope;
 import org.junit.Test;
@@ -20,12 +20,12 @@ public class BasicTypesTest extends AbstractSymtabTest {
     @Test
     public void testBasicTypes() throws IOException {
         Scope symtab = createSymTab("src/test/resources/");
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.basicTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.basicTypesComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        PortSymbol inQ = component.getPort("inQ").orElse(null);
-        PortSymbol inZ = component.getPort("inZ").orElse(null);
-        PortSymbol inB = component.getPort("inB").orElse(null);
+        EMAPortSymbol inQ = component.getPortInstance("inQ").orElse(null);
+        EMAPortSymbol inZ = component.getPortInstance("inZ").orElse(null);
+        EMAPortSymbol inB = component.getPortInstance("inB").orElse(null);
 
         assertNotNull(inQ);
         assertNotNull(inZ);
@@ -56,10 +56,10 @@ public class BasicTypesTest extends AbstractSymtabTest {
     @Test
     public void testMatrixTypes() {
         Scope symtab = createSymTab("src/test/resources/");
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.matrixTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.matrixTypesComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        Map<String, RosMsg> portToMsg = component.getPortsList().stream()
+        Map<String, RosMsg> portToMsg = component.getPortInstanceList().stream()
                 .collect(Collectors.toMap(CommonSymbol::getName, p -> GeneratorRosMsg.getRosType("std_msgs", p.getTypeReference())));
 
         assertTrue(portToMsg.get("in1").getName().equals("std_msgs/Float64MultiArray"));
@@ -72,15 +72,15 @@ public class BasicTypesTest extends AbstractSymtabTest {
     public void testBasicStructComp() throws IOException {
 
         Scope symtab = createSymTab("src/test/resources/");
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.basicStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.basicStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
         String packageName = "basic";
         generatorRosMsg.setTarget("target/generated-sources-rosmsg/basic", packageName);
 
-        PortSymbol in1 = component.getPort("in1").orElse(null);
-        PortSymbol out1 = component.getPort("out1").orElse(null);
+        EMAPortSymbol in1 = component.getPortInstance("in1").orElse(null);
+        EMAPortSymbol out1 = component.getPortInstance("out1").orElse(null);
 
         assertNotNull(in1);
         assertNotNull(out1);
@@ -102,14 +102,14 @@ public class BasicTypesTest extends AbstractSymtabTest {
     public void testNestedStructComp() throws IOException {
 
         Scope symtab = createSymTab("src/test/resources/");
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.nestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.nestedStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
         String packageName = "nested";
         generatorRosMsg.setTarget("target/generated-sources-rosmsg/nested", packageName);
 
-        PortSymbol inNested = component.getPort("inNested").orElse(null);
+        EMAPortSymbol inNested = component.getPortInstance("inNested").orElse(null);
 
         assertNotNull(inNested);
 
@@ -127,14 +127,14 @@ public class BasicTypesTest extends AbstractSymtabTest {
     public void testMultiNestedStructComp() throws IOException {
 
         Scope symtab = createSymTab("src/test/resources/");
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.multiNestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.multiNestedStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         GeneratorRosMsg generatorRosMsg = new GeneratorRosMsg();
         String packageName = "multinested";
         generatorRosMsg.setTarget("target/generated-sources-rosmsg/multinested", packageName);
 
-        PortSymbol inMultiNested = component.getPort("inMultiNested").orElse(null);
+        EMAPortSymbol inMultiNested = component.getPortInstance("inMultiNested").orElse(null);
 
         assertNotNull(inMultiNested);
 
@@ -147,12 +147,12 @@ public class BasicTypesTest extends AbstractSymtabTest {
     @Test
     public void testGenericCompInstance() {
         Scope symtab = createSymTab("src/test/resources/");
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.genericCompInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.genericCompInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        RosMsg typeB = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instB").get().getPort("in1").get().getTypeReference());
-        RosMsg typeQ = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instQ").get().getPort("in1").get().getTypeReference());
-        RosMsg typeZ = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instZ").get().getPort("in1").get().getTypeReference());
+        RosMsg typeB = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instB").get().getPortInstance("in1").get().getTypeReference());
+        RosMsg typeQ = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instQ").get().getPortInstance("in1").get().getTypeReference());
+        RosMsg typeZ = GeneratorRosMsg.getRosType("struct_msgs", component.getSubComponent("instZ").get().getPortInstance("in1").get().getTypeReference());
 
         assertTrue(typeB.getName().equals("std_msgs/Bool"));
         assertTrue(typeQ.getName().equals("std_msgs/Float64"));
