@@ -338,7 +338,7 @@ public class StreamTestMojo extends AbstractMojo {
         String execfilename;
         if (SystemUtils.IS_OS_WINDOWS) {
             //processBuilder = new ProcessBuilder("../build.bat");
-            processBuilder = new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "../build.bat").toAbsolutePath().toString());
+            processBuilder = new ProcessBuilder("cmd", "/C", Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "../build.bat").toAbsolutePath().toString());
             execfilename = EXEC_FILENAME_WINDOWS;
         }else{
             processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
@@ -404,9 +404,9 @@ public class StreamTestMojo extends AbstractMojo {
         // Todo write test
         ProcessBuilder processBuilder;
         if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder=new ProcessBuilder("./main.exe");
+            processBuilder=new ProcessBuilder(EXEC_FILENAME_WINDOWS);
         }else{
-            processBuilder=new ProcessBuilder("./main.exec");
+            processBuilder=new ProcessBuilder("./"+EXEC_FILENAME_UNIX);
         }
         processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
         try{

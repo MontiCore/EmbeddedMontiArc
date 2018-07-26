@@ -110,7 +110,7 @@ public class TestStreamTestMojo {
     public void Test_BuildFiles(){
         String path = "./target/tmp/Test_BuildFiles";
         Map<String,String> checksums = new HashMap<>();
-        checksums.put(path+"/1/cpp/build.bat", "4387BEC40756E17284DC93E7E299CE236BA0DFC01FF8F5FB34B5234DF962B06C");
+        checksums.put(path+"/1/cpp/build.bat", "9BAE82882D1AAD1F5F4A0B3EDA80966BCE2A42CE986DCA102E37498273C50C0E");
         checksums.put(path+"/1/cpp/build.sh", "2D3F9B8908B3F69BF9DB635993FCBF5572C813789A2D836FCAC5A09E8CB8FC7C");
 
 

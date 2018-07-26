@@ -3,7 +3,7 @@
 <#list cppIncludes>
 set TMP_CPLUS_INCLUDE_PATH=%CPLUS_INCLUDE_PATH%
     <#items as item>
-CPLUS_INCLUDE_PATH=${item};%CPLUS_INCLUDE_PATH%
+set CPLUS_INCLUDE_PATH=${item};%CPLUS_INCLUDE_PATH%
     </#items>
 </#list>
 
