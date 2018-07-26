@@ -161,19 +161,8 @@ public class TestStreamTestMojo {
 
     @Test
     public void Test_execution_valid() {
-
         //valid
-        StreamTestMojo stm = getNewStreamTestMojo("./src/test/resources/emam/execution/valid", "./target/tmp/Test_execution/valid");
-
-        try {
-            stm.execute();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        } catch (MojoFailureException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+        ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/Test_execution/valid");
     }
 
     @Test
@@ -190,6 +179,26 @@ public class TestStreamTestMojo {
             fail(e.getMessage());
         } catch (MojoFailureException e) {
             //should visit this case
+        }
+    }
+
+    @Test
+    public void Test_execution_many() {
+        ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
+    }
+
+    protected void ValidInner(String path, String tmp){
+        //valid
+        StreamTestMojo stm = getNewStreamTestMojo(path, tmp);
+
+        try {
+            stm.execute();
+        } catch (MojoExecutionException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        } catch (MojoFailureException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
         }
     }
 
