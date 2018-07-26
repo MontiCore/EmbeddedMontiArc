@@ -1,5 +1,7 @@
 package de.monitcore.lang.montiarc.utilities;
 
+import de.monitcore.lang.montiarc.utilities.tools.AllTemplates;
+import de.monitcore.lang.montiarc.utilities.tools.NoLog;
 import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.antlr4.MCConcreteParser;
@@ -26,10 +28,11 @@ import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsS
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
-import jdk.nashorn.internal.objects.annotations.Property;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -44,8 +47,35 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+
+
 @Mojo(name = "emam-streamtest")
 public class StreamTestMojo extends AbstractMojo {
+
+    private static final String EXEC_FILENAME_UNIX = "main.exec";
+    private static final String EXEC_FILENAME_WINDOWS= "main.exe";
+
+
+    private static final Template BUILD_UNIX;
+    private static final Template BUILD_WINDOWS;
+
+
+    static {
+        Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
+        conf.setDefaultEncoding("UTF-8");
+        conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
+        conf.setLogTemplateExceptions(false);
+        conf.setClassForTemplateLoading(AllTemplates.class, "/template/build/");
+        try {
+            BUILD_UNIX = conf.getTemplate("linux_build.ftl");
+            BUILD_WINDOWS = conf.getTemplate("windows_build.ftl");
+        } catch (IOException e) {
+            String msg = "could not load cmake templates";
+            Log.error(msg, e);
+            throw new RuntimeException(msg, e);
+        }
+    }
+
 
     //<editor-fold desc="Parameter Definitions">
 
@@ -76,13 +106,18 @@ public class StreamTestMojo extends AbstractMojo {
         this.gpp = gpp;
     }
 
-    @Parameter(property = "gppPathToArmadilloH", defaultValue = "")
-    private String gppPathToArmadilloH;
-    public String getGppPathToArmadilloH() {
-        return gppPathToArmadilloH;
+    @Parameter
+    private String[] cppInludePaths;
+    public String[] getCppInludePaths(){
+        return cppInludePaths;
     }
-    public void setGppPathToArmadilloH(String gppPathToArmadilloH) {
-        this.gppPathToArmadilloH = gppPathToArmadilloH;
+    public void setCppInludePaths(String[] paths){
+        cppInludePaths = paths;
+    }
+    public void addCppIncludePaths(String newItem){
+        int n = cppInludePaths.length;
+        cppInludePaths = Arrays.copyOf(cppInludePaths, n + 1);
+        cppInludePaths[n] = newItem;
     }
 
     @Parameter(property = "pathTmpOut", defaultValue = "./target/tmp")
@@ -113,15 +148,17 @@ public class StreamTestMojo extends AbstractMojo {
     //</editor-fold>
 
 
-    Map<String, MCConcreteParser> parser = new HashMap<>();
+    //<editor-fold desc="Parser, Scope and Taggingresolver">
+    protected  Map<String, MCConcreteParser> parser = new HashMap<>();
     public void createParser(){
-//        EmbeddedMontiArcMathParser parserEMAM = new EmbeddedMontiArcMathParser();
+        //EmbeddedMontiArcMathParser parserEMAM = new EmbeddedMontiArcMathParser();
+
         this.parser.put("emam", new EmbeddedMontiArcMathParser());
         this.parser.put("stream", new StreamUnitsParser());
     }
 
-    GlobalScope mainScope = null;
-    TaggingResolver tagging = null;
+    protected GlobalScope mainScope = null;
+    protected TaggingResolver tagging = null;
     public void createScopeAndTaggingResolver(){
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
@@ -130,13 +167,20 @@ public class StreamTestMojo extends AbstractMojo {
         final ModelPath mp_main = new ModelPath();
 
         mp_main.addEntry(Paths.get(this.pathMain));
-        mp_main.addEntry(Paths.get(this.pathTest));
+        if(!this.pathMain.equals(this.pathTest)) {
+            mp_main.addEntry(Paths.get(this.pathTest));
+        }
+
         this.mainScope = new GlobalScope(mp_main, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(mainScope);
 
         ArrayList<String> col = new ArrayList<String>();
+
         col.add(this.pathMain);
-        col.add(this.pathTest);
+        if(!this.pathMain.equals(this.pathTest)) {
+            col.add(this.pathTest);
+        }
+
         this.tagging = new TaggingResolver(mainScope, col);
         TagMinMaxTagSchema.registerTagTypes(tagging);
         TagTableTagSchema.registerTagTypes(tagging);
@@ -147,13 +191,25 @@ public class StreamTestMojo extends AbstractMojo {
         TagDelayTagSchema.registerTagTypes(tagging);
     }
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void init(){
         Log.enableFailQuick(false);
-
         getLog().debug("Create Parsers");
         this.createParser();
         this.createScopeAndTaggingResolver();
+
+        NoLog.init();
+    }
+
+    //</editor-fold>
+
+
+    protected Set<String> AllEmamComponentNames = null;
+    protected Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> AllAvailableStreamTests = null;
+    protected Set<ComponentSymbol>  AllTestComponentSymbols = null;
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+
+        this.init();
 
         getLog().debug("Cocos test of"+this.pathMain);
         Map<String, File> mainFiles = SearchFiles.searchFilesMap(this.pathMain, "emam", "stream");
@@ -171,6 +227,220 @@ public class StreamTestMojo extends AbstractMojo {
             throw new MojoFailureException("Error in file(s): "+String.join(", ", errorFiles));
         }
 
+        this.setupTmpFolder();
+        this.createBuildFiles();
+        this.searchTestComponentSymbols();
+
+        this.genCppForAllTests();
+        this.compileCppForAllTests();
+        this.runExecTest();
+
+        /*for (String componentName: AllEmamComponentNames) {
+            ComponentSymbol cs = getTestComponentSymbol(componentName);
+
+            if(cs == null){
+                getLog().warn("No Streamtest found for "+componentName);
+
+            }else{
+
+                getLog().debug("Streamtest found for"+componentName+" it is "+cs.get().getFullName());
+                if(this.execute_GenCppTest(cs.get())){
+                    if(this.execute_CompileCppTest(cs.get()))
+                    {
+                        if(this.execute_RunExecTest(cs.get()))
+                        {
+                            getLog().info("Tests for "+cs.get().getFullName()+" success");
+                        }
+                    }
+                }
+            }
+
+        }*/
+    }
+
+    public void searchTestComponentSymbols(){
+        AllTestComponentSymbols = new HashSet<>();
+        for (String componentName: AllEmamComponentNames) {
+            ComponentSymbol cs = getTestComponentSymbol(componentName);
+
+            if (cs == null) {
+                getLog().warn("No Streamtest found for " + componentName);
+
+            } else {
+                AllTestComponentSymbols.add(cs);
+            }
+        }
+
+    }
+
+    public ComponentSymbol getTestComponentSymbol(String componentName){
+        Optional<ComponentSymbol> cs = FindComponentSymbolByName(componentName, AllAvailableStreamTests.keySet());
+        if(!cs.isPresent()){
+            cs = FindComponentSymbolByName(componentName+this.wrapperTestExtension, AllAvailableStreamTests.keySet());
+        }
+        if(!cs.isPresent()){
+            return null;
+        }
+        return cs.get();
+    }
+
+    public void genCppForAllTests() throws MojoExecutionException {
+        for (ComponentSymbol cs :AllTestComponentSymbols) {
+            genCppTestForComponent(cs);
+        }
+    }
+
+    public List<File> genCppTestForComponent(ComponentSymbol cs) throws MojoExecutionException {
+// Todo write test
+        String testName = cs.getFullName();
+        int idx = testName.lastIndexOf(".");
+        testName = testName.substring(0,idx+1) + testName.substring(idx+1,idx+2).toLowerCase() + testName.substring(idx+2);
+
+        ExpandedComponentInstanceSymbol ecis = mainScope.<ExpandedComponentInstanceSymbol>resolve(testName, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+
+        if(ecis == null){
+            getLog().error("Error resolving "+cs.getFullName());
+            throw new MojoExecutionException("Error resolving "+cs.getFullName());
+
+        }
+
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
+
+
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString());
+        generatorCPP.setGenerateMainClass(true);
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setCheckModelDir(true);
+        generatorCPP.setUseAlgebraicOptimizations(false);
+        generatorCPP.setUseThreadingOptimization(false);
+        List<File> files = null;
+        try {
+            files = generatorCPP.generateFiles(tagging, ecis, mainScope);
+        }catch (IOException ioex){
+            getLog().error("IOException generating cpp files for "+cs.getFullName());
+            throw new MojoExecutionException("IOException generating cpp files for "+cs.getFullName());
+        }
+
+        return files;
+    }
+
+    public void compileCppForAllTests() throws MojoExecutionException {
+        for (ComponentSymbol cs :AllTestComponentSymbols) {
+            compileCppTestForComponent(cs);
+        }
+    }
+
+    private boolean compileCppTestForComponent(ComponentSymbol componentSymbol) throws MojoExecutionException {
+        // Todo write test
+        ProcessBuilder processBuilder;
+        String execfilename;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            processBuilder = new ProcessBuilder("../build.bat");
+            execfilename = EXEC_FILENAME_WINDOWS;
+        }else{
+            processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
+            execfilename = EXEC_FILENAME_UNIX;
+        }
+        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
+        try {
+            getLog().debug("Compiling "+componentSymbol.getFullName());
+            Process process = processBuilder.start();
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String line;
+            List<String> allLines = new ArrayList<>();
+            while ((line = in.readLine()) != null) {
+                allLines.add(line);
+                //getLog().debug(line);
+            }
+            process.waitFor();
+
+            //check log file
+            /*File logFile = Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "build.log").toFile();
+
+            if (logFile.length() > 0) {
+                // not empty
+                byte[] encoded = Files.readAllBytes(logFile.toPath());
+                String log = new String(encoded, Charset.defaultCharset());
+                getLog().error("Error while compiling:");
+                getLog().error(log);
+
+                throw new MojoExecutionException("Error while compiling "+componentSymbol.getFullName()+": "+log);
+
+            }*/
+            if(!Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), execfilename).toFile().exists()){
+                for(String l : allLines){
+                    getLog().error("g++ out: "+l);
+                }
+                throw new MojoFailureException("Can't compile "+componentSymbol.getFullName());
+            }
+
+            return true;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new MojoExecutionException(ex.getMessage());
+
+        }
+
+
+    }
+
+    public void runExecTest() throws MojoExecutionException, MojoFailureException {
+        boolean allTestPassed = true;
+        for (ComponentSymbol cs :AllTestComponentSymbols) {
+            if(!runExecTestForComponent(cs)){
+                getLog().error("Tests for "+cs.getFullName()+" failed");
+                allTestPassed = false;
+            }
+        }
+        if(!allTestPassed){
+            throw new MojoFailureException("Not all test passed");
+        }
+    }
+
+    private boolean runExecTestForComponent(ComponentSymbol componentSymbol) throws MojoExecutionException {
+        // Todo write test
+        ProcessBuilder processBuilder;
+        if (SystemUtils.IS_OS_WINDOWS) {
+            processBuilder=new ProcessBuilder("./main.exe");
+        }else{
+            processBuilder=new ProcessBuilder("./main.exec");
+        }
+        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
+        try{
+            getLog().debug("Running main.exec  test for "+componentSymbol.getFullName());
+
+            Process process = processBuilder.start();
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            List<String> allLines = new ArrayList<>();
+            while ((line = in.readLine()) != null) {
+                allLines.add(line);
+                //getLog().debug(line);
+            }
+            process.waitFor();
+
+
+            if(allLines.size() >= 2 && allLines.get(allLines.size()-2).contains("All tests passed")){
+                return true;
+            }
+
+
+            for(String l : allLines){
+                getLog().error(l);
+            }
+
+        }catch (Exception ex){
+            //ex.printStackTrace();
+            getLog().error(ex.getMessage());
+            throw new MojoExecutionException(ex.getMessage());
+        }
+        return false;
+    }
+
+    //tested
+    public void setupTmpFolder() throws MojoExecutionException {
         getLog().debug("Setting up tmp folders");
 
         File mainDir = new File(this.pathMain);
@@ -190,146 +460,59 @@ public class StreamTestMojo extends AbstractMojo {
 
         getLog().debug("Searching components and tests");
         ComponentScanner componentScanner = new ComponentScanner(Paths.get(this.pathMain), mainScope, "emam");
-        Set<String> emamComponentNames = componentScanner.scan();
+        AllEmamComponentNames = componentScanner.scan();
 
         StreamScanner scanner = new StreamScanner(Paths.get(this.pathTest), mainScope);
-        Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreamTests = new HashMap<>(scanner.scan());
+        AllAvailableStreamTests = new HashMap<>(scanner.scan());
+    }
 
+    //tested
+    public void createBuildFiles() throws MojoExecutionException{
         getLog().debug("Creating build files");
-        this.createBuildFiles();
-
-        for (String componentName: emamComponentNames) {
-            Optional<ComponentSymbol> cs = FindComponentSymbolByName(componentName, availableStreamTests.keySet());
-            if(!cs.isPresent()){
-                cs = FindComponentSymbolByName(componentName+this.wrapperTestExtension, availableStreamTests.keySet());
-            }
-
-            if(!cs.isPresent()){
-                getLog().warn("No Streamtest found for "+componentName);
-
-            }else{
-
-                getLog().debug("Streamtest found for"+componentName+" it is "+cs);
-                if(this.execute_GenCppTest(cs.get())){
-                    if(this.execute_CompileCppTest(cs.get()))
-                    {
-                        if(this.execute_RunExecTest(cs.get()))
-                        {
-                            getLog().info("Tests for "+cs.get().getFullName()+" success");
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
-    private boolean execute_CompileCppTest(ComponentSymbol componentSymbol) {
-        ProcessBuilder processBuilder;
-        if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder = null;
-        }else{
-            processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
-            processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
-
-        }
-
         try {
-            getLog().debug("Compiling "+componentSymbol.getFullName());
-            Process process = processBuilder.start();
-            process.waitFor();
-
-            //check log file
-            File logFile = Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "build.log").toFile();
-
-            if (logFile.length() > 0) {
-                // not empty
-                byte[] encoded = Files.readAllBytes(logFile.toPath());
-                String log = new String(encoded, Charset.defaultCharset());
-                getLog().error("Error while compiling:");
-                getLog().error(log);
-                return false;
-            }
-
-            return true;
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        return false;
-    }
-
-    private boolean execute_RunExecTest(ComponentSymbol componentSymbol){
-        ProcessBuilder processBuilder;
-        if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder = null;
-        }else{
-            processBuilder=new ProcessBuilder("./main.exec");
-            processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
-
-        }
-
-        try{
-            getLog().debug("Running main.exec  test for "+componentSymbol.getFullName());
-
-            Process process = processBuilder.start();
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            List<String> allLines = new ArrayList<>();
-            while ((line = in.readLine()) != null) {
-                allLines.add(line);
-                getLog().debug(line);
-            }
-            process.waitFor();
+            Map root = new HashMap();
+            root.put("user", "Big Joe");
+            root.put("cppIncludes", cppInludePaths);
+            root.put("gppCommand", this.gpp);
 
 
-            if(allLines.size() >= 2 && allLines.get(allLines.size()-2).startsWith("All tests passed")){
-                return true;
-            }
-
-        }catch (Exception ex){
-            ex.printStackTrace();
-            getLog().error(ex.getMessage());
-
-        }
-        return false;
-    }
-
-    public void createBuildFiles(){
-
-        try {
+            // BUILD.sh
+            root.put("execName", EXEC_FILENAME_UNIX);
             File f = Paths.get(this.getPathTmpOutCPP(), "build.sh").toFile();
             f.getParentFile().mkdirs();
-            PrintWriter out = new PrintWriter(f);
-            out.println("#!/bin/sh");
-            out.println();
-            //out.println(String.format("%s -std=c++11 -DCATCH_CONFIG_MAIN=1 -I\"%s\" \"test/tests_main.cpp\" -o main.exec -DARMA_DONT_USE_WRAPPER", this.gcccommand, this.gccpathtoarmadilloh));
-            out.print(this.gpp);
-            out.print(" -std=c++11 -DCATCH_CONFIG_MAIN=1 -DARMA_DONT_USE_WRAPPER -I\"");
-            out.print(this.gppPathToArmadilloH);
-            out.print("\" \"test/tests_main.cpp\" -o main.exec > build.log");
-            out.println();out.println();
-            out.flush();
-            out.close();
+            FileWriter fw = new FileWriter(f);
+            fw.write(AllTemplates.generate(BUILD_UNIX, root));
+            fw.flush();
+            fw.close();
+
+
+            // BUILD.bat
+            root.replace("execName", EXEC_FILENAME_WINDOWS);
+            f = Paths.get(this.getPathTmpOutCPP(), "build.bat").toFile();
+            f.getParentFile().mkdirs();
+            fw = new FileWriter(f);
+            fw.write(AllTemplates.generate(BUILD_WINDOWS, root));
+            fw.flush();
+            fw.close();
         }catch (Exception ex){
-            getLog().error("Can't create build file for linux: "+ex.getMessage());
+            throw new MojoExecutionException("Can't create build file for linux: "+ex.getMessage());
+            //getLog().error("Can't create build file for linux: "+ex.getMessage());
         }
-
-
-        // TODO : build bat for windows
-        getLog().error("No implementation for windows right now");
 
     }
 
-    protected List<String> execute_ParserTests(Map<String, File> files){
+    //tested
+    public List<String> execute_ParserTests(Map<String, File> files) throws MojoExecutionException {
 
         List<String> errors = new ArrayList<>();
         for (Map.Entry<String,File> f:files.entrySet()) {
             String ending = f.getKey().substring(f.getKey().lastIndexOf(".")+1);
             if(!parser.keySet().contains(ending)){
-                errors.add(f.getKey()+" (error: no parser for file)");
+                throw new MojoExecutionException("No parser for ."+ending+" files");
+                //errors.add(f.getKey()+" (error: no parser for file)");
             }
             MCConcreteParser concreteParser = parser.get(ending);
+
             getLog().debug("Parser Test "+f.getKey());
 
             Optional<? extends ASTNode> astemamCompilationUnit = Optional.empty();
@@ -342,7 +525,7 @@ public class StreamTestMojo extends AbstractMojo {
                     if(ending.equalsIgnoreCase("emam")) {
                         ASTEMAMCompilationUnit ast = (ASTEMAMCompilationUnit) astemamCompilationUnit.get();
 
-                        String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackage());
+                        String PackageName = Joiners.DOT.join(ast.getEMACompilationUnit().getPackageList());
                         String modelName = PackageName + "." + f.getValue().getName().replace(".emam", "");
 
                         ComponentSymbol comp = mainScope.<ComponentSymbol>resolve(modelName, ComponentSymbol.KIND).orElse(null);
@@ -355,7 +538,7 @@ public class StreamTestMojo extends AbstractMojo {
                     }else if(ending.equalsIgnoreCase("stream")){
 
                         ASTStreamUnitsCompilationUnit ast = (ASTStreamUnitsCompilationUnit)astemamCompilationUnit.get();
-                        String PackageName = Joiners.DOT.join(ast.getPackage());
+                        String PackageName = Joiners.DOT.join(ast.getPackageList());
                         String modelName = PackageName + "." + f.getValue().getName().replace(".stream", "");
 
                         ComponentStreamUnitsSymbol comp = mainScope.<ComponentStreamUnitsSymbol>resolve(modelName, ComponentStreamUnitsSymbol.KIND).orElse(null);
@@ -369,45 +552,11 @@ public class StreamTestMojo extends AbstractMojo {
                 }
 
             } catch (Exception e) {
-//                e.printStackTrace();
+                //e.printStackTrace();
                 errors.add(f.getKey()+" (error: Exception while parsing. "+e.getStackTrace().toString()+")");
             }
         }
         return errors;
-    }
-
-    protected boolean execute_GenCppTest(ComponentSymbol cs){
-
-        String testName = cs.getFullName();
-        int idx = testName.lastIndexOf(".");
-        testName = testName.substring(0,idx+1) + testName.substring(idx+1,idx+2).toLowerCase() + testName.substring(idx+2);
-
-        ExpandedComponentInstanceSymbol ecis = mainScope.<ExpandedComponentInstanceSymbol>resolve(testName, ExpandedComponentInstanceSymbol.KIND).orElse(null);
-
-        if(ecis == null){
-            getLog().error("Error resolving "+cs.getFullName());
-            return false;
-        }
-
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
-
-
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString());
-        generatorCPP.setGenerateMainClass(true);
-        generatorCPP.setGenerateTests(true);
-        generatorCPP.setCheckModelDir(true);
-        generatorCPP.setUseAlgebraicOptimizations(false);
-        generatorCPP.setUseThreadingOptimization(false);
-        try {
-            List<File> files = generatorCPP.generateFiles(tagging, ecis, mainScope);
-        }catch (IOException ioex){
-            getLog().error("IOException generating cpp files for "+cs.getFullName());
-            return false;
-        }
-
-        return true;
     }
 
     protected Optional<ComponentSymbol> FindComponentSymbolByName(String name, Set<ComponentSymbol> componentSymbols){

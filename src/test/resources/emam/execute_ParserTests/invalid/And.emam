@@ -1,15 +1,15 @@
-package testA;
+package invalid;
 
 component And<N1 n=2> {
 	port
 		in B in1[n],
-		out B out1;
+		out  out1;
 
-	implementation Math{
+	implementation Math
 	    B val = 1;
 	    for i = 1:n
 	        val = val && in1(i);
 	    end
         out1 = val;
-}
+
 }
