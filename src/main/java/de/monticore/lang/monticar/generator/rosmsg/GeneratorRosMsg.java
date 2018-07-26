@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.rosmsg;
 
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
-import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
 import de.monticore.lang.monticar.struct._symboltable.StructFieldDefinitionSymbol;
 import de.monticore.lang.monticar.struct._symboltable.StructSymbol;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
