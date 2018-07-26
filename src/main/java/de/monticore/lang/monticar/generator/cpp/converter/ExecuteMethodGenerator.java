@@ -111,7 +111,7 @@ public class ExecuteMethodGenerator extends BaseExecuteMethodGeneratorHandler {
      */
     public static String getCorrectAccessString(String nameOfMathValue, MathMatrixAccessOperatorSymbol mathMatrixAccessOperatorSymbol, List<String> includeStrings) {
         String result = "";
-        if (ComponentConverterMethodGeneration.currentComponentSymbol.getPort(nameOfMathValue + "[1]").isPresent()) {
+        if (ComponentConverterMethodGeneration.currentComponentSymbol.getPortInstance(nameOfMathValue + "[1]").isPresent()) {
             result += ExecuteMethodGeneratorMatrixExpressionHandler.generateExecuteCode(mathMatrixAccessOperatorSymbol, includeStrings, true).replaceAll("\\(", "\\[").replaceAll("\\)", "\\]") + " ";
         } else {
             result += ExecuteMethodGeneratorMatrixExpressionHandler.generateExecuteCode(mathMatrixAccessOperatorSymbol, includeStrings, true) + " ";

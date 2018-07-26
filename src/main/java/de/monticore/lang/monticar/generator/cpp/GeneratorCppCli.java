@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.resolver.Resolver;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -146,7 +146,7 @@ public final class GeneratorCppCli {
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
         TaggingResolver symTab = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath.toString());
         Resolver resolver = new Resolver(symTab);
-        ExpandedComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
+        EMAComponentInstanceSymbol componentSymbol = resolveSymbol(resolver, rootModelName);
 
         GeneratorCPP g = new GeneratorCPP();
         g.setUseAlgebraicOptimizations(false);
@@ -176,8 +176,8 @@ public final class GeneratorCppCli {
 
     }
 
-    private static ExpandedComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
-        ExpandedComponentInstanceSymbol componentSymbol = resolver.getExpandedComponentInstanceSymbol(rootModelName).orElse(null);
+    private static EMAComponentInstanceSymbol resolveSymbol(Resolver resolver, String rootModelName) {
+        EMAComponentInstanceSymbol componentSymbol = resolver.getEMAComponentInstanceSymbol(rootModelName).orElse(null);
         if (componentSymbol == null) {
             Log.error("could not resolve component " + rootModelName);
             //System.exit(1);

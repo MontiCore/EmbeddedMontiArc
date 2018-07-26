@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.cmake;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -36,7 +36,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeGenerationForBasicConstantAssignment() throws IOException {
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicConstantAssignment", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicConstantAssignment");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
@@ -46,7 +46,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeGenerationForModel() throws IOException {
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.model", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("testing.model", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/testing/Model");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);

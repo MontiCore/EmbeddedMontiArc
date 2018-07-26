@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
@@ -79,7 +79,7 @@ public class GeneratorCPP implements Generator {
         //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
-    public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
 
         return generateString(taggingResolver, componentInstanceSymbol, mathSymbol);
@@ -96,7 +96,7 @@ public class GeneratorCPP implements Generator {
     }
 
     @Override
-    public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
+    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
         LanguageUnitCPP languageUnitCPP = new LanguageUnitCPP();
         languageUnitCPP.setGeneratorCPP(this);
         languageUnitCPP.addSymbolToConvert(componentSymbol);
@@ -122,7 +122,7 @@ public class GeneratorCPP implements Generator {
     public static List<FileContent> currentFileContentList = null;
 
     @Override
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         List<FileContent> fileContents = new ArrayList<>();
         if (componentInstanceSymbol.getFullName().equals("simulator.mainController")) {
             setGenerateSimulatorInterface(true);
@@ -132,7 +132,7 @@ public class GeneratorCPP implements Generator {
         currentFileContentList = fileContents;
         fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
         String lastNameWithoutArrayPart = "";
-        for (ExpandedComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
+        for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
             //fileContents.add(new FileContent(generateString(instanceSymbol, symtab), instanceSymbol));
             int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
             boolean generateComponentInstance = true;
@@ -162,7 +162,7 @@ public class GeneratorCPP implements Generator {
     }
 
     //TODO add incremental generation based on described concept
-    public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol,
+    public List<File> generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol,
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
@@ -185,7 +185,7 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    protected List<File> generateCMakeFiles(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    protected List<File> generateCMakeFiles(EMAComponentInstanceSymbol componentInstanceSymbol) {
         List<File> files = new ArrayList<>();
         cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
         List<FileContent> contents = cMakeConfig.generateCMakeFiles();
@@ -216,7 +216,7 @@ public class GeneratorCPP implements Generator {
         return fileContents;
     }
 
-    public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol,
+    public List<File> generateFiles(EMAComponentInstanceSymbol componentSymbol,
                                     TaggingResolver taggingResolver) throws IOException {
         return generateFiles(taggingResolver, componentSymbol, taggingResolver);
     }
@@ -247,7 +247,7 @@ public class GeneratorCPP implements Generator {
         return f;
     }
 
-    public FileContent getMainClassFileContent(ExpandedComponentInstanceSymbol instanceSymbol, FileContent fileContent) {
+    public FileContent getMainClassFileContent(EMAComponentInstanceSymbol instanceSymbol, FileContent fileContent) {
         FileContent newFileContent = new FileContent();
 
         newFileContent.setFileName("main.cpp");
@@ -367,18 +367,18 @@ public class GeneratorCPP implements Generator {
         return tg.generateTypes(typeSymbols);
     }
 
-    private static List<FileContent> getAutopilotAdapterFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+    private static List<FileContent> getAutopilotAdapterFiles(EMAComponentInstanceSymbol componentSymbol) {
         List<FileContent> result = new ArrayList<>();
         result.add(FileUtil.getResourceAsFile("/template/autopilotadapter/AutopilotAdapter.h", "AutopilotAdapter.h"));
         result.add(generateAutopilotAdapter(componentSymbol));
         return result;
     }
 
-    private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
+    private static FileContent generateAutopilotAdapter(EMAComponentInstanceSymbol componentSymbol) {
         return generateWrapper(componentSymbol, "AutopilotAdapter.cpp");
     }
 
-    private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+    private static List<FileContent> getServerWrapperFiles(EMAComponentInstanceSymbol componentSymbol) {
         List<FileContent> result = new ArrayList<>();
         String[] filesToCopy = new String[]{
                 "Makefile",
@@ -392,11 +392,11 @@ public class GeneratorCPP implements Generator {
         return result;
     }
 
-    private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
+    private static FileContent generateServerWrapper(EMAComponentInstanceSymbol componentSymbol) {
         return generateWrapper(componentSymbol, "server.cc");
     }
 
-    private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
+    private static FileContent generateWrapper(EMAComponentInstanceSymbol componentSymbol, String name) {
         ServerWrapperViewModel vm = new ServerWrapperViewModel();
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateServerWrapper(vm);

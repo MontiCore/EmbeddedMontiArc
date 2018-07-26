@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathValueExpressionSymbol;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Sascha Schneiders
  */
 public class MathInformationFilter {
-    public static void filterStaticInformation(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static void filterStaticInformation(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         if (mathStatementsSymbol != null) {
             for (MathExpressionSymbol expressionSymbol : mathStatementsSymbol.getMathExpressionSymbols()) {
                 if (expressionSymbol.isAssignmentDeclarationExpression()) {

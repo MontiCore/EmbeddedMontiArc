@@ -2,9 +2,9 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
@@ -32,7 +32,7 @@ public final class TestsGeneratorCPP {
 
     private final GeneratorCPP generator;
     private List<BluePrintCPP> bluePrints;
-    public static Map<ComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
+    public static Map<EMAComponentSymbol, Set<ComponentStreamUnitsSymbol>> availableStreams;
     private Set<String> testedComponents;
     private List<FileContent> files;
     private TestsMainEntryViewModel viewModelForMain;
@@ -70,7 +70,7 @@ public final class TestsGeneratorCPP {
         viewModelForMain = new TestsMainEntryViewModel();
         viewModelForMain.setIncludes(new ArrayList<>());
         for (BluePrintCPP b : bluePrints) {
-            ExpandedComponentInstanceSymbol s = b.getOriginalSymbol();
+            EMAComponentInstanceSymbol s = b.getOriginalSymbol();
             if (s != null) {
                 processBluePrint(b, s);
             } else {
@@ -103,7 +103,7 @@ public final class TestsGeneratorCPP {
 
     private String getExistingComponentStreamNames() {
         String result = "";
-        for (ComponentSymbol k : availableStreams.keySet()) {
+        for (EMAComponentSymbol k : availableStreams.keySet()) {
             result += "Streams for component " + k.getFullName() + ":\n";
             Iterator<ComponentStreamUnitsSymbol> iter = availableStreams.get(k).iterator();
             while (iter.hasNext()) {
@@ -117,7 +117,7 @@ public final class TestsGeneratorCPP {
 
     private String getComponentNamesThatHaveTests() {
         String result = "";
-        for (ComponentSymbol k : availableStreams.keySet()) {
+        for (EMAComponentSymbol k : availableStreams.keySet()) {
             result += getSmallStartingName(k.getFullName()) + "\n";
         }
         return result;
@@ -152,14 +152,14 @@ public final class TestsGeneratorCPP {
         return result;
     }
 
-    private void processBluePrint(BluePrintCPP b, ExpandedComponentInstanceSymbol s) {
-        ComponentSymbol cs = s.getComponentType().getReferencedSymbol();
+    private void processBluePrint(BluePrintCPP b, EMAComponentInstanceSymbol s) {
+        EMAComponentSymbol cs = s.getComponentType().getReferencedSymbol();
         if (testedComponents.add(cs.getFullName())) {
             processBluePrint(b, cs);
         }
     }
 
-    private void processBluePrint(BluePrintCPP b, ComponentSymbol cs) {
+    private void processBluePrint(BluePrintCPP b, EMAComponentSymbol cs) {
         Set<ComponentStreamUnitsSymbol> streamsForComponent = availableStreams.get(cs);
         if (streamsForComponent == null || streamsForComponent.isEmpty()) {
             return;
@@ -172,7 +172,7 @@ public final class TestsGeneratorCPP {
 
     }
 
-    private static ComponentStreamTestViewModel getStreamViewModel(BluePrintCPP b, ComponentSymbol cs, Set<ComponentStreamUnitsSymbol> streamsForComponent) {
+    private static ComponentStreamTestViewModel getStreamViewModel(BluePrintCPP b, EMAComponentSymbol cs, Set<ComponentStreamUnitsSymbol> streamsForComponent) {
         ComponentStreamTestViewModel viewModel = new ComponentStreamTestViewModel();
         viewModel.setComponentName(b.getName());
         viewModel.setFileNameWithoutExtension(b.getName() + "_test");
@@ -186,15 +186,15 @@ public final class TestsGeneratorCPP {
         return viewModel;
     }
 
-    private static List<ComponentCheckViewModel> getComponentPortChecks(ComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
-        Map<PortSymbol, ASTStream> port2NamedStream = getPort2NamedStream(cs, stream);
+    private static List<ComponentCheckViewModel> getComponentPortChecks(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
+        Map<EMAPortSymbol, ASTStream> port2NamedStream = getPort2NamedStream(cs, stream);
         int streamLength = getStreamLengths(port2NamedStream, stream);
         List<ComponentCheckViewModel> result = new ArrayList<>();
         for (int i = 0; i < streamLength; i++) {
             ComponentCheckViewModel vm = new ComponentCheckViewModel();
             vm.setInputPortName2Value(new HashMap<>());
             vm.setOutputPortName2Check(new HashMap<>());
-            for (Map.Entry<PortSymbol, ASTStream> kv : port2NamedStream.entrySet()) {
+            for (Map.Entry<EMAPortSymbol, ASTStream> kv : port2NamedStream.entrySet()) {
                 ASTStreamInstruction nextInstruction = kv.getValue().getStreamInstructionList().get(i);
                 processInstruction(vm, nextInstruction, kv.getKey());
             }
@@ -203,9 +203,9 @@ public final class TestsGeneratorCPP {
         return result;
     }
 
-    private static Map<PortSymbol, ASTStream> getPort2NamedStream(ComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
-        Map<PortSymbol, ASTStream> port2NamedStream = new HashMap<>();
-        for (PortSymbol port : cs.getPortsList()) {
+    private static Map<EMAPortSymbol, ASTStream> getPort2NamedStream(EMAComponentSymbol cs, ComponentStreamUnitsSymbol stream) {
+        Map<EMAPortSymbol, ASTStream> port2NamedStream = new HashMap<>();
+        for (EMAPortSymbol port : cs.getPortsList()) {
             NamedStreamUnitsSymbol namedStreamForPort = stream.getNamedStream(port.getName()).orElse(null);
             if (namedStreamForPort != null && namedStreamForPort.getAstNode().isPresent()) {
                 ASTNamedStreamUnits node = (ASTNamedStreamUnits) namedStreamForPort.getAstNode().get();
@@ -215,7 +215,7 @@ public final class TestsGeneratorCPP {
         return port2NamedStream;
     }
 
-    private static int getStreamLengths(Map<PortSymbol, ASTStream> port2NamedStream, ComponentStreamUnitsSymbol stream) {
+    private static int getStreamLengths(Map<EMAPortSymbol, ASTStream> port2NamedStream, ComponentStreamUnitsSymbol stream) {
         int streamLength = -1;
         for (ASTStream ns : port2NamedStream.values()) {
             int l = ns.getStreamInstructionList().size();
@@ -235,7 +235,7 @@ public final class TestsGeneratorCPP {
         return streamLength;
     }
 
-    private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, PortSymbol port) {
+    private static void processInstruction(ComponentCheckViewModel vm, ASTStreamInstruction nextInstruction, EMAPortSymbol port) {
         if (nextInstruction.getStreamValueOpt().isPresent()) {
             ASTStreamValue sv = nextInstruction.getStreamValueOpt().get();
             String portName = port.getName();
