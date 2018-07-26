@@ -21,8 +21,8 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.helper.TypeHelper;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
@@ -48,7 +48,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testSimilarityImageMatrixAdapter(){
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a = symTab.<ComponentSymbol>resolve("detection.SimilarityImageMatrixAdapter", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.SimilarityImageMatrixAdapter", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
   }
@@ -56,7 +56,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testSimilarityImageMatrixCalculator(){
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a = symTab.<ComponentSymbol>resolve("detection.SimilarityImageMatrixCalculator", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.SimilarityImageMatrixCalculator", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
   }
@@ -64,7 +64,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testEigenSolver(){
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a = symTab.<ComponentSymbol>resolve("detection.EigenSolver", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.EigenSolver", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
   }
@@ -72,7 +72,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testKMeansClustering(){
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a = symTab.<ComponentSymbol>resolve("detection.KMeansClustering", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.KMeansClustering", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
   }
@@ -81,7 +81,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testDetection(){
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a = symTab.<ComponentSymbol>resolve("detection.ObjectDetector", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.ObjectDetector", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
   }
@@ -91,13 +91,13 @@ public class SymtabTest extends AbstractSymtabTest {
   public void testLookUp(){
 
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a1 = symTab.<ComponentSymbol>resolve("fas.basicLibrary.LookUp", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a1 = symTab.<EMAComponentSymbol>resolve("fas.basicLibrary.LookUp", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a1);
 
-    ComponentSymbol a2 = symTab.<ComponentSymbol>resolve("test.LookUpTest", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a2 = symTab.<EMAComponentSymbol>resolve("test.LookUpTest", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a2);
 
-    ComponentInstanceSymbol a3 = symTab.<ComponentInstanceSymbol>resolve("test.LookUpTest.look1",ComponentInstanceSymbol.KIND).orElse(null);
+    EMAComponentInstanceSymbol a3 = symTab.<EMAComponentInstanceSymbol>resolve("test.LookUpTest.look1",EMAComponentInstanceSymbol.KIND).orElse(null);
     assertNotNull(a3);
     Log.debug(a3.toString(),"info");
 
@@ -108,7 +108,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testSymbolTableCreatorDelegation1() {
     Scope symTab = createSymTab("src/test/resources");
-    ComponentSymbol a = symTab.<ComponentSymbol>resolve("adapterTest.A", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("adapterTest.A", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
   }
 
@@ -173,7 +173,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testMathStatementsSymbol() {
     Scope symTab = createSymTab("src/test/resources/");
-    ComponentSymbol component = symTab.<ComponentSymbol>resolve("test.Add", ComponentSymbol.KIND).orElse(null);
+    EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve("test.Add", EMAComponentSymbol.KIND).orElse(null);
     MathStatementsSymbol statements = (MathStatementsSymbol) component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND).orElse(null);
     assertNotNull(statements);
     assertEquals(1, statements.getMathExpressionSymbols().size());

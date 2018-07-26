@@ -21,8 +21,8 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter;
 
 import de.monticore.lang.monticar.ts.MontiCarTypeSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
@@ -35,20 +35,20 @@ import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 public class PortSymbol2MathVariableDeclarationTypeFilter extends TransitiveAdaptedResolvingFilter<MathVariableDeclarationSymbol> {
 
     public PortSymbol2MathVariableDeclarationTypeFilter() {
-        super(PortSymbol.KIND,
+        super(EMAPortSymbol.KIND,
                 MathVariableDeclarationSymbol.class,
                 MathVariableDeclarationSymbol.KIND);
     }
 
     @Override
     public Symbol translate(Symbol adaptee) {
-        assert adaptee instanceof PortSymbol;
-        if (((PortSymbol) adaptee).getTypeReference().getReferencedSymbol() instanceof SIUnitRangesSymbol)
-            return new PortSymbol2MathVariableDeclarationSymbol((PortSymbol) adaptee, (SIUnitRangesSymbol) ((PortSymbol) adaptee).getTypeReference().getReferencedSymbol());
+        assert adaptee instanceof EMAPortSymbol;
+        if (((EMAPortSymbol) adaptee).getTypeReference().getReferencedSymbol() instanceof SIUnitRangesSymbol)
+            return new PortSymbol2MathVariableDeclarationSymbol((EMAPortSymbol) adaptee, (SIUnitRangesSymbol) ((EMAPortSymbol) adaptee).getTypeReference().getReferencedSymbol());
         else {
-            MontiCarTypeSymbol jTypeSymbol = (MontiCarTypeSymbol) ((PortSymbol) adaptee).getTypeReference().getReferencedSymbol();
+            MontiCarTypeSymbol jTypeSymbol = (MontiCarTypeSymbol) ((EMAPortSymbol) adaptee).getTypeReference().getReferencedSymbol();
             System.out.println("Adaption of: " + jTypeSymbol.toString());
-            return new PortSymbol2MathVariableDeclarationSymbol((PortSymbol) adaptee);
+            return new PortSymbol2MathVariableDeclarationSymbol((EMAPortSymbol) adaptee);
         }
 
     }

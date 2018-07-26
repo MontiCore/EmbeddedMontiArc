@@ -23,7 +23,8 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter;
 import java.util.Arrays;
 import java.util.Collections;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
@@ -33,11 +34,11 @@ import de.monticore.symboltable.resolving.SymbolAdapter;
  * Created by MichaelvonWenckstern on 27.01.2017.
  */
 public class PortArraySymbol2MathVariableDeclarationSymbol extends MathVariableDeclarationSymbol
-        implements SymbolAdapter<PortArraySymbol> {
+        implements SymbolAdapter<EMAPortArraySymbol> {
 
-    private final PortArraySymbol adaptee;
+    private final EMAPortArraySymbol adaptee;
 
-    public PortArraySymbol2MathVariableDeclarationSymbol(PortArraySymbol ps) {
+    public PortArraySymbol2MathVariableDeclarationSymbol(EMAPortArraySymbol ps) {
         super(ps.getName(),
                 new ASTRange(),
                 Arrays.asList(1, ps.getDimension()),
@@ -46,7 +47,7 @@ public class PortArraySymbol2MathVariableDeclarationSymbol extends MathVariableD
         this.adaptee = ps;
     }
 
-    public PortArraySymbol2MathVariableDeclarationSymbol(PortArraySymbol ps, SIUnitRangesSymbol rangesSymbol) {
+    public PortArraySymbol2MathVariableDeclarationSymbol(EMAPortArraySymbol ps, SIUnitRangesSymbol rangesSymbol) {
         super(ps.getName(),
                 rangesSymbol.getRange(0),
                 Arrays.asList(1, ps.getDimension()),
@@ -56,7 +57,7 @@ public class PortArraySymbol2MathVariableDeclarationSymbol extends MathVariableD
     }
 
     @Override
-    public PortArraySymbol getAdaptee() {
+    public EMAPortArraySymbol getAdaptee() {
         return adaptee;
     }
 

@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.math._symboltable.MathVariableDeclarationSymbol;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.si._symboltable.SIUnitRangesSymbol;
@@ -34,11 +34,11 @@ import java.util.Collections;
  * @author Sascha Schneiders
  */
 public class PortSymbol2MathVariableDeclarationSymbol extends MathVariableDeclarationSymbol
-        implements SymbolAdapter<PortSymbol> {
+        implements SymbolAdapter<EMAPortSymbol> {
 
-    private final PortSymbol adaptee;
+    private final EMAPortSymbol adaptee;
 
-    public PortSymbol2MathVariableDeclarationSymbol(PortSymbol ps) {
+    public PortSymbol2MathVariableDeclarationSymbol(EMAPortSymbol ps) {
         super(ps.getName(),
                 new ASTRange(),
                 Arrays.asList(1, 1),
@@ -47,7 +47,7 @@ public class PortSymbol2MathVariableDeclarationSymbol extends MathVariableDeclar
         this.adaptee = ps;
     }
 
-    public PortSymbol2MathVariableDeclarationSymbol(PortSymbol ps, SIUnitRangesSymbol rangesSymbol) {
+    public PortSymbol2MathVariableDeclarationSymbol(EMAPortSymbol ps, SIUnitRangesSymbol rangesSymbol) {
         super(ps.getName(),
                 rangesSymbol.getRange(0),
                 Arrays.asList(1, 1),
@@ -57,7 +57,7 @@ public class PortSymbol2MathVariableDeclarationSymbol extends MathVariableDeclar
     }
 
     @Override
-    public PortSymbol getAdaptee() {
+    public EMAPortSymbol getAdaptee() {
         return adaptee;
     }
 }
