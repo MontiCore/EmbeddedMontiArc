@@ -24,21 +24,20 @@ import static org.junit.Assert.assertNotNull;
 public class GenerateCMakeTest extends AbstractSymtabTest {
 
     private static TaggingResolver symtab;
-    private static GeneratorCPP generatorCPP;
 
     @Before
     public void setUpClass() {
         Log.enableFailQuick(false);
         symtab = createSymTabAndTaggingResolver("src/test/resources");
-        generatorCPP = new GeneratorCPP();
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerateCMake(true);
     }
 
     @Test
     public void testCMakeGenerationForBasicConstantAssignment() throws IOException {
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicConstantAssignment");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "cmake/test/BasicConstantAssignment/";
@@ -49,6 +48,9 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
     public void testCMakeGenerationForModel() throws IOException {
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.model", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/testing/Model");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "cmake/testing/Model/";
@@ -59,6 +61,9 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
     public void testCMakeStreamTestGenerationForBasicPortsMath() throws IOException {
         ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPortsMath", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicPortsMath");
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
         generatorCPP.setGenerateTests(true);
