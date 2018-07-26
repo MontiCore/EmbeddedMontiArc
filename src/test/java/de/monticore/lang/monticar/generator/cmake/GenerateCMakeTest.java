@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,17 +55,37 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         testCMakeFilesEqual(files, restPath);
     }
 
+    @Test
+    public void testCMakeStreamTestGenerationForBasicPortsMath() throws IOException {
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPortsMath", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicPortsMath");
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setCheckModelDir(true);
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        String restPath = "cmake/test/BasicPortsMath/";
+        testCMakeFilesEqual(files, restPath);
+    }
+
     private void testCMakeFilesEqual(List<File> files, String restPath) {
         List<File> srcFiles = new ArrayList<>();
         List<File> findFiles = new ArrayList<>();
+        List<File> testFiles = new ArrayList<>();
         for (File f : files) {
             if (f.getName().startsWith("Find"))
                 findFiles.add(f);
+            else if (f.getName().endsWith(".hpp") || f.getName().endsWith(".cpp"))
+                testFiles.add(f);
+            else if (f.getName().endsWith(".txt")) {
+                //don't care about reporting files
+            }
             else
                 srcFiles.add(f);
         }
         testFilesAreEqual(srcFiles, restPath);
         testFilesAreEqual(findFiles, restPath + "cmake/");
+        testFilesAreEqual(testFiles, restPath + "test/");
     }
 
 }

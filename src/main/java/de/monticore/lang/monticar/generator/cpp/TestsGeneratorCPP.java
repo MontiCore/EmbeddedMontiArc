@@ -6,6 +6,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Componen
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
@@ -90,7 +91,17 @@ public final class TestsGeneratorCPP {
             files.add(new FileContent(getExistingComponentNames(), "/reporting/" + "existingComponents.txt"));
             files.add(new FileContent(getComponentNamesThatHaveTests(), "/reporting/" + "testComponents.txt"));
         }
+        // add to cmake lists
+        if (generator.isGenerateCMakeEnabled())
+            addTestExecutionToCMakeConfig();
         return files;
+    }
+
+    private void addTestExecutionToCMakeConfig() {
+        CMakeConfig cmake = generator.getCMakeConfig();
+        cmake.addCMakeCommandEnd("include_directories(test)");
+        cmake.addCMakeCommandEnd("add_executable(StreamTests test/tests_main.cpp)");
+        cmake.addCMakeCommandEnd("target_compile_definitions(StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
     }
 
     private String getExistingComponentNames() {
