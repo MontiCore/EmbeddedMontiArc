@@ -20,7 +20,7 @@
     <Embedded-MontiArc-Math.version>0.0.19-SNAPSHOT</Embedded-MontiArc-Math.version>
     <Embedded-montiarc-math-generator.version>0.0.22-SNAPSHOT</Embedded-montiarc-math-generator.version>
     <Embedded-montiarc-math-rosmsg-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
-    <tagging.version>0.0.5-SNAPSHOT</tagging.version>
+    <tagging.version>0.0.5</tagging.version>
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
