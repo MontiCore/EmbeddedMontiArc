@@ -5,12 +5,25 @@ package de.monticore.lang.monticar.generator.roscpp;
  * http://www.se-rwth.de/
  */
 
-import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
+import de.monticore.ModelingLanguageFamily;
+import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.embeddedmontiarc.LogConfig;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.Utils;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.GlobalScope;
+import de.monticore.symboltable.Scope;
 import org.junit.Assert;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +32,37 @@ import static org.junit.Assert.assertTrue;
 /**
  * Common methods for symboltable tests
  */
-public class AbstractSymtabTest extends AbstractSymtab {
+public class AbstractSymtabTest {
+
+    public AbstractSymtabTest() {
+    }
+
+    public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
+        Scope scope = createSymTab(modelPath);
+        return new TaggingResolver(scope, Arrays.asList(modelPath));
+    }
+
+    public static Scope createSymTab(String... modelPath) {
+        ModelingLanguageFamily fam = new ModelingLanguageFamily();
+        EmbeddedMontiArcMathLanguage montiArcLanguage = new EmbeddedMontiArcMathLanguage();
+        fam.addModelingLanguage(montiArcLanguage);
+        fam.addModelingLanguage(new StreamUnitsLanguage());
+        fam.addModelingLanguage(new StructLanguage());
+        fam.addModelingLanguage(new EnumLangLanguage());
+        ModelPath mp = new ModelPath(new Path[0]);
+        String[] var4 = modelPath;
+        int var5 = modelPath.length;
+
+        for(int var6 = 0; var6 < var5; ++var6) {
+            String m = var4[var6];
+            mp.addEntry(Paths.get(m));
+        }
+
+        LogConfig.init();
+        GlobalScope scope = new GlobalScope(mp, fam);
+        Utils.addBuiltInTypes(scope);
+        return scope;
+    }
 
     public static void testFilesAreEqual(List<File> files, String restPath) {
         assertTrue(files.size() > 0);

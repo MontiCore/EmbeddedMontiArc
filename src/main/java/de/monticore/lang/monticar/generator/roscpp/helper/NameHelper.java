@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
 import de.se_rwth.commons.logging.Log;
 
@@ -13,7 +13,7 @@ public class NameHelper {
     private NameHelper() {
     }
 
-    public static String getPortNameTargetLanguage(PortSymbol portSymbol) {
+    public static String getPortNameTargetLanguage(EMAPortSymbol portSymbol) {
         //TODO: get from cpp generator for consistency?
         if (portSymbol.isPartOfPortArray()) {
             return getFixedArrayPortName(portSymbol);
@@ -22,9 +22,9 @@ public class NameHelper {
         }
     }
 
-    public static String getFixedArrayPortName(PortSymbol portSymbol) {
+    public static String getFixedArrayPortName(EMAPortSymbol portSymbol) {
         if (!portSymbol.isPartOfPortArray())
-            throw new IllegalArgumentException("PortSymbol " + portSymbol.getName() + " is not part of an array!");
+            throw new IllegalArgumentException("EMAPortSymbol " + portSymbol.getName() + " is not part of an array!");
 
         return fixName(portSymbol.getName());
     }
@@ -52,7 +52,7 @@ public class NameHelper {
         return shortName + "[" + cppIndex + "]" + rest;
     }
 
-    public static String getAdapterName(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    public static String getAdapterName(EMAComponentInstanceSymbol componentInstanceSymbol) {
         return "RosAdapter_" + getComponentNameTargetLanguage(componentInstanceSymbol.getFullName());
     }
 

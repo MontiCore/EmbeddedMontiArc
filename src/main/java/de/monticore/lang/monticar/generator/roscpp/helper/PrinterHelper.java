@@ -1,9 +1,9 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.monticar.generator.Instruction;
-import de.monticore.lang.monticar.generator.Method;
-import de.monticore.lang.monticar.generator.Variable;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.roscpp.util.Instruction;
+import de.monticore.lang.monticar.generator.roscpp.util.Method;
+import de.monticore.lang.monticar.generator.roscpp.util.Variable;
+import de.monticore.lang.monticar.generator.roscpp.util.BluePrintCPP;
 
 import java.util.Comparator;
 

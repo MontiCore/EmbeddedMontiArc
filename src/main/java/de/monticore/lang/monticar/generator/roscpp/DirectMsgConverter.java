@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 
 public class DirectMsgConverter implements MsgConverter {
@@ -18,7 +18,7 @@ public class DirectMsgConverter implements MsgConverter {
     }
 
     @Override
-    public String getConversion(PortSymbol portSymbol) {
+    public String getConversion(EMAPortSymbol portSymbol) {
         return !isMsgToPort ? "." + msgField + " = component->" + NameHelper.getPortNameTargetLanguage(portSymbol) : "msg->" + msgField;
     }
 

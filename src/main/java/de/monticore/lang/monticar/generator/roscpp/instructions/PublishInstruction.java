@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.roscpp.instructions;
 
-import de.monticore.lang.monticar.generator.TargetCodeInstruction;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.roscpp.util.TargetCodeInstruction;
+import de.monticore.lang.monticar.generator.roscpp.util.Variable;
 
 public class PublishInstruction extends TargetCodeInstruction {
 

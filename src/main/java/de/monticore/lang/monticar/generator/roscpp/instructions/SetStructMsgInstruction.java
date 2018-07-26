@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.roscpp.instructions;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
-import de.monticore.lang.monticar.generator.TargetCodeInstruction;
+import de.monticore.lang.monticar.generator.roscpp.util.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.roscpp.helper.IndexHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.rosmsg.RosMsg;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SetStructMsgInstruction extends TargetCodeInstruction {
-    public SetStructMsgInstruction(PortSymbol portSymbol, RosMsg rosMsg) {
+    public SetStructMsgInstruction(EMAPortSymbol portSymbol, RosMsg rosMsg) {
         if (rosMsg.getName().startsWith("std_msgs/")) {
             if (rosMsg.getName().endsWith("MultiArray")) {
                 ASTCommonMatrixType matrixType = (ASTCommonMatrixType) ((MCASTTypeSymbol) portSymbol.getTypeReference().getReferencedSymbol()).getAstType();

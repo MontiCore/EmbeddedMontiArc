@@ -3,7 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import com.google.common.collect.Lists;
 import de.monticar.lang.monticar.generator.python.RosTag;
 import de.monticar.lang.monticar.generator.python.TagReader;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.generator.roscpp.helper.ResolveHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.YamlHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -46,13 +46,13 @@ public class YamlTest extends AbstractSymtabTest {
         assertEquals(subInter.getTopic(), "test");
         assertEquals(subInter.getInclude(), "automated_driving_msgs/CarMessage");
 
-        Map<String, PortSymbol> portNamesToPort = subInter.getPorts().stream().collect(Collectors.toMap(CommonSymbol::getName, p -> p));
+        Map<String, EMAPortSymbol> portNamesToPort = subInter.getPorts().stream().collect(Collectors.toMap(CommonSymbol::getName, p -> p));
         assertTrue(portNamesToPort.size() == 2);
         assertTrue(portNamesToPort.containsKey("rosIn"));
         assertTrue(portNamesToPort.containsKey("noRosIn"));
 
-        PortSymbol rosIn = portNamesToPort.get("rosIn");
-        PortSymbol noRosIn = portNamesToPort.get("noRosIn");
+        EMAPortSymbol rosIn = portNamesToPort.get("rosIn");
+        EMAPortSymbol noRosIn = portNamesToPort.get("noRosIn");
         assertEquals(subInter.getMsgFieldForPort(rosIn), "posX");
         assertEquals(subInter.getMsgFieldForPort(noRosIn), "posY");
 
@@ -67,7 +67,7 @@ public class YamlTest extends AbstractSymtabTest {
         assertTrue(portNamesToPort.size() == 1);
         assertTrue(portNamesToPort.containsKey("rosOut"));
 
-        PortSymbol rosOut = portNamesToPort.get("rosOut");
+        EMAPortSymbol rosOut = portNamesToPort.get("rosOut");
         assertEquals(pubInter.getMsgFieldForPort(rosOut), "data");
     }
 

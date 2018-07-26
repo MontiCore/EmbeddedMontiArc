@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.generator.roscpp.helper;
 
 import de.monticar.lang.monticar.generator.python.RosInterface;
 import de.monticar.lang.monticar.generator.python.RosTag;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.monticar.generator.roscpp.ResolvedRosInterface;
 import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
 import de.monticore.symboltable.Scope;
@@ -14,7 +14,7 @@ public class ResolveHelper {
     }
 
     //TODO: refactor
-    public static ResolvedRosInterface resolveRosInterface(RosInterface rosInterface, ExpandedComponentInstanceSymbol component, boolean isSubscriber) {
+    public static ResolvedRosInterface resolveRosInterface(RosInterface rosInterface, EMAComponentInstanceSymbol component, boolean isSubscriber) {
         String includeString = rosInterface.type;
         if (!includeString.contains("/")) {
             throw new IllegalArgumentException("The ROS msg type has to be given in the form package/msgName!");
@@ -23,7 +23,7 @@ public class ResolveHelper {
         ResolvedRosInterface res = new ResolvedRosInterface(topicType, rosInterface.topic, includeString);
 
         rosInterface.ports.keySet().forEach(portName -> {
-            PortSymbol tmpPort = component.getPort(portName).
+            EMAPortSymbol tmpPort = component.getPortInstance(portName).
                     orElseThrow(() -> new RuntimeException("Port " + component.getName() + "." + portName + " not found!"));
 
             res.addPort(tmpPort, rosInterface.ports.get(portName));
@@ -33,7 +33,7 @@ public class ResolveHelper {
 
     public static ResolvedRosTag resolveRosTag(RosTag rosTag, Scope symtab) {
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve(rosTag.component, ExpandedComponentInstanceSymbol.KIND)
+        EMAComponentInstanceSymbol componentInstanceSymbol = symtab.<EMAComponentInstanceSymbol>resolve(rosTag.component, EMAComponentInstanceSymbol.KIND)
                 .orElseThrow(() -> new RuntimeException("Component " + rosTag.component + " could not be found!"));
 
         ResolvedRosTag res = new ResolvedRosTag(componentInstanceSymbol);

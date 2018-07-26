@@ -1,9 +1,9 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
 import com.google.common.base.Objects;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.Method;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.monticar.generator.roscpp.util.Method;
+import de.monticore.lang.monticar.generator.roscpp.util.Variable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ public class ResolvedRosInterface {
     private String type;
     private String topic;
     private String include;
-    private Map<PortSymbol, String> portToMsgField = new HashMap<>();
+    private Map<EMAPortSymbol, String> portToMsgField = new HashMap<>();
     private Optional<Variable> publisherField = Optional.empty();
     private Optional<Variable> subscriberField = Optional.empty();
     private Optional<Method> publishMethod = Optional.empty();
@@ -81,15 +81,15 @@ public class ResolvedRosInterface {
         this.include = include;
     }
 
-    public void addPort(PortSymbol portSymbol, String msgField) {
+    public void addPort(EMAPortSymbol portSymbol, String msgField) {
         portToMsgField.put(portSymbol, msgField);
     }
 
-    public Set<PortSymbol> getPorts() {
+    public Set<EMAPortSymbol> getPorts() {
         return portToMsgField.keySet();
     }
 
-    public String getMsgFieldForPort(PortSymbol portSymbol) {
+    public String getMsgFieldForPort(EMAPortSymbol portSymbol) {
         return portToMsgField.get(portSymbol);
     }
 

@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -25,11 +25,11 @@ public class TaggingTest extends AbstractSymtabTest {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         RosToEmamTagSchema.registerTagTypes(symtab);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         //rosIn
-        PortSymbol rosIn = component.getPort("rosIn").orElse(null);
+        EMAPortSymbol rosIn = component.getPortInstance("rosIn").orElse(null);
         assertNotNull(rosIn);
 
         Collection<TagSymbol> tags = symtab.getTags(rosIn, RosConnectionSymbol.KIND);
@@ -41,7 +41,7 @@ public class TaggingTest extends AbstractSymtabTest {
         assertEquals(tag.getMsgField().get(), "clock.toSec()");
 
         //rosOut
-        PortSymbol rosOut = component.getPort("rosOut").orElse(null);
+        EMAPortSymbol rosOut = component.getPortInstance("rosOut").orElse(null);
         assertNotNull(rosOut);
 
         tags = symtab.getTags(rosOut, RosConnectionSymbol.KIND);
@@ -59,11 +59,11 @@ public class TaggingTest extends AbstractSymtabTest {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
         RosToEmamTagSchema.registerTagTypes(symtab);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.tagging.optionalMsgField", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.tagging.optionalMsgField", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        PortSymbol in1 = component.getPort("in1").orElse(null);
-        PortSymbol out1 = component.getPort("out1").orElse(null);
+        EMAPortSymbol in1 = component.getPortInstance("in1").orElse(null);
+        EMAPortSymbol out1 = component.getPortInstance("out1").orElse(null);
 
         assertNotNull(in1);
         assertNotNull(out1);
@@ -89,7 +89,7 @@ public class TaggingTest extends AbstractSymtabTest {
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/echoTaggingCompRos/");
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.a.compA", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
         TagHelper.resolveTags(symtab, component);
 
@@ -107,9 +107,9 @@ public class TaggingTest extends AbstractSymtabTest {
         GeneratorRosCpp generatorRosCpp = new GeneratorRosCpp();
         generatorRosCpp.setGenerationTargetPath("./target/generated-sources-roscpp/basicTypesComp/");
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.basicTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.msg.basicTypesComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
-        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
@@ -128,9 +128,9 @@ public class TaggingTest extends AbstractSymtabTest {
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
         generatorRosCpp.setGenerateCMake(true);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.basicStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.msg.basicStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
-        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
@@ -146,9 +146,9 @@ public class TaggingTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-roscpp/nestedStructComp/";
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.nestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.msg.nestedStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
-        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
@@ -164,9 +164,9 @@ public class TaggingTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-roscpp/multiNestedStructComp/";
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.msg.multiNestedStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.msg.multiNestedStructComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
-        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
@@ -182,9 +182,9 @@ public class TaggingTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-roscpp/matrixTypesComp/";
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("tests.structs.matrixTypesComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("tests.structs.matrixTypesComp", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
-        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
+        Map<EMAPortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(symtab, component);
 
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, symtab, component);
 
@@ -203,11 +203,11 @@ public class TaggingTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-roscpp/" + relResultPath;
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
 
-        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.tagging.missingInfo", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.tagging.missingInfo", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         RosConnectionSymbol rosConnectionSymbol = new RosConnectionSymbol((String) null,"std_msgs/Float64","data");
-        component.getPort("missingTopicName").get().setMiddlewareSymbol(rosConnectionSymbol);
+        component.getPortInstance("missingTopicName").get().setMiddlewareSymbol(rosConnectionSymbol);
 
         TagHelper.resolveTags(taggingResolver,component);
         List<File> files = generatorRosCpp.generateFiles(component,taggingResolver);
@@ -232,11 +232,11 @@ public class TaggingTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-roscpp/" + relResultPath;
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
 
-        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.tagging.missingInfo", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = taggingResolver.<EMAComponentInstanceSymbol>resolve("tests.tagging.missingInfo", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
         RosConnectionSymbol rosConnectionSymbol = new RosConnectionSymbol("/test",(String) null,"data");
-        component.getPort("missingTopicType").get().setMiddlewareSymbol(rosConnectionSymbol);
+        component.getPortInstance("missingTopicType").get().setMiddlewareSymbol(rosConnectionSymbol);
 
         TagHelper.resolveTags(taggingResolver,component);
         List<File> files = generatorRosCpp.generateFiles(component,taggingResolver);
