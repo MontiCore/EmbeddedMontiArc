@@ -1,26 +1,26 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
 import com.google.common.base.Objects;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 
 import java.util.HashSet;
 import java.util.Set;
 
 //TODO: rename: not used as a Tag
 public class ResolvedRosTag {
-    private ExpandedComponentInstanceSymbol component;
+    private EMAComponentInstanceSymbol component;
     private Set<ResolvedRosInterface> subscriberInterfaces = new HashSet<>();
     private Set<ResolvedRosInterface> publisherInterfaces = new HashSet<>();
 
-    public ResolvedRosTag(ExpandedComponentInstanceSymbol component) {
+    public ResolvedRosTag(EMAComponentInstanceSymbol component) {
         this.component = component;
     }
 
-    public ExpandedComponentInstanceSymbol getComponent() {
+    public EMAComponentInstanceSymbol getComponent() {
         return component;
     }
 
-    public void setComponent(ExpandedComponentInstanceSymbol component) {
+    public void setComponent(EMAComponentInstanceSymbol component) {
         this.component = component;
     }
 

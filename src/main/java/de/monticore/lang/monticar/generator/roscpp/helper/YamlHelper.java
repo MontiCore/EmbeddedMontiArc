@@ -2,8 +2,8 @@ package de.monticore.lang.monticar.generator.roscpp.helper;
 
 import com.esotericsoftware.yamlbeans.YamlReader;
 import de.monticar.lang.monticar.generator.python.RosTag;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.monticar.generator.roscpp.ResolvedRosTag;
@@ -48,7 +48,7 @@ public class YamlHelper {
     }
 
     private static void fixPortSyntax(RosTag rosTag, TaggingResolver symtab) {
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve(rosTag.component, ExpandedComponentInstanceSymbol.KIND)
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve(rosTag.component, EMAComponentInstanceSymbol.KIND)
                 .orElseThrow(() -> new RuntimeException("Component " + rosTag.component + " could not be found!"));
 
         //[:] syntax
@@ -69,7 +69,7 @@ public class YamlHelper {
                 });
     }
 
-    private static Set<Pair<String, String>> fixPortWithColonSyntax(Map<String, String> portNameToMsgField, String portName, ExpandedComponentInstanceSymbol component) {
+    private static Set<Pair<String, String>> fixPortWithColonSyntax(Map<String, String> portNameToMsgField, String portName, EMAComponentInstanceSymbol component) {
         assert (portName.contains("[:]"));
         assert (portNameToMsgField.containsKey(portName));
 
@@ -80,13 +80,13 @@ public class YamlHelper {
 //        portNameToMsgField.remove(portName);
 
         int i = 1;
-        PortSymbol curPort = component.getPort(portName.replace("[:]", "[" + i + "]"))
+        EMAPortSymbol curPort = component.getPortInstance(portName.replace("[:]", "[" + i + "]"))
                 .orElseThrow(() -> new RuntimeException("No Ports matching " + portName + " found in component " + component.getName()));
         while (curPort != null) {
             String curMsgField = msgField.replace("[:]", "[" + i + "]");
             res.add(new Pair<>(curPort.getName(), curMsgField));
             i++;
-            curPort = component.getPort(portName.replace("[:]", "[" + i + "]")).orElse(null);
+            curPort = component.getPortInstance(portName.replace("[:]", "[" + i + "]")).orElse(null);
         }
 
         return res;

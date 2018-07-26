@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.roscpp.helper;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.roscpp.GeneratorRosCpp;
 import de.monticore.lang.tagging._symboltable.TagSymbol;
@@ -20,9 +20,9 @@ public class TagHelper {
     private TagHelper() {
     }
 
-    public static Map<PortSymbol, RosConnectionSymbol> resolveTags(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        Map<PortSymbol, RosConnectionSymbol> rosConnectionSymbols = new HashMap<>();
-            componentInstanceSymbol.getPortsList().forEach(p -> {
+    public static Map<EMAPortSymbol, RosConnectionSymbol> resolveTags(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol) {
+        Map<EMAPortSymbol, RosConnectionSymbol> rosConnectionSymbols = new HashMap<>();
+            componentInstanceSymbol.getPortInstanceList().forEach(p -> {
                 Collection<TagSymbol> tmpTags = taggingResolver.getTags(p, RosConnectionSymbol.KIND);
                 if (tmpTags.size() == 1) {
                     rosConnectionSymbols.put(p, (RosConnectionSymbol) tmpTags.iterator().next());
@@ -32,16 +32,16 @@ public class TagHelper {
         return rosConnectionSymbols;
     }
 
-    public static List<File> resolveAndGenerate(GeneratorRosCpp generatorRosCpp, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol) throws IOException {
+    public static List<File> resolveAndGenerate(GeneratorRosCpp generatorRosCpp, TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol) throws IOException {
         resolveTags(taggingResolver, componentInstanceSymbol);
         return generatorRosCpp.generateFiles(componentInstanceSymbol, taggingResolver);
     }
 
-    public static boolean rosConnectionsValid(ExpandedComponentInstanceSymbol instanceSymbol) {
+    public static boolean rosConnectionsValid(EMAComponentInstanceSymbol instanceSymbol) {
         AtomicBoolean result = new AtomicBoolean(true);
 
-        instanceSymbol.getPortsList().stream()
-                .filter(PortSymbol::isRosPort)
+        instanceSymbol.getPortInstanceList().stream()
+                .filter(EMAPortSymbol::isRosPort)
                 .forEach(p ->{
                     RosConnectionSymbol rosConnectionSymbol = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
 

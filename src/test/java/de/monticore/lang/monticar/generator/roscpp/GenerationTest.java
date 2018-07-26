@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -23,13 +23,13 @@ public class GenerationTest extends AbstractSymtabTest {
         String generationTargetPath = "./target/generated-sources-roscpp/basicGenericInstance/";
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
 
-        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("test.basicGenericInstance", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = taggingResolver.<EMAComponentInstanceSymbol>resolve("test.basicGenericInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
-        ExpandedComponentInstanceSymbol genericComp = component.getSubComponent("basicGeneric").orElse(null);
+        EMAComponentInstanceSymbol genericComp = component.getSubComponent("basicGeneric").orElse(null);
         assertNotNull(genericComp);
 
-        genericComp.getPortsList().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol("/name1", "std_msgs/Float64MultiArray")));
+        genericComp.getPortInstanceList().forEach(p -> p.setMiddlewareSymbol(new RosConnectionSymbol("/name1", "std_msgs/Float64MultiArray")));
 
         List<File> files = generatorRosCpp.generateFiles(genericComp, taggingResolver);
 
@@ -46,7 +46,7 @@ public class GenerationTest extends AbstractSymtabTest {
         generatorRosCpp.setGenerationTargetPath(generationTargetPath);
         generatorRosCpp.setGenerateCMake(true);
 
-        ExpandedComponentInstanceSymbol component = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("test.instanceArrayComp.basicPorts[1]", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = taggingResolver.<EMAComponentInstanceSymbol>resolve("test.instanceArrayComp.basicPorts[1]", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(component);
 
 

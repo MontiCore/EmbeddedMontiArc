@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
+import de.monticore.lang.monticar.generator.roscpp.util.BluePrintCPP;
 import de.monticore.lang.monticar.generator.roscpp.helper.FormatHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.PrinterHelper;
@@ -36,7 +36,7 @@ public class GeneratorRosCpp {
         this.generationTargetPath = generationTargetPath;
     }
 
-    public List<File> generateFiles(ExpandedComponentInstanceSymbol component, TaggingResolver symtab) throws IOException {
+    public List<File> generateFiles(EMAComponentInstanceSymbol component, TaggingResolver symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(component);
 
         if (getGenerationTargetPath().charAt(getGenerationTargetPath().length() - 1) != '/') {
@@ -66,7 +66,7 @@ public class GeneratorRosCpp {
         return f;
     }
 
-    public List<FileContent> generateStrings(ExpandedComponentInstanceSymbol component) {
+    public List<FileContent> generateStrings(EMAComponentInstanceSymbol component) {
         List<FileContent> fileContents = new ArrayList<>();
         fileContents.addAll(generateRosAdapter(component));
         fileContents.stream()
@@ -75,7 +75,7 @@ public class GeneratorRosCpp {
         return fileContents;
     }
 
-    private List<FileContent> generateRosAdapter(ExpandedComponentInstanceSymbol component) {
+    private List<FileContent> generateRosAdapter(EMAComponentInstanceSymbol component) {
         List<FileContent> res = new ArrayList<>();
 
         FileContent apdapter = new FileContent();

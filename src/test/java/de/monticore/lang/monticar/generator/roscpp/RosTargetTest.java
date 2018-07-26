@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.roscpp.helper.YamlHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class RosTargetTest extends AbstractSymtabTest {
 //        generatorCPP.useArmadilloBackend();
 //
 
-        ExpandedComponentInstanceSymbol component = symtab.<ExpandedComponentInstanceSymbol>resolve("ba.intersection.intersectionController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol component = symtab.<EMAComponentInstanceSymbol>resolve("ba.intersection.intersectionController", EMAComponentInstanceSymbol.KIND).orElse(null);
 
         assertNotNull(component);
 

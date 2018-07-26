@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
+import de.monticore.lang.monticar.generator.rosmsg.util.FileContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class LanguageUnitRosCMake {
                     "\n" +
                     "export(TARGETS <name> FILE <name>.cmake)";
 
-    FileContent generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages) {
+    FileContent generate(EMAComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages) {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
 

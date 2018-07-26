@@ -1,10 +1,9 @@
 package de.monticore.lang.monticar.generator.roscpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
-import de.monticore.lang.monticar.generator.*;
-import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.roscpp.util.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.monticar.generator.roscpp.instructions.*;
@@ -29,7 +28,7 @@ public class LanguageUnitRosCppAdapter {
         return additionalPackages;
     }
 
-    public Optional<BluePrintCPP> generateBluePrint(ExpandedComponentInstanceSymbol componentSymbol) {
+    public Optional<BluePrintCPP> generateBluePrint(EMAComponentInstanceSymbol componentSymbol) {
 
         BluePrintCPP currentBluePrint = null;
 
@@ -37,8 +36,8 @@ public class LanguageUnitRosCppAdapter {
 
             String name = NameHelper.getAdapterName(componentSymbol);
             currentBluePrint = new BluePrintCPP(name);
-            List<PortSymbol> rosPorts = componentSymbol.getPortsList().stream()
-                    .filter(PortSymbol::isRosPort)
+            List<EMAPortSymbol> rosPorts = componentSymbol.getPortInstanceList().stream()
+                    .filter(EMAPortSymbol::isRosPort)
                     .collect(Collectors.toList());
 
             generateFields(componentSymbol, rosPorts, currentBluePrint);
@@ -54,7 +53,7 @@ public class LanguageUnitRosCppAdapter {
 
     }
 
-    private void generateIncludes(ExpandedComponentInstanceSymbol componentSymbol, List<PortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
+    private void generateIncludes(EMAComponentInstanceSymbol componentSymbol, List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
         currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
         String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
         currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
@@ -62,7 +61,7 @@ public class LanguageUnitRosCppAdapter {
         //Add each msg include exactly once
 
         rosPorts.stream()
-                .map(PortSymbol::getMiddlewareSymbol)
+                .map(EMAPortSymbol::getMiddlewareSymbol)
                 .map(Optional::get)
                 .map(mws -> (RosConnectionSymbol) mws)
                 .map(RosConnectionSymbol::getTopicType)
@@ -78,7 +77,7 @@ public class LanguageUnitRosCppAdapter {
                 .forEach(currentBluePrint::addAdditionalIncludeString);
     }
 
-    private void generatePublishMethods(List<PortSymbol> rosPorts, BluePrint currentBluePrint) {
+    private void generatePublishMethods(List<EMAPortSymbol> rosPorts, BluePrintCPP  currentBluePrint) {
         Map<String, Method> topicToMethod = new HashMap<>();
 
         publishers.keySet().forEach(var -> {
@@ -89,8 +88,8 @@ public class LanguageUnitRosCppAdapter {
         });
 
         rosPorts.stream()
-                .filter(PortSymbol::isOutgoing)
-                .sorted(Comparator.comparing(PortSymbol::getName))
+                .filter(EMAPortSymbol::isOutgoing)
+                .sorted(Comparator.comparing(EMAPortSymbol::getName))
                 .forEachOrdered(p -> {
                     RosConnectionSymbol rcs = (RosConnectionSymbol) p.getMiddlewareSymbol().get();
                     Method method = topicToMethod.get(rcs.getTopicName().get());
@@ -119,13 +118,13 @@ public class LanguageUnitRosCppAdapter {
                 .replace("]", "_");
     }
 
-    private void generateConstructor(String classname, BluePrint currentBluePrint) {
+    private void generateConstructor(String classname, BluePrintCPP  currentBluePrint) {
         Method constructorMethod = new Method(classname, "");
         constructorMethod.addInstruction(new TargetCodeInstruction(""));
         currentBluePrint.addMethod(constructorMethod);
     }
 
-    public void generateInit(String classname, String componentName, BluePrint currentBluePrint) {
+    public void generateInit(String classname, String componentName, BluePrintCPP  currentBluePrint) {
         Method initMethod = new Method("init", "void");
 
         Variable compPointer = new Variable();
@@ -157,7 +156,7 @@ public class LanguageUnitRosCppAdapter {
         currentBluePrint.addMethod(initMethod);
     }
 
-    private void generateFields(ExpandedComponentInstanceSymbol symbol, List<PortSymbol> rosPorts, BluePrintCPP currBluePrint) {
+    private void generateFields(EMAComponentInstanceSymbol symbol, List<EMAPortSymbol> rosPorts, BluePrintCPP currBluePrint) {
         currBluePrint.addDefineGenerics(symbol);
         //component
         Variable componentField = new Variable();
@@ -171,7 +170,7 @@ public class LanguageUnitRosCppAdapter {
 
         //subs
         rosPorts.stream()
-                .filter(PortSymbol::isIncoming)
+                .filter(EMAPortSymbol::isIncoming)
                 .map(p -> (RosConnectionSymbol) p.getMiddlewareSymbol().get())
                 .forEach(rosConnectionSymbol -> {
                     String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Subscriber";
@@ -187,7 +186,7 @@ public class LanguageUnitRosCppAdapter {
 
         //pubs
         rosPorts.stream()
-                .filter(PortSymbol::isOutgoing)
+                .filter(EMAPortSymbol::isOutgoing)
                 .map(p -> (RosConnectionSymbol) p.getMiddlewareSymbol().get())
                 .forEach(rosConnectionSymbol -> {
                     String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Publisher";
@@ -204,7 +203,7 @@ public class LanguageUnitRosCppAdapter {
     }
 
 
-    private void generateTick(BluePrint currentBluePrint) {
+    private void generateTick(BluePrintCPP  currentBluePrint) {
         Method tickMethod = new Method("tick", "void");
 
         publishMethods.stream()
@@ -223,13 +222,13 @@ public class LanguageUnitRosCppAdapter {
         return rosConnectionSymbol.getTopicType().get().replace("/", "::");
     }
 
-    private void generateCallbacks(List<PortSymbol> rosPorts, BluePrint currentBluePrint) {
+    private void generateCallbacks(List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
 
         Map<String, Method> uniqueMethods = new HashMap<>();
 
 
         rosPorts.stream()
-                .filter(PortSymbol::isIncoming)
+                .filter(EMAPortSymbol::isIncoming)
                 .forEachOrdered(portSymbol -> {
                     RosConnectionSymbol rosCon = (RosConnectionSymbol) portSymbol.getMiddlewareSymbol().get();
                     if (!uniqueMethods.containsKey(rosCon.getTopicName().get())) {
