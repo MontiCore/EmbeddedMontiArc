@@ -337,7 +337,8 @@ public class StreamTestMojo extends AbstractMojo {
         ProcessBuilder processBuilder;
         String execfilename;
         if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder = new ProcessBuilder("../build.bat");
+            //processBuilder = new ProcessBuilder("../build.bat");
+            processBuilder = new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "../build.bat").toAbsolutePath().toString());
             execfilename = EXEC_FILENAME_WINDOWS;
         }else{
             processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
