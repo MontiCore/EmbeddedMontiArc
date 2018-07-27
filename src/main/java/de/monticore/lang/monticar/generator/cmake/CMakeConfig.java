@@ -51,6 +51,10 @@ public class CMakeConfig {
 
     private HashSet<CMakeFindModule> moduleList = new HashSet<>();
 
+    private List<String> cmakeCommandList = new ArrayList<>();
+
+    private List<String> cmakeCommandListEnd = new ArrayList<>();
+
     // constructor
     public CMakeConfig(String compName) {
         cMakeListsViewModel.setCompName(compName);
@@ -59,7 +63,8 @@ public class CMakeConfig {
 
     // methods
     protected void configureCMakeListsViewModel() {
-        // nothing here
+        cMakeListsViewModel.setCmakeCommandList(cmakeCommandList);
+        cMakeListsViewModel.setCmakeCommandListEnd(cmakeCommandListEnd);
     }
 
     public List<FileContent> generateCMakeFiles() {
@@ -111,4 +116,24 @@ public class CMakeConfig {
     public CMakeListsCPPViewModel getCMakeListsViewModel() {
         return cMakeListsViewModel;
     }
+
+    /**
+     * Adds an arbitrary cmake command before target settings
+     *
+     * @param cmd some valid cmake command as string
+     */
+    public void addCMakeCommand(String cmd) {
+        cmakeCommandList.add(cmd);
+    }
+
+    /**
+     * Adds an arbitrary cmake command at the end of the file
+     *
+     * @param cmd some valid cmake command as string
+     */
+    public void addCMakeCommandEnd(String cmd) {
+        cmakeCommandListEnd.add(cmd);
+    }
+
+
 }

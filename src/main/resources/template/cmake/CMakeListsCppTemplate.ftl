@@ -13,6 +13,11 @@ find_package(${var.packageName} <#if var.required>REQUIRED<#else>OPTIONAL</#if>)
 <#if var.findLibrary>set(LIBS ${r"${LIBS}"} ${r"${"}${var.packageName}${r"_LIBRARIES}"})</#if>
 </#list>
 
+# additional commands
+<#list viewModel.cmakeCommandList as cmd>
+${cmd}
+</#list>
+
 # create static library
 include_directories(${r"${INCLUDE_DIRS}"})
 add_library(${viewModel.compName} ${viewModel.compName}.h)
@@ -22,3 +27,8 @@ set_target_properties(${viewModel.compName} PROPERTIES LINKER_LANGUAGE CXX)
 
 # export cmake project
 export(TARGETS ${viewModel.compName} FILE ${viewModel.compName}.cmake)
+
+# additional commands end
+<#list viewModel.cmakeCommandListEnd as cmd>
+${cmd}
+</#list>

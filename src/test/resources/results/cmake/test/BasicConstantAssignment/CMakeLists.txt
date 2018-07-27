@@ -11,6 +11,8 @@ find_package(Armadillo REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Armadillo_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 
+# additional commands
+
 # create static library
 include_directories(${INCLUDE_DIRS})
 add_library(test_basicConstantAssignment test_basicConstantAssignment.h)
@@ -20,3 +22,5 @@ set_target_properties(test_basicConstantAssignment PROPERTIES LINKER_LANGUAGE CX
 
 # export cmake project
 export(TARGETS test_basicConstantAssignment FILE test_basicConstantAssignment.cmake)
+
+# additional commands end
