@@ -74,8 +74,8 @@ public class AbstractSymtabTest extends AbstractSymtab {
         }
         int len = lines1.size();
         for (int i = 0; i < len; i++) {
-            String l1 = lines1.get(i);
-            String l2 = lines2.get(i);
+            String l1 = lines1.get(i).trim();
+            String l2 = lines2.get(i).trim();
             Assert.assertEquals("files differ in " + i + " line: "
                             + file1.getAbsolutePath()
                             + " has " + l1
