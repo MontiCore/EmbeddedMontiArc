@@ -30,6 +30,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.complex.ComplexField;
 import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
 
+import java.util.Optional;
+
 public class ConstructComplexMatrix {
     public static Array2DRowFieldMatrix<Complex> constructComplexMatrix(MathMatrixArithmeticValueSymbol symbol) {
         Complex[][] c = new Complex[symbol.getVectors().size()][symbol.getVectors().get(0).getMathMatrixAccessSymbols().size()];
@@ -45,23 +47,28 @@ public class ConstructComplexMatrix {
         MathMatrixAccessOperatorSymbol innerVector = symbol.getVectors().get(i);
         if (innerVector.getMathMatrixAccessSymbol(j).isPresent()) {
             MathExpressionSymbol expression = innerVector.getMathMatrixAccessSymbol(j).get();
-            c[i][j] = dissolveMathExpression(expression);
+            c[i][j] = dissolveMathExpression(expression, "");
         } else c[i][j] = new Complex(0);
     }
 
-    private static Complex dissolveMathExpression(MathExpressionSymbol exp) {
+    private static Complex dissolveMathExpression(MathExpressionSymbol exp, String lastResolvedName) {
         Complex result = null;
         if (exp != null) {
             if (exp.isParenthesisExpression()) {
-                result = dissolveMathExpression(((MathParenthesisExpressionSymbol) exp).getMathExpressionSymbol());
+                result = dissolveMathExpression(((MathParenthesisExpressionSymbol) exp).getMathExpressionSymbol(), "");
             } else if (exp.isValueExpression()) {
                 if (((MathValueExpressionSymbol) exp).isNameExpression()) {
                     exp = resolveName((MathNameExpressionSymbol) exp);
-                    result = dissolveMathExpression(exp);
+                    if ((exp != null) && (!lastResolvedName.contentEquals(exp.getName()))) {
+                        result = dissolveMathExpression(exp, exp.getName());
+                    } else {
+                        result = null;
+                        Log.warn("Can not resolve matrix value. Can not create matrix properties. 0 was returned instead.");
+                    }
                 } else if (exp instanceof MathNumberExpressionSymbol) {
                     result = castToComplex((MathNumberExpressionSymbol) exp);
                 } else {
-                    result = dissolveMathExpression(exp);
+                    result = dissolveMathExpression(exp, "");
                 }
             } else if (exp.isMatrixExpression()) {
                 result = null;
@@ -128,7 +135,7 @@ public class ConstructComplexMatrix {
             if (childExpressionSymbol != null) return childExpressionSymbol;
 
         } else if (expressionSymbol.isArithmeticExpression())
-            return dissolveMathExpression(expressionSymbol);
+            return dissolveMathExpression(expressionSymbol, "");
 
         return new Complex(0);
     }
@@ -139,13 +146,16 @@ public class ConstructComplexMatrix {
         if ((expressionSymbol instanceof MathValueExpressionSymbol) && ((MathValueExpressionSymbol) expressionSymbol).isNumberExpression())
             return castToComplex((MathNumberExpressionSymbol) expressionSymbol);
         else if (expressionSymbol.isArithmeticExpression())
-            return dissolveMathExpression(expressionSymbol);
+            return dissolveMathExpression(expressionSymbol, "");
         return null;
     }
 
     private static MathExpressionSymbol resolveName(MathNameExpressionSymbol expressionSymbol) {
-        Symbol symbol = expressionSymbol.getEnclosingScope()
-                .resolve(expressionSymbol.getNameToResolveValue(), expressionSymbol.getKind()).get();
-        return ((MathValueSymbol) symbol).getValue();
+        Optional<Symbol> symbol = expressionSymbol.getEnclosingScope()
+                .resolve(expressionSymbol.getNameToResolveValue(), expressionSymbol.getKind());
+        if (symbol.isPresent())
+            return ((MathValueSymbol) symbol.get()).getValue();
+        else
+            return expressionSymbol;
     }
 }
