@@ -52,8 +52,8 @@ import java.util.*;
 @Mojo(name = "emam-streamtest")
 public class StreamTestMojo extends AbstractMojo {
 
-    private static final String EXEC_FILENAME_UNIX = "main.exec";
-    private static final String EXEC_FILENAME_WINDOWS= "main.exe";
+    private static final String EXEC_FILENAME_UNIX = "build/StreamTests";
+    private static final String EXEC_FILENAME_WINDOWS= "build/StreamTests";
 
 
     private static final Template BUILD_UNIX;
@@ -315,6 +315,8 @@ public class StreamTestMojo extends AbstractMojo {
         generatorCPP.setCheckModelDir(true);
         generatorCPP.setUseAlgebraicOptimizations(false);
         generatorCPP.setUseThreadingOptimization(false);
+        //use cmake
+        generatorCPP.setGenerateCMake(true);
         List<File> files = null;
         try {
             files = generatorCPP.generateFiles(tagging, ecis, mainScope);

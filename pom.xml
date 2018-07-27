@@ -58,15 +58,11 @@
             <version>2.3.23</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>de.monticore.lang.monticar</groupId>-->
-            <!--<artifactId>embedded-montiarc-math</artifactId>-->
-            <!--<version>${Embedded-MontiArc-Math.version}</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>0.0.19-SNAPSHOT</version>
+            <version>0.0.23-SNAPSHOT</version>
         </dependency>
+
     </dependencies>
 </project>
