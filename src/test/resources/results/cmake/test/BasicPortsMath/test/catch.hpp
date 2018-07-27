@@ -10657,7 +10657,7 @@ namespace Catch {
                     case Unit::Nanoseconds:
                         return "ns";
                     case Unit::Microseconds:
-                        return "µs";
+                        return "us";
                     case Unit::Milliseconds:
                         return "ms";
                     case Unit::Seconds:
