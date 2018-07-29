@@ -9,7 +9,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.6-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -20,6 +20,8 @@
         <Embedded-montiarc-math-generator.version>0.0.18-SNAPSHOT</Embedded-montiarc-math-generator.version>
         <Embedded-montiarc-math-roscpp-generator.version>0.0.4-SNAPSHOT</Embedded-montiarc-math-roscpp-generator.version>
         <Embedded-montiarc-math-rosmsg-generator.version>0.0.3-SNAPSHOT</Embedded-montiarc-math-rosmsg-generator.version>
+        <!--TODO: remove with update to new emam version-->
+        <Tagging.version>0.0.6</Tagging.version>
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
@@ -82,6 +84,12 @@
         </dependency>
 
         <!-- MontiCore Dependencies -->
+
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>Tagging</artifactId>
+            <version>${Tagging.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>de.se_rwth.commons</groupId>
