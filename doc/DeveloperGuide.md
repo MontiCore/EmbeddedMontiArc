@@ -89,5 +89,8 @@ Figure 6.1 Interaction between Batch Scripts and Executables.
 ## 7. Models
 
 ## 8. Scenarios
+### 8.1 Integrating a Project.
+### 8.2 Executing a Batch Script with the Click of a Button.
+### 8.3 Adding a Model to EmbeddedMontiArcStudio
 
 ## 9. Frequently Asked Questions
