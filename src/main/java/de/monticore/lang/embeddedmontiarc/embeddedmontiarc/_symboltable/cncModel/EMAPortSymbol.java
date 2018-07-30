@@ -21,6 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant.EMAConstantValue;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
@@ -65,6 +66,8 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
   protected Optional<String> nameDependsOn = Optional.empty();
 
   private Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
+
+  private Optional<EMAConstantValue> constantValue = Optional.empty();
 
   /**
    * use {@link #builder()}
@@ -186,9 +189,17 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
   public String toString() {
     return SymbolPrinter.printPort(this);
   }
-  
+
+  public void setConstantValue(EMAConstantValue constantValue){
+    this.constantValue = Optional.ofNullable(constantValue);
+  }
+
+  public Optional<EMAConstantValue> getConstantValue(){
+    return constantValue;
+  }
+
   public boolean isConstant() {
-    return false;
+    return constantValue.isPresent();
   }
   
   public String getNameWithoutArrayBracketPart() {

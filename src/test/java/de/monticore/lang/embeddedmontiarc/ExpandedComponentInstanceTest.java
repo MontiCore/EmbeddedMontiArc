@@ -26,6 +26,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -126,7 +127,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testConnectorInstancing() {
-        EMAConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         Scope symTab = createSymTab("src/test/resources");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.connectorInstancing", EMAComponentInstanceSymbol.KIND).orElse(null);
@@ -136,7 +137,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
         assertEquals(3, inst.getConnectorInstances().size());
         // Todo: make ConstantPorts Instances
-        //EMAConstantPortSymbol portSymbol = (EMAConstantPortSymbol) inst.getPortInstance("CONSTANTPORT1").get();
+        //ConstantPortHelper portSymbol = (ConstantPortHelper) inst.getPortInstance("CONSTANTPORT1").get();
     }
 
     @Test

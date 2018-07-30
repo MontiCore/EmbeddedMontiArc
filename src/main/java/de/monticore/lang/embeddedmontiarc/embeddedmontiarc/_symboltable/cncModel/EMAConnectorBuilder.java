@@ -31,7 +31,7 @@ import java.util.Optional;
 public class EMAConnectorBuilder {
   protected Optional<String> source = Optional.empty();
   protected Optional<String> target = Optional.empty();
-  protected Optional<EMAConstantPortSymbol> portSymbol = Optional.empty();
+  protected Optional<EMAPortSymbol> portSymbol = Optional.empty();
 
   public static EMAConnectorSymbol clone(EMAConnectorSymbol con) {
     return new EMAConnectorBuilder().setSource(con.getSource()).
@@ -48,7 +48,7 @@ public class EMAConnectorBuilder {
     return this;
   }
  
-  public EMAConnectorBuilder setConstantPortSymbol(EMAConstantPortSymbol portSymbol) {
+  public EMAConnectorBuilder setConstantPortSymbol(EMAPortSymbol portSymbol) {
     this.portSymbol = Optional.of(portSymbol);
     return this;
   }
@@ -59,7 +59,7 @@ public class EMAConnectorBuilder {
       con.setSource(this.source.get());
       con.setTarget(this.target.get());
 	  if(portSymbol.orElse(null) != null) {
-        con.setEMAConstantPortSymbol(portSymbol.get());
+        con.setConstantEMAPortSymbol(portSymbol.get());
 	  }
       return con;
     }
@@ -72,7 +72,7 @@ public class EMAConnectorBuilder {
     connectorInstance.setSource(connector.getSource());
     connectorInstance.setTarget(connector.getTarget());
     connectorInstance.setIsConstantConnector(connector.isConstant);
-    connectorInstance.setEMAConstantPortSymbol(connector.emaConstantPortSymbol);
+    connectorInstance.setConstantEMAPortSymbol(connector.constantEmaPortSymbol);
     connectorInstance.setPackageName(packageName);
     connectorInstance.setFullName(packageName + "." + connectorInstance.getName());
     return connectorInstance;

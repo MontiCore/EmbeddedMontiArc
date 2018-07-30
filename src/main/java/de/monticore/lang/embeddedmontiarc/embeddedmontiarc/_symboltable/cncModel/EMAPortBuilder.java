@@ -40,14 +40,15 @@ public class EMAPortBuilder {
     protected Optional<MiddlewareSymbol> middlewareSymbol = Optional.empty();
 
     public static EMAPortSymbol clone(EMAPortSymbol port) {
-        if (port.isConstant())
-            return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming()).
-                    setTypeReference(port.getTypeReference()).setConstantValue(((EMAConstantPortSymbol) port).getConstantValue()).setASTNode(port.getAstNode())
-                    .buildConstantPort();
-        else {
-            return new EMAPortBuilder().setName(port.getName()).setDirection(port.isIncoming())
-                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig()).setMiddlewareSymbol(port.getMiddlewareSymbol()).build();
-        }
+            return new EMAPortBuilder()
+                    .setName(port.getName())
+                    .setDirection(port.isIncoming())
+                    .setTypeReference(port.getTypeReference())
+                    .setConstantValue(port.getConstantValue().orElse(null))
+                    .setMiddlewareSymbol(port.getMiddlewareSymbol().orElse(null))
+                    .setASTNode(port.getAstNode())
+                    .setConfig(port.isConfig())
+                    .build();
     }
 
     public EMAPortBuilder setDirection(boolean incoming) {
@@ -61,7 +62,7 @@ public class EMAPortBuilder {
     }
 
     public EMAPortBuilder setConstantValue(EMAConstantValue constantValue) {
-        this.constantValue = Optional.of(constantValue);
+        this.constantValue = Optional.ofNullable(constantValue);
         return this;
     }
 
@@ -74,8 +75,8 @@ public class EMAPortBuilder {
         this.astNode = astNode;
         return this;
     }
-    public EMAPortBuilder setMiddlewareSymbol(Optional<MiddlewareSymbol> middlewareSymbol){
-        this.middlewareSymbol = middlewareSymbol;
+    public EMAPortBuilder setMiddlewareSymbol(MiddlewareSymbol middlewareSymbol){
+        this.middlewareSymbol = Optional.ofNullable(middlewareSymbol);
         return this;
     }
 
@@ -90,6 +91,8 @@ public class EMAPortBuilder {
             EMAPortSymbol p = new EMAPortSymbol(this.name.get());
             p.setDirection(this.incoming.get());
             p.setTypeReference(this.typeReference.get());
+            if(constantValue.isPresent())
+                p.setConstantValue(constantValue.get());
             if (astNode.isPresent())
                 p.setAstNode(astNode.get());
             if (config.isPresent())
@@ -101,25 +104,6 @@ public class EMAPortBuilder {
         Log.error("not all parameters have been set before to build the port symbol");
         throw new Error("not all parameters have been set before to build the port symbol");
     }
-
-    public EMAConstantPortSymbol buildConstantPort() {
-        if (typeReference == null) {
-            Log.error("not all parameters have been set before to build the port symbol");
-            throw new Error("not all parameters have been set before to build the port symbol");
-        }
-        EMAConstantPortSymbol p = new EMAConstantPortSymbol(name.get());
-        p.setDirection(this.incoming.get());
-        p.setTypeReference(typeReference.get());
-        p.setConstantValue(constantValue.get());
-        if (astNode.isPresent())
-            p.setAstNode(astNode.get());
-        if (config.isPresent())
-            p.setConfig(config.get());
-        if(middlewareSymbol.isPresent())
-            p.setMiddlewareSymbol(middlewareSymbol.get());
-        return p;
-    }
-
 
     public static EMAPortInstanceSymbol instantiate(EMAPortSymbol port, String packageName) {
         EMAPortInstanceSymbol portInstance = new EMAPortInstanceSymbol(port.getName());

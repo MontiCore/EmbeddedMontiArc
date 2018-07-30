@@ -21,8 +21,8 @@
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc.unit.constant;
 
 /**
- * The base type of every constant that can be stored by a EMAConstantPortSymbol
- * which is used by a ConstantConnector
+ * The base type of every constant that can be stored by a constant EMAPortSymbol
+ * which is used by a constant Connector
  */
 public abstract class EMAConstantValue<T> {
     protected T value;
