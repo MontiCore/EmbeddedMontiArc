@@ -8,6 +8,9 @@
 4. [**Coordinator**](#4-coordinator)
 5. [**Batch Scripts**](#5-batch-scripts)
 6. [**Executables**](#6-executables)
+7. [**Models**](#7-models)
+8. [**Scenarios**](#8-scenarios)
+9. [**Frequently Asked Questions**](#9-frequently-asked-questions)
 
 ## 1. Introduction
 EMAStudioBuilder, as the name suggests, is the project responsible for building
@@ -32,18 +35,6 @@ the necessary steps to integrate a new project.
 
 Figure 2.1 Overview of EmbeddedMontiArcStudio's architecture.
 
-<img src="media/images/ide-coordinator.png" width="500"/>
-
-Figure 2.2 Interaction between IDE and Coordinator.
-
-<img src="media/images/coordinator-batch-scripts.png" width="500"/>
-
-Figure 2.3 Interaction between Coordinator and Batch Scripts.
-
-<img src="media/images/batch-scripts-executables.png" width="500"/>
-
-Figure 2.4 Interaction between Batch Scripts and Executables.
-
 ## 3. IDE
 <img src="media/images/ide.png" width="500"/>
 
@@ -54,18 +45,49 @@ Figure 3.1 Overview of the plugin functionality of the IDE.
 Figure 3.2 Overview of the structure of a plugin.
 
 ## 4. Coordinator
+<img src="media/images/ide-coordinator.png" width="500"/>
+
+Figure 4.1 Interaction between IDE and Coordinator.
+
 <img src="media/images/coordinator.png" width="500"/>
 
-Figure 4.1 Overview of the structure of the Coordinator.
+Figure 4.2 Overview of the structure of the Coordinator.
 
 <img src="media/images/constants.png" width="500"/>
 
-Figure 4.2 Overview of the included information.
+Figure 4.3 Overview of the information included in Constants.
 
 <img src="media/images/app.png" width="360"/>
 
-Figure 4.3 Overview of the included settings.
+Figure 4.4 Overview of the settings included in App.
 
 ## 5. Batch Scripts
+<img src="media/images/coordinator-batch-scripts.png" width="500"/>
+
+Figure 5.1 Interaction between Coordinator and Batch Scripts.
 
 ## 6. Executables
+As established in the previous section, the Coordinator executes Batch Scripts designed to
+prepare and execute an integrated project. In order to achieve this, these scripts make use of
+installed executables. Available executables are, amongst others, the executables provided by
+the Operating System, but also executables installed as dependencies for EmbeddedMontiArcStudio,
+such as java or g++. An overview of this can be seen in Figure 6.1.
+
+In order to add an executable as dependency, a developer has to add an entry to
+[`dependencies.txt`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioBuilder/blob/master/dependencies.txt#L31)
+which links to a ZIP archive containing the executable and all of its dependencies. Furthermore,
+in order to make the executable available as command in batch scripts, one has to add its
+parent folder to the
+[`PATH`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioBuilder/blob/master/EmbeddedMontiArcStudio/scripts/shared/variables.bat#L16)
+environmental variable. Alternatively, one has to specify the relative or absolute path to the
+executable.
+
+<img src="media/images/batch-scripts-executables.png" width="500"/>
+
+Figure 6.1 Interaction between Batch Scripts and Executables.
+
+## 7. Models
+
+## 8. Scenarios
+
+## 9. Frequently Asked Questions
