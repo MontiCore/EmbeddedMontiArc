@@ -5,7 +5,9 @@ import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
 import de.monticore.lang.montiarc.utilities.tools.ChecksumChecker;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.*;
@@ -20,6 +22,7 @@ import java.util.Map;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestStreamTestMojo {
 
     protected static StreamTestMojo getNewStreamTestMojo(String path, String pathOut){
@@ -107,11 +110,11 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_BuildFiles(){
+    public void Test_1_BuildFiles(){
         String path = "./target/tmp/Test_BuildFiles";
         Map<String,String> checksums = new HashMap<>();
-        checksums.put(path+"/1/cpp/build.bat", "EC86DA4F2CD7C8FFB1DC82E39760D5187033413B56A108591E436C2558290F2D");
-        checksums.put(path+"/1/cpp/build.sh", "74EE76D5B2B070ED1452C5B765A4B2C335606E2F33F817DF69C960967CF7496C");
+        checksums.put(path+"/1/cpp/build.bat", "A4FC47C425A2E907DD5540AED2B0364EF4D6D21EE438BC6314DDCC878F75E719");
+        checksums.put(path+"/1/cpp/build.sh", "60016990631B279414F7476AD7C3AA7957B31C31A2E66598CC53EC4B22666879");
 
 
         StreamTestMojo stm = getNewStreamTestMojo("", path+"/1");
@@ -134,8 +137,8 @@ public class TestStreamTestMojo {
 
 
         checksums.clear();
-        checksums.put(path+"/2/cpp/build.bat", "A9B9695A51E40E683B31DD7B3774F71DC04DBA9DA18A83A2788EE3965BFFDBDE");
-        checksums.put(path+"/2/cpp/build.sh", "74EE76D5B2B070ED1452C5B765A4B2C335606E2F33F817DF69C960967CF7496C");
+        checksums.put(path+"/2/cpp/build.bat", "99F03CC4A3C89FD4616AE24544A9ED6DDFD28FF3C97F2A459782C74200BA84F8");
+        checksums.put(path+"/2/cpp/build.sh", "60016990631B279414F7476AD7C3AA7957B31C31A2E66598CC53EC4B22666879");
 
 
         stm = getNewStreamTestMojo("", path+"/2");
