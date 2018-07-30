@@ -114,6 +114,8 @@ public class EMAPortBuilder {
         portInstance.setConfig(port.isConfig());
         if(port.getMiddlewareSymbol().isPresent())
             portInstance.setMiddlewareSymbol(port.getMiddlewareSymbol().get());
+        if(port.getConstantValue().isPresent())
+            portInstance.setConstantValue(port.getConstantValue().get());
         portInstance.setPackageName(packageName);
         portInstance.setFullName(packageName + "." + port.getName());
         return portInstance;
