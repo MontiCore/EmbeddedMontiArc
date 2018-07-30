@@ -20,10 +20,7 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConstantPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.TypesPrinter;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
 import de.se_rwth.commons.Joiners;
@@ -59,7 +56,7 @@ public class EMAConnectorInstanceSymbol extends EMAConnectorSymbol implements EM
     /**
      * is null if not a constantConnector
      */
-    protected EMAConstantPortSymbol emaConstantPortSymbol = null;
+    protected EMAPortSymbol constantEmaPortSymbol = null;
 
     /**
      * use {@link #builder()}
@@ -80,9 +77,9 @@ public class EMAConnectorInstanceSymbol extends EMAConnectorSymbol implements EM
         return isConstant;
     }
 
-    public void setEMAConstantPortSymbol(EMAConstantPortSymbol portSymbol) {
-        this.emaConstantPortSymbol = portSymbol;
-        setIsConstantConnector(true);
+    public void setConstantEMAPortSymbol(EMAPortSymbol portSymbol) {
+        this.constantEmaPortSymbol = portSymbol;
+        setIsConstantConnector(portSymbol != null && portSymbol.isConstant());
     }
 
     /**

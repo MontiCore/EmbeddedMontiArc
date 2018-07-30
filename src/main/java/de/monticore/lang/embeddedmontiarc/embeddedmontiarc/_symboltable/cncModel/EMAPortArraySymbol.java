@@ -122,19 +122,12 @@ public class EMAPortArraySymbol extends EMAPortSymbol {
     }
 
     private void createPortSymbolForArrayIndex(EMAComponentSymbolReference emaComponentSymbolReference, ASTPort node, String name, MCTypeReference<? extends MCTypeSymbol> typeRef) {
-        EMAPortSymbol ps;
-        if (name.startsWith("CONSTANTPORT")) {
-            ps = new EMAConstantPortSymbol(name);
-        } else {
-            ps = new EMAPortSymbol(name);
-        }
+        EMAPortSymbol ps = new EMAPortSymbol(name);
         ps.setNameDependsOn(nameSizeDependsOn);
         ps.setTypeReference(typeRef);
         ps.setDirection(node.isIncoming());
 
         getEnclosingScope().getAsMutableScope().add(ps);
-
-        //emastc.addToScopeAndLinkWithNode(ps, node);
 
         Log.debug(name + " " + emaComponentSymbolReference.getAllIncomingPorts().size(), "Added EMAPortSymbol From PortArray:");
     }

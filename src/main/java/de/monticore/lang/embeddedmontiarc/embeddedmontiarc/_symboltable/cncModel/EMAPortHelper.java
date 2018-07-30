@@ -23,6 +23,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTArrayAccess;
@@ -340,7 +341,7 @@ public class EMAPortHelper {
             de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector node,
             EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         int counter = 0, targetnum = 0;
-        EMAConstantPortSymbol emaConstantPortSymbol = EMAConstantPortSymbol.createConstantPortSymbol(node,
+        EMAPortSymbol emaConstantPortSymbol = ConstantPortHelper.createConstantPortSymbol(node,
                 symbolTableCreator);
         symbolTableCreator.addToScope(emaConstantPortSymbol);
         for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
@@ -352,7 +353,7 @@ public class EMAPortHelper {
             Log.debug("" + targetName, "target");
 
             EMAConnectorSymbol sym = new EMAConnectorSymbol(targetName);
-            sym.setEMAConstantPortSymbol(emaConstantPortSymbol);
+            sym.setConstantEMAPortSymbol(emaConstantPortSymbol);
             sym.setSource(emaConstantPortSymbol.getName());
             sym.setTarget(targetName);
             Log.debug(sym.getTarget(), "TARGETNAME SET TO");

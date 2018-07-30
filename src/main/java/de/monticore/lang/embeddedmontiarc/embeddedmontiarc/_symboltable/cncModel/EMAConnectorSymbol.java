@@ -58,7 +58,7 @@ public class EMAConnectorSymbol extends CommonSymbol implements EMAElementSymbol
     /**
      * is null if not a constantConnector
      */
-    protected EMAConstantPortSymbol emaConstantPortSymbol = null;
+    protected EMAPortSymbol constantEmaPortSymbol = null;
 
     /**
      * use {@link #builder()}
@@ -83,9 +83,9 @@ public class EMAConnectorSymbol extends CommonSymbol implements EMAElementSymbol
         return isConstant;
     }
 
-    public void setEMAConstantPortSymbol(EMAConstantPortSymbol portSymbol) {
-        this.emaConstantPortSymbol = portSymbol;
-        setIsConstantConnector(true);
+    public void setConstantEMAPortSymbol(EMAPortSymbol portSymbol) {
+        this.constantEmaPortSymbol = portSymbol;
+        setIsConstantConnector(portSymbol != null && portSymbol.isConstant());
     }
 
     /**
@@ -164,7 +164,7 @@ public class EMAConnectorSymbol extends CommonSymbol implements EMAElementSymbol
      */
     public EMAPortSymbol getSourcePort() {
         if (isConstant())
-            return emaConstantPortSymbol;
+            return constantEmaPortSymbol;
         return getPort(this.getSource());
     }
 

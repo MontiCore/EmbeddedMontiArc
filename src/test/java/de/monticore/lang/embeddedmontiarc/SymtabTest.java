@@ -264,10 +264,10 @@ public class SymtabTest extends AbstractSymtabTest {
 
         EMAConnectorSymbol emaConnectorSymbol = cs.getConnector("steering").get();
         assertTrue(emaConnectorSymbol.getSourcePort().isConstant());
-        EMAConstantPortSymbol cps = (EMAConstantPortSymbol) emaConnectorSymbol.getSourcePort();
-        assertTrue(cps.getConstantValue().isSIUnit());
+        EMAPortSymbol cps =  emaConnectorSymbol.getSourcePort();
+        assertTrue(cps.getConstantValue().get().isSIUnit());
 
-        EMAConstantSIUnit constantSIUnit = (EMAConstantSIUnit) cps.getConstantValue();
+        EMAConstantSIUnit constantSIUnit = (EMAConstantSIUnit) cps.getConstantValue().get();
         assertEquals(0.1, constantSIUnit.getRational().doubleValue(), 0.0000000001);
         assertEquals("cm", constantSIUnit.getUnit().toString());
 
@@ -301,12 +301,12 @@ public class SymtabTest extends AbstractSymtabTest {
         //check that this is a constant connector
         assertTrue(emaConnectorSymbol.isConstant());
         assertTrue(emaConnectorSymbol.getSourcePort().isConstant());
-        EMAConstantPortSymbol cps = ((EMAConstantPortSymbol) emaConnectorSymbol.getSourcePort());
+        EMAPortSymbol cps = emaConnectorSymbol.getSourcePort();
 
-        assertTrue(cps.getConstantValue().isBoolean());
+        assertTrue(cps.getConstantValue().get().isBoolean());
 
 
-        assertTrue((Boolean) cps.getConstantValue().getValue() == false);
+        assertEquals(false, cps.getConstantValue().get().getValue());
 
     }
 
