@@ -110,15 +110,13 @@ public class TestStreamTestMojo {
     public void Test_BuildFiles(){
         String path = "./target/tmp/Test_BuildFiles";
         Map<String,String> checksums = new HashMap<>();
-        checksums.put(path+"/1/cpp/build.bat", "0197617BF63A56A05D7AACB8F8C66F23996C66E80DA076D9FD0115087C74379B");
-        checksums.put(path+"/1/cpp/build.sh", "16E3427EB84C141712B5BA818286CD7DECDCEC53B9F8BB7F9D84FFA12DA2BBD1");
+        checksums.put(path+"/1/cpp/build.bat", "EC86DA4F2CD7C8FFB1DC82E39760D5187033413B56A108591E436C2558290F2D");
+        checksums.put(path+"/1/cpp/build.sh", "74EE76D5B2B070ED1452C5B765A4B2C335606E2F33F817DF69C960967CF7496C");
 
 
         StreamTestMojo stm = getNewStreamTestMojo("", path+"/1");
-        stm.setCppInludePaths(new String[]{});
-        stm.addCppIncludePaths("/a");
-        stm.addCppIncludePaths("/b");
-        stm.addCppIncludePaths("/c");
+        stm.setUsemingw(false);
+
 
         try {
             stm.createBuildFiles();
@@ -136,12 +134,12 @@ public class TestStreamTestMojo {
 
 
         checksums.clear();
-        checksums.put(path+"/2/cpp/build.bat", "0197617BF63A56A05D7AACB8F8C66F23996C66E80DA076D9FD0115087C74379B");
-        checksums.put(path+"/2/cpp/build.sh", "86E280A7D600222912812AEB134B924358EC5CD6F2E24F6C06AD73AE1DC5F3A6");
+        checksums.put(path+"/2/cpp/build.bat", "A9B9695A51E40E683B31DD7B3774F71DC04DBA9DA18A83A2788EE3965BFFDBDE");
+        checksums.put(path+"/2/cpp/build.sh", "74EE76D5B2B070ED1452C5B765A4B2C335606E2F33F817DF69C960967CF7496C");
 
 
         stm = getNewStreamTestMojo("", path+"/2");
-        stm.setCppInludePaths(new String[]{});
+        stm.setUsemingw(true);
 
         try {
             stm.createBuildFiles();

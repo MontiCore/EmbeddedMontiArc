@@ -19,5 +19,5 @@
 rm -rf build
 mkdir build
 cd build
-cmake .. > build.log
-make StreamTests >> build.log
+cmake ..
+cmake --build . --target StreamTests

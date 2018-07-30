@@ -53,7 +53,7 @@ import java.util.*;
 public class StreamTestMojo extends AbstractMojo {
 
     private static final String EXEC_FILENAME_UNIX = "build/StreamTests";
-    private static final String EXEC_FILENAME_WINDOWS= "build/StreamTests";
+    private static final String EXEC_FILENAME_WINDOWS= "build/StreamTests.exe";
 
 
     private static final Template BUILD_UNIX;
@@ -143,6 +143,15 @@ public class StreamTestMojo extends AbstractMojo {
     }
     public void setWrapperTestExtension(String wrapperTestExtension) {
         this.wrapperTestExtension = wrapperTestExtension;
+    }
+
+    @Parameter(name = "usemingw")
+    private boolean usemingw = true;
+    public boolean isUsemingw(){
+        return usemingw;
+    }
+    public void setUsemingw(boolean usemingw) {
+        this.usemingw = usemingw;
     }
 
     //</editor-fold>
@@ -374,7 +383,7 @@ public class StreamTestMojo extends AbstractMojo {
             }*/
             if(!Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), execfilename).toFile().exists()){
                 for(String l : allLines){
-                    getLog().error("g++ out: "+l);
+                    getLog().error("Build error out: "+l);
                 }
                 throw new MojoFailureException("Can't compile "+componentSymbol.getFullName());
             }
@@ -406,7 +415,7 @@ public class StreamTestMojo extends AbstractMojo {
         // Todo write test
         ProcessBuilder processBuilder;
         if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder=new ProcessBuilder(EXEC_FILENAME_WINDOWS);
+            processBuilder=new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), EXEC_FILENAME_WINDOWS).toAbsolutePath().toString());
         }else{
             processBuilder=new ProcessBuilder("./"+EXEC_FILENAME_UNIX);
         }
@@ -477,7 +486,7 @@ public class StreamTestMojo extends AbstractMojo {
             root.put("user", "Big Joe");
             root.put("cppIncludes", cppInludePaths);
             root.put("gppCommand", this.gpp);
-
+            root.put("usemingw", this.usemingw);
 
             // BUILD.sh
             root.put("execName", EXEC_FILENAME_UNIX);
