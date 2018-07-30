@@ -35,6 +35,6 @@ masterJobWindows:
   tags:
   - Windows10
   except:
-  -master
+  - master
 
 
