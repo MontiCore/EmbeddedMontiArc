@@ -9,7 +9,7 @@
 5. [**Batch Scripts**](#5-batch-scripts)
 6. [**Executables**](#6-executables)
 7. [**Models**](#7-models)
-8. [**Scenarios**](#8-scenarios)
+8. [**Scenario**](#8-scenario)
 9. [**Frequently Asked Questions**](#9-frequently-asked-questions)
 
 ## 1. Introduction
@@ -88,9 +88,27 @@ Figure 6.1 Interaction between Batch Scripts and Executables.
 
 ## 7. Models
 
-## 8. Scenarios
-### 8.1 Integrating a Project.
-### 8.2 Executing a Batch Script with the Click of a Button.
-### 8.3 Adding a Model to EmbeddedMontiArcStudio
+## 8. Scenario
+Imagine that you are in the following situation. You are a developer for the EmbeddedMontiArc
+subgroup and you have developed a language called `EmbeddedMontiArcBLA` which is the `BLA`
+language embedded into the EmbeddedMontiArc language. BLA stands for **B**iologically
+**L**inked **A**rchitecture (what else did you expect?) and is a language for the
+architectural description of biological components. Based on this newly created language
+(which if I may say so might shape the future of cyber-biological systems), you have developed
+a Java application which you called `VisualizationBLA` and which visualizes the links between
+different biological components. Like a good Software Engineer, you have created a collection
+of EmbeddedMontiArcBLA models which model the behavior of an intelligent exoskeleton
+(awesome stuff) in order to test your application (Wait, you did not test your application?
+There is still time, I will not tell on you). Your fully functional and tested application
+expects three inputs. The first one being the fully qualified name of the main model, namely
+`de.rwth.se.Exoskeleton`, the second one being the model path
+`C:\Users\Peter\Exoskeleton\input` and the last one being the output path
+`C:\Users\Peter\Exoskeleton\output` (Wait, your name is not Peter? Well, it is now). Your
+supervisor, the stakeholders (or for whomever you are developing for) like(s) your project.
+You are already expecting a good grade or a promotion. Heck, maybe you are already planning on
+going on vacation after all that hard work you have done. But hold your horses, life is not
+that simple, because you have been given a last task to perform: integrating your project into
+EmbeddedMontiArcStudio. Now, that is a scary task if I have ever seen one, but do not worry,
+for I will guide you through the necessary steps.
 
 ## 9. Frequently Asked Questions
