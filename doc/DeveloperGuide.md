@@ -111,4 +111,56 @@ that simple, because you have been given a last task to perform: integrating you
 EmbeddedMontiArcStudio. Now, that is a scary task if I have ever seen one, but do not worry,
 for I will guide you through the necessary steps.
 
+First of all, you will have to ensure that your application runs as standalone application
+when started with the `java` executable. In order to do so, you will have to pack it as
+Java Archive (JAR) with dependencies. This can be achieved by adding a plugin entry to the
+`pom.xml` of your Maven project (Wait, you did not use Maven? Then what are you waiting for,
+time to switch). How this entry has to look like can be seen in this
+[`pom.xml`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/VisualizationEMAM/blob/master/pom.xml#L166).
+Executing the `package` step of Maven will now generate a JAR with dependencies into the
+`target` folder. You can rename this JAR to whatever descriptive name you can think of, but
+for the sake of simplicity, let us assume that you renamed it to `visualization-bla.jar`.
+
+The next step is the creation of a ZIP archive which holds a folder containing the previously
+generated JAR with dependencies. Read the previous sentence once more. It is important that
+the ZIP archive holds a folder which then holds the JAR and not directly the JAR, because it
+will lead to a better structured integration. Therefore, the created ZIP archive should look
+like this:
+
+```
+/
+|-- visualization-bla/
+    |-- visualization-bla.jar
+```
+
+If you have double-checked everything, you can continue with uploading the ZIP archive to
+`Sciebo` (Wait, you do not have access to `Sciebo`? Well, nagging the one in charge has
+proven to be quite successful in this kind of situations). After having logged into `Sciebo`,
+you should be able to see a directory `dependencies`. In this directory, you need to create
+a new directory while respecting the following format `YY.MM.DD-ProjectName`. In your case,
+this would be the folder `YY.MM.DD-visualization-bla`. This newly created folder is also the
+upload destination for the previously created ZIP archive.
+
+With this, the preparations are completed and we can move to the core of the integration.
+In order to do so, you will have to clone this repository. In the root directory, you should
+find a `dependencies.txt` which needs to be modified in order to register the previously
+uploaded archive as dependency. `dependencies.txt` consists of two different kinds of entries.
+The first kind of entries are directories and are marked with a single * as first character
+in the line. The second kind of entries are the URLs to the dependencies and are marked with
+two ** as first characters in the line. During build, the dependencies will be downloaded and
+extracted to the folder under which they have been registered. Let us assume that you want to
+have your archive extracted under the root directory. In order to achieve this, you will have
+to add the following entry to `dependencies.txt`:
+
+```
+* EmbeddedMontiArcStudio\
+[...]
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2FYY.MM.DD.visualization-bla&files=visualization-bla.zip
+``` 
+
+<!-- Models -->
+<!-- Batch Script -->
+<!-- Coordinator -->
+<!-- IDE -->
+
 ## 9. Frequently Asked Questions
