@@ -53,7 +53,7 @@ public class SymbolNameSymbolCreator implements TagSymbolCreator {
     for (ASTTag element : unit.getTagBody().getTagList()) {
            element.getTagElementList().stream()
               .filter(t -> t.getName().equals("SymbolName"))
-              .filter(t -> !t.getTagValueOpt().isPresent())
+              .filter(t -> t.isPresentTagValue())
               .map(t -> checkContent(t.getTagValueOpt().get()))
               .filter(r -> r != null)
           .forEachOrdered(v ->
@@ -76,7 +76,7 @@ public class SymbolNameSymbolCreator implements TagSymbolCreator {
       Log.enableFailQuick(false);
       long errorCount = Log.getErrorCount();
 
-      ast = parser.parseStringTagValue(s);
+      ast = parser.parse_StringStringTagValue(s);
 
       Log.enableFailQuick(enableFailQuick);
       if (Log.getErrorCount() > errorCount) {

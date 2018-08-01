@@ -147,6 +147,7 @@ public class GeneratorTest {
     TagSchemaGenerator generator = new TagSchemaGenerator(setup);
     Map<String, String> symbolScopeMap = new LinkedHashMap<>();
     symbolScopeMap.put("CDType", "NameScope");
+    symbolScopeMap.put("OCLFile", "NameScope");
     generator.generate(Paths.get("OCL2JavaTags"), Paths.get("src/test/resources/tags"), symbolScopeMap);
 
   }
