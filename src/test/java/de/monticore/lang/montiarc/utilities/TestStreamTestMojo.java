@@ -1,8 +1,10 @@
 package de.monticore.lang.montiarc.utilities;
 
+import de.monitcore.lang.montiarc.utilities.GeneratorEnum;
 import de.monitcore.lang.montiarc.utilities.StreamTestMojo;
 import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
 import de.monticore.lang.montiarc.utilities.tools.ChecksumChecker;
+import de.se_rwth.commons.logging.Log;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.junit.FixMethodOrder;
@@ -36,18 +38,19 @@ public class TestStreamTestMojo {
 
         stm.setWrapperTestExtension("_TestWrapper");
 
-        stm.setGpp("g++");
-        stm.setCppInludePaths(new String[]{});
+        //stm.setGpp("g++");
+        //stm.setCppInludePaths(new String[]{});
+        //stm.setUsemingw(false);
         //
         //stm.addCppIncludePaths("/usr/local/Cellar/armadillo/8.500.1/include");
+
+        stm.setGenerator(GeneratorEnum.MinGW);
 
         return stm;
     }
 
-
-
     @Test
-    public void Test_execute_ParserTests(){
+    public void Test_03_execute_ParserTests(){
         String path = "./src/test/resources/emam/execute_ParserTests";
         String pathValid = path+"/valid";
         String pathInvalid = path+"/invalid";;
@@ -84,7 +87,7 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_setupTmpFolder(){
+    public void Test_02_setupTmpFolder(){
         String path = "./src/test/resources/emam/oneTest";
         String pathTMP = "./target/tmp/Test_setupTmpFolder";
         //test for valid emam and stream files
@@ -110,47 +113,46 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_1_BuildFiles(){
+    public void Test_01_BuildFiles(){
+
+
+
         String path = "./target/tmp/Test_BuildFiles";
         Map<String,String> checksums = new HashMap<>();
-        checksums.put(path+"/1/cpp/build.bat", "A4FC47C425A2E907DD5540AED2B0364EF4D6D21EE438BC6314DDCC878F75E719");
-        checksums.put(path+"/1/cpp/build.sh", "60016990631B279414F7476AD7C3AA7957B31C31A2E66598CC53EC4B22666879");
-
-
-        StreamTestMojo stm = getNewStreamTestMojo("", path+"/1");
-        stm.setUsemingw(false);
-
-
-        try {
-            stm.createBuildFiles();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
-        try {
-            ChecksumChecker.checkFilesWithAssert(checksums);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
+        checksums.put(path+"/1/cpp/build.bat", "265A13D9EF578E8EEC87DB4AD083FF6731A6DEE37B6587BAB679FB17A667C927");
+        checksums.put(path+"/1/cpp/build.sh", "0387937222E3D918568596DAD2B86330ACAB610F00DFF94D73207CE3A615081C");
+        Log.info("BuildFiles 1 : NONE", "");
+        this.InnerTest_01_BuildFiles(GeneratorEnum.NONE, path+"/1", checksums);
 
         checksums.clear();
-        checksums.put(path+"/2/cpp/build.bat", "99F03CC4A3C89FD4616AE24544A9ED6DDFD28FF3C97F2A459782C74200BA84F8");
-        checksums.put(path+"/2/cpp/build.sh", "60016990631B279414F7476AD7C3AA7957B31C31A2E66598CC53EC4B22666879");
+        checksums.put(path+"/2/cpp/build.bat", "9C7C2B9C55502BB4429269A54E346AAD6020E3E50C1C33A3318E56F02A4D6FD8");
+        checksums.put(path+"/2/cpp/build.sh", "0387937222E3D918568596DAD2B86330ACAB610F00DFF94D73207CE3A615081C");
+        Log.info("BuildFiles 2 : VS2017", "");
+        this.InnerTest_01_BuildFiles(GeneratorEnum.VS2017, path+"/2", checksums);
 
+        checksums.clear();
+        checksums.put(path+"/3/cpp/build.bat", "9C7C2B9C55502BB4429269A54E346AAD6020E3E50C1C33A3318E56F02A4D6FD8");
+        checksums.put(path+"/3/cpp/build.sh", "0387937222E3D918568596DAD2B86330ACAB610F00DFF94D73207CE3A615081C");
+        Log.info("BuildFiles 3 : VisualStudio2017", "");
+        this.InnerTest_01_BuildFiles(GeneratorEnum.VisualStudio2017, path+"/3", checksums);
 
-        stm = getNewStreamTestMojo("", path+"/2");
-        stm.setUsemingw(true);
+        checksums.clear();
+        checksums.put(path+"/4/cpp/build.bat", "41D6D2B269B0B3A5E4D72F296A87604A52D9957680CF2A0074DEB39F9B2D0744");
+        checksums.put(path+"/4/cpp/build.sh", "0387937222E3D918568596DAD2B86330ACAB610F00DFF94D73207CE3A615081C");
+        Log.info("BuildFiles 4 : MinGW", "");
+        this.InnerTest_01_BuildFiles(GeneratorEnum.MinGW, path+"/4", checksums);
+    }
 
+    private void InnerTest_01_BuildFiles(GeneratorEnum ge, String path, Map<String,String> checksums){
+
+        StreamTestMojo stm = getNewStreamTestMojo("", path);
+        stm.setGenerator(ge);
         try {
             stm.createBuildFiles();
         } catch (MojoExecutionException e) {
             e.printStackTrace();
             fail(e.getMessage());
         }
-
         try {
             ChecksumChecker.checkFilesWithAssert(checksums);
         } catch (IOException e) {
@@ -161,13 +163,13 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_execution_valid() {
+    public void Test_04_execution_valid() {
         //valid
         ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/Test_execution/valid");
     }
 
     @Test
-    public void Test_execution_invalid() {
+    public void Test_05_execution_invalid() {
 
         //valid
         StreamTestMojo stm = getNewStreamTestMojo("./src/test/resources/emam/execution/invalid", "./target/tmp/Test_execution/invalid");
@@ -184,7 +186,7 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_execution_many() {
+    public void Test_10_execution_many() {
         ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
     }
 
@@ -203,5 +205,9 @@ public class TestStreamTestMojo {
         }
     }
 
+    @Test
+    public void Test_06_execution_with_struct(){
+        ValidInner("./src/test/resources/emam/struct", "./target/tmp/struct");
+    }
 
 }

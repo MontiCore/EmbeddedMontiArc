@@ -14,6 +14,8 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
 import de.monticore.lang.monticar.generator.order.nfp.TagDelayTagSchema.TagDelayTagSchema;
@@ -26,6 +28,8 @@ import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit
 import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._parser.StructParser;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.se_rwth.commons.Joiners;
@@ -53,7 +57,7 @@ import java.util.*;
 public class StreamTestMojo extends AbstractMojo {
 
     private static final String EXEC_FILENAME_UNIX = "build/StreamTests";
-    private static final String EXEC_FILENAME_WINDOWS= "build/StreamTests.exe";
+    //private static final String EXEC_FILENAME_WINDOWS= "build/StreamTests.exe";
 
 
     private static final Template BUILD_UNIX;
@@ -97,16 +101,16 @@ public class StreamTestMojo extends AbstractMojo {
         this.pathTest = pathTest;
     }
 
-    @Parameter(property = "gpp", defaultValue = "g++")
+    /*@Parameter(property = "gpp", defaultValue = "g++")
     private String gpp;
     public String getGpp() {
         return gpp;
     }
     public void setGpp(String gpp) {
         this.gpp = gpp;
-    }
+    }*/
 
-    @Parameter
+    /*@Parameter
     private String[] cppInludePaths;
     public String[] getCppInludePaths(){
         return cppInludePaths;
@@ -118,7 +122,7 @@ public class StreamTestMojo extends AbstractMojo {
         int n = cppInludePaths.length;
         cppInludePaths = Arrays.copyOf(cppInludePaths, n + 1);
         cppInludePaths[n] = newItem;
-    }
+    }*/
 
     @Parameter(property = "pathTmpOut", defaultValue = "./target/tmp")
     private String pathTmpOut;
@@ -145,13 +149,24 @@ public class StreamTestMojo extends AbstractMojo {
         this.wrapperTestExtension = wrapperTestExtension;
     }
 
-    @Parameter(name = "usemingw")
+    /*@Parameter(name = "usemingw")
     private boolean usemingw = true;
     public boolean isUsemingw(){
         return usemingw;
     }
     public void setUsemingw(boolean usemingw) {
         this.usemingw = usemingw;
+    }*/
+
+
+
+    @Parameter(defaultValue = "NONE")
+    private GeneratorEnum generator;
+    public GeneratorEnum getGenerator() {
+        return generator;
+    }
+    public void setGenerator(GeneratorEnum generator) {
+        this.generator = generator;
     }
 
     //</editor-fold>
@@ -164,6 +179,8 @@ public class StreamTestMojo extends AbstractMojo {
 
         this.parser.put("emam", new EmbeddedMontiArcMathParser());
         this.parser.put("stream", new StreamUnitsParser());
+        this.parser.put("struct", new StructParser());
+        this.parser.put("enum", new EnumLangParser());
     }
 
     protected GlobalScope mainScope = null;
@@ -172,7 +189,8 @@ public class StreamTestMojo extends AbstractMojo {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
         fam.addModelingLanguage(new StreamUnitsLanguage());
-
+        fam.addModelingLanguage(new StructLanguage());
+        fam.addModelingLanguage(new EnumLangLanguage());
         final ModelPath mp_main = new ModelPath();
 
         mp_main.addEntry(Paths.get(this.pathMain));
@@ -221,7 +239,7 @@ public class StreamTestMojo extends AbstractMojo {
         this.init();
 
         getLog().debug("Cocos test of"+this.pathMain);
-        Map<String, File> mainFiles = SearchFiles.searchFilesMap(this.pathMain, "emam", "stream");
+        Map<String, File> mainFiles = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum");
         List<String> errorFiles = this.execute_ParserTests(mainFiles);
 
         getLog().debug("Cocos test of"+this.pathTest);
@@ -349,17 +367,19 @@ public class StreamTestMojo extends AbstractMojo {
         String execfilename;
         if (SystemUtils.IS_OS_WINDOWS) {
             //processBuilder = new ProcessBuilder("../build.bat");
-            processBuilder = new ProcessBuilder("cmd", "/C", Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "../build.bat").toAbsolutePath().toString());
-            execfilename = EXEC_FILENAME_WINDOWS;
+            processBuilder = new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "../build.bat").toAbsolutePath().toString());
+            execfilename = this.EXEC_FILENAME_WINDOWS();
         }else{
             processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
             execfilename = EXEC_FILENAME_UNIX;
         }
+
         processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
         try {
             getLog().debug("Compiling "+componentSymbol.getFullName());
             Process process = processBuilder.start();
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            //BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             List<String> allLines = new ArrayList<>();
             while ((line = in.readLine()) != null) {
@@ -415,7 +435,7 @@ public class StreamTestMojo extends AbstractMojo {
         // Todo write test
         ProcessBuilder processBuilder;
         if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder=new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), EXEC_FILENAME_WINDOWS).toAbsolutePath().toString());
+            processBuilder=new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), this.EXEC_FILENAME_WINDOWS()).toAbsolutePath().toString());
         }else{
             processBuilder=new ProcessBuilder("./"+EXEC_FILENAME_UNIX);
         }
@@ -484,12 +504,21 @@ public class StreamTestMojo extends AbstractMojo {
         try {
             Map root = new HashMap();
             root.put("user", "Big Joe");
-            root.put("cppIncludes", cppInludePaths);
-            root.put("gppCommand", this.gpp);
-            root.put("usemingw", this.usemingw);
+            //root.put("cppIncludes", cppInludePaths);
+            //root.put("gppCommand", this.gpp);
+            root.put("genNONE", this.generator == GeneratorEnum.NONE);
+            /*root.put("genMinGW", this.generator == GeneratorEnum.MinGW);
+            root.put("genVS2017", ((this.generator == GeneratorEnum.VisualStudio2017) || (this.generator == GeneratorEnum.VS2017)) );
+            */
+            root.put("generator", this.Windows_Build_Get_GeneratorString());
+            if((this.generator == GeneratorEnum.VS2017) || (this.generator == GeneratorEnum.VisualStudio2017)){
+                root.put("buildoptions", "--config Debug");
+            }else{
+                root.put("buildoptions", "");
+            }
 
             // BUILD.sh
-            root.put("execName", EXEC_FILENAME_UNIX);
+            //root.put("execName", EXEC_FILENAME_UNIX);
             File f = Paths.get(this.getPathTmpOutCPP(), "build.sh").toFile();
             f.getParentFile().mkdirs();
             FileWriter fw = new FileWriter(f);
@@ -499,7 +528,7 @@ public class StreamTestMojo extends AbstractMojo {
 
 
             // BUILD.bat
-            root.replace("execName", EXEC_FILENAME_WINDOWS);
+            //root.replace("execName", this.EXEC_FILENAME_WINDOWS());
             f = Paths.get(this.getPathTmpOutCPP(), "build.bat").toFile();
             f.getParentFile().mkdirs();
             fw = new FileWriter(f);
@@ -579,5 +608,28 @@ public class StreamTestMojo extends AbstractMojo {
         }
 
         return Optional.empty();
+    }
+
+    protected String EXEC_FILENAME_WINDOWS(){
+        if(this.generator == GeneratorEnum.NONE){
+            return "build/StreamTests.exe";
+        }
+        if(this.generator == GeneratorEnum.MinGW){
+            return "build/StreamTests.exe";
+        }
+        if((this.generator == GeneratorEnum.VS2017) || (this.generator == GeneratorEnum.VisualStudio2017)){
+            return "build/Debug/StreamTests.exe";
+        }
+        return "";
+    }
+
+    protected String Windows_Build_Get_GeneratorString(){
+        if(this.generator == GeneratorEnum.MinGW){
+            return "MinGW Makefiles";
+        }
+        if((this.generator == GeneratorEnum.VS2017) || (this.generator == GeneratorEnum.VisualStudio2017)){
+            return "Visual Studio 15 2017 Win64";
+        }
+        return "";
     }
 }

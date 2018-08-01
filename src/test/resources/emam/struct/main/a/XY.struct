@@ -1,0 +1,6 @@
+package a;
+
+struct XY {
+    Q x;
+    Q y;
+}
