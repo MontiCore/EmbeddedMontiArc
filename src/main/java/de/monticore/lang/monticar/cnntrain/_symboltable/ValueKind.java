@@ -20,31 +20,19 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.SymbolKind;
 
-import java.util.Optional;
+public class ValueKind implements SymbolKind {
 
-public class NormalizeSymbol extends CommonSymbol {
+    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.ValueKind";
 
-    public static final NormalizeSymbolKind KIND = new NormalizeSymbolKind();
-
-    private boolean value = false;
-
-    public NormalizeSymbol() {
-        super("", KIND);
+    @Override
+    public String getName() {
+        return NAME;
     }
 
-    public NormalizeSymbol(String name, SymbolKind kind) {
-        super(name, kind);
+    @Override
+    public boolean isKindOf(SymbolKind kind) {
+        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
     }
-
-    public boolean getValue() {
-        return value;
-    }
-
-    public void setValue(boolean value) {
-        this.value = value;
-    }
-
 }

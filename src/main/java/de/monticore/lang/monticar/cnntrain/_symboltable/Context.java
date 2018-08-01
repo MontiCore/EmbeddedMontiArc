@@ -20,19 +20,17 @@
  */
 package de.monticore.lang.monticar.cnntrain._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
-
-public class NormalizeSymbolKind implements SymbolKind {
-
-    private static final String NAME = "de.monticore.lang.monticar.cnntrain._symboltable.NormalizeSymbolKind";
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+public enum Context {
+    CPU{
+        @Override
+        public String toString() {
+            return "cpu";
+        }
+    },
+    GPU{
+        @Override
+        public String toString() {
+            return "gpu";
+        }
     }
 }

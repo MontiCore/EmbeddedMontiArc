@@ -25,26 +25,29 @@ import de.monticore.symboltable.SymbolKind;
 
 import java.util.Optional;
 
-public class BatchSizeSymbol extends CommonSymbol {
+public class ValueSymbol extends CommonSymbol {
 
-    public static final BatchSizeSymbolKind KIND = new BatchSizeSymbolKind();
+    public static final ValueKind KIND = new ValueKind();
 
-    private int value;
+    private Object value;
 
-    public BatchSizeSymbol() {
+    public ValueSymbol() {
         super("", KIND);
     }
 
-    public BatchSizeSymbol(String name, SymbolKind kind) {
+    public ValueSymbol(String name, SymbolKind kind) {
         super(name, kind);
     }
 
-    public int getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
+    public String toString(){
+        return getValue().toString();
+    }
 }

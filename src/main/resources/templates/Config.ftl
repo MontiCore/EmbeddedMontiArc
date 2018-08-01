@@ -5,13 +5,16 @@ batch_size = ${tc.batchSize},
 num_epoch = ${tc.numEpoch},
 </#if>
 <#if (tc.loadCheckpoint)??>
-load_checkpoint = ${tc.loadCheckpoint.value?string("True","False")},
+load_checkpoint = ${tc.loadCheckpoint?string("True","False")},
 </#if>
 <#if (tc.context)??>
-context = '${tc.context.value}',
+context = '${tc.context}',
 </#if>
 <#if (tc.normalize)??>
-normalize = ${tc.normalize.value?string("True","False")},
+normalize = ${tc.normalize?string("True","False")},
+</#if>
+<#if (tc.evalMetric)??>
+eval_metric = '${tc.evalMetric}',
 </#if>
 <#if (tc.configuration.optimizer)??>
 optimizer = '${tc.optimizerName}',

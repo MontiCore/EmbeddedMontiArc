@@ -25,7 +25,7 @@ import de.monticore.symboltable.SymbolKind;
 
 public class OptimizerParamSymbol extends CommonSymbol {
 
-    public static final OptimizerParamSymbolKind KIND = new OptimizerParamSymbolKind();
+    public static final EntryKind KIND = new EntryKind();
 
     private OptimizerParamValueSymbol value;
 
