@@ -48,6 +48,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -62,17 +63,21 @@ public class StreamTestMojo extends AbstractMojo {
 
     private static final Template BUILD_UNIX;
     private static final Template BUILD_WINDOWS;
-
+    private static final Template BUILD_COMBINED_CMAKELISTS;
+    private static final Template BUILD_COMBINED_MAIN;
 
     static {
         Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
         conf.setDefaultEncoding("UTF-8");
         conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
         conf.setLogTemplateExceptions(false);
-        conf.setClassForTemplateLoading(AllTemplates.class, "/template/build/");
+        conf.setClassForTemplateLoading(AllTemplates.class, "/template/");
         try {
-            BUILD_UNIX = conf.getTemplate("linux_build.ftl");
-            BUILD_WINDOWS = conf.getTemplate("windows_build.ftl");
+            BUILD_UNIX = conf.getTemplate("build/linux_build.ftl");
+            BUILD_WINDOWS = conf.getTemplate("build/windows_build.ftl");
+
+            BUILD_COMBINED_CMAKELISTS = conf.getTemplate("manybuild/cmakelists.ftl");
+            BUILD_COMBINED_MAIN = conf.getTemplate("manybuild/main.ftl");
         } catch (IOException e) {
             String msg = "could not load cmake templates";
             Log.error(msg, e);
@@ -167,6 +172,19 @@ public class StreamTestMojo extends AbstractMojo {
     }
     public void setGenerator(GeneratorEnum generator) {
         this.generator = generator;
+    }
+
+
+
+
+    @Parameter(defaultValue = "false")
+    private boolean combinebuilds;
+    public boolean getCombinebuilds() {
+        return combinebuilds;
+    }
+
+    public void setCombinebuilds(boolean combinebuilds) {
+        this.combinebuilds = combinebuilds;
     }
 
     //</editor-fold>
@@ -356,27 +374,32 @@ public class StreamTestMojo extends AbstractMojo {
     }
 
     public void compileCppForAllTests() throws MojoExecutionException {
-        for (ComponentSymbol cs :AllTestComponentSymbols) {
-            compileCppTestForComponent(cs);
+        if(!this.combinebuilds) {
+            for (ComponentSymbol cs : AllTestComponentSymbols) {
+                compileCppTestForComponent(cs.getFullName());
+            }
+        }else{
+            this.compileCppCombined();
+
         }
     }
 
-    private boolean compileCppTestForComponent(ComponentSymbol componentSymbol) throws MojoExecutionException {
+    private boolean compileCppTestForComponent(String name) throws MojoExecutionException {
         // Todo write test
         ProcessBuilder processBuilder;
         String execfilename;
         if (SystemUtils.IS_OS_WINDOWS) {
             //processBuilder = new ProcessBuilder("../build.bat");
-            processBuilder = new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), "../build.bat").toAbsolutePath().toString());
+            processBuilder = new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), name, "../build.bat").toAbsolutePath().toString());
             execfilename = this.EXEC_FILENAME_WINDOWS();
         }else{
             processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
             execfilename = EXEC_FILENAME_UNIX;
         }
 
-        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
+        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), name).toFile());
         try {
-            getLog().debug("Compiling "+componentSymbol.getFullName());
+            getLog().debug("Compiling "+name);
             Process process = processBuilder.start();
             //BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -401,11 +424,11 @@ public class StreamTestMojo extends AbstractMojo {
                 throw new MojoExecutionException("Error while compiling "+componentSymbol.getFullName()+": "+log);
 
             }*/
-            if(!Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), execfilename).toFile().exists()){
+            if(!Paths.get(this.getPathTmpOutCPP(), name, execfilename).toFile().exists()){
                 for(String l : allLines){
                     getLog().error("Build error out: "+l);
                 }
-                throw new MojoFailureException("Can't compile "+componentSymbol.getFullName());
+                throw new MojoFailureException("Can't compile "+name);
             }
 
             return true;
@@ -418,30 +441,95 @@ public class StreamTestMojo extends AbstractMojo {
 
     }
 
+    private void compileCppCombined() throws MojoExecutionException {
+        getLog().debug("Setting up folder for combined building");
+        String foldername = ".manybuild/";
+        File combinedDir = Paths.get(this.getPathTmpOutCPP(), foldername).toFile();
+        if(combinedDir.exists()){
+            combinedDir.delete();
+        }
+        combinedDir.mkdirs();
+
+
+
+        boolean first = true;
+        List<String> headerIncludes = new ArrayList<>();
+        List<File> files;
+        try {
+
+            File cf = Paths.get(this.getPathTmpOutCPP(), foldername, "CMakeLists.txt").toFile();
+            cf.getParentFile().mkdirs();
+            FileWriter fw = new FileWriter(cf);
+            fw.write(AllTemplates.generate(BUILD_COMBINED_CMAKELISTS, new HashMap<>()));
+            fw.flush();
+            fw.close();
+
+            Path local = Paths.get(this.getPathTmpOutCPP(), foldername);
+
+            for (ComponentSymbol cs : AllTestComponentSymbols) {
+                if(first){
+
+                    FileUtils.copyDirectory(Paths.get(this.getPathTmpOutCPP(), cs.getFullName(), "cmake/").toFile(),
+                                            Paths.get(this.getPathTmpOutCPP(), foldername, "cmake/").toFile() );
+                }
+                files = SearchFiles.searchFiles(Paths.get(this.getPathTmpOutCPP(), cs.getFullName(), "test/").toFile(), "hpp");
+                for (File f : files) {
+                    if(!f.getName().startsWith("catch")) {
+                        headerIncludes.add(local.relativize(Paths.get(f.getPath())).toString());
+                    }
+                }
+                first = false;
+            }
+
+            cf = Paths.get(this.getPathTmpOutCPP(), foldername, "combined_tests_main.cpp").toFile();
+            cf.getParentFile().mkdirs();
+            fw = new FileWriter(cf);
+            Map root = new HashMap();
+            root.put("headerinclude", headerIncludes);
+            fw.write(AllTemplates.generate(BUILD_COMBINED_MAIN, root));
+            fw.flush();
+            fw.close();
+
+            compileCppTestForComponent(".manybuild");
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new MojoExecutionException(ex.getMessage());
+
+        }
+
+    }
+
     public void runExecTest() throws MojoExecutionException, MojoFailureException {
         boolean allTestPassed = true;
-        for (ComponentSymbol cs :AllTestComponentSymbols) {
-            if(!runExecTestForComponent(cs)){
-                getLog().error("Tests for "+cs.getFullName()+" failed");
-                allTestPassed = false;
+        if(!combinebuilds) {
+            for (ComponentSymbol cs : AllTestComponentSymbols) {
+                getLog().debug("Running main.exec  test for " + cs.getFullName());
+                if (!runExecTestForComponent(cs.getFullName())) {
+                    getLog().error("Tests for " + cs.getFullName() + " failed");
+                    allTestPassed = false;
+                }
             }
+        }else{
+            getLog().debug("Running main.exec test for many build");
+            allTestPassed = runExecTestForComponent(".manybuild/");
+            getLog().debug("Passed");
         }
         if(!allTestPassed){
             throw new MojoFailureException("Not all test passed");
         }
     }
 
-    private boolean runExecTestForComponent(ComponentSymbol componentSymbol) throws MojoExecutionException {
+    private boolean runExecTestForComponent(String path) throws MojoExecutionException {
         // Todo write test
         ProcessBuilder processBuilder;
         if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder=new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName(), this.EXEC_FILENAME_WINDOWS()).toAbsolutePath().toString());
+            processBuilder=new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), path, this.EXEC_FILENAME_WINDOWS()).toAbsolutePath().toString());
         }else{
             processBuilder=new ProcessBuilder("./"+EXEC_FILENAME_UNIX);
         }
-        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), componentSymbol.getFullName()).toFile());
+        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), path).toFile());
         try{
-            getLog().debug("Running main.exec  test for "+componentSymbol.getFullName());
+
 
             Process process = processBuilder.start();
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));

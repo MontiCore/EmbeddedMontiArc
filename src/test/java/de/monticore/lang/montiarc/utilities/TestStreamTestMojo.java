@@ -186,8 +186,25 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_10_execution_many() {
+    public void Test_11_execution_many() {
         ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
+    }
+
+    @Test
+    public void Test_10_execution_many_combined() {
+
+        StreamTestMojo stm = getNewStreamTestMojo("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/manybuild");
+        stm.setCombinebuilds(true);
+
+        try {
+            stm.execute();
+        } catch (MojoExecutionException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        } catch (MojoFailureException e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
     }
 
     protected void ValidInner(String path, String tmp){
