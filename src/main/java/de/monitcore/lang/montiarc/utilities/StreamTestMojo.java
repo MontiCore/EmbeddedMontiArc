@@ -182,10 +182,20 @@ public class StreamTestMojo extends AbstractMojo {
     public boolean getCombinebuilds() {
         return combinebuilds;
     }
-
     public void setCombinebuilds(boolean combinebuilds) {
         this.combinebuilds = combinebuilds;
     }
+
+
+    @Parameter(defaultValue = "false")
+    private boolean showBuildAndRunOutput;
+    public boolean isShowBuildAndRunOutput() {
+        return showBuildAndRunOutput;
+    }
+    public void setShowBuildAndRunOutput(boolean showBuildAndRunOutput) {
+        this.showBuildAndRunOutput = showBuildAndRunOutput;
+    }
+
 
     //</editor-fold>
 
@@ -399,15 +409,21 @@ public class StreamTestMojo extends AbstractMojo {
 
         processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), name).toFile());
         try {
+
+
+
             getLog().debug("Compiling "+name);
             Process process = processBuilder.start();
-            //BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
             List<String> allLines = new ArrayList<>();
-            while ((line = in.readLine()) != null) {
-                allLines.add(line);
-                //getLog().debug(line);
+            if(showBuildAndRunOutput) {
+                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().forEach(System.out::println);
+                new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().forEach(System.out::println);
+            }else {
+                BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while (((line = in.readLine()) != null)) {
+                    allLines.add(line);
+                }
             }
             process.waitFor();
 
@@ -532,12 +548,16 @@ public class StreamTestMojo extends AbstractMojo {
 
 
             Process process = processBuilder.start();
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
             List<String> allLines = new ArrayList<>();
-            while ((line = in.readLine()) != null) {
-                allLines.add(line);
-                //getLog().debug(line);
+            if(showBuildAndRunOutput) {
+                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().forEach(System.out::println);
+                new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().forEach(System.out::println);
+            }else {
+                BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String line;
+                while (((line = in.readLine()) != null)) {
+                    allLines.add(line);
+                }
             }
             process.waitFor();
 

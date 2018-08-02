@@ -46,70 +46,10 @@ public class TestStreamTestMojo {
 
         stm.setGenerator(GeneratorEnum.MinGW);
 
+        //use this in test to see all output
+        stm.setShowBuildAndRunOutput(true);
+
         return stm;
-    }
-
-    @Test
-    public void Test_03_execute_ParserTests(){
-        String path = "./src/test/resources/emam/execute_ParserTests";
-        String pathValid = path+"/valid";
-        String pathInvalid = path+"/invalid";;
-
-        //test for valid emam and stream files
-        StreamTestMojo stm = getNewStreamTestMojo("", "./target/tmp/Test_BuildFiles");
-        stm.setPathMain(path);
-        stm.setPathTest(path);
-        stm.init();
-
-        Map<String, File> mainFiles = null;
-        List<String> errorFiles = null;
-        try {
-            mainFiles = SearchFiles.searchFilesMap(pathValid, "emam", "stream");
-            errorFiles = stm.execute_ParserTests(mainFiles);
-            assertTrue("execute ParserTests for valid not successfull.", errorFiles.isEmpty());
-
-            mainFiles = SearchFiles.searchFilesMap(pathInvalid, "emam", "stream");
-            errorFiles = stm.execute_ParserTests(mainFiles);
-            assertTrue("execute ParserTests for invalid not successfull.", !errorFiles.isEmpty());
-        } catch (MojoExecutionException e) {
-            fail(e.getMessage());
-        }
-
-
-        try {
-            mainFiles = SearchFiles.searchFilesMap(path, "none");
-            errorFiles = stm.execute_ParserTests(mainFiles);
-            fail("Invalid file ending is parsable!");
-        } catch (MojoExecutionException e) {
-            // alles gut
-        }
-
-    }
-
-    @Test
-    public void Test_02_setupTmpFolder(){
-        String path = "./src/test/resources/emam/oneTest";
-        String pathTMP = "./target/tmp/Test_setupTmpFolder";
-        //test for valid emam and stream files
-        StreamTestMojo stm = getNewStreamTestMojo(path, pathTMP);
-        stm.init();
-
-        try {
-            stm.setupTmpFolder();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-            fail("Can't create test folder");
-        }
-
-        Map<String, File> mainFiles = SearchFiles.searchFilesMap(path+"/main", "emam", "stream");
-        mainFiles.putAll(SearchFiles.searchFilesMap(path+"/test", "emam", "stream"));
-
-        Map<String, File> tmpFiles = SearchFiles.searchFilesMap(pathTMP+"/emam", "emam", "stream");
-
-        for (String entry:mainFiles.keySet()){
-            assertTrue("File not in out tmp folder ("+entry+")", tmpFiles.containsKey(entry));
-        }
-
     }
 
     @Test
@@ -163,6 +103,70 @@ public class TestStreamTestMojo {
     }
 
     @Test
+    public void Test_02_setupTmpFolder(){
+        String path = "./src/test/resources/emam/oneTest";
+        String pathTMP = "./target/tmp/Test_setupTmpFolder";
+        //test for valid emam and stream files
+        StreamTestMojo stm = getNewStreamTestMojo(path, pathTMP);
+        stm.init();
+
+        try {
+            stm.setupTmpFolder();
+        } catch (MojoExecutionException e) {
+            e.printStackTrace();
+            fail("Can't create test folder");
+        }
+
+        Map<String, File> mainFiles = SearchFiles.searchFilesMap(path+"/main", "emam", "stream");
+        mainFiles.putAll(SearchFiles.searchFilesMap(path+"/test", "emam", "stream"));
+
+        Map<String, File> tmpFiles = SearchFiles.searchFilesMap(pathTMP+"/emam", "emam", "stream");
+
+        for (String entry:mainFiles.keySet()){
+            assertTrue("File not in out tmp folder ("+entry+")", tmpFiles.containsKey(entry));
+        }
+
+    }
+
+    @Test
+    public void Test_03_execute_ParserTests(){
+        String path = "./src/test/resources/emam/execute_ParserTests";
+        String pathValid = path+"/valid";
+        String pathInvalid = path+"/invalid";;
+
+        //test for valid emam and stream files
+        StreamTestMojo stm = getNewStreamTestMojo("", "./target/tmp/Test_BuildFiles");
+        stm.setPathMain(path);
+        stm.setPathTest(path);
+        stm.init();
+
+        Map<String, File> mainFiles = null;
+        List<String> errorFiles = null;
+        try {
+            mainFiles = SearchFiles.searchFilesMap(pathValid, "emam", "stream");
+            errorFiles = stm.execute_ParserTests(mainFiles);
+            assertTrue("execute ParserTests for valid not successfull.", errorFiles.isEmpty());
+
+            mainFiles = SearchFiles.searchFilesMap(pathInvalid, "emam", "stream");
+            errorFiles = stm.execute_ParserTests(mainFiles);
+            assertTrue("execute ParserTests for invalid not successfull.", !errorFiles.isEmpty());
+        } catch (MojoExecutionException e) {
+            fail(e.getMessage());
+        }
+
+
+        try {
+            mainFiles = SearchFiles.searchFilesMap(path, "none");
+            errorFiles = stm.execute_ParserTests(mainFiles);
+            fail("Invalid file ending is parsable!");
+        } catch (MojoExecutionException e) {
+            // alles gut
+        }
+
+    }
+
+
+    @Test
     public void Test_04_execution_valid() {
         //valid
         ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/Test_execution/valid");
@@ -186,8 +190,8 @@ public class TestStreamTestMojo {
     }
 
     @Test
-    public void Test_11_execution_many() {
-        ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
+    public void Test_06_execution_with_struct(){
+        ValidInner("./src/test/resources/emam/struct", "./target/tmp/struct");
     }
 
     @Test
@@ -207,6 +211,11 @@ public class TestStreamTestMojo {
         }
     }
 
+    @Test
+    public void Test_11_execution_many() {
+        ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
+    }
+
     protected void ValidInner(String path, String tmp){
         //valid
         StreamTestMojo stm = getNewStreamTestMojo(path, tmp);
@@ -222,9 +231,6 @@ public class TestStreamTestMojo {
         }
     }
 
-    @Test
-    public void Test_06_execution_with_struct(){
-        ValidInner("./src/test/resources/emam/struct", "./target/tmp/struct");
-    }
+
 
 }
