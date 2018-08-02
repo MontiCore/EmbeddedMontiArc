@@ -51,7 +51,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-
+import java.util.function.Consumer;
 
 
 @Mojo(name = "emam-streamtest")
@@ -550,7 +550,13 @@ public class StreamTestMojo extends AbstractMojo {
             Process process = processBuilder.start();
             List<String> allLines = new ArrayList<>();
             if(showBuildAndRunOutput) {
-                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().forEach(System.out::println);
+                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().forEach(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) {
+                        getLog().debug(s);
+                        allLines.add(s);
+                    }
+                });
                 new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().forEach(System.out::println);
             }else {
                 BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
