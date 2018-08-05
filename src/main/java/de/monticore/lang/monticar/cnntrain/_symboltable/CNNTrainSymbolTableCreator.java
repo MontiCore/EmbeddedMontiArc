@@ -161,7 +161,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
             value.setValue(Context.CPU);
         }
         else {
-            value.setValue(Context.CPU);
+            value.setValue(Context.GPU);
         }
         entry.setValue(value);
         addToScopeAndLinkWithNode(entry, node);
