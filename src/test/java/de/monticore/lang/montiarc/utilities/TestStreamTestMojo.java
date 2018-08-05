@@ -211,10 +211,10 @@ public class TestStreamTestMojo {
         }
     }
 
-    @Test
+    /*@Test
     public void Test_11_execution_many() {
-        ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
-    }
+        //ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/Test_execution/many");
+    }*/
 
     protected void ValidInner(String path, String tmp){
         //valid

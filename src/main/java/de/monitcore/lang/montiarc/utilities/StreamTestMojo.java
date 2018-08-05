@@ -174,9 +174,6 @@ public class StreamTestMojo extends AbstractMojo {
         this.generator = generator;
     }
 
-
-
-
     @Parameter(defaultValue = "false")
     private boolean combinebuilds;
     public boolean getCombinebuilds() {
@@ -361,7 +358,6 @@ public class StreamTestMojo extends AbstractMojo {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
-
 
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString());

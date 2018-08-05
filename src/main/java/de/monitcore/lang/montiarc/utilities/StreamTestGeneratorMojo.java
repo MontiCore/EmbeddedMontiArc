@@ -1,0 +1,169 @@
+package de.monitcore.lang.montiarc.utilities;
+
+import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
+import de.monticore.antlr4.MCConcreteParser;
+import de.monticore.ast.ASTNode;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
+import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
+import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
+import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
+import de.monticore.lang.monticar.struct._parser.StructParser;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.monticore.symboltable.Scope;
+import de.se_rwth.commons.Joiners;
+import de.se_rwth.commons.logging.Log;
+import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class StreamTestGeneratorMojo extends StreamTestMojoBase {
+
+
+    @Override
+    protected void preExecution() throws MojoExecutionException {
+        super.preExecution();
+        myLog.setLogFile(this.getPathTmpOut()+"/StreamTestGeneratorMojo.log");
+        myLog.clear();
+        Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
+
+    }
+
+    @Override
+    protected void mainExecution() throws MojoExecutionException {
+        checkCocosOfInputFiles();
+
+        try{
+            File temam = Paths.get(this.getPathTmpOutEMAM()).toFile();
+            FileUtils.copyDirectory(Paths.get(this.pathMain).toFile(), temam);
+            FileUtils.copyDirectory(Paths.get(this.pathTest).toFile(), temam);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Could not copy files: "+e.getMessage() );
+        }
+
+        List<ComponentSymbol> toTest = getToTestComponentSymbols(true);
+        generateCPP(toTest);
+    }
+
+    protected void checkCocosOfInputFiles() throws MojoExecutionException {
+        Map<String,MCConcreteParser> parser = getParser();
+        Scope scope = getScope();
+
+        logInfo("Cocos Check:");
+
+        List<File> ff = SearchFiles.searchFiles(this.pathMain, "emam", "struct", "enum");
+        Map<String, File> files = SearchFiles.searchFilesMap(this.pathMain, "emam", "struct", "enum");
+        files.putAll(SearchFiles.searchFilesMap(this.pathTest, "emam", "stream"));
+
+        for (Map.Entry<String,File> f:files.entrySet()) {
+            String ending = f.getKey().substring(f.getKey().lastIndexOf(".") + 1);
+            if (!parser.keySet().contains(ending)) {
+                throw new MojoExecutionException("No parser for ." + ending + " files");
+                //errors.add(f.getKey()+" (error: no parser for file)");
+            }
+            MCConcreteParser mccp = parser.get(ending);
+            logInfo(" - "+f.getKey());
+            try {
+                Optional<? extends ASTNode> node = mccp.parse(f.getValue().getAbsolutePath());
+                if(!node.isPresent()){
+                    logError("   -> Could not parse: "+f.getKey());
+                }else {
+                    boolean resolved = false;
+                    String modelName;
+                    if(ending.equalsIgnoreCase("emam")) {
+                        ASTEMAMCompilationUnit ast = (ASTEMAMCompilationUnit) node.get();
+
+                        modelName = modelNameCalculator(f.getValue(),"emam", ast.getEMACompilationUnit().getPackageList());
+                        Optional<ComponentSymbol> comp = scope.<ComponentSymbol>resolve(modelName, ComponentSymbol.KIND);
+                        resolved = comp.isPresent();
+                    }else if(ending.equalsIgnoreCase("stream")){
+                        ASTStreamUnitsCompilationUnit ast = (ASTStreamUnitsCompilationUnit)node.get();
+
+                        modelName = modelNameCalculator(f.getValue(), "stream", ast.getPackageList());
+                        Optional<ComponentStreamUnitsSymbol> comp = scope.<ComponentStreamUnitsSymbol>resolve(modelName, ComponentStreamUnitsSymbol.KIND);
+                        resolved = comp.isPresent();
+                    }else{
+                        //TODO:
+                        logWarn("   -> No resolving for "+ending+"implemented at the moment.");
+                    }
+
+                    if(resolved){
+                        logInfo("   -> parsed & resolved");
+                    }else{
+                        logError("Could not resolve "+f.getKey());
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+    }
+
+    protected void generateCPP(List<ComponentSymbol> toTest){
+        Scope scope = getScope();
+        TaggingResolver tagging = this.getTaggingResolver();
+
+        logInfo("Generate CPP:");
+        for (ComponentSymbol cs :toTest) {
+            String name = cs.getPackageName() + "." + cs.getName().substring(0,1).toLowerCase()+cs.getName().substring(1);
+            logInfo(" - "+cs.getFullName()+" = "+name);
+
+            Optional<ExpandedComponentInstanceSymbol> ecis = scope.<ExpandedComponentInstanceSymbol>resolve(name, ExpandedComponentInstanceSymbol.KIND);
+
+            if(!ecis.isPresent()){
+                logError("   -> Can't resolve ExpandedComponentInstanceSymbol for "+cs.getFullName());
+                continue;
+            }
+
+            GeneratorCPP generatorCPP = new GeneratorCPP();
+            generatorCPP.setModelsDirPath(Paths.get(this.getPathTmpOutEMAM()));
+
+            generatorCPP.useArmadilloBackend();
+            generatorCPP.setGenerationTargetPath(Paths.get(this.getPathTmpOutCPP(),cs.getFullName()).toString());
+            generatorCPP.setGenerateMainClass(true);
+            generatorCPP.setGenerateTests(true);
+            generatorCPP.setCheckModelDir(true);
+            generatorCPP.setUseAlgebraicOptimizations(false);
+            generatorCPP.setUseThreadingOptimization(false);
+            //use cmake
+            generatorCPP.setGenerateCMake(true);
+            List<File> files = null;
+            try {
+                files = generatorCPP.generateFiles(tagging, ecis.get(), scope);
+                logInfo("   -> Success");
+                String s = files.stream().map(f -> f.getName()).collect(Collectors.joining(", "));
+                logInfo("   -> Files: "+s);
+            }catch (IOException ioex){
+                logError("   -> IOException generating cpp files for "+cs.getFullName());
+            }
+
+        }
+    }
+
+    //<editor-fold desc="Utilities">
+    protected String modelNameCalculator(File f, String ending,  List<String> packages){
+        String packageName = "";
+        if(!packages.isEmpty()) {
+            packageName = Joiners.DOT.join(packages) + ".";
+        }
+        return packageName+f.getName().replace("."+ending, "");
+    }
+    //</editor-fold>
+}
