@@ -103,6 +103,7 @@ public class StreamTestGenerator {
             }
             System.out.println();
         }
+        currentGeneratedStreamTest.fixPortArrays();
     }
 
     private void handleASTElementType(ASTElementType astElementType) {

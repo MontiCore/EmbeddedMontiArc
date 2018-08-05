@@ -179,6 +179,14 @@ public final class TestsGeneratorCPP {
         viewModel.setStreams(new ArrayList<>());
         for (ComponentStreamUnitsSymbol stream : streamsForComponent) {
             StreamViewModel svm = new StreamViewModel();
+
+            Collection<PortSymbol> outPorts = cs.getOutgoingPorts();
+            List<String> names = new ArrayList<>();
+            for (PortSymbol portSymbol : outPorts) {
+                names.add(portSymbol.getName());
+            }
+            svm.outputPortNames = names;
+
             viewModel.getStreams().add(svm);
             svm.setName(stream.getFullName());
             svm.setChecks(getComponentPortChecks(cs, stream));

@@ -1,0 +1,5 @@
+cd native
+call variables.bat
+call compileTestsArmadilloBackendOpenBLAS.bat %PROJECT_ROOT%/%1 %PROJECT_ROOT%/%2
+
+exit
