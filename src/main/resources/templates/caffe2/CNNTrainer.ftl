@@ -17,13 +17,13 @@ if __name__ == "__main__":
         batch_size = ${config.batchSize},
 </#if>
 <#if (config.loadCheckpoint)??>
-        load_checkpoint = ${config.loadCheckpoint.value?string("True","False")},
+        load_checkpoint = ${config.loadCheckpoint?string("True","False")},
 </#if>
 <#if (config.context)??>
-        context = '${config.context.value}',
+        context = '${config.context}',
 </#if>
 <#if (config.normalize)??>
-        normalize = ${config.normalize.value?string("True","False")},
+        normalize = ${config.normalize?string("True","False")},
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer = '${config.optimizerName}',
