@@ -2,7 +2,7 @@ package de.monticore.lang.monticar.generator.testing;
 
 import de.se_rwth.commons.logging.Log;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author Sascha Schneiders
@@ -10,6 +10,12 @@ import java.io.IOException;
 public class StreamTestExecution {
 
     public static void compileTests(String targetFullPath, String targetBasePath) throws IOException {
+        File f = new File("."+targetBasePath + "/exec");
+        if (!f.exists()) {
+            f.mkdirs();
+            f.mkdir();
+        }
+
         Process p = Runtime.
                 getRuntime().
                 exec(new String[]{"compileCPPTests.bat", targetFullPath, targetBasePath + "/exec"});

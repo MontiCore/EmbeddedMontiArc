@@ -1,5 +1,7 @@
 package de.monticore.lang.monticar.generator.testing;
 
+import de.se_rwth.commons.logging.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +131,7 @@ public class StreamTest {
             if (matchPort != port) {
                 String curName = getNameWithoutArrayPart(port.getName());
                 if (curName.equals(matchName)) {
-                    System.out.println("Found Same Ports: " + matchPort.getName() + " " + port.getName() + " for names " + matchName + " " + curName);
+                    Log.debug(matchPort.getName() + " " + port.getName() + " for names " + matchName + " " + curName, "Found Same Ports");
                     if (!samePorts.contains(port))
                         samePorts.add(port);
                     if (!samePorts.contains(matchPort)) {

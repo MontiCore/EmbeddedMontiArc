@@ -127,4 +127,9 @@ public class TagMinMaxSymbolCreator implements TagSymbolCreator {
                 scope.getScopeKind()), scope.get_SourcePositionStart());
         return false;
     }
+
+    @Override
+    public void create(ASTTaggingUnit astTaggingUnit, Scope scope) {
+        //TODO implement me, required by newer version
+    }
 }
