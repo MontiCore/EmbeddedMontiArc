@@ -44,7 +44,7 @@
         <Common-MontiCar.version>0.0.12</Common-MontiCar.version>
         <Embedded-MontiArc.version>0.0.17-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Behaviour.version>0.0.11</Embedded-MontiArc-Behaviour.version>
-        <CNNArch.version>0.2.1-SNAPSHOT</CNNArch.version>
+        <CNNArch.version>0.2.2-SNAPSHOT</CNNArch.version>
         <Math.version>0.0.11</Math.version>
         <Embedded-MontiArc-Math.version>0.0.12</Embedded-MontiArc-Math.version>
 
