@@ -26,26 +26,51 @@ public class ConfigurationData {
     }
 
     public String getNumEpoch() {
-        return String.valueOf(getConfiguration().getNumEpoch().getValue());
+        if (!getConfiguration().getEntryMap().containsKey("num_epoch")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("num_epoch").getValue());
     }
 
     public String getBatchSize() {
-        return String.valueOf(getConfiguration().getBatchSize().getValue());
+        if (!getConfiguration().getEntryMap().containsKey("batch_size")) {
+            return null;
+        }
+        return String.valueOf(getConfiguration().getEntry("batch_size") .getValue());
     }
 
-    public LoadCheckpointSymbol getLoadCheckpoint() {
-        return getConfiguration().getLoadCheckpoint();
+    public Boolean getLoadCheckpoint() {
+        if (!getConfiguration().getEntryMap().containsKey("load_checkpoint")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("load_checkpoint").getValue().getValue();
     }
 
-    public NormalizeSymbol getNormalize() {
-        return getConfiguration().getNormalize();
+    public Boolean getNormalize() {
+        if (!getConfiguration().getEntryMap().containsKey("normalize")) {
+            return null;
+        }
+        return (Boolean) getConfiguration().getEntry("normalize").getValue().getValue();
     }
 
-    public TrainContextSymbol getContext() {
-        return getConfiguration().getTrainContext();
+    public String getContext() {
+        if (!getConfiguration().getEntryMap().containsKey("context")) {
+            return null;
+        }
+        return getConfiguration().getEntry("context").getValue().toString();
+    }
+
+    public String getEvalMetric() {
+        if (!getConfiguration().getEntryMap().containsKey("eval_metric")) {
+            return null;
+        }
+        return getConfiguration().getEntry("eval_metric").getValue().toString();
     }
 
     public String getOptimizerName() {
+        if (getConfiguration().getOptimizer() == null) {
+            return null;
+        }
         return getConfiguration().getOptimizer().getName();
     }
 

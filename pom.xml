@@ -16,6 +16,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.2.2-SNAPSHOT</CNNArch.version>
+      <CNNTrain.version>0.2.2-SNAPSHOT</CNNTrain.version>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -66,6 +67,20 @@
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>cnn-arch</artifactId>
             <version>${CNNArch.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnn-train</artifactId>
+            <version>${CNNTrain.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>cnn-train</artifactId>
+            <version>${CNNTrain.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
