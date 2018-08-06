@@ -3,7 +3,7 @@ configuration FullConfig{
      batch_size : 100
      load_checkpoint : true
      eval_metric : mse
-     context : cpu
+     context : gpu
      normalize : true
      optimizer : rmsprop{
          learning_rate : 0.001
