@@ -29,6 +29,7 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -36,6 +37,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -117,6 +121,8 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     //<editor-fold desc="Properties">
 
+    protected static String mojoDirectory = "mojo/";
+
     protected LogToFile myLog = null;
 
     //</editor-fold>
@@ -129,22 +135,74 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.postExecution();
     }
 
-    protected void preExecution() throws MojoExecutionException {
+    protected void preExecution() throws MojoExecutionException, MojoFailureException {
         this.mkdir(this.getPathTmpOut());
         this.mkdir(this.getPathTmpOutCPP());
         this.mkdir(this.getPathTmpOutEMAM());
-        Log.enableFailQuick(false);
-        myLog = LogToFile.init();
+        this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory).toString());
 
+        Log.enableFailQuick(false);
+
+        if(myLog == null) {
+            myLog = LogToFile.init();
+        }
+        myLog.setLogFile(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()+".log").toString());
+        myLog.clear();
+
+        File f = Paths.get(this.getPathTmpOut(), mojoDirectory, "."+this.MojoName()).toFile();
+        if(f.exists()){
+            f.delete();
+        }
     }
 
-    protected  void mainExecution() throws MojoExecutionException{
+    protected  void mainExecution() throws MojoExecutionException, MojoFailureException {
         // tada
     }
 
     protected void postExecution()throws MojoExecutionException{
-        // Werbung
+
+        //Create hidden file as notification for other StreamTestMojoBase Tests.
+        File f = Paths.get(this.getPathTmpOut(), mojoDirectory, "."+this.MojoName()).toFile();
+        try {
+            if(f.exists()){
+                f.delete();
+            }
+            f.createNewFile();
+            if (SystemUtils.IS_OS_WINDOWS) {
+                Files.setAttribute(f.toPath(), "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Can't create dummy file for other mojos.");
+        }
     }
+
+
+    //</editor-fold>
+
+    //<editor-fold desc="Build Chain">
+
+    protected String MojoName(){
+        return "StreamTestMojoBase";
+    }
+
+    protected boolean hasMojoRunned(String mojo){
+        File f = Paths.get(this.getPathTmpOut(), mojoDirectory, "."+mojo).toFile();
+        return f.exists();
+    }
+
+    protected void copyPropertiesAndParametersTo(StreamTestMojoBase stmb){
+        stmb.pathMain = pathMain;
+        stmb.pathTest = pathTest;
+        stmb.pathTmpOut = pathTmpOut;
+        stmb.wrapperTestExtension = wrapperTestExtension;
+        stmb.generator = generator;
+        stmb.combinebuilds = combinebuilds;
+        stmb.showBuildAndRunOutput = showBuildAndRunOutput;
+
+        stmb.myLog = myLog;
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Log">
@@ -163,7 +221,7 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     protected void logInfo(String msg){
         getLog().info(msg);
-        Log.info(msg, "StreamTestMojoBase");
+        Log.info(msg, this.MojoName());
     }
 
     protected void logWarn(String msg){
@@ -247,8 +305,6 @@ public class StreamTestMojoBase extends AbstractMojo {
         }
         return this.myTaggingResolver;
     }
-
-
 
     protected List<ComponentSymbol> getToTestComponentSymbols(boolean output){
 

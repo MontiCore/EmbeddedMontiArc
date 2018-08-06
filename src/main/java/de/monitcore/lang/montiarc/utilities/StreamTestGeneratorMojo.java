@@ -33,10 +33,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
 
     @Override
-    protected void preExecution() throws MojoExecutionException {
+    protected void preExecution() throws MojoExecutionException, MojoFailureException {
         super.preExecution();
-        myLog.setLogFile(this.getPathTmpOut()+"/StreamTestGeneratorMojo.log");
-        myLog.clear();
+
         Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
 
     }
@@ -56,6 +55,11 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
         List<ComponentSymbol> toTest = getToTestComponentSymbols(true);
         generateCPP(toTest);
+    }
+
+    @Override
+    protected String MojoName(){
+        return "StreamTestGeneratorMojo";
     }
 
     protected void checkCocosOfInputFiles() throws MojoExecutionException {
@@ -148,8 +152,8 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             try {
                 files = generatorCPP.generateFiles(tagging, ecis.get(), scope);
                 logInfo("   -> Success");
-                String s = files.stream().map(f -> f.getName()).collect(Collectors.joining(", "));
-                logInfo("   -> Files: "+s);
+                //String s = files.stream().map(f -> f.getName()).collect(Collectors.joining(", "));
+                //logInfo("   -> Files: "+s);
             }catch (IOException ioex){
                 logError("   -> IOException generating cpp files for "+cs.getFullName());
             }
