@@ -41,6 +41,11 @@ public class TestStreamTestBuildMojo {
         //valid
         ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/build/01");
     }
+    @Test
+    public void Test_02_execution_many() {
+        //valid
+        ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/build/02");
+    }
 
     protected void ValidInner(String path, String tmp){
         //valid
