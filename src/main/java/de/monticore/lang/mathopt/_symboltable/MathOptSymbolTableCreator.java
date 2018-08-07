@@ -60,7 +60,7 @@ public class MathOptSymbolTableCreator extends MathSymbolTableCreator implements
 
     public void endVisit(final ASTOptimizationObjectiveValue node) {
         MathValueSymbol symbol = new MathValueSymbol(node.getName());
-        if (node.getTypeOpt().isPresent()) {
+        if (node.getType() != null) {
             MathValueType type = new MathValueType();
             type.setType(node.getType());
             symbol.setType(type);
