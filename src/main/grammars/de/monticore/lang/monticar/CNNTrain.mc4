@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar;
 
-grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.NumberUnit{
+grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.NumberUnit{
 
     symbol scope CNNTrainCompilationUnit = "configuration"
                                  name:Name&
@@ -42,13 +42,11 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
 
 
     DataVariable implements VariableReference = Name&;
-    IntegerValue implements ConfigValue = Number;
-    NumberValue implements ConfigValue = Number;
+    IntegerValue implements ConfigValue = NumberWithUnit;
+    NumberValue implements ConfigValue = NumberWithUnit;
     BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
 
     interface OptimizerValue extends ConfigValue;
-    //ast OptimizerValue = method java.util.List<? extends ASTEntry> getParams(){}
-    //                     method String getName(){};
 
     interface SGDEntry extends Entry;
     SGDOptimizer implements OptimizerValue = name:"sgd" ("{" params:SGDEntry* "}")?;
@@ -61,8 +59,6 @@ grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.lang.N
 
     interface AdaGradEntry extends Entry;
     AdaGradOptimizer implements OptimizerValue = name:"adagrad" ("{" params:AdaGradEntry* "}")?;
-
-    //DCASGD, SGLD, Ftrl, Adamax
 
     NesterovOptimizer implements OptimizerValue = name:"nag" ("{" params:SGDEntry* "}")?;
 
