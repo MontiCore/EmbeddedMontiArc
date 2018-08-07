@@ -19,9 +19,11 @@ import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.codegen.model.SerializedATN;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,19 +31,27 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Mojo(name = "streamtest-generator")
 public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
 
     @Override
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
         super.preExecution();
-
-        Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
-
+        File fmain = hashFileMain();
+        if(fmain.exists()){
+            fmain.delete();
+        }
+        File ftest = hashFileTest();
+        if(ftest.exists()){
+            ftest.delete();
+        }
     }
 
     @Override
     protected void mainExecution() throws MojoExecutionException {
+        Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
+
         checkCocosOfInputFiles();
 
         try{
@@ -58,8 +68,55 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     }
 
     @Override
+    protected void postExecution() throws MojoExecutionException {
+        super.postExecution();
+        //Create hash of files
+        String mainHash = SearchFiles.hashDirFiles(this.getPathMain());
+        String testHash = SearchFiles.hashDirFiles(this.getPathTest());
+        try {
+            FileUtils.write(hashFileMain(), mainHash, false);
+            FileUtils.write(hashFileTest(), testHash, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Failed to create hash files for "+MojoName());
+        }
+    }
+
+    @Override
+    protected boolean checkForExecution() throws MojoExecutionException {
+        File hmain = hashFileMain();
+        File htest = hashFileTest();
+        if(!hmain.exists() || !htest.exists()){
+            logInfo("Execution necessary: Hashfiles not found.");
+            return true;
+        }
+
+        String oldMainHash = "",oldTestHash = "";
+
+        String newMainHash = SearchFiles.hashDirFiles(this.getPathMain());
+        String newTestHash = SearchFiles.hashDirFiles(this.getPathTest());
+
+        try {
+            oldMainHash = FileUtils.readFileToString(hmain);
+            oldTestHash = FileUtils.readFileToString(htest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Can't read old hash files");
+        }
+
+        if(newMainHash.equalsIgnoreCase(oldMainHash) && newTestHash.equalsIgnoreCase(oldTestHash)){
+            logInfo("Execution not necessary. No input files changed.");
+            return false;
+        }
+
+        logInfo("Execution necessary: One or more input files chaned.");
+        return true;
+    }
+
+
+    @Override
     protected String MojoName(){
-        return "StreamTestGeneratorMojo";
+        return "streamtest-generator";
     }
 
     protected void checkCocosOfInputFiles() throws MojoExecutionException {
@@ -160,6 +217,19 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
         }
     }
+
+
+    //<editor-fold desc="Hashfiles">
+
+    protected File hashFileMain(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Main.txt").toFile();
+    }
+
+    protected File hashFileTest(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Test.txt").toFile();
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Utilities">
     protected String modelNameCalculator(File f, String ending,  List<String> packages){

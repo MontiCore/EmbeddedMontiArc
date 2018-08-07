@@ -130,9 +130,11 @@ public class StreamTestMojoBase extends AbstractMojo {
     //<editor-fold desc="Execution">
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        this.preExecution();
-        this.mainExecution();
-        this.postExecution();
+        if(checkForExecution()) {
+            this.preExecution();
+            this.mainExecution();
+            this.postExecution();
+        }
     }
 
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
@@ -140,6 +142,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.mkdir(this.getPathTmpOutCPP());
         this.mkdir(this.getPathTmpOutEMAM());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory).toString());
+        this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()).toString());
 
         Log.enableFailQuick(false);
 
@@ -148,11 +151,6 @@ public class StreamTestMojoBase extends AbstractMojo {
         }
         myLog.setLogFile(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()+".log").toString());
         myLog.clear();
-
-        File f = Paths.get(this.getPathTmpOut(), mojoDirectory, "."+this.MojoName()).toFile();
-        if(f.exists()){
-            f.delete();
-        }
     }
 
     protected  void mainExecution() throws MojoExecutionException, MojoFailureException {
@@ -160,21 +158,11 @@ public class StreamTestMojoBase extends AbstractMojo {
     }
 
     protected void postExecution()throws MojoExecutionException{
+        // hier koennte ihre werbung stehen
+    }
 
-        //Create hidden file as notification for other StreamTestMojoBase Tests.
-        File f = Paths.get(this.getPathTmpOut(), mojoDirectory, "."+this.MojoName()).toFile();
-        try {
-            if(f.exists()){
-                f.delete();
-            }
-            f.createNewFile();
-            if (SystemUtils.IS_OS_WINDOWS) {
-                Files.setAttribute(f.toPath(), "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new MojoExecutionException("Can't create dummy file for other mojos.");
-        }
+    protected boolean checkForExecution() throws MojoExecutionException {
+        return true;
     }
 
 
@@ -206,6 +194,7 @@ public class StreamTestMojoBase extends AbstractMojo {
     //</editor-fold>
 
     //<editor-fold desc="Log">
+
     protected void resetToMyLog(){
         if(myLog == null){
             myLog = LogToFile.init();
@@ -231,7 +220,6 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     //</editor-fold>
 
-
     protected void mkdir(String path) throws MojoExecutionException {
         try {
             File tmpOut = Paths.get(path).toFile();
@@ -246,6 +234,8 @@ public class StreamTestMojoBase extends AbstractMojo {
             throw new MojoExecutionException(ex.getMessage());
         }
     }
+
+    //<editor-fold desc="Parser, Scope, Tagging">
 
     private Map<String,MCConcreteParser> myParser = null;
     protected Map<String,MCConcreteParser> getParser(){
@@ -306,6 +296,10 @@ public class StreamTestMojoBase extends AbstractMojo {
         return this.myTaggingResolver;
     }
 
+    //</editor-fold>
+
+    //<editor-fold desc="Get Component Symbols">
+
     protected List<ComponentSymbol> getToTestComponentSymbols(boolean output){
 
         ComponentScanner componentScanner = new ComponentScanner(Paths.get(this.pathMain), this.getScope(), "emam");
@@ -340,7 +334,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         return toTestComponents;
     }
 
-    public Optional<ComponentSymbol> getTestComponentSymbol(String componentName, Set<ComponentSymbol> componentSymbols){
+    protected Optional<ComponentSymbol> getTestComponentSymbol(String componentName, Set<ComponentSymbol> componentSymbols){
 
         Optional<ComponentSymbol> cs = FindComponentSymbolByName(componentName, componentSymbols);
         if(!cs.isPresent()){
@@ -358,4 +352,6 @@ public class StreamTestMojoBase extends AbstractMojo {
 
         return Optional.empty();
     }
+
+    //</editor-fold>
 }

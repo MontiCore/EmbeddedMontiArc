@@ -10,6 +10,7 @@ import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Mojo(name = "streamtest-build")
 public class StreamTestBuildMojo extends StreamTestMojoBase {
 
     private static final Template TEMPLATE_BUILDFILE_UNIX;

@@ -39,7 +39,7 @@ public class TestStreamTestGeneratorMojo {
     @Test
     public void Test_05_many(){
         try {
-            getNewStreamTestMojo("./src/test/resources/emam/execution/many", "./target/tmp/05").execute();
+            getNewStreamTestMojo("./src/test/resources/emam/execution/many", "./target/tmp/streamtest-generator/05").execute();
         } catch (MojoExecutionException e) {
             e.printStackTrace();
         } catch (MojoFailureException e) {
@@ -50,7 +50,7 @@ public class TestStreamTestGeneratorMojo {
     @Test
     public void Test_01_execution_valid() {
         //valid
-        ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/01");
+        ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
     }
 
     @Test

@@ -32,7 +32,9 @@ public class LogToFile extends Log {
     }
 
     public void setLogFile(String path){
-        logFilePath = Optional.of(Paths.get(path));
+        if(!logFilePath.isPresent()) {
+            logFilePath = Optional.of(Paths.get(path));
+        }
     }
 
     public void clear()  {
