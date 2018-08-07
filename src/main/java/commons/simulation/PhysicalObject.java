@@ -204,9 +204,9 @@ public interface PhysicalObject {
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaT Duration of the current simulation step
+     * @param deltaTms Duration of the current simulation step in milliseconds
      */
-    void computePhysics(double deltaT);
+    void computePhysics(long deltaTms);
 
     /**
      * Function that sets the position of the center of mass and the rotation of the object, in order to place the object on the surface of the world.
