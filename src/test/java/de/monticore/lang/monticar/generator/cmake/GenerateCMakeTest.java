@@ -65,7 +65,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerateCMake(true);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/BasicPortsMath");
-        generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/"));
         generatorCPP.setGenerateTests(true);
         generatorCPP.setCheckModelDir(true);
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
@@ -82,7 +82,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
                 findFiles.add(f);
             else if (f.getName().endsWith(".hpp") || f.getName().endsWith(".cpp"))
                 testFiles.add(f);
-            else if (f.getName().endsWith(".txt")) {
+            else if (f.toPath().getParent().endsWith("reporting")) {
                 //don't care about reporting files
             }
             else

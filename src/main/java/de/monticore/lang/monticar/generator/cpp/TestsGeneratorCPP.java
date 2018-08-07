@@ -43,7 +43,7 @@ public final class TestsGeneratorCPP {
         this.generator = Log.errorIfNull(generator);
     }
 
-    public List<FileContent> generateStreamTests(Scope symTab) {
+    public List<FileContent> generateStreamTests(Scope symTab, ExpandedComponentInstanceSymbol componentSymbol) {
         bluePrints = new ArrayList<>(generator.getBluePrints());
         findStreams(symTab);
         findComponents(symTab);
@@ -52,7 +52,7 @@ public final class TestsGeneratorCPP {
             Log.warn("no blue prints were generated");
             //return Collections.emptyList();
         }
-        return generateFiles();
+        return generateFiles(componentSymbol);
     }
 
     private void findStreams(Scope symTab) {
@@ -65,7 +65,7 @@ public final class TestsGeneratorCPP {
         availableComponents = componentScanner.scan();
     }
 
-    private List<FileContent> generateFiles() {
+    private List<FileContent> generateFiles(ExpandedComponentInstanceSymbol componentSymbol) {
         testedComponents = new HashSet<>();
         files = new ArrayList<>();
         viewModelForMain = new TestsMainEntryViewModel();
@@ -93,15 +93,21 @@ public final class TestsGeneratorCPP {
         }
         // add to cmake lists
         if (generator.isGenerateCMakeEnabled())
-            addTestExecutionToCMakeConfig();
+            addTestExecutionToCMakeConfig(componentSymbol);
         return files;
     }
 
-    private void addTestExecutionToCMakeConfig() {
+    private void addTestExecutionToCMakeConfig(ExpandedComponentInstanceSymbol componentSymbol) {
+        // executable name
+        String name;
+        if (componentSymbol != null)
+            name = componentSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_') + "_StreamTests";
+        else
+            name = "StreamTests";
         CMakeConfig cmake = generator.getCMakeConfig();
         cmake.addCMakeCommandEnd("include_directories(test)");
         cmake.addCMakeCommandEnd("add_executable(StreamTests test/tests_main.cpp)");
-        cmake.addCMakeCommandEnd("target_compile_definitions(StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
+        cmake.addCMakeCommandEnd("target_compile_definitions(" + name + " PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
     }
 
     private String getExistingComponentNames() {

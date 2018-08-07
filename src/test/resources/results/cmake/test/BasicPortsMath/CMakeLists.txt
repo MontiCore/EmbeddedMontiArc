@@ -26,4 +26,4 @@ export(TARGETS test_basicPortsMath FILE test_basicPortsMath.cmake)
 # additional commands end
 include_directories(test)
 add_executable(StreamTests test/tests_main.cpp)
-target_compile_definitions(StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)
+target_compile_definitions(test_basicPortsMath_StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)
