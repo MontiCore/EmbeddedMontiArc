@@ -26,5 +26,5 @@ public interface ASTOptimizerValue extends ASTOptimizerValueTOP {
 
     String getName();
 
-    List<? extends ASTEntry> getParams();
+    List<? extends ASTEntry> getParamsList();
 }

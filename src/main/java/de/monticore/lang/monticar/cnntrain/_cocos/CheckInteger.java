@@ -22,26 +22,16 @@ package de.monticore.lang.monticar.cnntrain._cocos;
 
 import de.monticore.lang.monticar.cnntrain._ast.ASTIntegerValue;
 import de.monticore.lang.monticar.cnntrain.helper.ErrorCodes;
-import de.monticore.lang.numberunit._ast.ASTUnitNumber;
 import de.se_rwth.commons.logging.Log;
-import org.jscience.mathematics.number.Rational;
-
-import java.util.Optional;
 
 public class CheckInteger implements CNNTrainASTIntegerValueCoCo {
 
     @Override
     public void check(ASTIntegerValue node) {
-        Optional<ASTUnitNumber> unitNumber = node.getNumber().getUnitNumber();
-        if (unitNumber.isPresent()){
-            Rational number = unitNumber.get().getNumber().get();
-            if (number.getDivisor().intValue() != 1){
-                Log.error("0" + ErrorCodes.NOT_INTEGER_CODE +" Value has to be an integer."
-                        , node.get_SourcePositionStart());
-            }
-        }
-        else {
-            throw new IllegalStateException("integer check");
+        Double unitNumber = node.getNumberWithUnit().getNumber().get();
+        if ((unitNumber % 1)!= 0) {
+            Log.error("0" + ErrorCodes.NOT_INTEGER_CODE +" Value has to be an integer."
+                    , node.get_SourcePositionStart());
         }
     }
 

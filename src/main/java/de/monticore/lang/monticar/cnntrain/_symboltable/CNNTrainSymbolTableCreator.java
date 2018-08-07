@@ -92,7 +92,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void endVisit(ASTOptimizerEntry node) {
-        for (ASTEntry nodeParam : node.getValue().getParams()) {
+        for (ASTEntry nodeParam : node.getValue().getParamsList()) {
             OptimizerParamSymbol param = new OptimizerParamSymbol();
             OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol) nodeParam.getValue().getSymbol().get();
             param.setValue(valueSymbol);
@@ -105,7 +105,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTNumEpochEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
-        Integer value_as_int = node.getValue().getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
+        Integer value_as_int = getIntegerFromNumber(node.getValue());
         value.setValue(value_as_int);
         entry.setValue(value);
         addToScopeAndLinkWithNode(entry, node);
@@ -116,7 +116,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTBatchSizeEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
-        Integer value_as_int = node.getValue().getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
+        Integer value_as_int = getIntegerFromNumber(node.getValue());
         value.setValue(value_as_int);
         entry.setValue(value);
         addToScopeAndLinkWithNode(entry, node);
@@ -127,12 +127,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTLoadCheckpointEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
-        if (node.getValue().getTRUE().isPresent()){
-            value.setValue(true);
-        }
-        else if (node.getValue().getFALSE().isPresent()){
-            value.setValue(false);
-        }
+        value.setValue(getBooleanForValue(node.getValue()));
         entry.setValue(value);
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
@@ -142,12 +137,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTNormalizeEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
-        if (node.getValue().getTRUE().isPresent()){
-            value.setValue(true);
-        }
-        else if (node.getValue().getFALSE().isPresent()){
-            value.setValue(false);
-        }
+        value.setValue(getBooleanForValue(node.getValue()));
         entry.setValue(value);
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
@@ -157,7 +147,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void visit(ASTTrainContextEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
-        if (node.getValue().cpuIsPresent()){
+        if (node.getValue().isPresentCpu()){
             value.setValue(Context.CPU);
         }
         else {
@@ -172,25 +162,25 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void visit(ASTEvalMetricEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
         ValueSymbol value = new ValueSymbol();
-        if (node.getValue().getAccuracy().isPresent()){
+        if (node.getValue().isPresentAccuracy()){
             value.setValue(EvalMetric.ACCURACY);
         }
-        else if (node.getValue().getCrossEntropy().isPresent()){
+        else if (node.getValue().isPresentCrossEntropy()){
             value.setValue(EvalMetric.CROSS_ENTROPY);
         }
-        else if (node.getValue().getF1().isPresent()){
+        else if (node.getValue().isPresentF1()){
             value.setValue(EvalMetric.F1);
         }
-        else if (node.getValue().getMae().isPresent()){
+        else if (node.getValue().isPresentMae()){
             value.setValue(EvalMetric.MAE);
         }
-        else if (node.getValue().getMse().isPresent()){
+        else if (node.getValue().isPresentMse()){
             value.setValue(EvalMetric.MSE);
         }
-        else if (node.getValue().getRmse().isPresent()){
+        else if (node.getValue().isPresentRmse()){
             value.setValue(EvalMetric.RMSE);
         }
-        else if (node.getValue().getTopKAccuracy().isPresent()){
+        else if (node.getValue().isPresentTopKAccuracy()){
             value.setValue(EvalMetric.TOP_K_ACCURACY);
         }
         entry.setValue(value);
@@ -201,22 +191,22 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTLRPolicyValue node) {
         OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
-        if (node.getFixed().isPresent()){
+        if (node.isPresentFixed()){
             value.setValue(LRPolicy.FIXED);
         }
-        else if (node.getExp().isPresent()){
+        else if (node.isPresentExp()){
             value.setValue(LRPolicy.EXP);
         }
-        else if (node.getInv().isPresent()){
+        else if (node.isPresentInv()){
             value.setValue(LRPolicy.INV);
         }
-        else if (node.getStep().isPresent()){
+        else if (node.isPresentStep()){
             value.setValue(LRPolicy.STEP);
         }
-        else if (node.getSigmoid().isPresent()){
+        else if (node.isPresentSigmoid()){
             value.setValue(LRPolicy.SIGMOID);
         }
-        else if (node.getPoly().isPresent()){
+        else if (node.isPresentPoly()){
             value.setValue(LRPolicy.POLY);
         }
         addToScopeAndLinkWithNode(value, node);
@@ -225,7 +215,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTNumberValue node) {
         OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
-        Double number = node.getNumber().getUnitNumber().get().getNumber().get().doubleValue();
+        Double number = node.getNumberWithUnit().getNumber().get();
         value.setValue(number);
         addToScopeAndLinkWithNode(value, node);
     }
@@ -233,7 +223,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTIntegerValue node) {
         OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
-        Integer number = node.getNumber().getUnitNumber().get().getNumber().get().getDividend().intValue();
+        Integer number = getIntegerFromNumber(node);
         value.setValue(number);
         addToScopeAndLinkWithNode(value, node);
     }
@@ -241,13 +231,24 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTBooleanValue node) {
         OptimizerParamValueSymbol value = new OptimizerParamValueSymbol();
-        if (node.getTRUE().isPresent()){
+        if (node.isPresentTRUE()){
             value.setValue(true);
         }
-        else if (node.getFALSE().isPresent()){
+        else if (node.isPresentFALSE()){
             value.setValue(false);
         }
         addToScopeAndLinkWithNode(value, node);
+    }
+
+    private int getIntegerFromNumber(ASTIntegerValue value) {
+        return value.getNumberWithUnit().getNumber().get().intValue();
+    }
+
+    private boolean getBooleanForValue(ASTBooleanValue value2) {
+        if (value2.isPresentTRUE()) {
+            return true;
+        }
+        return false;
     }
 
 }
