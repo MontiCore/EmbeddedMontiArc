@@ -106,8 +106,11 @@ public final class TestsGeneratorCPP {
             name = "StreamTests";
         CMakeConfig cmake = generator.getCMakeConfig();
         cmake.addCMakeCommandEnd("include_directories(test)");
-        cmake.addCMakeCommandEnd("add_executable(StreamTests test/tests_main.cpp)");
+        cmake.addCMakeCommandEnd("add_executable(" + name + "  test/tests_main.cpp)");
         cmake.addCMakeCommandEnd("target_compile_definitions(" + name + " PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
+        cmake.addCMakeCommandEnd("target_include_directories(" + name + "  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_link_libraries(" + name + "  PUBLIC ${LIBS})");
+        cmake.addCMakeCommandEnd("set_target_properties(" + name + "  PROPERTIES LINKER_LANGUAGE CXX)");
     }
 
     private String getExistingComponentNames() {

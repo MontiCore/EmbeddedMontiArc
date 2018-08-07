@@ -25,5 +25,8 @@ export(TARGETS test_basicPortsMath FILE test_basicPortsMath.cmake)
 
 # additional commands end
 include_directories(test)
-add_executable(StreamTests test/tests_main.cpp)
+add_executable(test_basicPortsMath_StreamTests  test/tests_main.cpp)
 target_compile_definitions(test_basicPortsMath_StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)
+target_include_directories(test_basicPortsMath_StreamTests  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(test_basicPortsMath_StreamTests  PUBLIC ${LIBS})
+set_target_properties(test_basicPortsMath_StreamTests  PROPERTIES LINKER_LANGUAGE CXX)
