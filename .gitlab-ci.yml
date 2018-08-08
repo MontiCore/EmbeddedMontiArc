@@ -1,5 +1,5 @@
 stages:
-#- windows
+- windows
 - linux
 
 masterJobLinux:
