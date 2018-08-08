@@ -38,6 +38,14 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     @Override
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
         super.preExecution();
+
+    }
+
+    @Override
+    protected void mainExecution() throws MojoExecutionException {
+        Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
+
+        //Remove old hasfiles
         File fmain = hashFileMain();
         if(fmain.exists()){
             fmain.delete();
@@ -46,11 +54,10 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         if(ftest.exists()){
             ftest.delete();
         }
-    }
-
-    @Override
-    protected void mainExecution() throws MojoExecutionException {
-        Log.info("StreamTestGeneratorMojo", "StreamTestGeneratorMojo");
+        File femam = hashEmamFile();
+        if(femam.exists()){
+            femam.delete();
+        }
 
         checkCocosOfInputFiles();
 
@@ -73,9 +80,11 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         //Create hash of files
         String mainHash = SearchFiles.hashDirFiles(this.getPathMain());
         String testHash = SearchFiles.hashDirFiles(this.getPathTest());
+        String emamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
         try {
             FileUtils.write(hashFileMain(), mainHash, false);
             FileUtils.write(hashFileTest(), testHash, false);
+            FileUtils.write(hashEmamFile(), emamHash, false);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Failed to create hash files for "+MojoName());
@@ -86,26 +95,30 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
     protected boolean checkForExecution() throws MojoExecutionException {
         File hmain = hashFileMain();
         File htest = hashFileTest();
-        if(!hmain.exists() || !htest.exists()){
+        File hemam = hashEmamFile();
+        if(!hmain.exists() || !htest.exists() || !hemam.exists() ){
             logInfo("Execution necessary: Hashfiles not found.");
             return true;
         }
 
-        String oldMainHash = "",oldTestHash = "";
+        String oldMainHash = "",oldTestHash = "", oldEmamHash = "", oldCppHash;
 
         String newMainHash = SearchFiles.hashDirFiles(this.getPathMain());
         String newTestHash = SearchFiles.hashDirFiles(this.getPathTest());
+        String newEmamHash = SearchFiles.hashDirFiles(this.getPathTmpOutEMAM());
 
         try {
             oldMainHash = FileUtils.readFileToString(hmain);
             oldTestHash = FileUtils.readFileToString(htest);
+            oldEmamHash = FileUtils.readFileToString(hemam);
         } catch (IOException e) {
             e.printStackTrace();
             throw new MojoExecutionException("Can't read old hash files");
         }
 
-        if(newMainHash.equalsIgnoreCase(oldMainHash) && newTestHash.equalsIgnoreCase(oldTestHash)){
-            logInfo("Execution not necessary. No input files changed.");
+        if(newMainHash.equalsIgnoreCase(oldMainHash) && newTestHash.equalsIgnoreCase(oldTestHash) &&
+                newEmamHash.equalsIgnoreCase(oldEmamHash) ){
+            logInfo("Execution of "+this.MojoName().toUpperCase()+" not necessary. No input files changed.");
             return false;
         }
 
@@ -227,6 +240,10 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
     protected File hashFileTest(){
         return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Test.txt").toFile();
+    }
+
+    protected File hashEmamFile(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "Emam.txt").toFile();
     }
 
     //</editor-fold>

@@ -54,6 +54,12 @@ public class ChecksumChecker {
     public static String getChecksumForFileMD5(String filePath) throws IOException {
         Path wiki_path = Paths.get(filePath);
 
+        md5.reset();
+        md5.update(Files.readAllBytes(wiki_path));
+
+        byte[] digest = md5.digest();
+        return DatatypeConverter.printHexBinary(digest).toUpperCase();
+/*
         List<String> lines = Files.readAllLines(wiki_path);
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
@@ -63,7 +69,7 @@ public class ChecksumChecker {
         content = content.replace("\r", "");
         content = content.replace("\n", "");
 
-        return getChecksumForStringMD5(content);
+        return getChecksumForStringMD5(content);*/
     }
 
     public static String getChecksumForStringMD5(String s){

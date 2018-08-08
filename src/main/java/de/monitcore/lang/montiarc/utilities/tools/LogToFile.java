@@ -78,7 +78,7 @@ public class LogToFile extends Log {
     protected void doError(String msg, Throwable t) {
         Finding error = Finding.error(msg);
         this.addFinding(error);
-        System.err.println("[ERROR] " + error.toString());
+        //System.err.println("[ERROR] " + error.toString());
         this.write("[error] "+error.toString()+"\r\n");
         t.printStackTrace(System.err);
         this.terminateIfErrors();
@@ -88,7 +88,7 @@ public class LogToFile extends Log {
     protected void doError(String msg, SourcePosition pos) {
         Finding error = Finding.error(msg, pos);
         this.addFinding(error);
-        System.err.println("[ERROR] " + error.toString());
+        //System.err.println("[ERROR] " + error.toString());
         this.write("[error] "+error.toString()+"\r\n");
         this.terminateIfErrors();
     }
@@ -97,7 +97,7 @@ public class LogToFile extends Log {
     protected void doError(String msg) {
         Finding error = Finding.error(msg);
         this.addFinding(error);
-        System.err.println("[ERROR] " + error.toString());
+        //System.err.println("[ERROR] " + error.toString());
         this.write("[error] "+error.toString()+"\r\n");
         this.terminateIfErrors();
     }

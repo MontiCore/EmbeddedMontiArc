@@ -1,12 +1,9 @@
 package de.monitcore.lang.montiarc.utilities;
 
-import de.monitcore.lang.montiarc.utilities.tools.AllTemplates;
 import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.se_rwth.commons.logging.Log;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -14,16 +11,13 @@ import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.*;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Mojo(name = "streamtest-build")
 public class StreamTestBuildMojo extends StreamTestMojoBase {
 
+/*
     private static final Template TEMPLATE_BUILDFILE_UNIX;
     private static final Template TEMPLATE_BUILDFILE_WINDOWS;
     static {
@@ -41,29 +35,29 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             throw new RuntimeException(msg, e);
         }
     }
-
+*/
     @Override
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
         super.preExecution();
+        this.mkdir(this.hashDirBuild().toString());
+        this.mkdir(this.hashDirCPP().toString());
 
-        Log.info("StreamTestBuildMojo", "StreamTestBuildMojo");
 
-        if(!hasMojoRunned("StreamTestGeneratorMojo")){
-            logInfo("StreamTestGeneratorMojo was not executed -> Run StreamTestGeneratorMojo");
-            StreamTestGeneratorMojo stgm = new StreamTestGeneratorMojo();
-            this.copyPropertiesAndParametersTo(stgm);
-            stgm.execute();
-        }
+        StreamTestGeneratorMojo stgm = new StreamTestGeneratorMojo();
+        this.copyPropertiesAndParametersTo(stgm);
+        stgm.execute();
 
         Log.info("StreamTestBuildMojo", "StreamTestBuildMojo");
     }
 
     @Override
     protected void mainExecution() throws MojoExecutionException, MojoFailureException {
-        createBuildFiles();
+
+        this.removeMojoFiles();
+        this.mkdir(this.runProcessTMPDir().toString());
 
         if (SystemUtils.IS_OS_WINDOWS) {
-            logInfo("Building with cmake for: \""+this.getGeneratorString(this.generator)+"\" and options: \""+this.getGeneratorBuildOptions(this.generator)+"\"");
+            logInfo("Building with cmake for: \""+this.generator+"\"");
         }else{
             logInfo("Building with cmake for: make");
         }
@@ -74,64 +68,76 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
     }
 
     @Override
+    protected void postExecution() throws MojoExecutionException {
+        super.postExecution();
+
+
+        String buildHash = SearchFiles.hashDirFiles(this.getPathTmpOutBUILD());
+        String cppHash = SearchFiles.hashDirFiles(this.getPathTmpOutCPP());
+        try {
+            if(hashDirCPP().exists()){
+                FileUtils.deleteDirectory(hashDirCPP());
+            }
+            if(hashDirBuild().exists()){
+                FileUtils.deleteDirectory(hashDirBuild());
+            }
+            this.mkdir(this.hashDirBuild().toString());
+            this.mkdir(this.hashDirCPP().toString());
+
+            FileUtils.write(hashFileBuild(), buildHash, false);
+            FileUtils.write(hashFileCPP(), cppHash, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Failed to create hash files for "+MojoName());
+        }
+
+        List<ComponentSymbol> toBuild = getToTestComponentSymbols(false);
+        for (ComponentSymbol cs : toBuild) {
+            buildHash = SearchFiles.hashDirFiles(Paths.get(this.getPathTmpOutBUILD(), cs.getFullName()).toString());
+            cppHash = SearchFiles.hashDirFiles(Paths.get(this.getPathTmpOutCPP(), cs.getFullName()).toString());
+            try {
+                FileUtils.write(hashFileBuildFor(cs.getFullName()), buildHash, false);
+                FileUtils.write(hashFileCPPFor(cs.getFullName()), cppHash, false);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new MojoExecutionException("Failed to create hash files for "+MojoName());
+            }
+        }
+    }
+
+    @Override
     protected String MojoName() {
-        return "StreamTestBuildMojo";
+        return "streamtest-build";
     }
 
 
     //<editor-fold desc="Buildfile creation">
-    protected void createBuildFiles() throws MojoExecutionException {
-        logInfo("Create Build file(s)");
-        Map root = new HashMap();
-        root.put("genNONE", this.generator == GeneratorEnum.NONE);
-        root.put("generator", this.getGeneratorString(this.generator));
-        root.put("buildoptions", this.getGeneratorBuildOptions(this.generator));
 
 
-
-        FileWriter fw = null;
-        try {
-            logInfo(" - build.sh");
-            File f = Paths.get(this.getPathTmpOutCPP(), "build.sh").toFile();
-            f.getParentFile().mkdirs();
-            fw = new FileWriter(f);
-            fw.write(AllTemplates.generate(TEMPLATE_BUILDFILE_UNIX, root));
-            fw.flush();
-            fw.close();
-
-            logInfo(" - build.bat");
-            f = Paths.get(this.getPathTmpOutCPP(), "build.bat").toFile();
-            f.getParentFile().mkdirs();
-            fw = new FileWriter(f);
-            fw.write(AllTemplates.generate(TEMPLATE_BUILDFILE_WINDOWS, root));
-            fw.flush();
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new MojoExecutionException("Can't create build file!"+e.getMessage());
-        }
-
-    }
-
-    protected String getGeneratorString(GeneratorEnum gen){
+    protected void getGeneratorString(GeneratorEnum gen, List<String> cmd){
         switch (gen){
             case MinGW:
-                return "MinGW Makefiles";
+                cmd.add("-G");
+                cmd.add("\"MinGW Makefiles\"");
+                break;
+                //return "-G \"MinGW Makefiles\"";
             case VS2017:
             case VisualStudio2017:
-                return "Visual Studio 15 2017 Win64";
-            default:
-                return "";
+                cmd.add("-G");
+                cmd.add("\"Visual Studio 15 2017 Win64\"");
+                break;
+                //return "-G "Visual Studio 15 2017 Win64";
         }
     }
 
-    protected String getGeneratorBuildOptions(GeneratorEnum gen){
+    protected void getGeneratorBuildOptions(GeneratorEnum gen, List<String> cmd){
         switch (gen){
             case VS2017:
             case VisualStudio2017:
-                return "--config Debug";
-            default:
-                return "";
+                cmd.add("--config");
+                cmd.add("Debug");
+                break;
+                //return "--config Debug";
         }
     }
     //</editor-fold>
@@ -149,7 +155,11 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
 
         for (ComponentSymbol cs : toBuild) {
             logInfo(" - "+cs.getFullName());
-            allCompiled = allCompiled && buildName(cs.getFullName());
+            if(checkHashesAndExecForBuild(cs.getFullName())){
+                logInfo("   -> Files are up to date");
+                continue;
+            }
+            allCompiled = allCompiled && buildTestExecutable(cs.getFullName());
         }
 
         if(!allCompiled){
@@ -157,49 +167,141 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
     }
 
-    protected boolean buildName(String name) throws MojoExecutionException {
-        long startTime = System.nanoTime();
-        ProcessBuilder processBuilder;
-        if (SystemUtils.IS_OS_WINDOWS) {
-            processBuilder = new ProcessBuilder(Paths.get(this.getPathTmpOutCPP(), name, "../build.bat").toAbsolutePath().toString());
-        }else{
-            processBuilder=new ProcessBuilder("/bin/bash", "../build.sh");
+    protected boolean checkHashesAndExecForBuild(String name){
+        File hbuild = hashFileBuildFor(name);
+        File hcpp = hashFileCPPFor(name);
+        if(!hbuild.exists() || !hcpp.exists()){
+            return false;
         }
-        processBuilder.directory(Paths.get(this.getPathTmpOutCPP(), name).toFile());
+
+        String oldCPPHash = "", oldBUILDHash = "";
+        String newCPPHash = SearchFiles.hashDirFiles(Paths.get(this.getPathTmpOutCPP(), name).toString());
+        String newBUILDHash = SearchFiles.hashDirFiles(Paths.get(this.getPathTmpOutBUILD(), name).toString());
         try {
+            oldBUILDHash = FileUtils.readFileToString(hbuild);
+            oldCPPHash = FileUtils.readFileToString(hcpp);
+        }catch (Exception ex){
+            return false;
+        }
+        if(newCPPHash.equalsIgnoreCase(oldCPPHash) && newBUILDHash.equalsIgnoreCase(oldBUILDHash) ){
+
+            if(Paths.get(this.getPathTmpOutBUILD(), name, execFileName(this.generator)).toFile().exists()){
+                return true;
+            }
+
+            return false;
+        }
+
+        return false;
+    }
+
+
+    protected boolean buildTestExecutable(String name) throws MojoExecutionException{
+        //long startTime = System.nanoTime();
+        String buildDir = Paths.get(this.getPathTmpOutBUILD(), name).toString();
+        File bd = Paths.get(buildDir).toFile();
+        if(bd.exists()){
+            try {
+                FileUtils.deleteDirectory(bd);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new MojoExecutionException("Cannot delete build directory for "+name);
+            }
+        }
+        this.mkdir(buildDir);
+
+        String relPath = Paths.get(this.getPathTmpOutBUILD(),name).relativize(Paths.get(this.getPathTmpOutCPP(), name)).toString();
+
+        //Run cmake:
+        List<String> command = new ArrayList<>();
+        command.add("cmake");
+        command.add(""+relPath+"");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            //command.add(this.getGeneratorString(this.getGenerator()));
+            this.getGeneratorString(this.generator, command);
+        }
+        logInfo("   # Run ("+buildDir+"): "+String.join(" ", command)+" ");
+        long startTime = System.nanoTime();
+        if(processRun(command, buildDir, "1_"+name)==0){
+            logInfo("     -> Success in "+getReadableTime(System.nanoTime()-startTime));
+        }else{
+            logInfo("     -> Error. CMake failed for "+name);
+            return false;
+        }
+
+        command.clear();
+        command.add("cmake");
+        command.add("--build");
+        command.add(".");
+        command.add("--target");
+        command.add("StreamTests");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            //command.add(this.getGeneratorString(this.getGenerator()));
+            this.getGeneratorBuildOptions(this.generator, command);
+        }
+        logInfo("   # Run ("+buildDir+"): "+String.join(" ", command)+" ");
+        startTime = System.nanoTime();
+        if(processRun(command, buildDir,"2_"+ name)==0){
+            logInfo("     -> Success in "+getReadableTime(System.nanoTime()-startTime));
+        }else{
+            logInfo("     -> Error. CMake BUILD failed for "+name);
+            return false;
+        }
+
+        if(!Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(this.generator)).toFile().exists()){
+            logError("   -> StreamTests executable was not found. Build failed (unknown error)");
+        }
+
+        return true;
+    }
+
+    protected int processRun(List<String> cmd, String directory, String name)throws MojoExecutionException{
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        processBuilder.directory(Paths.get(directory).toFile());
+        try {
+            //processBuilder.redirectErrorStream(true);
+            processBuilder.redirectError(Paths.get(this.runProcessTMPDir().toString(), name+".err.txt").toFile());
+            processBuilder.redirectOutput(Paths.get(this.runProcessTMPDir().toString(), name+".out.txt").toFile());
+
             Process process = processBuilder.start();
-            List<String> allLines = new ArrayList<>();
+
+            /*List<String> allLines = new ArrayList<>();
             if (showBuildAndRunOutput) {
                 new BufferedReader(new InputStreamReader(process.getInputStream())).lines().
-                        forEach((String s) -> this.logInfo("   [build-info] "+s));
+                        forEach((String s) -> this.logInfo("   [build-info] " + s));
                 new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().
-                        forEach((String s) -> this.logError("   [build-error] "+s));
-            } else {
-                BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while (((line = in.readLine()) != null)) {
-                    allLines.add(line);
-                }
-            }
-            process.waitFor();
-
-            if(!Paths.get(this.getPathTmpOutCPP(), name, execFileName(this.generator)).toFile().exists()){
-                for(String l : allLines){
-                    logError("    # Build error out: "+l);
-                }
-                return false;
+                        forEach((String s) -> this.logError("   [build-error] " + s));
             }else{
+                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().
+                        forEach((String s) -> {
+                            //this.logInfo("   [build-info] " + s);
+                            allLines.add("   [build-info] "+s);
+                        });
+                new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().
+                        forEach((String s) -> {
+                            //this.logError("   [build-error] " + s);
+                            allLines.add("   [build-error] "+s);
+                        });
+            }*/
 
-                long stopTime = System.nanoTime();
+            int result = process.waitFor();
 
-                logInfo("   -> Success in "+getReadableTime(stopTime-startTime));
+            if(result != 0 || showBuildAndRunOutput){
+                List<String> allLines = FileUtils.readLines(Paths.get(this.runProcessTMPDir().toString(), name+".err.txt").toFile());
+                for (String s:allLines) {
+                    logError("   [build-error] " + s);
+                }
+                allLines = FileUtils.readLines(Paths.get(this.runProcessTMPDir().toString(), name+".out.txt").toFile());
+                for (String s:allLines) {
+                    logError("   [build-info] " + s);
+                }
             }
 
+            return result;
         }catch (Exception ex){
             ex.printStackTrace();
             throw new MojoExecutionException(ex.getMessage());
         }
-        return true;
     }
 
     protected String execFileName(GeneratorEnum generator){
@@ -207,12 +309,12 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             switch (generator) {
                 case VS2017:
                 case VisualStudio2017:
-                    return "build/Debug/StreamTests.exe";
+                    return "Debug/StreamTests.exe";
                 default:
-                    return "build/StreamTests.exe";
+                    return "StreamTests.exe";
             }
         }else{
-            return "build/StreamTests";
+            return "StreamTests";
         }
     }
 
@@ -223,9 +325,63 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         long sec = tempSec % 60;
         long min = (tempSec /60) % 60;
         long hour = (tempSec /(60*60));
-        return String.format("%d:%d:%d.%d",hour,min,sec,ms);
+        return String.format("%02d:%02d:%02d.%03d",hour,min,sec,ms);
 
     }
 
+    //</editor-fold>
+
+    //<editor-fold desc="Hashfiles">
+
+    protected void removeMojoFiles() throws MojoExecutionException {
+        try {
+            /*if(hashDirCPP().exists()){
+                FileUtils.deleteDirectory(hashDirCPP());
+            }
+            if(hashDirBuild().exists()){
+                FileUtils.deleteDirectory(hashDirBuild());
+            }*/
+            if(hashFileBuild().exists()){
+                hashFileBuild().delete();
+            }
+            if(hashFileCPP().exists()){
+                hashFileCPP().delete();
+            }
+            if(runProcessTMPDir().exists()){
+                FileUtils.deleteDirectory(runProcessTMPDir());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Cannot delete tmp mojo directorys!");
+        }
+    }
+
+    protected File hashDirBuild(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "build").toFile();
+    }
+
+    protected File hashFileBuild(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "build.txt").toFile();
+    }
+
+    protected File hashFileBuildFor(String name){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "build/", name+".txt").toFile();
+    }
+
+    protected File hashDirCPP(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "cpp").toFile();
+    }
+
+    protected File hashFileCPP(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "cpp.txt").toFile();
+    }
+
+    protected File hashFileCPPFor(String name){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "cpp/", name+".txt").toFile();
+    }
+
+    protected File runProcessTMPDir(){
+        return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "run").toFile();
+    }
     //</editor-fold>
 }

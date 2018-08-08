@@ -28,10 +28,10 @@ public class TestStreamTestBuildMojo {
         //
         //stm.addCppIncludePaths("/usr/local/Cellar/armadillo/8.500.1/include");
 
-        stm.setGenerator(GeneratorEnum.MinGW);
+        stm.setGenerator(GeneratorEnum.VS2017);
 
         //use this in test to see all output
-        stm.setShowBuildAndRunOutput(true);
+        stm.setShowBuildAndRunOutput(false);
 
         return stm;
     }

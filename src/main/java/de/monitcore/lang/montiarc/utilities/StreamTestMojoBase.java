@@ -79,6 +79,9 @@ public class StreamTestMojoBase extends AbstractMojo {
     public String getPathTmpOutEMAM(){
         return Paths.get(this.pathTmpOut, "emam/").toString();
     }
+    public String getPathTmpOutBUILD() {
+        return Paths.get(this.getPathTmpOut(), "build/").toString();
+    }
 
     @Parameter(name = "wrapperTestExtension", defaultValue = "_TestWrapper")
     protected String wrapperTestExtension;
@@ -130,8 +133,8 @@ public class StreamTestMojoBase extends AbstractMojo {
     //<editor-fold desc="Execution">
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        this.preExecution();
         if(checkForExecution()) {
-            this.preExecution();
             this.mainExecution();
             this.postExecution();
         }
@@ -141,6 +144,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.mkdir(this.getPathTmpOut());
         this.mkdir(this.getPathTmpOutCPP());
         this.mkdir(this.getPathTmpOutEMAM());
+        this.mkdir(this.getPathTmpOutBUILD());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory).toString());
         this.mkdir(Paths.get(this.getPathTmpOut(), mojoDirectory, this.MojoName()).toString());
 
@@ -172,11 +176,6 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     protected String MojoName(){
         return "StreamTestMojoBase";
-    }
-
-    protected boolean hasMojoRunned(String mojo){
-        File f = Paths.get(this.getPathTmpOut(), mojoDirectory, "."+mojo).toFile();
-        return f.exists();
     }
 
     protected void copyPropertiesAndParametersTo(StreamTestMojoBase stmb){
@@ -216,6 +215,11 @@ public class StreamTestMojoBase extends AbstractMojo {
     protected void logWarn(String msg){
         getLog().warn(msg);
         Log.warn(msg);
+    }
+
+    protected void logDebug(String msg){
+        getLog().debug(msg);
+        Log.debug(msg, this.MojoName());
     }
 
     //</editor-fold>
