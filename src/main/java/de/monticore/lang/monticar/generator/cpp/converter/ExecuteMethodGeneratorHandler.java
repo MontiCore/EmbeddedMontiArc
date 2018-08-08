@@ -220,6 +220,10 @@ public class ExecuteMethodGeneratorHandler {
         return mathNumberExpressionSymbol.getTextualRepresentation();
     }
 
+    public static String generateExecuteCodeFloatNumber(MathNumberExpressionSymbol mathNumberExpressionSymbol) {
+        return Double.toString(mathNumberExpressionSymbol.getValue().getRealNumber().doubleValue());
+    }
+
     public static String generateExecuteCode(MathBooleanExpressionSymbol mathBooleanExpressionSymbol, List<String> includeStrings) {
         return mathBooleanExpressionSymbol.getTextualRepresentation();
     }
@@ -334,14 +338,17 @@ public class ExecuteMethodGeneratorHandler {
             list.add(mathExpressionSymbol.getRightExpression());
             String valueListString = "(" + OctaveHelper.getOctaveValueListString(list, ";") + ")";
             return MathConverter.curBackend.getPowerOfString(mathExpressionSymbol, valueListString, ";");
+        } else if (mathExpressionSymbol.getMathOperator().equals("/") && (mathExpressionSymbol.getLeftExpression() instanceof MathNumberExpressionSymbol) && (mathExpressionSymbol.getRightExpression() instanceof MathNumberExpressionSymbol)) {
+            String left = ExecuteMethodGeneratorHandler.generateExecuteCodeFloatNumber((MathNumberExpressionSymbol) mathExpressionSymbol.getLeftExpression());
+            String right = ExecuteMethodGeneratorHandler.generateExecuteCodeFloatNumber((MathNumberExpressionSymbol) mathExpressionSymbol.getRightExpression());
+            result = String.format("%s%s%s", left, mathExpressionSymbol.getMathOperator(), right);
         } else {
             result += /*"("+*/  ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getLeftExpression(), includeStrings) + mathExpressionSymbol.getMathOperator();
-
-            if (mathExpressionSymbol.getRightExpression() != null)
+            if (mathExpressionSymbol.getRightExpression() != null) {
                 result += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getRightExpression(), includeStrings);
+            }
         }
         return result;
-
     }
 
 

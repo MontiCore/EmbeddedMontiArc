@@ -93,4 +93,20 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         testFilesAreEqual(testFiles, restPath + "test/");
     }
 
+    @Test
+    public void floatDivisionTest() throws IOException {
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.floatDivisionTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(true);
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/cmake/test/math/FloatDivisionTest");
+        generatorCPP.setModelsDirPath(Paths.get("src/test/resources/"));
+        generatorCPP.setGenerateTests(true);
+        generatorCPP.setCheckModelDir(true);
+        List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
+        String restPath = "cmake/test/math/FloatDivisionTest/";
+        testCMakeFilesEqual(files, restPath);
+    }
+
 }
