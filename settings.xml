@@ -59,7 +59,7 @@
       <repositories>
         <repository>
           <id>central</id>
-          <url>http://central</url>
+          <url>https://central</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </repository>
@@ -67,7 +67,7 @@
       <pluginRepositories>
         <pluginRepository>
           <id>central</id>
-          <url>http://central</url>
+          <url>https://central</url>
           <releases><enabled /></releases>
           <snapshots><enabled /></snapshots>
         </pluginRepository>
