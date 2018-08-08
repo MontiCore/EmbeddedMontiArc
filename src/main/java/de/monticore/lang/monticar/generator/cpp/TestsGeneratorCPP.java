@@ -43,7 +43,7 @@ public final class TestsGeneratorCPP {
         this.generator = Log.errorIfNull(generator);
     }
 
-    public List<FileContent> generateStreamTests(Scope symTab) {
+    public List<FileContent> generateStreamTests(Scope symTab, ExpandedComponentInstanceSymbol componentSymbol) {
         bluePrints = new ArrayList<>(generator.getBluePrints());
         findStreams(symTab);
         findComponents(symTab);
@@ -52,7 +52,7 @@ public final class TestsGeneratorCPP {
             Log.warn("no blue prints were generated");
             //return Collections.emptyList();
         }
-        return generateFiles();
+        return generateFiles(componentSymbol);
     }
 
     private void findStreams(Scope symTab) {
@@ -65,7 +65,7 @@ public final class TestsGeneratorCPP {
         availableComponents = componentScanner.scan();
     }
 
-    private List<FileContent> generateFiles() {
+    private List<FileContent> generateFiles(ExpandedComponentInstanceSymbol componentSymbol) {
         testedComponents = new HashSet<>();
         files = new ArrayList<>();
         viewModelForMain = new TestsMainEntryViewModel();
@@ -93,15 +93,30 @@ public final class TestsGeneratorCPP {
         }
         // add to cmake lists
         if (generator.isGenerateCMakeEnabled())
-            addTestExecutionToCMakeConfig();
+            addTestExecutionToCMakeConfig(componentSymbol);
         return files;
     }
 
-    private void addTestExecutionToCMakeConfig() {
+    private void addTestExecutionToCMakeConfig(ExpandedComponentInstanceSymbol componentSymbol) {
+        // executable name
+        String compName;
+        final String execuatablePostFix = "_StreamTests";
         CMakeConfig cmake = generator.getCMakeConfig();
         cmake.addCMakeCommandEnd("include_directories(test)");
-        cmake.addCMakeCommandEnd("add_executable(StreamTests test/tests_main.cpp)");
-        cmake.addCMakeCommandEnd("target_compile_definitions(StreamTests PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
+        if (componentSymbol != null) {
+            compName = componentSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_');
+        } else {
+            compName = "";
+        }
+        cmake.addCMakeCommandEnd("add_executable(" + compName + execuatablePostFix + "  test/tests_main.cpp)");
+        cmake.addCMakeCommandEnd("target_compile_definitions(" + compName + execuatablePostFix + " PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
+        if (compName.isEmpty()) {
+            cmake.addCMakeCommandEnd("target_include_directories(" + compName + execuatablePostFix + "  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
+            cmake.addCMakeCommandEnd("target_link_libraries(" + compName + execuatablePostFix + "  PUBLIC ${LIBS})");
+        } else { // link against already created static library
+            cmake.addCMakeCommandEnd("target_link_libraries(" + compName + execuatablePostFix + "  PUBLIC " + compName + ")");
+        }
+        cmake.addCMakeCommandEnd("set_target_properties(" + compName + execuatablePostFix + "  PROPERTIES LINKER_LANGUAGE CXX)");
     }
 
     private String getExistingComponentNames() {

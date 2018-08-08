@@ -167,7 +167,7 @@ public final class GeneratorCppCli {
             if (componentSymbol != null) {
                 g.generateFiles(componentSymbol, symTab);
             } else {
-                g.saveFilesToDisk(g.handleTestAndCheckDir(symTab));
+                g.saveFilesToDisk(g.handleTestAndCheckDir(symTab, componentSymbol));
             }
         } catch (IOException e) {
             Log.error("error during generation", e);

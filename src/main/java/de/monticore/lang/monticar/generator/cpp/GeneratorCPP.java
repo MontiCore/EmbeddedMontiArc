@@ -167,7 +167,7 @@ public class GeneratorCPP implements Generator {
                                     Scope symtab) throws IOException {
         List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
-        fileContents.addAll(handleTestAndCheckDir(symtab));
+        fileContents.addAll(handleTestAndCheckDir(symtab, componentSymbol));
         if (isGenerateAutopilotAdapter()) {
             fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
         }
@@ -207,11 +207,11 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    public List<FileContent> handleTestAndCheckDir(Scope symtab) {
+    public List<FileContent> handleTestAndCheckDir(Scope symtab, ExpandedComponentInstanceSymbol componentSymbol) {
         List<FileContent> fileContents = new ArrayList<>();
         if (isGenerateTests() || isCheckModelDir()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
-            List<FileContent> fileConts = g.generateStreamTests(symtab);
+            List<FileContent> fileConts = g.generateStreamTests(symtab, componentSymbol);
             fileContents.addAll(fileConts);
         }
         return fileContents;
