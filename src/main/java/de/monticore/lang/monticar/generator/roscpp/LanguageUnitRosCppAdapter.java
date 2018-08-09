@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.roscpp;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.monticar.generator.roscpp.helper.InitHelper;
 import de.monticore.lang.monticar.generator.roscpp.util.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.NameHelper;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -23,6 +24,15 @@ public class LanguageUnitRosCppAdapter {
     private List<MsgConverter> msgConverts = new ArrayList<>();
     private List<String> additionalPackages = new ArrayList<>();
     private Map<RosMsg, MCTypeReference<? extends MCTypeSymbol>> usedRosMsgs = new HashMap<>();
+    private boolean ros2Mode = false;
+
+    public boolean isRos2Mode() {
+        return ros2Mode;
+    }
+
+    public void setRos2Mode(boolean ros2Mode) {
+        this.ros2Mode = ros2Mode;
+    }
 
     public List<String> getAdditionalPackages() {
         return additionalPackages;
@@ -132,21 +142,17 @@ public class LanguageUnitRosCppAdapter {
         compPointer.setName("comp");
         initMethod.addParameter(compPointer);
 
-        initMethod.addInstruction(new TargetCodeInstruction("this->component = comp;"));
-        initMethod.addInstruction(new TargetCodeInstruction("char* tmp = strdup(\"\");"));
-        initMethod.addInstruction(new TargetCodeInstruction("int i = 0;"));
-        initMethod.addInstruction(new TargetCodeInstruction("ros::init(i, &tmp, \"" + classname + "_node\");"));
-        initMethod.addInstruction(new TargetCodeInstruction("ros::NodeHandle node_handle = ros::NodeHandle();"));
+        InitHelper.getInitInstructions(classname,isRos2Mode()).forEach(initMethod::addInstruction);
 
         //subs
         subscribers.keySet().stream()
-                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback"))
+                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback", ros2Mode, getFullRosType(subscribers.get(var))))
                 .distinct()
                 .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
 
         publishers.keySet().stream()
-                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get()))
+                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get(),ros2Mode))
                 .distinct()
                 .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
