@@ -35,8 +35,8 @@ import java.util.Set;
  */
 public class OptimizationStatementCheck implements MathOptASTOptimizationStatementCoCo {
 
-    private Set<String> supportedReturnTypes = new HashSet<>(Arrays.asList("Q, Z"));
-    private Set<String> supportedOptimizationTypes = new HashSet<>(Arrays.asList("Q, Z"));
+    private Set<String> supportedReturnTypes = new HashSet<>(Arrays.asList("Q", "Z"));
+    private Set<String> supportedOptimizationTypes = new HashSet<>(Arrays.asList("Q", "Z"));
 
     @Override
     public void check(ASTOptimizationStatement node) {
@@ -65,7 +65,7 @@ public class OptimizationStatementCheck implements MathOptASTOptimizationStateme
 
     private void checkOptimizationVariable(ASTOptimizationStatement node) {
         ASTOptimizationVariableDeclaration astOptVar = node.getOptimizationVariable();
-        if (!supportedOptimizationTypes.contains(astOptVar.getType().getElementType())) {
+        if (!supportedOptimizationTypes.contains(astOptVar.getType().getElementType().getName())) {
             Log.error(String.format("0xC0003 Optimization variable type \"%s\" is not supported as return value.", astOptVar.getType().toString()));
         }
     }

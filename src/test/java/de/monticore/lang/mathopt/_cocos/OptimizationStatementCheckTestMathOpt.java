@@ -80,6 +80,6 @@ public class OptimizationStatementCheckTestMathOpt extends AbstractMathOptCocoTe
         Log.enableFailQuick(false);
         coco.check(ast);
         assertEquals(1, Log.getErrorCount());
-        assertTrue(Log.getFindings().get(0).getMsg().contains("0x8E75E9"));
+        assertTrue(Log.getFindings().get(0).getMsg().contains("0xC0002"));
     }
 }
