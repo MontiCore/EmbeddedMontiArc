@@ -15,7 +15,7 @@
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.2-SNAPSHOT</CNNArch.version>
+      <CNNArch.version>0.2.1-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.2.2-SNAPSHOT</CNNTrain.version>
     
         <!-- .. Libraries .................................................. -->
