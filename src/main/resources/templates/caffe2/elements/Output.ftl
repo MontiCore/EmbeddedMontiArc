@@ -1,7 +1,7 @@
-
 <#if element.softmaxOutput>
-        ${element.name} = mx.symbol.SoftmaxOutput(data=${element.inputs[0]},
-            name="${element.name}")
+        pred = brew.fc(model, ${element.inputs[0]}, 'pred', 500, 10)
+        ${element.name} = brew.softmax(model, pred, '${element.name}')
+
 <#elseif element.logisticRegressionOutput>
         ${element.name} = mx.symbol.LogisticRegressionOutput(data=${element.inputs[0]},
             name="${element.name}")

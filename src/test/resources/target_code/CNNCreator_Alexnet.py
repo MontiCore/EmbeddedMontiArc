@@ -1,11 +1,15 @@
-import mxnet as mx
+from caffe2.python import workspace, core, model_helper, brew
+from caffe2.python.predictor import mobile_exporter
+from caffe2.proto import caffe2_pb2
+import numpy as np
+
 import logging
 import os
-import errno
 import shutil
 import h5py
 import sys
-import numpy as np
+
+model = model_helper.ModelHelper(name="caffe2 net")
 
 @mx.init.register
 class MyConstant(mx.init.Initializer):
