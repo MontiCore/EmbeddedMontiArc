@@ -190,8 +190,6 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     protected List<String> computeStartAndEndValue(List<ArchTypeSymbol> inputTypes, BinaryOperator<Rational> startValAccumulator, BinaryOperator<Rational> endValAccumulator){
-        boolean noStartValues = true;
-        boolean noEndValues = true;
         Stream.Builder<Rational> startValues = Stream.builder();
         Stream.Builder<Rational> endValues = Stream.builder();
         String start = null;
@@ -203,22 +201,20 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
                     start = "-oo";
                 }
                 else {
-                    noStartValues = false;
                     startValues.add(range.get().getStartValue());
                 }
                 if (range.get().hasNoUpperLimit()){
                     end = "oo";
                 }
                 else {
-                    noEndValues = false;
                     endValues.add(range.get().getEndValue());
                 }
             }
         }
-        if (start == null && !noStartValues){
+        if (start == null){
             start = "" + startValues.build().reduce(startValAccumulator).get().doubleValue();
         }
-        if (end == null && !noEndValues){
+        if (end == null){
             end = "" + endValues.build().reduce(endValAccumulator).get().doubleValue();
         }
 

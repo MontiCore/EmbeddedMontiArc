@@ -144,7 +144,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public void endVisit(final ASTArchitecture node) {
-        //ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbol().get();
+        //ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbolOpt().get();
         architecture.setBody((ArchitectureElementSymbol) node.getBody().getSymbolOpt().get());
 
         removeCurrentScope();
@@ -224,7 +224,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTLayerDeclaration ast) {
-        LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbol().get();
+        LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbolOpt().get();
         layerDeclaration.setBody((CompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
         List<VariableSymbol> parameters = new ArrayList<>(4);
@@ -259,7 +259,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         if (ast.isPresentArithmeticExpression()) {
             ASTExpression arithmeticExpression = ast.getArithmeticExpression();
             if (arithmeticExpression.isPresentSymbol()) {
-                mathExp = (MathExpressionSymbol) arithmeticExpression.getSymbol().get();
+                mathExp = (MathExpressionSymbol) arithmeticExpression.getSymbolOpt().get();
             }
         }
         else if (ast.isPresentBooleanExpression()) {

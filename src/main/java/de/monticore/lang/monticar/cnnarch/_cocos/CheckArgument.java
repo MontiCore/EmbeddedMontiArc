@@ -31,7 +31,7 @@ public class CheckArgument implements CNNArchASTArchArgumentCoCo {
 
     @Override
     public void check(ASTArchArgument node) {
-        ArgumentSymbol argument = (ArgumentSymbol) node.getSymbol().get();
+        ArgumentSymbol argument = (ArgumentSymbol) node.getSymbolOpt().get();
         LayerDeclarationSymbol layerDeclaration = argument.getLayer().getDeclaration();
         if (layerDeclaration != null && argument.getParameter() ==  null){
             Log.error("0"+ ErrorCodes.UNKNOWN_ARGUMENT + " Unknown Argument. " +
