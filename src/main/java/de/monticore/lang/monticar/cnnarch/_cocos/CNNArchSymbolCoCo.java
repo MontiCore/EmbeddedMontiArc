@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._cocos;
 
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.symboltable.Symbol;
 

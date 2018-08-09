@@ -24,6 +24,7 @@ import de.monticore.lang.monticar.cnnarch._cocos.*;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static de.monticore.lang.monticar.cnnarch.ParserTest.ENABLE_FAIL_QUICK;

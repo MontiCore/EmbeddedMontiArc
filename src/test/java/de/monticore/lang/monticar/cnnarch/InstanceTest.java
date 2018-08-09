@@ -25,6 +25,7 @@ import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static de.monticore.lang.monticar.cnnarch.ParserTest.ENABLE_FAIL_QUICK;

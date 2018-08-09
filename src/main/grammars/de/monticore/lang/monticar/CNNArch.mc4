@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar;
 
-grammar CNNArch extends de.monticore.lang.math.Math {
+grammar CNNArch extends de.monticore.lang.Math, de.monticore.lang.monticar.Common2,
+de.monticore.CommonExpressions, de.monticore.SetExpressions {
 
     token NEWLINETOKEN =
                  ('\r' '\n' |
@@ -113,12 +114,12 @@ grammar CNNArch extends de.monticore.lang.math.Math {
     /**
         Expressions for variable values.
     */
-    ArchSimpleExpression = (arithmeticExpression:MathArithmeticExpression
-                         | booleanExpression:MathBooleanExpression
+    ArchSimpleExpression = (arithmeticExpression:Expression
+                         | booleanExpression:Expression
                          | tupleExpression:TupleExpression
                          | string:StringLiteral);
 
-    TupleExpression = "(" expressions:MathArithmeticExpression "," expressions:(MathArithmeticExpression || ",")* ")";
+    TupleExpression = "(" expressions:Expression "," expressions:(Expression || ",")* ")";
 
 
     /* =================================*/

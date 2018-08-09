@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch.helper;
 
-import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.cnnarch._symboltable.TupleExpressionSymbol;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
@@ -155,40 +155,40 @@ public class Utils {
     }
 
     public static boolean equals(ASTElementType firstType, ASTElementType secondType){
-        if (firstType.isIsBoolean() ^ secondType.isIsBoolean()
-                || firstType.isIsNatural() ^ secondType.isIsNatural()
-                || firstType.isIsRational() ^ secondType.isIsRational()
-                || firstType.isIsWholeNumberNumber() ^ secondType.isIsWholeNumberNumber()
-                || firstType.isIsComplex() ^ secondType.isIsComplex()){
+        if (firstType.isBoolean() ^ secondType.isBoolean()
+                || firstType.isNaturalNumber() ^ secondType.isNaturalNumber()
+                || firstType.isRational() ^ secondType.isRational()
+                || firstType.isWholeNumber() ^ secondType.isWholeNumber()
+                || firstType.isComplex() ^ secondType.isComplex()){
             return false;
         }
-        if (firstType.getRange().isPresent()){
-            if (!secondType.getRange().isPresent()){
+        if (firstType.isPresentRange()){
+            if (!secondType.isPresentRange()){
                 return false;
             }
         }
         else {
-            return !secondType.getRange().isPresent();
+            return !secondType.isPresentRange();
         }
 
-        return equals(firstType.getRange().get(), secondType.getRange().get());
+        return equals(firstType.getRange(), secondType.getRange());
     }
 
     public static boolean equals(ASTRange firstRange, ASTRange secondRange){
-        if (firstRange.getStartInf().isPresent() ^ secondRange.getStartInf().isPresent()
-                || firstRange.getEndInf().isPresent() ^ secondRange.getEndInf().isPresent()){
+        if (firstRange.hasNoLowerLimit() ^ secondRange.hasNoLowerLimit()
+                || firstRange.hasNoUpperLimit() ^ secondRange.hasNoUpperLimit()){
             return false;
         }
-        if (!firstRange.getStartInf().isPresent() && !firstRange.getStartValue().equals(secondRange.getStartValue())){
+        if (!firstRange.hasNoLowerLimit() && !firstRange.getStartValue().equals(secondRange.getStartValue())){
             return false;
         }
-        if (!firstRange.getEndInf().isPresent() && !firstRange.getEndValue().equals(secondRange.getEndValue())){
+        if (!firstRange.hasNoUpperLimit() && !firstRange.getEndValue().equals(secondRange.getEndValue())){
             return false;
         }
-        if (firstRange.getStep().isPresent() ^ secondRange.getStep().isPresent()){
+        if (firstRange.isPresentStep() ^ secondRange.isPresentStep()){
             return false;
         }
-        if (firstRange.getStep().isPresent() && !firstRange.getStepValue().equals(secondRange.getStepValue())){
+        if (firstRange.isPresentStep() && !firstRange.getStepValue().equals(secondRange.getStepValue())){
             return false;
         }
 

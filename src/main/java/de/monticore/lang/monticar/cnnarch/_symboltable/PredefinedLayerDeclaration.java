@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
+import com.google.gson.internal.Streams;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
@@ -29,6 +30,7 @@ import org.jscience.mathematics.number.Rational;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
@@ -188,29 +190,35 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
     }
 
     protected List<String> computeStartAndEndValue(List<ArchTypeSymbol> inputTypes, BinaryOperator<Rational> startValAccumulator, BinaryOperator<Rational> endValAccumulator){
+        boolean noStartValues = true;
+        boolean noEndValues = true;
         Stream.Builder<Rational> startValues = Stream.builder();
         Stream.Builder<Rational> endValues = Stream.builder();
         String start = null;
         String end = null;
         for (ArchTypeSymbol inputType : inputTypes){
-            ASTRange range = inputType.getDomain().getRange().get();
-            if (range.getStartInf().isPresent()){
-                start = "-oo";
-            }
-            else {
-                startValues.add(range.getStartValue());
-            }
-            if (range.getEndInf().isPresent()){
-                end = "oo";
-            }
-            else {
-                endValues.add(range.getEndValue());
+            Optional<ASTRange> range = inputType.getDomain().getRangeOpt();
+            if (range.isPresent()) {
+                if (range.get().hasNoLowerLimit()){
+                    start = "-oo";
+                }
+                else {
+                    noStartValues = false;
+                    startValues.add(range.get().getStartValue());
+                }
+                if (range.get().hasNoUpperLimit()){
+                    end = "oo";
+                }
+                else {
+                    noEndValues = false;
+                    endValues.add(range.get().getEndValue());
+                }
             }
         }
-        if (start == null){
+        if (start == null && !noStartValues){
             start = "" + startValues.build().reduce(startValAccumulator).get().doubleValue();
         }
-        if (end == null){
+        if (end == null && !noEndValues){
             end = "" + endValues.build().reduce(endValAccumulator).get().doubleValue();
         }
 

@@ -28,13 +28,13 @@ public class CheckRangeOperators implements CNNArchASTArchValueRangeCoCo {
 
     @Override
     public void check(ASTArchValueRange node) {
-        if (node.getParallel().isPresent()){
-            if (!node.getParallel2().isPresent()){
+        if (node.isPresentParallel()){
+            if (!node.isPresentParallel2()){
                 differentOperatorError(node);
             }
         }
         else {
-            if (node.getParallel2().isPresent()){
+            if (node.isPresentParallel2()){
                 differentOperatorError(node);
             }
         }

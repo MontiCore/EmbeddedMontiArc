@@ -45,7 +45,7 @@ public class ArchTypeSymbol extends CommonSymbol {
     public ArchTypeSymbol() {
         super("", KIND);
         ASTElementType elementType = new ASTElementType();
-        elementType.setTElementType(DEFAULT_ELEMENT_TYPE);
+        elementType.setName(DEFAULT_ELEMENT_TYPE);
         setDomain(elementType);
     }
 
@@ -244,7 +244,7 @@ public class ArchTypeSymbol extends CommonSymbol {
         }
         public Builder elementType(String start, String end){
             domain = new ASTElementType();
-            domain.setTElementType("Q(" + start + ":" + end +")");
+            domain.setName("Q(" + start + ":" + end +")");
             return this;
         }
 
@@ -257,7 +257,7 @@ public class ArchTypeSymbol extends CommonSymbol {
 
             if (domain == null){
                 domain = new ASTElementType();
-                domain.setTElementType(DEFAULT_ELEMENT_TYPE);
+                domain.setName(DEFAULT_ELEMENT_TYPE);
             }
             sym.setDomain(domain);
             return sym;
