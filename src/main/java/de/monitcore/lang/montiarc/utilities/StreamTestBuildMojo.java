@@ -47,11 +47,13 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         this.copyPropertiesAndParametersTo(stgm);
         stgm.execute();
 
-        Log.info("StreamTestBuildMojo", "StreamTestBuildMojo");
+
     }
 
     @Override
     protected void mainExecution() throws MojoExecutionException, MojoFailureException {
+
+        Log.info("StreamTestBuildMojo", "StreamTestBuildMojo");
 
         this.removeMojoFiles();
         this.mkdir(this.runProcessTMPDir().toString());
@@ -222,7 +224,9 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
         logInfo("   # Run ("+buildDir+"): "+String.join(" ", command)+" ");
         long startTime = System.nanoTime();
-        if(processRun(command, buildDir, "1_"+name)==0){
+        File o = Paths.get(this.runProcessTMPDir().toString(), name+".cmake.out.txt").toFile();
+        File e = Paths.get(this.runProcessTMPDir().toString(), name+".cmake.err.txt").toFile();
+        if(processRun(command, buildDir, o,e, "build")==0){
             logInfo("     -> Success in "+getReadableTime(System.nanoTime()-startTime));
         }else{
             logInfo("     -> Error. CMake failed for "+name);
@@ -241,7 +245,9 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
         logInfo("   # Run ("+buildDir+"): "+String.join(" ", command)+" ");
         startTime = System.nanoTime();
-        if(processRun(command, buildDir,"2_"+ name)==0){
+        o = Paths.get(this.runProcessTMPDir().toString(), name+".build.out.txt").toFile();
+        e = Paths.get(this.runProcessTMPDir().toString(), name+".build.err.txt").toFile();
+        if(processRun(command, buildDir,o,e, "build")==0){
             logInfo("     -> Success in "+getReadableTime(System.nanoTime()-startTime));
         }else{
             logInfo("     -> Error. CMake BUILD failed for "+name);
@@ -253,69 +259,6 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
 
         return true;
-    }
-
-    protected int processRun(List<String> cmd, String directory, String name)throws MojoExecutionException{
-        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
-        processBuilder.directory(Paths.get(directory).toFile());
-        try {
-            //processBuilder.redirectErrorStream(true);
-            processBuilder.redirectError(Paths.get(this.runProcessTMPDir().toString(), name+".err.txt").toFile());
-            processBuilder.redirectOutput(Paths.get(this.runProcessTMPDir().toString(), name+".out.txt").toFile());
-
-            Process process = processBuilder.start();
-
-            /*List<String> allLines = new ArrayList<>();
-            if (showBuildAndRunOutput) {
-                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().
-                        forEach((String s) -> this.logInfo("   [build-info] " + s));
-                new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().
-                        forEach((String s) -> this.logError("   [build-error] " + s));
-            }else{
-                new BufferedReader(new InputStreamReader(process.getInputStream())).lines().
-                        forEach((String s) -> {
-                            //this.logInfo("   [build-info] " + s);
-                            allLines.add("   [build-info] "+s);
-                        });
-                new BufferedReader(new InputStreamReader(process.getErrorStream())).lines().
-                        forEach((String s) -> {
-                            //this.logError("   [build-error] " + s);
-                            allLines.add("   [build-error] "+s);
-                        });
-            }*/
-
-            int result = process.waitFor();
-
-            if(result != 0 || showBuildAndRunOutput){
-                List<String> allLines = FileUtils.readLines(Paths.get(this.runProcessTMPDir().toString(), name+".err.txt").toFile());
-                for (String s:allLines) {
-                    logError("   [build-error] " + s);
-                }
-                allLines = FileUtils.readLines(Paths.get(this.runProcessTMPDir().toString(), name+".out.txt").toFile());
-                for (String s:allLines) {
-                    logError("   [build-info] " + s);
-                }
-            }
-
-            return result;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            throw new MojoExecutionException(ex.getMessage());
-        }
-    }
-
-    protected String execFileName(GeneratorEnum generator){
-        if (SystemUtils.IS_OS_WINDOWS) {
-            switch (generator) {
-                case VS2017:
-                case VisualStudio2017:
-                    return "Debug/StreamTests.exe";
-                default:
-                    return "StreamTests.exe";
-            }
-        }else{
-            return "StreamTests";
-        }
     }
 
     private static String getReadableTime(Long nanos){

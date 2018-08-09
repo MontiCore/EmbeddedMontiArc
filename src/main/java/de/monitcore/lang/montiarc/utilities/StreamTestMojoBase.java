@@ -120,6 +120,18 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.showBuildAndRunOutput = showBuildAndRunOutput;
     }
 
+
+
+    @Parameter(defaultValue = "false")
+    protected boolean forceRun;
+    public boolean isForceRun() {
+        return forceRun;
+    }
+
+    public void setForceRun(boolean forceRun) {
+        this.forceRun = forceRun;
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">
@@ -186,6 +198,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.generator = generator;
         stmb.combinebuilds = combinebuilds;
         stmb.showBuildAndRunOutput = showBuildAndRunOutput;
+        stmb.forceRun = forceRun;
 
         stmb.myLog = myLog;
     }
@@ -355,6 +368,61 @@ public class StreamTestMojoBase extends AbstractMojo {
         }
 
         return Optional.empty();
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Process Helper">
+
+    protected int processRun(List<String> cmd, String directory, File outputFile, File errorFile, String logPrefix)throws MojoExecutionException{
+        ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+        processBuilder.directory(Paths.get(directory).toFile());
+        try {
+            processBuilder.redirectErrorStream(true);
+            processBuilder.redirectError(errorFile);
+            processBuilder.redirectOutput(outputFile);
+
+            Process process = processBuilder.start();
+
+
+            int result = process.waitFor();
+
+            if(result != 0 || showBuildAndRunOutput){
+                List<String> allLines = FileUtils.readLines(errorFile);
+                for (String s:allLines) {
+                    if(result != 0)
+                        logError("   ["+logPrefix+"-errout] " + s);
+                    else
+                        logInfo("   ["+logPrefix+"-errout] " + s);
+                }
+                allLines = FileUtils.readLines(outputFile);
+                for (String s:allLines) {
+                    if(result != 0)
+                        logError("   ["+logPrefix+"-output] " + s);
+                    else
+                        logInfo("   ["+logPrefix+"-output] " + s);
+                }
+            }
+
+            return result;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            throw new MojoExecutionException(ex.getMessage());
+        }
+    }
+
+    protected String execFileName(GeneratorEnum generator){
+        if (SystemUtils.IS_OS_WINDOWS) {
+            switch (generator) {
+                case VS2017:
+                case VisualStudio2017:
+                    return "Debug/StreamTests.exe";
+                default:
+                    return "StreamTests.exe";
+            }
+        }else{
+            return "StreamTests";
+        }
     }
 
     //</editor-fold>
