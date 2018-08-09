@@ -59,7 +59,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             femam.delete();
         }
 
-        checkCocosOfInputFiles();
+        if(!checkCocosOfInputFiles()){
+            throw new MojoExecutionException("Some files are invalid");
+        }
 
         try{
             File temam = Paths.get(this.getPathTmpOutEMAM()).toFile();
@@ -132,7 +134,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
         return "streamtest-generator";
     }
 
-    protected void checkCocosOfInputFiles() throws MojoExecutionException {
+    protected boolean checkCocosOfInputFiles() throws MojoExecutionException {
+        boolean result = true;
+
         Map<String,MCConcreteParser> parser = getParser();
         Scope scope = getScope();
 
@@ -154,6 +158,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                 Optional<? extends ASTNode> node = mccp.parse(f.getValue().getAbsolutePath());
                 if(!node.isPresent()){
                     logError("   -> Could not parse: "+f.getKey());
+                    result = false;
                 }else {
                     boolean resolved = false;
                     String modelName;
@@ -178,6 +183,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
                         logInfo("   -> parsed & resolved");
                     }else{
                         logError("Could not resolve "+f.getKey());
+                        result = false;
                     }
 
                 }
@@ -187,6 +193,7 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
         }
 
+        return result;
 
     }
 

@@ -1,94 +1,49 @@
 package de.monticore.lang.montiarc.utilities;
 
-import de.monitcore.lang.montiarc.utilities.GeneratorEnum;
-import de.monitcore.lang.montiarc.utilities.StreamTestGeneratorMojo;
-import de.monitcore.lang.montiarc.utilities.StreamTestMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-import static junit.framework.TestCase.fail;
+import static junit.framework.TestCase.assertTrue;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestStreamTestGeneratorMojo {
 
-    protected static StreamTestGeneratorMojo getNewStreamTestMojo(String path, String pathOut){
 
-        StreamTestGeneratorMojo stm = new StreamTestGeneratorMojo();
-
-        stm.setPathMain(path+"/main");
-        stm.setPathTest(path+"/test");
-
-        stm.setPathTmpOut(pathOut);
-
-        stm.setWrapperTestExtension("_TestWrapper");
-
-        //stm.setGpp("g++");
-        //stm.setCppInludePaths(new String[]{});
-        //stm.setUsemingw(false);
-        //
-        //stm.addCppIncludePaths("/usr/local/Cellar/armadillo/8.500.1/include");
-
-        stm.setGenerator(GeneratorEnum.MinGW);
-
-        //use this in test to see all output
-        stm.setShowBuildAndRunOutput(true);
-
-        return stm;
-    }
-
-    @Test
-    public void Test_05_many(){
-        try {
-            getNewStreamTestMojo("./src/test/resources/emam/execution/many", "./target/tmp/streamtest-generator/05").execute();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-        } catch (MojoFailureException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void Test_01_execution_valid() {
         //valid
-        ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
+        //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
+        int r = BaseTest.validGenerator("./src/test/resources/emam/execution/valid", "./target/tmp/generator/01");
+        assertTrue("Generator-01: Generator is invalid.["+r+"]", r==0);
     }
 
     @Test
     public void Test_02_execution_invalid() {
-        //valid
-
-        StreamTestGeneratorMojo stm = new StreamTestGeneratorMojo();
-
-        stm.setPathMain("./src/test/resources/emam/execute_ParserTests");
-        stm.setPathTest("./src/test/resources/emam/execute_ParserTests");
-
-        stm.setPathTmpOut("./target/tmp/02");
-
-        stm.setWrapperTestExtension("_TestWrapper");
-
-        try {
-            stm.execute();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        } catch (MojoFailureException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+        int r = BaseTest.validGenerator("./src/test/resources/emam/execution/invalid", "./target/tmp/generator/02");
+        assertTrue("Generator-02: Generator is invalid.["+r+"]", r==0);
     }
 
-    protected void ValidInner(String path, String tmp){
-        //valid
-        StreamTestGeneratorMojo stm = getNewStreamTestMojo(path, tmp);
+    @Test
+    public void Test_03_many(){
+        int r = BaseTest.validGenerator("./src/test/resources/emam/execution/many", "./target/tmp/generator/03");
+        assertTrue("Generator-03: Generator is invalid.["+r+"]", r==0);
+    }
 
-        try {
-            stm.execute();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        } catch (MojoFailureException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+
+    @Test
+    public void Test_04_invalid_emam(){
+        int r = BaseTest.validGenerator("./src/test/resources/emam/execute_ParserTests", "./target/tmp/generator/04");
+        assertTrue("Generator-04: Generator is invalid.["+r+"]", r==1);
+    }
+
+
+    @Test
+    public void Test_10_reRun(){
+        Test_01_execution_valid();
+        Test_02_execution_invalid();
+        Test_03_many();
     }
 }

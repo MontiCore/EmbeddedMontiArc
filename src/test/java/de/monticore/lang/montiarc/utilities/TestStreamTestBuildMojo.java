@@ -1,64 +1,37 @@
 package de.monticore.lang.montiarc.utilities;
 
-import de.monitcore.lang.montiarc.utilities.GeneratorEnum;
-import de.monitcore.lang.montiarc.utilities.StreamTestBuildMojo;
-import de.monitcore.lang.montiarc.utilities.StreamTestGeneratorMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+
 import org.junit.Test;
 
-import static junit.framework.TestCase.fail;
+import static junit.framework.TestCase.assertTrue;
+
 
 public class TestStreamTestBuildMojo {
-
-    protected static StreamTestBuildMojo getNewStreamTestMojo(String path, String pathOut){
-
-        StreamTestBuildMojo stm = new StreamTestBuildMojo();
-
-        stm.setPathMain(path+"/main");
-        stm.setPathTest(path+"/test");
-
-        stm.setPathTmpOut(pathOut);
-
-        stm.setWrapperTestExtension("_TestWrapper");
-
-        //stm.setGpp("g++");
-        //stm.setCppInludePaths(new String[]{});
-        //stm.setUsemingw(false);
-        //
-        //stm.addCppIncludePaths("/usr/local/Cellar/armadillo/8.500.1/include");
-
-        stm.setGenerator(GeneratorEnum.VS2017);
-
-        //use this in test to see all output
-        stm.setShowBuildAndRunOutput(false);
-
-        return stm;
-    }
 
     @Test
     public void Test_01_execution_valid() {
         //valid
-        ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/build/01");
+        //ValidInner("./src/test/resources/emam/execution/valid", "./target/tmp/streamtest-generator/01");
+        int r = BaseTest.validBuild("./src/test/resources/emam/execution/valid", "./target/tmp/build/01");
+        assertTrue("Build-01: Build is invalid.["+r+"]", r==0);
     }
+
     @Test
-    public void Test_02_execution_many() {
-        //valid
-        ValidInner("./src/test/resources/emam/execution/many", "./target/tmp/build/02");
+    public void Test_02_execution_invalid() {
+        int r = BaseTest.validBuild("./src/test/resources/emam/execution/invalid", "./target/tmp/build/02");
+        assertTrue("Build-02: Build is invalid.["+r+"]", r==0);
     }
 
-    protected void ValidInner(String path, String tmp){
-        //valid
-        StreamTestBuildMojo stm = getNewStreamTestMojo(path, tmp);
+    @Test
+    public void Test_03_many(){
+        int r = BaseTest.validBuild("./src/test/resources/emam/execution/many", "./target/tmp/build/03");
+        assertTrue("Build-03: Build is invalid.["+r+"]", r==0);
+    }
 
-        try {
-            stm.execute();
-        } catch (MojoExecutionException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        } catch (MojoFailureException e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
+    @Test
+    public void Test_10_reRun(){
+        Test_01_execution_valid();
+        Test_02_execution_invalid();
+        Test_03_many();
     }
 }

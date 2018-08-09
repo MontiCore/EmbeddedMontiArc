@@ -200,7 +200,11 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.showBuildAndRunOutput = showBuildAndRunOutput;
         stmb.forceRun = forceRun;
 
+        stmb.setLog(getLog());
+
         stmb.myLog = myLog;
+
+
     }
 
     //</editor-fold>
