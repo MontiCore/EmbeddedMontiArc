@@ -334,6 +334,17 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
     public List<ActualTypeArgument> getActualTypeArguments() {
         return null;
     }
+	
+	/**
+     * @param name port name
+     * @return port with the given name, empty optional, if it does not exist
+     */
+    public Optional<EMAPortSymbol> getPort(String name) {
+        // no check for reference required
+        return getPortsList().stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst();
+    }
 
     /**
      * @return incomingPorts of this component
