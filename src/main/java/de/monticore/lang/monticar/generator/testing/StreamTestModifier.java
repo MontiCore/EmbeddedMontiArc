@@ -91,6 +91,11 @@ public class StreamTestModifier {
 
     public static List<String> readLines(String filePath) {
         File streamTest = new File(filePath);
+        if (!streamTest.exists()) {
+
+            File curDir = new File(".");
+            getAllFiles(curDir);
+        }
         List<String> lines = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(streamTest));
@@ -103,5 +108,16 @@ public class StreamTestModifier {
             ex.printStackTrace();
         }
         return lines;
+    }
+
+    public static void getAllFiles(File curDir) {
+        File[] filesList = curDir.listFiles();
+        for (File f : filesList) {
+            if (f.isDirectory())
+                getAllFiles(f);
+            if (f.isFile()) {
+                System.out.println(f.getName());
+            }
+        }
     }
 }
