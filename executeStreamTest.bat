@@ -20,7 +20,7 @@
 @REM
 
 subst N: .
-cd N:\
+cd /D N:\
 cd native
 call variables.bat
 cd %PROJECT_ROOT%%1
