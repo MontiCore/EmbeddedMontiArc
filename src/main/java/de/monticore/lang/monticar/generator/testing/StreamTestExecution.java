@@ -31,7 +31,7 @@ import java.io.*;
 public class StreamTestExecution {
 
     public static void compileTests(String targetFullPath, String targetBasePath) throws IOException {
-        File f = new File("." + targetBasePath + "/exec");
+        File f = new File( "N:/"+targetBasePath + "/exec");
         if (!f.exists()) {
             f.mkdirs();
             f.mkdir();
