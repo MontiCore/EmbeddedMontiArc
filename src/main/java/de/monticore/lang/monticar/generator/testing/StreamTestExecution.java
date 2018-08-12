@@ -49,7 +49,8 @@ public class StreamTestExecution {
                 getRuntime().
                 exec(new String[]{execName, targetFullPath, targetBasePath + "/exec"});
         while (p.isAlive()) {
-            if (Log.isInfoEnabled("")) {
+            //if (Log.isInfoEnabled(""))
+            {
                 System.out.print((char) p.getInputStream().read());
                 System.out.print((char) p.getErrorStream().read());
             }
@@ -71,7 +72,9 @@ public class StreamTestExecution {
                 getRuntime().
                 exec(new String[]{execName, targetBasePath + "/exec"});
         while (p.isAlive()) {
-            if (Log.isInfoEnabled("")) {
+            //if (Log.isInfoEnabled(""))
+            {
+
                 System.out.print((char) p.getInputStream().read());
                 System.out.print((char) p.getErrorStream().read());
             }
