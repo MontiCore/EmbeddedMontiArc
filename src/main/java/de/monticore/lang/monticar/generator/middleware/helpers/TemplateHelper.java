@@ -52,7 +52,4 @@ public class TemplateHelper {
         return getTemplate("coordinatorCmakeListsTemplate.ftl");
     }
 
-    public static String getCmakeCppTemplate() {
-        return getTemplate("cmakeCppTemplate.ftl");
-    }
 }
