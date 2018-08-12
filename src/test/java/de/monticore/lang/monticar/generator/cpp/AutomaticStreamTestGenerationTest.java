@@ -55,21 +55,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         // ensure an empty log
         Log.getFindings().clear();
         Log.enableFailQuick(false);
-        if (SystemUtils.IS_OS_LINUX) {
-            String command = "find /directory/of/interest/ -type f -iname \"*.sh\" -exec chmod +x {} \\;";
-            try {
-                Process p = Runtime.
-                        getRuntime().
-                        exec(command);
-                while (p.isAlive()) {
-                    if (Log.isInfoEnabled("")) {
-                        System.out.print((char) p.getInputStream().read());
-                    }
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+
     }
 
     @Test
