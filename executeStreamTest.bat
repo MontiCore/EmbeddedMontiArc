@@ -19,6 +19,8 @@
 @REM *******************************************************************************
 @REM
 
+subst N: .
+cd N:\
 cd native
 call variables.bat
 cd %PROJECT_ROOT%%1

@@ -18,6 +18,8 @@
 @REM  License along with this project. If not, see <http://www.gnu.org/licenses/>.
 @REM *******************************************************************************
 @REM
+subst N: .
+cd N:\
 
 cd native
 call variables.bat
