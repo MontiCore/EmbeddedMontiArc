@@ -52,7 +52,7 @@ public class StreamTestExecution {
             //if (Log.isInfoEnabled(""))
             {
                 System.out.print((char) p.getInputStream().read());
-                System.out.print((char) p.getErrorStream().read());
+                //System.out.print((char) p.getErrorStream().read());
             }
         }
     }
@@ -76,7 +76,7 @@ public class StreamTestExecution {
             {
 
                 System.out.print((char) p.getInputStream().read());
-                System.out.print((char) p.getErrorStream().read());
+                //System.out.print((char) p.getErrorStream().read());
             }
         }
     }
