@@ -95,27 +95,18 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
         generator.generateTests("de.rwth.pacman.pacManControllerSimple",
                 "src/test/resources/emastudio/pacman", "N:/target/generated-sources-cpp/streamtest/pacman/", "1", 10);
-/*
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/pacman");
-
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("", ExpandedComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
-
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useStreamTestTestGeneration("1", 10);
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamtest/pacman/");
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
-        String restPath = "streamtest/pacman";
         //testFilesAreEqual(files, restPath); generated values are random*/
     }
 
     //Create image test manually, as generation for these large matrices takes a lot of time
     @Ignore
     @Test
-    public void testStreamTestClustererAllComponentsTestGen() throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/clustering");
+    public void testStreamTestClustererAllComponentsTestGen() throws Exception {
+        AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
+        generator.generateTests("de.rwth.clustering.detection.objectDetector1",
+                "src/test/resources/emastudio/clustering", "N:/target/generated-sources-cpp/streamtest/clustering/",
+                "1", 1);
+       /* TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/clustering");
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useStreamTestTestGeneration("1", 1);
@@ -127,7 +118,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         TaggingResolver streamSymtab = createSymTabAndTaggingResolver("./target/generated-sources-cpp/streamtest/cluster");
         generatorCPP.setGenerateTests(true);
         generatorCPP.setModelsDirPath(Paths.get("N:/target/generated-sources-cpp/streamtest/cluster"));
-        generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(streamSymtab));
+        generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(streamSymtab));*/
         //testFilesAreEqual(files, restPath); generated values are random
     }
 
