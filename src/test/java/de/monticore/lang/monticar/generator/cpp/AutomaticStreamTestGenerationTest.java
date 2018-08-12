@@ -195,6 +195,6 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
         StreamTestExecution.executeTests(targetBasePath);
     }
-    
+
 //TODO add test that executes all stream tests in the resource dir(will take long to execute)
 }
