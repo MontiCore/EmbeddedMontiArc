@@ -55,6 +55,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         // ensure an empty log
         Log.getFindings().clear();
         Log.enableFailQuick(false);
+        
     }
 
     @Test
