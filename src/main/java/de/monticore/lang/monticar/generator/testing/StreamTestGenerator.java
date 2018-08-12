@@ -131,6 +131,8 @@ public class StreamTestGenerator {
             currentPrecisionValueType = 0;
         } else if (astElementType.getName().equals("Z")) {
             currentPrecisionValueType = 1;
+        } else if (astElementType.getName().equals("N")) {
+            currentPrecisionValueType = 1;
         } else if (astElementType.getName().equals("B")) {
             currentPrecisionValueType = 2;
         }

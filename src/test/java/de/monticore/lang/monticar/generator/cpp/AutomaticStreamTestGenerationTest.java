@@ -122,8 +122,8 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamtest/cluster/");
         generatorCPP.useArmadilloBackend();
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources"));
-        /*List<File> files = generatorCPP.generateFiles(symtab, null, symtab);
-        String restPath = "streamtest/cluster";*/
+        List<File> files = generatorCPP.generateFiles(symtab, null, symtab);
+        String restPath = "streamtest/cluster";
         TaggingResolver streamSymtab = createSymTabAndTaggingResolver("./target/generated-sources-cpp/streamtest/cluster");
         generatorCPP.setGenerateTests(true);
         generatorCPP.setModelsDirPath(Paths.get("N:/target/generated-sources-cpp/streamtest/cluster"));
@@ -132,7 +132,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     }
 
     //Create image test manually, as generation for these large matrices takes a lot of time
-    @Ignore
+
     @Test
     public void testStreamTestAutopilotSteam2CPPTestGen() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/autopilot");
