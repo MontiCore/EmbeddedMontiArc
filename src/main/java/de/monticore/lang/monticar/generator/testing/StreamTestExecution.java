@@ -51,6 +51,7 @@ public class StreamTestExecution {
         while (p.isAlive()) {
             if (Log.isInfoEnabled("")) {
                 System.out.print((char) p.getInputStream().read());
+                System.out.print((char) p.getErrorStream().read());
             }
         }
     }
@@ -72,6 +73,7 @@ public class StreamTestExecution {
         while (p.isAlive()) {
             if (Log.isInfoEnabled("")) {
                 System.out.print((char) p.getInputStream().read());
+                System.out.print((char) p.getErrorStream().read());
             }
         }
     }
