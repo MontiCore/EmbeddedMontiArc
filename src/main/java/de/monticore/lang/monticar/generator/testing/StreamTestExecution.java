@@ -40,7 +40,7 @@ public class StreamTestExecution {
         if (SystemUtils.IS_OS_WINDOWS) {
             execName = "compileCPPTests.bat";
         } else if (SystemUtils.IS_OS_LINUX) {
-            execName = "chmod u+x ./compileCPPTests.sh";
+            execName = "ls; chmod u+x ./compileCPPTests.sh";
         } else {
             execName = "generic_platform";
             System.out.println("ERROR: Unsupported platform!!!");
@@ -61,7 +61,7 @@ public class StreamTestExecution {
         if (SystemUtils.IS_OS_WINDOWS) {
             execName = "executeStreamTest.bat";
         } else if (SystemUtils.IS_OS_LINUX) {
-            execName = "chmod u+x ./executeStreamTest.sh";
+            execName = "ls; chmod u+x ./executeStreamTest.sh";
         } else {
             execName = "generic_platform";
             System.out.println("ERROR: Unsupported platform!!!");
