@@ -8,7 +8,7 @@ see [TUTORIAL_ADD_MIDDLEWARE.md](https://git.rwth-aachen.de/monticore/EmbeddedMo
 ### CMake
 CMake and Make are required to compile the generated projects.
 
-Usage: Navigate to your build directory and run `cmake $srcPath`, where srcPath is the path to the generated project to be compiled. Next run `make` 
+Usage: Navigate to your build directory and run `cmake $srcPath`, where `$srcPath` is the path to the generated project to be compiled. Next run `make` 
 
 ### Cpp
 Armadillo version 8 or higher.
