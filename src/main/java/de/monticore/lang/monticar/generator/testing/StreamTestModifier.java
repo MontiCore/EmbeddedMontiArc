@@ -93,7 +93,7 @@ public class StreamTestModifier {
         File streamTest = new File(filePath);
         if (!streamTest.exists()) {
 
-            File curDir = new File(".");
+            File curDir = new File("N:\\");
             getAllFiles(curDir);
         }
         List<String> lines = new ArrayList<>();
