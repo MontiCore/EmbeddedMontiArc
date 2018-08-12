@@ -1,21 +1,20 @@
 /**
- *
- *  ******************************************************************************
- *  MontiCAR Modeling Family, www.se-rwth.de
- *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
- *  All rights reserved.
- *
- *  This project is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 3.0 of the License, or (at your option) any later version.
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * ******************************************************************************
+ * MontiCAR Modeling Family, www.se-rwth.de
+ * Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ * All rights reserved.
+ * <p>
+ * This project is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3.0 of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
 package de.monticore.lang.monticar.generator.cpp;
@@ -56,14 +55,30 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         // ensure an empty log
         Log.getFindings().clear();
         Log.enableFailQuick(false);
+        String execName = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            try {
+                execName = "subst.bat";
+                Process p = Runtime.
+                        getRuntime().
+                        exec(execName);
+                while (p.isAlive()) {
+                    if (Log.isInfoEnabled("")) {
+                        System.out.print((char) p.getInputStream().read());
+                    }
+                }
 
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Test
     public void testStreamTestAutopilotTestGen() throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
         generator.generateTests("de.rwth.armin.modeling.autopilot.autopilot",
-                "src/test/resources", "./target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
+                "src/test/resources", "N:/target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
 
     }
 
@@ -71,14 +86,14 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     public void testStreamTestAutopilotAllComponentsTestGen() throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
         generator.generateTests("",
-                "src/test/resources/emastudio/autopilot", "./target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
+                "src/test/resources/emastudio/autopilot", "N:/target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
     }
 
     @Test
     public void testStreamTestPacmanControllerSimpleTestGen() throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
         generator.generateTests("de.rwth.pacman.pacManControllerSimple",
-                "src/test/resources/emastudio/pacman", "./target/generated-sources-cpp/streamtest/pacman/", "1", 10);
+                "src/test/resources/emastudio/pacman", "N:/target/generated-sources-cpp/streamtest/pacman/", "1", 10);
 /*
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/pacman");
 
@@ -110,7 +125,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         String restPath = "streamtest/cluster";*/
         TaggingResolver streamSymtab = createSymTabAndTaggingResolver("./target/generated-sources-cpp/streamtest/cluster");
         generatorCPP.setGenerateTests(true);
-        generatorCPP.setModelsDirPath(Paths.get("./target/generated-sources-cpp/streamtest/cluster"));
+        generatorCPP.setModelsDirPath(Paths.get("N:/target/generated-sources-cpp/streamtest/cluster"));
         generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(streamSymtab));
         //testFilesAreEqual(files, restPath); generated values are random
     }
@@ -123,7 +138,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useStreamTestTestGeneration("1", 1);
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/streamtest/autopilot/");
+        generatorCPP.setGenerationTargetPath("N:/target/generated-sources-cpp/streamtest/autopilot/");
         generatorCPP.useArmadilloBackend();
         generatorCPP.setModelsDirPath(Paths.get("src/test/resources/emastudio/autopilot"));
         /*List<File> files = generatorCPP.generateFiles(symtab, null, symtab);
@@ -149,11 +164,11 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         //   --flag-generate-tests ^
         //   --flag-use-armadillo-backend
         System.out.println("Generation Done");
-        String targetBasePath = "/target/generated-sources-cpp/streamtest";
+        String targetBasePath = "N:/target/generated-sources-cpp/streamtest";
         String targetRestPath = "/autopilot";
         String targetFullPath = targetBasePath + targetRestPath;
-        String modelDirectory = "./src/test/resources/emastudio/autopilot";
-        String outputDirectory = "./target/generated-sources-cpp/streamtest/autopilot";
+        String modelDirectory = "N:/src/test/resources/emastudio/autopilot";
+        String outputDirectory = "N:/target/generated-sources-cpp/streamtest/autopilot";
         String fullComponentInstanceName = "de.rwth.armin.modeling.autopilot.motion.calculatePidError";
         String fullStreamTestName = "de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1";
         String fullStreamTestPathName = fullStreamTestName.replaceAll("\\.", "\\/");
@@ -168,11 +183,11 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     @Test
     public void testCLIExample() throws Exception {
         testStreamTestAutopilotAllComponentsTestGen();
-        String targetBasePath = "/target/generated-sources-cpp/streamtest";
+        String targetBasePath = "N:/target/generated-sources-cpp/streamtest";
         String targetRestPath = "/autopilot";
         String targetFullPath = targetBasePath + targetRestPath;
-        String modelDirectory = "./src/test/resources/emastudio/autopilot";
-        String outputDirectory = "./target/generated-sources-cpp/streamtest/autopilot";
+        String modelDirectory = "N:/src/test/resources/emastudio/autopilot";
+        String outputDirectory = "N:/target/generated-sources-cpp/streamtest/autopilot";
         String fullComponentInstanceName = "de.rwth.armin.modeling.autopilot.motion.calculatePidError";
         String fullStreamTestName = "de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1";
         String fullStreamTestPathName = fullStreamTestName.replaceAll("\\.", "\\/");
@@ -190,8 +205,8 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
 
         //Execute again to check if tests pass
 
-        StreamTestModifier.updateStreamTestWithResults("./target/generated-sources-cpp/streamtest/autopilot/" + fullStreamTestPathName + ".stream"
-                , "./target/generated-sources-cpp/streamtest/exec/" + fullStreamTestName);
+        StreamTestModifier.updateStreamTestWithResults("N:/target/generated-sources-cpp/streamtest/autopilot/" + fullStreamTestPathName + ".stream"
+                , "N:/target/generated-sources-cpp/streamtest/exec/" + fullStreamTestName);
         GeneratorCppCli.main(args);
 
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
