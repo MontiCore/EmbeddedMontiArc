@@ -5,7 +5,7 @@
     <groupId>de.monticore.lang.monticar.utilities</groupId>
     <artifactId>maven-streamtest</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <name>maven-package Streamtest Mojo</name>
     <url>http://maven.apache.org</url>
@@ -29,9 +29,7 @@
     </build>
 
     <properties>
-
-        <Embedded-MontiArc-Math.version>0.0.12-SNAPSHOT</Embedded-MontiArc-Math.version>
-
+        <EMAM2CPP.version>0.0.23-SNAPSHOT</EMAM2CPP.version>
     </properties>
 
     <dependencies>
@@ -61,7 +59,7 @@
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math-generator</artifactId>
-            <version>0.0.23-SNAPSHOT</version>
+            <version>${EMAM2CPP.version}</version>
         </dependency>
 
     </dependencies>

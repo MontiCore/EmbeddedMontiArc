@@ -14,3 +14,9 @@ buildNumber.properties
 # Don't track IntelliJ files
 .idea/
 *.iml
+
+# Don't track VSCode/Eclipse Files
+.classpath
+.project
+.vscode/
+.settings/

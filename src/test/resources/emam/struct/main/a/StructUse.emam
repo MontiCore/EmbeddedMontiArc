@@ -1,0 +1,12 @@
+package a;
+
+component StructUse {
+    port
+        in XY in1,
+        out Q out1;
+
+    implementation Math {
+        out1 = in1.x + in1.y;
+    }
+
+}

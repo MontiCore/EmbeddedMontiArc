@@ -1,6 +1,8 @@
 package de.monitcore.lang.montiarc.utilities.tools;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class SearchFiles {
@@ -63,6 +65,38 @@ public class SearchFiles {
                 for (String fileType : fileTypes)
                     if (file.getName().endsWith("." + fileType))
                         result.add(file);
+            }
+        }
+    }
+
+
+    public static String hashDirFiles(String path){
+        List<File> files = new ArrayList<>();
+        walkAll(Paths.get(path).toFile(), files);
+
+        StringBuilder sb = new StringBuilder();
+        for (File f : files) {
+
+            try {
+                sb.append(ChecksumChecker.getChecksumForFileMD5(f.getAbsolutePath()));
+                sb.append(ChecksumChecker.getChecksumForStringMD5(f.getAbsolutePath()));
+            } catch (IOException e) {
+                sb.append("--");
+            }
+        }
+
+        return sb.toString();
+    }
+
+
+    public static void walkAll(File root, List<File> result){
+        File[] list = root.listFiles();
+        if (list == null) return;
+        for (File file : list) {
+            if (file.isDirectory()) {
+                walkAll(file, result);
+            } else {
+                result.add(file);
             }
         }
     }
