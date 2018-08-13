@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware.impls;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
@@ -19,6 +20,7 @@ public class CPPGenImpl implements GeneratorImpl {
     public CPPGenImpl(){
         generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(true);
     }
 
     public void setGeneratorCPP(GeneratorCPP generatorCPP){
@@ -30,7 +32,6 @@ public class CPPGenImpl implements GeneratorImpl {
         List<File> files = new ArrayList<>();
 
         generatorCPP.setGenerationTargetPath(generationTargetPath);
-        files.add(generatorCPP.generateFile(generateCMake(componentInstanceSymbol)));
         files.addAll(generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver));
 
         return files;
@@ -41,11 +42,4 @@ public class CPPGenImpl implements GeneratorImpl {
         this.generationTargetPath = path;
     }
 
-    private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        FileContent cmake = new FileContent();
-        cmake.setFileName("CMakeLists.txt");
-        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
-        cmake.setFileContent(TemplateHelper.getCmakeCppTemplate().replace("${compName}", name));
-        return cmake;
-    }
 }
