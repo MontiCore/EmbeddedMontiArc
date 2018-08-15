@@ -170,6 +170,9 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
     }
 
     protected boolean checkHashesAndExecForBuild(String name){
+        if(forceRun){
+            return false;
+        }
         File hbuild = hashFileBuildFor(name);
         File hcpp = hashFileCPPFor(name);
         if(!hbuild.exists() || !hcpp.exists()){

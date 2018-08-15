@@ -146,7 +146,7 @@ public class StreamTestMojoBase extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         this.preExecution();
-        if(checkForExecution()) {
+        if(forceRun || checkForExecution()) {
             this.mainExecution();
             this.postExecution();
         }

@@ -201,7 +201,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
 
         int exitNumber = -1;
         File o = Paths.get(getPathMojoExecutionOutput(), name + ".exec.out.txt").toFile();
-        if(runExec) {
+        if(runExec || forceRun) {
             logInfo("   -> Running "+getExecutable(name));
             //if need to run:
             List<String> command = new ArrayList<>();
