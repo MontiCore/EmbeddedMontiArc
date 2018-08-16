@@ -18,6 +18,106 @@
  *                                                                 ====
  *                                                                     ====
  *                                                                         ====
+ *                                                                             ====
+ *                                                                                 ====
+ *                                                                                     ====
+ *                                                                                         ====
+ *                                                                                             ====
+ *                                                                                                 ******************************************************************************
+ *                                                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                  All rights reserved.
+ *
+ *                                                                                                  This project is free software; you can redistribute it and/or
+ *                                                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                                                  License as published by the Free Software Foundation; either
+ *                                                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                  Lesser General Public License for more details.
+ *
+ *                                                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                 *******************************************************************************
+ *                                                                                             ====
+ *
+ *                                                                                             ******************************************************************************
+ *                                                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                              All rights reserved.
+ *
+ *                                                                                              This project is free software; you can redistribute it and/or
+ *                                                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                                                              License as published by the Free Software Foundation; either
+ *                                                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                                                              This library is distributed in the hope that it will be useful,
+ *                                                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                              Lesser General Public License for more details.
+ *
+ *                                                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                             *******************************************************************************
+ *                                                                                         ====
+ *
+ *                                                                                         ******************************************************************************
+ *                                                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                          All rights reserved.
+ *
+ *                                                                                          This project is free software; you can redistribute it and/or
+ *                                                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                                                          License as published by the Free Software Foundation; either
+ *                                                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                                                          This library is distributed in the hope that it will be useful,
+ *                                                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                          Lesser General Public License for more details.
+ *
+ *                                                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                         *******************************************************************************
+ *                                                                                     ====
+ *
+ *                                                                                     ******************************************************************************
+ *                                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                      All rights reserved.
+ *
+ *                                                                                      This project is free software; you can redistribute it and/or
+ *                                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                                      License as published by the Free Software Foundation; either
+ *                                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                      Lesser General Public License for more details.
+ *
+ *                                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                     *******************************************************************************
+ *                                                                                 ====
+ *
+ *                                                                                 ******************************************************************************
+ *                                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                  All rights reserved.
+ *
+ *                                                                                  This project is free software; you can redistribute it and/or
+ *                                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                                  License as published by the Free Software Foundation; either
+ *                                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                  Lesser General Public License for more details.
+ *
+ *                                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                 *******************************************************************************
+ *                                                                             ====
+ *
  *                                                                             ******************************************************************************
  *                                                                              MontiCAR Modeling Family, www.se-rwth.de
  *                                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -460,19 +560,23 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     /** tau of formula */
     private RealVector angularMomentumDeriv;
 
+    /** Average tire pressure for car wheels */
+    public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
+
+
+    /** Components used for massPoint physics */
     /** Mass points of the car */
     private MassPoint[] wheelMassPoints = new MassPoint[4];
 
-    /** Average tire pressure for car wheels */
-    public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
 
     /**
      * Constructor for an uninitialized physical vehicle
      */
     public MassPointPhysicalVehicle(){
         super();
+        // Before the initialisation the center of geometry position is at the origin
         // Sets origin of the local coordinate system to the center of the bottom side of the vehicle
-        position = new ArrayRealVector(new double[]{0.0, 0.0, -simulationVehicle.getHeight() * -0.5});
+        position = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() * -0.5});
         // Set geometry position offset, works because the center of geometry position is at the origin
         geometryPositionOffset = position.mapMultiply(-1.0);
 
@@ -562,7 +666,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     @Override
     public void setAcceleration(RealVector acceleration){
         // this.acceleration = acceleration.copy();
-        // why
+        // toDo why
     }
 
     /**
@@ -608,18 +712,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-        /*
-        try {
-            RealVector currentGeometryPosition = getGeometryPosition();
-            RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
-            this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
-            setGeometryPosition(currentGeometryPosition);
-        } catch (Exception e){
-            Log.severe("Tree: setGeometryPositionOffset - Could not set geometryPositionOffset. Rotation matrix inversion failed");
-            e.printStackTrace();
-        }
-        */
-        // toDo why
+        // toDo why not
     }
 
     /**
@@ -687,10 +780,11 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaT Duration of the current simulation step
+     * @param deltaTms Duration of the current simulation step in milliseconds
      */
     @Override
-    public void computePhysics(double deltaT){
+    public void computePhysics(long deltaTms){
+        double deltaT = deltaTms / 1000.0;
         if (!this.getError()) {
             // Calculate forces
             calcMassPointForces(deltaT);
@@ -919,9 +1013,11 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * Function that initializes the massPoint physics computations when the physicalVehicle is created
      * Should only be called by builder
      */
+    @Override
     public void initPhysics() {
         if(!physicalVehicleInitialized) {
-            // Sets origin of the local coordinate system to the center of the bottom side of the vehicle
+            // Resets origin of the local coordinate system to the center of the bottom side of the vehicle
+            // Works, because between construction and initialisation the position and rotation of the physicalVehicle have not changed
             position = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() * -0.5});
             // Set geometry position offset, works because the center of geometry position is at the origin
             geometryPositionOffset = position.mapMultiply(-1.0);

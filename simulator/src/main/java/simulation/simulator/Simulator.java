@@ -12,6 +12,106 @@
  *                                         ====
  *                                             ====
  *                                                 ====
+ *                                                     ====
+ *                                                         ====
+ *                                                             ====
+ *                                                                 ====
+ *                                                                     ====
+ *                                                                         ******************************************************************************
+ *                                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                          All rights reserved.
+ *
+ *                                                                          This project is free software; you can redistribute it and/or
+ *                                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                                          License as published by the Free Software Foundation; either
+ *                                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                                          This library is distributed in the hope that it will be useful,
+ *                                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                          Lesser General Public License for more details.
+ *
+ *                                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                         *******************************************************************************
+ *                                                                     ====
+ *
+ *                                                                     ******************************************************************************
+ *                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                      All rights reserved.
+ *
+ *                                                                      This project is free software; you can redistribute it and/or
+ *                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                      License as published by the Free Software Foundation; either
+ *                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                      Lesser General Public License for more details.
+ *
+ *                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                     *******************************************************************************
+ *                                                                 ====
+ *
+ *                                                                 ******************************************************************************
+ *                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                  All rights reserved.
+ *
+ *                                                                  This project is free software; you can redistribute it and/or
+ *                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                  License as published by the Free Software Foundation; either
+ *                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                  Lesser General Public License for more details.
+ *
+ *                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                 *******************************************************************************
+ *                                                             ====
+ *
+ *                                                             ******************************************************************************
+ *                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                              All rights reserved.
+ *
+ *                                                              This project is free software; you can redistribute it and/or
+ *                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                              License as published by the Free Software Foundation; either
+ *                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                              This library is distributed in the hope that it will be useful,
+ *                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                              Lesser General Public License for more details.
+ *
+ *                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                             *******************************************************************************
+ *                                                         ====
+ *
+ *                                                         ******************************************************************************
+ *                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                          All rights reserved.
+ *
+ *                                                          This project is free software; you can redistribute it and/or
+ *                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                          License as published by the Free Software Foundation; either
+ *                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                          This library is distributed in the hope that it will be useful,
+ *                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                          Lesser General Public License for more details.
+ *
+ *                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                         *******************************************************************************
+ *                                                     ====
+ *
  *                                                     ******************************************************************************
  *                                                      MontiCAR Modeling Family, www.se-rwth.de
  *                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -390,8 +490,8 @@ public class Simulator {
     /** True iff computation of the simulation is currently paused */
     private boolean isComputationPaused = false;
 
-    /** True if collision occurred, may be reset by used */
-    private boolean collisionOccurredDuringExecution = false;
+    /** True if a computational error occurred, may be reset by used */
+    private boolean errorOccurredDuringExecution = false;
 
     /** All objects that want to be informed about loop executions */
     private final List<SimulationLoopNotifiable> loopObservers = Collections.synchronizedList(new LinkedList<SimulationLoopNotifiable>());
@@ -544,11 +644,11 @@ public class Simulator {
         //Keep current daytime for future time extensions
         daytimeStart = getDaytime();
 
-        // Count objects with collisions
-        int collisionCount = getCollidedObjects().size();
+        // Count objects with a computational error
+        int errorCount = getErrorObjects().size();
 
         //Inform user
-        Log.info("Simulation " + (isPausedInFuture ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + frameCount + " frames simulated. Objects with collisions: " + collisionCount);
+        Log.info("Simulation " + (isPausedInFuture ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + frameCount + " frames simulated. Objects with a computational error: " + errorCount);
 
         //Wake up waiting threads
         sharedInstance.wakeupWaitingThreads();
@@ -708,10 +808,10 @@ public class Simulator {
             waitTimers.removeIf(time -> simulationTime >= time);
         }
 
-        //Remember if collisions occurred. Only check this if we don't
-        //already know about collisions to save processing power
-        if (!collisionOccurredDuringExecution) {
-            collisionOccurredDuringExecution = collisionPresent();
+        //Remember if computational errors occurred. Only check this if we don't
+        //already know about computational errors to save processing power
+        if (!errorOccurredDuringExecution) {
+            errorOccurredDuringExecution = errorPresent();
         }
 
         Log.finest("Did loop iteration at simulation time " + simulationTime);
@@ -901,51 +1001,51 @@ public class Simulator {
     }
 
     /**
-     * Retrieves a list of all objects that are known to be collided.
+     * Retrieves a list of all objects that are known to have a computational error.
      *
-     * @return List of collided objects
+     * @return List of objects with a computational error
      */
-    public List<PhysicalObject> getCollidedObjects() {
-        LinkedList<PhysicalObject> collidedObjects = new LinkedList<>(physicalObjects);
-        collidedObjects.removeIf(physicalObject -> (!physicalObject.getCollision() && !physicalObject.getError()));
-        return collidedObjects;
+    public List<PhysicalObject> getErrorObjects() {
+        LinkedList<PhysicalObject> errorObjects = new LinkedList<>(physicalObjects);
+        errorObjects.removeIf(physicalObject -> (!physicalObject.getError()));
+        return errorObjects;
     }
 
     /**
-     * Checks whether a collision is currently present in the simulation
+     * Checks whether a computational error is currently present in the simulation
      *
-     * @return True iff there is at least one physical objects with a collision
+     * @return True iff there is at least one physical objects with a computational error
      */
-    public boolean collisionPresent() {
-        return getCollidedObjects().size() > 0;
+    public boolean errorPresent() {
+        return getErrorObjects().size() > 0;
     }
 
     /**
-     * Checks whether a collision occurred during the execution of the simulation.
-     * This does NOT imply that a collision is currently present, but only that
-     * a collision happened at some point in the simulation. This information may be
-     * reset while the simulation is not running using resetCollisionOccurred(). This
-     * method together with resetCollisionOccurred() can be handy to check if a collision
+     * Checks whether a computational error occurred during the execution of the simulation.
+     * This does NOT imply that a computational error is currently present, but only that
+     * a computational error happened at some point in the simulation. This information may be
+     * reset while the simulation is not running using resetErrorOccurred(). This
+     * method together with resetErrorOccurred() can be handy to check if a computational error
      * happened during the last extension of the simulation.
      *
-     * @return True iff a collision occurred since resetCollisionOccurred()
+     * @return True iff a computational error occurred since resetErrorOccurred()
      */
-    public boolean collisionOccurred() {
-        return collisionOccurredDuringExecution;
+    public boolean errorOccurred() {
+        return errorOccurredDuringExecution;
     }
 
     /**
-     * Resets the collision detection used by collisionOccurred(). If the collision
-     * is still present, collisionOccurred() will return true after the next simulation
+     * Resets the computational error occurred flag used by errorOccurred(). If the computational error
+     * is still present, errorOccurred() will return true after the next simulation
      * loop iteration.
      */
-    public void resetCollisionOccurred() {
+    public void resetErrorOccurred() {
         if (isSimulationRunning()) {
-            Log.severe("Cannot reset collisionOccurred. Simulation currently running.");
+            Log.severe("Cannot reset errorOccurred. Simulation currently running.");
             return;
         }
 
-        collisionOccurredDuringExecution = false;
+        errorOccurredDuringExecution = false;
     }
 
     /**
@@ -1229,52 +1329,7 @@ public class Simulator {
             registerPhysicalObject(physicalObject);
         }
 
-        // Preparation for automatic relocation with help of Environment, provided information might be bad for
-        // current object type (e.g. Tree should not be spawned within road)
-        double finalPosX = posX;
-        double finalPosY = posY;
-        double finalRotZ = rotZ;
-
-        // Decide per object type how to set position, ugly but better than giving public access to most stuff
-        // in the PhysicalObject interface
-
-        // Handle PhysicalVehicle
-        if (physicalObject instanceof PhysicalVehicle) {
-
-            // Set center point of physicalVehicle
-            PhysicalVehicle physicalVehicle = (PhysicalVehicle)(physicalObject);
-            physicalObject.putOnSurface(finalPosX, finalPosY, finalRotZ);
-
-        // Handle Pedestrian
-        } else if (physicalObject instanceof Pedestrian) {
-            Pedestrian pedestrian = (Pedestrian)(physicalObject);
-            pedestrian.putOnSurface(finalPosX, finalPosY, finalRotZ);
-
-        // Handle Tree
-        } else if (physicalObject instanceof Tree) {
-            Tree tree = (Tree)(physicalObject);
-            tree.putOnSurface(finalPosX, finalPosY,finalRotZ);
-            
-        // Handle StreetLantern
-        } else if (physicalObject instanceof StreetLantern) {
-            StreetLantern streetLantern = (StreetLantern) (physicalObject);
-            streetLantern.putOnSurface(finalPosX, finalPosY, finalRotZ);
-
-        // Handle RoadWorkSign
-        } else if (physicalObject instanceof RoadWorkSign) {
-            RoadWorkSign roadWorkSign = (RoadWorkSign) (physicalObject);
-            roadWorkSign.putOnSurface(finalPosX, finalPosY, finalRotZ);
-
-        // Handle House
-        } else if (physicalObject instanceof House) {
-            House house = (House) (physicalObject);
-            house.putOnSurface(finalPosX, finalPosY, finalRotZ);
-
-
-        // Handle NetworkCellBaseStation
-        } else if (physicalObject instanceof NetworkCellBaseStation) {
-            NetworkCellBaseStation networkCellBaseStation = (NetworkCellBaseStation)(physicalObject);
-            networkCellBaseStation.putOnSurface(finalPosX, finalPosY, finalRotZ);
-        }
+        // Put the object on the surface of the simulation
+        physicalObject.putOnSurface(posX, posY, rotZ);
     }
 }

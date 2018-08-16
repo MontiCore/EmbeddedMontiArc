@@ -12,6 +12,106 @@
  *                                         ====
  *                                             ====
  *                                                 ====
+ *                                                     ====
+ *                                                         ====
+ *                                                             ====
+ *                                                                 ====
+ *                                                                     ====
+ *                                                                         ******************************************************************************
+ *                                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                          All rights reserved.
+ *
+ *                                                                          This project is free software; you can redistribute it and/or
+ *                                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                                          License as published by the Free Software Foundation; either
+ *                                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                                          This library is distributed in the hope that it will be useful,
+ *                                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                          Lesser General Public License for more details.
+ *
+ *                                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                         *******************************************************************************
+ *                                                                     ====
+ *
+ *                                                                     ******************************************************************************
+ *                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                      All rights reserved.
+ *
+ *                                                                      This project is free software; you can redistribute it and/or
+ *                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                      License as published by the Free Software Foundation; either
+ *                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                      Lesser General Public License for more details.
+ *
+ *                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                     *******************************************************************************
+ *                                                                 ====
+ *
+ *                                                                 ******************************************************************************
+ *                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                  All rights reserved.
+ *
+ *                                                                  This project is free software; you can redistribute it and/or
+ *                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                  License as published by the Free Software Foundation; either
+ *                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                  Lesser General Public License for more details.
+ *
+ *                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                 *******************************************************************************
+ *                                                             ====
+ *
+ *                                                             ******************************************************************************
+ *                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                              All rights reserved.
+ *
+ *                                                              This project is free software; you can redistribute it and/or
+ *                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                              License as published by the Free Software Foundation; either
+ *                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                              This library is distributed in the hope that it will be useful,
+ *                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                              Lesser General Public License for more details.
+ *
+ *                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                             *******************************************************************************
+ *                                                         ====
+ *
+ *                                                         ******************************************************************************
+ *                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                          All rights reserved.
+ *
+ *                                                          This project is free software; you can redistribute it and/or
+ *                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                          License as published by the Free Software Foundation; either
+ *                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                          This library is distributed in the hope that it will be useful,
+ *                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                          Lesser General Public License for more details.
+ *
+ *                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                         *******************************************************************************
+ *                                                     ====
+ *
  *                                                     ******************************************************************************
  *                                                      MontiCAR Modeling Family, www.se-rwth.de
  *                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -450,90 +550,6 @@ public class SimulatorTest {
     }
 
     /**
-     * Returning collided objects returns collided objects only
-     */
-    @Test
-    public void returnCollidedObjects() {
-        Simulator sim = Simulator.getSharedInstance();
-        SimObject a = new SimObject();
-        SimObject b = new SimObject();
-        SimObject c = new SimObject();
-
-        sim.registerPhysicalObject(a);
-        sim.registerPhysicalObject(b);
-        sim.registerPhysicalObject(c);
-
-        //No collided objects -> empty list
-        List<PhysicalObject> collided = sim.getCollidedObjects();
-        assertTrue(collided.size() == 0);
-
-        //Collision detected -> return collided objects
-        a.setCollision(true);
-        collided = sim.getCollidedObjects();
-        assertTrue(collided.contains(a) && !collided.contains(b) && !collided.contains(c));
-        b.setCollision(true);
-        collided = sim.getCollidedObjects();
-        assertTrue(collided.contains(a) && collided.contains(b) && !collided.contains(c));
-
-        //Collision resolved -> Not returned anymore
-        a.setCollision(false);
-        collided = sim.getCollidedObjects();
-        assertTrue(!collided.contains(a) && collided.contains(b) && !collided.contains(c));
-        b.setCollision(false);
-        collided = sim.getCollidedObjects();
-        assertTrue(collided.size() == 0);
-    }
-
-    /**
-     * Checking collision memory
-     */
-    @SuppressWarnings("PointlessBooleanExpression")
-    @Test
-    public void collidedObjectsMemory() {
-        Simulator sim = Simulator.getSharedInstance();
-        PhysicalVehicleBuilder physicalVehicleBuilder1 = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle a = physicalVehicleBuilder1.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        PhysicalVehicleBuilder physicalVehicleBuilder2 = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle b = physicalVehicleBuilder2.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        PhysicalVehicleBuilder physicalVehicleBuilder3 = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle c = physicalVehicleBuilder3.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-
-        sim.registerAndPutObject(a, 966.6905532033019, 498.1714592002669, 0.8 * Math.PI);
-        sim.registerAndPutObject(b, 982.3084859322336, 425.53842059972903, 0.3 * Math.PI);
-        sim.registerAndPutObject(c, 906.8272188834519, 410.8760650003208, 1.75 * Math.PI);
-
-        //No collided objects
-        List<PhysicalObject> collided = sim.getCollidedObjects();
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == false);
-
-        //Collision detected
-        a.setCollision(true);
-        sim.stopAfter(100);
-        sim.startSimulation();
-        sim.waitUntilSimulationFinished();
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == false);
-
-        //Reset collision detection
-        sim.resetCollisionOccurred();
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == false);
-
-        //Extending simulation updates memory
-        sim.extendSimulationTime(100);
-        sim.startSimulation();
-        sim.waitUntilSimulationFinished();
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == false);
-
-        //Collision resolved
-        a.setCollision(false);
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == false);
-    }
-
-    /**
      * Returning objects with error returns objects with error only
      */
     @Test
@@ -548,24 +564,24 @@ public class SimulatorTest {
         sim.registerPhysicalObject(c);
 
         //No objects with error -> empty list
-        List<PhysicalObject> collided = sim.getCollidedObjects();
-        assertTrue(collided.size() == 0);
+        List<PhysicalObject> error = sim.getErrorObjects();
+        assertTrue(error.size() == 0);
 
         //error occurred -> return objects with error
         a.setError(true);
-        collided = sim.getCollidedObjects();
-        assertTrue(collided.contains(a) && !collided.contains(b) && !collided.contains(c));
+        error = sim.getErrorObjects();
+        assertTrue(error.contains(a) && !error.contains(b) && !error.contains(c));
         b.setError(true);
-        collided = sim.getCollidedObjects();
-        assertTrue(collided.contains(a) && collided.contains(b) && !collided.contains(c));
+        error = sim.getErrorObjects();
+        assertTrue(error.contains(a) && error.contains(b) && !error.contains(c));
 
         //Error resolved -> Not returned anymore
         a.setError(false);
-        collided = sim.getCollidedObjects();
-        assertTrue(!collided.contains(a) && collided.contains(b) && !collided.contains(c));
+        error = sim.getErrorObjects();
+        assertTrue(!error.contains(a) && error.contains(b) && !error.contains(c));
         b.setError(false);
-        collided = sim.getCollidedObjects();
-        assertTrue(collided.size() == 0);
+        error = sim.getErrorObjects();
+        assertTrue(error.size() == 0);
     }
 
     /**
@@ -587,34 +603,34 @@ public class SimulatorTest {
         sim.registerAndPutObject(c, 906.8272188834519, 410.8760650003208, 1.75 * Math.PI);
 
         //No objects with error
-        List<PhysicalObject> collided = sim.getCollidedObjects();
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == false);
+        List<PhysicalObject> error = sim.getErrorObjects();
+        assertTrue(sim.errorPresent() == false);
+        assertTrue(sim.errorOccurred() == false);
 
         //Error occurred
         a.setError(true);
         sim.stopAfter(100);
         sim.startSimulation();
         sim.waitUntilSimulationFinished();
-        assertTrue(sim.collisionPresent() == true);
-        assertTrue(sim.collisionOccurred() == true);
+        assertTrue(sim.errorPresent() == true);
+        assertTrue(sim.errorOccurred() == true);
 
-        //Reset collision detection
-        sim.resetCollisionOccurred();
-        assertTrue(sim.collisionPresent() == true);
-        assertTrue(sim.collisionOccurred() == false);
+        //Reset computational error flag
+        sim.resetErrorOccurred();
+        assertTrue(sim.errorPresent() == true);
+        assertTrue(sim.errorOccurred() == false);
 
         //Extending simulation updates memory
         sim.extendSimulationTime(100);
         sim.startSimulation();
         sim.waitUntilSimulationFinished();
-        assertTrue(sim.collisionPresent() == true);
-        assertTrue(sim.collisionOccurred() == true);
+        assertTrue(sim.errorPresent() == true);
+        assertTrue(sim.errorOccurred() == true);
 
         //Error resolved
         a.setError(false);
-        assertTrue(sim.collisionPresent() == false);
-        assertTrue(sim.collisionOccurred() == true);
+        assertTrue(sim.errorPresent() == false);
+        assertTrue(sim.errorOccurred() == true);
     }
 
     /**
@@ -1437,7 +1453,7 @@ public class SimulatorTest {
         public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
             return new ArrayList<>();
         }
-        public void computePhysics(double deltaT){
+        public void computePhysics(long deltaTms){
             //No physics computations for trees
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         }

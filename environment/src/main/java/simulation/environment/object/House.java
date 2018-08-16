@@ -22,6 +22,126 @@
  *                                                                                 ====
  *                                                                                     ====
  *                                                                                         ====
+ *                                                                                             ====
+ *                                                                                                 ====
+ *                                                                                                     ====
+ *                                                                                                         ====
+ *                                                                                                             ====
+ *                                                                                                                 ====
+ *                                                                                                                     ******************************************************************************
+ *                                                                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                                      All rights reserved.
+ *
+ *                                                                                                                      This project is free software; you can redistribute it and/or
+ *                                                                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                                                                      License as published by the Free Software Foundation; either
+ *                                                                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                                      Lesser General Public License for more details.
+ *
+ *                                                                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                                     *******************************************************************************
+ *                                                                                                                 ====
+ *
+ *                                                                                                                 ******************************************************************************
+ *                                                                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                                  All rights reserved.
+ *
+ *                                                                                                                  This project is free software; you can redistribute it and/or
+ *                                                                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                                                                  License as published by the Free Software Foundation; either
+ *                                                                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                                  Lesser General Public License for more details.
+ *
+ *                                                                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                                 *******************************************************************************
+ *                                                                                                             ====
+ *
+ *                                                                                                             ******************************************************************************
+ *                                                                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                              All rights reserved.
+ *
+ *                                                                                                              This project is free software; you can redistribute it and/or
+ *                                                                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                                                                              License as published by the Free Software Foundation; either
+ *                                                                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                              This library is distributed in the hope that it will be useful,
+ *                                                                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                              Lesser General Public License for more details.
+ *
+ *                                                                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                             *******************************************************************************
+ *                                                                                                         ====
+ *
+ *                                                                                                         ******************************************************************************
+ *                                                                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                          All rights reserved.
+ *
+ *                                                                                                          This project is free software; you can redistribute it and/or
+ *                                                                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                                                                          License as published by the Free Software Foundation; either
+ *                                                                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                          This library is distributed in the hope that it will be useful,
+ *                                                                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                          Lesser General Public License for more details.
+ *
+ *                                                                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                         *******************************************************************************
+ *                                                                                                     ====
+ *
+ *                                                                                                     ******************************************************************************
+ *                                                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                      All rights reserved.
+ *
+ *                                                                                                      This project is free software; you can redistribute it and/or
+ *                                                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                                                      License as published by the Free Software Foundation; either
+ *                                                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                      Lesser General Public License for more details.
+ *
+ *                                                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                     *******************************************************************************
+ *                                                                                                 ====
+ *
+ *                                                                                                 ******************************************************************************
+ *                                                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                  All rights reserved.
+ *
+ *                                                                                                  This project is free software; you can redistribute it and/or
+ *                                                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                                                  License as published by the Free Software Foundation; either
+ *                                                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                  Lesser General Public License for more details.
+ *
+ *                                                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                 *******************************************************************************
+ *                                                                                             ====
+ *
  *                                                                                             ******************************************************************************
  *                                                                                              MontiCAR Modeling Family, www.se-rwth.de
  *                                                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -849,10 +969,10 @@ public class House implements SimulationLoopExecutable, PhysicalObject {
 
     /**
      * Function that computes one step of the physical behaviour of the object
-     * @param deltaT Duration of the current simulation step
+     * @param deltaTms Duration of the current simulation step in milliseconds
      */
     @Override
-    public void computePhysics(double deltaT){
+    public void computePhysics(long deltaTms){
         //No physics computations for houses
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
     }
