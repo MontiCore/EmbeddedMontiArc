@@ -156,9 +156,32 @@ to add the following entry to `dependencies.txt`:
 * EmbeddedMontiArcStudio\
 [...]
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2FYY.MM.DD.visualization-bla&files=visualization-bla.zip
-``` 
+```
 
 <!-- Models -->
+The next point on our long checklist is the integration of your amazing Exoskeleton model.
+This integration happens in two steps: adding the model and telling the IDE that such a
+model exists. Adding the model is rather straightforward. Just create a new directory in
+the `model` folder of the root directory and copy your model to this newly created folder.
+In the following, let us assume that you named this folder `exoskeleton`. Adding the model
+to the registry is slightly more complicated (and hacky to be honest). For this, you will
+need to navigate to the folder
+[`ide/client/modules/se.rwth.common.dashboard`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioBuilder/tree/master/EmbeddedMontiArcStudio/ide/client/modules/se.rwth.common.dashboard)
+and open
+[`dashboard.js`](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioBuilder/blob/master/EmbeddedMontiArcStudio/ide/client/modules/se.rwth.common.dashboard/dashboard.js#L27).
+In the lines 27 and onwards, you can see how other models have been registered in an array.
+Analogously, you will have to add an entry to this array. In your case, this entry would look
+like this:
+
+```
+properties.projects = [{
+    username: "EmbeddedMontiArcStudio",
+    reponame: "Exoskeleton",
+    branchname: "",
+    href: "/api/load.html?mountPoint=EmbeddedMontiArcStudio/Exoskeleton/v&url=/m/exoskeleton.zip&openFile=/de/rwth/se/Exoskeleton.emab"
+}];
+```
+
 <!-- Batch Script -->
 <!-- Coordinator -->
 <!-- IDE -->
