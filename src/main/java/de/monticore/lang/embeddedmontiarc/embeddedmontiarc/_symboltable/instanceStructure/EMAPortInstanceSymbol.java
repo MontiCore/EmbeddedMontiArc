@@ -118,37 +118,25 @@ public class EMAPortInstanceSymbol extends EMAPortSymbol implements EMAElementIn
   public void setTypeReference(MCTypeReference<? extends MCTypeSymbol> typeReference) {
     this.typeReference = typeReference;
   }
-  
+
   /**
-   * returns the component which defines the connector this is independent from the component to
-   * which the source and target ports belong to
+   * returns the component which defines the port
+   * there should be exactly one component defining the port
    *
-   * @return is optional, b/c a connector can belong to a component symbol or to an expanded
-   * component instance symbol
+   * @return is the component symbol
    */
-  public Optional<EMAComponentSymbol> getComponent() {
-    if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
-      return Optional.empty();
-    }
-    if (!(this.getEnclosingScope().getSpanningSymbol().get() instanceof EMAComponentSymbol)) {
-      return Optional.empty();
-    }
-    return Optional.of(((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get()).getComponentType().getReferencedSymbol());
+  public EMAComponentSymbol getComponent() {
+    return getComponentInstance().getComponentType().getReferencedSymbol();
   }
-  
+
   /**
-   * returns the expanded component instance which defines the port this is independent from
-   * the component to which the source and target ports belong to
+   * returns the component instance which instantiates the port
+   * there should be exactly one component instantiating the port
    *
-   * @return is optional, b/c a connector can belong to a component symbol or to an expanded
-   * component instance symbol
+   * @return is the component instance symbol
    */
-  public Optional<EMAComponentInstanceSymbol> getComponentInstance() {
-    if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
-      return Optional.empty();
-    }
-    return Optional
-        .of((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+  public EMAComponentInstanceSymbol getComponentInstance() {
+    return (EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get();
   }
   
   /**

@@ -225,16 +225,12 @@ public class EMAComponentInstanceSymbol
         for (EMAConnectorInstanceSymbol connector : connectors) {
             EMAPortInstanceSymbol sourcePort = connector.getSourcePort();
             EMAPortInstanceSymbol targetPort = connector.getTargetPort();
-            Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
-            Optional<EMAComponentInstanceSymbol> targetCmpOpt = targetPort.getComponentInstance();
-
-            if (sourceCmpOpt.isPresent() && targetCmpOpt.isPresent()) {
-                EMAComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
-                EMAComponentInstanceSymbol targetCmp = targetCmpOpt.get();
-                if (subComponents.contains(sourceCmp) && subComponents.contains(targetCmp)) {
-                    set.add(connector);
-                }
+            EMAComponentInstanceSymbol sourceCmp = sourcePort.getComponentInstance();
+            EMAComponentInstanceSymbol targetCmp = targetPort.getComponentInstance();
+            if (subComponents.contains(sourceCmp) && subComponents.contains(targetCmp)) {
+                set.add(connector);
             }
+
         }
 
         return new ArrayList<>(set);
@@ -248,11 +244,9 @@ public class EMAComponentInstanceSymbol
         Set<EMAComponentInstanceSymbol> nonIndependentSubComponents = new HashSet<>();
         for (EMAConnectorInstanceSymbol connector : subComponentConnectors) {
             EMAPortInstanceSymbol sourcePort = connector.getSourcePort();
-            Optional<EMAComponentInstanceSymbol> sourceCmpOpt = sourcePort.getComponentInstance();
-            if (sourceCmpOpt.isPresent()) {
-                EMAComponentInstanceSymbol sourceCmp = sourceCmpOpt.get();
-                nonIndependentSubComponents.add(sourceCmp);
-            }
+            EMAComponentInstanceSymbol sourceCmp = sourcePort.getComponentInstance();
+            nonIndependentSubComponents.add(sourceCmp);
+
         }
 
         List<EMAComponentInstanceSymbol> independentSubComponents = new ArrayList<>(subComponents);

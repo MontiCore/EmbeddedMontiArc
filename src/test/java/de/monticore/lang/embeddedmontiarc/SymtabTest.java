@@ -450,14 +450,14 @@ public class SymtabTest extends AbstractSymtabTest {
         assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
         assertEquals("EMAPortSymbol source name is not correct", source.getName(), "lightsIn[1]");
         assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent(), cs);
 
         EMAPortSymbol target = conn.getTargetPort();
         assertNotNull("target is null", target);
         assertTrue("target is not incoming", target.isIncoming());
         assertEquals("target name is not correct", target.getName(), "lightsIn[1]");
         assertEquals("target type is not Boolean", target.getTypeReference().getName(), "B");
-        assertEquals("testing.LightControlSwitch", target.getComponent().get().getFullName());
+        assertEquals("testing.LightControlSwitch", target.getComponent().getFullName());
     }
 
     /**
@@ -490,14 +490,14 @@ public class SymtabTest extends AbstractSymtabTest {
         assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
         assertEquals("EMAPortSymbol source name is not correct", source.getName(), "sIn[1]");
         assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent(), cs);
 
         EMAPortSymbol target = conn.getTargetPort();
         assertNotNull("target is null", target);
         assertTrue("target is not outcoming", target.isOutgoing());
         assertEquals("target name is not correct", target.getName(), "sOut[2]");
         assertEquals("target type is not Boolean", target.getTypeReference().getName(), "B");
-        assertEquals("testing.ConnectorArraymn", target.getComponent().get().getFullName());
+        assertEquals("testing.ConnectorArraymn", target.getComponent().getFullName());
 
         conn = (EMAConnectorSymbol) iter.next();
         assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
@@ -507,14 +507,14 @@ public class SymtabTest extends AbstractSymtabTest {
         assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
         assertEquals("EMAPortSymbol source name is not correct2", source.getName(), "sIn[2]");
         assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent(), cs);
 
         target = conn.getTargetPort();
         assertNotNull("target is null", target);
         assertTrue("target is not outcoming", target.isOutgoing());
         assertEquals("target name is not correct3", target.getName(), "sOut[3]");
         assertEquals("target type is not Boolean", target.getTypeReference().getName(), "B");
-        assertEquals("testing.ConnectorArraymn", target.getComponent().get().getFullName());
+        assertEquals("testing.ConnectorArraymn", target.getComponent().getFullName());
 
 
         conn = (EMAConnectorSymbol) iter.next();
@@ -525,14 +525,14 @@ public class SymtabTest extends AbstractSymtabTest {
         assertTrue("EMAPortSymbol source is notIncoming", source.isIncoming());
         assertEquals("EMAPortSymbol source name is not correct4", source.getName(), "sIn[3]");
         assertEquals("EMAPortSymbol sourceType is not correct", source.getTypeReference().getName(), "B");
-        assertEquals("EMAPortSymbol connector is not correct", source.getComponent().get(), cs);
+        assertEquals("EMAPortSymbol connector is not correct", source.getComponent(), cs);
 
         target = conn.getTargetPort();
         assertNotNull("target is null", target);
         assertTrue("target is not outcoming", target.isOutgoing());
         assertEquals("target name is not correct5", target.getName(), "sOut[4]");
         assertEquals("target type is not Boolean", target.getTypeReference().getName(), "B");
-        assertEquals("testing.ConnectorArraymn", target.getComponent().get().getFullName());
+        assertEquals("testing.ConnectorArraymn", target.getComponent().getFullName());
     }
 
     /**

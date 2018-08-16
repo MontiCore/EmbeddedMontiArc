@@ -120,18 +120,13 @@ public class EMAPortSymbol extends CommonSymbol implements EMAElementSymbol {
   }
   
   /**
-   * returns the component which defines the connector this is independent from the component to
-   * which the source and target ports belong to
+   * returns the component which defines the port
+   * there should be exactly one component defining the port
    *
-   * @return is optional, b/c a connector can belong to a component symbol or to an expanded
-   * component instance symbol
+   * @return is the component symbol
    */
-  public Optional<EMAComponentSymbol> getComponent() {
-    if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
-      return Optional.empty();
-    }
-
-    return Optional.of((EMAComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+  public EMAComponentSymbol getComponent() {
+    return (EMAComponentSymbol) this.getEnclosingScope().getSpanningSymbol().get();
   }
 
   
