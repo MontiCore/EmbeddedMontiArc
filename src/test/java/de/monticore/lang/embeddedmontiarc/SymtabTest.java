@@ -443,7 +443,7 @@ public class SymtabTest extends AbstractSymtabTest {
         Log.debug("" + cs.getConnectors().size(), "Connectors");
         assertEquals(50, cs.getConnectors().size());
         EMAConnectorSymbol conn = cs.getConnectors().iterator().next();
-        assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
+        assertEquals("ConnectorSymbols not equal", conn.getComponent(), cs);
         //for loop to check everything
         EMAPortSymbol source = conn.getSourcePort();
         assertNotNull("EMAPortSymbol source is null", source);
@@ -483,7 +483,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals(3, cs.getConnectors().size());
         Iterator iter = cs.getConnectors().iterator();
         EMAConnectorSymbol conn = (EMAConnectorSymbol) iter.next();
-        assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
+        assertEquals("ConnectorSymbols not equal", conn.getComponent(), cs);
         //for loop to check everything
         EMAPortSymbol source = conn.getSourcePort();
         assertNotNull("EMAPortSymbol source is null", source);
@@ -500,7 +500,7 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("testing.ConnectorArraymn", target.getComponent().getFullName());
 
         conn = (EMAConnectorSymbol) iter.next();
-        assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
+        assertEquals("ConnectorSymbols not equal", conn.getComponent(), cs);
         //for loop to check everything
         source = conn.getSourcePort();
         assertNotNull("EMAPortSymbol source is null", source);
@@ -518,7 +518,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
 
         conn = (EMAConnectorSymbol) iter.next();
-        assertEquals("ConnectorSymbols not equal", conn.getComponent().get(), cs);
+        assertEquals("ConnectorSymbols not equal", conn.getComponent(), cs);
         //for loop to check everything
         source = conn.getSourcePort();
         assertNotNull("EMAPortSymbol source is null", source);

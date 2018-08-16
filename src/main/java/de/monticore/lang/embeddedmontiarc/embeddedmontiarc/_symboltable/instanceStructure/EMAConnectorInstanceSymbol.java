@@ -168,24 +168,16 @@ public class EMAConnectorInstanceSymbol extends EMAConnectorSymbol implements EM
     /**
      * returns the component which defines the connector this is independent from the component to
      * which the source and target ports belong to
-
      */
-    public Optional<EMAComponentSymbol> getComponent() {
-        if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get()).getComponentType().getReferencedSymbol());
+    public EMAComponentSymbol getComponent() {
+        return getComponentInstance().getComponentType().getReferencedSymbol();
     }
 
     /**
      * returns the component instance which defines the connector
      */
-    public Optional<EMAComponentInstanceSymbol> getComponentInstance() {
-        if (!this.getEnclosingScope().getSpanningSymbol().isPresent()) {
-            return Optional.empty();
-        }
-        return Optional.of((EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get());
+    public EMAComponentInstanceSymbol getComponentInstance() {
+        return (EMAComponentInstanceSymbol) this.getEnclosingScope().getSpanningSymbol().get();
     }
 
     /**
