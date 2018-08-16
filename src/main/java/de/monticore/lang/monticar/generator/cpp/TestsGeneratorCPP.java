@@ -272,12 +272,23 @@ public final class TestsGeneratorCPP {
             } else {
                 processOutgoingPort(vm, sv, portName);
             }
+        } else if (nextInstruction.getStreamArrayValuesOpt().isPresent()) {
+            ASTStreamArrayValues sv = nextInstruction.getStreamArrayValues();
+            String portName = port.getName();
+            if (port.isIncoming()) {
+                processIncomingPortArray(vm, sv, portName);
+            } else {
+                processOutgoingPortArray(vm, sv, portName);
+            }
+        } else if (nextInstruction.getStreamCompareOpt().isPresent()) {
+            Log.error("Not handled!");
         }
     }
 
     private static void processIncomingPort(ComponentCheckViewModel vm, ASTStreamValue sv, String portName) {
         ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
         sv.accept(converter);
+        System.out.println("Processing: " + portName);
         if (converter.getResult() != null) {
             vm.getInputPortName2Value().put(portName, converter.getResult());
         }
@@ -285,6 +296,23 @@ public final class TestsGeneratorCPP {
 
     private static void processOutgoingPort(ComponentCheckViewModel vm, ASTStreamValue sv, String portName) {
         ASTStreamValue2OutputPortCheck converter = new ASTStreamValue2OutputPortCheck();
+        sv.accept(converter);
+        if (converter.getResult() != null) {
+            vm.getOutputPortName2Check().put(portName, converter.getResult());
+        }
+    }
+
+    private static void processIncomingPortArray(ComponentCheckViewModel vm, ASTStreamArrayValues sv, String portName) {
+        ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
+        sv.accept(converter);
+        System.out.println("Processing: " + portName);
+        if (converter.getResult() != null) {
+            vm.getInputPortName2Value().put(portName, converter.getResult());
+        }
+    }
+
+    private static void processOutgoingPortArray(ComponentCheckViewModel vm, ASTStreamArrayValues sv, String portName) {
+        ASTStreamValue2OutputPortCheck converter = new ASTStreamValue2OutputPortCheck(portName);
         sv.accept(converter);
         if (converter.getResult() != null) {
             vm.getOutputPortName2Check().put(portName, converter.getResult());
@@ -304,43 +332,171 @@ public final class TestsGeneratorCPP {
 
     private static final class ASTStreamValue2OutputPortCheck implements StreamUnitsVisitor {
 
+
         private IOutputPortCheck result = null;
 
         public IOutputPortCheck getResult() {
             return result;
         }
 
+        boolean handled = false;
+        String portName = "";
+        boolean isMatrix = false;
+
+        public boolean getIsMatrix() {
+            return isMatrix;
+        }
+
+        public ASTStreamValue2OutputPortCheck(String portName) {
+            this.portName = portName;
+        }
+
+        public ASTStreamValue2OutputPortCheck() {
+        }
+
         @Override
         public void visit(ASTBooleanLiteral node) {
-            if (node.getValue()) {
-                result = BooleanOutputPortCheck.TRUE_EXPECTED;
-            } else {
-                result = BooleanOutputPortCheck.FALSE_EXPECTED;
+            if (!handled) {
+                if (node.getValue()) {
+                    result = BooleanOutputPortCheck.TRUE_EXPECTED;
+                } else {
+                    result = BooleanOutputPortCheck.FALSE_EXPECTED;
+                }
             }
+            handled = true;
         }
 
         @Override
         public void visit(ASTPrecisionNumber node) {
-            ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
-            if (!unitNumber.getNumber().isPresent()) {
-                return;
+            if (!handled) {
+                ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
+                if (!unitNumber.getNumber().isPresent()) {
+                    return;
+                }
+                double baseValue = unitNumber.getNumber().get().doubleValue();
+                if (node.getPrecisionOpt().isPresent()
+                        && node.getPrecisionOpt().get().getNumberWithUnit().getNumber().isPresent()) {
+                    double delta = node.getPrecisionOpt().get().getNumberWithUnit().getNumber().get().doubleValue();
+                    result = RangeOutputPortCheck.from(baseValue - delta, baseValue + delta);
+                } else {
+                    result = RangeOutputPortCheck.from(baseValue, baseValue);
+                }
             }
-            double baseValue = unitNumber.getNumber().get().doubleValue();
-            if (node.getPrecisionOpt().isPresent()
-                    && node.getPrecisionOpt().get().getNumberWithUnit().getNumber().isPresent()) {
-                double delta = node.getPrecisionOpt().get().getNumberWithUnit().getNumber().get().doubleValue();
-                result = RangeOutputPortCheck.from(baseValue - delta, baseValue + delta);
-            } else {
-                result = RangeOutputPortCheck.from(baseValue, baseValue);
+            handled = true;
+        }
+
+        @Override
+        public void visit(ASTStreamArrayValues node) {
+            if (!handled) {
+                isMatrix = true;
+                StringBuilder builder = new StringBuilder();
+                StreamValueConverter converter = new StreamValueConverter();
+                if (node.getMatrixPairOpt().isPresent()) {
+                    builder.append(" <<");
+                    for (int j = 0; j < node.getMatrixPair().getValuePairList().size(); ++j) {
+                        ASTValuePair valuePair = node.getMatrixPair().getValuePair(j);
+                        for (int i = 0; i < valuePair.getStreamValueList().size(); ++i) {
+                            ASTStreamValue value = valuePair.getStreamValueList().get(i);
+                            //TODO Name, PrecisionNumber, SignedLiteral, valueAtTick
+                            if (value.getNameOpt().isPresent()) {
+                                builder.append(value.getName());
+                            } else {
+                                builder.append(converter.convert(value));
+                            }
+                            if (i + 1 < valuePair.getStreamValueList().size()) {
+                                builder.append(" << ");
+                            }
+                        }
+                        builder.append("<< arma::endr ");
+
+                        if (j + 1 < node.getMatrixPair().getValuePairList().size()) {
+                            builder.append(" << ");
+                        }
+                    }
+                } else if (node.getValuePairOpt().isPresent()) {
+                    //TODO valuepair conversion
+                    builder.append("NOT HANDLED VALUEPAIROPT!!!");
+                }
+                System.out.println("Result: " + builder.toString());
+                result = RangeOutputPortCheck.from(builder.toString(), builder.toString(),true);
             }
+            handled = true;
         }
     }
+
 
     private static final class ASTStreamValue2InputPortValue implements StreamUnitsVisitor {
 
         private String result = null;
+        boolean handled = false;
 
         public String getResult() {
+            return result;
+        }
+
+        @Override
+        public void visit(ASTBooleanLiteral node) {
+
+            if (!handled) result = "=" + (node.getValue() ? "true" : "false");
+            handled = true;
+        }
+
+        @Override
+        public void visit(ASTPrecisionNumber node) {
+            if (!handled) {
+                ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
+                if (!unitNumber.getNumber().isPresent()) {
+                    return;
+                }
+                result = "= " + Double.toString(unitNumber.getNumber().get().doubleValue());
+            }
+            handled = true;
+        }
+
+        @Override
+        public void visit(ASTStreamArrayValues node) {
+            if (!handled) {
+                StringBuilder builder = new StringBuilder();
+                StreamValueConverter converter = new StreamValueConverter();
+                if (node.getMatrixPairOpt().isPresent()) {
+                    result = " <<";
+                    for (int j = 0; j < node.getMatrixPair().getValuePairList().size(); ++j) {
+                        ASTValuePair valuePair = node.getMatrixPair().getValuePair(j);
+                        for (int i = 0; i < valuePair.getStreamValueList().size(); ++i) {
+                            ASTStreamValue value = valuePair.getStreamValueList().get(i);
+                            //TODO Name, PrecisionNumber, SignedLiteral, valueAtTick
+                            if (value.getNameOpt().isPresent()) {
+                                builder.append(value.getName());
+                            } else {
+                                builder.append(converter.convert(value));
+                            }
+                            if (i + 1 < valuePair.getStreamValueList().size()) {
+                                builder.append(" << ");
+                            }
+                        }
+                        builder.append("<< arma::endr ");
+
+                        if (j + 1 < node.getMatrixPair().getValuePairList().size()) {
+                            builder.append(" << ");
+                        }
+                    }
+                } else if (node.getValuePairOpt().isPresent()) {
+                    //TODO valuepair conversion
+                    result += "NOT HANDLED VALUEPAIROPT!!!";
+                }
+                System.out.println("Result: " + builder.toString());
+                result += builder.toString();
+            }
+            handled = true;
+        }
+    }
+
+    private static class StreamValueConverter implements StreamUnitsVisitor {
+        String result = "";
+
+        public String convert(ASTStreamValue node) {
+            result = "";
+            handle(node);
             return result;
         }
 
@@ -357,5 +513,6 @@ public final class TestsGeneratorCPP {
             }
             result = Double.toString(unitNumber.getNumber().get().doubleValue());
         }
+
     }
 }

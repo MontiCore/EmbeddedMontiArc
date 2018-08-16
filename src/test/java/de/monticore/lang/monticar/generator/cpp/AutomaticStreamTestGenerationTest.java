@@ -27,10 +27,6 @@ import de.monticore.lang.monticar.generator.testing.StreamTestExecution;
 import de.monticore.lang.monticar.generator.testing.StreamTestModifier;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.BeforeClass;
@@ -40,7 +36,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -91,13 +86,30 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     }
 
     @Test
-    public void testStreamTestPacmanControllerSimpleTestGen() throws Exception {
+    public void testStreamTestPacmanControllerSimpleTestGenAndExec() throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
         generator.generateTests("de.rwth.pacman.pacManControllerSimple",
                 "src/test/resources/emastudio/pacman", "N:/target/generated-sources-cpp/streamtest/pacman/", "1", 10);
         //testFilesAreEqual(files, restPath); generated values are random*/
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/pacman",
+                "./src/test/resources/emastudio/pacman", "./target/generated-sources-cpp/streamtest/pacman",
+                "de.rwth.pacman.pacManControllerSimple",
+                "de.rwth.pacman.PacManControllerSimpleTest1");
     }
 
+    @Ignore//Does not work in maven for some reason
+    @Test
+    public void testStreamTestObjectDetectorTestGenAndExec() throws Exception{
+        AutomaticStreamTestGenerator automaticGenerator = new AutomaticStreamTestGenerator();
+
+        automaticGenerator.generateTests("detection.objectDetector1",
+                "src/test/resources/emastudio/cluster", "N:/target/generated-sources-cpp/streamtest/cluster/", "1", 1);
+
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/cluster",
+                "./src/test/resources/emastudio/cluster", "./target/generated-sources-cpp/streamtest/cluster",
+                "detection.objectDetector1",
+                "detection.ObjectDetector1Test1");
+    }
     //Create image test manually, as generation for these large matrices takes a lot of time
     @Ignore
     @Test
@@ -120,10 +132,15 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         generatorCPP.setModelsDirPath(Paths.get("N:/target/generated-sources-cpp/streamtest/cluster"));
         generatorCPP.saveFilesToDisk(generatorCPP.handleTestAndCheckDir(streamSymtab));*/
         //testFilesAreEqual(files, restPath); generated values are random
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/cluster",
+                "./src/test/resources/emastudio/cluster", "./target/generated-sources-cpp/streamtest/cluster",
+                "de.rwth.armin.modeling.autopilot.motion.calculatePidError",
+                "de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1");
+
     }
 
     //Create image test manually, as generation for these large matrices takes a lot of time
-
+    @Ignore
     @Test
     public void testStreamTestAutopilotSteam2CPPTestGen() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/emastudio/autopilot");
@@ -174,8 +191,11 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testCLIExample() throws Exception {
-        testStreamTestAutopilotAllComponentsTestGen();
-        String targetBasePath = "./target/generated-sources-cpp/streamtest";
+        AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
+        generator.generateTests("",
+                "src/test/resources/emastudio/autopilot", "N:/target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
+
+        /*String targetBasePath = "./target/generated-sources-cpp/streamtest";
         String targetRestPath = "/autopilot";
         String targetFullPath = targetBasePath + targetRestPath;
         String modelDirectory = "./src/test/resources/emastudio/autopilot";
@@ -202,8 +222,57 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         GeneratorCppCli.main(args);
 
         StreamTestExecution.compileTests(targetFullPath, targetBasePath);
-        StreamTestExecution.executeTests(targetBasePath);
+        StreamTestExecution.executeTests(targetBasePath);*/
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/autopilot",
+                "./src/test/resources/emastudio/autopilot", "./target/generated-sources-cpp/streamtest/autopilot",
+                "de.rwth.armin.modeling.autopilot.motion.calculatePidError",
+                "de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1");
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/autopilot",
+                "./src/test/resources/emastudio/autopilot", "./target/generated-sources-cpp/streamtest/autopilot",
+                "de.rwth.armin.modeling.autopilot.common.compass2CurrentDirection",
+                "de.rwth.armin.modeling.autopilot.common.compass2CurrentDirectionTest1");
     }
 
-//TODO add test that executes all stream tests in the resource dir(will take long to execute)
+    @Ignore //Does not work in maven for some reason
+    @Test
+    public void testComponent() throws Exception {
+        setUp();
+        AutomaticStreamTestGenerator automaticGenerator = new AutomaticStreamTestGenerator();
+
+        automaticGenerator.generateTests("detection.objectDetector1",
+                "src/test/resources/emastudio/cluster", "N:/target/generated-sources-cpp/streamtest/cluster/", "1", 1);
+
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/cluster",
+                "./src/test/resources/emastudio/cluster", "./target/generated-sources-cpp/streamtest/cluster",
+                "detection.objectDetector1",
+                "detection.ObjectDetector1Test1");
+    }
+
+    public void testGenCPPFilesAndExec(String targetBasePath, String targetRestPath, String modelDirectory, String outputDirectory,
+                                       String fullComponentInstanceName, String fullStreamTestName) throws Exception {
+        String targetFullPath = targetBasePath + targetRestPath;
+        String fullStreamTestPathName = fullStreamTestName.replaceAll("\\.", "\\/");
+        String args[] = {"--models-dir=" + outputDirectory,
+                "--output-dir=" + outputDirectory,
+                "--root-model=" + fullComponentInstanceName,
+                "--flag-generate-tests",
+                "--flag-use-armadillo-backend"};
+        File srcDir = new File(modelDirectory);
+        File destDir = new File(outputDirectory);
+        FileUtils.copyDirectory(srcDir, destDir);
+        GeneratorCppCli.main(args);
+        StreamTestExecution.compileTests(targetFullPath, targetBasePath);
+        StreamTestExecution.executeTests(targetBasePath);
+
+        //Execute again to check if tests pass
+
+        StreamTestModifier.updateStreamTestWithResults("N:/target/generated-sources-cpp/streamtest/"+targetRestPath+"/" + fullStreamTestPathName + ".stream"
+                , "N:/target/generated-sources-cpp/streamtest/exec/" + fullStreamTestName);
+        GeneratorCppCli.main(args);
+
+        StreamTestExecution.compileTests(targetFullPath, targetBasePath);
+        StreamTestExecution.executeTests(targetBasePath);
+
+    }
+    //Maybe add test that executes all stream tests in the resource dir(will take longer than an hour to execute) later
 }

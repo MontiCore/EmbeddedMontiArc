@@ -71,11 +71,14 @@ TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
         <#list check.inputPortName2Value?keys as portName>
             component.${portName} ${check.inputPortName2Value[portName]};
         </#list>
+        std::cout << "Execution Starting!";
         component.execute();
+        std::cout << "Execution Done!";
         <#list check.outputPortName2Check?keys as outputPortName>
             <@renderPortCheck outputPortName=outputPortName check=check.outputPortName2Check[outputPortName] />
         </#list>
         <#list stream.outputPortNames as outputPortName>
+            std::cout << (component.${outputPortName}) << "\n";
             myfile << "${outputPortName}: ";
             toFileString(myfile, component.${outputPortName});
             myfile << "\n";
@@ -113,6 +116,6 @@ TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
     rangeValueCheck(${portValue}, ${check.lowerBound} , ${check.upperBound});
     </#if>
 <#else>
-
+    std::cout << (${portValue}) << "\n";
 </#if>
 </#macro>

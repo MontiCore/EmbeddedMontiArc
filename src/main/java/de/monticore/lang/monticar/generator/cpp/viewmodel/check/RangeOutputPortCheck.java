@@ -29,6 +29,15 @@ public final class RangeOutputPortCheck extends ViewModelBase implements IOutput
 
     private String lowerBound;
     private String upperBound;
+    boolean isMatrix = false;
+
+    public boolean isMatrix() {
+        return isMatrix;
+    }
+
+    public void setMatrix(boolean matrix) {
+        isMatrix = matrix;
+    }
 
     public String getLowerBound() {
         return lowerBound;
@@ -90,6 +99,16 @@ public final class RangeOutputPortCheck extends ViewModelBase implements IOutput
         Log.errorIfNull(lowerBound);
         Log.errorIfNull(upperBound);
         RangeOutputPortCheck result = new RangeOutputPortCheck();
+        result.setLowerBound(lowerBound);
+        result.setUpperBound(upperBound);
+        return result;
+    }
+
+    public static RangeOutputPortCheck from(String lowerBound, String upperBound, boolean isMatrix) {
+        Log.errorIfNull(lowerBound);
+        Log.errorIfNull(upperBound);
+        RangeOutputPortCheck result = new RangeOutputPortCheck();
+        result.isMatrix = isMatrix;
         result.setLowerBound(lowerBound);
         result.setUpperBound(upperBound);
         return result;

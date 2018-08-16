@@ -1,6 +1,6 @@
 package detection;
 //only computes similarity for matrix element distances <=3
-component Similarity<N1 n = 1>{
+component Similarity<N1 n = 2500>{
     ports in Q(-oo:oo)^{n,3} data,
           out Q(-oo:oo)^{n,n} similarity,
           out Q(-oo:oo)^{n,n} degree;

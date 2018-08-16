@@ -43,6 +43,13 @@ public final class TemplateHelper {
         return check instanceof RangeOutputPortCheck;
     }
 
+    public boolean isRangeOutputPortCheckMatrix(Object check) {
+        if (isRangeOutputPortCheck(check)) {
+            return ((RangeOutputPortCheck) check).isMatrix();
+        }
+        return false;
+    }
+
     public boolean isTrueExpectedCheck(Object check) {
         return BooleanOutputPortCheck.TRUE_EXPECTED.equals(check);
     }
