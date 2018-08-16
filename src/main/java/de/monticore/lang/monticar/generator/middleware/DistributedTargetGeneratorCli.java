@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
@@ -60,6 +61,7 @@ public final class DistributedTargetGeneratorCli {
 
     public static final String GENERATOR_CPP = "cpp";
     public static final String GENERATOR_ROSCPP = "roscpp";
+    public static final String GENERATOR_ODV = "odv";
 
     private DistributedTargetGeneratorCli() {}
 
@@ -87,6 +89,7 @@ public final class DistributedTargetGeneratorCli {
         HashSet<String> res = new HashSet<>();
         res.add(GENERATOR_CPP);
         res.add(GENERATOR_ROSCPP);
+        res.add(GENERATOR_ODV);
         return res;
     }
 
@@ -140,6 +143,10 @@ public final class DistributedTargetGeneratorCli {
             generator.add(new RosCppGenImpl(), "roscpp");
             RosToEmamTagSchema.registerTagTypes(taggingResolver);
             TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+        }
+
+        if (generators.contains(GENERATOR_ODV)) {
+            generator.add(new ODVGenImpl(), "odv");
         }
 
         try {

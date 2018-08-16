@@ -17,7 +17,7 @@ public class CliTest{
     private static final String VALID_MODELS_DIR_OPTION = "--models-dir=src/test/resources/";
     private static final String VALID_ROOT_MODEL_OPTION = "--root-model=tests.a.addComp";
     private static final String VALID_GENERATOR_CPP_OPTION = "--generators=cpp";
-    private static final String VALID_GENERATOR_ALL_OPTION = "--generators=cpp,roscpp";
+    private static final String VALID_GENERATOR_ALL_OPTION = "--generators=cpp,roscpp,odv";
 
     private static final String INVALID_MODELS_DIR_OPTION = "--models-dir=src/invalid/resources/";
     private static final String INVALID_ROOT_MODEL_OPTION = "--root-model=invalid.invalid.addComp";
