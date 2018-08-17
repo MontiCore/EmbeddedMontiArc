@@ -21,6 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
 import de.se_rwth.commons.logging.Log;
@@ -62,14 +63,14 @@ public class ConnectorEndPointCorrectlyQualified
     @Override
     public void check(ASTConnector node) {
         if (node.getSourceOpt().isPresent()) {
-            checkEndPointMaximallyTwiceQualified(node.getSource());
+            checkEndPointMaximallyTwiceQualified(node.getSource().getQualifiedNameWithArray());
         } else {
             if (!node.getUnitNumberResolutionOpt().isPresent() && !node.getBoolLiteralOpt().isPresent())
                 Log.error("Error Connector has no valid source or constant " + node.toString());
         }
 
-        for (ASTQualifiedNameWithArray name : node.getTargets().getQualifiedNameWithArrayList()) {
-            checkEndPointMaximallyTwiceQualified(name);
+        for (ASTQualifiedNameWithArrayAndStar name : node.getTargets().getQualifiedNameWithArrayAndStarList()) {
+            checkEndPointMaximallyTwiceQualified(name.getQualifiedNameWithArray());
         }
     }
 

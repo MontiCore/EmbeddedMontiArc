@@ -1,9 +1,6 @@
 package symtab.instantiations;
 
 component Sub2 {
-
-    autoinstantiate off;
-
     ports
         in Byte sub_in_1,
         out Byte sub_out_1;

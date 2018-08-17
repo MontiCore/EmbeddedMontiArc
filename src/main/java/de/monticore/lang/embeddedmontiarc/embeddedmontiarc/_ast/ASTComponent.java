@@ -40,8 +40,8 @@ public class ASTComponent extends ASTComponentTOP {
         super();
     }
 
-    public ASTComponent(String name, Optional<ASTTypeParameters2> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body) {
-        super(name, genericTypeParameters, parameters, superComponent, body);
+    public ASTComponent(String name, Optional<ASTTypeParameters2> genericTypeParameters, List<ASTParameter> parameters, Optional<ASTReferenceType> superComponent, ASTComponentBody body, boolean r__interface) {
+        super(name, genericTypeParameters, parameters, superComponent, body, r__interface);
     }
 
     // do not use symbol table, since symbol table must not be created

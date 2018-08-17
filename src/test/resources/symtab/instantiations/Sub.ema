@@ -2,8 +2,6 @@ package symtab.instantiations;
 
 component Sub {
 
-    autoinstantiate off;
-
     instance Sub2 sub_2a, sub_2b;
 
     ports

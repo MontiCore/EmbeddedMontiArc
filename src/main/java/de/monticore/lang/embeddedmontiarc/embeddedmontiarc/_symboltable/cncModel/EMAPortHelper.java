@@ -22,6 +22,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
@@ -121,21 +122,20 @@ public class EMAPortHelper {
     }
 
 
-    public static List<String> getPortName(ASTQualifiedNameWithArray portName,
+    public static List<String> getPortName(ASTQualifiedNameWithArrayAndStar portName,
                                            EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
         List<String> names = new ArrayList<String>();
 
         List<String> compNameParts = getComponentNameParts(portName, symbolTableCreator);
 
         List<String> portNameParts;
-        portNameParts = getPortNameParts(portName, symbolTableCreator);
+        portNameParts = getPortNameParts(portName.getQualifiedNameWithArray(), symbolTableCreator);
 
-        Log.debug("portName: " + portName + " " + compNameParts.size(), "CompNameParts");
+        Log.debug("portName: " + portName.getQualifiedNameWithArray() + " " + compNameParts.size(), "CompNameParts");
         Log.debug("" + portNameParts.size(), "PortNameParts");
         for (String compNamePart : compNameParts) {
             for (String portNamePart : portNameParts) {
                 String curName = compNamePart + portNamePart;
-
                 names.add(curName);
             }
         }
@@ -143,9 +143,10 @@ public class EMAPortHelper {
         return names;
     }
 
-    public static List<String> getComponentNameParts(ASTQualifiedNameWithArray portName,
+    public static List<String> getComponentNameParts(ASTQualifiedNameWithArrayAndStar portNameStar,
                                                      EmbeddedMontiArcSymbolTableCreator symbolTableCreator) {
-        List<String> names = new ArrayList<String>();
+        ASTQualifiedNameWithArray portName = portNameStar.getQualifiedNameWithArray();
+		List<String> names = new ArrayList<String>();
         String name = "";
         if (portName.getCompNameOpt().isPresent()) {
             name += portName.getCompName();
@@ -311,7 +312,7 @@ public class EMAPortHelper {
 
         Log.info("" + sourceNames.size(), "SourcePorts");
         int counter = 0, targetnum = 0;
-        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
+        for (ASTQualifiedNameWithArrayAndStar target : node.getTargets().getQualifiedNameWithArrayAndStarList()) {
             counter = 0;
             targetnum = 0;
             for (String sourceName : sourceNames) {
@@ -344,7 +345,7 @@ public class EMAPortHelper {
         EMAPortSymbol emaConstantPortSymbol = ConstantPortHelper.createConstantPortSymbol(node,
                 symbolTableCreator);
         symbolTableCreator.addToScope(emaConstantPortSymbol);
-        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
+        for (ASTQualifiedNameWithArrayAndStar target : node.getTargets().getQualifiedNameWithArrayAndStarList()) {
             counter = 0;
             targetnum = 0;
             List<String> targetNames = getPortName(target, symbolTableCreator);
