@@ -5,6 +5,7 @@ import de.monitcore.lang.montiarc.utilities.tools.ChecksumChecker;
 import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -205,7 +206,13 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
             logInfo("   -> Running "+getExecutable(name));
             //if need to run:
             List<String> command = new ArrayList<>();
-            command.add(this.getExecutable(name));
+            //command.add(this.getExecutable(name));
+            if(SystemUtils.IS_OS_WINDOWS){
+                command.add(this.execFileName(name,this.generator));
+            }else{
+                command.add("./"+this.execFileName(name,this.generator));
+            }
+
             File e = Paths.get(getPathMojoExecutionOutput(), "Exec.err.txt").toFile();
             exitNumber = processRun(command, Paths.get(this.getPathTmpOutBUILD(), name).toString(), o, e, "exec");
             if (exitNumber == 0) {
