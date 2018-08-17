@@ -23,13 +23,17 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathBooleanExpressionSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._ast.*;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchInheritanceVisitor;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchVisitor;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchDelegatorVisitor;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
+import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -256,21 +260,14 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTArchSimpleExpression ast) {
         ArchSimpleExpressionSymbol sym = new ArchSimpleExpressionSymbol();
         MathExpressionSymbol mathExp = null;
-        if (ast.isPresentArithmeticExpression()) {
-            ASTExpression arithmeticExpression = ast.getArithmeticExpression();
-            if (arithmeticExpression.isPresentSymbol()) {
-                mathExp = (MathExpressionSymbol) arithmeticExpression.getSymbolOpt().get();
-            }
-        }
-        else if (ast.isPresentBooleanExpression()) {
+        if (ast.isPresentArithmeticExpression())
+            mathExp = (MathExpressionSymbol) ast.getArithmeticExpression().getSymbolOpt().get();
+        else if (ast.isPresentBooleanExpression())
             mathExp = (MathExpressionSymbol) ast.getBooleanExpression().getSymbolOpt().get();
-        }
-        else if (ast.isPresentTupleExpression()){
+        else if (ast.isPresentTupleExpression())
             mathExp = (MathExpressionSymbol) ast.getTupleExpression().getSymbolOpt().get();
-        }
-        else{
+        else
             sym.setValue(ast.getString().getValue());
-        }
         sym.setMathExpression(mathExp);
         addToScopeAndLinkWithNode(sym, ast);
     }
@@ -428,8 +425,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTTupleExpression node) {
         TupleExpressionSymbol symbol = new TupleExpressionSymbol();
 
-        for (ASTExpression expression : node.getExpressionsList()){
-            if (expression.isPresentSymbol()) {
+        for (ASTArchArithmeticExpression expression : node.getExpressionsList()){
+            if (expression.getSymbolOpt().isPresent()) {
                 symbol.add((MathExpressionSymbol) expression.getSymbolOpt().get());
             }
         }
@@ -437,4 +434,69 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         addToScopeAndLinkWithNode(symbol, node);
     }
 
+    @Override
+    public void endVisit(ASTArchSimpleArithmeticExpression node) {
+        MathExpressionSymbol sym = null;
+        if (node.isPresentNumberExpression())
+            sym = (MathExpressionSymbol) node.getNumberExpression().getSymbolOpt().get();
+        else if (node.isPresentNameExpression())
+            sym = (MathExpressionSymbol) node.getNameExpression().getSymbolOpt().get();
+        else if (node.isPresentMathDottedNameExpression())
+            sym = (MathExpressionSymbol) node.getMathDottedNameExpression().getSymbolOpt().get();
+        else if (node.isPresentMathAssignmentDeclarationStatement())
+            sym = (MathExpressionSymbol) node.getMathAssignmentDeclarationStatement().getSymbolOpt().get();
+        else if (node.isPresentMathAssignmentStatement())
+            sym = (MathExpressionSymbol) node.getMathAssignmentStatement().getSymbolOpt().get();
+        else if (node.isPresentMinusPrefixExpression())
+            sym = (MathExpressionSymbol) node.getMinusPrefixExpression().getExpression().getSymbolOpt().get();
+
+        addToScopeAndLinkWithNode(sym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchComplexArithmeticExpression node) {
+        MathArithmeticExpressionSymbol arithmSym = new MathArithmeticExpressionSymbol();
+        if (node.getLeftExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setLeftExpression((MathExpressionSymbol) node.getLeftExpression().getSymbolOpt().get());
+        }
+        if (node.getRightExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setRightExpression((MathExpressionSymbol) node.getRightExpression().getSymbolOpt().get());
+        }
+        arithmSym.setOperator(node.getOperator());
+
+        addToScopeAndLinkWithNode(arithmSym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchSimpleBooleanExpression node) {
+        MathExpressionSymbol sym = null;
+        if (node.isPresentBooleanExpression())
+            sym = new MathBooleanExpressionSymbol(node.getBooleanExpression().getBooleanLiteral().getValue());
+        else if (node.isPresentBooleanNotExpression())
+            sym = (MathExpressionSymbol) node.getBooleanNotExpression().getSymbolOpt().get();
+        else if (node.isPresentLogicalNotExpression())
+            sym = (MathExpressionSymbol) node.getLogicalNotExpression().getSymbolOpt().get();
+
+        addToScopeAndLinkWithNode(sym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchComplexBooleanExpression node) {
+        MathArithmeticExpressionSymbol arithmSym = new MathArithmeticExpressionSymbol();
+        if (node.getLeftExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setLeftExpression((MathExpressionSymbol) node.getLeftExpression().getSymbolOpt().get());
+        }
+        if (node.getRightExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setRightExpression((MathExpressionSymbol) node.getRightExpression().getSymbolOpt().get());
+        }
+        arithmSym.setOperator(node.getOperator());
+
+        addToScopeAndLinkWithNode(arithmSym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchBracketExpression node) {
+        MathExpressionSymbol sym = (MathExpressionSymbol) node.getArchMathExpression().getSymbolOpt().get();
+        addToScopeAndLinkWithNode(sym, node);
+    }
 }

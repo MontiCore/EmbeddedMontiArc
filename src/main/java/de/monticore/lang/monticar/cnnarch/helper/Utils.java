@@ -143,6 +143,10 @@ public class Utils {
             MathNumberExpressionSymbol exp = (MathNumberExpressionSymbol) expression;
             copy = new MathNumberExpressionSymbol(exp.getValue().getRealNumber());
         }
+        else if (expression instanceof MathBooleanExpressionSymbol){
+            MathBooleanExpressionSymbol castedCopy = (MathBooleanExpressionSymbol) expression.getRealMathExpressionSymbol();
+            copy = castedCopy;
+        }
         else {
             throw new IllegalArgumentException("Unknown expression type: " + expression.getClass().getSimpleName());
         }

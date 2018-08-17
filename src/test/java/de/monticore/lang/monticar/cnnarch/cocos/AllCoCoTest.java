@@ -159,6 +159,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
                 new ExpectedErrorInfo(1, ErrorCodes.ILLEGAL_ASSIGNMENT));
     }
 
+    @Ignore
     @Test
     public void testArgumentConstraintTest2(){
         checkInvalid(new CNNArchCoCoChecker(),

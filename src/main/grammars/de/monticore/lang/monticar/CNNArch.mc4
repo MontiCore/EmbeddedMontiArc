@@ -113,12 +113,49 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
     /**
         Expressions for variable values.
     */
-    ArchSimpleExpression = (arithmeticExpression:Expression
-                         | booleanExpression:BooleanExpression
+    ArchSimpleExpression = (arithmeticExpression:ArchArithmeticExpression
+                         | booleanExpression:ArchBooleanExpression
                          | tupleExpression:TupleExpression
                          | string:StringLiteral);
 
-    TupleExpression = "(" expressions:Expression "," expressions:(Expression || ",")* ")";
+    interface ArchMathExpression extends Expression;
+    interface ArchArithmeticExpression extends ArchMathExpression;
+    interface ArchBooleanExpression extends ArchMathExpression;
+
+    ArchSimpleArithmeticExpression implements ArchArithmeticExpression = (NumberExpression
+                                             | NameExpression
+                                             | MathDottedNameExpression
+                                             | MathAssignmentDeclarationStatement
+                                             | MathAssignmentStatement
+                                             | MinusPrefixExpression);
+
+    ArchComplexArithmeticExpression implements ArchArithmeticExpression = leftExpression:ArchMathExpression
+                                               NEWLINETOKEN*
+                                               (   operator:"*"
+                                               |   operator:"/"
+                                               |   operator:"%"
+                                               |   operator:"^"
+                                               |   operator:"+"
+                                               |   operator:"-"
+                                               )
+                                               NEWLINETOKEN*
+                                               rightExpression:ArchMathExpression;
+
+    TupleExpression = "(" expressions:ArchArithmeticExpression "," expressions:(ArchArithmeticExpression || ",")* ")";
+
+    ArchSimpleBooleanExpression implements ArchBooleanExpression = (BooleanExpression
+                         | BooleanNotExpression
+                         | LogicalNotExpression);
+
+    ArchComplexBooleanExpression implements ArchBooleanExpression = leftExpression:ArchMathExpression
+                                                                         (   operator:"=="
+                                                                         |   operator:"!="
+                                                                         |   operator:"&&"
+                                                                         |   operator:"||"
+                                                                         )
+                                                                         rightExpression:ArchMathExpression;
+
+    ArchBracketExpression implements ArchMathExpression, ArchBooleanExpression, ArchArithmeticExpression = "(" ArchMathExpression ")";
 
 
     /* =================================*/
