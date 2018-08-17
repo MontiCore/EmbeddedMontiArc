@@ -29,7 +29,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instance
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstancingRegister;
 import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
 import de.monticore.lang.embeddedmontiarc.helper.EMAJavaHelper;
-import de.monticore.lang.embeddedmontiarc.trafos.AutoConnection;
 import de.monticore.lang.monticar.ValueSymbol;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
@@ -74,8 +73,6 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     public Stack<EMAComponentSymbol> componentStack = new Stack<>();
 
     protected List<ImportStatement> currentImports = new ArrayList<>();
-
-    protected AutoConnection autoConnectionTrafo = new AutoConnection();
 
     protected MontiCarSymbolFactory jSymbolFactory = new MontiCarSymbolFactory();
 
@@ -217,15 +214,12 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
             return;
         }
-
-        autoConnectionTrafo.transformAtStart(node, component);
     }
 
 
     @Override
     public void endVisit(ASTComponent node) {
         EMAComponentSymbol component = componentStack.pop();
-        autoConnectionTrafo.transformAtEnd(node, component);
         removeCurrentScope();
     }
 
@@ -343,20 +337,4 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
 
         addToScopeAndLinkWithNode(symbol, node);
     }
-
-
-
-    @Override
-    public void visit(ASTMontiArcAutoInstantiate node) {
-        autoInstantiate = node.isOn();
-    }
-
-
-    @Override
-    public void visit(ASTMontiArcAutoConnect node) {
-        autoConnectionTrafo.transform(node, componentStack.peek());
-    }
-
-
-
 }

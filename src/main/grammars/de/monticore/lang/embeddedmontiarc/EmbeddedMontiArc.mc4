@@ -177,39 +177,7 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
     targets:ConnectorTargets ";" ;
 
    ConnectorTargets = (QualifiedNameWithArray (",")?  )+;
-
-  /* ======================================================*/
-  /* ============ From OLD MARC Grammar ==================*/
-  /* ======================================================*/
-
-  /**
-  * MontiArc components may contain arbitrary many 
-  * configurations. These configurations have to 
-  * implement this interface.
-  */
-  interface MontiArcConfig extends Element;
-        
-  /**
-  * AutoConnect is used to connect ports automatically.
-  *
-  * @attribute type autoconnect unambigous ports with the 
-  *   same type
-  * @attribute port autoconnect unambigous ports with the 
-  *   same name and compatible type}
-  * @attribute off do not use autoconnection (default)
-  */
-  MontiArcAutoConnect implements MontiArcConfig = 
-    "autoconnect"
-    (["type"] | ["port"] | ["off"]) ";";
-     
-  /**
-   * AutoInstantiate is used to automatically instantiate inner components.
-   *
-   * @attribute type autoinstantiate for inner components
-   * @attribute on to enable automatically instantiating inner components
-   * @attribute off do not use autoinstantiate (default)
-   */
-   MontiArcAutoInstantiate implements MontiArcConfig =
-     "autoinstantiate"
-     (["on"] | ["off"]) ";";
+  
+  // autoconnect and autoinstantiate is removed
+  // for autoconnect use "connect this.* -> sub1.*;" to connect all inports of the parent component to the inports of the sub1 subcomponent having the same name 
 }
