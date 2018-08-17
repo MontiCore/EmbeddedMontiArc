@@ -210,7 +210,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
             if(SystemUtils.IS_OS_WINDOWS){
                 //command.add(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name,this.generator)).toString());
                 try {
-                    FileUtils.copyDirectory(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name, this.generator)).toFile(),
+                    FileUtils.copyFile(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name, this.generator)).toFile(),
                             Paths.get(this.getPathTmpOutBUILD(), name, "StreamTests.exe").toFile());
                 } catch (IOException e1) {
                     e1.printStackTrace();
