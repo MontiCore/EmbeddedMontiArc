@@ -82,8 +82,9 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
   */
   
   symbol scope Component implements Element =
-    "component" ["interface"]? Name
-    genericTypeParameters:TypeParameters2?
+    "component" (["interface"])? Name
+    //("component" | ["component_interface"]) Name
+	genericTypeParameters:TypeParameters2?
     (  "("  (Parameter || ",")+  ")" )?
     ("implements" superComponent:ReferenceType)?
     body:ComponentBody;

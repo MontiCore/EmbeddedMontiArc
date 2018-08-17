@@ -5,6 +5,6 @@ component interface CarInterface { // interface defines the contract with develo
          in Q(0 km/h : 0.1 km/h: 250 km/h) carSpeed,
          in Q(0 cm : 0.1 cm : 100 cm) distanceFront[20],
          out Q(0 lx : 2 lx : 60 lx) leftFrontLights[40],
-             Q(-10 m/s^2 : 0.01 m/s^2: 15 m/s^2) acceleration,
-             Q(-90°: 0.2°:90°) steering;
+         out Q(-10 m/s^2 : 0.01 m/s^2: 15 m/s^2) acceleration,
+         out Q(-90°: 0.2°:90°) steering;
 }
