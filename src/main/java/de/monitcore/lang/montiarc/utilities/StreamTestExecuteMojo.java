@@ -208,7 +208,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
             List<String> command = new ArrayList<>();
             //command.add(this.getExecutable(name));
             if(SystemUtils.IS_OS_WINDOWS){
-                command.add(".\\"+this.execFileName(name,this.generator));
+                command.add(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name,this.generator)).toString());
             }else{
                 command.add("./"+this.execFileName(name,this.generator));
             }
