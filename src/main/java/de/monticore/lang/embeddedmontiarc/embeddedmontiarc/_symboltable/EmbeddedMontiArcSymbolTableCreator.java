@@ -314,7 +314,7 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     @Override
     public void visit(ASTConnector node) {
         doConnectorResolution(node, this);
-        ASTQualifiedNameWithArray portName;
+        ASTQualifiedNameWithArrayAndStar portName;
         List<String> sourceNames = null;
         boolean isConstant = false;
         if (node.getSourceOpt().isPresent()) {

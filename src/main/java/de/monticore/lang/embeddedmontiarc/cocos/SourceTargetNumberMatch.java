@@ -21,6 +21,7 @@
 package de.monticore.lang.embeddedmontiarc.cocos;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTConnector;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTQualifiedNameWithArrayAndStar;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
 import de.monticore.lang.monticar.common2._ast.ASTQualifiedNameWithArray;
 import de.se_rwth.commons.logging.Log;
@@ -35,9 +36,9 @@ public class SourceTargetNumberMatch implements EmbeddedMontiArcASTConnectorCoCo
 
         sourceNum = getSourceNum(node);
 
-        for (ASTQualifiedNameWithArray target : node.getTargets().getQualifiedNameWithArrayList()) {
+        for (ASTQualifiedNameWithArrayAndStar target : node.getTargets().getQualifiedNameWithArrayAndStarList()) {
 
-            targetNum = getTargetNum(target);
+            targetNum = getTargetNum(target.getQualifiedNameWithArray());
 
             if (sourceNum != targetNum){
                 Log.error("0xJK901 source port number "+ sourceNum +" and target port number "+ targetNum + " don't match");
@@ -48,13 +49,14 @@ public class SourceTargetNumberMatch implements EmbeddedMontiArcASTConnectorCoCo
     private int getSourceNum(ASTConnector node){
         int sourceNum = 0, sourceComp = 0, sourcePort = 0;
         if (node.getSourceOpt().isPresent()) {
-            if (node.getSource().getCompArrayOpt().isPresent()){
-                if (node.getSource().getCompArray().getLowerboundOpt().isPresent())
-                    sourceComp = node.getSource().getCompArray().getUpperbound().getNumber().get().intValue() - node.getSource().getCompArray().getLowerbound().getNumber().get().intValue() + 1;
+            ASTQualifiedNameWithArray source = node.getSource().getQualifiedNameWithArray();
+            if (source.getCompArrayOpt().isPresent()){
+                if (source.getCompArray().getLowerboundOpt().isPresent())
+                    sourceComp = source.getCompArray().getUpperbound().getNumber().get().intValue() - source.getCompArray().getLowerbound().getNumber().get().intValue() + 1;
             }else sourceComp = 1;
-            if (node.getSource().getPortArrayOpt().isPresent()){
-                if (node.getSource().getPortArray().getLowerboundOpt().isPresent())
-                    sourcePort = node.getSource().getPortArray().getUpperbound().getNumber().get().intValue() - node.getSource().getPortArray().getLowerbound().getNumber().get().intValue() + 1;
+            if (source.getPortArrayOpt().isPresent()){
+                if (source.getPortArray().getLowerboundOpt().isPresent())
+                    sourcePort = source.getPortArray().getUpperbound().getNumber().get().intValue() - source.getPortArray().getLowerbound().getNumber().get().intValue() + 1;
             }else sourcePort = 1;
             sourceNum = sourceComp * sourcePort;
         }

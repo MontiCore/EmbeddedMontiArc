@@ -164,6 +164,17 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
     ("[" UnitNumberResolution "]")? ;
 
   /**
+    * port1
+	* port1[2]
+	* port1[:]
+	* sub1.port1
+	* sub1[2].port1[3]
+	* sub1.*
+	* sub1[2].*
+  */
+  QualifiedNameWithArrayAndStar = QualifiedNameWithArray DotStar?;
+  DotStar = "." {noSpace()}? "*";
+  /**
   * A connector connects one source port with one or many
   * target ports.
   *
@@ -173,10 +184,14 @@ grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
   *   instance names
   */
   Connector implements Element=
-     "connect" (source:QualifiedNameWithArray  | (boolLiteral:BooleanLiteral) | (stringLiteral:StringLiteral)| UnitNumberResolution) "->"
+     "connect" (source:QualifiedNameWithArrayAndStar | 
+	            boolLiteral:BooleanLiteral | 
+				stringLiteral:StringLiteral| 
+				UnitNumberResolution) "->"
     targets:ConnectorTargets ";" ;
 
-   ConnectorTargets = (QualifiedNameWithArray (",")?  )+;
+   ConnectorTargets = ["#"] | // route symbol terminates inputs
+                      (QualifiedNameWithArrayAndStar || ","  )+;
   
   // autoconnect and autoinstantiate is removed
   // for autoconnect use "connect this.* -> sub1.*;" to connect all inports of the parent component to the inports of the sub1 subcomponent having the same name 
