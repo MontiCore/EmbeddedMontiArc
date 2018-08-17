@@ -23,6 +23,86 @@
  *                                                                                     ====
  *                                                                                         ====
  *                                                                                             ====
+ *                                                                                                 ====
+ *                                                                                                     ====
+ *                                                                                                         ====
+ *                                                                                                             ====
+ *                                                                                                                 ******************************************************************************
+ *                                                                                                                  MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                                  All rights reserved.
+ *
+ *                                                                                                                  This project is free software; you can redistribute it and/or
+ *                                                                                                                  modify it under the terms of the GNU Lesser General Public
+ *                                                                                                                  License as published by the Free Software Foundation; either
+ *                                                                                                                  version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                                  This library is distributed in the hope that it will be useful,
+ *                                                                                                                  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                                  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                                  Lesser General Public License for more details.
+ *
+ *                                                                                                                  You should have received a copy of the GNU Lesser General Public
+ *                                                                                                                  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                                 *******************************************************************************
+ *                                                                                                             ====
+ *
+ *                                                                                                             ******************************************************************************
+ *                                                                                                              MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                              Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                              All rights reserved.
+ *
+ *                                                                                                              This project is free software; you can redistribute it and/or
+ *                                                                                                              modify it under the terms of the GNU Lesser General Public
+ *                                                                                                              License as published by the Free Software Foundation; either
+ *                                                                                                              version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                              This library is distributed in the hope that it will be useful,
+ *                                                                                                              but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                              Lesser General Public License for more details.
+ *
+ *                                                                                                              You should have received a copy of the GNU Lesser General Public
+ *                                                                                                              License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                             *******************************************************************************
+ *                                                                                                         ====
+ *
+ *                                                                                                         ******************************************************************************
+ *                                                                                                          MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                          Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                          All rights reserved.
+ *
+ *                                                                                                          This project is free software; you can redistribute it and/or
+ *                                                                                                          modify it under the terms of the GNU Lesser General Public
+ *                                                                                                          License as published by the Free Software Foundation; either
+ *                                                                                                          version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                          This library is distributed in the hope that it will be useful,
+ *                                                                                                          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                          Lesser General Public License for more details.
+ *
+ *                                                                                                          You should have received a copy of the GNU Lesser General Public
+ *                                                                                                          License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                         *******************************************************************************
+ *                                                                                                     ====
+ *
+ *                                                                                                     ******************************************************************************
+ *                                                                                                      MontiCAR Modeling Family, www.se-rwth.de
+ *                                                                                                      Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *                                                                                                      All rights reserved.
+ *
+ *                                                                                                      This project is free software; you can redistribute it and/or
+ *                                                                                                      modify it under the terms of the GNU Lesser General Public
+ *                                                                                                      License as published by the Free Software Foundation; either
+ *                                                                                                      version 3.0 of the License, or (at your option) any later version.
+ *                                                                                                      This library is distributed in the hope that it will be useful,
+ *                                                                                                      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *                                                                                                      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *                                                                                                      Lesser General Public License for more details.
+ *
+ *                                                                                                      You should have received a copy of the GNU Lesser General Public
+ *                                                                                                      License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ *                                                                                                     *******************************************************************************
+ *                                                                                                 ====
+ *
  *                                                                                                 ******************************************************************************
  *                                                                                                  MontiCAR Modeling Family, www.se-rwth.de
  *                                                                                                  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
@@ -509,7 +589,6 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
-import simulation.util.Log;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -524,8 +603,6 @@ public class PhysicalVehicleBuilder {
     /** Singleton instance of the class */
     private static PhysicalVehicleBuilder instance = null;
 
-    /** The vehicle created by this class*/
-    private PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
 
     /**
      * Empty constructor, this is a singleton class
@@ -553,19 +630,6 @@ public class PhysicalVehicleBuilder {
         instance = null;
     }
 
-    /**
-     * Function that resets the physicalVehicle that is currently built in the builder class
-     * Changes values to the default physicalVehicle values
-     *
-     * @return PhysicalVehicleBuilder singleton class
-     */
-    private PhysicalVehicleBuilder resetPhysicalVehicle() {
-        Log.finest("PhysicalVehicleBuilder: resetPhysicalVehicle - PhysicalVehicle at start: " + physicalVehicle);
-        physicalVehicle = new MassPointPhysicalVehicle();
-        Log.finest("PhysicalVehicleBuilder: resetPhysicalVehicle - PhysicalVehicle at end: " + physicalVehicle);
-
-        return getInstance();
-    }
 
     /**
      * Function that returns the physicalVehicle that is currently built in the builder class
@@ -576,32 +640,15 @@ public class PhysicalVehicleBuilder {
      * @return PhysicalVehicle that was built with the builder
      */
     public PhysicalVehicle buildPhysicalVehicle(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
-        Log.finest("PhysicalVehicleBuilder: buildPhysicalVehicle - PhysicalVehicle at start: " + physicalVehicle);
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
 
         physicalVehicle.getSimulationVehicle().setControllerBus(controllerBus);
         physicalVehicle.getSimulationVehicle().setController(controller);
         physicalVehicle.getSimulationVehicle().setNavigation(navigation);
 
-        if(!physicalVehicle.getPhysicalVehicleInitialized()){
-            physicalVehicle.initPhysics();
-        }
-        PhysicalVehicle result = physicalVehicle;
-        resetPhysicalVehicle();
-
-        Log.finest("PhysicalVehicleBuilder: buildPhysicalVehicle - Returned physicalVehicle: " + result + " , reset physicalVehicle in builder:" + physicalVehicle);
-        return result;
-    }
-
-    /**
-     * Function that initializes the physicalVehicle that is currently build in the builder class
-     *
-     * @return PhysicalVehicle that was built with the builder
-     */
-    public PhysicalVehicleBuilder initPhysicalVehicle() {
-        Log.finest("PhysicalVehicleBuilder: initPhysicalVehicle - PhysicalVehicle at start: " + physicalVehicle);
         physicalVehicle.initPhysics();
-        Log.finest("PhysicalVehicleBuilder: initPhysicalVehicle - PhysicalVehicle at end: " + physicalVehicle);
-        return getInstance();
+
+        return physicalVehicle;
     }
 
     /**
@@ -612,21 +659,11 @@ public class PhysicalVehicleBuilder {
      * @return {@link PhysicalVehicleBuilder} singleton class
      * @throws IOException thrown if the given file could either not be found or accessed/read.
      */
-    public PhysicalVehicleBuilder loadPropertiesFromFile(File file) throws IOException {
-        resetPhysicalVehicle();
+    public PhysicalVehicle loadPropertiesFromFile(File file) throws IOException {
         String jsonContents = new String(Files.readAllBytes(file.toPath()));
-        return loadPropertiesFromJSON(jsonContents);
-    }
+        ParsableVehicleProperties data = new Gson().fromJson(jsonContents, ParsableVehicleProperties.class);
 
-    /**
-     * Method to load car properties from a JSON String instead of manually setting them via the builder.
-     * After loading from file, changes are still possible as usual via the methods the builder provides.
-     *
-     * @param json valid json configuration string
-     * @return {@link PhysicalVehicleBuilder} singleton class
-     */
-    public PhysicalVehicleBuilder loadPropertiesFromJSON(String json) {
-        ParsableVehicleProperties data = new Gson().fromJson(json, ParsableVehicleProperties.class); // contains the whole reviews list
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
 
         for (VehicleActuator a : data.actuators) {
             physicalVehicle.getSimulationVehicle().setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
@@ -642,15 +679,19 @@ public class PhysicalVehicleBuilder {
         physicalVehicle.getSimulationVehicle().setWheelDistLeftRight(data.wheelDistLeftRight);
         physicalVehicle.getSimulationVehicle().setWheelDistFrontBack(data.wheelDistFrontBack);
 
-        initPhysicalVehicle();
+        physicalVehicle.getSimulationVehicle().setControllerBus(Optional.empty());
+        physicalVehicle.getSimulationVehicle().setController(Optional.empty());
+        physicalVehicle.getSimulationVehicle().setNavigation(Optional.empty());
+
+        physicalVehicle.initPhysics();
 
         physicalVehicle.setPosition(new ArrayRealVector(new double[]{data.posX, data.posY, data.posZ}));
 
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, data.rotX, data.rotY, data.rotZ);
         RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
         physicalVehicle.setRotation(rotation);
-
-        return getInstance();
+        
+        return physicalVehicle;
     }
 
     /**
@@ -662,12 +703,9 @@ public class PhysicalVehicleBuilder {
      * @throws IOException thrown if the given path cannot be accessed.
      */
     public PhysicalVehicleBuilder storeJSONInFile(File whereToStore) throws IOException {
-        //When the car is not initialized it should be because storing the car reads components of massPoint physics
-        if (!physicalVehicle.getPhysicalVehicleInitialized()) {
-            physicalVehicle.initPhysics();
-        }
-        Gson g = new Gson();
         PhysicalVehicle v = this.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+
+        Gson g = new Gson();
         ParsableVehicleProperties carProps = new PhysicalVehicleBuilder.ParsableVehicleProperties(v);
         String json = g.toJson(carProps, PhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
@@ -717,7 +755,6 @@ public class PhysicalVehicleBuilder {
         private PhysicalObjectType type;
 
         public ParsableVehicleProperties(PhysicalVehicle v) {
-
 
             width = v.getSimulationVehicle().getWidth();
             height = v.getSimulationVehicle().getHeight();
