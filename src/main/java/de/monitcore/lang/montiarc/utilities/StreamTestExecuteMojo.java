@@ -25,7 +25,7 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
     }
 
     protected String getExecutable(String name){
-        return Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(this.generator)).toAbsolutePath().toString();
+        return Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name, this.generator)).toAbsolutePath().toString();
     }
 
     //<editor-fold desc="Execution">

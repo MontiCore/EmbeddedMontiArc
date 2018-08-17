@@ -10,6 +10,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.*;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +191,7 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         }
         if(newCPPHash.equalsIgnoreCase(oldCPPHash) && newBUILDHash.equalsIgnoreCase(oldBUILDHash) ){
 
-            if(Paths.get(this.getPathTmpOutBUILD(), name, execFileName(this.generator)).toFile().exists()){
+            if(Paths.get(this.getPathTmpOutBUILD(), name, execFileName(name, this.generator)).toFile().exists()){
                 return true;
             }
 
@@ -214,6 +215,11 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             }
         }
         this.mkdir(buildDir);
+        String targetname = this.fullNameToCMakeTarget(name);
+        if(SystemUtils.IS_OS_MAC){
+            logInfo("   -> Set MacOS CMake workaround for streamtests building");
+            this.setCMakeMacOS(name, targetname);
+        }
 
         String relPath = Paths.get(this.getPathTmpOutBUILD(),name).relativize(Paths.get(this.getPathTmpOutCPP(), name)).toString();
 
@@ -241,7 +247,9 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         command.add("--build");
         command.add(".");
         command.add("--target");
-        command.add("StreamTests");
+//        command.add("StreamTests");
+//        command.add(name.replace(".", "_")+"_StreamTests");
+        command.add(targetname);
         if (SystemUtils.IS_OS_WINDOWS) {
             //command.add(this.getGeneratorString(this.getGenerator()));
             this.getGeneratorBuildOptions(this.generator, command);
@@ -257,11 +265,54 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             return false;
         }
 
-        if(!Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(this.generator)).toFile().exists()){
+        if(!Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name, this.generator)).toFile().exists()){
             logError("   -> StreamTests executable was not found. Build failed (unknown error)");
         }
 
+        if(SystemUtils.IS_OS_MAC){
+            logInfo("   -> Unset MacOS CMake workaround");
+            this.unsetCMakeMacOS(name, targetname);
+        }
+
         return true;
+    }
+
+    private void setCMakeMacOS(String name, String targetname) throws MojoExecutionException {
+        try {
+            List<String> lines = FileUtils.readLines(Paths.get(this.getPathTmpOutCPP(), name, "CMakeLists.txt").toFile());
+            //target_link_libraries(de_rwth_cmplib_basicLibrary_or_TestWrapper_StreamTests
+            //set_target_properties(de_rwth_cmplib_basicLibrary_or_TestWrapper_StreamTests
+            String starget = "target_link_libraries("+targetname;
+            String sset = "set_target_properties("+targetname;
+            for(int i = 0; i < lines.size(); ++i){
+                String line = lines.get(i);
+                if(line.startsWith(sset) || line.startsWith(starget)){
+                    lines.set(i, "# "+line);
+                }
+            }
+            FileUtils.writeLines(Paths.get(this.getPathTmpOutCPP(), name, "CMakeLists.txt").toFile(), lines, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Error while chaning CMakeLists.txt for macos workaround");
+        }
+    }
+
+    private void unsetCMakeMacOS(String name, String targetname) throws MojoExecutionException {
+        try {
+            List<String> lines = FileUtils.readLines(Paths.get(this.getPathTmpOutCPP(), name, "CMakeLists.txt").toFile());
+            String starget = "# target_link_libraries("+targetname;
+            String sset = "# set_target_properties("+targetname;
+            for(int i = 0; i < lines.size(); ++i){
+                String line = lines.get(i);
+                if(line.startsWith(sset) || line.startsWith(starget)){
+                    lines.set(i, line.substring(2));
+                }
+            }
+            FileUtils.writeLines(Paths.get(this.getPathTmpOutCPP(), name, "CMakeLists.txt").toFile(), lines, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Error while chaning CMakeLists.txt for macos workaround");
+        }
     }
 
     private static String getReadableTime(Long nanos){
@@ -330,4 +381,6 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
         return Paths.get(this.pathTmpOut, mojoDirectory, this.MojoName(), "run").toFile();
     }
     //</editor-fold>
+
+
 }

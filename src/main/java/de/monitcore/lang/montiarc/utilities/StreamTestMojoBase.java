@@ -145,8 +145,12 @@ public class StreamTestMojoBase extends AbstractMojo {
     //<editor-fold desc="Execution">
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        Log.enableFailQuick(false);
         this.preExecution();
         if(forceRun || checkForExecution()) {
+            if(forceRun){
+                logInfo(this.MojoName()+" is forced to run!");
+            }
             this.mainExecution();
             this.postExecution();
         }
@@ -415,17 +419,29 @@ public class StreamTestMojoBase extends AbstractMojo {
         }
     }
 
-    protected String execFileName(GeneratorEnum generator){
+    protected String fullNameToCMakeTarget(String name){
+
+//        cs.getName().substring(0,1).toLowerCase()+cs.getName().substring(1);
+        // name.lastIndexOf(".")
+        int idx = name.lastIndexOf(".");
+
+        name = name.substring(0, idx+1)+name.substring(idx+1,idx+2).toLowerCase()+name.substring(idx+2)+"_StreamTests";
+
+        return name.replace(".", "_");
+    }
+
+    protected String execFileName(String name, GeneratorEnum generator){
+        String targetname = fullNameToCMakeTarget(name);
         if (SystemUtils.IS_OS_WINDOWS) {
             switch (generator) {
                 case VS2017:
                 case VisualStudio2017:
-                    return "Debug/StreamTests.exe";
+                    return "Debug/"+targetname+".exe";
                 default:
-                    return "StreamTests.exe";
+                    return targetname+".exe";
             }
         }else{
-            return "StreamTests";
+            return targetname;
         }
     }
 

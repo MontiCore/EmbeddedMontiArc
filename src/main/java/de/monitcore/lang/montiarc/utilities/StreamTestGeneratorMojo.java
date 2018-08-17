@@ -229,6 +229,9 @@ public class StreamTestGeneratorMojo extends StreamTestMojoBase {
             try {
                 files = generatorCPP.generateFiles(tagging, ecis.get(), scope);
                 logInfo("   -> Success");
+
+
+
                 //String s = files.stream().map(f -> f.getName()).collect(Collectors.joining(", "));
                 //logInfo("   -> Files: "+s);
             }catch (IOException ioex){

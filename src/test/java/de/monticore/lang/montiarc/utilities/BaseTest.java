@@ -44,6 +44,8 @@ public class BaseTest {
 
         //use this in test to see all output
         stmb.setShowBuildAndRunOutput(false);
+
+        stmb.setForceRun(false);
     }
 
     //</editor-fold>
