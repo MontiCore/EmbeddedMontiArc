@@ -208,7 +208,15 @@ public class StreamTestExecuteMojo extends StreamTestMojoBase {
             List<String> command = new ArrayList<>();
             //command.add(this.getExecutable(name));
             if(SystemUtils.IS_OS_WINDOWS){
-                command.add(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name,this.generator)).toString());
+                //command.add(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name,this.generator)).toString());
+                try {
+                    FileUtils.copyDirectory(Paths.get(this.getPathTmpOutBUILD(), name, this.execFileName(name, this.generator)).toFile(),
+                            Paths.get(this.getPathTmpOutBUILD(), name, "StreamTests.exe").toFile());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                    logError("   -> "+this.execFileName(name, this.generator)+" executable could not be copied. Build failed (unknown error)");
+                }
+                command.add(Paths.get(this.getPathTmpOutBUILD(), name, "StreamTests.exe").toAbsolutePath().toString());
             }else{
                 command.add("./"+this.execFileName(name,this.generator));
             }
