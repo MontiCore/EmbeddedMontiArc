@@ -851,6 +851,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 if(true/*if FMUs are terminated*/){
                     //Set up new FMUs and transfer values
                 }
+
                 doCalculationStep(stepSizems);
             }
             long partialStepSize = deltaTms - currentDeltaTms;
@@ -860,6 +861,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 }
                 doCalculationStep(partialStepSize);
             }
+
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
