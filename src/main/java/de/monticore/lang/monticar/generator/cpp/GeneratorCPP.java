@@ -56,6 +56,7 @@ public class GeneratorCPP implements Generator {
     private boolean isGenerateTests = false;
     private boolean isGenerateAutopilotAdapter = false;
     private boolean isGenerateServerWrapper = false;
+    protected boolean isExecutionLoggingActive = false;
     private final List<BluePrintCPP> bluePrints = new ArrayList<>();
 
     protected String generationTargetPath = "./target/generated-sources-cpp/";
@@ -74,6 +75,14 @@ public class GeneratorCPP implements Generator {
         useOctaveBackend();
         TypeConverter.clearTypeSymbols();
         currentInstance = this;
+    }
+
+    public boolean isExecutionLoggingActive() {
+        return isExecutionLoggingActive;
+    }
+
+    public void setExecutionLoggingActive(boolean executionLoggingActive) {
+        isExecutionLoggingActive = executionLoggingActive;
     }
 
     public void useArmadilloBackend() {

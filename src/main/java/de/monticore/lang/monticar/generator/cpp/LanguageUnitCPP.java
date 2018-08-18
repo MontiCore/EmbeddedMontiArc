@@ -111,10 +111,19 @@ public class LanguageUnitCPP extends LanguageUnit {
                     resultString += "#include \"" + v.getVariableType().getIncludeName() + ".h\"\n";
                 }
             }
+
+        }
+
+        if (!alreadyGeneratedIncludes.contains("HelperA") && generatorCPP.isExecutionLoggingActive) {
+            alreadyGeneratedIncludes.add("HelperA");
+            resultString += "#include \"" + "HelperA" + ".h\"\n";
         }
 
         for (String string : bluePrint.getAdditionalIncludeStrings())
             resultString += "#include \"" + string + ".h\"\n";
+
+        if (generatorCPP.isExecutionLoggingActive)
+            resultString += "#include <fstream>\n";
 
         for (String include : includeStrings) {
             resultString += include;
@@ -136,7 +145,9 @@ public class LanguageUnitCPP extends LanguageUnit {
         for (String constString : bluePrint.getConsts())
             resultString += constString;
         resultString += "public:\n";
-
+        if (generatorCPP.isExecutionLoggingActive) {
+            resultString += "int __EXECCOUNTER;\n";
+        }
         //input variable
         for (Variable v : bluePrint.getVariables()) {
             if (!v.isArray())
@@ -147,8 +158,10 @@ public class LanguageUnitCPP extends LanguageUnit {
 
         //generate methods
         for (Method method : bluePrint.getMethods()) {
+
             int counter = 0;
             resultString += method.getReturnTypeName() + " " + method.getName() + "(";
+
             for (Variable param : method.getParameters()) {
                 if (counter == 0) {
                     ++counter;
@@ -163,7 +176,11 @@ public class LanguageUnitCPP extends LanguageUnit {
 
             //method body start
             resultString += "{\n";
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+                resultString += "std::ofstream __LogExecutionFile;\n";
+                resultString += "__LogExecutionFile.open(\"execution\"+std::to_string(__EXECCOUNTER)+\".res\");\n";
 
+            }
             for (Instruction instruction : method.getInstructions()) {
                 if (instruction instanceof ConnectInstructionCPP) {
                     ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
@@ -176,7 +193,22 @@ public class LanguageUnitCPP extends LanguageUnit {
                 resultString += instruction.getTargetLanguageInstruction();
                 Log.info(resultString, "afterRes:");
             }
-
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+                for (Variable v : bluePrint.getVariables()) {
+                    if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
+                        resultString += "__LogExecutionFile << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
+                        resultString += "toFileString(__LogExecutionFile, " + v.getNameTargetLanguageFormat() + ");\n";
+                        resultString += "__LogExecutionFile << \"\\n\";\n";
+                    }
+                }
+            }
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+                resultString += "__LogExecutionFile.close();\n";
+                resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
+            }
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("init")) {
+                resultString += "__EXECCOUNTER = 0;\n";
+            }
             //method body end
             resultString += "}\n";
         }

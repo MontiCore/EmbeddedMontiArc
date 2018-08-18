@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-/*void toFileString(std::ofstream& myfile, mat A){
+void toFileString(std::ofstream& myfile, mat A){
     myfile << "[";
     for (int i = 0; i < A.n_rows; i++){
         for (int j = 0; j < A.n_cols; j++){
@@ -57,7 +57,7 @@ void rangeValueCheck(int A, double lower, double upper){
 void rangeValueCheck(mat& A, mat& lower , mat& upper){
     REQUIRE(Is_close(A, lower, 0.0001));
     REQUIRE(Is_close(A, upper, 0.0001));
-}*/
+}
 <#list viewModel.streams as stream>
 TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
     mat tmpA;

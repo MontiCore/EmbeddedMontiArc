@@ -233,6 +233,30 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
                 "de.rwth.armin.modeling.autopilot.common.compass2CurrentDirectionTest1");
     }
 
+    @Test
+    public void testLoggingExample1() throws Exception {
+        AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
+        generator.generateTests("",
+                "src/test/resources/emastudio/autopilot", "N:/target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
+
+        testGenCPPFilesAndExecWithExecLogging("./target/generated-sources-cpp/streamtest", "/autopilot",
+                "./src/test/resources/emastudio/autopilot", "./target/generated-sources-cpp/streamtest/autopilot",
+                "de.rwth.armin.modeling.autopilot.motion.calculatePidError",
+                "de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1");
+    }
+
+    @Test
+    public void testLoggingExample2() throws Exception {
+        AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
+        generator.generateTests("",
+                "src/test/resources/emastudio/autopilot", "N:/target/generated-sources-cpp/streamtest/autopilot/", "1", 10);
+
+        testGenCPPFilesAndExecWithExecLogging("./target/generated-sources-cpp/streamtest", "/autopilot",
+                "./src/test/resources/emastudio/autopilot", "./target/generated-sources-cpp/streamtest/autopilot",
+                "de.rwth.armin.modeling.autopilot.motion.calculateEngineAndBrakes",
+                "de.rwth.armin.modeling.autopilot.motion.CalculateEngineAndBrakesTest1");
+    }
+
     @Ignore //Does not work in maven for some reason
     @Test
     public void testComponent() throws Exception {
@@ -257,6 +281,34 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
                 "--root-model=" + fullComponentInstanceName,
                 "--flag-generate-tests",
                 "--flag-use-armadillo-backend"};
+        File srcDir = new File(modelDirectory);
+        File destDir = new File(outputDirectory);
+        FileUtils.copyDirectory(srcDir, destDir);
+        GeneratorCppCli.main(args);
+        StreamTestExecution.compileTests(targetFullPath, targetBasePath);
+        StreamTestExecution.executeTests(targetBasePath);
+
+        //Execute again to check if tests pass
+
+        StreamTestModifier.updateStreamTestWithResults("N:/target/generated-sources-cpp/streamtest/"+targetRestPath+"/" + fullStreamTestPathName + ".stream"
+                , "N:/target/generated-sources-cpp/streamtest/exec/" + fullStreamTestName);
+        GeneratorCppCli.main(args);
+
+        StreamTestExecution.compileTests(targetFullPath, targetBasePath);
+        StreamTestExecution.executeTests(targetBasePath);
+
+    }
+
+    public void testGenCPPFilesAndExecWithExecLogging(String targetBasePath, String targetRestPath, String modelDirectory, String outputDirectory,
+                                       String fullComponentInstanceName, String fullStreamTestName) throws Exception {
+        String targetFullPath = targetBasePath + targetRestPath;
+        String fullStreamTestPathName = fullStreamTestName.replaceAll("\\.", "\\/");
+        String args[] = {"--models-dir=" + outputDirectory,
+                "--output-dir=" + outputDirectory,
+                "--root-model=" + fullComponentInstanceName,
+                "--flag-generate-tests",
+                "--flag-use-armadillo-backend",
+                "--flag-use-exec-logging"};
         File srcDir = new File(modelDirectory);
         File destDir = new File(outputDirectory);
         FileUtils.copyDirectory(srcDir, destDir);

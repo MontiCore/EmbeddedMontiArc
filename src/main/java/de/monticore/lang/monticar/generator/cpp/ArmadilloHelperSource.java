@@ -30,7 +30,64 @@ public class ArmadilloHelperSource {
             "#include \"armadillo.h\"\n" +
             "#include <stdarg.h>\n" +
             "#include <initializer_list>\n" +
+            "#include <fstream>\n" +
             "using namespace arma;\n" +
+            "#ifndef _FILESTRING_CONVERSION___A\n" +
+            "#define _FILESTRING_CONVERSION___A\n" +
+            "#include \"armadillo.h\"\n" +
+            "using namespace arma;\n" +
+            "void toFileString(std::ofstream& myfile, mat A){\n" +
+            "    myfile << \"[\";\n" +
+            "    for (int i = 0; i < A.n_rows; i++){\n" +
+            "        for (int j = 0; j < A.n_cols; j++){\n" +
+            "            myfile << A(i,j);\n" +
+            "            if(j + 1 < A.n_cols){\n" +
+            "                myfile << \", \";\n" +
+            "            }\n" +
+            "        }\n" +
+            "        if(i + 1 < A.n_rows){\n" +
+            "            myfile << \";\";\n" +
+            "        }\n" +
+            "    }\n" +
+            "    myfile << \"]\";\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, double A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, float A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, int A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, bool A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "bool Is_close(mat& X, mat& Y, double tol)\n" +
+            "{\n" +
+            "    // abs returns a mat type then max checks columns and returns a row_vec\n" +
+            "    // max used again will return the biggest element in the row_vec\n" +
+            "    bool close(false);\n" +
+            "    if(arma::max(arma::max(arma::abs(X-Y))) < tol)\n" +
+            "    {\n" +
+            "        close = true;\n" +
+            "    }\n" +
+            "    return close;\n" +
+            "}\n" +
+            "void rangeValueCheck(double A, double lower, double upper){\n" +
+            "    REQUIRE( A >= lower );\n" +
+            "    REQUIRE( A <= upper );\n" +
+            "}\n" +
+            "\n" +
+            "void rangeValueCheck(int A, double lower, double upper){\n" +
+            "    REQUIRE( A >= lower );\n" +
+            "    REQUIRE( A <= upper );\n" +
+            "}\n" +
+            "void rangeValueCheck(mat& A, mat& lower , mat& upper){\n" +
+            "    REQUIRE(Is_close(A, lower, 0.0001));\n" +
+            "    REQUIRE(Is_close(A, upper, 0.0001));\n" +
+            "}\n" +
+            "#endif\n" +
             "class HelperA{\n" +
             "public:\n" +
             "static mat getEigenVectors(mat A){\n" +

@@ -99,6 +99,13 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_FLAG_EXEC_LOGGING = Option.builder("a")
+            .longOpt("flag-use-exec-logging")
+            .desc("optional flag indicating if execution logging should be on")
+            .hasArg(false)
+            .required(false)
+            .build();
+
 
     public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
             .longOpt("flag-generate-autopilot-adapter")
@@ -145,6 +152,7 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_SERVER_WRAPPER);
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
+        options.addOption(OPTION_FLAG_EXEC_LOGGING);
         return options;
     }
 
@@ -183,6 +191,8 @@ public final class GeneratorCppCli {
 
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
+        g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
+
         try {
             if (componentSymbol != null) {
                 g.generateFiles(componentSymbol, symTab);
