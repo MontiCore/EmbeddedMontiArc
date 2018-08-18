@@ -830,8 +830,8 @@ public class LinearInterpolatorTest extends TestCase {
 
         Point3D p1 = new Point3D(-1,1,0);
 
-        System.out.println(p1.angle(0,1,0));
-        System.out.println(Math.toRadians(p1.angle(0,1,0)));
+        //System.out.println(p1.angle(0,1,0));
+        //System.out.println(Math.toRadians(p1.angle(0,1,0)));
 
     }
 }

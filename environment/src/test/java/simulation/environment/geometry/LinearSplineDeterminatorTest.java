@@ -722,8 +722,8 @@ public class LinearSplineDeterminatorTest extends TestCase {
         SplineDeterminator minSplineDeterminator = null;
         double minDist = Double.MAX_VALUE;
         for(SplineDeterminator s : splines) {
-            System.out.println(s.getStreet().getNodes());
-            System.out.println(s.determineSplineDistance(n));
+            //System.out.println(s.getStreet().getNodes());
+            //System.out.println(s.determineSplineDistance(n));
 
         }
 

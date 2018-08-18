@@ -704,7 +704,7 @@ public class Parser2DJsonTest extends TestCase {
 
         assertNotNull(jsonString);
 
-        System.out.println(jsonString);
+        //System.out.println(jsonString);
 
     }
 }
