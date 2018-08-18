@@ -23,10 +23,7 @@ package de.monticore.lang.monticar.cnnarch._symboltable;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathBooleanExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
-import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.cnnarch._ast.*;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchInheritanceVisitor;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchVisitor;
@@ -447,8 +444,6 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
             sym = (MathExpressionSymbol) node.getMathAssignmentDeclarationStatement().getSymbolOpt().get();
         else if (node.isPresentMathAssignmentStatement())
             sym = (MathExpressionSymbol) node.getMathAssignmentStatement().getSymbolOpt().get();
-        else if (node.isPresentMinusPrefixExpression())
-            sym = (MathExpressionSymbol) node.getMinusPrefixExpression().getExpression().getSymbolOpt().get();
 
         addToScopeAndLinkWithNode(sym, node);
     }
@@ -498,5 +493,13 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTArchBracketExpression node) {
         MathExpressionSymbol sym = (MathExpressionSymbol) node.getArchMathExpression().getSymbolOpt().get();
         addToScopeAndLinkWithNode(sym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchPreMinusExpression node) {
+        MathPreOperatorExpressionSymbol symbol = new MathPreOperatorExpressionSymbol();
+        symbol.setMathExpressionSymbol((MathExpressionSymbol) node.getArchMathExpression().getSymbolOpt().get());
+        symbol.setOperator("-");
+        addToScopeAndLinkWithNode(symbol, node);
     }
 }

@@ -126,8 +126,8 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                              | NameExpression
                                              | MathDottedNameExpression
                                              | MathAssignmentDeclarationStatement
-                                             | MathAssignmentStatement
-                                             | MinusPrefixExpression);
+                                             | MathAssignmentStatement);
+                                             //| MinusPrefixExpression);
 
     ArchComplexArithmeticExpression implements ArchArithmeticExpression = leftExpression:ArchMathExpression
                                                NEWLINETOKEN*
@@ -156,6 +156,8 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                                                          rightExpression:ArchMathExpression;
 
     ArchBracketExpression implements ArchMathExpression, ArchBooleanExpression, ArchArithmeticExpression = "(" ArchMathExpression ")";
+
+    ArchPreMinusExpression implements ArchMathExpression, ArchBooleanExpression, ArchArithmeticExpression = "-" ArchMathExpression ;
 
 
     /* =================================*/
