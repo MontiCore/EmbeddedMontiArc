@@ -178,7 +178,7 @@ public class LanguageUnitCPP extends LanguageUnit {
             resultString += "{\n";
             if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
                 resultString += "std::ofstream __LogExecutionFile;\n";
-                resultString += "__LogExecutionFile.open(\"execution\"+std::to_string(__EXECCOUNTER)+\".res\");\n";
+                resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
 
             }
             for (Instruction instruction : method.getInstructions()) {
