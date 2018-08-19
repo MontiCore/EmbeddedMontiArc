@@ -22,6 +22,7 @@ package de.monticore.lang.monticar.generator;
 
 import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixVectorExpressionSymbol;
 
 /**
  * @author Sascha Schneiders
@@ -57,6 +58,7 @@ public interface MathBackend {
 
     String getDivisionEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString);
 
+    String getMultiplicationEEString(MathMatrixArithmeticExpressionSymbol mathExpressionSymbol, String valueListString);
     /**
      * Does the backend use 0-based or 1-based indexing for matrix element access?
      *
@@ -71,4 +73,6 @@ public interface MathBackend {
     String getWholeNumberMatrixTypeName();
 
     String getWholeNumberCubeTypeName();
+
+    String getMathMatrixColonVectorString(MathMatrixVectorExpressionSymbol mathMatrixArithmeticExpressionSymbol);
 }

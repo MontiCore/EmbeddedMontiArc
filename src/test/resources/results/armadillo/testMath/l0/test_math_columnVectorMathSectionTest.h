@@ -12,7 +12,7 @@ void init()
 }
 void execute()
 {
-colvec a;
+colvec a=mat(10,1);
 }
 
 };

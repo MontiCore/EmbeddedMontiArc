@@ -24,11 +24,9 @@ import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.monticar.generator.BluePrint;
-import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.Generator;
-import de.monticore.lang.monticar.generator.Helper;
-import de.monticore.lang.monticar.generator.MathCommandRegister;
+import de.monticore.lang.monticar.generator.*;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
@@ -70,12 +68,17 @@ public class GeneratorCPP implements Generator {
     protected boolean checkModelDir = false;
     protected boolean streamTestGenerationMode = false;
 
+    // CMake
+    private boolean generateCMake = false;
+    private CMakeConfig cMakeConfig;
+
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
         useOctaveBackend();
         TypeConverter.clearTypeSymbols();
         currentInstance = this;
     }
+
 
     public boolean isExecutionLoggingActive() {
         return isExecutionLoggingActive;
@@ -85,8 +88,21 @@ public class GeneratorCPP implements Generator {
         isExecutionLoggingActive = executionLoggingActive;
     }
 
+    protected void setupCMake() {
+        cMakeConfig = new CMakeConfig("");
+        if (usesArmadilloBackend()) {
+            // add dependency on module Armadillo
+            cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        }
+    }
+
     public void useArmadilloBackend() {
         MathConverter.curBackend = new ArmadilloBackend();
+        setupCMake();
+    }
+
+    public boolean usesArmadilloBackend() {
+        return MathConverter.curBackend instanceof ArmadilloBackend;
     }
 
     protected String testNamePostFix = "";
@@ -104,6 +120,7 @@ public class GeneratorCPP implements Generator {
 
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
+        setupCMake();
         //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
@@ -219,7 +236,7 @@ public class GeneratorCPP implements Generator {
         } else
             fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
-        fileContents.addAll(handleTestAndCheckDir(symtab));
+        fileContents.addAll(handleTestAndCheckDir(symtab, componentSymbol));
         if (isGenerateAutopilotAdapter()) {
             fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
         }
@@ -231,7 +248,23 @@ public class GeneratorCPP implements Generator {
             setGenerationTargetPath(getGenerationTargetPath() + "/");
         }
         List<File> files = saveFilesToDisk(fileContents);
+        //cmake
+        if (generateCMake)
+            files.addAll(generateCMakeFiles(componentSymbol));
 
+        return files;
+    }
+
+    protected List<File> generateCMakeFiles(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        List<File> files = new ArrayList<>();
+        cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
+        List<FileContent> contents = cMakeConfig.generateCMakeFiles();
+        try {
+            for (FileContent content : contents)
+                files.add(generateFile(content));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return files;
     }
 
@@ -243,11 +276,11 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    public List<FileContent> handleTestAndCheckDir(Scope symtab) {
+    public List<FileContent> handleTestAndCheckDir(Scope symtab, ExpandedComponentInstanceSymbol componentSymbol) {
         List<FileContent> fileContents = new ArrayList<>();
         if (isGenerateTests() || isCheckModelDir()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
-            List<FileContent> fileConts = g.generateStreamTests(symtab);
+            List<FileContent> fileConts = g.generateStreamTests(symtab, componentSymbol);
             fileContents.addAll(fileConts);
         }
         return fileContents;
@@ -412,7 +445,33 @@ public class GeneratorCPP implements Generator {
     }
 
     private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
-        return generateWrapper(componentSymbol, "AutopilotAdapter.cpp");
+        AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
+        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        String fileContents = AllTemplates.generateAutopilotAdapter(vm);
+        if (currentInstance.generateCMake)
+            addAutopilotAdapterCMakeConfig();
+        return new FileContent(fileContents, "AutopilotAdapter.cpp");
+    }
+
+    private static void addAutopilotAdapterCMakeConfig() {
+        CMakeConfig cmake = currentInstance.cMakeConfig;
+        // add jni
+        cmake.addCMakeCommand("find_package(JNI)");
+        cmake.addCMakeCommand("set(INCLUDE_DIRS ${INCLUDE_DIRS} ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})");
+        // set install dir
+        cmake.addCMakeCommand("IF (WIN32)");
+        cmake.addCMakeCommand("set(CMAKE_INSTALL_PREFIX $ENV{DLL_DIR})");
+        cmake.addCMakeCommand("ELSE()");
+        cmake.addCMakeCommand("set(CMAKE_INSTALL_PREFIX /usr/lib)");
+        cmake.addCMakeCommand("ENDIF()");
+        // create shared lib
+        cmake.addCMakeCommandEnd("add_library(AutopilotAdapter SHARED AutopilotAdapter.cpp ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_include_directories(AutopilotAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_link_libraries(AutopilotAdapter PUBLIC ${LIBS})");
+        cmake.addCMakeCommandEnd("set_target_properties(AutopilotAdapter PROPERTIES LINKER_LANGUAGE CXX)");
+        // install shared lib
+        cmake.addCMakeCommandEnd("install(TARGETS AutopilotAdapter DESTINATION \"./\")");
+        cmake.addCMakeCommandEnd("export(TARGETS AutopilotAdapter FILE de_rwth_armin_modeling_autopilot_autopilotAdapter.cmake)");
     }
 
     private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
@@ -439,4 +498,19 @@ public class GeneratorCPP implements Generator {
         String fileContents = AllTemplates.generateServerWrapper(vm);
         return new FileContent(fileContents, name);
     }
+
+    public boolean isGenerateCMakeEnabled() {
+        return generateCMake;
+    }
+
+    public void setGenerateCMake(boolean generateCMake) {
+        if (!this.generateCMake && generateCMake)
+            setupCMake();
+        this.generateCMake = generateCMake;
+    }
+
+    public CMakeConfig getCMakeConfig() {
+        return cMakeConfig;
+    }
+
 }

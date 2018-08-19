@@ -8,9 +8,12 @@ using namespace arma;
 class test_math_armadilloIndexTest{
 public:
 mat in1;
+int inRow;
+int inCol;
 mat out1;
 mat CONSTANTCONSTANTVECTOR0;
 rowvec CONSTANTCONSTANTVECTOR1;
+colvec CONSTANTCONSTANTVECTOR2;
 void init()
 {
 in1=mat(2,2);
@@ -23,6 +26,11 @@ CONSTANTCONSTANTVECTOR0(1,1) = 4;
 CONSTANTCONSTANTVECTOR1 = rowvec(2);
 CONSTANTCONSTANTVECTOR1(0,0) = 11;
 CONSTANTCONSTANTVECTOR1(0,1) = 12;
+CONSTANTCONSTANTVECTOR2 = colvec(4);
+CONSTANTCONSTANTVECTOR2(0,0) = 1;
+CONSTANTCONSTANTVECTOR2(1,0) = 1;
+CONSTANTCONSTANTVECTOR2(2,0) = 1;
+CONSTANTCONSTANTVECTOR2(3,0) = 1;
 }
 void execute()
 {
@@ -41,14 +49,17 @@ b(1-1) = A(1-1);
 b(1-1) = A(2-1, 2-1);
 b(2-1) = out1(4-1, 4-1);
 double x = 0;
-x = A(1-1, 2-1) ;
-x = b(2-1) ;
-x = in1(1-1, 1-1) ;
+x = A(1-1, 2-1);
+x = b(2-1);
+x = in1(1-1, 1-1);
 out1(1-1, 1-1) = in1(1-1, 1-1);
 mat test = (zeros<mat>(4, 4));
 out1 = test;
 out1(1-1) = test(1-1);
 out1(2-1, 2-1) = A(2-1, 2-1);
+double y = A(inRow-1, inCol-1);
+colvec C = CONSTANTCONSTANTVECTOR2;
+y = C(1-1)*C(4-1)*(C(1-1)+C(2-1)+C(3-1))+C(3-1);
 }
 
 };

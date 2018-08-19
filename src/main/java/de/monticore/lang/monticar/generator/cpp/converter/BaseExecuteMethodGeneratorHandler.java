@@ -37,17 +37,21 @@ public abstract class BaseExecuteMethodGeneratorHandler extends BaseChainOfRespo
 
     protected abstract String doGenerateExecuteCode(MathExpressionSymbol symbol, List<String> includeStrings);
 
-    public String handleGenerateExecuteCode(MathExpressionSymbol symbol, List<String> includeStrings) {
+    private String handleGenerateExecuteCode(MathExpressionSymbol symbol, List<String> includeStrings) {
         String result = "";
         if (canHandleSymbol(symbol)) {
             result = doGenerateExecuteCode(symbol, includeStrings);
         } else if (getSuccessor() != null) {
-            result = getSuccessor().handleGenerateExecuteCode(symbol, includeStrings);
+            result = ((BaseExecuteMethodGeneratorHandler) getSuccessor()).handleGenerateExecuteCode(symbol, includeStrings);
         } else {
             Log.info(symbol.getTextualRepresentation(), "Symbol:");
             Log.debug(getRole(), "Case not handled!");
         }
         return result;
+    }
+
+    public String chainHandleGenerateExecuteCode(MathExpressionSymbol symbol, List<String> includeStrings) {
+        return ((BaseExecuteMethodGeneratorHandler) getChainStart()).handleGenerateExecuteCode(symbol, includeStrings);
     }
 
 }

@@ -117,6 +117,14 @@ public class MathCommandRegisterCPP extends MathCommandRegister {
         return fullString;
     }
 
+    public static String removeBrackets(String fullString) {
+        String result = removeTrailingStrings(fullString, "(");
+        int idx = result.indexOf("(");
+        if (idx > 0)
+            result = result.substring(0, idx);
+        return result;
+    }
+
     public static String calculateName(String fullName) {
         int index = fullName.indexOf("(");
         String name = "";

@@ -32,6 +32,7 @@ import de.monticore.lang.monticar.generator.optimization.MathInformationRegister
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -94,7 +95,10 @@ public class MathConverter {
             for (MathMatrixAccessSymbol symbolAccess : symbol.getMathMatrixAccessSymbols()) {
                 Log.debug("symbolAccess: " + symbolAccess.getTextualRepresentation(), "MathConverter");
                 result += matrixName + "(" + column + "," + row + ") = ";
-                result += symbolAccess.getTextualRepresentation();
+                if (symbolAccess.getMathExpressionSymbol().isPresent())
+                    result += ExecuteMethodGenerator.generateExecuteCode(symbolAccess.getMathExpressionSymbol().get(), new ArrayList<>());
+                else
+                    result += symbolAccess.getTextualRepresentation();
                 result += ";\n";
                 ++row;
             }
@@ -112,7 +116,6 @@ public class MathConverter {
         }
         return firstPart + result;
     }
-
 
     public static int CONSTANTCONSTANTVECTORID = 0;
 
@@ -140,7 +143,7 @@ public class MathConverter {
         if (!unitNumber.getNumber().isPresent()) {
             Log.error("Number should be present");
         }
-        if ((unitNumber.getNumber().get() %  1) == 0) {
+        if ((unitNumber.getNumber().get() % 1) == 0) {
             return "" + unitNumber.getNumber().get().intValue();
         } else {
             return "" + unitNumber.getNumber().get().doubleValue();
@@ -152,15 +155,15 @@ public class MathConverter {
     }
 
     public static String getWholeNumberMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
 
     public static String getWholeNumberRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
     }
 
     public static String getWholeNumberColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
     }
 
     public static String getWholeNumberCubeInitLine(Variable v, BluePrintCPP bluePrint) {

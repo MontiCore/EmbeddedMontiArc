@@ -271,4 +271,17 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         String restPath = "armadillo/detectionObjectDetector" + number + "/l3/";
         testFilesAreEqual(files, restPath);
     }
+
+    @Test
+    public void testPortInMatrixDefinition() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
+        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.portInMatrixDefinition", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/portInMatrixDefinition");
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        String restPath = "armadillo/portInMatrixDefinition/";
+        testFilesAreEqual(files, restPath);
+    }
 }

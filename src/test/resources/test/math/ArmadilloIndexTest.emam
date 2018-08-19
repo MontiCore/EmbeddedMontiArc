@@ -3,6 +3,8 @@ package test.math;
 component ArmadilloIndexTest{
 
     ports   in Q^{2, 2} in1,
+            in Z inRow,
+            in Z inCol,
             out Q^{4, 4} out1;
 
     implementation Math{
@@ -44,5 +46,13 @@ component ArmadilloIndexTest{
         out1 = test;
         out1(1) = test(1);
         out1(2, 2) = A(2, 2);
+
+        // test scalar port matrix access
+        Q y = A(inRow, inCol);
+
+        // test scalar matrix access
+        Q^{4} C = [1; 1; 1; 1];
+        y = C(1) * C(4) * (C(1) + C(2) + C(3)) + C(3);
+
     }
 }

@@ -143,7 +143,7 @@ public class TagInitSymbolCreator implements TagSymbolCreator {
         return false;
     }
 
-    @Override
+
     public void create(ASTTaggingUnit astTaggingUnit, Scope scope) {
         //TODO implement me, required by newer version
     }
