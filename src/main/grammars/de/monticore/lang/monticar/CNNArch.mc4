@@ -127,7 +127,6 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                              | MathDottedNameExpression
                                              | MathAssignmentDeclarationStatement
                                              | MathAssignmentStatement);
-                                             //| MinusPrefixExpression);
 
     ArchComplexArithmeticExpression implements ArchArithmeticExpression = leftExpression:ArchMathExpression
                                                NEWLINETOKEN*
