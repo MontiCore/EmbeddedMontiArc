@@ -838,10 +838,10 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("a.in1", connector.getTarget());
         assertTrue(connectors.contains(connector));
 
-        connector = component.getConnector("a.in1").orElse(null);
+        connector = component.getConnector("a.in2").orElse(null);
         assertNotNull(connector);
-        assertEquals("in1", connector.getSource());
-        assertEquals("a.in1", connector.getTarget());
+        assertEquals("in2", connector.getSource());
+        assertEquals("a.in2", connector.getTarget());
         assertTrue(connectors.contains(connector));
 
         connector = component.getConnector("out1").orElse(null);
@@ -850,10 +850,10 @@ public class SymtabTest extends AbstractSymtabTest {
         assertEquals("out1", connector.getTarget());
         assertTrue(connectors.contains(connector));
 
-        connector = component.getConnector("out1").orElse(null);
+        connector = component.getConnector("out2").orElse(null);
         assertNotNull(connector);
-        assertEquals("a.out1", connector.getSource());
-        assertEquals("out1", connector.getTarget());
+        assertEquals("a.out2", connector.getSource());
+        assertEquals("out2", connector.getTarget());
         assertTrue(connectors.contains(connector));
 
         connector = component.getConnector("#").orElse(null);
