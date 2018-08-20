@@ -1,3 +1,6 @@
+![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNArchLang/badges/master/build.svg)
+![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNArchLang/badges/master/coverage.svg)
+
 # CNNArch
 ## Introduction
 CNNArch is a descriptive language to model architectures of feedforward neural networks with a special focus on convolutional neural networks. 
