@@ -3,7 +3,9 @@ package simulation.vehicle;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.*;
+import simulation.environment.WorldModel;
 import simulation.util.Log;
 
 import java.util.AbstractMap;
@@ -37,6 +39,9 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     /** Default step size in milliseconds */
     private int stepSizems = 2;
 
+    /** Current rotation around the local z axis */
+    private double yaw_angle;
+
 
     /** Components used for modelica physics */
     /** InputFilter of the vehicle */
@@ -52,6 +57,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     private Tires tires;
 
 
+    /** Coordinate system rotation */
+    public static final RealMatrix coordinateRotation = new BlockRealMatrix(new Rotation(
+            RotationOrder.XYZ,
+            RotationConvention.VECTOR_OPERATOR,
+            0.0, 0.0, Math.PI / 2).getMatrix());
 
     /**
      * Constructor for an uninitialized physical vehicle
@@ -258,25 +268,74 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void computePhysics(long deltaTms){
         if (!this.getError()) {
-
             // Calculate input values
+            // Get values from FDUs
+            double z = chassis.getSimulator().read("z").asDouble();
+            double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+            double m = chassis.getSimulator().read("m").asDouble();
+            // Get current road surface position
+            RealVector roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
+            // Reset vehicle on surface
+            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
+            // Get motor acceleration and convert it in torque
+            double motorAcceleration = 4 * simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
+            double motorForce = m * motorAcceleration;
+            double motorTorque = r_nom * motorForce;
+            System.out.println(motorTorque);
+            // Assume equal 4 wheel drive
+            chassis.getSimulator().write("tau_D_1").with(motorTorque / 4);
+            chassis.getSimulator().write("tau_D_2").with(motorTorque / 4);
+            chassis.getSimulator().write("tau_D_3").with(motorTorque / 4);
+            chassis.getSimulator().write("tau_D_4").with(motorTorque / 4);
+            // Get brake acceleration and convert it in torque
+            double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
+            double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
+            double brakeAcceleration3 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent();
+            double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
+            double brakeForce1 = m * brakeAcceleration1;
+            double brakeForce2 = m * brakeAcceleration2;
+            double brakeForce3 = m * brakeAcceleration3;
+            double brakeForce4 = m * brakeAcceleration4;
+            double brakeTorque1 = r_nom * brakeForce1;
+            double brakeTorque2 = r_nom * brakeForce2;
+            double brakeTorque3 = r_nom * brakeForce3;
+            double brakeTorque4 = r_nom * brakeForce4;
+            chassis.getSimulator().write("tau_B_1").with(brakeTorque1);
+            chassis.getSimulator().write("tau_B_2").with(brakeTorque2);
+            chassis.getSimulator().write("tau_B_3").with(brakeTorque3);
+            chassis.getSimulator().write("tau_B_4").with(brakeTorque4);
+            // Get steering angle
+            double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
+            chassis.getSimulator().write("delta_1").with(steeringAngle);
+            chassis.getSimulator().write("delta_2").with(steeringAngle);
+            tires.getSimulator().write("delta_1").with(steeringAngle);
+            tires.getSimulator().write("delta_2").with(steeringAngle);
+            // Express the force vector in local coordinates
+            RealVector localForce = rotation.transpose().operate(force);
+            chassis.getSimulator().write("F_ext_x").with(localForce.getEntry(0));
+            chassis.getSimulator().write("F_ext_y").with(localForce.getEntry(1));
+            // todo Take the wheel positions and get the frictions coefficients
 
+            // Exchange values
+            exchangeValues();
             long currentDeltaTms = 0;
+            // Do steps with maximum step size as long as possible
             while(currentDeltaTms + stepSizems <= deltaTms){
-                if(true/*if FMUs are terminated*/){
-                    //Set up new FMUs and transfer values
+                if(inputFilter.isTerminated() || chassis.isTerminated() || suspension.isTerminated() || tires.isTerminated()){
+                    //todo Set up new FMUs and transfer values
                 }
-
                 doCalculationStep(stepSizems);
+                currentDeltaTms = currentDeltaTms + stepSizems;
             }
+            // Do a step with partial step size to fill the gap
             long partialStepSize = deltaTms - currentDeltaTms;
             if(partialStepSize > 0){
-                if(true/*if FMUs are terminated*/){
-                    //Set up new FMUs and transfer values
+                if(inputFilter.isTerminated() || chassis.isTerminated() || suspension.isTerminated() || tires.isTerminated()){
+                    //todo Set up new FMUs and transfer values
                 }
                 doCalculationStep(partialStepSize);
+                currentDeltaTms = currentDeltaTms + partialStepSize;
             }
-
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -290,89 +349,75 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * @param rotZ Z component of the rotation of the physical object
      */
     @Override
-    public void putOnSurface(double posX, double posY, double rotZ){/*
-        // Set vehicle on ground
-        double groundZ = WorldModel.getInstance().getGround(posX, posY, getGeometryPosition().getEntry(2)).doubleValue();
-        RealVector newPosition = new ArrayRealVector(new double[]{posX, posY, groundZ + getWheelRadius()});
-        setPosition(newPosition);
+    public void putOnSurface(double posX, double posY, double rotZ){
+        //Get values from FDUs
+        double z = chassis.getSimulator().read("z").asDouble();
+        double L_1 = chassis.getSimulator().read("L_1").asDouble();
+        double L_2 = chassis.getSimulator().read("L_2").asDouble();
+        double TW_f = chassis.getSimulator().read("TW_r").asDouble();
+        double TW_r = chassis.getSimulator().read("TW_r").asDouble();
 
-        // Create rotation for Z, needed to get the correct ground values of wheel mass points
+        //set on ground only rotated around z axis
+        double ground = WorldModel.getInstance().getGround(posX, posY, 0.0).doubleValue();
+        double posZ = ground + z;
+        position = new ArrayRealVector(new double[]{posX, posY, posZ});
+
+        //rotate around z axis
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, rotZ);
-        RealMatrix newRotation = new BlockRealMatrix(rot.getMatrix());
+        rotation = coordinateRotation.multiply(new BlockRealMatrix(rot.getMatrix())).copy();
 
-        // Compute rotated positions of wheel mass points with new Z rotation
-        RealVector frontLeft = getPosition().add(newRotation.operate(wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()].getLocalCenterDiff()));
-        RealVector frontRight = getPosition().add(newRotation.operate(wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].getLocalCenterDiff()));
-        RealVector backLeft = getPosition().add(newRotation.operate(wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()].getLocalCenterDiff()));
-        RealVector backRight = getPosition().add(newRotation.operate(wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()].getLocalCenterDiff()));
+        //Get local positions
+        RealVector frontPositionLocal = new ArrayRealVector(new double[]{L_1, 0.0, -z});
+        RealVector backPositionLocal = new ArrayRealVector(new double[]{-L_2, 0.0, -z});
+        RealVector leftPositionLocal = new ArrayRealVector(new double[]{0.0, (TW_f / 2 + TW_r / 2) / 2, -z});
+        RealVector rightPositionLocal = new ArrayRealVector(new double[]{0.0, -(TW_f / 2 + TW_r / 2) / 2, -z});
 
-        // Get all ground values for new mass point X and Y coordinates
-        double frontLeftGroundZ = WorldModel.getInstance().getGround(frontLeft.getEntry(0), frontLeft.getEntry(1), frontLeft.getEntry(2)).doubleValue();
-        double frontRightGroundZ = WorldModel.getInstance().getGround(frontRight.getEntry(0), frontRight.getEntry(1), frontRight.getEntry(2)).doubleValue();
-        double backLeftGroundZ = WorldModel.getInstance().getGround(backLeft.getEntry(0), backLeft.getEntry(1), backLeft.getEntry(2)).doubleValue();
-        double backRightGroundZ = WorldModel.getInstance().getGround(backRight.getEntry(0), backRight.getEntry(1), backRight.getEntry(2)).doubleValue();
+        Vector3D backToFrontLocal = new Vector3D(L_1 + L_2, 0.0, 0.0);
 
-        // Store elevated ground values in all vectors
-        frontLeft.setEntry(2, frontLeftGroundZ + getWheelRadius());
-        frontRight.setEntry(2, frontRightGroundZ + getWheelRadius());
-        backLeft.setEntry(2, backLeftGroundZ + getWheelRadius());
-        backRight.setEntry(2, backRightGroundZ + getWheelRadius());
+        //Get global positions only rotated around z axis
+        RealVector frontPosition = position.add(rotation.operate(frontPositionLocal));
+        RealVector backPosition = position.add(rotation.operate(backPositionLocal));
+        RealVector leftPosition = position.add(rotation.operate(leftPositionLocal));
+        RealVector rightPosition = position.add(rotation.operate(rightPositionLocal));
 
-        // Compute relative vectors to estimate angles for rotations around X and Y axis
-        RealVector backFrontLeftSide = frontLeft.subtract(backLeft);
-        RealVector backFrontRightSide = frontRight.subtract(backRight);
-        RealVector leftRightFrontSide = frontRight.subtract(frontLeft);
-        RealVector leftRightBackSide = backRight.subtract(backLeft);
+        //Get ground values for rotated wheel positions
+        double frontGround = WorldModel.getInstance().getGround(frontPosition.getEntry(0), frontPosition.getEntry(1), frontPosition.getEntry(2)).doubleValue();
+        double backGround = WorldModel.getInstance().getGround(backPosition.getEntry(0), backPosition.getEntry(1), frontPosition.getEntry(2)).doubleValue();
+        double leftGround = WorldModel.getInstance().getGround(leftPosition.getEntry(0), leftPosition.getEntry(1), frontPosition.getEntry(2)).doubleValue();
+        double rightGround = WorldModel.getInstance().getGround(rightPosition.getEntry(0), rightPosition.getEntry(1), frontPosition.getEntry(2)).doubleValue();
 
-        // Compute all estimation angles between Z plane and relative vectors
-        RealVector planeXYNormVector = new ArrayRealVector(new double[] {0.0, 0.0, 1.0});
-        double angleBackFrontLeftSide = 0.0;
-        double angleBackFrontRightSide = 0.0;
-        double angleLeftRightFrontSide = 0.0;
-        double angleLeftRightBackSide = 0.0;
+        //Store new ground value in global wheel position
+        frontPosition.setEntry(2, frontGround);
+        backPosition.setEntry(2, backGround);
+        leftPosition.setEntry(2, leftGround);
+        rightPosition.setEntry(2, rightGround);
 
-        double normBackFrontLeftSide = backFrontLeftSide.getNorm() * planeXYNormVector.getNorm();
-        if (normBackFrontLeftSide != 0.0) {
-            double dotProduct = backFrontLeftSide.dotProduct(planeXYNormVector);
-            double sinAngle = Math.abs(dotProduct) / normBackFrontLeftSide;
-            angleBackFrontLeftSide = Math.asin(sinAngle);
-            angleBackFrontLeftSide = (dotProduct < 0.0 ? -angleBackFrontLeftSide : angleBackFrontLeftSide);
+        //Compute relative vectors
+        Vector3D backToFront = realTo3D(frontPosition.subtract(backPosition));
+        Vector3D rightToLeft = realTo3D(leftPosition.subtract(rightPosition));
+        Vector3D roadPlaneNorm = Vector3D.crossProduct(backToFront, rightToLeft);
+
+        //Compute angles between relative vectors and X-Y-Plane
+        Vector3D XYPlaneNorm = new Vector3D(0.0, 0.0, 1.0);
+        double backToFrontAngle = (Math.PI / 2) - Vector3D.angle(XYPlaneNorm, backToFront);
+        double rightToLeftAngle = (Math.PI / 2) - Vector3D.angle(XYPlaneNorm, rightToLeft);
+
+        if(physicalVehicleInitialized) {
+            inputFilter.getSimulator().write("slope").with(backToFrontAngle);
+            inputFilter.getSimulator().write("bank").with(rightToLeftAngle);
         }
 
-        double normBackFrontRightSide = backFrontRightSide.getNorm() * planeXYNormVector.getNorm();
-        if (normBackFrontRightSide != 0.0) {
-            double dotProduct = backFrontRightSide.dotProduct(planeXYNormVector);
-            double sinAngle = Math.abs(dotProduct) / normBackFrontRightSide;
-            angleBackFrontRightSide = Math.asin(sinAngle);
-            angleBackFrontRightSide = (dotProduct < 0.0 ? -angleBackFrontRightSide : angleBackFrontRightSide);
-        }
+        //The resulting rotation should transform the XY plane norm to the roadPlaneNorm
+        //and the backToFrontLocal to the BackToFront
 
-        double normLeftRightFrontSide = leftRightFrontSide.getNorm() * planeXYNormVector.getNorm();
-        if (normLeftRightFrontSide != 0.0) {
-            double dotProduct = leftRightFrontSide.dotProduct(planeXYNormVector);
-            double sinAngle = Math.abs(dotProduct) / normLeftRightFrontSide;
-            angleLeftRightFrontSide = Math.asin(sinAngle);
-            angleLeftRightFrontSide = (dotProduct > 0.0 ? -angleLeftRightFrontSide : angleLeftRightFrontSide);
-        }
+        Rotation finalRot = new Rotation(XYPlaneNorm, backToFrontLocal, roadPlaneNorm, backToFront);
+        rotation = new BlockRealMatrix(finalRot.getMatrix());
+        yaw_angle = rotZ;
 
-        double normLeftRightBackSide = leftRightBackSide.getNorm() * planeXYNormVector.getNorm();
-        if (normLeftRightBackSide != 0.0) {
-            double dotProduct = leftRightBackSide.dotProduct(planeXYNormVector);
-            double sinAngle = Math.abs(dotProduct) / normLeftRightBackSide;
-            angleLeftRightBackSide = Math.asin(sinAngle);
-            angleLeftRightBackSide = (dotProduct > 0.0 ? -angleLeftRightBackSide : angleLeftRightBackSide);
-        }
-
-        // From vector angles compute and set optimal rotation values based on ground levels
-        double rotX = 0.5 * (angleBackFrontLeftSide + angleBackFrontRightSide);
-        double rotY = 0.5 * (angleLeftRightFrontSide + angleLeftRightBackSide);
-
-        // Set optimal angles
-        rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, rotX, rotY, rotZ);
-        newRotation = new BlockRealMatrix(rot.getMatrix());
-        setRotation(newRotation);
-        */
-
+        //The rotation is occurring around the center of the road plane, so the position has to be shifted
+        RealVector roadPlaneCenter = position.add(new ArrayRealVector(new double[]{0.0, 0.0, -z}));
+        RealVector roadPlaneCenterToPositionLocal = new ArrayRealVector(new double[]{0.0, 0.0, z});
+        position = roadPlaneCenter.add(rotation.operate(roadPlaneCenterToPositionLocal));
     }
 
 
@@ -537,8 +582,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
             //Initialize remaining variables
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2);
-            rotation = new BlockRealMatrix(rot.getMatrix());
+            rotation = coordinateRotation.copy();
+            yaw_angle = 0.0;
 
             //Overwrite parameters in vehicle with the FDU values
             simulationVehicle.setMass(chassis.getSimulator().read("m").asDouble());
@@ -604,11 +649,45 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * @param deltaTms Length of the calculation step in milliseconds
      */
     private void doCalculationStep(long deltaTms){
-        //Exchange values
+        // Store z coordinate for interpolation later
+        double oldZ = chassis.getSimulator().read("z").asDouble();
 
-        //Do Computation step
+        // Do a computation step
+        double deltaT = deltaTms / 1000.0;
+        inputFilter.doStep(deltaT);
+        chassis.doStep(deltaT);
+        suspension.doStep(deltaT);
+        tires.doStep(deltaT);
+
+        // Exchange values
+        exchangeValues();
 
         //Integrate over model output
+        double omega_z = chassis.getSimulator().read("omega_z").asDouble();
+        yaw_angle = yaw_angle + omega_z * deltaT;
+        double v_x = chassis.getSimulator().read("v_x").asDouble();
+        double v_y = chassis.getSimulator().read("v_y").asDouble();
+        double z = chassis.getSimulator().read("z").asDouble();
+        double v_z = (z - oldZ)/deltaT;
+        RealVector localVelocity = new ArrayRealVector(new double[]{v_x, v_y, v_z});
+        RealVector velocity = rotation.operate(localVelocity);
+        position = position.add(velocity.mapMultiply(deltaT));
+        RealVector deltaZ = new ArrayRealVector(new double[]{0.0, 0.0, oldZ - z});
+        geometryPositionOffset = geometryPositionOffset.add(deltaZ);
+    }
+
+    /**
+     * Function that takes a RealVector with 3 components and gives a Vector3D
+     * @param vector RealVector to be turned into a Vector3D
+     * @return Vector3D according to the RealVector vector
+     */
+    private Vector3D realTo3D(RealVector vector){
+        if(vector.getDimension() == 3) {
+            return new Vector3D(vector.getEntry(0), vector.getEntry(1), vector.getEntry(2));
+        }else{
+            Log.warning("Input vector " + vector + " has not the right amount of components!");
+            return new Vector3D(0.0, 0.0, 0.0);
+        }
     }
 
     /**

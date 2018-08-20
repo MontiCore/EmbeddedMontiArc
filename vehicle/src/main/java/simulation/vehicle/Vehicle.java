@@ -647,8 +647,7 @@ public class Vehicle {
     public static final double VEHICLE_DEFAULT_WIDTH = 2.02712567705637776;
 
     /** Height of the vehicle in meters */
-    //public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
-    public static final double VEHICLE_DEFAULT_HEIGHT = 2;
+    public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
 
     /** Radius of the wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;

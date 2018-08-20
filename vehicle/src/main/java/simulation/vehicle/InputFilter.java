@@ -599,7 +599,7 @@ public class InputFilter {
      * Constructor for an uninitialized inputFilter FMU
      */
     public InputFilter(){
-        inputFilter = new Simulation("vehicle/lib/InputFilter.fmu");
+        inputFilter = new Simulation("lib/InputFilter.fmu");
     }
 
     /**
@@ -625,7 +625,6 @@ public class InputFilter {
         if(isInitialized) {
             if (!isTerminated) {
                 inputFilter.doStep(stepSize);
-                isInitialized = isTerminated();
             } else {
                 //ToDo error if already terminated
             }

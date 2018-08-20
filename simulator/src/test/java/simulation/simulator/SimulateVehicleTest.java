@@ -459,6 +459,7 @@
  */
 package simulation.simulator;
 
+import commons.simulation.SimulationLoopExecutable;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
@@ -500,6 +501,55 @@ public class SimulateVehicleTest {
         sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
         sim.setPausedInFuture(true);
+    }
+
+    @Test
+    public void fistTest(){
+        Simulator sim = Simulator.getSharedInstance();
+
+        // Create a new vehicle
+        ModelicaPhysicalVehicleBuilder physicalVehicleBuilder = new ModelicaPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        // Set actuator values for testing
+        VehicleActuator motor = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
+
+        try {
+            motor.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        // Add physicalVehicle to simulation
+        System.out.println(physicalVehicle);
+        physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
+        System.out.println(physicalVehicle);
+        physicalVehicle.computePhysics(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.executeLoopIteration(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.computePhysics(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.executeLoopIteration(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.computePhysics(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.executeLoopIteration(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.computePhysics(50);
+        System.out.println(physicalVehicle);
+        physicalVehicle.executeLoopIteration(50);
+        System.out.println(physicalVehicle);
+
+        // Start simulation
+        // After 5 seconds, value should be reached
+        //sim.stopAfter(5000);
+        //sim.startSimulation();
+
+        //assertTrue(motor.getActuatorValueCurrent() == Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
+        assertTrue(true);
     }
 
     @Test

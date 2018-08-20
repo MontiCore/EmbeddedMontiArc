@@ -599,7 +599,7 @@ public class Suspension {
      * Constructor for an uninitialized suspension FMU
      */
     public Suspension(){
-        suspension = new Simulation("vehicle/lib/Suspension.fmu");
+        suspension = new Simulation("lib/Suspension.fmu");
     }
 
     /**
@@ -625,7 +625,6 @@ public class Suspension {
         if(isInitialized) {
             if (!isTerminated) {
                 suspension.doStep(stepSize);
-                isInitialized = isTerminated();
             } else {
                 //ToDo error if already terminated
             }

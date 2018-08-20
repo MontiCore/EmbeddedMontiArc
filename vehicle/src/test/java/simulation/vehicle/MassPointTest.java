@@ -696,6 +696,7 @@ public class MassPointTest {
         System.out.println(xyCross);
         */
 
+        /*
         //Desired x,y position and z rotation
         double posX = 0.0;
         double posY = 0.0;
@@ -718,7 +719,7 @@ public class MassPointTest {
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, rotZ);
         RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
 
-        /*
+
 
         //Get local wheel positions
         RealVector frontLeftPositionLocal = new ArrayRealVector(new double[]{L1, TW_f / 2, -z});
@@ -760,7 +761,7 @@ public class MassPointTest {
         //Get average angles
         double bank = (rightToLeftFrontSideAngle + rightToLeftBackSideAngle)*0.5;
         double slope = (backToFrontLeftSideAngle + backToFrontRightSideAngle)*0.5;
-        */
+
 
         //Get local positions
         RealVector frontPositionLocal = new ArrayRealVector(new double[]{L1, 0.0, -z});
@@ -836,7 +837,6 @@ public class MassPointTest {
 
         System.out.println(finalRotation);
 
-        //ToDo adjust position so that the rotation done by placing the car on the surface was done around the center of the road plane
         RealVector roadPlaneCenter = position.add(new ArrayRealVector(new double[]{0.0, 0.0, -z}));
         RealVector roadPlaneCenterToPositionLocal = new ArrayRealVector(new double[]{0.0, 0.0, z});
         RealVector finalPosition = roadPlaneCenter.add(finalRotation.operate(roadPlaneCenterToPositionLocal));
@@ -853,7 +853,12 @@ public class MassPointTest {
         //express output in global position
         //RealVector velocity = finalRotation.operate(velocityLocal);
         //System.out.println(velocity);
+        */
 
+        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 38, 0.0, 47);
+        RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
+        RealMatrix inversion = rotation.transpose();
+        System.out.println(rotation.multiply(inversion));
 
 
 

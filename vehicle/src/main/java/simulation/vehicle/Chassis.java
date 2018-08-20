@@ -599,7 +599,7 @@ public class Chassis {
      * Constructor for an uninitialized chassis FMU
      */
     public Chassis(){
-        chassis = new Simulation("vehicle/lib/Chassis.fmu");
+        chassis = new Simulation("lib/Chassis.fmu");
     }
 
     /**
@@ -625,7 +625,6 @@ public class Chassis {
         if(isInitialized) {
             if (!isTerminated) {
                 chassis.doStep(stepSize);
-                isInitialized = isTerminated();
             } else {
                 //ToDo error if already terminated
             }

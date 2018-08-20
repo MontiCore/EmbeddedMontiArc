@@ -599,7 +599,7 @@ public class Tires {
      * Constructor for an uninitialized tires FMU
      */
     public Tires(){
-        tires = new Simulation("vehicle/lib/Tires.fmu");
+        tires = new Simulation("lib/Tires.fmu");
     }
 
     /**
@@ -625,7 +625,6 @@ public class Tires {
         if(isInitialized) {
             if (!isTerminated) {
                 tires.doStep(stepSize);
-                isInitialized = isTerminated();
             } else {
                 //ToDo error if already terminated
             }
