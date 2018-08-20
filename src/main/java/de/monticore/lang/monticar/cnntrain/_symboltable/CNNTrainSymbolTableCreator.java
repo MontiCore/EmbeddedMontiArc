@@ -66,8 +66,8 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
 
     @Override
     public void endVisit(ASTCNNTrainCompilationUnit ast) {
-        CNNTrainCompilationUnitSymbol compilationUnitSymbol = (CNNTrainCompilationUnitSymbol) ast.getSymbol().get();
-        compilationUnitSymbol.setConfiguration((ConfigurationSymbol) ast.getConfiguration().getSymbol().get());
+        CNNTrainCompilationUnitSymbol compilationUnitSymbol = (CNNTrainCompilationUnitSymbol) ast.getSymbolOpt().get();
+        compilationUnitSymbol.setConfiguration((ConfigurationSymbol) ast.getConfiguration().getSymbolOpt().get());
         setEnclosingScopeOfNodes(ast);
     }
 
@@ -94,7 +94,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     public void endVisit(ASTOptimizerEntry node) {
         for (ASTEntry nodeParam : node.getValue().getParamsList()) {
             OptimizerParamSymbol param = new OptimizerParamSymbol();
-            OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol) nodeParam.getValue().getSymbol().get();
+            OptimizerParamValueSymbol valueSymbol = (OptimizerParamValueSymbol) nodeParam.getValue().getSymbolOpt().get();
             param.setValue(valueSymbol);
             configuration.getOptimizer().getOptimizerParamMap().put(nodeParam.getName(), param);;
         }
