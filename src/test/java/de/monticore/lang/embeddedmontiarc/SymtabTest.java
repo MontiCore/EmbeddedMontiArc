@@ -37,6 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -819,6 +820,48 @@ public class SymtabTest extends AbstractSymtabTest {
 
         EMAPortInstanceSymbol portInstanceSymbol3 = symTab.<EMAPortInstanceSymbol>resolve("symtab.instantiations.top_1.sub_1.sub_2a.sub_in_1", EMAPortInstanceSymbol.KIND).orElse(null);
         assertNotNull(portInstanceSymbol3);
+    }
+
+
+    @Test
+    public void starConnectorsTest() {
+        Scope symTab = createSymTab("src/test/resources");
+        EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve("testing.StarConnector", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull(component);
+
+        Collection<EMAConnectorSymbol> connectors = component.getConnectors();
+        assertEquals(5, connectors.size());
+
+        EMAConnectorSymbol connector = component.getConnector("a.in1").orElse(null);
+        assertNotNull(connector);
+        assertEquals("in1", connector.getSource());
+        assertEquals("a.in1", connector.getTarget());
+        assertTrue(connectors.contains(connector));
+
+        connector = component.getConnector("a.in1").orElse(null);
+        assertNotNull(connector);
+        assertEquals("in1", connector.getSource());
+        assertEquals("a.in1", connector.getTarget());
+        assertTrue(connectors.contains(connector));
+
+        connector = component.getConnector("out1").orElse(null);
+        assertNotNull(connector);
+        assertEquals("a.out1", connector.getSource());
+        assertEquals("out1", connector.getTarget());
+        assertTrue(connectors.contains(connector));
+
+        connector = component.getConnector("out1").orElse(null);
+        assertNotNull(connector);
+        assertEquals("a.out1", connector.getSource());
+        assertEquals("out1", connector.getTarget());
+        assertTrue(connectors.contains(connector));
+
+        connector = component.getConnector("#").orElse(null);
+        assertNotNull(connector);
+        assertEquals("in3", connector.getSource());
+        assertEquals("#", connector.getTarget());
+        assertTrue(connectors.contains(connector));
+
     }
 
 }

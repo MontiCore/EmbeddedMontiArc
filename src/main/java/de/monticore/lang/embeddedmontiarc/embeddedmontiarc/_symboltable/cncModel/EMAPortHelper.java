@@ -305,11 +305,56 @@ public class EMAPortHelper {
         return counter;
     }
 
-    public static void nonConstantPortSetup(List<String> sourceNames,
-                                            de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.
+    public static void starConnectorSetup(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.
                                                     ASTConnector node, EmbeddedMontiArcSymbolTableCreator
                                                     symbolTableCreator) {
 
+        String sourceCmpName = node.getSource().getQualifiedNameWithArray().isPresentCompName() ? node.getSource().getQualifiedNameWithArray().getCompName() + "." : "";
+        sourceCmpName += node.getSource().getQualifiedNameWithArray().getPortName();
+
+        String targetCmpName = node.getTargets().getQualifiedNameWithArrayAndStar(0).getQualifiedNameWithArray().isPresentCompName() ?
+                node.getTargets().getQualifiedNameWithArrayAndStar(0).getQualifiedNameWithArray().getCompName() + "." : "";
+        targetCmpName += node.getTargets().getQualifiedNameWithArrayAndStar(0).getQualifiedNameWithArray().getPortName();
+        EMAComponentSymbol sourceCmp, targetCmp;
+
+        if(sourceCmpName.equals("this")) {
+            sourceCmp = symbolTableCreator.componentStack.peek();
+            targetCmp = sourceCmp.getSubComponent(targetCmpName).get().getComponentType().getReferencedSymbol();
+            for(EMAPortSymbol from : sourceCmp.getIncomingPorts()) {
+                for (EMAPortSymbol to : targetCmp.getIncomingPorts()) {
+                    if (from.getName().equals(to.getName())) {
+                        EMAConnectorSymbol connector = new EMAConnectorSymbol(to.getName());
+                        connector.setSource(from.getName());
+                        connector.setTarget(targetCmpName + "." + to.getName());
+                        symbolTableCreator.addToScopeAndLinkWithNode(connector, node);
+                    }
+                }
+            }
+        } else if(targetCmpName.equals("this")) {
+            targetCmp = symbolTableCreator.componentStack.peek();
+            sourceCmp = targetCmp.getSubComponent(sourceCmpName).get().getComponentType().getReferencedSymbol();
+            for(EMAPortSymbol from : sourceCmp.getOutgoingPorts()) {
+                for (EMAPortSymbol to : targetCmp.getOutgoingPorts()) {
+                    if (from.getName().equals(to.getName())) {
+                        EMAConnectorSymbol connector = new EMAConnectorSymbol(to.getName());
+                        connector.setSource(sourceCmpName + "." + from.getName());
+                        connector.setTarget(to.getName());
+                        symbolTableCreator.addToScopeAndLinkWithNode(connector, node);
+                    }
+                }
+            }
+        } else {
+
+        }
+
+
+    }
+
+    public static void nonConstantPortSetup(de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.
+                                                    ASTConnector node, EmbeddedMontiArcSymbolTableCreator
+                                                    symbolTableCreator) {
+
+        List<String> sourceNames = getPortName(node.getSource(), symbolTableCreator);
         Log.info("" + sourceNames.size(), "SourcePorts");
         int counter = 0, targetnum = 0;
         for (ASTQualifiedNameWithArrayAndStar target : node.getTargets().getQualifiedNameWithArrayAndStarList()) {
@@ -335,6 +380,13 @@ public class EMAPortHelper {
             // TODO enable checking again if it is fixed
             /* if(counter!=targetnum) { Log.error("source port number "+ counter +" and target port num"+
              * targetnum+" don't match"); } */
+        }
+        if (node.getTargets().isHASH()) {
+            String sourceName = getPortName(node.getSource(), symbolTableCreator).get(0);
+            EMAConnectorSymbol sym = new EMAConnectorSymbol("#");
+            sym.setSource(sourceName);
+            sym.setTarget("#");
+            symbolTableCreator.addToScopeAndLinkWithNode(sym, node);
         }
     }
 

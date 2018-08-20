@@ -314,18 +314,15 @@ public class EmbeddedMontiArcSymbolTableCreator extends EmbeddedMontiArcSymbolTa
     @Override
     public void visit(ASTConnector node) {
         doConnectorResolution(node, this);
-        ASTQualifiedNameWithArrayAndStar portName;
-        List<String> sourceNames = null;
-        boolean isConstant = false;
+
         if (node.getSourceOpt().isPresent()) {
-            portName = node.getSource();
-            sourceNames = getPortName(portName, this);
+            if(node.getSource().isPresentDotStar()) {
+                starConnectorSetup(node, this);
+            } else {
+                nonConstantPortSetup(node, this);
+            }
         } else {
-            isConstant = true;
             constantPortSetup(node, this);
-        }
-        if (!isConstant) {
-            nonConstantPortSetup(sourceNames, node, this);
         }
 
     }
