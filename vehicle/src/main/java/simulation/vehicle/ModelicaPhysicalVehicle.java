@@ -85,12 +85,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setPosition(RealVector position){
-        if(physicalVehicleInitialized) {/*
+        if(physicalVehicleInitialized) {
             this.position = position.copy();
-            // Recalculate the mass point values that are based on the position
-            calcMassPointCenterDiff();
-            calcMassPointPosition();
-            calcMassPointVelocity();*/
         }
     }
 
@@ -100,9 +96,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealMatrix getRotation(){
-        //return this.rotation.copy();
-        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
-        return new BlockRealMatrix(rot.getMatrix());
+        return this.rotation.copy();
     }
 
     /**
@@ -111,12 +105,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setRotation(RealMatrix rotation){
-        if(physicalVehicleInitialized) {/*
+        if(physicalVehicleInitialized) {
             this.rotation = rotation.copy();
-            // Recalculate the mass point values that are based on the rotation
-            calcMassPointCenterDiff();
-            calcMassPointPosition();
-            calcMassPointVelocity();*/
         }
     }
 
@@ -193,8 +183,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getGeometryPositionOffset(){
-        //return this.rotation.operate(geometryPositionOffset).copy();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        return this.rotation.operate(geometryPositionOffset).copy();
     }
 
     /**
@@ -217,6 +206,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         if (error) {
             this.force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            //todo set FDU values to zero
         }
 
         Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at end: " + this);
@@ -229,8 +219,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
         // Build relative vectors between vertices
-        RealVector relVectorBackFront = new ArrayRealVector(new double[] {0.0, getLength(), 0.0});
-        RealVector relVectorLeftRight = new ArrayRealVector(new double[] {getWidth(), 0.0 , 0.0});
+        RealVector relVectorBackFront = new ArrayRealVector(new double[] {getLength(), 0.0, 0.0});
+        RealVector relVectorLeftRight = new ArrayRealVector(new double[] {0.0, -getWidth(), 0.0});
         RealVector relVectorBottomTop = new ArrayRealVector(new double[] {0.0, 0.0, getHeight()});
 
         // Rotate relative vectors
@@ -268,6 +258,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void computePhysics(long deltaTms){
         if (!this.getError()) {
+
             // Calculate input values
 
             long currentDeltaTms = 0;
@@ -381,6 +372,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         newRotation = new BlockRealMatrix(rot.getMatrix());
         setRotation(newRotation);
         */
+
     }
 
 
@@ -415,8 +407,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getFrontRightWheelGeometryPosition(){
-        //return wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].getPos();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        //Get values from FDUs
+        double L_1 = chassis.getSimulator().read(("L_1")).asDouble();
+        double TW_f = chassis.getSimulator().read("TW_f").asDouble();
+        double z = chassis.getSimulator().read("z").asDouble();
+        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        //Calculate localPosition and return global position
+        RealVector localPosition = new ArrayRealVector(new double[]{L_1, -TW_f / 2, -z + r_nom});
+        return position.add(rotation.operate(localPosition));
     }
 
     /**
@@ -425,8 +423,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getFrontLeftWheelGeometryPosition(){
-        //return wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()].getPos();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        //Get values from FDUs
+        double L_1 = chassis.getSimulator().read(("L_1")).asDouble();
+        double TW_f = chassis.getSimulator().read("TW_f").asDouble();
+        double z = chassis.getSimulator().read("z").asDouble();
+        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        //Calculate localPosition and return global position
+        RealVector localPosition = new ArrayRealVector(new double[]{L_1, TW_f / 2, -z + r_nom});
+        return position.add(rotation.operate(localPosition));
     }
 
     /**
@@ -435,8 +439,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getBackRightWheelGeometryPosition(){
-        //return wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()].getPos();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        //Get values from FDUs
+        double L_2 = chassis.getSimulator().read(("L_2")).asDouble();
+        double TW_r = chassis.getSimulator().read("TW_r").asDouble();
+        double z = chassis.getSimulator().read("z").asDouble();
+        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        //Calculate localPosition and return global position
+        RealVector localPosition = new ArrayRealVector(new double[]{L_2, -TW_r / 2, -z + r_nom});
+        return position.add(rotation.operate(localPosition));
     }
 
     /**
@@ -445,8 +455,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getBackLeftWheelGeometryPosition(){
-        //return wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()].getPos();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        //Get values from FDUs
+        double L_2 = chassis.getSimulator().read(("L_2")).asDouble();
+        double TW_r = chassis.getSimulator().read("TW_r").asDouble();
+        double z = chassis.getSimulator().read("z").asDouble();
+        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        //Calculate localPosition and return global position
+        RealVector localPosition = new ArrayRealVector(new double[]{L_2, TW_r / 2, -z + r_nom});
+        return position.add(rotation.operate(localPosition));
     }
 
     /**
@@ -514,8 +530,24 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             //Exchange values
             exchangeValues();
 
+            //Shift position and geometryPositionOffset
+            double z = chassis.getSimulator().read("z").asDouble();
+            geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() / 2 - z});
+            position = geometryPositionOffset.mapMultiply(-1.0);
+
             //Initialize remaining variables
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2);
+            rotation = new BlockRealMatrix(rot.getMatrix());
+
+            //Overwrite parameters in vehicle with the FDU values
+            simulationVehicle.setMass(chassis.getSimulator().read("m").asDouble());
+            simulationVehicle.setWheelDistLeftRightFrontSide(chassis.getSimulator().read("TW_f").asDouble());
+            simulationVehicle.setWheelDistLeftRightBackSide(chassis.getSimulator().read("TW_r").asDouble());
+            simulationVehicle.setWheelDistFrontBack(
+                    chassis.getSimulator().read("L_1").asDouble()+
+                    chassis.getSimulator().read("L_2").asDouble());
+            simulationVehicle.setWheelRadius(chassis.getSimulator().read("r_nom").asDouble());
 
             physicalVehicleInitialized = true;
             simulationVehicle.setVehicleInitialized(true);
@@ -572,13 +604,31 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * @param deltaTms Length of the calculation step in milliseconds
      */
     private void doCalculationStep(long deltaTms){
-        //Write inputs to FMUs
-
         //Exchange values
 
         //Do Computation step
 
         //Integrate over model output
+    }
+
+    /**
+     * Overwrite toString() to get a nice output for ModelicaPhysicalVehicles
+     * @return String that contains all information of ModelicaPhysicalVehicles
+     */
+    @Override
+    public String toString() {
+        return  "PhysicalVehicle " + getId() +
+                (physicalVehicleInitialized ? " , geometryPos: " + getGeometryPosition() : "") +
+                (physicalVehicleInitialized ? " , position: " + position : "") +
+                //(physicalVehicleInitialized ? " , velocity: " + velocity : "") +
+                //(physicalVehicleInitialized ? " , acceleration: " + acceleration : "") +
+                (physicalVehicleInitialized ? " , force: " + force : "") +
+                (physicalVehicleInitialized ? " , rotation: " + rotation : "") +
+                (physicalVehicleInitialized ? " , physicalObjectType: " + physicalObjectType : "") +
+                " , collision: " + collision +
+                " , error: " + error +
+                " , physicalVehicleInitialized: " + physicalVehicleInitialized +
+                " , simulationVehicle: " + simulationVehicle;
     }
 
     public RealVector getForce(){

@@ -507,8 +507,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Set actuator values for testing
@@ -561,8 +561,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Set actuator values for testing
@@ -617,8 +617,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Set actuator values for testing
@@ -676,8 +676,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
@@ -713,8 +713,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
 
         //Remember start position
         RealVector startPosition = physicalVehicle.getPosition();
@@ -740,8 +740,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
         VehicleActuator motor = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
         VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
@@ -786,8 +786,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
 
         // Add physicalVehicle to simulation
         sim.registerSimulationObject(physicalVehicle);
@@ -812,8 +812,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
@@ -862,8 +862,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
@@ -910,8 +910,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
 
         // Add physicalVehicle to simulation
         sim.registerSimulationObject(physicalVehicle);
@@ -936,8 +936,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
 
         // Add physicalVehicle to simulation
         sim.registerSimulationObject(physicalVehicle);
@@ -962,8 +962,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
@@ -1036,8 +1036,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
@@ -1078,8 +1078,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         if (physicalVehicle instanceof MassPointPhysicalVehicle) {
             MassPointPhysicalVehicle massPointPhysicalVehicle = (MassPointPhysicalVehicle) physicalVehicle;
             Vehicle vehicle = massPointPhysicalVehicle.getSimulationVehicle();
@@ -1114,8 +1114,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             MassPointPhysicalVehicle massPointPhysicalVehicle = (MassPointPhysicalVehicle) physicalVehicle;
             Vehicle vehicle = massPointPhysicalVehicle.getSimulationVehicle();
@@ -1151,8 +1151,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
@@ -1179,8 +1179,8 @@ public class SimulateVehicleTest {
         Simulator sim = Simulator.getSharedInstance();
 
         // Create a new vehicle
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation

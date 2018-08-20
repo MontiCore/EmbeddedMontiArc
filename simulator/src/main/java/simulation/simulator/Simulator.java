@@ -591,7 +591,6 @@ public class Simulator {
      */
     public static void resetSimulator() {
         IdGenerator.resetInstance();
-        PhysicalVehicleBuilder.resetInstance();
         sharedInstance = new Simulator(0);
     }
 

@@ -476,7 +476,7 @@ import simulation.environment.pedestrians.Pedestrian;
 import simulation.environment.object.Tree;
 import simulation.util.*;
 import simulation.vehicle.PhysicalVehicle;
-import simulation.vehicle.PhysicalVehicleBuilder;
+import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 
 import java.util.*;
 
@@ -671,12 +671,12 @@ public class SimulatorTest {
     @Test
     public void errorObjectsMemory() {
         Simulator sim = Simulator.getSharedInstance();
-        PhysicalVehicleBuilder physicalVehicleBuilder1 = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle a = physicalVehicleBuilder1.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        PhysicalVehicleBuilder physicalVehicleBuilder2 = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle b = physicalVehicleBuilder2.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
-        PhysicalVehicleBuilder physicalVehicleBuilder3 = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle c = physicalVehicleBuilder3.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder1 = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle a = physicalVehicleBuilder1.buildPhysicalVehicle();
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder2 = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle b = physicalVehicleBuilder2.buildPhysicalVehicle();
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder3 = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle c = physicalVehicleBuilder3.buildPhysicalVehicle();
 
         sim.registerAndPutObject(a, 966.6905532033019, 498.1714592002669, 0.8 * Math.PI);
         sim.registerAndPutObject(b, 982.3084859322336, 425.53842059972903, 0.3 * Math.PI);
@@ -1208,8 +1208,8 @@ public class SimulatorTest {
         Simulator sim = Simulator.getSharedInstance();
 
         //Create car
-        PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
 
         //Register and put object
         sim.registerAndPutObject(physicalVehicle, 10, 20, 0);

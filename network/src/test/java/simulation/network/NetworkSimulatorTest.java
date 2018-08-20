@@ -546,7 +546,7 @@ import org.junit.Test;
 import simulation.network.settings.SettingsSimple;
 import simulation.util.Log;
 import simulation.vehicle.PhysicalVehicle;
-import simulation.vehicle.PhysicalVehicleBuilder;
+import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -573,7 +573,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
@@ -605,7 +605,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
@@ -638,7 +638,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 
@@ -680,7 +680,7 @@ public class NetworkSimulatorTest {
         NetworkStatistics.resetInstance();
         NetworkStatistics statistics = NetworkStatistics.getInstance();
 
-        PhysicalVehicle vehicle1 = PhysicalVehicleBuilder.getInstance().buildPhysicalVehicle(Optional.empty(), Optional.empty(), Optional.empty());
+        PhysicalVehicle vehicle1 = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         vehicle1.setPosition(new ArrayRealVector(new double[]{1000.0, 1000.0, 0.50}));
         NetworkNode networkNode = new NetworkNode(vehicle1);
 

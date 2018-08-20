@@ -627,7 +627,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         // Set collision flag
         collision = false;
         // Create default simulation vehicle
-        this.simulationVehicle = new Vehicle();
+        this.simulationVehicle = new Vehicle(this);
         // When created, the physical vehicle is not initialized
         physicalVehicleInitialized = false;
     }

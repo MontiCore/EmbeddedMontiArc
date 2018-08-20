@@ -1397,8 +1397,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     */
 
     /**
-     * Overwrite toString() to get a nice output for physicalVehicles
-     * @return String that contains all information of physicalVehicles
+     * Overwrite toString() to get a nice output for MassPointPhysicalVehicles
+     * @return String that contains all information of MassPointPhysicalVehicles
      */
     @Override
     public String toString() {

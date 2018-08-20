@@ -647,7 +647,8 @@ public class Vehicle {
     public static final double VEHICLE_DEFAULT_WIDTH = 2.02712567705637776;
 
     /** Height of the vehicle in meters */
-    public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
+    //public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
+    public static final double VEHICLE_DEFAULT_HEIGHT = 2;
 
     /** Radius of the wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
@@ -693,6 +694,9 @@ public class Vehicle {
     /** Navigation for vehicle */
     private Optional<FunctionBlockInterface> navigation;
 
+    /** PhysicalVehicle that this vehicle is part of */
+    private PhysicalVehicle physicalVehicle;
+
 
     /** Properties */
     /** M of formula */
@@ -708,8 +712,11 @@ public class Vehicle {
     /** Radius of vehicle wheels */
     private double wheelRadius;
 
-    /** Track of the vehicle wheels */
-    private double wheelDistLeftRight;
+    /** Track of the vehicle wheels at the front axel */
+    private double wheelDistLeftRightFrontSide;
+
+    /** Track of the vehicle wheels at the back axel */
+    private double wheelDistLeftRightBackSide;
 
     /** Wheelbase of the vehicle wheels */
     private double wheelDistFrontBack;
@@ -741,7 +748,7 @@ public class Vehicle {
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
      */
-    protected Vehicle() {
+    protected Vehicle(PhysicalVehicle physicalVehicle) {
         // Create the motor
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
         // Create the brakes
@@ -761,6 +768,8 @@ public class Vehicle {
         this.controller = Optional.empty();
         // Create the navigation unit
         this.navigation = Optional.empty();
+        // Set physicalVehicle that this vehicle is part of
+        this.physicalVehicle = physicalVehicle;
         // Set width
         this.width = VEHICLE_DEFAULT_WIDTH;
         // Set length
@@ -774,7 +783,8 @@ public class Vehicle {
         // Set wheel radius
         this.wheelRadius = VEHICLE_DEFAULT_WHEEL_RADIUS;
         // Set track
-        this.wheelDistLeftRight = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        this.wheelDistLeftRightFrontSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        this.wheelDistLeftRightBackSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
         // Set wheel base
         this.wheelDistFrontBack = VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK;
         // Initialize last navigation target with empty optional
@@ -1008,6 +1018,27 @@ public class Vehicle {
     }
 
     /**
+     * Function that returns the mass of the vehicle
+     *
+     * @return Mass of the vehicle
+     */
+    public double getMass() {
+        return massFront + massBack;
+    }
+
+    /**
+     * Function that sets the mass of the vehicle
+     *
+     * @param mass New mass of the vehicle
+     */
+    public void setMass(double mass){
+        if(!vehicleInitialized) {
+            this.massFront = mass / 2;
+            this.massBack= mass / 2;
+        }
+    }
+
+    /**
      * Function that returns the front mass of the vehicle
      *
      * @return Front mass of the vehicle
@@ -1068,12 +1099,12 @@ public class Vehicle {
     }
 
     /**
-     * Function that returns the distance between left and right wheels of the vehicle
+     * Function that return the distance between left and right wheels of the vehicle
      *
      * @return Distance between left and right wheels of the vehicle
      */
-    double getWheelDistLeftRight() {
-        return wheelDistLeftRight;
+    double getWheelDistLeftRight(){
+        return (wheelDistLeftRightFrontSide + wheelDistLeftRightBackSide)/2;
     }
 
     /**
@@ -1083,9 +1114,51 @@ public class Vehicle {
      */
     public void setWheelDistLeftRight(double wheelDistLeftRight){
         if(!vehicleInitialized) {
-            this.wheelDistLeftRight = wheelDistLeftRight;
+            this.wheelDistLeftRightFrontSide = wheelDistLeftRight;
+            this.wheelDistLeftRightBackSide = wheelDistLeftRight;
         }
     }
+
+    /**
+     * Function that returns the distance between left and right wheels of the front axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the front axel of the vehicle
+     */
+    double getWheelDistLeftRightFrontSide() {
+        return wheelDistLeftRightFrontSide;
+    }
+
+    /**
+     * Function that sets the distance between left and right wheels of the front axel of the vehicle
+     *
+     * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
+     */
+    public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
+        if(!vehicleInitialized) {
+            this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
+        }
+    }
+
+    /**
+     * Function that returns the distance between left and right wheels of the back axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the back axel of the vehicle
+     */
+    double getWheelDistLeftRightBackSide() {
+        return wheelDistLeftRightBackSide;
+    }
+
+    /**
+     * Function that sets the distance between left and right wheels of the back axel of the vehicle
+     *
+     * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
+     */
+    public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
+        if(!vehicleInitialized) {
+            this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
+        }
+    }
+
 
     /**
      * Function that returns the distance between front and back wheels of the vehicle
@@ -1596,7 +1669,7 @@ public class Vehicle {
                 " , approxMaxTotalVelocity: " + approxMaxTotalVelocity +
                 " , maxTemporaryAllowedVelocity: " + maxTemporaryAllowedVelocity +
                 " , wheelRadius: " + wheelRadius +
-                " , wheelDistLeftRight: " + wheelDistLeftRight +
+                " , wheelDistLeftRightFrontSide: " + wheelDistLeftRightFrontSide +
                 " , wheelDistFrontBack: " + wheelDistFrontBack +
                 " , massFront: " + massFront +
                 " , massBack " + massBack +

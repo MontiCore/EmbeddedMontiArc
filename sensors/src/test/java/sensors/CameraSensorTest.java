@@ -534,7 +534,7 @@ import org.junit.Test;
 import ij.ImagePlus;
 import sensors.CameraSensor;
 import simulation.vehicle.PhysicalVehicle;
-import simulation.vehicle.PhysicalVehicleBuilder;
+import simulation.vehicle.MassPointPhysicalVehicleBuilder;
 
 public class CameraSensorTest {
     private Image image;
@@ -545,9 +545,8 @@ public class CameraSensorTest {
             InputStream in = getClass().getResourceAsStream("/testImage.jpg");
             BufferedImage bufferedImage = ImageIO.read(in);
 
-            PhysicalVehicleBuilder physicalVehicleBuilder = PhysicalVehicleBuilder.getInstance();
-            PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle(Optional.empty(),
-                    Optional.empty(), Optional.empty());
+            MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+            PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
             Optional<Image> optional = Optional.of(bufferedImage);
             physicalVehicle.getSimulationVehicle().setCameraImage(optional);
 
