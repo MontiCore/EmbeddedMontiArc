@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.math.math._symboltable.expression.*;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.cnnarch.helper.Calculator;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 import de.monticore.symboltable.Scope;

@@ -20,9 +20,9 @@
  */
 package de.monticore.lang.monticar.cnnarch;
 
-import de.monticore.lang.math.math._symboltable.expression.MathArithmeticExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathNumberExpressionSymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathPreOperatorExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathArithmeticExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathNumberExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathPreOperatorExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.Calculator;
 import de.monticore.lang.numberunit.Rationals;

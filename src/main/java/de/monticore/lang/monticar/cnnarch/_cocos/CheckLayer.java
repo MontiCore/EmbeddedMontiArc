@@ -38,7 +38,7 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
     @Override
     public void check(ASTLayer node) {
         Set<String> nameSet = new HashSet<>();
-        for (ASTArchArgument argument : node.getArguments()){
+        for (ASTArchArgument argument : node.getArgumentsList()){
             String name = argument.getName();
             if (nameSet.contains(name)){
                 Log.error("0" + ErrorCodes.DUPLICATED_ARG + " Duplicated name: " + name +
@@ -50,9 +50,9 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
             }
         }
 
-        LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbol().get()).getDeclaration();
+        LayerDeclarationSymbol layerDeclaration = ((LayerSymbol) node.getSymbolOpt().get()).getDeclaration();
         if (layerDeclaration == null){
-            ArchitectureSymbol architecture = node.getSymbol().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
+            ArchitectureSymbol architecture = node.getSymbolOpt().get().getEnclosingScope().<ArchitectureSymbol>resolve("", ArchitectureSymbol.KIND).get();
             Log.error("0" + ErrorCodes.UNKNOWN_LAYER + " Unknown layer. " +
                             "Layer with name '" + node.getName() + "' does not exist. " +
                             "Existing layers: " + Joiners.COMMA.join(architecture.getLayerDeclarations()) + "."
@@ -65,7 +65,7 @@ public class CheckLayer implements CNNArchASTLayerCoCo{
                     requiredArguments.add(param.getName());
                 }
             }
-            for (ASTArchArgument argument : node.getArguments()){
+            for (ASTArchArgument argument : node.getArgumentsList()){
                 requiredArguments.remove(argument.getName());
             }
 

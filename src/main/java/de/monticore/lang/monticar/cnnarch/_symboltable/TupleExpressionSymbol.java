@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch.helper.Utils;
 
 import java.util.LinkedList;

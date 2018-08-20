@@ -23,25 +23,26 @@ package de.monticore.lang.monticar.cnnarch._ast;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ASTArchSpecialArgument extends ASTArchSpecialArgumentTOP {
 
     public ASTArchSpecialArgument() {
     }
 
-    public ASTArchSpecialArgument(ASTArchExpression rhs, List<String> nEWLINETOKENs, String serial, String parallel, String conditional) {
+    public ASTArchSpecialArgument(ASTArchExpression rhs, List<String> nEWLINETOKENs, Optional<String> serial, Optional<String> parallel, Optional<String> conditional) {
         super(rhs, nEWLINETOKENs, serial, parallel, conditional);
     }
 
     @Override
     public String getName() {
-        if (getParallel().isPresent()){
+        if (isPresentParallel()){
             return AllPredefinedVariables.PARALLEL_ARG_NAME;
         }
-        else if (getSerial().isPresent()) {
+        else if (isPresentSerial()) {
             return AllPredefinedVariables.SERIAL_ARG_NAME;
         }
-        else if (getConditional().isPresent()){
+        else if (isPresentConditional()){
             return AllPredefinedVariables.CONDITIONAL_ARG_NAME;
         }
         else {

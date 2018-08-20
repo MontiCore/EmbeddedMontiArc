@@ -39,7 +39,7 @@ public class CheckLayerRecursion implements CNNArchASTLayerDeclarationCoCo {
     @Override
     public void check(ASTLayerDeclaration node) {
         done = false;
-        LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) node.getSymbol().get();
+        LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) node.getSymbolOpt().get();
         checkForRecursion(layerDeclaration, layerDeclaration.getBody());
     }
 

@@ -21,15 +21,16 @@
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
 
-import de.monticore.lang.math.math._ast.ASTMathExpression;
-import de.monticore.lang.math.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.expressionsbasis._ast.ASTExpression;
+import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
+import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.monticar.cnnarch._ast.*;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchInheritanceVisitor;
 import de.monticore.lang.monticar.cnnarch._visitor.CNNArchVisitor;
-import de.monticore.lang.monticar.cnnarch._visitor.CommonCNNArchDelegatorVisitor;
+import de.monticore.lang.monticar.cnnarch._visitor.CNNArchDelegatorVisitor;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
+import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.symboltable.*;
 import de.se_rwth.commons.logging.Log;
 
@@ -58,9 +59,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         this.mathSTC = new ModifiedMathSymbolTableCreator(resolvingConfig, scopeStack);
-        CommonCNNArchDelegatorVisitor visitor = new CommonCNNArchDelegatorVisitor();
-        visitor.set_de_monticore_lang_monticar_cnnarch__visitor_CNNArchVisitor(this);
-        visitor.set_de_monticore_lang_math_math__visitor_MathVisitor(mathSTC);
+        CNNArchDelegatorVisitor visitor = new CNNArchDelegatorVisitor();
+        visitor.setCNNArchVisitor(this);
+        visitor.setMathVisitor(mathSTC);
 
         setRealThis(visitor);
     }
@@ -116,18 +117,18 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTCNNArchCompilationUnit ast) {
-        CNNArchCompilationUnitSymbol compilationUnitSymbol = (CNNArchCompilationUnitSymbol) ast.getSymbol().get();
-        compilationUnitSymbol.setArchitecture((ArchitectureSymbol) ast.getArchitecture().getSymbol().get());
+        CNNArchCompilationUnitSymbol compilationUnitSymbol = (CNNArchCompilationUnitSymbol) ast.getSymbolOpt().get();
+        compilationUnitSymbol.setArchitecture((ArchitectureSymbol) ast.getArchitecture().getSymbolOpt().get());
 
-        List<VariableSymbol> parameters = new ArrayList<>(ast.getArchitectureParameters().size());
-        for (ASTArchitectureParameter astParameter : ast.getArchitectureParameters()){
-            parameters.add((VariableSymbol) astParameter.getSymbol().get());
+        List<VariableSymbol> parameters = new ArrayList<>(ast.getArchitectureParameterList().size());
+        for (ASTArchitectureParameter astParameter : ast.getArchitectureParameterList()){
+            parameters.add((VariableSymbol) astParameter.getSymbolOpt().get());
         }
         compilationUnitSymbol.setParameters(parameters);
 
         List<IODeclarationSymbol> ioDeclarations = new ArrayList<>();
-        for (ASTIODeclaration astIODeclaration : ast.getIoDeclarations()){
-            ioDeclarations.add((IODeclarationSymbol) astIODeclaration.getSymbol().get());
+        for (ASTIODeclaration astIODeclaration : ast.getIoDeclarationsList()){
+            ioDeclarations.add((IODeclarationSymbol) astIODeclaration.getSymbolOpt().get());
         }
         compilationUnitSymbol.setIoDeclarations(ioDeclarations);
 
@@ -144,8 +145,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     }
 
     public void endVisit(final ASTArchitecture node) {
-        //ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbol().get();
-        architecture.setBody((ArchitectureElementSymbol) node.getBody().getSymbol().get());
+        //ArchitectureSymbol architecture = (ArchitectureSymbol) node.getSymbolOpt().get();
+        architecture.setBody((ArchitectureElementSymbol) node.getBody().getSymbolOpt().get());
 
         removeCurrentScope();
     }
@@ -165,8 +166,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTArchitectureParameter node) {
         VariableSymbol variable = new VariableSymbol(node.getName());
         variable.setType(VariableType.ARCHITECTURE_PARAMETER);
-        if (node.getDefault().isPresent()){
-            variable.setDefaultExpression((ArchSimpleExpressionSymbol) node.getDefault().get().getSymbol().get());
+        if (node.isPresentDefault()){
+            variable.setDefaultExpression((ArchSimpleExpressionSymbol) node.getDefault().getSymbolOpt().get());
         }
 
         addToScopeAndLinkWithNode(variable, node);
@@ -180,12 +181,12 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTIODeclaration ast) {
-        IODeclarationSymbol iODeclaration = (IODeclarationSymbol) ast.getSymbol().get();
-        if (ast.getArrayDeclaration().isPresent()){
-            iODeclaration.setArrayLength(ast.getArrayDeclaration().get().getIntLiteral().getNumber().get().getDividend().intValue());
+        IODeclarationSymbol iODeclaration = (IODeclarationSymbol) ast.getSymbolOpt().get();
+        if (ast.isPresentArrayDeclaration()){
+            iODeclaration.setArrayLength(ast.getArrayDeclaration().getIntLiteral().getNumber().get().intValue());
         }
-        iODeclaration.setInput(ast.getIn().isPresent());
-        iODeclaration.setType((ArchTypeSymbol) ast.getType().getSymbol().get());
+        iODeclaration.setInput(ast.isPresentIn());
+        iODeclaration.setType((ArchTypeSymbol) ast.getType().getSymbolOpt().get());
     }
 
     @Override
@@ -196,8 +197,8 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTArchType node) {
-        ArchTypeSymbol sym = (ArchTypeSymbol) node.getSymbol().get();
-        List<ASTArchSimpleExpression> astDimensions = node.getShape().getDimensions();
+        ArchTypeSymbol sym = (ArchTypeSymbol) node.getSymbolOpt().get();
+        List<ASTArchSimpleExpression> astDimensions = node.getShape().getDimensionsList();
 
         if (astDimensions.size() >= 1){
             sym.setChannelIndex(0);
@@ -210,7 +211,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
         }
         List<ArchSimpleExpressionSymbol> dimensionList = new ArrayList<>(3);
         for (ASTArchSimpleExpression astExp : astDimensions){
-            dimensionList.add((ArchSimpleExpressionSymbol) astExp.getSymbol().get());
+            dimensionList.add((ArchSimpleExpressionSymbol) astExp.getSymbolOpt().get());
         }
         sym.setDimensionSymbols(dimensionList);
         sym.setDomain(node.getElementType());
@@ -224,12 +225,12 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTLayerDeclaration ast) {
-        LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbol().get();
-        layerDeclaration.setBody((CompositeElementSymbol) ast.getBody().getSymbol().get());
+        LayerDeclarationSymbol layerDeclaration = (LayerDeclarationSymbol) ast.getSymbolOpt().get();
+        layerDeclaration.setBody((CompositeElementSymbol) ast.getBody().getSymbolOpt().get());
 
         List<VariableSymbol> parameters = new ArrayList<>(4);
-        for (ASTLayerParameter astParam : ast.getParameters()){
-            VariableSymbol parameter = (VariableSymbol) astParam.getSymbol().get();
+        for (ASTLayerParameter astParam : ast.getParametersList()){
+            VariableSymbol parameter = (VariableSymbol) astParam.getSymbolOpt().get();
             parameters.add(parameter);
         }
         layerDeclaration.setParameters(parameters);
@@ -246,9 +247,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTLayerParameter ast) {
-        VariableSymbol variable = (VariableSymbol) ast.getSymbol().get();
-        if (ast.getDefault().isPresent()){
-            variable.setDefaultExpression((ArchSimpleExpressionSymbol) ast.getDefault().get().getSymbol().get());
+        VariableSymbol variable = (VariableSymbol) ast.getSymbolOpt().get();
+        if (ast.isPresentDefault()){
+            variable.setDefaultExpression((ArchSimpleExpressionSymbol) ast.getDefault().getSymbolOpt().get());
         }
     }
 
@@ -256,29 +257,25 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTArchSimpleExpression ast) {
         ArchSimpleExpressionSymbol sym = new ArchSimpleExpressionSymbol();
         MathExpressionSymbol mathExp = null;
-        if (ast.getArithmeticExpression().isPresent()) {
-            mathExp = (MathExpressionSymbol) ast.getArithmeticExpression().get().getSymbol().get();
-        }
-        else if (ast.getBooleanExpression().isPresent()) {
-            mathExp = (MathExpressionSymbol) ast.getBooleanExpression().get().getSymbol().get();
-        }
-        else if (ast.getTupleExpression().isPresent()){
-            mathExp = (MathExpressionSymbol) ast.getTupleExpression().get().getSymbol().get();
-        }
-        else{
-            sym.setValue(ast.getString().get().getValue());
-        }
+        if (ast.isPresentArithmeticExpression())
+            mathExp = (MathExpressionSymbol) ast.getArithmeticExpression().getSymbolOpt().get();
+        else if (ast.isPresentBooleanExpression())
+            mathExp = (MathExpressionSymbol) ast.getBooleanExpression().getSymbolOpt().get();
+        else if (ast.isPresentTupleExpression())
+            mathExp = (MathExpressionSymbol) ast.getTupleExpression().getSymbolOpt().get();
+        else
+            sym.setValue(ast.getString().getValue());
         sym.setMathExpression(mathExp);
         addToScopeAndLinkWithNode(sym, ast);
     }
 
     @Override
     public void endVisit(ASTArchExpression node) {
-        if (node.getExpression().isPresent()){
-            addToScopeAndLinkWithNode(node.getExpression().get().getSymbol().get(), node);
+        if (node.isPresentExpression()){
+            addToScopeAndLinkWithNode(node.getExpression().getSymbolOpt().get(), node);
         }
         else {
-            addToScopeAndLinkWithNode(node.getSequence().get().getSymbol().get(), node);
+            addToScopeAndLinkWithNode(node.getSequence().getSymbolOpt().get(), node);
         }
     }
 
@@ -290,10 +287,10 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTArchValueRange node) {
-        ArchRangeExpressionSymbol sym = (ArchRangeExpressionSymbol) node.getSymbol().get();
-        sym.setParallel(node.getParallel().isPresent());
-        sym.setStartSymbol((ArchSimpleExpressionSymbol) node.getStart().getSymbol().get());
-        sym.setEndSymbol((ArchSimpleExpressionSymbol) node.getEnd().getSymbol().get());
+        ArchRangeExpressionSymbol sym = (ArchRangeExpressionSymbol) node.getSymbolOpt().get();
+        sym.setParallel(node.isPresentParallel());
+        sym.setStartSymbol((ArchSimpleExpressionSymbol) node.getStart().getSymbolOpt().get());
+        sym.setEndSymbol((ArchSimpleExpressionSymbol) node.getEnd().getSymbolOpt().get());
     }
 
     @Override
@@ -304,13 +301,13 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTArchParallelSequence node) {
-        ArchSequenceExpressionSymbol sym = (ArchSequenceExpressionSymbol) node.getSymbol().get();
+        ArchSequenceExpressionSymbol sym = (ArchSequenceExpressionSymbol) node.getSymbolOpt().get();
 
         List<List<ArchSimpleExpressionSymbol>> elements = new ArrayList<>();
-        for (ASTArchSerialSequence serialSequenceAST : node.getParallelValues()) {
+        for (ASTArchSerialSequence serialSequenceAST : node.getParallelValuesList()) {
             List<ArchSimpleExpressionSymbol> serialElements = new ArrayList<>();
-            for (ASTArchSimpleExpression astExpression : serialSequenceAST.getSerialValues()) {
-                serialElements.add((ArchSimpleExpressionSymbol) astExpression.getSymbol().get());
+            for (ASTArchSimpleExpression astExpression : serialSequenceAST.getSerialValuesList()) {
+                serialElements.add((ArchSimpleExpressionSymbol) astExpression.getSymbolOpt().get());
             }
             elements.add(serialElements);
         }
@@ -326,11 +323,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTParallelBlock node) {
-        CompositeElementSymbol compositeElement = (CompositeElementSymbol) node.getSymbol().get();
+        CompositeElementSymbol compositeElement = (CompositeElementSymbol) node.getSymbolOpt().get();
 
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTArchBody astBody : node.getGroups()){
-            elements.add((CompositeElementSymbol) astBody.getSymbol().get());
+        for (ASTArchBody astBody : node.getGroupsList()){
+            elements.add((CompositeElementSymbol) astBody.getSymbolOpt().get());
         }
         compositeElement.setElements(elements);
 
@@ -346,11 +343,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTArchBody ast) {
-        CompositeElementSymbol compositeElement = (CompositeElementSymbol) ast.getSymbol().get();
+        CompositeElementSymbol compositeElement = (CompositeElementSymbol) ast.getSymbolOpt().get();
 
         List<ArchitectureElementSymbol> elements = new ArrayList<>();
-        for (ASTArchitectureElement astElement : ast.getElements()){
-            elements.add((ArchitectureElementSymbol) astElement.getSymbol().get());
+        for (ASTArchitectureElement astElement : ast.getElementsList()){
+            elements.add((ArchitectureElementSymbol) astElement.getSymbolOpt().get());
         }
         compositeElement.setElements(elements);
 
@@ -365,11 +362,11 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTLayer ast) {
-        LayerSymbol layer = (LayerSymbol) ast.getSymbol().get();
+        LayerSymbol layer = (LayerSymbol) ast.getSymbolOpt().get();
 
         List<ArgumentSymbol> arguments = new ArrayList<>(6);
-        for (ASTArchArgument astArgument : ast.getArguments()){
-            Optional<ArgumentSymbol> optArgument = astArgument.getSymbol().map(e -> (ArgumentSymbol)e);
+        for (ASTArchArgument astArgument : ast.getArgumentsList()){
+            Optional<ArgumentSymbol> optArgument = astArgument.getSymbolOpt().map(e -> (ArgumentSymbol)e);
             optArgument.ifPresent(arguments::add);
         }
         layer.setArguments(arguments);
@@ -380,7 +377,7 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     @Override
     public void endVisit(ASTArchArgument node) {
         ArchExpressionSymbol value;
-        value = (ArchExpressionSymbol) node.getRhs().getSymbol().get();
+        value = (ArchExpressionSymbol) node.getRhs().getSymbolOpt().get();
 
         ArgumentSymbol argument = new ArgumentSymbol(node.getName());
         argument.setRhs(value);
@@ -394,9 +391,9 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTIOElement node) {
-        IOSymbol sym = (IOSymbol) node.getSymbol().get();
-        if (node.getIndex().isPresent()){
-            sym.setArrayAccess((ArchSimpleExpressionSymbol) node.getIndex().get().getSymbol().get());
+        IOSymbol sym = (IOSymbol) node.getSymbolOpt().get();
+        if (node.isPresentIndex()){
+            sym.setArrayAccess((ArchSimpleExpressionSymbol) node.getIndex().getSymbolOpt().get());
         }
         removeCurrentScope();
     }
@@ -409,10 +406,10 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
 
     @Override
     public void endVisit(ASTArrayAccessLayer node) {
-        LayerSymbol layer = (LayerSymbol) node.getSymbol().get();
+        LayerSymbol layer = (LayerSymbol) node.getSymbolOpt().get();
         ArgumentSymbol indexArgument = new ArgumentSymbol.Builder()
                 .parameter(layer.getDeclaration().getParameter(AllPredefinedLayers.INDEX_NAME).get())
-                .value((ArchSimpleExpressionSymbol) node.getIndex().getSymbol().get())
+                .value((ArchSimpleExpressionSymbol) node.getIndex().getSymbolOpt().get())
                 .build();
         indexArgument.setAstNode(node.getIndex());
         addToScope(indexArgument);
@@ -425,11 +422,84 @@ public class CNNArchSymbolTableCreator extends de.monticore.symboltable.CommonSy
     public void endVisit(ASTTupleExpression node) {
         TupleExpressionSymbol symbol = new TupleExpressionSymbol();
 
-        for (ASTMathExpression expression : node.getExpressions()){
-            symbol.add((MathExpressionSymbol)expression.getSymbol().get());
+        for (ASTArchArithmeticExpression expression : node.getExpressionsList()){
+            if (expression.getSymbolOpt().isPresent()) {
+                symbol.add((MathExpressionSymbol) expression.getSymbolOpt().get());
+            }
         }
 
         addToScopeAndLinkWithNode(symbol, node);
     }
 
+    @Override
+    public void endVisit(ASTArchSimpleArithmeticExpression node) {
+        MathExpressionSymbol sym = null;
+        if (node.isPresentNumberExpression())
+            sym = (MathExpressionSymbol) node.getNumberExpression().getSymbolOpt().get();
+        else if (node.isPresentNameExpression())
+            sym = (MathExpressionSymbol) node.getNameExpression().getSymbolOpt().get();
+        else if (node.isPresentMathDottedNameExpression())
+            sym = (MathExpressionSymbol) node.getMathDottedNameExpression().getSymbolOpt().get();
+        else if (node.isPresentMathAssignmentDeclarationStatement())
+            sym = (MathExpressionSymbol) node.getMathAssignmentDeclarationStatement().getSymbolOpt().get();
+        else if (node.isPresentMathAssignmentStatement())
+            sym = (MathExpressionSymbol) node.getMathAssignmentStatement().getSymbolOpt().get();
+
+        addToScopeAndLinkWithNode(sym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchComplexArithmeticExpression node) {
+        MathArithmeticExpressionSymbol arithmSym = new MathArithmeticExpressionSymbol();
+        if (node.getLeftExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setLeftExpression((MathExpressionSymbol) node.getLeftExpression().getSymbolOpt().get());
+        }
+        if (node.getRightExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setRightExpression((MathExpressionSymbol) node.getRightExpression().getSymbolOpt().get());
+        }
+        arithmSym.setOperator(node.getOperator());
+
+        addToScopeAndLinkWithNode(arithmSym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchSimpleBooleanExpression node) {
+        MathExpressionSymbol sym = null;
+        if (node.isPresentBooleanExpression())
+            sym = new MathBooleanExpressionSymbol(node.getBooleanExpression().getBooleanLiteral().getValue());
+        else if (node.isPresentBooleanNotExpression())
+            sym = (MathExpressionSymbol) node.getBooleanNotExpression().getSymbolOpt().get();
+        else if (node.isPresentLogicalNotExpression())
+            sym = (MathExpressionSymbol) node.getLogicalNotExpression().getSymbolOpt().get();
+
+        addToScopeAndLinkWithNode(sym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchComplexBooleanExpression node) {
+        MathArithmeticExpressionSymbol arithmSym = new MathArithmeticExpressionSymbol();
+        if (node.getLeftExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setLeftExpression((MathExpressionSymbol) node.getLeftExpression().getSymbolOpt().get());
+        }
+        if (node.getRightExpression().getSymbolOpt().isPresent()) {
+            arithmSym.setRightExpression((MathExpressionSymbol) node.getRightExpression().getSymbolOpt().get());
+        }
+        arithmSym.setOperator(node.getOperator());
+
+        addToScopeAndLinkWithNode(arithmSym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchBracketExpression node) {
+        MathExpressionSymbol sym = (MathExpressionSymbol) node.getArchMathExpression().getSymbolOpt().get();
+        addToScopeAndLinkWithNode(sym, node);
+    }
+
+    @Override
+    public void endVisit(ASTArchPreMinusExpression node) {
+        MathPreOperatorExpressionSymbol symbol = new MathPreOperatorExpressionSymbol();
+        symbol.setMathExpressionSymbol((MathExpressionSymbol) node.getArchMathExpression().getSymbolOpt().get());
+        symbol.setOperator("-");
+        addToScopeAndLinkWithNode(symbol, node);
+    }
 }

@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar;
 
-grammar CNNArch extends de.monticore.lang.math.Math {
+grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, de.monticore.lang.monticar.Common2 {
 
     token NEWLINETOKEN =
                  ('\r' '\n' |
@@ -113,12 +113,51 @@ grammar CNNArch extends de.monticore.lang.math.Math {
     /**
         Expressions for variable values.
     */
-    ArchSimpleExpression = (arithmeticExpression:MathArithmeticExpression
-                         | booleanExpression:MathBooleanExpression
+    ArchSimpleExpression = (arithmeticExpression:ArchArithmeticExpression
+                         | booleanExpression:ArchBooleanExpression
                          | tupleExpression:TupleExpression
                          | string:StringLiteral);
 
-    TupleExpression = "(" expressions:MathArithmeticExpression "," expressions:(MathArithmeticExpression || ",")* ")";
+    interface ArchMathExpression extends Expression;
+    interface ArchArithmeticExpression extends ArchMathExpression;
+    interface ArchBooleanExpression extends ArchMathExpression;
+
+    ArchSimpleArithmeticExpression implements ArchArithmeticExpression = (NumberExpression
+                                             | NameExpression
+                                             | MathDottedNameExpression
+                                             | MathAssignmentDeclarationStatement
+                                             | MathAssignmentStatement);
+                                             //| MinusPrefixExpression);
+
+    ArchComplexArithmeticExpression implements ArchArithmeticExpression = leftExpression:ArchMathExpression
+                                               NEWLINETOKEN*
+                                               (   operator:"*"
+                                               |   operator:"/"
+                                               |   operator:"%"
+                                               |   operator:"^"
+                                               |   operator:"+"
+                                               |   operator:"-"
+                                               )
+                                               NEWLINETOKEN*
+                                               rightExpression:ArchMathExpression;
+
+    TupleExpression = "(" expressions:ArchArithmeticExpression "," expressions:(ArchArithmeticExpression || ",")* ")";
+
+    ArchSimpleBooleanExpression implements ArchBooleanExpression = (BooleanExpression
+                         | BooleanNotExpression
+                         | LogicalNotExpression);
+
+    ArchComplexBooleanExpression implements ArchBooleanExpression = leftExpression:ArchMathExpression
+                                                                         (   operator:"=="
+                                                                         |   operator:"!="
+                                                                         |   operator:"&&"
+                                                                         |   operator:"||"
+                                                                         )
+                                                                         rightExpression:ArchMathExpression;
+
+    ArchBracketExpression implements ArchMathExpression, ArchBooleanExpression, ArchArithmeticExpression = "(" ArchMathExpression ")";
+
+    ArchPreMinusExpression implements ArchMathExpression, ArchBooleanExpression, ArchArithmeticExpression = "-" ArchMathExpression ;
 
 
     /* =================================*/

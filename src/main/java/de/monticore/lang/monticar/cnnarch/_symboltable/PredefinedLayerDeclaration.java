@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
+import com.google.gson.internal.Streams;
 import de.monticore.lang.monticar.cnnarch.helper.ErrorCodes;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedLayers;
 import de.monticore.lang.monticar.ranges._ast.ASTRange;
@@ -29,6 +30,7 @@ import org.jscience.mathematics.number.Rational;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
@@ -193,18 +195,20 @@ abstract public class PredefinedLayerDeclaration extends LayerDeclarationSymbol 
         String start = null;
         String end = null;
         for (ArchTypeSymbol inputType : inputTypes){
-            ASTRange range = inputType.getDomain().getRange().get();
-            if (range.getStartInf().isPresent()){
-                start = "-oo";
-            }
-            else {
-                startValues.add(range.getStartValue());
-            }
-            if (range.getEndInf().isPresent()){
-                end = "oo";
-            }
-            else {
-                endValues.add(range.getEndValue());
+            Optional<ASTRange> range = inputType.getDomain().getRangeOpt();
+            if (range.isPresent()) {
+                if (range.get().hasNoLowerLimit()){
+                    start = "-oo";
+                }
+                else {
+                    startValues.add(range.get().getStartValue());
+                }
+                if (range.get().hasNoUpperLimit()){
+                    end = "oo";
+                }
+                else {
+                    endValues.add(range.get().getEndValue());
+                }
             }
         }
         if (start == null){

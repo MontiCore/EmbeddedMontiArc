@@ -65,7 +65,7 @@ public class CheckVariableName implements CNNArchASTVariableCoCo {
         String name = node.getName();
         if (variableNames.contains(name)){
             if (node instanceof ASTLayerParameter){
-                Collection<Symbol> allParametersWithSameName = node.getEnclosingScope().get().getLocalSymbols().get(name);
+                Collection<Symbol> allParametersWithSameName = node.getEnclosingScopeOpt().get().getLocalSymbols().get(name);
                 if (allParametersWithSameName.size() > 1){
                     duplicationError(node);
                 }

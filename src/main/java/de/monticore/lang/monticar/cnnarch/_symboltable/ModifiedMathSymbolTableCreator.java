@@ -20,10 +20,10 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
-import de.monticore.lang.math.math._ast.ASTMathFalseExpression;
-import de.monticore.lang.math.math._ast.ASTMathTrueExpression;
-import de.monticore.lang.math.math._symboltable.MathSymbolTableCreator;
-import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._ast.ASTMathFalseExpression;
+import de.monticore.lang.math._ast.ASTMathTrueExpression;
+import de.monticore.lang.math._symboltable.MathSymbolTableCreator;
+import de.monticore.lang.math._symboltable.expression.MathNameExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch.predefined.AllPredefinedVariables;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;

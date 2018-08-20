@@ -228,8 +228,8 @@ public class IOSymbol extends ArchitectureElementSymbol {
                     if (!Utils.equals(inputType, getDefinition().getType().getDomain())) {
                         Log.error("0" + ErrorCodes.INVALID_ELEMENT_INPUT_DOMAIN + " " +
                                 "The declared output type of '" + name + "' does not match with the actual type. " +
-                                "Declared type: " + getDefinition().getType().getDomain().getTElementType().get() + ". " +
-                                "Actual type: " + inputType.getTElementType().get() + ".");
+                                "Declared type: " + getDefinition().getType().getDomain().getName() + ". " +
+                                "Actual type: " + inputType.getName() + ".");
                     }
                 }
 

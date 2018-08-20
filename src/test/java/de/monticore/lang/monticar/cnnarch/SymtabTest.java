@@ -47,7 +47,6 @@ public class SymtabTest extends AbstractSymtabTest {
         assertTrue(parser.parse("src/test/resources/architectures/Alexnet.cnna").isPresent());
     }
 
-    @Ignore
     @Test
     public void testAlexnet(){
         Scope symTab = createSymTab("src/test/resources/architectures");
@@ -59,7 +58,6 @@ public class SymtabTest extends AbstractSymtabTest {
         a.getArchitecture().getBody().getOutputTypes();
     }
 
-    @Ignore
     @Test
     public void testResNeXt(){
         Scope symTab = createSymTab("src/test/resources/architectures");
@@ -71,7 +69,6 @@ public class SymtabTest extends AbstractSymtabTest {
         a.getArchitecture().getBody().getOutputTypes();
     }
 
-    @Ignore
     @Test
     public void test3(){
         Scope symTab = createSymTab("src/test/resources/valid_tests");

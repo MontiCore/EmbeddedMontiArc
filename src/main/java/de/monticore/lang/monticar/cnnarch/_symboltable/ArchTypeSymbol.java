@@ -20,7 +20,11 @@
  */
 package de.monticore.lang.monticar.cnnarch._symboltable;
 
+import de.monticore.lang.monticar.ranges._ast.ASTRange;
+import de.monticore.lang.monticar.ranges._ast.ASTRangeStepResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
+import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.monticore.symboltable.CommonSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Scope;
@@ -45,7 +49,7 @@ public class ArchTypeSymbol extends CommonSymbol {
     public ArchTypeSymbol() {
         super("", KIND);
         ASTElementType elementType = new ASTElementType();
-        elementType.setTElementType(DEFAULT_ELEMENT_TYPE);
+        elementType.setName(DEFAULT_ELEMENT_TYPE);
         setDomain(elementType);
     }
 
@@ -244,7 +248,11 @@ public class ArchTypeSymbol extends CommonSymbol {
         }
         public Builder elementType(String start, String end){
             domain = new ASTElementType();
-            domain.setTElementType("Q(" + start + ":" + end +")");
+            domain.setName("Q"); //("Q(" + start + ":" + end +")");
+            ASTRange range = new ASTRange();
+            range.setStartValue(start);
+            range.setEndValue(end);
+            domain.setRange(range);
             return this;
         }
 
@@ -257,7 +265,7 @@ public class ArchTypeSymbol extends CommonSymbol {
 
             if (domain == null){
                 domain = new ASTElementType();
-                domain.setTElementType(DEFAULT_ELEMENT_TYPE);
+                domain.setName(DEFAULT_ELEMENT_TYPE);
             }
             sym.setDomain(domain);
             return sym;
