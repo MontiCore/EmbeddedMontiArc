@@ -16,7 +16,7 @@
 
     <!-- .. SE-Libraries .................................................. -->
       <CNNArch.version>0.2.3-SNAPSHOT</CNNArch.version>
-      <CNNTrain.version>0.2.3-SNAPSHOT</CNNTrain.version>
+      <CNNTrain.version>0.2.4-SNAPSHOT</CNNTrain.version>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
