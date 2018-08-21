@@ -105,7 +105,7 @@ class CNNCreator_VGG16:
             sys.exit(1)
 
 
-    def train(self, batch_size,
+    def train(self, batch_size=64,
               num_epoch=10,
               eval_metric='acc',
               optimizer='adam',
