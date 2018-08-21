@@ -16,7 +16,7 @@ if __name__ == "__main__":
         load_checkpoint = True,
         context = 'gpu',
         normalize = True,
-        eval_metric = mse,
+        eval_metric = 'mse',
         optimizer = 'rmsprop',
         optimizer_params = {
             'weight_decay': 0.01,
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         load_checkpoint = False,
         context = 'gpu',
         normalize = False,
-        eval_metric = topKAccuracy,
+        eval_metric = 'topKAccuracy',
         optimizer = 'adam',
         optimizer_params = {
             'epsilon': 1.0E-6,
