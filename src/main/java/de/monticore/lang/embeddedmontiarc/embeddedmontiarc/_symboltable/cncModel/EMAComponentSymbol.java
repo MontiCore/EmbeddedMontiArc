@@ -23,6 +23,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncMode
 import com.google.common.collect.ImmutableList;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentKind;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.embeddedmontiarc.helper.SymbolPrinter;
@@ -661,5 +662,9 @@ public class EMAComponentSymbol extends CommonScopeSpanningSymbol implements EMA
 
     public void addIncomingPort(EMAPortSymbol symbol) {
         // TODO implement me
+    }
+
+    public Optional<EMAComponentSymbol> getParent() {
+        return (Optional<EMAComponentSymbol>) getEnclosingScope().getSpanningSymbol();
     }
 }

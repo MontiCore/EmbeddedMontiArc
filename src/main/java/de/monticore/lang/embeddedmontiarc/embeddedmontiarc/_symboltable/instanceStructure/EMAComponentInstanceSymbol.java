@@ -297,4 +297,8 @@ public class EMAComponentInstanceSymbol
     public Optional<EMAComponentInstanceSymbol> getEnclosingComponent() {
         return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
     }
+
+    public Optional<EMAComponentInstanceSymbol> getParent() {
+        return (Optional<EMAComponentInstanceSymbol>) getEnclosingScope().getSpanningSymbol();
+    }
 }
