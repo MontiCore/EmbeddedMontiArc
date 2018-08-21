@@ -18,14 +18,14 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import org.apache.commons.cli.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class CNNArchGeneratorCli {
+public class CNNArch2MxNetCli {
 
     public static final Option OPTION_MODELS_PATH = Option.builder("m")
             .longOpt("models-dir")
@@ -48,7 +48,7 @@ public class CNNArchGeneratorCli {
             .required(false)
             .build();
 
-    private CNNArchGeneratorCli() {
+    private CNNArch2MxNetCli() {
     }
 
     public static void main(String[] args) {
@@ -84,7 +84,7 @@ public class CNNArchGeneratorCli {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        CNNArchGenerator generator = new CNNArchGenerator();
+        CNNArch2MxNet generator = new CNNArch2MxNet();
         if (outputPath != null){
             generator.setGenerationTargetPath(outputPath);
         }

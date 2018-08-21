@@ -18,13 +18,15 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.io.paths.ModelPath;
+import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -33,15 +35,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-public class CNNArchGenerator {
+public class CNNArch2MxNet implements CNNArchGenerator {
 
     private String generationTargetPath;
 
-    public CNNArchGenerator() {
+    public CNNArch2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
     }
 
@@ -79,6 +79,24 @@ public class CNNArchGenerator {
         }
     }
 
+    @Override
+    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName) {
+        int numberOfNetworks = configurations.size();
+        if (configurations.size() != instanceNames.size()){
+            throw new IllegalStateException(
+                    "The number of configurations and the number of instances for generation of the CNNTrainer is not equal. " +
+                    "This should have been checked previously.");
+        }
+        List<ConfigurationData> configDataList = new ArrayList<>();
+        for(int i = 0; i < numberOfNetworks; i++){
+            configDataList.add(new ConfigurationData(configurations.get(i), instanceNames.get(i)));
+        }
+        Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
+        return Collections.singletonMap(
+                "CNNTrainer_" + mainComponentName + ".py",
+                TemplateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl"));
+    }
+
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
         Map<String, String> fileContentMap = new HashMap<>();
@@ -104,21 +122,19 @@ public class CNNArchGenerator {
 
     private void checkValidGeneration(ArchitectureSymbol architecture){
         if (architecture.getInputs().size() > 1){
-            Log.warn("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the generator. " +
-                            "The generated code will not work correctly."
+            Log.error("This cnn architecture has multiple inputs, " +
+                            "which is currently not supported by the mxnetgenerator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().size() > 1){
-            Log.warn("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the generator. " +
-                            "The generated code will not work correctly."
+            Log.error("This cnn architecture has multiple outputs, " +
+                            "which is currently not supported by the mxnetgenerator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
                 architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
             Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the generator."
+                            "which is currently not supported by the mxnetgenerator."
                     , architecture.getSourcePosition());
         }
     }
@@ -143,5 +159,4 @@ public class CNNArchGenerator {
             writer.close();
         }
     }
-
 }

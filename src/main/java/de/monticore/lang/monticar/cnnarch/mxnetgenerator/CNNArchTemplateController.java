@@ -18,17 +18,12 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
-package de.monticore.lang.monticar.cnnarch.generator;
+package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.*;
 import de.monticore.lang.monticar.cnnarch.predefined.Sigmoid;
 import de.monticore.lang.monticar.cnnarch.predefined.Softmax;
-import de.se_rwth.commons.logging.Log;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
@@ -41,13 +36,14 @@ public class CNNArchTemplateController {
     public static final String ELEMENT_DATA_KEY = "element";
 
     private LayerNameCreator nameManager;
-    private Configuration freemarkerConfig = TemplateConfiguration.get();
     private ArchitectureSymbol architecture;
 
+    //temporary attributes. They are set after calling process()
     private Writer writer;
     private String mainTemplateNameWithoutEnding;
     private Target targetLanguage;
     private ArchitectureElementData dataElement;
+
 
     public CNNArchTemplateController(ArchitectureSymbol architecture) {
         setArchitecture(architecture);
@@ -55,14 +51,6 @@ public class CNNArchTemplateController {
 
     public String getFileNameWithoutEnding() {
         return mainTemplateNameWithoutEnding + "_" + getFullArchitectureName();
-    }
-
-    public Target getTargetLanguage(){
-        return targetLanguage;
-    }
-
-    public void setTargetLanguage(Target targetLanguage) {
-        this.targetLanguage = targetLanguage;
     }
 
     public ArchitectureElementData getCurrentElement() {
@@ -137,25 +125,10 @@ public class CNNArchTemplateController {
 
     public void include(String relativePath, String templateWithoutFileEnding, Writer writer){
         String templatePath = relativePath + templateWithoutFileEnding + FTL_FILE_ENDING;
-
-        try {
-            Template template = freemarkerConfig.getTemplate(templatePath);
-            Map<String, Object> ftlContext = new HashMap<>();
-            ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
-            ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
-
-            this.writer = writer;
-            template.process(ftlContext, writer);
-            this.writer = null;
-        }
-        catch (IOException e) {
-            Log.error("Freemarker could not find template " + templatePath + " :\n" + e.getMessage());
-            System.exit(1);
-        }
-        catch (TemplateException e){
-            Log.error("An exception occured in template " + templatePath + " :\n" + e.getMessage());
-            System.exit(1);
-        }
+        Map<String, Object> ftlContext = new HashMap<>();
+        ftlContext.put(TEMPLATE_CONTROLLER_KEY, this);
+        ftlContext.put(ELEMENT_DATA_KEY, getCurrentElement());
+        TemplateConfiguration.processTemplate(ftlContext, templatePath, writer);
     }
 
     public void include(IOSymbol ioElement, Writer writer){
@@ -229,18 +202,16 @@ public class CNNArchTemplateController {
         StringWriter writer = new StringWriter();
         this.mainTemplateNameWithoutEnding = templateNameWithoutEnding;
         this.targetLanguage = targetLanguage;
+        this.writer = writer;
+
         include("", templateNameWithoutEnding, writer);
-
         String fileEnding = targetLanguage.toString();
-        if (targetLanguage == Target.CPP){
-            fileEnding = ".h";
-        }
         String fileName = getFileNameWithoutEnding() + fileEnding;
-
         Map.Entry<String,String> fileContent = new AbstractMap.SimpleEntry<>(fileName, writer.toString());
 
         this.mainTemplateNameWithoutEnding = null;
         this.targetLanguage = null;
+        this.writer = null;
         return fileContent;
     }
 
