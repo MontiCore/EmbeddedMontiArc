@@ -7,37 +7,37 @@ import CNNCreator_${config.instanceName}
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger()
-    handler = logging.FileHandler("train.log","w", encoding=None, delay="true")
+    handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
 <#list configurations as config>
     ${config.instanceName} = CNNCreator_${config.instanceName}.CNNCreator_${config.instanceName}()
     ${config.instanceName}.train(
 <#if (config.batchSize)??>
-        batch_size = ${config.batchSize},
+        batch_size=${config.batchSize},
 </#if>
 <#if (config.numEpoch)??>
-        num_epoch = ${config.numEpoch},
+        num_epoch=${config.numEpoch},
 </#if>
 <#if (config.loadCheckpoint)??>
-        load_checkpoint = ${config.loadCheckpoint?string("True","False")},
+        load_checkpoint=${config.loadCheckpoint?string("True","False")},
 </#if>
 <#if (config.context)??>
-        context = '${config.context}',
+        context='${config.context}',
 </#if>
 <#if (config.normalize)??>
-        normalize = ${config.normalize?string("True","False")},
+        normalize=${config.normalize?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric = '${config.evalMetric}',
+        eval_metric='${config.evalMetric}',
 </#if>
 <#if (config.configuration.optimizer)??>
-        optimizer = '${config.optimizerName}',
-        optimizer_params = {
+        optimizer='${config.optimizerName}',
+        optimizer_params={
 <#list config.optimizerParams?keys as param>
             '${param}': ${config.optimizerParams[param]}<#sep>,
 </#list>
-        }
+}
 </#if>
     )
 </#list>
