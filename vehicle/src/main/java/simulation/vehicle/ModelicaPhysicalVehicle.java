@@ -43,19 +43,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     private double yaw_angle;
 
 
-    /** Components used for modelica physics */
-    /** InputFilter of the vehicle */
-    private InputFilter inputFilter;
-
-    /** Chassis of the vehicle */
-    private Chassis chassis;
-
-    /** Suspension of the vehicle */
-    private Suspension suspension;
-
-    /** Tires of the vehicle */
-    private Tires tires;
-
+    /** VehicleDynamicsModel used for modelica physics */
+    private VehicleDynamicsModel vehicleDynamicsModel;
 
     /** Coordinate system rotation */
     public static final RealMatrix coordinateRotation = new BlockRealMatrix(new Rotation(
@@ -68,10 +57,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     public ModelicaPhysicalVehicle(){
         super();
-        inputFilter = new InputFilter();
-        chassis = new Chassis();
-        suspension = new Suspension();
-        tires = new Tires();
+        vehicleDynamicsModel = new VehicleDynamicsModel();
 
         //Before initialisation the center of mass position is the same as the center of geometry position and at the origin
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -268,77 +254,79 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void computePhysics(long deltaTms){
         if (!this.getError()) {
+
             // Calculate input values
             // Get values from FDUs
-            double z = chassis.getSimulator().read("z").asDouble();
-            double r_nom = chassis.getSimulator().read("r_nom").asDouble();
-            double m = chassis.getSimulator().read("m").asDouble();
+            double z = vehicleDynamicsModel.getValue("z");
+            double r_nom = vehicleDynamicsModel.getValue("r_nom");
+            double m = vehicleDynamicsModel.getValue("m");
+            double omega_wheel_1 = vehicleDynamicsModel.getValue("omega_wheel_1");
+            double omega_wheel_2 = vehicleDynamicsModel.getValue("omega_wheel_2");
+            double omega_wheel_3 = vehicleDynamicsModel.getValue("omega_wheel_3");
+            double omega_wheel_4 = vehicleDynamicsModel.getValue("omega_wheel_4");
             // Get current road surface position
             RealVector roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
             // Reset vehicle on surface
             putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
+            /*
             // Get motor acceleration and convert it in torque
-            double motorAcceleration = 4 * simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
+            //double motorAcceleration = 4 * simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
+            double motorAcceleration = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
             double motorForce = m * motorAcceleration;
             double motorTorque = r_nom * motorForce;
             System.out.println(motorTorque);
             // Assume equal 4 wheel drive
-            chassis.getSimulator().write("tau_D_1").with(motorTorque / 4);
-            chassis.getSimulator().write("tau_D_2").with(motorTorque / 4);
-            chassis.getSimulator().write("tau_D_3").with(motorTorque / 4);
-            chassis.getSimulator().write("tau_D_4").with(motorTorque / 4);
+            vehicleDynamicsModel.setValue("tau_D_1", motorTorque / 4);
+            vehicleDynamicsModel.setValue("tau_D_2", motorTorque / 4);
+            vehicleDynamicsModel.setValue("tau_D_3", motorTorque / 4);
+            vehicleDynamicsModel.setValue("tau_D_4", motorTorque / 4);
             // Get brake acceleration and convert it in torque
             double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
             double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
             double brakeAcceleration3 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent();
             double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
-            double brakeForce1 = m * brakeAcceleration1;
-            double brakeForce2 = m * brakeAcceleration2;
-            double brakeForce3 = m * brakeAcceleration3;
-            double brakeForce4 = m * brakeAcceleration4;
+            double brakeForce1 = (m/4) * brakeAcceleration1;
+            double brakeForce2 = (m/4) * brakeAcceleration2;
+            double brakeForce3 = (m/4) * brakeAcceleration3;
+            double brakeForce4 = (m/4) * brakeAcceleration4;
             double brakeTorque1 = r_nom * brakeForce1;
             double brakeTorque2 = r_nom * brakeForce2;
             double brakeTorque3 = r_nom * brakeForce3;
             double brakeTorque4 = r_nom * brakeForce4;
-            chassis.getSimulator().write("tau_B_1").with(brakeTorque1);
-            chassis.getSimulator().write("tau_B_2").with(brakeTorque2);
-            chassis.getSimulator().write("tau_B_3").with(brakeTorque3);
-            chassis.getSimulator().write("tau_B_4").with(brakeTorque4);
+            vehicleDynamicsModel.setValue("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
+            System.out.println(omega_wheel_1 + " " + brakeTorque1 * Math.tanh(omega_wheel_1));
+            vehicleDynamicsModel.setValue("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
+            vehicleDynamicsModel.setValue("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
+            vehicleDynamicsModel.setValue("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
             // Get steering angle
             double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
-            chassis.getSimulator().write("delta_1").with(steeringAngle);
-            chassis.getSimulator().write("delta_2").with(steeringAngle);
-            tires.getSimulator().write("delta_1").with(steeringAngle);
-            tires.getSimulator().write("delta_2").with(steeringAngle);
+            vehicleDynamicsModel.setValue("delta_1", steeringAngle);
+            vehicleDynamicsModel.setValue("delta_2", steeringAngle);
             // Express the force vector in local coordinates
             RealVector localForce = rotation.transpose().operate(force);
-            chassis.getSimulator().write("F_ext_x").with(localForce.getEntry(0));
-            chassis.getSimulator().write("F_ext_y").with(localForce.getEntry(1));
+            vehicleDynamicsModel.setValue("F_ext_x", localForce.getEntry(0));
+            vehicleDynamicsModel.setValue("F_ext_y", localForce.getEntry(1));
             // todo Take the wheel positions and get the frictions coefficients
 
             // Exchange values
             exchangeValues();
+            */
             long currentDeltaTms = 0;
             // Do steps with maximum step size as long as possible
             while(currentDeltaTms + stepSizems <= deltaTms){
-                if(inputFilter.isTerminated() || chassis.isTerminated() || suspension.isTerminated() || tires.isTerminated()){
-                    //todo Set up new FMUs and transfer values
-                }
                 doCalculationStep(stepSizems);
                 currentDeltaTms = currentDeltaTms + stepSizems;
             }
             // Do a step with partial step size to fill the gap
             long partialStepSize = deltaTms - currentDeltaTms;
             if(partialStepSize > 0){
-                if(inputFilter.isTerminated() || chassis.isTerminated() || suspension.isTerminated() || tires.isTerminated()){
-                    //todo Set up new FMUs and transfer values
-                }
                 doCalculationStep(partialStepSize);
                 currentDeltaTms = currentDeltaTms + partialStepSize;
             }
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+        System.out.println(this);
     }
 
     /**
@@ -351,11 +339,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void putOnSurface(double posX, double posY, double rotZ){
         //Get values from FDUs
-        double z = chassis.getSimulator().read("z").asDouble();
-        double L_1 = chassis.getSimulator().read("L_1").asDouble();
-        double L_2 = chassis.getSimulator().read("L_2").asDouble();
-        double TW_f = chassis.getSimulator().read("TW_r").asDouble();
-        double TW_r = chassis.getSimulator().read("TW_r").asDouble();
+        double z = vehicleDynamicsModel.getValue("z");
+        double L_1 = vehicleDynamicsModel.getValue("L_1");
+        double L_2 = vehicleDynamicsModel.getValue("L_2");
+        double TW_f = vehicleDynamicsModel.getValue("TW_r");
+        double TW_r = vehicleDynamicsModel.getValue("TW_r");
 
         //set on ground only rotated around z axis
         double ground = WorldModel.getInstance().getGround(posX, posY, 0.0).doubleValue();
@@ -403,8 +391,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double rightToLeftAngle = (Math.PI / 2) - Vector3D.angle(XYPlaneNorm, rightToLeft);
 
         if(physicalVehicleInitialized) {
-            inputFilter.getSimulator().write("slope").with(backToFrontAngle);
-            inputFilter.getSimulator().write("bank").with(rightToLeftAngle);
+            vehicleDynamicsModel.setValue("slope", backToFrontAngle);
+            vehicleDynamicsModel.setValue("bank", rightToLeftAngle);
         }
 
         //The resulting rotation should transform the XY plane norm to the roadPlaneNorm
@@ -453,10 +441,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public RealVector getFrontRightWheelGeometryPosition(){
         //Get values from FDUs
-        double L_1 = chassis.getSimulator().read(("L_1")).asDouble();
-        double TW_f = chassis.getSimulator().read("TW_f").asDouble();
-        double z = chassis.getSimulator().read("z").asDouble();
-        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        double L_1 = vehicleDynamicsModel.getValue(("L_1"));
+        double TW_f = vehicleDynamicsModel.getValue("TW_f");
+        double z = vehicleDynamicsModel.getValue("z");
+        double r_nom = vehicleDynamicsModel.getValue("r_nom");
         //Calculate localPosition and return global position
         RealVector localPosition = new ArrayRealVector(new double[]{L_1, -TW_f / 2, -z + r_nom});
         return position.add(rotation.operate(localPosition));
@@ -469,10 +457,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public RealVector getFrontLeftWheelGeometryPosition(){
         //Get values from FDUs
-        double L_1 = chassis.getSimulator().read(("L_1")).asDouble();
-        double TW_f = chassis.getSimulator().read("TW_f").asDouble();
-        double z = chassis.getSimulator().read("z").asDouble();
-        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        double L_1 = vehicleDynamicsModel.getValue(("L_1"));
+        double TW_f = vehicleDynamicsModel.getValue("TW_f");
+        double z = vehicleDynamicsModel.getValue("z");
+        double r_nom = vehicleDynamicsModel.getValue("r_nom");
         //Calculate localPosition and return global position
         RealVector localPosition = new ArrayRealVector(new double[]{L_1, TW_f / 2, -z + r_nom});
         return position.add(rotation.operate(localPosition));
@@ -485,10 +473,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public RealVector getBackRightWheelGeometryPosition(){
         //Get values from FDUs
-        double L_2 = chassis.getSimulator().read(("L_2")).asDouble();
-        double TW_r = chassis.getSimulator().read("TW_r").asDouble();
-        double z = chassis.getSimulator().read("z").asDouble();
-        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        double L_2 = vehicleDynamicsModel.getValue(("L_2"));
+        double TW_r = vehicleDynamicsModel.getValue("TW_r");
+        double z = vehicleDynamicsModel.getValue("z");
+        double r_nom = vehicleDynamicsModel.getValue("r_nom");
         //Calculate localPosition and return global position
         RealVector localPosition = new ArrayRealVector(new double[]{L_2, -TW_r / 2, -z + r_nom});
         return position.add(rotation.operate(localPosition));
@@ -501,10 +489,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public RealVector getBackLeftWheelGeometryPosition(){
         //Get values from FDUs
-        double L_2 = chassis.getSimulator().read(("L_2")).asDouble();
-        double TW_r = chassis.getSimulator().read("TW_r").asDouble();
-        double z = chassis.getSimulator().read("z").asDouble();
-        double r_nom = chassis.getSimulator().read("r_nom").asDouble();
+        double L_2 = vehicleDynamicsModel.getValue(("L_2"));
+        double TW_r = vehicleDynamicsModel.getValue("TW_r");
+        double z = vehicleDynamicsModel.getValue("z");
+        double r_nom = vehicleDynamicsModel.getValue("r_nom");
         //Calculate localPosition and return global position
         RealVector localPosition = new ArrayRealVector(new double[]{L_2, TW_r / 2, -z + r_nom});
         return position.add(rotation.operate(localPosition));
@@ -565,18 +553,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     public void initPhysics() {
         if(!physicalVehicleInitialized) {
             // Initialize the modelica components
-            inputFilter.initialize(0.0, 10.0);
-            chassis.initialize(0.0, 10.0);
-            suspension.initialize(0.0, 10.0);
-            tires.initialize(0.0, 10.0);
+            vehicleDynamicsModel.initialize(0.0, 10.0);
 
             //The input values for a stationary car with no rotation and external influences are already encoded in the FMUs
 
-            //Exchange values
-            exchangeValues();
-
             //Shift position and geometryPositionOffset
-            double z = chassis.getSimulator().read("z").asDouble();
+            double z = vehicleDynamicsModel.getValue("z");
             geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() / 2 - z});
             position = geometryPositionOffset.mapMultiply(-1.0);
 
@@ -586,13 +568,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             yaw_angle = 0.0;
 
             //Overwrite parameters in vehicle with the FDU values
-            simulationVehicle.setMass(chassis.getSimulator().read("m").asDouble());
-            simulationVehicle.setWheelDistLeftRightFrontSide(chassis.getSimulator().read("TW_f").asDouble());
-            simulationVehicle.setWheelDistLeftRightBackSide(chassis.getSimulator().read("TW_r").asDouble());
+            simulationVehicle.setMass(vehicleDynamicsModel.getValue("m"));
+            simulationVehicle.setWheelDistLeftRightFrontSide(vehicleDynamicsModel.getValue("TW_f"));
+            simulationVehicle.setWheelDistLeftRightBackSide(vehicleDynamicsModel.getValue("TW_r"));
             simulationVehicle.setWheelDistFrontBack(
-                    chassis.getSimulator().read("L_1").asDouble()+
-                    chassis.getSimulator().read("L_2").asDouble());
-            simulationVehicle.setWheelRadius(chassis.getSimulator().read("r_nom").asDouble());
+                    vehicleDynamicsModel.getValue("L_1")+
+                    vehicleDynamicsModel.getValue("L_2"));
+            simulationVehicle.setWheelRadius(vehicleDynamicsModel.getValue("r_nom"));
 
             physicalVehicleInitialized = true;
             simulationVehicle.setVehicleInitialized(true);
@@ -600,74 +582,66 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     }
 
     /**
-     * Function that exchanges values of the modelica components
-     */
-    private void exchangeValues(){
-        chassis.getSimulator().write("slope_d").with(inputFilter.getSimulator().read("slope_d").asDouble());
-        chassis.getSimulator().write("bank_d").with(inputFilter.getSimulator().read("bank_d").asDouble());
-        suspension.getSimulator().write("slope_d").with(inputFilter.getSimulator().read("slope_d").asDouble());
-        suspension.getSimulator().write("bank_d").with(inputFilter.getSimulator().read("bank_d").asDouble());
-        suspension.getSimulator().write("a_y").with(chassis.getSimulator().read("a_y").asDouble());
-        suspension.getSimulator().write("pitch_angle").with(chassis.getSimulator().read("pitch_angle").asDouble());
-        suspension.getSimulator().write("omega_y").with(chassis.getSimulator().read("omega_y").asDouble());
-        tires.getSimulator().write("v_s_1").with(chassis.getSimulator().read("v_s_1").asDouble());
-        tires.getSimulator().write("v_s_2").with(chassis.getSimulator().read("v_s_2").asDouble());
-        tires.getSimulator().write("v_s_3").with(chassis.getSimulator().read("v_s_3").asDouble());
-        tires.getSimulator().write("v_s_4").with(chassis.getSimulator().read("v_s_4").asDouble());
-        tires.getSimulator().write("v_x_1").with(chassis.getSimulator().read("v_x_1").asDouble());
-        tires.getSimulator().write("v_x_2").with(chassis.getSimulator().read("v_x_2").asDouble());
-        tires.getSimulator().write("v_x_3").with(chassis.getSimulator().read("v_x_3").asDouble());
-        tires.getSimulator().write("v_x_4").with(chassis.getSimulator().read("v_x_4").asDouble());
-        tires.getSimulator().write("v_y_1").with(chassis.getSimulator().read("v_y_1").asDouble());
-        tires.getSimulator().write("v_y_2").with(chassis.getSimulator().read("v_y_2").asDouble());
-        tires.getSimulator().write("v_y_3").with(chassis.getSimulator().read("v_y_3").asDouble());
-        tires.getSimulator().write("v_y_4").with(chassis.getSimulator().read("v_y_4").asDouble());
-        chassis.getSimulator().write("d_roll").with(suspension.getSimulator().read("d_roll").asDouble());
-        chassis.getSimulator().write("d_pitch").with(suspension.getSimulator().read("d_pitch").asDouble());
-        chassis.getSimulator().write("K_roll_f").with(suspension.getSimulator().read("K_roll_f").asDouble());
-        chassis.getSimulator().write("K_roll_r").with(suspension.getSimulator().read("K_roll_r").asDouble());
-        chassis.getSimulator().write("D_roll_f").with(suspension.getSimulator().read("D_roll_f").asDouble());
-        chassis.getSimulator().write("D_roll_r").with(suspension.getSimulator().read("D_roll_r").asDouble());
-        chassis.getSimulator().write("D_pitch").with(suspension.getSimulator().read("D_pitch").asDouble());
-        chassis.getSimulator().write("K_pitch").with(suspension.getSimulator().read("K_pitch").asDouble());
-        tires.getSimulator().write("F_z_1").with(suspension.getSimulator().read("F_z_1").asDouble());
-        tires.getSimulator().write("F_z_2").with(suspension.getSimulator().read("F_z_2").asDouble());
-        tires.getSimulator().write("F_z_3").with(suspension.getSimulator().read("F_z_3").asDouble());
-        tires.getSimulator().write("F_z_4").with(suspension.getSimulator().read("F_z_4").asDouble());
-        chassis.getSimulator().write("F_x_1").with(tires.getSimulator().read("F_x_1").asDouble());
-        chassis.getSimulator().write("F_x_2").with(tires.getSimulator().read("F_x_2").asDouble());
-        chassis.getSimulator().write("F_x_3").with(tires.getSimulator().read("F_x_3").asDouble());
-        chassis.getSimulator().write("F_x_4").with(tires.getSimulator().read("F_x_4").asDouble());
-        chassis.getSimulator().write("F_y_1").with(tires.getSimulator().read("F_y_1").asDouble());
-        chassis.getSimulator().write("F_y_2").with(tires.getSimulator().read("F_y_2").asDouble());
-        chassis.getSimulator().write("F_y_3").with(tires.getSimulator().read("F_y_3").asDouble());
-        chassis.getSimulator().write("F_y_4").with(tires.getSimulator().read("F_y_4").asDouble());
-    }
-
-    /**
      * Function that does a calculation step
      * @param deltaTms Length of the calculation step in milliseconds
      */
     private void doCalculationStep(long deltaTms){
-        // Store z coordinate for interpolation later
-        double oldZ = chassis.getSimulator().read("z").asDouble();
+        // Calculate input values
+        // Get values from FDUs
+        double r_nom = vehicleDynamicsModel.getValue("r_nom");
+        double m = vehicleDynamicsModel.getValue("m");
+        double omega_wheel_1 = vehicleDynamicsModel.getValue("omega_wheel_1");
+        double omega_wheel_2 = vehicleDynamicsModel.getValue("omega_wheel_2");
+        double omega_wheel_3 = vehicleDynamicsModel.getValue("omega_wheel_3");
+        double omega_wheel_4 = vehicleDynamicsModel.getValue("omega_wheel_4");
+        // Get motor acceleration and convert it in torque
+        //double motorAcceleration = 4 * simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
+        double motorAcceleration = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
+        double motorForce = m * motorAcceleration;
+        double motorTorque = r_nom * motorForce;
+        // Assume equal 4 wheel drive
+        vehicleDynamicsModel.setValue("tau_D_1", motorTorque / 4);
+        vehicleDynamicsModel.setValue("tau_D_2", motorTorque / 4);
+        vehicleDynamicsModel.setValue("tau_D_3", motorTorque / 4);
+        vehicleDynamicsModel.setValue("tau_D_4", motorTorque / 4);
+        // Get brake acceleration and convert it in torque
+        double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
+        double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
+        double brakeAcceleration3 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent();
+        double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
+        double brakeForce1 = (m/4) * brakeAcceleration1;
+        double brakeForce2 = (m/4) * brakeAcceleration2;
+        double brakeForce3 = (m/4) * brakeAcceleration3;
+        double brakeForce4 = (m/4) * brakeAcceleration4;
+        double brakeTorque1 = r_nom * brakeForce1;
+        double brakeTorque2 = r_nom * brakeForce2;
+        double brakeTorque3 = r_nom * brakeForce3;
+        double brakeTorque4 = r_nom * brakeForce4;
+        vehicleDynamicsModel.setValue("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
+        vehicleDynamicsModel.setValue("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
+        vehicleDynamicsModel.setValue("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
+        vehicleDynamicsModel.setValue("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
+        // Get steering angle
+        double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
+        vehicleDynamicsModel.setValue("delta_1", steeringAngle);
+        vehicleDynamicsModel.setValue("delta_2", steeringAngle);
+        // Express the force vector in local coordinates
+        RealVector localForce = rotation.transpose().operate(force);
+        vehicleDynamicsModel.setValue("F_ext_x", localForce.getEntry(0));
+        vehicleDynamicsModel.setValue("F_ext_y", localForce.getEntry(1));
+        // todo Take the wheel positions and get the frictions coefficients
 
+        // Store z coordinate for interpolation later
+        double oldZ = vehicleDynamicsModel.getValue("z");
         // Do a computation step
         double deltaT = deltaTms / 1000.0;
-        inputFilter.doStep(deltaT);
-        chassis.doStep(deltaT);
-        suspension.doStep(deltaT);
-        tires.doStep(deltaT);
-
-        // Exchange values
-        exchangeValues();
-
+        vehicleDynamicsModel.doStep(deltaT);
         //Integrate over model output
-        double omega_z = chassis.getSimulator().read("omega_z").asDouble();
+        double omega_z = vehicleDynamicsModel.getValue("omega_z");
         yaw_angle = yaw_angle + omega_z * deltaT;
-        double v_x = chassis.getSimulator().read("v_x").asDouble();
-        double v_y = chassis.getSimulator().read("v_y").asDouble();
-        double z = chassis.getSimulator().read("z").asDouble();
+        double v_x = vehicleDynamicsModel.getValue("v_x");
+        double v_y = vehicleDynamicsModel.getValue("v_y");
+        double z = vehicleDynamicsModel.getValue("z");
         double v_z = (z - oldZ)/deltaT;
         RealVector localVelocity = new ArrayRealVector(new double[]{v_x, v_y, v_z});
         RealVector velocity = rotation.operate(localVelocity);
@@ -703,6 +677,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 //(physicalVehicleInitialized ? " , acceleration: " + acceleration : "") +
                 (physicalVehicleInitialized ? " , force: " + force : "") +
                 (physicalVehicleInitialized ? " , rotation: " + rotation : "") +
+                (physicalVehicleInitialized ? " , yaw_angle: " + yaw_angle : "") +
                 (physicalVehicleInitialized ? " , physicalObjectType: " + physicalObjectType : "") +
                 " , collision: " + collision +
                 " , error: " + error +
