@@ -29,7 +29,7 @@ if __name__ == "__main__":
         normalize = ${config.normalize?string("True","False")},
 </#if>
 <#if (config.evalMetric)??>
-        eval_metric = ${config.evalMetric},
+        eval_metric = '${config.evalMetric}',
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer = '${config.optimizerName}',

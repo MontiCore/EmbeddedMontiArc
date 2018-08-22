@@ -156,4 +156,107 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                         "CNNTrainer_main.py"));
     }
+
+    @Test
+    public void testFullCfgGeneration() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        List<ConfigurationSymbol> configurations = new ArrayList<>();
+        List<String> instanceName = Arrays.asList("main_net1", "main_net2");
+
+        final ModelPath mp = new ModelPath(Paths.get("src/test/resources/valid_tests"));
+        GlobalScope scope = new GlobalScope(mp, new CNNTrainLanguage());
+
+        CNNTrainCompilationUnitSymbol compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("FullConfig", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("FullConfig2", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        CNNArch2Caffe2 generator = new CNNArch2Caffe2();
+        Map<String,String> trainerMap = generator.generateTrainer(configurations, instanceName, "mainFull");
+
+        for (String fileName : trainerMap.keySet()){
+            FileWriter writer = new FileWriter(generator.getGenerationTargetPath() + fileName);
+            writer.write(trainerMap.get(fileName));
+            writer.close();
+        }
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_mainFull.py"));
+    }
+
+    @Test
+    public void testSimpleCfgGeneration() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        List<ConfigurationSymbol> configurations = new ArrayList<>();
+        List<String> instanceName = Arrays.asList("main_net1", "main_net2");
+
+        final ModelPath mp = new ModelPath(Paths.get("src/test/resources/valid_tests"));
+        GlobalScope scope = new GlobalScope(mp, new CNNTrainLanguage());
+
+        CNNTrainCompilationUnitSymbol compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("SimpleConfig1", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("SimpleConfig2", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        CNNArch2Caffe2 generator = new CNNArch2Caffe2();
+        Map<String,String> trainerMap = generator.generateTrainer(configurations, instanceName, "mainSimple");
+
+        for (String fileName : trainerMap.keySet()){
+            FileWriter writer = new FileWriter(generator.getGenerationTargetPath() + fileName);
+            writer.write(trainerMap.get(fileName));
+            writer.close();
+        }
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_mainSimple.py"));
+    }
+
+    @Test
+    public void testEmptyCfgGeneration() throws IOException, TemplateException {
+        Log.getFindings().clear();
+        List<ConfigurationSymbol> configurations = new ArrayList<>();
+        List<String> instanceName = Arrays.asList("main_net1");
+
+        final ModelPath mp = new ModelPath(Paths.get("src/test/resources/valid_tests"));
+        GlobalScope scope = new GlobalScope(mp, new CNNTrainLanguage());
+
+        CNNTrainCompilationUnitSymbol compilationUnit = scope.<CNNTrainCompilationUnitSymbol>
+                resolve("EmptyConfig", CNNTrainCompilationUnitSymbol.KIND).get();
+        CNNTrainCocos.checkAll(compilationUnit);
+        configurations.add(compilationUnit.getConfiguration());
+
+        CNNArch2Caffe2 generator = new CNNArch2Caffe2();
+        Map<String,String> trainerMap = generator.generateTrainer(configurations, instanceName, "mainEmpty");
+
+        for (String fileName : trainerMap.keySet()){
+            FileWriter writer = new FileWriter(generator.getGenerationTargetPath() + fileName);
+            writer.write(trainerMap.get(fileName));
+            writer.close();
+        }
+
+        assertTrue(Log.getFindings().isEmpty());
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CNNTrainer_mainEmpty.py"));
+    }
 }
