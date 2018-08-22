@@ -1,14 +1,14 @@
 <#assign input = element.inputs[0]>
 <#if element.padding??>
 <#assign input = element.name>
-        ${element.name} = mx.symbol.pad(data=${element.inputs[0]},
-            mode='constant',
-            pad_width=(${tc.join(element.padding, ",")}),
-            constant_value=0)
+        #TODO: check how to adapt CNNArchLang argument pad_width=${element.padding}
 </#if>
-        ${element.name} = mx.symbol.Pooling(data=${input},
-            kernel=(${tc.join(element.kernel, ",")}),
-            pool_type=${element.poolType},
-            stride=(${tc.join(element.stride, ",")}),
-            name="${element.name}")
+
+<#if element.poolType == "max">
+        ${element.name} = brew.max_pool(model, ${input}, '${element.name}', kernel=${element.kernel}, stride=${element.stride})
+<#elseif element.poolType == "avg">
+        ${element.name} = brew.average_pool(model, ${input}, '${element.name}', kernel=${element.kernel}, stride=${element.stride})
+</#if>
+
+
 <#include "OutputShape.ftl">
