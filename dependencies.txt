@@ -24,7 +24,7 @@
 ** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
 // new dependencies here: https://rwth-aachen.sciebo.de/apps/files/?dir=/EmbeddedMontiArc/dependencies&fileid=1238725838
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.15.ocl-verification&files=oclverification.zip
-** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.20.visualisation&files=visualisation.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.08.22.visualisation&files=visualisation.zip
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.streamTesting&files=streamTesting.zip
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.pacman&files=pacman.zip
 ** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.supermario&files=supermario.zip

@@ -79,6 +79,22 @@ class AutoPilotVisualization extends AbstractVisualization {
 	}
 }
 
+class AutoPilotVisualizationRes1 extends AbstractVisualization {
+	constructor() {
+		super("autopilot", BATCHES.AUTOPILOT.VISUALIZATIONRES1);
+		this.logger = Log.getLogger("CALCULATE PID ERROR VISUALIZATION WITH RESOURCE INTERFACE");
+        this.logger.level = "debug";
+	}
+}
+
+class AutoPilotVisualizationRes2 extends AbstractVisualization {
+	constructor() {
+		super("autopilot", BATCHES.AUTOPILOT.VISUALIZATIONRES2);
+		this.logger = Log.getLogger("CALCULATE ENGINE AND BRAKES VISUALIZATION WITH RESOURCE INTERFACE");
+        this.logger.level = "debug";
+	}
+}
+
 class ClusteringVisualization extends AbstractVisualization {
     constructor() {
         super("clustering", BATCHES.CLUSTERING.VISUALIZATION);
@@ -113,6 +129,8 @@ class SuperMarioVisualization extends AbstractVisualization {
 
 module.exports = {
 	AutoPilotVisualization: new AutoPilotVisualization(),
+	AutoPilotVisualizationRes1: new AutoPilotVisualizationRes1(),
+	AutoPilotVisualizationRes2: new AutoPilotVisualizationRes2(),
 	PumpVisualization: new PumpVisualization(),
 	ClusteringVisualization: new ClusteringVisualization(),
     PacManVisualization: new PacManVisualization(),

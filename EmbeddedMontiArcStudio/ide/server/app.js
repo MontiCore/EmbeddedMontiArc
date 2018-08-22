@@ -3,7 +3,7 @@ const Path                                              = require("path");
 const {PATHS, URLS, OPTIONS}                            = require("./constants");
 const Chrome                                            = require("./chrome");
 const {AutoPilotSimulation, ClusteringSimulation, PacManSimulation, SuperMarioSimulation} = require("./simulations");
-const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization, SuperMarioVisualization} = require("./visualizations");
+const {AutoPilotVisualization, ClusteringVisualization, PumpVisualization, PacManVisualization, SuperMarioVisualization,AutoPilotVisualizationRes1,AutoPilotVisualizationRes2} = require("./visualizations");
 const {AutoPilotReporting, ClusteringReporting, PumpReporting, PacManReporting, SuperMarioReporting} = require("./reportings");
 const {AutoPilotReportingWS, ClusteringReportingWS, PacManReportingWS, SuperMarioReportingWS} = require("./reportings");
 const {AutoPilotVerification, ClusteringVerification, PumpVerification} = require("./viewverification");
@@ -77,6 +77,26 @@ App.post("/services/autopilot/visualize", function(request, response) {
 	}
 
 	AutoPilotVisualization.execute(onExecuted);
+});
+
+
+App.post("/services/autopilot/visualizeRes1", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/de.rwth.armin.modeling.autopilot.motion.calculatePidError_extended.html");
+		response.end();
+	}
+
+	AutoPilotVisualizationRes1.execute(onExecuted);
+});
+
+
+App.post("/services/autopilot/visualizeRes2", function(request, response) {
+	function onExecuted() {
+		Chrome.open(URLS.SHARED + "/v/de.rwth.armin.modeling.autopilot.motion.calculateEngineAndBrakes_extended.html");
+		response.end();
+	}
+
+	AutoPilotVisualizationRes2.execute(onExecuted);
 });
 
 App.post("/services/autopilot/report", function(request, response) {
