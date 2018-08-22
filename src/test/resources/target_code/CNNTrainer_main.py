@@ -12,6 +12,7 @@ if __name__ == "__main__":
     main_net1 = CNNCreator_main_net1.CNNCreator_main_net1()
     main_net1.train(
         batch_size = 64,
+        num_epoch = 10,
         load_checkpoint = False,
         context = 'gpu',
         normalize = True,
@@ -25,6 +26,7 @@ if __name__ == "__main__":
     main_net2 = CNNCreator_main_net2.CNNCreator_main_net2()
     main_net2.train(
         batch_size = 32,
+        num_epoch = 10,
         load_checkpoint = False,
         context = 'gpu',
         normalize = True,
