@@ -8,7 +8,7 @@
 </#if>
         ${element.name} = mx.symbol.Pooling(data=${input},
             kernel=(${tc.join(element.kernel, ",")}),
-            pool_type=${element.poolType},
+            pool_type="${element.poolType}",
             stride=(${tc.join(element.stride, ",")}),
             name="${element.name}")
 <#include "OutputShape.ftl">
