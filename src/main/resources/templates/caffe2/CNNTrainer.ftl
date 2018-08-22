@@ -16,6 +16,9 @@ if __name__ == "__main__":
 <#if (config.batchSize)??>
         batch_size = ${config.batchSize},
 </#if>
+<#if (config.numEpoch)??>
+        num_epoch = ${config.numEpoch},
+</#if>
 <#if (config.loadCheckpoint)??>
         load_checkpoint = ${config.loadCheckpoint?string("True","False")},
 </#if>
@@ -24,6 +27,9 @@ if __name__ == "__main__":
 </#if>
 <#if (config.normalize)??>
         normalize = ${config.normalize?string("True","False")},
+</#if>
+<#if (config.evalMetric)??>
+        eval_metric = '${config.evalMetric}',
 </#if>
 <#if (config.configuration.optimizer)??>
         optimizer = '${config.optimizerName}',

@@ -109,8 +109,9 @@ class CNNCreator_CifarClassifierNetwork:
             sys.exit(1)
 
 
-    def train(self, batch_size,
+    def train(self, batch_size=64,
               num_epoch=10,
+              eval_metric='acc',
               optimizer='adam',
               optimizer_params=(('learning_rate', 0.001),),
               load_checkpoint=True,
@@ -162,6 +163,7 @@ class CNNCreator_CifarClassifierNetwork:
 
         self.module.fit(
             train_data=train_iter,
+            eval_metric=eval_metric,
             eval_data=test_iter,
             optimizer=optimizer,
             optimizer_params=optimizer_params,
