@@ -446,4 +446,15 @@ public class StreamTestMojoBase extends AbstractMojo {
     }
 
     //</editor-fold>
+
+    protected static String getReadableTime(Long nanos){
+
+        long tempSec = nanos/(1000*1000*1000);
+        long ms = (nanos/(1000*1000))%1000;
+        long sec = tempSec % 60;
+        long min = (tempSec /60) % 60;
+        long hour = (tempSec /(60*60));
+        return String.format("%02d:%02d:%02d.%03d",hour,min,sec,ms);
+
+    }
 }

@@ -29,56 +29,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Mojo(name = "streamtest-middleare-generate")
-public class MiddlewareGeneratorMojo extends StreamTestMojoBase {
+public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
 
 
-
-
-    @Parameter(defaultValue = "roscpp")
-    private MiddlewareGenerator middlewareGenerator;
-    public MiddlewareGenerator getMiddlewareGenerator() {
-        return middlewareGenerator;
-    }
-    public void setMiddlewareGenerator(MiddlewareGenerator middlewareGenerator) {
-        this.middlewareGenerator = middlewareGenerator;
-    }
-
-
-    @Parameter
-    private List<String> middlewareRootModels;
-    public List<String> getMiddlewareRootModels() {
-        return middlewareRootModels;
-    }
-    public void setMiddlewareRootModels(List<String> middlewareRootModels) {
-        this.middlewareRootModels = middlewareRootModels;
-    }
-    public void addMiddlewareRootModel(String item){
-        if(middlewareRootModels == null){
-            middlewareRootModels = new ArrayList<>();
-        }
-        middlewareRootModels.add(item);
-    }
-
-    @Parameter(defaultValue = "./target/middleware")
-    protected String pathMiddlewareOut;
-    public String getPathMiddlewareOut() {
-        return pathMiddlewareOut;
-    }
-    public void setPathMiddlewareOut(String pathMiddlewareOut) {
-        this.pathMiddlewareOut = pathMiddlewareOut;
-    }
-
-
-
-    @Parameter(defaultValue = "true")
-    protected boolean runStreamTestBefore;
-    public boolean getRunStreamTestBefore() {
-        return runStreamTestBefore;
-    }
-    public void setRunStreamTestBefore(boolean runStreamTestBefore) {
-        this.runStreamTestBefore = runStreamTestBefore;
-    }
-    //</editor-fold>
 
     //<editor-fold desc="Execution">
 

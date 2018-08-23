@@ -18,25 +18,7 @@ import java.util.List;
 @Mojo(name = "streamtest-build")
 public class StreamTestBuildMojo extends StreamTestMojoBase {
 
-/*
-    private static final Template TEMPLATE_BUILDFILE_UNIX;
-    private static final Template TEMPLATE_BUILDFILE_WINDOWS;
-    static {
-        Configuration conf = new Configuration(Configuration.VERSION_2_3_23);
-        conf.setDefaultEncoding("UTF-8");
-        conf.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
-        conf.setLogTemplateExceptions(false);
-        conf.setClassForTemplateLoading(AllTemplates.class, "/template/");
-        try {
-            TEMPLATE_BUILDFILE_UNIX = conf.getTemplate("build/linux_build.ftl");
-            TEMPLATE_BUILDFILE_WINDOWS = conf.getTemplate("build/windows_build.ftl");
-        } catch (IOException e) {
-            String msg = "could not load cmake templates";
-            Log.error(msg, e);
-            throw new RuntimeException(msg, e);
-        }
-    }
-*/
+
     @Override
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
         super.preExecution();
@@ -313,17 +295,6 @@ public class StreamTestBuildMojo extends StreamTestMojoBase {
             e.printStackTrace();
             throw new MojoExecutionException("Error while chaning CMakeLists.txt for macos workaround");
         }
-    }
-
-    private static String getReadableTime(Long nanos){
-
-        long tempSec = nanos/(1000*1000*1000);
-        long ms = (nanos/(1000*1000))%1000;
-        long sec = tempSec % 60;
-        long min = (tempSec /60) % 60;
-        long hour = (tempSec /(60*60));
-        return String.format("%02d:%02d:%02d.%03d",hour,min,sec,ms);
-
     }
 
     //</editor-fold>
