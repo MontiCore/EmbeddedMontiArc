@@ -1,10 +1,10 @@
-package de.monticore.lang.montiarc.utilities;
+package de.monticore.lang.monticar.utilities;
 
-import de.monitcore.lang.montiarc.utilities.*;
+
+import de.monitcore.lang.monticar.utilities.*;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
-import static junit.framework.TestCase.fail;
 
 public class BaseTest {
 

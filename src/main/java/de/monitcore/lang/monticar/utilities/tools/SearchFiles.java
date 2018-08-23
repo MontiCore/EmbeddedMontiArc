@@ -1,4 +1,4 @@
-package de.monitcore.lang.montiarc.utilities.tools;
+package de.monitcore.lang.monticar.utilities.tools;
 
 import java.io.File;
 import java.io.IOException;

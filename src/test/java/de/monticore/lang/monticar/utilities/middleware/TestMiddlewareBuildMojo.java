@@ -1,6 +1,5 @@
-package de.monticore.lang.montiarc.utilities.middleware;
+package de.monticore.lang.monticar.utilities.middleware;
 
-import de.monticore.lang.montiarc.utilities.BaseTest;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.FixMethodOrder;

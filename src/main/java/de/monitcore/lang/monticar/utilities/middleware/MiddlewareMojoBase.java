@@ -1,6 +1,6 @@
-package de.monitcore.lang.montiarc.utilities.middleware;
+package de.monitcore.lang.monticar.utilities.middleware;
 
-import de.monitcore.lang.montiarc.utilities.StreamTestMojoBase;
+import de.monitcore.lang.monticar.utilities.StreamTestMojoBase;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.ArrayList;

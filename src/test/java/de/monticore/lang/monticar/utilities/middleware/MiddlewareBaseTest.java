@@ -1,10 +1,10 @@
-package de.monticore.lang.montiarc.utilities.middleware;
+package de.monticore.lang.monticar.utilities.middleware;
 
-import de.monitcore.lang.montiarc.utilities.middleware.MiddlewareBuildMojo;
-import de.monitcore.lang.montiarc.utilities.middleware.MiddlewareGenerator;
-import de.monitcore.lang.montiarc.utilities.middleware.MiddlewareGeneratorMojo;
-import de.monitcore.lang.montiarc.utilities.middleware.MiddlewareMojoBase;
-import de.monticore.lang.montiarc.utilities.BaseTest;
+import de.monitcore.lang.monticar.utilities.middleware.MiddlewareBuildMojo;
+import de.monitcore.lang.monticar.utilities.middleware.MiddlewareGenerator;
+import de.monitcore.lang.monticar.utilities.middleware.MiddlewareGeneratorMojo;
+import de.monitcore.lang.monticar.utilities.middleware.MiddlewareMojoBase;
+import de.monticore.lang.monticar.utilities.BaseTest;
 
 public class MiddlewareBaseTest extends BaseTest {
 

@@ -1,6 +1,6 @@
-package de.monitcore.lang.montiarc.utilities;
+package de.monitcore.lang.monticar.utilities;
 
-import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
+import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
@@ -10,7 +10,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.*;
-import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;

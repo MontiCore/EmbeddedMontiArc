@@ -1,4 +1,4 @@
-package de.monitcore.lang.montiarc.utilities.middleware;
+package de.monitcore.lang.monticar.utilities.middleware;
 
 public enum MiddlewareGenerator {
     roscpp,

@@ -1,7 +1,6 @@
-package de.monitcore.lang.montiarc.utilities;
+package de.monitcore.lang.monticar.utilities;
 
-import de.monitcore.lang.montiarc.utilities.tools.AllTemplates;
-import de.monitcore.lang.montiarc.utilities.tools.LogToFile;
+import de.monitcore.lang.monticar.utilities.tools.LogToFile;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.io.paths.ModelPath;
@@ -36,10 +35,6 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.*;
 

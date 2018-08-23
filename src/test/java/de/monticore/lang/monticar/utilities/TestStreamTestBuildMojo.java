@@ -1,4 +1,4 @@
-package de.monticore.lang.montiarc.utilities;
+package de.monticore.lang.monticar.utilities;
 
 
 import org.junit.Test;

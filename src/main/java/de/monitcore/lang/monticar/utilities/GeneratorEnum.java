@@ -1,4 +1,4 @@
-package de.monitcore.lang.montiarc.utilities;
+package de.monitcore.lang.monticar.utilities;
 
 public enum GeneratorEnum {
 

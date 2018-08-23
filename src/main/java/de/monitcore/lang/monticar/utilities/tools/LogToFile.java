@@ -1,4 +1,4 @@
-package de.monitcore.lang.montiarc.utilities.tools;
+package de.monitcore.lang.monticar.utilities.tools;
 
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Finding;

@@ -1,9 +1,6 @@
-package de.monticore.lang.montiarc.utilities.middleware;
+package de.monticore.lang.monticar.utilities.middleware;
 
 
-import de.monitcore.lang.montiarc.utilities.middleware.MiddlewareGenerator;
-import de.monitcore.lang.montiarc.utilities.middleware.MiddlewareGeneratorMojo;
-import de.monticore.lang.montiarc.utilities.BaseTest;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;

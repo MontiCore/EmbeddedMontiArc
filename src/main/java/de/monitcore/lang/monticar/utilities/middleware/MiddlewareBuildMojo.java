@@ -1,8 +1,7 @@
-package de.monitcore.lang.montiarc.utilities.middleware;
+package de.monitcore.lang.monticar.utilities.middleware;
 
-import de.monitcore.lang.montiarc.utilities.tools.LogToFile;
-import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monitcore.lang.monticar.utilities.tools.LogToFile;
+import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;

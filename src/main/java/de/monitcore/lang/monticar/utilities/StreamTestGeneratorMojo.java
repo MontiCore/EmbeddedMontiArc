@@ -1,25 +1,18 @@
-package de.monitcore.lang.montiarc.utilities;
+package de.monitcore.lang.monticar.utilities;
 
-import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
+import de.monitcore.lang.monticar.utilities.tools.SearchFiles;
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
-import de.monticore.lang.monticar.enumlang._parser.EnumLangParser;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.streamunits._ast.ASTStreamUnitsCompilationUnit;
-import de.monticore.lang.monticar.streamunits._parser.StreamUnitsParser;
 import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
-import de.monticore.lang.monticar.struct._parser.StructParser;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Joiners;
 import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.codegen.model.SerializedATN;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -29,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Mojo(name = "streamtest-generator")
 public class StreamTestGeneratorMojo extends StreamTestMojoBase {

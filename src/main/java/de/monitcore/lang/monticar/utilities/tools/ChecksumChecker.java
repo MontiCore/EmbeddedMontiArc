@@ -1,4 +1,4 @@
-package de.monitcore.lang.montiarc.utilities.tools;
+package de.monitcore.lang.monticar.utilities.tools;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;

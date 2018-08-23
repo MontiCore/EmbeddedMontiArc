@@ -1,8 +1,7 @@
-package de.monitcore.lang.montiarc.utilities;
+package de.monitcore.lang.monticar.utilities;
 
 
-import de.monitcore.lang.montiarc.utilities.tools.ChecksumChecker;
-import de.monitcore.lang.montiarc.utilities.tools.SearchFiles;
+import de.monitcore.lang.monticar.utilities.tools.ChecksumChecker;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
