@@ -3,6 +3,6 @@ package test.symtable.sub2;
 struct T4 {
   Z f1;
   Q f2;
-  Z (-10m : 1cm : 10m) f3;
+  (-10m : 1cm : 10m) f3;
   T5 f4;
 }

@@ -1,7 +1,7 @@
 package test.symtable.sub3;
 
 struct K2 {
-  Z (0 : oo) f1;
+  (0 : oo) f1;
   B f2;
   C f3;
   Z f4;

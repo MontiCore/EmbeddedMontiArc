@@ -3,5 +3,5 @@ package test.symtable;
 struct ErrAmbiguouslyReferencedStruct2 {
   B f1;
   Q f2;
-  Z (0 : oo) f3;
+  (0 : oo) f3;
 }

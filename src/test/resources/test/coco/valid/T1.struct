@@ -2,6 +2,6 @@ package test.coco.valid;
 
 struct T1 {
   B f1;
-  Z (0 : oo) f2;
+  (0 : oo) f2;
   Q f3;
 }

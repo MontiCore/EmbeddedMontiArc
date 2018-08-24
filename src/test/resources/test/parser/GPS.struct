@@ -1,6 +1,6 @@
 package test.parser;
 
 struct GPS {
-  Q (-90 : 0.001 : 90) latitude;
-  Q (-180 : 0.001 : 180) longitude;
+  (-90 : 0.001 : 90) latitude;
+  (-180 : 0.001 : 180) longitude;
 }

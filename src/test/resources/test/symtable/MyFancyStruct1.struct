@@ -11,9 +11,9 @@ struct MyFancyStruct1 {
   T3 f4;
   test.symtable.sub3.K1 f5;
   Q f6;
-  Z (0 : oo) f7;
-  Z (-10 : 10) f8;
-  Z (-10m : 10cm : 10m) f9;
+  (0 : oo) f7;
+  (-10 : 10) f8;
+  (-10m : 10cm : 10m) f9;
   B f10;
   C f11;
   S2[] f12;
