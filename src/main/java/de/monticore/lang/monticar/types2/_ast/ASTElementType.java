@@ -56,4 +56,11 @@ public class ASTElementType extends ASTElementTypeTOP {
         return isPresentName() && getName().contentEquals("C");
     }
 
+    @Override
+    public String getName() {
+        if (!super.isPresentName())
+            return "Q";
+        return super.getName();
+    }
+
 }
