@@ -8,6 +8,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
 import de.monticore.lang.monticar.generator.middleware.DistributedTargetGenerator;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -34,7 +35,8 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
     @Override
     protected void preExecution() throws MojoExecutionException, MojoFailureException {
 //        super.preExecution();
-        if(middlewareGenerator == MiddlewareGenerator.odv){
+//        if(middlewareGenerator == MiddlewareGenerator.odv){
+        if(middlewareGenerator.contains(MiddlewareGenerator.odv)){
             logError("ODV is not yet implemented!");
             throw new MojoExecutionException("ODV is not yet implemented!");
         }
@@ -96,13 +98,22 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
 
 
 
-            generator.add(new CPPGenImpl(), "cpp");
-            if(this.middlewareGenerator == MiddlewareGenerator.roscpp) {
+            if(this.middlewareGenerator.contains(MiddlewareGenerator.cpp)) {
+                logInfo("   -> Adding cpp generator");
+                generator.add(new CPPGenImpl(), "cpp");
+            }
+            if(this.middlewareGenerator.contains(MiddlewareGenerator.roscpp)){
                 logInfo("   -> Adding roscpp generator");
                 generator.add(new RosCppGenImpl(), "roscpp");
                 RosToEmamTagSchema.registerTagTypes(tagging);
                 TagHelper.resolveTags(tagging, ecis.get());
             }
+            if (this.middlewareGenerator.contains(MiddlewareGenerator.odv)) {
+                logInfo("   -> Adding odv generator");
+                generator.add(new ODVGenImpl(), "odv");
+            }
+
+
 
             try {
                 generator.generate(ecis.get(), tagging);
@@ -204,7 +215,12 @@ public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
         this.middlewareRootModels.forEach(mr -> {
             sb.append(ChecksumChecker.getChecksumForStringMD5(mr));
         });
-        return ChecksumChecker.getChecksumForStringMD5(this.middlewareGenerator.name())+sb.toString();
+
+        this.middlewareGenerator.forEach(mg -> {
+            sb.append(ChecksumChecker.getChecksumForStringMD5(mg.name()));
+        });
+
+        return sb.toString();
     }
 
 }

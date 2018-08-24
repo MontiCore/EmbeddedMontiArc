@@ -10,13 +10,23 @@ public class MiddlewareMojoBase extends StreamTestMojoBase {
 
     //<editor-fold desc="Parameter">
     @Parameter(defaultValue = "roscpp")
-    protected MiddlewareGenerator middlewareGenerator;
-    public MiddlewareGenerator getMiddlewareGenerator() {
+    protected List<MiddlewareGenerator> middlewareGenerator;
+    public List<MiddlewareGenerator> getMiddlewareGenerator() {
         return middlewareGenerator;
     }
-    public void setMiddlewareGenerator(MiddlewareGenerator middlewareGenerator) {
+    public void setMiddlewareGenerator(List<MiddlewareGenerator> middlewareGenerator) {
         this.middlewareGenerator = middlewareGenerator;
     }
+    public void addMiddlewareGenerator(MiddlewareGenerator mg){
+        if(middlewareGenerator == null){
+            middlewareGenerator = new ArrayList<>();
+        }
+
+        if(!middlewareGenerator.contains(mg)){
+            middlewareGenerator.add(mg);
+        }
+    }
+
 
 
     @Parameter

@@ -35,7 +35,8 @@ public class MiddlewareBaseTest extends BaseTest {
         setup(mmb, path, pathOut);
 
         mmb.setPathMiddlewareOut(middlewareOut);
-        mmb.setMiddlewareGenerator(MiddlewareGenerator.roscpp);
+        mmb.addMiddlewareGenerator(MiddlewareGenerator.cpp);
+        mmb.addMiddlewareGenerator(MiddlewareGenerator.roscpp);
 
         mmb.setRunStreamTestBefore(false);
 
