@@ -14,8 +14,8 @@ component CC_SetValue_edited {
 		in B CC_enabled_b,
 		in B CruiseControl_b,
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_kmh,
-		in Z(0:7) LeverUp_Stat,
-		in Z(0:7) LeverDown_Stat,
+		in (0:7) LeverUp_Stat,
+		in (0:7) LeverDown_Stat,
 		in B Enable,
 		out (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_CCSetValue;
 

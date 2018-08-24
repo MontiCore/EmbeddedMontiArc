@@ -1,11 +1,11 @@
 package autocart.navigation;
 
-component PathPlaner(Q(0:1:oo) n){
+component PathPlaner((0:1:oo) n){
     port
-        in Q(-1:1:oo) destination,
-        in Q(-1:1:oo) start,
+        in (-1:1:oo) destination,
+        in (-1:1:oo) start,
         in Q^{n,n} distMatrix,
-        in Q(-1:1:n) curPathIndex,
-        in Q(-1:1:n) prevPathIndex,
-        out Q(-1:1:n) nextPathIndex;
+        in (-1:1:n) curPathIndex,
+        in (-1:1:n) prevPathIndex,
+        out (-1:1:n) nextPathIndex;
 }

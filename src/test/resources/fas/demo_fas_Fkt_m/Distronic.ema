@@ -12,14 +12,14 @@ component Distronic {
 		in B CC_active_b,
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_ms,
 		in (0m:1m:200m) Distance_Object_m,
-		in Z(0:255) Distance_stat,
+		in (0:255) Distance_stat,
 		in (0m/s:0.28m/s:1820.39m/s) V_Obj_rel_kmh,
 		in B FTS_active_b,
 		in (0m:200m) FTS_Abstand_soll_m,
-		out Z(0:255) BrakeForce_Distronic_pc,
-		out Z(0:255) Decelerator_pc;
+		out (0:255) BrakeForce_Distronic_pc,
+		out (0:255) Decelerator_pc;
 
-	instance SwitchB<Z(0:255)> switch1, switch2, switch3, switch4, switch5, switch6;
+	instance SwitchB<(0:255)> switch1, switch2, switch3, switch4, switch5, switch6;
 	instance And and1, and2, and3, and4, and5;
 	instance Not<Boolean> not1, not2;
 	instance Distronic_Enabled dist_Enabled;

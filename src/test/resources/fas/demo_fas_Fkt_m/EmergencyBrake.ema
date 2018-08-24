@@ -9,13 +9,13 @@ component EmergencyBrake {
 		in (0m:1m:200m) Distance_Object_m,
 		in (0m/s:0.28m/s:1820.39m/s) V_Obj_rel_ms,
 		in B cond,
-		out Z(0:255) BrakeForce_Emergency_pc,
+		out (0:255) BrakeForce_Emergency_pc,
 		out B Acusti_warn_b;
 
 	instance EmergencyBrake_Function eBrake_Function;
-	instance SwitchB<Z(0:255)> switch1;
+	instance SwitchB<(0:255)> switch1;
 	instance SwitchB<Boolean> switch2;
-	instance Memory<Z(0:255)>(0) mem1;
+	instance Memory<(0:255)>(0) mem1;
 	instance Memory<Boolean>(false) mem2;
 
 	connect V_Vehicle_ms -> eBrake_Function.V_Vehicle_ms;

@@ -4,27 +4,27 @@ import fas.basicLibrary.*;
 
 component VelocityControl {
 	port
-		in Z(0:255) BrakeForceBoosted_pc,
+		in (0:255) BrakeForceBoosted_pc,
 		in (-1820.39m/s:0.28m/s:1820.39m/s) V_CC_delta_kmh,
 		in (0m/s:0.28m/s:1820.39m/s) VMax_kmh,
-		in Z(0:255) Accelaration_pedal_pc,
+		in (0:255) Accelaration_pedal_pc,
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_kmh,
-		in Z(0:255) BrakeForce_pedal_pc,
-		in Z(0:255) BrakeForce_Distronic_pc,
-		in Z(0:255) Decelerator_pc,
-		in Z(0:255) BrakeForce_Emergency_pc,
-		out Z(0:255) Accelaration_pc,
-		out Z(0:255) BrakeForce_pc;
+		in (0:255) BrakeForce_pedal_pc,
+		in (0:255) BrakeForce_Distronic_pc,
+		in (0:255) Decelerator_pc,
+		in (0:255) BrakeForce_Emergency_pc,
+		out (0:255) Accelaration_pc,
+		out (0:255) BrakeForce_pc;
 
 	instance Saturation<(-1820.39m/s:0.28m/s:1820.39m/s)> sat1, sat2;
-	instance LookUpM<(0m/s:0.28m/s:1820.39m/s),Z(0:100)> look1,look2;
-	instance Max<Z(0:255)> max1;
-	instance Max<Z(0:255),5> max2;
-	instance SwitchB<Z(0:255)> switch1;
-	instance SwitchM<Z(0:255)> switch2, switch3;
+	instance LookUpM<(0m/s:0.28m/s:1820.39m/s),(0:100)> look1,look2;
+	instance Max<(0:255)> max1;
+	instance Max<(0:255),5> max2;
+	instance SwitchB<(0:255)> switch1;
+	instance SwitchM<(0:255)> switch2, switch3;
 	instance Greater<(0m/s:0.28m/s:1820.39m/s)> greater1, greater2;
 	instance And and1;
-	instance MultDiv<Z(0:255)> mul;
+	instance MultDiv<(0:255)> mul;
 
 	connect Decelerator_pc -> mul.in1;
 	connect V_Vehicle_kmh -> greater1.in1;

@@ -1,8 +1,8 @@
 package testing;
 
 component BasicInputPortWrapped{
-    ports in Q(0 m/s^2 : 50 m/s^2) basicIn1,
-             in Q(0 m/s^2 : 50 m/s^2) basicIn2;
+    ports in (0 m/s^2 : 50 m/s^2) basicIn1,
+             in (0 m/s^2 : 50 m/s^2) basicIn2;
 
     instance BasicInputPort in1;
 

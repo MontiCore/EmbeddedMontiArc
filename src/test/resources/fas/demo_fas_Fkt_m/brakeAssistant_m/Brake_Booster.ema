@@ -5,11 +5,11 @@ import fas.basicLibrary.*;
 component Brake_Booster {
 
 	port
-		in Z(0:255) BrakeForce_pedal_pc,
-		out Z(0:255) BrakeForceBoosted_pc;
+		in (0:255) BrakeForce_pedal_pc,
+		out (0:255) BrakeForceBoosted_pc;
 
-	instance GreaterEquals<Z(0:255)> greaterEq;
-	instance SwitchB<Z(0:255)> switch1;
+	instance GreaterEquals<(0:255)> greaterEq;
+	instance SwitchB<(0:255)> switch1;
 
 	connect BrakeForce_pedal_pc -> greaterEq.in1, switch1.in3;
 	connect 70 /*demo_fas_BrakeBooster_Threshold*/ -> greaterEq.in2;

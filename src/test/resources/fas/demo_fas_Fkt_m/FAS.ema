@@ -6,23 +6,23 @@ component FAS {
     port
         in B ParkingBrake_b,
         // Winkel BrakeForce_pedal = (0°:0.2°:45°), codiert in 8-bit
-        in Z(0:255) BrakeForce_pedal_pc, // BRMS_STATUS
+        in (0:255) BrakeForce_pedal_pc, // BRMS_STATUS
         // Winkel Accelaration_pedal = (0°:0.2°:45°)
-	    in Z(0:255) Accelaration_pedal_pc, // GAS_STATUS
+	    in (0:255) Accelaration_pedal_pc, // GAS_STATUS
         in B CruiseControl_b,
 		in B Limiter_b,
-		in Z(0:7) LeverUp_stat, // TMP_POS
-		in Z(0:7) LeverDown_stat, // TMP_POS
+		in (0:7) LeverUp_stat, // TMP_POS
+		in (0:7) LeverDown_stat, // TMP_POS
         // Geschwindigkeit = (0km/h:0.1km/h:6553.4km/h)
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_kmh, // R_Fahrzeuggeschwindigkeit_kmh
-		in Z(0:255) V_Sign_kmh, // R_TrafficSign, 8-bit Datenstruktur
+		in (0:255) V_Sign_kmh, // R_TrafficSign, 8-bit Datenstruktur
 		in B Sign_b,
-		in Z(0:255) Distance_stat, // RDR_DETECT, 8-bit Datenstruktur
+		in (0:255) Distance_stat, // RDR_DETECT, 8-bit Datenstruktur
         in (0m/s:2.8m/s:1820.39m/s) V_Obj_rel_kmh,
         in (0m:1m:200m) Distance_Object_m, // siehe: RDR_DETECT
         out B CC_active_b,
-        out Z(0:255) Accelaration_pc,
-        out Z(0:255) BrakeForce_pc,
+        out (0:255) Accelaration_pc,
+        out (0:255) BrakeForce_pc,
         out (0m/s:2.8m/s:1820.39m/s) CCSetValue_kmh,
         out (0m/s:2.8m/s:1820.39m/s) LimiterSetValue_kmh,
         out B Limiter_active_b,

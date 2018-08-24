@@ -4,8 +4,8 @@ import fas.demo_fas_Fkt_m.brakeAssistant_m.Brake_Booster;
 
 component BrakeAssistant {
 	port
-		in Z(0:255) BrakeForce_pedal_pc,
-		out Z(0:255) BrakeForceBoosted_pc;
+		in (0:255) BrakeForce_pedal_pc,
+		out (0:255) BrakeForceBoosted_pc;
 
 	instance Brake_Booster brake;
 
