@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Checks if MiddlewareRootModels are available and
+ * generates cpp / roscpp / odv code for the given emam models
+ */
 @Mojo(name = "streamtest-middleare-generate")
 public class MiddlewareGeneratorMojo extends MiddlewareMojoBase {
 

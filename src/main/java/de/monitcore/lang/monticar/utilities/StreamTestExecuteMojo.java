@@ -15,6 +15,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Runs stream tests executables and checks if their output is valid
+ */
 @Mojo(name = "streamtest-execute")
 public class StreamTestExecuteMojo extends StreamTestMojoBase {
     protected List<ComponentSymbol> toRun;

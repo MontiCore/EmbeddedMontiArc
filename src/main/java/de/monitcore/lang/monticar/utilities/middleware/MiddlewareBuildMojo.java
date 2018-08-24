@@ -16,6 +16,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * runs cmake and make for generated c++ code of given middlewarerootmodels
+ */
 @Mojo(name = "streamtest-middleare-build")
 public class MiddlewareBuildMojo extends MiddlewareMojoBase {
 

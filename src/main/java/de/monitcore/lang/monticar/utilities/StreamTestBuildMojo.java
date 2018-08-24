@@ -14,6 +14,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * builds the executable stream test out of the generated c++ code for testable components
+ */
 @Mojo(name = "streamtest-build")
 public class StreamTestBuildMojo extends StreamTestMojoBase {
 

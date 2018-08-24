@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 
+/**
+ * Runs CoCos test on all components in pathMain and pathTest
+ * Generates c++ code for all components which have a stream test
+ */
 @Mojo(name = "streamtest-generator")
 public class StreamTestGeneratorMojo extends StreamTestMojoBase {
 
