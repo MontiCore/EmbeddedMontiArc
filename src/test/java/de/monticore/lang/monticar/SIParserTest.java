@@ -269,7 +269,7 @@ public class SIParserTest {
     @Test
     public void testRangeDegreeUnit1() throws IOException {
         Types2Parser parser = new Types2Parser();
-        ASTElementType ast = parser.parse_StringElementType("Q(10 deg: 0.1 : 45 )").orElse(null);
+        ASTElementType ast = parser.parse_StringElementType("(10 deg: 0.1 : 45 )").orElse(null);
         assertNotNull(ast);
 
     }
@@ -278,7 +278,7 @@ public class SIParserTest {
     @Test
     public void testRangeDegreeUnit2() throws IOException {
         Types2Parser parser = new Types2Parser();
-        ASTElementType ast = parser.parse_StringElementType("Q(-90°:0.001°:90°)").orElse(null);
+        ASTElementType ast = parser.parse_StringElementType("(-90°:0.001°:90°)").orElse(null);
         assertNotNull(ast);
 
     }

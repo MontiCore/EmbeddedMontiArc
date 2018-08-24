@@ -55,6 +55,7 @@ public class NumberUnitParserTest {
         Log.getFindings().clear();
     }
 
+    @Ignore
     @Test
     public void testDegree20() throws IOException {
         NumberUnitParser parser = new NumberUnitParser();

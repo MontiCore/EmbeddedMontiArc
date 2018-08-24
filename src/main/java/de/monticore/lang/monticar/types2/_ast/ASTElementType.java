@@ -32,28 +32,28 @@ public class ASTElementType extends ASTElementTypeTOP {
     public ASTElementType() {
     }
 
-    public ASTElementType(String name, Optional<ASTRange> range) {
+    public ASTElementType(Optional<String> name, Optional<ASTRange> range) {
         super(name, range);
     }
 
     public boolean isBoolean() {
-        return getName().contentEquals("B") || getName().contentEquals("Boolean");
+        return isPresentName() &&  getName().contentEquals("B") || getName().contentEquals("Boolean");
     }
 
     public boolean isNaturalNumber() {
-        return getName().contentEquals("N");
+        return isPresentName() && getName().contentEquals("N");
     }
 
     public boolean isWholeNumber() {
-        return getName().contentEquals("Z");
+        return isPresentName() && getName().contentEquals("Z");
     }
 
     public boolean isRational() {
-        return getName().contentEquals("Q");
+        return isPresentName() && getName().contentEquals("Q");
     }
 
     public boolean isComplex() {
-        return getName().contentEquals("C");
+        return isPresentName() && getName().contentEquals("C");
     }
 
 }
