@@ -9,7 +9,7 @@ component Limiter_Enabled {
 
 	port
 		in B Limiter_b,
-		in Z(0:255) Accelaration_pedal_pc,
+		in (0:255) Accelaration_pedal_pc,
 		in (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_LimiterSetValue,
 		out (0m/s:0.28m/s:1820.39m/s) VMax_kmh,
 		out B Limiter_active_b;

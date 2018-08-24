@@ -7,8 +7,8 @@ component Distronic_FTS_Enabled {
 		in (0m:200m) Distance_Object_m,
 		in (0m:200m) FTS_Abstand_soll_m,
 		in (-1820.39m/s:0.28m/s:1820.39m/s) V_Obj_rel_kmh,
-		out Z(0:255) BrakeForce_Distronic_pc,
-		out Z(0:255) Decelerator_pc;
+		out (0:255) BrakeForce_Distronic_pc,
+		out (0:255) Decelerator_pc;
 
 	instance PlusMinus<(0m:200m)> plusMinus1;
 	instance LookUpM<(-1820.39m/s:0.28m/s:1820.39m/s),Z(0:255)> look1, look2;

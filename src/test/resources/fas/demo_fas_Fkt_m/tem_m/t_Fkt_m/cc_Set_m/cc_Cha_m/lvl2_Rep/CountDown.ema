@@ -7,7 +7,7 @@ component CountDown {
 		in B E,
 		in B R,
 		in B Enable,
-		in Z(1:10) IV, // delay auto repeat
+		in (1:10) IV, // delay auto repeat
 		out B y;
 
 	instance SwitchB<Z(1:10)> switch_R, switch_C, switch1;

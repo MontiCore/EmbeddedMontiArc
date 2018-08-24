@@ -7,8 +7,8 @@ import fas.demo_fas_Fkt_m.tem_m.t_Fkt_m.cc_Set_m.cc_Cha_m.CC_ChangeSetValue_Lvl2
 component CC_ChangeSetValue_edited {
 
 	port
-		in Z(0:7) LeverUp_Stat,
-		in Z(0:7) LeverDown_Stat,
+		in (0:7) LeverUp_Stat,
+		in (0:7) LeverDown_Stat,
 		in (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_CCSetValue_Read,
 		in B Enable,
 		in B If,

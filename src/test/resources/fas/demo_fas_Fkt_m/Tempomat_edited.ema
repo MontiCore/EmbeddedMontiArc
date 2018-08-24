@@ -6,13 +6,13 @@ import fas.demo_fas_Fkt_m.tem_m.Tempomat_Function_edited;
 component Tempomat_edited {
 	port
 		in B ParkingBrake_b,
-	    in Z(0:255) BrakeForce_pedal_pc,
+	    in (0:255) BrakeForce_pedal_pc,
 		in B CruiseControl_b,
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_kmh,
 		in B Limiter_b,
 		in B FTS_active_b,
-		in Z(0:7) LeverUp_Stat,
-		in Z(0:7) LeverDown_Stat,
+		in (0:7) LeverUp_Stat,
+		in (0:7) LeverDown_Stat,
 		in B Enable,
 		out (0m/s:0.28m/s:1820.39m/s) V_CC_delta_kmh,
 		out B CC_active_b;

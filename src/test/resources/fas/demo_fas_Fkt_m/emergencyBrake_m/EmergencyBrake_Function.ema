@@ -7,7 +7,7 @@ component EmergencyBrake_Function {
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_ms,
 		in (0m:200m) Distance_Object_m,
 		in (-1820.39m/s:0.28m/s:1820.39m/s) V_Obj_rel_ms,
-		out Z(0:255) BrakeForce_Emergency_pc,
+		out (0:255) BrakeForce_Emergency_pc,
 		out B Acusti_warn_b;
 
 	instance Saturation<(1m/s:0.28m/s:1820.39m/s)> sat1, sat2, sat3;

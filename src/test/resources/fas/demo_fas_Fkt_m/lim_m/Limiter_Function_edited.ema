@@ -11,11 +11,11 @@ import fas.demo_fas_Fkt_m.lim_m.lim_Fkt_m.Limiter_InitialSetValue;
 component Limiter_Function_edited {
 	port
 		in B Limiter_b,
-		in Z(0:255) Accelaration_pedal_pc,
+		in (0:255) Accelaration_pedal_pc,
 		in (0m/s:0.28m/s:1820.39m/s) V_Vehicle_kmh,
-		in Z(0:7) LeverUp_stat,
-		in Z(0:7) LeverDown_stat,
-		in Z(0:255) V_Sign_kmh,
+		in (0:7) LeverUp_stat,
+		in (0:7) LeverDown_stat,
+		in (0:255) V_Sign_kmh,
 		in B Sign_b,
 		in B Enable,
 		out (0m/s:0.28m/s:1820.39m/s) VMax_kmh,

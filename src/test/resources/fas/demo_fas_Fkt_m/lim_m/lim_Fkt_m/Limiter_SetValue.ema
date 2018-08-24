@@ -6,8 +6,8 @@ import fas.demo_fas_Fkt_m.lim_m.lim_Fkt_m.lim_SetVal_m.V_LimSetValueMinus;
 
 component Limiter_SetValue {
 	port
-		in Z(0:7) LeverUp_stat,
-		in Z(0:7) LeverDown_stat,
+		in (0:7) LeverUp_stat,
+		in (0:7) LeverDown_stat,
 		in (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_LimiterSetValue_Read,
 		in B Enabled_Cond,
 		out (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_LimiterSetValue_Write;

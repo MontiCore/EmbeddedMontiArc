@@ -4,8 +4,8 @@ import fas.basicLibrary.*;
 
 component Distronic_Disabled {
 	port
-		out Z(0:255) BrakeForce_Distronic_pc,
-		out Z(0:255) Decelerator_pc;
+		out (0:255) BrakeForce_Distronic_pc,
+		out (0:255) Decelerator_pc;
 
 
 	connect 0 -> BrakeForce_Distronic_pc;
