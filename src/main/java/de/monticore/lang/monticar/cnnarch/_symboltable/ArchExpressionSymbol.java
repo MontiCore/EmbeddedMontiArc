@@ -178,6 +178,9 @@ abstract public class ArchExpressionSymbol extends CommonSymbol {
         if (optValue.isPresent() && (optValue.get() instanceof Integer)){
             return Optional.of((Integer) optValue.get());
         }
+        else if (optValue.isPresent() && (optValue.get() instanceof Double) && (((Double)optValue.get()  % 1)== 0)) {
+            return Optional.of(((Double) optValue.get()).intValue());
+        }
         return Optional.empty();
     }
 
