@@ -11,11 +11,11 @@ component Distronic_Enabled {
 		out (0:255) BrakeForce_Distronic_pc,
 		out (0:255) Decelerator_pc;
 
-	instance SwitchMultiport<Q(0:255),3> switch1;
-	instance SwitchB<Z(0:255)> switch2;
+	instance SwitchMultiport<(0:255),3> switch1;
+	instance SwitchB<(0:255)> switch2;
 	instance Multiplication<(0m/s:0.28m/s:1820.39m/s)> mult1, mult2, mult3;
 	instance PlusMinusPlus<(-oo:d:oo)> pmp1;
-	instance LookUpM<(-1820.39m/s:0.28m/s:1820.39m/s),Z(0:255)> look1, look2, look3, look4, look5;
+	instance LookUpM<(-1820.39m/s:0.28m/s:1820.39m/s),(0:255)> look1, look2, look3, look4, look5;
 	instance Smaller<(0m:200m)> smaller1;
 
 	connect Distance_stat -> switch1.in1;

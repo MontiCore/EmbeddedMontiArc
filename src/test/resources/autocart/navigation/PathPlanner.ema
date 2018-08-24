@@ -1,6 +1,6 @@
 package autocart.navigation;
 
-component PathPlaner(Q(0:1:oo) n){
+component PathPlaner((0:1:oo) n){
     port
         in (-1:1:oo) destination,
         in (-1:1:oo) start,

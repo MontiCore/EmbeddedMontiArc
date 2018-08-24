@@ -18,7 +18,7 @@ component CC_ChangeSetValue_Lvl2_Repeater {
 		out (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_CCSetValue;
 
 
-	instance Equals<Z(0:7)> eq1, eq2, eq3, eq4;
+	instance Equals<(0:7)> eq1, eq2, eq3, eq4;
 	instance Or<4> or;
 	instance Or<3> or2;
 	instance Not<Boolean> not1, not2;

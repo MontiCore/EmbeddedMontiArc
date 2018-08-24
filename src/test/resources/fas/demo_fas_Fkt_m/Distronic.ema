@@ -19,7 +19,7 @@ component Distronic {
 		out (0:255) BrakeForce_Distronic_pc,
 		out (0:255) Decelerator_pc;
 
-	instance SwitchB<Z(0:255)> switch1, switch2, switch3, switch4, switch5, switch6;
+	instance SwitchB<(0:255)> switch1, switch2, switch3, switch4, switch5, switch6;
 	instance And and1, and2, and3, and4, and5;
 	instance Not<Boolean> not1, not2;
 	instance Distronic_Enabled dist_Enabled;

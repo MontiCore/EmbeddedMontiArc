@@ -17,8 +17,8 @@ component CC_On_Off {
 		out B CC_active_b;
 
 	instance Not<Boolean> not1, not2, not3;
-	instance Greater<Z(0:7)> greater1, greater2;
-	instance Greater<Z(0:255)> greater3;
+	instance Greater<(0:7)> greater1, greater2;
+	instance Greater<(0:255)> greater3;
 	instance Less<(0m/s:0.28m/s:1820.39m/s)> less1;
 	instance And and1, and2;
 	instance Or or1, or2;

@@ -22,16 +22,16 @@ component Limiter_Function_edited {
 	    out B Limiter_active_b,
 		out (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_CCSetValue;
 
-	instance SwitchB<Z(0:255)> switch1, switch2;
+	instance SwitchB<(0:255)> switch1, switch2;
 	instance SwitchB<(0m/s:0.28m/s:1820.39m/s)> switch3, switch6, switch7, switch8;
-	instance SwitchB<Z(0:7)> switch4, switch5;
+	instance SwitchB<(0:7)> switch4, switch5;
 	instance SwitchB<Boolean> switch9, switch10, switch11;
-	instance Memory<Z(0:255)>(0) mem1, mem2;
-	instance Memory<Z(0:7)> mem4, mem5;
+	instance Memory<(0:255)>(0) mem1, mem2;
+	instance Memory<(0:7)> mem4, mem5;
 	instance Memory<(0m/s:0.28m/s:1820.39m/s)> mem3, mem6, mem7, mem8;
 	instance Memory<Boolean>(false) mem9, mem10, mem11;
 	instance And and1;
-	instance Min<Z(0:255)> min1;
+	instance Min<(0:255)> min1;
 	instance Limiter_Enabled_edited lim_Enabled;
 	instance Limiter_StartUpSetValue lim_StartUpSetValue;
 	instance Limiter_InitialSetValue lim_InitialSetValue;

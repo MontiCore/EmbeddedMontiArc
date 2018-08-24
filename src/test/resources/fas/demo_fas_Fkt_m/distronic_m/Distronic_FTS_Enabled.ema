@@ -11,10 +11,10 @@ component Distronic_FTS_Enabled {
 		out (0:255) Decelerator_pc;
 
 	instance PlusMinus<(0m:200m)> plusMinus1;
-	instance LookUpM<(-1820.39m/s:0.28m/s:1820.39m/s),Z(0:255)> look1, look2;
+	instance LookUpM<(-1820.39m/s:0.28m/s:1820.39m/s),(0:255)> look1, look2;
 	instance Smaller<(0m:200m)> smaller1;
-	instance Multiplication<Z(0:255)> mult1;
-	instance SwitchB<Z(0:255)> switch1;
+	instance Multiplication<(0:255)> mult1;
+	instance SwitchB<(0:255)> switch1;
 
 	connect Distance_Object_m -> smaller1.in1, plusMinus1.in1;
 	connect FTS_Abstand_soll_m -> plusMinus1.in2;

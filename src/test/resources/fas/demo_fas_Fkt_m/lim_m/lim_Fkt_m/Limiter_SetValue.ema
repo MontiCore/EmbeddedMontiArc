@@ -12,9 +12,9 @@ component Limiter_SetValue {
 		in B Enabled_Cond,
 		out (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_LimiterSetValue_Write;
 
-	instance Greater<Z(0:7)> greater1, greater2;
-	instance Memory<Z(0:7)>(0) mem1, mem2;
-	instance SwitchB<Z(0:7)> switch1, switch2;
+	instance Greater<(0:7)> greater1, greater2;
+	instance Memory<(0:7)>(0) mem1, mem2;
+	instance SwitchB<(0:7)> switch1, switch2;
 	instance SwitchB<(0m/s:0.28m/s:1820.39m/s)> switch3;
 	instance V_LimSetValuePlus plus;
 	instance V_LimSetValueMinus minus;

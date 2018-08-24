@@ -14,7 +14,7 @@ component Limiter_Enabled {
 		out (0m/s:0.28m/s:1820.39m/s) VMax_kmh,
 		out B Limiter_active_b;
 
-	instance Smaller<Z(0:255)> smaller1;
+	instance Smaller<(0:255)> smaller1;
 	instance And and1;
 	instance Not<Boolean> not1, not2;
 	instance EdgeRising eRising;

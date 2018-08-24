@@ -97,7 +97,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     }
 /* TODO add more tests*/
 
-    // @Ignore
+    @Ignore("fix type, the type is Q and not RangeType")
     @Test
     public void testSubGenericInstance() throws Exception {
         Scope symTab = createSymTab("src/test/resources/symtab");

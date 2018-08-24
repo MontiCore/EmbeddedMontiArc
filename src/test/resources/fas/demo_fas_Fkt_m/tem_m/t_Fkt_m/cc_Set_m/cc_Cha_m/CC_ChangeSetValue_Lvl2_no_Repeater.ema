@@ -14,7 +14,7 @@ component CC_ChangeSetValue_Lvl2_no_Repeater {
 		in B Enable,
 		out (0m/s:0.28m/s:1820.39m/s) DEMO_FAS_V_CCSetValue;
 
-	instance Equals<Z(0:7)> eq1, eq2, eq3, eq4;
+	instance Equals<(0:7)> eq1, eq2, eq3, eq4;
 	instance V_SetValuePlusLvl2 v_SetValuePlus2;
 	instance V_SetValuePlus v_SetValuePlus;
 	instance V_SetValueMinus v_SetValueMinus;
