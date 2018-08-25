@@ -276,10 +276,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             double motorTorque = r_nom * motorForce;
             System.out.println(motorTorque);
             // Assume equal 4 wheel drive
-            vehicleDynamicsModel.setValue("tau_D_1", motorTorque / 4);
-            vehicleDynamicsModel.setValue("tau_D_2", motorTorque / 4);
-            vehicleDynamicsModel.setValue("tau_D_3", motorTorque / 4);
-            vehicleDynamicsModel.setValue("tau_D_4", motorTorque / 4);
+            vehicleDynamicsModel.setInput("tau_D_1", motorTorque / 4);
+            vehicleDynamicsModel.setInput("tau_D_2", motorTorque / 4);
+            vehicleDynamicsModel.setInput("tau_D_3", motorTorque / 4);
+            vehicleDynamicsModel.setInput("tau_D_4", motorTorque / 4);
             // Get brake acceleration and convert it in torque
             double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
             double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
@@ -293,19 +293,19 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             double brakeTorque2 = r_nom * brakeForce2;
             double brakeTorque3 = r_nom * brakeForce3;
             double brakeTorque4 = r_nom * brakeForce4;
-            vehicleDynamicsModel.setValue("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
+            vehicleDynamicsModel.setInput("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
             System.out.println(omega_wheel_1 + " " + brakeTorque1 * Math.tanh(omega_wheel_1));
-            vehicleDynamicsModel.setValue("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
-            vehicleDynamicsModel.setValue("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
-            vehicleDynamicsModel.setValue("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
+            vehicleDynamicsModel.setInput("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
+            vehicleDynamicsModel.setInput("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
+            vehicleDynamicsModel.setInput("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
             // Get steering angle
             double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
-            vehicleDynamicsModel.setValue("delta_1", steeringAngle);
-            vehicleDynamicsModel.setValue("delta_2", steeringAngle);
+            vehicleDynamicsModel.setInput("delta_1", steeringAngle);
+            vehicleDynamicsModel.setInput("delta_2", steeringAngle);
             // Express the force vector in local coordinates
             RealVector localForce = rotation.transpose().operate(force);
-            vehicleDynamicsModel.setValue("F_ext_x", localForce.getEntry(0));
-            vehicleDynamicsModel.setValue("F_ext_y", localForce.getEntry(1));
+            vehicleDynamicsModel.setInput("F_ext_x", localForce.getEntry(0));
+            vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
             // todo Take the wheel positions and get the frictions coefficients
 
             // Exchange values
@@ -390,8 +390,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double rightToLeftAngle = (Math.PI / 2) - Vector3D.angle(XYPlaneNorm, rightToLeft);
 
         if(physicalVehicleInitialized) {
-            vehicleDynamicsModel.setValue("slope", backToFrontAngle);
-            vehicleDynamicsModel.setValue("bank", rightToLeftAngle);
+            vehicleDynamicsModel.setInput("slope", backToFrontAngle);
+            vehicleDynamicsModel.setInput("bank", rightToLeftAngle);
         }
 
         //The resulting rotation should transform the XY plane norm to the roadPlaneNorm
@@ -551,10 +551,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void initPhysics() {
         if(!physicalVehicleInitialized) {
+            // Set parameters for the VDM
+
             // Initialize the modelica components
             vehicleDynamicsModel.initialize();
-
-            //The input values for a stationary car with no rotation and external influences are already encoded in the FMUs
 
             //Shift position and geometryPositionOffset
             double z = vehicleDynamicsModel.getValue("z");
@@ -566,7 +566,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             rotation = coordinateRotation.copy();
             yaw_angle = 0.0;
 
-            //Overwrite parameters in vehicle with the FDU values
+            //Overwrite parameters in vehicle with FDU values
             simulationVehicle.setMass(vehicleDynamicsModel.getValue("m"));
             simulationVehicle.setWheelDistLeftRightFrontSide(vehicleDynamicsModel.getValue("TW_f"));
             simulationVehicle.setWheelDistLeftRightBackSide(vehicleDynamicsModel.getValue("TW_r"));
@@ -599,10 +599,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double motorForce = m * motorAcceleration;
         double motorTorque = r_nom * motorForce;
         // Assume equal 4 wheel drive
-        vehicleDynamicsModel.setValue("tau_D_1", motorTorque / 4);
-        vehicleDynamicsModel.setValue("tau_D_2", motorTorque / 4);
-        vehicleDynamicsModel.setValue("tau_D_3", motorTorque / 4);
-        vehicleDynamicsModel.setValue("tau_D_4", motorTorque / 4);
+        vehicleDynamicsModel.setInput("tau_D_1", motorTorque / 4);
+        vehicleDynamicsModel.setInput("tau_D_2", motorTorque / 4);
+        vehicleDynamicsModel.setInput("tau_D_3", motorTorque / 4);
+        vehicleDynamicsModel.setInput("tau_D_4", motorTorque / 4);
         // Get brake acceleration and convert it in torque
         double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
         double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
@@ -616,18 +616,18 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double brakeTorque2 = r_nom * brakeForce2;
         double brakeTorque3 = r_nom * brakeForce3;
         double brakeTorque4 = r_nom * brakeForce4;
-        vehicleDynamicsModel.setValue("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
-        vehicleDynamicsModel.setValue("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
-        vehicleDynamicsModel.setValue("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
-        vehicleDynamicsModel.setValue("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
+        vehicleDynamicsModel.setInput("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
+        vehicleDynamicsModel.setInput("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
+        vehicleDynamicsModel.setInput("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
+        vehicleDynamicsModel.setInput("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
         // Get steering angle
         double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
-        vehicleDynamicsModel.setValue("delta_1", steeringAngle);
-        vehicleDynamicsModel.setValue("delta_2", steeringAngle);
+        vehicleDynamicsModel.setInput("delta_1", steeringAngle);
+        vehicleDynamicsModel.setInput("delta_2", steeringAngle);
         // Express the force vector in local coordinates
         RealVector localForce = rotation.transpose().operate(force);
-        vehicleDynamicsModel.setValue("F_ext_x", localForce.getEntry(0));
-        vehicleDynamicsModel.setValue("F_ext_y", localForce.getEntry(1));
+        vehicleDynamicsModel.setInput("F_ext_x", localForce.getEntry(0));
+        vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
         // todo Take the wheel positions and get the frictions coefficients
 
         // Store z coordinate for interpolation later

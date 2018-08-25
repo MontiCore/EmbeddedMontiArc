@@ -83,11 +83,29 @@ public class VehicleDynamicsModel {
     }
 
     /**
-     * Function that sets a value into the corresponding FMU
-     * @param name Name of the value to be set
+     * Function that sets a parameter value into the corresponding FMU
+     * @param name Name of the parameter value to be set
      * @param value New value to be set
      */
-    public void setValue(String name, double value){
+    public void setParameter(String name, double value){
+        if(!isInitialized) {
+            switch (name) {
+                default:
+                    System.out.println(name + " wants to be written!");
+                    break;
+            }
+            needsExchanging = true;
+        }else{
+            //todo error if already initialized
+        }
+    }
+
+    /**
+     * Function that sets a input value into the corresponding FMU
+     * @param name Name of the input value to be set
+     * @param value New value to be set
+     */
+    public void setInput(String name, double value){
         if(isInitialized) {
             switch (name) {
                 case "bank":

@@ -542,6 +542,7 @@ public class SimulateVehicleTest {
         // After 5 seconds, value should be reached
         sim.stopAfter(6000);
         sim.startSimulation();
+        System.out.println(physicalVehicle);
 
         // Set actuator values for testing
         VehicleActuator brakes1 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT);
@@ -595,6 +596,7 @@ public class SimulateVehicleTest {
 
         sim.extendSimulationTime(6000);
         sim.startSimulation();
+        System.out.println(physicalVehicle);
 
 
         //assertTrue(motor.getActuatorValueCurrent() == Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
