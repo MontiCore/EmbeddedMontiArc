@@ -20,13 +20,13 @@ public class VehicleDynamicsModel {
     private Simulation tires;
 
     /** Flag whether the VDM has been initialized */
-    private boolean isInitialized = false;
+    private boolean isInitialized;
 
     /** Flag whether the VDM has been terminated */
     //private boolean isTerminated = false;
 
     /** Flag whether the FDUs need to exchange their values */
-    private boolean needsExchanging = false;
+    private boolean needsExchanging;
 
     /**
      * Constructor for an uninitialized VDM
@@ -36,20 +36,21 @@ public class VehicleDynamicsModel {
         chassis = new Simulation("lib/Chassis.fmu");
         suspension = new Simulation("lib/Suspension.fmu");
         tires = new Simulation("lib/Tires.fmu");
+        isInitialized = false;
+        needsExchanging= false;
     }
 
     /**
      * Function that initialized the VDM
      * Should only be called by physicalVehicleBuilder
-     * @param startTime Start time of the calculations
-     * @param stopTime Stop time of the calculation
      */
-    public void initialize(double startTime, double stopTime){
+    public void initialize(){
         if(!isInitialized) {
-            inputFilter.init(startTime, stopTime);
-            chassis.init(startTime, stopTime);
-            suspension.init(startTime, stopTime);
-            tires.init(startTime, stopTime);
+            double stopTime = 10.0;
+            inputFilter.init(0, stopTime);
+            chassis.init(0, stopTime);
+            suspension.init(0, stopTime);
+            tires.init(0, stopTime);
             isInitialized = true;
             exchangeValues();
         }else{
@@ -130,7 +131,6 @@ public class VehicleDynamicsModel {
         if(isInitialized) {
             if (needsExchanging) {
                 exchangeValues();
-                needsExchanging = false;
             }
             switch (name) {
                 case "r_nom":
@@ -202,5 +202,6 @@ public class VehicleDynamicsModel {
         chassis.write("F_y_2").with(tires.read("F_y_2").asDouble());
         chassis.write("F_y_3").with(tires.read("F_y_3").asDouble());
         chassis.write("F_y_4").with(tires.read("F_y_4").asDouble());
+        needsExchanging = false;
     }
 }

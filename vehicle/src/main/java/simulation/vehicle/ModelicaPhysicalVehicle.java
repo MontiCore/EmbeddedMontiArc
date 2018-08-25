@@ -326,7 +326,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        System.out.println(this);
     }
 
     /**
@@ -553,7 +552,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     public void initPhysics() {
         if(!physicalVehicleInitialized) {
             // Initialize the modelica components
-            vehicleDynamicsModel.initialize(0.0, 10.0);
+            vehicleDynamicsModel.initialize();
 
             //The input values for a stationary car with no rotation and external influences are already encoded in the FMUs
 
