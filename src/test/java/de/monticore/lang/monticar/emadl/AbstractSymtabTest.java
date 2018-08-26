@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl;
 
-import de.monticore.lang.monticar.emadl.generator.AbstractSymtab;
+import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Assert;
 
@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 public class AbstractSymtabTest {
     protected static TaggingResolver createSymTab(String... modelPath) {
 
-        return AbstractSymtab.createSymTabAndTaggingResolver(modelPath);
+        return EMADLAbstractSymtab.createSymTabAndTaggingResolver(modelPath);
     }
 
     public static void checkFilesAreEqual(Path generationPath, Path resultsPath, List<String> fileNames) {

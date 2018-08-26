@@ -26,6 +26,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class EMADLGeneratorCli {
 
@@ -49,6 +50,12 @@ public class EMADLGeneratorCli {
             .hasArg(true)
             .required(false)
             .build();
+    public static final Option OPTION_BACKEND = Option.builder("b")
+            .longOpt("backend")
+            .desc("deep-learning-framework backend. Options: MXNET, CAFFE2")
+            .hasArg(true)
+            .required(false)
+            .build();
 
     private EMADLGeneratorCli() {
     }
@@ -67,6 +74,7 @@ public class EMADLGeneratorCli {
         options.addOption(OPTION_MODELS_PATH);
         options.addOption(OPTION_ROOT_MODEL);
         options.addOption(OPTION_OUTPUT_PATH);
+        options.addOption(OPTION_BACKEND);
         return options;
     }
 
@@ -85,7 +93,21 @@ public class EMADLGeneratorCli {
     private static void runGenerator(CommandLine cliArgs) {
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
-        EMADLGenerator generator = new EMADLGenerator();
+        String backendString = cliArgs.getOptionValue(OPTION_BACKEND.getOpt());
+        final String DEFAULT_BACKEND = "MXNET";
+
+        if (backendString == null) {
+            Log.warn("backend not specified. backend set to default value " + DEFAULT_BACKEND);
+            backendString = DEFAULT_BACKEND;
+        }
+
+        Optional<Backend> backend = Backend.getBackendFromString(backendString);
+        if (!backend.isPresent()){
+            Log.warn("specified backend " + backendString + " not supported. backend set to default value " + DEFAULT_BACKEND);
+            backend = Backend.getBackendFromString(DEFAULT_BACKEND);
+        }
+        EMADLGenerator generator = new EMADLGenerator(backend.get());
+
         if (outputPath != null){
             generator.setGenerationTargetPath(outputPath);
         }

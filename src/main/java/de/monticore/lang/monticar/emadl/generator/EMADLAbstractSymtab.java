@@ -44,7 +44,10 @@ import de.monticore.symboltable.Scope;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-public class AbstractSymtab {
+public class EMADLAbstractSymtab {
+    public EMADLAbstractSymtab() {
+    }
+
     public static TaggingResolver createSymTabAndTaggingResolver(String... modelPath) {
         Scope scope = createSymTab(modelPath);
         TaggingResolver tagging = new TaggingResolver(scope, Arrays.asList(modelPath));

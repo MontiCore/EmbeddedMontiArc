@@ -13,6 +13,4 @@ component Cifar10Classifier{
     connect image -> net.data;
     connect net.softmax -> calculateClass.inputVector;
     connect calculateClass.maxIndex -> classIndex;
-
-    }
 }

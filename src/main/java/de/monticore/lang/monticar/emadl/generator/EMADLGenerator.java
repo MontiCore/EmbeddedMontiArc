@@ -22,14 +22,18 @@ package de.monticore.lang.monticar.emadl.generator;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.math.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnnarch.generator.CNNArchGenerator;
+import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
+import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
-import de.monticore.lang.monticar.cnntrain.generator.CNNTrainGenerator;
+import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
@@ -42,11 +46,10 @@ import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.Splitters;
 import de.se_rwth.commons.logging.Log;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -55,18 +58,18 @@ import java.util.*;
 
 public class EMADLGenerator {
 
-    public static final String CNN_HELPER = "CNNTranslator";
-    public static final String CNN_TRAINER = "CNNTrainer";
-
     private GeneratorCPP emamGen;
+    private CNNArchGenerator cnnArchGenerator;
 
-    public EMADLGenerator() {
+    private String modelsPath;
+
+
+    public EMADLGenerator(Backend backend) {
         emamGen = new GeneratorCPP();
         emamGen.useArmadilloBackend();
         emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
+        cnnArchGenerator = backend.getGenerator();
     }
-
-    private String modelsPath;
 
     public String getModelsPath() {
         return modelsPath;
@@ -100,7 +103,7 @@ public class EMADLGenerator {
 
     public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
         setModelsPath( modelPath );
-        TaggingResolver symtab = AbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
+        TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
         ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
 
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
@@ -131,7 +134,7 @@ public class EMADLGenerator {
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
-        fileContents.add(generateCNNTrainer(allInstances, componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_")));
+        fileContents.addAll(generateCNNTrainer(allInstances, componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_")));
         fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
         fileContents.addAll(tg.generateTypes(TypeConverter.getTypeSymbols()));
@@ -185,7 +188,6 @@ public class EMADLGenerator {
     }
 
     public void generateCNN(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
-        CNNArchGenerator cnnArchGenerator = new CNNArchGenerator();
         Map<String,String> contentMap = cnnArchGenerator.generateStrings(architecture);
         String fullName = instance.getFullName().replaceAll("\\.", "_");
 
@@ -206,7 +208,7 @@ public class EMADLGenerator {
             fileContents.add(new FileContent(contentMap.get(fileName), fileName));
         }
         fileContents.add(componentFileContent);
-        fileContents.add(new FileContent(processTemplate(new HashMap<>(), CNN_HELPER), CNN_HELPER + ".h"));
+        fileContents.add(new FileContent(readResource("CNNTranslator.h", Charsets.UTF_8), "CNNTranslator.h"));
     }
 
     protected String transformComponent(String component, String predictorClassName, String executeMethod){
@@ -215,7 +217,7 @@ public class EMADLGenerator {
         //insert includes
         component = component.replaceFirst("using namespace",
                 "#include \"" + predictorClassName + ".h" + "\"\n" +
-                        "#include \"" + CNN_HELPER + ".h" + "\"\n" +
+                        "#include \"CNNTranslator.h\"\n" +
                         "using namespace");
 
         //insert network attribute
@@ -252,34 +254,28 @@ public class EMADLGenerator {
         }
     }
 
-    public FileContent generateCNNTrainer(Set<ExpandedComponentInstanceSymbol> allInstances, String mainComponentName){
-        List<ExpandedComponentInstanceSymbol> cnnInstances = new ArrayList<>();
-        List<String> trainParams = new ArrayList<>();
-        Set<String> componentNames = new HashSet<>();
-        for (ExpandedComponentInstanceSymbol componentInstance : allInstances){
+    public List<FileContent> generateCNNTrainer(Set<ExpandedComponentInstanceSymbol> allInstances, String mainComponentName) {
+        List<String> cnnInstanceNames = new ArrayList<>();
+        List<ConfigurationSymbol> configurations = new ArrayList<>();
+        for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
             ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
             Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
 
-            if (architecture.isPresent()){
-
-                String fileContent = getTrainingParamsForComponent(mainComponentName, component, componentInstance);
-                if (!fileContent.isEmpty()) {
-                    trainParams.add(fileContent);
-                }
-
-                cnnInstances.add(componentInstance);
-                componentNames.add(component.getFullName());
-
+            if (architecture.isPresent()) {
+                ConfigurationSymbol configuration = getTrainingConfiguration(mainComponentName, component, componentInstance);
+                configurations.add(configuration);
+                cnnInstanceNames.add(componentInstance.getFullName().replaceAll("\\.", "_"));
             }
         }
-        Map<String, Object> ftlContext = new HashMap<>();
-        ftlContext.put("instances", cnnInstances);
-        ftlContext.put("componentNames", componentNames);
-        ftlContext.put("trainParams", trainParams);
-        return new FileContent(processTemplate(ftlContext, CNN_TRAINER), CNN_TRAINER + "_" + mainComponentName + ".py");
+        List<FileContent> fileContents = new ArrayList<>();
+        Map<String, String> fileContentMap =  cnnArchGenerator.generateTrainer(configurations, cnnInstanceNames, mainComponentName);
+        for (String fileName : fileContentMap.keySet()){
+            fileContents.add(new FileContent(fileContentMap.get(fileName), fileName));
+        }
+        return fileContents;
     }
 
-    private String getTrainingParamsForComponent(String mainComponentName, ComponentSymbol component, ExpandedComponentInstanceSymbol instance) {
+    public ConfigurationSymbol getTrainingConfiguration(String mainComponentName, ComponentSymbol component, ExpandedComponentInstanceSymbol instance) {
         String configFilename;
         String mainComponentConfigFilename = mainComponentName.replaceAll("\\.", "/");
         String componentConfigFilename = component.getFullName().replaceAll("\\.", "/");
@@ -300,7 +296,7 @@ public class EMADLGenerator {
                     + getModelsPath() + componentConfigFilename + ".cnnt', '"
                     + getModelsPath() + mainComponentConfigFilename + ".cnnt'." +
                     " These files denote respectively the configuration for the single instance, the component or the whole system.");
-            return "";
+            return null;
         }
 
         //should be removed when CNNTrain supports packages
@@ -309,29 +305,32 @@ public class EMADLGenerator {
         Path modelPath = Paths.get(getModelsPath() + Joiner.on("/").join(names.subList(0,names.size()-1)));
         //
 
-        CNNTrainGenerator cnnTrainGenerator =  new CNNTrainGenerator();
+        //CNNTrainGenerator cnnTrainGenerator =  new CNNTrainGenerator(); //No need of cnnTrainGenerator since cnnArchGenerator can also generateTrainer()
         final ModelPath mp = new ModelPath(modelPath);
         GlobalScope trainScope = new GlobalScope(mp, new CNNTrainLanguage());
-        Map.Entry<String, String> fileContents = cnnTrainGenerator.generateFileContent( trainScope, configFilename );
-        return fileContents.getValue();
-    }
-
-    protected String processTemplate(Map<String, Object> ftlContext, String templateNameWithoutEnding){
-        StringWriter writer = new StringWriter();
-        String templateName = templateNameWithoutEnding + ".ftl";
-        try{
-            Template template = TemplateConfiguration.get().getTemplate(templateName);
-            template.process(ftlContext, writer);
-        }
-        catch (IOException e) {
-            Log.error("Freemarker could not find template " + templateName + " :\n" + e.getMessage());
+        Optional<CNNTrainCompilationUnitSymbol> compilationUnit = trainScope.resolve(configFilename, CNNTrainCompilationUnitSymbol.KIND);
+        if (!compilationUnit.isPresent()){
+            Log.error("CNNTrainCompilationUnitSymbol is empty. Could not resolve configuration " + configFilename);
             System.exit(1);
         }
-        catch (TemplateException e){
-            Log.error("An exception occured in template " + templateName + " :\n" + e.getMessage());
-            System.exit(1);
-        }
-        return writer.toString();
+        CNNTrainCocos.checkAll(compilationUnit.get());
+        ConfigurationSymbol configuration = compilationUnit.get().getConfiguration();
+
+        return configuration;
     }
 
+    public String readResource(final String fileName, Charset charset) {
+        try {
+            return Resources.toString(Resources.getResource(fileName), charset);
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Resource file " + fileName + " not found");
+            System.exit(1);
+            return null;
+        } catch (IOException e) {
+            System.err.println("IO Error occurred");
+            System.exit(1);
+            return null;
+        }
+    }
 }

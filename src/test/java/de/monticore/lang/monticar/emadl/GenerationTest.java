@@ -44,7 +44,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testCifar10Generation() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "cifar10.Cifar10Classifier", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
 
@@ -65,7 +65,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testSimulatorGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "simulator.MainController"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "simulator.MainController", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -73,7 +73,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testAddGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "Add"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Add", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -81,7 +81,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testAlexnetGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "Alexnet"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "Alexnet", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -89,7 +89,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testResNeXtGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "ResNeXt50"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "ResNeXt50", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -97,7 +97,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testThreeInputGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "ThreeInputCNN_M14"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "ThreeInputCNN_M14", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
@@ -105,7 +105,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMultipleOutputsGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "MultipleOutputs", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().size() == 1);
     }
@@ -113,7 +113,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void tesVGGGeneration() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "VGG16"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "VGG16", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
@@ -121,7 +121,7 @@ public class GenerationTest extends AbstractSymtabTest {
     @Test
     public void testMultipleInstances() throws IOException, TemplateException {
         Log.getFindings().clear();
-        String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB"};
+        String[] args = {"-m", "src/test/resources/models/", "-r", "InstanceTest.MainB", "-b", "MXNET"};
         EMADLGeneratorCli.main(args);
         assertTrue(Log.getFindings().isEmpty());
     }
