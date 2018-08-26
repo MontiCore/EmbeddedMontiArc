@@ -8,14 +8,14 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-mxnet-generator</artifactId>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.3-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.3-SNAPSHOT</CNNArch.version>
+      <CNNArch.version>0.2.4-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.2.4-SNAPSHOT</CNNTrain.version>
     
         <!-- .. Libraries .................................................. -->
