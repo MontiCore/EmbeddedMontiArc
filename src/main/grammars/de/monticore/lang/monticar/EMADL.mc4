@@ -3,14 +3,11 @@ package de.monticore.lang.monticar;
 grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
                       de.monticore.lang.monticar.CNNArch{
 
-    EMADLCompilationUnit = EMACompilationUnit;
+    start EMACompilationUnit;
 
     BehaviorEmbedding = Architecture | MathStatements;
 
-    BehaviorName = name:"CNN" | name:"Math";
+    MathStatements = Statement+;
 
-    token NEWLINETOKEN =
-             ('\r' '\n' |
-             '\r' |
-             '\n' ):;
+    BehaviorName = name:"CNN" | name:"Math";
 }

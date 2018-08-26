@@ -25,7 +25,7 @@ import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
-import de.monticore.lang.math.math._symboltable.MathLanguage;
+import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl.adapter.PortArraySymbol2IODeclarationSymbolTypeFilter;

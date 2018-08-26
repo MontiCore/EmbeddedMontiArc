@@ -21,18 +21,19 @@
 package de.monticore.lang.monticar.emadl.adapter;
 
 import de.monticore.ast.ASTNode;
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
-import de.monticore.lang.math.math._symboltable.expression.MathNameExpressionSymbol;
+import de.monticore.lang.math._ast.ASTNameExpression;
+import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchTypeSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
-import de.monticore.lang.monticar.common2._ast.ASTCommonDimensionElement;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.ts.MCASTTypeSymbol;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
-import de.monticore.lang.monticar.types2._ast.ASTType;
+import de.monticore.types.types._ast.ASTType;
 import de.monticore.symboltable.resolving.SymbolAdapter;
 import de.se_rwth.commons.SourcePosition;
 
@@ -91,16 +92,15 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
 
         if (astType instanceof ASTCommonMatrixType){
             ASTCommonMatrixType matrixType = (ASTCommonMatrixType) astType;
-            for (ASTCommonDimensionElement element : matrixType.getCommonDimension().getCommonDimensionElements()){
-                if (element.getUnitNumber().isPresent()){
-                    int dimension = element.getUnitNumber().get().getNumber().get().getDividend().intValue();
+            for (ASTExpression element : matrixType.getDimension().getDimensionList()){
+                if (element instanceof ASTNumberExpression){
+                    int dimension = ((ASTNumberExpression) element).getNumberWithUnit().getNumber().get().intValue();
                     dimensionList.add(ArchSimpleExpressionSymbol.of(dimension));
                 }
                 else {
-                    ArchSimpleExpressionSymbol dimension = ArchSimpleExpressionSymbol.of(
-                            new MathNameExpressionSymbol(element.getName().get()));
+                    String instName = element instanceof ASTNameExpression ? ((ASTNameExpression) element).getName() : element.getSymbolOpt().get().getName();
                     VariableSymbol variable= port.getEnclosingScope()
-                            .<VariableSymbol>resolve(element.getName().get(), VariableSymbol.KIND).get();
+                            .<VariableSymbol>resolve(instName, VariableSymbol.KIND).get();
                     dimensionList.add(variable.getExpression());
                 }
             }

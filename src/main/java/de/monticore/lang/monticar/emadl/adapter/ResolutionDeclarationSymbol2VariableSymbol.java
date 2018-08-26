@@ -25,7 +25,7 @@ import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbo
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.resolving.SymbolAdapter;
 import de.se_rwth.commons.SourcePosition;
 import org.jscience.mathematics.number.Rational;
@@ -40,10 +40,10 @@ public class ResolutionDeclarationSymbol2VariableSymbol extends VariableSymbol
     public ResolutionDeclarationSymbol2VariableSymbol(ResolutionDeclarationSymbol ps, ASTUnitNumberResolution unitNumberResolution) {
         super(ps.getName());
         setType(VariableType.ARCHITECTURE_PARAMETER);
-        Rational rational = unitNumberResolution.getNumber().get();
-        setExpression(ArchSimpleExpressionSymbol.of(rational.getDivisor().equals(1)
-                ? rational.getDividend().intValue()
-                : rational.doubleValue()));
+        Double doubleValue = unitNumberResolution.getNumberWithUnit().getNumber().get();
+        setExpression(ArchSimpleExpressionSymbol.of((doubleValue % 1)!= 0
+                ? doubleValue.intValue()
+                : doubleValue));
         this.adaptee = ps;
     }
 

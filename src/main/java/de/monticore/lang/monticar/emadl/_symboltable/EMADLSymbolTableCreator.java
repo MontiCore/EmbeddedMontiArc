@@ -20,10 +20,15 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
+import de.monticore.lang.math._ast.ASTStatement;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
-import de.monticore.lang.monticar.emadl._visitor.CommonEMADLDelegatorVisitor;
+import de.monticore.lang.monticar.emadl._ast.ASTMathStatements;
+import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
 import de.monticore.lang.monticar.emadl._visitor.EMADLVisitor;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -35,7 +40,7 @@ import java.util.Deque;
 public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymbolTableCreator
         implements EMADLVisitor {
     
-    private final CommonEMADLDelegatorVisitor visitor = new CommonEMADLDelegatorVisitor();
+    private final EMADLDelegatorVisitor visitor = new EMADLDelegatorVisitor();
 
     private EmbeddedMontiArcSymbolTableCreator emaSTC;
     private CNNArchSymbolTableCreator cnnArchSTC;
@@ -56,12 +61,21 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         this.emaSTC = new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);//new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);
         this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack);
 
-        visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarc__visitor_EmbeddedMontiArcVisitor(emaSTC);
-        visitor.set_de_monticore_lang_embeddedmontiarc_embeddedmontiarcbehavior__visitor_EmbeddedMontiArcBehaviorVisitor(
+        visitor.setEmbeddedMontiArcVisitor(emaSTC);
+        visitor.setEmbeddedMontiArcBehaviorVisitor(
                 new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
-        visitor.set_de_monticore_lang_monticar_emadl__visitor_EMADLVisitor(this);
-        visitor.set_de_monticore_lang_monticar_cnnarch__visitor_CNNArchVisitor(cnnArchSTC);
-        visitor.set_de_monticore_lang_math_math__visitor_MathVisitor(cnnArchSTC.getMathSTC());
+
+        visitor.setEMADLVisitor(this);
+        visitor.setCNNArchVisitor(cnnArchSTC);
+
+        visitor.setMathVisitor(cnnArchSTC.getMathSTC());
+        visitor.setMatrixVisitor(cnnArchSTC.getMathSTC());
+        visitor.setMatrixExpressionsVisitor(cnnArchSTC.getMathSTC());
+
+        visitor.setExpressionsBasisVisitor(cnnArchSTC.getMathSTC());
+        visitor.setCommonExpressionsVisitor(cnnArchSTC.getMathSTC());
+        visitor.setTypes2Visitor(cnnArchSTC.getMathSTC());
+        visitor.setAssignmentExpressionsVisitor(cnnArchSTC.getMathSTC());
     }
 
 /**
@@ -73,7 +87,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
      */
 
 
-    public Scope createFromAST(de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit rootNode) {
+    public Scope createFromAST(ASTEMACompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
         rootNode.accept(visitor);
         return getFirstCreatedScope();
@@ -98,11 +112,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
         }
     }
 
-    /*@Override
-    public void visit(ASTEMADLCompilationUnit ast) {
-        EMADLCompilationUnitSymbol compilationUnit = new EMADLCompilationUnitSymbol("");
-        addToScopeAndLinkWithNode(compilationUnit, ast);
-    }*/
-
+    public void endVisit(ASTMathStatements ast) {
+        addToScopeAndLinkWithNode(new EMADLMathStatementsSymbol("MathStatements", ast), ast);
+    }
 }
-

@@ -49,8 +49,8 @@ public class ModifiedEMASymbolTableCreator extends EmbeddedMontiArcSymbolTableCr
     public void endVisit(ASTEMACompilationUnit node) {
         this.removeCurrentScope();
         if (!this.aboartVisitComponent) {
-            Log.debug("endVisit of " + node.getComponent().getSymbol().get().getFullName(), "SymbolTableCreator:");
-            getInstanceSymbolCreator().createInstances((ComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbol().orElse(null))));
+            Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "SymbolTableCreator:");
+            getInstanceSymbolCreator().createInstances((ComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))));
         }
     }
 

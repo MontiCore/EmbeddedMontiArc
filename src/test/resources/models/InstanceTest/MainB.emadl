@@ -19,7 +19,4 @@ component MainB{
     connect net2.predictions -> outCalc2.probabilities;
     connect outCalc1.digit -> digit1;
     connect outCalc2.digit -> digit2;
-
-
-    }
 }

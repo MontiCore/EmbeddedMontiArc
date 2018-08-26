@@ -22,7 +22,7 @@ package de.monticore.lang.monticar.emadl.adapter;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 

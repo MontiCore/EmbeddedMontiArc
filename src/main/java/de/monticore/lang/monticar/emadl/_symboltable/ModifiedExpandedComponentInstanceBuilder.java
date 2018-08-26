@@ -21,14 +21,14 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
-import de.monticore.lang.math.math._ast.ASTMathNumberExpression;
+import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.VariableType;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.lang.monticar.ts.MCFieldSymbol;
-import de.monticore.lang.monticar.types2._ast.ASTUnitNumberResolution;
+import de.monticore.lang.monticar.resolution._ast.ASTUnitNumberResolution;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -75,8 +75,8 @@ public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentI
 
         //add configuration parameters
         for (int i = 0; i < instance.getArguments().size(); i++){
-            if (instance.getArguments().get(i) instanceof ASTMathNumberExpression){
-                ASTMathNumberExpression exp = (ASTMathNumberExpression) instance.getArguments().get(i);
+            if (instance.getArguments().get(i) instanceof ASTNumberExpression){
+                ASTNumberExpression exp = (ASTNumberExpression) instance.getArguments().get(i);
 
                 MCFieldSymbol emaParam = instance.getComponentType().getConfigParameters().get(i);
                 VariableSymbol archParam = new VariableSymbol.Builder()
@@ -84,7 +84,7 @@ public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentI
                         .type(VariableType.ARCHITECTURE_PARAMETER)
                         .build();
                 archParam.setExpression(ArchSimpleExpressionSymbol.of(
-                        exp.getNumber().getUnitNumber().get().getNumber().get()));
+                        exp.getNumberWithUnit().getNumber().get()));
 
                 instance.getSpannedScope().getAsMutableScope().add(archParam);
             }
@@ -98,7 +98,7 @@ public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentI
 
     public void addPortArraySymbolsToInstance(ExpandedComponentInstanceSymbol instance){
         Map<String, List<PortSymbol>> nameToPortList = new HashMap<>();
-        for (PortSymbol port : instance.getPorts()){
+        for (PortSymbol port : instance.getPortsList()){
             List<PortSymbol> list = nameToPortList
                     .computeIfAbsent(port.getNameWithoutArrayBracketPart(), k -> new ArrayList<>());
             list.add(port);
