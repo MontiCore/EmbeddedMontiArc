@@ -76,7 +76,6 @@
         </properties>
     </profile>
     <profile>
-    <profile>
       <id>se-nexus</id>
       <repositories>
         <repository>
