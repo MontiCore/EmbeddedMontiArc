@@ -75,7 +75,7 @@
         </sonar.password>
       </properties>
     </profile>
-    
+
     <profile>
       <id>se-nexus</id>
       <repositories>
