@@ -29,7 +29,7 @@ public:
     }
 
     void predict(const std::vector<float> &data,
-                 std::vector<float> &softmax){
+                     std::vector<float> &softmax){
         MXPredSetInput(handle, "data", data.data(), data.size());
         //MXPredSetInput(handle, "data", data.data(), data.size());
 

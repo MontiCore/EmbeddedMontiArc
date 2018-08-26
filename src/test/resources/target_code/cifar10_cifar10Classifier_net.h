@@ -11,11 +11,11 @@ class cifar10_cifar10Classifier_net{
 const int classes = 10;
 public:
 CNNPredictor_cifar10_cifar10Classifier_net _cnn_;
-cube data;
+icube data;
 colvec softmax;
 void init()
 {
-data = cube(3, 32, 32);
+data = icube(3, 32, 32);
 softmax=colvec(classes);
 }
 void execute(){

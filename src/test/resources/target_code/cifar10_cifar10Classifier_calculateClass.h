@@ -9,7 +9,7 @@ class cifar10_cifar10Classifier_calculateClass{
 const int n = 10;
 public:
 colvec inputVector;
-double maxIndex;
+int maxIndex;
 void init()
 {
 inputVector=colvec(n);
@@ -17,11 +17,11 @@ inputVector=colvec(n);
 void execute()
 {
 maxIndex = 0;
-double maxValue = inputVector(0);
+double maxValue = inputVector(0-1);
 for( auto i=2;i<=n;++i){
-if((inputVector(i) > maxValue)){
+if((inputVector(i-1) > maxValue)){
 maxIndex = i-1;
-maxValue = inputVector(i-1) ;
+maxValue = inputVector(i-1);
 }
 }
 }

@@ -9,13 +9,13 @@
 using namespace arma;
 class cifar10_cifar10Classifier{
 public:
-cube image;
-double classIndex;
+icube image;
+int classIndex;
 cifar10_cifar10Classifier_net net;
 cifar10_cifar10Classifier_calculateClass calculateClass;
 void init()
 {
-image = cube(3, 32, 32);
+image = icube(3, 32, 32);
 net.init();
 calculateClass.init();
 }
