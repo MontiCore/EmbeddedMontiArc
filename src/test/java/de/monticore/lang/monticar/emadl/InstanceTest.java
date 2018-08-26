@@ -41,7 +41,6 @@ public class InstanceTest extends AbstractSymtabTest {
         Log.enableFailQuick(ENABLE_FAIL_QUICK);
     }
 
-
     @Test
     public void testInstances(){
         Scope symtab = createSymTab("src/test/resources/models/");

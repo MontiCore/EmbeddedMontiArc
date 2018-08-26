@@ -23,7 +23,7 @@ package de.monticore.lang.monticar.emadl._cocos;
 import de.monticore.lang.embeddedmontiarc.cocos.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.AtomicComponentCoCo;
-import de.monticore.lang.math.math._cocos.MatrixAssignmentDeclarationCheck;
+import de.monticore.lang.math._cocos.MatrixAssignmentDeclarationCheck;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 

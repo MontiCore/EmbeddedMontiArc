@@ -20,6 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.symboltable.ArtifactScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -27,14 +28,14 @@ import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
 
-public class EMADLModelLoader extends de.monticore.modelloader.ModelingLanguageModelLoader<de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit> {
+public class EMADLModelLoader extends de.monticore.modelloader.ModelingLanguageModelLoader<ASTEMACompilationUnit> {
 
     public EMADLModelLoader(EMADLLanguage language) {
         super(language);
     }
 
     @Override
-    protected void createSymbolTableFromAST(final de.monticore.lang.monticar.emadl._ast.ASTEMADLCompilationUnit ast, final String modelName,
+    protected void createSymbolTableFromAST(final ASTEMACompilationUnit ast, final String modelName,
                                             final MutableScope enclosingScope, final ResolvingConfiguration resolvingConfiguration) {
         final EMADLSymbolTableCreator symbolTableCreator =
                 getModelingLanguage().getSymbolTableCreator(resolvingConfiguration, enclosingScope).orElse(null);

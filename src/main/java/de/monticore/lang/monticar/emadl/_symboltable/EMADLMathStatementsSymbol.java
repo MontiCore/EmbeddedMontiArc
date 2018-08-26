@@ -20,20 +20,31 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.symboltable.SymbolKind;
+import de.monticore.lang.math._ast.ASTStatement;
+import de.monticore.lang.math._symboltable.MathStatementsSymbol;
+import de.monticore.lang.math._symboltable.MathStatementsSymbolKind;
+import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.monticar.emadl._ast.ASTMathStatements;
 
-public class EMADLCompilationUnitKind implements SymbolKind {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final String NAME = "de.monticore.lang.monticar.emadl._symboltable.EMADLCompilationUnitKind";
 
-    @Override
-    public String getName() {
-        return NAME;
+public class EMADLMathStatementsSymbol extends MathStatementsSymbol {
+    protected List<MathExpressionSymbol> emadlMathExpressionSymbols = null;
+
+    public EMADLMathStatementsSymbol(String name, ASTMathStatements ast) {
+        super(name, null);
+        this.emadlMathExpressionSymbols = new ArrayList<>();
+        for (ASTStatement astStatement : ast.getStatementList()) {
+            emadlMathExpressionSymbols.add((MathExpressionSymbol) astStatement.getSymbolOpt().get());
+        }
     }
 
     @Override
-    public boolean isKindOf(SymbolKind kind) {
-        return NAME.equals(kind.getName()) || SymbolKind.super.isKindOf(kind);
+    public List<MathExpressionSymbol> getMathExpressionSymbols() {
+        return this.emadlMathExpressionSymbols;
     }
+
 
 }

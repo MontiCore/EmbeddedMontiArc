@@ -37,7 +37,7 @@ public class ModifiedExpandedInstanceSymbolCreator extends EmbeddedMontiArcExpan
 
         //everything below is copied from super class
         builder.setSymbolReference(new ComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope()))
-                .addPorts(cmp.getPorts())
+                .addPorts(cmp.getPortsList())
                 .addConnectors(cmp.getConnectors()).addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols()).addParameters(cmp.getParameters()).addArguments(cmp.getArguments());
 
         for (ConnectorSymbol connectorSymbol : cmp.getConnectors())
@@ -72,7 +72,7 @@ public class ModifiedExpandedInstanceSymbolCreator extends EmbeddedMontiArcExpan
             }
 
             builder.addPortsIfNameDoesNotExists(
-                    superCmp.getSuperComponent().get().getPorts(),
+                    superCmp.getSuperComponent().get().getPortsList(),
                     superCmp.getSuperComponent().get().getFormalTypeParameters(),
                     superCmp.getSuperComponent().get().getActualTypeArguments());
             builder.addConnectorsIfNameDoesNotExists(superCmp.getSuperComponent().get().getConnectors());

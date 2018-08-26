@@ -1,3 +1,6 @@
+![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArcDL/badges/master/build.svg)
+![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArcDL/badges/master/coverage.svg)
+
 # EmbeddedMontiArcDL
 Embeds [CNNArch](https://github.com/EmbeddedMontiArc/CNNArchLang), [CNNTrain](https://github.com/EmbeddedMontiArc/CNNTrainLang) and MontiMath into EmbeddedMontiArc.
 
