@@ -36,6 +36,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class StreamTestMojoBase extends AbstractMojo {
@@ -127,6 +129,9 @@ public class StreamTestMojoBase extends AbstractMojo {
         this.forceRun = forceRun;
     }
 
+    @Parameter(defaultValue = "true")
+    protected boolean showDateAndTime;
+
     //</editor-fold>
 
     //<editor-fold desc="Properties">
@@ -198,7 +203,7 @@ public class StreamTestMojoBase extends AbstractMojo {
         stmb.combinebuilds = combinebuilds;
         stmb.showBuildAndRunOutput = showBuildAndRunOutput;
         stmb.forceRun = forceRun;
-
+        stmb.showDateAndTime = showDateAndTime;
         stmb.setLog(getLog());
 
         stmb.myLog = myLog;
@@ -210,6 +215,8 @@ public class StreamTestMojoBase extends AbstractMojo {
 
     //<editor-fold desc="Log">
 
+
+
     protected void resetToMyLog(){
         if(myLog == null){
             myLog = LogToFile.init();
@@ -219,23 +226,54 @@ public class StreamTestMojoBase extends AbstractMojo {
     }
 
     protected void logError(String msg){
+        if(showDateAndTime){
+            msg = addDateTime(msg);
+        }
         getLog().error(msg);
         Log.error(msg);
     }
 
     protected void logInfo(String msg){
+
+        if(showDateAndTime){
+            msg = addDateTime(msg);
+        }
+
         getLog().info(msg);
         Log.info(msg, this.MojoName());
     }
 
     protected void logWarn(String msg){
+        if(showDateAndTime){
+            msg = addDateTime(msg);
+        }
         getLog().warn(msg);
         Log.warn(msg);
     }
 
     protected void logDebug(String msg){
+        if(showDateAndTime){
+            msg = addDateTime(msg);
+        }
         getLog().debug(msg);
         Log.debug(msg, this.MojoName());
+    }
+
+    public boolean isShowDateAndTime(){
+        return showDateAndTime;
+    }
+
+    public void setShowDateAndTime(boolean value){
+        showDateAndTime = value;
+    }
+
+    public String getCurrentLocalDateTimeStamp() {
+        return LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
+    }
+
+    public String addDateTime(String msg){
+        return String.format("[%s] %s", getCurrentLocalDateTimeStamp(), msg);
     }
 
     //</editor-fold>

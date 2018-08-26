@@ -46,6 +46,8 @@ public class BaseTest {
         stmb.setShowBuildAndRunOutput(false);
 
         stmb.setForceRun(false);
+
+        stmb.setShowDateAndTime(true);
     }
 
     //</editor-fold>

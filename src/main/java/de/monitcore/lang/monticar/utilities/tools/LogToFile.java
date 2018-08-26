@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public class LogToFile extends Log {
 
+
+
     protected Optional<Path> logFilePath;
 
 
@@ -59,19 +61,19 @@ public class LogToFile extends Log {
 
     @Override
     protected void doDebug(String msg, String logName) {
-        this.write("[debug] "+logName+" : "+msg+"\r\n");
+        this.write("[debug] "+logName+" : "+msg+System.lineSeparator());
     }
 
     @Override
     protected void doInfo(String msg, String logName) {
-        this.write("[info] "+logName+" : "+msg+"\r\n");
+        this.write("[info] "+logName+" : "+msg+System.lineSeparator());
     }
 
     @Override
     protected void doWarn(String msg) {
         Finding warn = Finding.warning(msg);
         this.addFinding(warn);
-        this.write("[warn] "+warn.toString()+"\r\n");
+        this.write("[warn] "+warn.toString()+System.lineSeparator());
     }
 
     @Override
@@ -79,7 +81,7 @@ public class LogToFile extends Log {
         Finding error = Finding.error(msg);
         this.addFinding(error);
         //System.err.println("[ERROR] " + error.toString());
-        this.write("[error] "+error.toString()+"\r\n");
+        this.write("[error] "+error.toString()+System.lineSeparator());
         t.printStackTrace(System.err);
         this.terminateIfErrors();
     }
@@ -89,7 +91,7 @@ public class LogToFile extends Log {
         Finding error = Finding.error(msg, pos);
         this.addFinding(error);
         //System.err.println("[ERROR] " + error.toString());
-        this.write("[error] "+error.toString()+"\r\n");
+        this.write("[error] "+error.toString()+System.lineSeparator());
         this.terminateIfErrors();
     }
 
@@ -98,12 +100,15 @@ public class LogToFile extends Log {
         Finding error = Finding.error(msg);
         this.addFinding(error);
         //System.err.println("[ERROR] " + error.toString());
-        this.write("[error] "+error.toString()+"\r\n");
+        this.write("[error] "+error.toString()+System.lineSeparator());
         this.terminateIfErrors();
     }
 
     @Override
     protected void doTrace(String msg, String logName) {
-        this.write("[trace] "+logName+" : "+msg+"\r\n");
+        this.write("[trace] "+logName+" : "+msg+System.lineSeparator());
     }
+
+
+
 }
