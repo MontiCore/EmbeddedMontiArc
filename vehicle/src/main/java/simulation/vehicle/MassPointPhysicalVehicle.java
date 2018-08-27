@@ -180,6 +180,24 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     }
 
     /**
+     * Function that returns the mass of the object
+     * @return Mass of the physical object
+     */
+    @Override
+    public double getMass(){
+        return simulationVehicle.getMassFront() + simulationVehicle.getMassBack();
+    }
+
+    /**
+     * Function that sets the mass of the object
+     * @param mass New mass of the physical object
+     */
+    @Override
+    public void setMass(double mass){
+        //toDo comment why here is nothing done
+    }
+
+    /**
      * Function that returns a copy of center of geometry position vector
      * @return Position vector of the center of geometry
      */

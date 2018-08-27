@@ -1031,9 +1031,15 @@ public class Vehicle {
      * @param mass New mass of the vehicle
      */
     public void setMass(double mass){
-        if(!vehicleInitialized) {
-            this.massFront = mass / 2;
-            this.massBack= mass / 2;
+        if(physicalVehicle instanceof ModelicaPhysicalVehicle) {
+            if (!vehicleInitialized) {
+                this.massFront = mass / 2;
+                this.massBack = mass / 2;
+            }else{
+                //todo error
+            }
+        }else{
+            //todo error
         }
     }
 
@@ -1052,8 +1058,14 @@ public class Vehicle {
      * @param massFront New front mass of the vehicle
      */
     public void setMassFront(double massFront){
-        if(!vehicleInitialized) {
-            this.massFront = massFront;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            if (!vehicleInitialized) {
+                this.massFront = massFront;
+            }else{
+                //todo error
+            }
+        }else{
+            //todo error
         }
     }
 
@@ -1072,8 +1084,14 @@ public class Vehicle {
      * @param massBack New back mass of the vehicle
      */
     public void setMassBack(double massBack){
-        if(!vehicleInitialized) {
-            this.massBack = massBack;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            if (!vehicleInitialized) {
+                this.massBack = massBack;
+            }else{
+                //todo error
+            }
+        }else{
+            //todo error
         }
     }
 
@@ -1112,9 +1130,15 @@ public class Vehicle {
      * @param wheelDistLeftRight New distance between left and right wheels of the vehicle
      */
     public void setWheelDistLeftRight(double wheelDistLeftRight){
-        if(!vehicleInitialized) {
-            this.wheelDistLeftRightFrontSide = wheelDistLeftRight;
-            this.wheelDistLeftRightBackSide = wheelDistLeftRight;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            if (!vehicleInitialized) {
+                this.wheelDistLeftRightFrontSide = wheelDistLeftRight;
+                this.wheelDistLeftRightBackSide = wheelDistLeftRight;
+            }else{
+                //todo error
+            }
+        }else{
+            //todo error
         }
     }
 
@@ -1133,8 +1157,14 @@ public class Vehicle {
      * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
      */
     public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
-        if(!vehicleInitialized) {
-            this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
+        if(physicalVehicle instanceof ModelicaPhysicalVehicle) {
+            if (!vehicleInitialized) {
+                this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
+            }else{
+                //todo error
+            }
+        }else{
+            //todo error
         }
     }
 
@@ -1153,8 +1183,14 @@ public class Vehicle {
      * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
      */
     public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
-        if(!vehicleInitialized) {
-            this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
+        if(physicalVehicle instanceof ModelicaPhysicalVehicle) {
+            if (!vehicleInitialized) {
+                this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
+            }else{
+                //todo erro
+            }
+        }else{
+            //todo error
         }
     }
 
