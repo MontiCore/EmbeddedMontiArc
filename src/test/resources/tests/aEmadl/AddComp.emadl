@@ -1,0 +1,12 @@
+package tests.aEmadl;
+
+component AddComp{
+    ports in Q in1,
+          in Q in2,
+          out Q out1;
+
+    implementation Math{
+        out1 = in1 + in2;
+    }
+
+}

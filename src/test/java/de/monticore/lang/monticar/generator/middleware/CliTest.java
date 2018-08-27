@@ -2,10 +2,8 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.se_rwth.commons.logging.Finding;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.commons.lang3.ArrayUtils;
+import org.junit.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -23,6 +21,7 @@ public class CliTest{
     private static final String INVALID_ROOT_MODEL_OPTION = "--root-model=invalid.invalid.addComp";
     private static final String INVALID_GENERATOR_OPTION = "--generators=invalid";
     private static final String INVALID_GENERATOR_EMPTY_OPTION = "--generators=";
+    public static final String RESNET_MODELNAME = "tests.emadlTests.resNet34";
 
     @BeforeClass
     public static void initLog(){
@@ -86,8 +85,6 @@ public class CliTest{
                 VALID_GENERATOR_CPP_OPTION,
                 "--output-dir=" + targetDir};
         DistributedTargetGeneratorCli.main(args);
-
-
         String[] positiveFileNames = {
                 "CMakeLists.txt",
                 "tests_a_addComp/cpp/tests_a_addComp.h",
@@ -102,6 +99,68 @@ public class CliTest{
     }
 
     @Test
+    public void testSingleEMADLGenerator(){
+        String targetDir = "target/cliTest/SingleEmadlTest/";
+        String[] args = {
+                VALID_MODELS_DIR_OPTION,
+                "--root-model="+RESNET_MODELNAME,
+                "--generators=emadlcpp",
+                "--backend=MXNET",
+                "--output-dir=" + targetDir};
+        DistributedTargetGeneratorCli.main(args);
+        String[] positiveFileNames = getEMADLGeneratedFilesList(false);
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+        }
+    }
+
+    @Test
+    public void testEMADLAndRosGenerator(){
+        String targetDir = "target/cliTest/EmadlRosTest/";
+        String[] args = {
+                VALID_MODELS_DIR_OPTION,
+                "--root-model="+RESNET_MODELNAME,
+                "--generators=emadlcpp,roscpp",
+                "--backend=MXNET",
+                "--output-dir=" + targetDir};
+        DistributedTargetGeneratorCli.main(args);
+        String[] positiveFileNames = getEMADLGeneratedFilesList(true);
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+        }
+    }
+
+    private String[] getEMADLGeneratedFilesList(boolean generateRosFiles) {
+        String modelName = RESNET_MODELNAME.replace('.', '_');
+        String[] generatedFiles = {
+                modelName + "/CMakeLists.txt",
+
+                modelName + "/cpp/CNNBufferFile.h",
+                modelName + "/cpp/CNNCreator_" + modelName + ".py",
+                modelName + "/cpp/CNNPredictor_" + modelName + ".h",
+                modelName + "/cpp/CNNTrainer_tests_emadlTests_ResNet34.py",
+                modelName + "/cpp/CNNTranslator.h",
+                modelName + "/cpp/HelperA.h",
+                modelName + "/cpp/CMakeLists.txt",
+                modelName + "/cpp/" + modelName + ".h",
+
+                modelName + "/coordinator/CMakeLists.txt",
+                modelName + "/coordinator/Coordinator_" + modelName + ".cpp",
+                modelName + "/coordinator/IAdapter_" + modelName + ".h"
+        };
+        if (generateRosFiles) {
+            String[] generatedRosFiles = {
+                    modelName + "/roscpp/CMakeLists.txt",
+                    modelName + "/roscpp/RosAdapter_" + modelName + ".h"
+            };
+            generatedFiles = ArrayUtils.addAll(generatedFiles, generatedRosFiles);
+        }
+        return generatedFiles;
+    }
+
+    @Test
     public void testAllGenerators(){
         String targetDir = "target/cliTest/AllGenerators/";
         String[] args = {
@@ -110,7 +169,6 @@ public class CliTest{
                 VALID_GENERATOR_ALL_OPTION,
                 "--output-dir=" + targetDir};
         DistributedTargetGeneratorCli.main(args);
-
 
         String[] positiveFileNames = {
                 "CMakeLists.txt",

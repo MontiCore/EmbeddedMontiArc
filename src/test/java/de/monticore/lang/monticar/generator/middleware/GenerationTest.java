@@ -7,36 +7,31 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymb
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.EmbeddedMontiArcMathCoCos;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
-import de.monticore.lang.monticar.generator.cpp.TestConverter;
-import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareGenImpl;
-import de.monticore.lang.monticar.generator.middleware.impls.DummyMiddlewareSymbol;
-import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
+import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
+import de.monticore.lang.monticar.generator.middleware.impls.*;
 import de.monticore.lang.monticar.generator.roscpp.helper.TagHelper;
-import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
+import freemarker.template.TemplateException;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class GenerationTest extends AbstractSymtabTest {
 
+    public static final String TEST_PATH = "src/test/resources/";
+
     @Test
     public void testBasicGeneration() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -53,7 +48,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeGeneration() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -70,7 +65,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testCppOnlyMiddlewareGeneration() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.addComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
@@ -86,7 +81,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testBaSystem() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("ba.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -112,7 +107,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testMiddlewareGenerator() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         //register the middleware tag types
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
@@ -135,7 +130,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testDistributedTargetGenerator() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.distComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -154,7 +149,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testDistributedStructTargetGenerator() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.distWithStructComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -173,7 +168,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testParameterInit() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.dist.parameterInit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
@@ -201,7 +196,7 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     public void testMutliMw(String relPath, boolean genRosAdapter, boolean genDummyAdapter) throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         //Don't load tags, will be set manually
         //RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
@@ -234,7 +229,6 @@ public class GenerationTest extends AbstractSymtabTest {
 
         List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
 
-
         List<String> fileNames = files.stream()
                 .map(File::getName)
                 .collect(Collectors.toList());
@@ -248,7 +242,7 @@ public class GenerationTest extends AbstractSymtabTest {
     //      No types other then Q(https://github.com/EmbeddedMontiArc/EMAM2Cpp/issues/14)
     @Test
     public void testThreeDimMatrix() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         //register the middleware tag types
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
@@ -269,7 +263,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testTwoDimMatrix() throws IOException {
-        TaggingResolver taggingResolver = createSymTabAndTaggingResolver("src/test/resources/");
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
         //register the middleware tag types
         RosToEmamTagSchema.registerTagTypes(taggingResolver);
 
@@ -286,5 +280,41 @@ public class GenerationTest extends AbstractSymtabTest {
         middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
 
         middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
+
+    @Test
+    public void testEMADLMiddlewareGeneration() throws IOException, TemplateException {
+        TaggingResolver taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(TEST_PATH);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.emadlTests.resNet34", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        MiddlewareGenerator middlewareGenerator = new MiddlewareGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-emadl/");
+        middlewareGenerator.add(new EMADLGeneratorImpl(TEST_PATH, "MXNET"), "cpp");
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+        assertTrue(Log.getFindings().isEmpty());
+    }
+
+    @Test
+    public void testBasicEMADLGeneration() throws IOException {
+        TaggingResolver taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(TEST_PATH);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.aEmadl.compA", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        StarBridgeGenerator starBridgeGenerator = new StarBridgeGenerator();
+        starBridgeGenerator.setGenerationTargetPath("./target/generated-sources-emadl-ros/");
+        starBridgeGenerator.add(new EMADLGeneratorImpl(TEST_PATH, "MXNET"), "cpp");
+        starBridgeGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
+        assertTrue(Log.getFindings().isEmpty());
     }
 }
