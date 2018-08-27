@@ -1,0 +1,64 @@
+package de.monticore.lang.monticar.generator.middleware.impls;
+
+import de.monticore.lang.monticar.emadl.generator.Backend;
+import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
+import de.monticore.lang.tagging._symboltable.TaggingResolver;
+import de.se_rwth.commons.logging.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class EMADLGeneratorImpl implements GeneratorImpl {
+    private String generationTargetPath;
+    private EMADLGenerator emadlGenerator;
+    final String DEFAULT_BACKEND = "MXNET";
+
+
+    public EMADLGeneratorImpl(String modelPath, String backendString){
+        Optional<Backend> backend = Backend.getBackendFromString(backendString);
+        if (!backend.isPresent()){
+            Log.warn("specified backend " + backendString + " not supported. backend set to default value " + DEFAULT_BACKEND);
+            backend = Backend.getBackendFromString(DEFAULT_BACKEND);
+        }
+        emadlGenerator = new EMADLGenerator(backend.get());
+        emadlGenerator.setModelsPath(modelPath);
+    }
+
+
+    @Override
+    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+        List<File> files = new ArrayList<>();
+
+        emadlGenerator.setGenerationTargetPath(generationTargetPath);
+        List<FileContent> fileContents = emadlGenerator.generateStrings(taggingResolver, componentInstanceSymbol, taggingResolver);
+
+        for (FileContent fileContent : fileContents) {
+            files.add(emadlGenerator.getEmamGen().generateFile(fileContent));
+        }
+
+        files.add(emadlGenerator.getEmamGen().generateFile((generateCMake(componentInstanceSymbol))));
+        return files;
+    }
+
+    @Override
+    public void setGenerationTargetPath(String path) {
+        this.generationTargetPath = path;
+    }
+
+    private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+        FileContent cmake = new FileContent();
+        cmake.setFileName("CMakeLists.txt");
+        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
+        cmake.setFileContent(TemplateHelper.getCoordinatorCmakeListsTemplate().replace("${compName}", name));
+        cmake.setFileContent(cmake.getFileContent() + "target_link_libraries(" + name + " -lmxnet)");
+        return cmake;
+    }
+}
+

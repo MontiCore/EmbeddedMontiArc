@@ -2,7 +2,10 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosToEmamTagSchema;
+import de.monticore.lang.monticar.emadl.generator.EMADLAbstractSymtab;
+import de.monticore.lang.monticar.emadl.generator.EMADLGeneratorCli;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.EMADLGeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.ODVGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.monticar.generator.order.simulator.AbstractSymtab;
@@ -59,7 +62,10 @@ public final class DistributedTargetGeneratorCli {
             .valueSeparator(',')
             .build();
 
+    private static final Option OPTION_EMADL_BACKEND = EMADLGeneratorCli.OPTION_BACKEND;
+
     public static final String GENERATOR_CPP = "cpp";
+    public static final String GENERATOR_EMADL = "emadlcpp";
     public static final String GENERATOR_ROSCPP = "roscpp";
     public static final String GENERATOR_ODV = "odv";
 
@@ -82,12 +88,14 @@ public final class DistributedTargetGeneratorCli {
         options.addOption(OPTION_ROOT_MODEL);
         options.addOption(OPTION_OUTPUT_PATH);
         options.addOption(OPTION_GENERATORS);
+        options.addOption(OPTION_EMADL_BACKEND);
         return options;
     }
 
     private static Set<String> getGeneratorNames() {
         HashSet<String> res = new HashSet<>();
         res.add(GENERATOR_CPP);
+        res.add(GENERATOR_EMADL);
         res.add(GENERATOR_ROSCPP);
         res.add(GENERATOR_ODV);
         return res;
@@ -114,7 +122,13 @@ public final class DistributedTargetGeneratorCli {
         String outputPath = expandHomeDir(cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         Set<String> generators = Arrays.stream(cliArgs.getOptionValues(OPTION_GENERATORS.getOpt())).collect(Collectors.toSet());
-        TaggingResolver taggingResolver = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath);
+        TaggingResolver taggingResolver;
+        if (generators.contains(GENERATOR_EMADL)) {
+            taggingResolver = EMADLAbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath);
+        }
+        else{
+            taggingResolver = AbstractSymtab.createSymTabAndTaggingResolver(modelsDirPath);
+        }
 
         DistributedTargetGenerator generator = new DistributedTargetGenerator();
         generator.setGenerationTargetPath(outputPath);
@@ -137,6 +151,11 @@ public final class DistributedTargetGeneratorCli {
 
         if (generators.contains(GENERATOR_CPP)) {
             generator.add(new CPPGenImpl(), "cpp");
+        }
+
+        if (generators.contains(GENERATOR_EMADL)) {
+            String backendString = cliArgs.getOptionValue(OPTION_EMADL_BACKEND.getOpt());
+            generator.add(new EMADLGeneratorImpl(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()), backendString), "cpp");
         }
 
         if (generators.contains(GENERATOR_ROSCPP)) {
