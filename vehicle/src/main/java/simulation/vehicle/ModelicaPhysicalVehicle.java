@@ -59,9 +59,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         super();
         vehicleDynamicsModel = new VehicleDynamicsModel();
 
-        //Before initialisation the center of mass position is the same as the center of geometry position and at the origin
+        // Before initialisation the center of mass position is the same as the center of geometry position and at the origin
+        // with no rotation
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        this.rotation = coordinateRotation.copy();
 
         Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
     }
@@ -116,8 +118,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getVelocity(){
-        //return this.velocity.copy();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        // Get current velocity
+        RealVector localVelocity = new ArrayRealVector(new double[]{
+                vehicleDynamicsModel.getValue("v_x"),
+                vehicleDynamicsModel.getValue("v_y"),
+                vehicleDynamicsModel.getValue("v_z")});
+        // Return in global coordinates
+        return rotation.operate(localVelocity);
     }
 
     /**
@@ -126,7 +133,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setVelocity(RealVector velocity){
-        // this.velocity = velocity.copy();
         // toDo why
     }
 
@@ -136,8 +142,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getAcceleration(){
-        //return this.acceleration.copy();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        // Get current acceleration
+        RealVector localAcceleration = new ArrayRealVector(new double[]{
+                vehicleDynamicsModel.getValue("a_x"),
+                vehicleDynamicsModel.getValue("a_y"),
+                vehicleDynamicsModel.getValue("a_z")});
+        // Return in global coordinates
+        return rotation.operate(localAcceleration);
     }
 
     /**
@@ -146,7 +157,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setAcceleration(RealVector acceleration){
-        // this.acceleration = acceleration.copy();
         // toDo why
     }
 
@@ -281,7 +291,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     public void computePhysics(long deltaTms){
         if (!this.getError()) {
             // Calculate input values
-            // Get values from FDUs
+            // Get values from VDM
             double z = vehicleDynamicsModel.getValue("z");
             double r_nom = vehicleDynamicsModel.getValue("r_nom");
             double m = vehicleDynamicsModel.getValue("m");
@@ -368,7 +378,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void putOnSurface(double posX, double posY, double rotZ){
-        //Get values from FDUs
+        //Get values from VDM
         double z = vehicleDynamicsModel.getValue("z");
         double L_1 = vehicleDynamicsModel.getValue("L_1");
         double L_2 = vehicleDynamicsModel.getValue("L_2");
@@ -470,7 +480,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getFrontRightWheelGeometryPosition(){
-        //Get values from FDUs
+        //Get values from VDM
         double L_1 = vehicleDynamicsModel.getValue(("L_1"));
         double TW_f = vehicleDynamicsModel.getValue("TW_f");
         double z = vehicleDynamicsModel.getValue("z");
@@ -486,7 +496,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getFrontLeftWheelGeometryPosition(){
-        //Get values from FDUs
+        //Get values from VDM
         double L_1 = vehicleDynamicsModel.getValue(("L_1"));
         double TW_f = vehicleDynamicsModel.getValue("TW_f");
         double z = vehicleDynamicsModel.getValue("z");
@@ -502,7 +512,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getBackRightWheelGeometryPosition(){
-        //Get values from FDUs
+        //Get values from VDM
         double L_2 = vehicleDynamicsModel.getValue(("L_2"));
         double TW_r = vehicleDynamicsModel.getValue("TW_r");
         double z = vehicleDynamicsModel.getValue("z");
@@ -518,7 +528,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getBackLeftWheelGeometryPosition(){
-        //Get values from FDUs
+        //Get values from VDM
         double L_2 = vehicleDynamicsModel.getValue(("L_2"));
         double TW_r = vehicleDynamicsModel.getValue("TW_r");
         double z = vehicleDynamicsModel.getValue("z");
@@ -597,7 +607,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             rotation = coordinateRotation.copy();
             yaw_angle = 0.0;
 
-            //Overwrite parameters in vehicle with FDU values
+            //Overwrite parameters in vehicle with VDM values
             simulationVehicle.setMass(vehicleDynamicsModel.getValue("m"));
             simulationVehicle.setWheelDistLeftRightFrontSide(vehicleDynamicsModel.getValue("TW_f"));
             simulationVehicle.setWheelDistLeftRightBackSide(vehicleDynamicsModel.getValue("TW_r"));
@@ -617,7 +627,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     private void doCalculationStep(long deltaTms){
         // Calculate input values
-        // Get values from FDUs
+        // Get values from VDM
         double r_nom = vehicleDynamicsModel.getValue("r_nom");
         double m = vehicleDynamicsModel.getValue("m");
         double omega_wheel_1 = vehicleDynamicsModel.getValue("omega_wheel_1");
