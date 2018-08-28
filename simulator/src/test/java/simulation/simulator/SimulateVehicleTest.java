@@ -508,7 +508,7 @@ public class SimulateVehicleTest {
         sim.setPausedInFuture(true);
     }
 
-    @Test
+    /*@Test
     public void firstTest(){
         try {
             WorldModel.init(new ParserSettings("/map_ahornstrasse.osm", ParserSettings.ZCoordinates.ALLZERO), new WeatherSettings(Weather.RAIN));
@@ -601,7 +601,7 @@ public class SimulateVehicleTest {
 
         //assertTrue(motor.getActuatorValueCurrent() == Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
         assertTrue(true);
-    }
+    }*/
 
     @Test
     public void testMotor() {

@@ -83,6 +83,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     public void setPosition(RealVector position){
         if(physicalVehicleInitialized) {
             this.position = position.copy();
+        }else{
+            //todo error
         }
     }
 
@@ -103,6 +105,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     public void setRotation(RealMatrix rotation){
         if(physicalVehicleInitialized) {
             this.rotation = rotation.copy();
+        }else{
+            //todo error
         }
     }
 
@@ -189,7 +193,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setGeometryPosition(RealVector geometryPosition){
-        setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
+        if(physicalVehicleInitialized) {
+            setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
+        }else{
+            //todo error
+        }
     }
 
     /**
@@ -221,7 +229,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         if (error) {
             this.force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            //todo set FDU values to zero
         }
 
         Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at end: " + this);
@@ -273,7 +280,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void computePhysics(long deltaTms){
         if (!this.getError()) {
-
             // Calculate input values
             // Get values from FDUs
             double z = vehicleDynamicsModel.getValue("z");
@@ -338,10 +344,16 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             }
             // Do a step with partial step size to fill the gap
             long partialStepSize = deltaTms - currentDeltaTms;
-            if(partialStepSize > 0){
+            if(partialStepSize > 0) {
                 doCalculationStep(partialStepSize);
                 currentDeltaTms = currentDeltaTms + partialStepSize;
             }
+            // Update the rotation and position
+            z = vehicleDynamicsModel.getValue("z");
+            // Get current road surface position
+            roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
+            // Reset vehicle on surface
+            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});

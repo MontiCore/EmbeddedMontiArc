@@ -105,6 +105,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             calcMassPointCenterDiff();
             calcMassPointPosition();
             calcMassPointVelocity();
+        }else{
+            //todo error
         }
     }
 
@@ -129,6 +131,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             calcMassPointCenterDiff();
             calcMassPointPosition();
             calcMassPointVelocity();
+        }else{
+            //todo error
         }
     }
 
@@ -212,8 +216,12 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setGeometryPosition(RealVector geometryPosition){
-        // Uses setter to update mass point information
-        setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
+        if(physicalVehicleInitialized) {
+            // Uses setter to update mass point information
+            setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
+        }else{
+            //todo error
+        }
     }
 
     /**

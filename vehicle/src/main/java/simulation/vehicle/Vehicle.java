@@ -579,6 +579,7 @@
  */
 package simulation.vehicle;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import commons.controller.commons.BusEntry;
 import commons.controller.commons.NavigationEntry;
 import commons.controller.commons.Surface;
@@ -1022,7 +1023,13 @@ public class Vehicle {
      * @return Mass of the vehicle
      */
     public double getMass() {
-        return massFront + massBack;
+        double returnValue = 0.0;
+        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+            returnValue =  massFront + massBack;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
@@ -1101,7 +1108,13 @@ public class Vehicle {
      * @return Wheel radius of the vehicle
      */
     public double getWheelRadius() {
-        return wheelRadius;
+        double returnValue = 0.0;
+        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+            returnValue = wheelRadius;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
@@ -1148,7 +1161,13 @@ public class Vehicle {
      * @return Distance between left and right wheels of the front axel of the vehicle
      */
     double getWheelDistLeftRightFrontSide() {
-        return wheelDistLeftRightFrontSide;
+        double returnValue = 0.0;
+        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+            returnValue = wheelDistLeftRightFrontSide;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
@@ -1174,7 +1193,13 @@ public class Vehicle {
      * @return Distance between left and right wheels of the back axel of the vehicle
      */
     double getWheelDistLeftRightBackSide() {
-        return wheelDistLeftRightBackSide;
+        double returnValue = 0.0;
+        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+            returnValue = wheelDistLeftRightBackSide;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
@@ -1201,7 +1226,13 @@ public class Vehicle {
      * @return Distance between front and back wheels of the vehicle
      */
     double getWheelDistFrontBack() {
-        return wheelDistFrontBack;
+        double returnValue = 0.0;
+        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+            returnValue = wheelDistFrontBack;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
