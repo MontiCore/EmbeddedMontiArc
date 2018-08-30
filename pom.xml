@@ -8,15 +8,16 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-mxnet-generator</artifactId>
-  <version>0.2.3-SNAPSHOT</version>
+  <version>0.2.4-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.4-SNAPSHOT</CNNArch.version>
+      <CNNArch.version>0.2.5-SNAPSHOT</CNNArch.version>
       <CNNTrain.version>0.2.4-SNAPSHOT</CNNTrain.version>
+      <embedded-montiarc-math-generator>0.0.25-SNAPSHOT</embedded-montiarc-math-generator>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -84,6 +85,12 @@
             <version>${CNNTrain.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-generator</artifactId>
+            <version>${embedded-montiarc-math-generator}</version>
         </dependency>
 
 
