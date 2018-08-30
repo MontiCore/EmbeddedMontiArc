@@ -93,6 +93,7 @@ public class VehicleDynamicsModel {
                 case "m":
                     chassis.write(name).with(value);
                     suspension.write(name).with(value);
+                    break;
                 default:
                     System.out.println(name + " wants to be written!");
                     break;
