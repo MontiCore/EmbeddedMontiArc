@@ -21,12 +21,10 @@
 package de.monticore.lang.monticar.cnnarch;
 
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
-import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.symboltable.Scope;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Map;
 
 public interface CNNArchGenerator {
@@ -40,8 +38,6 @@ public interface CNNArchGenerator {
     void generate(Path modelsDirPath, String rootModelName);
 
     void generate(Scope scope, String rootModelName);
-
-    Map<String,String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName);
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     Map<String, String> generateStrings(ArchitectureSymbol architecture);
