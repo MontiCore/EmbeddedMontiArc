@@ -31,6 +31,8 @@ import java.util.Map;
 
 public interface CNNArchGenerator {
 
+    boolean isCMakeRequired();
+
     String getGenerationTargetPath();
 
     void setGenerationTargetPath(String generationTargetPath);
@@ -46,4 +48,8 @@ public interface CNNArchGenerator {
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     void generateFiles(ArchitectureSymbol architecture) throws IOException;
+
+    void generateCMake(String rootModelName);
+
+    Map<String, String> generateCMakeContent(String rootModelName);
 }
