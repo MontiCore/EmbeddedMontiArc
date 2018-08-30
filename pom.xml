@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-arch</artifactId>
-    <version>0.2.5-SNAPSHOT</version>
+    <version>0.2.6-SNAPSHOT</version>
 
 
 
@@ -44,7 +44,6 @@
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <SIUnit.version>0.0.11</SIUnit.version>
         <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
-        <CNNTrain.version>0.2.4-SNAPSHOT</CNNTrain.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
 
         <!-- .. Libraries .................................................. -->
@@ -169,22 +168,6 @@
             <artifactId>commons-cli</artifactId>
             <version>${commons-cli.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNTrain.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang.monticar</groupId>
-            <artifactId>cnn-train</artifactId>
-            <version>${CNNTrain.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
-
 
         <!-- .. Test Libraries ............................................... -->
         <dependency>
