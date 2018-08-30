@@ -129,7 +129,6 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                              | MathAssignmentStatement);
 
     ArchComplexArithmeticExpression implements ArchArithmeticExpression = leftExpression:ArchMathExpression
-                                               NEWLINETOKEN*
                                                (   operator:"*"
                                                |   operator:"/"
                                                |   operator:"%"
@@ -137,7 +136,6 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                                |   operator:"+"
                                                |   operator:"-"
                                                )
-                                               NEWLINETOKEN*
                                                rightExpression:ArchMathExpression;
 
     TupleExpression = "(" expressions:ArchArithmeticExpression "," expressions:(ArchArithmeticExpression || ",")* ")";
