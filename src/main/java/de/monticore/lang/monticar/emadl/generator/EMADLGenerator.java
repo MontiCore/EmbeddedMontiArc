@@ -134,10 +134,20 @@ public class EMADLGenerator {
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
-        fileContents.addAll(generateCNNTrainer(allInstances, componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_")));
+        String instanceName = componentInstanceSymbol.getComponentType().getFullName().replaceAll("\\.", "_");
+        fileContents.addAll(generateCNNTrainer(allInstances, instanceName));
+
         fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
         TypesGeneratorCPP tg = new TypesGeneratorCPP();
         fileContents.addAll(tg.generateTypes(TypeConverter.getTypeSymbols()));
+
+        if (cnnArchGenerator.isCMakeRequired()) {
+            cnnArchGenerator.setGenerationTargetPath(getGenerationTargetPath());
+            Map<String, String> cmakeContentsMap = cnnArchGenerator.generateCMakeContent(componentInstanceSymbol.getFullName());
+            for (String fileName : cmakeContentsMap.keySet()){
+                fileContents.add(new FileContent(cmakeContentsMap.get(fileName), fileName));
+            }
+        }
 
         if (emamGen.shouldGenerateMainClass()) {
             //fileContents.add(emamGen.getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
