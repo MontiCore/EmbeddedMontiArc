@@ -184,7 +184,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setMass(double mass){
-        //toDo comment why here is nothing done
+        if(!physicalVehicleInitialized){
+            simulationVehicle.setMass(mass);
+            vehicleDynamicsModel.setParameter("m", mass);
+        }else{
+            //todo error
+        }
     }
 
 

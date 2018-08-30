@@ -90,6 +90,9 @@ public class VehicleDynamicsModel {
     public void setParameter(String name, double value){
         if(!isInitialized) {
             switch (name) {
+                case "m":
+                    chassis.write(name).with(value);
+                    suspension.write(name).with(value);
                 default:
                     System.out.println(name + " wants to be written!");
                     break;
