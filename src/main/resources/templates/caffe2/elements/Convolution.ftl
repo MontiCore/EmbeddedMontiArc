@@ -1,6 +1,8 @@
 <#assign input = element.inputs[0]>
 <#assign strideHeight = element.stride[0]>
 <#assign strideWidth = element.stride[1]>
+<#assign kernelHeight = element.kernel[0]>
+<#assign kernelWidth = element.kernel[1]>
 <#if element.padding??>  <#-- Check wheather padding null is. -->
 		<#-- TODO: check how to adapt CNNArchLang argument pad_width=${element.padding[0]} -->
 </#if>
@@ -9,10 +11,15 @@
 <#else>
 	<#assign strideParameter = "stride_h=${strideHeight}, stride_w=${strideWidth}">
 </#if>
-<#if input = tc.architectureInputs[0]>	<#-- TODO: CHECK COMPARISON -->
-		${element.name} = brew.conv(model, '${input}', '${element.name}', dim_in=1, dim_out=${element.channels?c}, kernel=${element.kernel[0]}, ${strideParameter})
+<#if kernelHeight == kernelWidth>
+	<#assign kernelParameter = "kernel=${kernelHeight}">
 <#else>
-		${element.name} = brew.conv(model, ${input}, '${element.name}', dim_in=${element.element.inputTypes[0].channels?c}, dim_out=${element.channels?c}, kernel=${element.kernel[0]}, ${strideParameter})
+	<#assign kernelParameter = "kernel=[${kernelHeight},${kernelWidth}]">
+</#if>
+<#if input = tc.architectureInputs[0]>	<#-- TODO: CHECK COMPARISON -->
+		${element.name} = brew.conv(model, '${input}', '${element.name}', dim_in=1, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter})
+<#else>
+		${element.name} = brew.conv(model, ${input}, '${element.name}', dim_in=${element.element.inputTypes[0].channels?c}, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter})
 </#if>
 		<#-- TODO: check how to adapt CNNArchLang argument no_bias=${element.noBias?string("True","False")} -->
 <#include "OutputShape.ftl">
