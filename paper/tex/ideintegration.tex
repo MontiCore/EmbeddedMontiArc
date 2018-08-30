@@ -1,0 +1,17 @@
+\subsection{IDE integration}
+\begin{figure}
+	\label{fig:idePacmanTop}
+	\centering
+	\includegraphics[scale=0.55]{pictures/IDE-PacMan-Top.pdf}
+	\caption{Main options for the PacMan project in the ide}
+\end{figure}
+To integrate a simulator into the EmbeddedMontiArcStudio several steps were necessary. In figure. \ref{fig:idePacmanTop} you can see the top view of the EmbeddedMontiArc's ide. The five added features here are as follows:
+\begin{itemize}
+	\item[1.] This opens a new tab where you can play a normal game of PacMan
+	\item[2.] Generate the WebAssembly of the main component
+	\item[3.] This opens a new tab in which the simulation of the component takes place
+	\item[4.] Generates the visualization of the main component and shows it in a new tab
+	\item[5.] Generates the reporting of all components and shows it in a new tab
+\end{itemize}
+The features needed to be implemented properly in different places in order to work along the logic of the ide. Each one calls a batch script which again runs the jar for the demanded task for the specific files. In addition, for feature 1 and 2 extra plugins were required which got implemented by group A (expert) and can be reused for SuperMario.
+A full list of the files edited can be found in the attachment.
