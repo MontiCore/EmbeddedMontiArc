@@ -104,10 +104,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTNumEpochEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
-        ValueSymbol value = new ValueSymbol();
-        Integer value_as_int = getIntegerFromNumber(node.getValue());
-        value.setValue(value_as_int);
-        entry.setValue(value);
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
@@ -115,10 +112,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTBatchSizeEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
-        ValueSymbol value = new ValueSymbol();
-        Integer value_as_int = getIntegerFromNumber(node.getValue());
-        value.setValue(value_as_int);
-        entry.setValue(value);
+        entry.setValue(getValueSymbolForInteger(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
@@ -126,9 +120,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTLoadCheckpointEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
-        ValueSymbol value = new ValueSymbol();
-        value.setValue(getBooleanForValue(node.getValue()));
-        entry.setValue(value);
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
@@ -136,9 +128,7 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
     @Override
     public void endVisit(ASTNormalizeEntry node) {
         EntrySymbol entry = new EntrySymbol(node.getName());
-        ValueSymbol value = new ValueSymbol();
-        value.setValue(getBooleanForValue(node.getValue()));
-        entry.setValue(value);
+        entry.setValue(getValueSymbolForBoolean(node.getValue()));
         addToScopeAndLinkWithNode(entry, node);
         configuration.getEntryMap().put(node.getName(), entry);
     }
@@ -240,15 +230,26 @@ public class CNNTrainSymbolTableCreator extends CNNTrainSymbolTableCreatorTOP {
         addToScopeAndLinkWithNode(value, node);
     }
 
+    private ValueSymbol getValueSymbolForInteger(ASTIntegerValue astIntegerValue) {
+        ValueSymbol value = new ValueSymbol();
+        Integer value_as_int = getIntegerFromNumber(astIntegerValue);
+        value.setValue(value_as_int);
+        return value;
+    }
+
+    private ValueSymbol getValueSymbolForBoolean(ASTBooleanValue astBooleanValue) {
+        ValueSymbol value = new ValueSymbol();
+        Boolean value_as_bool = getBooleanForValue(astBooleanValue);
+        value.setValue(value_as_bool);
+        return value;
+    }
+
     private int getIntegerFromNumber(ASTIntegerValue value) {
         return value.getNumberWithUnit().getNumber().get().intValue();
     }
 
     private boolean getBooleanForValue(ASTBooleanValue value2) {
-        if (value2.isPresentTRUE()) {
-            return true;
-        }
-        return false;
+        return value2.isPresentTRUE();
     }
 
 }

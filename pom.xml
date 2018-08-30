@@ -30,17 +30,16 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-train</artifactId>
-    <version>0.2.4-SNAPSHOT</version>
+    <version>0.2.5-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. SE-Libraries .................................................. -->
-        <monticore.version>5.0.0</monticore.version>
+        <monticore.version>5.0.1</monticore.version>
         <se-commons.version>1.7.8</se-commons.version>
-        <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-        <SIUnit.version>0.0.11</SIUnit.version>
+        <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
 
         <!-- .. Libraries .................................................. -->
@@ -50,7 +49,7 @@
         <jscience.version>4.3.1</jscience.version>
 
         <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>5.0.0</monticore.plugin>
+        <monticore.plugin>5.0.1</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
@@ -113,21 +112,6 @@
             <artifactId>se-commons-groovy</artifactId>
             <version>${se-commons.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
-        </dependency>
-
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
