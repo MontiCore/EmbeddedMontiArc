@@ -1024,7 +1024,7 @@ public class Vehicle {
      */
     public double getMass() {
         double returnValue = 0.0;
-        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+        if(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized) {
             returnValue =  massFront + massBack;
         }else{
             //todo error
@@ -1056,7 +1056,13 @@ public class Vehicle {
      * @return Front mass of the vehicle
      */
     public double getMassFront() {
-        return massFront;
+        double returnValue = 0.0;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            returnValue =  massFront;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
@@ -1082,7 +1088,13 @@ public class Vehicle {
      * @return Back mass of the vehicle
      */
     public double getMassBack() {
-        return massBack;
+        double returnValue = 0.0;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            returnValue =  massBack;
+        }else{
+            //todo error
+        }
+        return returnValue;
     }
 
     /**
@@ -1162,7 +1174,7 @@ public class Vehicle {
      */
     double getWheelDistLeftRightFrontSide() {
         double returnValue = 0.0;
-        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+        if(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized) {
             returnValue = wheelDistLeftRightFrontSide;
         }else{
             //todo error
@@ -1194,7 +1206,7 @@ public class Vehicle {
      */
     double getWheelDistLeftRightBackSide() {
         double returnValue = 0.0;
-        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+        if(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized) {
             returnValue = wheelDistLeftRightBackSide;
         }else{
             //todo error
