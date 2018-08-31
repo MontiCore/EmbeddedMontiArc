@@ -26,19 +26,19 @@ import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class CNNArch2MxNet implements CNNArchGenerator {
 
@@ -85,24 +85,6 @@ public class CNNArch2MxNet implements CNNArchGenerator {
         catch (IOException e){
             Log.error(e.toString());
         }
-    }
-
-    @Override
-    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName) {
-        int numberOfNetworks = configurations.size();
-        if (configurations.size() != instanceNames.size()){
-            throw new IllegalStateException(
-                    "The number of configurations and the number of instances for generation of the CNNTrainer is not equal. " +
-                    "This should have been checked previously.");
-        }
-        List<ConfigurationData> configDataList = new ArrayList<>();
-        for(int i = 0; i < numberOfNetworks; i++){
-            configDataList.add(new ConfigurationData(configurations.get(i), instanceNames.get(i)));
-        }
-        Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
-        return Collections.singletonMap(
-                "CNNTrainer_" + mainComponentName + ".py",
-                TemplateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl"));
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
@@ -163,19 +145,10 @@ public class CNNArch2MxNet implements CNNArchGenerator {
     }
 
     private void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
+        GeneratorCPP genCPP = new GeneratorCPP();
+        genCPP.setGenerationTargetPath(getGenerationTargetPath());
         for (String fileName : fileContentMap.keySet()){
-            File f = new File(getGenerationTargetPath() + fileName);
-            Log.info(f.getName(), "FileCreation:");
-            if (!f.exists()) {
-                f.getParentFile().mkdirs();
-                if (!f.createNewFile()) {
-                    Log.error("File could not be created");
-                }
-            }
-
-            FileWriter writer = new FileWriter(f);
-            writer.write(fileContentMap.get(fileName));
-            writer.close();
+            genCPP.generateFile(new FileContent(fileContentMap.get(fileName), fileName));
         }
     }
 
@@ -186,7 +159,7 @@ public class CNNArch2MxNet implements CNNArchGenerator {
 
         CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
-        cMakeConfig.addCMakeCommandEnd("set(LIBS ${LIBS} mxnet)");
+        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
 
         Map<String,String> fileContentMap = new HashMap<>();
         for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
