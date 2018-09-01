@@ -23,6 +23,3 @@
 </#if>
 		<#-- TODO: check how to adapt CNNArchLang argument no_bias=${element.noBias?string("True","False")} -->
 <#include "OutputShape.ftl">
-		# Yeverino input layer name: ${element.inputs[0]}
-		# Yeverino input/previous layer dim_out: ${element.element.inputTypes[0].channels?c}
-		# Yeverino current layer dim_out: ${element.element.outputTypes[0].channels?c}

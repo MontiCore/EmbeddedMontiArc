@@ -13,6 +13,4 @@
 		${element.name} = brew.fc(model, ${input}, '${element.name}', dim_in=${inputChannels} * ${inputHeight} * ${inputWidth}, dim_out=${element.units?c})
 </#if>
 		<#-- TODO: check how to adapt CNNArchLang argument no_bias=${element.noBias?string("True","False")} -->
-		# Yeverino input layer type: ${inputLayerType}
-		# Yeverino current layer type: ${element.element}
 <#include "OutputShape.ftl">
