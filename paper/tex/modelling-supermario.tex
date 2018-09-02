@@ -1,9 +1,16 @@
 \newpage
 \subsubsection{Supermario (by Philipp Haller)}
 
-This part discusses the model used to solve a level of the Supermario game which was presented in section XX. The presented visualisations are generated from the Embedded MontiArc Studio. Therein, a grey component indicates that the component uses additional subcomponents. 
+This part discusses the model used to solve a level of the Supermario game which was presented in section XX. The presented visualisations are generated from the Embedded MontiArc Studio. Therein, a grey component indicates that the component uses additional subcomponents, whereas a white component marks atomic components. 
+
+TODO List:
+
 
 VEREINFACHUNGEN?? WIESO? HIERHIN?
+Prior to modelling some assumptions were made to fulfill time and complexity constraints.
+Only a fixed number of enemies and obstacles in the path of the player are considered in order to ensure a static input size. Five entities each have shown empirically to be sufficient for the first level and the implemented strategy. For the same reason only the next hole in the ground is considered
+-Why 5 enemies, obstacles etc
+VEREINFACHUNGEN ENDE
 
 The first entity modelled was the supermario wrapper which is closely related to the outputs and inputs of the simulator. Therefore it receives all necessary values as input with the aim to forward them to the actual controller and its corresponding sub-components. After computation the results of the controller are handed back into the wrapper, which forwards the data to the simulator. Figure XX shows the graphical representation, while listing XX shows the actual EMA interface definition.
 \begin{figure}
@@ -66,6 +73,12 @@ TBD
 
 The enemy strategy uses the distances and velocities from the enemy components to watch them for their distance to the player and wether they can get dangerous. If an enemy comes too close and is on the player's pane, a jump advice is given. The jump advices are again combined via a logical or-relation and returned.
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{pictures/haller_obstaclestrategy.PNG}
+	\caption{Visualisation of the Supermario enemy strategy model}
+	\label{fig:marioObstacleStrategy}
+\end{figure}
 
 The obstacle controller is modelled very similar to the enemy controller, extracting positions from the raw input array and feeding them into a obstacle strategy. The main difference to the enemy controller is the presence of another input. This additional input is the distance to the next disruption in the ground pane of the level. It is forwarded into the obstacle strategy where a watcher component checks the player's proximity to the hole and emits a jump advice. The advice is then used....
 
@@ -77,15 +90,19 @@ During modelling of Supermario a distinction between models named with "controll
 In scope of the Supermario model the name "controller" was used to describe a model which 
 
 "Watcher"
+The watcher model type takes a position as input and returns a bollean value which indicates if it is in a certain range.
 
 "Selector"
+The selector model type uses a raw array and an index as input and returns the corresponding array entry.
 
 "Strategy"
+A strategy model type can take different inputs and performs a action decision based on its inputs.
 
 "Controller"
+The controller model type combines the other defined model types to refine the inputs of the simulation and executes a strategy.
 
-"Decider??"
-
+"Decider -> Filter??"
+The decider model type is intended to perform filtering like debouncing and plausibility checks.
 
 
 
