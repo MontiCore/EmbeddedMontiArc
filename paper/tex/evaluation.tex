@@ -1,18 +1,30 @@
-In the section the sampled data is analyzed. First the results of the quantitative analysis are presented, followed by statements made by the subjects and a final  summary.
+The two developers of PacMan and SuperMario were interviewed in the manner mentioned in the introduction. In this section the results of this interviews are collected and summarized.
 
-\subsection{Quantitative Analysis}
+\subsection{RQ1 - Is EmbeddedMontiArc suitable for other systems?}
+The tasks were both based on real-time problems which the EMA language is designed for. Both developers were able to model a controller which can beat a level in their specific domain.
 
-To be added after implementation completion...
+\subsection{RQ2 - Is it possible to integrate other simulators in a recent amount of work?}
+To integrate the PacMan- and SuperMario simulators two tasks had to be completed: integrate into the IDE and then link the simulator to the web assembly. The integration into the IDE was quite simple for both systems as soon as the instructions were handed out. But as there was no infrastructure for generating the web assembly before this led to some extra effort by installing emscripten and writing the needed scripts. The Simulator for PacMan was easily adjustable so that the extraction of the needed information (e.g. PacMan position) was done in short time. In contrast, the underlying structure of the SuperMario project in use was way more complex and needed a lot more effort to understand it. Linking the web assembly with the simulator was done within little work as soon as the interface for extracting the data from the simulators and inputting the computed results was implemented. Just the data had to be transformed into the correct format and then the web assembly needed to be executed.
+
+Therefore the answer to this question is dependent on the complexity of the system and on whether the is a working interface for extracting data. PacMan was fairly easy to integrate but SuperMario needed more time than calculated.
+
+\subsection{RQ3 - What kind of background knowloedge is needed to model C\&C in EMA?}
+One of the developers had some experience with EmbeddedMontiArc while the other had not. Both are computer science students and are therefore familiar with programming concepts and the modular programming that EMA requires. For the more experienced developer the concept of C\&C was easy to understand and he could easily make use some of the tooling the language offers. The less experienced developer had a few problems in the beginning but after overcoming those he had no further problems with implementing what he was trying to. Both developers benefited from being familiar with programming languages so the math library was easy to understand. 
+
+Having experience with programming concepts is necessary to model C\&C in EMA but specific knowledge about the EMA language is optional and can be obtained in a short time.
+
+\subsection{RQ4 - What features are good and what are not suited?}
+This section will be split up into the question about the tools around the language and the question about the features the language itself is offering.
+
+\subsubsection{Tools}
+The onlineIDE coming with the EmbeddedMontiArcStudio is powerful enough to help with the modeling process. But it is also missing a lot of tools a modern ide is offering. The safe option was also one of the weak points of the ide, only after running a plugin all the files are saved to the hard drive. Syntax checking was sufficient for the non-atomic components but missing for the atomic components. The other tools integrated into the ide, such as generating a report with semantical checks of the models or generating a visualization could be utilized for error checking and planning the model. But most of the tools had a long runtime and need optimization.
+
+\subsubsection{Language Features}
+The option to import other components and to have a package hierarchy were used all the time and are well suited for the purpose of the language. Also connecting arrays of ports with a [:] is very convenient but this option is not nested which made the code at some point larger than necessary. What was missing in this version of the code generator is the ability to use structs as a port type which led to unclear port interface for some components.
+
+All in all, the features the ide and the language were offering helped with the modeling process and are well suited for the language purpose.
 
 
-\subsection{Qualitative Analysis}
-
-\subsubsection{Subject writeups}
 
 
 
-In this section I (Sezer) will present some evaluations concerning the facts and problems of the simulator and IDE. Apart from that, I will also clarify my problems I faced during our approach.
-\\
-First of all, I had to understand what "C\&C" means and I also had to clarify what components are in our context. Furthermore, I had to get accustomed to the syntax of the IDE which is quite easy to handle. Moreover, the IDE offers a good overview on the used components and how components are connected with each other. Personally, I also had to get to know what a "wrapper" and a "controller" are. For someone like me who is relocated in web development, it was difficult to get into the project. Besides there are other more intuitive datatypes in EmbeddedMontiArc Studio. These are for example \textbf{B} (Boolean), \textbf{Z} (Integer), \textbf{Q} (Rational number) and \textbf{N} (Natural number). It is also possible to assign  a domain or an interval to the above-mentioned datatypes which is not always possible with other programming languages. You can also "define" units which makes it easier to comprehend your datatypes and which is not always usual for other programming languages. Apart from this, we can also create and handle with matrices in an easier way. The creation of matrices in the EmbeddedMontiArc studio is more intuitive. In my opinion, Michael's and Armin's video are good for beginners since the interaction with the components and how to program them are explained in a good manner. Besides, the relation between the single "MontiArc" programming languages are described in the tutorial videos. What I liked in our project is that we could use techniques from the software engineering domain (e.g. representation of the components) but nevertheless we faced some problems which I will mention below. What I also liked was that it is shown in the IDE whether the used packages are correct or not. What I didn't like was that there is no possibility of debugging as it is possible in other IDEs. It is very difficult to find a semantical error and the only stuff that was available is the start console of the IDE where errors are shown. But there are no methods for debugging like variable watcher or breakpoints which made the debugging for us very difficult. Honestly, I had problems to get an idea how to start with the implementation of the PacMan-game. Therefore, I had a look on my partners' code examples in order to get an inspiration. 
-
-\subsubsection{Summary of writeups}
