@@ -1,9 +1,12 @@
 \newpage
-\subsubsection{Supermario (by Philipp Haller)}
+\subsection{ Modeling - Supermario (by Philipp Haller)}
 
 This part discusses the model used to solve a level of the Supermario game which was presented in section XX. First a general introduction on model types is given. Thereafter, the different models are discussed step by step, beginning at the most abstract.
 
-\emph{Model Types}
+\subsubsection{Simulator Interface}
+
+
+\subsubsection{Model Types}
 
 In this context the following model types used were:
 "Watcher"
@@ -21,7 +24,7 @@ The controller model type combines the other defined model types to refine the i
 "Filter"
 The filter model type is intended to perform filtering like debouncing and plausibility checks.
 
-\emph{Models}
+\subsubsection{Models}
 The presented model visualizations are generated from the EmbeddedMontiArc Studio. Therein, a grey component indicates that the component uses additional subcomponents, whereas a white component marks atomic components. 
 
 The first and most abstract entity modeled was the supermario wrapper which is closely related to the outputs and inputs of the simulator. Therefore it receives all necessary values as input with the aim to forward them to the actual controller and its corresponding sub-components. After computation the results of the controller are handed back into the wrapper, which forwards the data to the simulator. Figure \ref{fig:marioWrapper} shows the graphical representation, while listing \ref{lst:marioWrapperInterface} shows the actual EMA interface definition.
@@ -102,7 +105,7 @@ The enemy strategy (Figure \ref{fig:marioEnemyStrategy}) uses the distances and 
 The obstacle controller is modeled very similar to the enemy controller, extracting positions from the raw input array and feeding them into a obstacle strategy. The main difference to the enemy controller is the presence of another input. This additional input is the distance to the next hole in the ground plane of the level. It is forwarded into the obstacle strategy (Figure \ref{fig:marioObstacleStrategy}) where a watcher component checks the player's proximity to the hole and computes a jump advice. All advices are again combined by a or relation.
 
 
-\emph{Future Modeling}
+\subsubsection{Future Modeling}
 
 The models presented in this chapter were developed with modularity and extensibility in mind, such that in future work more complex strategies can be used to solve more levels and to lay more attention to the score.
 -mario direction
