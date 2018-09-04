@@ -2,11 +2,25 @@ The magnitude and quantity of software projects rises constantly, as software de
 EmbeddedMontiArc, a specific DSL for cyber-physical systems is evaluated in this paper. It will be introduced in more detail in section \ref{} together with the used tools. This section forms a general introduction and will present the research questions.
 Thereafter the approach will be presented in section \ref{}. Section \ref{} depicts the simulator integration and the developed models. In section \ref{} the evaluation is presented, concluded by a conclusion in section \ref{}.
 
-\subsection{Research Questions}
-In the following the scope of this paper will be presented by formulating the research questions.
+In general most problems can be sorted into two categories. The first being data based problems, where huge amounts of data are processed and no hard real time capabilities are necessary. An example for such a problem is google's or amazon's search system. The other problem category consists of reactive systems which operate on very little data and must return output with hard time constraints. In this paper EmbeddedMontiArc is evaluated towards its capabilities for the second category.
+The following research questions were formulated to specify evaluation topics:
+
 \begin{itemize}
 	\item RQ1: Is EmbeddedMontiArc suitable for other systems?
 	\item RQ2: Is it possible to integrate other simulators in a recent amount of work?
 	\item RQ3: What kind of background knowledge is needed to model C\&C in EMA?
 	\item RQ4: What features are good and what are not suited?
 \end{itemize}
+
+To answer these research questions two groups are formed who develop different models in EmbeddedMontiArc and share their experience while doing so. To ensure a similar experience to real reactive cyber physical systems, two games were selected.
+Games were selected, because most games are real-time problems with a changing environment and limited inputs, while requiring immediate responses.
+The games chosen for this paper are Pacman and Supermario. Goal for both models was to solve a level in their respective game.
+
+The finished models can be observed playing Pacman and Supermario autonomouosly on the websites 
+\begin{lstlisting}
+https://embeddedmotiarc.github.io/SuperMario/Pacman/
+\end{lstlisting}
+and
+\begin{lstlisting}
+https://embeddedmotiarc.github.io/SuperMario/supermario2/
+\end{lstlisting}
