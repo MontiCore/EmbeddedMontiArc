@@ -30,22 +30,20 @@
 
     <groupId>de.monticore.lang.embeddedmontiarc</groupId>
     <artifactId>embedded-montiarc-application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
     <properties>
 
         <!-- .. SE-Libraries .................................................. -->
-        <monticore.version>4.5.4-SNAPSHOT</monticore.version>
+        <monticore.version>5.0.0</monticore.version>
         <se-commons.version>1.7.7</se-commons.version>
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-        <SIUnit.version>0.0.10-SNAPSHOT</SIUnit.version>
-        <Common-MontiCar.version>0.0.11-SNAPSHOT</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.0.11-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Behaviour.version>0.0.11-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-        <Application.version>0.0.1-SNAPSHOT</Application.version>
-        <EMAApplication.version>0.0.1-SNAPSHOT</EMAApplication.version>
+        <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
+        <Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>
+        <Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
+        <Application.version>0.0.3-SNAPSHOT</Application.version>
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
         <junit.version>4.12</junit.version>
@@ -53,7 +51,7 @@
         <jscience.version>4.3.1</jscience.version>
 
         <!-- .. Plugins ....................................................... -->
-        <monticore.plugin>4.5.3-SNAPSHOT</monticore.plugin>
+        <monticore.plugin>5.0.0</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
@@ -117,20 +115,6 @@
             <groupId>de.se_rwth.commons</groupId>
             <artifactId>se-commons-groovy</artifactId>
             <version>${se-commons.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore.lang</groupId>
-            <artifactId>NumberUnit</artifactId>
-            <version>${SIUnit.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-            <scope>provided</scope>
         </dependency>
 
 

@@ -1,7 +1,7 @@
 package test;
 
-component PacmanInputControl{
-    port out Boolean moveDown,
+actuator PacmanInputControl{
+    variable out Boolean moveDown,
         out Boolean moveUp,
         out Boolean moveLeft,
         out Boolean moveRight;
@@ -9,9 +9,9 @@ component PacmanInputControl{
     connect true -> initDone;
 
     implementation Application{
-        set port moveDown  to "s";
-        set port moveUp    to "w";
-        set port moveLeft  to "a";
-        set port moveRight to "d";
+        set variable moveDown  to "s";
+        set variable moveUp    to "w";
+        set variable moveLeft  to "a";
+        set variable moveRight to "d";
     }
 }
