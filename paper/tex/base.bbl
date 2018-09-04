@@ -5,6 +5,23 @@
 \expandafter\ifx\csname href\endcsname\relax
   \def\href#1#2{#2} \def\path#1{#1}\fi
 
+\bibitem{emademo}
+M.~von Wenckstern,
+  \href{https://www.youtube.com/watch?v=VTKSWwWp-kg}{Embeddedmontiarc demo
+  video}.
+\newline\urlprefix\url{https://www.youtube.com/watch?v=VTKSWwWp-kg}
+
+\bibitem{pacmanmodel}
+M.~Heithoff,
+  \href{https://embeddedmontiarc.github.io/SuperMario/PacMan/}{Pacman model}.
+\newline\urlprefix\url{https://embeddedmontiarc.github.io/SuperMario/PacMan/}
+
+\bibitem{mariomodel}
+P.~Haller,
+  \href{https://embeddedmontiarc.github.io/SuperMario/supermario/simulation.html}{Supermario
+  model}.
+\newline\urlprefix\url{https://embeddedmontiarc.github.io/SuperMario/supermario/simulation.html}
+
 \bibitem{WencksternCCViP}
 {V. Bertram{,} S. Maoz{,} J. O. Ringert{,} B. Rumpe{,} M. von Wenckstern},
   Component and connector views in practice: An experience report, ACM/IEEE
@@ -46,7 +63,7 @@ A.~Mokhtarian, Monticar: 3d modeling using embeddedmontiarcmath (2018).
 P.~Runeson, M.~Höst, Guidelines for conducting and reporting case study
   research in software engineering.
 
-\bibitem{pacmanLink}
+\bibitem{PacmanLink}
 D.~Harvey, \href{https://demo.embeddedmontiarc.com/pacman2/}{Html5 pacman}.
 \newline\urlprefix\url{https://demo.embeddedmontiarc.com/pacman2/}
 
