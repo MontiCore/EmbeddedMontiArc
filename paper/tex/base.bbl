@@ -47,10 +47,8 @@ P.~Runeson, M.~Höst, Guidelines for conducting and reporting case study
   research in software engineering.
 
 \bibitem{pacmanLink}
-C.~of~Software Engineering RWTH Aachen~University,
-  \href{http://se-rwth.de}{Homepage of the chair of software engineering at
-  rwth aachen university}.
-\newline\urlprefix\url{http://se-rwth.de}
+D.~Harvey, \href{https://demo.embeddedmontiarc.com/pacman2/}{Html5 pacman}.
+\newline\urlprefix\url{https://demo.embeddedmontiarc.com/pacman2/}
 
 \bibitem{marioLink}
 J.~Goldberg,
@@ -61,5 +59,11 @@ J.~Goldberg,
 \bibitem{emscirpten}
 A.~Zakai, \href{http://kripken.github.io/emscripten-site/}{Emscripten}.
 \newline\urlprefix\url{http://kripken.github.io/emscripten-site/}
+
+\bibitem{emadoc}
+E.~Team,
+  \href{https://github.com/EmbeddedMontiArc/Documentation}{Embeddedmontiarc
+  documentation}.
+\newline\urlprefix\url{https://github.com/EmbeddedMontiArc/Documentation}
 
 \end{thebibliography}
