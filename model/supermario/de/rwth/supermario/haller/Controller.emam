@@ -5,7 +5,7 @@ package de.rwth.supermario.haller;
 
 import de.rwth.supermario.haller.tools.OrRelation_3;
 import de.rwth.supermario.haller.actuator.GeneralStrategy;
-import de.rwth.supermario.haller.actuator.JumpDecider;
+import de.rwth.supermario.haller.actuator.JumpFilter;
 import de.rwth.supermario.haller.EnemyController;
 import de.rwth.supermario.haller.ObstacleController;
 
@@ -48,12 +48,12 @@ component Controller {
     connect  genStrategy.jumpAdvice -> orR.input[3];
     
     //Checked vor validity
-    instance JumpDecider jumpDecider;
-    connect orR.output -> jumpDecider.jumpAdvice;
-    connect marioResting -> jumpDecider.marioResting;
+    instance JumpFilter jumpFilter;
+    connect orR.output -> jumpFilter.jumpAdvice;
+    connect marioResting -> jumpFilter.marioResting;
     
     //And forwarded 
-    connect  jumpDecider.marioJump -> marioJump;
+    connect  jumpFilter.marioJump -> marioJump;
     
     //The general strategy is currently the only entity making decisions on direction and crouching
     connect  genStrategy.directionAdvice -> marioDirection;
