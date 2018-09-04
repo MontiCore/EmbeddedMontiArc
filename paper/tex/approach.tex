@@ -8,7 +8,7 @@ We can use those tests to define the conditions the controllers need to fulfill.
 The tests are taken from use case scenarios as stated before. In this section the process of deriving the stream test from a scenario is presented once and then a few conditions are framed. \newline
 
 \emph{Deriving a Stream Test} \newline
-In fig. \ref{fig:pacManFleeing} a scenario is shown where the only option for PacMan is to flee to the left in order to not collide with the pink and blue ghost. The values of the ghosts and PacMan are partially listed in listing \ref{lst:pmStreamValues}. Together with the other values this concludes to the stream test shown below .
+In fig. \ref{fig:pacManFleeing} a scenario is shown where the only option for PacMan is to flee to the left in order to not collide with the pink and blue ghost. The values of the ghosts and PacMan are partially listed in listing \ref{lst:pmStreamValues}. Together with the other values this concludes to the stream test shown below \ref{lst:pmStreamTest}.
 \begin{figure}[!h]
 	\centering
 	\subfigure[]{\includegraphics[width=0.49\textwidth]{pictures/PacMan/StreamTests/2/Bild1.PNG}} 
@@ -18,46 +18,53 @@ In fig. \ref{fig:pacManFleeing} a scenario is shown where the only option for Pa
 	\caption{PacMan has to move left to avoid colliding with the ghosts} 
 	\label{fig:pacManFleeing}
 \end{figure}
-\begin{lstlisting}[caption={Values for the stream test},label=lst:pmStreamValues]
+\begin{lstlisting}[caption={Values for the stream test},label=lst:pmStreamValues, frame=single]
 (a)
-	PacMan: (15m, 17.2m) 
-	Pink Ghost: (17m, 19m) 
-	BlueGhost: (15m, 14.8m) 
-	newDir: 0
+  PacMan: (15m, 17.2m) 
+  Pink Ghost: (17m, 19m) 
+  BlueGhost: (15m, 14.8m) 
+  newDir: 0
 (b)	
-	PacMan: (15m, 17m) 
-	Pink Ghost: (16.8m, 19m) 
-	BlueGhost: (15m, 15m) 
-	newDir: 0
+  PacMan: (15m, 17m) 
+  Pink Ghost: (16.8m, 19m) 
+  BlueGhost: (15m, 15m) 
+  newDir: 0
 (c)	
-	PacMan: (14.8m, 17m) 
-	Pink Ghost: (16.6m, 19m) 
-	BlueGhost: (15m, 15.2m) 
-	newDir: 2
+  PacMan: (14.8m, 17m) 
+  Pink Ghost: (16.6m, 19m) 
+  BlueGhost: (15m, 15.2m) 
+  newDir: 2
 (d)	
-	PacMan: (14.6m, 17m) 
-	Pink Ghost: (16.4m, 19m)
-	BlueGhost: (15m, 15.4m)
-	newDir: 2
+  PacMan: (14.6m, 17m) 
+  Pink Ghost: (16.4m, 19m)
+  BlueGhost: (15m, 15.4m)
+  newDir: 2
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Stream test for the scenario above},label=lst:pmStreamTest, frame=single, morekeywords={tick, stream, for, package}]
 package de.rwth.pacman;
 stream Test1 for PacManWrapper {
-	ghostX: [5.4m,15m,17m,7m] tick [5.2m,15m,16.8m,7m] tick ...
-	ghostY: [21m,14.8m,19m,17.2m] tick [21m,15m,19m,17.4m] ...
-	ghostDirection: [2,1,2,1] tick [2,1,2,1] tick [2,1,2,1] tick [2,1,2,1];
-	ghostEtable: [false, false, false, false] tick ...
-	ghostEaten: [false, false, false, false] tick ...
-	pacManX: 15m tick 15m tick 14.8m tick 14.6m;
-	pacManY: 17.2m tick 17m tick 17m tick 17m;
-	pacManEaten: false tick false tick false tick false;
-	pacManLives: 3 tick 3 tick 3 tick 3;
-	pacManScore: 0 tick 0 tick 0 tick 0;
-	map: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0; ...
-	newPacManDirection: 0 tick 0 tick 2 tick 2;
+  ghostX: [5.4m,15m,17m,7m] tick [5.2m,15m, ...
+  ghostY: [21m,14.8m,19m,17.2m] tick [21m,15m, ...
+  ghostDirection: [2,1,2,1] tick [2,1,2,1] tick ...
+  ghostEtable: [false, false, false, false] tick ...
+  ghostEaten: [false, false, false, false] tick ...
+  pacManX: 15m tick 15m tick 14.8m tick 14.6m;
+  pacManY: 17.2m tick 17m tick 17m tick 17m;
+  pacManEaten: false tick false tick false tick false;
+  pacManLives: 3 tick 3 tick 3 tick 3;
+  pacManScore: 0 tick 0 tick 0 tick 0;
+  map: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0; ...
+  newPacManDirection: 0 tick 0 tick 2 tick 2;
 }
 \end{lstlisting}
+
+\emph{Some other tests}
+\begin{itemize}
+	\item If PacMan is located at an intersection and ghosts are coming from two sides, PacMan should walk to a safe path.
+	\item If PacMan is located at an intersection and ghosts are at the top path and are all eatable, PacMan should walk this path.
+	\item If PacMan is located at an intersection
+\end{itemize}
 
 Those scenarios can be tested easily within a few ticks via stream testing.
 
