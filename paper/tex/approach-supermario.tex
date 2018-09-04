@@ -32,8 +32,9 @@ Figure \ref{fig:marioenemies} shows two situations. In the first one, mario jump
 In Figure \ref{fig:mariohole} the player is seen standing next to holes in the ground. In the first picture he is on the ground level, in the second he is standing on an obstacle.
 
 The stream tests derived from the scenarios are introduced in the following.
-\begin{lstlisting}[label=lst:enemywatchertest_1, caption=Enemy watcher stream test, morekeywords={},
+\begin{lstlisting}[label=lst:enemywatchertest_1, caption=Enemy watcher stream test, morekeywords={package, stream, tick, for},
 frame=single, basicstyle=\tiny]
+package de.rwth.supermario.haller.environment;
 stream Env_EnemyWatcher for EnemyWatcher {
     EnemyDistX:         200 tick    100     tick     75;
     EnemyDistY:           0 tick      0     tick      0;
@@ -48,23 +49,25 @@ If a enemy gets closer than 80 pixels (two blocks) and is on the same height as 
 The output values are of type boolean.
 
 
-\begin{lstlisting}[label=lst:obstaclewatchertest, caption=Obstacle watcher stream test, morekeywords={},
+\begin{lstlisting}[label=lst:obstaclewatchertest, caption=Obstacle watcher stream test, morekeywords={package, stream, tick, for},
 frame=single, basicstyle=\tiny]
+package de.rwth.supermario.haller.environment;
 stream Env_ObstacleWatcher for ObstacleWatcher {
-    ObstacleDistX:         200 tick    100     tick		75	tick	50	tick 	25   tick	 0;
-    ObstacleDistX:           0 tick      0     tick      0	tick	25	tick 	50	 tick	75;
+    ObstacleDistX: 200 tick 100 tick 75	tick 50	tick 25  tick  0;
+    ObstacleDistX:   0 tick   0 tick  0	tick 25	tick 50	 tick 75;
     
-    inJumpRange:          	 0 tick      0     tick      1	tick	 1	tick	 1	 tick	 0;
+    inJumpRange:     0 tick   0 tick  1	tick  1	tick  1	 tick  0;
     }
 \end{lstlisting}
 If a obstacle is in front of the player, he shall jump until he has passed it(listing \ref{lst:obstaclewatchertest}). The distances are given in pixels, and the obstacle in this text is of 70px height.
 
-\begin{lstlisting}[label=lst:holewatchertest, caption=Hole watcher stream test, morekeywords={},
+\begin{lstlisting}[label=lst:holewatchertest, caption=Hole watcher stream test, morekeywords={package, stream, tick, for},
 frame=single, basicstyle=\tiny]
+package de.rwth.supermario.haller.environment;
 stream Env_ObstacleWatcher for ObstacleWatcher {
-    holeDistance:         200 	tick    100     tick     10 	tick     0 	tick     1200;
+    holeDistance: 200 tick 100 tick 10 tick 0 tick 1200;
     
-    inJumpRange:            0 	tick      0     tick      1		tick	 1  tick		0;
+    inJumpRange:    0 tick   0 tick  1 tick	1 tick    0;
     }
 \end{lstlisting}
 
