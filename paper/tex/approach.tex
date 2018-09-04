@@ -18,7 +18,8 @@ In fig. \ref{fig:PacmanFleeing} a scenario is shown where the only option for Pa
 	\caption{Pacman has to move left to avoid colliding with the ghosts} 
 	\label{fig:PacmanFleeing}
 \end{figure}
-\begin{lstlisting}[caption={Values for the stream test},label=lst:pmStreamValues, frame=single]
+
+\begin{lstlisting}[caption={Values for the stream test},label=lst:pmStreamValues, frame=single, float,floatplacement=H]
 (a)
   Pacman: (15m, 17.2m) 
   Pink Ghost: (17m, 19m) 
@@ -41,7 +42,7 @@ In fig. \ref{fig:PacmanFleeing} a scenario is shown where the only option for Pa
   newDir: 2
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Stream test for the scenario above},label=lst:pmStreamTest, frame=single, morekeywords={tick, stream, for, package}]
+\begin{lstlisting}[caption={Stream test for the scenario above},label=lst:pmStreamTest, frame=single, morekeywords={tick, stream, for, package}, float,floatplacement=H]
 package de.rwth.Pacman;
 stream Test1 for PacmanWrapper {
   ghostX: [5.4m,15m,17m,7m] tick [5.2m,15m, ...
