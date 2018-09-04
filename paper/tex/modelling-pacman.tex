@@ -3,10 +3,10 @@ In the following the model for the Pacman controller is presented. The goal is t
 
 \subsubsection{Interface}
 \begin{figure}
+	\caption{Visualization of the Pacman wrapper}
 	\label{fig:visPacmanWrapper}
 	\centering
 	\includegraphics[scale=0.7]{pictures/VisualizationPacmanWrapper.png}
-	\caption{Visualization of the Pacman wrapper}
 \end{figure}
 \begin{lstlisting}[label=lst:pacmanWrapper, caption=Interface of the Pacman Wrapper, morekeywords={ports, port, connect, in, out, instance, ->},
 frame=single]
@@ -30,10 +30,10 @@ To connect the web assembly of the main component with the Pacman emulator a new
 
 \subsubsection{C\&C modeling - Pacman (simple)}
 \begin{figure}
+	\caption{Visualization of the Pacman controller (simple)}
 	\label{fig:visPacmanSimple}
 	\centering
 	\includegraphics[scale=0.7]{pictures/VisualizationPacmanSimple.png}
-	\caption{Visualization of the Pacman controller (simple)}
 \end{figure}
 In fig. \ref{fig:visPacmanSimple} the design of a simple controller is shown. It has four subcomponents:
 \begin{itemize}
@@ -47,10 +47,10 @@ This design is very simple and not very successful. It shows the concept of C\&C
 
 \subsubsection{C\&C modeling - Pacman (complex)}
 \begin{figure}
+	\caption{Visualization of the Pacman controller (complex)}
 	\label{fig:visPacman20}
 	\centering
 	\includegraphics[scale=0.85]{pictures/Pacman/Controller20.png}
-	\caption{Visualization of the Pacman controller (complex)}
 \end{figure}
 
 The more complex Pacman controller is shown in fig. \ref{fig:visPacman20}.
@@ -66,24 +66,24 @@ We will now go into detail for the three main component.
 
 \emph{Safe Paths} \newline
 \begin{figure}
+	\caption{Visualization of Safe Paths}
 	\label{fig:safePaths}
 	\centering
 	\includegraphics[scale=0.75]{pictures/Pacman/safePaths.png}
-	\caption{Visualization of Safe Paths}
 \end{figure}
 In fig. \ref{fig:safePaths} the \textit{safePaths} component is shown. It contains a subcomponent for each direction and some starting values. It gives back whether the four directions are safe or not. A direction is safe if there is a wall blocking it (no path) or there is no enemy on its path until the next intersection. This is calculated by ``going'' the path. This could be done with a single component looping through the path to the next intersection. Due to the fact that this would contradict the conditions on C\&C components stated before it is split up into subcomponents. Each path in this labyrinth has a length of at most 10. So the task is divided into 10 components as one can partially see in fig. \ref{fig:search}. Each of those checks whether the current position is safe and then calculate the position to check for the next component. This way the runtime is fixed and the code is better parallelizable.
 \begin{figure}
+	\caption{Visualization of one Search}
 	\label{fig:search}
 	\centering
 	\includegraphics[scale=0.5]{pictures/Pacman/Search.png}
-	\caption{Visualization of one Search}
 \end{figure}
 
 \begin{figure}
+	\caption{Visualization of one Single Search Component}
 	\label{fig:searchSingle}
 	\centering
 	\includegraphics[scale=0.55]{pictures/Pacman/SearchSingle.png}
-	\caption{Visualization of one Single Search Component}
 \end{figure}
 The task of one of the 10 subcomponents is again split up into 5 subtasks (see fig. \ref{fig:searchSingle}):
 \begin{itemize}
@@ -96,10 +96,10 @@ The task of one of the 10 subcomponents is again split up into 5 subtasks (see f
 
 \emph{Cone Search} \newline
 \begin{figure}
+	\caption{Visualization of Cone Search}
 	\label{fig:cone}
 	\centering
 	\includegraphics[scale=0.65]{pictures/Pacman/Cone.png}
-	\caption{Visualization of Cone Search}
 \end{figure}
 The \textit{ConeSearch} component searches through the map in cones (see fig. \ref{fig:cone}). This way each direction can be given a value which increases when biscuits and coins are found and decreases when ghosts are found. The following weights are used in the most current version:
 \begin{itemize}
@@ -111,10 +111,10 @@ The \textit{ConeSearch} component searches through the map in cones (see fig. \r
 \end{itemize}
 The values shrink with the distance to Pacman. The biscuit/coin value shrink squared and the enemy value linear with the distance. This way near objectives are valued more and Pacman does not go for only far away biscuits/coins if there already are nearby ones. But if all biscuit/coin values are small the maximum gets increased by a fix amount, so Pacman goes for far away biscuits/coins if there are no around. In the end for each direction a value is returned by combining the biscuits/coins value and the enemy value. 
 \begin{figure}
+	\caption{Visualization of Cone Search}
 	\label{fig:coneSearch}
 	\centering
 	\includegraphics[scale=0.55]{pictures/Pacman/ConeSearch.png}
-	\caption{Visualization of Cone Search}
 \end{figure}
 
 In the visualization of the component (see fig. \ref{fig:coneSearch}) one can see the different kind of subcomponents:
@@ -128,10 +128,10 @@ In the visualization of the component (see fig. \ref{fig:coneSearch}) one can se
 
 \emph{Decision} \newline
 \begin{figure}
+	\caption{Visualization of Cone Search}
 	\label{fig:decision}
 	\centering
 	\includegraphics[scale=0.55]{pictures/Pacman/Decision.png}
-	\caption{Visualization of Cone Search}
 \end{figure}
 The \textit{decision} component gets all data from \textit{safePaths} and \textit{coneSearch} and makes a final decision on where to go. Beside the maximum value for a direction and whether it is safe or not, the decision is based on a few additional information. E.g. the top direction has the maximum value from the cone searches but it is blocked by a wall or not safe. Then another direction has to be chosen. Here an orthogonal direction (left or right) is preferred to stay near to the desired one (top). In addition, to prevent stuttering a new path is only chosen if the current one is not safe anymore or an intersection is reached.
 In fig. \ref{fig:decision} one can see the four subcomponents of \textit{safePaths}:
