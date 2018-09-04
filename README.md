@@ -1,5 +1,201 @@
 ![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Caffe2/badges/master/build.svg)
 ![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Caffe2/badges/master/coverage.svg)
 
-
+# CNNArch2Caffe2
 This generator generates caffe2 networks from the cnnarch language.
+
+
+## Caffe2 Installation Guide 
+
+This is a guide about how to install Caffe2 on Ubuntu and Windows 10. 
+
+1. [Ubuntu](#ubuntu)
+2. [Windows 10](#windows-10)
+
+
+### Ubuntu 
+
+This guide is based on the installation guide from the Caffe2 website: https://caffe2.ai/docs/getting-started.html?platform=ubuntu&configuration=compile
+
+- **For GPU Support :** Install CUDA 8.0 and cuDNN directly from NVIDIA website.
+    Install CUDA 8.0 with the option "deb (local)". Install cuDNN with the option "Library for Linux" and download cuDNN 7.0.5 since version 5.1 does not work with CUDA 8.0.
+    
+    Do the following in the extracted folder cuDNN 7.0.5:
+    
+    ```
+    sudo cp -P include/cudnn.h /usr/local/cuda-8.0/include 
+    sudo cp -P lib64/libcudnn* /usr/local/cuda-8.0/lib64
+    ```
+
+- Install Dependencies: 
+	
+	```
+	sudo apt-get update
+	sudo apt-get install -y --no-install-recommends \
+      build-essential \
+      cmake \
+      git \
+      libgoogle-glog-dev \
+      libgtest-dev \
+      libiomp-dev \
+      libleveldb-dev \
+      liblmdb-dev \
+      libopencv-dev \
+      libopenmpi-dev \
+      libsnappy-dev \
+      libprotobuf-dev \
+      openmpi-bin \
+      openmpi-doc \
+      protobuf-compiler \
+      python-dev \
+      python-pip                          
+	pip install --user \
+      future \
+      numpy \
+      protobuf
+	```
+	
+	```
+	#for Ubuntu 14.04
+	sudo apt-get install -y --no-install-recommends libgflags2
+	#for Ubuntu 16.04
+	sudo apt-get install -y --no-install-recommends libgflags-dev
+	```
+
+- Set PYTHONPATH and LD_LIBRARY_PATH before compiling Caffe2. In terminal (anywhere), do the following: 
+	
+    ```
+    sudo gedit ~/.bashrc
+    ```
+   
+    Add the following at the end of the file: 
+	
+    ```
+    #caffe2 
+    #echo $PYTHONPATH
+    export PYTHONPATH = /usr/local
+    export PYTHONPATH = $PYTHONPATH:YourRepositoryPath/pytorch/build
+    export PYTHONPATH = $PYTHONPATH:/usr/bin/python
+    #echo $LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH = /usr/local/lib 
+    ```
+
+    Save the file and close it. Then, in terminal do the following: 
+	
+    ```
+    source ~/.bashrc
+    ```
+	
+    Now, in terminal execute
+	
+    ```
+    echo $PYTHONPATH  
+    echo $LD_LIBRARY_PATH
+    ```
+
+    And review that there should not be double ":" in the paths.
+
+- Clone Pytorch which now contains Caffe2 in your desired YourRepositoryPath and compile it:
+	
+	```
+	git clone --recursive https://github.com/pytorch/pytorch.git && cd pythorch
+        
+	git submodule update --init
+      
+	mkdir build && cd build
+
+	cmake..
+	```
+
+	Review the output from cmake configuration. CUDA value should be CUDA 8.0 and cuDNN value should be 7.0.5.
+    
+	```
+	sudo make install
+	```
+
+	Review that progress should achieve 100% and there should be no error messages.
+	
+- Test Caffe2 installation:
+	In terminal (anywhere), do the following:
+	
+	```
+	cd ~ && python -c 'from caffe2.python import core'
+	2>/dev/null && echo "Success" || echo "Failure"
+	```
+
+    Review the output. Output should be Success.
+
+
+### Windows 10
+
+This guide is based on the installation guide from the Caffe2 website: https://caffe2.ai/docs/getting-started.html?platform=windows&configuration=compile
+
+- Add the directories C:\Python27 and C:\Python27\Scripts to the system variable _Path_.
+
+- Install python dependencies. Run the command line as administrator and navigate to path C:\Python27\Scripts. Execute the following commands:
+
+	```
+	pip install future
+	pip install hypothesis	(if waring appears, then add C:\phyton27\Scripts to _Path_)
+	pip install numpy 
+	pip install protobuf
+	pip install six
+	```
+	
+	Optional packages:
+	
+	```
+	pip install flask
+	pip install glog
+    pip install graphviz
+	pip install jupyter
+	pip install matplotlib
+	pip install pydot python-nvd3
+	pip install pyyaml
+	pip install requests
+	pip install scikit-image
+	pip install scipy
+	pip install setuptools
+	pip install tornado
+	```
+
+    If there is an error installing optional python packages with “pip install …”, e.g., for graphviz or matplotlib, then execute the following in the same root:
+	```
+	pip install - - upgrade setuptools.
+	```
+
+- Install CMake (Add CMake bin to _Path_)
+
+- Install Git from https://git-scm.com/downloads
+
+- Clone Pytorch which now contains Caffe2 in your desired YourRepositoryPath:
+	```
+	git clone --recursive https://github.com/pytorch/pytorch.git 
+	```
+	
+- Add the system variable CAFFE2_ROOT with the directory YourRepositoryPath\pytorch. Then, add the directory %CAFFE2_ROOT%\bin to _Path_.
+
+    Afterwards, modify the file \scripts\build_windows.bat to set BUILD_PYTHON to ON instead of OFF.
+
+    Open a Developer Command Prompt for VS 2017 (from Visual Studio 2017) and navigate to \scripts and execute build_windows.bat. Here the compilation will take place.
+	
+	```
+	build_windows.bat
+	```
+	
+- **For GPU Support :** Before executing build_windows.bat, set the following:
+
+	```
+	Set CMAKE_GENERATOR=(quote)Visual Studio 14 2015 Win64(quote)
+	Set USE_CUDA=ON
+	Set TORCH_CUDA_ARCH_LIST=6.1 	 for GeForce GTX 1050 architecture
+	```
+	
+	Then execute build.windows.bat 
+
+- Once Caffe2 is successfully compiled, add the system variable PYTHONPATH with the following directories in order to fix the possible error “ImportError: No module named Caffe2.python”:
+	C:\Python27\Lib;
+	C:\Phyton27\DLLs;
+	C:\Phyton27\Lib\lib-tk
+	C:\Users\Carlos\Documents\git\pytorch\build
+
