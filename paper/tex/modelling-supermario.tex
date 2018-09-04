@@ -26,9 +26,7 @@ The controller model type combines the other defined model types to refine the i
 The filter model type is intended to perform filtering like debouncing and plausibility checks.
 
 \subsubsection{Models}
-The presented model visualizations are generated from the EmbeddedMontiArc Studio. Therein, a grey component indicates that the component uses additional subcomponents, whereas a white component marks atomic components. 
-
-Split -> Reference
+The presented model visualizations are generated from the EmbeddedMontiArc Studio. Therein, a grey component indicates that the component uses additional subcomponents, whereas a white component marks atomic components. As stated before, the modeling was performed in such a way, that small components with few lines of code were preferred to bigger components.
 
 The first and most abstract entity modeled was the Supermario wrapper which is closely related to the outputs and inputs of the simulator. Therefore it receives all necessary values as input with the aim to forward them to the actual controller and its corresponding sub-components. After computation the results of the controller are handed back into the wrapper, which forwards the data to the simulator. Figure \ref{fig:marioWrapper} shows the graphical representation, while listing \ref{lst:marioWrapperInterface} shows the actual EMA interface definition.
 \begin{figure}
