@@ -107,8 +107,6 @@ Those scenarios can be tested easily within a few ticks via stream testing.
 	\label{fig:marioFight}
 \end{figure}
 
-The two groups were then assigned to use these tests as a guideline to develop their controllers.
-
 \subsection{Preparations (by Haller and Heithoff)}
 The Code of the PacMan emulator \cite{pacmanLink} and SuperMario emulator \cite{marioLink} we used was available in Html5 and JavaScript. C\&C-Components in EmbeddedMontiArc can be translated to C++ code and then to a web assembly (using Emscripten \cite{emscirpten}) which uses JavaScript (see \cite{bertram2017component}). This JavaScript file can be given inputs according to the component and calculates the outputs on execution. To combine these two files, there is an additional interface needed to extract the information for the inputs out of the emulator and then give the calculated outputs into the emulator.
 For the purpose of implementing the controllers the subjects were assigned to use the EmbeddedMontiArcStudio.
