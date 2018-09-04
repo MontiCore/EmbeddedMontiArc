@@ -1,0 +1,65 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{WencksternCCViP}
+{V. Bertram{,} S. Maoz{,} J. O. Ringert{,} B. Rumpe{,} M. von Wenckstern},
+  Component and connector views in practice: An experience report, ACM/IEEE
+  International Conference on Model Driven Engineering Languages and Systems
+  20.
+
+\bibitem{WencksternSimFrame}
+{Filippo Grazioli{,} Evgeny Kusmenko{,} Alexander Roth{,} Bernhard Rumpe{,}
+  Michael von Wenckstern}, Simulation framework for executing component and
+  connector models of self-driving vehicles, Proceedings of MODELS 2017.
+  Workshop EXE, Austin, CEUR 2019, Sept. 2017.
+
+\bibitem{sysml}
+OMG, \href{http://www.omgsysml.org}{Sysml}.
+\newline\urlprefix\url{http://www.omgsysml.org}
+
+\bibitem{aadl}
+SAE, \href{http://www.aadl.info/}{Architecture analysis and design language}.
+\newline\urlprefix\url{http://www.aadl.info/}
+
+\bibitem{simulink}
+Mathworks, \href{https://de.mathworks.com/products/simulink.html}{Simulink}.
+\newline\urlprefix\url{https://de.mathworks.com/products/simulink.html}
+
+\bibitem{labview}
+N.~Instruments, \href{http://www.ni.com/de-de/shop/labview.html}{Labview}.
+\newline\urlprefix\url{http://www.ni.com/de-de/shop/labview.html}
+
+\bibitem{serwth}
+C.~of~Software Engineering RWTH Aachen~University,
+  \href{http://se-rwth.de}{Homepage of the chair of software engineering at
+  rwth aachen university}.
+\newline\urlprefix\url{http://se-rwth.de}
+
+\bibitem{seminarArmin}
+A.~Mokhtarian, Monticar: 3d modeling using embeddedmontiarcmath (2018).
+
+\bibitem{CaseStudyGuidelines}
+P.~Runeson, M.~Höst, Guidelines for conducting and reporting case study
+  research in software engineering.
+
+\bibitem{pacmanLink}
+C.~of~Software Engineering RWTH Aachen~University,
+  \href{http://se-rwth.de}{Homepage of the chair of software engineering at
+  rwth aachen university}.
+\newline\urlprefix\url{http://se-rwth.de}
+
+\bibitem{marioLink}
+J.~Goldberg,
+  \href{http://www.joshuakgoldberg.com/FullScreenMario/Source/}{Fullscreenmario,
+  html5 browser game}.
+\newline\urlprefix\url{http://www.joshuakgoldberg.com/FullScreenMario/Source/}
+
+\bibitem{emscirpten}
+A.~Zakai, \href{http://kripken.github.io/emscripten-site/}{Emscripten}.
+\newline\urlprefix\url{http://kripken.github.io/emscripten-site/}
+
+\end{thebibliography}

@@ -1,0 +1,33 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Context \(by Philipp Haller\)}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{C \046 C models}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{MontiCore and EmbeddedMontiArc}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Performing a case study in Software Engineering}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.4}{Simulators}{section.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Pacman}{subsection.2.4}% 7
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Supermario}{subsection.2.4}% 8
+\BOOKMARK [1][-]{section.3}{Approach}{}% 9
+\BOOKMARK [2][-]{subsection.3.1}{Stream Testing}{section.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.1.1}{PacMan}{subsection.3.1}% 11
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Supermario \(by Philipp Haller\)}{subsection.3.1}% 12
+\BOOKMARK [2][-]{subsection.3.2}{Preparations \(by Haller and Heithoff\)}{section.3}% 13
+\BOOKMARK [1][-]{section.4}{Implementation}{}% 14
+\BOOKMARK [2][-]{subsection.4.1}{IDE integration \(Introduction by Philipp Haller\)}{section.4}% 15
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Pacman \(by Malte Heithoff\)}{subsection.4.1}% 16
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Supermario \(by Philipp Haller\)}{subsection.4.1}% 17
+\BOOKMARK [2][-]{subsection.4.2}{Modelling}{section.4}% 18
+\BOOKMARK [2][-]{subsection.4.3}{PacMan \(by Heithoff\)}{section.4}% 19
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Interface}{subsection.4.3}% 20
+\BOOKMARK [3][-]{subsubsection.4.3.2}{C\046C modeling - PacMan \(simple\)}{subsection.4.3}% 21
+\BOOKMARK [3][-]{subsubsection.4.3.3}{C\046C modeling - PacMan \(complex\)}{subsection.4.3}% 22
+\BOOKMARK [2][-]{subsection.4.4}{ Modeling - Supermario \(by Philipp Haller\)}{section.4}% 23
+\BOOKMARK [3][-]{subsubsection.4.4.1}{Simulator Interface}{subsection.4.4}% 24
+\BOOKMARK [3][-]{subsubsection.4.4.2}{Model Types}{subsection.4.4}% 25
+\BOOKMARK [3][-]{subsubsection.4.4.3}{Models}{subsection.4.4}% 26
+\BOOKMARK [3][-]{subsubsection.4.4.4}{Future Modeling}{subsection.4.4}% 27
+\BOOKMARK [1][-]{section.5}{Evaluation}{}% 28
+\BOOKMARK [2][-]{subsection.5.1}{Quantitative Analysis}{section.5}% 29
+\BOOKMARK [2][-]{subsection.5.2}{Qualitative Analysis}{section.5}% 30
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Subject writeups}{subsection.5.2}% 31
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Summary of writeups}{subsection.5.2}% 32
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 33

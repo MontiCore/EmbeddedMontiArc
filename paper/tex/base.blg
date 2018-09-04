@@ -1,0 +1,27 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: base.aux
+The style file: elsarticle-num.bst
+Database file #1: bibliography.bib
+Warning--entry type for "serwth" isn't style-file defined
+--line 47 of file bibliography.bib
+Warning--entry type for "marioLink" isn't style-file defined
+--line 55 of file bibliography.bib
+Warning--entry type for "pacmanLink" isn't style-file defined
+--line 63 of file bibliography.bib
+Warning--entry type for "sysml" isn't style-file defined
+--line 71 of file bibliography.bib
+Warning--entry type for "aadl" isn't style-file defined
+--line 78 of file bibliography.bib
+Warning--entry type for "simulink" isn't style-file defined
+--line 85 of file bibliography.bib
+Warning--entry type for "labview" isn't style-file defined
+--line 92 of file bibliography.bib
+Repeated entry---line 105 of file bibliography.bib
+ : @www{pacmanLink
+ :                ,
+I'm skipping whatever remains of this entry
+Warning--entry type for "emscirpten" isn't style-file defined
+--line 111 of file bibliography.bib
+Warning--I didn't find a database entry for "bertram2017component"
+Warning--empty note in seminarArmin
+Warning--empty journal in CaseStudyGuidelines
+(There was 1 error message)
