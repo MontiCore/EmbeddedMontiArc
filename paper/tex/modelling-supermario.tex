@@ -1,13 +1,8 @@
 \newpage
-\subsection{ Modeling - Supermario (by Philipp Haller)}
-
-This part discusses the model used to solve a level of the Supermario game which was presented in section XX. First a general introduction on model types is given. Thereafter, the different models are discussed step by step, beginning at the most abstract.
-
-\subsubsection{Simulator Interface}
-
+\subsection{Modeling - Supermario (by Philipp Haller)}
+This part discusses the model used to solve a level of the Supermario game. First a general introduction on model types is given. Thereafter, the different models are discussed step by step, beginning at the most abstract.
 
 \subsubsection{Model Types}
-
 In this context the following model types used were:
 \newline
 
@@ -72,7 +67,7 @@ The data type for most values is integer, indicated by a "Z" in the code. This i
 	\label{fig:marioController}
 \end{figure}
 
-The controller used (Figure \ref{fig:marioController}) consists of five parts and is depicted in figure XX. There are sub-controllers tasked to cope with the evaluation of enemies and obstacles respectively, named enemyController and obstController. They return an advice to indicate if the player should jump or not. The genStrategy is an atomic component which is currently used to provide a general strategy like moving in another direction, jumping or crouching if the player is stuck. 
+The controller used (Figure \ref{fig:marioController}) consists of five parts. There are sub-controllers tasked to cope with the evaluation of enemies and obstacles respectively, named enemyController and obstController. They return an advice to indicate if the player should jump or not. The genStrategy is an atomic component which is currently used to provide a general strategy like moving in another direction, jumping or crouching if the player is stuck. 
 
 The action advices of the controllers and the strategy are combined via a logical or-relation, as indicated by the "orR" block. Additionally, the jumpDecider filters the output of the combined value and forwards it, if the player can jump in that time frame. This is necessary to prohibit side-effects like the player only jumping once because the jump key remains pressed constantly and the simulator only accepts distinct jump activations, opposed to continuous jumping.
 
@@ -112,9 +107,7 @@ The enemy strategy (Figure \ref{fig:marioEnemyStrategy}) uses the distances and 
 
 The obstacle controller is modeled very similar to the enemy controller, extracting positions from the raw input array and feeding them into a obstacle strategy. The main difference to the enemy controller is the presence of another input. This additional input is the distance to the next hole in the ground plane of the level. It is forwarded into the obstacle strategy (Figure \ref{fig:marioObstacleStrategy}) where a watcher component checks the player's proximity to the hole and computes a jump advice. All advices are again combined by a or relation.
 
-
 \subsubsection{Future Modeling}
-
 The models presented in this chapter were developed with modularity and extensibility in mind, such that in future work more complex strategies can be used to solve more levels and to lay more attention to the score.
--mario direction
--weighted combination of decisions
+The presented model utilizes that the player always runs into the right direction, thus it can't solve levels which require the player to move backwards. A future model should be able to solve those situations too. This behaviour could be modeled in the general strategy component or a "movement controller".
+Another issue could be, that currently all advices are combined via or relations. This can lead to side effects where the player jumps to early because of an enemy and drops into a hole he would have avoided without the enemy. To achieve a better model, the or relations could be swapped with a weighted decision making process.
