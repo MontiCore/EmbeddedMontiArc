@@ -106,7 +106,7 @@ author = {Per Runeson and Martin Höst}
   url    = {http://kripken.github.io/emscripten-site/},
 }
 
-@WWW{emadoc,
+@WWW{e,
   author = {EmbeddedMontiArc Team},
   title  = {EmbeddedMontiArc Documentation},
   url    = {https://github.com/EmbeddedMontiArc/Documentation},
