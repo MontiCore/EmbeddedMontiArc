@@ -112,4 +112,16 @@ author = {Per Runeson and Martin Höst}
   url    = {https://github.com/EmbeddedMontiArc/Documentation},
 }
 
+@WWW{mariomodel,
+  author = {Philipp Haller},
+  title  = {Supermario Model},
+  url    = {https://embeddedmontiarc.github.io/SuperMario/supermario/simulation.html},
+}
+
+@WWW{pacmanmodel,
+  author = {Malte Heithoff},
+  title  = {Pacman Model},
+  url    = {https://embeddedmontiarc.github.io/SuperMario/PacMan/},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}

@@ -19,7 +19,11 @@ Warning--entry type for "emscirpten" isn't style-file defined
 --line 103 of file bibliography.bib
 Warning--entry type for "emadoc" isn't style-file defined
 --line 109 of file bibliography.bib
+Warning--entry type for "mariomodel" isn't style-file defined
+--line 115 of file bibliography.bib
+Warning--entry type for "pacmanmodel" isn't style-file defined
+--line 121 of file bibliography.bib
 Warning--I didn't find a database entry for "bertram2017component"
 Warning--empty note in seminarArmin
 Warning--empty journal in CaseStudyGuidelines
-(There were 12 warnings)
+(There were 14 warnings)
