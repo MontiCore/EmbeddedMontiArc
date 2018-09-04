@@ -31,9 +31,16 @@ We can use those tests to define the conditions the controllers need to fulfill.
 
 Those scenarios can be tested easily within a few ticks via stream testing.
 
-\subsubsection{SuperMario}
-In the following the scenarios a SuperMario model has to master are listed:
+\subsubsection{Supermario (by Philipp Haller)}
 
+
+TESTING
+The goal for the Supermario model is to solve a level successfully. The first level was chosen since it provides a diverse environment with different enemy types and obstacles, while not being too skill intensive to solve.  
+
+In order to develop the model, different situations were assessed and according tests derived. The scenarios a SuperMario model has to master are listed in the following, while the derived tests are presented in chapter X.
+
+
+DELETE MOST OF THIS!
 \begin{itemize}
 	\item Given the scenario in fig. \ref{fig:marioLeft}, Mario has to build up speed in order to jump over the obstacle.
 	\item Given the scenario in fig. \ref{fig:marioSmashHead}, Mario has to jump in order to get coins, mushrooms or flowers.
@@ -66,11 +73,22 @@ In the following the scenarios a SuperMario model has to master are listed:
 	\label{fig:marioFight}
 \end{figure}
 
+
+VEREINFACHUNGEN?? WIESO? HIERHIN?
+Prior to modeling some assumptions were made to fulfill time and complexity constraints.
+Only a fixed number of enemies and obstacles in the path of the player are considered in order to ensure a static input size. Five entities each have shown empirically to be sufficient for the first level and the implemented strategy. For the same reason only the next hole in the ground is considered
+-Why 5 enemies, obstacles etc
+VEREINFACHUNGEN ENDE
+
+Since the presented scenarios have in common that the player has to 
+
 The two groups were then assigned to use these tests as a guideline to develop their controllers.
 
-\subsection{Preparations}
+
+\subsection{Preparations (by Haller and Heithoff)}
 The Code of the PacMan emulator \cite{pacmanLink} and SuperMario emulator \cite{marioLink} we used was available in Html5 and JavaScript. C\&C-Components in EmbeddedMontiArc can be translated to C++ code and then to a web assembly (using Emscripten \cite{emscirpten}) which uses JavaScript (see \cite{bertram2017component}). This JavaScript file can be given inputs according to the component and calculates the outputs on execution. To combine these two files, there is an additional interface needed to extract the information for the inputs out of the emulator and then give the calculated outputs into the emulator.
 For the purpose of implementing the controllers the subjects were assigned to use the EmbeddedMontiArcStudio.
-EmbeddedMontiArcStudioV1.6.2 did neither support a simulator of PacMan nor of a simulator SuperMario. So an additional step to awnser RQ2 \textit{Is it possible to integrate other simulators in a recent amount of work} it for the groups to integrate the simulators into the EmbeddedMontiArcStudio.
+EmbeddedMontiArcStudioV1.6.2 did neither support a simulator of PacMan nor of a simulator SuperMario. So an additional step to answer RQ2 \textit{Is it possible to integrate other simulators in a recent amount of work} it for the groups to integrate the simulators into the EmbeddedMontiArcStudio.
+
 In order to be able to do so, group A is instructed by an expert (Jean-Marc) which files need modification and what to add. After that group A instructed group B the same way.
 
