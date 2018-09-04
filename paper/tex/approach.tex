@@ -59,11 +59,13 @@ stream Test1 for PacManWrapper {
 }
 \end{lstlisting}
 
-\emph{Some other tests}
+\emph{Some other tests}\newline
+To formulate just some tests, here are a few examples:
 \begin{itemize}
 	\item If PacMan is located at an intersection and ghosts are coming from two sides, PacMan should walk to a safe path.
 	\item If PacMan is located at an intersection and ghosts are at the top path and are all eatable, PacMan should walk this path.
-	\item If PacMan is located at an intersection
+	\item If PacMan is located at an intersection and there are ghosts from 3 directions and in the other direction there is a ghost facing away from PacMan, PacMan should walk this direction.
+	\item If there are no ghosts nearby, PacMan should walk the direction with the largest biscuit/coin value.
 \end{itemize}
 
 Those scenarios can be tested easily within a few ticks via stream testing.

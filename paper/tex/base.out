@@ -26,8 +26,10 @@
 \BOOKMARK [3][-]{subsubsection.4.4.2}{Models}{subsection.4.4}% 26
 \BOOKMARK [3][-]{subsubsection.4.4.3}{Future Modeling}{subsection.4.4}% 27
 \BOOKMARK [1][-]{section.5}{Evaluation}{}% 28
-\BOOKMARK [2][-]{subsection.5.1}{Quantitative Analysis}{section.5}% 29
-\BOOKMARK [2][-]{subsection.5.2}{Qualitative Analysis}{section.5}% 30
-\BOOKMARK [3][-]{subsubsection.5.2.1}{Subject writeups}{subsection.5.2}% 31
-\BOOKMARK [3][-]{subsubsection.5.2.2}{Summary of writeups}{subsection.5.2}% 32
-\BOOKMARK [1][-]{section.6}{Conclusion}{}% 33
+\BOOKMARK [2][-]{subsection.5.1}{RQ1 - Is EmbeddedMontiArc suitable for other systems?}{section.5}% 29
+\BOOKMARK [2][-]{subsection.5.2}{RQ2 - Is it possible to integrate other simulators in a recent amount of work?}{section.5}% 30
+\BOOKMARK [2][-]{subsection.5.3}{RQ3 - What kind of background knowloedge is needed to model C\046C in EMA?}{section.5}% 31
+\BOOKMARK [2][-]{subsection.5.4}{RQ4 - What features are good and what are not suited?}{section.5}% 32
+\BOOKMARK [3][-]{subsubsection.5.4.1}{Tools}{subsection.5.4}% 33
+\BOOKMARK [3][-]{subsubsection.5.4.2}{Language Features}{subsection.5.4}% 34
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 35
