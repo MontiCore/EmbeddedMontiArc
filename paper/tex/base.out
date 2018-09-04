@@ -1,35 +1,32 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Context \(by Philipp Haller\)}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{C \046 C models}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{MontiCore and EmbeddedMontiArc}{section.2}% 4
-\BOOKMARK [2][-]{subsection.2.3}{Performing a case study in Software Engineering}{section.2}% 5
-\BOOKMARK [2][-]{subsection.2.4}{Simulators}{section.2}% 6
-\BOOKMARK [3][-]{subsubsection.2.4.1}{Pacman}{subsection.2.4}% 7
-\BOOKMARK [3][-]{subsubsection.2.4.2}{Supermario}{subsection.2.4}% 8
-\BOOKMARK [1][-]{section.3}{Approach}{}% 9
-\BOOKMARK [2][-]{subsection.3.1}{Stream Testing}{section.3}% 10
-\BOOKMARK [3][-]{subsubsection.3.1.1}{PacMan}{subsection.3.1}% 11
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Supermario \(by Philipp Haller\)}{subsection.3.1}% 12
-\BOOKMARK [3][-]{subsubsection.3.1.3}{Supermario \(by Mustafa Sezer\)}{subsection.3.1}% 13
-\BOOKMARK [2][-]{subsection.3.2}{Preparations \(by Haller and Heithoff\)}{section.3}% 14
-\BOOKMARK [1][-]{section.4}{Implementation}{}% 15
-\BOOKMARK [2][-]{subsection.4.1}{IDE integration \(Introduction by Philipp Haller\)}{section.4}% 16
-\BOOKMARK [3][-]{subsubsection.4.1.1}{Pacman \(by Malte Heithoff\)}{subsection.4.1}% 17
-\BOOKMARK [3][-]{subsubsection.4.1.2}{Supermario \(by Philipp Haller\)}{subsection.4.1}% 18
-\BOOKMARK [2][-]{subsection.4.2}{Modeling}{section.4}% 19
-\BOOKMARK [2][-]{subsection.4.3}{PacMan \(by Heithoff\)}{section.4}% 20
-\BOOKMARK [3][-]{subsubsection.4.3.1}{Interface}{subsection.4.3}% 21
-\BOOKMARK [3][-]{subsubsection.4.3.2}{C\046C modeling - PacMan \(simple\)}{subsection.4.3}% 22
-\BOOKMARK [3][-]{subsubsection.4.3.3}{C\046C modeling - PacMan \(complex\)}{subsection.4.3}% 23
-\BOOKMARK [2][-]{subsection.4.4}{Modeling - Supermario \(by Philipp Haller\)}{section.4}% 24
-\BOOKMARK [3][-]{subsubsection.4.4.1}{Model Types}{subsection.4.4}% 25
-\BOOKMARK [3][-]{subsubsection.4.4.2}{Models}{subsection.4.4}% 26
-\BOOKMARK [3][-]{subsubsection.4.4.3}{Future Modeling}{subsection.4.4}% 27
-\BOOKMARK [1][-]{section.5}{Evaluation}{}% 28
-\BOOKMARK [2][-]{subsection.5.1}{RQ1 - Is EmbeddedMontiArc suitable for other systems?}{section.5}% 29
-\BOOKMARK [2][-]{subsection.5.2}{RQ2 - Is it possible to integrate other simulators in a recent amount of work?}{section.5}% 30
-\BOOKMARK [2][-]{subsection.5.3}{RQ3 - What kind of background knowloedge is needed to model C\046C in EMA?}{section.5}% 31
-\BOOKMARK [2][-]{subsection.5.4}{RQ4 - What features are good and what are not suited?}{section.5}% 32
-\BOOKMARK [3][-]{subsubsection.5.4.1}{Tools}{subsection.5.4}% 33
-\BOOKMARK [3][-]{subsubsection.5.4.2}{Language Features}{subsection.5.4}% 34
-\BOOKMARK [1][-]{section.6}{Conclusion}{}% 35
+\BOOKMARK [2][-]{subsection.1.1}{Research Questions}{section.1}% 2
+\BOOKMARK [1][-]{section.2}{Context \(by Philipp Haller\)}{}% 3
+\BOOKMARK [2][-]{subsection.2.1}{C \046 C models}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.2}{MontiCore and EmbeddedMontiArc}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.3}{Performing a case study in Software Engineering}{section.2}% 6
+\BOOKMARK [1][-]{section.3}{Approach}{}% 7
+\BOOKMARK [2][-]{subsection.3.1}{Stream Testing \(by Heithoff\)}{section.3}% 8
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Pacman \(by Heithoff\)}{subsection.3.1}% 9
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Supermario \(by Philipp Haller\)}{subsection.3.1}% 10
+\BOOKMARK [2][-]{subsection.3.2}{Preparations \(by Haller and Heithoff\)}{section.3}% 11
+\BOOKMARK [1][-]{section.4}{Implementation}{}% 12
+\BOOKMARK [2][-]{subsection.4.1}{IDE integration \(Introduction by Philipp Haller\)}{section.4}% 13
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Integration at the example of Pacman \(by Malte Heithoff\)}{subsection.4.1}% 14
+\BOOKMARK [2][-]{subsection.4.2}{Modeling \(by Heithoff\)}{section.4}% 15
+\BOOKMARK [2][-]{subsection.4.3}{Pacman \(by Heithoff\)}{section.4}% 16
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Interface}{subsection.4.3}% 17
+\BOOKMARK [3][-]{subsubsection.4.3.2}{C\046C modeling - Pacman \(simple\)}{subsection.4.3}% 18
+\BOOKMARK [3][-]{subsubsection.4.3.3}{C\046C modeling - Pacman \(complex\)}{subsection.4.3}% 19
+\BOOKMARK [2][-]{subsection.4.4}{Modeling - Supermario \(by Philipp Haller\)}{section.4}% 20
+\BOOKMARK [3][-]{subsubsection.4.4.1}{Model Types}{subsection.4.4}% 21
+\BOOKMARK [3][-]{subsubsection.4.4.2}{Models}{subsection.4.4}% 22
+\BOOKMARK [3][-]{subsubsection.4.4.3}{Future Modeling}{subsection.4.4}% 23
+\BOOKMARK [1][-]{section.5}{Evaluation}{}% 24
+\BOOKMARK [2][-]{subsection.5.1}{RQ1 - Is EmbeddedMontiArc suitable for other systems?}{section.5}% 25
+\BOOKMARK [2][-]{subsection.5.2}{RQ2 - Is it possible to integrate other simulators in a recent amount of work?}{section.5}% 26
+\BOOKMARK [2][-]{subsection.5.3}{RQ3 - What kind of background knowloedge is needed to model C\046C in EMA?}{section.5}% 27
+\BOOKMARK [2][-]{subsection.5.4}{RQ4 - What features are good and what are not suited?}{section.5}% 28
+\BOOKMARK [3][-]{subsubsection.5.4.1}{Tools}{subsection.5.4}% 29
+\BOOKMARK [3][-]{subsubsection.5.4.2}{Language Features}{subsection.5.4}% 30
+\BOOKMARK [2][-]{subsection.5.5}{Other Problems}{section.5}% 31
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 32
