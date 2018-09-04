@@ -1,4 +1,7 @@
-\subsection{Interface}
+\subsection{PacMan (by Heithoff)}
+Text TODO
+
+\subsubsection{Interface}
 \begin{figure}
 	\label{fig:visPacmanWrapper}
 	\centering
@@ -25,7 +28,7 @@ The project's main component is PacManWrapper. The main task of the wrapper is t
 The wrapper also holds the current controller. This way the controller is easily exchangeable without changing any of the code needed for the ide. All input ports of the wrapper are connected to the corresponding ports of the controller and the output port of the controller is also connected to the output port of the wrapper. \newline
 To connect the web assembly of the main component with the PacMan emulator a new JavaScript file was created. Its main functionalities is to extract the needed informations out of the emulator, pass it to the web assembly, execute it and then give the output back to the emulator. In order to be able to extract needed information out of the emulator some modifications were needed. In its original state the emulator did not offer access to the current game object, thus the PACMAN class was extended by these functions. Due to the fact PacMan is a playable game, its input is given as a key-press-event in JavaScript. So the output of the web assembly, which is a number from 0 to 3, is mapped to a corresponding key-press-event which then gets triggered. The emulator is running with 30 frames per second, which also leads to 30 iterations of the game per second. Because the emulator is running asynchronously the component is executed at a double of that rate in order to track every position change.
 
-\subsection{C\&C modeling - PacMan}
+\subsubsection{C\&C modeling - PacMan (simple)}
 \begin{figure}
 	\label{fig:visPacmanSimple}
 	\centering
@@ -42,7 +45,7 @@ In fig. \ref{fig:visPacmanSimple} the design of a simple controller is shown. It
 The controller connects the subcomponents in the shown order: It calculates the nearest ghost, passes its index to the picker which then again passes the corresponding ghost to the \textit{away} component. This calculates the direction facing away from said ghost and the \textit{tryDir} component then avoids running into walls. This leads to a controller that runs away from the ghosts with some success but it is only determined by the nearest ghost and has no other goals. Due to the fact that \textit{tryDir} always tries to walk to the left (or top) first, this can lead to some stuttering as soon as the PacMan walked enough to the right that there is again space to the left. \newline
 This design is very simple and not very successful. It shows the concept of C\&C modeling in its basics and is therefore listed here. The next controller is a lot more complex and can easily beat up to 10 levels.
 
-\subsection{C\&C modeling - PacMan 2.0}
+\subsubsection{C\&C modeling - PacMan (complex)}
 \begin{figure}
 	\label{fig:visPacman20}
 	\centering
@@ -59,9 +62,9 @@ It has three main subcomponents:
 \end{itemize}
 The last component \textit{normalize} not listed here is only responsible for increasing all position values from the ghosts and PacMan by 1 to fit the indexation from the math library.
 We will now go into detail for the three main component.
+\newline
 
-\newpage
-\subsubsection{Safe Paths}
+\emph{Safe Paths} \newline
 \begin{figure}
 	\label{fig:safePaths}
 	\centering
@@ -91,7 +94,7 @@ The task of one of the 10 subcomponents is again split up into 5 subtasks (see f
 	\item \textit{control}: The control unit evaluates all data from the other components and gives back a corresponding new position and whether the search until now is safe or not.
 \end{itemize}
 
-\subsubsection{Cone Search}
+\emph{Cone Search} \newline
 \begin{figure}
 	\label{fig:cone}
 	\centering
@@ -123,7 +126,7 @@ In the visualization of the component (see fig. \ref{fig:coneSearch}) one can se
 	\item \textit{combine}: combines the values for biscuits/coins and enemies for a direction.
 \end{itemize}
 
-\subsubsection{Decision}
+\emph{Decision} \newline
 \begin{figure}
 	\label{fig:decision}
 	\centering
