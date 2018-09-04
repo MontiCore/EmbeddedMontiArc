@@ -21,9 +21,7 @@
 package de.monticore.lang.monticar.cnntrain;
 
 import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
-import de.monticore.symboltable.Scope;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -37,12 +35,9 @@ public interface CNNTrainGenerator {
 
     void setGenerationTargetPath(String generationTargetPath);
 
+    ConfigurationSymbol getConfigurationSymbol(Path modelsDirPath, String rootModelName);
+
     void generate(Path modelsDirPath, String rootModelNames);
-
-    void generate(Scope scope, String rootModelName);
-
-    //check cocos with CNNTrainCocos.checkAll(configuration) before calling this method.
-    void generateFile(ConfigurationSymbol configuration) throws IOException;
 
     //check cocos with CNNTrainCocos.checkAll(configuration) before calling this method.
     Map<String, String> generateStrings(ConfigurationSymbol configuration);
