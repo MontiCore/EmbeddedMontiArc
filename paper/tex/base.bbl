@@ -5,6 +5,12 @@
 \expandafter\ifx\csname href\endcsname\relax
   \def\href#1#2{#2} \def\path#1{#1}\fi
 
+\bibitem{emademo}
+M.~von Wenckstern,
+  \href{https://www.youtube.com/watch?v=VTKSWwWp-kg}{Embeddedmontiarc demo
+  video}.
+\newline\urlprefix\url{https://www.youtube.com/watch?v=VTKSWwWp-kg}
+
 \bibitem{pacmanmodel}
 M.~Heithoff,
   \href{https://embeddedmontiarc.github.io/SuperMario/PacMan/}{Pacman model}.

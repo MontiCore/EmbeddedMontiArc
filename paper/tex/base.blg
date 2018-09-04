@@ -23,7 +23,9 @@ Warning--entry type for "mariomodel" isn't style-file defined
 --line 115 of file bibliography.bib
 Warning--entry type for "pacmanmodel" isn't style-file defined
 --line 121 of file bibliography.bib
+Warning--entry type for "emademo" isn't style-file defined
+--line 127 of file bibliography.bib
 Warning--I didn't find a database entry for "bertram2017component"
 Warning--empty note in seminarArmin
 Warning--empty journal in CaseStudyGuidelines
-(There were 14 warnings)
+(There were 15 warnings)
