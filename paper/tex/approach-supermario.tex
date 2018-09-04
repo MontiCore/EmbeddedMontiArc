@@ -33,7 +33,7 @@ In Figure \ref{fig:mariohole} the player is seen standing next to holes in the g
 
 The stream tests derived from the scenarios are introduced in the following.
 \begin{lstlisting}[label=lst:enemywatchertest_1, caption=Enemy watcher stream test, morekeywords={package, stream, tick, for},
-frame=single, basicstyle=\small]
+frame=single, basicstyle=\small, float,floatplacement=H]
 package de.rwth.supermario.haller.environment;
 
 stream Env_EnemyWatcher_Evade for EnemyWatcher {
@@ -50,7 +50,7 @@ If a enemy gets closer than 80 pixels (two blocks) and is on the same height as 
 The output values are of type boolean.
 
 \begin{lstlisting}[label=lst:enemywatchertest_2, caption=Enemy watcher stream test, morekeywords={package, stream, tick, for},
-frame=single, basicstyle=\small]
+frame=single, basicstyle=\small, float,floatplacement=H]
 package de.rwth.supermario.haller.environment;
 
 stream Env_EnemyWatcher_FromAbove for EnemyWatcher {
@@ -70,7 +70,7 @@ The stream in listing \ref{lst:enemywatchertest_2} covers the case when the play
 
 
 \begin{lstlisting}[label=lst:enemywatchertest_3, caption=Enemy watcher stream test, morekeywords={package, stream, tick, for},
-frame=single, basicstyle=\small]
+frame=single, basicstyle=\small, float,floatplacement=H]
 package de.rwth.supermario.haller.environment;
 
 stream Env_EnemyWatcher_FromAbove for EnemyWatcher {
@@ -90,7 +90,7 @@ If there is no enemy near the player, the enemy watcher object shall give no jum
 
 
 \begin{lstlisting}[label=lst:obstaclewatchertest, caption=Obstacle watcher stream test, morekeywords={package, stream, tick, for},
-frame=single, basicstyle=\small]
+frame=single, basicstyle=\small, float,floatplacement=H]
 package de.rwth.supermario.haller.environment;
 stream Env_ObstacleWatcher for ObstacleWatcher {
   ObstacleDistX: 200 tick 100 tick 75 tick 50 tick 25 tick  0;
@@ -102,7 +102,7 @@ stream Env_ObstacleWatcher for ObstacleWatcher {
 If a obstacle is in front of the player, he shall jump until he has passed it(listing \ref{lst:obstaclewatchertest}). The distances are given in pixels, and the obstacle in this text is of 70px height.
 
 \begin{lstlisting}[label=lst:holewatchertest, caption=Hole watcher stream test, morekeywords={package, stream, tick, for},
-frame=single, basicstyle=\small]
+frame=single, basicstyle=\small, float,floatplacement=H]
 package de.rwth.supermario.haller.environment;
 stream Env_ObstacleWatcher for ObstacleWatcher {
     holeDistance: 200 tick 100 tick 10 tick 0 tick 1200;
