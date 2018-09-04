@@ -10,21 +10,21 @@
 \BOOKMARK [2][-]{subsection.3.1}{Stream Testing}{section.3}% 10
 \BOOKMARK [3][-]{subsubsection.3.1.1}{PacMan}{subsection.3.1}% 11
 \BOOKMARK [3][-]{subsubsection.3.1.2}{Supermario \(by Philipp Haller\)}{subsection.3.1}% 12
-\BOOKMARK [2][-]{subsection.3.2}{Preparations \(by Haller and Heithoff\)}{section.3}% 13
-\BOOKMARK [1][-]{section.4}{Implementation}{}% 14
-\BOOKMARK [2][-]{subsection.4.1}{IDE integration \(Introduction by Philipp Haller\)}{section.4}% 15
-\BOOKMARK [3][-]{subsubsection.4.1.1}{Pacman \(by Malte Heithoff\)}{subsection.4.1}% 16
-\BOOKMARK [3][-]{subsubsection.4.1.2}{Supermario \(by Philipp Haller\)}{subsection.4.1}% 17
-\BOOKMARK [2][-]{subsection.4.2}{Modelling}{section.4}% 18
-\BOOKMARK [2][-]{subsection.4.3}{PacMan \(by Heithoff\)}{section.4}% 19
-\BOOKMARK [3][-]{subsubsection.4.3.1}{Interface}{subsection.4.3}% 20
-\BOOKMARK [3][-]{subsubsection.4.3.2}{C\046C modeling - PacMan \(simple\)}{subsection.4.3}% 21
-\BOOKMARK [3][-]{subsubsection.4.3.3}{C\046C modeling - PacMan \(complex\)}{subsection.4.3}% 22
-\BOOKMARK [2][-]{subsection.4.4}{ Modeling - Supermario \(by Philipp Haller\)}{section.4}% 23
-\BOOKMARK [3][-]{subsubsection.4.4.1}{Simulator Interface}{subsection.4.4}% 24
-\BOOKMARK [3][-]{subsubsection.4.4.2}{Model Types}{subsection.4.4}% 25
-\BOOKMARK [3][-]{subsubsection.4.4.3}{Models}{subsection.4.4}% 26
-\BOOKMARK [3][-]{subsubsection.4.4.4}{Future Modeling}{subsection.4.4}% 27
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Supermario \(by Mustafa Sezer\)}{subsection.3.1}% 13
+\BOOKMARK [2][-]{subsection.3.2}{Preparations \(by Haller and Heithoff\)}{section.3}% 14
+\BOOKMARK [1][-]{section.4}{Implementation}{}% 15
+\BOOKMARK [2][-]{subsection.4.1}{IDE integration \(Introduction by Philipp Haller\)}{section.4}% 16
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Pacman \(by Malte Heithoff\)}{subsection.4.1}% 17
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Supermario \(by Philipp Haller\)}{subsection.4.1}% 18
+\BOOKMARK [2][-]{subsection.4.2}{Modeling}{section.4}% 19
+\BOOKMARK [2][-]{subsection.4.3}{PacMan \(by Heithoff\)}{section.4}% 20
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Interface}{subsection.4.3}% 21
+\BOOKMARK [3][-]{subsubsection.4.3.2}{C\046C modeling - PacMan \(simple\)}{subsection.4.3}% 22
+\BOOKMARK [3][-]{subsubsection.4.3.3}{C\046C modeling - PacMan \(complex\)}{subsection.4.3}% 23
+\BOOKMARK [2][-]{subsection.4.4}{Modeling - Supermario \(by Philipp Haller\)}{section.4}% 24
+\BOOKMARK [3][-]{subsubsection.4.4.1}{Model Types}{subsection.4.4}% 25
+\BOOKMARK [3][-]{subsubsection.4.4.2}{Models}{subsection.4.4}% 26
+\BOOKMARK [3][-]{subsubsection.4.4.3}{Future Modeling}{subsection.4.4}% 27
 \BOOKMARK [1][-]{section.5}{Evaluation}{}% 28
 \BOOKMARK [2][-]{subsection.5.1}{Quantitative Analysis}{section.5}% 29
 \BOOKMARK [2][-]{subsection.5.2}{Qualitative Analysis}{section.5}% 30

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700 64-bit) (preloaded format=pdflatex 2018.5.24)  4 SEP 2018 14:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700 64-bit) (preloaded format=pdflatex 2018.5.24)  4 SEP 2018 17:33
 entering extended mode
 **./base.tex
 (base.tex
@@ -254,36 +254,56 @@ File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
 File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
- (base.aux)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\subfigure\subfigure.sty"
+Package: subfigure 2002/07/30 v2.1.4 subfigure package
+\subfigtopskip=\skip48
+\subfigcapskip=\skip49
+\subfigcaptopadj=\dimen122
+\subfigbottomskip=\skip50
+\subfigcapmargin=\dimen123
+\subfiglabelskip=\skip51
+\c@subfigure=\count121
+\c@lofdepth=\count122
+\c@subtable=\count123
+\c@lotdepth=\count124
+
+****************************************
+* Local config file subfigure.cfg used *
+****************************************
+("C:\Program Files\MiKTeX 2.9\tex\latex\subfigure\subfigure.cfg")
+\subfig@top=\skip52
+\subfig@bottom=\skip53
+) (base.aux)
 \openout1 = `base.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 11.
-LaTeX Font Info:    ... okay on input line 11.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
 
 ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count121
-\scratchdimen=\dimen122
+\scratchcounter=\count125
+\scratchdimen=\dimen124
 \scratchbox=\box35
-\nofMPsegments=\count122
-\nofMParguments=\count123
+\nofMPsegments=\count126
+\nofMParguments=\count127
 \everyMPshowfont=\toks21
-\MPscratchCnt=\count124
-\MPscratchDim=\dimen123
-\MPnumerator=\count125
-\makeMPintoPDFobject=\count126
+\MPscratchCnt=\count128
+\MPscratchDim=\dimen125
+\MPnumerator=\count129
+\makeMPintoPDFobject=\count130
 \everyMPtoPDFconversion=\toks22
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
@@ -299,7 +319,7 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 \AtBeginShipoutBox=\box36
-Package hyperref Info: Link coloring OFF on input line 11.
+Package hyperref Info: Link coloring OFF on input line 13.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -307,26 +327,26 @@ Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count127
+\c@section@level=\count131
 )
-LaTeX Info: Redefining \ref on input line 11.
-LaTeX Info: Redefining \pageref on input line 11.
-LaTeX Info: Redefining \nameref on input line 11.
+LaTeX Info: Redefining \ref on input line 13.
+LaTeX Info: Redefining \pageref on input line 13.
+LaTeX Info: Redefining \nameref on input line 13.
 
 (base.out) (base.out)
 \@outlinefile=\write4
 \openout4 = `base.out'.
 
-\c@lstlisting=\count128
+\c@lstlisting=\count132
  (abstract.tex)
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 32.
+(Font)              <8> on input line 34.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 32.
+(Font)              <6> on input line 34.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 32.
+(Font)              <5> on input line 34.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 32.
+(Font)              <7> on input line 34.
  [1
 
 
@@ -342,120 +362,188 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 5.
- [3] [4]) (context.tex
-[5]
-<pictures/MontiCarOverview.PNG, id=179, 454.69875pt x 234.1247pt>
+ [3]) (context.tex
+[4]
+<pictures/MontiCarOverview.PNG, id=175, 454.69875pt x 234.1247pt>
 File: pictures/MontiCarOverview.PNG Graphic file (type png)
 <use pictures/MontiCarOverview.PNG>
 Package pdftex.def Info: pictures/MontiCarOverview.PNG  used on input line 19.
 (pdftex.def)             Requested size: 250.08508pt x 128.76897pt.
- [6]
-<pictures/EMA.PNG, id=196, 261.22594pt x 234.8775pt>
+<pictures/EMA.PNG, id=179, 261.22594pt x 234.8775pt>
 File: pictures/EMA.PNG Graphic file (type png)
 <use pictures/EMA.PNG>
 Package pdftex.def Info: pictures/EMA.PNG  used on input line 28.
 (pdftex.def)             Requested size: 182.85689pt x 164.41312pt.
-<pictures/EMAMath.PNG, id=198, 241.65282pt x 379.4175pt>
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<pictures/EMAMath.PNG, id=181, 241.65282pt x 379.4175pt>
 File: pictures/EMAMath.PNG Graphic file (type png)
 <use pictures/EMAMath.PNG>
 Package pdftex.def Info: pictures/EMAMath.PNG  used on input line 37.
 (pdftex.def)             Requested size: 132.90945pt x 208.68027pt.
 
-
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[7 <./pictures/MontiCarOverview.PNG> <./pictures/EMA.PNG>]
-<pictures/EMAStream.PNG, id=209, 334.24875pt x 60.225pt>
+[5]
+<pictures/EMAStream.PNG, id=198, 334.24875pt x 60.225pt>
 File: pictures/EMAStream.PNG Graphic file (type png)
 <use pictures/EMAStream.PNG>
 Package pdftex.def Info: pictures/EMAStream.PNG  used on input line 46.
 (pdftex.def)             Requested size: 183.83737pt x 33.12384pt.
- [8 <./pictures/EMAMath.PNG> <./pictures/EMAStream.PNG>]) (approach.tex
-<pictures/Pacman_Condition3.PNG, id=222, 283.0575pt x 353.06906pt>
-File: pictures/Pacman_Condition3.PNG Graphic file (type png)
-<use pictures/Pacman_Condition3.PNG>
-Package pdftex.def Info: pictures/Pacman_Condition3.PNG  used on input line 15.
-
-(pdftex.def)             Requested size: 155.6821pt x 194.18857pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<pictures/Pacman_Condition4.PNG, id=223, 283.81032pt x 353.82187pt>
-File: pictures/Pacman_Condition4.PNG Graphic file (type png)
-<use pictures/Pacman_Condition4.PNG>
-Package pdftex.def Info: pictures/Pacman_Condition4.PNG  used on input line 21.
+[6 <./pictures/MontiCarOverview.PNG> <./pictures/EMA.PNG>]) (approach.tex
+[7 <./pictures/EMAMath.PNG> <./pictures/EMAStream.PNG>]
+Underfull \hbox (badness 10000) in paragraph at lines 8--9
 
-(pdftex.def)             Requested size: 156.09615pt x 194.60262pt.
+ []
+
+<pictures/PacMan/StreamTests/2/Bild1.PNG, id=218, 283.0575pt x 353.06906pt>
+File: pictures/PacMan/StreamTests/2/Bild1.PNG Graphic file (type png)
+<use pictures/PacMan/StreamTests/2/Bild1.PNG>
+Package pdftex.def Info: pictures/PacMan/StreamTests/2/Bild1.PNG  used on input
+ line 14.
+(pdftex.def)             Requested size: 169.0519pt x 210.86795pt.
+<pictures/PacMan/StreamTests/2/Bild2.PNG, id=219, 283.0069pt x 352.84764pt>
+File: pictures/PacMan/StreamTests/2/Bild2.PNG Graphic file (type png)
+<use pictures/PacMan/StreamTests/2/Bild2.PNG>
+Package pdftex.def Info: pictures/PacMan/StreamTests/2/Bild2.PNG  used on input
+ line 15.
+(pdftex.def)             Requested size: 169.0519pt x 210.77339pt.
+<pictures/PacMan/StreamTests/2/Bild3.PNG, id=220, 282.39958pt x 352.84764pt>
+File: pictures/PacMan/StreamTests/2/Bild3.PNG Graphic file (type png)
+<use pictures/PacMan/StreamTests/2/Bild3.PNG>
+Package pdftex.def Info: pictures/PacMan/StreamTests/2/Bild3.PNG  used on input
+ line 16.
+(pdftex.def)             Requested size: 169.0519pt x 211.22565pt.
+<pictures/PacMan/StreamTests/2/Bild4.PNG, id=221, 283.0069pt x 352.84764pt>
+File: pictures/PacMan/StreamTests/2/Bild4.PNG Graphic file (type png)
+<use pictures/PacMan/StreamTests/2/Bild4.PNG>
+Package pdftex.def Info: pictures/PacMan/StreamTests/2/Bild4.PNG  used on input
+ line 17.
+(pdftex.def)             Requested size: 169.0519pt x 210.77339pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<pictures/Pacman_Condition6.PNG, id=224, 283.81032pt x 353.82187pt>
-File: pictures/Pacman_Condition6.PNG Graphic file (type png)
-<use pictures/Pacman_Condition6.PNG>
-Package pdftex.def Info: pictures/Pacman_Condition6.PNG  used on input line 27.
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 21.
+[8] [9 <./pictures/PacMan/StreamTests/2/Bild1.PNG> <./pictures/PacMan/StreamTes
+ts/2/Bild2.PNG> <./pictures/PacMan/StreamTests/2/Bild3.PNG> <./pictures/PacMan/
+StreamTests/2/Bild4.PNG>] (approach-supermario.tex
+<pictures/haller_mario1.PNG, id=271, 216.81pt x 147.55125pt>
+File: pictures/haller_mario1.PNG Graphic file (type png)
+<use pictures/haller_mario1.PNG>
+Package pdftex.def Info: pictures/haller_mario1.PNG  used on input line 8.
+(pdftex.def)             Requested size: 119.24586pt x 81.15343pt.
+<pictures/haller_mario2.PNG, id=273, 194.22563pt x 153.57375pt>
+File: pictures/haller_mario2.PNG Graphic file (type png)
+<use pictures/haller_mario2.PNG>
+Package pdftex.def Info: pictures/haller_mario2.PNG  used on input line 17.
+(pdftex.def)             Requested size: 130.89807pt x 103.50105pt.
+<pictures/haller_mario3.PNG, id=274, 218.31563pt x 130.98938pt>
+File: pictures/haller_mario3.PNG Graphic file (type png)
+<use pictures/haller_mario3.PNG>
+Package pdftex.def Info: pictures/haller_mario3.PNG  used on input line 18.
+(pdftex.def)             Requested size: 172.50742pt x 103.50105pt.
+<pictures/haller_mario4.PNG, id=276, 191.9672pt x 97.86563pt>
+File: pictures/haller_mario4.PNG Graphic file (type png)
+<use pictures/haller_mario4.PNG>
+Package pdftex.def Info: pictures/haller_mario4.PNG  used on input line 27.
+(pdftex.def)             Requested size: 203.03316pt x 103.50105pt.
+<pictures/haller_mario5.PNG, id=277, 313.9228pt x 179.16937pt>
+File: pictures/haller_mario5.PNG Graphic file (type png)
+<use pictures/haller_mario5.PNG>
+Package pdftex.def Info: pictures/haller_mario5.PNG  used on input line 28.
+(pdftex.def)             Requested size: 181.34726pt x 103.50105pt.
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <5> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 37.
+ [10 <./pictures/haller_mario1.PNG>] [11 <./pictures/haller_mario2.PNG> <./pict
+ures/haller_mario3.PNG> <./pictures/haller_mario4.PNG> <./pictures/haller_mario
+5.PNG>]
+Overfull \hbox (67.42537pt too wide) in paragraph at lines 54--55
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ []
 
-(pdftex.def)             Requested size: 156.09615pt x 194.60262pt.
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+Overfull \hbox (51.0917pt too wide) in paragraph at lines 55--57
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ []
 
-[9] [10 <./pictures/Pacman_Condition3.PNG> <./pictures/Pacman_Condition4.PNG>]
-<pictures/Mario1.PNG, id=242, 365.11406pt x 234.8775pt>
+
+Overfull \hbox (18.42435pt too wide) in paragraph at lines 57--58
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ []
+
+
+Overfull \hbox (18.42435pt too wide) in paragraph at lines 65--67
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ []
+
+
+Overfull \hbox (87.84248pt too wide) in paragraph at lines 67--68
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+
+ []
+
+)
+<pictures/Mario1.PNG, id=319, 365.11406pt x 234.8775pt>
 File: pictures/Mario1.PNG Graphic file (type png)
 <use pictures/Mario1.PNG>
-Package pdftex.def Info: pictures/Mario1.PNG  used on input line 50.
+Package pdftex.def Info: pictures/Mario1.PNG  used on input line 83.
 (pdftex.def)             Requested size: 200.81334pt x 129.18301pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<pictures/Mario2.PNG, id=243, 269.50688pt x 237.88875pt>
+<pictures/Mario2.PNG, id=320, 269.50688pt x 237.88875pt>
 File: pictures/Mario2.PNG Graphic file (type png)
 <use pictures/Mario2.PNG>
-Package pdftex.def Info: pictures/Mario2.PNG  used on input line 56.
+Package pdftex.def Info: pictures/Mario2.PNG  used on input line 89.
 (pdftex.def)             Requested size: 148.22923pt x 130.8392pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<pictures/Mario3.PNG, id=244, 264.23718pt x 172.39406pt>
+<pictures/Mario3.PNG, id=321, 264.23718pt x 172.39406pt>
 File: pictures/Mario3.PNG Graphic file (type png)
 <use pictures/Mario3.PNG>
-Package pdftex.def Info: pictures/Mario3.PNG  used on input line 62.
+Package pdftex.def Info: pictures/Mario3.PNG  used on input line 95.
 (pdftex.def)             Requested size: 145.33089pt x 94.81702pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<pictures/Mario4.PNG, id=245, 412.54124pt x 101.62968pt>
+<pictures/Mario4.PNG, id=322, 412.54124pt x 101.62968pt>
 File: pictures/Mario4.PNG Graphic file (type png)
 <use pictures/Mario4.PNG>
-Package pdftex.def Info: pictures/Mario4.PNG  used on input line 68.
+Package pdftex.def Info: pictures/Mario4.PNG  used on input line 101.
 (pdftex.def)             Requested size: 226.89838pt x 55.89648pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[11 <./pictures/Pacman_Condition6.PNG>] [12 <./pictures/Mario1.PNG> <./pictures
-/Mario2.PNG> <./pictures/Mario3.PNG>]
 
-Package natbib Warning: Citation `bertram2017component' on page 13 undefined on
- input line 86.
+Package natbib Warning: Citation `bertram2017component' on page 12 undefined on
+ input line 109.
 
-) (implementation.tex [13 <./pictures/Mario4.PNG>] (ideintegration.tex
-<pictures/IDE/IDETop.png, id=270, 183.084pt x 53.60025pt>
+[12] [13 <./pictures/Mario1.PNG> <./pictures/Mario2.PNG> <./pictures/Mario3.PNG
+>]) (implementation.tex (ideintegration.tex
+<pictures/IDE/IDETop.png, id=359, 183.084pt x 53.60025pt>
 File: pictures/IDE/IDETop.png Graphic file (type png)
 <use pictures/IDE/IDETop.png>
 Package pdftex.def Info: pictures/IDE/IDETop.png  used on input line 10.
 (pdftex.def)             Requested size: 100.6965pt x 29.48021pt.
- [14 <./pictures/IDE/IDETop.png>]) (modelling.tex (modelling-pacman.tex
-<pictures/VisualizationPacManWrapper.png, id=277, 197.538pt x 133.6995pt>
+ [14 <./pictures/Mario4.PNG> <./pictures/IDE/IDETop.png>]) (modelling.tex (mode
+lling-pacman.tex
+<pictures/VisualizationPacManWrapper.png, id=367, 197.538pt x 133.6995pt>
 File: pictures/VisualizationPacManWrapper.png Graphic file (type png)
 <use pictures/VisualizationPacManWrapper.png>
 Package pdftex.def Info: pictures/VisualizationPacManWrapper.png  used on input
  line 8.
 (pdftex.def)             Requested size: 138.27565pt x 93.58899pt.
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 12.
- [15 <./pictures/VisualizationPacManWrapper.png>] [16]
-<pictures/VisualizationPacManSimple.png, id=302, 500.46976pt x 278.84175pt>
+ [15]
+<pictures/VisualizationPacManSimple.png, id=380, 500.46976pt x 278.84175pt>
 File: pictures/VisualizationPacManSimple.png Graphic file (type png)
 <use pictures/VisualizationPacManSimple.png>
 Package pdftex.def Info: pictures/VisualizationPacManSimple.png  used on input 
@@ -466,43 +554,44 @@ Overfull \hbox (5.32643pt too wide) in paragraph at lines 35--36
  [][] 
  []
 
-[17 <./pictures/VisualizationPacManSimple.png>]
-<pictures/PacMan/Controller20.png, id=309, 345.08925pt x 249.3315pt>
+[16 <./pictures/VisualizationPacManWrapper.png>] [17 <./pictures/VisualizationP
+acManSimple.png>]
+<pictures/PacMan/Controller20.png, id=400, 345.08925pt x 249.3315pt>
 File: pictures/PacMan/Controller20.png Graphic file (type png)
 <use pictures/PacMan/Controller20.png>
 Package pdftex.def Info: pictures/PacMan/Controller20.png  used on input line 5
 2.
 (pdftex.def)             Requested size: 293.32724pt x 211.93275pt.
- [18 <./pictures/PacMan/Controller20.png>]
+
 Underfull \hbox (badness 10000) in paragraph at lines 63--66
 
  []
 
-<pictures/PacMan/safePaths.png, id=316, 377.0085pt x 436.029pt>
+<pictures/PacMan/safePaths.png, id=402, 377.0085pt x 436.029pt>
 File: pictures/PacMan/safePaths.png Graphic file (type png)
 <use pictures/PacMan/safePaths.png>
 Package pdftex.def Info: pictures/PacMan/safePaths.png  used on input line 71.
 (pdftex.def)             Requested size: 282.75568pt x 327.02094pt.
-<pictures/PacMan/Search.png, id=319, 577.55775pt x 316.18124pt>
+<pictures/PacMan/Search.png, id=405, 577.55775pt x 316.18124pt>
 File: pictures/PacMan/Search.png Graphic file (type png)
 <use pictures/PacMan/Search.png>
 Package pdftex.def Info: pictures/PacMan/Search.png  used on input line 78.
 (pdftex.def)             Requested size: 288.77817pt x 158.09023pt.
-<pictures/PacMan/SearchSingle.png, id=320, 557.08125pt x 437.2335pt>
+[18 <./pictures/PacMan/Controller20.png>] [19 <./pictures/PacMan/safePaths.png>
+]
+<pictures/PacMan/SearchSingle.png, id=417, 557.08125pt x 437.2335pt>
 File: pictures/PacMan/SearchSingle.png Graphic file (type png)
 <use pictures/PacMan/SearchSingle.png>
 Package pdftex.def Info: pictures/PacMan/SearchSingle.png  used on input line 8
 5.
 (pdftex.def)             Requested size: 306.39563pt x 240.47916pt.
-[19] [20 <./pictures/PacMan/safePaths.png> <./pictures/PacMan/Search.png>]
-[21 <./pictures/PacMan/SearchSingle.png>]
-<pictures/PacMan/Cone.png, id=338, 324.46219pt x 402.75468pt>
+ [20 <./pictures/PacMan/Search.png>]
+<pictures/PacMan/Cone.png, id=424, 324.46219pt x 402.75468pt>
 File: pictures/PacMan/Cone.png Graphic file (type png)
 <use pictures/PacMan/Cone.png>
 Package pdftex.def Info: pictures/PacMan/Cone.png  used on input line 101.
 (pdftex.def)             Requested size: 210.8979pt x 261.78743pt.
- [22 <./pictures/PacMan/Cone.png>]
-<pictures/PacMan/ConeSearch.png, id=345, 787.743pt x 422.7795pt>
+<pictures/PacMan/ConeSearch.png, id=426, 787.743pt x 422.7795pt>
 File: pictures/PacMan/ConeSearch.png Graphic file (type png)
 <use pictures/PacMan/ConeSearch.png>
 Package pdftex.def Info: pictures/PacMan/ConeSearch.png  used on input line 116
@@ -513,100 +602,133 @@ Overfull \hbox (88.25998pt too wide) in paragraph at lines 116--117
  [][] 
  []
 
-[23 <./pictures/PacMan/ConeSearch.png>]
-<pictures/PacMan/Decision.png, id=352, 457.71pt x 275.22826pt>
+[21 <./pictures/PacMan/SearchSingle.png>] [22 <./pictures/PacMan/Cone.png>]
+<pictures/PacMan/Decision.png, id=438, 457.71pt x 275.22826pt>
 File: pictures/PacMan/Decision.png Graphic file (type png)
 <use pictures/PacMan/Decision.png>
 Package pdftex.def Info: pictures/PacMan/Decision.png  used on input line 133.
 (pdftex.def)             Requested size: 251.74129pt x 151.376pt.
- [24 <./pictures/PacMan/Decision.png>])
-(modelling-supermario.tex [25]
-<pictures/haller_supermariowrapper.PNG, id=366, 589.4522pt x 401.24907pt>
+
+[23 <./pictures/PacMan/ConeSearch.png>]) (modelling-supermario.tex [24 <./pictu
+res/PacMan/Decision.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 6--8
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 9--12
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 13--16
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 17--20
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 21--24
+
+ []
+
+<pictures/haller_supermariowrapper.PNG, id=452, 589.4522pt x 401.24907pt>
 File: pictures/haller_supermariowrapper.PNG Graphic file (type png)
 <use pictures/haller_supermariowrapper.PNG>
 Package pdftex.def Info: pictures/haller_supermariowrapper.PNG  used on input l
-ine 33.
+ine 36.
 (pdftex.def)             Requested size: 294.72537pt x 200.62404pt.
- [26] [27 <./pictures/haller_supermariowrapper.PNG>]
-<pictures/haller_controller.PNG, id=392, 998.22937pt x 405.01312pt>
+[25]
+<pictures/haller_controller.PNG, id=463, 998.22937pt x 405.01312pt>
 File: pictures/haller_controller.PNG Graphic file (type png)
 <use pictures/haller_controller.PNG>
-Package pdftex.def Info: pictures/haller_controller.PNG  used on input line 62.
+Package pdftex.def Info: pictures/haller_controller.PNG  used on input line 65.
 
 (pdftex.def)             Requested size: 499.11346pt x 202.50606pt.
 
-Overfull \hbox (154.11346pt too wide) in paragraph at lines 62--63
+Overfull \hbox (154.11346pt too wide) in paragraph at lines 65--66
  [][] 
  []
 
-[28 <./pictures/haller_controller.PNG>]
-<pictures/haller_enemycontroller.PNG, id=400, 904.1278pt x 654.94687pt>
+
+Overfull \hbox (4.82455pt too wide) in paragraph at lines 70--71
+[]\OT1/cmr/m/n/10 The con-troller used (Fig-ure []24[]) con-sists of five parts
+. There are sub-controllers
+ []
+
+[26 <./pictures/haller_supermariowrapper.PNG>]
+<pictures/haller_enemycontroller.PNG, id=482, 904.1278pt x 654.94687pt>
 File: pictures/haller_enemycontroller.PNG Graphic file (type png)
 <use pictures/haller_enemycontroller.PNG>
 Package pdftex.def Info: pictures/haller_enemycontroller.PNG  used on input lin
-e 73.
+e 76.
 (pdftex.def)             Requested size: 361.64471pt x 261.9741pt.
 
-Overfull \hbox (16.64471pt too wide) in paragraph at lines 73--74
+Overfull \hbox (16.64471pt too wide) in paragraph at lines 76--77
  [][] 
  []
 
-[29 <./pictures/haller_enemycontroller.PNG>]
-<pictures/haller_enemy.PNG, id=408, 228.855pt x 186.6975pt>
+<pictures/haller_enemy.PNG, id=484, 228.855pt x 186.6975pt>
 File: pictures/haller_enemy.PNG Graphic file (type png)
 <use pictures/haller_enemy.PNG>
-Package pdftex.def Info: pictures/haller_enemy.PNG  used on input line 82.
+Package pdftex.def Info: pictures/haller_enemy.PNG  used on input line 85.
 (pdftex.def)             Requested size: 114.42722pt x 93.34851pt.
-<pictures/haller_enemystrategy.PNG, id=410, 341.02406pt x 371.13657pt>
+<pictures/haller_enemystrategy.PNG, id=486, 341.02406pt x 371.13657pt>
 File: pictures/haller_enemystrategy.PNG Graphic file (type png)
 <use pictures/haller_enemystrategy.PNG>
 Package pdftex.def Info: pictures/haller_enemystrategy.PNG  used on input line 
-91.
+94.
 (pdftex.def)             Requested size: 136.4072pt x 148.45198pt.
-<pictures/haller_obstaclestrategy.PNG, id=412, 739.26187pt x 594.72188pt>
+<pictures/haller_obstaclestrategy.PNG, id=488, 739.26187pt x 594.72188pt>
 File: pictures/haller_obstaclestrategy.PNG Graphic file (type png)
 <use pictures/haller_obstaclestrategy.PNG>
 Package pdftex.def Info: pictures/haller_obstaclestrategy.PNG  used on input li
-ne 100.
+ne 103.
 (pdftex.def)             Requested size: 295.69951pt x 237.88454pt.
- [30 <./pictures/haller_enemy.PNG> <./pictures/haller_enemystrategy.PNG>]))) (e
-valuation.tex [31 <./pictures/haller_obstaclestrategy.PNG>] [32]) (conclusion.t
-ex) [33] (base.bbl [34])
+[27 <./pictures/haller_controller.PNG>] [28 <./pictures/haller_enemycontroller.
+PNG> <./pictures/haller_enemy.PNG>] [29 <./pictures/haller_enemystrategy.PNG> <
+./pictures/haller_obstaclestrategy.PNG>]))) (evaluation.tex [30])
+(conclusion.tex) [31] (base.bbl)
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 61.
-[35]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 61.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 63.
+[32]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 63.
  (base.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 61.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 61.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 63.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 63.
 Package rerunfilecheck Info: File `base.out' has not changed.
-(rerunfilecheck)             Checksum: F5FE22E677E36A55BB462196444B0479;2424.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 61.
+(rerunfilecheck)             Checksum: A0662738EF59EEA05F93450312103D4A;2434.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 63.
  ) 
 Here is how much of TeX's memory you used:
- 7867 strings out of 492976
- 113732 string characters out of 3135991
- 206060 words of memory out of 3000000
- 11474 multiletter control sequences out of 15000+200000
+ 8155 strings out of 492976
+ 118359 string characters out of 3135991
+ 230040 words of memory out of 3000000
+ 11679 multiletter control sequences out of 15000+200000
  8285 words of font info for 29 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 32i,8n,33p,2322b,1838s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 32i,8n,33p,2322b,1855s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Fil
 es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmss8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cms
-y10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti8.pfb><C:/Progr
-am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files
-/MiKTeX 2.9/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on base.pdf (35 pages, 820238 bytes).
+ 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss
+8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C
+:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/Program
+ Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti8.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
+ype1/urw/zapfding/uzdr.pfb>
+Output written on base.pdf (32 pages, 965698 bytes).
 PDF statistics:
- 536 PDF objects out of 1000 (max. 8388607)
- 140 named destinations out of 1000 (max. 500000)
- 400 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 634 PDF objects out of 1000 (max. 8388607)
+ 207 named destinations out of 1000 (max. 500000)
+ 430 words of extra memory for PDF output out of 10000 (max. 10000000)
 
