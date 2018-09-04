@@ -30,7 +30,7 @@ The presented model visualizations are generated from the EmbeddedMontiArc Studi
 
 Split -> Reference
 
-The first and most abstract entity modeled was the supermario wrapper which is closely related to the outputs and inputs of the simulator. Therefore it receives all necessary values as input with the aim to forward them to the actual controller and its corresponding sub-components. After computation the results of the controller are handed back into the wrapper, which forwards the data to the simulator. Figure \ref{fig:marioWrapper} shows the graphical representation, while listing \ref{lst:marioWrapperInterface} shows the actual EMA interface definition.
+The first and most abstract entity modeled was the Supermario wrapper which is closely related to the outputs and inputs of the simulator. Therefore it receives all necessary values as input with the aim to forward them to the actual controller and its corresponding sub-components. After computation the results of the controller are handed back into the wrapper, which forwards the data to the simulator. Figure \ref{fig:marioWrapper} shows the graphical representation, while listing \ref{lst:marioWrapperInterface} shows the actual EMA interface definition.
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.5]{pictures/haller_supermariowrapper.PNG}
@@ -96,7 +96,7 @@ The enemy component (Figure \ref{fig:marioEnemy}) is used to compute a velocity 
 	\label{fig:marioEnemyStrategy}
 \end{figure}
 
-The enemy strategy (Figure \ref{fig:marioEnemyStrategy}) uses the distances and velocities from the enemy components to watch them for their distance to the player and wether they can get dangerous. If an enemy comes too close and is on the player's plane, a jump advice is given. The jump advices are again combined via a logical or-relation and returned.
+The enemy strategy (Figure \ref{fig:marioEnemyStrategy}) uses the distances and velocities from the enemy components to watch them for their distance to the player and whether they can get dangerous. If an enemy comes too close and is on the player's plane, a jump advice is given. The jump advices are again combined via a logical or-relation and returned.
 
 \begin{figure}
 	\centering
@@ -109,5 +109,5 @@ The obstacle controller is modeled very similar to the enemy controller, extract
 
 \subsubsection{Future Modeling}
 The models presented in this chapter were developed with modularity and extensibility in mind, such that in future work more complex strategies can be used to solve more levels and to lay more attention to the score.
-The presented model utilizes that the player always runs into the right direction, thus it can't solve levels which require the player to move backwards. A future model should be able to solve those situations too. This behaviour could be modeled in the general strategy component or a "movement controller".
+The presented model utilizes that the player always runs into the right direction, thus it can't solve levels which require the player to move backwards. A future model should be able to solve those situations too. This behavior could be modeled in the general strategy component or a "movement controller".
 Another issue could be, that currently all advices are combined via or relations. This can lead to side effects where the player jumps to early because of an enemy and drops into a hole he would have avoided without the enemy. To achieve a better model, the or relations could be swapped with a weighted decision making process.

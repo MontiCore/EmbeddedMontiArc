@@ -4,8 +4,8 @@ The following section consists of three parts. The first one is a brief introduc
 
 In the following a short introduction in Connector and Component (C\&C) model based software development is given. C\&C modeling divides a task into Components and Connectors.
 
-A \emph{Component} represents a computation. It has predefined inputs and outputs, where the output data is obtained by some kind of mathematical transformation of the input data. A \emph{Connector} represents interaction mechanisms by connecting outputs with inputs. By making this division, the paradigm ensures modularity and therefore reusability.
-It can be used for modelling software with high demands for testing and verification such as software for self-driving vehicles \cite{WencksternCCViP}\cite{WencksternSimFrame}.
+A \emph{Component} represents a computation. It has predefined inputs and outputs, where the output data is obtained by some kind of mathematical transformation of the input data. A \emph{Connector} represents interaction mechanisms by connecting outputs with inputs. By making this division, the paradigm ensures modularity and therefore re-usability.
+It can be used for modeling software with high demands for testing and verification such as software for self-driving vehicles \cite{WencksternCCViP}\cite{WencksternSimFrame}.
 Another benefit is that a graphical representation is always possible and more efficiently obtainable compared to other text based development, especially non model driven development. The structure of C\&C models also benefits code generation techniques in order to transform models into source code for various target systems.
 Well established examples of C\&C modeling and development are SysML\cite{sysml}, AADL\cite{aadl}, Simulink\cite{simulink} and Labview\cite{labview}. The latter two are used in the automotive domain to model behaviour of Electronic Control Units (ECUs) and test their functionality.
 
@@ -21,7 +21,7 @@ MontiCore[ref], MontiCAR[ref] and EmbeddedMontiArc[ref] are tools developed by t
 	\label{fig:MontiCAR}
 \end{figure}
 The components directly used in this studies implementation are EmbeddedMontiArc, EmbeddedMontiArcMath and Stream.
-\emph{EmbeddedMontiArc} represents the core language of MontiCar. It implements a C\&C DSL which can be used to write C\&C models, verify, test and deploy them to another architecture. Due to its modularity different simulators and Stream tests can be integrated. See the chapter Modelling for more information. Figure \ref{fig:EMontiArc} depicts a usage of the EmbeddedMontiArc DSL.
+\emph{EmbeddedMontiArc} represents the core language of MontiCar. It implements a C\&C DSL which can be used to write C\&C models, verify, test and deploy them to another architecture. Due to its modularity different simulators and Stream tests can be integrated. See the chapter modeling for more information. Figure \ref{fig:EMontiArc} depicts a usage of the EmbeddedMontiArc DSL.
 
 \begin{figure}[!h]
 	\centering
@@ -30,7 +30,7 @@ The components directly used in this studies implementation are EmbeddedMontiArc
 	\label{fig:EMontiArc}
 \end{figure}
 
-\emph{EmbeddedMontiArcMath} is a DSL for implementing mathematical expressions, thus used for transforming the input values of a Component into its output values. It is also able to declare other variables than the defined inputs and logical structures like if-statements and loops. Example usage of EmbeddedMontiArcMath is shown in figure \ref{fig:EMontiArcMath} .
+\emph{EmbeddedMontiArcMath} is a DSL for implementing mathematical expressions, thus used for transforming the input values of a Component into its output values. It is also able to declare other variables than the defined inputs and logical structures like if-statements and loops. Example usage of EmbeddedMontiArcMath is shown in figure \ref{fig:EMontiArcMath}.
 
 \begin{figure}[!h]
 	\centering
