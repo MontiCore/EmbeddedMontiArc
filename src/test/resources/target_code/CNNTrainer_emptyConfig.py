@@ -1,6 +1,6 @@
 import logging
 import mxnet as mx
-import CNNCreator_main_net1
+import CNNCreator_emptyConfig
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
@@ -8,6 +8,6 @@ if __name__ == "__main__":
     handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
     logger.addHandler(handler)
 
-    main_net1 = CNNCreator_main_net1.CNNCreator_main_net1()
-    main_net1.train(
+    emptyConfig = CNNCreator_emptyConfig.CNNCreator_emptyConfig()
+    emptyConfig.train(
     )

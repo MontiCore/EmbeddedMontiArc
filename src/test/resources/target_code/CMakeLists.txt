@@ -12,6 +12,7 @@ set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Armadillo_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 
 # additional commands
+set(LIBS ${LIBS} mxnet)
 
 # create static library
 include_directories(${INCLUDE_DIRS})
@@ -24,4 +25,3 @@ set_target_properties(alexnet PROPERTIES LINKER_LANGUAGE CXX)
 export(TARGETS alexnet FILE alexnet.cmake)
 
 # additional commands end
-set(LIBS ${LIBS} mxnet)
