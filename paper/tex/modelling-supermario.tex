@@ -36,8 +36,9 @@ The first and most abstract entity modeled was the Supermario wrapper which is c
 	\label{fig:marioWrapper}
 \end{figure}
 
-\begin{lstlisting}[label=lst:marioWrapperInterface, caption=Interface of the Supermario Wrapper, morekeywords={ports, port, connect, in, out, instance, ->},
-frame=single,float,floatplacement=H]
+\begin{lstlisting}[label=lst:marioWrapperInterface, caption=Interface of the Supermario Wrapper, morekeywords={ports, port, connect, component, in, out, instance, ->},
+frame=single,float,floatplacement=H]7
+component SuperMarioWrapper {
     ports   
         in Z^{1,2} marioPosition,
         in Z^{1,2} marioVelocity,
@@ -52,6 +53,7 @@ frame=single,float,floatplacement=H]
         out Z marioJump,
         out Z marioDown,
         out Z marioShoot;
+}
 \end{lstlisting}
 
 The player figure's position, velocity and height were chosen as inputs, together with the positions of the next five enemies and obstacles. Furthermore, the position of the next hole in the ground, the position of the next five loot crates, the tick size (the time between model executions) and the information if the player is resting on a tile is given.

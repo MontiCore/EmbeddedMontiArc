@@ -9,7 +9,7 @@ In the following the model for the Pacman controller is presented. The goal is t
 	\includegraphics[scale=0.7]{pictures/VisualizationPacmanWrapper.png}
 \end{figure}
 \begin{lstlisting}[label=lst:pacmanWrapper, caption=Interface of the Pacman Wrapper, morekeywords={ports, port, connect, in, out, instance, ->},
-frame=single]
+frame=single, basicstyle=\small, float,floatplacement=H]
 ports 
 	in Z(0cm: 180cm) ghostX[4],
 	in Z(0cm: 210cm) ghostY[4],
@@ -35,7 +35,7 @@ To connect the web assembly of the main component with the Pacman emulator a new
 	\centering
 	\includegraphics[scale=0.7]{pictures/VisualizationPacmanSimple.png}
 \end{figure}
-In fig. \ref{fig:visPacmanSimple} the design of a simple controller is shown. It has four subcomponents:
+In figure \ref{fig:visPacmanSimple} the design of a simple controller is shown. It has four subcomponents:
 \begin{itemize}
 	\item nearestGhost: Is given the x - and y - position of every ghost and the x - and y - position of the Pacman. It then iterates over all ghosts and calculates the nearest ghost and gives back its index.
 	\item picker: Is given all ghost informations as input as well as an index and gives back the ghost information of the ghost at this index.
@@ -53,7 +53,7 @@ This design is very simple and not very successful. It shows the concept of C\&C
 	\includegraphics[scale=0.85]{pictures/Pacman/Controller20.png}
 \end{figure}
 
-The more complex Pacman controller is shown in fig. \ref{fig:visPacman20}.
+The more complex Pacman controller is shown in figure \ref{fig:visPacman20}.
 It has three main subcomponents:
 \begin{itemize}
 	\item \textit{safePaths}: This component is responsible for checking all the paths leading from Pacman into the labyrinth for safety. This is done by searching in each of the four possible directions until a wall or intersection is found.	
@@ -71,7 +71,7 @@ We will now go into detail for the three main component.
 	\centering
 	\includegraphics[scale=0.75]{pictures/Pacman/safePaths.png}
 \end{figure}
-In fig. \ref{fig:safePaths} the \textit{safePaths} component is shown. It contains a subcomponent for each direction and some starting values. It gives back whether the four directions are safe or not. A direction is safe if there is a wall blocking it (no path) or there is no enemy on its path until the next intersection. This is calculated by ``going'' the path. This could be done with a single component looping through the path to the next intersection. Due to the fact that this would contradict the conditions on C\&C components stated before it is split up into subcomponents. Each path in this labyrinth has a length of at most 10. So the task is divided into 10 components as one can partially see in fig. \ref{fig:search}. Each of those checks whether the current position is safe and then calculate the position to check for the next component. This way the runtime is fixed and the code is better parallelizable.
+In figure \ref{fig:safePaths} the \textit{safePaths} component is shown. It contains a subcomponent for each direction and some starting values. It gives back whether the four directions are safe or not. A direction is safe if there is a wall blocking it (no path) or there is no enemy on its path until the next intersection. This is calculated by ``going'' the path. This could be done with a single component looping through the path to the next intersection. Due to the fact that this would contradict the conditions on C\&C components stated before it is split up into subcomponents. Each path in this labyrinth has a length of at most 10. So the task is divided into 10 components as one can partially see in fig. \ref{fig:search}. Each of those checks whether the current position is safe and then calculate the position to check for the next component. This way the runtime is fixed and the code is better parallelizable.
 \begin{figure}
 	\caption{Visualization of one Search}
 	\label{fig:search}
@@ -101,7 +101,7 @@ The task of one of the 10 subcomponents is again split up into 5 subtasks (see f
 	\centering
 	\includegraphics[scale=0.65]{pictures/Pacman/Cone.png}
 \end{figure}
-The \textit{ConeSearch} component searches through the map in cones (see fig. \ref{fig:cone}). This way each direction can be given a value which increases when biscuits and coins are found and decreases when ghosts are found. The following weights are used in the most current version:
+The \textit{ConeSearch} component searches through the map in cones (see figure \ref{fig:cone}). This way each direction can be given a value which increases when biscuits and coins are found and decreases when ghosts are found. The following weights are used in the most current version:
 \begin{itemize}
 	\item biscuit: 50
 	\item coin: 200
