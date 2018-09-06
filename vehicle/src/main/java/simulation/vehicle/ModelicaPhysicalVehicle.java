@@ -369,6 +369,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
             // Reset vehicle on surface
             putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
+            System.out.println(getVelocity() + " " + vehicleDynamicsModel.getValue("omega_wheel_1") + " " + position);
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -675,6 +676,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         vehicleDynamicsModel.setInput("F_ext_x", localForce.getEntry(0));
         vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
         // todo Take the wheel positions and get the frictions coefficients
+        double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
+        vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
+        vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);
+        vehicleDynamicsModel.setInput("mu_3", frictionCoefficient);
+        vehicleDynamicsModel.setInput("mu_4", frictionCoefficient);
 
         // Store z coordinate for interpolation later
         double oldZ = vehicleDynamicsModel.getValue("z");
@@ -693,6 +699,39 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         position = position.add(velocity.mapMultiply(deltaT));
         RealVector deltaZ = new ArrayRealVector(new double[]{0.0, 0.0, oldZ - z});
         geometryPositionOffset = geometryPositionOffset.add(deltaZ);
+        //set velocity to zero when braking if very near to zero
+        if(velocity.getNorm() <= 0.35 && brakeTorque1 > 0 && motorTorque == 0){
+            // Set brake input to zero
+            vehicleDynamicsModel.setInput("tau_B_1", 0.0);
+            vehicleDynamicsModel.setInput("tau_B_2", 0.0);
+            vehicleDynamicsModel.setInput("tau_B_3", 0.0);
+            vehicleDynamicsModel.setInput("tau_B_4", 0.0);
+            // Set chassis states to zero
+            vehicleDynamicsModel.setInput("omega_wheel_1", 0.0);
+            vehicleDynamicsModel.setInput("omega_wheel_2", 0.0);
+            vehicleDynamicsModel.setInput("omega_wheel_3", 0.0);
+            vehicleDynamicsModel.setInput("omega_wheel_4", 0.0);
+            //vehicleDynamicsModel.setInput("alpha_wheel_1", 0.0);
+            //vehicleDynamicsModel.setInput("alpha_wheel_2", 0.0);
+            //vehicleDynamicsModel.setInput("alpha_wheel_3", 0.0);
+            //vehicleDynamicsModel.setInput("alpha_wheel_4", 0.0);
+            vehicleDynamicsModel.setInput("v_x", 0.0);
+            vehicleDynamicsModel.setInput("v_y", 0.0);
+            vehicleDynamicsModel.setInput("omega_z", 0.0);
+            vehicleDynamicsModel.setInput("roll_angle", 0.0);
+            vehicleDynamicsModel.setInput("omega_x", 0.0);
+            vehicleDynamicsModel.setInput("pitch_angle", 0.0);
+            vehicleDynamicsModel.setInput("omega_y", 0.0);
+            // Set tires states to zero
+            vehicleDynamicsModel.setInput("F_x_1", 0.0);
+            vehicleDynamicsModel.setInput("F_x_2", 0.0);
+            vehicleDynamicsModel.setInput("F_x_3", 0.0);
+            vehicleDynamicsModel.setInput("F_x_4", 0.0);
+            vehicleDynamicsModel.setInput("F_y_1", 0.0);
+            vehicleDynamicsModel.setInput("F_y_2", 0.0);
+            vehicleDynamicsModel.setInput("F_y_3", 0.0);
+            vehicleDynamicsModel.setInput("F_y_4", 0.0);
+        }
     }
 
     /**
@@ -718,7 +757,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         return  "PhysicalVehicle " + getId() +
                 (physicalVehicleInitialized ? " , geometryPos: " + getGeometryPosition() : "") +
                 (physicalVehicleInitialized ? " , position: " + position : "") +
-                //(physicalVehicleInitialized ? " , velocity: " + velocity : "") +
+                (physicalVehicleInitialized ? " , velocity: " + getVelocity() : "") +
                 //(physicalVehicleInitialized ? " , acceleration: " + acceleration : "") +
                 (physicalVehicleInitialized ? " , force: " + force : "") +
                 (physicalVehicleInitialized ? " , rotation: " + rotation : "") +

@@ -525,13 +525,59 @@ public class SimulateVehicleTest {
 
         // Set actuator values for testing
         VehicleActuator motor = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
+        VehicleActuator brakes1 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT);
+        VehicleActuator brakes2 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT);
+        VehicleActuator brakes3 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT);
+        VehicleActuator brakes4 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT);
+        VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
 
         try {
+            motor.setActuatorValueCurrent(0.0);
             motor.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
+
+        try {
+            //brakes1.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            //brakes1.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            //brakes2.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            //brakes2.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            //brakes3.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            //brakes3.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            //brakes4.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            //brakes4.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            steering.setActuatorValueCurrent(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        System.out.println(physicalVehicle);
 
         // Add physicalVehicle to simulation
         System.out.println(physicalVehicle);
@@ -540,18 +586,12 @@ public class SimulateVehicleTest {
 
         // Start simulation
         // After 5 seconds, value should be reached
-        sim.stopAfter(6000);
+        sim.stopAfter(5000);
         sim.startSimulation();
         System.out.println(physicalVehicle);
 
-        // Set actuator values for testing
-        VehicleActuator brakes1 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT);
-        VehicleActuator brakes2 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT);
-        VehicleActuator brakes3 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT);
-        VehicleActuator brakes4 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT);
-        VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
-
         try {
+            motor.setActuatorValueCurrent(0.0);
             motor.setActuatorValueTarget(0.0);
         } catch (Exception e) {
             e.printStackTrace();
@@ -559,6 +599,7 @@ public class SimulateVehicleTest {
         }
 
         try {
+            brakes1.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
             brakes1.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
         } catch (Exception e) {
             e.printStackTrace();
@@ -566,6 +607,7 @@ public class SimulateVehicleTest {
         }
 
         try {
+            brakes2.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
             brakes2.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
         } catch (Exception e) {
             e.printStackTrace();
@@ -573,6 +615,7 @@ public class SimulateVehicleTest {
         }
 
         try {
+            brakes3.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
             brakes3.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
         } catch (Exception e) {
             e.printStackTrace();
@@ -580,6 +623,7 @@ public class SimulateVehicleTest {
         }
 
         try {
+            brakes4.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
             brakes4.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
         } catch (Exception e) {
             e.printStackTrace();
@@ -587,17 +631,120 @@ public class SimulateVehicleTest {
         }
 
         try {
-            steering.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
+            steering.setActuatorValueCurrent(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        System.out.println(physicalVehicle);
+
+        sim.extendSimulationTime(5000);
+        sim.startSimulation();
+        System.out.println(physicalVehicle);
+
+        try {
+            motor.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
+            motor.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
         }
 
+        try {
+            brakes1.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            brakes1.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
 
-        sim.extendSimulationTime(6000);
+        try {
+            brakes2.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            brakes2.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            brakes3.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            brakes3.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            brakes4.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+            brakes4.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            steering.setActuatorValueCurrent(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        System.out.println(physicalVehicle);
+
+        sim.extendSimulationTime(1000);
         sim.startSimulation();
         System.out.println(physicalVehicle);
 
+        try {
+            motor.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
+            motor.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            brakes1.setActuatorValueCurrent(0.0);
+            brakes1.setActuatorValueTarget(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            brakes2.setActuatorValueCurrent(0.0);
+            brakes2.setActuatorValueTarget(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            brakes3.setActuatorValueCurrent(0.0);
+            brakes3.setActuatorValueTarget(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            brakes4.setActuatorValueCurrent(0.0);
+            brakes4.setActuatorValueTarget(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        try {
+            steering.setActuatorValueCurrent(0.0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        System.out.println(physicalVehicle);
+
+        sim.extendSimulationTime(1000);
+        sim.startSimulation();
+        System.out.println(physicalVehicle);
 
         //assertTrue(motor.getActuatorValueCurrent() == Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
         assertTrue(true);

@@ -126,11 +126,40 @@ public class VehicleDynamicsModel {
                 case "tau_B_4":
                 case "F_ext_x":
                 case "F_ext_y":
+                case "omega_wheel_1":
+                case "omega_wheel_2":
+                case "omega_wheel_3":
+                case "omega_wheel_4":
+                case "alpha_wheel_1":
+                case "alpha_wheel_2":
+                case "alpha_wheel_3":
+                case "alpha_wheel_4":
+                case "v_x":
+                case "v_y":
+                case "omega_z":
+                case "pitch_angle":
+                case "omega_x":
+                case "roll_angle":
+                case "omega_y":
                     chassis.write(name).with(value);
                     break;
                 case "delta_1":
                 case "delta_2":
                     chassis.write(name).with(value);
+                    tires.write(name).with(value);
+                    break;
+                case "F_x_1":
+                case "F_x_2":
+                case "F_x_3":
+                case "F_x_4":
+                case "F_y_1":
+                case "F_y_2":
+                case "F_y_3":
+                case "F_y_4":
+                case "mu_1":
+                case "mu_2":
+                case "mu_3":
+                case "mu_4":
                     tires.write(name).with(value);
                     break;
                 default:
@@ -165,11 +194,17 @@ public class VehicleDynamicsModel {
                 case "omega_z":
                 case "v_x":
                 case "v_y":
+                case "v_z":
                 case "L_1":
                 case "L_2":
                 case "TW_f":
                 case "TW_r":
                     value = chassis.read(name).asDouble();
+                    break;
+                case "psi_1":
+                case "v_x_1":
+                case "v_s_1":
+                    value = tires.read(name).asDouble();
                     break;
                 default:
                     System.out.println(name + " wants to be read!");
