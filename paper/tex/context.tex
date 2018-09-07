@@ -39,11 +39,19 @@ The components directly used in this studies implementation are EmbeddedMontiArc
 	\label{fig:EMontiArcMath}
 \end{figure}
 
-The \emph{Stream} DSL allows to implement test cases by defining the expected output values for a given input. Multiple values can be tested in one Stream test, as shown in figure \ref{fig:EMAStream} which shows an example stream test for a sum function.
+The \emph{Stream} DSL allows to implement test cases by defining the expected output values for a given input. Multiple values can be tested in one Stream test, as shown in figure \ref{fig:EMAStream} which shows an example stream test for a sum function. Thy syntax of this DSL holds the following items: 
+\begin{itemize}
+	\item The package which also holds the component (de.rwth...)
+	\item The test's name (Sum)
+	\item The name of the component to test (Sum)
+	\item Values for each input port (t1 and t2)
+	\item A line with the values for at least one output port (result)
+\end{itemize}
+The values for one port are separated by ticks. Each tick stands for one execution cycle. This way a component can be tested over several cycles which gets important if the component's behavior is dependent on previous execution cycles. In addition the \textit{+/-} allows inaccuracy in the results.
 
 \begin{figure}[!h]
 	\centering
-	\includegraphics[scale=0.7]{pictures/EMAStream.PNG}
+	\includegraphics[scale=0.75]{pictures/EMAStream.PNG}
 	\caption{Example Stream implementation]}
 	\label{fig:EMAStream}
 \end{figure}

@@ -8,8 +8,7 @@ In the following the model for the Pacman controller is presented. The goal is t
 	\centering
 	\includegraphics[scale=0.7]{pictures/VisualizationPacmanWrapper.png}
 \end{figure}
-\begin{lstlisting}[label=lst:pacmanWrapper, caption=Interface of the Pacman Wrapper, morekeywords={ports, port, connect, in, out, instance, ->},
-frame=single, basicstyle=\small, float,floatplacement=H]
+\begin{lstlisting}[label=lst:pacmanWrapper, caption=Interface of the Pacman Wrapper, language=EMAM]
 ports 
 	in Z(0cm: 180cm) ghostX[4],
 	in Z(0cm: 210cm) ghostY[4],
@@ -26,7 +25,7 @@ ports
 \end{lstlisting}
 The project's main component is PacmanWrapper. The main task of the wrapper is to provide a shared interface. Listing \ref{lst:pacmanWrapper} shows the input and output ports. As for the inputs, the ghosts' and the Pacman's position are given, the direction the ghosts are facing, information about the ghosts' vulnerability, as well as the current map. The only output port is the new direction the Pacman should walk. \newline
 The wrapper also holds the current controller. This way the controller is easily exchangeable without changing any of the code needed for the ide. All input ports of the wrapper are connected to the corresponding ports of the controller and the output port of the controller is also connected to the output port of the wrapper. \newline
-To connect the web assembly of the main component with the Pacman emulator a new JavaScript file was created. Its main functionalities is to extract the needed informations out of the emulator, pass it to the web assembly, execute it and then give the output back to the emulator. In order to be able to extract needed information out of the emulator some modifications were needed. In its original state the emulator did not offer access to the current game object, thus the PACMAN class was extended by these functions. Due to the fact Pacman is a playable game, its input is given as a key-press-event in JavaScript. So the output of the web assembly, which is a number from 0 to 3, is mapped to a corresponding key-press-event which then gets triggered. The emulator is running with 30 frames per second, which also leads to 30 iterations of the game per second. Because the emulator is running asynchronously the component is executed at a double of that rate in order to track every position change.
+To connect the web assembly of the main component with the Pacman emulator a new JavaScript file was created. Its main functionalities is to extract the needed informations out of the emulator, pass it to the web assembly, execute it and then give the output back to the emulator. In order to be able to extract needed information out of the emulator some modifications were needed. In its original state the emulator did not offer access to the current game object, thus the \textit{Pacman} class was extended by these functions. Due to the fact Pacman is a playable game, its input is given as a key-press-event in JavaScript. So the output of the web assembly, which is a number from 0 to 3, is mapped to a corresponding key-press-event which then gets triggered. The emulator is running with 30 frames per second, which also leads to 30 iterations of the game per second. Because the emulator is running asynchronously the component is executed at a double of that rate in order to track every position change.
 
 \subsubsection{C\&C modeling - Pacman (simple)}
 \begin{figure}

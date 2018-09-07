@@ -50,6 +50,28 @@ Mathworks, \href{https://de.mathworks.com/products/simulink.html}{Simulink}.
 N.~Instruments, \href{http://www.ni.com/de-de/shop/labview.html}{Labview}.
 \newline\urlprefix\url{http://www.ni.com/de-de/shop/labview.html}
 
+\bibitem{HR17}
+K.~H{\"o}lldobler, B.~Rumpe,
+  \href{http://www.se-rwth.de/phdtheses/MontiCore-5-Language-Workbench-Edition-2017.pdf}{{MontiCore
+  5 Language Workbench Edition 2017}}, {Aachener Informatik-Berichte, Software
+  Engineering, Band 32}, Shaker Verlag, 2017.
+\newline\urlprefix\url{http://www.se-rwth.de/phdtheses/MontiCore-5-Language-Workbench-Edition-2017.pdf}
+
+\bibitem{KRRW17}
+E.~Kusmenko, A.~Roth, B.~Rumpe, M.~von Wenckstern,
+  \href{http://www.se-rwth.de/publications/Modeling-Architectures-of-Cyber-Physical-Systems.pdf}{{Modeling
+  Architectures of Cyber-Physical Systems}}, in: European Conference on
+  Modelling Foundations and Applications (ECMFA'17), LNCS 10376, Springer,
+  2017, pp. 34--50.
+\newline\urlprefix\url{http://www.se-rwth.de/publications/Modeling-Architectures-of-Cyber-Physical-Systems.pdf}
+
+\bibitem{HKK+18}
+S.~Hillemacher, S.~Kriebel, E.~Kusmenko, M.~Lorang, B.~Rumpe, A.~Sema,
+  G.~Strobl, M.~von Wenckstern, {Model-Based Development of Self-Adaptive
+  Autonomous Vehicles using the SMARDT Methodology}, in: Proceedings of the 6th
+  International Conference on Model-Driven Engineering and Software Development
+  (MODELSWARD'18), SciTePress, 2018, pp. 163 -- 178.
+
 \bibitem{serwth}
 C.~of~Software Engineering RWTH Aachen~University,
   \href{http://se-rwth.de}{Homepage of the chair of software engineering at
@@ -73,9 +95,11 @@ J.~Goldberg,
   html5 browser game}.
 \newline\urlprefix\url{http://www.joshuakgoldberg.com/FullScreenMario/Source/}
 
-\bibitem{emscirpten}
-A.~Zakai, \href{http://kripken.github.io/emscripten-site/}{Emscripten}.
-\newline\urlprefix\url{http://kripken.github.io/emscripten-site/}
+\bibitem{KRSvW18}
+E.~Kusmenko, B.~Rumpe, S.~Schneiders, M.~von Wenckstern, {Highly-Optimizing and
+  Multi-Target Compiler for Embedded System Models: C++ Compiler Toolchain for
+  the Component and Connector Language EmbeddedMontiArc}, in: Conference on
+  Model Driven Engineering Languages and Systems (MODELS'18), IEEE, 2018.
 
 \bibitem{emadoc}
 E.~Team,
