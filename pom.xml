@@ -8,7 +8,7 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-emadl-generator</artifactId>
-  <version>0.2.3-SNAPSHOT</version>
+  <version>0.2.4-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -16,8 +16,8 @@
 
     <!-- .. SE-Libraries .................................................. -->
     <emadl.version>0.2.2-SNAPSHOT</emadl.version>
-    <CNNTrain.version>0.2.4-SNAPSHOT</CNNTrain.version>
-    <cnnarch-mxnet-generator.version>0.2.4-SNAPSHOT</cnnarch-mxnet-generator.version>
+    <CNNTrain.version>0.2.5-SNAPSHOT</CNNTrain.version>
+    <cnnarch-mxnet-generator.version>0.2.5-SNAPSHOT</cnnarch-mxnet-generator.version>
     <cnnarch-caffe2-generator.version>0.2.2-SNAPSHOT</cnnarch-caffe2-generator.version>
     <embedded-montiarc-math-generator>0.0.25-SNAPSHOT</embedded-montiarc-math-generator>
     

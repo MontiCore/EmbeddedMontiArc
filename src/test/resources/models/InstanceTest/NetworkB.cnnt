@@ -1,4 +1,4 @@
-configuration NetworkB_net1{
+configuration NetworkB{
     num_epoch:10
     batch_size:64
     normalize:true
