@@ -59,7 +59,7 @@ public class GenerationTest extends AbstractSymtabTest {
                         "cifar10_cifar10Classifier_net.h",
                         "CNNTranslator.h",
                         "cifar10_cifar10Classifier_calculateClass.h",
-                        "CNNTrainer_cifar10_Cifar10Classifier.py"));
+                        "CNNTrainer_cifar10_cifar10Classifier_net.py"));
     }
 
     @Test
