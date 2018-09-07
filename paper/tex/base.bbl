@@ -22,6 +22,15 @@ P.~Haller,
   model}.
 \newline\urlprefix\url{https://embeddedmontiarc.github.io/SuperMario/supermario/simulation.html}
 
+\bibitem{pacmanvideo}
+M.~Heithoff, \href{https://www.youtube.com/watch?v=f7YKCsSB_Tg}{Pacman video}.
+\newline\urlprefix\url{https://www.youtube.com/watch?v=f7YKCsSB_Tg}
+
+\bibitem{mariovideo}
+P.~Haller, \href{https://www.youtube.com/watch?v=LZ3rp8KgdHI}{Supermario
+  video}.
+\newline\urlprefix\url{https://www.youtube.com/watch?v=LZ3rp8KgdHI}
+
 \bibitem{WencksternCCViP}
 {V. Bertram{,} S. Maoz{,} J. O. Ringert{,} B. Rumpe{,} M. von Wenckstern},
   Component and connector views in practice: An experience report, ACM/IEEE
