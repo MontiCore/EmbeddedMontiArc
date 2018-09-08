@@ -1,72 +1,106 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6700 64-bit) (preloaded format=pdflatex 2018.5.24)  7 SEP 2018 15:31
-entering extended mode
-**./base.tex
-(base.tex
-LaTeX2e <2018-04-01> patch level 4
-Babel <3.20> and hyphenation patterns for 75 language(s) loaded.
-("C:\Program Files\MiKTeX 2.9\tex\latex\elsarticle\elsarticle.cls"
-Document Class: elsarticle 2009/09/17, 1.2.0: Elsevier Ltd
+This is LuaTeX, Version 1.07.0 (MiKTeX 2.9.6630 64-bit)  (format=lualatex 2018.9.8)  8 SEP 2018 11:19
+ restricted system commands enabled.
+**C:/Users/vonwenckstern/Documents/SuperMario/paper/tex/base.tex
+(C:/Users/vonwenckstern/Documents/SuperMario/paper/tex/base.tex
+LaTeX2e <2017-04-15>
+Lua module: luaotfload-main 2017/01/29 2.80001 OpenType layout system.
+Lua module: lualibs 2017-02-01 2.5 ConTeXt Lua standard libraries.
+Lua module: lualibs-extended 2017-02-01 2.5 ConTeXt Lua libraries -- extended co
+llection.(using cache: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/luatex-ca
+che/generic)
+luaotfload | conf : Root cache directory is C:/Users/vonwenckstern/AppData/Local
+/MiKTeX/2.9/luatex-cache/generic/names.
+luaotfload | init : Loading fontloader “fontloader-2017-02-11.lua” from kpse
+-resolved path “C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/l
+uatex/luaotfload/fontloader-2017-02-11.lua”.
+Lua-only attribute luaotfload@state = 1
+Lua-only attribute luaotfload@noligature = 2
+Lua-only attribute luaotfload@syllabe = 3
+luaotfload | init : Context OpenType loader version “3.027”
+Inserting `luaotfload.node_processor' at position 1 in `pre_linebreak_filter'.
+Inserting `luaotfload.node_processor' at position 1 in `hpack_filter'.
+Inserting `luaotfload.define_font' at position 1 in `define_font'.
+Lua-only attribute luaotfload_color_attribute = 4
+luaotfload | conf : Root cache directory is C:/Users/vonwenckstern/AppData/Local
+/MiKTeX/2.9/luatex-cache/generic/names.
+Inserting `luaotfload.aux.set_sscale_dimens' at position 1 in `luaotfload.patch_
+font'.
+Inserting `luaotfload.aux.patch_cambria_domh' at position 2 in `luaotfload.patch
+_font'.
+Inserting `luaotfload.aux.fixup_fontdata' at position 1 in `luaotfload.patch_fon
+t_unsafe'.
+Inserting `luaotfload.aux.set_capheight' at position 3 in `luaotfload.patch_font
+'.
+Inserting `luaotfload.rewrite_fontname' at position 4 in `luaotfload.patch_font'
+.
+luaotfload | main : initialization completed in 0.359 seconds
+Babel <3.18> and hyphenation patterns for 1 language(s) loaded.
+
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/elsarticle
+/elsarticle.cls"
+Document Class: elsarticle 2018/06/08, 3.0: Elsevier Ltd
 \@bls=\dimen102
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/base/artic
+le.cls"
 Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
+
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/base/size1
+0.clo"
 File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
-)
-\c@part=\count80
-\c@section=\count81
-\c@subsection=\count82
-\c@subsubsection=\count83
-\c@paragraph=\count84
-\c@subparagraph=\count85
-\c@figure=\count86
-\c@table=\count87
+luaotfload | db : Font names database loaded from C:/Users/vonwenckstern/AppData
+/Local/MiKTeX/2.9/luatex-cache/generic/names/luaotfload-names.luc(load luc: C:/U
+sers/vonwenckstern/AppData/Local/MiKTeX/2.9/luatex-cache/generic/fonts/otl/lmrom
+an10-regular.luc))
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
 \bibindent=\dimen103
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/graphics/g
+raphicx.sty"
 Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/graphics/k
+eyval.sty"
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/graphics/g
+raphics.sty"
 Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/graphics/t
+rig.sty"
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\graphics.cfg"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/graphics-c
+fg/graphics.cfg"
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 99.
+Package graphics Info: Driver file: luatex.def on input line 99.
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-def\pdftex.def"
-File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/graphics-d
+ef/luatex.def"
+File: luatex.def 2018/01/08 v1.0l Graphics/color driver for luatex
 ))
 \Gin@req@height=\dimen104
 \Gin@req@width=\dimen105
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\pifont.sty"
-Package: pifont 2005/04/12 PSNFSS-v9.2a Pi font support (SPQR) 
-LaTeX Font Info:    Try loading font information for U+pzd on input line 63.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\upzd.fd"
-File: upzd.fd 2001/06/04 font definitions for U/pzd.
-)
-LaTeX Font Info:    Try loading font information for U+psy on input line 64.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\upsy.fd"
-File: upsy.fd 2001/06/04 font definitions for U/psy.
-))
-\c@tnote=\count88
-\c@fnote=\count89
-\c@cnote=\count90
-\c@ead=\count91
-\c@author=\count92
+\c@tnote=\count87
+\c@fnote=\count88
+\c@cnote=\count89
+\c@ead=\count90
+\c@author=\count91
 \@eadauthor=\toks15
-\c@affn=\count93
+\c@affn=\count92
 \absbox=\box26
 \keybox=\box27
 \Columnwidth=\dimen106
@@ -77,78 +111,84 @@ File: upsy.fd 2001/06/04 font definitions for U/psy.
 \@enLab=\toks16
 \@sep=\skip43
 \@@sep=\skip44
- (base.spl)
-("C:\Program Files\MiKTeX 2.9\tex\latex\natbib\natbib.sty"
+ (./base.spl)
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/natbib/nat
+bib.sty"
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip45
 \bibsep=\skip46
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count94
+\c@NAT@ctr=\count93
 )
 \splwrite=\write3
-\openout3 = `base.spl'.
 
+\openout3 = base.spl
+\appnamewidth=\dimen109
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\float\float.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/float/floa
+t.sty"
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count95
+\c@float@type=\count94
 \float@exts=\toks17
 \float@box=\box30
 \@float@everytoks=\toks18
 \@floatcapt=\box31
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\lineno\lineno.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/lineno/lin
+eno.sty"
 Package: lineno 2005/11/02 line numbers on paragraphs v4.41
-\linenopenalty=\count96
+\linenopenalty=\count95
 \output=\toks19
-\linenoprevgraf=\count97
-\linenumbersep=\dimen109
-\linenumberwidth=\dimen110
-\c@linenumber=\count98
-\c@pagewiselinenumber=\count99
-\c@LN@truepage=\count100
-\c@internallinenumber=\count101
-\c@internallinenumbers=\count102
-\quotelinenumbersep=\dimen111
-\bframerule=\dimen112
-\bframesep=\dimen113
+\linenoprevgraf=\count96
+\linenumbersep=\dimen110
+\linenumberwidth=\dimen111
+\c@linenumber=\count97
+\c@pagewiselinenumber=\count98
+\c@LN@truepage=\count99
+\c@internallinenumber=\count100
+\c@internallinenumbers=\count101
+\quotelinenumbersep=\dimen112
+\bframerule=\dimen113
+\bframesep=\dimen114
 \bframebox=\box32
 LaTeX Info: Redefining \\ on input line 3056.
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hyperref.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/hyperref/h
+yperref.sty"
 Package: hyperref 2018/02/06 v6.86b Hypertext links for LaTeX
 
-("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\hobsub-hyperref.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/generic/oberdiek
+/hobsub-hyperref.sty"
 Package: hobsub-hyperref 2016/05/16 v1.14 Bundle oberdiek, subset hyperref (HO)
 
-
-("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\hobsub-generic.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/generic/oberdiek
+/hobsub-generic.sty"
 Package: hobsub-generic 2016/05/16 v1.14 Bundle oberdiek, subset generic (HO)
 Package: hobsub 2016/05/16 v1.14 Construct package bundles (HO)
 Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
 Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
-Package ifluatex Info: LuaTeX not detected.
+Package ifluatex Info: LuaTeX detected.
 Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
 Package ifvtex Info: VTeX not detected.
 Package: intcalc 2016/05/16 v1.2 Expandable calculations with integers (HO)
 Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
 Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
 Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
 Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
-Package: pdftexcmds 2018/01/30 v0.27 Utility functions of pdfTeX for LuaTeX (HO
-)
-Package pdftexcmds Info: LuaTeX not detected.
+Package: luatex-loader 2016/05/16 v0.6 Lua module loader (HO)
+
+(C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/scripts/oberdiek/oberd
+iek.luatex.lua)
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO)
+
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
+\pdftexcmds@toks=\toks20
 Package: pdfescape 2016/05/16 v1.14 Implements pdfTeX's escape features (HO)
-Package: bigintcalc 2016/05/16 v1.4 Expandable calculations on big integers (HO
-)
+Package: bigintcalc 2016/05/16 v1.4 Expandable calculations on big integers (HO)
+
 Package: bitset 2016/05/16 v1.2 Handle bit-vector datatype (HO)
 Package: uniquecounter 2016/05/16 v1.3 Provide unlimited unique counter (HO)
 )
@@ -162,27 +202,30 @@ Package: atbegshi 2016/06/09 v1.18 At begin shipout hook (HO)
 Package: refcount 2016/05/16 v3.5 Data extraction from label references (HO)
 Package: hycolor 2016/05/16 v1.8 Color options for hyperref/bookmark (HO)
 )
-("C:\Program Files\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/generic/ifxetex/
+ifxetex.sty"
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\auxhook.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/oberdiek/a
+uxhook.sty"
 Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/oberdiek/k
+voptions.sty"
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen114
-\Hy@linkcounter=\count103
-\Hy@pagecounter=\count104
+\@linkdim=\dimen115
+\Hy@linkcounter=\count102
+\Hy@pagecounter=\count103
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/hyperref/p
+d1enc.def"
 File: pd1enc.def 2018/02/06 v6.86b Hyperref: PDFDocEncoding definition (HO)
-Now handling font encoding PD1 ...
-... no UTF-8 mapping file for font encoding PD1
 )
-\Hy@SavedSpaceFactor=\count105
+\Hy@SavedSpaceFactor=\count104
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\00miktex\hyperref.cfg"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/00miktex/h
+yperref.cfg"
 File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
 )
 Package hyperref Info: Hyper figures OFF on input line 4509.
@@ -192,17 +235,18 @@ Package hyperref Info: Plain pages OFF on input line 4524.
 Package hyperref Info: Backreferencing OFF on input line 4529.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4762.
-\c@Hy@tempcnt=\count106
+\c@Hy@tempcnt=\count105
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\url\url.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/url/url.st
+y"
 \Urlmuskip=\muskip10
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5115.
-\XeTeXLinkMargin=\dimen115
-\Fld@menulength=\count107
-\Field@Width=\dimen116
-\Fld@charsize=\dimen117
+\XeTeXLinkMargin=\dimen116
+\Fld@menulength=\count106
+\Field@Width=\dimen117
+\Fld@charsize=\dimen118
 Package hyperref Info: Hyper figures OFF on input line 6369.
 Package hyperref Info: Link nesting OFF on input line 6374.
 Package hyperref Info: Hyper index ON on input line 6377.
@@ -212,74 +256,83 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6394.
 Package hyperref Info: PDF/A mode OFF on input line 6399.
 LaTeX Info: Redefining \ref on input line 6439.
 LaTeX Info: Redefining \pageref on input line 6443.
-\Hy@abspage=\count108
-\c@Item=\count109
-\c@Hfootnote=\count110
+\Hy@abspage=\count107
+\c@Item=\count108
+\c@Hfootnote=\count109
 )
-Package hyperref Info: Driver (autodetected): hpdftex.
+Package hyperref Info: Driver (autodetected): hluatex.
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\hpdftex.def"
-File: hpdftex.def 2018/02/06 v6.86b Hyperref driver for pdfTeX
-\Fld@listcount=\count111
-\c@bookmark@seq@number=\count112
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/hyperref/h
+luatex.def"
+File: hluatex.def 2018/02/06 v6.86b Hyperref driver for luaTeX
+\Fld@listcount=\count110
+\c@bookmark@seq@number=\count111
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\rerunfilecheck.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/oberdiek/r
+erunfilecheck.sty"
 Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
-Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
-82.
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
+2.
 )
 \Hy@SectionHShift=\skip47
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\listings\listings.sty"
-\lst@mode=\count113
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/listings/l
+istings.sty"
+\lst@mode=\count112
 \lst@gtempboxa=\box33
-\lst@token=\toks20
-\lst@length=\count114
-\lst@currlwidth=\dimen118
-\lst@column=\count115
-\lst@pos=\count116
-\lst@lostspace=\dimen119
-\lst@width=\dimen120
-\lst@newlines=\count117
-\lst@lineno=\count118
-\lst@maxwidth=\dimen121
+\lst@token=\toks21
+\lst@length=\count113
+\lst@currlwidth=\dimen119
+\lst@column=\count114
+\lst@pos=\count115
+\lst@lostspace=\dimen120
+\lst@width=\dimen121
+\lst@newlines=\count116
+\lst@lineno=\count117
+\lst@maxwidth=\dimen122
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\listings\lstmisc.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/listings/l
+stmisc.sty"
 File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-\c@lstnumber=\count119
-\lst@skipnumbers=\count120
+\c@lstnumber=\count118
+\lst@skipnumbers=\count119
 \lst@framebox=\box34
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\listings\listings.cfg"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/listings/l
+istings.cfg"
 File: listings.cfg 2015/06/04 1.6 listings configuration
 ))
 Package: listings 2015/06/04 1.6 (Carsten Heinz)
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\subfigure\subfigure.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/subfigure/
+subfigure.sty"
 Package: subfigure 2002/07/30 v2.1.4 subfigure package
 \subfigtopskip=\skip48
 \subfigcapskip=\skip49
-\subfigcaptopadj=\dimen122
+\subfigcaptopadj=\dimen123
 \subfigbottomskip=\skip50
-\subfigcapmargin=\dimen123
+\subfigcapmargin=\dimen124
 \subfiglabelskip=\skip51
-\c@subfigure=\count121
-\c@lofdepth=\count122
-\c@subtable=\count123
-\c@lotdepth=\count124
+\c@subfigure=\count120
+\c@lofdepth=\count121
+\c@subtable=\count122
+\c@lotdepth=\count123
 
 ****************************************
 * Local config file subfigure.cfg used *
 ****************************************
-("C:\Program Files\MiKTeX 2.9\tex\latex\subfigure\subfigure.cfg")
+
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/subfigure/
+subfigure.cfg")
 \subfig@top=\skip52
 \subfig@bottom=\skip53
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\flafter.sty"
-Package: flafter 2018/01/08 v1.4c Standard LaTeX floats after reference (FMi)
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/base/flaft
+er.sty"
+Package: flafter 2017/04/11 v1.4a Standard LaTeX floats after reference (FMi)
 Applying: [2015/01/01] float order in 2-column on input line 49.
 Already applied: [0000/00/00] float order in 2-column on input line 151.
-) (base.aux
+) (./base.aux
 
 LaTeX Warning: Label `lst:enemywatchertest_1' multiply defined.
 
@@ -296,7 +349,7 @@ LaTeX Warning: Label `lst:obstaclewatchertest' multiply defined.
 LaTeX Warning: Label `lst:holewatchertest' multiply defined.
 
 )
-\openout1 = `base.aux'.
+\openout1 = base.aux
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
@@ -306,83 +359,101 @@ LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
 LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 48.
+LaTeX Font Info:    ... okay on input line 48.
 LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
- ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/context/base/sup
+p-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count125
-\scratchdimen=\dimen124
+\scratchcounter=\count124
+\scratchdimen=\dimen125
 \scratchbox=\box35
-\nofMPsegments=\count126
-\nofMParguments=\count127
-\everyMPshowfont=\toks21
-\MPscratchCnt=\count128
-\MPscratchDim=\dimen125
-\MPnumerator=\count129
-\makeMPintoPDFobject=\count130
-\everyMPtoPDFconversion=\toks22
-) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
+\nofMPsegments=\count125
+\nofMParguments=\count126
+\everyMPshowfont=\toks22
+\MPscratchCnt=\count127
+\MPscratchDim=\dimen126
+\MPnumerator=\count128
+\makeMPintoPDFobject=\count129
+\everyMPtoPDFconversion=\toks23
+)
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/oberdiek/e
+pstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/oberdiek/g
+rfext.sty"
 Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
 )
-Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
-38.
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 43
+8.
 Package grfext Info: Graphics extension search list:
-(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
-G,.JBIG2,.JB2,.eps]
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG
+,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 \AtBeginShipoutBox=\box36
 Package hyperref Info: Link coloring OFF on input line 48.
 
-("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/latex/hyperref/n
+ameref.sty"
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
 
-("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\gettitlestring.sty"
+("C:/Users/vonwenckstern/AppData/Local/Programs/MiKTeX 2.9/tex/generic/oberdiek
+/gettitlestring.sty"
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count131
+\c@section@level=\count130
 )
 LaTeX Info: Redefining \ref on input line 48.
 LaTeX Info: Redefining \pageref on input line 48.
 LaTeX Info: Redefining \nameref on input line 48.
-
-(base.out) (base.out)
+ (./base.out) (./base.out)
 \@outlinefile=\write4
-\openout4 = `base.out'.
 
-\c@lstlisting=\count132
- (abstract.tex)
+\openout4 = base.out
+\c@lstlisting=\count131
+(load luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/luatex-cache/generic/
+fonts/otl/lmroman10-bold.luc)
+(./abstract.tex)(load luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/luate
+x-cache/generic/fonts/otl/lmroman10-italic.luc)(load luc: C:/Users/vonwenckstern
+/AppData/Local/MiKTeX/2.9/luatex-cache/generic/fonts/otl/lmroman8-regular.luc)
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 69.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 69.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 69.
+(load luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/luatex-cache/generic/
+fonts/otl/lmroman6-regular.luc)(load luc: C:/Users/vonwenckstern/AppData/Local/M
+iKTeX/2.9/luatex-cache/generic/fonts/otl/lmroman12-regular.luc)
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 69.
- [1
+(load luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/luatex-cache/generic/
+fonts/otl/lmroman7-regular.luc)(load luc: C:/Users/vonwenckstern/AppData/Local/M
+iKTeX/2.9/luatex-cache/generic/fonts/otl/lmroman8-italic.luc)
+Overfull \hbox (2.22pt too wide) has occurred while \output is active
+[] 
+ []
+
+[1
 
 
-{C:/Users/Malte/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] (introducti
-on.tex
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 9.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
-File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 9.
- [2]
-Overfull \hbox (11.99689pt too wide) in paragraph at lines 22--27
-[]$\OT1/cmtt/m/n/10 https : / / embeddedmontiarc . github . io / SuperMario / s
-upermario / simulation .
+{C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}](load
+ luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.9/luatex-cache/generic/fonts
+/otl/lmroman5-regular.luc)(load luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX
+/2.9/luatex-cache/generic/fonts/otl/lmsans8-regular.luc)
+(./introduction.tex [2](load luc: C:/Users/vonwenckstern/AppData/Local/MiKTeX/2.
+9/luatex-cache/generic/fonts/otl/lmmono10-regular.luc)
+Overfull \hbox (12.0pt too wide) in paragraph at lines 22--27
+[]$\TU/lmtt/m/n/10 https://embeddedmontiarc.github.io/SuperMario/supermario/sim
+ulation.
  []
 
 
@@ -390,18 +461,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 22--27
 
  []
 
-) (context.tex
+) (./context.tex
 <pictures/MontiCarOverview.PNG, id=187, 454.69875pt x 234.1247pt>
 File: pictures/MontiCarOverview.PNG Graphic file (type png)
 <use pictures/MontiCarOverview.PNG>
-Package pdftex.def Info: pictures/MontiCarOverview.PNG  used on input line 19.
-(pdftex.def)             Requested size: 250.08508pt x 128.76897pt.
+Package luatex.def Info: pictures/MontiCarOverview.PNG  used on input line 19.
+(luatex.def)             Requested size: 345.0pt x 177.64366pt.
  [3]
 <pictures/EMA.PNG, id=213, 261.22594pt x 234.8775pt>
 File: pictures/EMA.PNG Graphic file (type png)
 <use pictures/EMA.PNG>
-Package pdftex.def Info: pictures/EMA.PNG  used on input line 28.
-(pdftex.def)             Requested size: 182.85689pt x 164.41312pt.
+Package luatex.def Info: pictures/EMA.PNG  used on input line 28.
+(luatex.def)             Requested size: 182.85689pt x 164.41312pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
@@ -409,166 +480,155 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 <pictures/EMAMath.PNG, id=215, 241.65282pt x 379.4175pt>
 File: pictures/EMAMath.PNG Graphic file (type png)
 <use pictures/EMAMath.PNG>
-Package pdftex.def Info: pictures/EMAMath.PNG  used on input line 37.
-(pdftex.def)             Requested size: 169.1558pt x 265.59042pt.
+Package luatex.def Info: pictures/EMAMath.PNG  used on input line 37.
+(luatex.def)             Requested size: 169.1558pt x 265.59042pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 <pictures/EMAStream.PNG, id=217, 299.9205pt x 76.48575pt>
 File: pictures/EMAStream.PNG Graphic file (type png)
 <use pictures/EMAStream.PNG>
-Package pdftex.def Info: pictures/EMAStream.PNG  used on input line 54.
-(pdftex.def)             Requested size: 224.9398pt x 57.36415pt.
+Package luatex.def Info: pictures/EMAStream.PNG  used on input line 54.
+(luatex.def)             Requested size: 224.9398pt x 57.36415pt.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[4 <./pictures/MontiCarOverview.PNG>]) [5 <./pictures/EMA.PNG> <./pictures/EMAM
-ath.PNG>] (approach.tex
+) (./approach.tex [4] [5<./pictures/MontiCarOverview.PNG><./pictures/EMA.PNG>]
 Underfull \hbox (badness 10000) in paragraph at lines 8--9
 
  []
 
-<pictures/Pacman/StreamTests/2/Bild1.PNG, id=240, 283.0575pt x 353.06906pt>
+<pictures/Pacman/StreamTests/2/Bild1.PNG, id=241, 283.0575pt x 353.06906pt>
 File: pictures/Pacman/StreamTests/2/Bild1.PNG Graphic file (type png)
 <use pictures/Pacman/StreamTests/2/Bild1.PNG>
-Package pdftex.def Info: pictures/Pacman/StreamTests/2/Bild1.PNG  used on input
- line 15.
-(pdftex.def)             Requested size: 169.0519pt x 210.86795pt.
-<pictures/Pacman/StreamTests/2/Bild2.PNG, id=241, 283.0069pt x 352.84764pt>
+Package luatex.def Info: pictures/Pacman/StreamTests/2/Bild1.PNG  used on input 
+line 15.
+(luatex.def)             Requested size: 169.0519pt x 210.86795pt.
+<pictures/Pacman/StreamTests/2/Bild2.PNG, id=242, 283.0069pt x 352.84764pt>
 File: pictures/Pacman/StreamTests/2/Bild2.PNG Graphic file (type png)
 <use pictures/Pacman/StreamTests/2/Bild2.PNG>
-Package pdftex.def Info: pictures/Pacman/StreamTests/2/Bild2.PNG  used on input
- line 16.
-(pdftex.def)             Requested size: 169.0519pt x 210.77339pt.
-<pictures/Pacman/StreamTests/2/Bild3.PNG, id=242, 282.39958pt x 352.84764pt>
+Package luatex.def Info: pictures/Pacman/StreamTests/2/Bild2.PNG  used on input 
+line 16.
+(luatex.def)             Requested size: 169.0519pt x 210.77339pt.
+<pictures/Pacman/StreamTests/2/Bild3.PNG, id=243, 282.39958pt x 352.84764pt>
 File: pictures/Pacman/StreamTests/2/Bild3.PNG Graphic file (type png)
 <use pictures/Pacman/StreamTests/2/Bild3.PNG>
-Package pdftex.def Info: pictures/Pacman/StreamTests/2/Bild3.PNG  used on input
- line 17.
-(pdftex.def)             Requested size: 169.0519pt x 211.22565pt.
-<pictures/Pacman/StreamTests/2/Bild4.PNG, id=243, 283.0069pt x 352.84764pt>
+Package luatex.def Info: pictures/Pacman/StreamTests/2/Bild3.PNG  used on input 
+line 17.
+(luatex.def)             Requested size: 169.0519pt x 211.22565pt.
+<pictures/Pacman/StreamTests/2/Bild4.PNG, id=244, 283.0069pt x 352.84764pt>
 File: pictures/Pacman/StreamTests/2/Bild4.PNG Graphic file (type png)
 <use pictures/Pacman/StreamTests/2/Bild4.PNG>
-Package pdftex.def Info: pictures/Pacman/StreamTests/2/Bild4.PNG  used on input
- line 18.
-(pdftex.def)             Requested size: 169.0519pt x 210.77339pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 23.
-[6 <./pictures/EMAStream.PNG>] [7] [8 <./pictures/Pacman/StreamTests/2/Bild1.PN
-G> <./pictures/Pacman/StreamTests/2/Bild2.PNG> <./pictures/Pacman/StreamTests/2
-/Bild3.PNG> <./pictures/Pacman/StreamTests/2/Bild4.PNG>]
-(approach-Supermario.tex
-<pictures/haller_mario1.PNG, id=303, 216.81pt x 147.55125pt>
+Package luatex.def Info: pictures/Pacman/StreamTests/2/Bild4.PNG  used on input 
+line 18.
+(luatex.def)             Requested size: 169.0519pt x 210.77339pt.
+[6<./pictures/EMAMath.PNG><./pictures/EMAStream.PNG>]
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on in
+put line 23.
+ [7<./pictures/Pacman/StreamTests/2/Bild1.PNG><./pictures/Pacman/StreamTests/2/B
+ild2.PNG><./pictures/Pacman/StreamTests/2/Bild3.PNG><./pictures/Pacman/StreamTes
+ts/2/Bild4.PNG>]
+[8] (./approach-Supermario.tex
+<pictures/haller_mario1.PNG, id=306, 216.81pt x 147.55125pt>
 File: pictures/haller_mario1.PNG Graphic file (type png)
 <use pictures/haller_mario1.PNG>
-Package pdftex.def Info: pictures/haller_mario1.PNG  used on input line 8.
-(pdftex.def)             Requested size: 119.24586pt x 81.15343pt.
-<pictures/haller_mario2.PNG, id=305, 194.22563pt x 153.57375pt>
+Package luatex.def Info: pictures/haller_mario1.PNG  used on input line 8.
+(luatex.def)             Requested size: 119.24586pt x 81.15343pt.
+<pictures/haller_mario2.PNG, id=308, 194.22563pt x 153.57375pt>
 File: pictures/haller_mario2.PNG Graphic file (type png)
 <use pictures/haller_mario2.PNG>
-Package pdftex.def Info: pictures/haller_mario2.PNG  used on input line 17.
-(pdftex.def)             Requested size: 130.89807pt x 103.50105pt.
-<pictures/haller_mario3.PNG, id=306, 218.31563pt x 130.98938pt>
+Package luatex.def Info: pictures/haller_mario2.PNG  used on input line 17.
+(luatex.def)             Requested size: 130.89807pt x 103.50105pt.
+<pictures/haller_mario3.PNG, id=309, 218.31563pt x 130.98938pt>
 File: pictures/haller_mario3.PNG Graphic file (type png)
 <use pictures/haller_mario3.PNG>
-Package pdftex.def Info: pictures/haller_mario3.PNG  used on input line 18.
-(pdftex.def)             Requested size: 172.50742pt x 103.50105pt.
-<pictures/haller_mario4.PNG, id=308, 191.9672pt x 97.86563pt>
+Package luatex.def Info: pictures/haller_mario3.PNG  used on input line 18.
+(luatex.def)             Requested size: 172.50742pt x 103.50105pt.
+<pictures/haller_mario4.PNG, id=311, 191.9672pt x 97.86563pt>
 File: pictures/haller_mario4.PNG Graphic file (type png)
 <use pictures/haller_mario4.PNG>
-Package pdftex.def Info: pictures/haller_mario4.PNG  used on input line 27.
-(pdftex.def)             Requested size: 203.03316pt x 103.50105pt.
-<pictures/haller_mario5.PNG, id=309, 313.9228pt x 179.16937pt>
+Package luatex.def Info: pictures/haller_mario4.PNG  used on input line 27.
+(luatex.def)             Requested size: 203.03316pt x 103.50105pt.
+<pictures/haller_mario5.PNG, id=312, 313.9228pt x 179.16937pt>
 File: pictures/haller_mario5.PNG Graphic file (type png)
 <use pictures/haller_mario5.PNG>
-Package pdftex.def Info: pictures/haller_mario5.PNG  used on input line 28.
-(pdftex.def)             Requested size: 181.34726pt x 103.50105pt.
- [9 <./pictures/haller_mario1.PNG>] [10 <./pictures/haller_mario2.PNG> <./pictu
-res/haller_mario3.PNG> <./pictures/haller_mario4.PNG> <./pictures/haller_mario5
-.PNG>] [11])) (implementation.tex [12]
-(ideintegration.tex
-<pictures/IDE/IDETop.png, id=392, 183.084pt x 53.60025pt>
+Package luatex.def Info: pictures/haller_mario5.PNG  used on input line 28.
+(luatex.def)             Requested size: 181.34726pt x 103.50105pt.
+ [9<./pictures/haller_mario1.PNG>] [10<./pictures/haller_mario2.PNG><./pictures/
+haller_mario3.PNG><./pictures/haller_mario4.PNG><./pictures/haller_mario5.PNG>]
+) [11] [12]) (./implementation.tex
+(./ideintegration.tex
+<pictures/IDE/IDETop.png, id=411, 183.084pt x 53.60025pt>
 File: pictures/IDE/IDETop.png Graphic file (type png)
 <use pictures/IDE/IDETop.png>
-Package pdftex.def Info: pictures/IDE/IDETop.png  used on input line 11.
-(pdftex.def)             Requested size: 100.6965pt x 29.48021pt.
- [13 <./pictures/IDE/IDETop.png>]) (modelling.tex
-(modelling-pacman.tex
-<pictures/VisualizationPacmanWrapper.png, id=416, 197.538pt x 133.6995pt>
+Package luatex.def Info: pictures/IDE/IDETop.png  used on input line 11.
+(luatex.def)             Requested size: 100.6965pt x 29.48021pt.
+ [13<./pictures/IDE/IDETop.png>]) (./modelling.tex
+(./modelling-pacman.tex
+<pictures/VisualizationPacmanWrapper.png, id=423, 197.538pt x 133.6995pt>
 File: pictures/VisualizationPacmanWrapper.png Graphic file (type png)
 <use pictures/VisualizationPacmanWrapper.png>
-Package pdftex.def Info: pictures/VisualizationPacmanWrapper.png  used on input
- line 9.
-(pdftex.def)             Requested size: 138.27565pt x 93.58899pt.
- [14] [15 <./pictures/VisualizationPacmanWrapper.png>]
-<pictures/VisualizationPacmanSimple.png, id=442, 500.46976pt x 278.84175pt>
+Package luatex.def Info: pictures/VisualizationPacmanWrapper.png  used on input 
+line 9.
+(luatex.def)             Requested size: 138.27565pt x 93.58899pt.
+ [14]
+<pictures/VisualizationPacmanSimple.png, id=432, 500.46976pt x 278.84175pt>
 File: pictures/VisualizationPacmanSimple.png Graphic file (type png)
 <use pictures/VisualizationPacmanSimple.png>
-Package pdftex.def Info: pictures/VisualizationPacmanSimple.png  used on input 
-line 35.
-(pdftex.def)             Requested size: 350.32643pt x 195.18788pt.
-
-Overfull \hbox (5.32643pt too wide) in paragraph at lines 35--36
- [][] 
- []
-
-<pictures/Pacman/Controller20.png, id=444, 345.08925pt x 249.3315pt>
+Package luatex.def Info: pictures/VisualizationPacmanSimple.png  used on input l
+ine 36.
+(luatex.def)             Requested size: 345.0pt x 192.2308pt.
+ [15<./pictures/VisualizationPacmanWrapper.png>]
+[16<./pictures/VisualizationPacmanSimple.png>]
+<pictures/Pacman/Controller20.png, id=458, 345.08925pt x 249.3315pt>
 File: pictures/Pacman/Controller20.png Graphic file (type png)
 <use pictures/Pacman/Controller20.png>
-Package pdftex.def Info: pictures/Pacman/Controller20.png  used on input line 5
-2.
-(pdftex.def)             Requested size: 293.32724pt x 211.93275pt.
-[16]
-Underfull \hbox (badness 10000) in paragraph at lines 62--65
+Package luatex.def Info: pictures/Pacman/Controller20.png  used on input line 53
+.
+(luatex.def)             Requested size: 345.0pt x 249.28522pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 63--66
 
  []
 
-<pictures/Pacman/safePaths.png, id=451, 377.0085pt x 436.029pt>
+<pictures/Pacman/safePaths.png, id=460, 377.0085pt x 436.029pt>
 File: pictures/Pacman/safePaths.png Graphic file (type png)
 <use pictures/Pacman/safePaths.png>
-Package pdftex.def Info: pictures/Pacman/safePaths.png  used on input line 71.
-(pdftex.def)             Requested size: 282.75568pt x 327.02094pt.
-<pictures/Pacman/Search.png, id=454, 577.55775pt x 316.18124pt>
+Package luatex.def Info: pictures/Pacman/safePaths.png  used on input line 72.
+(luatex.def)             Requested size: 282.75568pt x 327.02094pt.
+<pictures/Pacman/Search.png, id=463, 577.55775pt x 316.18124pt>
 File: pictures/Pacman/Search.png Graphic file (type png)
 <use pictures/Pacman/Search.png>
-Package pdftex.def Info: pictures/Pacman/Search.png  used on input line 78.
-(pdftex.def)             Requested size: 288.77817pt x 158.09023pt.
-[17 <./pictures/VisualizationPacmanSimple.png>]
-<pictures/Pacman/SearchSingle.png, id=461, 557.08125pt x 437.2335pt>
+Package luatex.def Info: pictures/Pacman/Search.png  used on input line 79.
+(luatex.def)             Requested size: 345.0pt x 188.87556pt.
+<pictures/Pacman/SearchSingle.png, id=464, 557.08125pt x 437.2335pt>
 File: pictures/Pacman/SearchSingle.png Graphic file (type png)
 <use pictures/Pacman/SearchSingle.png>
-Package pdftex.def Info: pictures/Pacman/SearchSingle.png  used on input line 8
-5.
-(pdftex.def)             Requested size: 306.39563pt x 240.47916pt.
-<pictures/Pacman/Cone.png, id=463, 324.46219pt x 402.75468pt>
+Package luatex.def Info: pictures/Pacman/SearchSingle.png  used on input line 86
+.
+(luatex.def)             Requested size: 345.0pt x 270.78174pt.
+[17]
+<pictures/Pacman/Cone.png, id=475, 324.46219pt x 402.75468pt>
 File: pictures/Pacman/Cone.png Graphic file (type png)
 <use pictures/Pacman/Cone.png>
-Package pdftex.def Info: pictures/Pacman/Cone.png  used on input line 101.
-(pdftex.def)             Requested size: 210.8979pt x 261.78743pt.
- [18 <./pictures/Pacman/Controller20.png>] [19 <./pictures/Pacman/safePaths.png
-> <./pictures/Pacman/Search.png>]
-<pictures/Pacman/ConeSearch.png, id=476, 787.743pt x 422.7795pt>
+Package luatex.def Info: pictures/Pacman/Cone.png  used on input line 102.
+(luatex.def)             Requested size: 345.0pt x 428.2761pt.
+ [18<./pictures/Pacman/Controller20.png>] [19<./pictures/Pacman/safePaths.png>]
+ [20<./pictures/Pacman/Search.png><./pictures/Pacman/SearchSingle.png>]
+[21<./pictures/Pacman/Cone.png>]
+<pictures/Pacman/ConeSearch.png, id=496, 787.743pt x 422.7795pt>
 File: pictures/Pacman/ConeSearch.png Graphic file (type png)
 <use pictures/Pacman/ConeSearch.png>
-Package pdftex.def Info: pictures/Pacman/ConeSearch.png  used on input line 116
-.
-(pdftex.def)             Requested size: 433.25998pt x 232.52943pt.
+Package luatex.def Info: pictures/Pacman/ConeSearch.png  used on input line 117.
 
-Overfull \hbox (88.25998pt too wide) in paragraph at lines 116--117
- [][] 
- []
-
-[20 <./pictures/Pacman/SearchSingle.png>] [21 <./pictures/Pacman/Cone.png> <./p
-ictures/Pacman/ConeSearch.png>]
-<pictures/Pacman/Decision.png, id=488, 457.71pt x 275.22826pt>
+(luatex.def)             Requested size: 345.0pt x 185.16556pt.
+<pictures/Pacman/Decision.png, id=498, 457.71pt x 275.22826pt>
 File: pictures/Pacman/Decision.png Graphic file (type png)
 <use pictures/Pacman/Decision.png>
-Package pdftex.def Info: pictures/Pacman/Decision.png  used on input line 133.
-(pdftex.def)             Requested size: 251.74129pt x 151.376pt.
-) (modelling-supermario.tex [22]
+Package luatex.def Info: pictures/Pacman/Decision.png  used on input line 134.
+(luatex.def)             Requested size: 345.0pt x 207.46219pt.
+) (./modelling-supermario.tex [22] [23<./pictures/Pacman/ConeSearch.png><./pictu
+res/Pacman/Decision.png>]
 Underfull \hbox (badness 10000) in paragraph at lines 6--8
 
  []
@@ -593,240 +653,167 @@ Underfull \hbox (badness 10000) in paragraph at lines 21--24
 
  []
 
-[23 <./pictures/Pacman/Decision.png>]
-<pictures/haller_supermariowrapper.PNG, id=501, 589.4522pt x 401.24907pt>
+<pictures/haller_supermariowrapper.PNG, id=513, 589.4522pt x 401.24907pt>
 File: pictures/haller_supermariowrapper.PNG Graphic file (type png)
 <use pictures/haller_supermariowrapper.PNG>
-Package pdftex.def Info: pictures/haller_supermariowrapper.PNG  used on input l
-ine 34.
-(pdftex.def)             Requested size: 294.72537pt x 200.62404pt.
-<pictures/haller_controller.PNG, id=502, 998.22937pt x 405.01312pt>
+Package luatex.def Info: pictures/haller_supermariowrapper.PNG  used on input li
+ne 34.
+(luatex.def)             Requested size: 345.0pt x 234.84914pt.
+[24] [25<./pictures/haller_supermariowrapper.PNG>]
+<pictures/haller_controller.PNG, id=542, 998.22937pt x 405.01312pt>
 File: pictures/haller_controller.PNG Graphic file (type png)
 <use pictures/haller_controller.PNG>
-Package pdftex.def Info: pictures/haller_controller.PNG  used on input line 64.
+Package luatex.def Info: pictures/haller_controller.PNG  used on input line 64.
+(luatex.def)             Requested size: 345.0pt x 139.97687pt.
 
-(pdftex.def)             Requested size: 499.11346pt x 202.50606pt.
-
-Overfull \hbox (154.11346pt too wide) in paragraph at lines 64--65
- [][] 
+Overfull \hbox (4.81001pt too wide) in paragraph at lines 69--70
+[]\TU/lmr/m/n/10 The con-troller used (Fig-ure []20[]) con-sists of five parts.
+ There are sub-controllers
  []
 
-
-Overfull \hbox (4.82455pt too wide) in paragraph at lines 69--70
-[]\OT1/cmr/m/n/10 The con-troller used (Fig-ure []20[]) con-sists of five parts
-. There are sub-controllers
- []
-
-<pictures/haller_enemycontroller.PNG, id=504, 904.1278pt x 654.94687pt>
+<pictures/haller_enemycontroller.PNG, id=544, 904.1278pt x 654.94687pt>
 File: pictures/haller_enemycontroller.PNG Graphic file (type png)
 <use pictures/haller_enemycontroller.PNG>
-Package pdftex.def Info: pictures/haller_enemycontroller.PNG  used on input lin
-e 75.
-(pdftex.def)             Requested size: 361.64471pt x 261.9741pt.
+Package luatex.def Info: pictures/haller_enemycontroller.PNG  used on input line
+ 75.
+(luatex.def)             Requested size: 361.64471pt x 261.9741pt.
 
 Overfull \hbox (16.64471pt too wide) in paragraph at lines 75--76
  [][] 
  []
 
-<pictures/haller_enemy.PNG, id=506, 228.855pt x 186.6975pt>
+<pictures/haller_enemy.PNG, id=546, 228.855pt x 186.6975pt>
 File: pictures/haller_enemy.PNG Graphic file (type png)
 <use pictures/haller_enemy.PNG>
-Package pdftex.def Info: pictures/haller_enemy.PNG  used on input line 84.
-(pdftex.def)             Requested size: 114.42722pt x 93.34851pt.
-<pictures/haller_enemystrategy.PNG, id=508, 341.02406pt x 371.13657pt>
+Package luatex.def Info: pictures/haller_enemy.PNG  used on input line 84.
+(luatex.def)             Requested size: 114.42722pt x 93.34851pt.
+<pictures/haller_enemystrategy.PNG, id=548, 341.02406pt x 371.13657pt>
 File: pictures/haller_enemystrategy.PNG Graphic file (type png)
 <use pictures/haller_enemystrategy.PNG>
-Package pdftex.def Info: pictures/haller_enemystrategy.PNG  used on input line 
-93.
-(pdftex.def)             Requested size: 136.4072pt x 148.45198pt.
-[24] [25 <./pictures/haller_supermariowrapper.PNG>] [26 <./pictures/haller_cont
-roller.PNG> <./pictures/haller_enemycontroller.PNG>] [27 <./pictures/haller_ene
-my.PNG> <./pictures/haller_enemystrategy.PNG>]
-<pictures/haller_obstaclestrategy.PNG, id=554, 739.26187pt x 594.72188pt>
+Package luatex.def Info: pictures/haller_enemystrategy.PNG  used on input line 9
+3.
+(luatex.def)             Requested size: 136.4072pt x 148.45198pt.
+[26<./pictures/haller_controller.PNG>] [27<./pictures/haller_enemycontroller.PNG
+><./pictures/haller_enemy.PNG>]
+<pictures/haller_obstaclestrategy.PNG, id=566, 739.26187pt x 594.72188pt>
 File: pictures/haller_obstaclestrategy.PNG Graphic file (type png)
 <use pictures/haller_obstaclestrategy.PNG>
-Package pdftex.def Info: pictures/haller_obstaclestrategy.PNG  used on input li
-ne 102.
-(pdftex.def)             Requested size: 295.69951pt x 237.88454pt.
-))) (evaluation.tex [28] [29 <./pictures/haller_obstaclestrategy.PNG>]
-Overfull \hbox (5.24954pt too wide) in paragraph at lines 20--21
-[]\OT1/cmr/m/n/10 The on-lineIDE com-ing with the Em-bed-ded-Mon-tiArc-Stu-dio 
-is pow-er-ful enough
+Package luatex.def Info: pictures/haller_obstaclestrategy.PNG  used on input lin
+e 102.
+(luatex.def)             Requested size: 345.0pt x 277.54103pt.
+))) (./evaluation.tex [28<./pictures/haller_enemystrategy.PNG>] [29<./pictures/h
+aller_obstaclestrategy.PNG>] [30]
+Overfull \hbox (5.29887pt too wide) in paragraph at lines 20--21
+[]\TU/lmr/m/n/10 The on-lineIDE com-ing with the Em-bed-ded-Mon-tiArc-Stu-dio i
+s pow-er-ful enough
  []
 
-) (conclusion.tex) [30] (app-pacman-ema-code.tex
-<pictures/Pacman/heithoff_pacmanoutlineSmall.PNG, id=570, 399.29175pt x 313.17p
-t>
+) (./conclusion.tex) [31] (./app-pacman-ema-code.tex
+<pictures/Pacman/heithoff_pacmanoutlineSmall.PNG, id=589, 399.29175pt x 313.17pt
+>
 File: pictures/Pacman/heithoff_pacmanoutlineSmall.PNG Graphic file (type png)
 <use pictures/Pacman/heithoff_pacmanoutlineSmall.PNG>
-Package pdftex.def Info: pictures/Pacman/heithoff_pacmanoutlineSmall.PNG  used 
-on input line 3.
-(pdftex.def)             Requested size: 399.29077pt x 313.16922pt.
-
-Overfull \hbox (54.29077pt too wide) in paragraph at lines 3--4
- [][] 
- []
-
-(model/pacman/PacManWrapper.emam) (model/pacman/heithoff2/Controller.emam)
-
-LaTeX Warning: Float too large for page by 117.35555pt on input line 9.
-
-(model/pacman/heithoff2/NormalizePosition.emam)
-(model/pacman/heithoff2/BFS/BFSearch.emam)
-
-LaTeX Warning: Float too large for page by 1437.35555pt on input line 11.
-
-(model/pacman/heithoff2/BFS/BFSSingle.emam
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 2.
-)
-
-LaTeX Warning: Float too large for page by 58.3546pt on input line 12.
-
-(model/pacman/heithoff2/BFS/EndSafe.emam)
-
-LaTeX Warning: Float too large for page by 33.35555pt on input line 13.
-
-(model/pacman/heithoff2/BFS/Paths.emam)
-
-LaTeX Warning: Float too large for page by 96.35454pt on input line 14.
-
-(model/pacman/heithoff2/BFS/StartBottom.emam)
-(model/pacman/heithoff2/BFS/StartValues.emam)
-(model/pacman/heithoff2/BFS/single/CalcNewPosition.emam
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 36.
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\omlcmr.fd"
-File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `OML/cmr/bx/n' in size <10> not available
-(Font)              Font shape `OML/cmm/b/it' tried instead on input line 36.
-)
-
-LaTeX Warning: Float too large for page by 117.35555pt on input line 17.
-
-(model/pacman/heithoff2/BFS/single/ControlFlow.emam)
-(model/pacman/heithoff2/BFS/single/ReenterMap.emam
-LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 20.
-)
-(model/pacman/heithoff2/BFS/single/SafePosition.emam)
-(model/pacman/heithoff2/BFS/single/SearchFinished.emam)
-(model/pacman/heithoff2/coneSearch/CombineValues.emam)
-(model/pacman/heithoff2/coneSearch/ConeSearches.emam)
-
-LaTeX Warning: Float too large for page by 633.35555pt on input line 23.
-
-(model/pacman/heithoff2/coneSearch/EnhanceCoinValue.emam)
-(model/pacman/heithoff2/coneSearch/coinSearch/CoinWeights.emam)
-(model/pacman/heithoff2/coneSearch/coinSearch/SearchCoinsBottom.emam)
-(model/pacman/heithoff2/coneSearch/enemySearch/EnemyWeights.emam)
-(model/pacman/heithoff2/coneSearch/enemySearch/SearchEnemiesBottom.emam)
-
-LaTeX Warning: Float too large for page by 33.35555pt on input line 28.
-
-(model/pacman/heithoff2/decision/CompareValues.emam
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <7> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 7.
-LaTeX Font Info:    Font shape `OML/cmr/bx/n' in size <7> not available
-(Font)              Font shape `OML/cmm/b/it' tried instead on input line 28.
-)
-
-LaTeX Warning: Float too large for page by 61.35555pt on input line 30.
-
-(model/pacman/heithoff2/decision/Decision.emam)
-
-LaTeX Warning: Float too large for page by 117.35555pt on input line 31.
-
-(model/pacman/heithoff2/decision/NextIntersection.emam)
-(model/pacman/heithoff2/decision/PossibleWays.emam)
-
-LaTeX Warning: Float too large for page by 45.35555pt on input line 33.
-
-(model/pacman/heithoff2/decision/VerifyDirection.emam)
-
-LaTeX Warning: Float too large for page by 93.35555pt on input line 34.
-
-) (app-pacman-stream-code.tex
-(model/pacman/heithoff2/decision/TestCompareValues.stream)
-(PMStream/Scenarien/01/Test1.stream) (PMStream/Scenarien/02/Test2.stream)
-(PMStream/Scenarien/03/Test3.stream) (PMStream/Scenarien/04/Test4.stream)
-(PMStream/Scenarien/05/Test5.stream)) [31 <./pictures/Pacman/heithoff_pacmanout
-lineSmall.PNG>] [32] [33] [34] [35] [36] [37] [38] [39] [40] [41] [42] [43]
-[44] [45] [46] [47] [48] [49] [50] [51] [52] [53] [54] [55] [56] [57] [58]
-[59] [60] [61] (app-supermario-ema-code.tex
-<pictures/haller_mariooutline.PNG, id=1977, 215.30438pt x 367.3725pt>
+Package luatex.def Info: pictures/Pacman/heithoff_pacmanoutlineSmall.PNG  used o
+n input line 3.
+(luatex.def)             Requested size: 345.0pt x 270.59204pt.
+ [32<./pictures/Pacman/heithoff_pacmanoutlineSmall.PNG>] (./model/pacman/PacMan
+Wrapper.emam) [33]
+(./model/pacman/heithoff2/Controller.emam [34]) [35]
+(./model/pacman/heithoff2/NormalizePosition.emam) [36]
+(./model/pacman/heithoff2/BFS/BFSearch.emam [37] [38] [39]) [40]
+(./model/pacman/heithoff2/BFS/BFSSingle.emam [41]) [42]
+(./model/pacman/heithoff2/BFS/EndSafe.emam [43]) [44]
+(./model/pacman/heithoff2/BFS/Paths.emam [45]) [46]
+(./model/pacman/heithoff2/BFS/StartBottom.emam) [47]
+(./model/pacman/heithoff2/BFS/StartValues.emam) [48]
+(./model/pacman/heithoff2/BFS/single/CalcNewPosition.emam [49]) [50]
+(./model/pacman/heithoff2/BFS/single/ControlFlow.emam) [51]
+(./model/pacman/heithoff2/BFS/single/ReenterMap.emam) [52]
+(./model/pacman/heithoff2/BFS/single/SafePosition.emam) [53]
+(./model/pacman/heithoff2/BFS/single/SearchFinished.emam) [54]
+(./model/pacman/heithoff2/coneSearch/CombineValues.emam) [55]
+(./model/pacman/heithoff2/coneSearch/ConeSearches.emam [56] [57]) [58]
+(./model/pacman/heithoff2/coneSearch/EnhanceCoinValue.emam) [59]
+(./model/pacman/heithoff2/coneSearch/coinSearch/CoinWeights.emam) [60]
+(./model/pacman/heithoff2/coneSearch/coinSearch/SearchCoinsBottom.emam)
+[61] (./model/pacman/heithoff2/coneSearch/enemySearch/EnemyWeights.emam)
+[62] (./model/pacman/heithoff2/coneSearch/enemySearch/SearchEnemiesBottom.emam
+[63]) [64] (./model/pacman/heithoff2/decision/CompareValues.emam [65]) [66]
+(./model/pacman/heithoff2/decision/Decision.emam [67]) [68]
+(./model/pacman/heithoff2/decision/NextIntersection.emam) [69]
+(./model/pacman/heithoff2/decision/PossibleWays.emam [70]) [71]
+(./model/pacman/heithoff2/decision/VerifyDirection.emam [72])) [73]
+(./app-pacman-stream-code.tex
+(./model/pacman/heithoff2/decision/TestCompareValues.stream) [74]
+(./PMStream/Scenarien/01/Test1.stream) [75]
+(./PMStream/Scenarien/02/Test2.stream) [76]
+(./PMStream/Scenarien/03/Test3.stream) [77]
+(./PMStream/Scenarien/04/Test4.stream) [78]
+(./PMStream/Scenarien/05/Test5.stream)) [79] (./app-supermario-ema-code.tex
+<pictures/haller_mariooutline.PNG, id=2053, 215.30438pt x 367.3725pt>
 File: pictures/haller_mariooutline.PNG Graphic file (type png)
 <use pictures/haller_mariooutline.PNG>
-Package pdftex.def Info: pictures/haller_mariooutline.PNG  used on input line 3
-.
-(pdftex.def)             Requested size: 215.30385pt x 367.37158pt.
+Package luatex.def Info: pictures/haller_mariooutline.PNG  used on input line 3.
 
-(model/supermario/SuperMarioWrapper.emam)
-(model/supermario/haller/Controller.emam)
+(luatex.def)             Requested size: 215.30385pt x 367.37158pt.
 
-LaTeX Warning: Float too large for page by 105.35555pt on input line 9.
+[80
 
-(model/supermario/haller/EnemyController.emam)
-(model/supermario/haller/ObstacleController.emam)
-(model/supermario/haller/actuator/GeneralStrategy.emam)
-(model/supermario/haller/actuator/EnemyStrategy.emam)
-(model/supermario/haller/actuator/ObstacleStrategy.emam)
-(model/supermario/haller/actuator/JumpFilter.emam)
-(model/supermario/haller/environment/Enemy.emam)
-(model/supermario/haller/environment/EnemySelector.emam)
-(model/supermario/haller/environment/EnemyWatcher.emam)
-(model/supermario/haller/environment/HoleWatcher.emam)
-(model/supermario/haller/environment/Obstacle.emam)
-(model/supermario/haller/environment/ObstacleSelector.emam)
-(model/supermario/haller/environment/ObstacleWatcher.emam)
-(model/supermario/haller/tools/GetVelocity.emam)
-(model/supermario/haller/tools/GetNearest.emam
-LaTeX Font Info:    Font shape `OMS/cmr/m/it' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 15.
-)) [62
+<./pictures/haller_mariooutline.PNG>]
+(./model/supermario/SuperMarioWrapper.emam) [81]
+(./model/supermario/haller/Controller.emam [82]) [83]
+(./model/supermario/haller/EnemyController.emam) [84]
+(./model/supermario/haller/ObstacleController.emam) [85]
+(./model/supermario/haller/actuator/GeneralStrategy.emam) [86]
+(./model/supermario/haller/actuator/EnemyStrategy.emam) [87]
+(./model/supermario/haller/actuator/ObstacleStrategy.emam) [88]
+(./model/supermario/haller/actuator/JumpFilter.emam) [89]
+(./model/supermario/haller/environment/Enemy.emam) [90]
+(./model/supermario/haller/environment/EnemySelector.emam) [91]
+(./model/supermario/haller/environment/EnemyWatcher.emam) [92]
+(./model/supermario/haller/environment/HoleWatcher.emam) [93]
+(./model/supermario/haller/environment/Obstacle.emam) [94]
+(./model/supermario/haller/environment/ObstacleSelector.emam) [95]
+(./model/supermario/haller/environment/ObstacleWatcher.emam) [96]
+(./model/supermario/haller/tools/GetVelocity.emam) [97]
+(./model/supermario/haller/tools/GetNearest.emam)) [98]
+(./app-supermario-stream-code.tex [99
 
- <./pictures/haller_mariooutline.PNG>] [63] [64] [65] [66] [67] [68] [69] [70] 
-[71] [72] [73] [74]
-[75] [76] (app-supermario-stream-code.tex) [77
-
-] [78] (base.bbl
-Underfull \hbox (badness 1024) in paragraph at lines 63--68
-\OT1/cmr/m/n/10 2017[], Aach-ener Informatik-Berichte, Soft-ware En-gi-neer-ing
-, Band 32,
+]) [100] (./base.bbl
+Underfull \hbox (badness 1024) in paragraph at lines 57--62
+\TU/lmr/m/n/10 2017[], Aach-ener Informatik-Berichte, Soft-ware En-gi-neer-ing,
+ Band 32,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--68
-\OT1/cmr/m/n/10 URL []$\OT1/cmtt/m/n/10 http : / / www . se-[]rwth . de / phdth
-eses /
+Underfull \hbox (badness 10000) in paragraph at lines 57--62
+\TU/lmr/m/n/10 URL []$\TU/lmtt/m/n/10 http://www.se-[]rwth.de/phdtheses/
  []
 
 
-Underfull \hbox (badness 1005) in paragraph at lines 70--76
-[]\OT1/cmr/m/n/10 E. Kus-menko, A. Roth, B. Rumpe, M. von Wenck-stern, []Mod-el
--ing
+Underfull \hbox (badness 1028) in paragraph at lines 64--70
+[]\TU/lmr/m/n/10 E. Kus-menko, A. Roth, B. Rumpe, M. von Wenck-stern, []Mod-el-
+ing
  []
 
 
-Underfull \hbox (badness 1067) in paragraph at lines 70--76
-\OT1/cmr/m/n/10 Mod-elling Foun-da-tions and Ap-pli-ca-tions (ECMFA'17), LNCS 1
-0376,
+Underfull \hbox (badness 1062) in paragraph at lines 64--70
+\TU/lmr/m/n/10 Mod-elling Foun-da-tions and Ap-pli-ca-tions (ECMFA’17), LNCS 
+10376,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 70--76
-\OT1/cmr/m/n/10 URL []$\OT1/cmtt/m/n/10 http : / / www . se-[]rwth . de / publi
-cations /
+Underfull \hbox (badness 10000) in paragraph at lines 64--70
+\TU/lmr/m/n/10 URL []$\TU/lmtt/m/n/10 http://www.se-[]rwth.de/publications/
  []
 
-[79
+[101
 
 ])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 123.
- [80]
+ [102]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 123.
- (base.aux)
+ (./base.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 123.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 123.
 Package rerunfilecheck Info: File `base.out' has not changed.
@@ -836,35 +823,35 @@ Package rerunfilecheck Info: File `base.out' has not changed.
 LaTeX Warning: There were multiply-defined labels.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 123.
- ) 
-Here is how much of TeX's memory you used:
- 10651 strings out of 492976
- 160398 string characters out of 3135991
- 10247220 words of memory out of 13000000
- 12043 multiletter control sequences out of 15000+200000
- 9965 words of font info for 34 fonts, out of 3000000 for 9000
- 1141 hyphenation exceptions out of 8191
- 32i,7n,40p,1109b,1427s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/Program Fil
-es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
-1/public/amsfonts/cmextra/cmmib7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
-fonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
-cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><
-C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/
-MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmti7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/cm/cmti8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-tt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/zapfding/uzdr.pfb>
-Output written on base.pdf (80 pages, 1312548 bytes).
-PDF statistics:
- 3167 PDF objects out of 3580 (max. 8388607)
- 2135 named destinations out of 2487 (max. 500000)
- 436 words of extra memory for PDF output out of 10000 (max. 10000000)
+)
+
+Here is how much of LuaTeX's memory you used:
+ 11295 strings out of 494447
+ 476957,266212 words of node,token memory allocated
+ 481 words of node memory still in use:
+   2 hlist, 1 vlist, 1 rule, 3 glue, 11 attribute, 54 glue_spec, 11 attribute_li
+st, 1 write, 7 pdf_action nodes
+   avail lists: 1:1,2:5804,3:311,4:41,5:10253,6:63,7:25185,8:5991,9:10768,10:40,
+11:973
+ 12191 multiletter control sequences out of 65536+200000
+ 41 fonts using 3029431 bytes
+ 33i,7n,40p,1144b,854s stack positions out of 5000i,500n,10000p,200000b,50000s
+<c:/users/vonwenckstern/appdata/local/programs/miktex 2.9/fonts/opentype/public/
+lm/lmroman8-regular.otf><c:/users/vonwenckstern/appdata/local/programs/miktex 2.
+9/fonts/opentype/public/lm/lmmono10-regular.otf><c:/users/vonwenckstern/appdata/
+local/programs/miktex 2.9/fonts/opentype/public/lm/lmsans8-regular.otf><c:/users
+/vonwenckstern/appdata/local/programs/miktex 2.9/fonts/opentype/public/lm/lmroma
+n10-italic.otf><c:/users/vonwenckstern/appdata/local/programs/miktex 2.9/fonts/o
+pentype/public/lm/lmroman10-bold.otf><c:/users/vonwenckstern/appdata/local/progr
+ams/miktex 2.9/fonts/opentype/public/lm/lmroman8-italic.otf><c:/users/vonwenckst
+ern/appdata/local/programs/miktex 2.9/fonts/opentype/public/lm/lmroman10-regular
+.otf><c:/users/vonwenckstern/appdata/local/programs/miktex 2.9/fonts/opentype/pu
+blic/lm/lmroman12-regular.otf><C:/Users/vonwenckstern/AppData/Local/Programs/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/vonwenckstern/AppData
+/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on base.pdf (102 pages, 1130090 bytes).
+
+PDF statistics: 2895 PDF objects out of 2984 (max. 8388607)
+ 2156 named destinations out of 2487 (max. 131072)
+ 281 words of extra memory for PDF output out of 10000 (max. 100000000)
 

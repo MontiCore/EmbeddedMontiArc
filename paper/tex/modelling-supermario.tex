@@ -31,12 +31,12 @@ The presented model visualizations are generated from the EmbeddedMontiArc Studi
 The first and most abstract entity modeled was the Supermario wrapper which is closely related to the outputs and inputs of the simulator. Therefore it receives all necessary values as input with the aim to forward them to the actual controller and its corresponding sub-components. After computation the results of the controller are handed back into the wrapper, which forwards the data to the simulator. Figure \ref{fig:marioWrapper} shows the graphical representation, while listing \ref{lst:marioWrapperInterface} shows the actual EMA interface definition.
 \begin{figure}
 	\centering
-	\includegraphics[scale=0.5]{pictures/haller_supermariowrapper.PNG}
+	\includegraphics[width=\textwidth]{pictures/haller_supermariowrapper.PNG}
 	\caption{Visualisation of the Supermario wrapper model}
 	\label{fig:marioWrapper}
 \end{figure}
 
-\begin{lstlisting}[label=lst:marioWrapperInterface, caption=Interface of the Supermario Wrapper, language=EMAM]
+\begin{lstlisting}[float,label=lst:marioWrapperInterface, caption=Interface of the Supermario Wrapper, language=EMAM]
 component SuperMarioWrapper {
     ports   
         in Z^{1,2} marioPosition,
@@ -48,7 +48,7 @@ component SuperMarioWrapper {
         in Z^{5,2} nextLootCrates,
         in Q tickSize,
         in Z marioResting,
-        out Z(-1 : 1 : 1) marioDirection,
+        out (-1 : 1 : 1) marioDirection,
         out Z marioJump,
         out Z marioDown,
         out Z marioShoot;
@@ -61,7 +61,7 @@ The data type for most values is integer, indicated by a "Z" in the code. This i
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=0.5]{pictures/haller_controller.PNG}
+	\includegraphics[width=\textwidth]{pictures/haller_controller.PNG}
 	\caption{Visualization of the Supermario controller model}
 	\label{fig:marioController}
 \end{figure}
@@ -99,7 +99,7 @@ The enemy strategy (Figure \ref{fig:marioEnemyStrategy}) uses the distances and 
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=0.4]{pictures/haller_obstaclestrategy.PNG}
+	\includegraphics[width=\textwidth]{pictures/haller_obstaclestrategy.PNG}
 	\caption{Visualization of the Supermario enemy strategy model}
 	\label{fig:marioObstacleStrategy}
 \end{figure}

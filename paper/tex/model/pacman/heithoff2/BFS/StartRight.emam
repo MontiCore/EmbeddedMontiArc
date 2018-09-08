@@ -2,10 +2,10 @@ package de.rwth.pacman.heithoff2.BFS;
 
 component StartRight{
     ports
-        in Q(-1m: 19m) pacManX,
-        in Q(0m: 22m) pacManY,
-        out Q(-1m: 19m) startX,
-        out Q(0m: 22m) startY,
+        in (-1m: 19m) pacManX,
+        in (0m: 22m) pacManY,
+        out (-1m: 19m) startX,
+        out (0m: 22m) startY,
         out Z startD;
         
     implementation Math {

@@ -9,7 +9,7 @@ component EnemyController {
     ports
         in Z^{5,2} nextEnemyPositions,
 
-        out Z(-1 : 1 : 1) dirAdvice,
+        out (-1 : 1 : 1) dirAdvice,
         out Z jumpAdvice,
         out Z shootAdvice,
         out Z crouchAdvice;

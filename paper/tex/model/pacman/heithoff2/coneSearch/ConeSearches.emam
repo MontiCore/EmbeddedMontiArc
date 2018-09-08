@@ -8,11 +8,11 @@ import de.rwth.pacman.heithoff2.coneSearch.enemySearch.*;
 component ConeSearches {
     ports
       in Z^{22,19} map,
-      in Q(-1m: 19m) currentX,
-      in Q(0m: 22m) currentY,
-      in Q(-1m: 19m) ghostX[4],
-      in Q(0m: 22m) ghostY[4],
-      in Z(0 : 1 : 3) ghostDirection[4],
+      in (-1m: 19m) currentX,
+      in (0m: 22m) currentY,
+      in (-1m: 19m) ghostX[4],
+      in (0m: 22m) ghostY[4],
+      in (0 : 1 : 3) ghostDirection[4],
       in B ghostEatable[4],
       
       out Z topValue,

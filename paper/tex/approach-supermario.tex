@@ -32,7 +32,7 @@ Figure \ref{fig:marioenemies} shows two situations. In the first one, mario jump
 In Figure \ref{fig:mariohole} the player is seen standing next to holes in the ground. In the first picture he is on the ground level, in the second he is standing on an obstacle.
 
 The stream tests derived from the scenarios are introduced in the following.
-\begin{lstlisting}[label=lst:enemywatchertest_1, caption=Enemy watcher stream test]
+\begin{lstlisting}[float,label=lst:enemywatchertest_1, caption=Enemy watcher stream test]
 package de.rwth.supermario.haller.environment;
 
 stream Env_EnemyWatcher_Evade for EnemyWatcher {
@@ -48,7 +48,7 @@ stream Env_EnemyWatcher_Evade for EnemyWatcher {
 If a enemy gets closer than 80 pixels (two blocks) and is on the same height as the player, the player has to jump in order to evade the enemy (listing \ref{lst:enemywatchertest_1}). The units for the EnemyDistX and EnemyDistY values are pixels, while the velocities are given in pixels per time frame.
 The output values are of type boolean.
 
-\begin{lstlisting}[label=lst:enemywatchertest_2, caption=Enemy watcher stream test]
+\begin{lstlisting}[float,label=lst:enemywatchertest_2, caption=Enemy watcher stream test]
 package de.rwth.supermario.haller.environment;
 
 stream Env_EnemyWatcher_FromAbove for EnemyWatcher {    
@@ -66,7 +66,7 @@ The stream in listing \ref{lst:enemywatchertest_2} covers the case when the play
 
 
 
-\begin{lstlisting}[label=lst:enemywatchertest_3, caption=Enemy watcher stream test]
+\begin{lstlisting}[float,label=lst:enemywatchertest_3, caption=Enemy watcher stream test]
 package de.rwth.supermario.haller.environment;
 
 stream Env_EnemyWatcher_FromAbove for EnemyWatcher {   
@@ -83,7 +83,7 @@ If there is no enemy near the player, the enemy watcher object shall give no jum
 
 
 
-\begin{lstlisting}[label=lst:obstaclewatchertest, caption=Obstacle watcher stream test]
+\begin{lstlisting}[float,label=lst:obstaclewatchertest, caption=Obstacle watcher stream test]
 package de.rwth.supermario.haller.environment;
 stream Env_ObstacleWatcher for ObstacleWatcher {
   ObstacleDistX: 200 tick 100 tick 75 tick 50 tick 25 tick  0;
@@ -94,7 +94,7 @@ stream Env_ObstacleWatcher for ObstacleWatcher {
 \end{lstlisting}
 If a obstacle is in front of the player, he shall jump until he has passed it(listing \ref{lst:obstaclewatchertest}). The distances are given in pixels, and the obstacle in this text is of 70px height.
 
-\begin{lstlisting}[label=lst:holewatchertest, caption=Hole watcher stream test]
+\begin{lstlisting}[float,label=lst:holewatchertest, caption=Hole watcher stream test]
 package de.rwth.supermario.haller.environment;
 stream Env_ObstacleWatcher for ObstacleWatcher {
     holeDistance: 200 tick 100 tick 10 tick 0 tick 1200;

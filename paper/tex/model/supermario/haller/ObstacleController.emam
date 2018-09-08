@@ -10,7 +10,7 @@ component ObstacleController {
         in Z^{5,2} nextObstaclePositions,
         in Z holeDistance,
         
-        out Z(-1 : 1 : 1) dirAdvice,
+        out (-1 : 1 : 1) dirAdvice,
         out Z jumpAdvice,
         out Z shootAdvice,
         out Z crouchAdvice;

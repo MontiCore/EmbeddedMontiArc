@@ -2,20 +2,20 @@ package de.rwth.pacman.heithoff2.BFS.single;
 
 component ControlFlow {
     ports
-      in Q(0m: 20m) currentX,
-      in Q(1m: 23m) currentY,
+      in (0m: 20m) currentX,
+      in (1m: 23m) currentY,
       in B searchFinished,
       in B safeFromSearchFinished,
       in B safeFoundFromSearchFinished,
       in Z oldDirection,
       in B positionIsSafe,
       in B safeFoundFromNewPosition,
-      in Q(0m: 20m) newXFromNewPosition,
-      in Q(1m: 23m) newYFromNewPosition,
+      in (0m: 20m) newXFromNewPosition,
+      in (1m: 23m) newYFromNewPosition,
       in Z newDirectionFromNewPosition,
       
-      out Q(0m: 20m) newX,
-      out Q(1m: 23m) newY,
+      out (0m: 20m) newX,
+      out (1m: 23m) newY,
       out B safeFound,
       out B safe,
       out Z newDirection;

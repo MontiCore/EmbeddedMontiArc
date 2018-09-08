@@ -2,10 +2,10 @@ package de.rwth.pacman.heithoff2.coneSearch.enemySearch;
 
 component SearchEnemiesLeft {
     ports
-      in Q(-1m: 19m) currentX,
-      in Q(0m: 22m) currentY,
-      in Q(-1m: 19m) ghostX[4],
-      in Q(0m: 22m) ghostY[4],
+      in (-1m: 19m) currentX,
+      in (0m: 22m) currentY,
+      in (-1m: 19m) ghostX[4],
+      in (0m: 22m) ghostY[4],
       in Z ghostDirection[4],
       in B ghostEatable[4],
       in Z ghostNormalWeight,

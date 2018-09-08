@@ -13,7 +13,7 @@ component SuperMarioWrapper {
         in Z^{5,2} nextLootCrates,
         in Q tickSize,
         in Z marioResting,
-        out Z(-1 : 1 : 1) marioDirection,
+        out (-1 : 1 : 1) marioDirection,
         out Z marioJump,
         out Z marioDown,
         out Z marioShoot;

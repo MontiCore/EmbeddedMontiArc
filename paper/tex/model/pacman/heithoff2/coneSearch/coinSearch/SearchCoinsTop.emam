@@ -3,8 +3,8 @@ package de.rwth.pacman.heithoff2.coneSearch.coinSearch;
 component SearchCoinsTop {
     ports
       in Z^{22,19} map,
-      in Q(-1m: 19m) currentX,
-      in Q(0m: 22m) currentY,
+      in (-1m: 19m) currentX,
+      in (0m: 22m) currentY,
       in Z buiscuitWeight,
       in Z coinWeight,
       

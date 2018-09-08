@@ -2,27 +2,28 @@
 In the following the model for the Pacman controller is presented. The goal is to collect as many biscuits and coins as possible and to avoid the ghosts. After introducing the interface which is used here two controllers for Pacman are shown. There is a simple controller which was used in the early stages of the IDE integration to test everything and then a more complex controller that can actually survive a few levels.
 
 \subsubsection{Interface}
-\begin{figure}
+\begin{figure}[t!]
 	\caption{Visualization of the Pacman wrapper}
 	\label{fig:visPacmanWrapper}
 	\centering
 	\includegraphics[scale=0.7]{pictures/VisualizationPacmanWrapper.png}
-\end{figure}
+
 \begin{lstlisting}[label=lst:pacmanWrapper, caption=Interface of the Pacman Wrapper, language=EMAM]
 ports 
-	in Z(0cm: 180cm) ghostX[4],
-	in Z(0cm: 210cm) ghostY[4],
-	in Z(0 : 1 : 3) ghostDirection[4],
+	in (0cm: 180cm) ghostX[4],
+	in (0cm: 210cm) ghostY[4],
+	in (0 : 1 : 3) ghostDirection[4],
 	in B ghostEatable[4],
 	in B ghostEaten[4],
-	in Z(0cm: 180cm) pacManX,
-	in Z(0cm: 210cm) pacManY,
+	in (0cm: 180cm) pacManX,
+	in (0cm: 210cm) pacManY,
 	in B pacManEaten,
-	in Z(0:oo) pacManLives,
-	in Z(0:oo) pacManScore,
+	in (0:oo) pacManLives,
+	in (0:oo) pacManScore,
 	in Z^{22,19} map,
-	out Z(0 : 1 : 3) newPacmanDirection;
+	out (0 : 1 : 3) newPacmanDirection;
 \end{lstlisting}
+\end{figure}
 The project's main component is PacmanWrapper. The main task of the wrapper is to provide a shared interface. Listing \ref{lst:pacmanWrapper} shows the input and output ports. As for the inputs, the ghosts' and the Pacman's position are given, the direction the ghosts are facing, information about the ghosts' vulnerability, as well as the current map. The only output port is the new direction the Pacman should walk. \newline
 The wrapper also holds the current controller. This way the controller is easily exchangeable without changing any of the code needed for the ide. All input ports of the wrapper are connected to the corresponding ports of the controller and the output port of the controller is also connected to the output port of the wrapper. \newline
 To connect the web assembly of the main component with the Pacman emulator a new JavaScript file was created. Its main functionalities is to extract the needed informations out of the emulator, pass it to the web assembly, execute it and then give the output back to the emulator. In order to be able to extract needed information out of the emulator some modifications were needed. In its original state the emulator did not offer access to the current game object, thus the \textit{Pacman} class was extended by these functions. Due to the fact Pacman is a playable game, its input is given as a key-press-event in JavaScript. So the output of the web assembly, which is a number from 0 to 3, is mapped to a corresponding key-press-event which then gets triggered. The emulator is running with 30 frames per second, which also leads to 30 iterations of the game per second. Because the emulator is running asynchronously the component is executed at a double of that rate in order to track every position change.
@@ -32,7 +33,7 @@ To connect the web assembly of the main component with the Pacman emulator a new
 	\caption{Visualization of the Pacman controller (simple)}
 	\label{fig:visPacmanSimple}
 	\centering
-	\includegraphics[scale=0.7]{pictures/VisualizationPacmanSimple.png}
+	\includegraphics[width=\textwidth]{pictures/VisualizationPacmanSimple.png}
 \end{figure}
 In figure \ref{fig:visPacmanSimple} the design of a simple controller is shown. It has four subcomponents:
 \begin{itemize}
@@ -49,7 +50,7 @@ This design is very simple and not very successful. It shows the concept of C\&C
 	\caption{Visualization of the Pacman controller (complex)}
 	\label{fig:visPacman20}
 	\centering
-	\includegraphics[scale=0.85]{pictures/Pacman/Controller20.png}
+	\includegraphics[width=\textwidth]{pictures/Pacman/Controller20.png}
 \end{figure}
 
 The more complex Pacman controller is shown in figure \ref{fig:visPacman20}.
@@ -75,14 +76,14 @@ In figure \ref{fig:safePaths} the \textit{safePaths} component is shown. It cont
 	\caption{Visualization of one Search}
 	\label{fig:search}
 	\centering
-	\includegraphics[scale=0.5]{pictures/Pacman/Search.png}
+	\includegraphics[width=\textwidth]{pictures/Pacman/Search.png}
 \end{figure}
 
 \begin{figure}
 	\caption{Visualization of one Single Search Component}
 	\label{fig:searchSingle}
 	\centering
-	\includegraphics[scale=0.55]{pictures/Pacman/SearchSingle.png}
+	\includegraphics[width=\textwidth]{pictures/Pacman/SearchSingle.png}
 \end{figure}
 The task of one of the 10 subcomponents is again split up into 5 subtasks (see fig. \ref{fig:searchSingle}):
 \begin{itemize}
@@ -98,7 +99,7 @@ The task of one of the 10 subcomponents is again split up into 5 subtasks (see f
 	\caption{Visualization of Cone Search}
 	\label{fig:cone}
 	\centering
-	\includegraphics[scale=0.65]{pictures/Pacman/Cone.png}
+	\includegraphics[width=\textwidth]{pictures/Pacman/Cone.png}
 \end{figure}
 The \textit{ConeSearch} component searches through the map in cones (see figure \ref{fig:cone}). This way each direction can be given a value which increases when biscuits and coins are found and decreases when ghosts are found. The following weights are used in the most current version:
 \begin{itemize}
@@ -113,7 +114,7 @@ The values shrink with the distance to Pacman. The biscuit/coin value shrink squ
 	\caption{Visualization of Cone Search}
 	\label{fig:coneSearch}
 	\centering
-	\includegraphics[scale=0.55]{pictures/Pacman/ConeSearch.png}
+	\includegraphics[width=\textwidth]{pictures/Pacman/ConeSearch.png}
 \end{figure}
 
 In the visualization of the component (see fig. \ref{fig:coneSearch}) one can see the different kind of subcomponents:
@@ -130,7 +131,7 @@ In the visualization of the component (see fig. \ref{fig:coneSearch}) one can se
 	\caption{Visualization of Cone Search}
 	\label{fig:decision}
 	\centering
-	\includegraphics[scale=0.55]{pictures/Pacman/Decision.png}
+	\includegraphics[width=\textwidth]{pictures/Pacman/Decision.png}
 \end{figure}
 The \textit{decision} component gets all data from \textit{safePaths} and \textit{coneSearch} and makes a final decision on where to go. Beside the maximum value for a direction and whether it is safe or not, the decision is based on a few additional information. E.g. the top direction has the maximum value from the cone searches but it is blocked by a wall or not safe. Then another direction has to be chosen. Here an orthogonal direction (left or right) is preferred to stay near to the desired one (top). In addition, to prevent stuttering a new path is only chosen if the current one is not safe anymore or an intersection is reached.
 In fig. \ref{fig:decision} one can see the four subcomponents of \textit{safePaths}:

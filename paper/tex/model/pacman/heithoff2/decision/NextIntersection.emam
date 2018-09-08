@@ -4,8 +4,8 @@ package de.rwth.pacman.heithoff2.decision;
 
 component NextIntersection {
     ports
-      in Q(-1m: 19m) pacManX,
-      in Q(0m: 22m) pacManY,
+      in (-1m: 19m) pacManX,
+      in (0m: 22m) pacManY,
       in Z^{22,19} map,
       
       out B interSectionReached;

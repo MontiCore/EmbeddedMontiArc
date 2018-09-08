@@ -2,15 +2,15 @@ package de.rwth.pacman.heithoff2.BFS.single;
 
 component CalcNewPosition {
     ports
-      in Q(0m: 20m) currentX,
-      in Q(1m: 23m) currentY,
-      in Q(0m: 20m) oldX,
-      in Q(1m: 23m) oldY,
+      in (0m: 20m) currentX,
+      in (1m: 23m) currentY,
+      in (0m: 20m) oldX,
+      in (1m: 23m) oldY,
       in Z^{22,19} map,
       in B searchFinished,
       in B positionIsSafe,
-      out Q(0m: 20m) newX,
-      out Q(1m: 23m) newY,
+      out (0m: 20m) newX,
+      out (1m: 23m) newY,
       out Z newDirection,
       out B safeFound;
     
