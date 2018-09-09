@@ -511,7 +511,7 @@ public class SimulateVehicleTest {
     @Test
     public void firstTest(){
         Simulator sim = Simulator.getSharedInstance();
-        sim.registerLoopObserver(new SimulationPlotter2D());
+        //sim.registerLoopObserver(new SimulationPlotter2D());
 
         // Create a new vehicle
         ModelicaPhysicalVehicleBuilder physicalVehicleBuilder = new ModelicaPhysicalVehicleBuilder();
@@ -574,7 +574,6 @@ public class SimulateVehicleTest {
         long firstRoundStartingTime = System.nanoTime();
         sim.startSimulation();
         long firstRoundEndTime = System.nanoTime();
-        System.out.println(physicalVehicle);
 
         try {
             motor.setActuatorValueCurrent(0.0);
@@ -623,8 +622,6 @@ public class SimulateVehicleTest {
         sim.setPausedInFuture(false);
         sim.stopSimulation();
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
-
-        //assertTrue(motor.getActuatorValueCurrent() == Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
         assertTrue(true);
     }
 

@@ -298,78 +298,29 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             // Calculate input values
             // Get values from VDM
             double z = vehicleDynamicsModel.getValue("z");
-            double r_nom = vehicleDynamicsModel.getValue("r_nom");
-            double m = vehicleDynamicsModel.getValue("m");
-            double omega_wheel_1 = vehicleDynamicsModel.getValue("omega_wheel_1");
-            double omega_wheel_2 = vehicleDynamicsModel.getValue("omega_wheel_2");
-            double omega_wheel_3 = vehicleDynamicsModel.getValue("omega_wheel_3");
-            double omega_wheel_4 = vehicleDynamicsModel.getValue("omega_wheel_4");
-            // Get current road surface position
-            RealVector roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
-            // Reset vehicle on surface
-            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
-            /*
-            // Get motor acceleration and convert it in torque
-            //double motorAcceleration = 4 * simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
-            double motorAcceleration = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
-            double motorForce = m * motorAcceleration;
-            double motorTorque = r_nom * motorForce;
-            System.out.println(motorTorque);
-            // Assume equal 4 wheel drive
-            vehicleDynamicsModel.setInput("tau_D_1", motorTorque / 4);
-            vehicleDynamicsModel.setInput("tau_D_2", motorTorque / 4);
-            vehicleDynamicsModel.setInput("tau_D_3", motorTorque / 4);
-            vehicleDynamicsModel.setInput("tau_D_4", motorTorque / 4);
-            // Get brake acceleration and convert it in torque
-            double brakeAcceleration1 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent();
-            double brakeAcceleration2 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
-            double brakeAcceleration3 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent();
-            double brakeAcceleration4 = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent();
-            double brakeForce1 = (m/4) * brakeAcceleration1;
-            double brakeForce2 = (m/4) * brakeAcceleration2;
-            double brakeForce3 = (m/4) * brakeAcceleration3;
-            double brakeForce4 = (m/4) * brakeAcceleration4;
-            double brakeTorque1 = r_nom * brakeForce1;
-            double brakeTorque2 = r_nom * brakeForce2;
-            double brakeTorque3 = r_nom * brakeForce3;
-            double brakeTorque4 = r_nom * brakeForce4;
-            vehicleDynamicsModel.setInput("tau_B_1", brakeTorque1 * Math.tanh(omega_wheel_1));
-            System.out.println(omega_wheel_1 + " " + brakeTorque1 * Math.tanh(omega_wheel_1));
-            vehicleDynamicsModel.setInput("tau_B_2", brakeTorque2 * Math.tanh(omega_wheel_2));
-            vehicleDynamicsModel.setInput("tau_B_3", brakeTorque3 * Math.tanh(omega_wheel_3));
-            vehicleDynamicsModel.setInput("tau_B_4", brakeTorque4 * Math.tanh(omega_wheel_4));
-            // Get steering angle
-            double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
-            vehicleDynamicsModel.setInput("delta_1", steeringAngle);
-            vehicleDynamicsModel.setInput("delta_2", steeringAngle);
-            // Express the force vector in local coordinates
-            RealVector localForce = rotation.transpose().operate(force);
-            vehicleDynamicsModel.setInput("F_ext_x", localForce.getEntry(0));
-            vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
-            // todo Take the wheel positions and get the frictions coefficients
 
-            // Exchange values
-            exchangeValues();
-            */
+            // Reset vehicle on surface
+            RealVector roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
+            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
+
+            // Do calculation steps with maximum step size as long as possible
             long currentDeltaTms = 0;
-            // Do steps with maximum step size as long as possible
             while(currentDeltaTms + stepSizems <= deltaTms){
                 doCalculationStep(stepSizems);
                 currentDeltaTms = currentDeltaTms + stepSizems;
             }
-            // Do a step with partial step size to fill the gap
+
+            // Do a calculation step with partial step size to fill the gap
             long partialStepSize = deltaTms - currentDeltaTms;
             if(partialStepSize > 0) {
                 doCalculationStep(partialStepSize);
                 currentDeltaTms = currentDeltaTms + partialStepSize;
             }
+
             // Update the rotation and position
             z = vehicleDynamicsModel.getValue("z");
-            // Get current road surface position
             roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
-            // Reset vehicle on surface
             putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
-            System.out.println(getVelocity() + " " + vehicleDynamicsModel.getValue("omega_wheel_1") + " " + position);
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -628,6 +579,15 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     }
 
     /**
+     * Function that return the VDM
+     * Should only be called by the builder and vehicle
+     * @return The VDM of the vehicle
+     */
+    public VehicleDynamicsModel getVDM(){
+        return vehicleDynamicsModel;
+    }
+
+    /**
      * Function that does a calculation step
      * @param deltaTms Length of the calculation step in milliseconds
      */
@@ -711,7 +671,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         geometryPositionOffset = geometryPositionOffset.add(deltaZ);
 
         // Set velocity to zero when braking if very near to zero
-        if(velocity.getNorm() <= 0.35 && brakeTorque1 > 0 && motorTorque == 0){
+        if(velocity.getNorm() <= 0.1 && brakeTorque1 > 0 && motorTorque == 0){
             // Set brake input to zero
             vehicleDynamicsModel.setInput("tau_B_1", 0.0);
             vehicleDynamicsModel.setInput("tau_B_2", 0.0);
