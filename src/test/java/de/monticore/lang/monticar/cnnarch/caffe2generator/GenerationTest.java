@@ -194,7 +194,7 @@ public class GenerationTest extends AbstractSymtabTest{
     }
 
     @Test
-    public void testSimpleCfgGeneration() throws IOException, TemplateException {
+    public void testSimpleCfgGeneration() throws IOException {
         Log.getFindings().clear();
         List<ConfigurationSymbol> configurations = new ArrayList<>();
         List<String> instanceName = Arrays.asList("main_net1", "main_net2");
@@ -230,7 +230,7 @@ public class GenerationTest extends AbstractSymtabTest{
     }
 
     @Test
-    public void testEmptyCfgGeneration() throws IOException, TemplateException {
+    public void testEmptyCfgGeneration() throws IOException {
         Log.getFindings().clear();
         List<ConfigurationSymbol> configurations = new ArrayList<>();
         List<String> instanceName = Arrays.asList("main_net1");
@@ -259,4 +259,29 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                         "CNNTrainer_mainEmpty.py"));
     }
+
+
+    @Test
+    public void testCMakeGeneration() {
+        Log.getFindings().clear();
+        String rootModelName = "alexnet";
+        CNNArch2Caffe2 generator = new CNNArch2Caffe2();
+        generator.setGenerationTargetPath("./target/generated-sources-cnnarch");
+        generator.generateCMake(rootModelName);
+
+        assertTrue(Log.getFindings().isEmpty());
+
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch"),
+                Paths.get("./src/test/resources/target_code"),
+                Arrays.asList(
+                        "CMakeLists.txt"));
+
+        checkFilesAreEqual(
+                Paths.get("./target/generated-sources-cnnarch/cmake"),
+                Paths.get("./src/test/resources/target_code/cmake"),
+                Arrays.asList(
+                        "FindArmadillo.cmake"));
+    }
+
 }
