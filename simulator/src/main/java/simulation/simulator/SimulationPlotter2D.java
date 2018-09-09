@@ -539,9 +539,9 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
     public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {
 
         // Calling the plotter constructor for both vehicle Position and Velocity
-        PositionChart = new Plotter2D(wheelsPosition, vehiclePos, vehicleVelocity, simulationTimePoints, getPlottingVehicleWheelRadius(), Plotter2D.PLOTTER_OUTPUT_POSITION_XY);
-        VelocityChart = new Plotter2D(wheelsPosition, vehiclePos, vehicleVelocity, simulationTimePoints, getPlottingVehicleWheelRadius(), Plotter2D.PLOTTER_OUTPUT_VELOCITY);
-        zAxisChart = new Plotter2D(wheelsPosition, vehiclePos, vehicleVelocity, simulationTimePoints, getPlottingVehicleWheelRadius(), Plotter2D.PLOTTER_OUTPUT_Z);
+        PositionChart = new Plotter2D(wheelsPosition, vehiclePos, vehicleVelocity, simulationTimePoints, Plotter2D.PLOTTER_OUTPUT_POSITION_XY);
+        VelocityChart = new Plotter2D(wheelsPosition, vehiclePos, vehicleVelocity, simulationTimePoints, Plotter2D.PLOTTER_OUTPUT_VELOCITY);
+        zAxisChart = new Plotter2D(wheelsPosition, vehiclePos, vehicleVelocity, simulationTimePoints, Plotter2D.PLOTTER_OUTPUT_Z);
 
         // Creating and locating the resulting frames in the screen
         PositionChart.pack();

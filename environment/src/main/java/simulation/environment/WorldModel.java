@@ -130,7 +130,7 @@ public class WorldModel implements World{
         parseWorld(pSettings);
         constructGeomStreets();
         positionStreetSigns();
-        initWeather(new WeatherSettings(Weather.RAIN));
+        initWeather(new WeatherSettings(Weather.SUNSHINE));
         constructControllerContainer();
         initPedestrians();
     }
