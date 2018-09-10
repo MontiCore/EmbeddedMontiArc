@@ -5,6 +5,7 @@ import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNArch2MxNet;
 import de.monticore.lang.monticar.cnnarch.caffe2generator.CNNArch2Caffe2;
 import de.monticore.lang.monticar.cnnarch.mxnetgenerator.CNNTrain2MxNet;
+import de.monticore.lang.monticar.cnnarch.caffe2generator.CNNTrain2Caffe2;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
 
 import java.util.Optional;
@@ -27,8 +28,8 @@ public enum Backend {
         }
         @Override
         public CNNTrainGenerator getCNNTrainGenerator() {
-            return null;
-        } // not implemented yet
+            return new CNNTrain2Caffe2();
+        }
     };
 
     public abstract CNNArchGenerator getCNNArchGenerator();
