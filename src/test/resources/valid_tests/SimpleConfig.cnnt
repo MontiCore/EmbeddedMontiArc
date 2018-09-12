@@ -1,4 +1,4 @@
-configuration SimpleConfig1{
+configuration SimpleConfig{
      num_epoch : 50
      batch_size : 100
      optimizer : adam{

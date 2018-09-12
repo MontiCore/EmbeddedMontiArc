@@ -26,16 +26,19 @@ import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
-import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
+import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
+import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class CNNArch2Caffe2 implements CNNArchGenerator{
 
@@ -43,6 +46,11 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
 
     public CNNArch2Caffe2() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
+    }
+
+    @Override
+    public boolean isCMakeRequired() {
+        return true;
     }
 
     public String getGenerationTargetPath() {
@@ -79,24 +87,6 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         }
     }
 
-    @Override
-    public Map<String, String> generateTrainer(List<ConfigurationSymbol> configurations, List<String> instanceNames, String mainComponentName) {
-        int numberOfNetworks = configurations.size();
-        if (configurations.size() != instanceNames.size()){
-            throw new IllegalStateException(
-                    "The number of configurations and the number of instances for generation of the CNNTrainer is not equal. " +
-                    "This should have been checked previously.");
-        }
-        List<ConfigurationData> configDataList = new ArrayList<>();
-        for(int i = 0; i < numberOfNetworks; i++){
-            configDataList.add(new ConfigurationData(configurations.get(i), instanceNames.get(i)));
-        }
-        Map<String, Object> ftlContext = Collections.singletonMap("configurations", configDataList);
-        return Collections.singletonMap(
-                "CNNTrainer_" + mainComponentName + ".py",
-                TemplateConfiguration.processTemplate(ftlContext, "CNNTrainer.ftl"));
-    }
-
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public Map<String, String> generateStrings(ArchitectureSymbol architecture){
         Map<String, String> fileContentMap = new HashMap<>();
@@ -123,40 +113,58 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
     private void checkValidGeneration(ArchitectureSymbol architecture){
         if (architecture.getInputs().size() > 1){
             Log.error("This cnn architecture has multiple inputs, " +
-                            "which is currently not supported by the generator. "
+                            "which is currently not supported by the caffe2generator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().size() > 1){
             Log.error("This cnn architecture has multiple outputs, " +
-                            "which is currently not supported by the generator. "
+                            "which is currently not supported by the caffe2generator. "
                     , architecture.getSourcePosition());
         }
         if (architecture.getOutputs().get(0).getDefinition().getType().getWidth() != 1 ||
                 architecture.getOutputs().get(0).getDefinition().getType().getHeight() != 1){
             Log.error("This cnn architecture has a multi-dimensional output, " +
-                            "which is currently not supported by the generator."
+                            "which is currently not supported by the caffe2generator."
                     , architecture.getSourcePosition());
         }
     }
 
     //check cocos with CNNArchCocos.checkAll(architecture) before calling this method.
     public void generateFiles(ArchitectureSymbol architecture) throws IOException{
-        CNNArchTemplateController archTc = new CNNArchTemplateController(architecture);
         Map<String, String> fileContentMap = generateStrings(architecture);
+        generateFromFilecontentsMap(fileContentMap);
+    }
 
-        for (String fileName : fileContentMap.keySet()){
-            File f = new File(getGenerationTargetPath() + fileName);
-            Log.info(f.getName(), "FileCreation:");
-            if (!f.exists()) {
-                f.getParentFile().mkdirs();
-                if (!f.createNewFile()) {
-                    Log.error("File could not be created");
-                }
-            }
-
-            FileWriter writer = new FileWriter(f);
-            writer.write(fileContentMap.get(fileName));
-            writer.close();
+    public void generateCMake(String rootModelName) {
+        Map<String, String> fileContentMap = generateCMakeContent(rootModelName);
+        try {
+            generateFromFilecontentsMap(fileContentMap);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void generateFromFilecontentsMap(Map<String, String> fileContentMap) throws IOException {
+        GeneratorCPP genCPP = new GeneratorCPP();
+        genCPP.setGenerationTargetPath(getGenerationTargetPath());
+        for (String fileName : fileContentMap.keySet()){
+            genCPP.generateFile(new FileContent(fileContentMap.get(fileName), fileName));
+        }
+    }
+
+    public Map<String, String> generateCMakeContent(String rootModelName) {
+        // model name should start with a lower case letter. If it is a component, replace dot . by _
+        rootModelName = rootModelName.replace('.', '_').replace('[', '_').replace(']', '_');
+        rootModelName =  rootModelName.substring(0, 1).toLowerCase() + rootModelName.substring(1);
+
+        CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
+        cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
+        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
+
+        Map<String,String> fileContentMap = new HashMap<>();
+        for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){
+            fileContentMap.put(fileContent.getFileName(), fileContent.getFileContent());
+        }
+        return fileContentMap;
     }
 }

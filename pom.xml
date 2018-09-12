@@ -8,15 +8,16 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>cnnarch-caffe2-generator</artifactId>
-  <version>0.2.2-SNAPSHOT</version>
+  <version>0.2.5-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-      <CNNArch.version>0.2.3-SNAPSHOT</CNNArch.version>
-      <CNNTrain.version>0.2.4-SNAPSHOT</CNNTrain.version>
+      <CNNArch.version>0.2.6-SNAPSHOT</CNNArch.version>
+      <CNNTrain.version>0.2.5-SNAPSHOT</CNNTrain.version>
+      <embedded-montiarc-math-generator>0.0.25-SNAPSHOT</embedded-montiarc-math-generator>
     
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -29,6 +30,7 @@
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
+        <jacoco.plugin>0.8.1</jacoco.plugin>
 
     <!-- Classifiers -->
     <grammars.classifier>grammars</grammars.classifier>
@@ -85,6 +87,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-generator</artifactId>
+            <version>${embedded-montiarc-math-generator}</version>
+        </dependency>
+
 
         <!-- .. Test Libraries ............................................... -->
         <dependency>
@@ -117,6 +125,28 @@
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.8.1</version>
       </plugin>
+        <!-- Test coverage -->
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.plugin}</version>
+            <executions>
+                <execution>
+                    <id>pre-unit-test</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>post-unit-test</id>
+                    <phase>test</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+
 
       <!-- Other Configuration -->
       <plugin>

@@ -1,0 +1,18 @@
+import logging
+import mxnet as mx
+import CNNCreator_simpleConfig
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+    logger = logging.getLogger()
+    handler = logging.FileHandler("train.log", "w", encoding=None, delay="true")
+    logger.addHandler(handler)
+
+    simpleConfig = CNNCreator_simpleConfig.CNNCreator_simpleConfig()
+    simpleConfig.train(
+        batch_size=100,
+        num_epoch=50,
+        optimizer='adam',
+        optimizer_params={
+            'learning_rate': 0.001}
+    )
