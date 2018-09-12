@@ -6,10 +6,10 @@ import numpy as np
 import logging
 import os
 import shutil
-#import h5py
 import sys
 
-#class CNNCreator_SimpleNetworkRelu:
+#TODO: Check whether class is needed
+#class CNNCreator_CifarClassifierNetwork:
 
 module = None
 _data_dir_ = "data/CifarClassifierNetwork/"
@@ -19,12 +19,19 @@ _input_names_ = ['data']
 _input_shapes_ = [(3,32,32)]
 _output_names_ = ['softmax_label']
 
-INIT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/init_net'
-PREDICT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/predict_net'
+#TODO: Modify paths to make them dynamic
+#For Windows
+#INIT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/init_net'
+#PREDICT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/predict_net'
 
-#device_opts = core.DeviceOption(caffe2_pb2.CPU, 0)
-device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)#' for GPU processing
+#For Ubuntu
+INIT_NET = '/home/carlos/Documents/git/Caffe2_scripts/caffe2_ema_cnncreator/init_net'
+PREDICT_NET = '/home/carlos/Documents/git/Caffe2_scripts/caffe2_ema_cnncreator/predict_net'
 
+#device_opts = core.DeviceOption(caffe2_pb2.CPU, 0) #for CPU processing
+device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0) #for GPU processing
+
+#data and label are dummy at the moment
 # randomly creates 30x30 patches of ones or zeros with label 1 and 0 respectively
 def get_dummy_data(batchsize) :
 	data = []
@@ -48,7 +55,6 @@ def AddInput(model, batch_size):
 
 	return data, label
 
-#def create_model(model, data, device_opts): #data argument is dummy at the moment
 def create_model(model, device_opts):
 	with core.DeviceScope(device_opts):
 
@@ -236,8 +242,7 @@ def create_model(model, device_opts):
 		model.net.AddExternalOutput(softmax)
 		return softmax
 
-# add loss and optimizer
-#def add_training_operators(model, output, label, device_opts) : #label argument is dummy at the moment
+# this adds the loss and optimizer
 def add_training_operators(model, output, device_opts) :
 
 	with core.DeviceScope(device_opts):
@@ -251,9 +256,6 @@ def add_training_operators(model, output, device_opts) :
 def train(INIT_NET, PREDICT_NET, epochs, batch_size, device_opts) :
 
 	train_model= model_helper.ModelHelper(name="train_net")
-	#data, label = AddInput(train_model, batch_size=100)
-	#predictions = create_model(train_model, data, device_opts=device_opts)
-	#add_training_operators(train_model, predictions, label, device_opts=device_opts)
 	softmax = create_model(train_model, device_opts=device_opts)
 	add_training_operators(train_model, softmax, device_opts=device_opts)
 	with core.DeviceScope(device_opts):
@@ -273,7 +275,6 @@ def train(INIT_NET, PREDICT_NET, epochs, batch_size, device_opts) :
 	print '\nrunning test model'
 
 	test_model= model_helper.ModelHelper(name="test_net", init_params=False)
-	#create_model(test_model, data, device_opts=device_opts)
 	create_model(test_model, device_opts=device_opts)
 	workspace.RunNetOnce(test_model.param_init_net)
 	workspace.CreateNet(test_model.net, overwrite=True)
