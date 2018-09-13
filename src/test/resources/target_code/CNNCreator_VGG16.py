@@ -1,464 +1,244 @@
-import mxnet as mx
-import logging
-import os
-import errno
-import shutil
-import h5py
-import sys
+from caffe2.python import workspace, core, model_helper, brew, optimizer
+from caffe2.python.predictor import mobile_exporter
+from caffe2.proto import caffe2_pb2
 import numpy as np
 
-@mx.init.register
-class MyConstant(mx.init.Initializer):
-    def __init__(self, value):
-        super(MyConstant, self).__init__(value=value)
-        self.value = value
-    def _init_weight(self, _, arr):
-        arr[:] = mx.nd.array(self.value)
+import logging
+import os
+import shutil
+import sys
 
-class CNNCreator_VGG16:
+#TODO: Check whether class is needed
+#class CNNCreator_VGG16:
 
-    module = None
-    _data_dir_ = "data/VGG16/"
-    _model_dir_ = "model/VGG16/"
-    _model_prefix_ = "VGG16"
-    _input_names_ = ['data']
-    _input_shapes_ = [(3,224,224)]
-    _output_names_ = ['predictions_label']
+module = None
+_data_dir_ = "data/VGG16/"
+_model_dir_ = "model/VGG16/"
+_model_prefix_ = "VGG16"
+_input_names_ = ['data']
+_input_shapes_ = [(3,224,224)]
+_output_names_ = ['predictions_label']
 
+#TODO: Modify paths to make them dynamic
+#For Windows
+#INIT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/init_net'
+#PREDICT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/predict_net'
 
-    def load(self, context):
-        lastEpoch = 0
-        param_file = None
+#For Ubuntu
+INIT_NET = '/home/carlos/Documents/git/Caffe2_scripts/caffe2_ema_cnncreator/init_net'
+PREDICT_NET = '/home/carlos/Documents/git/Caffe2_scripts/caffe2_ema_cnncreator/predict_net'
 
-        try:
-            os.remove(self._model_dir_ + self._model_prefix_ + "_newest-0000.params")
-        except OSError:
-            pass
-        try:
-            os.remove(self._model_dir_ + self._model_prefix_ + "_newest-symbol.json")
-        except OSError:
-            pass
+#device_opts = core.DeviceOption(caffe2_pb2.CPU, 0) #for CPU processing
+device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0) #for GPU processing
 
-        if os.path.isdir(self._model_dir_):
-            for file in os.listdir(self._model_dir_):
-                if ".params" in file and self._model_prefix_ in file:
-                    epochStr = file.replace(".params","").replace(self._model_prefix_ + "-","")
-                    epoch = int(epochStr)
-                    if epoch > lastEpoch:
-                        lastEpoch = epoch
-                        param_file = file
-        if param_file is None:
-            return 0
-        else:
-            logging.info("Loading checkpoint: " + param_file)
-            self.module.load(prefix=self._model_dir_ + self._model_prefix_,
-                              epoch=lastEpoch,
-                              data_names=self._input_names_,
-                              label_names=self._output_names_,
-                              context=context)
-            return lastEpoch
+#data and label are dummy at the moment
+# randomly creates 30x30 patches of ones or zeros with label 1 and 0 respectively
+def get_dummy_data(batchsize) :
+	data = []
+	label = []
+	for i in range(batchsize) :
+		r = np.random.randint(0, 2)
+		if r==0 :
+			d = np.zeros((1,30,30))
+			l = 0
+		else :
+			d = np.ones((1,30,30))
+			l = 1
+		data.append(d)
+		label.append(l)
+	return np.array(data).astype('float32'), np.array(label).astype('int32')
 
+def AddInput(model, batch_size):
+	data, label = get_dummy_data(batch_size)
+	print '\ndata:', data
+	print '\nlabel:', label
 
-    def load_data(self, batch_size):
-        train_h5, test_h5 = self.load_h5_files()
+	return data, label
 
-        data_mean = train_h5[self._input_names_[0]][:].mean(axis=0)
-        data_std = train_h5[self._input_names_[0]][:].std(axis=0) + 1e-5
+def create_model(model, device_opts):
+	with core.DeviceScope(device_opts):
 
-        train_iter = mx.io.NDArrayIter(train_h5[self._input_names_[0]],
-                                       train_h5[self._output_names_[0]],
-                                       batch_size=batch_size,
-                                       data_name=self._input_names_[0],
-                                       label_name=self._output_names_[0])
-        test_iter = None
-        if test_h5 != None:
-            test_iter = mx.io.NDArrayIter(test_h5[self._input_names_[0]],
-                                          test_h5[self._output_names_[0]],
-                                          batch_size=batch_size,
-                                          data_name=self._input_names_[0],
-                                          label_name=self._output_names_[0])
-        return train_iter, test_iter, data_mean, data_std
-
-    def load_h5_files(self):
-        train_h5 = None
-        test_h5 = None
-        train_path = self._data_dir_ + "train.h5"
-        test_path = self._data_dir_ + "test.h5"
-        if os.path.isfile(train_path):
-            train_h5 = h5py.File(train_path, 'r')
-            if not (self._input_names_[0] in train_h5 and self._output_names_[0] in train_h5):
-                logging.error("The HDF5 file '" + os.path.abspath(train_path) + "' has to contain the datasets: "
-                              + "'" + self._input_names_[0] + "', '" + self._output_names_[0] + "'")
-                sys.exit(1)
-            test_iter = None
-            if os.path.isfile(test_path):
-                test_h5 = h5py.File(test_path, 'r')
-                if not (self._input_names_[0] in test_h5 and self._output_names_[0] in test_h5):
-                    logging.error("The HDF5 file '" + os.path.abspath(test_path) + "' has to contain the datasets: "
-                                  + "'" + self._input_names_[0] + "', '" + self._output_names_[0] + "'")
-                    sys.exit(1)
-            else:
-                logging.warning("Couldn't load test set. File '" + os.path.abspath(test_path) + "' does not exist.")
-            return train_h5, test_h5
-        else:
-            logging.error("Data loading failure. File '" + os.path.abspath(train_path) + "' does not exist.")
-            sys.exit(1)
-
-
-    def train(self, batch_size=64,
-              num_epoch=10,
-              eval_metric='acc',
-              optimizer='adam',
-              optimizer_params=(('learning_rate', 0.001),),
-              load_checkpoint=True,
-              context='gpu',
-              checkpoint_period=5,
-              normalize=True):
-        if context == 'gpu':
-            mx_context = mx.gpu()
-        elif context == 'cpu':
-            mx_context = mx.cpu()
-        else:
-            logging.error("Context argument is '" + context + "'. Only 'cpu' and 'gpu are valid arguments'.")
-
-        if 'weight_decay' in optimizer_params:
-            optimizer_params['wd'] = optimizer_params['weight_decay']
-            del optimizer_params['weight_decay']
-        if 'learning_rate_decay' in optimizer_params:
-            min_learning_rate = 1e-08
-            if 'learning_rate_minimum' in optimizer_params:
-                min_learning_rate = optimizer_params['learning_rate_minimum']
-                del optimizer_params['learning_rate_minimum']
-            optimizer_params['lr_scheduler'] = mx.lr_scheduler.FactorScheduler(
-                                                   optimizer_params['step_size'],
-                                                   factor=optimizer_params['learning_rate_decay'],
-                                                   stop_factor_lr=min_learning_rate)
-            del optimizer_params['step_size']
-            del optimizer_params['learning_rate_decay']
-
-
-        train_iter, test_iter, data_mean, data_std = self.load_data(batch_size)
-        if self.module == None:
-            if normalize:
-                self.construct(mx_context, data_mean, data_std)
-            else:
-                self.construct(mx_context)
-
-        begin_epoch = 0
-        if load_checkpoint:
-            begin_epoch = self.load(mx_context)
-        else:
-            if os.path.isdir(self._model_dir_):
-                shutil.rmtree(self._model_dir_)
-
-        try:
-            os.makedirs(self._model_dir_)
-        except OSError:
-            if not os.path.isdir(self._model_dir_):
-                raise
-
-        self.module.fit(
-            train_data=train_iter,
-            eval_metric=eval_metric,
-            eval_data=test_iter,
-            optimizer=optimizer,
-            optimizer_params=optimizer_params,
-            batch_end_callback=mx.callback.Speedometer(batch_size),
-            epoch_end_callback=mx.callback.do_checkpoint(prefix=self._model_dir_ + self._model_prefix_, period=checkpoint_period),
-            begin_epoch=begin_epoch,
-            num_epoch=num_epoch + begin_epoch)
-        self.module.save_checkpoint(self._model_dir_ + self._model_prefix_, num_epoch + begin_epoch)
-        self.module.save_checkpoint(self._model_dir_ + self._model_prefix_ + '_newest', 0)
-
-
-    def construct(self, context, data_mean=None, data_std=None):
-        data = mx.sym.var("data",
-            shape=(0,3,224,224))
-        # data, output shape: {[3,224,224]}
-
-        if not data_mean is None:
-            assert(not data_std is None)
-            _data_mean_ = mx.sym.Variable("_data_mean_", shape=(3,224,224), init=MyConstant(value=data_mean.tolist()))
-            _data_mean_ = mx.sym.BlockGrad(_data_mean_)
-            _data_std_ = mx.sym.Variable("_data_std_", shape=(3,224,224), init=MyConstant(value=data_mean.tolist()))
-            _data_std_ = mx.sym.BlockGrad(_data_std_)
-            data = mx.symbol.broadcast_sub(data, _data_mean_)
-            data = mx.symbol.broadcast_div(data, _data_std_)
-        conv1_ = mx.symbol.pad(data=data,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv1_ = mx.symbol.Convolution(data=conv1_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=64,
-            no_bias=False,
-            name="conv1_")
-        # conv1_, output shape: {[64,224,224]}
-
-        relu1_ = mx.symbol.Activation(data=conv1_,
-            act_type='relu',
-            name="relu1_")
-
-        conv2_ = mx.symbol.pad(data=relu1_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv2_ = mx.symbol.Convolution(data=conv2_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=64,
-            no_bias=False,
-            name="conv2_")
-        # conv2_, output shape: {[64,224,224]}
-
-        relu2_ = mx.symbol.Activation(data=conv2_,
-            act_type='relu',
-            name="relu2_")
-
-        pool2_ = mx.symbol.Pooling(data=relu2_,
-            kernel=(2,2),
-            pool_type="max",
-            stride=(2,2),
-            name="pool2_")
-        # pool2_, output shape: {[64,112,112]}
-
-        conv3_ = mx.symbol.pad(data=pool2_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv3_ = mx.symbol.Convolution(data=conv3_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv3_")
-        # conv3_, output shape: {[128,112,112]}
-
-        relu3_ = mx.symbol.Activation(data=conv3_,
-            act_type='relu',
-            name="relu3_")
-
-        conv4_ = mx.symbol.pad(data=relu3_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv4_ = mx.symbol.Convolution(data=conv4_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=128,
-            no_bias=False,
-            name="conv4_")
-        # conv4_, output shape: {[128,112,112]}
-
-        relu4_ = mx.symbol.Activation(data=conv4_,
-            act_type='relu',
-            name="relu4_")
-
-        pool4_ = mx.symbol.Pooling(data=relu4_,
-            kernel=(2,2),
-            pool_type="max",
-            stride=(2,2),
-            name="pool4_")
-        # pool4_, output shape: {[128,56,56]}
-
-        conv5_ = mx.symbol.pad(data=pool4_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv5_ = mx.symbol.Convolution(data=conv5_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=256,
-            no_bias=False,
-            name="conv5_")
-        # conv5_, output shape: {[256,56,56]}
-
-        relu5_ = mx.symbol.Activation(data=conv5_,
-            act_type='relu',
-            name="relu5_")
-
-        conv6_ = mx.symbol.pad(data=relu5_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv6_ = mx.symbol.Convolution(data=conv6_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=256,
-            no_bias=False,
-            name="conv6_")
-        # conv6_, output shape: {[256,56,56]}
-
-        relu6_ = mx.symbol.Activation(data=conv6_,
-            act_type='relu',
-            name="relu6_")
-
-        conv7_ = mx.symbol.pad(data=relu6_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv7_ = mx.symbol.Convolution(data=conv7_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=256,
-            no_bias=False,
-            name="conv7_")
-        # conv7_, output shape: {[256,56,56]}
-
-        relu7_ = mx.symbol.Activation(data=conv7_,
-            act_type='relu',
-            name="relu7_")
-
-        pool7_ = mx.symbol.Pooling(data=relu7_,
-            kernel=(2,2),
-            pool_type="max",
-            stride=(2,2),
-            name="pool7_")
-        # pool7_, output shape: {[256,28,28]}
-
-        conv8_ = mx.symbol.pad(data=pool7_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv8_ = mx.symbol.Convolution(data=conv8_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=512,
-            no_bias=False,
-            name="conv8_")
-        # conv8_, output shape: {[512,28,28]}
-
-        relu8_ = mx.symbol.Activation(data=conv8_,
-            act_type='relu',
-            name="relu8_")
-
-        conv9_ = mx.symbol.pad(data=relu8_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv9_ = mx.symbol.Convolution(data=conv9_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=512,
-            no_bias=False,
-            name="conv9_")
-        # conv9_, output shape: {[512,28,28]}
-
-        relu9_ = mx.symbol.Activation(data=conv9_,
-            act_type='relu',
-            name="relu9_")
-
-        conv10_ = mx.symbol.pad(data=relu9_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv10_ = mx.symbol.Convolution(data=conv10_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=512,
-            no_bias=False,
-            name="conv10_")
-        # conv10_, output shape: {[512,28,28]}
-
-        relu10_ = mx.symbol.Activation(data=conv10_,
-            act_type='relu',
-            name="relu10_")
-
-        pool10_ = mx.symbol.Pooling(data=relu10_,
-            kernel=(2,2),
-            pool_type="max",
-            stride=(2,2),
-            name="pool10_")
-        # pool10_, output shape: {[512,14,14]}
-
-        conv11_ = mx.symbol.pad(data=pool10_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv11_ = mx.symbol.Convolution(data=conv11_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=512,
-            no_bias=False,
-            name="conv11_")
-        # conv11_, output shape: {[512,14,14]}
-
-        relu11_ = mx.symbol.Activation(data=conv11_,
-            act_type='relu',
-            name="relu11_")
-
-        conv12_ = mx.symbol.pad(data=relu11_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv12_ = mx.symbol.Convolution(data=conv12_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=512,
-            no_bias=False,
-            name="conv12_")
-        # conv12_, output shape: {[512,14,14]}
-
-        relu12_ = mx.symbol.Activation(data=conv12_,
-            act_type='relu',
-            name="relu12_")
-
-        conv13_ = mx.symbol.pad(data=relu12_,
-            mode='constant',
-            pad_width=(0,0,0,0,1,1,1,1),
-            constant_value=0)
-        conv13_ = mx.symbol.Convolution(data=conv13_,
-            kernel=(3,3),
-            stride=(1,1),
-            num_filter=512,
-            no_bias=False,
-            name="conv13_")
-        # conv13_, output shape: {[512,14,14]}
-
-        relu13_ = mx.symbol.Activation(data=conv13_,
-            act_type='relu',
-            name="relu13_")
-
-        pool13_ = mx.symbol.Pooling(data=relu13_,
-            kernel=(2,2),
-            pool_type="max",
-            stride=(2,2),
-            name="pool13_")
-        # pool13_, output shape: {[512,7,7]}
-
-        fc13_ = mx.symbol.flatten(data=pool13_)
-        fc13_ = mx.symbol.FullyConnected(data=fc13_,
-            num_hidden=4096,
-            no_bias=False,
-            name="fc13_")
-        relu14_ = mx.symbol.Activation(data=fc13_,
-            act_type='relu',
-            name="relu14_")
-
+		data, label = AddInput(model, batch_size=100)
+		# data, output shape: {[3,224,224]}
+		workspace.FeedBlob("data", data, device_option=device_opts)
+		workspace.FeedBlob("label", label, device_option=device_opts)
+  	
+		conv1_ = brew.conv(model, 'data', 'conv1_', dim_in=1, dim_out=64, kernel=3, stride=1)
+		# conv1_, output shape: {[64,224,224]}
+		relu1_ = brew.relu(model, conv1_, conv1_)
+  		conv2_ = brew.conv(model, relu1_, 'conv2_', dim_in=64, dim_out=64, kernel=3, stride=1)
+		# conv2_, output shape: {[64,224,224]}
+		relu2_ = brew.relu(model, conv2_, conv2_)
+		pool2_ = brew.max_pool(model, relu2_, 'pool2_', kernel=2, stride=2)
+		# pool2_, output shape: {[64,112,112]}
+  		conv3_ = brew.conv(model, pool2_, 'conv3_', dim_in=64, dim_out=128, kernel=3, stride=1)
+		# conv3_, output shape: {[128,112,112]}
+		relu3_ = brew.relu(model, conv3_, conv3_)
+  		conv4_ = brew.conv(model, relu3_, 'conv4_', dim_in=128, dim_out=128, kernel=3, stride=1)
+		# conv4_, output shape: {[128,112,112]}
+		relu4_ = brew.relu(model, conv4_, conv4_)
+		pool4_ = brew.max_pool(model, relu4_, 'pool4_', kernel=2, stride=2)
+		# pool4_, output shape: {[128,56,56]}
+  		conv5_ = brew.conv(model, pool4_, 'conv5_', dim_in=128, dim_out=256, kernel=3, stride=1)
+		# conv5_, output shape: {[256,56,56]}
+		relu5_ = brew.relu(model, conv5_, conv5_)
+  		conv6_ = brew.conv(model, relu5_, 'conv6_', dim_in=256, dim_out=256, kernel=3, stride=1)
+		# conv6_, output shape: {[256,56,56]}
+		relu6_ = brew.relu(model, conv6_, conv6_)
+  		conv7_ = brew.conv(model, relu6_, 'conv7_', dim_in=256, dim_out=256, kernel=3, stride=1)
+		# conv7_, output shape: {[256,56,56]}
+		relu7_ = brew.relu(model, conv7_, conv7_)
+		pool7_ = brew.max_pool(model, relu7_, 'pool7_', kernel=2, stride=2)
+		# pool7_, output shape: {[256,28,28]}
+  		conv8_ = brew.conv(model, pool7_, 'conv8_', dim_in=256, dim_out=512, kernel=3, stride=1)
+		# conv8_, output shape: {[512,28,28]}
+		relu8_ = brew.relu(model, conv8_, conv8_)
+  		conv9_ = brew.conv(model, relu8_, 'conv9_', dim_in=512, dim_out=512, kernel=3, stride=1)
+		# conv9_, output shape: {[512,28,28]}
+		relu9_ = brew.relu(model, conv9_, conv9_)
+  		conv10_ = brew.conv(model, relu9_, 'conv10_', dim_in=512, dim_out=512, kernel=3, stride=1)
+		# conv10_, output shape: {[512,28,28]}
+		relu10_ = brew.relu(model, conv10_, conv10_)
+		pool10_ = brew.max_pool(model, relu10_, 'pool10_', kernel=2, stride=2)
+		# pool10_, output shape: {[512,14,14]}
+  		conv11_ = brew.conv(model, pool10_, 'conv11_', dim_in=512, dim_out=512, kernel=3, stride=1)
+		# conv11_, output shape: {[512,14,14]}
+		relu11_ = brew.relu(model, conv11_, conv11_)
+  		conv12_ = brew.conv(model, relu11_, 'conv12_', dim_in=512, dim_out=512, kernel=3, stride=1)
+		# conv12_, output shape: {[512,14,14]}
+		relu12_ = brew.relu(model, conv12_, conv12_)
+  		conv13_ = brew.conv(model, relu12_, 'conv13_', dim_in=512, dim_out=512, kernel=3, stride=1)
+		# conv13_, output shape: {[512,14,14]}
+		relu13_ = brew.relu(model, conv13_, conv13_)
+		pool13_ = brew.max_pool(model, relu13_, 'pool13_', kernel=2, stride=2)
+		# pool13_, output shape: {[512,7,7]}
+		fc13_ = brew.fc(model, pool13_, 'fc13_', dim_in=512 * 7 * 7, dim_out=4096)
+		# fc13_, output shape: {[4096,1,1]}
+		relu14_ = brew.relu(model, fc13_, fc13_)
         dropout14_ = mx.symbol.Dropout(data=relu14_,
             p=0.5,
             name="dropout14_")
-        fc14_ = mx.symbol.FullyConnected(data=dropout14_,
-            num_hidden=4096,
-            no_bias=False,
-            name="fc14_")
-        relu15_ = mx.symbol.Activation(data=fc14_,
-            act_type='relu',
-            name="relu15_")
-
+		fc14_ = brew.fc(model, dropout14_, 'fc14_', dim_in=4096, dim_out=4096)
+		# fc14_, output shape: {[4096,1,1]}
+		relu15_ = brew.relu(model, fc14_, fc14_)
         dropout15_ = mx.symbol.Dropout(data=relu15_,
             p=0.5,
             name="dropout15_")
-        fc15_ = mx.symbol.FullyConnected(data=dropout15_,
-            num_hidden=1000,
-            no_bias=False,
-            name="fc15_")
+		fc15_ = brew.fc(model, dropout15_, 'fc15_', dim_in=4096, dim_out=1000)
+		# fc15_, output shape: {[1000,1,1]}
+		predictions = brew.softmax(model, fc15_, 'predictions')
 
-        predictions = mx.symbol.SoftmaxOutput(data=fc15_,
-            name="predictions")
+		model.net.AddExternalOutput(predictions)
+		return predictions
 
-        self.module = mx.mod.Module(symbol=mx.symbol.Group([predictions]),
-                                         data_names=self._input_names_,
-                                         label_names=self._output_names_,
-                                         context=context)
+# this adds the loss and optimizer
+def add_training_operators(model, output, device_opts) :
+
+	with core.DeviceScope(device_opts):
+		xent = model.LabelCrossEntropy([output, "label"], 'xent')
+		loss = model.AveragedLoss(xent, "loss")
+		brew.accuracy(model, [output, "label"], "accuracy")
+
+		model.AddGradientOperators([loss])
+		opt = optimizer.build_sgd(model, base_learning_rate=0.01, policy="step", stepsize=1, gamma=0.999)  # , momentum=0.9
+
+def train(INIT_NET, PREDICT_NET, epochs, batch_size, device_opts) :
+
+	train_model= model_helper.ModelHelper(name="train_net")
+	predictions = create_model(train_model, device_opts=device_opts)
+	add_training_operators(train_model, predictions, device_opts=device_opts)
+	with core.DeviceScope(device_opts):
+		brew.add_weight_decay(train_model, 0.001)  # any effect???
+
+	workspace.RunNetOnce(train_model.param_init_net)
+	workspace.CreateNet(train_model.net)
+
+	print '\ntraining for', epochs, 'epochs'
+
+	for j in range(0, epochs):
+		workspace.RunNet(train_model.net, 10)   # run for 10 times
+		print str(j) + ': ' + 'loss ' + str(workspace.FetchBlob("loss")) + ' - ' + 'accuracy ' + str(workspace.FetchBlob("accuracy"))
+
+	print 'training done'
+
+	print '\nrunning test model'
+
+	test_model= model_helper.ModelHelper(name="test_net", init_params=False)
+	create_model(test_model, device_opts=device_opts)
+	workspace.RunNetOnce(test_model.param_init_net)
+	workspace.CreateNet(test_model.net, overwrite=True)
+
+	data = np.zeros((1,1,30,30)).astype('float32')
+	workspace.FeedBlob("data", data, device_option=device_opts)
+	workspace.RunNet(test_model.net, 1)
+	print "\nInput: zeros"
+	print "Output:", workspace.FetchBlob("predictions") #TODO: Consider multiple output names
+	print "Output class:", np.argmax(workspace.FetchBlob("predictions")) #TODO: Consider multiple output names
+
+	data = np.ones((1,1,30,30)).astype('float32')
+	workspace.FeedBlob("data", data, device_option=device_opts)
+	workspace.RunNet(test_model.net, 1)
+	print "\nInput: ones"
+	print "Output:", workspace.FetchBlob("predictions") #TODO: Consider multiple output names
+	print "Output class:", np.argmax(workspace.FetchBlob("predictions")) #TODO: Consider multiple output names
+
+	print '\nsaving test model'
+
+	save_net(INIT_NET, PREDICT_NET, test_model)
+
+def save_net(init_net_path, predict_net_path, model):
+	extra_params = []
+	extra_blobs = []
+	for blob in workspace.Blobs():
+		name = str(blob)
+		if name.endswith("_rm") or name.endswith("_riv"):
+			extra_params.append(name)
+			extra_blobs.append(workspace.FetchBlob(name))
+	for name, blob in zip(extra_params, extra_blobs):
+		model.params.append(name)
+
+	init_net, predict_net = mobile_exporter.Export(
+		workspace,
+		model.net,
+		model.params
+	)
+
+	print("Save the model to init_net.pb and predict_net.pb")
+	with open(predict_net_path + '.pb', 'wb') as f:
+		f.write(model.net._net.SerializeToString())
+	with open(init_net_path + '.pb', 'wb') as f:
+		f.write(init_net.SerializeToString())
+
+	print("Save the mode to init_net.pbtxt and predict_net.pbtxt")
+	with open(init_net_path + '.pbtxt', 'w') as f:
+		f.write(str(init_net))
+
+	with open(predict_net_path + '.pbtxt', 'w') as f:
+		f.write(str(predict_net))
+
+def load_net(init_net_path, predict_net_path, device_opts):
+	init_def = caffe2_pb2.NetDef()
+	with open(init_net_path + '.pb', 'rb') as f:
+		init_def.ParseFromString(f.read())
+		init_def.device_option.CopyFrom(device_opts)
+		workspace.RunNetOnce(init_def.SerializeToString())
+
+	net_def = caffe2_pb2.NetDef()
+	with open(predict_net_path + '.pb', 'rb') as f:
+		net_def.ParseFromString(f.read())
+		net_def.device_option.CopyFrom(device_opts)
+		workspace.CreateNet(net_def.SerializeToString(), overwrite=True)
+
+train(INIT_NET, PREDICT_NET, epochs=20, batch_size=100, device_opts=device_opts)
+
+print '\n********************************************'
+print 'loading test model'
+load_net(INIT_NET, PREDICT_NET, device_opts=device_opts)
+
+data = np.ones((1,1,30,30)).astype('float32')
+workspace.FeedBlob("data", data, device_option=device_opts)
+workspace.RunNet('test_net', 1)
+
+print "\nInput: ones"
+print "Output:", workspace.FetchBlob("predictions") #TODO: Consider multiple output names
+print "Output class:", np.argmax(workspace.FetchBlob("predictions")) #TODO: Consider multiple output names

@@ -1,3 +1,2 @@
-        ${element.name} = mx.symbol.Activation(data=${element.inputs[0]},
-            act_type='sigmoid',
-            name="${element.name}")
+<#assign input = element.inputs[0]>
+		${element.name} = model.net.Sigmoid(${input}, '${element.name}')

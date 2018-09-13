@@ -1,3 +1,2 @@
-        ${element.name} = mx.symbol.Activation(data=${element.inputs[0]},
-            act_type='tanh',
-            name="${element.name}")
+<#assign input = element.inputs[0]>
+        ${element.name} = brew.tanh(model, ${input}, ${input})

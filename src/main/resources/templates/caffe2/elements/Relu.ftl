@@ -1,4 +1,2 @@
-        ${element.name} = mx.symbol.Activation(data=${element.inputs[0]},
-            act_type='relu',
-            name="${element.name}")
-
+<#assign input = element.inputs[0]>
+		${element.name} = brew.relu(model, ${input}, ${input})
