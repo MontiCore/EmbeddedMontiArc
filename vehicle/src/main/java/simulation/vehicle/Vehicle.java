@@ -596,6 +596,7 @@ import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
 
+import javax.jws.WebParam;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -653,17 +654,17 @@ public class Vehicle {
     /** Radius of the wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
 
-    /** Mass of the vehicle's front */
-    public static final double VEHICLE_DEFAULT_MASS_FRONT = 950.0;
-
-    /** Mass of the vehicle's back */
-    public static final double VEHICLE_DEFAULT_MASS_BACK = 850.0;
+    /** Mass of the vehicle */
+    public static final double VEHICLE_DEFAULT_MASS = 1800.0;
 
     /** Distance between the left and the right wheels in meters */
     public static final double VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT = 1.62025;
 
     /** Distance between front and back wheels in meters */
-    public static final double VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK = 2.921;
+    public static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT = 1.379;
+
+    /** Distance between back wheels and center of mass in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK = 1.542;
 
 
     /**Components */
@@ -700,11 +701,8 @@ public class Vehicle {
 
     /** Properties */
     /** M of formula */
-    /** Front mass of the vehicle */
-    private double massFront;
-
-    /** Back mass of the vehicle */
-    private double massBack;
+    /** Mass of the vehicle */
+    private double mass;
 
     /** Dimensions of vehicle in meters */
     private double width, length, height;
@@ -718,8 +716,11 @@ public class Vehicle {
     /** Track of the vehicle wheels at the back axel */
     private double wheelDistLeftRightBackSide;
 
-    /** Wheelbase of the vehicle wheels */
-    private double wheelDistFrontBack;
+    /** Wheelbase of the vehicle to the front axel */
+    private double wheelDistToFront;
+
+    /** Wheelbase of the vehicle to the back axel */
+    private double wheelDistToBack;
 
 
     /** Internal Attributes */
@@ -777,16 +778,15 @@ public class Vehicle {
         // Set height
         this.height = VEHICLE_DEFAULT_HEIGHT;
         // Set front mass
-        this.massFront = VEHICLE_DEFAULT_MASS_FRONT;
-        // Set back mass
-        this.massBack = VEHICLE_DEFAULT_MASS_BACK;
+        this.mass = VEHICLE_DEFAULT_MASS;
         // Set wheel radius
         this.wheelRadius = VEHICLE_DEFAULT_WHEEL_RADIUS;
         // Set track
         this.wheelDistLeftRightFrontSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
         this.wheelDistLeftRightBackSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
         // Set wheel base
-        this.wheelDistFrontBack = VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK;
+        this.wheelDistToFront = VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
+        this.wheelDistToBack = VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
         // Initialize last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
         // Initialize camera image with empty optional
@@ -1014,6 +1014,8 @@ public class Vehicle {
     public void setHeight(double height){
         if(!vehicleInitialized) {
             this.height = height;
+        }else{
+            //todo error
         }
     }
 
@@ -1024,10 +1026,15 @@ public class Vehicle {
      */
     public double getMass() {
         double returnValue = 0.0;
-        if(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized) {
-            returnValue =  massFront + massBack;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            returnValue =  mass;
         }else{
-            //todo error
+            if(vehicleInitialized){
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                returnValue = modelicaPhysicalVehicle.getVDM().getValue("m");
+            }else{
+                //todo error
+            }
         }
         return returnValue;
     }
@@ -1038,76 +1045,12 @@ public class Vehicle {
      * @param mass New mass of the vehicle
      */
     public void setMass(double mass){
-        if(physicalVehicle instanceof ModelicaPhysicalVehicle) {
-            if (!vehicleInitialized) {
-                this.massFront = mass / 2;
-                this.massBack = mass / 2;
+        if(!vehicleInitialized) {
+            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+                this.mass = mass;
             }else{
-                //todo error
-            }
-        }else{
-            //todo error
-        }
-    }
-
-    /**
-     * Function that returns the front mass of the vehicle
-     *
-     * @return Front mass of the vehicle
-     */
-    public double getMassFront() {
-        double returnValue = 0.0;
-        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            returnValue =  massFront;
-        }else{
-            //todo error
-        }
-        return returnValue;
-    }
-
-    /**
-     * Function that sets the front mass of the vehicle
-     *
-     * @param massFront New front mass of the vehicle
-     */
-    public void setMassFront(double massFront){
-        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            if (!vehicleInitialized) {
-                this.massFront = massFront;
-            }else{
-                //todo error
-            }
-        }else{
-            //todo error
-        }
-    }
-
-    /**
-     * Function that returns the back mass of the vehicle
-     *
-     * @return Back mass of the vehicle
-     */
-    public double getMassBack() {
-        double returnValue = 0.0;
-        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            returnValue =  massBack;
-        }else{
-            //todo error
-        }
-        return returnValue;
-    }
-
-    /**
-     * Function that sets the back mass of the vehicle
-     *
-     * @param massBack New back mass of the vehicle
-     */
-    public void setMassBack(double massBack){
-        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            if (!vehicleInitialized) {
-                this.massBack = massBack;
-            }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().setParameter("m", mass);
             }
         }else{
             //todo error
@@ -1121,10 +1064,15 @@ public class Vehicle {
      */
     public double getWheelRadius() {
         double returnValue = 0.0;
-        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             returnValue = wheelRadius;
         }else{
-            //todo error
+            if(vehicleInitialized){
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().getValue("r_nom");
+            }else{
+                //todo error
+            }
         }
         return returnValue;
     }
@@ -1136,31 +1084,11 @@ public class Vehicle {
      */
     public void setWheelRadius(double wheelRadius){
         if(!vehicleInitialized) {
-            this.wheelRadius = wheelRadius;
-        }
-    }
-
-    /**
-     * Function that return the distance between left and right wheels of the vehicle
-     *
-     * @return Distance between left and right wheels of the vehicle
-     */
-    double getWheelDistLeftRight(){
-        return (wheelDistLeftRightFrontSide + wheelDistLeftRightBackSide)/2;
-    }
-
-    /**
-     * Function that sets the distance between left and right wheels of the vehicle
-     *
-     * @param wheelDistLeftRight New distance between left and right wheels of the vehicle
-     */
-    public void setWheelDistLeftRight(double wheelDistLeftRight){
-        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            if (!vehicleInitialized) {
-                this.wheelDistLeftRightFrontSide = wheelDistLeftRight;
-                this.wheelDistLeftRightBackSide = wheelDistLeftRight;
+            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+                this.wheelRadius = wheelRadius;
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().setParameter("r_nom", wheelRadius);
             }
         }else{
             //todo error
@@ -1174,10 +1102,15 @@ public class Vehicle {
      */
     double getWheelDistLeftRightFrontSide() {
         double returnValue = 0.0;
-        if(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized) {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle){
             returnValue = wheelDistLeftRightFrontSide;
         }else{
-            //todo error
+            if(vehicleInitialized) {
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                returnValue = modelicaPhysicalVehicle.getVDM().getValue("TW_f");
+            }else{
+                //todo error
+            }
         }
         return returnValue;
     }
@@ -1188,11 +1121,12 @@ public class Vehicle {
      * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
      */
     public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
-        if(physicalVehicle instanceof ModelicaPhysicalVehicle) {
-            if (!vehicleInitialized) {
+        if (!vehicleInitialized) {
+            if(physicalVehicle instanceof MassPointPhysicalVehicle){
                 this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().setParameter("TW_f", wheelDistLeftRightFrontSide);
             }
         }else{
             //todo error
@@ -1204,12 +1138,17 @@ public class Vehicle {
      *
      * @return Distance between left and right wheels of the back axel of the vehicle
      */
-    double getWheelDistLeftRightBackSide() {
+    double getWheelDistLeftRightBackSide(){
         double returnValue = 0.0;
-        if(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized) {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle){
             returnValue = wheelDistLeftRightBackSide;
         }else{
-            //todo error
+            if(vehicleInitialized){
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                returnValue = modelicaPhysicalVehicle.getVDM().getValue("TW_r");
+            }else{
+                //todo error
+            }
         }
         return returnValue;
     }
@@ -1220,41 +1159,91 @@ public class Vehicle {
      * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
      */
     public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
-        if(physicalVehicle instanceof ModelicaPhysicalVehicle) {
-            if (!vehicleInitialized) {
+        if (!vehicleInitialized) {
+            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
                 this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
             }else{
-                //todo erro
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().setParameter("TW_r", wheelDistLeftRightBackSide);
             }
         }else{
             //todo error
         }
     }
 
-
     /**
-     * Function that returns the distance between front and back wheels of the vehicle
+     * Function that returns the distance between the center of mass and the front axel of the vehicle
      *
-     * @return Distance between front and back wheels of the vehicle
+     * @return Distance between center of mass and front axel of the vehicle
      */
-    double getWheelDistFrontBack() {
+    double getWheelDistToFront() {
         double returnValue = 0.0;
-        if(!(physicalVehicle instanceof ModelicaPhysicalVehicle && !vehicleInitialized)) {
-            returnValue = wheelDistFrontBack;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            returnValue = wheelDistToFront;
         }else{
-            //todo error
+            if(vehicleInitialized){
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                returnValue = modelicaPhysicalVehicle.getVDM().getValue("L_1");
+            }else{
+                //todo error
+            }
         }
         return returnValue;
     }
 
     /**
-     * Function that sets the distance between front and back wheels of the vehicle
+     * Function that sets the distance between the center of mass and the front axel of the vehicle
      *
-     * @param wheelDistFrontBack New distance between front and back wheels of the vehicle
+     * @param wheelDistToFront New distance between center of mass and front axel of the vehicle
      */
-    public void setWheelDistFrontBack(double wheelDistFrontBack){
-        if(!vehicleInitialized) {
-            this.wheelDistFrontBack = wheelDistFrontBack;
+    public void setWheelDistToFront(double wheelDistToFront){
+        if (!vehicleInitialized) {
+            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+                this.wheelDistToFront = wheelDistToFront;
+            } else {
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().setParameter("L_1", wheelDistToFront);
+            }
+        }else{
+            //todo error
+        }
+    }
+
+    /**
+     * Function that returns the distance between the center of mass and the back axel of the vehicle
+     *
+     * @return Distance between center of mass and back axel of the vehicle
+     */
+    double getWheelDistToBack() {
+        double returnValue = 0.0;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            returnValue = wheelDistToBack;
+        }else{
+            if(vehicleInitialized){
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                returnValue = modelicaPhysicalVehicle.getVDM().getValue("L_2");
+            }else{
+                //todo error
+            }
+        }
+        return returnValue;
+    }
+
+    /**
+     * Function that sets the distance between the center of mass and the back axel of the vehicle
+     *
+     * @param wheelDistToBack New distance between center of mass and back axel of the vehicle
+     */
+    public void setWheelDistToBack(double wheelDistToBack){
+        if (!vehicleInitialized) {
+            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+                this.wheelDistToBack = wheelDistToBack;
+            }else {
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                modelicaPhysicalVehicle.getVDM().setParameter("L_2", wheelDistToBack);
+            }
+        }else{
+            //todo error
         }
     }
 
@@ -1356,7 +1345,7 @@ public class Vehicle {
             // Send vehicle data to controller
             if (!constantBusDataSent) {
                 controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
-                controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistFrontBack());
+                controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
                 controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), getApproxMaxTotalVelocity());
                 controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
                 controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
@@ -1473,7 +1462,7 @@ public class Vehicle {
         // Process navigation target without avoiding coordinates for reference
         Map<String, Object> navigationInputs = new LinkedHashMap<>();
         navigationInputs.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), WorldModel.getInstance().getControllerMap().getAdjacencies());
-        navigationInputs.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistFrontBack());
+        navigationInputs.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
         navigationInputs.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
         navigationInputs.put(NavigationEntry.TARGET_NODE.toString(), node);
         navigation.get().setInputs(navigationInputs);
@@ -1542,7 +1531,7 @@ public class Vehicle {
         // Process navigation target without avoiding coordinates for reference
         Map<String, Object> navigationInputsFiltered = new LinkedHashMap<>();
         navigationInputsFiltered.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), adjacencyFiltered);
-        navigationInputsFiltered.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistFrontBack());
+        navigationInputsFiltered.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
         navigationInputsFiltered.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
         navigationInputsFiltered.put(NavigationEntry.TARGET_NODE.toString(), node);
         navigation.get().setInputs(navigationInputsFiltered);
@@ -1748,9 +1737,9 @@ public class Vehicle {
                 " , maxTemporaryAllowedVelocity: " + maxTemporaryAllowedVelocity +
                 " , wheelRadius: " + wheelRadius +
                 " , wheelDistLeftRightFrontSide: " + wheelDistLeftRightFrontSide +
-                " , wheelDistFrontBack: " + wheelDistFrontBack +
-                " , massFront: " + massFront +
-                " , massBack " + massBack +
+                " , wheelDistToFront: " + wheelDistToFront +
+                " , wheelDistToBack: " + wheelDistToBack +
+                " , mass: " + mass +
                 " , constantBusDataSent: " + constantBusDataSent +
                 " , motor: " + motor +
                 " , brakesFrontLeft: " + brakesFrontLeft +

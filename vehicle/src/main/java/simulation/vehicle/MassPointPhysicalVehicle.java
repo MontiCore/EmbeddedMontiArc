@@ -75,11 +75,11 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     public MassPointPhysicalVehicle(){
         super();
-        // Before the initialisation the center of geometry position is at the origin
+        // Before the initialisation the center of mass position is at the origin
+        position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         // Sets origin of the local coordinate system to the center of the bottom side of the vehicle
-        position = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() * -0.5});
         // Set geometry position offset, works because the center of geometry position is at the origin
-        geometryPositionOffset = position.mapMultiply(-1.0);
+        geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() * 0.5});
 
         Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
     }
@@ -189,7 +189,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public double getMass(){
-        return simulationVehicle.getMassFront() + simulationVehicle.getMassBack();
+        return simulationVehicle.getMass();
     }
 
     /**
@@ -240,30 +240,6 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
         // toDo why not
-    }
-
-    /**
-     * Function that sets the error flag
-     * @param error New Error flag of the physical object
-     */
-    @Override
-    public void setError(boolean error){
-        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at start: " + this);
-        this.error = error;
-
-        if (error) {
-            this.velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            this.acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            this.angularVelocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            this.angularMomentum = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            this.angularMomentumDeriv = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            for(MassPoint point : wheelMassPoints){
-                point.setVelocity(new ArrayRealVector(new double[] {0.0, 0.0, 0.0}));
-                point.setForce(new ArrayRealVector(new double[] {0.0, 0.0, 0.0}));
-            }
-        }
-
-        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at end: " + this);
     }
 
     /**
@@ -543,18 +519,19 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     @Override
     public void initPhysics() {
         if(!physicalVehicleInitialized) {
-            // Resets origin of the local coordinate system to the center of the bottom side of the vehicle
-            // Works, because between construction and initialisation the position and rotation of the physicalVehicle have not changed
-            position = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() * -0.5});
+            // Before the initialisation the center of mass position is at the origin
+            position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+            // Sets origin of the local coordinate system to the center of the bottom side of the vehicle
             // Set geometry position offset, works because the center of geometry position is at the origin
-            geometryPositionOffset = position.mapMultiply(-1.0);
+            geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() * 0.5});
 
             // Create Mass Points
             createMassPoints(
-                    simulationVehicle.getMassFront(),
-                    simulationVehicle.getMassBack(),
-                    simulationVehicle.getWheelDistLeftRight(),
-                    simulationVehicle.getWheelDistFrontBack());
+                    simulationVehicle.getMass(),
+                    simulationVehicle.getWheelDistLeftRightFrontSide(),
+                    simulationVehicle.getWheelDistLeftRightBackSide(),
+                    simulationVehicle.getWheelDistToFront(),
+                    simulationVehicle.getWheelDistToBack());
 
             // Initialize vectors and matrices
             localPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
@@ -574,7 +551,12 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             // Calculate and set correct center of mass position
             initLocalPosition();
             // Calculate change of center of mass position
-            RealVector centerOfMassShift = oldCenterOfMassPosition.subtract(localPosition);
+            /* RealVector centerOfMassShift = oldCenterOfMassPosition.subtract(localPosition);
+            if(centerOfMassShift.getEntry(0) == 0 && centerOfMassShift.getEntry(1) == 0 && centerOfMassShift.getEntry(2) == 0){
+                System.out.println("Success");
+            }else{
+                System.out.println(centerOfMassShift);
+            }
             // Shift local coordinate system to put center of mass position at the origin
             localPosition = localPosition.add(centerOfMassShift);
             geometryPositionOffset = geometryPositionOffset.add(centerOfMassShift);
@@ -590,7 +572,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].setLocalPos(rightFrontWheelLocalPosition);
             wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()].setLocalPos(leftBackWheelLocalPosition);
             wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()].setLocalPos(rightBackWheelLocalPosition);
-            position = position.add(rotation.operate(centerOfMassShift));
+            position = position.add(rotation.operate(centerOfMassShift)); */
 
             // Initialize remaining values
             initMassPointLocalCenterDiff();
@@ -612,19 +594,20 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * Function that creates the mass points with local position and mass
      * Should only be called by initMassPointPhysics
      *
-     * @param massFront          Sum of mass for both front wheels
-     * @param massBack           Sum of mass for both back wheels
-     * @param wheelDistLeftRight Distance between left and right wheels
-     * @param wheelDistFrontBack Distance between front and back wheels
+     * @param mass Mass of the vehicle
+     * @param wheelDistLeftRightFrontSide Distance between left and right wheels at front axel
+     * @param wheelDistLeftRightBackSide Distance between left and right wheels at back axel
+     * @param wheelDistToFront Distance between center of mass and front axel
+     * @param wheelDistToBack Distance between center of mass and back axel
      */
-    private void createMassPoints(double massFront, double massBack,  double wheelDistLeftRight, double wheelDistFrontBack) {
-        RealVector localPositionFrontLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
-        RealVector localPositionFrontRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
-        RealVector localPositionBackLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), -(wheelDistFrontBack / 2), 0.0});
-        RealVector localPositionBackRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), -(wheelDistFrontBack / 2), 0.0});
+    private void createMassPoints(double mass, double wheelDistLeftRightFrontSide, double wheelDistLeftRightBackSide, double wheelDistToFront, double wheelDistToBack) {
+        RealVector localPositionFrontLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRightFrontSide / 2), wheelDistToFront, 0.0});
+        RealVector localPositionFrontRight = new ArrayRealVector(new double[]{(wheelDistLeftRightFrontSide / 2), wheelDistToFront, 0.0});
+        RealVector localPositionBackLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRightBackSide / 2), -wheelDistToBack, 0.0});
+        RealVector localPositionBackRight = new ArrayRealVector(new double[]{(wheelDistLeftRightBackSide / 2), -wheelDistToBack, 0.0});
+        double massFront = mass / ((wheelDistToFront/wheelDistToBack)+1);
+        double massBack = mass / ((wheelDistToBack/wheelDistToFront)+1);
         RealVector zeroVector = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-        //RealVector gravitationVectorFrontWheel = new ArrayRealVector(new double[]{0.0, 0.0, (massFront / 2) * -9.81});
-        //RealVector gravitationVectorBackWheel = new ArrayRealVector(new double[]{0.0, 0.0, (massBack / 2) * -9.81});
 
         wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_FRONT_LEFT, localPositionFrontLeft, zeroVector, zeroVector, zeroVector, zeroVector, zeroVector, (massFront / 2));
         wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_FRONT_RIGHT, localPositionFrontRight, zeroVector, zeroVector, zeroVector, zeroVector, zeroVector, (massFront / 2));
@@ -649,8 +632,13 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         for (MassPoint mp : wheelMassPoints) {
             result = result.add(mp.getLocalPos().mapMultiplyToSelf(mp.getMass()));
         }
-
-        localPosition = result.mapDivideToSelf(getMass());
+        result = result.mapDivideToSelf(getMass());
+        if(result.getNorm() == 0.0) {
+            localPosition = result.mapDivideToSelf(getMass());
+        }else{
+            System.out.println(result + "Something is not right");
+            //todo Error
+        }
         Log.finest("PhysicalVehicle: initLocalPos - PhysicalVehicle at end: " + this);
     }
 
@@ -1290,7 +1278,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         double curveRadiusSin = Math.sin(steeringAngle);
 
         if (curveRadiusSin != 0.0) {
-            double wheelDistFrontBack = getSimulationVehicle().getWheelDistFrontBack();
+            double wheelDistFrontBack = getSimulationVehicle().getWheelDistToFront() + getSimulationVehicle().getWheelDistToBack();
             double curveRadiusVectorLength = (wheelDistFrontBack / curveRadiusSin);
             RealVector curveRadiusVector = (wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].getPos().subtract(wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()].getPos()));
 

@@ -459,6 +459,7 @@
  */
 package simulation.simulator;
 
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import commons.simulation.SimulationLoopExecutable;
 import commons.simulation.SimulationLoopNotifiable;
@@ -466,6 +467,7 @@ import simulation.util.Plotter2D;
 import simulation.vehicle.MassPoint;
 import simulation.vehicle.MassPointPhysicalVehicle;
 import simulation.vehicle.ModelicaPhysicalVehicle;
+import simulation.vehicle.VehicleActuatorType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -475,6 +477,10 @@ import java.util.List;
  */
 
 public class SimulationPlotter2D implements SimulationLoopNotifiable {
+
+    //private double acceleration = 0.0;
+    //private double velocity = 0.0;
+    //private double position = 0.0;
 
     // Lists to store the data separately for plotting later
     private List<Long> simulationTimePoints = new LinkedList<>();
@@ -497,15 +503,31 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
 
             // Convert the argument to PhysicalVehicle type
             ModelicaPhysicalVehicle plottingVehicle = ((ModelicaPhysicalVehicle) simulationObject);
-
+            //double motorAcceleration = plottingVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).getActuatorValueCurrent();
+            //double brakeAcceleration = plottingVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).getActuatorValueCurrent()/4
+            //        + plottingVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).getActuatorValueCurrent()/4
+            //        + plottingVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).getActuatorValueCurrent()/4
+            //        + plottingVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).getActuatorValueCurrent()/4;
+            //if(velocity < 0.1 && motorAcceleration == 0.0 && brakeAcceleration > 0.0){
+                //velocity = 0.0;
+            //}else{
+                //velocity = velocity + (motorAcceleration - brakeAcceleration) * deltaTime/1000.0;
+            //}
+            //position = position + velocity * deltaTime/1000.0;
             // Get current position and velocity of the vehicle
             vehiclePosition.add(plottingVehicle.getPosition());
+            //vehiclePosition.add(new ArrayRealVector(new Double[]{0.0, position, 0.0}));
             vehicleVelocity.add(plottingVehicle.getVelocity());
+            //vehicleVelocity.add(new ArrayRealVector(new Double[]{0.0, velocity, 0.0}));
             List<Double> wheelsBuffer = new LinkedList<>();
             wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_1"));
             wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_2"));
             wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_3"));
             wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_4"));
+            //wheelsBuffer.add(new Double(0.0));
+            //wheelsBuffer.add(new Double(0.0));
+            //wheelsBuffer.add(new Double(0.0));
+            //wheelsBuffer.add(new Double(0.0));
             wheelRotationRates.add(wheelsBuffer);
 
             // Store current simulation time

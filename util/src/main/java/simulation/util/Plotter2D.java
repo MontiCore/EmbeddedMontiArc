@@ -47,9 +47,9 @@ public class Plotter2D extends ApplicationFrame
         JFreeChart velocityChart = vehicleVelocityChart(vehicleVelocity, simulationTimePoints);
         JFreeChart rotationRatesChart = wheelRotationRatesChart(wheelRotationRates, simulationTimePoints);
         try {
-            ChartUtilities.saveChartAsPNG(new File("position.png"), positionChart, 750, 450);
-            ChartUtilities.saveChartAsPNG(new File("velocity.png"), velocityChart, 750, 450);
-            ChartUtilities.saveChartAsPNG(new File("rotationRate.png"), rotationRatesChart, 750, 450);
+            ChartUtilities.saveChartAsPNG(new File("StepSize4Position.png"), positionChart, 750, 450);
+            ChartUtilities.saveChartAsPNG(new File("StepSize4Velocity.png"), velocityChart, 750, 450);
+            ChartUtilities.saveChartAsPNG(new File("StepSize4RotationRate.png"), rotationRatesChart, 750, 450);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -224,13 +224,13 @@ public class Plotter2D extends ApplicationFrame
 
         // Create XY Series objects for storing the velocity of the vehicle
         final XYSeries VehicleVelXY = new XYSeries("v_y", false, true);
-        List<Double>  temporaryNorm = new LinkedList<Double>();
+        List<Double>  temporary = new LinkedList<Double>();
 
         // Retrieving velocity coordinates of the vehicle
         for(int i=0; i<vehicleVelocity.size(); i++){
 
-            temporaryNorm.add(vehicleVelocity.get(i).getEntry(1));
-            VehicleVelXY.add(simTime.get(i), temporaryNorm.get(i));
+            temporary.add(vehicleVelocity.get(i).getEntry(1));
+            VehicleVelXY.add(simTime.get(i), temporary.get(i));
 
         }
 

@@ -84,10 +84,12 @@ public class MassPointBuilderTest {
         Assert.assertEquals(carProps.getWidth(), v.getSimulationVehicle().getWidth(), 0);
         Assert.assertEquals(carProps.getLength(), v.getSimulationVehicle().getLength(), 0);
         Assert.assertEquals(carProps.getApproxMaxTotalVelocity(), v.getSimulationVehicle().getApproxMaxTotalVelocity(), 0);
+        Assert.assertEquals(carProps.getMass(), v.getSimulationVehicle().getMass(), 0);
         Assert.assertEquals(carProps.getWheelRadius(), v.getSimulationVehicle().getWheelRadius(), 0);
-        Assert.assertEquals(carProps.getWheelDistFrontBack(), v.getSimulationVehicle().getWheelDistFrontBack(), 0);
-        Assert.assertEquals(carProps.getWheelDistLeftRight(), v.getSimulationVehicle().getWheelDistLeftRight(), 0);
-        Assert.assertEquals(carProps.getWheelDistLeftRight(), v.getSimulationVehicle().getWheelDistLeftRight(), 0);
+        Assert.assertEquals(carProps.getWheelDistToFront(), v.getSimulationVehicle().getWheelDistToFront(), 0);
+        Assert.assertEquals(carProps.getWheelDistToBack(), v.getSimulationVehicle().getWheelDistToBack(), 0);
+        Assert.assertEquals(carProps.getWheelDistLeftRightFrontSide(), v.getSimulationVehicle().getWheelDistLeftRightFrontSide(), 0);
+        Assert.assertEquals(carProps.getWheelDistLeftRightBackSide(), v.getSimulationVehicle().getWheelDistLeftRightBackSide(), 0);
 
         Assert.assertSame(carProps.getType(), v.getPhysicalObjectType());
 

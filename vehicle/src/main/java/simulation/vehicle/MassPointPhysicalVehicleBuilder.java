@@ -67,11 +67,12 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         physicalVehicle.getSimulationVehicle().setLength(data.length);
         physicalVehicle.getSimulationVehicle().setHeight(data.height);
 
-        physicalVehicle.getSimulationVehicle().setMassFront(data.massFront);
-        physicalVehicle.getSimulationVehicle().setMassBack(data.massBack);
+        physicalVehicle.getSimulationVehicle().setMass(data.mass);
         physicalVehicle.getSimulationVehicle().setWheelRadius(data.wheelRadius);
-        physicalVehicle.getSimulationVehicle().setWheelDistLeftRight(data.wheelDistLeftRight);
-        physicalVehicle.getSimulationVehicle().setWheelDistFrontBack(data.wheelDistFrontBack);
+        physicalVehicle.getSimulationVehicle().setWheelDistLeftRightFrontSide(data.wheelDistLeftRightFrontSide);
+        physicalVehicle.getSimulationVehicle().setWheelDistLeftRightBackSide(data.wheelDistLeftRightBackSide);
+        physicalVehicle.getSimulationVehicle().setWheelDistToFront(data.wheelDistToFront);
+        physicalVehicle.getSimulationVehicle().setWheelDistToBack(data.wheelDistToBack);
 
         physicalVehicle.getSimulationVehicle().setControllerBus(Optional.empty());
         physicalVehicle.getSimulationVehicle().setController(Optional.empty());
@@ -135,11 +136,12 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         private double rotY;
         private double rotZ;
 
-        private double massFront;
-        private double massBack;
+        private double mass;
         private double wheelRadius;
-        private double wheelDistLeftRight;
-        private double wheelDistFrontBack;
+        private double wheelDistLeftRightFrontSide;
+        private double wheelDistLeftRightBackSide;
+        private double wheelDistToFront;
+        private double wheelDistToBack;
 
         private ArrayList<VehicleActuator> actuators = new ArrayList<>();
 
@@ -158,13 +160,14 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             posY = v.getPosition().getEntry(1);
             posZ = v.getPosition().getEntry(2);
 
-            massFront = v.getSimulationVehicle().getMassFront();
-            massBack = v.getSimulationVehicle().getMassBack();
+            mass = v.getSimulationVehicle().getMass();
             wheelRadius = v.getSimulationVehicle().getWheelRadius();
 
-            wheelDistLeftRight = v.getSimulationVehicle().getWheelDistLeftRight();
+            wheelDistLeftRightFrontSide = v.getSimulationVehicle().getWheelDistLeftRightFrontSide();
+            wheelDistLeftRightBackSide = v.getSimulationVehicle().getWheelDistLeftRightBackSide();
 
-            wheelDistFrontBack = v.getSimulationVehicle().getWheelDistFrontBack();
+            wheelDistToFront = v.getSimulationVehicle().getWheelDistToFront();
+            wheelDistToBack = v.getSimulationVehicle().getWheelDistToBack();
 
             type = v.getPhysicalObjectType();
         }
@@ -209,24 +212,28 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             return rotZ;
         }
 
-        public double getMassFront() {
-            return massFront;
-        }
-
-        public double getMassBack() {
-            return massBack;
+        public double getMass() {
+            return mass;
         }
 
         public double getWheelRadius() {
             return wheelRadius;
         }
 
-        public double getWheelDistLeftRight() {
-            return wheelDistLeftRight;
+        public double getWheelDistLeftRightFrontSide() {
+            return wheelDistLeftRightFrontSide;
         }
 
-        public double getWheelDistFrontBack() {
-            return wheelDistFrontBack;
+        public double getWheelDistLeftRightBackSide() {
+            return wheelDistLeftRightBackSide;
+        }
+
+        public double getWheelDistToFront() {
+            return wheelDistToFront;
+        }
+
+        public double getWheelDistToBack() {
+            return wheelDistToBack;
         }
 
         public ArrayList<VehicleActuator> getActuators() {

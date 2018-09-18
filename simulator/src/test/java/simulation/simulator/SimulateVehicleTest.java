@@ -508,13 +508,13 @@ public class SimulateVehicleTest {
         sim.setPausedInFuture(true);
     }
 
-    @Test
+    /*@Test
     public void firstTest(){
         Simulator sim = Simulator.getSharedInstance();
         //sim.registerLoopObserver(new SimulationPlotter2D());
 
         // Create a new vehicle
-        ModelicaPhysicalVehicleBuilder physicalVehicleBuilder = new ModelicaPhysicalVehicleBuilder();
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
         PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
@@ -623,7 +623,7 @@ public class SimulateVehicleTest {
         sim.stopSimulation();
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
         assertTrue(true);
-    }
+    }*/
 
     @Test
     public void testMotor() {
@@ -1196,7 +1196,7 @@ public class SimulateVehicleTest {
         assertTrue(velocityStart.getEntry(2) == velocityEnd.getEntry(2));
     }
 
-    @Test
+    /*@Test
     public void testMassDistribution() {
         Simulator sim = Simulator.getSharedInstance();
 
@@ -1230,7 +1230,7 @@ public class SimulateVehicleTest {
         }else {
             assertTrue(true);
         }
-    }
+    }*/
 
     @Test
     public void testMassPointDistances() {

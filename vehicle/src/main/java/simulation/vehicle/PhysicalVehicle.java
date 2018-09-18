@@ -708,6 +708,17 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     }
 
     /**
+     * Function that sets the error flag
+     * @param error New Error flag of the physical object
+     */
+    @Override
+    public void setError(boolean error){
+        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at start: " + this);
+        this.error = error;
+        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at end: " + this);
+    }
+
+    /**
      * Function that returns the collision flag
      * @return Collision flag of the physical object
      */

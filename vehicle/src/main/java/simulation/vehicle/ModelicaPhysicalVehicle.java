@@ -37,7 +37,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
     /** Attributes used for medelica physics */
     /** Default step size in milliseconds */
-    private int stepSizems = 2;
+    private int stepSizems = 4;
 
     /** Current rotation around the local z axis */
     private double yaw_angle;
@@ -231,22 +231,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
         // toDo why not
-    }
-
-    /**
-     * Function that sets the error flag
-     * @param error New Error flag of the physical object
-     */
-    @Override
-    public void setError(boolean error){
-        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at start: " + this);
-        this.error = error;
-
-        if (error) {
-            this.force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        }
-
-        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at end: " + this);
     }
 
     /**
@@ -563,15 +547,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
             rotation = coordinateRotation.copy();
             yaw_angle = 0.0;
-
-            //Overwrite parameters in vehicle with VDM values
-            simulationVehicle.setMass(vehicleDynamicsModel.getValue("m"));
-            simulationVehicle.setWheelDistLeftRightFrontSide(vehicleDynamicsModel.getValue("TW_f"));
-            simulationVehicle.setWheelDistLeftRightBackSide(vehicleDynamicsModel.getValue("TW_r"));
-            simulationVehicle.setWheelDistFrontBack(
-                    vehicleDynamicsModel.getValue("L_1")+
-                    vehicleDynamicsModel.getValue("L_2"));
-            simulationVehicle.setWheelRadius(vehicleDynamicsModel.getValue("r_nom"));
 
             physicalVehicleInitialized = true;
             simulationVehicle.setVehicleInitialized(true);
