@@ -65,7 +65,7 @@ def create_model(model, data, device_opts):
 		data = data
 		# data, output shape: {[3,224,224]}
   	
-		conv1_ = brew.conv(model, 'data', 'conv1_', dim_in=1, dim_out=64, kernel=3, stride=1)
+		conv1_ = brew.conv(model, data, 'conv1_', dim_in=1, dim_out=64, kernel=3, stride=1)
 		# conv1_, output shape: {[64,224,224]}
 		relu1_ = brew.relu(model, conv1_, conv1_)
   		conv2_ = brew.conv(model, relu1_, 'conv2_', dim_in=64, dim_out=64, kernel=3, stride=1)

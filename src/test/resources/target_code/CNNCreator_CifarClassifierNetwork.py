@@ -65,7 +65,7 @@ def create_model(model, data, device_opts):
 		data = data
 		# data, output shape: {[3,32,32]}
   	
-		conv2_1_ = brew.conv(model, 'data', 'conv2_1_', dim_in=1, dim_out=8, kernel=3, stride=1)
+		conv2_1_ = brew.conv(model, data, 'conv2_1_', dim_in=1, dim_out=8, kernel=3, stride=1)
 		# conv2_1_, output shape: {[8,32,32]}
         batchnorm2_1_ = mx.symbol.BatchNorm(data=conv2_1_,
             fix_gamma=True,
@@ -77,7 +77,7 @@ def create_model(model, data, device_opts):
             fix_gamma=True,
             name="batchnorm3_1_")
 	
-		conv2_2_ = brew.conv(model, 'data', 'conv2_2_', dim_in=1, dim_out=8, kernel=1, stride=1)
+		conv2_2_ = brew.conv(model, data, 'conv2_2_', dim_in=1, dim_out=8, kernel=1, stride=1)
 		# conv2_2_, output shape: {[8,32,32]}
         batchnorm2_2_ = mx.symbol.BatchNorm(data=conv2_2_,
             fix_gamma=True,
