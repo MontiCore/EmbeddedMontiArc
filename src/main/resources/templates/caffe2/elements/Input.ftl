@@ -6,7 +6,7 @@
 <#if heightIndex != 0><#assign indexList = indexList + [heightIndex]></#if>
 <#if widthIndex != 0><#assign indexList = indexList + [widthIndex]></#if>
 <#assign dimensions = element.element.outputTypes[0].dimensions>
-		${element.name}, label = AddInput(model, batch_size=100)
+		${element.name} = data
 <#include "OutputShape.ftl">
 <#if heightIndex != channelIndex + 1 || widthIndex != heightIndex + 1>
 		${element.name} = mx.symbol.transpose(data=${element.name},mx.sym.var    <#-- TODO: check how to adapt CNNArchLang transpose case -->
@@ -17,5 +17,3 @@
 		${element.name} = mx.symbol.reshape(data=${element.name},    <#-- TODO: check how to adapt CNNArchLang transpose case -->
             shape=(0,${element.element.outputTypes[0].channels?c},${element.element.outputTypes[0].height?c},${element.element.outputTypes[0].width?c}))
 </#if>
-		workspace.FeedBlob("${element.name}", ${element.name}, device_option=device_opts)
-		workspace.FeedBlob("label", label, device_option=device_opts)
