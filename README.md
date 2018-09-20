@@ -186,9 +186,9 @@ This guide is based on the installation guide from the Caffe2 website: https://c
 - **For GPU Support :** Before executing build_windows.bat, set the following:
 
 	```
-	Set CMAKE_GENERATOR=(quote)Visual Studio 14 2015 Win64(quote)
+	Set CMAKE_GENERATOR="Visual Studio 14 2015 Win64"
 	Set USE_CUDA=ON
-	Set TORCH_CUDA_ARCH_LIST=6.1 	 for GeForce GTX 1050 architecture
+	Set TORCH_CUDA_ARCH_LIST=6.1 	//This applies for GeForce GTX 1050 architecture
 	```
 	
 	Then execute build.windows.bat 
@@ -196,6 +196,6 @@ This guide is based on the installation guide from the Caffe2 website: https://c
 - Once Caffe2 is successfully compiled, add the system variable PYTHONPATH with the following directories in order to fix the possible error “ImportError: No module named Caffe2.python”:
 	C:\Python27\Lib;
 	C:\Phyton27\DLLs;
-	C:\Phyton27\Lib\lib-tk
-	C:\Users\Carlos\Documents\git\pytorch\build
+	C:\Phyton27\Lib\lib-tk;
+	YourRepositoryPath\pytorch\build
 
