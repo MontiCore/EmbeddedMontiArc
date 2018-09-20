@@ -17,7 +17,7 @@
 	<#assign kernelParameter = "kernel=[${kernelHeight},${kernelWidth}]">
 </#if>
 <#if input = tc.architectureInputs[0]>	<#-- TODO: CHECK COMPARISON -->
-		${element.name} = brew.conv(model, '${input}', '${element.name}', dim_in=1, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter})
+		${element.name} = brew.conv(model, ${input}, '${element.name}', dim_in=1, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter})
 <#else>
 		${element.name} = brew.conv(model, ${input}, '${element.name}', dim_in=${element.element.inputTypes[0].channels?c}, dim_out=${element.channels?c}, ${kernelParameter}, ${strideParameter})
 </#if>

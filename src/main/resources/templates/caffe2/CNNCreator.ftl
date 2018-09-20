@@ -179,7 +179,7 @@ img = cv2.imread("3.jpg")                                   # Load test image
 img = cv2.resize(img, (28,28))                              # Resize to 28x28
 img = cv2.cvtColor( img, cv2.COLOR_RGB2GRAY )               # Covert to grayscale
 img = img.reshape((1,1,28,28)).astype('float32')            # Reshape to (1,1,28,28)
-workspace.FeedBlob("${tc.architectureInputs[0]}", img, device_option=device_opts)  # FeedBlob
+workspace.FeedBlob("data", img, device_option=device_opts)  # FeedBlob
 workspace.RunNet('deploy_net', num_iter=1)                  # Forward
 
 print("\nInput: {}".format(img.shape))
