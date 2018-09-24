@@ -22,6 +22,19 @@ _output_names_ = ['predictions_label']
 
 EPOCHS     = 10000	# total training iterations
 BATCH_SIZE = 256	# batch size for training
+CONTEXT = 'gpu'
+EVAL_METRIC = 'accuracy'
+OPTIMIZER_TYPE = 'adam'
+BASE_LEARNING_RATE = 0.001
+WEIGHT_DECAY = 0.001
+POLICY = 'fixed'
+STEP_SIZE = 1
+EPSILON = 1e-8
+BETA1 = 0.9
+BETA2 = 0.999
+GAMMA = 0.999
+MOMENTUM = 0.9
+
 
 CURRENT_FOLDER      = os.path.join('./')
 DATA_FOLDER         = os.path.join(CURRENT_FOLDER, 'data')
@@ -36,8 +49,13 @@ ROOT_FOLDER         = os.path.join(CURRENT_FOLDER, 'model')
 INIT_NET = './model/init_net'
 PREDICT_NET = './model/predict_net'
 
-#device_opts = core.DeviceOption(caffe2_pb2.CPU, 0) #for CPU processing
-device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0) #for GPU processing
+# Move into train function if test of deploy_net is removed
+if CONTEXT == 'cpu':
+    device_opts = core.DeviceOption(caffe2_pb2.CPU, 0)
+    print("CPU mode selected")
+elif CONTEXT == 'gpu':
+    device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
+    print("GPU mode selected")
 
 def add_input(model, batch_size, db, db_type, device_opts):
     with core.DeviceScope(device_opts):
@@ -139,11 +157,38 @@ def add_training_operators(model, output, label, device_opts) :
 		loss = model.AveragedLoss(xent, "loss")
 
 		model.AddGradientOperators([loss])
-		opt = optimizer.build_sgd(model, base_learning_rate=0.01, policy="step", stepsize=1, gamma=0.999)  # , momentum=0.9
+
+        if OPTIMIZER_TYPE == 'adam':
+            if POLICY == 'step':
+                opt = optimizer.build_adam(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, stepsize=STEP_SIZE, beta1=BETA1, beta2=BETA2, epsilon=EPSILON)
+            elif POLICY == 'fixed' or POLICY == 'inv':
+                opt = optimizer.build_adam(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, beta1=BETA1, beta2=BETA2, epsilon=EPSILON)
+            print("adam optimizer selected")
+        elif OPTIMIZER_TYPE == 'sgd':
+            if POLICY == 'step':
+                opt = optimizer.build_sgd(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, stepsize=STEP_SIZE, gamma=GAMMA, momentum=MOMENTUM)
+            elif POLICY == 'fixed' or POLICY == 'inv':
+                opt = optimizer.build_sgd(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, gamma=GAMMA, momentum=MOMENTUM)
+            print("sgd optimizer selected")
+        elif OPTIMIZER_TYPE == 'rmsprop':
+            if POLICY == 'step':
+                opt = optimizer.build_rms_prop(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, stepsize=STEP_SIZE, decay=GAMMA, momentum=MOMENTUM, epsilon=EPSILON)
+            elif POLICY == 'fixed' or POLICY == 'inv':
+                opt = optimizer.build_rms_prop(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, decay=GAMMA, momentum=MOMENTUM, epsilon=EPSILON)
+            print("rmsprop optimizer selected")
+        elif OPTIMIZER_TYPE == 'adagrad':
+            if POLICY == 'step':
+                opt = optimizer.build_adagrad(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, stepsize=STEP_SIZE, decay=GAMMA, epsilon=EPSILON)
+            elif POLICY == 'fixed' or POLICY == 'inv':
+                opt = optimizer.build_adagrad(model, base_learning_rate=BASE_LEARNING_RATE, policy=POLICY, decay=GAMMA, epsilon=EPSILON)
+            print("adagrad optimizer selected")
 
 def add_accuracy(model, output, label, device_opts):
     with core.DeviceScope(device_opts):
-        accuracy = brew.accuracy(model, [output, label], "accuracy")
+        if EVAL_METRIC == 'accuracy':
+            accuracy = brew.accuracy(model, [output, label], "accuracy")
+        elif EVAL_METRIC == 'top_k_accuracy':
+            accuracy = brew.accuracy(model, [output, label], "accuracy", top_k=3)
         return accuracy
 
 def train(INIT_NET, PREDICT_NET, epochs, batch_size, device_opts) :
@@ -158,7 +203,7 @@ def train(INIT_NET, PREDICT_NET, epochs, batch_size, device_opts) :
 	add_training_operators(train_model, predictions, label, device_opts=device_opts)
 	add_accuracy(train_model, predictions, label, device_opts)
 	with core.DeviceScope(device_opts):
-		brew.add_weight_decay(train_model, 0.001)  # any effect???
+		brew.add_weight_decay(train_model, WEIGHT_DECAY)
 
 	# Initialize and create the training network
 	workspace.RunNetOnce(train_model.param_init_net)
@@ -199,7 +244,7 @@ def train(INIT_NET, PREDICT_NET, epochs, batch_size, device_opts) :
 	deploy_model = model_helper.ModelHelper(name="deploy_net", arg_scope=arg_scope, init_params=False)
 	create_model(deploy_model, "data", device_opts)
 
-	print("Saving test model")
+	print("Saving deploy model")
 	save_net(INIT_NET, PREDICT_NET, deploy_model)
 
 def save_net(init_net_path, predict_net_path, model):
@@ -240,12 +285,12 @@ def load_net(init_net_path, predict_net_path, device_opts):
 train(INIT_NET, PREDICT_NET, epochs=EPOCHS, batch_size=BATCH_SIZE, device_opts=device_opts)
 
 print '\n********************************************'
-print("Loading Test model")
+print("Loading Deploy model")
 load_net(INIT_NET, PREDICT_NET, device_opts=device_opts)
 
 img = cv2.imread("3.jpg")                                   # Load test image
 img = cv2.resize(img, (28,28))                              # Resize to 28x28
-img = cv2.cvtColor( img, cv2.COLOR_RGB2GRAY )               # Covert to grayscale
+img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY )               # Covert to grayscale
 img = img.reshape((1,1,28,28)).astype('float32')            # Reshape to (1,1,28,28)
 workspace.FeedBlob("data", img, device_option=device_opts)  # FeedBlob
 workspace.RunNet('deploy_net', num_iter=1)                  # Forward
