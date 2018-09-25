@@ -1,9 +1,9 @@
 package de.monticore.lang.monticar;
 
-grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
+grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath,
                       de.monticore.lang.monticar.CNNArch{
 
-    start EMACompilationUnit;
+    start EMAMCompilationUnit;
 
     BehaviorEmbedding = Architecture | MathStatements;
 

@@ -20,12 +20,11 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
-import de.monticore.lang.math._ast.ASTStatement;
-import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathSymbolTableCreatorTOP;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchSymbolTableCreator;
 import de.monticore.lang.monticar.emadl._ast.ASTMathStatements;
 import de.monticore.lang.monticar.emadl._visitor.EMADLDelegatorVisitor;
@@ -43,6 +42,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private final EMADLDelegatorVisitor visitor = new EMADLDelegatorVisitor();
 
     private EmbeddedMontiArcSymbolTableCreator emaSTC;
+    private EmbeddedMontiArcMathSymbolTableCreatorTOP emamSTC;
     private CNNArchSymbolTableCreator cnnArchSTC;
 
 
@@ -60,10 +60,12 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
     private void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         this.emaSTC = new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);//new ModifiedEMASymbolTableCreator(resolvingConfig, scopeStack);
         this.cnnArchSTC = new CNNArchSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
 
         visitor.setEmbeddedMontiArcVisitor(emaSTC);
         visitor.setEmbeddedMontiArcBehaviorVisitor(
                 new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack));
+        visitor.setEmbeddedMontiArcMathVisitor(emamSTC);
 
         visitor.setEMADLVisitor(this);
         visitor.setCNNArchVisitor(cnnArchSTC);
@@ -87,7 +89,7 @@ public class EMADLSymbolTableCreator extends de.monticore.symboltable.CommonSymb
      */
 
 
-    public Scope createFromAST(ASTEMACompilationUnit rootNode) {
+    public Scope createFromAST(ASTEMAMCompilationUnit rootNode) {
         Log.errorIfNull(rootNode, "0xA7004_184 Error by creating of the EMADLSymbolTableCreator symbol table: top ast node is null");
         rootNode.accept(visitor);
         return getFirstCreatedScope();

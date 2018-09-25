@@ -43,9 +43,11 @@
         <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
         <Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>
         <Embedded-MontiArc-Math.version>0.0.19-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-MathOpt.version>0.1.1-SNAPSHOT</Embedded-MontiArc-MathOpt.version>
         <Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <CNNArch.version>0.2.4-SNAPSHOT</CNNArch.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
+        <MathOpt.version>0.1.0</MathOpt.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -177,10 +179,31 @@
         </dependency>
 
         <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>math-opt</artifactId>
+            <version>${MathOpt.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
             <artifactId>embedded-montiarc-math</artifactId>
             <version>${Embedded-MontiArc-Math.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math</artifactId>
+            <version>${Embedded-MontiArc-Math.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-opt</artifactId>
+            <version>${Embedded-MontiArc-MathOpt.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>de.monticore.lang.monticar</groupId>
