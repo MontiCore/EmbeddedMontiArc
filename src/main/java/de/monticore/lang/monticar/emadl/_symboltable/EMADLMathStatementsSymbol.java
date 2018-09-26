@@ -22,7 +22,6 @@ package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.math._ast.ASTStatement;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
-import de.monticore.lang.math._symboltable.MathStatementsSymbolKind;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.monticar.emadl._ast.ASTMathStatements;
 

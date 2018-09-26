@@ -25,7 +25,7 @@ import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
-import de.monticore.lang.math._symboltable.MathLanguage;
+import de.monticore.lang.mathopt._symboltable.MathOptLanguage;
 import de.monticore.lang.monticar.cnnarch._symboltable.CNNArchLanguage;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.lang.monticar.emadl.adapter.PortArraySymbol2IODeclarationSymbolTypeFilter;
@@ -42,7 +42,7 @@ public class EMADLLanguage extends EmbeddingModelingLanguage {
 
     public static final EmbeddedMontiArcLanguage HOST_LANGUAGE = new EmbeddedMontiArcLanguage();
     public static final CNNArchLanguage CNNARCH_LANGUAGE = new CNNArchLanguage();
-    public static final MathLanguage MATH_LANGUAGE = new MathLanguage();
+    public static final MathOptLanguage MATH_LANGUAGE = new MathOptLanguage();
 
 
     public EMADLLanguage() {

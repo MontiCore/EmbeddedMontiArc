@@ -50,6 +50,7 @@ public class AllCoCoTest extends AbstractCoCoTest {
 
         checkValid("models", "Add");
         checkValid("models", "simulator.SteeringAngleCalculator");
+
     }
 
     @Test
@@ -57,6 +58,11 @@ public class AllCoCoTest extends AbstractCoCoTest {
         checkInvalid("models",
                 "InvalidLayerInput",
                 new ExpectedErrorInfo(1, ErrorCodes.INVALID_ELEMENT_INPUT_SHAPE));
+    }
+
+    @Test
+    public void testMathOpt(){
+        checkValid("models", "MinimizePortsTest");
     }
 
 }

@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar;
 
-grammar EMADL extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath,
+grammar EMADL extends de.monticore.lang.EmbeddedMontiArcMathOpt,
                       de.monticore.lang.monticar.CNNArch{
 
     start EMAMCompilationUnit;
