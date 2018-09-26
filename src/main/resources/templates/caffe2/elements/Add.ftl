@@ -1,2 +1,2 @@
-        ${element.name} = ${tc.join(element.inputs, " + ")}
+    		${element.name} = ${tc.join(element.inputs, " + ")}
 <#include "OutputShape.ftl">

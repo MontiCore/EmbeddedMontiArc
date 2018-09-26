@@ -1,1 +1,1 @@
-        ${element.name} = ${element.inputs[element.index]}
+    		${element.name} = ${element.inputs[element.index]}
