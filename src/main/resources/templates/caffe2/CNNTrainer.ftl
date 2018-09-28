@@ -79,7 +79,6 @@ if __name__ == "__main__":
 <#else>
     context = 'gpu'
 </#if>
-</#list>
 <#--Code section that decides the mode cannot be moved into the load_net function since workspace.FeedBlob also needs this parameter-->
     if context == 'cpu':
         device_opts = core.DeviceOption(caffe2_pb2.CPU, 0)
@@ -87,6 +86,7 @@ if __name__ == "__main__":
     elif context == 'gpu':
         device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
         print("GPU mode selected")
+</#list>
 
     LeNet.load_net(LeNet.INIT_NET, LeNet.PREDICT_NET, device_opts=device_opts)
 
