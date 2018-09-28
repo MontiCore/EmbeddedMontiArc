@@ -192,11 +192,11 @@ class CNNCreator_Alexnet:
                 accuracy = brew.accuracy(model, [output, label], "accuracy", top_k=3)
             return accuracy
 
-    def train(self, num_epoch=1000, batch_size=64, device_opts='gpu', eval_metric='accuracy', opt_type='adam', base_learning_rate=0.001, weight_decay=0.001, policy='fixed', stepsize=1, epsilon=1E-8, beta1=0.9, beta2=0.999, gamma=0.999, momentum=0.9) :
-        if device_opts == 'cpu':
+    def train(self, num_epoch=1000, batch_size=64, context='gpu', eval_metric='accuracy', opt_type='adam', base_learning_rate=0.001, weight_decay=0.001, policy='fixed', stepsize=1, epsilon=1E-8, beta1=0.9, beta2=0.999, gamma=0.999, momentum=0.9) :
+        if context == 'cpu':
             device_opts = core.DeviceOption(caffe2_pb2.CPU, 0)
             print("CPU mode selected")
-        elif device_opts == 'gpu':
+        elif context == 'gpu':
             device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
             print("GPU mode selected")
 
