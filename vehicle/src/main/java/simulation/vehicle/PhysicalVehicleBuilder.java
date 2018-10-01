@@ -588,9 +588,10 @@ import java.util.Optional;
  */
 public abstract class PhysicalVehicleBuilder {
 
-    protected Optional<Bus> controllerBus = Optional.empty();
-    protected Optional<FunctionBlockInterface> controller = Optional.empty();
-    protected Optional<FunctionBlockInterface> navigation = Optional.empty();
+    protected Optional<Optional<Bus>> controllerBus = Optional.empty();
+    protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();
+    protected Optional<Optional<FunctionBlockInterface>> navigation = Optional.empty();
+    protected Optional<Double> mass = Optional.empty();
 
     /**
      * Constructor
@@ -607,17 +608,22 @@ public abstract class PhysicalVehicleBuilder {
     public abstract PhysicalVehicle buildPhysicalVehicle();
 
     public PhysicalVehicleBuilder setControllerBus(Optional<Bus> controllerBus){
-        this.controllerBus = controllerBus;
+        this.controllerBus = Optional.of(controllerBus);
         return this;
     }
 
     public PhysicalVehicleBuilder setController(Optional<FunctionBlockInterface> controller) {
-        this.controller = controller;
+        this.controller = Optional.of(controller);
         return this;
     }
 
     public PhysicalVehicleBuilder setNavigation(Optional<FunctionBlockInterface> navigation) {
-        this.navigation = navigation;
+        this.navigation = Optional.of(navigation);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setMass(double mass){
+        this.mass = Optional.of(mass);
         return this;
     }
 }

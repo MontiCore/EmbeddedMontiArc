@@ -822,9 +822,9 @@ public class Vehicle {
                 return brakesBackRight;
             case VEHICLE_ACTUATOR_TYPE_STEERING:
                 return steering;
+            default:
+                return null;
         }
-
-        return null;
     }
 
     /**
@@ -1413,17 +1413,12 @@ public class Vehicle {
             double steeringValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString()));
 
             // Set new values from bus to actuators
-            try {
-                motor.setActuatorValueTarget(motorValue);
-                brakesFrontLeft.setActuatorValueTarget(brakeValue);
-                brakesFrontRight.setActuatorValueTarget(brakeValue);
-                brakesBackLeft.setActuatorValueTarget(brakeValue);
-                brakesBackRight.setActuatorValueTarget(brakeValue);
-                steering.setActuatorValueTarget(steeringValue);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            motor.setActuatorValueTarget(motorValue);
+            brakesFrontLeft.setActuatorValueTarget(brakeValue);
+            brakesFrontRight.setActuatorValueTarget(brakeValue);
+            brakesBackLeft.setActuatorValueTarget(brakeValue);
+            brakesBackRight.setActuatorValueTarget(brakeValue);
+            steering.setActuatorValueTarget(steeringValue);
         }
     }
 

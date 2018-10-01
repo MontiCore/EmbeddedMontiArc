@@ -379,27 +379,22 @@ public final class MathHelper {
      * @return Inverse matrix of the input matrix
      */
     public static RealMatrix matrixInvert(RealMatrix matrix) throws Exception {
-        Log.finest("MathHelper: matrixInvert - Input matrix: " + matrix.toString());
-        RealMatrix result = null;
+        // Check for valid input
+        if(!matrix.isSquare()){
+            throw new IllegalArgumentException("Matrix should be a square matrix to be inverted"); //todo error
+        }
 
-        if (matrix.isSquare()) {
-            if (matrix.getColumnDimension() > 0) {
-                LUDecomposition lu = new LUDecomposition(matrix);
+        if (matrix.getColumnDimension() > 0) {
+            LUDecomposition lu = new LUDecomposition(matrix);
 
-                if (lu.getDeterminant() != 0.0) {
-                    DecompositionSolver solver = lu.getSolver();
-                    result = solver.getInverse();
-                }
+            if (lu.getDeterminant() != 0.0) {
+                DecompositionSolver solver = lu.getSolver();
+                return solver.getInverse();
             }
         }
 
-        if (result == null) {
-            Log.severe("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString());
-            throw new Exception("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString());
-        }
-
-        Log.finest("MathHelper: matrixInvert - Result matrix: " + result.toString());
-        return result;
+        Log.severe("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString());
+        throw new Exception("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString());
     }
 
     /**
@@ -414,7 +409,7 @@ public final class MathHelper {
         // Checks for valid input
         if (matrix.getColumnDimension() != 3 || !matrix.isSquare()) {
             Log.warning("MathHelper: matrix3DOrthonormalize - Input matrix is not a 3x3 matrix, also returned as result: " + matrix);
-            return matrix;
+            throw new IllegalArgumentException("Matrix should be a 3x3 matrix"); //todo error
         }
 
         // Prepare variables
@@ -473,25 +468,19 @@ public final class MathHelper {
      * Only supports 3-dimensional vectors and 3x3 matrices as result
      *
      * @param vector 3-dimensional vector for which the corresponding cross product matrix should be computed
-     * @throws Exception If vector is not convertible
      * @return 3x3 cross product matrix for the input 3-dimensional vector
      */
-    public static RealMatrix vector3DToCrossProductMatrix(RealVector vector) throws Exception {
+    public static RealMatrix vector3DToCrossProductMatrix(RealVector vector) {
         Log.finest("MathHelper: vector3DToCrossProductMatrix - Input vector: " + vector.toString());
-        RealMatrix result = null;
 
-        if (vector.getDimension() == 3) {
-            double[][] matrixEntries = {{0.0, -vector.getEntry(2), vector.getEntry(1)}, {vector.getEntry(2), 0.0, -vector.getEntry(0)}, {-vector.getEntry(1), vector.getEntry(0), 0.0}};
-            result = new BlockRealMatrix(matrixEntries);
-        }
-
-        if (result == null) {
+        // Check for valid input
+        if(vector.getDimension() != 3){
             Log.severe("MathHelper: vector3DToCrossProductMatrix - vector is not convertible: " + vector.toString());
-            throw new Exception("MathHelper: vector3DToCrossProductMatrix - vector is not convertible: " + vector.toString());
+            throw new IllegalArgumentException("Vector should be a three dimensional vector"); //todo error
         }
 
-        Log.finest("MathHelper: vector3DToCrossProductMatrix - Result matrix: " + result.toString());
-        return result;
+        double[][] matrixEntries = {{0.0, -vector.getEntry(2), vector.getEntry(1)}, {vector.getEntry(2), 0.0, -vector.getEntry(0)}, {-vector.getEntry(1), vector.getEntry(0), 0.0}};
+        return new BlockRealMatrix(matrixEntries);
     }
 
     /**
@@ -500,26 +489,22 @@ public final class MathHelper {
      *
      * @param vector1 First 3-dimensional vector that is used in cross product computation
      * @param vector2 Second 3-dimensional vector that is used in cross product computation
-     * @throws Exception If cross product cannot be computed
      * @return 3-dimensional cross product for the input 3-dimensional vectors
      */
-    public static RealVector vector3DCrossProduct(RealVector vector1, RealVector vector2) throws Exception {
+    public static RealVector vector3DCrossProduct(RealVector vector1, RealVector vector2) {
         Log.finest("MathHelper: vector3DCrossProduct - Input vector1: " + vector1.toString() + " , input vector2:" + vector2.toString());
-        RealVector result = null;
+
+        // Check for valid input
+        if(vector1.getDimension() != 3){
+            throw new IllegalArgumentException("First vector should be a three dimensional vector"); //todo error
+        }
+        if(vector2.getDimension() != 3){
+            throw new IllegalArgumentException("Second vector should be a three dimensional vector"); //todo error
+        }
 
         // This is also an example of how to use the vector3DToCrossProductMatrix function
-        if (vector1.getDimension() == 3 && vector2.getDimension() == 3) {
-            RealMatrix crossProductMatrixVector1 = vector3DToCrossProductMatrix(vector1);
-            result = crossProductMatrixVector1.operate(vector2);
-        }
-
-        if (result == null) {
-            Log.severe("MathHelper: vector3DCrossProduct - vector cross product can not be computed: Input vector1: " + vector1.toString() + " , input vector2:" + vector2.toString());
-            throw new Exception("MathHelper: vector3DCrossProduct - vector cross product can not be computed: Input vector1: " + vector1.toString() + " , input vector2:" + vector2.toString());
-        }
-
-        Log.finest("MathHelper: vector3DCrossProduct - Result vector: " + result.toString());
-        return result;
+        RealMatrix crossProductMatrixVector1 = vector3DToCrossProductMatrix(vector1);
+        return crossProductMatrixVector1.operate(vector2);
     }
 
     /**

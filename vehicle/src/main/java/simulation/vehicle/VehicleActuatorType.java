@@ -592,10 +592,6 @@ public enum VehicleActuatorType {
     VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT,
     VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT,
 
-
     /** A motor turing the steering wheel of the vehicle */
     VEHICLE_ACTUATOR_TYPE_STEERING,
-
-    /** Unknown actuator*/
-    VEHICLE_ACTUATOR_TYPE_UNKNOWN,
 }

@@ -37,7 +37,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
     /** Attributes used for medelica physics */
     /** Default step size in milliseconds */
-    private int stepSizems = 4;
+    private int stepSizems = 2;
 
     /** Current rotation around the local z axis */
     private double yaw_angle;
