@@ -3,10 +3,10 @@ from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
 import numpy as np
 
-#import logging
+import logging
 import os
+import sys
 #import shutil
-#import sys
 #import cv2
 
 class CNNCreator_Alexnet:
@@ -20,18 +20,12 @@ class CNNCreator_Alexnet:
     _output_names_ = ['predictions_label']
 
 
-    CURRENT_FOLDER      = os.path.join('./')
-    DATA_FOLDER         = os.path.join(CURRENT_FOLDER, 'data')
-    ROOT_FOLDER         = os.path.join(CURRENT_FOLDER, 'model')
+    CURRENT_DIR = os.path.join('./')
+    DATA_DIR    = os.path.join(CURRENT_DIR, 'data', 'Alexnet')
+    MODEL_DIR   = os.path.join(CURRENT_DIR, 'model', 'Alexnet')
 
-    #TODO: Modify paths to make them dynamic
-    #For Windows
-    #INIT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/init_net'
-    #PREDICT_NET = 'D:/Yeverino/git_projects/Caffe2_scripts/caffe2_ema_cnncreator/predict_net'
-
-    #For Ubuntu
-    INIT_NET = './model/init_net'
-    PREDICT_NET = './model/predict_net'
+    INIT_NET    = os.path.join(MODEL_DIR, 'init_net.pb')
+    PREDICT_NET = os.path.join(MODEL_DIR, 'predict_net.pb')
 
     def add_input(self, model, batch_size, db, db_type, device_opts):
         with core.DeviceScope(device_opts):
@@ -58,7 +52,7 @@ class CNNCreator_Alexnet:
 
     		data = data
     		# data, output shape: {[3,224,224]}
-  	
+
     		conv1_ = brew.conv(model, data, 'conv1_', dim_in=1, dim_out=96, kernel=11, stride=4)
     		# conv1_, output shape: {[96,55,55]}
     		lrn1_ = mx.symbol.LRN(data=conv1_,
@@ -200,12 +194,12 @@ class CNNCreator_Alexnet:
             device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
             print("GPU mode selected")
 
-    	workspace.ResetWorkspace(self.ROOT_FOLDER)
+    	workspace.ResetWorkspace(self.MODEL_DIR)
 
     	arg_scope = {"order": "NCHW"}
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
-    	data, label = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self.DATA_FOLDER, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self.DATA_DIR, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
     	predictions = self.create_model(train_model, data, device_opts=device_opts)
     	self.add_training_operators(train_model, predictions, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
@@ -227,7 +221,7 @@ class CNNCreator_Alexnet:
     	print("== Running Test model ==")
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
-    	data, label = self.add_input(test_model, batch_size=100, db=os.path.join(self.DATA_FOLDER, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label = self.add_input(test_model, batch_size=100, db=os.path.join(self.DATA_DIR, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
     	predictions = self.create_model(test_model, data, device_opts=device_opts)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
@@ -262,28 +256,43 @@ class CNNCreator_Alexnet:
     		model.params
     	)
 
+        try:
+            os.makedirs(self.MODEL_DIR)
+        except OSError:
+            if not os.path.isdir(self.MODEL_DIR):
+                raise
+
     	print("Save the model to init_net.pb and predict_net.pb")
-    	with open(predict_net_path + '.pb', 'wb') as f:
+    	with open(predict_net_path, 'wb') as f:
     		f.write(model.net._net.SerializeToString())
-    	with open(init_net_path + '.pb', 'wb') as f:
+    	with open(init_net_path, 'wb') as f:
     		f.write(init_net.SerializeToString())
 
     	print("Save the model to init_net.pbtxt and predict_net.pbtxt")
-    	with open(init_net_path + '.pbtxt', 'w') as f:
+
+    	with open(init_net_path.replace('.pb','.pbtxt'), 'w') as f:
     		f.write(str(init_net))
-    	with open(predict_net_path + '.pbtxt', 'w') as f:
+    	with open(predict_net_path.replace('.pb','.pbtxt'), 'w') as f:
     		f.write(str(predict_net))
     	print("== Saved init_net and predict_net ==")
 
     def load_net(self, init_net_path, predict_net_path, device_opts):
-    	init_def = caffe2_pb2.NetDef()
-    	with open(init_net_path + '.pb', 'rb') as f:
+        #TODO: Verify that paths ends in '.pb' and not in '.pbtxt'. The extension '.pbtxt' is not supported at the moment.
+        if not os.path.isfile(init_net_path):
+            logging.error("Network loading failure. File '" + os.path.abspath(init_net_path) + "' does not exist.")
+            sys.exit(1)
+        elif not os.path.isfile(predict_net_path):
+            logging.error("Network loading failure. File '" + os.path.abspath(predict_net_path) + "' does not exist.")
+            sys.exit(1)
+
+        init_def = caffe2_pb2.NetDef()
+    	with open(init_net_path, 'rb') as f:
     		init_def.ParseFromString(f.read())
     		init_def.device_option.CopyFrom(device_opts)
     		workspace.RunNetOnce(init_def.SerializeToString())
 
     	net_def = caffe2_pb2.NetDef()
-    	with open(predict_net_path + '.pb', 'rb') as f:
+    	with open(predict_net_path, 'rb') as f:
     		net_def.ParseFromString(f.read())
     		net_def.device_option.CopyFrom(device_opts)
     		workspace.CreateNet(net_def.SerializeToString(), overwrite=True)
