@@ -30,18 +30,18 @@
 
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-behaviour</artifactId>
-  <version>0.0.14-SNAPSHOT</version>
+  <version>0.0.15-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>5.0.0</monticore.version>
-    <se-commons.version>1.7.7</se-commons.version>
+    <monticore.version>5.0.1</monticore.version>
+    <se-commons.version>1.7.8</se-commons.version>
     <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
 	<Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>
+	<Embedded-MontiArc.version>0.1.6-SNAPSHOT</Embedded-MontiArc.version>
 	
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
@@ -50,9 +50,9 @@
 	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>5.0.0</monticore.plugin>
+    <monticore.plugin>5.0.1</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
-    <compiler.plugin>3.3</compiler.plugin>
+    <compiler.plugin>3.8.0</compiler.plugin>
     <source.plugin>2.4</source.plugin>
     <shade.plugin>2.4.3</shade.plugin>
 
@@ -321,6 +321,7 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
+                    <check/>
                     <format>xml</format>
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
