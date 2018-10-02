@@ -1,14 +1,25 @@
 package simulation.vehicle;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.concurrent.ExecutionException;
+import simulation.util.Log;
 
 /**
  * Class that tests the VehicleActuator class
  */
 public class VehicleActuatorTest {
+    @BeforeClass
+    public static void setUpClass() {
+        Log.setLogEnabled(false);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Log.setLogEnabled(true);
+    }
+
     @Test
     public void vehicleActuatorNormal() {
         // Test normal case

@@ -684,10 +684,10 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public void setHeight(double height){
-        if(!physicalVehicleInitialized) {
-            simulationVehicle.setHeight(height);
+        if(physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
         }
-        //toDo why not after physicalVehicle initialized
+        simulationVehicle.setHeight(height);
     }
 
     /**
@@ -793,14 +793,12 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     }
 
 
-
     /**
      * Function that requests the called object to update its state for given time difference
      * @param timeDiffMs Difference in time measured in milliseconds
      */
     @Override
     public void executeLoopIteration(long timeDiffMs) {
-
         if (this.error) {
             Log.finest("PhysicalVehicle: Vehicle collided or had a computational error and will therefore not move anymore, PhysicalVehicle: " + this);
             return;
@@ -822,7 +820,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
             simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).update(deltaT);
             simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(deltaT);
         }else{
-            // TODO: This logic should be moved to the controller!
             simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueCurrent(0.0);
             simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).setActuatorValueCurrent(0.0);
             simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).setActuatorValueCurrent(0.0);
@@ -838,7 +835,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
     /**
      * Function that returns the current simulation vehicle
-     *
      * @return Current simulation vehicle object
      */
     public Vehicle getSimulationVehicle() {
@@ -852,14 +848,16 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     public abstract void initPhysics();
 
     /**
+     * Function that returns the force that is acting on the vehicle
+     * @return Force acting on the vehicle
+     */
+    public abstract RealVector getForce();
+
+    /**
      * Function that returns if the physicalVehicle is initialized
-     *
      * @return Value of physicalVehicleInitialized
      */
     public boolean getPhysicalVehicleInitialized() {
         return physicalVehicleInitialized;
     }
-
-    public abstract RealVector getForce();
-    public abstract RealVector getAngularVelocity();
 }

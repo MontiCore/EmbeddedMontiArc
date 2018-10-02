@@ -1,12 +1,25 @@
 package simulation.vehicle;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import simulation.util.Log;
 
 /**
  * JUnit test for the Vehicle class
  */
 public class VehicleTest {
+    @BeforeClass
+    public static void setUpClass() {
+        Log.setLogEnabled(false);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Log.setLogEnabled(true);
+    }
+
     @Test
     public void setHeightNormal(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();

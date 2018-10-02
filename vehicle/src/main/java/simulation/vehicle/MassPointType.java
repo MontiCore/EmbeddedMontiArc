@@ -594,7 +594,4 @@ public enum MassPointType {
 
     /** Mass point located at the back right of the simulated vehicle */
     MASS_POINT_TYPE_WHEEL_BACK_RIGHT,
-
-    /** Mass point located at unknown position*/
-    MASS_POINT_TYPE_UNKNOWN,
 }

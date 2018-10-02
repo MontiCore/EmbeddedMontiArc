@@ -1,8 +1,17 @@
 package simulation.vehicle;
 
 import com.google.gson.Gson;
+import commons.simulation.PhysicalObjectType;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.util.Log;
+import simulation.util.MathHelper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,7 +26,6 @@ public class MassPointBuilderTest {
     private String testFile = "car_test.json";
     private File testFileAsFile;
 
-
     @BeforeClass
     public static void setUpClass() {
         Log.setLogEnabled(false);
@@ -30,26 +38,81 @@ public class MassPointBuilderTest {
 
     @Test
     public void buildDefaultVehicle(){
+        // Build default car
         MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = builder.buildPhysicalVehicle();
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
 
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
+        // Calculate expected values
+        double height = physicalVehicle.getHeight();
+        RealVector expectedPosition = new ArrayRealVector(new double[]{0.0, 0.0, - height/2});
+        Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
+        RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
+        RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        RealVector expectedAngularVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        RealVector expectedGeometryPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+
+
+        // Test not set/default parameters
         Assert.assertEquals(Optional.empty(), vehicle.getControllerBus());
         Assert.assertEquals(Optional.empty(), vehicle.getController());
         Assert.assertEquals(Optional.empty(), vehicle.getNavigation());
         Assert.assertEquals(Vehicle.VEHICLE_DEFAULT_MASS, vehicle.getMass(), 0);
+
+        // Test internal values
+        Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
+        Assert.assertFalse(physicalVehicle.getError());
+        Assert.assertFalse(physicalVehicle.getCollision());
+        Assert.assertTrue(physicalVehicle.getPhysicalVehicleInitialized());
+
+        // Test physical values
+        Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
+        Assert.assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
+        // todo mass distribution and distances
     }
 
     @Test
     public void buildCustomVehicle(){
+        // Build custom car
         MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
         builder.setMass(1000.0);
-        PhysicalVehicle physicalVehicle = builder.buildPhysicalVehicle();
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
 
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
+        // Calculate expected values
+        double height = physicalVehicle.getHeight();
+        RealVector expectedPosition = new ArrayRealVector(new double[]{0.0, 0.0, - height/2});
+        Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
+        RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
+        RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        RealVector expectedAngularVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+        RealVector expectedGeometryPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
+
+        // Test custom set parameters
         Assert.assertEquals(1000.0, vehicle.getMass(), 0);
+
+        // Test internal values
+        Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
+        Assert.assertFalse(physicalVehicle.getError());
+        Assert.assertFalse(physicalVehicle.getCollision());
+        Assert.assertTrue(physicalVehicle.getPhysicalVehicleInitialized());
+
+        // Test physical values
+        Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
+        Assert.assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
+        // todo mass distribution and distances
     }
 
     /**

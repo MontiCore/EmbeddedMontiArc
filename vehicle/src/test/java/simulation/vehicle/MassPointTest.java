@@ -591,7 +591,6 @@ import static org.junit.Assert.*;
  * Class that tests the MassPoint class
  */
 public class MassPointTest {
-
     private MassPoint mp = null;
 
     @BeforeClass
@@ -613,7 +612,7 @@ public class MassPointTest {
         RealVector velocity = new ArrayRealVector(new double[] {0.0, 50.3, -0.25});
         RealVector force = new ArrayRealVector(new double[] {5.02, 0.1, -39.4});
         double mass = 500.0;
-        mp = new MassPoint(MassPointType.MASS_POINT_TYPE_UNKNOWN, localPos, localCenterDiff, pos, centerDiff, velocity, force, mass);
+        mp = new MassPoint(MassPointType.MASS_POINT_TYPE_WHEEL_FRONT_LEFT, localPos, localCenterDiff, pos, centerDiff, velocity, force, mass);
     }
 
     @Test

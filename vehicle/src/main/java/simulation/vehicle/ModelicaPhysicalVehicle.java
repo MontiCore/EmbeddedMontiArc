@@ -35,7 +35,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     private RealVector geometryPositionOffset;
 
 
-    /** Attributes used for medelica physics */
+    /** Attributes used for modelica physics */
     /** Default step size in milliseconds */
     private int stepSizems = 2;
 
@@ -59,11 +59,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         super();
         vehicleDynamicsModel = new VehicleDynamicsModel();
 
-        // Before initialisation the center of mass position is the same as the center of geometry position and at the origin
-        // with no rotation
+        // Before initialisation
+        // the center of mass position is at the origin
+        // no rotation
+        // the center of geometry position is at the origin
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-        this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         this.rotation = coordinateRotation.copy();
+        this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
         Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
     }
@@ -472,12 +474,19 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
             //Initialize remaining variables
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            rotation = coordinateRotation.copy();
             yaw_angle = 0.0;
 
             physicalVehicleInitialized = true;
             simulationVehicle.setVehicleInitialized(true);
         }
+    }
+
+    /**
+     * Function that returns the force that is acting on the vehicle
+     * @return Force acting on the vehicle
+     */
+    public RealVector getForce(){
+        return force.copy();
     }
 
     /**
@@ -605,16 +614,15 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
     /**
      * Function that takes a RealVector with 3 components and gives a Vector3D
-     * @param vector RealVector to be turned into a Vector3D
+     * @param vector RealVector with 3 components to be turned into a Vector3D
      * @return Vector3D according to the RealVector vector
      */
     private Vector3D realTo3D(RealVector vector){
-        if(vector.getDimension() == 3) {
-            return new Vector3D(vector.getEntry(0), vector.getEntry(1), vector.getEntry(2));
-        }else{
+        if(vector.getDimension() != 3) {
             Log.warning("Input vector " + vector + " has not the right amount of components!");
-            return new Vector3D(0.0, 0.0, 0.0);
+            throw new IllegalArgumentException("Ha"); //todo error
         }
+        return new Vector3D(vector.getEntry(0), vector.getEntry(1), vector.getEntry(2));
     }
 
     /**
@@ -636,13 +644,5 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 " , error: " + error +
                 " , physicalVehicleInitialized: " + physicalVehicleInitialized +
                 " , simulationVehicle: " + simulationVehicle;
-    }
-
-    public RealVector getForce(){
-        return force.copy();
-    }
-    public RealVector getAngularVelocity(){
-        //return angularVelocity.copy();
-        return new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
     }
 }
