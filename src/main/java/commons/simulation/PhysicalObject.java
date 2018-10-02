@@ -71,18 +71,6 @@ public interface PhysicalObject {
     void setVelocity(RealVector velocity);
 
     /**
-     * Function that returns a copy of the acceleration vector of the center of mass
-     * @return Acceleration vector of the center of mass
-     */
-    RealVector getAcceleration();
-
-    /**
-     * Function that sets the accelerations vector of the center of mass
-     * @param acceleration New acceleration vector of the center of mass
-     */
-    void setAcceleration(RealVector acceleration);
-
-    /**
      * Function that adds an external force acting on the center of mass
      * @param force Force vector that acts on the center of mass
      */
