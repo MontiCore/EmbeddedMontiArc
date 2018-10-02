@@ -674,7 +674,7 @@ public class PhysicsEngine{
      * Function that calculates forces caused by a collision
      *
      * @param objectA First object for which the force should be computed
-     * @param objectB Sectond object for which force should be computed
+     * @param objectB Second object for which force should be computed
      * @param deltaT Time of the simulation step
      */
     private static void calcCollisionForces(PhysicalObject objectA, PhysicalObject objectB, double deltaT){

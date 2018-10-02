@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class VehicleActuatorTest {
     @Test
-    public void VehicleActuatorNormal() {
+    public void vehicleActuatorNormal() {
         // Test normal case
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
 

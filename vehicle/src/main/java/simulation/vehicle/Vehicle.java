@@ -1012,11 +1012,10 @@ public class Vehicle {
      * @param height New height of the vehicle
      */
     public void setHeight(double height){
-        if(!vehicleInitialized) {
-            this.height = height;
-        }else{
-            //todo error
+        if(vehicleInitialized){
+            throw new IllegalStateException("Ha"); //todo error
         }
+        this.height = height;
     }
 
     /**
@@ -1025,18 +1024,16 @@ public class Vehicle {
      * @return Mass of the vehicle
      */
     public double getMass() {
-        double returnValue = 0.0;
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            returnValue =  mass;
+            return mass;
         }else{
-            if(vehicleInitialized){
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                returnValue = modelicaPhysicalVehicle.getVDM().getValue("m");
+            if(!vehicleInitialized) {
+                throw new IllegalStateException("Ha"); //todo error
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return  modelicaPhysicalVehicle.getVDM().getValue("m");
             }
         }
-        return returnValue;
     }
 
     /**
@@ -1045,15 +1042,14 @@ public class Vehicle {
      * @param mass New mass of the vehicle
      */
     public void setMass(double mass){
-        if(!vehicleInitialized) {
-            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-                this.mass = mass;
-            }else{
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().setParameter("m", mass);
-            }
+        if(vehicleInitialized){
+            throw new IllegalStateException("Ha"); //Todo error
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.mass = mass;
         }else{
-            //todo error
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("m", mass);
         }
     }
 
@@ -1063,18 +1059,16 @@ public class Vehicle {
      * @return Wheel radius of the vehicle
      */
     public double getWheelRadius() {
-        double returnValue = 0.0;
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            returnValue = wheelRadius;
+            return wheelRadius;
         }else{
-            if(vehicleInitialized){
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().getValue("r_nom");
+            if(!vehicleInitialized) {
+                throw new IllegalStateException("Ha"); //todo error
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("r_nom");
             }
         }
-        return returnValue;
     }
 
     /**
@@ -1083,15 +1077,14 @@ public class Vehicle {
      * @param wheelRadius New wheel radius of the vehicle
      */
     public void setWheelRadius(double wheelRadius){
-        if(!vehicleInitialized) {
-            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-                this.wheelRadius = wheelRadius;
-            }else{
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().setParameter("r_nom", wheelRadius);
-            }
+        if(vehicleInitialized){
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelRadius = wheelRadius;
         }else{
-            //todo error
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("r_nom", wheelRadius);
         }
     }
 
@@ -1101,18 +1094,16 @@ public class Vehicle {
      * @return Distance between left and right wheels of the front axel of the vehicle
      */
     double getWheelDistLeftRightFrontSide() {
-        double returnValue = 0.0;
         if(physicalVehicle instanceof MassPointPhysicalVehicle){
-            returnValue = wheelDistLeftRightFrontSide;
+            return wheelDistLeftRightFrontSide;
         }else{
-            if(vehicleInitialized) {
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                returnValue = modelicaPhysicalVehicle.getVDM().getValue("TW_f");
+            if(!vehicleInitialized) {
+                throw new IllegalStateException("Ha"); //todo error
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("TW_f");
             }
         }
-        return returnValue;
     }
 
     /**
@@ -1121,15 +1112,14 @@ public class Vehicle {
      * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
      */
     public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
-        if (!vehicleInitialized) {
-            if(physicalVehicle instanceof MassPointPhysicalVehicle){
-                this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
-            }else{
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().setParameter("TW_f", wheelDistLeftRightFrontSide);
-            }
+        if (vehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle){
+            this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
         }else{
-            //todo error
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("TW_f", wheelDistLeftRightFrontSide);
         }
     }
 
@@ -1139,18 +1129,16 @@ public class Vehicle {
      * @return Distance between left and right wheels of the back axel of the vehicle
      */
     double getWheelDistLeftRightBackSide(){
-        double returnValue = 0.0;
         if(physicalVehicle instanceof MassPointPhysicalVehicle){
-            returnValue = wheelDistLeftRightBackSide;
+            return wheelDistLeftRightBackSide;
         }else{
-            if(vehicleInitialized){
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                returnValue = modelicaPhysicalVehicle.getVDM().getValue("TW_r");
+            if(!vehicleInitialized){
+                throw new IllegalStateException("Ha"); //todo error
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("TW_r");
             }
         }
-        return returnValue;
     }
 
     /**
@@ -1159,15 +1147,14 @@ public class Vehicle {
      * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
      */
     public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
-        if (!vehicleInitialized) {
-            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-                this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
-            }else{
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().setParameter("TW_r", wheelDistLeftRightBackSide);
-            }
+        if (vehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
         }else{
-            //todo error
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("TW_r", wheelDistLeftRightBackSide);
         }
     }
 
@@ -1177,18 +1164,16 @@ public class Vehicle {
      * @return Distance between center of mass and front axel of the vehicle
      */
     double getWheelDistToFront() {
-        double returnValue = 0.0;
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            returnValue = wheelDistToFront;
+            return wheelDistToFront;
         }else{
-            if(vehicleInitialized){
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                returnValue = modelicaPhysicalVehicle.getVDM().getValue("L_1");
+            if(!vehicleInitialized){
+                throw new IllegalStateException("Ha"); //todo error
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("L_1");
             }
         }
-        return returnValue;
     }
 
     /**
@@ -1197,15 +1182,14 @@ public class Vehicle {
      * @param wheelDistToFront New distance between center of mass and front axel of the vehicle
      */
     public void setWheelDistToFront(double wheelDistToFront){
-        if (!vehicleInitialized) {
-            if (physicalVehicle instanceof MassPointPhysicalVehicle) {
-                this.wheelDistToFront = wheelDistToFront;
-            } else {
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().setParameter("L_1", wheelDistToFront);
-            }
-        }else{
-            //todo error
+        if (vehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelDistToFront = wheelDistToFront;
+        } else {
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("L_1", wheelDistToFront);
         }
     }
 
@@ -1215,18 +1199,16 @@ public class Vehicle {
      * @return Distance between center of mass and back axel of the vehicle
      */
     double getWheelDistToBack() {
-        double returnValue = 0.0;
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-            returnValue = wheelDistToBack;
+            return wheelDistToBack;
         }else{
-            if(vehicleInitialized){
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                returnValue = modelicaPhysicalVehicle.getVDM().getValue("L_2");
+            if(!vehicleInitialized){
+                throw new IllegalStateException("Ha"); //tdo error
             }else{
-                //todo error
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("L_2");
             }
         }
-        return returnValue;
     }
 
     /**
@@ -1235,15 +1217,14 @@ public class Vehicle {
      * @param wheelDistToBack New distance between center of mass and back axel of the vehicle
      */
     public void setWheelDistToBack(double wheelDistToBack){
-        if (!vehicleInitialized) {
-            if(physicalVehicle instanceof MassPointPhysicalVehicle) {
-                this.wheelDistToBack = wheelDistToBack;
-            }else {
-                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
-                modelicaPhysicalVehicle.getVDM().setParameter("L_2", wheelDistToBack);
-            }
-        }else{
-            //todo error
+        if (vehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelDistToBack = wheelDistToBack;
+        }else {
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("L_2", wheelDistToBack);
         }
     }
 
@@ -1317,9 +1298,10 @@ public class Vehicle {
      * @param vehicleInitialized New value for the vehicle initialized flag
      */
     public void setVehicleInitialized(boolean vehicleInitialized){
-        if(vehicleInitialized){
-            this.vehicleInitialized = vehicleInitialized;
+        if(!vehicleInitialized){
+            throw new IllegalArgumentException("Ha"); //todo error
         }
+        this.vehicleInitialized = vehicleInitialized;
     }
 
 

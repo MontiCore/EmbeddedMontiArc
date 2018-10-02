@@ -7,9 +7,10 @@ import simulation.util.Log;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
- * Created by samuel on 15.12.16.
+ * Class that tests the MassPointPhysicalVehicleBuilder class
  */
 public class MassPointBuilderTest {
     private MassPointPhysicalVehicleBuilder.ParsableVehicleProperties carProps;
@@ -27,26 +28,40 @@ public class MassPointBuilderTest {
         Log.setLogEnabled(true);
     }
 
+    @Test
+    public void buildDefaultVehicle(){
+        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = builder.buildPhysicalVehicle();
+
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        Assert.assertEquals(Optional.empty(), vehicle.getControllerBus());
+        Assert.assertEquals(Optional.empty(), vehicle.getController());
+        Assert.assertEquals(Optional.empty(), vehicle.getNavigation());
+        Assert.assertEquals(Vehicle.VEHICLE_DEFAULT_MASS, vehicle.getMass(), 0);
+    }
+
+    @Test
+    public void buildCustomVehicle(){
+        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
+        builder.setMass(1000.0);
+        PhysicalVehicle physicalVehicle = builder.buildPhysicalVehicle();
+
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
+
+        Assert.assertEquals(1000.0, vehicle.getMass(), 0);
+    }
+
     /**
-     * In this setup method a valid JSON car file and String is created, which is later on used.
-     * The created file is registered for deletion on VM exit.
+     * Testing the loading a JSON serialized car from a file and construct the object using the @{@link PhysicalVehicleBuilder}.
      */
-    @Before
-    public void setUp() {
+    @Test
+    public void testLoadPropertiesFromFile() throws IOException {
         PhysicalVehicle v = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         carProps = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(v);
 
         testFileAsFile = new File(testFile);
         testFileAsFile.deleteOnExit();
-    }
-
-    /**
-     * Testing the loading a JSON serialized car from a file and construct the object using the @{@link PhysicalVehicleBuilder}.
-     *
-     * @throws IOException
-     */
-    @Test
-    public void testLoadPropertiesFromFile() throws IOException {
 
         Gson g = new Gson();
         String json = g.toJson(carProps, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
@@ -58,7 +73,7 @@ public class MassPointBuilderTest {
 
         MassPointPhysicalVehicleBuilder b = new MassPointPhysicalVehicleBuilder();
 
-        PhysicalVehicle v = b.loadPropertiesFromFile(new File(testFile));
+        v = b.loadPropertiesFromFile(new File(testFile));
         checkTheCar(v);
     }
 
@@ -68,8 +83,14 @@ public class MassPointBuilderTest {
      */
     @Test
     public void testStoreJSONInFile() throws IOException {
+        PhysicalVehicle v = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        carProps = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(v);
+
+        testFileAsFile = new File(testFile);
+        testFileAsFile.deleteOnExit();
+
         new MassPointPhysicalVehicleBuilder().storeJSONInFile(testFileAsFile);
-        PhysicalVehicle v = new MassPointPhysicalVehicleBuilder().loadPropertiesFromFile(testFileAsFile);
+        v = new MassPointPhysicalVehicleBuilder().loadPropertiesFromFile(testFileAsFile);
         checkTheCar(v);
     }
 

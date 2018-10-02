@@ -583,6 +583,7 @@ import commons.simulation.SimulationLoopExecutable;
 import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObjectType;
 import commons.simulation.IdGenerator;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.util.Log;
 import static simulation.vehicle.VehicleActuatorType.*;
@@ -747,6 +748,32 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return this.uniqueId;
     }
 
+
+    /*====================*/
+
+    /**
+     * Marked as deprecated in favour of getGeometryPosition
+     * Function that returns a vector with the x, y and z coordinates of the object
+     * This refers to the center position of the geometry object (i.e. NOT mass point position)
+     * @return Vector with x, y, z coordinates of the object center
+     */
+    @Override
+    @Deprecated
+    public RealVector getGeometryPos(){
+        return  getGeometryPosition();
+    }
+
+    /**
+     * Marked as deprecated in favour of getRotation
+     * Function that returns a matrix with the rotation of the object
+     * @return Matrix with the rotation of the object
+     */
+    @Override
+    @Deprecated
+    public RealMatrix getGeometryRot(){
+        return getRotation();
+    }
+
     /**
      * Function that returns the wheel radius of the physical vehicle
      * @return Wheel radius of the physical vehicle
@@ -763,6 +790,50 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     @Override
     public double getSteeringAngle(){
         return simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
+    }
+
+
+
+    /**
+     * Function that requests the called object to update its state for given time difference
+     * @param timeDiffMs Difference in time measured in milliseconds
+     */
+    @Override
+    public void executeLoopIteration(long timeDiffMs) {
+
+        if (this.error) {
+            Log.finest("PhysicalVehicle: Vehicle collided or had a computational error and will therefore not move anymore, PhysicalVehicle: " + this);
+            return;
+        }
+        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs + ", PhysicalVehicle at start: " + this);
+
+        simulationVehicle.updateAllSensors();
+
+        final double deltaT = (timeDiffMs / 1000.0);
+
+        // Exchange data with controller
+        simulationVehicle.exchangeDataWithController(deltaT);
+
+        // Update vehicle actuators
+        if (!this.collision) {
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).update(deltaT);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).update(deltaT);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).update(deltaT);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).update(deltaT);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(deltaT);
+        }else{
+            // TODO: This logic should be moved to the controller!
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueCurrent(0.0);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).setActuatorValueCurrent(0.0);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).setActuatorValueCurrent(0.0);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).setActuatorValueCurrent(0.0);
+            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).setActuatorValueCurrent(0.0);
+        }
+
+        simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
+        this.collision = false;
+
+        Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs +  ", PhysicalVehicle at end: " + this);
     }
 
     /**

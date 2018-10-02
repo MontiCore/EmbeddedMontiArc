@@ -389,32 +389,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         position = roadPlaneCenter.add(rotation.operate(roadPlaneCenterToPositionLocal));
     }
 
-
-    /*====================*/
-
-    /**
-     * Marked as deprecated in favour of getGeometryPosition
-     * Function that returns a vector with the x, y and z coordinates of the object
-     * This refers to the center position of the geometry object (i.e. NOT mass point position)
-     * @return Vector with x, y, z coordinates of the object center
-     */
-    @Override
-    @Deprecated
-    public RealVector getGeometryPos(){
-        return  getGeometryPosition();
-    }
-
-    /**
-     * Marked as deprecated in favour of getRotation
-     * Function that returns a matrix with the rotation of the object
-     * @return Matrix with the rotation of the object
-     */
-    @Override
-    @Deprecated
-    public RealMatrix getGeometryRot(){
-        return getRotation();
-    }
-
     /**
      * Function that returns a copy of the position vector of the center of the front right wheel
      * @return Position vector of the center of the front right wheel
@@ -480,54 +454,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     }
 
     /**
-     * Function that requests the called object to update its state for given time difference
-     * @param timeDiffMs Difference in time measured in milliseconds
-     */
-    @Override
-    public void executeLoopIteration(long timeDiffMs) {
-
-        simulationVehicle.updateAllSensors();
-
-        if (!this.error) {
-            Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs + ", PhysicalVehicle at start: " + this);
-
-            final double deltaT = (timeDiffMs / 1000.0);
-
-            // Exchange data with controller
-            simulationVehicle.exchangeDataWithController(deltaT);
-
-            // Update vehicle actuators
-            if (!this.collision) {
-                simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).update(deltaT);
-                simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).update(deltaT);
-                simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).update(deltaT);
-                simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).update(deltaT);
-                simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(deltaT);
-            }else{
-                // TODO: This logic should be moved to the controller!
-                try {
-                    simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueCurrent(0.0);
-                    simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).setActuatorValueCurrent(0.0);
-                    simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).setActuatorValueCurrent(0.0);
-                    simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).setActuatorValueCurrent(0.0);
-                    simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).setActuatorValueCurrent(0.0);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
-            this.collision = false;
-
-            Log.finest("PhysicalVehicle: executeLoopIteration - timeDiffMs: " + timeDiffMs +  ", PhysicalVehicle at end: " + this);
-        } else {
-            Log.finest("PhysicalVehicle: Vehicle collided or had a computational error and will therefore not move anymore, PhysicalVehicle: " + this);
-        }
-    }
-
-    /**
-     * Function that initializes the massPoint physics computations when the physicalVehicle is created
+     * Function that initializes the physics computations when the physicalVehicle is created
      * Should only be called by builder
      */
     @Override

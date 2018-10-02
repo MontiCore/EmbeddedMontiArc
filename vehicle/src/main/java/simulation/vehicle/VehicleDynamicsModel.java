@@ -86,6 +86,11 @@ public class VehicleDynamicsModel {
         }
         switch (name) {
             case "m":
+            case "r_nom":
+            case "L_1":
+            case "L_2":
+            case "TW_f":
+            case "TW_r":
                 chassis.write(name).with(value);
                 suspension.write(name).with(value);
                 break;
