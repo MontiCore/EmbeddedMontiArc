@@ -14,18 +14,14 @@ import simulation.util.Log;
 import simulation.util.MathHelper;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
 
 /**
  * Class that tests the MassPointPhysicalVehicleBuilder class
  */
 public class MassPointBuilderTest {
-    private MassPointPhysicalVehicleBuilder.ParsableVehicleProperties carProps;
-    private String testFile = "car_test.json";
-    private File testFileAsFile;
-
     @BeforeClass
     public static void setUpClass() {
         Log.setLogEnabled(false);
@@ -119,25 +115,25 @@ public class MassPointBuilderTest {
      * Testing the loading a JSON serialized car from a file and construct the object using the @{@link PhysicalVehicleBuilder}.
      */
     @Test
-    public void testLoadPropertiesFromFile() throws IOException {
-        PhysicalVehicle v = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        carProps = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(v);
+    public void loadFromFileTest() throws IOException {
+        // Create file
+        File testFile = new File("testFile.json");
+        testFile.deleteOnExit();
 
-        testFileAsFile = new File(testFile);
-        testFileAsFile.deleteOnExit();
+        // Create default car and store in file
+        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
+        builder.storeInFile(testFile);
 
+        // Load content of file
+        String fileContent = new String(Files.readAllBytes(testFile.toPath()));
         Gson g = new Gson();
-        String json = g.toJson(carProps, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
+        MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties = g.fromJson(fileContent, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
-        FileWriter fooWriter = new FileWriter(testFile, false);
-        fooWriter.write(json);
-        fooWriter.flush();
-        fooWriter.close();
+        // Load car from file
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().loadFromFile(testFile);
 
-        MassPointPhysicalVehicleBuilder b = new MassPointPhysicalVehicleBuilder();
-
-        v = b.loadPropertiesFromFile(new File(testFile));
-        checkTheCar(v);
+        // Check if both are equal
+        checkTheCar(properties, physicalVehicle);
     }
 
     /**
@@ -145,37 +141,59 @@ public class MassPointBuilderTest {
      * This is done by first storing it in a file and then load it again and check if all properties remained the same.
      */
     @Test
-    public void testStoreJSONInFile() throws IOException {
-        PhysicalVehicle v = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
-        carProps = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(v);
+    public void storeInFileTest() throws IOException {
+        // Create file
+        File testFile = new File("testFile.json");
+        testFile.deleteOnExit();
 
-        testFileAsFile = new File(testFile);
-        testFileAsFile.deleteOnExit();
+        // Create default car and store in file
+        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
+        builder.storeInFile(testFile);
 
-        new MassPointPhysicalVehicleBuilder().storeJSONInFile(testFileAsFile);
-        v = new MassPointPhysicalVehicleBuilder().loadPropertiesFromFile(testFileAsFile);
-        checkTheCar(v);
+        // Load content of file
+        String fileContent = new String(Files.readAllBytes(testFile.toPath()));
+        Gson g = new Gson();
+        MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties = g.fromJson(fileContent, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
+
+        // Create default reference car
+        PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+
+        checkTheCar(properties, physicalVehicle);
     }
 
     /**
      * Checks various vehicle properties and compares them with the initially created one, to assure correct loading.
      *
-     * @param v a vehicle to check against the one created in the setup
+     * @param physicalVehicle a vehicle to check against the one created in the setup
      */
-    private void checkTheCar(PhysicalVehicle v) {
+    private void checkTheCar(MassPointPhysicalVehicleBuilder.ParsableVehicleProperties properties, PhysicalVehicle physicalVehicle) {
+        Assert.assertEquals(properties.getHeight(), physicalVehicle.getSimulationVehicle().getHeight(), 0);
+        Assert.assertEquals(properties.getWidth(), physicalVehicle.getSimulationVehicle().getWidth(), 0);
+        Assert.assertEquals(properties.getLength(), physicalVehicle.getSimulationVehicle().getLength(), 0);
 
-        Assert.assertEquals(carProps.getHeight(), v.getSimulationVehicle().getHeight(), 0);
-        Assert.assertEquals(carProps.getWidth(), v.getSimulationVehicle().getWidth(), 0);
-        Assert.assertEquals(carProps.getLength(), v.getSimulationVehicle().getLength(), 0);
-        Assert.assertEquals(carProps.getApproxMaxTotalVelocity(), v.getSimulationVehicle().getApproxMaxTotalVelocity(), 0);
-        Assert.assertEquals(carProps.getMass(), v.getSimulationVehicle().getMass(), 0);
-        Assert.assertEquals(carProps.getWheelRadius(), v.getSimulationVehicle().getWheelRadius(), 0);
-        Assert.assertEquals(carProps.getWheelDistToFront(), v.getSimulationVehicle().getWheelDistToFront(), 0);
-        Assert.assertEquals(carProps.getWheelDistToBack(), v.getSimulationVehicle().getWheelDistToBack(), 0);
-        Assert.assertEquals(carProps.getWheelDistLeftRightFrontSide(), v.getSimulationVehicle().getWheelDistLeftRightFrontSide(), 0);
-        Assert.assertEquals(carProps.getWheelDistLeftRightBackSide(), v.getSimulationVehicle().getWheelDistLeftRightBackSide(), 0);
+        Assert.assertEquals(properties.getApproxMaxTotalVelocity(), physicalVehicle.getSimulationVehicle().getApproxMaxTotalVelocity(), 0);
 
-        Assert.assertSame(carProps.getType(), v.getPhysicalObjectType());
+        Assert.assertEquals(properties.getPositionX(), physicalVehicle.getPosition().getEntry(0), 0);
+        Assert.assertEquals(properties.getPositionY(), physicalVehicle.getPosition().getEntry(1), 0);
+        Assert.assertEquals(properties.getPositionZ(), physicalVehicle.getPosition().getEntry(2), 0);
 
+        //Assert.assertTrue(MathHelper.matrixEquals(properties.getRotation(), physicalVehicle.getRotation(), 0));
+
+        Assert.assertEquals(properties.getMass(), physicalVehicle.getSimulationVehicle().getMass(), 0);
+        Assert.assertEquals(properties.getWheelRadius(), physicalVehicle.getSimulationVehicle().getWheelRadius(), 0);
+        Assert.assertEquals(properties.getWheelDistToFront(), physicalVehicle.getSimulationVehicle().getWheelDistToFront(), 0);
+        Assert.assertEquals(properties.getWheelDistToBack(), physicalVehicle.getSimulationVehicle().getWheelDistToBack(), 0);
+        Assert.assertEquals(properties.getWheelDistLeftRightFrontSide(), physicalVehicle.getSimulationVehicle().getWheelDistLeftRightFrontSide(), 0);
+        Assert.assertEquals(properties.getWheelDistLeftRightBackSide(), physicalVehicle.getSimulationVehicle().getWheelDistLeftRightBackSide(), 0);
+
+        /*VehicleActuator b;
+        for(VehicleActuator a : properties.getActuators()){
+            b = physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType());
+            Assert.assertEquals(a.getActuatorValueMin(), b.getActuatorValueMin(), 0);
+            Assert.assertEquals(a.getActuatorValueMax(), b.getActuatorValueMax(), 0);
+            Assert.assertEquals(a.getActuatorValueChangeRate(), b.getActuatorValueChangeRate(), 0);
+            Assert.assertEquals(a.getActuatorValueTarget(), b.getActuatorValueTarget(), 0);
+            Assert.assertEquals(a.getActuatorValueCurrent(), b.getActuatorValueCurrent(), 0);
+        }*/
     }
 }

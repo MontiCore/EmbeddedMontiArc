@@ -1,20 +1,13 @@
 package simulation.vehicle;
 
 import com.google.gson.Gson;
-import commons.simulation.PhysicalObjectType;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * Abstract Builder class for a MassPointPhysicalVehicle to avoid complex constructors
@@ -54,38 +47,41 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @return MassPointPhysicalVehicle according to the JSON contents
      * @throws IOException thrown if the given file could either not be found or accessed/read.
      */
-    public MassPointPhysicalVehicle loadPropertiesFromFile(File file) throws IOException {
+    public MassPointPhysicalVehicle loadFromFile(File file) throws IOException {
         String jsonContents = new String(Files.readAllBytes(file.toPath()));
-        ParsableVehicleProperties data = new Gson().fromJson(jsonContents, ParsableVehicleProperties.class);
+        Gson g = new Gson();
+        ParsableVehicleProperties data = g.fromJson(jsonContents, ParsableVehicleProperties.class);
 
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
-
-        for (VehicleActuator a : data.actuators) {
-            physicalVehicle.getSimulationVehicle().setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
-        }
 
         physicalVehicle.getSimulationVehicle().setWidth(data.width);
         physicalVehicle.getSimulationVehicle().setLength(data.length);
         physicalVehicle.getSimulationVehicle().setHeight(data.height);
 
-        physicalVehicle.getSimulationVehicle().setMass(data.mass);
+        physicalVehicle.getSimulationVehicle().setApproxMaxTotalVelocity(data.getApproxMaxTotalVelocity());
+
+        /*for (VehicleActuator a : data.actuators) {
+            physicalVehicle.getSimulationVehicle().setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
+            physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueTarget(a.getActuatorValueTarget());
+            physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueCurrent(a.getActuatorValueCurrent());
+        }*/
+
+        physicalVehicle.setMass(data.mass);
         physicalVehicle.getSimulationVehicle().setWheelRadius(data.wheelRadius);
         physicalVehicle.getSimulationVehicle().setWheelDistLeftRightFrontSide(data.wheelDistLeftRightFrontSide);
         physicalVehicle.getSimulationVehicle().setWheelDistLeftRightBackSide(data.wheelDistLeftRightBackSide);
         physicalVehicle.getSimulationVehicle().setWheelDistToFront(data.wheelDistToFront);
         physicalVehicle.getSimulationVehicle().setWheelDistToBack(data.wheelDistToBack);
 
-        physicalVehicle.getSimulationVehicle().setControllerBus(Optional.empty());
-        physicalVehicle.getSimulationVehicle().setController(Optional.empty());
-        physicalVehicle.getSimulationVehicle().setNavigation(Optional.empty());
-
         physicalVehicle.initPhysics();
 
-        physicalVehicle.setPosition(new ArrayRealVector(new double[]{data.posX, data.posY, data.posZ}));
+        RealVector position = new ArrayRealVector(3);
+        position.setEntry(0, data.getPositionX());
+        position.setEntry(1, data.getPositionY());
+        position.setEntry(2, data.getPositionZ());
+        physicalVehicle.setPosition(position);
 
-        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, data.rotX, data.rotY, data.rotZ);
-        RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
-        physicalVehicle.setRotation(rotation);
+        //physicalVehicle.setRotation(data.getRotation());
 
         return physicalVehicle;
     }
@@ -98,20 +94,18 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * @return current instance of the Builder
      * @throws IOException thrown if the given path cannot be accessed.
      */
-    public MassPointPhysicalVehicleBuilder storeJSONInFile(File whereToStore) throws IOException {
-        PhysicalVehicle v = this.buildPhysicalVehicle();
+    public void storeInFile(File whereToStore) throws IOException {
+        PhysicalVehicle physicalVehicle = this.buildPhysicalVehicle();
+        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(physicalVehicle);
 
         Gson g = new Gson();
-        ParsableVehicleProperties carProps = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(v);
-        String json = g.toJson(carProps, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
+        String json = g.toJson(properties, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
 
-        FileWriter fooWriter = new FileWriter(whereToStore, false);
+        FileWriter fileWriter = new FileWriter(whereToStore, false);
 
-        fooWriter.write(json);
-        fooWriter.flush();
-        fooWriter.close();
-
-        return this;
+        fileWriter.write(json);
+        fileWriter.flush();
+        fileWriter.close();
     }
 
     /**
@@ -129,13 +123,11 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         private double approxMaxTotalVelocity;
 
-        private double posX;
-        private double posY;
-        private double posZ;
+        private double positionX;
+        private double positionY;
+        private double positionZ;
 
-        private double rotX;
-        private double rotY;
-        private double rotZ;
+        //private RealMatrix rotation;
 
         private double mass;
         private double wheelRadius;
@@ -144,10 +136,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         private double wheelDistToFront;
         private double wheelDistToBack;
 
-        private ArrayList<VehicleActuator> actuators = new ArrayList<>();
-
-
-        private PhysicalObjectType type;
+        //private List<VehicleActuator> actuators;
 
         public ParsableVehicleProperties(PhysicalVehicle v) {
 
@@ -157,20 +146,26 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
             approxMaxTotalVelocity = v.getSimulationVehicle().getApproxMaxTotalVelocity();
 
-            posX = v.getPosition().getEntry(0);
-            posY = v.getPosition().getEntry(1);
-            posZ = v.getPosition().getEntry(2);
+            positionX = v.getPosition().getEntry(0);
+            positionY = v.getPosition().getEntry(1);
+            positionZ = v.getPosition().getEntry(2);
+
+            //rotation = v.getRotation();
 
             mass = v.getSimulationVehicle().getMass();
             wheelRadius = v.getSimulationVehicle().getWheelRadius();
-
             wheelDistLeftRightFrontSide = v.getSimulationVehicle().getWheelDistLeftRightFrontSide();
             wheelDistLeftRightBackSide = v.getSimulationVehicle().getWheelDistLeftRightBackSide();
-
             wheelDistToFront = v.getSimulationVehicle().getWheelDistToFront();
             wheelDistToBack = v.getSimulationVehicle().getWheelDistToBack();
 
-            type = v.getPhysicalObjectType();
+            /*actuators = new ArrayList<>();
+            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR));
+            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT));
+            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT));
+            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT));
+            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT));
+            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING));*/
         }
 
         public double getWidth() {
@@ -189,29 +184,21 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             return approxMaxTotalVelocity;
         }
 
-        public double getPosX() {
-            return posX;
+        public double getPositionX() {
+            return positionX;
         }
 
-        public double getPosY() {
-            return posY;
+        public double getPositionY() {
+            return positionY;
         }
 
-        public double getPosZ() {
-            return posZ;
+        public double getPositionZ() {
+            return positionZ;
         }
 
-        public double getRotX() {
-            return rotX;
-        }
-
-        public double getRotY() {
-            return rotY;
-        }
-
-        public double getRotZ() {
-            return rotZ;
-        }
+        /*public RealMatrix getRotation() {
+            return rotation;
+        }*/
 
         public double getMass() {
             return mass;
@@ -237,17 +224,8 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             return wheelDistToBack;
         }
 
-        public ArrayList<VehicleActuator> getActuators() {
+        /*public List<VehicleActuator> getActuators() {
             return actuators;
-        }
-
-        public PhysicalObjectType getType() {
-            return type;
-        }
-
-        public void setType(PhysicalObjectType type) {
-            this.type = type;
-        }
-
+        }*/
     }
 }

@@ -35,10 +35,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     private RealVector geometryPositionOffset;
 
 
-    /** Attributes used for modelica physics */
-    /** Default step size in milliseconds */
-    private int stepSizems = 2;
-
     /** Current rotation around the local z axis */
     private double yaw_angle;
 
@@ -260,6 +256,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
             // Do calculation steps with maximum step size as long as possible
             long currentDeltaTms = 0;
+            int stepSizems = 2;
             while(currentDeltaTms + stepSizems <= deltaTms){
                 doCalculationStep(stepSizems);
                 currentDeltaTms = currentDeltaTms + stepSizems;
@@ -269,7 +266,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             long partialStepSize = deltaTms - currentDeltaTms;
             if(partialStepSize > 0) {
                 doCalculationStep(partialStepSize);
-                currentDeltaTms = currentDeltaTms + partialStepSize;
             }
 
             // Update the rotation and position
