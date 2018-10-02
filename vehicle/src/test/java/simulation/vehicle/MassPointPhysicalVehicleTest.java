@@ -1,12 +1,33 @@
 package simulation.vehicle;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import simulation.util.Log;
+import simulation.util.MathHelper;
 
 /**
  * JUnit test for the MassPointPhysicalVehicle class
  */
 public class MassPointPhysicalVehicleTest {
+    @BeforeClass
+    public static void setUpClass() {
+        Log.setLogEnabled(false);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        Log.setLogEnabled(true);
+    }
+
     @Test
     public void setHeightNormal(){
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
@@ -204,6 +225,51 @@ public class MassPointPhysicalVehicleTest {
 
         // Error flag should be set
         Assert.assertTrue(physicalVehicle.getError());
+    }
 
+    @Test
+    public void setPositionNormal(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        RealVector position = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setPosition(position);
+        Assert.assertTrue(MathHelper.vectorEquals(position, physicalVehicle.getPosition(), 0.00000001));
+        //todo check massPoint information
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setPositionFail(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        physicalVehicle.setPosition(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test
+    public void setRotationNormal(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
+        RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
+        physicalVehicle.setRotation(rotation);
+        Assert.assertTrue(MathHelper.matrixEquals(rotation, physicalVehicle.getRotation(), 0.00000001));
+        //todo check massPoint information
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setRotationFail(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
+        RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
+        physicalVehicle.setRotation(rotation);
+    }
+
+    @Test
+    public void setMassNormal(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        physicalVehicle.setMass(1000.0);
+        Assert.assertEquals(1000.0, physicalVehicle.getMass(), 0);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setMassFail() {
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setMass(1000.0);
     }
 }

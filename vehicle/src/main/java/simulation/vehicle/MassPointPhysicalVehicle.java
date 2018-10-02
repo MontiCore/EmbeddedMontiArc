@@ -102,15 +102,14 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setPosition(RealVector position){
-        if(physicalVehicleInitialized) {
-            this.position = position.copy();
-            // Recalculate the mass point values that are based on the position
-            calcMassPointCenterDiff();
-            calcMassPointPosition();
-            calcMassPointVelocity();
-        }else{
-            //todo error
+        if(!physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
         }
+        this.position = position.copy();
+        // Recalculate the mass point values that are based on the position
+        calcMassPointCenterDiff();
+        calcMassPointPosition();
+        calcMassPointVelocity();
     }
 
     /**
@@ -128,15 +127,14 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setRotation(RealMatrix rotation){
-        if(physicalVehicleInitialized) {
-            this.rotation = rotation.copy();
-            // Recalculate the mass point values that are based on the rotation
-            calcMassPointCenterDiff();
-            calcMassPointPosition();
-            calcMassPointVelocity();
-        }else{
-            //todo error
+        if(!physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
         }
+        this.rotation = rotation.copy();
+        // Recalculate the mass point values that are based on the rotation
+        calcMassPointCenterDiff();
+        calcMassPointPosition();
+        calcMassPointVelocity();
     }
 
     /**
@@ -154,26 +152,6 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setVelocity(RealVector velocity){
-        // this.velocity = velocity.copy();
-        // toDo why
-    }
-
-    /**
-     * Function that returns a copy of the acceleration vector of the center of mass
-     * @return Acceleration vector of the center of mass
-     */
-    @Override
-    public RealVector getAcceleration(){
-        return this.acceleration.copy();
-    }
-
-    /**
-     * Function that sets the accelerations vector of the center of mass
-     * @param acceleration New acceleration vector of the center of mass
-     */
-    @Override
-    public void setAcceleration(RealVector acceleration){
-        // this.acceleration = acceleration.copy();
         // toDo why
     }
 
@@ -201,7 +179,10 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setMass(double mass){
-        //toDo comment why here is nothing done
+        if(physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        simulationVehicle.setMass(mass);
     }
 
     /**
@@ -219,12 +200,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setGeometryPosition(RealVector geometryPosition){
-        if(physicalVehicleInitialized) {
-            // Uses setter to update mass point information
-            setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
-        }else{
-            //todo error
-        }
+        // Uses setter to update mass point information and check initialisation
+        setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
     }
 
     /**
@@ -584,7 +561,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
         } catch (Exception e) {
             Log.severe("PhysicalVehicle: initLocalInertiaInverse - Could not calculate local inertia inverse. Cross product matrix or matrix inversion failed.");
-            e.printStackTrace();
+            setError(true);
         }
         Log.finest("PhysicalVehicle: initLocalInertiaInverse - PhysicalVehicle at end: " + this);
     }
@@ -603,7 +580,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             }
             catch (Exception e) {
                 Log.severe("PhysicalVehicle: calcAngularMomentumDeriv - Exception:" + e.toString());
-                e.printStackTrace();
+                setError(true);
             }
         }
 
@@ -685,7 +662,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             rotation = rotation.add((MathHelper.vector3DToCrossProductMatrix(angularVelocity).multiply(rotation)).scalarMultiply(deltaT));
         } catch (Exception e) {
             Log.severe("PhysicalVehicle: calcRotationMatrix - Exception:" + e.toString());
-            e.printStackTrace();
+            setError(true);
         }
 
         // Always orthonormalize matrix after computations to avoid numerical issues
@@ -767,7 +744,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             try {
                 massPoint.setVelocity(this.velocity.add(MathHelper.vector3DCrossProduct(this.angularVelocity, massPoint.getCenterDiff())));
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.severe("PhysicalVehicle: calcMassPointVelocity - Exception:" + e.toString());
+                setError(true);
             }
 
             RealVector zeroVector = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -999,7 +977,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             try {
                 forceNormal = MathHelper.vector3DCrossProduct(vectorBackFront, vectorLeftRight);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.severe("Ha"); //todo error
             }
 
             // Ensure that normal force points upwards
@@ -1197,7 +1175,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
                 forceCentripetal = MathHelper.vector3DCrossProduct(angularVelocity, MathHelper.vector3DCrossProduct(angularVelocity, curveRadiusVector)).mapMultiply(mp.getMass());
             }
             catch (Exception e) {
-                e.printStackTrace();
+                Log.severe("Ha"); //todo error
             }
         }
         return forceCentripetal;

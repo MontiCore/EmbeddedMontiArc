@@ -710,8 +710,6 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
     private RealMatrix rotation;
     /** Velocity vector of the center of mass */
     private RealVector velocity;
-    /** Acceleration vector of the center of mass */
-    private RealVector acceleration;
     /** Force vector acting on the center of mass */
     private RealVector force;
     /** Mass of the physical object */
@@ -742,7 +740,6 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         rotation = new BlockRealMatrix(rot.getMatrix());
         velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         mass = 0.0;
         width = 1.0;
@@ -806,24 +803,6 @@ public class RoadWorkSign implements SimulationLoopExecutable, PhysicalObject {
     @Override
     public void setVelocity(RealVector velocity){
         this.velocity = velocity.copy();
-    }
-
-    /**
-     * Function that returns a copy of the acceleration vector of the center of mass
-     * @return Acceleration vector of the center of mass
-     */
-    @Override
-    public RealVector getAcceleration(){
-        return this.acceleration.copy();
-    }
-
-    /**
-     * Function that sets the accelerations vector of the center of mass
-     * @param acceleration New acceleration vector of the center of mass
-     */
-    @Override
-    public void setAcceleration(RealVector acceleration){
-        this.acceleration = acceleration.copy();
     }
 
     /**

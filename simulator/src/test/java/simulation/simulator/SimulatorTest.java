@@ -1413,7 +1413,6 @@ public class SimulatorTest {
         private RealVector position;
         private RealMatrix rotation;
         private RealVector velocity;
-        private RealVector acceleration;
         private RealVector force;
         private double mass;
         private double width;
@@ -1430,7 +1429,6 @@ public class SimulatorTest {
             Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
             rotation = new BlockRealMatrix(rot.getMatrix());
             velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            acceleration = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
             mass = 0.0;
             width = 0.0;
@@ -1458,12 +1456,6 @@ public class SimulatorTest {
         }
         public void setVelocity(RealVector velocity){
             this.velocity = velocity.copy();
-        }
-        public RealVector getAcceleration(){
-            return this.acceleration.copy();
-        }
-        public void setAcceleration(RealVector acceleration){
-            this.acceleration = acceleration.copy();
         }
         public void addForce(RealVector force){
             this.force = this.force.add(force);

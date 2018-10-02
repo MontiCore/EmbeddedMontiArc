@@ -85,11 +85,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setPosition(RealVector position){
-        if(physicalVehicleInitialized) {
-            this.position = position.copy();
-        }else{
-            //todo error
+        if(!physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
         }
+        this.position = position.copy();
     }
 
     /**
@@ -107,11 +106,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setRotation(RealMatrix rotation){
-        if(physicalVehicleInitialized) {
-            this.rotation = rotation.copy();
-        }else{
-            //todo error
+        if(!physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
         }
+        this.rotation = rotation.copy();
     }
 
     /**
@@ -139,30 +137,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     }
 
     /**
-     * Function that returns a copy of the acceleration vector of the center of mass
-     * @return Acceleration vector of the center of mass
-     */
-    @Override
-    public RealVector getAcceleration(){
-        // Get current acceleration
-        RealVector localAcceleration = new ArrayRealVector(new double[]{
-                vehicleDynamicsModel.getValue("a_x"),
-                vehicleDynamicsModel.getValue("a_y"),
-                vehicleDynamicsModel.getValue("a_z")});
-        // Return in global coordinates
-        return rotation.operate(localAcceleration);
-    }
-
-    /**
-     * Function that sets the accelerations vector of the center of mass
-     * @param acceleration New acceleration vector of the center of mass
-     */
-    @Override
-    public void setAcceleration(RealVector acceleration){
-        // toDo why
-    }
-
-    /**
      * Function that adds an external force acting on the center of mass
      * @param force Force vector that acts on the center of mass
      */
@@ -186,14 +160,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setMass(double mass){
-        if(!physicalVehicleInitialized){
-            simulationVehicle.setMass(mass);
-            vehicleDynamicsModel.setParameter("m", mass);
-        }else{
-            //todo error
+        if(physicalVehicleInitialized) {
+            throw new IllegalStateException("Ha"); //todo error
         }
+        simulationVehicle.setMass(mass);
     }
-
 
     /**
      * Function that returns a copy of center of geometry position vector
@@ -210,11 +181,9 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setGeometryPosition(RealVector geometryPosition){
-        if(physicalVehicleInitialized) {
-            setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
-        }else{
-            //todo error
-        }
+        // Uses setter to check initialisation
+        setPosition(geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0)));
+
     }
 
     /**

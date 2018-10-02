@@ -673,7 +673,7 @@ public class SimulateVehicleTest {
         assertTrue(forceStart.getEntry(0) != forceEnd.getEntry(0) || forceStart.getEntry(1) != forceEnd.getEntry(1) ||
                 forceStart.getEntry(2) != forceEnd.getEntry(2));
     }*/
-    
+
     /**
      * Test if airdrag slows the vehicle down, by accelerating it for one second and then step of the gas
      * and check after 20 seconds if it is slower

@@ -1,10 +1,18 @@
 package simulation.vehicle;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import simulation.util.Log;
+import simulation.util.MathHelper;
 
 /**
  * JUnit test for the ModelicaPhysicalVehicle class
@@ -207,7 +215,7 @@ public class ModelicaPhysicalVehicleTest {
         // Execute loop iteration
         physicalVehicle.executeLoopIteration(33);
 
-        // Ass actuators should not be updated
+        // All actuators should not be updated
         Assert.assertEquals(motorValueReference, motor.getActuatorValueCurrent(), 0);
         Assert.assertEquals(frontLeftBrakeValueReference, frontLeftBrake.getActuatorValueCurrent(), 0);
         Assert.assertEquals(frontRightBrakeValueReference, frontRightBrake.getActuatorValueCurrent(), 0);
@@ -217,6 +225,50 @@ public class ModelicaPhysicalVehicleTest {
 
         // Error flag should be set
         Assert.assertTrue(physicalVehicle.getError());
+    }
 
+    @Test
+    public void setPositionNormal(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        RealVector position = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setPosition(position);
+        Assert.assertTrue(MathHelper.vectorEquals(position, physicalVehicle.getPosition(), 0.00000001));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setPositionFail(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        physicalVehicle.setPosition(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test
+    public void setRotationNormal(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
+        RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
+        physicalVehicle.setRotation(rotation);
+        Assert.assertTrue(MathHelper.matrixEquals(rotation, physicalVehicle.getRotation(), 0.00000001));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setRotationFail(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 1.0, 2.0, 3.0);
+        RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
+        physicalVehicle.setRotation(rotation);
+    }
+
+    @Test
+    public void setMassNormal(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        physicalVehicle.setMass(1000.0);
+        physicalVehicle.initPhysics();
+        Assert.assertEquals(1000.0, physicalVehicle.getMass(), 0);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setMassFail() {
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setMass(1000.0);
     }
 }

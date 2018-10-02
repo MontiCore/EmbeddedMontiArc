@@ -42,6 +42,7 @@ public class ModelicaBuilderTest {
         RealVector expectedPosition = new ArrayRealVector(new Double[]{0.0, 0.0, - height/2 + z});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
+        RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedGeometryPosition = new ArrayRealVector(new Double[]{0.0, 0.0, 0.0});
 
@@ -60,6 +61,7 @@ public class ModelicaBuilderTest {
         // Test physical values
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
         Assert.assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
     }
@@ -79,6 +81,7 @@ public class ModelicaBuilderTest {
         RealVector expectedPosition = new ArrayRealVector(new double[]{0.0, 0.0, - height/2 + z});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
+        RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedGeometryPosition = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
 
@@ -94,6 +97,7 @@ public class ModelicaBuilderTest {
         // Test physical values
         Assert.assertTrue(MathHelper.vectorEquals(expectedPosition, physicalVehicle.getPosition(), 0.00000001));
         Assert.assertTrue(MathHelper.matrixEquals(expectedRotation, physicalVehicle.getRotation(), 0.00000001));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedVelocity, physicalVehicle.getVelocity(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
     }

@@ -39,7 +39,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         this.controllerBus.ifPresent(physicalVehicle.getSimulationVehicle()::setControllerBus);
         this.controller.ifPresent(physicalVehicle.getSimulationVehicle()::setController);
         this.navigation.ifPresent(physicalVehicle.getSimulationVehicle()::setNavigation);
-        this.mass.ifPresent(physicalVehicle.getSimulationVehicle()::setMass);
+        this.mass.ifPresent(physicalVehicle::setMass);
 
         physicalVehicle.initPhysics();
 
