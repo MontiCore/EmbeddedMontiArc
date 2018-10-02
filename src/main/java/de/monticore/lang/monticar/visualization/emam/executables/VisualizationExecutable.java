@@ -60,7 +60,9 @@ public class VisualizationExecutable extends JavaExecutablesContribution {
     public void execute() throws IOException {
         String[] arguments = this.buildArguments();
 
+        this.logger.info("Executing Visualization...");
         super.execute(arguments);
+        this.logger.info("...Visualization executed.");
     }
 
     @Override

@@ -1,5 +1,7 @@
 package de.rwth.pacman.heithoff2.coneSearch;
 
+// a simple add
+
 component CombineValues {
     ports 
       in Z valueCoins,
@@ -10,6 +12,6 @@ component CombineValues {
     implementation Math {
         // some weightning here
         
-        value = valueCoins + 10*valueEnemies;
+        value = valueCoins + valueEnemies;
     }
 }

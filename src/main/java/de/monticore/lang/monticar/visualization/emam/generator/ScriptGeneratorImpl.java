@@ -1,14 +1,11 @@
 package de.monticore.lang.monticar.visualization.emam.generator;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.monticore.generating.GeneratorEngine;
 import de.monticore.generating.GeneratorSetup;
 import de.monticore.generating.templateengine.GlobalExtensionManagement;
-import de.monticore.lang.monticar.visualization.emam.options.OptionsParsedEvent;
 import de.monticore.lang.monticar.visualization.emam.options.OptionsService;
-import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.util.logging.Logger;

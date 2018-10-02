@@ -2,12 +2,15 @@ package de.rwth.pacman.heithoff2.coneSearch.enemySearch;
 
 component SearchEnemiesLeft {
     ports
-      in Z(-1m: 19m) currentX,
-      in Z(0m: 22m) currentY,
-      in Z(-1m: 19m) ghostX[4],
-      in Z(0m: 22m) ghostY[4],
+      in Q(-1m: 19m) currentX,
+      in Q(0m: 22m) currentY,
+      in Q(-1m: 19m) ghostX[4],
+      in Q(0m: 22m) ghostY[4],
       in Z ghostDirection[4],
       in B ghostEatable[4],
+      in Z ghostNormalWeight,
+      in Z ghostFacingPacManWight,
+      in Z ghostEatableWeight,
       
       out Z value;
       
@@ -18,20 +21,20 @@ component SearchEnemiesLeft {
             if indexX > 0
                 for j = (-i):i
                     Z indexY = round(currentY) + j;
-                    if (indexY > 0) && (indexY < 21)
+                    if (indexY > 0) && (indexY < 22)
                         for i = 1:4
                             Z xG = round(ghostX(i));
                             Z yG = round(ghostY(i));
                             if (abs (xG - indexX) < 0.1) && (abs(yG - indexY) < 0.1)
-                                Z multiplyer = 40;
-                                if ghostDirection(i) == 0 // Facing towards PacMan
-                                    multiplyer = 100;
+                                Z multiplyer = ghostNormalWeight;
+                                if ghostDirection(i) == 3 // Facing towards PacMan
+                                    multiplyer = ghostFacingPacManWight;
                                 end
                                 if ghostEatable(i)
-                                    multiplyer = -500;
+                                    multiplyer = ghostEatableWeight;
                                 end
                                 Q dist = sqrt(i*i + j*j);
-                                value = value - (multiplyer/dist);
+                                value = value + (multiplyer/dist);
                             end
                         end
                     end

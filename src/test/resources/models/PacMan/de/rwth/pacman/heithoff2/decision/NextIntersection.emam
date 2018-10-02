@@ -1,9 +1,11 @@
 package de.rwth.pacman.heithoff2.decision;
 
+// check whether an intersection (3 or more non-blocked paths) is reached
+
 component NextIntersection {
     ports
-      in Z(-1m: 19m) pacManX,
-      in Z(0m: 22m) pacManY,
+      in Q(-1m: 19m) pacManX,
+      in Q(0m: 22m) pacManY,
       in Z^{22,19} map,
       
       out B interSectionReached;

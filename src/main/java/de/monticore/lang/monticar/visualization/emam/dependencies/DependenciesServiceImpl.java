@@ -20,12 +20,8 @@ public class DependenciesServiceImpl implements DependenciesService, Application
     }
 
     @Override
-    public void download() throws Exception {
-        this.logger.info("Downloading Dependencies...");
-
-        for (DependenciesContribution contribution : this.contributions) {
-            if (!contribution.isDownloaded()) contribution.download();
-        }
+    public void prepare(Application application) throws Exception {
+        this.install();
     }
 
     @Override
@@ -35,21 +31,5 @@ public class DependenciesServiceImpl implements DependenciesService, Application
         for (DependenciesContribution contribution : this.contributions) {
             if (!contribution.isInstalled()) contribution.install();
         }
-    }
-
-    @Override
-    public void clean() throws Exception {
-        this.logger.info("Cleaning Installation Files...");
-
-        for (DependenciesContribution contribution : this.contributions) {
-            if (!contribution.isCleaned()) contribution.clean();
-        }
-    }
-
-    @Override
-    public void prepare(Application application) throws Exception {
-        this.download();
-        this.install();
-        this.clean();
     }
 }
