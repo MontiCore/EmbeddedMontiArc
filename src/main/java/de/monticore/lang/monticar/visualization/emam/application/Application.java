@@ -1,6 +1,5 @@
 package de.monticore.lang.monticar.visualization.emam.application;
 
-import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -14,7 +13,7 @@ import de.monticore.lang.monticar.visualization.emam.models.ModelsModule;
 import de.monticore.lang.monticar.visualization.emam.options.OptionsModule;
 import de.monticore.lang.monticar.visualization.emam.options.OptionsService;
 import de.monticore.lang.monticar.visualization.emam.paths.PathsModule;
-import de.monticore.lang.monticar.visualization.emam.url.URLModule;
+import de.monticore.lang.monticar.visualization.emam.resources.ResourcesModule;
 
 import java.text.ParseException;
 import java.util.Set;
@@ -89,8 +88,8 @@ public class Application {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(
             new ApplicationModule(), new DependenciesModule(), new ExecutablesModule(),
-            new OptionsModule(), new PathsModule(), new URLModule(), new ModelsModule(),
-            new EventsModule(), new GeneratorModule()
+            new OptionsModule(), new PathsModule(), new ModelsModule(), new EventsModule(),
+            new GeneratorModule(), new ResourcesModule()
         );
         Application application = injector.getInstance(Application.class);
 

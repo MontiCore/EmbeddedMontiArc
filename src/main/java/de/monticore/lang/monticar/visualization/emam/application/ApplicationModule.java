@@ -8,7 +8,7 @@ import de.monticore.lang.monticar.visualization.emam.generator.HTMLGeneratorImpl
 import de.monticore.lang.monticar.visualization.emam.models.ModelsServiceImpl;
 import de.monticore.lang.monticar.visualization.emam.options.OptionsServiceImpl;
 import de.monticore.lang.monticar.visualization.emam.paths.PathsServiceImpl;
-import de.monticore.lang.monticar.visualization.emam.url.URLServiceImpl;
+import de.monticore.lang.monticar.visualization.emam.resources.ResourcesServiceImpl;
 
 public class ApplicationModule extends AbstractModule {
     @Override
@@ -19,7 +19,7 @@ public class ApplicationModule extends AbstractModule {
         contributions.addBinding().to(DependenciesServiceImpl.class);
         contributions.addBinding().to(ExecutablesServiceImpl.class);
         contributions.addBinding().to(OptionsServiceImpl.class);
-        contributions.addBinding().to(URLServiceImpl.class);
+        contributions.addBinding().to(ResourcesServiceImpl.class);
         contributions.addBinding().to(PathsServiceImpl.class);
         contributions.addBinding().to(ModelsServiceImpl.class);
         contributions.addBinding().to(HTMLGeneratorImpl.class);

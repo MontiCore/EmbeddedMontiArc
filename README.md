@@ -2,10 +2,10 @@
 
 <p align="center">
     <a>
-        <img src="https://img.shields.io/badge/Version-0.1.0-blue.svg?longCache=true&style=flat-square"/>
+        <img src="https://img.shields.io/badge/Version-0.1.1-blue.svg?longCache=true&style=flat-square"/>
     </a>
-    <a href="https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.20.visualization-emam&files=visualization-emam.zip">
-        <img src="https://img.shields.io/badge/Download-18.07.20-blue.svg?longCache=true&style=flat-square"/>
+    <a href="https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.02.visualization-emam&files=visualization-emam.zip">
+        <img src="https://img.shields.io/badge/Download-18.10.02-blue.svg?longCache=true&style=flat-square"/>
     </a>
 </p>
 

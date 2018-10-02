@@ -37,8 +37,13 @@ public class ModelPathVisitorImpl extends SimpleFileVisitor<Path> implements Mod
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
         if (file.toString().endsWith(".emam")) {
+            String fileName = file.toString();
+
+            this.logger.info("Splitting \"" + fileName + "\"...");
+
             List<File> models = this.splitter.split(file.toFile());
 
+            this.logger.info("...\"" + fileName + "\" has been split.");
             this.registry.addAllModels(models);
         }
 

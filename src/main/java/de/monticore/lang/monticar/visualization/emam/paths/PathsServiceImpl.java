@@ -26,6 +26,7 @@ public class PathsServiceImpl implements PathsService, ApplicationContribution {
         this.paths = new HashMap<>();
 
         this.addUserHome();
+        this.addEmbeddedMontiArcDirectory();
         this.addProjectDirectory();
     }
 
@@ -33,12 +34,19 @@ public class PathsServiceImpl implements PathsService, ApplicationContribution {
         String pathString = System.getProperty("user.home");
         Path path = Paths.get(pathString);
 
-        this.paths.put("user.home", path);
+        this.paths.put("~", path);
+    }
+
+    protected void addEmbeddedMontiArcDirectory() {
+        Path userhome = this.paths.get("~");
+        Path embeddedMontiArcDirectory = userhome.resolve(".embeddedmontiarc");
+
+        this.paths.put(".embeddedmontiarc", embeddedMontiArcDirectory);
     }
 
     protected void addProjectDirectory() {
-        Path userHome = this.paths.get("user.home");
-        Path projectDirectory = userHome.resolve("visualization-emam");
+        Path embeddedMontiArcDirectory = this.paths.get(".embeddedmontiarc");
+        Path projectDirectory = embeddedMontiArcDirectory.resolve("visualization-emam");
 
         this.paths.put("visualization-emam", projectDirectory);
     }

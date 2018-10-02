@@ -102,7 +102,7 @@
             var childContentWindow = childElement.contentWindow || childDocument.parentWindow || childDocument.defaultView;
 
             childContentWindow.open = function(url) {
-                var qualifiedName = url.replace(/(.*?)\.html/, "$1").replace(/(.*?)_.*?$/, "$1");
+                var qualifiedName = url.replace(/([\w.]+?)(_\w*)*\.html$/, "$1");;
 
                 this.setQualifiedName(qualifiedName, true);
             }.bind(this);
@@ -126,10 +126,8 @@
                 if(index < 4) {
                     this.setMode(index, true);
                 } else {
-                    var url = anchor.href;
-                    var qualifiedName = url
-                        .replace(/.*?visualization\/(.*?)\.html$/, "$1")
-                        .replace(/(.*?)_.*?$/, "$1");
+                    var url = anchor.getAttribute("href");
+                    var qualifiedName = url.replace(/([\w.]+?)(_\w*)*\.html$/, "$1");
 
                     this.setQualifiedName(qualifiedName, true);
                 }
@@ -271,7 +269,7 @@
         }
 
         _onMessage(message) {
-            this.setQualifiedName(message.data, true);
+            if (message.source !== window.top) this.setQualifiedName(message.data, true);
         }
 
         _onLoad() {
@@ -343,7 +341,7 @@
 
     class Port {
         set onMessage(callback) {
-            window.addEventListener("message", callback);
+            window.top.addEventListener("message", callback);
         }
     }
 

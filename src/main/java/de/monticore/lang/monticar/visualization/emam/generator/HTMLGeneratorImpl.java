@@ -55,6 +55,8 @@ public class HTMLGeneratorImpl implements HTMLGenerator, ApplicationContribution
 
     @Subscribe
     public void onExecutablesExecuted(ExecutablesExecutedEvent event) {
+        this.logger.info("Generating \"index.html\"...");
         this.generate();
+        this.logger.info("...\"index.html\" has been generated.");
     }
 }

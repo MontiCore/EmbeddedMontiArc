@@ -51,7 +51,9 @@ public class MathPrettyPrinterExecutable extends JavaExecutablesContribution {
     public void execute() throws IOException {
         String[] arguments = this.buildArguments();
 
+        this.logger.info("Executing MathPrettyPrinter...");
         super.execute(arguments);
+        this.logger.info("...MathPrettyPrinter executed.");
     }
 
     @Override
