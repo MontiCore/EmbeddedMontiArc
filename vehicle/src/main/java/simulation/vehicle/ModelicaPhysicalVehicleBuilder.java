@@ -27,6 +27,14 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         physicalVehicle.initPhysics();
 
+        // todo set wheel velocity when setting the normal velocity
+
+        // Compute velocity in local coordinates
+        // RealVector localVelocity = rotation.transpose().operate(velocity);
+        // Set initial velocity values
+        // vehicleDynamicsModel.setParameter("v_x_0", localVelocity.getEntry(0));
+        // vehicleDynamicsModel.setParameter("v_y_0", localVelocity.getEntry(1));
+
         return physicalVehicle;
     }
 }

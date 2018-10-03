@@ -375,10 +375,9 @@ public final class MathHelper {
      * Perform some simple checks before actually computing the matrix inverse
      *
      * @param matrix Matrix that is used for the inverse computation, should be square and invertible matrix
-     * @throws Exception If matrix is not invertible
      * @return Inverse matrix of the input matrix
      */
-    public static RealMatrix matrixInvert(RealMatrix matrix) throws Exception {
+    public static RealMatrix matrixInvert(RealMatrix matrix) {
         // Check for valid input
         if(!matrix.isSquare()){
             throw new IllegalArgumentException("Matrix should be a square matrix to be inverted"); //todo error
@@ -394,7 +393,7 @@ public final class MathHelper {
         }
 
         Log.severe("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString());
-        throw new Exception("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString());
+        throw new IllegalArgumentException("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString()); //todo error
     }
 
     /**

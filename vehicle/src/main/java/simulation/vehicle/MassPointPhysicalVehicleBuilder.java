@@ -1,8 +1,13 @@
 package simulation.vehicle;
 
 import com.google.gson.Gson;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -75,11 +80,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         physicalVehicle.initPhysics();
 
-        RealVector position = new ArrayRealVector(3);
-        position.setEntry(0, data.getPositionX());
-        position.setEntry(1, data.getPositionY());
-        position.setEntry(2, data.getPositionZ());
-        physicalVehicle.setPosition(position);
+        physicalVehicle.setPosition(data.getPosition());
 
         //physicalVehicle.setRotation(data.getRotation());
 
@@ -96,7 +97,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      */
     public void storeInFile(File whereToStore) throws IOException {
         PhysicalVehicle physicalVehicle = this.buildPhysicalVehicle();
-        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties(physicalVehicle);
+        ParsableVehicleProperties properties = new MassPointPhysicalVehicleBuilder.ParsableVehicleProperties((MassPointPhysicalVehicle) physicalVehicle);
 
         Gson g = new Gson();
         String json = g.toJson(properties, MassPointPhysicalVehicleBuilder.ParsableVehicleProperties.class);
@@ -127,7 +128,18 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         private double positionY;
         private double positionZ;
 
-        //private RealMatrix rotation;
+        // Rotation order XYZ, Rotation convention vector operator
+        private double rotationX;
+        private double rotationY;
+        private double rotationZ;
+
+        private double velocityX;
+        private double velocityY;
+        private double velocityZ;
+
+        private double angularVelocityX;
+        private double angularVelocityY;
+        private double angularVelocityZ;
 
         private double mass;
         private double wheelRadius;
@@ -138,7 +150,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         //private List<VehicleActuator> actuators;
 
-        public ParsableVehicleProperties(PhysicalVehicle v) {
+        public ParsableVehicleProperties(MassPointPhysicalVehicle v) {
 
             width = v.getSimulationVehicle().getWidth();
             height = v.getSimulationVehicle().getHeight();
@@ -150,7 +162,19 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             positionY = v.getPosition().getEntry(1);
             positionZ = v.getPosition().getEntry(2);
 
-            //rotation = v.getRotation();
+            Rotation rot = new Rotation(v.getRotation().getData(), 0.00000001);
+            double[] angles = rot.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
+            rotationX = angles[0];
+            rotationY = angles[1];
+            rotationZ = angles[2];
+
+            velocityX = v.getVelocity().getEntry(0);
+            velocityY = v.getVelocity().getEntry(1);
+            velocityZ = v.getVelocity().getEntry(2);
+
+            angularVelocityX = v.getAngularVelocity().getEntry(0);
+            angularVelocityY = v.getAngularVelocity().getEntry(1);
+            angularVelocityZ = v.getAngularVelocity().getEntry(2);
 
             mass = v.getSimulationVehicle().getMass();
             wheelRadius = v.getSimulationVehicle().getWheelRadius();
@@ -184,21 +208,22 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             return approxMaxTotalVelocity;
         }
 
-        public double getPositionX() {
-            return positionX;
+        public RealVector getPosition(){
+            return new ArrayRealVector(new double[]{positionX, positionY, positionZ});
         }
 
-        public double getPositionY() {
-            return positionY;
+        public RealMatrix getRotation() {
+            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, rotationX, rotationY, rotationZ);
+            return new BlockRealMatrix(rot.getMatrix());
         }
 
-        public double getPositionZ() {
-            return positionZ;
+        public RealVector getVelocity(){
+            return new ArrayRealVector(new double[]{velocityX, velocityY, velocityZ});
         }
 
-        /*public RealMatrix getRotation() {
-            return rotation;
-        }*/
+        public RealVector getAngularVelocity(){
+            return new ArrayRealVector(new double[]{angularVelocityX, angularVelocityY, angularVelocityZ});
+        }
 
         public double getMass() {
             return mass;

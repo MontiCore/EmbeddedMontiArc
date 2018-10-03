@@ -714,8 +714,12 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
     private RealMatrix rotation;
     /** Velocity vector of the center of mass */
     private RealVector velocity;
+    /** Angular velocity vector around the center of mass */
+    private RealVector angularVelocity;
     /** Force vector acting on the center of mass */
     private RealVector force;
+    /** Torque vector acting around the center of mass */
+    private RealVector torque;
     /** Mass of the physical object */
     private double mass;
     /** Width of the physical object */
@@ -749,7 +753,9 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         rotation = new BlockRealMatrix(rot.getMatrix());
         velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+        angularVelocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+        torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         mass = 0.0;
         width = 0.5;
         length = 0.5;
@@ -820,12 +826,36 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
     }
 
     /**
+     * Function that returns a copy of the angular velocity vector around the center of mass
+     * @return Angular velocity vector around the center of mass
+     */
+    public RealVector getAngularVelocity(){
+        return this.angularVelocity.copy();
+    }
+
+    /**
+     * Function that sets the angular velocity vector around the center of mass
+     * @param angularVelocity New angular velocity around of the center of mass
+     */
+    public void setAngularVelocity(RealVector angularVelocity){
+        this.angularVelocity = angularVelocity.copy();
+    }
+
+    /**
      * Function that adds an external force acting on the center of mass
      * @param force Force vector that acts on the center of mass
      */
     @Override
     public void addForce(RealVector force){
         this.force = this.force.add(force);
+    }
+
+    /**
+     * Function that add an external torque acting around the center of mass
+     * @param torque Torque vector that acts around the center of mass
+     */
+    public void addTorque(RealVector torque){
+        this.torque = this.torque.add(torque);
     }
 
     /**
@@ -933,15 +963,10 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
      */
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-        try {
-            RealVector currentGeometryPosition = getGeometryPosition();
-            RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
-            this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
-            setGeometryPosition(currentGeometryPosition);
-        } catch (Exception e){
-            Log.severe("Pedestrian: setGeometryPositionOffset - Could not set geometryPositionOffset. Rotation matrix inversion failed");
-            e.printStackTrace();
-        }
+        RealVector currentGeometryPosition = getGeometryPosition();
+        RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
+        this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
+        setGeometryPosition(currentGeometryPosition);
     }
 
     /**
@@ -1049,6 +1074,7 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
     public void computePhysics(long deltaTms){
         //No physics computations for pedestrians
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+        torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
     }
 
     /**

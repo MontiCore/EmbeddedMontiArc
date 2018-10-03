@@ -365,7 +365,7 @@ public class MathHelperTest {
     }
 
     @Test
-    public void testMatrixInvert() throws Exception {
+    public void testMatrixInvert(){
         // Invert - Invert should be equal
         double[][] matrixEntries1 = {{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}};
         RealMatrix matrix1 = new BlockRealMatrix(matrixEntries1);

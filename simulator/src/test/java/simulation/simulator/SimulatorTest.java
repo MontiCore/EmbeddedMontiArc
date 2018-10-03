@@ -1413,7 +1413,9 @@ public class SimulatorTest {
         private RealVector position;
         private RealMatrix rotation;
         private RealVector velocity;
+        private RealVector angularVelocity;
         private RealVector force;
+        private RealVector torque;
         private double mass;
         private double width;
         private double height;
@@ -1429,7 +1431,9 @@ public class SimulatorTest {
             Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
             rotation = new BlockRealMatrix(rot.getMatrix());
             velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            angularVelocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
             mass = 0.0;
             width = 0.0;
             length = 0.0;
@@ -1457,8 +1461,17 @@ public class SimulatorTest {
         public void setVelocity(RealVector velocity){
             this.velocity = velocity.copy();
         }
+        public RealVector getAngularVelocity(){
+            return this.angularVelocity.copy();
+        }
+        public void setAngularVelocity(RealVector angularVelocity){
+            this.angularVelocity = angularVelocity.copy();
+        }
         public void addForce(RealVector force){
             this.force = this.force.add(force);
+        }
+        public void addTorque(RealVector torque){
+            this.torque = this.torque.add(torque);
         }
         public double getMass(){
             return this.mass;
@@ -1494,15 +1507,10 @@ public class SimulatorTest {
             return this.rotation.operate(geometryPositionOffset).copy();
         }
         public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-            try {
-                RealVector currentGeometryPosition = getGeometryPosition();
-                RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
-                this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
-                setGeometryPosition(currentGeometryPosition);
-            } catch (Exception e){
-                Log.severe("Tree: setGeometryPositionOffset - Could not set geometryPositionOffset. Rotation matrix inversion failed");
-                e.printStackTrace();
-            }
+            RealVector currentGeometryPosition = getGeometryPosition();
+            RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
+            this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
+            setGeometryPosition(currentGeometryPosition);
         }
         public PhysicalObjectType getPhysicalObjectType(){
             return this.physicalObjectType;
@@ -1526,8 +1534,9 @@ public class SimulatorTest {
             return new ArrayList<>();
         }
         public void computePhysics(long deltaTms){
-            //No physics computations for trees
+            //No physics computations for this
             force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+            torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         }
         public void putOnSurface(double posX, double posY, double rotZ){
             // do nothing: this object is never put on the surface of a simulation
@@ -1539,7 +1548,7 @@ public class SimulatorTest {
             return getRotation();
         }
         public void executeLoopIteration(long timeDiffMs) {
-            // do nothing: trees do not move
+            // do nothing: this do not move
         }
     }
 }

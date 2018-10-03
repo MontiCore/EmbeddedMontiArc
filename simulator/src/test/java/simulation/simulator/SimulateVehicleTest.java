@@ -784,12 +784,8 @@ public class SimulateVehicleTest {
         RealMatrix matrix1 = null;
         RealMatrix matrix2 = null;
 
-        try {
-            matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
-            matrix2 =  physicalVehicle.getGeometryRot().transpose();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
+        matrix2 =  physicalVehicle.getGeometryRot().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
 
         vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0);
@@ -797,23 +793,15 @@ public class SimulateVehicleTest {
         sim.extendSimulationTime(2000);
         sim.startSimulation();
 
-        try {
-            matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
-            matrix2 =  physicalVehicle.getGeometryRot().transpose();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
+        matrix2 =  physicalVehicle.getGeometryRot().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
 
         sim.extendSimulationTime(2000);
         sim.startSimulation();
 
-        try {
-            matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
-            matrix2 =  physicalVehicle.getGeometryRot().transpose();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
+        matrix2 =  physicalVehicle.getGeometryRot().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
     }
 

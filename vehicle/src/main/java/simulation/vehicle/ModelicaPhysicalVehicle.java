@@ -34,10 +34,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     /** Vector pointing from the center of mass position to the center of geometry position in the local coordinate system */
     private RealVector geometryPositionOffset;
 
-
     /** Current rotation around the local z axis */
     private double yaw_angle;
-
 
     /** VehicleDynamicsModel used for modelica physics */
     private VehicleDynamicsModel vehicleDynamicsModel;
@@ -53,6 +51,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     public ModelicaPhysicalVehicle(){
         super();
+
         vehicleDynamicsModel = new VehicleDynamicsModel();
 
         // Before initialisation
@@ -62,8 +61,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         this.position = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         this.rotation = coordinateRotation.copy();
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-
-        Log.finest("PhysicalVehicle: Constructor - PhysicalVehicle constructed: " + this);
     }
 
     /**
@@ -129,7 +126,35 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setVelocity(RealVector velocity){
-        // toDo why
+        if(physicalVehicleInitialized){
+            throw new IllegalStateException("Ha"); //todo error
+        }else{
+            throw new IllegalStateException("Done by builder"); //todo error
+        }
+    }
+
+    /**
+     * Function that returns a copy of the angular velocity vector around the center of mass
+     * @return Angular velocity vector around the center of mass
+     */
+    @Override
+    public RealVector getAngularVelocity(){
+        return new ArrayRealVector(3);
+    }
+
+    /**
+     * Function that sets the angular velocity vector around the center of mass
+     * @param angularVelocity New angular velocity around of the center of mass
+     */
+    @Override
+    public void setAngularVelocity(RealVector angularVelocity){
+        if(physicalVehicleInitialized){
+            throw new IllegalStateException("Ha"); //todo error
+        }
+        // Compute angular velocity in local coordinates
+        RealVector localAngularVelocity = rotation.transpose().operate(angularVelocity);
+        // Set initial velocity values
+        vehicleDynamicsModel.setParameter("omega_z_0", localAngularVelocity.getEntry(2));
     }
 
     /**
@@ -139,6 +164,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void addForce(RealVector force){
         this.force = this.force.add(force);
+    }
+
+    /**
+     * Function that add an external torque acting around the center of mass
+     * @param torque Torque vector that acts around the center of mass
+     */
+    public void addTorque(RealVector torque){
+        throw new UnsupportedOperationException("Ha"); //todo error
     }
 
     /**
@@ -197,7 +230,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-        // toDo why not
+        throw new UnsupportedOperationException("Ha"); //todo error
     }
 
     /**
@@ -250,7 +283,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             // Get values from VDM
             double z = vehicleDynamicsModel.getValue("z");
 
-            // Reset vehicle on surface
+            // Reset vehicle on surface and calculate slope and bank
             RealVector roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
             putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
 
@@ -426,24 +459,25 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void initPhysics() {
-        if(!physicalVehicleInitialized) {
-            // Set parameters for the VDM
-
-            // Initialize the modelica components
-            vehicleDynamicsModel.initialize();
-
-            //Shift position and geometryPositionOffset
-            double z = vehicleDynamicsModel.getValue("z");
-            geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() / 2 - z});
-            position = geometryPositionOffset.mapMultiply(-1.0);
-
-            //Initialize remaining variables
-            force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            yaw_angle = 0.0;
-
-            physicalVehicleInitialized = true;
-            simulationVehicle.setVehicleInitialized(true);
+        if(physicalVehicleInitialized){
+            throw new IllegalStateException("Ha"); //todo error
         }
+        // Set parameters for the VDM
+
+        // Initialize the modelica components
+        vehicleDynamicsModel.initialize();
+
+        //Shift position and geometryPositionOffset
+        double z = vehicleDynamicsModel.getValue("z");
+        geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() / 2 - z});
+        position = geometryPositionOffset.mapMultiply(-1.0);
+
+        //Initialize remaining variables
+        force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
+        yaw_angle = 0.0;
+
+        physicalVehicleInitialized = true;
+        simulationVehicle.setVehicleInitialized(true);
     }
 
     /**
@@ -600,7 +634,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 (physicalVehicleInitialized ? " , geometryPos: " + getGeometryPosition() : "") +
                 (physicalVehicleInitialized ? " , position: " + position : "") +
                 (physicalVehicleInitialized ? " , velocity: " + getVelocity() : "") +
-                //(physicalVehicleInitialized ? " , acceleration: " + acceleration : "") +
                 (physicalVehicleInitialized ? " , force: " + force : "") +
                 (physicalVehicleInitialized ? " , rotation: " + rotation : "") +
                 (physicalVehicleInitialized ? " , yaw_angle: " + yaw_angle : "") +

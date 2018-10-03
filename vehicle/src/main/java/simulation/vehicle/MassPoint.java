@@ -579,6 +579,7 @@
  */
 package simulation.vehicle;
 
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
 /**
@@ -590,18 +591,18 @@ public class MassPoint {
     private MassPointType type;
 
     /** x_i bar of formula: Position relative to center of mass of rigid body (local coordinate system) */
-    private RealVector localPos;
+    private RealVector localPosition;
 
     /** r_i bar of formula: Vector pointing from center of mass of rigid body to mass point (local coordinate system) */
     private RealVector localCenterDiff;
 
     /** x_i of formula: Position relative to global coordinate system */
-    private RealVector pos;
+    private RealVector position;
 
     /** r_i of formula: Vector pointing from center of mass of rigid body to mass point (global coordinate system) */
     private RealVector centerDiff;
 
-    /** x_i dot of formula: Velocity relative to global coordinate system */
+    /** v_i of formula: Velocity relative to global coordinate system */
     private RealVector velocity;
 
     /** f_i of formula: Acceleration relative to global coordinate system */
@@ -621,22 +622,17 @@ public class MassPoint {
      * Uses deep copy of vectors to avoid that vectors can be modified externally
      *
      * @param type Type of the mass point
-     * @param localPos Position vector of mass point in local coordinate system
-     * @param localCenterDiff Center difference vector of mass point in local coordinate system
-     * @param pos Position vector of mass point in global coordinate system
-     * @param centerDiff Center difference vector of mass point in global coordinate system
-     * @param velocity Velocity vector of the mass point
-     * @param force Force vector of the mass point
+     * @param localPosition Position vector of mass point in local coordinate system
      * @param mass Mass of the mass point
      */
-    public MassPoint(MassPointType type, RealVector localPos, RealVector localCenterDiff, RealVector pos, RealVector centerDiff, RealVector velocity, RealVector force, double mass) {
+    public MassPoint(MassPointType type, RealVector localPosition, double mass) {
         this.type = type;
-        this.localPos = localPos.copy();
-        this.localCenterDiff = localCenterDiff.copy();
-        this.pos = pos.copy();
-        this.centerDiff = centerDiff.copy();
-        this.velocity = velocity.copy();
-        this.force = force.copy();
+        this.localPosition = localPosition.copy();
+        this.localCenterDiff = new ArrayRealVector(3);
+        this.position = new ArrayRealVector(3);
+        this.centerDiff = new ArrayRealVector(3);
+        this.velocity = new ArrayRealVector(3);
+        this.force = new ArrayRealVector(3);
         this.mass = mass;
         this.groundZ = 0.0;
         this.pressure = 0.0;
@@ -654,8 +650,8 @@ public class MassPoint {
      * Getter for local position
      * @return Deep copy of the actual vector to avoid external modifications of vector data
      */
-    public RealVector getLocalPos() {
-        return localPos.copy();
+    public RealVector getLocalPosition() {
+        return localPosition.copy();
     }
 
     /**
@@ -670,8 +666,8 @@ public class MassPoint {
      * Getter for global position
      * @return Deep copy of the actual vector to avoid external modifications of vector data
      */
-    public RealVector getPos() {
-        return pos.copy();
+    public RealVector getPosition() {
+        return position.copy();
     }
 
     /**
@@ -708,10 +704,10 @@ public class MassPoint {
 
     /**
      * Setter for local position
-     * @param localPos Input vector data that is deep copied to the mass point data to avoid external modifications
+     * @param localPosition Input vector data that is deep copied to the mass point data to avoid external modifications
      */
-    public void setLocalPos(RealVector localPos) {
-        this.localPos = localPos.copy();
+    public void setLocalPosition(RealVector localPosition) {
+        this.localPosition = localPosition.copy();
     }
 
     /**
@@ -724,10 +720,10 @@ public class MassPoint {
 
     /**
      * Setter for position
-     * @param pos Input vector data that is deep copied to the mass point data to avoid external modifications
+     * @param position Input vector data that is deep copied to the mass point data to avoid external modifications
      */
-    public void setPos(RealVector pos) {
-        this.pos = pos.copy();
+    public void setPosition(RealVector position) {
+        this.position = position.copy();
     }
 
     /**
@@ -747,11 +743,18 @@ public class MassPoint {
     }
 
     /**
-     * Setter for force
-     * @param force Input vector data that is deep copied to the mass point data to avoid external modifications
+     * Adder for force
+     * @param force Input vector that is added to the force vector
      */
-    public void setForce(RealVector force) {
-        this.force = force.copy();
+    public void addForce(RealVector force) {
+        this.force = this.force.add(force);
+    }
+
+    /**
+     * Resetter for force
+     */
+    public void resetForce(){
+        this.force = new ArrayRealVector(3);
     }
 
     /**
@@ -801,9 +804,9 @@ public class MassPoint {
     @Override
     public String toString() {
         return  "MassPoint " + hashCode() + ": type: " + type +
-                " , localPos: " + localPos +
+                " , localPosition: " + localPosition +
                 " , localCenterDiff: " + localCenterDiff +
-                " , pos: " + pos +
+                " , position: " + position +
                 " , centerDiff: " + centerDiff +
                 " , velocity: " + velocity +
                 " , force: " + force +
