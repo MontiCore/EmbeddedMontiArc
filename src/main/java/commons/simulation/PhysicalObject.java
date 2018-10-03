@@ -71,10 +71,28 @@ public interface PhysicalObject {
     void setVelocity(RealVector velocity);
 
     /**
+     * Function that returns a copy of the angular velocity vector around the center of mass
+     * @return Angular velocity vector around the center of mass
+     */
+    RealVector getAngularVelocity();
+
+    /**
+     * Function that sets the angular velocity vector around the center of mass
+     * @param angularVelocity New angular velocity around of the center of mass
+     */
+    void setAngularVelocity(RealVector angularVelocity);
+
+    /**
      * Function that adds an external force acting on the center of mass
      * @param force Force vector that acts on the center of mass
      */
     void addForce(RealVector force);
+
+    /**
+     * Function that add an external torque acting around the center of mass
+     * @param torque Torque vector that acts around the center of mass
+     */
+    void addTorque(RealVector torque);
 
     /**
      * Function that returns the mass of the object
