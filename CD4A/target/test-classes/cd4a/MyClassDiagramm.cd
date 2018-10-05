@@ -1,0 +1,9 @@
+package cd4a;
+
+classdiagram MyClassDiagramm {
+
+  class MyClass {
+    int myVar;
+  }
+
+}

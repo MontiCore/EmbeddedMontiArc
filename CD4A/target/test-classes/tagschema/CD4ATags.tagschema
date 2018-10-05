@@ -1,0 +1,10 @@
+package tagschema;
+
+import de.monticore.umlcd4a.symboltable.CDTypeSymbol;
+
+tagschema OCL2JavaTags {
+  tagtype SymbolName:String for CDType;
+}
+
+// This file is only needed for documentation purposes and the TaggingGenrator,
+// which generated CD4ATags.java SymbolNameSymbol.java and SymbolNameSymbolCreator.java
