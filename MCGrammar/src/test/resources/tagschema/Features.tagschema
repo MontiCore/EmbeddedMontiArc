@@ -1,0 +1,5 @@
+package tagschema;
+
+tagschema Features {
+  tagtype Feature:String for Prod;
+}
