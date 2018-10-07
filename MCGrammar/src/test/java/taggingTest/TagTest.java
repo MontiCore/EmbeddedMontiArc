@@ -71,10 +71,10 @@ public class TagTest {
         TaggingResolver taggingResolver = createSymTabAndTaggingResolver(modelPath);
 
         MCGrammarSymbol testGrammar = taggingResolver.<MCGrammarSymbol>resolve("grammar.TestGrammar", MCGrammarSymbol.KIND).orElse(null);
-        //assertNotNull(testGrammar);
+        assertNotNull(testGrammar);
 
         MCProdSymbol prod = taggingResolver.<MCProdSymbol>resolve("grammar.TestGrammar.Rule1", MCProdSymbol.KIND).orElse(null);
-        // assertNotNull(prod);
+        assertNotNull(prod);
         List<TagSymbol> tags = (List<TagSymbol>) taggingResolver.getTags(prod, FeatureSymbol.KIND);
         assertEquals(1, tags.size());
     }
