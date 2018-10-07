@@ -44,14 +44,14 @@ import static org.junit.Assert.*;
  */
 public class TagTest {
 
-    protected static CD4AnalysisLanguage getMontiArcLanguage() {
-        CD4AnalysisLanguage montiArcLanguage = new CD4AnalysisLanguage();
-        return montiArcLanguage;
+    protected static CD4AnalysisLanguage getCD4ALanguage() {
+        CD4AnalysisLanguage cd4AnalysisLanguage = new CD4AnalysisLanguage();
+        return cd4AnalysisLanguage;
     }
 
     protected TaggingResolver createSymTabAndTaggingResolver(String modelPath) {
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
-        fam.addModelingLanguage(getMontiArcLanguage());
+        fam.addModelingLanguage(getCD4ALanguage());
         final ModelPath mp = new ModelPath(Paths.get(modelPath));
         GlobalScope scope = new GlobalScope(mp, fam);
         TaggingResolver tagging = new TaggingResolver(scope, Arrays.asList(modelPath));
