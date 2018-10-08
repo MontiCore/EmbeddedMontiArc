@@ -522,8 +522,18 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * Function that returns the force that is acting on the vehicle
      * @return Force acting on the vehicle
      */
+    @Override
     public RealVector getForce(){
         return force.copy();
+    }
+
+    /**
+     * Function that returns the mass points
+     * Should only be called for tests
+     * @return The mass points of the vehicle
+     */
+    public MassPoint[] getMassPoints(){
+        return massPoints;
     }
 
     /**
@@ -591,7 +601,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     private void initLocalInertiaInverse(){
         RealMatrix result = MatrixUtils.createRealMatrix(3, 3);
         for (MassPoint mp : massPoints) {
-            RealMatrix matrixMassPoint = MathHelper.vector3DToCrossProductMatrix(mp.getLocalCenterDiff()).power(2).scalarMultiply(-mp.getMass());
+            RealMatrix matrixMassPoint = MathHelper.vectorToCrossProductMatrix(mp.getLocalCenterDiff()).power(2).scalarMultiply(-mp.getMass());
             result = result.add(matrixMassPoint);
         }
         localInertiaInverse = MathHelper.matrixInvert(result);
@@ -604,7 +614,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     private void calcTorque(){
         RealVector result = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         for (MassPoint mp : massPoints) {
-            result = result.add(MathHelper.vector3DCrossProduct(mp.getCenterDiff(), mp.getForce()));
+            result = result.add(MathHelper.crossProduct(mp.getCenterDiff(), mp.getForce()));
         }
         torque = result;
     }
@@ -657,7 +667,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * @param deltaT Time difference to previous step in seconds
      */
     private void calcRotationMatrix(double deltaT){
-        rotation = rotation.add((MathHelper.vector3DToCrossProductMatrix(angularVelocity).multiply(rotation)).scalarMultiply(deltaT));
+        rotation = rotation.add((MathHelper.vectorToCrossProductMatrix(angularVelocity).multiply(rotation)).scalarMultiply(deltaT));
         rotation = MathHelper.matrix3DOrthonormalize(rotation);
     }
 
@@ -720,7 +730,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     private void calcMassPointVelocity(){
         for(MassPoint massPoint : massPoints){
-            massPoint.setVelocity(this.velocity.add(MathHelper.vector3DCrossProduct(this.angularVelocity, massPoint.getCenterDiff())));
+            massPoint.setVelocity(this.velocity.add(MathHelper.crossProduct(this.angularVelocity, massPoint.getCenterDiff())));
             RealVector zeroVector = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
             double threshold = 0.0000000000001;
             if (MathHelper.vectorEquals(massPoint.getVelocity(), zeroVector, threshold)) {
@@ -947,7 +957,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             RealVector forceNormal = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
 
             try {
-                forceNormal = MathHelper.vector3DCrossProduct(vectorBackFront, vectorLeftRight);
+                forceNormal = MathHelper.crossProduct(vectorBackFront, vectorLeftRight);
             } catch (Exception e) {
                 Log.severe("Ha"); //todo error
             }
@@ -1144,7 +1154,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             curveRadiusVector = curveRadiusVector.mapMultiply(curveRadiusVectorLength);
 
             try {
-                forceCentripetal = MathHelper.vector3DCrossProduct(angularVelocity, MathHelper.vector3DCrossProduct(angularVelocity, curveRadiusVector)).mapMultiply(mp.getMass());
+                forceCentripetal = MathHelper.crossProduct(angularVelocity, MathHelper.crossProduct(angularVelocity, curveRadiusVector)).mapMultiply(mp.getMass());
             }
             catch (Exception e) {
                 Log.severe("Ha"); //todo error

@@ -435,7 +435,7 @@ public class MathHelperTest {
         double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
         RealVector vector1 = new ArrayRealVector(vectorEntries1);
         RealVector vector2 = new ArrayRealVector(vectorEntries2);
-        RealMatrix crossProductMatrixVector1 = MathHelper.vector3DToCrossProductMatrix(vector1);
+        RealMatrix crossProductMatrixVector1 = MathHelper.vectorToCrossProductMatrix(vector1);
         RealVector crossProduct1 = crossProductMatrixVector1.operate(vector2);
         Vector3D vector3 = new Vector3D(vectorEntries1);
         Vector3D vector4 = new Vector3D(vectorEntries2);
@@ -450,7 +450,7 @@ public class MathHelperTest {
         RealVector vector5 = new ArrayRealVector(vectorEntries5);
 
         try {
-            MathHelper.vector3DToCrossProductMatrix(vector5);
+            MathHelper.vectorToCrossProductMatrix(vector5);
         }
         catch (Exception e) {
             exceptionCaught5 = true;
@@ -466,7 +466,7 @@ public class MathHelperTest {
         double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
         RealVector vector1 = new ArrayRealVector(vectorEntries1);
         RealVector vector2 = new ArrayRealVector(vectorEntries2);
-        RealVector crossProduct1 = MathHelper.vector3DCrossProduct(vector1, vector2);
+        RealVector crossProduct1 = MathHelper.crossProduct(vector1, vector2);
         Vector3D vector3 = new Vector3D(vectorEntries1);
         Vector3D vector4 = new Vector3D(vectorEntries2);
         Vector3D crossProduct2tmp = vector3.crossProduct(vector4);
@@ -482,7 +482,7 @@ public class MathHelperTest {
         RealVector vector6 = new ArrayRealVector(vectorEntries6);
 
         try {
-            MathHelper.vector3DCrossProduct(vector5, vector6);
+            MathHelper.crossProduct(vector5, vector6);
         }
         catch (Exception e) {
             exceptionCaught5 = true;

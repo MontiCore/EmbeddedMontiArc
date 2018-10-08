@@ -46,7 +46,7 @@ public class ModelicaBuilderTest {
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedGeometryPosition = new ArrayRealVector(new Double[]{0.0, 0.0, 0.0});
 
-        // Test not set/default parameters
+        // Test default/not set parameters
         Assert.assertEquals(Optional.empty(), vehicle.getControllerBus());
         Assert.assertEquals(Optional.empty(), vehicle.getController());
         Assert.assertEquals(Optional.empty(), vehicle.getNavigation());

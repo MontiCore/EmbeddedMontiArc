@@ -261,6 +261,35 @@ public class MassPointPhysicalVehicleTest {
     }
 
     @Test
+    public void setVelocityNormal(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        RealVector velocity = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setVelocity(velocity);
+        Assert.assertTrue(MathHelper.vectorEquals(velocity, physicalVehicle.getVelocity(), 0.00000001));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setVelocityFail(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test
+    public void setAngularVelocityNormal(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        RealVector angularVelocity = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setVelocity(angularVelocity);
+        physicalVehicle.initPhysics();
+        Assert.assertTrue(MathHelper.vectorEquals(angularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setAngularVelocityFail(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setAngularVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test
     public void setMassNormal(){
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         physicalVehicle.setMass(1000.0);

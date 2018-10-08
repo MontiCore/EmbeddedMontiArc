@@ -126,10 +126,12 @@ public class VehicleActuatorTest {
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
         actuator.setActuatorValueTarget(5.0);
         Assert.assertEquals(5.0, actuator.getActuatorValueTarget(), 0);
+
         // Test setting on max value
         actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
         actuator.setActuatorValueTarget(10.0);
         Assert.assertEquals(10.0, actuator.getActuatorValueTarget(), 0);
+
         // Test setting on min value
         actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
         actuator.setActuatorValueTarget(0.0);
@@ -147,5 +149,36 @@ public class VehicleActuatorTest {
     public void setActuatorValueTargetUnderMin(){
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
         actuator.setActuatorValueTarget(-1.0);
+    }
+
+    @Test
+    public void setActuatorValueCurrentNormal(){
+        // Test normal case
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator.setActuatorValueCurrent(5.0);
+        Assert.assertEquals(5.0, actuator.getActuatorValueCurrent(), 0);
+
+        // Test setting on max value
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator.setActuatorValueCurrent(10.0);
+        Assert.assertEquals(10.0, actuator.getActuatorValueCurrent(), 0);
+
+        // Test setting on min value
+        actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator.setActuatorValueCurrent(0.0);
+        Assert.assertEquals(0.0, actuator.getActuatorValueCurrent(), 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setActuatorValueCurrentOverMax() {
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator.setActuatorValueCurrent(11.0);
+        Assert.assertTrue(true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setActuatorValueCurrentUnderMin(){
+        VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
+        actuator.setActuatorValueCurrent(-1.0);
     }
 }

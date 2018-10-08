@@ -31,13 +31,28 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      *
      * @return MassPointPhysicalVehicle that was built with the builder
      */
+    @Override
     public PhysicalVehicle buildPhysicalVehicle(){
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+
+        this.velocity.ifPresent(physicalVehicle::setVelocity);
+        this.angularVelocity.ifPresent(physicalVehicle::setAngularVelocity);
+
+        this.mass.ifPresent(physicalVehicle::setMass);
+
+        this.width.ifPresent(physicalVehicle::setWidth);
+        this.length.ifPresent(physicalVehicle::setLength);
+        this.height.ifPresent(physicalVehicle::setHeight);
+
+        this.wheelRadius.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelRadius);
+        this.wheelDistLeftRightFrontSide.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistLeftRightFrontSide);
+        this.wheelDistLeftRightBackSide.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistLeftRightBackSide);
+        this.wheelDistToFront.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistToFront);
+        this.wheelDistToBack.ifPresent(physicalVehicle.getSimulationVehicle()::setWheelDistToBack);
 
         this.controllerBus.ifPresent(physicalVehicle.getSimulationVehicle()::setControllerBus);
         this.controller.ifPresent(physicalVehicle.getSimulationVehicle()::setController);
         this.navigation.ifPresent(physicalVehicle.getSimulationVehicle()::setNavigation);
-        this.mass.ifPresent(physicalVehicle::setMass);
 
         physicalVehicle.initPhysics();
 
@@ -57,13 +72,24 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         Gson g = new Gson();
         ParsableVehicleProperties data = g.fromJson(jsonContents, ParsableVehicleProperties.class);
 
-        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
 
-        physicalVehicle.getSimulationVehicle().setWidth(data.width);
-        physicalVehicle.getSimulationVehicle().setLength(data.length);
-        physicalVehicle.getSimulationVehicle().setHeight(data.height);
+        builder.setVelocity(data.getVelocity());
+        builder.setAngularVelocity(data.getAngularVelocity());
 
-        physicalVehicle.getSimulationVehicle().setApproxMaxTotalVelocity(data.getApproxMaxTotalVelocity());
+        builder.setMass(data.getMass());
+
+        builder.setWidth(data.getWidth());
+        builder.setLength(data.getLength());
+        builder.setHeight(data.getHeight());
+
+        builder.setWheelRadius(data.getWheelRadius());
+        builder.setWheelDistLeftRightFrontSide(data.getWheelDistLeftRightFrontSide());
+        builder.setWheelDistLeftRightBackSide(data.getWheelDistLeftRightBackSide());
+        builder.setWheelDistToFront(data.getWheelDistToFront());
+        builder.setWheelDistToBack(data.getWheelDistToBack());
+
+        MassPointPhysicalVehicle physicalVehicle =  (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
 
         /*for (VehicleActuator a : data.actuators) {
             physicalVehicle.getSimulationVehicle().setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
@@ -71,18 +97,9 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueCurrent(a.getActuatorValueCurrent());
         }*/
 
-        physicalVehicle.setMass(data.mass);
-        physicalVehicle.getSimulationVehicle().setWheelRadius(data.wheelRadius);
-        physicalVehicle.getSimulationVehicle().setWheelDistLeftRightFrontSide(data.wheelDistLeftRightFrontSide);
-        physicalVehicle.getSimulationVehicle().setWheelDistLeftRightBackSide(data.wheelDistLeftRightBackSide);
-        physicalVehicle.getSimulationVehicle().setWheelDistToFront(data.wheelDistToFront);
-        physicalVehicle.getSimulationVehicle().setWheelDistToBack(data.wheelDistToBack);
-
-        physicalVehicle.initPhysics();
-
         physicalVehicle.setPosition(data.getPosition());
 
-        //physicalVehicle.setRotation(data.getRotation());
+        physicalVehicle.setRotation(data.getRotation());
 
         return physicalVehicle;
     }
@@ -117,13 +134,6 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * to be able to reuse the building process as is.
      */
     public static class ParsableVehicleProperties {
-
-        private double width;
-        private double height;
-        private double length;
-
-        private double approxMaxTotalVelocity;
-
         private double positionX;
         private double positionY;
         private double positionZ;
@@ -142,6 +152,11 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         private double angularVelocityZ;
 
         private double mass;
+
+        private double width;
+        private double height;
+        private double length;
+
         private double wheelRadius;
         private double wheelDistLeftRightFrontSide;
         private double wheelDistLeftRightBackSide;
@@ -151,13 +166,6 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         //private List<VehicleActuator> actuators;
 
         public ParsableVehicleProperties(MassPointPhysicalVehicle v) {
-
-            width = v.getSimulationVehicle().getWidth();
-            height = v.getSimulationVehicle().getHeight();
-            length = v.getSimulationVehicle().getLength();
-
-            approxMaxTotalVelocity = v.getSimulationVehicle().getApproxMaxTotalVelocity();
-
             positionX = v.getPosition().getEntry(0);
             positionY = v.getPosition().getEntry(1);
             positionZ = v.getPosition().getEntry(2);
@@ -177,6 +185,11 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             angularVelocityZ = v.getAngularVelocity().getEntry(2);
 
             mass = v.getSimulationVehicle().getMass();
+
+            width = v.getSimulationVehicle().getWidth();
+            height = v.getSimulationVehicle().getHeight();
+            length = v.getSimulationVehicle().getLength();
+
             wheelRadius = v.getSimulationVehicle().getWheelRadius();
             wheelDistLeftRightFrontSide = v.getSimulationVehicle().getWheelDistLeftRightFrontSide();
             wheelDistLeftRightBackSide = v.getSimulationVehicle().getWheelDistLeftRightBackSide();
@@ -190,22 +203,6 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT));
             actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT));
             actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING));*/
-        }
-
-        public double getWidth() {
-            return width;
-        }
-
-        public double getHeight() {
-            return height;
-        }
-
-        public double getLength() {
-            return length;
-        }
-
-        public double getApproxMaxTotalVelocity() {
-            return approxMaxTotalVelocity;
         }
 
         public RealVector getPosition(){
@@ -227,6 +224,18 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         public double getMass() {
             return mass;
+        }
+
+        public double getWidth() {
+            return width;
+        }
+
+        public double getHeight() {
+            return height;
+        }
+
+        public double getLength() {
+            return length;
         }
 
         public double getWheelRadius() {

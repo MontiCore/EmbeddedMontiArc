@@ -33,6 +33,12 @@ public class VehicleTest {
         vehicle.setHeight(2.0);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void getMassFailModelica(){
+        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
+        vehicle.getMass();
+    }
+
     @Test
     public void setMassNormal(){
         // Test MassPoint case
@@ -61,9 +67,9 @@ public class VehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getMassFailModelica(){
+    public void getWheelRadiusFailModelica(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getMass();
+        vehicle.getWheelRadius();
     }
 
     @Test
@@ -94,9 +100,9 @@ public class VehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelRadiusFailModelica(){
+    public void getWheelDistLeftRightFrontSideFailModelica(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelRadius();
+        vehicle.getWheelDistLeftRightFrontSide();
     }
 
     @Test
@@ -127,9 +133,9 @@ public class VehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistLeftRightFrontSideFailModelica(){
+    public void getWheelDistLeftRightBackSideFailModelica(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistLeftRightFrontSide();
+        vehicle.getWheelDistLeftRightBackSide();
     }
 
     @Test
@@ -160,9 +166,9 @@ public class VehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistLeftRightBackSideFailModelica(){
+    public void getWheelDistToFrontFailModelica(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistLeftRightBackSide();
+        vehicle.getWheelDistToFront();
     }
 
     @Test
@@ -193,9 +199,9 @@ public class VehicleTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getWheelDistToFrontFailModelica(){
+    public void getWheelDistToBackFailModelica(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistToFront();
+        vehicle.getWheelDistToBack();
     }
 
     @Test
@@ -223,12 +229,6 @@ public class VehicleTest {
     public void setWheelDistToBackFailModelica() {
         Vehicle vehicle = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle().getSimulationVehicle();
         vehicle.setWheelDistToBack(1.0);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void getWheelDistToBackFailModelica(){
-        Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.getWheelDistToBack();
     }
 
     @Test

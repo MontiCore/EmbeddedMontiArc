@@ -581,6 +581,9 @@ package simulation.vehicle;
 
 import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
+import org.apache.commons.math3.linear.RealVector;
+import org.javafmi.modeldescription.v1.RealVariable;
+
 import java.util.Optional;
 
 /**
@@ -588,10 +591,24 @@ import java.util.Optional;
  */
 public abstract class PhysicalVehicleBuilder {
 
+    protected Optional<RealVector> velocity = Optional.empty();
+    protected Optional<RealVector> angularVelocity = Optional.empty();
+
+    protected Optional<Double> mass = Optional.empty();
+
+    protected Optional<Double> width = Optional.empty();
+    protected Optional<Double> length = Optional.empty();
+    protected Optional<Double> height = Optional.empty();
+
+    protected Optional<Double> wheelRadius = Optional.empty();
+    protected Optional<Double> wheelDistLeftRightFrontSide = Optional.empty();
+    protected Optional<Double> wheelDistLeftRightBackSide = Optional.empty();
+    protected Optional<Double> wheelDistToFront = Optional.empty();
+    protected Optional<Double> wheelDistToBack = Optional.empty();
+
     protected Optional<Optional<Bus>> controllerBus = Optional.empty();
     protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();
     protected Optional<Optional<FunctionBlockInterface>> navigation = Optional.empty();
-    protected Optional<Double> mass = Optional.empty();
 
     /**
      * Constructor
@@ -607,6 +624,61 @@ public abstract class PhysicalVehicleBuilder {
      */
     public abstract PhysicalVehicle buildPhysicalVehicle();
 
+    public  PhysicalVehicleBuilder setVelocity(RealVector velocity){
+        this.velocity = Optional.of(velocity);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setAngularVelocity(RealVector angularVelocity){
+        this.angularVelocity = Optional.of(angularVelocity);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setMass(double mass){
+        this.mass = Optional.of(mass);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setWheelRadius(double wheelRadius){
+        this.wheelRadius = Optional.of(wheelRadius);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setWidth(double width){
+        this.width = Optional.of(width);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setLength(double length){
+        this.length = Optional.of(length);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setHeight(double height){
+        this.height = Optional.of(height);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
+        this.wheelDistLeftRightFrontSide = Optional.of(wheelDistLeftRightFrontSide);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
+        this.wheelDistLeftRightBackSide = Optional.of(wheelDistLeftRightBackSide);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setWheelDistToFront(double wheelDistToFront){
+        this.wheelDistToFront = Optional.of(wheelDistToFront);
+        return this;
+    }
+
+    public  PhysicalVehicleBuilder setWheelDistToBack(double wheelDistToBack){
+        this.wheelDistToBack = Optional.of(wheelDistToBack);
+        return this;
+    }
+
     public PhysicalVehicleBuilder setControllerBus(Optional<Bus> controllerBus){
         this.controllerBus = Optional.of(controllerBus);
         return this;
@@ -619,11 +691,6 @@ public abstract class PhysicalVehicleBuilder {
 
     public PhysicalVehicleBuilder setNavigation(Optional<FunctionBlockInterface> navigation) {
         this.navigation = Optional.of(navigation);
-        return this;
-    }
-
-    public  PhysicalVehicleBuilder setMass(double mass){
-        this.mass = Optional.of(mass);
         return this;
     }
 }

@@ -591,7 +591,6 @@ import static org.junit.Assert.*;
  * Class that tests the MassPoint class
  */
 public class MassPointTest {
-    private MassPoint mp = null;
 
     @BeforeClass
     public static void setUpClass() {
@@ -603,66 +602,104 @@ public class MassPointTest {
         Log.setLogEnabled(true);
     }
 
-    @Before
-    public void setUp() {
+    @Test
+    public void constructorTest(){
+        // Create test values
+        RealVector zeroVector = new ArrayRealVector(3);
         RealVector localPos = new ArrayRealVector(new double[] {0.2346, 0.3678, 0.2486});
         double mass = 500.0;
-        mp = new MassPoint(MassPointType.MASS_POINT_TYPE_WHEEL_FRONT_LEFT, localPos, mass);
+
+        // Construct mass point
+        MassPoint mp = new MassPoint(MassPointType.MASS_POINT_TYPE_WHEEL_FRONT_LEFT, localPos, mass);
+
+        // Ensure that constructor works
+        assertTrue(MathHelper.vectorEquals(localPos, mp.getLocalPosition(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getLocalCenterDiff(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getPosition(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getCenterDiff(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getVelocity(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(zeroVector,mp.getForce(), 0.00000001));
+        assertEquals(mass, mp.getMass(), 0);
+        assertEquals(0.0, mp.getGroundZ(), 0);
+        assertEquals(0.0, mp.getPressure(), 0);
     }
 
     @Test
-    public void testGetterAndSetter() {
-        //todo force adder and resetter testing
+    public void getterAndSetterTest() {
+        // Create test values
         RealVector zeroVector = new ArrayRealVector(3);
-        RealVector localPos = new ArrayRealVector(new double[] {0.2346, 0.3678, 0.2486});
+        RealVector localPosition = new ArrayRealVector(new double[] {0.2346, 0.3678, 0.2486});
         RealVector localCenterDiff = new ArrayRealVector(new double[] {5.2346, 0.678, 1.2486});
-        RealVector pos = new ArrayRealVector(new double[] {249.2346, 10.3678, 3.2486});
+        RealVector position = new ArrayRealVector(new double[] {249.2346, 10.3678, 3.2486});
         RealVector centerDiff = new ArrayRealVector(new double[] {240.2346, 11.3678, 2.2486});
         RealVector velocity = new ArrayRealVector(new double[] {0.0, 50.3, -0.25});
-        //RealVector force = new ArrayRealVector(new double[] {5.02, 0.1, -39.4});
         double mass = 500.0;
+        double groundZ = 2.1;
+        double pressure = 1.9;
 
-        // Ensure that constructor works
-        assertTrue(MathHelper.vectorEquals(mp.getLocalPosition(), localPos, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getLocalCenterDiff(), zeroVector, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getPosition(), zeroVector, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getCenterDiff(), zeroVector, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getVelocity(), zeroVector, 0.00000001));
-        //assertTrue(MathHelper.vectorEquals(mp.getForce(), zeroVector, 0.00000001));
-        assertTrue(mp.getMass() == mass);
+        // Construct mass point
+        MassPoint mp = new MassPoint(MassPointType.MASS_POINT_TYPE_WHEEL_FRONT_LEFT, zeroVector, 0.0);
 
-        // Modify local copies of vectors, mass point values should not change!
-        localPos.setEntry(0, 0.3256);
-        localCenterDiff.setEntry(0, 0.3256);
-        pos.setEntry(0, 0.3256);
-        centerDiff.setEntry(0, 0.3256);
-        velocity.setEntry(0, 0.3256);
-        //force.setEntry(0, 0.3256);
-
-        // Now the vectors should not be the same anymore
-        assertFalse(MathHelper.vectorEquals(mp.getLocalPosition(), localPos, 0.00000001));
-        assertFalse(MathHelper.vectorEquals(mp.getLocalCenterDiff(), localCenterDiff, 0.00000001));
-        assertFalse(MathHelper.vectorEquals(mp.getPosition(), pos, 0.00000001));
-        assertFalse(MathHelper.vectorEquals(mp.getCenterDiff(), centerDiff, 0.00000001));
-        assertFalse(MathHelper.vectorEquals(mp.getVelocity(), velocity, 0.00000001));
-        //assertFalse(MathHelper.vectorEquals(mp.getForce(), force, 0.00000001));
-
-        // Use setter to modify data
-        mp.setLocalPosition(localPos);
+        // Set remaining values
+        mp.setLocalPosition(localPosition);
         mp.setLocalCenterDiff(localCenterDiff);
-        mp.setPosition(pos);
+        mp.setPosition(position);
         mp.setCenterDiff(centerDiff);
         mp.setVelocity(velocity);
-        //mp.addForce(force);
-        mp.setMass(600.0);
+        mp.setMass(mass);
+        mp.setGroundZ(groundZ);
+        mp.setPressure(pressure);
 
-        // Ensure that setter work
-        assertTrue(MathHelper.vectorEquals(mp.getLocalPosition(), localPos, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getLocalCenterDiff(), localCenterDiff, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getPosition(), pos, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getCenterDiff(), centerDiff, 0.00000001));
-        assertTrue(MathHelper.vectorEquals(mp.getVelocity(), velocity, 0.00000001));
-        //assertTrue(MathHelper.vectorEquals(mp.getForce(), force, 0.00000001));
-        assertTrue(mp.getMass() == 600.0);
+        // Test if setters work
+        assertTrue(MathHelper.vectorEquals(localPosition, mp.getLocalPosition(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(localCenterDiff, mp.getLocalCenterDiff(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(position, mp.getPosition(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(centerDiff, mp.getCenterDiff(), 0.00000001));
+        assertTrue(MathHelper.vectorEquals(velocity, mp.getVelocity(), 0.00000001));
+        assertEquals(mass, mp.getMass(), 0);
+        assertEquals(groundZ, mp.getGroundZ(), 0);
+        assertEquals(pressure, mp.getPressure(), 0);
+
+        // Modify local copies of vectors, mass point values should not change!
+        localPosition.setEntry(0, 0.3256);
+        localCenterDiff.setEntry(0, 0.3256);
+        position.setEntry(0, 0.3256);
+        centerDiff.setEntry(0, 0.3256);
+        velocity.setEntry(0, 0.3256);
+
+        // Now the vectors should not be the same anymore
+        assertFalse(MathHelper.vectorEquals(localPosition, mp.getLocalPosition(), 0.00000001));
+        assertFalse(MathHelper.vectorEquals(localCenterDiff, mp.getLocalCenterDiff(), 0.00000001));
+        assertFalse(MathHelper.vectorEquals(position, mp.getPosition(), 0.00000001));
+        assertFalse(MathHelper.vectorEquals(centerDiff, mp.getCenterDiff(), 0.00000001));
+        assertFalse(MathHelper.vectorEquals(velocity, mp.getVelocity(), 0.00000001));
+    }
+
+    @Test
+    public void forceAdderAndResetterTest(){
+        // Create test values
+        RealVector zeroVector = new ArrayRealVector(3);
+        RealVector force = new ArrayRealVector(new double[] {5.02, 0.1, -39.4});
+
+        // Construct mass point
+        MassPoint mp = new MassPoint(MassPointType.MASS_POINT_TYPE_WHEEL_BACK_LEFT, zeroVector, 0.0);
+
+        // Add force
+        mp.addForce(force);
+
+        // Test adder
+        assertTrue(MathHelper.vectorEquals(force, mp.getForce(), 0.00000001));
+
+        // Add force again
+        mp.addForce(force);
+
+        // Test adder
+        assertTrue(MathHelper.vectorEquals(force.add(force), mp.getForce(), 0.00000001));
+
+        // Reset force
+        mp.resetForce();
+
+        // Test re setter
+        assertTrue(MathHelper.vectorEquals(zeroVector, mp.getForce(), 0.00000001));
     }
 }

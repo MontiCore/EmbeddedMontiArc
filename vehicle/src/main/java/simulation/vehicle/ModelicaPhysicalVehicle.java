@@ -7,6 +7,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.Log;
+import simulation.util.MathHelper;
 
 import java.util.AbstractMap;
 import java.util.LinkedList;
@@ -341,7 +342,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         RealVector leftPositionLocal = new ArrayRealVector(new double[]{0.0, (TW_f / 2 + TW_r / 2) / 2, -z});
         RealVector rightPositionLocal = new ArrayRealVector(new double[]{0.0, -(TW_f / 2 + TW_r / 2) / 2, -z});
 
-        Vector3D backToFrontLocal = new Vector3D(L_1 + L_2, 0.0, 0.0);
+        RealVector backToFrontLocal = new ArrayRealVector(new double[]{L_1 + L_2, 0.0, 0.0});
 
         //Get global positions only rotated around z axis
         RealVector frontPosition = position.add(rotation.operate(frontPositionLocal));
@@ -362,14 +363,14 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         rightPosition.setEntry(2, rightGround);
 
         //Compute relative vectors
-        Vector3D backToFront = realTo3D(frontPosition.subtract(backPosition));
-        Vector3D rightToLeft = realTo3D(leftPosition.subtract(rightPosition));
-        Vector3D roadPlaneNorm = Vector3D.crossProduct(backToFront, rightToLeft);
+        RealVector backToFront = frontPosition.subtract(backPosition);
+        RealVector rightToLeft = leftPosition.subtract(rightPosition);
+        RealVector roadPlaneNorm = MathHelper.crossProduct(backToFront, rightToLeft);
 
         //Compute angles between relative vectors and X-Y-Plane
-        Vector3D XYPlaneNorm = new Vector3D(0.0, 0.0, 1.0);
-        double backToFrontAngle = (Math.PI / 2) - Vector3D.angle(XYPlaneNorm, backToFront);
-        double rightToLeftAngle = (Math.PI / 2) - Vector3D.angle(XYPlaneNorm, rightToLeft);
+        RealVector XYPlaneNorm = new ArrayRealVector(new double[]{0.0, 0.0, 1.0});
+        double backToFrontAngle = (Math.PI / 2) - MathHelper.angle(XYPlaneNorm, backToFront);
+        double rightToLeftAngle = (Math.PI / 2) - MathHelper.angle(XYPlaneNorm, rightToLeft);
 
         if(physicalVehicleInitialized) {
             vehicleDynamicsModel.setInput("slope", backToFrontAngle);
@@ -379,7 +380,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         //The resulting rotation should transform the XY plane norm to the roadPlaneNorm
         //and the backToFrontLocal to the BackToFront
 
-        Rotation finalRot = new Rotation(XYPlaneNorm, backToFrontLocal, roadPlaneNorm, backToFront);
+        Rotation finalRot = new Rotation(MathHelper.realTo3D(XYPlaneNorm),
+                MathHelper.realTo3D(backToFrontLocal),
+                MathHelper.realTo3D(roadPlaneNorm),
+                MathHelper.realTo3D(backToFront));
         rotation = new BlockRealMatrix(finalRot.getMatrix());
         yaw_angle = rotZ;
 
@@ -484,12 +488,13 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * Function that returns the force that is acting on the vehicle
      * @return Force acting on the vehicle
      */
+    @Override
     public RealVector getForce(){
         return force.copy();
     }
 
     /**
-     * Function that return the VDM
+     * Function that returns the VDM
      * Should only be called by the builder and vehicle
      * @return The VDM of the vehicle
      */
@@ -609,19 +614,6 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             vehicleDynamicsModel.setInput("F_y_3", 0.0);
             vehicleDynamicsModel.setInput("F_y_4", 0.0);
         }
-    }
-
-    /**
-     * Function that takes a RealVector with 3 components and gives a Vector3D
-     * @param vector RealVector with 3 components to be turned into a Vector3D
-     * @return Vector3D according to the RealVector vector
-     */
-    private Vector3D realTo3D(RealVector vector){
-        if(vector.getDimension() != 3) {
-            Log.warning("Input vector " + vector + " has not the right amount of components!");
-            throw new IllegalArgumentException("Ha"); //todo error
-        }
-        return new Vector3D(vector.getEntry(0), vector.getEntry(1), vector.getEntry(2));
     }
 
     /**

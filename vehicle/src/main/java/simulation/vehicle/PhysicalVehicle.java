@@ -714,9 +714,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public void setError(boolean error){
-        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at start: " + this);
         this.error = error;
-        Log.warning("PhysicalVehicle: setError - error: " + error + ", PhysicalVehicle at end: " + this);
     }
 
     /**
@@ -734,9 +732,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public void setCollision(boolean collision){
-        Log.warning("PhysicalVehicle: setCollision - collision: " + collision + ", PhysicalVehicle at start: " + this);
         this.collision = collision;
-        Log.warning("PhysicalVehicle: setCollision - collision: " + collision + ", PhysicalVehicle at end: " + this);
     }
 
     /**

@@ -730,9 +730,6 @@ public class Vehicle {
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
 
-    /** Estimated maximum total velocity of vehicle */
-    private double approxMaxTotalVelocity;
-
     /** Maximum temporary allowed velocity of vehicle */
     private double maxTemporaryAllowedVelocity;
 
@@ -791,8 +788,6 @@ public class Vehicle {
         this.lastNavigationTarget = Optional.empty();
         // Initialize camera image with empty optional
         cameraImage = Optional.empty();
-        // Set approximate maximum velocity
-        this.approxMaxTotalVelocity = VEHICLE_DEFAULT_APPROX_MAX_VELOCITY;
         // When created, maximum temporary allowed velocity is not limited
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
         // When created, the constant bus data is not sent yet
@@ -1256,24 +1251,6 @@ public class Vehicle {
     }
 
     /**
-     * Function that returns the maximum approximate velocity of vehicle
-     *
-     * @return Maximum approximate velocity of vehicle
-     */
-    public double getApproxMaxTotalVelocity() {
-        return approxMaxTotalVelocity;
-    }
-
-    /**
-     * Function that sets the maximum approximate velocity of vehicle
-     *
-     * @param approxMaxTotalVelocity Maximum approximate velocity of vehicle
-     */
-    protected void setApproxMaxTotalVelocity(double approxMaxTotalVelocity) {
-        this.approxMaxTotalVelocity = approxMaxTotalVelocity;
-    }
-
-    /**
      * Function that returns the maximum temporary allowed velocity of simulated car
      *
      * @return Maximum temporary allowed velocity
@@ -1320,88 +1297,87 @@ public class Vehicle {
      * @param deltaT Time difference of the last update loop in seconds
      */
     protected void exchangeDataWithController(double deltaT) {
-
-        // Send / Retrieve data from controller bus, if available
-        if (controllerBus.isPresent() && controller.isPresent()) {
-
-            // Send vehicle data to controller
-            if (!constantBusDataSent) {
-                controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
-                controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
-                controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), getApproxMaxTotalVelocity());
-                controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
-                controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
-                controllerBus.get().setData(CONSTANT_BRAKES_MAX_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMax());
-                controllerBus.get().setData(CONSTANT_BRAKES_MIN_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMin());
-                controllerBus.get().setData(CONSTANT_STEERING_MAX_ANGLE.toString(), steering.getActuatorValueMax());
-                controllerBus.get().setData(CONSTANT_STEERING_MIN_ANGLE.toString(), steering.getActuatorValueMin());
-                controllerBus.get().setData(CONSTANT_TRAJECTORY_ERROR.toString(), 0.0);
-
-                constantBusDataSent = true;
-            }
-
-            // Send sensor data: Write values to bus
-            for (Sensor sensor : sensorList) {
-                // Put data from sensor on the bus
-                controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
-
-                // Special case for weather / surface, for now just constant Asphalt
-                if (sensor.getType() == SENSOR_WEATHER) {
-                    Surface surface = Surface.Asphalt;
-                    controllerBus.get().setData(SENSOR_CURRENT_SURFACE.toString(), surface);
-                }
-            }
-
-            // TODO: This logic should be moved to the controller!
-            Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
-            if (streetTypeSensor.isPresent()) {
-                String streetType = (String)(streetTypeSensor.get().getValue());
-                double allowedVelocityByStreetType = Double.MAX_VALUE;
-
-                switch(streetType){
-                    case "MOTORWAY":
-                        allowedVelocityByStreetType = (100.0 / 3.6);
-                        break;
-                    case "A_ROAD":
-                        allowedVelocityByStreetType = (70.0 / 3.6);
-                        break;
-                    case "STREET":
-                        allowedVelocityByStreetType = (50.0 / 3.6);
-                        break;
-                    case "LIVING_STREET":
-                        allowedVelocityByStreetType = (30.0 / 3.6);
-                        break;
-                }
-
-                setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
-            }
-
-            // Set other values on bus that can change during simulation
-            controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
-            controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
-
-            //Give the bus to the mainControlBlock
-            controller.get().setInputs(controllerBus.get().getAllData());
-
-            // Call controller to compute new values
-            controller.get().execute();
-
-            //Pass the data of the mainControlBlock to the bus
-            controllerBus.get().setAllData(controller.get().getOutputs());
-
-            // Read new values from bus
-            double motorValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString()));
-            double brakeValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString()));
-            double steeringValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString()));
-
-            // Set new values from bus to actuators
-            motor.setActuatorValueTarget(motorValue);
-            brakesFrontLeft.setActuatorValueTarget(brakeValue);
-            brakesFrontRight.setActuatorValueTarget(brakeValue);
-            brakesBackLeft.setActuatorValueTarget(brakeValue);
-            brakesBackRight.setActuatorValueTarget(brakeValue);
-            steering.setActuatorValueTarget(steeringValue);
+        // Skip if controller bus or controller are not available
+        if (!controllerBus.isPresent() || !controller.isPresent()) {
+            return;
         }
+        // Send vehicle data to controller
+        if (!constantBusDataSent) {
+            controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
+            controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
+            controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), Vehicle.VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
+            controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
+            controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
+            controllerBus.get().setData(CONSTANT_BRAKES_MAX_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMax());
+            controllerBus.get().setData(CONSTANT_BRAKES_MIN_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMin());
+            controllerBus.get().setData(CONSTANT_STEERING_MAX_ANGLE.toString(), steering.getActuatorValueMax());
+            controllerBus.get().setData(CONSTANT_STEERING_MIN_ANGLE.toString(), steering.getActuatorValueMin());
+            controllerBus.get().setData(CONSTANT_TRAJECTORY_ERROR.toString(), 0.0);
+
+            constantBusDataSent = true;
+        }
+
+        // Send sensor data: Write values to bus
+        for (Sensor sensor : sensorList) {
+            // Put data from sensor on the bus
+            controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
+
+            // Special case for weather / surface, for now just constant Asphalt
+            if (sensor.getType() == SENSOR_WEATHER) {
+                Surface surface = Surface.Asphalt;
+                controllerBus.get().setData(SENSOR_CURRENT_SURFACE.toString(), surface);
+            }
+        }
+
+        // TODO: This logic should be moved to the controller!
+        Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
+        if (streetTypeSensor.isPresent()) {
+            String streetType = (String)(streetTypeSensor.get().getValue());
+            double allowedVelocityByStreetType = Double.MAX_VALUE;
+
+            switch(streetType){
+                case "MOTORWAY":
+                    allowedVelocityByStreetType = (100.0 / 3.6);
+                    break;
+                case "A_ROAD":
+                    allowedVelocityByStreetType = (70.0 / 3.6);
+                    break;
+                case "STREET":
+                    allowedVelocityByStreetType = (50.0 / 3.6);
+                    break;
+                case "LIVING_STREET":
+                    allowedVelocityByStreetType = (30.0 / 3.6);
+                    break;
+            }
+
+            setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
+        }
+
+        // Set other values on bus that can change during simulation
+        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
+        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
+
+        //Give the bus to the mainControlBlock
+        controller.get().setInputs(controllerBus.get().getAllData());
+
+        // Call controller to compute new values
+        controller.get().execute();
+
+        //Pass the data of the mainControlBlock to the bus
+        controllerBus.get().setAllData(controller.get().getOutputs());
+
+        // Read new values from bus
+        double motorValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString()));
+        double brakeValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString()));
+        double steeringValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString()));
+
+        // Set new values from bus to actuators
+        motor.setActuatorValueTarget(motorValue);
+        brakesFrontLeft.setActuatorValueTarget(brakeValue);
+        brakesFrontRight.setActuatorValueTarget(brakeValue);
+        brakesBackLeft.setActuatorValueTarget(brakeValue);
+        brakesBackRight.setActuatorValueTarget(brakeValue);
+        steering.setActuatorValueTarget(steeringValue);
     }
 
     /**
@@ -1710,7 +1686,6 @@ public class Vehicle {
         return "Vehicle " + hashCode() + ": length: " + length +
                 " , width: " + width +
                 " , height: " + height +
-                " , approxMaxTotalVelocity: " + approxMaxTotalVelocity +
                 " , maxTemporaryAllowedVelocity: " + maxTemporaryAllowedVelocity +
                 " , wheelRadius: " + wheelRadius +
                 " , wheelDistLeftRightFrontSide: " + wheelDistLeftRightFrontSide +

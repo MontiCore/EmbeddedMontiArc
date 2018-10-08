@@ -703,7 +703,6 @@ public class VehicleActuator {
      * Actuator will change to target value in time (limited by change rate)
      *
      * @param value New target value of the actuator
-     * @throws Exception If target value is not in allowed value range for actuator
      */
     public void setActuatorValueTarget(double value){
         if (value > actuatorValueMax || value < actuatorValueMin || Double.isNaN(value)) {
@@ -717,7 +716,6 @@ public class VehicleActuator {
      * Used to reset actuators in a collision
      *
      * @param value New value of the actuator
-     * @throws Exception If target value is not in allowed value range for actuator
      */
     public void setActuatorValueCurrent(double value){
         if (value > actuatorValueMax || value < actuatorValueMin || Double.isNaN(value)) {
