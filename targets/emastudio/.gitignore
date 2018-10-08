@@ -1,0 +1,8 @@
+# Build
+/src-gen/
+/lib/
+/webpack.config.js
+node_modules/
+yarn-error.log
+/app/
+/dist/

@@ -1,26 +1,50 @@
 # Getting Started
 
+## Table of Contents
+* [**Prerequisites**](#prerequisites)
+* [**Installation**](#installation)
+* [**Multi-Target**](#multi-target)
+* [**Building**](#building)
+* [**Packaging**](#packaging)
+* [**Documentation**](#documentation)
+* [**Local Execution**](#local-execution)
+* [**Contributing**](Contributing.md)
+
 ## Prerequisites
 | ![https://yarnpkg.com](images/yarn.png) | ![https://nodejs.org](images/nodejs.png) |
 | :----: | :-----: |
-| 1.5.1+ | 0.12.0+ |
+| 1.5.1+ | 8.12.0 |
 
-Furthermore, one might need a C++ compiler and a Python 2.7 distribution for their
+Furthermore, one needs a C++ compiler and a Python 2.7 distribution for their
 respective operating system, such as
-[**Visual C++ Build Tools**](http://landinghub.visualstudio.com/visual-cpp-build-tools) and
+[**Visual C++ Build Tools**](https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2017) and
 [**Python 2.7**](https://www.python.org/downloads) for Windows.
 
 ## Installation
 After having downloaded and installed the prerequisites, a developer can clone this repository
 and continue with the installation of this project. The installation is performed by executing
-two console commands from within the root directory or more precisely the directory where the
-`yarn.lock` is located. These two commands written as one are:
+a console command from within the root directory or more precisely the directory where the
+`yarn.lock` is located. The console command is the following:
 
 ```bash
-yarn install && yarn run download
+yarn install
 ```
 
 Depending on the system, the installation might take a few minutes.
+
+## Multi-Target
+At the time of this writing, the IDE supports two different targets, namely **Standalone**
+(`standalone`) and **EmbeddedMontiArcStudio** (`emastudio`). All targets share the same
+supported commands with slight variations in results. Furthermore, they each have their
+own root directory from which these commands have to be executed. In order to change
+directory a developer can use the following command from the root directory of this
+project:
+
+```bash
+cd targets/{target}
+```
+
+where `{target}` is one of the above identifiers of a target.
 
 ## Building
 The main programming language used for the implementation of this project as well as of most of
@@ -29,14 +53,9 @@ programming language developed by Microsoft and is a superset of the JavaScript 
 language which introduces new syntactic constructs as well as static typing to its subset,
 which makes code more maintainable. Nonetheless, TypeScript is not directly executed in its
 respective runtime environment but is translated to JavaScript using the compiler that comes
-shipped with it. In order to execute this compiler on the files of this project, a developer
-has to run the following console command in the root directory:
+shipped with it. 
 
-```bash
-yarn run compile
-```
-
-The execution of this command, however, results in a large amount of JavaScript files which
+The execution of the compiler, however, results in a large amount of JavaScript files which
 all have to be served to the client in order to guarantee a functional system. However, the
 HyperText Transfer Protocol (HTTP) used for the transmission of such files limits the client
 to a maximum of six parallel Transmission Control Protocol (TCP) connections resulting in a
@@ -46,15 +65,16 @@ increased page load time.
 In order to overcome this limitation, the JavaScript files and the assets used in this
 project are combined into bundles using [**WebPack**](https://webpack.js.org/). As a result,
 less files have to be transferred to the client and the total page loading time decreases.
-In order to execute the bundling process, a developer has to run the following console
-command in the root directory:
+
+In order to execute both compiling and bundling, a developer has to run the following console
+command in the root directory of the respective target:
 
 ```bash
 yarn run build
 ```
 
-This console command implicitly calls the `compile` command and the output is generated in
-the `docs` folder of the root directory.
+## Packaging
+To be written.
 
 ## Documentation
 One of the key aspects which makes a piece of software maintainable and extensible is how well
@@ -69,41 +89,15 @@ of both annotations and code analysis.
 For TypeScript one of the available generators for documentations is
 [**TypeDoc**](http://typedoc.org/) and it is also the one used in this project. A developer
 can generate the documentation from the files of the project by running the following console
-command from the root directory:
+command from the root directory of a respective target:
 
 ```bash
-yarn run documentation
+yarn run docs
 ```
 
-The output path of the documentation defaults to the `docs` folder inside the root
-directory.
-
-## Publishing
-Publishing in the context of this project denotes the generation of all the files necessary
-for the execution of and understanding for the development on this project. Therefore, it
-denotes the combination of all the commands described in the [__Building__](#building) and
-[__Documentation__](#documentation) sections of this description. A shorthand command which
-executes all these commands is the following:
-
-```bash
-yarn run preupload
-```
-
-The output path of all the generated files defaults to the `docs` folder inside the root
-directory of this project.
+The output path of the documentation defaults to the `docs` folder inside the respective
+package or plugin.
 
 ## Local Execution
-Transferring the output files to the server responsible for their distribution could become
-quite inefficient when done after each implementation phase in order to test the usability of
-new features. For this reason, this project is shipped with its own server implementation
-based on [**Express**](http://expressjs.com) in order to locally test the functionality.
-Starting this server is performed with the following console command executed in the root
-directory:
-
-```bash
-yarn run start
-```
-
-The port used for the server defaults to `3005` and the implementation can be visited on
-[http://localhost:3005](http://localhost:3005) with any of the
-[supported browsers](../README.md#browser-support).
+* [**Standalone**](../targets/standalone/doc/GettingStarted.md#local-execution)
+* [**EmbeddedMontiArcStudio**](../targets/emastudio/doc/GettingStarted.md#local-execution)

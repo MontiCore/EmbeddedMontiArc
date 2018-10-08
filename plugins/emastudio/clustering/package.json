@@ -1,0 +1,50 @@
+{
+  "private": true,
+  "name": "@emastudio/clustering",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio Clustering Plugin.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "yarn run compile:clean && yarn run docs:clean",
+    "build": "yarn run compile",
+    "compile": "tsc --project compile.tsconfig.json",
+    "compile:clean": "rimraf lib",
+    "watch": "tsc --watch --project compile.tsconfig.json",
+    "docs": "typedoc --tsconfig compile.tsconfig.json --options ../../../configs/typedoc.json",
+    "docs:clean": "rimraf docs"
+  },
+  "dependencies": {
+    "@emastudio/core": "^0.1.0",
+    "@emastudio/executing": "^0.1.0",
+    "@emastudio/paths": "^0.1.0",
+    "@emastudio/process": "^0.1.0",
+    "@emastudio/scripts": "^0.1.0",
+    "@emastudio/relay": "^0.1.0",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/workspace": "latest",
+    "express-fileupload": "^1.0.0-alpha.1",
+    "jimp": "^0.5.3"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/clustering-frontend-module",
+      "backend": "lib/node/clustering-backend-module"
+    }
+  ]
+}
