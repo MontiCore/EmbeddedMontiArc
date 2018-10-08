@@ -781,11 +781,8 @@ public class SimulateVehicleTest {
         sim.stopAfter(2000);
         sim.startSimulation();
 
-        RealMatrix matrix1 = null;
-        RealMatrix matrix2 = null;
-
-        matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
-        matrix2 =  physicalVehicle.getGeometryRot().transpose();
+        RealMatrix matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRot());
+        RealMatrix matrix2 =  physicalVehicle.getGeometryRot().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
 
         vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0);

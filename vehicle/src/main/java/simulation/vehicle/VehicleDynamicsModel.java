@@ -19,8 +19,8 @@ public class VehicleDynamicsModel {
     /** FMU that represents the tires of the car*/
     private Simulation tires;
 
-    /** Flag whether the VDM has been initialized */
-    private boolean isInitialized;
+    /** Flag whether the VDM has been initialised */
+    private boolean isInitialised;
 
     /** Flag whether the VDM has been terminated */
     //private boolean isTerminated = false;
@@ -29,31 +29,31 @@ public class VehicleDynamicsModel {
     private boolean needsExchanging;
 
     /**
-     * Constructor for an uninitialized VDM
+     * Constructor for an uninitialised VDM
      */
     public VehicleDynamicsModel(){
         inputFilter = new Simulation("lib/InputFilter.fmu");
         chassis = new Simulation("lib/Chassis.fmu");
         suspension = new Simulation("lib/Suspension.fmu");
         tires = new Simulation("lib/Tires.fmu");
-        isInitialized = false;
+        isInitialised = false;
         needsExchanging = false;
     }
 
     /**
-     * Function that initialized the VDM
+     * Function that initialised the VDM
      * Should only be called by physicalVehicleBuilder
      */
-    public void initialize(){
-        if(isInitialized){
-            throw new IllegalStateException("Ha"); //todo error if already initialized
+    public void initialise(){
+        if(isInitialised){
+            throw new IllegalStateException("Ha"); //todo error if already initialised
         }
         double stopTime = 10.0;
         inputFilter.init(0, stopTime);
         chassis.init(0, stopTime);
         suspension.init(0, stopTime);
         tires.init(0, stopTime);
-        isInitialized = true;
+        isInitialised = true;
         exchangeValues();
     }
 
@@ -62,8 +62,8 @@ public class VehicleDynamicsModel {
      * @param stepSize Size of the computation step
      */
     public void doStep(double stepSize){
-        if(!isInitialized){
-            throw new IllegalStateException("Ha"); //ToDo error if not initialized
+        if(!isInitialised){
+            throw new IllegalStateException("Ha"); //ToDo error if not initialised
         }
         if(needsExchanging){
             exchangeValues();
@@ -81,27 +81,91 @@ public class VehicleDynamicsModel {
      * @param value New value to be set
      */
     public void setParameter(String name, double value){
-        if (isInitialized) {
-            throw new IllegalStateException("Already initialized"); //todo error if already initialized
+        if (isInitialised) {
+            throw new IllegalStateException("Already initialised"); //todo error if already initialised
         }
         switch (name) {
-            case "m":
-            case "r_nom":
-            case "L_1":
-            case "L_2":
-            case "TW_f":
-            case "TW_r":
-                chassis.write(name).with(value);
-                suspension.write(name).with(value);
+            // Input filter parameters
+            case "K_d_road":
+            // Input filter initial parameters
+            case "slope_d_0":
+            case "bank_d_0":
+                inputFilter.write(name).with(value);
                 break;
+            // Chassis parameters
+            case "I_x":
+            case "I_y":
+            case "I_z":
+            case "A_f":
+            case "C_drag":
+            case "f_r":
+            case "I_tire":
+            case "roh_air":
+            // Chassis initial parameters
+            case "omega_wheel_1_0":
+            case "omega_wheel_2_0":
+            case "omega_wheel_3_0":
+            case "omega_wheel_4_0":
             case "omega_z_0":
+            case "pitch_angle_0":
+            case "omega_y_0":
+            case "roll_angle_0":
+            case "omega_x_0":
             case "v_x_0":
             case "v_y_0":
                 chassis.write(name).with(value);
                 break;
-            default:
-                System.out.println(name + " wants to be written!");
+            // Suspension parameters
+            case "Roll_c_f":
+            case "Roll_c_r":
+            case "K_spring_f":
+            case "K_spring_r":
+            case "D_shock_f":
+            case "D_shock_r":
+            case "d_f":
+            case "d_r":
+            case "L_antiroll_f":
+            case "L_antiroll_r":
+            case "L_lever_f":
+            case "L_lever_r":
+            case "G":
+            case "d_pitch":
+                suspension.write(name).with(value);
                 break;
+            // Tires parameters
+            case "C":
+            case "a":
+            case "dc":
+            case "muv_1":
+            case "muv_2":
+            case "muv_3":
+            case "muv_4":
+            case "rlxlen":
+            // Tires initial parameters
+            case "F_x_1_0":
+            case "F_x_2_0":
+            case "F_x_3_0":
+            case "F_x_4_0":
+            case "F_y_1_0":
+            case "F_y_2_0":
+            case "F_y_3_0":
+            case "F_y_4_0":
+                tires.write(name).with(value);
+                break;
+            // Chassis and Suspension parameters
+            case "m":
+            case "L_1":
+            case "L_2":
+            case "TW_f":
+            case "TW_r":
+            case "COG_z":
+            case "r_nom":
+            case "g":
+                chassis.write(name).with(value);
+                suspension.write(name).with(value);
+                break;
+            default:
+                throw new IllegalArgumentException("Ha"); //todo error
         }
         needsExchanging = true;
     }
@@ -112,14 +176,19 @@ public class VehicleDynamicsModel {
      * @param value New value to be set
      */
     public void setInput(String name, double value){
-        if(!isInitialized){
-            throw new IllegalStateException("Ha"); //todo error if not initialized
+        if(!isInitialised){
+            throw new IllegalStateException("Ha"); //todo error if not initialised
         }
         switch (name) {
+            // Input filter inputs
             case "bank":
             case "slope":
+            // Input filter state variables
+            case "slope_d":
+            case "bank_d":
                 inputFilter.write(name).with(value);
                 break;
+            // Chassis inputs
             case "tau_D_1":
             case "tau_D_2":
             case "tau_D_3":
@@ -130,28 +199,26 @@ public class VehicleDynamicsModel {
             case "tau_B_4":
             case "F_ext_x":
             case "F_ext_y":
+            // Chassis state variables
             case "omega_wheel_1":
             case "omega_wheel_2":
             case "omega_wheel_3":
             case "omega_wheel_4":
-            case "alpha_wheel_1":
-            case "alpha_wheel_2":
-            case "alpha_wheel_3":
-            case "alpha_wheel_4":
-            case "v_x":
-            case "v_y":
             case "omega_z":
             case "pitch_angle":
-            case "omega_x":
-            case "roll_angle":
             case "omega_y":
+            case "roll_angle":
+            case "omega_x":
+            case "v_x":
+            case "v_y":
                 chassis.write(name).with(value);
                 break;
-            case "delta_1":
-            case "delta_2":
-                chassis.write(name).with(value);
-                tires.write(name).with(value);
-                break;
+            // Tires inputs
+            case "mu_1":
+            case "mu_2":
+            case "mu_3":
+            case "mu_4":
+            // Tires state variables
             case "F_x_1":
             case "F_x_2":
             case "F_x_3":
@@ -160,15 +227,18 @@ public class VehicleDynamicsModel {
             case "F_y_2":
             case "F_y_3":
             case "F_y_4":
-            case "mu_1":
-            case "mu_2":
-            case "mu_3":
-            case "mu_4":
+                tires.write(name).with(value);
+                break;
+            // Chassis and tires inputs
+            case "delta_1":
+            case "delta_2":
+            case "delta_3":
+            case "delta_4":
+                chassis.write(name).with(value);
                 tires.write(name).with(value);
                 break;
             default:
-                System.out.println(name + " wants to be written!");
-                break;
+                throw new IllegalArgumentException("Ha"); //todo error
         }
         needsExchanging = true;
     }
@@ -179,36 +249,216 @@ public class VehicleDynamicsModel {
      * @return Value with the given name
      */
     public double getValue(String name){
-        if(!isInitialized){
-            throw new IllegalStateException("Ha"); //todo error if not initialized
+        if(!isInitialised){
+            throw new IllegalStateException("Ha"); //todo error if not initialised
         }
         if (needsExchanging) {
             exchangeValues();
         }
         switch (name) {
-            case "r_nom":
+            // Input filter parameters
+            case "K_d_road":
+            //Input filter initial parameter
+            case "slope_d_0":
+            case "bank_d_0":
+            //Input filter inputs
+            case "slope":
+            case "bank":
+            //Input filter variables
+            case "slope_d":
+            case "bank_d":
+                return inputFilter.read(name).asDouble();
+            //Chassis parameters
             case "m":
-            case "omega_wheel_1":
-            case "omega_wheel_2":
-            case "omega_wheel_3":
-            case "omega_wheel_4":
-            case "z":
-            case "omega_z":
-            case "v_x":
-            case "v_y":
-            case "v_z":
             case "L_1":
             case "L_2":
             case "TW_f":
             case "TW_r":
-                return chassis.read(name).asDouble();
-            case "psi_1":
+            case "COG_z":
+            case "I_x":
+            case "I_y":
+            case "I_z":
+            case "A_f":
+            case "C_drag":
+            case "f_r":
+            case "I_tire":
+            case "r_nom":
+            case "rho_air":
+            case "g":
+            //Chassis Initial parameters
+            case "omega_wheel_1_0":
+            case "omega_wheel_2_0":
+            case "omega_wheel_3_0":
+            case "omega_wheel_4_0":
+            case "omega_z_0":
+            case "pitch_angle_0":
+            case "omega_y_0":
+            case "roll_angle_0":
+            case "omega_x_0":
+            case "v_x_0":
+            case "v_y_0":
+            //Chassis input
+            case "tau_D_1":
+            case "tau_D_2":
+            case "tau_D_3":
+            case "tau_D_4":
+            case "tau_B_1":
+            case "tau_B_2":
+            case "tau_B_3":
+            case "tau_B_4":
+            case "F_ext_x":
+            case "F_ext_y":
+            case "delta_1":
+            case "delta_2":
+            case "delta_3":
+            case "delta_4":
+            //Chassis variables
+            case "a_x":
+            case "v_x":
+            case "a_y":
+            case "v_y":
+            case "a_z":
+            case "v_z":
+            case "z":
+            case "alpha_x":
+            case "omega_x":
+            case "roll_angle":
+            case "alpha_y":
+            case "omega_y":
+            case "pitch_angle":
+            case "alpha_z":
+            case "omega_z":
+            case "alpha_wheel_1":
+            case "alpha_wheel_2":
+            case "alpha_wheel_3":
+            case "alpha_wheel_4":
+            case "omega_wheel_1":
+            case "omega_wheel_2":
+            case "omega_wheel_3":
+            case "omega_wheel_4":
+            //Chassis outputs
             case "v_x_1":
+            case "v_x_2":
+            case "v_x_3":
+            case "v_x_4":
+            case "v_y_1":
+            case "v_y_2":
+            case "v_y_3":
+            case "v_y_4":
             case "v_s_1":
+            case "v_s_2":
+            case "v_s_3":
+            case "v_s_4":
+                return chassis.read(name).asDouble();
+            //Suspension parameters
+            case "Roll_c_f":
+            case "Roll_c_r":
+            case "K_spring_f":
+            case "K_spring_r":
+            case "D_shock_f":
+            case "D_shock_r":
+            case "d_f":
+            case "d_r":
+            case "L_antiroll_f":
+            case "L_antiroll_r":
+            case "L_lever_f":
+            case "L_lever_r":
+            case "G":
+            case "d_pitch":
+            //"L_1":
+            //"L_2":
+            //"COG_z":
+            //"TW_f":
+            //"TW_r":
+            //"m":
+            //"g":
+            //"r_nom":
+            //Suspension variables
+            case "d_roll":
+            case "I_antiroll_f":
+            case "K_antiroll_f":
+            case "K_roll_f":
+            case "I_antiroll_r":
+            case "K_antiroll_r":
+            case "K_roll_r":
+            case "D_roll_f":
+            case "D_roll_r":
+            case "DeltaF_z_f":
+            case "DeltaF_z_r":
+            case "K_pitch":
+            case "D_pitch":
+            case "F_z_1":
+            case "F_z_2":
+            case "F_z_3":
+            case "F_z_4":
+                return suspension.read(name).asDouble();
+            //Parameters Tires
+            case "C":
+            case "a":
+            case "dc":
+            case "muv_1":
+            case "muv_2":
+            case "muv_3":
+            case "muv_4":
+            case "rlxlen":
+            //Tires initial parameters
+            case "F_x_1_0":
+            case "F_x_2_0":
+            case "F_x_3_0":
+            case "F_x_4_0":
+            case "F_y_1_0":
+            case "F_y_2_0":
+            case "F_y_3_0":
+            case "F_y_4_0":
+            //Tires inputs
+            case "mu_1":
+            case "mu_2":
+            case "mu_3":
+            case "mu_4":
+            //"delta_1":
+            //"delta_2":
+            //"delta_3":
+            //"delta_4":
+            //Tires variables
+            case "F_x_1":
+            case "F_x_2":
+            case "F_x_3":
+            case "F_x_4":
+            case "F_y_1":
+            case "F_y_2":
+            case "F_y_3":
+            case "F_y_4":
+            case "S_x_1":
+            case "S_x_2":
+            case "S_x_3":
+            case "S_x_4":
+            case "S_y_1":
+            case "S_y_2":
+            case "S_y_3":
+            case "S_y_4":
+            case "S_1":
+            case "S_2":
+            case "S_3":
+            case "S_4":
+            case "psi_1":
+            case "psi_2":
+            case "psi_3":
+            case "psi_4":
+            case "F_1":
+            case "F_2":
+            case "F_3":
+            case "F_4":
+            case "F_x_1_rlx":
+            case "F_x_2_rlx":
+            case "F_x_3_rlx":
+            case "F_x_4_rlx":
+            case "F_y_1_rlx":
+            case "F_y_2_rlx":
+            case "F_y_3_rlx":
+            case "F_y_4_rlx":
                 return tires.read(name).asDouble();
             default:
-                System.out.println(name + " wants to be read!");
-                return 0.0;
+                throw new IllegalArgumentException("Ha"); //todo error
         }
     }
 
@@ -257,4 +507,21 @@ public class VehicleDynamicsModel {
         chassis.write("F_y_4").with(tires.read("F_y_4").asDouble());
         needsExchanging = false;
     }
+
+
+            /*case "omega_wheel_1":
+                    case "omega_wheel_2":
+                    case "omega_wheel_3":
+                    case "omega_wheel_4":
+                    case "alpha_wheel_1":
+                    case "alpha_wheel_2":
+                    case "alpha_wheel_3":
+                    case "alpha_wheel_4":
+                    case "v_x":
+                    case "v_y":
+                    case "omega_z":
+                    case "pitch_angle":
+                    case "omega_x":
+                    case "roll_angle":
+                    case "omega_y":*/
 }

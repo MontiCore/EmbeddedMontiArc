@@ -752,7 +752,6 @@ public class TrafficSignalImpl implements TrafficSignal {
             }
         }
         Log.finest(this.timeDiffMs + "-" + this.signalA.toString() + ":" + this.signalB.toString());
-
     }
 
     private void flipFlag() {

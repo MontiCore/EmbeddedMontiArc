@@ -20,16 +20,16 @@ public class VehicleDynamicsModelTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void initializeFail(){
+    public void initialiseFail(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
-        model.initialize();
-        model.initialize();
+        model.initialise();
+        model.initialise();
     }
 
     @Test
     public void doStepNormal(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
-        model.initialize();
+        model.initialise();
         model.doStep(0.033);
     }
 
@@ -46,35 +46,55 @@ public class VehicleDynamicsModelTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setParameterFail(){
+    public void setParameterFailInitialised(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
-        model.initialize();
+        model.initialise();
         model.setParameter("m", 1750);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setParameterFailWrongName(){
+        VehicleDynamicsModel model = new VehicleDynamicsModel();
+        model.setParameter("wrong", 1750);
     }
 
     @Test
     public void setInputNormal(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
-        model.initialize();
+        model.initialise();
         model.setInput("delta_1", 0.3);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setInputFail(){
+    public void setInputFailUninitialised(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
         model.setInput("delta_1", 0.3);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void setInputFailWrongName(){
+        VehicleDynamicsModel model = new VehicleDynamicsModel();
+        model.initialise();
+        model.setInput("wrong", 0.3);
     }
 
     @Test
     public void getValueNormal(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
-        model.initialize();
+        model.initialise();
         model.getValue("m");
     }
 
     @Test(expected = IllegalStateException.class)
-    public void getValueFail(){
+    public void getValueFailUninitialised(){
         VehicleDynamicsModel model = new VehicleDynamicsModel();
         model.getValue("m");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getValueFailWrongName(){
+        VehicleDynamicsModel model = new VehicleDynamicsModel();
+        model.initialise();
+        model.getValue("wrong");
     }
 }

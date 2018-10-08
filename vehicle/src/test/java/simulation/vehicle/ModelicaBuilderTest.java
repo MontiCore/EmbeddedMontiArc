@@ -88,7 +88,7 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
         Assert.assertFalse(physicalVehicle.getError());
         Assert.assertFalse(physicalVehicle.getCollision());
-        Assert.assertTrue(physicalVehicle.getPhysicalVehicleInitialized());
+        Assert.assertTrue(physicalVehicle.getPhysicalVehicleInitialised());
 
         // Test physical values
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
@@ -163,7 +163,7 @@ public class ModelicaBuilderTest {
         Assert.assertEquals(PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR, physicalVehicle.getPhysicalObjectType());
         Assert.assertFalse(physicalVehicle.getError());
         Assert.assertFalse(physicalVehicle.getCollision());
-        Assert.assertTrue(physicalVehicle.getPhysicalVehicleInitialized());
+        Assert.assertTrue(physicalVehicle.getPhysicalVehicleInitialised());
 
         // Test physical values
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));

@@ -606,7 +606,7 @@ public class VehicleActuator {
 
     /**
      * Constructor for the actuator class, only sets the type, minimum, maximum and change rate values
-     * Current value and target value are initialized to 0.0 or the given minimum value if 0.0 is not in the given range
+     * Current value and target value are initialised to 0.0 or the given minimum value if 0.0 is not in the given range
      *
      * @param actuatorType Type of the actuator
      * @param actuatorValueMin Minimum allowed value of the actuator

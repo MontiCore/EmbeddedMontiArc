@@ -612,8 +612,8 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
 
 
     /** Internal flags*/
-    /** Flag whether the vehicle is fully initialized or not */
-    protected boolean physicalVehicleInitialized;
+    /** Flag whether the vehicle is fully initialised or not */
+    protected boolean physicalVehicleInitialised;
 
 
     /**
@@ -629,8 +629,8 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         collision = false;
         // Create default simulation vehicle
         this.simulationVehicle = new Vehicle(this);
-        // When created, the physical vehicle is not initialized
-        physicalVehicleInitialized = false;
+        // When created, the physical vehicle is not initialised
+        physicalVehicleInitialised = false;
     }
 
     /**
@@ -684,7 +684,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
      */
     @Override
     public void setHeight(double height){
-        if(physicalVehicleInitialized) {
+        if(physicalVehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         simulationVehicle.setHeight(height);
@@ -838,7 +838,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     }
 
     /**
-     * Function that initializes the physical components and parameters
+     * Function that initialises the physical components and parameters
      * Should only be called by physical vehicle builder
      */
     public abstract void initPhysics();
@@ -856,10 +856,10 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     public abstract RealVector getTorque();
 
     /**
-     * Function that returns if the physicalVehicle is initialized
-     * @return Value of physicalVehicleInitialized
+     * Function that returns if the physicalVehicle is initialised
+     * @return Value of physicalVehicleInitialised
      */
-    public boolean getPhysicalVehicleInitialized() {
-        return physicalVehicleInitialized;
+    public boolean getPhysicalVehicleInitialised() {
+        return physicalVehicleInitialised;
     }
 }

@@ -3,10 +3,8 @@ package simulation.vehicle;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
-import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
-import simulation.util.Log;
 import simulation.util.MathHelper;
 
 import java.util.AbstractMap;
@@ -48,7 +46,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             0.0, 0.0, Math.PI / 2).getMatrix());
 
     /**
-     * Constructor for an uninitialized physical vehicle
+     * Constructor for an uninitialised physical vehicle
      */
     public ModelicaPhysicalVehicle(){
         super();
@@ -79,7 +77,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setPosition(RealVector position){
-        if(!physicalVehicleInitialized) {
+        if(!physicalVehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         this.position = position.copy();
@@ -100,7 +98,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setRotation(RealMatrix rotation){
-        if(!physicalVehicleInitialized) {
+        if(!physicalVehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         this.rotation = rotation.copy();
@@ -128,7 +126,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setVelocity(RealVector velocity){
-        if(physicalVehicleInitialized){
+        if(physicalVehicleInitialised){
             throw new IllegalStateException("Ha"); //todo error
         }else{
             throw new UnsupportedOperationException("Done by builder"); //todo error
@@ -154,7 +152,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setAngularVelocity(RealVector angularVelocity){
-        if(physicalVehicleInitialized){
+        if(physicalVehicleInitialised){
             throw new IllegalStateException("Ha"); //todo error
         }
         // Compute angular velocity in local coordinates
@@ -195,7 +193,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setMass(double mass){
-        if(physicalVehicleInitialized) {
+        if(physicalVehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         simulationVehicle.setMass(mass);
@@ -377,7 +375,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double backToFrontAngle = (Math.PI / 2) - MathHelper.angle(XYPlaneNorm, backToFront);
         double rightToLeftAngle = (Math.PI / 2) - MathHelper.angle(XYPlaneNorm, rightToLeft);
 
-        if(physicalVehicleInitialized) {
+        if(physicalVehicleInitialised) {
             vehicleDynamicsModel.setInput("slope", backToFrontAngle);
             vehicleDynamicsModel.setInput("bank", rightToLeftAngle);
         }
@@ -463,30 +461,30 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     }
 
     /**
-     * Function that initializes the physics computations when the physicalVehicle is created
+     * Function that initialises the physics computations when the physicalVehicle is created
      * Should only be called by builder
      */
     @Override
     public void initPhysics() {
-        if(physicalVehicleInitialized){
+        if(physicalVehicleInitialised){
             throw new IllegalStateException("Ha"); //todo error
         }
         // Set parameters for the VDM
 
-        // Initialize the modelica components
-        vehicleDynamicsModel.initialize();
+        // Initialise the modelica components
+        vehicleDynamicsModel.initialise();
 
         //Shift position and geometryPositionOffset
         double z = vehicleDynamicsModel.getValue("z");
         geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight() / 2 - z});
         position = geometryPositionOffset.mapMultiply(-1.0);
 
-        //Initialize remaining variables
+        //Initialise remaining variables
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         yaw_angle = 0.0;
 
-        physicalVehicleInitialized = true;
-        simulationVehicle.setVehicleInitialized(true);
+        physicalVehicleInitialised = true;
+        simulationVehicle.setVehicleInitialised(true);
     }
 
     /**
@@ -637,16 +635,16 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public String toString() {
         return  "PhysicalVehicle " + getId() +
-                (physicalVehicleInitialized ? " , geometryPos: " + getGeometryPosition() : "") +
-                (physicalVehicleInitialized ? " , position: " + position : "") +
-                (physicalVehicleInitialized ? " , velocity: " + getVelocity() : "") +
-                (physicalVehicleInitialized ? " , force: " + force : "") +
-                (physicalVehicleInitialized ? " , rotation: " + rotation : "") +
-                (physicalVehicleInitialized ? " , yaw_angle: " + yaw_angle : "") +
-                (physicalVehicleInitialized ? " , physicalObjectType: " + physicalObjectType : "") +
+                (physicalVehicleInitialised ? " , geometryPos: " + getGeometryPosition() : "") +
+                (physicalVehicleInitialised ? " , position: " + position : "") +
+                (physicalVehicleInitialised ? " , velocity: " + getVelocity() : "") +
+                (physicalVehicleInitialised ? " , force: " + force : "") +
+                (physicalVehicleInitialised ? " , rotation: " + rotation : "") +
+                (physicalVehicleInitialised ? " , yaw_angle: " + yaw_angle : "") +
+                (physicalVehicleInitialised ? " , physicalObjectType: " + physicalObjectType : "") +
                 " , collision: " + collision +
                 " , error: " + error +
-                " , physicalVehicleInitialized: " + physicalVehicleInitialized +
+                " , physicalVehicleInitialised: " + physicalVehicleInitialised +
                 " , simulationVehicle: " + simulationVehicle;
     }
 }

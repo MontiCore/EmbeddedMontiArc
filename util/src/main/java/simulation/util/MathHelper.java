@@ -435,7 +435,6 @@ public final class MathHelper {
     public static boolean vectorEquals(RealVector vector1, RealVector vector2, double threshold) {
         // Simple check to avoid computations if possible
         if (vector1.getDimension() != vector2.getDimension() || vector1.getDimension() == 0) {
-            Log.finest("MathHelper: vectorEquals - returned false because of vector dimension mismatch or zero dimension");
             return false;
         }
 

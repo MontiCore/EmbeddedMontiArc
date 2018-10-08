@@ -73,7 +73,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
 
     /**
-     * Constructor for an uninitialized physical vehicle
+     * Constructor for an uninitialised physical vehicle
      */
     public MassPointPhysicalVehicle(){
         super();
@@ -107,7 +107,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setPosition(RealVector position){
-        if(!physicalVehicleInitialized) {
+        if(!physicalVehicleInitialised) {
             throw new IllegalStateException("Position can only be set after initialisation");
         }
         this.position = position.copy();
@@ -132,7 +132,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setRotation(RealMatrix rotation){
-        if(!physicalVehicleInitialized) {
+        if(!physicalVehicleInitialised) {
             throw new IllegalStateException("Rotation can only be set after initialisation");
         }
         // Calculate the rotation to reach given rotation
@@ -169,7 +169,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setVelocity(RealVector velocity){
-        if(physicalVehicleInitialized){
+        if(physicalVehicleInitialised){
             throw new IllegalStateException("Velocity can only be set before the initialisation");
         }
         this.velocity = velocity.copy();
@@ -190,7 +190,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setAngularVelocity(RealVector angularVelocity){
-        if(physicalVehicleInitialized){
+        if(physicalVehicleInitialised){
             throw new IllegalStateException("Angular velocity can only be set before the initialisation");
         }
         // In reality the angular momentum has to be set, but that is not possible before initialisation
@@ -230,7 +230,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setMass(double mass){
-        if(physicalVehicleInitialized) {
+        if(physicalVehicleInitialised) {
             throw new IllegalStateException("Mass can only be set before the initialisation");
         }
         simulationVehicle.setMass(mass);
@@ -318,8 +318,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void computePhysics(long deltaTms){
-        if(!physicalVehicleInitialized){
-            throw new IllegalStateException("Physical vehicle has to be initialized before physical computations");
+        if(!physicalVehicleInitialised){
+            throw new IllegalStateException("Physical vehicle has to be initialised before physical computations");
         }
         double deltaT = deltaTms / 1000.0;
 
@@ -477,13 +477,13 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     }
 
     /**
-     * Function that initializes the physics computations when the physicalVehicle is created
+     * Function that initialises the physics computations when the physicalVehicle is created
      * Should only be called by builder
      */
     @Override
     public void initPhysics() {
-        if(physicalVehicleInitialized) {
-            throw new IllegalStateException("Physical vehicle is already initialized");
+        if(physicalVehicleInitialised) {
+            throw new IllegalStateException("Physical vehicle is already initialised");
         }
         // Reset geometryPositionOffset
         this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight()/2});
@@ -496,7 +496,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
                 simulationVehicle.getWheelDistToFront(),
                 simulationVehicle.getWheelDistToBack());
 
-        //Initialize values
+        //Initialise values
         initLocalPosition();
         initMassPointLocalCenterDiff();
         initLocalInertiaInverse();
@@ -508,7 +508,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         // Set angular velocity
         calcAngularVelocity();
 
-        // Initialize remaining mass point values
+        // Initialise remaining mass point values
         calcMassPointCenterDiff();
         calcMassPointPosition();
         calcMassPointVelocity();
@@ -517,8 +517,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         force = new ArrayRealVector(3);
         torque = new ArrayRealVector(3);
 
-        physicalVehicleInitialized = true;
-        simulationVehicle.setVehicleInitialized(true);
+        physicalVehicleInitialised = true;
+        simulationVehicle.setVehicleInitialised(true);
     }
 
     /**
@@ -757,8 +757,6 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      * @param deltaT Time difference to previous step in seconds
      */
     private void calcMassPointForces(double deltaT){
-        Log.finest("PhysicsEngine: calcMassPointForces - PhysicalVehicle at start: " + this);
-
         // Iterate over wheel mass points
         for (MassPoint mp : massPoints) {
 
@@ -814,8 +812,6 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             // Set force to mass point
             mp.addForce(forceResult);
         }
-
-        Log.finest("PhysicsEngine: calcMassPointForces - PhysicalVehicle at end: " + this);
     }
 
     /**
@@ -966,13 +962,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             RealVector vectorLeftRight = leftRight1.add(leftRight2).mapMultiply(0.5);
 
             // Force: Normal force Fn = mass * gravity constant (with correct angles)
-            RealVector forceNormal = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-
-            try {
-                forceNormal = MathHelper.crossProduct(vectorBackFront, vectorLeftRight);
-            } catch (Exception e) {
-                Log.severe("Ha"); //todo error
-            }
+            RealVector forceNormal = MathHelper.crossProduct(vectorBackFront, vectorLeftRight);
 
             // Ensure that normal force points upwards
             if (forceNormal.getEntry(2) < 0.0) {
@@ -1164,13 +1154,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
             }
 
             curveRadiusVector = curveRadiusVector.mapMultiply(curveRadiusVectorLength);
-
-            try {
-                forceCentripetal = MathHelper.crossProduct(angularVelocity, MathHelper.crossProduct(angularVelocity, curveRadiusVector)).mapMultiply(mp.getMass());
-            }
-            catch (Exception e) {
-                Log.severe("Ha"); //todo error
-            }
+            forceCentripetal = MathHelper.crossProduct(angularVelocity, MathHelper.crossProduct(angularVelocity, curveRadiusVector)).mapMultiply(mp.getMass());
         }
         return forceCentripetal;
     }
@@ -1260,25 +1244,25 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     @Override
     public String toString() {
         return  "PhysicalVehicle " + getId() +
-                (physicalVehicleInitialized ? " , geometryPos: " + getGeometryPosition() : "") +
-                (physicalVehicleInitialized ? " , localPosition: " + localPosition : "") +
+                (physicalVehicleInitialised ? " , geometryPos: " + getGeometryPosition() : "") +
+                (physicalVehicleInitialised ? " , localPosition: " + localPosition : "") +
                 " , position: " + position +
-                (physicalVehicleInitialized ? " , velocity: " + velocity : "") +
-                (physicalVehicleInitialized ? " , force: " + force : "") +
-                (physicalVehicleInitialized ? " , localInertiaInverse: " + localInertiaInverse : "") +
-                (physicalVehicleInitialized ? " , inertiaInverse: " + inertiaInverse : "") +
-                (physicalVehicleInitialized ? " , rotation: " + rotation : "") +
-                (physicalVehicleInitialized ? " , angularVelocity: " + angularVelocity : "") +
-                (physicalVehicleInitialized ? " , angularMomentum: " + angularMomentum : "") +
-                (physicalVehicleInitialized ? " , torque: " + torque : "") +
-                (physicalVehicleInitialized ? " , physicalObjectType: " + physicalObjectType : "") +
+                (physicalVehicleInitialised ? " , velocity: " + velocity : "") +
+                (physicalVehicleInitialised ? " , force: " + force : "") +
+                (physicalVehicleInitialised ? " , localInertiaInverse: " + localInertiaInverse : "") +
+                (physicalVehicleInitialised ? " , inertiaInverse: " + inertiaInverse : "") +
+                (physicalVehicleInitialised ? " , rotation: " + rotation : "") +
+                (physicalVehicleInitialised ? " , angularVelocity: " + angularVelocity : "") +
+                (physicalVehicleInitialised ? " , angularMomentum: " + angularMomentum : "") +
+                (physicalVehicleInitialised ? " , torque: " + torque : "") +
+                (physicalVehicleInitialised ? " , physicalObjectType: " + physicalObjectType : "") +
                 " , collision: " + collision +
                 " , error: " + error +
-                " , physicalVehicleInitialized: " + physicalVehicleInitialized +
-                (physicalVehicleInitialized ? " , massPoints[0]: " + massPoints[0] : "") +
-                (physicalVehicleInitialized ? " , massPoints[1]: " + massPoints[1] : "") +
-                (physicalVehicleInitialized ? " , massPoints[2]: " + massPoints[2] : "") +
-                (physicalVehicleInitialized ? " , massPoints[3]: " + massPoints[3] : "") +
+                " , physicalVehicleInitialised: " + physicalVehicleInitialised +
+                (physicalVehicleInitialised ? " , massPoints[0]: " + massPoints[0] : "") +
+                (physicalVehicleInitialised ? " , massPoints[1]: " + massPoints[1] : "") +
+                (physicalVehicleInitialised ? " , massPoints[2]: " + massPoints[2] : "") +
+                (physicalVehicleInitialised ? " , massPoints[3]: " + massPoints[3] : "") +
                 " , simulationVehicle: " + simulationVehicle;
     }
 }

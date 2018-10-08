@@ -232,14 +232,14 @@ public class VehicleTest {
     }
 
     @Test
-    public void setVehicleInitializedTrue(){
+    public void setVehicleInitialisedTrue(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.setVehicleInitialized(true);
+        vehicle.setVehicleInitialised(true);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setVehicleInitializedFail(){
+    public void setVehicleInitialisedFail(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
-        vehicle.setVehicleInitialized(false);
+        vehicle.setVehicleInitialised(false);
     }
 }

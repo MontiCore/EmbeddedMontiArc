@@ -614,7 +614,7 @@ public class MassPoint {
     /** Ground Z position of mass point (for performance improvements) */
     private double groundZ;
 
-    /** Pressure value for the mass point (e.g. tire pressure) initialized to 0.0 */
+    /** Pressure value for the mass point (e.g. tire pressure) initialised to 0.0 */
     private double pressure;
 
     /**

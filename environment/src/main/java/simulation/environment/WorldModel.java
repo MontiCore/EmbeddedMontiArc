@@ -59,7 +59,7 @@ public class WorldModel implements World{
     }
 
     /**
-     * Initialize singleton World instance.
+     * Initialise singleton World instance.
      * 
      * No map parsing done in this method,
      * rather only weather settings are 
@@ -79,7 +79,7 @@ public class WorldModel implements World{
      * Parse only the world map and return
      * its VisualisationEnvironmentContainer.
      * 
-     * This method does not initialize the singleton World instance!
+     * This method does not initialise the singleton World instance!
      * 
      * @param pSettings - parser settings
      * @return VisualisationEnvironmentContainer object
@@ -92,7 +92,7 @@ public class WorldModel implements World{
     /** 
      * Builds controller-container only. 
      *  
-     * Singleton instance is not initialized. 
+     * Singleton instance is not initialised.
      *  
      * @param visContainer - pre-built VisualisationEnvironmentContainer 
      * @param wSettings - weather settings 

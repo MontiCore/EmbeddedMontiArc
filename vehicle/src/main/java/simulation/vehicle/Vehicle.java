@@ -579,7 +579,6 @@
  */
 package simulation.vehicle;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import commons.controller.commons.BusEntry;
 import commons.controller.commons.NavigationEntry;
 import commons.controller.commons.Surface;
@@ -596,14 +595,11 @@ import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
 
-import javax.jws.WebParam;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 import static commons.controller.commons.BusEntry.*;
-import static simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetTypes.*;
-import static simulation.vehicle.MassPointType.*;
 import static simulation.vehicle.VehicleActuatorType.*;
 
 /**
@@ -738,8 +734,8 @@ public class Vehicle {
     /** Flag whether the constant bus data was sent */
     private boolean constantBusDataSent;
 
-    /** Flag whether the vehicle is initialized */
-    private boolean vehicleInitialized;
+    /** Flag whether the vehicle is initialised */
+    private boolean vehicleInitialised;
 
 
     /**
@@ -784,17 +780,16 @@ public class Vehicle {
         // Set wheel base
         this.wheelDistToFront = VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
         this.wheelDistToBack = VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
-        // Initialize last navigation target with empty optional
+        // Initialise last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
-        // Initialize camera image with empty optional
+        // Initialise camera image with empty optional
         cameraImage = Optional.empty();
         // When created, maximum temporary allowed velocity is not limited
         this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
         // When created, the constant bus data is not sent yet
         this.constantBusDataSent = false;
-        // When created, the physical vehicle is not initialized
-        this.vehicleInitialized = false;
-        Log.finest("Vehicle: Constructor - Vehicle constructed: " + this);
+        // When created, the physical vehicle is not initialised
+        this.vehicleInitialised = false;
     }
 
     /**
@@ -831,8 +826,6 @@ public class Vehicle {
      * @param actuatorChangeRate Change rate of the actuator
      */
     void setActuatorProperties(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate) {
-        Log.finest("Vehicle: setActuatorProperties - Vehicle at start: " + this);
-
         switch (actuatorType) {
             case VEHICLE_ACTUATOR_TYPE_MOTOR:
                 motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
@@ -855,8 +848,6 @@ public class Vehicle {
             default:
                 break;
         }
-
-        Log.finest("Vehicle: setActuatorProperties - Vehicle at end: " + this);
     }
 
     /**
@@ -1007,7 +998,7 @@ public class Vehicle {
      * @param height New height of the vehicle
      */
     public void setHeight(double height){
-        if(vehicleInitialized){
+        if(vehicleInitialised){
             throw new IllegalStateException("Ha"); //todo error
         }
         this.height = height;
@@ -1022,7 +1013,7 @@ public class Vehicle {
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             return mass;
         }else{
-            if(!vehicleInitialized) {
+            if(!vehicleInitialised) {
                 throw new IllegalStateException("Ha"); //todo error
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
@@ -1037,7 +1028,7 @@ public class Vehicle {
      * @param mass New mass of the vehicle
      */
     public void setMass(double mass){
-        if(vehicleInitialized){
+        if(vehicleInitialised){
             throw new IllegalStateException("Ha"); //Todo error
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
@@ -1057,7 +1048,7 @@ public class Vehicle {
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             return wheelRadius;
         }else{
-            if(!vehicleInitialized) {
+            if(!vehicleInitialised) {
                 throw new IllegalStateException("Ha"); //todo error
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
@@ -1072,7 +1063,7 @@ public class Vehicle {
      * @param wheelRadius New wheel radius of the vehicle
      */
     public void setWheelRadius(double wheelRadius){
-        if(vehicleInitialized){
+        if(vehicleInitialised){
             throw new IllegalStateException("Ha"); //todo error
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
@@ -1092,7 +1083,7 @@ public class Vehicle {
         if(physicalVehicle instanceof MassPointPhysicalVehicle){
             return wheelDistLeftRightFrontSide;
         }else{
-            if(!vehicleInitialized) {
+            if(!vehicleInitialised) {
                 throw new IllegalStateException("Ha"); //todo error
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
@@ -1107,7 +1098,7 @@ public class Vehicle {
      * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
      */
     public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
-        if (vehicleInitialized) {
+        if (vehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle){
@@ -1127,7 +1118,7 @@ public class Vehicle {
         if(physicalVehicle instanceof MassPointPhysicalVehicle){
             return wheelDistLeftRightBackSide;
         }else{
-            if(!vehicleInitialized){
+            if(!vehicleInitialised){
                 throw new IllegalStateException("Ha"); //todo error
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
@@ -1142,7 +1133,7 @@ public class Vehicle {
      * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
      */
     public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
-        if (vehicleInitialized) {
+        if (vehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
@@ -1162,7 +1153,7 @@ public class Vehicle {
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             return wheelDistToFront;
         }else{
-            if(!vehicleInitialized){
+            if(!vehicleInitialised){
                 throw new IllegalStateException("Ha"); //todo error
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
@@ -1177,7 +1168,7 @@ public class Vehicle {
      * @param wheelDistToFront New distance between center of mass and front axel of the vehicle
      */
     public void setWheelDistToFront(double wheelDistToFront){
-        if (vehicleInitialized) {
+        if (vehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         if (physicalVehicle instanceof MassPointPhysicalVehicle) {
@@ -1197,7 +1188,7 @@ public class Vehicle {
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             return wheelDistToBack;
         }else{
-            if(!vehicleInitialized){
+            if(!vehicleInitialised){
                 throw new IllegalStateException("Ha"); //tdo error
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
@@ -1212,7 +1203,7 @@ public class Vehicle {
      * @param wheelDistToBack New distance between center of mass and back axel of the vehicle
      */
     public void setWheelDistToBack(double wheelDistToBack){
-        if (vehicleInitialized) {
+        if (vehicleInitialised) {
             throw new IllegalStateException("Ha"); //todo error
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
@@ -1269,16 +1260,16 @@ public class Vehicle {
     }
 
     /**
-     * Function that sets the vehicle initialized flag to true
+     * Function that sets the vehicle initialised flag to true
      * Should only be called by initPhysics
      *
-     * @param vehicleInitialized New value for the vehicle initialized flag
+     * @param vehicleInitialised New value for the vehicle initialised flag
      */
-    public void setVehicleInitialized(boolean vehicleInitialized){
-        if(!vehicleInitialized){
+    public void setVehicleInitialised(boolean vehicleInitialised){
+        if(!vehicleInitialised){
             throw new IllegalArgumentException("Ha"); //todo error
         }
-        this.vehicleInitialized = vehicleInitialized;
+        this.vehicleInitialised = vehicleInitialised;
     }
 
 
