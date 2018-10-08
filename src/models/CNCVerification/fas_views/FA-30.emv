@@ -1,0 +1,21 @@
+package fas_views;
+
+view FA-30 {
+  component FAS {
+    ports
+	  in ? Limiter_b,
+	  out ? Limiter_active_b;
+	  
+	  component Limiter {
+	    ports
+		  in ? Limiter_b,
+		  out ? Limiter_active_b;
+	  }
+	  instance Limiter limit;
+	  
+	  effect limit.Limiter_b -> limit.Limiter_active_b;
+	  
+	  connect limit.Limiter_active_b -> Limiter_active_b;
+	  connect Limiter_b -> limit.Limiter_b;
+  }
+}

@@ -1,0 +1,3 @@
+@ECHO OFF
+call generateArmadilloBackend
+call compileClusterer

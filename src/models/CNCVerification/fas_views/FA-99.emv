@@ -1,0 +1,28 @@
+package fas_views;
+
+view FA-99 {
+  component FAS {
+    ports
+	  in ? V_Vehicle_kmh,
+      in ? V_Obj_rel_kmh,
+	  out ? Acceleration_pc,
+	  out ? BrakeForce_pc;
+	  
+	  component FollowToStop {
+	    ports
+		  in ? V_Vehicle_kmh,
+		  in ? V_Obj_rel_kmh,
+		  out ? FTS_Abstand_soll_m;
+	  }
+	  instance FollowToStop fts;
+	  
+	  connect V_Vehicle_kmh -> fts.V_Vehicle_kmh;
+	  connect V_Obj_rel_kmh -> fts.V_Obj_rel_kmh;
+	  
+	  effect fts.V_Vehicle_kmh -> fts.FTS_Abstand_soll_m;
+	  effect fts.V_Obj_rel_kmh -> fts.FTS_Abstand_soll_m;
+	  
+	  effect fts.FTS_Abstand_soll_m -> Acceleration_pc;
+	  effect fts.FTS_Abstand_soll_m -> BrakeForce_pc;
+  }
+}

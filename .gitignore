@@ -1,0 +1,8 @@
+# Editors
+/.idea/
+
+# Build
+/node_modules/
+/dist/
+/downloads/
+/cache/

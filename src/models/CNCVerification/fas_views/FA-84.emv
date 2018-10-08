@@ -1,0 +1,38 @@
+package fas_views;
+
+view FA-84 {
+  component FAS {
+    ports
+	  in ? V_Vehicle_kmh,
+	  in ? Distance_Object_m,
+	  out ? Acusti_warn_b,
+	  out ? BrakeForce_pc;
+	  
+	  component EmergencyBrake {
+	    ports
+	      in ? V_Vehicle_ms,
+	      in ? Distance_Object_m,
+	      out ? Acusti_warn_b,
+	      out ? BrakeForce_Emergency_pc;
+	  }
+	  instance EmergencyBrake emBrake;
+	  
+	  component VelocityControl {
+	    ports
+		  in ? BrakeForce_Emergency_pc,
+		  out ? BrakeForce_pc;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect V_Vehicle_kmh -> emBrake.V_Vehicle_ms;
+	  effect emBrake.Acusti_warn_b -> Acusti_warn_b;
+	  effect emBrake.Distance_Object_m -> emBrake.Acusti_warn_b;
+	  effect emBrake.V_Vehicle_ms -> emBrake.Acusti_warn_b;
+	  effect emBrake.Distance_Object_m -> BrakeForce_pc;
+	  effect emBrake.V_Vehicle_ms -> BrakeForce_pc;
+	  
+	  connect Distance_Object_m -> emBrake.Distance_Object_m;
+	  connect emBrake.BrakeForce_Emergency_pc -> veloCont.BrakeForce_Emergency_pc;
+	  connect veloCont.BrakeForce_pc -> BrakeForce_pc;
+  }
+}

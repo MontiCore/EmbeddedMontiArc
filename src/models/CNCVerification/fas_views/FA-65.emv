@@ -1,0 +1,29 @@
+package fas_views;
+
+view FA-65 {
+  component FAS {
+    ports
+	  in ? LeverUp_stat,
+	  out ? Limiter_active_b;
+	  
+	  component Limiter {
+	    ports
+		  in ? LeverUp_stat,
+		  out ? VMax_kmh,
+		  out ? Limiter_active_b;
+	  }
+	  instance Limiter limit;
+	  
+	  component VelocityControl {
+	    port
+		  in ? VMax_kmh;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect limit.LeverUp_stat -> limit.VMax_kmh;
+	  
+	  connect limit.VMax_kmh -> veloCont.VMax_kmh;
+	  connect LeverUp_stat -> limit.LeverUp_stat;
+	  connect limit.Limiter_active_b -> Limiter_active_b;
+  }
+}

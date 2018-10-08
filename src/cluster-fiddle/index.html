@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>ClusterFiddle</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width">
+
+   <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+   <script type="text/javascript" src="resources/js/jquery-3.2.1.min.js"></script>
+   <script type="text/javascript" src="resources/js/dropzone.js"></script>
+   <script type="text/javascript" src="resources/js/index.js"></script>
+   <script>if (window.module) module = window.module;</script>
+
+   <link href="resources/css/dropzone.css" rel="stylesheet" type="text/css"/>
+   <link href="resources/css/index.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="row row-1">
+   <img src="resources/images/example-image-1.jpg"/>
+   <img src="resources/images/example-image-2.jpg"/>
+</div>
+<div class="row row-2">
+   Either: * Drag an image from your desktop into the dropzone. * Click on the dropzone. * Drag an image from above into the dropzone.
+   <div id="dropzone"></div>
+</div>
+<div class="row row-3">
+   <img id="spinner" src="resources/images/loader.svg"/>
+</div>
+<div class="row row-4">
+   <img id="result"/>
+</div>
+</body>
+</html>

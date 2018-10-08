@@ -1,0 +1,25 @@
+package fas.advancedLibrary;
+
+import fas.basicLibrary.*;
+
+component EdgeFalling {
+	port
+		in B u,
+		in B R,
+		in B IV,
+		out B y;
+		
+	instance And and;
+	instance Not<Boolean> not;
+	instance SwitchB<Boolean> switch_R;
+	instance Memory<Boolean>(false) memory_U;
+	
+	connect u -> not.in1;
+	connect not.out1 -> and.in1[1];
+	connect u -> memory_U.in1;
+	connect IV -> switch_R.in1;
+	connect R -> switch_R.cond;
+	connect memory_U.out1 -> switch_R.in3;
+	connect switch_R.out1 -> and.in1[2],;
+	connect and.out1 -> y;
+}

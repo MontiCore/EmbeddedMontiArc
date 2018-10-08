@@ -1,0 +1,23 @@
+package pumpStationExample;
+
+view PumpingSystemStructure {
+component PumpStation {
+  component PumpingSystem {
+
+  component SensorReading {}
+  instance SensorReading sensorReading;
+  component PumpActuator {}
+  instance PumpActuator pumpActuator;
+  component Controller {}
+  instance Controller controller;
+  component ValveActuator {}
+  instance ValveActuator valveActuator;
+  }
+  instance PumpingSystem pumpingSystem;
+  connect sensorReading -> pumpActuator;
+  connect sensorReading -> valveActuator;
+  connect sensorReading -> controller;
+  connect controller -> pumpActuator;
+  connect controller -> valveActuator;
+}
+}
