@@ -2,10 +2,6 @@ package de.monticore.lang.monticar;
 
 grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, de.monticore.lang.monticar.Common2 {
 
-    token NEWLINETOKEN =
-                 ('\r' '\n' |
-                 '\r' |
-                 '\n' ):;
 
     /* =================================*/
     /* ========== PRODUCTIONS ==========*/
@@ -24,12 +20,12 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
                                           Architecture
                                           "}";
 
-    LayerDeclaration = NEWLINETOKEN* "def"
+    LayerDeclaration =  "def"
                        Name "("
-                       parameters:(LayerParameter || ",")* ")" "{" NEWLINETOKEN*
-                       body:ArchBody NEWLINETOKEN* "}";
+                       parameters:(LayerParameter || ",")* ")" "{"
+                       body:ArchBody  "}";
 
-    IODeclaration = NEWLINETOKEN* "def"
+    IODeclaration =  "def"
                     (in:"input" | out:"output")
                     type:ArchType
                     Name
@@ -57,39 +53,38 @@ grammar CNNArch extends de.monticore.CommonExpressions, de.monticore.lang.Math, 
         @attribute body
                  The architecture of the neural network.
     */
-    Architecture = NEWLINETOKEN* methodDeclaration:LayerDeclaration* NEWLINETOKEN*
-                   body:ArchBody NEWLINETOKEN*;
+    Architecture =  methodDeclaration:LayerDeclaration*
+                   body:ArchBody ;
 
     scope ArchBody = elements:(ArchitectureElement || "->")*;
 
     interface ArchitectureElement;
 
-    IOElement implements ArchitectureElement = NEWLINETOKEN* Name ("[" index:ArchSimpleExpression "]")?;
+    IOElement implements ArchitectureElement =  Name ("[" index:ArchSimpleExpression "]")?;
 
-    Layer implements ArchitectureElement = NEWLINETOKEN* Name "(" arguments:(ArchArgument || ",")* ")";
+    Layer implements ArchitectureElement =  Name "(" arguments:(ArchArgument || ",")* ")";
 
-    ParallelBlock implements ArchitectureElement = NEWLINETOKEN* "(" NEWLINETOKEN*
-                                                   groups:ArchBody NEWLINETOKEN* "|" NEWLINETOKEN*
-                                                   groups:(ArchBody || "|")+ NEWLINETOKEN* ")";
+    ParallelBlock implements ArchitectureElement =  "("
+                                                   groups:ArchBody  "|"
+                                                   groups:(ArchBody || "|")+ ")";
 
-    ArrayAccessLayer implements ArchitectureElement = NEWLINETOKEN* "[" index:ArchSimpleExpression "]";
+    ArrayAccessLayer implements ArchitectureElement =  "[" index:ArchSimpleExpression "]";
 
 
     /* ====== Variables/Arguments ======*/
 
     interface Variable;
 
-    ArchitectureParameter implements Variable = NEWLINETOKEN* Name ("=" default:ArchSimpleExpression)? NEWLINETOKEN*;
+    ArchitectureParameter implements Variable =  Name ("=" default:ArchSimpleExpression)? ;
 
-    LayerParameter implements Variable = NEWLINETOKEN* Name ("=" default:ArchSimpleExpression)? NEWLINETOKEN*;
+    LayerParameter implements Variable =  Name ("=" default:ArchSimpleExpression)? ;
 
     interface ArchArgument;
 
-    ArchParameterArgument implements ArchArgument = NEWLINETOKEN* Name "=" rhs:ArchExpression NEWLINETOKEN*;
+    ArchParameterArgument implements ArchArgument =  Name "=" rhs:ArchExpression ;
 
-    ArchSpecialArgument implements ArchArgument = NEWLINETOKEN*
-                                                  (serial:"->" | parallel:"|" | conditional:"?") "="
-                                                  rhs:ArchExpression NEWLINETOKEN*;
+    ArchSpecialArgument implements ArchArgument = (serial:"->" | parallel:"|" | conditional:"?") "="
+                                                  rhs:ArchExpression ;
 
 
     /* ======= Value Expressions =======*/

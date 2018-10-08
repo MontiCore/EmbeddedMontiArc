@@ -30,8 +30,8 @@ public class ASTArchSpecialArgument extends ASTArchSpecialArgumentTOP {
     public ASTArchSpecialArgument() {
     }
 
-    public ASTArchSpecialArgument(ASTArchExpression rhs, List<String> nEWLINETOKENs, Optional<String> serial, Optional<String> parallel, Optional<String> conditional) {
-        super(rhs, nEWLINETOKENs, serial, parallel, conditional);
+    public ASTArchSpecialArgument(ASTArchExpression rhs, Optional<String> serial, Optional<String> parallel, Optional<String> conditional) {
+        super(rhs, serial, parallel, conditional);
     }
 
     @Override
