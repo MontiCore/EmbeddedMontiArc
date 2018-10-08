@@ -1,5 +1,6 @@
 package simulation.vehicle;
 
+import org.apache.commons.math3.linear.BlockRealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 /**
@@ -51,6 +52,9 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         this.navigation.ifPresent(physicalVehicle.getSimulationVehicle()::setNavigation);
 
         physicalVehicle.initPhysics();
+
+        this.position.ifPresent(physicalVehicle::setPosition);
+        this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
 
         return physicalVehicle;
     }

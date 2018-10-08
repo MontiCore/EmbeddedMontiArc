@@ -485,6 +485,9 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         if(physicalVehicleInitialized) {
             throw new IllegalStateException("Physical vehicle is already initialized");
         }
+        // Reset geometryPositionOffset
+        this.geometryPositionOffset = new ArrayRealVector(new double[]{0.0, 0.0, simulationVehicle.getHeight()/2});
+
         // Create Mass Points
         createMassPoints(
                 simulationVehicle.getMass(),
@@ -525,6 +528,15 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     @Override
     public RealVector getForce(){
         return force.copy();
+    }
+
+    /**
+     * Function that returns the torque that is acting on the vehicle
+     * @return Torque acting on the vehicle
+     */
+    @Override
+    public RealVector getTorque(){
+        return torque.copy();
     }
 
     /**

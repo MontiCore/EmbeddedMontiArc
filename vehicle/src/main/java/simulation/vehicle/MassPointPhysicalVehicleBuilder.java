@@ -56,6 +56,9 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         physicalVehicle.initPhysics();
 
+        this.position.ifPresent(physicalVehicle::setPosition);
+        this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
+
         return physicalVehicle;
     }
 
@@ -74,6 +77,8 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
 
+        builder.setPosition(data.getPosition());
+        builder.setRotation(data.getRotation());
         builder.setVelocity(data.getVelocity());
         builder.setAngularVelocity(data.getAngularVelocity());
 
@@ -96,10 +101,6 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueTarget(a.getActuatorValueTarget());
             physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueCurrent(a.getActuatorValueCurrent());
         }*/
-
-        physicalVehicle.setPosition(data.getPosition());
-
-        physicalVehicle.setRotation(data.getRotation());
 
         return physicalVehicle;
     }
@@ -209,9 +210,8 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             return new ArrayRealVector(new double[]{positionX, positionY, positionZ});
         }
 
-        public RealMatrix getRotation() {
-            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, rotationX, rotationY, rotationZ);
-            return new BlockRealMatrix(rot.getMatrix());
+        public Rotation getRotation() {
+            return new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, rotationX, rotationY, rotationZ);
         }
 
         public RealVector getVelocity(){

@@ -104,6 +104,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             throw new IllegalStateException("Ha"); //todo error
         }
         this.rotation = rotation.copy();
+        //todo yaw angle
     }
 
     /**
@@ -130,7 +131,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         if(physicalVehicleInitialized){
             throw new IllegalStateException("Ha"); //todo error
         }else{
-            throw new IllegalStateException("Done by builder"); //todo error
+            throw new UnsupportedOperationException("Done by builder"); //todo error
         }
     }
 
@@ -140,7 +141,11 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getAngularVelocity(){
-        return new ArrayRealVector(3);
+        // Get current angular velocity
+        RealVector localAngularVelocity = new ArrayRealVector(new double[]{0.0, 0.0,
+                vehicleDynamicsModel.getValue("omega_z")});
+        // Return in global coordinates
+        return rotation.operate(localAngularVelocity);
     }
 
     /**
@@ -491,6 +496,15 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public RealVector getForce(){
         return force.copy();
+    }
+
+    /**
+     * Function that returns the torque that is acting on the vehicle
+     * @return Torque acting on the vehicle
+     */
+    @Override
+    public RealVector getTorque(){
+        throw new UnsupportedOperationException("Ha"); //todo error
     }
 
     /**

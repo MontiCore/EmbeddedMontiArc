@@ -258,6 +258,34 @@ public class ModelicaPhysicalVehicleTest {
         physicalVehicle.setRotation(rotation);
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void setVelocityNormalFailUninitialized(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setVelocityNormalFailInitialized(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test
+    public void setAngularVelocityNormal(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        RealVector angularVelocity = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setAngularVelocity(angularVelocity);
+        physicalVehicle.initPhysics();
+        RealVector expectedAngularVelocity = physicalVehicle.getRotation().operate(new ArrayRealVector(new double[]{0.0, 0.0, angularVelocity.getEntry(2)}));
+        Assert.assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setAngularVelocityFail(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setAngularVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
     @Test
     public void setMassNormal(){
         ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
@@ -270,5 +298,37 @@ public class ModelicaPhysicalVehicleTest {
     public void setMassFail() {
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
+    }
+
+    @Test
+    public void setGeometryPositionNormal(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        RealVector geometryPosition = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setGeometryPosition(geometryPosition);
+        Assert.assertTrue(MathHelper.vectorEquals(geometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setPositionGeometryFail(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        physicalVehicle.setGeometryPosition(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void setGeometryPositionOffsetFail(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setGeometryPositionOffset(new ArrayRealVector(3));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void computePhysicsFail(){
+        ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
+        physicalVehicle.computePhysics(33);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void initPhysicsFail(){
+        ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.initPhysics();
     }
 }

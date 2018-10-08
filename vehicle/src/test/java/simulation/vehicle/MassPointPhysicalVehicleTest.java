@@ -278,7 +278,7 @@ public class MassPointPhysicalVehicleTest {
     public void setAngularVelocityNormal(){
         MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
         RealVector angularVelocity = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
-        physicalVehicle.setVelocity(angularVelocity);
+        physicalVehicle.setAngularVelocity(angularVelocity);
         physicalVehicle.initPhysics();
         Assert.assertTrue(MathHelper.vectorEquals(angularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
     }
@@ -300,5 +300,38 @@ public class MassPointPhysicalVehicleTest {
     public void setMassFail() {
         MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         physicalVehicle.setMass(1000.0);
+    }
+
+    @Test
+    public void setGeometryPositionNormal(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        RealVector geometryPosition = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
+        physicalVehicle.setGeometryPosition(geometryPosition);
+        Assert.assertTrue(MathHelper.vectorEquals(geometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
+        //todo check massPoint information
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setPositionGeometryFail(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        physicalVehicle.setGeometryPosition(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void setGeometryPositionOffsetFail(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.setGeometryPositionOffset(new ArrayRealVector(3));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void computePhysicsFail(){
+        MassPointPhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
+        physicalVehicle.computePhysics(33);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void initPhysicsFail(){
+        MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
+        physicalVehicle.initPhysics();
     }
 }

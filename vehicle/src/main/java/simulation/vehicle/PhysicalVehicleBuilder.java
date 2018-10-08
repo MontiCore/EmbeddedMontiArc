@@ -581,6 +581,7 @@ package simulation.vehicle;
 
 import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.linear.RealVector;
 import org.javafmi.modeldescription.v1.RealVariable;
 
@@ -591,6 +592,8 @@ import java.util.Optional;
  */
 public abstract class PhysicalVehicleBuilder {
 
+    protected Optional<RealVector> position = Optional.empty();
+    protected Optional<Rotation> rotation = Optional.empty();
     protected Optional<RealVector> velocity = Optional.empty();
     protected Optional<RealVector> angularVelocity = Optional.empty();
 
@@ -623,6 +626,16 @@ public abstract class PhysicalVehicleBuilder {
      * @return PhysicalVehicle that was built with the builder
      */
     public abstract PhysicalVehicle buildPhysicalVehicle();
+
+    public PhysicalVehicleBuilder setPosition(RealVector position){
+        this.position = Optional.of(position);
+        return this;
+    }
+
+    public PhysicalVehicleBuilder setRotation(Rotation rotation){
+        this.rotation = Optional.of(rotation);
+        return this;
+    }
 
     public  PhysicalVehicleBuilder setVelocity(RealVector velocity){
         this.velocity = Optional.of(velocity);

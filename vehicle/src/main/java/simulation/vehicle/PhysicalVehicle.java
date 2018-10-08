@@ -850,6 +850,12 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     public abstract RealVector getForce();
 
     /**
+     * Function that returns the torque that is acting on the vehicle
+     * @return Torque acting on the vehicle
+     */
+    public abstract RealVector getTorque();
+
+    /**
      * Function that returns if the physicalVehicle is initialized
      * @return Value of physicalVehicleInitialized
      */
