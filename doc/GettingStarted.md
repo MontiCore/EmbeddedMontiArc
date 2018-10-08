@@ -23,7 +23,19 @@ yarn install
 Depending on the system, the installation might take a few minutes.
 
 ## Packaging
-To be written.
+Packaging in the context of this repository denotes the generation of an installer for
+EmbeddedMontiArcStudio for a specific target platform. In order to successfully execute
+the packaging process, all artifacts should have been downloaded and extracted during the
+installation process. Two different packaging modes can be distinguished, namely `package`
+and `package:dry`. The former triggers the generation of all necessary artifacts including
+the installer itself whereas the latter excludes the installer. The `package:dry` mode
+can be used to test EmbeddedMontiArcStudio before packaging it into a fully-fledged
+installer. To execute either of the modes, a developer has to execute the following console
+commands in the root directory of this repository:
+
+```bash
+yarn run package[:dry]
+```
 
 ## Contributing
 EmbeddedMontiArcStudio is the result of the cooperation between a multitude of university
@@ -98,6 +110,8 @@ artifact. `to` specifies the relative location to which the archive should be ex
 after the download phase. In most cases, `to` should be `resources` as this denotes the
 root for EmbeddedMontiArcStudio's resources.
 
+Running `yarn install` again will result in the artifact being downloaded and extracted.
+
 In the following, let us assume that a developer has a bundled application named
 `visualization-emam`. Following the above guide, the next step would be the creation of a
 ZIP archive with the following structure:
@@ -122,7 +136,7 @@ following entry:
 }
 ```
 
-Note that the platforms could further be extended to include unix based platforms.
+Note that `platforms` could further be extended to include unix based platforms.
 
 ### Adding Control Scripts
 To be written.
