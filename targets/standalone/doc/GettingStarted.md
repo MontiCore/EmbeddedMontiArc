@@ -12,6 +12,6 @@ directory:
 yarn run start
 ```
 
-The port used for the server defaults to `3000` and the implementation can be visited on
-[http://localhost:3000](http://localhost:3000) with any of the
+The port used for the server defaults to `3005` and the implementation can be visited on
+[http://localhost:3005](http://localhost:3005) with any of the
 [supported browsers](../README.md#browser-support).
