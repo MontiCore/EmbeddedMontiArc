@@ -4,6 +4,7 @@
 ## Table of Contents
 * [**Description**](#description)
 * [**Getting Started**](doc/GettingStarted.md)
+* [**Contributing**](doc/Contributing.md)
 * [**License**](#license)
 
 ## Description
