@@ -14,6 +14,7 @@
 * [**Standalone**](/targets/standalone)
 * [**EmbeddedMontiArcStudio**](/targets/emastudio)
 * [**Development Team**](/doc/DevelopmentTeam.md)
+* [**Contributing**](/doc/Contributing.md)
 * [**License**](#license)
 
 ## Description
