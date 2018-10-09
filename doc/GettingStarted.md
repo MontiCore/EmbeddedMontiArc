@@ -169,5 +169,6 @@ following table gives an overview of this convention.
 | Test Active Stream | scripts/{project}/testing/ | test |
 
 where `{project}` denotes the name of the demonstration project from the first section.
-Furthermore, the scripts should also be sub-divided by platform as can be seen
+
+Apart from the project, the scripts should also be sub-divided by platform as can be seen
 [here](../src/windows).
