@@ -123,7 +123,7 @@ ZIP archive with the following structure:
 ```
 
 The application being a Java application in nature, the archive has to be uploaded to a
-sub-folder `YY.MM.DD.visualization-emam` inside of the `shared` folder where `YY.MM.DD`
+sub-folder `YY.MM.DD.visualization-emam` inside of the `shared` folder, where `YY.MM.DD`
 denotes the date of the upload. Lastly, `dependencies.json` has to be extended by the
 following entry:
 
@@ -136,9 +136,38 @@ following entry:
 }
 ```
 
-Note that `platforms` could further be extended to include unix based platforms.
+Note that `platforms` could further be extended to include unix-based platforms.
 
 ### Adding Control Scripts
-To be written.
+A last aspect to cover is the large variety of execution parameters of EmbeddedMontiArc
+projects. Some projects, for instance, need the result of some kind of intermediate
+transformation of the models and do not operate on the models themselves. Some others
+assume that a different project has been executed beforehand. In order to cover all
+these cases, a developer has to write one or more control scripts which coordinate the
+execution of the project.
 
-<!-- Bound to Button -->
+The format of these scripts is Batch (.bat) scripts for Windows as target platform and
+Shell (.sh) scripts for unix-based platforms. The advantage of using these types of
+scripts is that a developer can make use of the entire functions spectrum of the operating
+system. For instance, if a file needs to be copied, a developer can just use `copy` or `cp`
+to perform this task. Usually, a script begins with a call to
+[`variables`](../src/windows/scripts/common/variables.bat), a script which instantiates
+useful variables which can be used to ease development of the actual script.
+
+The script will be executed when a certain menu point in EmbeddedMontiArcStudio is selected.
+EmbeddedMontiArcStudio derives the correct script from its location and its name. The
+following table gives an overview of this convention.
+
+| Menu  | Location | Name{.bat,.sh}  |
+| :--- | :--- | :--- |
+| Execute Model | scripts/{project}/executing/ | execute |
+| Generate WebAssembly | scripts/{project}/emam2wasm/ | emam2wasm |
+| Visualize Workspace | scripts/{project}/visualization/ | visualize |
+| Report | scripts/{project}/reporting/ | report |
+| Report With Streams | scripts/{project}/reporting/ | report.streams |
+| Test Workspace | scripts/{project}/testing/ | test.all |
+| Test Active Stream | scripts/{project}/testing/ | test |
+
+where `{project}` denotes the name of the demonstration project from the first section.
+Furthermore, the scripts should also be sub-divided by platform as can be seen
+[here](../src/windows).
