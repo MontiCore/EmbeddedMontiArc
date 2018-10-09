@@ -30,6 +30,7 @@
   "dependencies": {
     "@theia/core": "latest",
     "@theia/filesystem": "latest",
+    "@theia/messages": "latest",
     "@elysium/core": "^0.1.0",
     "browserfs": "^1.4.3"
   },
