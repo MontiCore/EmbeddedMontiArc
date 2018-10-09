@@ -4,11 +4,11 @@
 * [**Prerequisites**](#prerequisites)
 * [**Installation**](#installation)
 * [**Multi-Target**](#multi-target)
+* [**Compiling**](#compiling)
 * [**Building**](#building)
 * [**Packaging**](#packaging)
 * [**Documentation**](#documentation)
 * [**Local Execution**](#local-execution)
-* [**Contributing**](Contributing.md)
 
 ## Prerequisites
 | ![https://yarnpkg.com](images/yarn.png) | ![https://nodejs.org](images/nodejs.png) |
@@ -46,15 +46,23 @@ cd targets/{target}
 
 where `{target}` is one of the above identifiers of a target.
 
-## Building
+## Compiling
 The main programming language used for the implementation of this project as well as of most of
 its dependencies is [**TypeScript**](https://www.typescriptlang.org). TypeScript is a
 programming language developed by Microsoft and is a superset of the JavaScript programming
 language which introduces new syntactic constructs as well as static typing to its subset,
 which makes code more maintainable. Nonetheless, TypeScript is not directly executed in its
 respective runtime environment but is translated to JavaScript using the compiler that comes
-shipped with it. 
+shipped with it.
 
+In order to execute the compiling process, a developer has to run the following console
+command in the root directory of the respective target:
+
+```bash
+yarn run compile
+```
+
+## Building
 The execution of the compiler, however, results in a large amount of JavaScript files which
 all have to be served to the client in order to guarantee a functional system. However, the
 HyperText Transfer Protocol (HTTP) used for the transmission of such files limits the client
@@ -66,7 +74,7 @@ In order to overcome this limitation, the JavaScript files and the assets used i
 project are combined into bundles using [**WebPack**](https://webpack.js.org/). As a result,
 less files have to be transferred to the client and the total page loading time decreases.
 
-In order to execute both compiling and bundling, a developer has to run the following console
+In order to execute the bundling process, a developer has to run the following console
 command in the root directory of the respective target:
 
 ```bash
