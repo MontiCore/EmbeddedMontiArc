@@ -12,6 +12,8 @@ import {
 import { FileSystem } from "@theia/filesystem/lib/common/filesystem";
 import { BrowserFileSystemWatcher } from "./browser-filesystem-watcher";
 import { FileSystemBrowser } from "./browser-filesystem";
+import { BrowserFilesystemFrontendContribution } from "./browser-filesystem-frontend-contribution";
+import { FrontendApplicationContribution } from "@theia/core/lib/browser";
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
     unbind(FileSystemWatcherServerProxy);
@@ -22,5 +24,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     rebind(FileSystemWatcherServer).to(BrowserFileSystemWatcher).inSingletonScope();
     rebind(FileSystem).toDynamicValue(
         ctx => ctx.container.get(FileSystemBrowser)
+    ).inSingletonScope();
+
+    bind(BrowserFilesystemFrontendContribution).toSelf().inSingletonScope();
+    bind(FrontendApplicationContribution).toDynamicValue(
+        ctx => ctx.container.get(BrowserFilesystemFrontendContribution)
     ).inSingletonScope();
 });
