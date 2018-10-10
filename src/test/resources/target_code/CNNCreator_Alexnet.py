@@ -52,8 +52,7 @@ class CNNCreator_Alexnet:
 
     		data = data
     		# data, output shape: {[3,224,224]}
-
-    		conv1_ = brew.conv(model, data, 'conv1_', dim_in=1, dim_out=96, kernel=11, stride=4)
+      		conv1_ = brew.conv(model, data, 'conv1_', dim_in=3, dim_out=96, kernel=11, stride=4)
     		# conv1_, output shape: {[96,55,55]}
     		lrn1_ = mx.symbol.LRN(data=conv1_,
     		    alpha=0.0001,
