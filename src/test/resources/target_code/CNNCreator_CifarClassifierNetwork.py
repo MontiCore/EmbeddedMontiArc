@@ -58,8 +58,7 @@ class CNNCreator_CifarClassifierNetwork:
 
     		data = data
     		# data, output shape: {[3,32,32]}
-  	
-    		conv2_1_ = brew.conv(model, data, 'conv2_1_', dim_in=1, dim_out=8, kernel=3, stride=1)
+      		conv2_1_ = brew.conv(model, data, 'conv2_1_', dim_in=3, dim_out=8, kernel=3, stride=1)
     		# conv2_1_, output shape: {[8,32,32]}
     		batchnorm2_1_ = mx.symbol.BatchNorm(data=conv2_1_,
     		    fix_gamma=True,
