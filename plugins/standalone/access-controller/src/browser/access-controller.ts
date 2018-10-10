@@ -5,7 +5,7 @@
  */
 
 import { injectable, inject, named } from "inversify";
-import { FrontendApplicationContribution, FrontendApplication } from "@theia/core/lib/browser";
+import { FrontendApplicationContribution } from "@theia/core/lib/browser";
 import { ContributionProvider } from "@theia/core/lib/common";
 
 export const AccessContribution = Symbol("AccessContribution");
@@ -34,7 +34,7 @@ export class AccessController implements FrontendApplicationContribution {
     protected readonly provider: ContributionProvider<AccessContribution>;
 
     // tslint:disable:no-any
-    public async onStart(app: FrontendApplication): Promise<void> {
+    public initialize(): void {
         (window as any).api = {};
 
         for (const contribution of this.provider.getContributions()) {
