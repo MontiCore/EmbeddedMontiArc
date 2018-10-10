@@ -1,8 +1,8 @@
 # EmbeddedMontiArcStudio
 
-**Latest release:** https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc
-
-**Windows Installer with new IDE:** https://rwth-aachen.sciebo.de/s/ljgKW9cWvL2qMH9?path=%2F2.0.0
+* **Latest release of old IDE but with complete Features:** https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc
+* **Windows Installer with new IDE:** https://rwth-aachen.sciebo.de/s/ljgKW9cWvL2qMH9?path=%2F2.0.0
+  * Please use `C:\EmbeddedMontiArcStudio\` as installation path, if white space as `Program Files` are in path, the tool does not work correct
 
 [![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
 
@@ -15,6 +15,8 @@ For stable releases later than version 1.4 please insert the EmbeddedMontiArcLog
 
 Release History
 =======
+* **[v2.0:](https://rwth-aachen.sciebo.de/s/ljgKW9cWvL2qMH9?path=%2F2.0.0)** Installer with new professional IDE
+  * BumperBot View Verification and NFPVerification do not work yet
 * **[v1.7.0:](https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc)** Added IDE support for tags
 * **[v1.6.5:](https://rwth-aachen.sciebo.de/s/Wli0nHabWAYTgl3)** Added PacMan example and BumperBot View Verification example
 * **[v1.5.2:](https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio/releases/tag/v1.5.1)** Updated SVG-Visualization (using new and better algorithm)
