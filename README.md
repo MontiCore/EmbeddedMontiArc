@@ -1,6 +1,7 @@
 # EmbeddedMontiArcStudio
 
 **Latest release:** https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc
+
 **Windows Installer with new IDE:** https://rwth-aachen.sciebo.de/s/ljgKW9cWvL2qMH9?path=%2F2.0.0
 
 [![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
