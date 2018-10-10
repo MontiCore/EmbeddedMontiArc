@@ -1,6 +1,7 @@
 # EmbeddedMontiArcStudio
 
 **Latest release:** https://rwth-aachen.sciebo.de/s/6g3uWJNQcqgnKRc
+**Windows Installer with new IDE:** https://rwth-aachen.sciebo.de/s/ljgKW9cWvL2qMH9?path=%2F2.0.0
 
 [![Overview video of EmbeddedMontiArcStudio](https://user-images.githubusercontent.com/30497492/37372601-8b1f3b0a-2713-11e8-860a-e0bb757b6eaa.png)](https://youtu.be/VTKSWwWp-kg)
 
@@ -35,11 +36,12 @@ Release History
 Credits
 =======
 * Bernhard Rumpe (Organization-Leader and Sponsor of EmbeddedMontiArc)
-* Michael von Wenckstern (Project-Leader: EmbeddedMontiArc-Language, Compiler, Visualisation, and IDE)
-* Evgeny Kusmenko (Project-Leader: Simulator, and Physic Engine)
+* Michael von Wenckstern (Project-Leader: EmbeddedMontiArc-Language, Compiler, Visualisation, IDE, PacMan, SuperMario, and OCL)
+* Evgeny Kusmenko (Project-Leader: Simulator, Physic Engine, and 3D-Car)
 * Jean-Marc Ronck (IDE)
+* Malte Heithoff (Reporting, PacMan)
 * Alexander Ryndin (Simulator and Integration of Compiler & Packing first version)
 * Sascha Schneiders (EmbeddedMontiArc to C++ Compiler)
 * Armin Mokhtarian (Autopilot Model)
 * Manuel Schrick (SVG generation)
-* Malte Heithoff (Reporting)
+* Haller, Philipp (SuperMario)
