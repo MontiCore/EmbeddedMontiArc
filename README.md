@@ -45,6 +45,7 @@ Credits
 * Malte Heithoff (Reporting, PacMan)
 * Alexander Ryndin (Simulator and Integration of Compiler & Packing first version)
 * Sascha Schneiders (EmbeddedMontiArc to C++ Compiler)
+* Stefan Brunecker (EmbeddedMontiArcMath to WebAssembly Compiler)
 * Armin Mokhtarian (Autopilot Model)
 * Manuel Schrick (SVG generation)
 * Haller, Philipp (SuperMario)
