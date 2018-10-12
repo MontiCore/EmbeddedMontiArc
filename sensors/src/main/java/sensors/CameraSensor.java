@@ -584,19 +584,15 @@ public class CameraSensor extends AbstractSensor {
             // TODO: Add noise in Image
             ImagePlus imagePlus = new ImagePlus();
             imagePlus.setImage(temp.get());
-            try {
-                int width = imagePlus.getWidth() / 2;
-                this.value = Optional.of(cropImage(imagePlus, 0, 0, width, imagePlus.getHeight()));
-                this.rightImage = Optional
-                        .of(cropImage(imagePlus, imagePlus.getWidth() / 2, 0, width, imagePlus.getHeight()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            int width = imagePlus.getWidth() / 2;
+            this.value = Optional.of(cropImage(imagePlus, 0, 0, width, imagePlus.getHeight()));
+            this.rightImage = Optional
+                    .of(cropImage(imagePlus, imagePlus.getWidth() / 2, 0, width, imagePlus.getHeight()));
         }
 
     }
 
-    private BufferedImage cropImage(ImagePlus imp, int x, int y, int width, int height) throws Exception {
+    private BufferedImage cropImage(ImagePlus imp, int x, int y, int width, int height){
 
         ImageProcessor ip = imp.getProcessor();
         ip.setInterpolationMethod(ImageProcessor.BILINEAR);
@@ -655,9 +651,7 @@ public class CameraSensor extends AbstractSensor {
     public static BufferedImage motionBlurFilter(BufferedImage bi) {
         MotionBlurFilter blurFilter = new MotionBlurFilter(0.1f, 0.1f, 0.12f, 0.001f);
 
-        BufferedImage im = blurFilter.filter(bi, null);
-
-        return im;
+        return blurFilter.filter(bi, null);
     }
 
 }

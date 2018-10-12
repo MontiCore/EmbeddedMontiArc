@@ -797,8 +797,7 @@ public class Simulator {
                 try {
                     Thread.sleep(slowDownTime);
                 } catch (InterruptedException e) {
-                    Log.warning("Failed to slow down simulation computation.");
-                    e.printStackTrace();
+                    Log.warning("Failed to slow down simulation computation." + e);
                 }
             }
         }
@@ -811,7 +810,7 @@ public class Simulator {
                     isComputationPaused = true;
                     computationPauseTime.wait();
                 } catch (InterruptedException e) {
-                    Log.warning("Thread of simulation with paused computation was interrupted");
+                    Log.warning("Thread of simulation with paused computation was interrupted." + e);
                 }
             }
         }
@@ -902,8 +901,7 @@ public class Simulator {
             try {
                 Thread.sleep(timeDifference * (long)(slowDownFactor-1));
             } catch (InterruptedException e) {
-                Log.warning("Failed to slow down simulation computation.");
-                e.printStackTrace();
+                Log.warning("Failed to slow down simulation computation." + e);
             }
         }
 
@@ -925,8 +923,7 @@ public class Simulator {
             try {
                 sharedInstance.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                Log.warning("Could not block thread.");
+                Log.warning("Could not block thread." + e);
             }
         }
     }
@@ -953,8 +950,7 @@ public class Simulator {
             try {
                 sharedInstance.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                Log.warning("Could not block thread.");
+                Log.warning("Could not block thread." + e);
             }
         }
     }

@@ -755,7 +755,7 @@ public class Parser2D implements IParser {
             if (!StringUtils.isBlank(this.filePath)) {
                 this.in = new FileInputStream(filePath);
             } else {
-                throw new Exception("No Input Exception");
+                throw new IllegalArgumentException("No Input");
             }
         }
         try {
