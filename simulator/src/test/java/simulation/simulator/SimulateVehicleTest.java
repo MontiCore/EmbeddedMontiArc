@@ -508,14 +508,7 @@ public class SimulateVehicleTest {
         sim.setPausedInFuture(true);
     }
 
-    /*@Test
-    public void firstTest(){
-        Simulator sim = Simulator.getSharedInstance();
-        //sim.registerLoopObserver(new SimulationPlotter2D());
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
+    private void setAccelerating(PhysicalVehicle physicalVehicle){
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Set actuator values for testing
@@ -539,16 +532,17 @@ public class SimulateVehicleTest {
 
         brakes4.setActuatorValueCurrent(0.0);
         brakes4.setActuatorValueTarget(0.0);
+    }
 
-        // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
+    private void setBraking(PhysicalVehicle physicalVehicle){
+        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
-        // Start simulation
-        // After 5 seconds, value should be reached
-        sim.stopAfter(5000);
-        long firstRoundStartingTime = System.nanoTime();
-        sim.startSimulation();
-        long firstRoundEndTime = System.nanoTime();
+        // Set actuator values for testing
+        VehicleActuator motor = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
+        VehicleActuator brakes1 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT);
+        VehicleActuator brakes2 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT);
+        VehicleActuator brakes3 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT);
+        VehicleActuator brakes4 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT);
 
         motor.setActuatorValueCurrent(0.0);
         motor.setActuatorValueTarget(0.0);
@@ -564,6 +558,35 @@ public class SimulateVehicleTest {
 
         brakes4.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
         brakes4.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+    }
+    /*
+    @Test
+    public void firstTest(){
+        Simulator sim = Simulator.getSharedInstance();
+        //sim.registerLoopObserver(new SimulationPlotter2D());
+
+        // Create a new vehicle
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder1 = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle1 = physicalVehicleBuilder1.buildPhysicalVehicle();
+
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder2 = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle2 = physicalVehicleBuilder2.buildPhysicalVehicle();
+
+        // Add physicalVehicle1 to simulation
+        sim.registerSimulationObject(physicalVehicle1);
+        sim.registerSimulationObject(physicalVehicle2);
+
+        setAccelerating(physicalVehicle1);
+        setAccelerating(physicalVehicle2);
+
+        // Start simulation
+        sim.stopAfter(5000);
+        long firstRoundStartingTime = System.nanoTime();
+        sim.startSimulation();
+        long firstRoundEndTime = System.nanoTime();
+
+        setBraking(physicalVehicle1);
+        setBraking(physicalVehicle2);
 
         sim.extendSimulationTime(5000);
         long secondRoundStartingTime = System.nanoTime();
@@ -574,8 +597,9 @@ public class SimulateVehicleTest {
         sim.stopSimulation();
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
         assertTrue(true);
-    }*/
-
+    }
+    */
+    
     /**
      * Check if the vehicle drives straight forward, if there is no steering angle
      */
