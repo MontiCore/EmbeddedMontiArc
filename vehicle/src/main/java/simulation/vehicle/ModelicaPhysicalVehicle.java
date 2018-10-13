@@ -440,7 +440,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double z = vehicleDynamicsModel.getValue("z");
         double r_nom = vehicleDynamicsModel.getValue("r_nom");
         //Calculate localPosition and return global position
-        RealVector localPosition = new ArrayRealVector(new double[]{L_2, -TW_r / 2, -z + r_nom});
+        RealVector localPosition = new ArrayRealVector(new double[]{-L_2, -TW_r / 2, -z + r_nom});
         return position.add(rotation.operate(localPosition));
     }
 
@@ -456,7 +456,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         double z = vehicleDynamicsModel.getValue("z");
         double r_nom = vehicleDynamicsModel.getValue("r_nom");
         //Calculate localPosition and return global position
-        RealVector localPosition = new ArrayRealVector(new double[]{L_2, TW_r / 2, -z + r_nom});
+        RealVector localPosition = new ArrayRealVector(new double[]{-L_2, TW_r / 2, -z + r_nom});
         return position.add(rotation.operate(localPosition));
     }
 
@@ -557,8 +557,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         // Get steering angle
         double steeringAngle = simulationVehicle.getVehicleActuator(VEHICLE_ACTUATOR_TYPE_STEERING).getActuatorValueCurrent();
-        vehicleDynamicsModel.setInput("delta_1", steeringAngle);
-        vehicleDynamicsModel.setInput("delta_2", steeringAngle);
+        vehicleDynamicsModel.setInput("delta_1", - steeringAngle);
+        vehicleDynamicsModel.setInput("delta_2", - steeringAngle);
 
         // Express the force vector in local coordinates
         RealVector localForce = rotation.transpose().operate(force);

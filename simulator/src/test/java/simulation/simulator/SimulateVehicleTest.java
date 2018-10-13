@@ -544,21 +544,24 @@ public class SimulateVehicleTest {
         VehicleActuator brakes2 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT);
         VehicleActuator brakes3 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT);
         VehicleActuator brakes4 = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT);
+        VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
 
         motor.setActuatorValueCurrent(0.0);
         motor.setActuatorValueTarget(0.0);
 
-        brakes1.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
-        brakes1.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        brakes1.setActuatorValueCurrent(1.5);
+        brakes1.setActuatorValueTarget(1.5);
 
-        brakes2.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
-        brakes2.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        brakes2.setActuatorValueCurrent(1.5);
+        brakes2.setActuatorValueTarget(1.5);
 
-        brakes3.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
-        brakes3.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        brakes3.setActuatorValueCurrent(1.5);
+        brakes3.setActuatorValueTarget(1.5);
 
-        brakes4.setActuatorValueCurrent(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
-        brakes4.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
+        brakes4.setActuatorValueCurrent(1.5);
+        brakes4.setActuatorValueTarget(1.5);
+
+        steering.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
     }
     /*
     @Test
@@ -571,7 +574,7 @@ public class SimulateVehicleTest {
         PhysicalVehicle physicalVehicle1 = physicalVehicleBuilder1.buildPhysicalVehicle();
 
         // Add physicalVehicle1 to simulation
-        sim.registerSimulationObject(physicalVehicle1);
+        sim.registerAndPutObject(physicalVehicle1, 0.0, 5.0, 0.0);
 
         setAccelerating(physicalVehicle1);
 

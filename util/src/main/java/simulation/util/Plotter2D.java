@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.math3.linear.RealVector;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -24,6 +25,107 @@ public final class Plotter2D{
 
     /* A circle shape to be used by the plotting renderer */
     private static java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
+
+    private static void plotOne(List<RealVector> vehiclePosition, List<Long> simulationTime, int i, List<List<RealVector>> wheelPositions){
+        if(i % 10 != 0){
+            //return;
+        }
+        // Create axis
+        NumberAxis xAxis = new NumberAxis("Vehicle Position (m)");
+        xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        xAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
+        xAxis.setTickLabelsVisible(false);
+        xAxis.setTickUnit(new NumberTickUnit(2));
+        xAxis.setRange(vehiclePosition.get(i).getEntry(0) - 5.0, vehiclePosition.get(i).getEntry(0) + 5.0);
+
+        NumberAxis yAxis = new NumberAxis("Vehicle Position (m)");
+        yAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        yAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
+        yAxis.setTickLabelsVisible(false);
+        yAxis.setTickUnit(new NumberTickUnit(2));
+        yAxis.setRange(vehiclePosition.get(i).getEntry(1) - 5.0, vehiclePosition.get(i).getEntry(1) + 5.0);
+
+        // Create XY series for storing the position
+        XYSeries position = new XYSeries("x_y", false, true);
+        double tempPosition = 0.0;
+
+        tempPosition = vehiclePosition.get(i).getEntry(1);
+        position.add(vehiclePosition.get(i).getEntry(0), tempPosition);
+
+        tempPosition = vehiclePosition.get(i + 1).getEntry(1);
+        position.add(vehiclePosition.get(i + 1).getEntry(0), tempPosition);
+
+        // Create XY series for storing the wheel positions
+        XYSeries position1 = new XYSeries("x_y_1", false, true);
+        XYSeries position2 = new XYSeries("x_y_2", false, true);
+        XYSeries position3 = new XYSeries("x_y_3", false, true);
+        XYSeries position4 = new XYSeries("x_y_4", false, true);
+
+        tempPosition = wheelPositions.get(i).get(0).getEntry(1);
+        position1.add(wheelPositions.get(i).get(0).getEntry(0), tempPosition);
+        tempPosition = wheelPositions.get(i).get(1).getEntry(1);
+        position2.add(wheelPositions.get(i).get(1).getEntry(0), tempPosition);
+        tempPosition = wheelPositions.get(i).get(2).getEntry(1);
+        position3.add(wheelPositions.get(i).get(2).getEntry(0), tempPosition);
+        tempPosition = wheelPositions.get(i).get(3).getEntry(1);
+        position4.add(wheelPositions.get(i).get(3).getEntry(0), tempPosition);
+
+        // Create a parallel series collection and store data
+        XYSeriesCollection vehiclePositionDataSet = new XYSeriesCollection();
+        vehiclePositionDataSet.addSeries(position);
+        vehiclePositionDataSet.addSeries(position1);
+        vehiclePositionDataSet.addSeries(position2);
+        vehiclePositionDataSet.addSeries(position3);
+        vehiclePositionDataSet.addSeries(position4);
+
+        // Create and customize renderer
+        XYLineAndShapeRenderer positionPlotRenderer = new XYLineAndShapeRenderer();
+        positionPlotRenderer.setBaseShapesFilled(true);
+
+        positionPlotRenderer.setSeriesPaint(0, Color.BLUE);
+        positionPlotRenderer.setSeriesShape(0, shape);
+        positionPlotRenderer.setSeriesLinesVisible(0, true);
+
+        positionPlotRenderer.setSeriesPaint(1, Color.GREEN);
+        positionPlotRenderer.setSeriesShape(1, shape);
+        positionPlotRenderer.setSeriesLinesVisible(1, false);
+
+        positionPlotRenderer.setSeriesPaint(2, Color.GREEN);
+        positionPlotRenderer.setSeriesShape(2, shape);
+        positionPlotRenderer.setSeriesLinesVisible(2, false);
+
+        positionPlotRenderer.setSeriesPaint(3, Color.RED);
+        positionPlotRenderer.setSeriesShape(3, shape);
+        positionPlotRenderer.setSeriesLinesVisible(3, false);
+
+        positionPlotRenderer.setSeriesPaint(4, Color.RED);
+        positionPlotRenderer.setSeriesShape(4, shape);
+        positionPlotRenderer.setSeriesLinesVisible(4, false);
+
+        // Creating position plot
+        XYPlot positionPlot = new XYPlot(vehiclePositionDataSet, xAxis, yAxis, positionPlotRenderer);
+        positionPlot.setDomainGridlinePaint(Color.BLACK);
+        positionPlot.setRangeGridlinePaint(Color.BLACK);
+
+        // Create position chart
+        JFreeChart positionChart = new JFreeChart(" ", JFreeChart.DEFAULT_TITLE_FONT, positionPlot, true);
+        positionChart.removeLegend();
+
+        try {
+            ChartUtilities.saveChartAsPNG(new File("Position" + i + ".png"), positionChart, 750, 750);
+        }catch (Exception e){
+            Log.severe("Could not save charts as PNGs." + e);
+        }
+    }
+
+    public static void plotMany(List<RealVector> vehiclePosition, List<Long> simulationTimePoints, List<List<RealVector>> wheelPositions){
+
+        for(int i=0; i<vehiclePosition.size() - 1; i++){
+
+            plotOne(vehiclePosition, simulationTimePoints, i, wheelPositions);
+
+        }
+    }
 
     /**
      * Creates charts from the given data sets and saves them as images
@@ -41,7 +143,7 @@ public final class Plotter2D{
         try {
             ChartUtilities.saveChartAsPNG(new File("Position.png"), positionChart, 750, 450);
             ChartUtilities.saveChartAsPNG(new File("Velocity.png"), velocityChart, 750, 450);
-            ChartUtilities.saveChartAsPNG(new File("RotationRate.png"), rotationRatesChart, 750, 450);
+            ChartUtilities.saveChartAsPNG(new File("Rotation.png"), rotationRatesChart, 750, 450);
         }catch (Exception e){
             Log.severe("Could not save charts as PNGs." + e);
         }
@@ -193,7 +295,8 @@ public final class Plotter2D{
         for(int i=0; i<vehiclePosition.size(); i++){
 
             tempPosition.add(vehiclePosition.get(i).getEntry(1));
-            position.add(simTime.get(i), tempPosition.get(i));
+            //position.add(simTime.get(i), tempPosition.get(i));
+            position.add(vehiclePosition.get(i).getEntry(0), tempPosition.get(i));
 
         }
 

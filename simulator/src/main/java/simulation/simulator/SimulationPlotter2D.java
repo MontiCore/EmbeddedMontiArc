@@ -480,6 +480,7 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
     private List<List<Double>> wheelRotationRates = new LinkedList<>();
     private List<RealVector> vehiclePosition = new LinkedList<>();
     private List<RealVector> vehicleVelocity= new LinkedList<>();
+    private List<List<RealVector>> wheelPositions = new LinkedList<>();
 
     /**
      * This function retrieves data of the vehicle at every instant and stores it
@@ -499,12 +500,18 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
             // Get current position and velocity of the vehicle
             vehiclePosition.add(plottingVehicle.getPosition());
             vehicleVelocity.add(plottingVehicle.getVelocity());
-            List<Double> wheelsBuffer = new LinkedList<>();
-            wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_1"));
-            wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_2"));
-            wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_3"));
-            wheelsBuffer.add(plottingVehicle.getVDM().getValue("omega_wheel_4"));
-            wheelRotationRates.add(wheelsBuffer);
+            List<Double> wheelsBuffer1 = new LinkedList<>();
+            wheelsBuffer1.add(plottingVehicle.getVDM().getValue("omega_wheel_1"));
+            wheelsBuffer1.add(plottingVehicle.getVDM().getValue("omega_wheel_2"));
+            wheelsBuffer1.add(plottingVehicle.getVDM().getValue("omega_wheel_3"));
+            wheelsBuffer1.add(plottingVehicle.getVDM().getValue("omega_wheel_4"));
+            wheelRotationRates.add(wheelsBuffer1);
+            List<RealVector> wheelsBuffer2 = new LinkedList<>();
+            wheelsBuffer2.add(plottingVehicle.getFrontLeftWheelGeometryPosition());
+            wheelsBuffer2.add(plottingVehicle.getFrontRightWheelGeometryPosition());
+            wheelsBuffer2.add(plottingVehicle.getBackLeftWheelGeometryPosition());
+            wheelsBuffer2.add(plottingVehicle.getBackRightWheelGeometryPosition());
+            wheelPositions.add(wheelsBuffer2);
 
             // Store current simulation time
             simulationTimePoints.add(Simulator.getSharedInstance().getSimulationTime());
@@ -515,12 +522,18 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
             // Get current position and velocity of the vehicle
             vehiclePosition.add(plottingVehicle.getPosition());
             vehicleVelocity.add(plottingVehicle.getVelocity());
-            List<Double> wheelsBuffer = new LinkedList<>();
-            wheelsBuffer.add(new Double(0.0));
-            wheelsBuffer.add(new Double(0.0));
-            wheelsBuffer.add(new Double(0.0));
-            wheelsBuffer.add(new Double(0.0));
-            wheelRotationRates.add(wheelsBuffer);
+            List<Double> wheelsBuffer1 = new LinkedList<>();
+            wheelsBuffer1.add(new Double(0.0));
+            wheelsBuffer1.add(new Double(0.0));
+            wheelsBuffer1.add(new Double(0.0));
+            wheelsBuffer1.add(new Double(0.0));
+            wheelRotationRates.add(wheelsBuffer1);
+            List<RealVector> wheelsBuffer2 = new LinkedList<>();
+            wheelsBuffer2.add(plottingVehicle.getFrontLeftWheelGeometryPosition());
+            wheelsBuffer2.add(plottingVehicle.getFrontRightWheelGeometryPosition());
+            wheelsBuffer2.add(plottingVehicle.getBackLeftWheelGeometryPosition());
+            wheelsBuffer2.add(plottingVehicle.getBackRightWheelGeometryPosition());
+            wheelPositions.add(wheelsBuffer2);
 
             // Store current simulation time
             simulationTimePoints.add(Simulator.getSharedInstance().getSimulationTime());
@@ -537,7 +550,8 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
      **/
     @Override
     public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {
-        Plotter2D.plot(vehiclePosition, vehicleVelocity, wheelRotationRates, simulationTimePoints);
+        //Plotter2D.plot(vehiclePosition, vehicleVelocity, wheelRotationRates, simulationTimePoints);
+        Plotter2D.plotMany(vehiclePosition, simulationTimePoints, wheelPositions);
     }
 
     @Override
