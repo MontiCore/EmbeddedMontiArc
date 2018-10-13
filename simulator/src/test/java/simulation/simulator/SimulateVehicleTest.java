@@ -476,6 +476,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static simulation.vehicle.MassPointType.*;
 import static simulation.vehicle.MassPointType.MASS_POINT_TYPE_WHEEL_BACK_RIGHT;
@@ -563,21 +564,16 @@ public class SimulateVehicleTest {
     @Test
     public void firstTest(){
         Simulator sim = Simulator.getSharedInstance();
-        //sim.registerLoopObserver(new SimulationPlotter2D());
+        sim.registerLoopObserver(new SimulationPlotter2D());
 
         // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder1 = new MassPointPhysicalVehicleBuilder();
+        ModelicaPhysicalVehicleBuilder physicalVehicleBuilder1 = new ModelicaPhysicalVehicleBuilder();
         PhysicalVehicle physicalVehicle1 = physicalVehicleBuilder1.buildPhysicalVehicle();
-
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder2 = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle2 = physicalVehicleBuilder2.buildPhysicalVehicle();
 
         // Add physicalVehicle1 to simulation
         sim.registerSimulationObject(physicalVehicle1);
-        sim.registerSimulationObject(physicalVehicle2);
 
         setAccelerating(physicalVehicle1);
-        setAccelerating(physicalVehicle2);
 
         // Start simulation
         sim.stopAfter(5000);
@@ -586,7 +582,6 @@ public class SimulateVehicleTest {
         long firstRoundEndTime = System.nanoTime();
 
         setBraking(physicalVehicle1);
-        setBraking(physicalVehicle2);
 
         sim.extendSimulationTime(5000);
         long secondRoundStartingTime = System.nanoTime();
@@ -597,9 +592,9 @@ public class SimulateVehicleTest {
         sim.stopSimulation();
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
         assertTrue(true);
-    }
-    */
-    
+    }*/
+
+
     /**
      * Check if the vehicle drives straight forward, if there is no steering angle
      */
@@ -856,9 +851,9 @@ public class SimulateVehicleTest {
 
         RealVector velocityEnd = physicalVehicle.getVelocity();
 
-        assertTrue(velocityStart.getEntry(0) == velocityEnd.getEntry(0));
+        assertEquals(velocityStart.getEntry(0), velocityEnd.getEntry(0), 0);
         assertTrue(velocityEnd.getEntry(1) < 1 && (velocityEnd.getEntry(1) > -1));
-        assertTrue(velocityStart.getEntry(2) == velocityEnd.getEntry(2));
+        assertEquals(velocityStart.getEntry(2), velocityEnd.getEntry(2), 0);
     }
 
     @Test
