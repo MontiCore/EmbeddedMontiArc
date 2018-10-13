@@ -46,7 +46,7 @@
 }, {
   "//": "EMAM2WASM",
   "platforms": ["win32"],
-  "from": "https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/emam2wasm.zip",
+  "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=emam2wasm.zip",
   "to": "resources"
 }, {
   "//": "View Verification",
