@@ -262,7 +262,7 @@ public class WorldModel implements World{
      */
     @Override
     public GeomStreet getStreet(PhysicalObject o){
-        EnvNode n = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        EnvNode n = new Node2D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         GeomStreet street = getMinimumStreetForNode(n);
         return street;
     }
@@ -294,14 +294,14 @@ public class WorldModel implements World{
 
     @Override
     public Number getDistanceToMiddleOfStreet(PhysicalObject o) {
-        EnvNode n = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        EnvNode n = new Node2D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
         return minStreet.getDistanceToMiddle(o);
     }
 
     @Override
     public Number getDistanceToLeftStreetBorder(IPhysicalVehicle v) {
-        EnvNode n = new Node2D(v.getGeometryPos().getEntry(0),v.getGeometryPos().getEntry(1),v.getGeometryPos().getEntry(2));
+        EnvNode n = new Node2D(v.getGeometryPosition().getEntry(0),v.getGeometryPosition().getEntry(1),v.getGeometryPosition().getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
         return minStreet.getDistanceToLeft(v);
@@ -349,7 +349,7 @@ public class WorldModel implements World{
 
     @Override
     public Number getDistanceToRightStreetBorder(IPhysicalVehicle v) {
-        EnvNode n = new Node2D(v.getGeometryPos().getEntry(0),v.getGeometryPos().getEntry(1),v.getGeometryPos().getEntry(2));
+        EnvNode n = new Node2D(v.getGeometryPosition().getEntry(0),v.getGeometryPosition().getEntry(1),v.getGeometryPosition().getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
         return minStreet.getDistanceToRight(v);

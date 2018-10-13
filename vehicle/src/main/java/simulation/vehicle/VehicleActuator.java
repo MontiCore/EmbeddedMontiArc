@@ -579,8 +579,6 @@
  */
 package simulation.vehicle;
 
-import org.jfree.util.Log;
-
 /**
  * Class that represents an actuator of the vehicle
  */
@@ -642,12 +640,11 @@ public class VehicleActuator {
         // Total change of value in given time span
         double valueDiff = (actuatorChangeRate * timeDiff);
 
-        // If the difference between current value and target value is less or equal valueDiff, then just set target value
         if (Math.abs(actuatorValueTarget - actuatorValueCurrent) <= valueDiff) {
+            // If the difference between current value and target value is less or equal valueDiff, then just set target value
             actuatorValueCurrent = actuatorValueTarget;
-        }
-        // Otherwise add or subtract valueDiff to current value
-        else {
+        }else {
+            // Otherwise add or subtract valueDiff to current value
             actuatorValueCurrent = actuatorValueCurrent + ((actuatorValueCurrent < actuatorValueTarget) ? valueDiff : -valueDiff);
         }
     }

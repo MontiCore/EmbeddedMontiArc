@@ -579,25 +579,13 @@
  */
 package simulation.vehicle;
 
-
 import commons.simulation.PhysicalObject;
 import commons.simulation.PhysicalObjectType;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
-import simulation.environment.WorldModel;
-import simulation.util.Log;
 import simulation.util.MathHelper;
-
 import java.util.List;
 import java.util.Map;
-
-import static simulation.vehicle.MassPointType.*;
-import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING;
 
 /**
  * Physics calculations for simulation
@@ -613,6 +601,10 @@ public class PhysicsEngine{
     public static final double ROAD_FRICTION_DRY = 0.7;
     /** Average road friction coefficient for wet roads (no unit) */
     public static final double ROAD_FRICTION_WET = 0.4;
+
+    private PhysicsEngine(){
+        // Private constructor to hide the implicit public one
+    }
 
 
     /**
@@ -636,15 +628,15 @@ public class PhysicsEngine{
                 }
 
                 // Do not compute collision if both objects are more than 100 meters away from each other
-                if (physicalObject.getGeometryPos().getDistance(object.getGeometryPos()) >= 100.0) {
+                if (physicalObject.getGeometryPosition().getDistance(object.getGeometryPosition()) >= 100.0) {
                     continue;
                 }
 
                 // Do not compute collision if objects do not overlap in height
-                double minHeight = object.getGeometryPos().getEntry(2) - 0.5 * object.getHeight();
-                double maxHeight = object.getGeometryPos().getEntry(2) + 0.5 * object.getHeight();
-                double otherMinHeight = physicalObject.getGeometryPos().getEntry(2) - 0.5 * physicalObject.getHeight();
-                double otherMaxHeight = physicalObject.getGeometryPos().getEntry(2) + 0.5 * physicalObject.getHeight();
+                double minHeight = object.getGeometryPosition().getEntry(2) - 0.5 * object.getHeight();
+                double maxHeight = object.getGeometryPosition().getEntry(2) + 0.5 * object.getHeight();
+                double otherMinHeight = physicalObject.getGeometryPosition().getEntry(2) - 0.5 * physicalObject.getHeight();
+                double otherMaxHeight = physicalObject.getGeometryPosition().getEntry(2) + 0.5 * physicalObject.getHeight();
                 boolean heightOverlap = (minHeight >= otherMinHeight && minHeight <= otherMaxHeight) ||
                         (maxHeight >= otherMinHeight && maxHeight <= otherMaxHeight) ||
                         (otherMinHeight >= minHeight && otherMinHeight <= maxHeight) ||
@@ -682,66 +674,53 @@ public class PhysicsEngine{
         RealVector velocityA = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         double massA = 0.0;
         RealVector momentumA = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        switch (objectA.getPhysicalObjectType()) {
-            case PHYSICAL_OBJECT_TYPE_CAR:
-                PhysicalVehicle vehicleA = (PhysicalVehicle) objectA;
-                velocityA = vehicleA.getVelocity();
-                massA = vehicleA.getMass();
-                momentumA = velocityA.mapMultiply(massA);
-                break;
+        if(objectA.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+            PhysicalVehicle vehicleA = (PhysicalVehicle) objectA;
+            velocityA = vehicleA.getVelocity();
+            massA = vehicleA.getMass();
+            momentumA = velocityA.mapMultiply(massA);
         }
 
         //Initial calculations for object B
         RealVector velocityB = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         double massB = 0.0;
         RealVector momentumB = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        switch (objectB.getPhysicalObjectType()) {
-            case PHYSICAL_OBJECT_TYPE_CAR:
-                PhysicalVehicle vehicleB = (PhysicalVehicle) objectB;
-                velocityB = vehicleB.getVelocity();
-                massB = vehicleB.getMass();
-                momentumB = velocityB.mapMultiply(massB);
-                break;
+        if(objectB.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+            PhysicalVehicle vehicleB = (PhysicalVehicle) objectB;
+            velocityB = vehicleB.getVelocity();
+            massB = vehicleB.getMass();
+            momentumB = velocityB.mapMultiply(massB);
         }
 
         //Calculate new velocity
         RealVector velocityANew = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         RealVector velocityBNew = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        switch (objectA.getPhysicalObjectType()) {
-            case PHYSICAL_OBJECT_TYPE_CAR:
-                switch (objectB.getPhysicalObjectType()) {
-                    case PHYSICAL_OBJECT_TYPE_CAR:
-                        //Both objects are cars
-                        RealVector temporaryCalculationA = velocityB;
-                        temporaryCalculationA = temporaryCalculationA.mapMultiply(2.0);
-                        temporaryCalculationA = temporaryCalculationA.subtract(velocityA);
-                        temporaryCalculationA = temporaryCalculationA.mapMultiply(massB);
-                        temporaryCalculationA = temporaryCalculationA.add(momentumA);
-                        velocityANew = temporaryCalculationA.mapDivide(massA + massB);
-                        RealVector temporaryCalculationB = velocityA;
-                        temporaryCalculationB = temporaryCalculationB.mapMultiply(2.0);
-                        temporaryCalculationB = temporaryCalculationB.subtract(velocityB);
-                        temporaryCalculationB = temporaryCalculationB.mapMultiply(massA);
-                        temporaryCalculationB = temporaryCalculationB.add(momentumB);
-                        velocityBNew = temporaryCalculationB.mapDivide(massB + massA);
-                        break;
-                    default:
-                        //Only object A is a car
-                        velocityANew = velocityA.mapMultiply(-1.0);
-                        break;
-                }
-                break;
-            default:
-                switch (objectB.getPhysicalObjectType()) {
-                    case PHYSICAL_OBJECT_TYPE_CAR:
-                        //Only object B is a Car
-                        velocityBNew = velocityB.mapMultiply(-1.0);
-                        break;
-                    default:
-                        //Both object are not a car
-                        break;
-                }
-                break;
+        if(objectA.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+            if(objectB.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+                //Both objects are cars
+                RealVector temporaryCalculationA = velocityB;
+                temporaryCalculationA = temporaryCalculationA.mapMultiply(2.0);
+                temporaryCalculationA = temporaryCalculationA.subtract(velocityA);
+                temporaryCalculationA = temporaryCalculationA.mapMultiply(massB);
+                temporaryCalculationA = temporaryCalculationA.add(momentumA);
+                velocityANew = temporaryCalculationA.mapDivide(massA + massB);
+                RealVector temporaryCalculationB = velocityA;
+                temporaryCalculationB = temporaryCalculationB.mapMultiply(2.0);
+                temporaryCalculationB = temporaryCalculationB.subtract(velocityB);
+                temporaryCalculationB = temporaryCalculationB.mapMultiply(massA);
+                temporaryCalculationB = temporaryCalculationB.add(momentumB);
+                velocityBNew = temporaryCalculationB.mapDivide(massB + massA);
+            }else{
+                //Only object A is a car
+                velocityANew = velocityA.mapMultiply(-1.0);
+            }
+        }else{
+            if(objectB.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+                //Only object B is a Car
+                velocityBNew = velocityB.mapMultiply(-1.0);
+            }else{
+                //Both object are not a car
+            }
         }
 
         //Calculate new Momentum and Force
@@ -753,16 +732,13 @@ public class PhysicsEngine{
         RealVector forceB = deltaMomentumB.mapDivide(deltaT);
 
         //Add Force to the objects
-        switch (objectA.getPhysicalObjectType()) {
-            case PHYSICAL_OBJECT_TYPE_CAR:
-                PhysicalVehicle vehicleA = (PhysicalVehicle) objectA;
-                vehicleA.addForce(forceA);
+        if(objectA.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+            PhysicalVehicle vehicleA = (PhysicalVehicle) objectA;
+            vehicleA.addForce(forceA);
         }
-        switch (objectB.getPhysicalObjectType()) {
-            case PHYSICAL_OBJECT_TYPE_CAR:
-                PhysicalVehicle vehicleB = (PhysicalVehicle) objectB;
-                vehicleB.addForce(forceB);
-                break;
+        if(objectB.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+            PhysicalVehicle vehicleB = (PhysicalVehicle) objectB;
+            vehicleB.addForce(forceB);
         }
     }
 }

@@ -22,9 +22,6 @@ public class VehicleDynamicsModel {
     /** Flag whether the VDM has been initialised */
     private boolean isInitialised;
 
-    /** Flag whether the VDM has been terminated */
-    //private boolean isTerminated = false;
-
     /** Flag whether the FDUs need to exchange their values */
     private boolean needsExchanging;
 

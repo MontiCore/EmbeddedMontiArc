@@ -1450,12 +1450,6 @@ public class SimulatorTest {
         public void putOnSurface(double posX, double posY, double rotZ){
             // do nothing: this object is never put on the surface of a simulation
         }
-        public RealVector getGeometryPos(){
-            return  getPosition();
-        }
-        public RealMatrix getGeometryRot(){
-            return getRotation();
-        }
         public void executeLoopIteration(long timeDiffMs) {
             // do nothing: this do not move
         }

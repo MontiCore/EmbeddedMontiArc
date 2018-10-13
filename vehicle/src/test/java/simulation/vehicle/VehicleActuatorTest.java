@@ -173,7 +173,6 @@ public class VehicleActuatorTest {
     public void setActuatorValueCurrentOverMax() {
         VehicleActuator actuator = new VehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, 0, 10, 1);
         actuator.setActuatorValueCurrent(11.0);
-        Assert.assertTrue(true);
     }
 
     @Test(expected = IllegalArgumentException.class)

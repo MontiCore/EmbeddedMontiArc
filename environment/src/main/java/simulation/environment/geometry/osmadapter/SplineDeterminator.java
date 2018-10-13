@@ -750,7 +750,7 @@ public abstract class SplineDeterminator {
      * @return the distance to the middle spline
      */
     public double determineSplineDistance(PhysicalObject o) {
-        Point3D p = new Point3D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        Point3D p = new Point3D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToMiddle(p);
     }
@@ -771,19 +771,19 @@ public abstract class SplineDeterminator {
      * @return the distance to the left spline
      */
     public double determineDistanceToLeft(PhysicalObject o) {
-        Point3D p = new Point3D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        Point3D p = new Point3D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToLeft(o);
     }
 
     public double determineDistanceFrontLeft(PhysicalObject o) {
-        Point3D p = new Point3D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        Point3D p = new Point3D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToFrontLeft(o);
     }
 
     public double determineDistanceFrontRight(PhysicalObject o) {
-        Point3D p = new Point3D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        Point3D p = new Point3D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToFrontRight(o);
     }
@@ -793,7 +793,7 @@ public abstract class SplineDeterminator {
      * @return the distance to the right spline
      */
     public double determineDistanceToRight(PhysicalObject o) {
-        Point3D p = new Point3D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        Point3D p = new Point3D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         Spline s = getMinimumSplineForSetAndPoints(this.splines.keySet(), p);
         return s.computeDistanceToRight(o);
     }

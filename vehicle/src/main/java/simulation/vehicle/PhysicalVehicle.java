@@ -744,32 +744,6 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
         return this.uniqueId;
     }
 
-
-    /*====================*/
-
-    /**
-     * Marked as deprecated in favour of getGeometryPosition
-     * Function that returns a vector with the x, y and z coordinates of the object
-     * This refers to the center position of the geometry object (i.e. NOT mass point position)
-     * @return Vector with x, y, z coordinates of the object center
-     */
-    @Override
-    @Deprecated
-    public RealVector getGeometryPos(){
-        return  getGeometryPosition();
-    }
-
-    /**
-     * Marked as deprecated in favour of getRotation
-     * Function that returns a matrix with the rotation of the object
-     * @return Matrix with the rotation of the object
-     */
-    @Override
-    @Deprecated
-    public RealMatrix getGeometryRot(){
-        return getRotation();
-    }
-
     /**
      * Function that returns the wheel radius of the physical vehicle
      * @return Wheel radius of the physical vehicle

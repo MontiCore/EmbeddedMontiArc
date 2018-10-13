@@ -347,89 +347,71 @@ public class MathHelperTest {
 
     @Test
     public void testMatrixEquals() {
-        // Simple check for equality
-        double[][] matrixEntries1 = {{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}};
-        RealMatrix matrix11 = new BlockRealMatrix(matrixEntries1);
-        RealMatrix matrix12 = new BlockRealMatrix(matrixEntries1);
-        assertTrue(MathHelper.matrixEquals(matrix11, matrix12, 0.0000001));
+        // Test equal case
+        RealMatrix matrix1 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        RealMatrix matrix2 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.0000001));
 
-        // Matrices with too much difference are not equal
-        double[][] matrixEntries2 = {{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}};
-        RealMatrix matrix21 = new BlockRealMatrix(matrixEntries2);
-        RealMatrix matrix22 = matrix21.scalarAdd(0.0000002);
-        assertFalse(MathHelper.matrixEquals(matrix21, matrix22, 0.0000001));
+        // Test almost equal case
+        matrix1 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        matrix2 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        matrix2 = matrix2.scalarAdd(0.00000002);
+        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.0000001));
 
-        // Matrices with a small difference are considered equal
-        RealMatrix matrix23 = matrix21.scalarAdd(0.00000002);
-        assertTrue(MathHelper.matrixEquals(matrix21, matrix23, 0.0000001));
+        // Test not equal case
+        matrix1 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        matrix2 = new BlockRealMatrix(new double[][]{{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}});
+        assertFalse(MathHelper.matrixEquals(matrix1, matrix2, 0.0000001));
     }
 
     @Test
-    public void testMatrixInvert(){
+    public void testMatrixInvert() {
         // Invert - Invert should be equal
-        double[][] matrixEntries1 = {{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}};
-        RealMatrix matrix1 = new BlockRealMatrix(matrixEntries1);
-        RealMatrix inverse11 = MathHelper.matrixInvert(matrix1);
-        RealMatrix inverse12 = MathHelper.matrixInvert(inverse11);
-        assertTrue(MathHelper.matrixEquals(matrix1, inverse12, 0.0000001));
+        RealMatrix matrix = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        RealMatrix inverse1 = MathHelper.matrixInvert(matrix);
+        RealMatrix inverse2 = MathHelper.matrixInvert(inverse1);
+        assertTrue(MathHelper.matrixEquals(matrix, inverse2, 0.0000001));
 
         // Invert - Invert should be equal
-        double[][] matrixEntries2 = {{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}};
-        RealMatrix matrix2 = new BlockRealMatrix(matrixEntries2);
-        RealMatrix inverse21 = MathHelper.matrixInvert(matrix2);
-        RealMatrix inverse22 = MathHelper.matrixInvert(inverse21);
-        assertTrue(MathHelper.matrixEquals(matrix2, inverse22, 0.0000001));
+        matrix = new BlockRealMatrix(new double[][]{{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}});
+        inverse1 = MathHelper.matrixInvert(matrix);
+        inverse2 = MathHelper.matrixInvert(inverse1);
+        assertTrue(MathHelper.matrixEquals(matrix, inverse2, 0.0000001));
+    }
 
-        // Non square matrix throws exception
-        boolean exceptionCaught3 = false;
-        double[][] matrixEntries3 = {{0.034, 0.3}, {0.82356, 0.378}, {1.3534, 0.1235}};
-        RealMatrix matrix3 = new BlockRealMatrix(matrixEntries3);
+    @Test(expected = IllegalArgumentException.class)
+    public void matrixInvertNotSquare() {
+        RealMatrix matrix = new BlockRealMatrix(new double[][]{{0.034, 0.3}, {0.82356, 0.378}, {1.3534, 0.1235}});
+        MathHelper.matrixInvert(matrix);
+    }
 
-        try {
-            MathHelper.matrixInvert(matrix3);
-        }
-        catch (Exception e) {
-            exceptionCaught3 = true;
-        }
-
-        assertTrue(exceptionCaught3);
-
-        // Non invertible matrix throws exception
-        boolean exceptionCaught4 = false;
-        double[][] matrixEntries4 = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-        RealMatrix matrix4 = new BlockRealMatrix(matrixEntries4);
-
-        try {
-            MathHelper.matrixInvert(matrix4);
-        }
-        catch (Exception e) {
-            exceptionCaught4 = true;
-        }
-
-        assertTrue(exceptionCaught4);
+    @Test(expected = IllegalArgumentException.class)
+    public void matrixInvertSingular() {
+        RealMatrix matrix = new BlockRealMatrix(new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}});
+        MathHelper.matrixInvert(matrix);
     }
 
     @Test
     public void testVectorEquals() {
-        // Simple check for equality
-        double[] vectorEntries1 = {23.237, 239.258, 0.2374};
-        RealVector vector11 = new ArrayRealVector(vectorEntries1);
-        RealVector vector12 = new ArrayRealVector(vectorEntries1);
-        assertTrue(MathHelper.vectorEquals(vector11, vector12, 0.00000001));
+        // Test equal case
+        RealVector vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        RealVector vector2 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        assertTrue(MathHelper.vectorEquals(vector1, vector2, 0.0000001));
 
-        // Vectors with too much difference are not equal
-        double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
-        RealVector vector21 = new ArrayRealVector(vectorEntries2);
-        RealVector vector22 = vector21.mapAdd(0.00000002);
-        assertFalse(MathHelper.vectorEquals(vector21, vector22, 0.00000001));
+        // Test almost equal case
+        vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        vector2 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        vector2 = vector2.mapAdd(0.00000002);
+        assertTrue(MathHelper.vectorEquals(vector1, vector2, 0.0000001));
 
-        // Vectors with a small difference are considered equal
-        RealVector vector23 = vector21.mapAdd(0.000000002);
-        assertTrue(MathHelper.vectorEquals(vector21, vector23, 0.00000001));
+        // Test not equal case
+        vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        vector2 = new ArrayRealVector(new double[]{0.2537, 87.258, 0.05739});
+        assertFalse(MathHelper.vectorEquals(vector1, vector2, 0.0000001));
     }
 
     @Test
-    public void testVector3DToCrossProductMatrix() throws Exception {
+    public void testVectorToCrossProductMatrix() {
         // Compare with default cross product computation
         double[] vectorEntries1 = {23.237, 239.258, 0.2374};
         double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
@@ -460,7 +442,7 @@ public class MathHelperTest {
     }
 
     @Test
-    public void testVector3DCrossProduct() throws Exception {
+    public void testVectorCrossProduct() throws Exception {
         // Compare with default cross product computation
         double[] vectorEntries1 = {23.237, 239.258, 0.2374};
         double[] vectorEntries2 = {0.2537, 87.258, 0.05739};

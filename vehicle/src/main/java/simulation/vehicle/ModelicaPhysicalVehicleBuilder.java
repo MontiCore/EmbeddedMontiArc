@@ -12,7 +12,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * Constructor
      */
     public ModelicaPhysicalVehicleBuilder(){
-
+        // Class has no uninitialized fields
     }
 
     /**

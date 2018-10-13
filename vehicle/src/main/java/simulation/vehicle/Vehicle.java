@@ -1339,6 +1339,9 @@ public class Vehicle {
                 case "LIVING_STREET":
                     allowedVelocityByStreetType = (30.0 / 3.6);
                     break;
+                default:
+                    allowedVelocityByStreetType = maxTemporaryAllowedVelocity;
+                    break;
             }
 
             setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
@@ -1517,11 +1520,9 @@ public class Vehicle {
      */
     public List<Vertex> getTrajectory() {
         // Check if trajectory is available and return copy if valid
-        if (controllerBus.isPresent()) {
-            if (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null) {
+        if (controllerBus.isPresent() && (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null)) {
                 ArrayList<Vertex> originalList = (ArrayList<Vertex>)(controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
                 return new ArrayList<>(originalList);
-            }
         }
 
         // Fallback to empty list

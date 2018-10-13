@@ -584,7 +584,7 @@ public final class NetworkUtils {
      * @param node2 Second communicating node
      */
     public static long calcPropagationTime(NetworkNode node1, NetworkNode node2) {
-        double distance = node1.getPhysicalObject().getGeometryPos().getDistance(node2.getPhysicalObject().getGeometryPos());
+        double distance = node1.getPhysicalObject().getGeometryPosition().getDistance(node2.getPhysicalObject().getGeometryPosition());
         long result = (long)(1000000000.0 * (distance / (double)(NetworkSettings.SPEED_OF_LIGHT)));
         return result;
     }

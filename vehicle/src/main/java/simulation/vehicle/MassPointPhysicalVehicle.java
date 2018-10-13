@@ -732,7 +732,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
             // If mass point position goes way below ground position + wheel radius, then set computational error
             if (massPointPosition.getEntry(2) < (limitZ - 0.5 * simulationVehicle.getWheelRadius())) {
-                // setError(true);
+                // ToDo build in check if physical vehicle is part of a simulation and then do not set the error if the vehicle is not part of a simulation;
             }
         }
     }
@@ -1169,9 +1169,9 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         // Force: Air friction Fa = -0.5 * air density * velocity^2 * drag coefficient * area hit by wind
         RealVector forceAirFriction = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
 
-        RealVector velocity = mp.getVelocity();
+        RealVector mpVelocity = mp.getVelocity();
 
-        if (velocity.getNorm() == 0.0) {
+        if (mpVelocity.getNorm() == 0.0) {
             return forceAirFriction;
         }
 
@@ -1181,7 +1181,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
         // For a rotation matrix it holds: inverse(matrix) = transpose(matrix)
         // Rotate velocityOrientation back to global coordinate system axis to match up with area values
-        RealVector velocityOrigin = rotation.transpose().operate(velocity);
+        RealVector velocityOrigin = rotation.transpose().operate(mpVelocity);
 
         // Fractions of area values for each axis according to velocity vector orientation and with no more vehicle rotation
         areaX = areaX * (velocityOrigin.getEntry(0) / velocityOrigin.getL1Norm());
@@ -1196,10 +1196,10 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
         // Final force computation, preserve direction that we need for computations in the 3D space
         RealVector direction = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        direction.setEntry(0, (velocity.getEntry(0) < 0.0 ? -1.0 : 1.0));
-        direction.setEntry(1, (velocity.getEntry(1) < 0.0 ? -1.0 : 1.0));
-        direction.setEntry(2, (velocity.getEntry(2) < 0.0 ? -1.0 : 1.0));
-        forceAirFriction = velocity.ebeMultiply(velocity).ebeMultiply(direction).mapMultiply(scalarCoefficient);
+        direction.setEntry(0, (mpVelocity.getEntry(0) < 0.0 ? -1.0 : 1.0));
+        direction.setEntry(1, (mpVelocity.getEntry(1) < 0.0 ? -1.0 : 1.0));
+        direction.setEntry(2, (mpVelocity.getEntry(2) < 0.0 ? -1.0 : 1.0));
+        forceAirFriction = mpVelocity.ebeMultiply(mpVelocity).ebeMultiply(direction).mapMultiply(scalarCoefficient);
         return forceAirFriction;
     }
 

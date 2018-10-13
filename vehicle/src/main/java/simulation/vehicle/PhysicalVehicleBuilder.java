@@ -583,8 +583,6 @@ import commons.controller.interfaces.Bus;
 import commons.controller.interfaces.FunctionBlockInterface;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.linear.RealVector;
-import org.javafmi.modeldescription.v1.RealVariable;
-
 import java.util.Optional;
 
 /**
@@ -608,6 +606,8 @@ public abstract class PhysicalVehicleBuilder {
     protected Optional<Double> wheelDistLeftRightBackSide = Optional.empty();
     protected Optional<Double> wheelDistToFront = Optional.empty();
     protected Optional<Double> wheelDistToBack = Optional.empty();
+
+    //Todo add actuators to the build process and to the JSON serialisation
 
     protected Optional<Optional<Bus>> controllerBus = Optional.empty();
     protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();

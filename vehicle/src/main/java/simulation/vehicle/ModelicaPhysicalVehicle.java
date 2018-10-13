@@ -34,7 +34,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     private RealVector geometryPositionOffset;
 
     /** Current rotation around the local z axis */
-    private double yaw_angle;
+    private double yawAngle;
 
     /** VehicleDynamicsModel used for modelica physics */
     private VehicleDynamicsModel vehicleDynamicsModel;
@@ -289,7 +289,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
             // Reset vehicle on surface and calculate slope and bank
             RealVector roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
-            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
+            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yawAngle);
 
             // Do calculation steps with maximum step size as long as possible
             long currentDeltaTms = 0;
@@ -308,7 +308,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             // Update the rotation and position
             z = vehicleDynamicsModel.getValue("z");
             roadPlane = position.add(rotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, -z})));
-            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yaw_angle);
+            putOnSurface(roadPlane.getEntry(0), roadPlane.getEntry(1), yawAngle);
         }
         // Reset forces
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
@@ -371,9 +371,9 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         RealVector roadPlaneNorm = MathHelper.crossProduct(backToFront, rightToLeft);
 
         //Compute angles between relative vectors and X-Y-Plane
-        RealVector XYPlaneNorm = new ArrayRealVector(new double[]{0.0, 0.0, 1.0});
-        double backToFrontAngle = (Math.PI / 2) - MathHelper.angle(XYPlaneNorm, backToFront);
-        double rightToLeftAngle = (Math.PI / 2) - MathHelper.angle(XYPlaneNorm, rightToLeft);
+        RealVector xyPlaneNorm = new ArrayRealVector(new double[]{0.0, 0.0, 1.0});
+        double backToFrontAngle = (Math.PI / 2) - MathHelper.angle(xyPlaneNorm, backToFront);
+        double rightToLeftAngle = (Math.PI / 2) - MathHelper.angle(xyPlaneNorm, rightToLeft);
 
         if(physicalVehicleInitialised) {
             vehicleDynamicsModel.setInput("slope", backToFrontAngle);
@@ -383,12 +383,12 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         //The resulting rotation should transform the XY plane norm to the roadPlaneNorm
         //and the backToFrontLocal to the BackToFront
 
-        Rotation finalRot = new Rotation(MathHelper.realTo3D(XYPlaneNorm),
+        Rotation finalRot = new Rotation(MathHelper.realTo3D(xyPlaneNorm),
                 MathHelper.realTo3D(backToFrontLocal),
                 MathHelper.realTo3D(roadPlaneNorm),
                 MathHelper.realTo3D(backToFront));
         rotation = new BlockRealMatrix(finalRot.getMatrix());
-        yaw_angle = rotZ;
+        yawAngle = rotZ;
 
         //The rotation is occurring around the center of the road plane, so the position has to be shifted
         RealVector roadPlaneCenter = position.add(new ArrayRealVector(new double[]{0.0, 0.0, -z}));
@@ -481,7 +481,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
 
         //Initialise remaining variables
         force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        yaw_angle = 0.0;
+        yawAngle = 0.0;
 
         physicalVehicleInitialised = true;
         simulationVehicle.setVehicleInitialised(true);
@@ -582,7 +582,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         // Integrate over model output
         // Integrate over the yaw rotation rate
         double omega_z = vehicleDynamicsModel.getValue("omega_z");
-        yaw_angle = yaw_angle + omega_z * deltaT;
+        yawAngle = yawAngle + omega_z * deltaT;
 
         // Integrate over the velocity
         double v_x = vehicleDynamicsModel.getValue("v_x");
@@ -640,7 +640,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
                 (physicalVehicleInitialised ? " , velocity: " + getVelocity() : "") +
                 (physicalVehicleInitialised ? " , force: " + force : "") +
                 (physicalVehicleInitialised ? " , rotation: " + rotation : "") +
-                (physicalVehicleInitialised ? " , yaw_angle: " + yaw_angle : "") +
+                (physicalVehicleInitialised ? " , yawAngle: " + yawAngle : "") +
                 (physicalVehicleInitialised ? " , physicalObjectType: " + physicalObjectType : "") +
                 " , collision: " + collision +
                 " , error: " + error +

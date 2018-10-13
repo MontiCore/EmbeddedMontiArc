@@ -711,7 +711,7 @@ public class GeomStreet implements EnvObjectGeomContainer {
      */
     public double getDistanceToMiddle(PhysicalObject o) {
         //ensure EnvNode-Implementation implements equals() and hashCode()!!!!!
-        EnvNode node = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        EnvNode node = new Node2D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
 
         if(street.getNodes().contains(node)) {
             return 0;

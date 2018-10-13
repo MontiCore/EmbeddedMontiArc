@@ -5,10 +5,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,7 +21,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
      * Constructor
      */
     public MassPointPhysicalVehicleBuilder(){
-
+        // Class has no uninitialized fields
     }
 
     /**
@@ -94,15 +92,7 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         builder.setWheelDistToFront(data.getWheelDistToFront());
         builder.setWheelDistToBack(data.getWheelDistToBack());
 
-        MassPointPhysicalVehicle physicalVehicle =  (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
-
-        /*for (VehicleActuator a : data.actuators) {
-            physicalVehicle.getSimulationVehicle().setActuatorProperties(a.getActuatorType(), a.getActuatorValueMin(), a.getActuatorValueMax(), a.getActuatorValueChangeRate());
-            physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueTarget(a.getActuatorValueTarget());
-            physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType()).setActuatorValueCurrent(a.getActuatorValueCurrent());
-        }*/
-
-        return physicalVehicle;
+        return (MassPointPhysicalVehicle) builder.buildPhysicalVehicle();
     }
 
     /**
@@ -196,14 +186,6 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             wheelDistLeftRightBackSide = v.getSimulationVehicle().getWheelDistLeftRightBackSide();
             wheelDistToFront = v.getSimulationVehicle().getWheelDistToFront();
             wheelDistToBack = v.getSimulationVehicle().getWheelDistToBack();
-
-            /*actuators = new ArrayList<>();
-            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR));
-            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT));
-            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT));
-            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT));
-            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT));
-            actuators.add(v.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING));*/
         }
 
         public RealVector getPosition(){
@@ -257,9 +239,5 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         public double getWheelDistToBack() {
             return wheelDistToBack;
         }
-
-        /*public List<VehicleActuator> getActuators() {
-            return actuators;
-        }*/
     }
 }

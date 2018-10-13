@@ -545,7 +545,7 @@ public class ObstacleSensor extends AbstractSensor {
         //TODO: result.addAll Collections.synchronizedList (Alle physikalischen Objekte in einer Liste brauchen wir)
         value[0] = Double.MAX_VALUE;
         for(PhysicalObject k : result){
-            Double t = getPhysicalVehicle().getGeometryPos().getDistance(k.getGeometryPos());
+            Double t = getPhysicalVehicle().getGeometryPosition().getDistance(k.getGeometryPosition());
             if(((Double) value[0]) < t) {
                 value[0]=t;
                 value[1]=k.getVelocity();

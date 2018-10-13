@@ -763,7 +763,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         totalBitErrorRate += errorRateNoise;
 
         // Distance and power objects
-        double distance = sender.getPhysicalObject().getGeometryPos().getDistance(otherNode.getPhysicalObject().getGeometryPos());
+        double distance = sender.getPhysicalObject().getGeometryPosition().getDistance(otherNode.getPhysicalObject().getGeometryPosition());
         double errorRateDistance = (PATH_LOSS_FACTOR * Math.pow(distance, PATH_LOSS_EXPONENT));
         totalBitErrorRate += errorRateDistance;
 
@@ -773,8 +773,8 @@ public class ChannelModelCellular extends NetworkChannelModel {
         // Add error for all other physical objects that are near the direct line communication depending on their distance
         for (PhysicalObject physicalObject : NetworkSimulator.getInstance().getPhysicalObjects()) {
             if (physicalObject.getId() != sender.getPhysicalObject().getId() && physicalObject.getId() != otherNode.getPhysicalObject().getId()) {
-                RealVector senderPos = sender.getPhysicalObject().getGeometryPos();
-                RealVector otherPos = physicalObject.getGeometryPos();
+                RealVector senderPos = sender.getPhysicalObject().getGeometryPosition();
+                RealVector otherPos = physicalObject.getGeometryPosition();
                 RealVector diffVector = otherPos.subtract(senderPos);
                 List<RealVector> positionList = Collections.synchronizedList(new LinkedList<>());
 
@@ -808,7 +808,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         double senderVelocityNorm = senderVelocity.getNorm();
         RealVector otherVelocity = otherNode.getPhysicalObject().getVelocity();
         double otherVelocityNorm = otherVelocity.getNorm();
-        RealVector senderToOther = otherNode.getPhysicalObject().getGeometryPos().subtract(sender.getPhysicalObject().getGeometryPos());
+        RealVector senderToOther = otherNode.getPhysicalObject().getGeometryPosition().subtract(sender.getPhysicalObject().getGeometryPosition());
         RealVector otherToSender = senderToOther.mapMultiply(-1.0);
 
         // There must be a distance for relativistic Doppler Effect
@@ -944,17 +944,17 @@ public class ChannelModelCellular extends NetworkChannelModel {
                 long stationID = cellBaseStationAssignmentMap.get(nodeID);
 
                 if (cellBaseStationMap.containsKey(stationID)) {
-                    RealVector stationPos = cellBaseStationMap.get(stationID).getPhysicalObject().getGeometryPos();
+                    RealVector stationPos = cellBaseStationMap.get(stationID).getPhysicalObject().getGeometryPosition();
                     preferredStationID = cellBaseStationAssignmentMap.get(nodeID);
-                    preferredStationDistance = node.getPhysicalObject().getGeometryPos().getDistance(stationPos);
+                    preferredStationDistance = node.getPhysicalObject().getGeometryPosition().getDistance(stationPos);
                 }
             }
 
             // Check all available base stations and choose nearest one with offset to prefer already connected station
             synchronized (cellBaseStationMap) {
                 for (Map.Entry<Long, NetworkNode> entry : cellBaseStationMap.entrySet()) {
-                    RealVector stationPos = entry.getValue().getPhysicalObject().getGeometryPos();
-                    double distance = node.getPhysicalObject().getGeometryPos().getDistance(stationPos);
+                    RealVector stationPos = entry.getValue().getPhysicalObject().getGeometryPosition();
+                    double distance = node.getPhysicalObject().getGeometryPosition().getDistance(stationPos);
 
                     if (distance + (2.0 * HANDOVER_DISTANCE_OFFSET) < preferredStationDistance) {
                         preferredStationDistance = distance;
