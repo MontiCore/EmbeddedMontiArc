@@ -1,12 +1,11 @@
 package simulation.util;
+
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.axis.NumberAxis;
-
 import java.awt.*;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.commons.math3.linear.RealVector;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberTickUnit;
@@ -14,7 +13,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.chart.plot.XYPlot;
-
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 

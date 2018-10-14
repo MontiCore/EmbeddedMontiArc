@@ -6,12 +6,10 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.MathHelper;
-
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import static simulation.vehicle.VehicleActuatorType.*;
 import static simulation.vehicle.VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING;
 

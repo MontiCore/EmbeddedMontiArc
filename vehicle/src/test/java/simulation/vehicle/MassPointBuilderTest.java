@@ -14,7 +14,6 @@ import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.util.Log;
 import simulation.util.MathHelper;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -246,15 +245,5 @@ public class MassPointBuilderTest {
         Assert.assertEquals(properties.getWheelDistToBack(), physicalVehicle.getSimulationVehicle().getWheelDistToBack(), 0);
         Assert.assertEquals(properties.getWheelDistLeftRightFrontSide(), physicalVehicle.getSimulationVehicle().getWheelDistLeftRightFrontSide(), 0);
         Assert.assertEquals(properties.getWheelDistLeftRightBackSide(), physicalVehicle.getSimulationVehicle().getWheelDistLeftRightBackSide(), 0);
-
-        /*VehicleActuator b;
-        for(VehicleActuator a : properties.getActuators()){
-            b = physicalVehicle.getSimulationVehicle().getVehicleActuator(a.getActuatorType());
-            Assert.assertEquals(a.getActuatorValueMin(), b.getActuatorValueMin(), 0);
-            Assert.assertEquals(a.getActuatorValueMax(), b.getActuatorValueMax(), 0);
-            Assert.assertEquals(a.getActuatorValueChangeRate(), b.getActuatorValueChangeRate(), 0);
-            Assert.assertEquals(a.getActuatorValueTarget(), b.getActuatorValueTarget(), 0);
-            Assert.assertEquals(a.getActuatorValueCurrent(), b.getActuatorValueCurrent(), 0);
-        }*/
     }
 }

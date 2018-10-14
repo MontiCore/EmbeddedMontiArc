@@ -23,8 +23,6 @@ import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
-
-
 import java.util.*;
 
 /**
@@ -440,6 +438,4 @@ public class WorldModel implements World{
             return streets.get(street).getNodes().get(r.nextInt(streets.get(street).getNodes().size()));
         }
     }
-
-
 }

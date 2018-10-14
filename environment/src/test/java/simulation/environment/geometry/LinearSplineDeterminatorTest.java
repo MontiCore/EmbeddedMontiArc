@@ -11,7 +11,6 @@ import simulation.environment.visualisationadapter.implementation.Node2D;
 import simulation.environment.visualisationadapter.interfaces.EnvNode;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -47,8 +46,5 @@ public class LinearSplineDeterminatorTest extends TestCase {
             //System.out.println(s.determineSplineDistance(n));
 
         }
-
-
     }
-
 }

@@ -53,7 +53,5 @@ public class ConcentricCircleGeneratorTest extends TestCase {
             assertEquals(generator.getCircleIndex(2000, 2000+(i*10)+1),i);
 
         }
-
-
     }
 }

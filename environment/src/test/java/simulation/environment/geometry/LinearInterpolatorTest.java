@@ -9,7 +9,6 @@ import simulation.environment.WorldModel;
 import simulation.environment.geometry.splines.LinearInterpolator;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
 import simulation.environment.visualisationadapter.interfaces.EnvStreet;
-
 import java.util.ArrayList;
 
 /**

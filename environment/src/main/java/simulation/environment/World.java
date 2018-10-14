@@ -8,7 +8,6 @@ import javafx.geometry.Point3D;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
-
 import java.util.List;
 
 /**

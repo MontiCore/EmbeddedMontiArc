@@ -7,12 +7,10 @@ import org.apache.commons.math3.linear.*;
 import simulation.environment.WorldModel;
 import simulation.util.Log;
 import simulation.util.MathHelper;
-
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import static simulation.vehicle.MassPointType.*;
 import static simulation.vehicle.PhysicsEngine.GRAVITY_EARTH;
 import static simulation.vehicle.VehicleActuatorType.*;

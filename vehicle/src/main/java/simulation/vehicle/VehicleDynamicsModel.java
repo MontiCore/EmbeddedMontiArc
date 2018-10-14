@@ -504,21 +504,4 @@ public class VehicleDynamicsModel {
         chassis.write("F_y_4").with(tires.read("F_y_4").asDouble());
         needsExchanging = false;
     }
-
-
-            /*case "omega_wheel_1":
-                    case "omega_wheel_2":
-                    case "omega_wheel_3":
-                    case "omega_wheel_4":
-                    case "alpha_wheel_1":
-                    case "alpha_wheel_2":
-                    case "alpha_wheel_3":
-                    case "alpha_wheel_4":
-                    case "v_x":
-                    case "v_y":
-                    case "omega_z":
-                    case "pitch_angle":
-                    case "omega_x":
-                    case "roll_angle":
-                    case "omega_y":*/
 }

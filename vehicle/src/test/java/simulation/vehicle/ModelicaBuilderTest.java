@@ -13,7 +13,6 @@ import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.util.Log;
 import simulation.util.MathHelper;
-
 import java.util.Optional;
 
 /**
