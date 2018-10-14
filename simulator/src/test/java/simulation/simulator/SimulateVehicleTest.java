@@ -1,13 +1,10 @@
 package simulation.simulator;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.util.Log;
-import simulation.util.MathHelper;
 import simulation.vehicle.*;
-import static org.junit.Assert.assertTrue;
 
 /**
  * JUnit Test-suite for simulating a vehicle
@@ -124,41 +121,42 @@ public class SimulateVehicleTest {
         assertTrue(true);
     }*/
 
-    //ToDo
     /**
-     * Check if the vehicle drives straight forward, if there is no steering angle
+     * Tests if the vehicle drives straight forward, if there is no steering angle
      */
     @Test
     public void testDriveStraightForward() {
         Simulator sim = Simulator.getSharedInstance();
 
-        // Create a new vehicle
+        // Create a new vehicle with a velocity
         MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 14.0, 0.0}));
         PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
         sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
 
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
-
+        // Remember start position projected on xz plane
         RealVector startPosition = physicalVehicle.getPosition();
+        startPosition.setEntry(1, 0.0);
 
-        //Run simulation
+        // Run simulation
         sim.stopAfter(5000);
         sim.startSimulation();
 
+        // Remember end position projected on xz plane
         RealVector endPosition = physicalVehicle.getPosition();
+        endPosition.setEntry(1, 0.0);
 
-        //Ignore y direction
-        startPosition.setEntry(1,0);
-        endPosition.setEntry(1,0);
+        // Calculated projected distance
+        RealVector projectedDistance = endPosition.subtract(startPosition);
 
-        assertTrue(MathHelper.vectorEquals(startPosition, endPosition, 0.001));
+        // Check if distance is zero
+        Assert.assertEquals(0.0, projectedDistance.getNorm(), 0);
     }
 
     /**
-     * Checks, whether the vehicle does not move if there is no acceleration
+     * Tests whether the vehicle does not move if there is no acceleration
      */
     @Test
     public void testNoDriveIfNoAcceleration() {
@@ -183,95 +181,6 @@ public class SimulateVehicleTest {
 
         // Check if distance is zero
         Assert.assertEquals(0.0, distance.getNorm(), 0);
-    }
-    //ToDo
-    /**
-     * Test if the vehicle will drive in a straight line after steering to the right and
-     * constantly accelerating
-     */
-    @Test
-    public void testWillDriveInStraightLineAfterSteering() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
-
-        // Set simulation duration (30 seconds)
-        sim.stopAfter(30000);
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(1);
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0.3);
-
-        // Start simulation
-        sim.stopAfter(5000);
-        sim.startSimulation();
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0);
-        RealVector afterSteeringValuePos = physicalVehicle.getPosition();
-
-        sim.extendSimulationTime(20000);
-        sim.startSimulation();
-
-        RealVector endValuePos = physicalVehicle.getPosition();
-
-        assertTrue(afterSteeringValuePos.getEntry(0) < endValuePos.getEntry(0));
-        assertTrue(afterSteeringValuePos.getEntry(1) < endValuePos.getEntry(1));
-        assertTrue(afterSteeringValuePos.getEntry(2) == endValuePos.getEntry(2));
-    }
-
-    //Todo
-    /**
-     * Test if the rotation matrix stays orthogonal
-     */
-    @Test
-    public void testRotationMatrixStaysOrthogonal() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
-
-        // Set simulation duration (30 seconds)
-        sim.stopAfter(30000);
-
-        //Start simulation
-        sim.startSimulation();
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(1);
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0.3);
-
-        // Start simulation
-        sim.stopAfter(2000);
-        sim.startSimulation();
-
-        RealMatrix matrix1 = MathHelper.matrixInvert(physicalVehicle.getRotation());
-        RealMatrix matrix2 =  physicalVehicle.getRotation().transpose();
-        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0);
-
-        sim.extendSimulationTime(2000);
-        sim.startSimulation();
-
-        matrix1 = MathHelper.matrixInvert(physicalVehicle.getRotation());
-        matrix2 =  physicalVehicle.getRotation().transpose();
-        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
-
-        sim.extendSimulationTime(2000);
-        sim.startSimulation();
-
-        matrix1 = MathHelper.matrixInvert(physicalVehicle.getRotation());
-        matrix2 =  physicalVehicle.getRotation().transpose();
-        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
     }
 
     /**

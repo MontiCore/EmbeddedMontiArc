@@ -1,21 +1,9 @@
 package simulation.simulator;
 
-import commons.simulation.PhysicalObject;
-import commons.simulation.PhysicalObjectType;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.BlockRealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
-import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import commons.simulation.*;
+import org.apache.commons.math3.linear.*;
 import org.junit.*;
-import commons.simulation.SimulationLoopExecutable;
-import commons.simulation.SimulationLoopNotifiable;
 import simulation.util.*;
-import simulation.vehicle.PhysicalVehicle;
-import simulation.vehicle.MassPointPhysicalVehicleBuilder;
-
 import java.util.*;
 
 import static org.junit.Assert.assertTrue;
@@ -35,22 +23,14 @@ public class SimulatorTest {
         Log.setLogEnabled(true);
     }
 
-    @Before
-    public void setUp() {
-        Simulator.resetSimulator();
-
-        //Set update frequency to 30 loop iterations per second
-        Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-    }
-
     /**
      * Prevent simulation with invalid settings
      */
     @Test
     public void startSimulation() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
         sim.setSimulationLoopFrequency(0);
 
         //Try to run simulation
@@ -91,44 +71,51 @@ public class SimulatorTest {
     }
 
     /**
-     * Unregistering simulation objects should stop calling the methods of the interface
+     * Unregistering observers should stop calling the methods of the interface
      */
     @Test
-    public void unregisteringObjects() {
+    public void unregisterObserver() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
+        sim.setSynchronousSimulation(true);
 
-        //Add notifiable objects
+        // Create and register counting observers
         NotificationCounter notNotified = new NotificationCounter();
-        NotificationCounter alwaysNotified = new NotificationCounter();
         NotificationCounter firstSecsNotified = new NotificationCounter();
+        NotificationCounter alwaysNotified = new NotificationCounter();
         sim.registerLoopObserver(notNotified);
-        sim.registerLoopObserver(alwaysNotified);
-        sim.unregisterLoopObserver(notNotified);
         sim.registerLoopObserver(firstSecsNotified);
+        sim.registerLoopObserver(alwaysNotified);
 
-        // Set simulation duration (5 seconds)
-        sim.stopAfter(5000);
+        // Remove first observer and store iteration count
+        sim.unregisterLoopObserver(notNotified);
+        long iterationCount1 = sim.getFrameCount();
 
-        //Run simulation
+        // Run simulation for 1 second
+        sim.stopAfter(1000);
         sim.startSimulation();
 
-        //Get loop iterations after 1 sec and unregister notifiable
-        sim.waitForTime(1000);
+        // Remove second observer and store iteration count
         sim.unregisterLoopObserver(firstSecsNotified);
-        long firstIterationsCountDid = firstSecsNotified.didExecCounter;
-        long firstIterationsCountWill = firstSecsNotified.willExecCounter;
+        long iterationCount2 = sim.getFrameCount();
 
-        sim.waitUntilSimulationFinished();
-        long iterationCount = sim.getFrameCount();
+        // Run simulation for 1 second
+        sim.extendSimulationTime(1000);
+        sim.startSimulation();
 
+        // Remove second observer and store iteration count
+        sim.unregisterLoopObserver(alwaysNotified);
+        long iterationCount3 = sim.getFrameCount();
 
-        assertTrue(0 == notNotified.didExecCounter);
-        assertTrue(0 == notNotified.willExecCounter);
-        assertTrue(firstIterationsCountDid == firstSecsNotified.didExecCounter);
-        assertTrue(firstIterationsCountWill
-                == firstSecsNotified.willExecCounter);
-        assertTrue(iterationCount == alwaysNotified.didExecCounter);
-        assertTrue(iterationCount == alwaysNotified.willExecCounter);
+        // Check if number of observer calls are correct
+        Assert.assertEquals(iterationCount1, notNotified.didExecCounter);
+        Assert.assertEquals(iterationCount1, notNotified.willExecCounter);
+        Assert.assertEquals(iterationCount2, firstSecsNotified.didExecCounter);
+        Assert.assertEquals(iterationCount2, firstSecsNotified.willExecCounter);
+        Assert.assertEquals(iterationCount3, alwaysNotified.didExecCounter);
+        Assert.assertEquals(iterationCount3, alwaysNotified.willExecCounter);
     }
 
     /**
@@ -136,7 +123,10 @@ public class SimulatorTest {
      */
     @Test
     public void unregisteringPhysicalObjects() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
 
         //Create dummy objects
         SimObject a = new SimObject();
@@ -172,7 +162,10 @@ public class SimulatorTest {
      */
     @Test
     public void returnErrorObjects() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         SimObject a = new SimObject();
         SimObject b = new SimObject();
         SimObject c = new SimObject();
@@ -205,20 +198,20 @@ public class SimulatorTest {
     /**
      * Checking error memory
      */
-    @SuppressWarnings("PointlessBooleanExpression")
     @Test
     public void errorObjectsMemory() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder1 = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle a = physicalVehicleBuilder1.buildPhysicalVehicle();
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder2 = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle b = physicalVehicleBuilder2.buildPhysicalVehicle();
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder3 = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle c = physicalVehicleBuilder3.buildPhysicalVehicle();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
 
-        sim.registerAndPutObject(a, 966.6905532033019, 498.1714592002669, 0.8 * Math.PI);
-        sim.registerAndPutObject(b, 982.3084859322336, 425.53842059972903, 0.3 * Math.PI);
-        sim.registerAndPutObject(c, 906.8272188834519, 410.8760650003208, 1.75 * Math.PI);
+        SimObject a = new SimObject();
+        SimObject b = new SimObject();
+        SimObject c = new SimObject();
+
+        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
+        sim.registerAndPutObject(b, 20.0, 20.0, 0.0);
+        sim.registerAndPutObject(c, 30.0, 30.0, 0.0);
 
         //No objects with error
         List<PhysicalObject> error = sim.getErrorObjects();
@@ -252,35 +245,14 @@ public class SimulatorTest {
     }
 
     /**
-     * Checks that didExecute and willExecute are called for every loop iteration
-     */
-    @Test
-    public void notificationsCalledForEveryLoopIteration() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        //Add a notifiable object
-        NotificationCounter nc = new NotificationCounter();
-        sim.registerLoopObserver(nc);
-
-        // Set simulation duration (5 seconds)
-        sim.stopAfter(5000);
-
-        //Run simulation
-        sim.startSimulation();
-        sim.waitUntilSimulationFinished();
-
-        //Function calls should match actual loop iterations
-        long frames = sim.getFrameCount();
-        assertTrue(frames == nc.didExecCounter);
-        assertTrue(frames == nc.willExecCounter);
-    }
-
-    /**
      * Checks that executeLoopIteration is called for every loop iteration
      */
     @Test
     public void executable() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
 
         //Add a notifiable object
         Executable exec = new Executable();
@@ -303,7 +275,10 @@ public class SimulatorTest {
      */
     @Test
     public void slowDownSynchronousComputation() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
 
         // Set simulation duration (5 seconds)
@@ -339,7 +314,10 @@ public class SimulatorTest {
      */
     @Test
     public void slowDownSynchronousComputationToWallClockTime() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
 
         // Set simulation duration
@@ -383,7 +361,10 @@ public class SimulatorTest {
      */
     @Test
     public void slowDownAsynchronousComputation() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
 
         // Set simulation duration (5 seconds)
@@ -421,7 +402,10 @@ public class SimulatorTest {
      */
     @Test
     public void slowDownAsynchronousComputationToWallClockTime() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
 
         // Set simulation duration
@@ -467,7 +451,10 @@ public class SimulatorTest {
      */
     @Test
     public void pauseAsyncComputations() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
 
         // Set simulation duration
@@ -509,7 +496,10 @@ public class SimulatorTest {
      */
     @Test
     public void pauseSyncComputations() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
 
         // Set simulation duration
@@ -554,8 +544,10 @@ public class SimulatorTest {
      */
     @Test
     public void simulationFrequencySaneValues () {
-        //Sane example
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+
+        //Sane example
         sim.setSimulationLoopFrequency(20);
         assertTrue(sim.getSimulationLoopFrequency() == 20);
 
@@ -569,7 +561,10 @@ public class SimulatorTest {
      */
     @Test
     public void stopTime () {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
 
         // Set simulation duration (5 seconds)
         sim.stopAfter(5000);
@@ -590,7 +585,10 @@ public class SimulatorTest {
      */
     @Test
     public void immediatelyStopSimulation() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
 
         //Immediately stopping simulation
         sim.stopAfter(0);
@@ -609,7 +607,10 @@ public class SimulatorTest {
      */
     @Test
     public void continueSimulationIncreasesSimTime() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
 
         //Start a simulation
@@ -630,7 +631,9 @@ public class SimulatorTest {
      */
     @Test
     public void synchronousSimulationIsDeterministic() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
         sim.setSynchronousSimulation(true);
         sim.setSimulationLoopFrequency(33);
 
@@ -665,7 +668,10 @@ public class SimulatorTest {
      */
     @Test
     public void extendSimulationTime() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
 
         //Start a simulation
@@ -698,7 +704,10 @@ public class SimulatorTest {
      */
     @Test
     public void daytimeSimulation() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(true);
 
         // Set daytime, speedup: 1 second = 1 day
@@ -743,7 +752,10 @@ public class SimulatorTest {
      */
     @Test
     public void getters() {
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
 
         //Synchronous simulation
         sim.setSynchronousSimulation(true);
@@ -763,20 +775,25 @@ public class SimulatorTest {
      */
     @Test
     public void fixedTimeIntervals() {
-        //Simulator setup
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSynchronousSimulation(true);
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
         sim.setSimulationLoopFrequency(30);
-        sim.stopAfter(5000);
+        sim.setSynchronousSimulation(true);
 
-        //Set time that should be between each two frames
-        long timeBetweenIterations = (long) ((1.0 / 30) * 1000);
-        TimeChecker checker = new TimeChecker();
-        checker.referenceTime = timeBetweenIterations;
+        // Set simulation loop frequency
+        int simulationLoopFrequency = 30;
+        sim.setSimulationLoopFrequency(simulationLoopFrequency);
 
-        //Test that time is between each two iterations
+        // Calculate expected iteration time
+        long expectedIterationTime = (long) ((1.0 / simulationLoopFrequency) * 1000);
+
+        // Create and register observer that tests the iteration time
+        TimeChecker checker = new TimeChecker(expectedIterationTime);
         sim.registerLoopObserver(checker);
+
+        // Run simulation
+        sim.stopAfter(5000);
         sim.startSimulation();
     }
 
@@ -785,11 +802,11 @@ public class SimulatorTest {
      */
     @Test
     public void realTimeSimTakesRealTime() {
-        //Simulator setup
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
-        sim.setSimulationLoopFrequency(30);
         sim.stopAfter(2000);
 
         long millisBefore = System.currentTimeMillis();
@@ -806,38 +823,42 @@ public class SimulatorTest {
     }
 
     private class NotificationCounter implements SimulationLoopNotifiable {
-        public long willExecCounter = 0;
-        public long didExecCounter = 0;
+        private long willExecCounter = 0;
+        private long didExecCounter = 0;
 
-        public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}
-        public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {}
-        public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
-        public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
-
-        public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
+        public NotificationCounter(){}
+        public void simulationStarted(List<SimulationLoopExecutable> simulationObjects){}
+        public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime){}
+        public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime){}
+        public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime){}
+        public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime){
             willExecCounter++;
         }
-
         public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
             didExecCounter++;
         }
     }
 
     private class TimeChecker implements SimulationLoopNotifiable {
-        public long referenceTime = 0;
+        private long expectedTime;
+
+        public TimeChecker(long expectedTime){
+            this.expectedTime = expectedTime;
+        }
         public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}
         public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {}
         public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
         public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
         public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
         public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-            assertTrue(Simulator.getSharedInstance().getTimeBetweenLastIterations() == referenceTime);
+            Assert.assertEquals(expectedTime, Simulator.getSharedInstance().getTimeBetweenLastIterations());
         }
     }
 
     private class Executable implements SimulationLoopExecutable {
         public long execCounter = 0;
 
+        public Executable(){}
         public void executeLoopIteration(long timeDiffMs) {
             execCounter++;
         }
@@ -846,6 +867,7 @@ public class SimulatorTest {
     private class SlowExecutable implements SimulationLoopExecutable {
         public long execCounter = 0;
 
+        public SlowExecutable(){}
         public void executeLoopIteration(long timeDiffMs) {
             try {
                 Thread.sleep(20);
@@ -857,110 +879,54 @@ public class SimulatorTest {
     }
 
     private class SimObject implements SimulationLoopExecutable, PhysicalObject {
-        private RealVector position;
-        private RealMatrix rotation;
-        private RealVector velocity;
-        private RealVector angularVelocity;
-        private RealVector force;
-        private RealVector torque;
-        private double mass;
-        private double width;
-        private double height;
-        private double length;
-        private RealVector geometryPositionOffset;
-        private PhysicalObjectType physicalObjectType;
-        private boolean error;
-        private boolean collision;
-        private long uniqueId;
+        private boolean error = false;
+        private long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
 
-        public SimObject() {
-            position = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
-            rotation = new BlockRealMatrix(rot.getMatrix());
-            velocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            angularVelocity = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            mass = 0.0;
-            width = 0.0;
-            length = 0.0;
-            height = 0.0;
-            geometryPositionOffset = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            physicalObjectType = PhysicalObjectType.PHYSICAL_OBJECT_TYPE_TREE;
-            error = false;
-            collision = false;
-        }
+        public SimObject() {}
         public RealVector getPosition(){
-            return  position.copy();
+            return new ArrayRealVector(3);
         }
-        public void setPosition(RealVector position){
-            this.position = position.copy();
-        }
+        public void setPosition(RealVector position){}
         public RealMatrix getRotation(){
-            return this.rotation.copy();
+            return new BlockRealMatrix(3, 3);
         }
-        public void setRotation(RealMatrix rotation){
-            this.rotation = rotation.copy();
-        }
+        public void setRotation(RealMatrix rotation){}
         public RealVector getVelocity(){
-            return this.velocity.copy();
+            return new ArrayRealVector(3);
         }
-        public void setVelocity(RealVector velocity){
-            this.velocity = velocity.copy();
-        }
+        public void setVelocity(RealVector velocity){}
         public RealVector getAngularVelocity(){
-            return this.angularVelocity.copy();
+            return new ArrayRealVector(3);
         }
-        public void setAngularVelocity(RealVector angularVelocity){
-            this.angularVelocity = angularVelocity.copy();
-        }
-        public void addForce(RealVector force){
-            this.force = this.force.add(force);
-        }
-        public void addTorque(RealVector torque){
-            this.torque = this.torque.add(torque);
-        }
+        public void setAngularVelocity(RealVector angularVelocity){}
+        public void addForce(RealVector force){}
+        public void addTorque(RealVector torque){}
         public double getMass(){
-            return this.mass;
+            return 0.0;
         }
-        public void setMass(double mass){
-            this.mass = mass;
-        }
+        public void setMass(double mass){}
         public double getWidth(){
-            return this.width;
+            return 0.0;
         }
-        public void setWidth(double width){
-            this.width = width;
-        }
+        public void setWidth(double width){}
         public double getLength(){
-            return this.length;
+            return 0.0;
         }
-        public void setLength(double length){
-            this.length = length;
-        }
+        public void setLength(double length){}
         public double getHeight(){
-            return this.height;
+            return 0.0;
         }
-        public void setHeight(double height){
-            this.height = height;
-        }
+        public void setHeight(double height){}
         public RealVector getGeometryPosition(){
-            return position.add(getGeometryPositionOffset());
+            return new ArrayRealVector(3);
         }
-        public void setGeometryPosition(RealVector geometryPosition){
-            this.position = geometryPosition.add(getGeometryPositionOffset().mapMultiply(-1.0));
-        }
+        public void setGeometryPosition(RealVector geometryPosition){}
         public RealVector getGeometryPositionOffset(){
-            return this.rotation.operate(geometryPositionOffset).copy();
+            return new ArrayRealVector(3);
         }
-        public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-            RealVector currentGeometryPosition = getGeometryPosition();
-            RealMatrix inverseRotation = MathHelper.matrixInvert(rotation);
-            this.geometryPositionOffset = inverseRotation.operate(geometryPositionOffset);
-            setGeometryPosition(currentGeometryPosition);
-        }
+        public void setGeometryPositionOffset(RealVector geometryPositionOffset){}
         public PhysicalObjectType getPhysicalObjectType(){
-            return this.physicalObjectType;
+            return PhysicalObjectType.PHYSICAL_OBJECT_TYPE_HOUSE;
         }
         public boolean getError(){
             return this.error;
@@ -969,28 +935,18 @@ public class SimulatorTest {
             this.error = error;
         }
         public boolean getCollision(){
-            return this.collision;
+            return false;
         }
-        public void setCollision(boolean collision){
-            this.collision = collision;
-        }
+        public void setCollision(boolean collision){}
         public long getId(){
-            return this.uniqueId;
+            return uniqueId;
         }
         public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
             // ToDo Function is unnecessary with three dimensional collision detection
             return new ArrayList<>();
         }
-        public void computePhysics(long deltaTms){
-            //No physics computations for this
-            force = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-            torque = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        }
-        public void putOnSurface(double posX, double posY, double rotZ){
-            // do nothing: this object is never put on the surface of a simulation
-        }
-        public void executeLoopIteration(long timeDiffMs) {
-            // do nothing: this do not move
-        }
+        public void computePhysics(long deltaTms){}
+        public void putOnSurface(double posX, double posY, double rotZ){}
+        public void executeLoopIteration(long timeDiffMs){}
     }
 }

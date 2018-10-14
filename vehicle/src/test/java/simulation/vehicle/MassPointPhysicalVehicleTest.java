@@ -335,4 +335,6 @@ public class MassPointPhysicalVehicleTest {
         MassPointPhysicalVehicle physicalVehicle = (MassPointPhysicalVehicle) new MassPointPhysicalVehicleBuilder().buildPhysicalVehicle();
         physicalVehicle.initPhysics();
     }
+
+    //Todo Test if the rotation matrix stays orthogonal
 }
