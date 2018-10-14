@@ -506,77 +506,94 @@ public class Simulator {
     }
 
     /**
-     * Adds an object that is capable of updating its state during the loop iterations. In case the object
-     * implements PhysicalObject, it is also added to the physical objects list without explicitly calling
-     * registerPhysicalObject(). However, it can only be removed from the physical objects list by calling
-     * unregisterSimulationObject(). Removing it only from
+     * Registers a simulation object to the simulation. But only if it is not also a physical object.
+     * Register physical objects with registerAndPutObject().
      *
-     * @param object the object to be updated during the loop iterations
+     * @param executable The simulation object to be updated during loop iterations
      */
-    public void registerSimulationObject(SimulationLoopExecutable object) {
+    public void registerSimulationObject(SimulationLoopExecutable executable) {
         synchronized (simulationObjects) {
-            if (!simulationObjects.contains(object)) {
-                simulationObjects.add(object);
+            if(executable instanceof PhysicalObject){
+                throw new IllegalArgumentException("Physical object " + executable + "should be registered using registerAndPutObject().");
             }
-
-            //Register also as physical object if applicable
-            if (object instanceof PhysicalObject) {
-                registerPhysicalObject((PhysicalObject) object);
+            if (!simulationObjects.contains(executable)) {
+                simulationObjects.add(executable);
             }
         }
     }
 
     /**
-     * Removes an object from the simulation execution loop. In case the object implements PhysicalObject,
-     * it is also added to the physical objects list without explicitly calling unregisterPhysicalObject()
+     * Removes a simulation object from the simulation. But only if it is not also a physical object.
+     * Remove physical objects with unregisterPhysicalObject().
      *
-     * @param object the object to not longer be updated during simulation execution
+     * @param executable The simulation object to no longer be updated during loop iterations
      */
-    public void unregisterSimulationObject(SimulationLoopExecutable object) {
+    public void unregisterSimulationObject(SimulationLoopExecutable executable) {
         synchronized (simulationObjects) {
-            simulationObjects.remove(object);
-
-            //Unregister also as physical object if applicable
-            if (object instanceof PhysicalObject) {
-                unregisterPhysicalObject((PhysicalObject) object);
+            if(executable instanceof PhysicalObject){
+                throw new IllegalArgumentException("Physical object " + executable + "should be unregistered using unregisterPhysicalObject().");
             }
+            simulationObjects.remove(executable);
         }
     }
 
     /**
-     * Adds a physical object to the simulation. The added object will not be notified about simulation
-     * progress unless it's added by using registerSimulationObject() or registerLoopObserver()
+     * Adds a physical object to the simulation. If the physical object is also a simulation object
+     * than is it is also registered as a simulation object.
      *
-     * @param object the physical object to be added to simulation
+     * @param object The physical object to be updated during loop iterations
      */
-    public void registerPhysicalObject(PhysicalObject object) {
+    private void registerPhysicalObject(PhysicalObject object) {
         synchronized (physicalObjects) {
             if (!physicalObjects.contains(object)) {
                 physicalObjects.add(object);
             }
+
+            if(object instanceof SimulationLoopExecutable){
+                SimulationLoopExecutable executable = (SimulationLoopExecutable) object;
+                synchronized (simulationObjects){
+                    if (!simulationObjects.contains(executable)) {
+                        simulationObjects.add(executable);
+                    }
+                }
+            }
         }
     }
 
     /**
-     * Removes a physical object to the simulation. However, objects that were registered as using
-     * registerSimulationObject() need to be unregistered using unregisterSimulationObject() and
-     * will not be removed from physical objects list to keep the two lists consistent.
+     * Removes a physical object from the simulation. If the physical object is also a simulation object
+     * than is it is also removed as a simulation object.
      *
-     * @param object the physical object to be added to simulation
+     * @param object The physical object to no longer be updated during loop iterations
      */
     public void unregisterPhysicalObject(PhysicalObject object) {
         synchronized (physicalObjects) {
-            if (!(object instanceof SimulationLoopExecutable)) {
-                //Objects that are not SimulationLoopExecutables can be removed
-                physicalObjects.remove(object);
-            } else if (!(simulationObjects.contains(object))) {
-                //Objects that are SimulationLoopExecutables but not registered as such can also be removed
-                physicalObjects.remove(object);
-            } else {
-                //Objects that are registered SimulationLoopExecutables may not be removed
-                Log.warning("You cannot unregister a physical object that is registered as a simulation object");
+            physicalObjects.remove(object);
+            if(object instanceof SimulationLoopExecutable){
+                synchronized (simulationObjects){
+                    SimulationLoopExecutable executable = (SimulationLoopExecutable) object;
+                    simulationObjects.remove(executable);
+                }
             }
         }
+    }
+
+    /**
+     * Adds a physical object to the simulation at a specified position and with a specified rotation.
+     * If the physical object is also a simulation object
+     * than is it is also registered as a simulation object.
+     *
+     * @param object The physical object to be updated during loop iterations
+     * @param posX Position x of the object
+     * @param posY Position y of the object
+     * @param rotZ Rotation z of the object
+     */
+    public void registerAndPutObject(PhysicalObject object, double posX, double posY, double rotZ) {
+        // Register
+        registerPhysicalObject(object);
+
+        // Put object on the surface of the simulation
+        object.putOnSurface(posX, posY, rotZ);
     }
 
     /**
@@ -904,29 +921,5 @@ public class Simulator {
             //Wake up possibly paused computation
             computationPauseTime.notifyAll();
         }
-    }
-
-    /**
-     * Register a PhysicalObject in the simulation and place it at
-     * specified x, y coordinate on the ground with given rotation around z axis
-     *
-     * @param physicalObject PhysicalObject to be registered and placed in simulation
-     * @param posX Position X of the object
-     * @param posY Position Y of the object
-     * @param rotZ Rotation Z of the object
-     */
-    @SuppressWarnings("UnnecessaryLocalVariable")
-    public void registerAndPutObject(PhysicalObject physicalObject, double posX, double posY, double rotZ) {
-
-        // Register as full simulation object if possible
-        if (physicalObject instanceof SimulationLoopExecutable) {
-            registerSimulationObject((SimulationLoopExecutable) (physicalObject));
-        // Otherwise just register as physical object
-        } else {
-            registerPhysicalObject(physicalObject);
-        }
-
-        // Put the object on the surface of the simulation
-        physicalObject.putOnSurface(posX, posY, rotZ);
     }
 }

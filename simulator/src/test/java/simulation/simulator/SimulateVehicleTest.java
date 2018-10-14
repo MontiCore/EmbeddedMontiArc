@@ -138,7 +138,7 @@ public class SimulateVehicleTest {
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
+        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
 
         vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX);
 
@@ -199,7 +199,7 @@ public class SimulateVehicleTest {
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
+        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
 
         // Set simulation duration (30 seconds)
         sim.stopAfter(30000);
@@ -238,7 +238,7 @@ public class SimulateVehicleTest {
         Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
+        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
 
         // Set simulation duration (30 seconds)
         sim.stopAfter(30000);

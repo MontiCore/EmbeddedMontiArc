@@ -143,10 +143,10 @@ public class SimulatorTest {
         SimObject b = new SimObject();
 
         //(Un)registering physical objects
-        sim.registerPhysicalObject(a);
+        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
         assertTrue(sim.getPhysicalObjects().contains(a));
         assertTrue(!sim.getPhysicalObjects().contains(b));
-        sim.registerPhysicalObject(b);
+        sim.registerAndPutObject(b, 20.0, 20.0, 0.0);
         assertTrue(sim.getPhysicalObjects().contains(a));
         assertTrue(sim.getPhysicalObjects().contains(b));
 
@@ -157,13 +157,13 @@ public class SimulatorTest {
         assertTrue(!sim.getPhysicalObjects().contains(a));
         assertTrue(!sim.getPhysicalObjects().contains(b));
 
-        //Unregistering physical objects that are registered as simulation objects is illegal
-        sim.registerSimulationObject(a);
+        //Unregistering physical objects that are registered as simulation objects is legal
+        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
         sim.unregisterPhysicalObject(a);
-        assertTrue(sim.getPhysicalObjects().contains(a));
+        assertTrue(!sim.getPhysicalObjects().contains(a));
 
         //Unregistering simulation objects also removes physical object
-        sim.unregisterSimulationObject(a);
+        sim.unregisterPhysicalObject(a);
         assertTrue(!sim.getPhysicalObjects().contains(a));
     }
 
@@ -177,9 +177,9 @@ public class SimulatorTest {
         SimObject b = new SimObject();
         SimObject c = new SimObject();
 
-        sim.registerPhysicalObject(a);
-        sim.registerPhysicalObject(b);
-        sim.registerPhysicalObject(c);
+        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
+        sim.registerAndPutObject(b, 20.0, 20.0, 0.0);
+        sim.registerAndPutObject(c, 30.0, 30.0, 0.0);
 
         //No objects with error -> empty list
         List<PhysicalObject> error = sim.getErrorObjects();
