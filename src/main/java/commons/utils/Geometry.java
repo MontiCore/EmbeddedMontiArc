@@ -21,10 +21,8 @@
 package commons.utils;
 
 import java.util.Random;
-
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
-
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 

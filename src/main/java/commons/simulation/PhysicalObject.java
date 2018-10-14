@@ -20,10 +20,8 @@
  */
 package commons.simulation;
 
-
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
-
 import java.util.List;
 import java.util.Map;
 
@@ -207,6 +205,7 @@ public interface PhysicalObject {
      * @return List of pairs of 3D points, indicating a vector on the edges of the physical object
      */
     List<Map.Entry<RealVector, RealVector>> getBoundaryVectors();
+    // ToDo is unnecessary with three dimensional collision detection
 
     /**
      * Function that computes one step of the physical behaviour of the object
@@ -222,22 +221,4 @@ public interface PhysicalObject {
      * @param rotZ Z component of the rotation of the physical object
      */
     void putOnSurface(double posX, double posY, double rotZ);
-
-
-    /*====================*/
-
-    /**
-     * Marked as deprecated in favour of getGeometryPosition
-     * Function that returns a vector with the x, y and z coordinates of the object
-     * This refers to the center position of the geometry object (i.e. NOT mass point position)
-     * @return Vector with x, y, z coordinates of the object center
-     */
-    RealVector getGeometryPos();
-
-    /**
-     * Marked as deprecated in favour of getRotation
-     * Function that returns a matrix with the rotation of the object
-     * @return Matrix with the rotation of the object
-     */
-    RealMatrix getGeometryRot();
 }
