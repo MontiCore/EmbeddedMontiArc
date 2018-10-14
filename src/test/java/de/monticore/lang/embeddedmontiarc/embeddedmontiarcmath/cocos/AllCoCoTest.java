@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
  * @author Sascha Schneiders
  */
 public class AllCoCoTest extends AbstractCoCoTest {
-    String baseDir="src/test/resources";
+    String baseDir="src/test/resources/emam";
     @Test
     public void testCoCosSimulator() throws IOException {
         testModel("","simulator.MainController");
