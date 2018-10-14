@@ -44,7 +44,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Ignore
     @Test
     public void testComponentSub2() throws Exception {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "a.sub2", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
@@ -58,7 +58,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testDetection() throws Exception {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "detection.objectDetector", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
@@ -69,7 +69,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testLookUp() throws Exception {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.basicLookUpInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
@@ -93,7 +93,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testDynamic_1(){
-        Scope symTab = createSymTab("src/test/resources/dynamic");
+        Scope symTab = createSymTab("src/test/resources/emam/dynamic");
         EMADynamicComponentInstanceSymbol inst = symTab.<EMADynamicComponentInstanceSymbol>resolve(
                 "adapter.notAdapter", EMADynamicComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);

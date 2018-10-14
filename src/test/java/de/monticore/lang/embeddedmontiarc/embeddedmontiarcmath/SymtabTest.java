@@ -42,12 +42,12 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testParsing() throws Exception {
     EmbeddedMontiArcMathParser parser = new EmbeddedMontiArcMathParser();
-    assertTrue(parser.parse("src/test/resources/adapterTest/A.emam").isPresent());
+    assertTrue(parser.parse("src/test/resources/emam/adapterTest/A.emam").isPresent());
   }
   @Ignore
   @Test
   public void testSimilarityImageMatrixAdapter(){
-    Scope symTab = createSymTab("src/test/resources");
+    Scope symTab = createSymTab("src/test/resources/emam");
     EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.SimilarityImageMatrixAdapter", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
@@ -55,7 +55,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Ignore
   @Test
   public void testSimilarityImageMatrixCalculator(){
-    Scope symTab = createSymTab("src/test/resources");
+    Scope symTab = createSymTab("src/test/resources/emam");
     EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.SimilarityImageMatrixCalculator", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
@@ -63,7 +63,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Ignore
   @Test
   public void testEigenSolver(){
-    Scope symTab = createSymTab("src/test/resources");
+    Scope symTab = createSymTab("src/test/resources/emam");
     EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.EigenSolver", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
@@ -71,7 +71,7 @@ public class SymtabTest extends AbstractSymtabTest {
 @Ignore
   @Test
   public void testKMeansClustering(){
-    Scope symTab = createSymTab("src/test/resources");
+    Scope symTab = createSymTab("src/test/resources/emam");
     EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.KMeansClustering", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
@@ -80,7 +80,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Ignore
   @Test
   public void testDetection(){
-    Scope symTab = createSymTab("src/test/resources");
+    Scope symTab = createSymTab("src/test/resources/emam");
     EMAComponentSymbol a = symTab.<EMAComponentSymbol>resolve("detection.ObjectDetector", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a);
 
@@ -90,7 +90,7 @@ public class SymtabTest extends AbstractSymtabTest {
   @Test
   public void testLookUp(){
 
-    Scope symTab = createSymTab("src/test/resources");
+    Scope symTab = createSymTab("src/test/resources/emam");
     EMAComponentSymbol a1 = symTab.<EMAComponentSymbol>resolve("fas.basicLibrary.LookUp", EMAComponentSymbol.KIND).orElse(null);
     assertNotNull(a1);
 
@@ -172,7 +172,7 @@ public class SymtabTest extends AbstractSymtabTest {
 
   @Test
   public void testMathStatementsSymbol() {
-    Scope symTab = createSymTab("src/test/resources/");
+    Scope symTab = createSymTab("src/test/resources/emam/");
     EMAComponentSymbol component = symTab.<EMAComponentSymbol>resolve("test.Add", EMAComponentSymbol.KIND).orElse(null);
     MathStatementsSymbol statements = (MathStatementsSymbol) component.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND).orElse(null);
     assertNotNull(statements);

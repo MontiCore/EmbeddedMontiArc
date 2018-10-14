@@ -31,7 +31,7 @@ public class SimulatorTest extends AbstractSymtabTest{
 
     @Test
     public void resolveTest() {
-        Scope symtab = createSymTab("src/test/resources");
+        Scope symtab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol model = symtab.
                 <EMAComponentInstanceSymbol>resolve("simulator.mainController",
                         EMAComponentInstanceSymbol.KIND).orElse(null);
