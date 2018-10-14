@@ -354,14 +354,7 @@ public class MassPointPhysicalVehicleTest {
         startPosition.setEntry(1, 0.0);
 
         // Mock a simulation
-        long simulationLength = 5000;
-        long currentTime = 0;
-        long stepSize = 33;
-        while(currentTime < simulationLength) {
-            physicalVehicle.computePhysics(stepSize);
-            updateActuators(physicalVehicle, stepSize);
-            currentTime = currentTime + stepSize;
-        }
+        mockSimulation(physicalVehicle, 5000, 33);
 
         // Remember end position projected on xz plane
         RealVector endPosition = physicalVehicle.getPosition();
@@ -389,14 +382,7 @@ public class MassPointPhysicalVehicleTest {
         RealVector startPosition = physicalVehicle.getPosition();
 
         // Mock a simulation
-        long simulationLength = 5000;
-        long currentTime = 0;
-        long stepSize = 33;
-        while(currentTime < simulationLength) {
-            physicalVehicle.computePhysics(stepSize);
-            updateActuators(physicalVehicle, stepSize);
-            currentTime = currentTime + stepSize;
-        }
+        mockSimulation(physicalVehicle, 5000, 33);
 
         // Compute distance driven
         RealVector distance = physicalVehicle.getPosition().subtract(startPosition);
@@ -419,20 +405,22 @@ public class MassPointPhysicalVehicleTest {
         physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
 
         // Mock a simulation
-        long simulationLength = 60000;
-        long currentTime = 0;
-        long stepSize = 33;
-        while(currentTime < simulationLength) {
-            physicalVehicle.computePhysics(stepSize);
-            updateActuators(physicalVehicle, stepSize);
-            currentTime = currentTime + stepSize;
-        }
+        mockSimulation(physicalVehicle, 60000, 33);
 
         // Test if velocity is zero
         Assert.assertEquals(0.0, physicalVehicle.getVelocity().getNorm(), 0);
     }
 
     //Todo Test if the rotation matrix stays orthogonal
+
+    private void mockSimulation(PhysicalVehicle physicalVehicle, long simulationLength, long stepSize){
+        long currentTime = 0;
+        while(currentTime < simulationLength) {
+            physicalVehicle.computePhysics(stepSize);
+            updateActuators(physicalVehicle, stepSize);
+            currentTime = currentTime + stepSize;
+        }
+    }
 
     private void updateActuators(PhysicalVehicle physicalVehicle, long timeDiffMs){
         double deltaT = (timeDiffMs / 1000.0);
