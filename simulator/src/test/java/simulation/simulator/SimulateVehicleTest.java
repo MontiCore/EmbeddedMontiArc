@@ -127,7 +127,6 @@ public class SimulateVehicleTest {
         assertTrue(true);
     }*/
 
-
     /**
      * Check if the vehicle drives straight forward, if there is no steering angle
      */

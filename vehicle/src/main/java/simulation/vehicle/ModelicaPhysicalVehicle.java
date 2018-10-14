@@ -100,7 +100,10 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             throw new IllegalStateException("Rotation can only be set after initialisation.");
         }
         this.rotation = rotation.copy();
-        //todo yaw angle
+        // Get angles to set yaw_angle
+        Rotation rot = new Rotation(rotation.getData(), 0.00000001);
+        double[] angles = rot.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);
+        yawAngle = angles[2] - Math.PI / 2;
     }
 
     /**
