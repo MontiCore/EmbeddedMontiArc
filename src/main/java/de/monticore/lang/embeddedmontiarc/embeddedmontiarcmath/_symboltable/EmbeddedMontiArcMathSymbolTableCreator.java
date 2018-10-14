@@ -26,6 +26,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcbehavior._symboltable.EmbeddedMontiArcBehaviorSymbolTableCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure.ModifiedEMAComponentInstanceSymbolCreator;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathDelegatorVisitor;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._visitor.EmbeddedMontiArcMathVisitor;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicSymbolTableCreator;
@@ -63,9 +64,12 @@ public class EmbeddedMontiArcMathSymbolTableCreator extends de.monticore.symbolt
     protected void initSuperSTC(final ResolvingConfiguration resolvingConfig) {
         // create symbol table creators
         this.emadSTC = new EmbeddedMontiArcDynamicSymbolTableCreator(resolvingConfig, scopeStack);
+        this.emadSTC.setInstanceSymbolCreator(new ModifiedEMAComponentInstanceSymbolCreator()); //Use an instance symbo, creator that adds math statement to instances
+
         this.emaBehaviorSTC = new EmbeddedMontiArcBehaviorSymbolTableCreator(resolvingConfig, scopeStack);
         this.emamSTC = new EmbeddedMontiArcMathSymbolTableCreatorTOP(resolvingConfig, scopeStack);
         this.mathSTC = new MathSymbolTableCreator(resolvingConfig, scopeStack);
+
         // assign to delegator visitor
         visitor.setEmbeddedMontiArcMathVisitor(emamSTC);
         visitor.setEmbeddedMontiArcVisitor(emadSTC);

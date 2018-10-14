@@ -29,15 +29,16 @@ import java.util.Set;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.SymbolKind;
 
+@Deprecated
 public class EmbeddedMontiArcMathModelNameCalculator extends de.monticore.CommonModelNameCalculator {
 
   @Override
   public Set<String> calculateModelNames(final String name, final SymbolKind kind) {
     final Set<String> calculatedModelNames = new LinkedHashSet<>();
 
-      if (EMAMCompilationUnitSymbol.KIND.isKindOf(kind)) {
-        calculatedModelNames.addAll(calculateModelNamesForEMAMCompilationUnit(name));
-      }
+//      if (EMAMCompilationUnitSymbol.KIND.isKindOf(kind)) {
+//        calculatedModelNames.addAll(calculateModelNamesForEMAMCompilationUnit(name));
+//      }
 
     return calculatedModelNames;
   }
