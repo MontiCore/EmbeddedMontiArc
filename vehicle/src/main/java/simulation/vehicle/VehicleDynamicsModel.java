@@ -97,7 +97,7 @@ public class VehicleDynamicsModel {
             case "C_drag":
             case "f_r":
             case "I_tire":
-            case "roh_air":
+            case "rho_air":
             // Chassis initial parameters
             case "omega_wheel_1_0":
             case "omega_wheel_2_0":

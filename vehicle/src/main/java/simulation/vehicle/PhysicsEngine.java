@@ -15,9 +15,7 @@ public class PhysicsEngine{
     /** Average earth gravitational acceleration */
     public static final double GRAVITY_EARTH = -9.81;
     /** Average air density */
-    public static final double AIR_DENSITY = 1.25;
-    /** Average car air drag coefficient*/
-    public static final double AIR_DRAG_CAR = 0.3;
+    public static final double AIR_DENSITY = 1.225;
     /** Average road friction coefficient for dry roads (no unit) */
     public static final double ROAD_FRICTION_DRY = 0.7;
     /** Average road friction coefficient for wet roads (no unit) */

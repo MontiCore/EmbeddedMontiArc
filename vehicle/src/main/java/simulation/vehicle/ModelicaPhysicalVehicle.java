@@ -470,6 +470,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
             throw new IllegalStateException("Physical Vehicle can only be initialised once.");
         }
         // Set parameters for the VDM
+        vehicleDynamicsModel.setParameter("rho_air", PhysicsEngine.AIR_DENSITY);
+        vehicleDynamicsModel.setParameter("g", - PhysicsEngine.GRAVITY_EARTH);
 
         // Initialise the modelica components
         vehicleDynamicsModel.initialise();
@@ -567,6 +569,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
 
         // Take the wheel positions and get the frictions coefficients
+        // ToDo Let the physical vehicle look up the ground type and not only the weather
         double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
         vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);

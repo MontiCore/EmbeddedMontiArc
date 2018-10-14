@@ -54,6 +54,9 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
     /** Average tire pressure for car wheels */
     public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
 
+    /** Average car air drag coefficient*/
+    public static final double AIR_DRAG_CAR = 0.3;
+
 
     /** Variables for the IPhysicalVehicle interface */
     /** Vector pointing from the center of mass position to the center of geometry position in the local coordinate system */
@@ -1191,7 +1194,8 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         double area = Math.abs(areaX) + Math.abs(areaY) + Math.abs(areaZ);
 
         // Scalar for air friction force computations
-        double scalarCoefficient = -0.5 * PhysicsEngine.AIR_DENSITY * PhysicsEngine.AIR_DRAG_CAR * area;
+        // ToDo Let the physical vehicle look up the ground type and not only the weather
+        double scalarCoefficient = -0.5 * PhysicsEngine.AIR_DENSITY * MassPointPhysicalVehicle.AIR_DRAG_CAR * area;
 
         // Final force computation, preserve direction that we need for computations in the 3D space
         RealVector direction = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});

@@ -408,7 +408,7 @@ public class Pedestrian implements SimulationLoopExecutable, PhysicalObject, IPe
     @Override
     public void putOnSurface(double posX, double posY, double rotZ){
         double groundZ = WorldModel.getInstance().getGround(posX, posY, this.getGeometryPosition().getEntry(2)).doubleValue();
-        this.setPosition(new ArrayRealVector(new double[] {posX, posY, groundZ})); //ToDo Should this not be groundZ + 0.0 * this.getHeight()
+        this.setPosition(new ArrayRealVector(new double[] {posX, posY, groundZ + 0.5 * this.getHeight()}));
         Rotation rot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, rotZ);
         this.setRotation(new BlockRealMatrix(rot.getMatrix()));
     }
