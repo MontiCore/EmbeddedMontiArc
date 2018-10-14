@@ -27,12 +27,15 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcLanguage;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicLanguage;
+import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
 import de.monticore.lang.math._symboltable.MathLanguage;
 
 public class EmbeddedMontiArcMathLanguageFamiliy extends ModelingLanguageFamily {
 
   public EmbeddedMontiArcMathLanguageFamiliy() {
-    addModelingLanguage(new EmbeddedMontiArcLanguage());
+    addModelingLanguage(new EmbeddedMontiArcDynamicLanguage());
+    addModelingLanguage(new EventLanguage());
     addModelingLanguage(new MathLanguage());
   }
 }

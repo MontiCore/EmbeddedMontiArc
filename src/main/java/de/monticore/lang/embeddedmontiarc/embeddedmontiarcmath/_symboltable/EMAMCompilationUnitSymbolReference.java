@@ -31,6 +31,7 @@ import de.monticore.symboltable.references.SymbolReference;
 /**
  * Represents a reference of {@link EMAMCompilationUnitSymbol}.
  */
+@Deprecated
 public class EMAMCompilationUnitSymbolReference extends EMAMCompilationUnitSymbol implements SymbolReference<EMAMCompilationUnitSymbol> {
   protected final SymbolReference<EMAMCompilationUnitSymbol> reference;
 

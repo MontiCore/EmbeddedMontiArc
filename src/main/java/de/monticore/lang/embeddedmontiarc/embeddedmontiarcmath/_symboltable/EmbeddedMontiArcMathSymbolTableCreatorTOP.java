@@ -75,20 +75,20 @@ public class EmbeddedMontiArcMathSymbolTableCreatorTOP extends de.monticore.symb
   }
 
 
-  @Override
-  public void visit(de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit ast) {
-    EMAMCompilationUnitSymbol eMAMCompilationUnit = create_EMAMCompilationUnit(ast);
-    initialize_EMAMCompilationUnit(eMAMCompilationUnit, ast);
-    addToScopeAndLinkWithNode(eMAMCompilationUnit, ast);
-  }
+//  @Override
+//  public void visit(de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit ast) {
+//    EMAMCompilationUnitSymbol eMAMCompilationUnit = create_EMAMCompilationUnit(ast);
+//    initialize_EMAMCompilationUnit(eMAMCompilationUnit, ast);
+//    addToScopeAndLinkWithNode(eMAMCompilationUnit, ast);
+//  }
 
-  protected EMAMCompilationUnitSymbol create_EMAMCompilationUnit(de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit ast) {
-      return new EMAMCompilationUnitSymbol("");
-  }
-
-  protected void initialize_EMAMCompilationUnit(EMAMCompilationUnitSymbol eMAMCompilationUnit, de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit ast) {
-
-  }
+//  protected EMAMCompilationUnitSymbol create_EMAMCompilationUnit(de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit ast) {
+//      return new EMAMCompilationUnitSymbol("");
+//  }
+//
+//  protected void initialize_EMAMCompilationUnit(EMAMCompilationUnitSymbol eMAMCompilationUnit, de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit ast) {
+//
+//  }
 
   @Override
   public void visit(ASTBehaviorEmbedding node) {
