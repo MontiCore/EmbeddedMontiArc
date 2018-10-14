@@ -103,10 +103,8 @@ public class MassPointBuilderTest {
         RealVector expectedPosition = new ArrayRealVector(new double[]{12.0, -3.0, 3.5});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 7.0, -1.5, Math.PI / 2);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
-        RealVector setVelocity = new ArrayRealVector(new double[]{1.0, -5.725, 12.0});
-        RealVector expectedVelocity = expectedRotation.operate(new ArrayRealVector(new double[]{1.0, -5.725, 12.0}));
-        RealVector setAngularVelocity = new ArrayRealVector(new double[]{7.0, -2.5, 11.75});
-        RealVector expectedAngularVelocity = expectedRotation.operate(new ArrayRealVector(new double[]{7.0, -2.5, 11.75}));
+        RealVector expectedVelocity = new ArrayRealVector(new double[]{1.0, -5.725, 12.0});
+        RealVector expectedAngularVelocity = new ArrayRealVector(new double[]{7.0, -2.5, 11.75});
         double expectedMass = 1000.0;
         double expectedWidth = 2.125;
         double expectedLength = 10.0;
@@ -127,8 +125,8 @@ public class MassPointBuilderTest {
         MassPointPhysicalVehicleBuilder builder = new MassPointPhysicalVehicleBuilder();
         builder.setPosition(expectedPosition);
         builder.setRotation(expectedRot);
-        builder.setVelocity(setVelocity);
-        builder.setAngularVelocity(setAngularVelocity);
+        builder.setVelocity(expectedVelocity);
+        builder.setAngularVelocity(expectedAngularVelocity);
         builder.setMass(expectedMass);
         builder.setWidth(expectedWidth);
         builder.setLength(expectedLength);

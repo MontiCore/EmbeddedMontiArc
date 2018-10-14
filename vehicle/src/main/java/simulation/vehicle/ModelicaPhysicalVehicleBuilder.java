@@ -63,7 +63,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             }
             // Compute angular velocity in local coordinates
             RealVector localAngularVelocity = rotation.transpose().operate(this.angularVelocity.get());
-            // Set initial velocity values
+            // Set initial angular velocity values
             ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_z_0", localAngularVelocity.getEntry(2));
         }
 

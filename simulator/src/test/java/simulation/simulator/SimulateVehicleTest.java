@@ -1,16 +1,13 @@
 package simulation.simulator;
 
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.util.Log;
 import simulation.util.MathHelper;
 import simulation.vehicle.*;
-import java.util.List;
-import static junit.framework.TestCase.assertFalse;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static simulation.vehicle.VehicleStatusSensor.VEHICLE_STATUS_SENSOR_ENGINE_STATUS;
 
 /**
  * JUnit Test-suite for simulating a vehicle
@@ -127,6 +124,7 @@ public class SimulateVehicleTest {
         assertTrue(true);
     }*/
 
+    //ToDo
     /**
      * Check if the vehicle drives straight forward, if there is no steering angle
      */
@@ -160,7 +158,7 @@ public class SimulateVehicleTest {
     }
 
     /**
-     * Checks, whether the vehicle stands still, if there is no acceleration
+     * Checks, whether the vehicle does not move if there is no acceleration
      */
     @Test
     public void testNoDriveIfNoAcceleration() {
@@ -170,101 +168,23 @@ public class SimulateVehicleTest {
         MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
         PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
 
-        //Remember start position
-        RealVector startPosition = physicalVehicle.getPosition();
-
         // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
+        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
+
+        // Remember start position
+        RealVector startPosition = physicalVehicle.getPosition();
 
         //Run simulation
         sim.stopAfter(5000);
         sim.startSimulation();
 
-        //Compare to end position
-        RealVector endPosition = physicalVehicle.getPosition();
-        assertTrue(MathHelper.vectorEquals(startPosition, endPosition, 0.001));
+        // Compute distance driven
+        RealVector distance = physicalVehicle.getPosition().subtract(startPosition);
+
+        // Check if distance is zero
+        Assert.assertEquals(0.0, distance.getNorm(), 0);
     }
-
-
-    /**
-     * Checks if the force applied on the vehicle diifers between driving forward andr steering to the right
-     *
-    @Test
-    public void testCentripetalForceHasInfluence() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-        VehicleActuator motor = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR);
-        VehicleActuator steering = vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING);
-
-        // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
-
-        // Set simulation duration (5 seconds)
-        sim.stopAfter(5000);
-
-
-        //Start simulation
-        sim.stopAfter(1000);
-        sim.startSimulation();
-
-        motor.setActuatorValueTarget(1);
-
-        RealVector forceStart = physicalVehicle.getForce();
-
-        steering.setActuatorValueTarget(0.5);
-
-        sim.extendSimulationTime(5000);
-        sim.startSimulation();
-        RealVector forceEnd = physicalVehicle.getForce();
-
-        assertTrue(forceStart.getEntry(0) != forceEnd.getEntry(0) || forceStart.getEntry(1) != forceEnd.getEntry(1) ||
-                forceStart.getEntry(2) != forceEnd.getEntry(2));
-    }*/
-
-    /**
-     * Test if airdrag slows the vehicle down, by accelerating it for one second and then step of the gas
-     * and check after 20 seconds if it is slower
-     */
-    @Test
-    public void testBecomesSlowerThroughAirdrag() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
-
-        // Set simulation duration (30 seconds)
-        sim.stopAfter(30000);
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(1);
-
-
-        //Start simulation
-        sim.stopAfter(1000);
-        sim.startSimulation();
-
-        RealVector velocityStart = physicalVehicle.getVelocity();
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN);
-
-        sim.extendSimulationTime(20000);
-        sim.startSimulation();
-
-        RealVector velocityEnd = physicalVehicle.getVelocity();
-
-        assertTrue(velocityStart.getEntry(0) == velocityEnd.getEntry(0));
-        assertTrue(velocityStart.getEntry(1) > velocityEnd.getEntry(1));
-        assertTrue(velocityStart.getEntry(2) == velocityEnd.getEntry(2));
-    }
-
+    //ToDo
     /**
      * Test if the vehicle will drive in a straight line after steering to the right and
      * constantly accelerating
@@ -304,6 +224,7 @@ public class SimulateVehicleTest {
         assertTrue(afterSteeringValuePos.getEntry(2) == endValuePos.getEntry(2));
     }
 
+    //Todo
     /**
      * Test if the rotation matrix stays orthogonal
      */
@@ -354,100 +275,25 @@ public class SimulateVehicleTest {
     }
 
     /**
-     * Test if airdrag brings the vehicle to a full stop
+     * Test if air drag and friction brings the vehicle to a full stop
      */
     @Test
     public void testWillComeToHold() {
         Simulator sim = Simulator.getSharedInstance();
 
-        // Create a new vehicle
+        // Create a new vehicle with a velocity
         MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 0.01, 0.0}));
         PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
 
         // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(1);
+        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
 
         // Start simulation
-        sim.stopAfter(1000);
+        sim.stopAfter(60000);
         sim.startSimulation();
 
-        RealVector velocityStart = physicalVehicle.getVelocity();
-
-        vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).setActuatorValueTarget(0);
-
-        sim.extendSimulationTime(45000);
-        sim.startSimulation();
-
-        RealVector velocityEnd = physicalVehicle.getVelocity();
-
-        assertEquals(velocityStart.getEntry(0), velocityEnd.getEntry(0), 0);
-        assertTrue(velocityEnd.getEntry(1) < 1 && (velocityEnd.getEntry(1) > -1));
-        assertEquals(velocityStart.getEntry(2), velocityEnd.getEntry(2), 0);
-    }
-
-    @Test
-    public void statusLoggerContainsAddedMessage(){
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
-
-        sim.stopAfter(10000);
-
-        //Add engine failure message
-        vehicle.setStatusLogger(new RandomStatusLogger());
-        StatusMessage message = new StatusMessage(VEHICLE_STATUS_SENSOR_ENGINE_STATUS,VehicleStatus.VEHICLE_STATUS_CRITICAL, 0x5535);
-        vehicle.getStatusLogger().addMessage(message);
-
-        //Run simulation
-        sim.startSimulation();
-        sim.waitUntilSimulationFinished();
-
-        //Check the error memory for engine failure
-        List<StatusMessage> statusList = vehicle.getStatusLogger().readStatusMemory(VEHICLE_STATUS_SENSOR_ENGINE_STATUS);
-        assertTrue(statusList.contains(message));
-    }
-
-    @Test
-    public void statusLoggerDeletesAddedMessage(){
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-        Vehicle vehicle = physicalVehicle.getSimulationVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerSimulationObject(physicalVehicle);
-
-        sim.stopAfter(5000);
-
-        //Add engine failure message
-        vehicle.setStatusLogger(new RandomStatusLogger());
-        StatusMessage message = new StatusMessage(VEHICLE_STATUS_SENSOR_ENGINE_STATUS,VehicleStatus.VEHICLE_STATUS_CRITICAL, 0x5535);
-        vehicle.getStatusLogger().addMessage(message);
-
-        //Run simulation
-        sim.startSimulation();
-
-        //Check the error memory for engine failure
-        List<StatusMessage> statusList = vehicle.getStatusLogger().readStatusMemory(VEHICLE_STATUS_SENSOR_ENGINE_STATUS);
-        assertTrue(statusList.contains(message));
-        vehicle.getStatusLogger().clearMemory();
-
-        sim.extendSimulationTime(5000);
-        sim.startSimulation();
-
-        //Check the error memory for engine failure
-        statusList = vehicle.getStatusLogger().readStatusMemory(VEHICLE_STATUS_SENSOR_ENGINE_STATUS);
-        assertFalse(statusList.contains(message));
+        // Test if velocity is zero
+        Assert.assertEquals(0.0, physicalVehicle.getVelocity().getNorm(), 0);
     }
 }

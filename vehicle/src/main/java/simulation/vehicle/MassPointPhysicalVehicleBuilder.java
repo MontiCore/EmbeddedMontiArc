@@ -5,6 +5,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import java.io.File;
@@ -33,8 +34,32 @@ public class MassPointPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
     public PhysicalVehicle buildPhysicalVehicle(){
         PhysicalVehicle physicalVehicle = new MassPointPhysicalVehicle();
 
-        this.velocity.ifPresent(physicalVehicle::setVelocity);
-        this.angularVelocity.ifPresent(physicalVehicle::setAngularVelocity);
+        if(this.velocity.isPresent()){
+            // Get rotation
+            RealMatrix rotation;
+            if(this.rotation.isPresent()){
+                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+            }else{
+                rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
+            }
+            // Compute velocity in local coordinates
+            RealVector localVelocity = rotation.transpose().operate(this.velocity.get());
+            // Set velocity
+            physicalVehicle.setVelocity(localVelocity);
+        }
+        if(this.angularVelocity.isPresent()){
+            // Get rotation
+            RealMatrix rotation;
+            if(this.rotation.isPresent()){
+                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+            }else{
+                rotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0).getMatrix());
+            }
+            // Compute angular velocity in local coordinates
+            RealVector localAngularVelocity = rotation.transpose().operate(this.angularVelocity.get());
+            // Set angular velocity
+            physicalVehicle.setAngularVelocity(localAngularVelocity);
+        }
 
         this.mass.ifPresent(physicalVehicle::setMass);
 

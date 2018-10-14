@@ -259,25 +259,25 @@ public class ModelicaPhysicalVehicleTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void setVelocityNormalFailUninitialised(){
+    public void setVelocityUninitialised(){
         ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setVelocityNormalFailInitialised(){
+    public void setVelocityInitialised(){
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
         physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void setAngularVelocityFailUninitialized(){
+    public void setAngularVelocityUninitialized(){
         ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
         physicalVehicle.setAngularVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test(expected = IllegalStateException.class)
-    public void setAngularVelocityFail(){
+    public void setAngularVelocityInitialized(){
         ModelicaPhysicalVehicle physicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
         physicalVehicle.setAngularVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }

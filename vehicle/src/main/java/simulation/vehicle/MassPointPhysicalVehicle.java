@@ -173,7 +173,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         if(physicalVehicleInitialised){
             throw new IllegalStateException("Velocity can only be set before the initialisation");
         }
-        this.velocity = velocity.copy();
+        this.velocity  = velocity.copy();
     }
 
     /**
@@ -667,7 +667,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     private void calcVelocity(double deltaT){
         RealVector zeroVector = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
-        double threshold = 0.0000000000001;
+        double threshold = 0.0001;
         velocity = velocity.add(force.mapMultiply(deltaT).mapDivide(getMass()));
         if(MathHelper.vectorEquals(velocity, zeroVector, threshold)){
             velocity = zeroVector;
