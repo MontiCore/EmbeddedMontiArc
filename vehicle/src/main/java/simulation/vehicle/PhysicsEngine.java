@@ -591,11 +591,11 @@ import java.util.Map;
  * Physics calculations for simulation
  */
 public class PhysicsEngine{
-    /** Average earth gravity in m/s^2 or N/kg */
+    /** Average earth gravitational acceleration */
     public static final double GRAVITY_EARTH = -9.81;
-    /** Average air density in kg/m^3 */
+    /** Average air density */
     public static final double AIR_DENSITY = 1.25;
-    /** Average car air drag coefficient (without unit) */
+    /** Average car air drag coefficient*/
     public static final double AIR_DRAG_CAR = 0.3;
     /** Average road friction coefficient for dry roads (no unit) */
     public static final double ROAD_FRICTION_DRY = 0.7;
@@ -606,60 +606,78 @@ public class PhysicsEngine{
         // Private constructor to hide the implicit public one
     }
 
-
     /**
-     * Computes the physics of all the physical objects
+     * Computes the physics of a physical object
+     *
      * @param object Is the physical object, which physics have to be computed
      * @param physicalObjects List of all physical objects, needed to check for collision
      * @param timeDiffMs Difference in time measured in milliseconds
      */
     public static void computePhysics(PhysicalObject object, List<PhysicalObject> physicalObjects, long timeDiffMs){
-
-        double deltaT = timeDiffMs / 1000.0;
-
-        //Do not compute collision if the object has a computational error or is not a car
-        if (!object.getError() && object.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
-
-            // Check objects for collisions
-            for (PhysicalObject physicalObject : physicalObjects) {
-                // Do not compute collision if its the same object or when both objects are already in collision/computational error
-                if (physicalObject.getId() == object.getId() || physicalObject.getError() || (physicalObject.getCollision() && object.getCollision())) {
-                    continue;
-                }
-
-                // Do not compute collision if both objects are more than 100 meters away from each other
-                if (physicalObject.getGeometryPosition().getDistance(object.getGeometryPosition()) >= 100.0) {
-                    continue;
-                }
-
-                // Do not compute collision if objects do not overlap in height
-                double minHeight = object.getGeometryPosition().getEntry(2) - 0.5 * object.getHeight();
-                double maxHeight = object.getGeometryPosition().getEntry(2) + 0.5 * object.getHeight();
-                double otherMinHeight = physicalObject.getGeometryPosition().getEntry(2) - 0.5 * physicalObject.getHeight();
-                double otherMaxHeight = physicalObject.getGeometryPosition().getEntry(2) + 0.5 * physicalObject.getHeight();
-                boolean heightOverlap = (minHeight >= otherMinHeight && minHeight <= otherMaxHeight) ||
-                        (maxHeight >= otherMinHeight && maxHeight <= otherMaxHeight) ||
-                        (otherMinHeight >= minHeight && otherMinHeight <= maxHeight) ||
-                        (otherMaxHeight >= minHeight && otherMaxHeight <= maxHeight);
-
-                if (!heightOverlap) {
-                    continue;
-                }
-
-                // Perform collision computation
-                List<Map.Entry<RealVector, RealVector>> boundaries = object.getBoundaryVectors();
-                List<Map.Entry<RealVector, RealVector>> otherBoundaries = physicalObject.getBoundaryVectors();
-                boolean collisionDetected = MathHelper.checkIntersection2D(boundaries, otherBoundaries);
-
-                if (collisionDetected) {
-                	object.setCollision(true);
-                    physicalObject.setCollision(true);
-                    calcCollisionForces(object, physicalObject, deltaT);
-                }
-            }
-        }
+        // Detect and handle possible collisions
+        computeCollision(object, physicalObjects, timeDiffMs);
 
         object.computePhysics(timeDiffMs);
+    }
+
+    /**
+     * Function that detects and handles a collision for a object
+     *
+     * @param object Is the physical object, which is the collision is computed for
+     * @param physicalObjects List of all physical objects
+     * @param timeDiffMs Difference in time measured in milliseconds
+     */
+    private static void computeCollision(PhysicalObject object, List<PhysicalObject> physicalObjects, long timeDiffMs){
+        // ToDo the collision currently detects and handles a collision between two cars twice
+        // Do not compute collision if the object has a computational error
+        if (object.getError()){
+            return;
+        }
+
+        // Do not compute collision if the object is not a car
+        if(object.getPhysicalObjectType() == PhysicalObjectType.PHYSICAL_OBJECT_TYPE_CAR) {
+            return;
+        }
+
+        // Check objects for collisions
+        for (PhysicalObject objectB : physicalObjects) {
+            if(detectCollision(object, objectB)){
+                object.setCollision(true);
+                objectB.setCollision(true);
+                calcCollisionForces(object, objectB, timeDiffMs);
+            }
+        }
+    }
+
+    /**
+     * Function that detects a collision
+     *
+     * @param objectA First object tested for collision
+     * @param objectB First object tested for collision
+     * @return Weather a collision has occurred or not
+     */
+    private static boolean detectCollision(PhysicalObject objectA, PhysicalObject objectB){
+        // Todo use better short cuts
+        // Do not compute collision if its the same object
+        if (objectA.getId() == objectB.getId()){
+            return false;
+        }
+
+        // Do not compute if the other object has a computational error
+        if (objectB.getError()){
+            return false;
+        }
+
+        // Do not compute collision if both objects are more than 100 meters away from each other
+        if (objectA.getGeometryPosition().getDistance(objectB.getGeometryPosition()) >= 100.0) {
+            return false;
+        }
+
+        // Perform collision computation
+        // toDo use a three dimensional collision detection
+        List<Map.Entry<RealVector, RealVector>> boundariesA = objectA.getBoundaryVectors();
+        List<Map.Entry<RealVector, RealVector>> boundariesB = objectB.getBoundaryVectors();
+        return MathHelper.checkIntersection2D(boundariesA, boundariesB);
     }
 
     /**
@@ -667,9 +685,11 @@ public class PhysicsEngine{
      *
      * @param objectA First object for which the force should be computed
      * @param objectB Second object for which force should be computed
-     * @param deltaT Time of the simulation step
+     * @param timeDiffMs Difference in time measured in milliseconds
      */
-    private static void calcCollisionForces(PhysicalObject objectA, PhysicalObject objectB, double deltaT){
+    private static void calcCollisionForces(PhysicalObject objectA, PhysicalObject objectB, long timeDiffMs){
+        double deltaT = timeDiffMs / 1000.0;
+
         //Initial calculations for object A
         RealVector velocityA = new ArrayRealVector(new double[] {0.0, 0.0, 0.0});
         double massA = 0.0;
