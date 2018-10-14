@@ -1,7 +1,5 @@
 package simulation.simulator;
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
 import org.junit.*;
 import simulation.util.Log;
 import simulation.vehicle.*;
@@ -19,18 +17,6 @@ public class SimulateVehicleTest {
     @AfterClass
     public static void tearDownClass() {
         Log.setLogEnabled(true);
-    }
-
-    @Before
-    public void setUp() {
-        Simulator.resetSimulator();
-
-        //Set update frequency to 30 loop iterations per second
-        Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
-        sim.setPausedInFuture(true);
     }
 
     private void setAccelerating(PhysicalVehicle physicalVehicle){
@@ -90,7 +76,13 @@ public class SimulateVehicleTest {
     /*
     @Test
     public void firstTest(){
+        Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationLoopFrequency(30);
+        sim.setSynchronousSimulation(true);
+        sim.setPausedInFuture(true);
+
         sim.registerLoopObserver(new SimulationPlotter2D());
 
         // Create a new vehicle
@@ -120,89 +112,4 @@ public class SimulateVehicleTest {
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
         assertTrue(true);
     }*/
-
-    /**
-     * Tests if the vehicle drives straight forward, if there is no steering angle
-     */
-    @Test
-    public void testDriveStraightForward() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle with a velocity
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 14.0, 0.0}));
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
-
-        // Remember start position projected on xz plane
-        RealVector startPosition = physicalVehicle.getPosition();
-        startPosition.setEntry(1, 0.0);
-
-        // Run simulation
-        sim.stopAfter(5000);
-        sim.startSimulation();
-
-        // Remember end position projected on xz plane
-        RealVector endPosition = physicalVehicle.getPosition();
-        endPosition.setEntry(1, 0.0);
-
-        // Calculated projected distance
-        RealVector projectedDistance = endPosition.subtract(startPosition);
-
-        // Check if distance is zero
-        Assert.assertEquals(0.0, projectedDistance.getNorm(), 0);
-    }
-
-    /**
-     * Tests whether the vehicle does not move if there is no acceleration
-     */
-    @Test
-    public void testNoDriveIfNoAcceleration() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
-
-        // Remember start position
-        RealVector startPosition = physicalVehicle.getPosition();
-
-        //Run simulation
-        sim.stopAfter(5000);
-        sim.startSimulation();
-
-        // Compute distance driven
-        RealVector distance = physicalVehicle.getPosition().subtract(startPosition);
-
-        // Check if distance is zero
-        Assert.assertEquals(0.0, distance.getNorm(), 0);
-    }
-
-    /**
-     * Test if air drag and friction brings the vehicle to a full stop
-     */
-    @Test
-    public void testWillComeToHold() {
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Create a new vehicle with a velocity
-        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
-        physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 0.01, 0.0}));
-        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
-
-        // Add physicalVehicle to simulation
-        sim.registerAndPutObject(physicalVehicle, 0.0, 0.0, 0.0);
-
-        // Start simulation
-        sim.stopAfter(60000);
-        sim.startSimulation();
-
-        // Test if velocity is zero
-        Assert.assertEquals(0.0, physicalVehicle.getVelocity().getNorm(), 0);
-    }
 }

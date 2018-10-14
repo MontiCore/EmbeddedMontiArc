@@ -336,5 +336,111 @@ public class MassPointPhysicalVehicleTest {
         physicalVehicle.initPhysics();
     }
 
+    /**
+     * Tests if a vehicle drives in a straight line when undisturbed
+     */
+    @Test
+    public void testDriveStraightForward() {
+        // Create a new vehicle with a velocity
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 14.0, 0.0}));
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
+
+        // Put physical vehicle on the surface
+        physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
+
+        // Remember start position projected on xz plane
+        RealVector startPosition = physicalVehicle.getPosition();
+        startPosition.setEntry(1, 0.0);
+
+        // Mock a simulation
+        long simulationLength = 5000;
+        long currentTime = 0;
+        long stepSize = 33;
+        while(currentTime < simulationLength) {
+            physicalVehicle.computePhysics(stepSize);
+            updateActuators(physicalVehicle, stepSize);
+            currentTime = currentTime + stepSize;
+        }
+
+        // Remember end position projected on xz plane
+        RealVector endPosition = physicalVehicle.getPosition();
+        endPosition.setEntry(1, 0.0);
+
+        // Calculated projected distance
+        RealVector projectedDistance = endPosition.subtract(startPosition);
+
+        // Check if distance is zero
+        Assert.assertEquals(0.0, projectedDistance.getNorm(), 0);
+    }
+
+    /**
+     * Tests whether the vehicle does not move if there is no acceleration
+     */
+    @Test
+    public void testNoDriveIfNoAcceleration() {// Create a new vehicle
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
+
+        // Add physicalVehicle to simulation
+        physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
+
+        // Remember start position
+        RealVector startPosition = physicalVehicle.getPosition();
+
+        // Mock a simulation
+        long simulationLength = 5000;
+        long currentTime = 0;
+        long stepSize = 33;
+        while(currentTime < simulationLength) {
+            physicalVehicle.computePhysics(stepSize);
+            updateActuators(physicalVehicle, stepSize);
+            currentTime = currentTime + stepSize;
+        }
+
+        // Compute distance driven
+        RealVector distance = physicalVehicle.getPosition().subtract(startPosition);
+
+        // Check if distance is zero
+        Assert.assertEquals(0.0, distance.getNorm(), 0);
+    }
+
+    /**
+     * Test if air drag and friction brings the vehicle to a full stop
+     */
+    @Test
+    public void testWillComeToHold() {
+        // Create a new vehicle with a velocity
+        MassPointPhysicalVehicleBuilder physicalVehicleBuilder = new MassPointPhysicalVehicleBuilder();
+        physicalVehicleBuilder.setVelocity(new ArrayRealVector(new double[]{0.0, 0.01, 0.0}));
+        PhysicalVehicle physicalVehicle = physicalVehicleBuilder.buildPhysicalVehicle();
+
+        // Add physicalVehicle to simulation
+        physicalVehicle.putOnSurface(0.0, 0.0, 0.0);
+
+        // Mock a simulation
+        long simulationLength = 60000;
+        long currentTime = 0;
+        long stepSize = 33;
+        while(currentTime < simulationLength) {
+            physicalVehicle.computePhysics(stepSize);
+            updateActuators(physicalVehicle, stepSize);
+            currentTime = currentTime + stepSize;
+        }
+
+        // Test if velocity is zero
+        Assert.assertEquals(0.0, physicalVehicle.getVelocity().getNorm(), 0);
+    }
+
     //Todo Test if the rotation matrix stays orthogonal
+
+    private void updateActuators(PhysicalVehicle physicalVehicle, long timeDiffMs){
+        double deltaT = (timeDiffMs / 1000.0);
+        physicalVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).update(deltaT);
+        physicalVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT).update(deltaT);
+        physicalVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT).update(deltaT);
+        physicalVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT).update(deltaT);
+        physicalVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT).update(deltaT);
+        physicalVehicle.getSimulationVehicle().getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_MOTOR).update(deltaT);
+    }
 }
