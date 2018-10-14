@@ -93,7 +93,7 @@ public class SimulateVehicleTest {
 
         steering.setActuatorValueTarget(Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
     }
-
+    /*
     @Test
     public void firstTest(){
         Simulator sim = Simulator.getSharedInstance();
@@ -125,7 +125,7 @@ public class SimulateVehicleTest {
         sim.stopSimulation();
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
         assertTrue(true);
-    }
+    }*/
 
 
     /**
