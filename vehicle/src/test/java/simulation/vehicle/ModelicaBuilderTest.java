@@ -34,6 +34,7 @@ public class ModelicaBuilderTest {
         // Get default VDM values
         ModelicaPhysicalVehicle referencePhysicalVehicle = (ModelicaPhysicalVehicle) new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
         VehicleDynamicsModel referenceVDM = referencePhysicalVehicle.getVDM();
+
         // Calculate expected values
         double z = referenceVDM.getValue("z");
         double height = Vehicle.VEHICLE_DEFAULT_HEIGHT;
@@ -58,6 +59,7 @@ public class ModelicaBuilderTest {
         // Calculate expected remaining values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedGeometryPosition = new ArrayRealVector(new Double[]{0.0, 0.0, 0.0});
+        double expectedWheelRotationRate = 0.0;
 
         // Build default car
         ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
@@ -92,6 +94,10 @@ public class ModelicaBuilderTest {
         // Test physical values
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_1"), 0);
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_2"), 0);
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_3"), 0);
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_4"), 0);
     }
 
     @Test
@@ -103,12 +109,16 @@ public class ModelicaBuilderTest {
         // Calculate expected values
         double z = referenceVDM.getValue("z");
         RealVector expectedPosition = new ArrayRealVector(new double[]{12.0, -3.0, 3.5});
-        Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 7.0, -1.5, Math.PI / 2);
+        Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 7.0, -3.2, Math.PI / 2);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
         RealVector setVelocity = new ArrayRealVector(new double[]{1.0, -5.725, 12.0});
-        RealVector expectedVelocity = expectedRotation.operate(new ArrayRealVector(new double[]{-5.725, -1.0, 0.0}));
+        RealVector setVelocityLocal = expectedRotation.transpose().operate(setVelocity);
+        RealVector expectedVelocityLocal = new ArrayRealVector(new double[]{setVelocityLocal.getEntry(0), setVelocityLocal.getEntry(1), 0.0});
+        RealVector expectedVelocity = expectedRotation.operate(expectedVelocityLocal);
         RealVector setAngularVelocity = new ArrayRealVector(new double[]{7.0, -2.5, 11.75});
-        RealVector expectedAngularVelocity = expectedRotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, 11.75}));
+        RealVector setAngularVelocityLocal = expectedRotation.transpose().operate(setAngularVelocity);
+        RealVector expectedAngularVelocityLocal = new ArrayRealVector(new double[]{0.0, 0.0, setAngularVelocityLocal.getEntry(2)});
+        RealVector expectedAngularVelocity = expectedRotation.operate(expectedAngularVelocityLocal);
         double expectedMass = 1000.0;
         double expectedWidth = 2.125;
         double expectedLength = 10.0;
@@ -123,6 +133,7 @@ public class ModelicaBuilderTest {
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedGeometryPositionOffset = expectedRotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, expectedHeight/2 - z}));
         RealVector expectedGeometryPosition = expectedPosition.add(expectedGeometryPositionOffset);
+        double expectedWheelRotationRate = expectedVelocityLocal.getEntry(0) / expectedWheelRadius;
 
         // Build custom car
         ModelicaPhysicalVehicleBuilder builder = new ModelicaPhysicalVehicleBuilder();
@@ -167,5 +178,9 @@ public class ModelicaBuilderTest {
         // Test physical values
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_1"), 0);
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_2"), 0);
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_3"), 0);
+        Assert.assertEquals(expectedWheelRotationRate, physicalVehicle.getVDM().getValue("omega_wheel_4"), 0);
     }
 }

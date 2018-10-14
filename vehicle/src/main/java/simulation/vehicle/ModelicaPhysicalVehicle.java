@@ -156,10 +156,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         if(physicalVehicleInitialised){
             throw new IllegalStateException("Angular velocity can only be set before initialisation.");
         }
-        // Compute angular velocity in local coordinates
-        RealVector localAngularVelocity = rotation.transpose().operate(angularVelocity);
-        // Set initial velocity values
-        vehicleDynamicsModel.setParameter("omega_z_0", localAngularVelocity.getEntry(2));
+        throw new UnsupportedOperationException("Setting the velocity before initialisation is done by the builder.");
     }
 
     /**

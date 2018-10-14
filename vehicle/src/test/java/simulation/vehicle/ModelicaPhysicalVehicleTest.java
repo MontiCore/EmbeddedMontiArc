@@ -270,14 +270,10 @@ public class ModelicaPhysicalVehicleTest {
         physicalVehicle.setVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
-    @Test
-    public void setAngularVelocityNormal(){
+    @Test(expected = UnsupportedOperationException.class)
+    public void setAngularVelocityFailUninitialized(){
         ModelicaPhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
-        RealVector angularVelocity = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
-        physicalVehicle.setAngularVelocity(angularVelocity);
-        physicalVehicle.initPhysics();
-        RealVector expectedAngularVelocity = physicalVehicle.getRotation().operate(new ArrayRealVector(new double[]{0.0, 0.0, angularVelocity.getEntry(2)}));
-        Assert.assertTrue(MathHelper.vectorEquals(expectedAngularVelocity, physicalVehicle.getAngularVelocity(), 0.00000001));
+        physicalVehicle.setAngularVelocity(new ArrayRealVector(new double[]{1.0, 2.0, 3.0}));
     }
 
     @Test(expected = IllegalStateException.class)

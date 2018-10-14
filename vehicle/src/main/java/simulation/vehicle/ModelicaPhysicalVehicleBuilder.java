@@ -1,6 +1,7 @@
 package simulation.vehicle;
 
 import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 /**
@@ -25,15 +26,46 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
         PhysicalVehicle physicalVehicle = new ModelicaPhysicalVehicle();
 
         if(this.velocity.isPresent()){
+            // Get rotation
+            RealMatrix rotation;
+            if(this.rotation.isPresent()){
+                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+            }else{
+                rotation = ModelicaPhysicalVehicle.coordinateRotation.copy();
+            }
             // Compute velocity in local coordinates
-            RealVector localVelocity = physicalVehicle.getRotation().transpose().operate(this.velocity.get());
+            RealVector localVelocity = rotation.transpose().operate(this.velocity.get());
             // Set initial velocity values
             ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("v_x_0", localVelocity.getEntry(0));
             ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("v_y_0", localVelocity.getEntry(1));
-            // todo set wheel velocity
-
+            // Get wheelRadius
+            double wheelRadius;
+            if(this.wheelRadius.isPresent()){
+                wheelRadius = this.wheelRadius.get();
+            }else {
+                VehicleDynamicsModel model = new VehicleDynamicsModel();
+                model.initialise();
+                wheelRadius = model.getValue("r_nom");
+            }
+            // Set initial wheel rotation rates
+            ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_1_0", localVelocity.getEntry(0) / wheelRadius);
+            ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_2_0", localVelocity.getEntry(0) / wheelRadius);
+            ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_3_0", localVelocity.getEntry(0) / wheelRadius);
+            ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_wheel_4_0", localVelocity.getEntry(0) / wheelRadius);
         }
-        this.angularVelocity.ifPresent(physicalVehicle::setAngularVelocity);
+        if(this.angularVelocity.isPresent()){
+            // Get rotation
+            RealMatrix rotation;
+            if(this.rotation.isPresent()){
+                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+            }else{
+                rotation = ModelicaPhysicalVehicle.coordinateRotation.copy();
+            }
+            // Compute angular velocity in local coordinates
+            RealVector localAngularVelocity = rotation.transpose().operate(this.angularVelocity.get());
+            // Set initial velocity values
+            ((ModelicaPhysicalVehicle) physicalVehicle).getVDM().setParameter("omega_z_0", localAngularVelocity.getEntry(2));
+        }
 
         this.mass.ifPresent(physicalVehicle::setMass);
 
