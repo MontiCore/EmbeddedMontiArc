@@ -400,8 +400,11 @@ public class GeneratorCPP implements Generator {
         cmake.addCMakeCommandEnd("target_include_directories(AutopilotAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
         cmake.addCMakeCommandEnd("target_link_libraries(AutopilotAdapter PUBLIC ${LIBS})");
         cmake.addCMakeCommandEnd("set_target_properties(AutopilotAdapter PROPERTIES LINKER_LANGUAGE CXX)");
+        cmake.addCMakeCommand("IF (WIN32)");
+        cmake.addCMakeCommandEnd("set_target_properties(AutopilotAdapter PROPERTIES PREFIX \"\")");
+        cmake.addCMakeCommand("ENDIF()");
         // install shared lib
-        cmake.addCMakeCommandEnd("install(TARGETS AutopilotAdapter DESTINATION \"./\")");
+        cmake.addCMakeCommandEnd("install(TARGETS AutopilotAdapter DESTINATION $ENV{DLL_DIR})");
         cmake.addCMakeCommandEnd("export(TARGETS AutopilotAdapter FILE de_rwth_armin_modeling_autopilot_autopilotAdapter.cmake)");
     }
 
