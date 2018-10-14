@@ -22,7 +22,7 @@ package de.monticore.lang.embeddedmontiarc;
 
 grammar EmbeddedMontiArcMath extends  de.monticore.lang.embeddedmontiarcdynamic.EmbeddedMontiArcDynamic,
                                       de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
-                                      de.monticore.lang.Math{
+                                      de.monticore.lang.MathOpt {
 
     //EMAMCompilationUnit = EMACompilationUnit;
     start EMACompilationUnit;

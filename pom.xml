@@ -42,10 +42,11 @@
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
         <Embedded-MontiArc.version>0.1.6-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Dynamics.version>0.0.1-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
+        <Embedded-MontiArc-Dynamics.version>0.0.2-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
         <Embedded-MontiArc-Behaviour.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
-        <!-- TODO: Include MathOpt -->
+        <MathOpt.version>0.1.0</MathOpt.version>
+
 
 
         <!-- .. Libraries .................................................. -->
@@ -190,6 +191,20 @@
             <groupId>de.monticore.lang</groupId>
             <artifactId>math</artifactId>
             <version>${Math.version}</version>
+            <classifier>${grammars.classifier}</classifier>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>math-opt</artifactId>
+            <version>${MathOpt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang</groupId>
+            <artifactId>math-opt</artifactId>
+            <version>${MathOpt.version}</version>
             <classifier>${grammars.classifier}</classifier>
             <scope>provided</scope>
         </dependency>
