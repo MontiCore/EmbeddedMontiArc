@@ -23,6 +23,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
 import de.monticore.symboltable.SymbolKind;
 
+@Deprecated
 public class EMAMCompilationUnitKind implements SymbolKind {
 
     private static final String NAME = "de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EMAMCompilationUnitKind";

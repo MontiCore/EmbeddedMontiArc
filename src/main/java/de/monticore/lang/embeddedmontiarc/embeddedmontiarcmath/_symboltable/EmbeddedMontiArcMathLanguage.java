@@ -29,6 +29,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedM
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortArraySymbol2MathVariableDeclarationSymbolTypeFilter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicLanguage;
 import de.monticore.lang.math._symboltable.MathLanguage;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
@@ -43,7 +44,7 @@ import java.util.*;
 public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage{
     public static final String FILE_ENDING = "emam";
     public static final ModelingLanguage HOST_LANGUAGE =
-            new EmbeddedMontiArcLanguage();
+            new EmbeddedMontiArcDynamicLanguage();
     public static final ModelingLanguage EMBEDDED_LANGUAGE =
             new MathLanguage();
 
@@ -57,11 +58,15 @@ public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage{
     public Collection<ResolvingFilter<? extends Symbol>> getResolvingFilters() {
         List<ResolvingFilter<? extends Symbol>> ret =
                 new ArrayList<>(super.getResolvingFilters());
+
         ret.add(new ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter());
         ret.add(new PortArraySymbol2MathVariableDeclarationSymbolTypeFilter());
+
         // ret.add(new PortSymbol2MathVariableDeclarationTypeFilter());
         return ret;
     }
+
+
 
     @Override
     protected EmbeddedMontiArcMathModelLoader provideModelLoader() {

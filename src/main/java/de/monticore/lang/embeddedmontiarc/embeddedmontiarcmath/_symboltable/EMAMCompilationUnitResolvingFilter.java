@@ -25,6 +25,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
 import de.monticore.symboltable.resolving.CommonResolvingFilter;
 
+@Deprecated
 public class EMAMCompilationUnitResolvingFilter extends CommonResolvingFilter<EMAMCompilationUnitSymbol> {
 
     public EMAMCompilationUnitResolvingFilter() {

@@ -22,6 +22,7 @@
 
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
 
+@Deprecated
 public class EMAMCompilationUnitSymbol extends EMAMCompilationUnitSymbolEMPTY {
 
   public EMAMCompilationUnitSymbol(String name) {
