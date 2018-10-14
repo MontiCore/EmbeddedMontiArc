@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
