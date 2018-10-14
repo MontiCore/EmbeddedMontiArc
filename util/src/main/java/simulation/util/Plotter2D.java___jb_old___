@@ -31,9 +31,9 @@ public final class Plotter2D{
 
     /* A circle shape to be used by the plotting renderer */
     private static java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
-    private static java.awt.geom.Ellipse2D.Double shapeLarge = new java.awt.geom.Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0); // remove
+    private static java.awt.geom.Ellipse2D.Double shapeLarge = new java.awt.geom.Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0);
 
-    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms){ // remove
+    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms){
         if(counter != 241){
             //return;
         }
@@ -188,6 +188,7 @@ public final class Plotter2D{
         }
     }
 
+
     /**
      * Function that creates the vehicle position chart
      *
@@ -315,6 +316,7 @@ public final class Plotter2D{
         return rotationRateChart;
     }
 
+
     /**
      * Function that creates the vehicle position XY data set
      *
@@ -344,6 +346,7 @@ public final class Plotter2D{
         return vehiclePositionDataSet;
     }
 
+
     /**
      * Function that creates the vehicle velocity XY data set
      *
@@ -372,6 +375,7 @@ public final class Plotter2D{
 
         return vehicleVelocityDataSet;
     }
+
 
     /**
      * Function that creates the vehicle rotation rates XY data set
