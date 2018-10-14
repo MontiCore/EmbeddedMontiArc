@@ -173,7 +173,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * @param torque Torque vector that acts around the center of mass
      */
     public void addTorque(RealVector torque){
-        // Todo Expand the model to accept external torques
+        // ToDo Expand the model to accept external torques
         throw new UnsupportedOperationException("External torques are currently not supported.");
     }
 
@@ -502,7 +502,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getTorque(){
-        // Todo Expand the model to accept external torques
+        // ToDo Expand the model to accept external torques
         throw new UnsupportedOperationException("External torques are currently not supported.");
     }
 

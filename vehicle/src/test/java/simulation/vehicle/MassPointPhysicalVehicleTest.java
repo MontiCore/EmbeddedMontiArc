@@ -233,7 +233,7 @@ public class MassPointPhysicalVehicleTest {
         RealVector position = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setPosition(position);
         Assert.assertTrue(MathHelper.vectorEquals(position, physicalVehicle.getPosition(), 0.00000001));
-        //todo check massPoint information
+        //ToDo check massPoint information
     }
 
     @Test(expected = IllegalStateException.class)
@@ -249,7 +249,7 @@ public class MassPointPhysicalVehicleTest {
         RealMatrix rotation = new BlockRealMatrix(rot.getMatrix());
         physicalVehicle.setRotation(rotation);
         Assert.assertTrue(MathHelper.matrixEquals(rotation, physicalVehicle.getRotation(), 0.00000001));
-        //todo check massPoint information
+        //ToDo check massPoint information
     }
 
     @Test(expected = IllegalStateException.class)
@@ -308,7 +308,7 @@ public class MassPointPhysicalVehicleTest {
         RealVector geometryPosition = new ArrayRealVector(new double[]{1.0, 2.0, 3.0});
         physicalVehicle.setGeometryPosition(geometryPosition);
         Assert.assertTrue(MathHelper.vectorEquals(geometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
-        //todo check massPoint information
+        //ToDo check massPoint information
     }
 
     @Test(expected = IllegalStateException.class)

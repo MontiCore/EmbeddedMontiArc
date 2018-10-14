@@ -78,7 +78,7 @@ public class PhysicsEngine{
      * @return Weather a collision has occurred or not
      */
     private static boolean detectCollision(PhysicalObject objectA, PhysicalObject objectB){
-        // Todo Use better short cuts
+        // ToDo Use better short cuts
         // Do not compute collision if its the same object
         if (objectA.getId() == objectB.getId()){
             return false;
@@ -95,7 +95,7 @@ public class PhysicsEngine{
         }
 
         // Perform collision computation
-        // toDo Use a three dimensional collision detection
+        // ToDo Use a three dimensional collision detection
         List<Map.Entry<RealVector, RealVector>> boundariesA = objectA.getBoundaryVectors();
         List<Map.Entry<RealVector, RealVector>> boundariesB = objectB.getBoundaryVectors();
         return MathHelper.checkIntersection2D(boundariesA, boundariesB);

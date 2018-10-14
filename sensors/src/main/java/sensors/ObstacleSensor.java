@@ -22,7 +22,7 @@ public class ObstacleSensor extends AbstractSensor {
 
     protected void calculateValue() {
         result.clear();
-        //TODO: result.addAll Collections.synchronizedList (Alle physikalischen Objekte in einer Liste brauchen wir)
+        //ToDo: result.addAll Collections.synchronizedList (Alle physikalischen Objekte in einer Liste brauchen wir)
         value[0] = Double.MAX_VALUE;
         for(PhysicalObject k : result){
             Double t = getPhysicalVehicle().getGeometryPosition().getDistance(k.getGeometryPosition());

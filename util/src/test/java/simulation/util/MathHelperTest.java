@@ -89,7 +89,7 @@ public class MathHelperTest {
         MathHelper.matrixInvert(matrix);
     }
 
-    //Todo matrix re-orthonormalize
+    //ToDo matrix re-orthonormalize
 
     @Test
     public void crossProductNormal() {

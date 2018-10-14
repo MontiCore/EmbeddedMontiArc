@@ -28,7 +28,7 @@ public abstract class PhysicalVehicleBuilder {
     protected Optional<Double> wheelDistToFront = Optional.empty();
     protected Optional<Double> wheelDistToBack = Optional.empty();
 
-    //Todo add actuators to the build process and to the JSON serialisation
+    //ToDo add actuators to the build process and to the JSON serialisation
 
     protected Optional<Optional<Bus>> controllerBus = Optional.empty();
     protected Optional<Optional<FunctionBlockInterface>> controller = Optional.empty();

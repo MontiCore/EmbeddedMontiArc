@@ -19,7 +19,7 @@ public class CameraSensor extends AbstractSensor {
     private Optional<Image> value = Optional.empty();
     private Optional<Image> rightImage = Optional.empty();
     private Optional<Image> originalImage = Optional.empty();
-    // camera parameter TODO: get them from the real used camera
+    // camera parameter ToDo: get them from the real used camera
     private double cameraHFOV = 90.4642140657; // [deg]
     private double focalDistance = 0.1369274884123756; // [m]
     private double baseline = 0.02; // [m]
@@ -60,7 +60,7 @@ public class CameraSensor extends AbstractSensor {
         Optional<Image> temp = getPhysicalVehicle().getSimulationVehicle().getCameraImage();
         if (temp.isPresent()) {
             this.originalImage = Optional.of(temp.get());
-            // TODO: Add noise in Image
+            // ToDo: Add noise in Image
             ImagePlus imagePlus = new ImagePlus();
             imagePlus.setImage(temp.get());
             int width = imagePlus.getWidth() / 2;
@@ -110,7 +110,7 @@ public class CameraSensor extends AbstractSensor {
         float perspectiveTop = 3f;
         float perspectiveBottom = 3f;
 
-        // TODO read from artwork profile
+        // ToDo read from artwork profile
         int top3d = (int) (h * perspectiveTop / 10);
         // int top3d = (int) (h * perspectiveTop / 100);
         int bot3d = (int) (h * perspectiveBottom / 100);
