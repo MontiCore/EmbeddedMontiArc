@@ -30,11 +30,21 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Embedded
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicLanguage;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
 import de.monticore.lang.math._symboltable.MathLanguage;
+import de.monticore.lang.mathopt._symboltable.MathOptLanguage;
+import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
+import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
+import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
+import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 
 public class EmbeddedMontiArcMathLanguageFamiliy extends ModelingLanguageFamily {
 
   public EmbeddedMontiArcMathLanguageFamiliy() {
-    addModelingLanguage(new EmbeddedMontiArcDynamicLanguage());
+    addModelingLanguage(new EmbeddedMontiArcMathLanguage());
+    addModelingLanguage(new MathOptLanguage());
+    addModelingLanguage(new StreamLanguage());
+    addModelingLanguage(new StructLanguage());
+    addModelingLanguage(new StreamUnitsLanguage());
+    addModelingLanguage(new EnumLangLanguage());
     addModelingLanguage(new EventLanguage());
     addModelingLanguage(new MathLanguage());
   }

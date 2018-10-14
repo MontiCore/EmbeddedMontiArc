@@ -31,6 +31,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.PortSymbo
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.adapter.ResolutionDeclarationSymbol2MathVariableDeclarationTypeFilter;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.EmbeddedMontiArcDynamicLanguage;
 import de.monticore.lang.math._symboltable.MathLanguage;
+import de.monticore.lang.mathopt._symboltable.MathOptLanguage;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.monticore.symboltable.Symbol;
@@ -46,11 +47,11 @@ public class EmbeddedMontiArcMathLanguage extends EmbeddingModelingLanguage{
     public static final ModelingLanguage HOST_LANGUAGE =
             new EmbeddedMontiArcDynamicLanguage();
     public static final ModelingLanguage EMBEDDED_LANGUAGE =
-            new MathLanguage();
+            new MathOptLanguage();
 
 
     public EmbeddedMontiArcMathLanguage() {
-        super("Embedded MontiArc Math Language", FILE_ENDING,
+        super("Embedded MontiArc (+dynamics) Math (+Opt) Language", FILE_ENDING,
                 HOST_LANGUAGE, EMBEDDED_LANGUAGE);
     }
 
