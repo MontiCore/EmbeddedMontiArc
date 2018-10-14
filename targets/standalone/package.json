@@ -68,7 +68,7 @@
     "docs:clean": "yarn run logo && lerna run --scope \"@elysium/!(target-)*\" --parallel docs:clean",
     "watch": "yarn build --watch --mode development",
     "start": "yarn run logo && node scripts/start",
-    "package": "yarn run prepare && node scripts/package"
+    "package": "node scripts/package"
   },
   "devDependencies": {
     "@theia/cli": "latest",
