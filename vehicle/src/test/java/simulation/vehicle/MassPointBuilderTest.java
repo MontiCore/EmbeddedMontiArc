@@ -95,7 +95,7 @@ public class MassPointBuilderTest {
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedTorque, physicalVehicle.getTorque(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
-        // todo mass distribution and distances and values
+        // todo Check mass distribution and distances and values
     }
 
     @Test
@@ -168,7 +168,7 @@ public class MassPointBuilderTest {
         Assert.assertTrue(MathHelper.vectorEquals(expectedForce, physicalVehicle.getForce(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedTorque, physicalVehicle.getTorque(), 0.00000001));
         Assert.assertTrue(MathHelper.vectorEquals(expectedGeometryPosition, physicalVehicle.getGeometryPosition(), 0.00000001));
-        // todo mass distribution and distances and values
+        // todo Check mass distribution and distances and values
     }
 
     /**

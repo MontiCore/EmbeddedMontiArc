@@ -999,7 +999,7 @@ public class Vehicle {
      */
     public void setHeight(double height){
         if(vehicleInitialised){
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Height can only be set before initialisation.");
         }
         this.height = height;
     }
@@ -1014,7 +1014,7 @@ public class Vehicle {
             return mass;
         }else{
             if(!vehicleInitialised) {
-                throw new IllegalStateException("Ha"); //todo error
+                throw new IllegalStateException("Mass can only be read after initialisation.");
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
                 return  modelicaPhysicalVehicle.getVDM().getValue("m");
@@ -1029,7 +1029,7 @@ public class Vehicle {
      */
     public void setMass(double mass){
         if(vehicleInitialised){
-            throw new IllegalStateException("Ha"); //Todo error
+            throw new IllegalStateException("Mass can only be set before initialisation.");
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             this.mass = mass;
@@ -1049,7 +1049,7 @@ public class Vehicle {
             return wheelRadius;
         }else{
             if(!vehicleInitialised) {
-                throw new IllegalStateException("Ha"); //todo error
+                throw new IllegalStateException("Wheel radius can only be read after initialisation.");
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
                 return modelicaPhysicalVehicle.getVDM().getValue("r_nom");
@@ -1064,7 +1064,7 @@ public class Vehicle {
      */
     public void setWheelRadius(double wheelRadius){
         if(vehicleInitialised){
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Wheel radius can only be set before initialisation.");
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             this.wheelRadius = wheelRadius;
@@ -1084,7 +1084,7 @@ public class Vehicle {
             return wheelDistLeftRightFrontSide;
         }else{
             if(!vehicleInitialised) {
-                throw new IllegalStateException("Ha"); //todo error
+                throw new IllegalStateException("Front axel wheel distance can only be read after initialisation.");
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
                 return modelicaPhysicalVehicle.getVDM().getValue("TW_f");
@@ -1099,7 +1099,7 @@ public class Vehicle {
      */
     public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
         if (vehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Front axel wheel distance can only be set before initialisation.");
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle){
             this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
@@ -1119,7 +1119,7 @@ public class Vehicle {
             return wheelDistLeftRightBackSide;
         }else{
             if(!vehicleInitialised){
-                throw new IllegalStateException("Ha"); //todo error
+                throw new IllegalStateException("Back axel wheel distance can only be set before initialisation.");
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
                 return modelicaPhysicalVehicle.getVDM().getValue("TW_r");
@@ -1134,7 +1134,7 @@ public class Vehicle {
      */
     public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
         if (vehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Position can only be set after initialisation.");
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
@@ -1154,7 +1154,7 @@ public class Vehicle {
             return wheelDistToFront;
         }else{
             if(!vehicleInitialised){
-                throw new IllegalStateException("Ha"); //todo error
+                throw new IllegalStateException("Distance from the center of mass to the front axel can only be read after initialisation.");
             }else{
                 ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
                 return modelicaPhysicalVehicle.getVDM().getValue("L_1");
@@ -1169,7 +1169,7 @@ public class Vehicle {
      */
     public void setWheelDistToFront(double wheelDistToFront){
         if (vehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Distance from the center of mass to the front axel can only be set before initialisation.");
         }
         if (physicalVehicle instanceof MassPointPhysicalVehicle) {
             this.wheelDistToFront = wheelDistToFront;
@@ -1204,7 +1204,7 @@ public class Vehicle {
      */
     public void setWheelDistToBack(double wheelDistToBack){
         if (vehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Distance from the center of mass to the back axel can only be set before initialisation.");
         }
         if(physicalVehicle instanceof MassPointPhysicalVehicle) {
             this.wheelDistToBack = wheelDistToBack;
@@ -1267,7 +1267,7 @@ public class Vehicle {
      */
     public void setVehicleInitialised(boolean vehicleInitialised){
         if(!vehicleInitialised){
-            throw new IllegalArgumentException("Ha"); //todo error
+            throw new IllegalArgumentException("Vehicle can only be initialised once.");
         }
         this.vehicleInitialised = vehicleInitialised;
     }
@@ -1320,7 +1320,7 @@ public class Vehicle {
             }
         }
 
-        // TODO: This logic should be moved to the controller!
+        // TODO This logic should be moved to the controller
         Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
         if (streetTypeSensor.isPresent()) {
             String streetType = (String)(streetTypeSensor.get().getValue());

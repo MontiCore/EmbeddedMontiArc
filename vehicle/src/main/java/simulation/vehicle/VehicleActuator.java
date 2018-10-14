@@ -613,10 +613,10 @@ public class VehicleActuator {
      */
     public VehicleActuator(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate){
         if(actuatorValueMin > actuatorValueMax){
-            throw new IllegalArgumentException("Ha"); //todo error message
+            throw new IllegalArgumentException("Lower end " + actuatorValueMin + " should not be higher than the upper end " + actuatorValueMax + ".");
         }
         if(actuatorChangeRate < 0){
-            throw new IllegalArgumentException("Ha"); //todo error message
+            throw new IllegalArgumentException("Change rate " + actuatorChangeRate + " should not be negative.");
         }
         this.actuatorType = actuatorType;
         this.actuatorValueMin = actuatorValueMin;

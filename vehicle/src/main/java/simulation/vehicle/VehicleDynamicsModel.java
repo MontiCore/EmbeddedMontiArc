@@ -43,7 +43,7 @@ public class VehicleDynamicsModel {
      */
     public void initialise(){
         if(isInitialised){
-            throw new IllegalStateException("Ha"); //todo error if already initialised
+            throw new IllegalStateException("Vehicle dynamics model can only be initialized once.");
         }
         double stopTime = 10.0;
         inputFilter.init(0, stopTime);
@@ -60,7 +60,7 @@ public class VehicleDynamicsModel {
      */
     public void doStep(double stepSize){
         if(!isInitialised){
-            throw new IllegalStateException("Ha"); //ToDo error if not initialised
+            throw new IllegalStateException("A integration step can only be performed after initialisation.");
         }
         if(needsExchanging){
             exchangeValues();
@@ -79,7 +79,7 @@ public class VehicleDynamicsModel {
      */
     public void setParameter(String name, double value){
         if (isInitialised) {
-            throw new IllegalStateException("Already initialised"); //todo error if already initialised
+            throw new IllegalStateException("A parameter can only be set before initialisation.");
         }
         switch (name) {
             // Input filter parameters
@@ -162,7 +162,7 @@ public class VehicleDynamicsModel {
                 suspension.write(name).with(value);
                 break;
             default:
-                throw new IllegalArgumentException("Ha"); //todo error
+                throw new IllegalArgumentException("Parameter " + name + " does not exist.");
         }
         needsExchanging = true;
     }
@@ -174,7 +174,7 @@ public class VehicleDynamicsModel {
      */
     public void setInput(String name, double value){
         if(!isInitialised){
-            throw new IllegalStateException("Ha"); //todo error if not initialised
+            throw new IllegalStateException("A input value can only be set after initialisation.");
         }
         switch (name) {
             // Input filter inputs
@@ -235,7 +235,7 @@ public class VehicleDynamicsModel {
                 tires.write(name).with(value);
                 break;
             default:
-                throw new IllegalArgumentException("Ha"); //todo error
+                throw new IllegalArgumentException("Input value " + name + " does not exist.");
         }
         needsExchanging = true;
     }
@@ -247,7 +247,7 @@ public class VehicleDynamicsModel {
      */
     public double getValue(String name){
         if(!isInitialised){
-            throw new IllegalStateException("Ha"); //todo error if not initialised
+            throw new IllegalStateException("A value can only be read after initialisation.");
         }
         if (needsExchanging) {
             exchangeValues();
@@ -455,7 +455,7 @@ public class VehicleDynamicsModel {
             case "F_y_4_rlx":
                 return tires.read(name).asDouble();
             default:
-                throw new IllegalArgumentException("Ha"); //todo error
+                throw new IllegalArgumentException("Value " + name + " does not exist.");
         }
     }
 

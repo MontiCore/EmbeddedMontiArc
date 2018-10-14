@@ -685,7 +685,7 @@ public abstract class PhysicalVehicle implements SimulationLoopExecutable, IPhys
     @Override
     public void setHeight(double height){
         if(physicalVehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Height can only be set before initialisation.");
         }
         simulationVehicle.setHeight(height);
     }

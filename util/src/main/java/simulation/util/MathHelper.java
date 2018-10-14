@@ -395,7 +395,7 @@ public final class MathHelper {
     public static RealMatrix matrixInvert(RealMatrix matrix) {
         // Check for valid input
         if(!matrix.isSquare()){
-            throw new IllegalArgumentException("Matrix should be a square matrix to be inverted"); //todo error
+            throw new IllegalArgumentException("Matrix " + matrix + "should be a square matrix.");
         }
 
         if (matrix.getColumnDimension() > 0) {
@@ -407,7 +407,7 @@ public final class MathHelper {
             }
         }
 
-        throw new IllegalArgumentException("MathHelper: matrixInvert - matrix is not invertible: " + matrix.toString()); //todo error
+        throw new IllegalArgumentException("Matrix " + matrix + "should not be singular.");
     }
 
     /**
@@ -419,10 +419,10 @@ public final class MathHelper {
     public static RealMatrix matrixReOrthonormalize(RealMatrix matrix) {
         // Checks for valid input
         if (matrix.getColumnDimension() != 3 || !matrix.isSquare()) {
-            throw new IllegalArgumentException("Matrix should be a 3x3 matrix"); //todo error
+            throw new IllegalArgumentException("Matrix " + matrix + " should be a 3x3 matrix.");
         }
         if (matrix.getColumnVector(0).getNorm() == 0 || matrix.getColumnVector(1).getNorm() == 0 || matrix.getColumnVector(2).getNorm() == 0){
-            throw new IllegalArgumentException("Ha"); //todo error
+            throw new IllegalArgumentException("Matrix " + matrix + " should have no zero-norm columns.");
         }
 
         // Prepare variables
@@ -457,10 +457,10 @@ public final class MathHelper {
     public static RealVector crossProduct(RealVector vector1, RealVector vector2) {
         // Check for valid input
         if(vector1.getDimension() != 3){
-            throw new IllegalArgumentException("First vector should be a three dimensional vector"); //todo error
+            throw new IllegalArgumentException("First vector " + vector1 + " should be a three dimensional vector.");
         }
         if(vector2.getDimension() != 3){
-            throw new IllegalArgumentException("Second vector should be a three dimensional vector"); //todo error
+            throw new IllegalArgumentException("Second vector " + vector2 + " should be a three dimensional vector.");
         }
 
         // This is also an example of how to use the vector3DToCrossProductMatrix function
@@ -479,7 +479,7 @@ public final class MathHelper {
     public static RealMatrix vectorToCrossProductMatrix(RealVector vector) {
         // Check for valid input
         if(vector.getDimension() != 3){
-            throw new IllegalArgumentException("Vector should be a three dimensional vector"); //todo error
+            throw new IllegalArgumentException("Vector " + vector + " should be a three dimensional vector.");
         }
 
         double[][] matrixEntries = {{0.0, -vector.getEntry(2), vector.getEntry(1)}, {vector.getEntry(2), 0.0, -vector.getEntry(0)}, {-vector.getEntry(1), vector.getEntry(0), 0.0}};
@@ -496,18 +496,18 @@ public final class MathHelper {
     public static double angle(RealVector vector1, RealVector vector2){
         // Checks for valid input
         if(vector1.getDimension() != 3){
-            throw new IllegalArgumentException("First vector should be a three dimensional vector"); //todo error
+            throw new IllegalArgumentException("First vector " + vector1 + " should be a three dimensional vector.");
         }
         if(vector2.getDimension() != 3){
-            throw new IllegalArgumentException("Second vector should be a three dimensional vector"); //todo error
+            throw new IllegalArgumentException("Second vector " + vector2 + " should be a three dimensional vector.");
         }
         double norm1 = vector1.getNorm();
         if(norm1 == 0){
-            throw new IllegalArgumentException("Norm of first vector should not be zero"); //todo error
+            throw new IllegalArgumentException("Second vector " + vector2 + " should not have a zero norm.");
         }
         double norm2 = vector2.getNorm();
         if(norm2 == 0){
-            throw new IllegalArgumentException("Norm of second vector should not be zero"); //todo error
+            throw new IllegalArgumentException("Second vector " + vector2 + " should not have a zero norm.");
         }
         double dotProduct = vector1.dotProduct(vector2);
         return Math.acos(dotProduct / (norm1 * norm2));
@@ -522,7 +522,7 @@ public final class MathHelper {
     public static Vector3D realTo3D(RealVector vector){
         // Checks for valid input
         if(vector.getDimension() != 3){
-            throw new IllegalArgumentException("The vector should be a three dimensional vector"); //todo error
+            throw new IllegalArgumentException("Vector " + vector + " should be a three dimensional vector.");
         }
         return  new Vector3D(vector.getEntry(0), vector.getEntry(1), vector.getEntry(2));
     }
@@ -535,7 +535,7 @@ public final class MathHelper {
      * @return True if 2D intersection is non-empty, otherwise false
      */
     public static boolean checkIntersection2D(List<Map.Entry<RealVector, RealVector>> vectorsOne, List<Map.Entry<RealVector, RealVector>> vectorsTwo) {
-        // ToDo is unnecessary with three dimensional collision detection
+        // ToDo Function is unnecessary with three dimensional collision detection
         // If any list is empty, return false
         if (vectorsOne.isEmpty() || vectorsTwo.isEmpty()) {
             return false;
@@ -585,7 +585,7 @@ public final class MathHelper {
     public static long randomLong(long lower, long upper) {
         // Check for valid input
         if(lower > upper){
-            throw new IllegalArgumentException("Ha"); //todo
+            throw new IllegalArgumentException("Lower end " + lower + " should not be higher as upper end " + upper + ".");
         }
         // For same value return the same value
         if (lower == upper) {
@@ -607,7 +607,7 @@ public final class MathHelper {
     public static int randomInt(int lower, int upper) {
         // Check for valid input
         if(lower > upper){
-            throw new IllegalArgumentException("Ha"); //todo
+            throw new IllegalArgumentException("Lower end " + lower + " should not be higher as upper end " + upper + ".");
         }
         // For same value return the same value
         if (lower == upper) {

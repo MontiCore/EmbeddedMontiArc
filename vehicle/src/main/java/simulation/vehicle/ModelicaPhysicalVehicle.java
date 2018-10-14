@@ -78,7 +78,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void setPosition(RealVector position){
         if(!physicalVehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Position can only be set after initialisation.");
         }
         this.position = position.copy();
     }
@@ -99,7 +99,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void setRotation(RealMatrix rotation){
         if(!physicalVehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Rotation can only be set after initialisation.");
         }
         this.rotation = rotation.copy();
         //todo yaw angle
@@ -127,9 +127,9 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void setVelocity(RealVector velocity){
         if(physicalVehicleInitialised){
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Velocity can only be set before initialisation.");
         }else{
-            throw new UnsupportedOperationException("Done by builder"); //todo error
+            throw new UnsupportedOperationException("Setting the velocity before initialisation is done by the builder.");
         }
     }
 
@@ -153,7 +153,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void setAngularVelocity(RealVector angularVelocity){
         if(physicalVehicleInitialised){
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Angular velocity can only be set before initialisation.");
         }
         // Compute angular velocity in local coordinates
         RealVector localAngularVelocity = rotation.transpose().operate(angularVelocity);
@@ -175,7 +175,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * @param torque Torque vector that acts around the center of mass
      */
     public void addTorque(RealVector torque){
-        throw new UnsupportedOperationException("Ha"); //todo error
+        // Todo Expand the model to accept external torques
+        throw new UnsupportedOperationException("External torques are currently not supported.");
     }
 
     /**
@@ -194,7 +195,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void setMass(double mass){
         if(physicalVehicleInitialised) {
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Mass can only be set before initialisation.");
         }
         simulationVehicle.setMass(mass);
     }
@@ -234,7 +235,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-        throw new UnsupportedOperationException("Ha"); //todo error
+        throw new UnsupportedOperationException("Geometry position offset is determined by the chassis rotation.");
     }
 
     /**
@@ -243,7 +244,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
-        // ToDo is unnecessary with three dimensional collision detection
+        // ToDo Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {getLength(), 0.0, 0.0});
         RealVector relVectorLeftRight = new ArrayRealVector(new double[] {0.0, -getWidth(), 0.0});
@@ -468,7 +469,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
     @Override
     public void initPhysics() {
         if(physicalVehicleInitialised){
-            throw new IllegalStateException("Ha"); //todo error
+            throw new IllegalStateException("Physical Vehicle can only be initialised once.");
         }
         // Set parameters for the VDM
 
@@ -503,7 +504,8 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getTorque(){
-        throw new UnsupportedOperationException("Ha"); //todo error
+        // Todo Expand the model to accept external torques
+        throw new UnsupportedOperationException("External torques are currently not supported.");
     }
 
     /**

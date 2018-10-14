@@ -1440,7 +1440,7 @@ public class SimulatorTest {
             return this.uniqueId;
         }
         public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
-            // ToDo is unnecessary with three dimensional collision detection
+            // ToDo Function is unnecessary with three dimensional collision detection
             return new ArrayList<>();
         }
         public void computePhysics(long deltaTms){

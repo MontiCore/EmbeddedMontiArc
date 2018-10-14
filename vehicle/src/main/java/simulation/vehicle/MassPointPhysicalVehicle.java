@@ -270,7 +270,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public void setGeometryPositionOffset(RealVector geometryPositionOffset){
-        throw new UnsupportedOperationException("Geometry position offset is determined by the mass points");
+        throw new UnsupportedOperationException("Geometry position offset is determined by the mass point configuration.");
     }
 
     /**
@@ -279,7 +279,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
-        // ToDo is unnecessary with three dimensional collision detection
+        // ToDo Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {0.0, getLength(), 0.0});
         RealVector relVectorLeftRight = new ArrayRealVector(new double[] {getWidth(), 0.0 , 0.0});
@@ -733,7 +733,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
             // If mass point position goes way below ground position + wheel radius, then set computational error
             if (massPointPosition.getEntry(2) < (limitZ - 0.5 * simulationVehicle.getWheelRadius())) {
-                // ToDo build in check if physical vehicle is part of a simulation and then do not set the error if the vehicle is not part of a simulation;
+                // ToDo Build in check if physical vehicle is part of a simulation and then do not set the error if the vehicle is not part of a simulation;
             }
         }
     }

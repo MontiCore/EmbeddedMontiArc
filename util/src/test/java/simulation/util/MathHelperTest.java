@@ -527,7 +527,7 @@ public class MathHelperTest {
 
     @Test
     public void checkIntersection2DTest() {
-        // ToDo is unnecessary with three dimensional collision detection
+        // ToDo Function is unnecessary with three dimensional collision detection
         List<Map.Entry<RealVector, RealVector>> list1 = new LinkedList<>();
         Map.Entry<RealVector, RealVector> e1 = new AbstractMap.SimpleEntry<RealVector, RealVector>(new ArrayRealVector(new double[]{0.0, 0.0, 0.0}), new ArrayRealVector(new double[]{4.0, 0.0, 0.0}));
         Map.Entry<RealVector, RealVector> e2 = new AbstractMap.SimpleEntry<RealVector, RealVector>(new ArrayRealVector(new double[]{4.0, 0.0, 0.0}), new ArrayRealVector(new double[]{4.0, 4.0, 0.0}));
