@@ -554,7 +554,7 @@ public class CompassSensor extends AbstractSensor {
 
     @Override
     protected void calculateValue() {
-        RealMatrix rotation = getPhysicalVehicle().getGeometryRotation();
+        RealMatrix rotation = getPhysicalVehicle().getRotation();
         RealVector yAxis = new ArrayRealVector(new double[] {0.0, 1.0, 0.0});
         RealVector v = rotation.operate(yAxis);
         //the angle in the xy-plane is needed

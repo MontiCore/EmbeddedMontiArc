@@ -243,6 +243,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
+        // ToDo is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {getLength(), 0.0, 0.0});
         RealVector relVectorLeftRight = new ArrayRealVector(new double[] {0.0, -getWidth(), 0.0});

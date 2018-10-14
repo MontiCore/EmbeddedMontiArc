@@ -846,8 +846,8 @@ public class LinearInterpolator implements Spline {
 
     @Override
     public double computeDistanceToLeft(PhysicalObject o) {
-        RealVector left = o.getGeometryPosition().add(o.getGeometryRotation().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
-        RealVector right = o.getGeometryPosition().add(o.getGeometryRotation().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector left = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector right = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
         RealVector middle = o.getGeometryPosition();
 
         Point3D lP = new Point3D(left.getEntry(0),left.getEntry(1),left.getEntry(2));
@@ -866,14 +866,14 @@ public class LinearInterpolator implements Spline {
 
     @Override
     public double computeDistanceToFrontLeft(PhysicalObject o){
-        RealVector front = o.getGeometryPosition().add(o.getGeometryRotation().operate(new ArrayRealVector(new double[]{-0.25*o.getWidth(),5*o.getLength(),0.0})));
+        RealVector front = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[]{-0.25*o.getWidth(),5*o.getLength(),0.0})));
         Point3D frontpoint= new Point3D(front.getEntry(0),front.getEntry(1),front.getEntry(2));
         return computeDistance(frontpoint,Direction.MIDDLE,false);
     }
 
     @Override
     public double computeDistanceToFrontRight(PhysicalObject o){
-        RealVector front = o.getGeometryPosition().add(o.getGeometryRotation().operate(new ArrayRealVector(new double[]{0.25*o.getWidth(),5*o.getLength(),0.0})));
+        RealVector front = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[]{0.25*o.getWidth(),5*o.getLength(),0.0})));
         Point3D frontpoint= new Point3D(front.getEntry(0),front.getEntry(1),front.getEntry(2));
         return computeDistance(frontpoint,Direction.MIDDLE,false);
     }
@@ -885,8 +885,8 @@ public class LinearInterpolator implements Spline {
 
     @Override
     public double computeDistanceToRight(PhysicalObject o) {
-        RealVector left = o.getGeometryPosition().add(o.getGeometryRotation().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
-        RealVector right = o.getGeometryPosition().add(o.getGeometryRotation().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector left = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector right = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
         RealVector middle = o.getGeometryPosition();
 
         Point3D lP = new Point3D(left.getEntry(0),left.getEntry(1),left.getEntry(2));

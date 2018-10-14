@@ -137,7 +137,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         }
         // Calculate the rotation to reach given rotation
         RealMatrix rotationDiff = rotation.multiply(this.rotation.transpose());
-        rotationDiff = MathHelper.matrix3DOrthonormalize(rotationDiff);
+        rotationDiff = MathHelper.matrixReOrthonormalize(rotationDiff);
 
         // Apply rotation to all values
         this.rotation = rotationDiff.multiply(this.rotation);
@@ -279,6 +279,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
+        // ToDo is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {0.0, getLength(), 0.0});
         RealVector relVectorLeftRight = new ArrayRealVector(new double[] {getWidth(), 0.0 , 0.0});
@@ -680,7 +681,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     private void calcRotationMatrix(double deltaT){
         rotation = rotation.add((MathHelper.vectorToCrossProductMatrix(angularVelocity).multiply(rotation)).scalarMultiply(deltaT));
-        rotation = MathHelper.matrix3DOrthonormalize(rotation);
+        rotation = MathHelper.matrixReOrthonormalize(rotation);
     }
 
     /**

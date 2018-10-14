@@ -344,6 +344,26 @@ public final class MathHelper {
     private MathHelper() {}
 
     /**
+     * Function that checks for vector equality allowing a small fixed error factor because of numeric issues
+     *
+     * @param vector1 First vector to be checked for fuzzy equality
+     * @param vector2 Second vector to be checked for fuzzy equality
+     * @param threshold Threshold value for check of norm, e.g. a value such as 0.00000001
+     * @return Boolean indicating fuzzy equality of input vectors
+     */
+    public static boolean vectorEquals(RealVector vector1, RealVector vector2, double threshold) {
+        // Simple check to avoid computations if possible
+        if (vector1.getDimension() != vector2.getDimension() || vector1.getDimension() == 0) {
+            return false;
+        }
+
+        // If vectors are nearly equal, norm for all entries of difference vectors must be near 0
+        RealVector diffVector = vector1.subtract(vector2);
+        double norm = diffVector.getNorm();
+        return (norm < threshold);
+    }
+
+    /**
      * Function that checks for matrix equality allowing a small fixed error factor because of numeric issues
      *
      * @param matrix1 First matrix to be checked for fuzzy equality
@@ -396,10 +416,13 @@ public final class MathHelper {
      * @param matrix Input 3x3 rotation matrix that is used in re-orthonormalization
      * @return Result 3x3 rotation matrix that is now orthonormal again
      */
-    public static RealMatrix matrix3DOrthonormalize(RealMatrix matrix) {
+    public static RealMatrix matrixReOrthonormalize(RealMatrix matrix) {
         // Checks for valid input
         if (matrix.getColumnDimension() != 3 || !matrix.isSquare()) {
             throw new IllegalArgumentException("Matrix should be a 3x3 matrix"); //todo error
+        }
+        if (matrix.getColumnVector(0).getNorm() == 0 || matrix.getColumnVector(1).getNorm() == 0 || matrix.getColumnVector(2).getNorm() == 0){
+            throw new IllegalArgumentException("Ha"); //todo error
         }
 
         // Prepare variables
@@ -423,45 +446,6 @@ public final class MathHelper {
         return matrix;
     }
 
-    //
-    /**
-     * Function that checks for vector equality allowing a small fixed error factor because of numeric issues
-     *
-     * @param vector1 First vector to be checked for fuzzy equality
-     * @param vector2 Second vector to be checked for fuzzy equality
-     * @param threshold Threshold value for check of norm, e.g. a value such as 0.00000001
-     * @return Boolean indicating fuzzy equality of input vectors
-     */
-    public static boolean vectorEquals(RealVector vector1, RealVector vector2, double threshold) {
-        // Simple check to avoid computations if possible
-        if (vector1.getDimension() != vector2.getDimension() || vector1.getDimension() == 0) {
-            return false;
-        }
-
-        // If vectors are nearly equal, norm for all entries of difference vectors must be near 0
-        RealVector diffVector = vector1.subtract(vector2);
-        double norm = diffVector.getNorm();
-        return (norm < threshold);
-    }
-
-    /**
-     * Function that converts a vector to a matrix such that the matrix multiplied with another vector is the cross product
-     * Perform some simple checks before actually computing the matrix
-     * Only supports 3-dimensional vectors and 3x3 matrices as result
-     *
-     * @param vector 3-dimensional vector for which the corresponding cross product matrix should be computed
-     * @return 3x3 cross product matrix for the input 3-dimensional vector
-     */
-    public static RealMatrix vectorToCrossProductMatrix(RealVector vector) {
-        // Check for valid input
-        if(vector.getDimension() != 3){
-            throw new IllegalArgumentException("Vector should be a three dimensional vector"); //todo error
-        }
-
-        double[][] matrixEntries = {{0.0, -vector.getEntry(2), vector.getEntry(1)}, {vector.getEntry(2), 0.0, -vector.getEntry(0)}, {-vector.getEntry(1), vector.getEntry(0), 0.0}};
-        return new BlockRealMatrix(matrixEntries);
-    }
-
     /**
      * Function that computes the cross product of two 3-dimensional vectors
      * Only supports 3-dimensional vectors and 3x3 matrices as result
@@ -482,6 +466,24 @@ public final class MathHelper {
         // This is also an example of how to use the vector3DToCrossProductMatrix function
         RealMatrix crossProductMatrixVector1 = vectorToCrossProductMatrix(vector1);
         return crossProductMatrixVector1.operate(vector2);
+    }
+
+    /**
+     * Function that converts a vector to a matrix such that the matrix multiplied with another vector is the cross product
+     * Perform some simple checks before actually computing the matrix
+     * Only supports 3-dimensional vectors and 3x3 matrices as result
+     *
+     * @param vector 3-dimensional vector for which the corresponding cross product matrix should be computed
+     * @return 3x3 cross product matrix for the input 3-dimensional vector
+     */
+    public static RealMatrix vectorToCrossProductMatrix(RealVector vector) {
+        // Check for valid input
+        if(vector.getDimension() != 3){
+            throw new IllegalArgumentException("Vector should be a three dimensional vector"); //todo error
+        }
+
+        double[][] matrixEntries = {{0.0, -vector.getEntry(2), vector.getEntry(1)}, {vector.getEntry(2), 0.0, -vector.getEntry(0)}, {-vector.getEntry(1), vector.getEntry(0), 0.0}};
+        return new BlockRealMatrix(matrixEntries);
     }
 
     /**
@@ -533,6 +535,7 @@ public final class MathHelper {
      * @return True if 2D intersection is non-empty, otherwise false
      */
     public static boolean checkIntersection2D(List<Map.Entry<RealVector, RealVector>> vectorsOne, List<Map.Entry<RealVector, RealVector>> vectorsTwo) {
+        // ToDo is unnecessary with three dimensional collision detection
         // If any list is empty, return false
         if (vectorsOne.isEmpty() || vectorsTwo.isEmpty()) {
             return false;
@@ -580,6 +583,10 @@ public final class MathHelper {
      * @return Uniformly random long value within the interval
      */
     public static long randomLong(long lower, long upper) {
+        // Check for valid input
+        if(lower > upper){
+            throw new IllegalArgumentException("Ha"); //todo
+        }
         // For same value return the same value
         if (lower == upper) {
             return lower;
@@ -598,6 +605,10 @@ public final class MathHelper {
      * @return Uniformly random int value within the interval
      */
     public static int randomInt(int lower, int upper) {
+        // Check for valid input
+        if(lower > upper){
+            throw new IllegalArgumentException("Ha"); //todo
+        }
         // For same value return the same value
         if (lower == upper) {
             return lower;

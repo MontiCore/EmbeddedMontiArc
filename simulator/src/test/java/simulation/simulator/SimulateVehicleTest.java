@@ -803,8 +803,8 @@ public class SimulateVehicleTest {
         sim.stopAfter(2000);
         sim.startSimulation();
 
-        RealMatrix matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRotation());
-        RealMatrix matrix2 =  physicalVehicle.getGeometryRotation().transpose();
+        RealMatrix matrix1 = MathHelper.matrixInvert(physicalVehicle.getRotation());
+        RealMatrix matrix2 =  physicalVehicle.getRotation().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
 
         vehicle.getVehicleActuator(VehicleActuatorType.VEHICLE_ACTUATOR_TYPE_STEERING).setActuatorValueTarget(0);
@@ -812,15 +812,15 @@ public class SimulateVehicleTest {
         sim.extendSimulationTime(2000);
         sim.startSimulation();
 
-        matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRotation());
-        matrix2 =  physicalVehicle.getGeometryRotation().transpose();
+        matrix1 = MathHelper.matrixInvert(physicalVehicle.getRotation());
+        matrix2 =  physicalVehicle.getRotation().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
 
         sim.extendSimulationTime(2000);
         sim.startSimulation();
 
-        matrix1 = MathHelper.matrixInvert(physicalVehicle.getGeometryRotation());
-        matrix2 =  physicalVehicle.getGeometryRotation().transpose();
+        matrix1 = MathHelper.matrixInvert(physicalVehicle.getRotation());
+        matrix2 =  physicalVehicle.getRotation().transpose();
         assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.00001));
     }
 
