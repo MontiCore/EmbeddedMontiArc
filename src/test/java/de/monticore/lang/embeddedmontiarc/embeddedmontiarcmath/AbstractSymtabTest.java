@@ -24,6 +24,7 @@ import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
 import de.monticore.lang.monticar.stream._symboltable.StreamLanguage;
 import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.symboltable.GlobalScope;
@@ -48,6 +49,7 @@ public class AbstractSymtabTest {
         fam.addModelingLanguage(new EmbeddedMontiArcMathLanguage());
         fam.addModelingLanguage(new StreamLanguage());
         fam.addModelingLanguage(new StructLanguage());
+        fam.addModelingLanguage(new EventLanguage());
         return fam;
     }
 
