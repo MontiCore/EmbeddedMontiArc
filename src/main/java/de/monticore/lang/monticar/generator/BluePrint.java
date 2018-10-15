@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceBuilder;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class BluePrint {
     MathInformationRegister mathInformationRegister = new MathInformationRegister(this);
     protected String name;
     protected String packageName;
-    protected ExpandedComponentInstanceSymbol originalSymbol;
+    protected EMAComponentInstanceSymbol originalSymbol;
 
     public BluePrint(String name) {
         this.name = name;
@@ -93,11 +92,11 @@ public class BluePrint {
         return genericsVariableList;
     }
 
-    public ExpandedComponentInstanceSymbol getOriginalSymbol() {
+    public EMAComponentInstanceSymbol getOriginalSymbol() {
         return originalSymbol;
     }
 
-    public void setOriginalSymbol(ExpandedComponentInstanceSymbol originalSymbol) {
+    public void setOriginalSymbol(EMAComponentInstanceSymbol originalSymbol) {
         this.originalSymbol = originalSymbol;
     }
 

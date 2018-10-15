@@ -1,6 +1,6 @@
 package de.monticore.lang.monticar.generator.order.nfp.TagInitTagSchema;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.tagging._ast.ASTNameScope;
 import de.monticore.lang.tagging._ast.ASTScope;
 import de.monticore.lang.tagging._ast.ASTTag;
@@ -94,16 +94,16 @@ public class TagInitSymbolCreator implements TagSymbolCreator {
         return NumericLiteral.getValue(ast.get().getNumericLiteral());
     }
 
-    protected ExpandedComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
-        ExpandedComponentInstanceSymbol ret = null;
+    protected EMAComponentInstanceSymbol checkKind(Collection<Symbol> symbols) {
+        EMAComponentInstanceSymbol ret = null;
         for (Symbol symbol : symbols) {
-            if (symbol.getKind().isSame(ExpandedComponentInstanceSymbol.KIND)) {
+            if (symbol.getKind().isSame(EMAComponentInstanceSymbol.KIND)) {
                 if (ret != null) {
                     Log.error(String.format("0xT0019 Found more than one symbol: '%s' and '%s'",
                             ret, symbol));
                     return null;
                 }
-                ret = (ExpandedComponentInstanceSymbol) symbol;
+                ret = (EMAComponentInstanceSymbol) symbol;
             }
         }
         if (ret == null) {

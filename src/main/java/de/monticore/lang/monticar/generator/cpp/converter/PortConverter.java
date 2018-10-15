@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
@@ -24,19 +24,19 @@ public class PortConverter {
 
     public static int counterConstantPorts = 0;
 
-    public static Variable getVariableForPortSymbol(ConnectorSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
+    public static Variable getVariableForPortSymbol(EMAConnectorInstanceSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
         /*Optional<Variable> variable = bluePrint.getVariable(PortSymbol.getNameWithoutArrayBracketPart(connectName));
         if (variable.isPresent())
             return variable.get();*/
         return convertPortSymbolToVariable(connectorSymbol, connectName, bluePrint);
     }
 
-    public static Variable convertPortSymbolToVariable(ConnectorSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
+    public static Variable convertPortSymbolToVariable(EMAConnectorInstanceSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
     /*    Variable variable = bluePrint.getVariable(PortConverter.getPortNameWithoutArrayBracketPart(connectName)).orElse(null);
         if (variable != null&&variable.isArray())
             return variable;
 */
-        PortSymbol portSymbol;
+        EMAPortInstanceSymbol portSymbol;
         if (connectName.equals(connectorSymbol.getSource())) {
             portSymbol = connectorSymbol.getSourcePort();
         } else
@@ -46,7 +46,7 @@ public class PortConverter {
         return convertPortSymbolToVariable(portSymbol, connectName, bluePrint);
     }
 
-    public static Variable convertPortSymbolToVariable(PortSymbol portSymbol, String connectName, BluePrintCPP bluePrint) {
+    public static Variable convertPortSymbolToVariable(EMAPortInstanceSymbol portSymbol, String connectName, BluePrintCPP bluePrint) {
     /*    Variable variable = bluePrint.getVariable(PortConverter.getPortNameWithoutArrayBracketPart(connectName)).orElse(null);
         if (variable != null&&variable.isArray())
             return variable;
@@ -69,7 +69,7 @@ public class PortConverter {
         return variable;
     }
 
-    private static void handlePortDirection(PortSymbol portSymbol, Variable variable) {
+    private static void handlePortDirection(EMAPortInstanceSymbol portSymbol, Variable variable) {
         if (portSymbol.isIncoming()) {
             variable.setInputVariable(true);
         } else {
@@ -78,13 +78,18 @@ public class PortConverter {
 
     }
 
-    private static String handlePortName(PortSymbol portSymbol, Variable variable, String connectName) {
+    private static String handlePortName(EMAPortInstanceSymbol portSymbol, Variable variable, String connectName) {
         String name = "";
         if (portSymbol.isConstant()) {
             //name += "Constant" + ++counterConstantPorts;
             name += connectName;
             variable.setIsConstantVariable(true);
-            variable.setConstantValue(((ConstantPortSymbol) portSymbol).getConstantValue().getValueAsString());
+
+            //OLD: variable.setConstantValue(((ConstantPortSymbol) portSymbol).getConstantValue().getValueAsString());
+            //NEW:
+            if(portSymbol.getConstantValue().isPresent()){
+                variable.setConstantValue(portSymbol.getConstantValue().get().getValueAsString());
+            }
 
             // Log.error("0xCOPOSHNOBECRASAAVA Constant Port should not be created as a variable");
         } else {
@@ -94,7 +99,7 @@ public class PortConverter {
         return name;
     }
 
-    private static void addVariableProperties(PortSymbol portSymbol, Variable variable) {
+    private static void addVariableProperties(EMAPortInstanceSymbol portSymbol, Variable variable) {
         MCTypeReference<? extends MCTypeSymbol> typeRef = portSymbol.getTypeReference();
         if (typeRef.existsReferencedSymbol() && typeRef.getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
             MCASTTypeSymbolReference typeSymbolReference = (MCASTTypeSymbolReference) portSymbol.getTypeReference().getReferencedSymbol();
@@ -107,7 +112,7 @@ public class PortConverter {
         }
     }
 
-    private static Optional<ASTType> getAstTypeFromPortSymbol(PortSymbol portSymbol) {
+    private static Optional<ASTType> getAstTypeFromPortSymbol(EMAPortInstanceSymbol portSymbol) {
         Optional<ASTType> result = Optional.empty();
         MCTypeReference<? extends MCTypeSymbol> typeRef = portSymbol.getTypeReference();
         if (typeRef.existsReferencedSymbol() && typeRef.getReferencedSymbol() instanceof MCASTTypeSymbolReference) {
@@ -118,7 +123,7 @@ public class PortConverter {
         return result;
     }
 
-    public static Optional<ASTCommonMatrixType> getCommonMatrixTypeFromPortSymbol(PortSymbol portSymbol) {
+    public static Optional<ASTCommonMatrixType> getCommonMatrixTypeFromPortSymbol(EMAPortInstanceSymbol portSymbol) {
         Optional<ASTCommonMatrixType> result = Optional.empty();
         Optional<ASTType> astType = getAstTypeFromPortSymbol(portSymbol);
         if (astType.isPresent()) {

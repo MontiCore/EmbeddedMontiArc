@@ -8,8 +8,8 @@ package de.monticore.lang.monticar.generator.order.simulator;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizationRule;
@@ -52,7 +52,8 @@ public class AbstractSymtab {
     }
 
     public static Scope createSymTab(String... modelPath) {
-        ConstantPortSymbol.resetLastID();
+//        ConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();
         MathOptimizer.resetIDs();

@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -20,18 +20,18 @@ public class ConfigPortTest extends AbstractSymtabTest{
     public void testConfigPortFromAdaptableParameter() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol comp = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.adaptableParameterInstance",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol comp = symtab.<EMAComponentInstanceSymbol>resolve("testing.adaptableParameterInstance",EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(comp);
 
-        ExpandedComponentInstanceSymbol subInst1 = comp.getSubComponent("adaptableParameter").orElse(null);
+        EMAComponentInstanceSymbol subInst1 = comp.getSubComponent("adaptableParameter").orElse(null);
         assertNotNull(subInst1);
 
-        PortSymbol configPort = subInst1.getIncomingPort("param1").orElse(null);
+        EMAPortInstanceSymbol configPort = subInst1.getIncomingPortInstance("param1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
         assertTrue(configPort.isIncoming());
 
-        assertNull(subInst1.getIncomingPort("param2").orElse(null));
+        assertNull(subInst1.getIncomingPortInstance("param2").orElse(null));
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPort/");
@@ -44,10 +44,10 @@ public class ConfigPortTest extends AbstractSymtabTest{
     public void testConfigPortFromKeyword() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol comp = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.configPort",ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol comp = symtab.<EMAComponentInstanceSymbol>resolve("testing.configPort",EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(comp);
 
-        PortSymbol configPort = comp.getIncomingPort("in1").orElse(null);
+        EMAPortInstanceSymbol configPort = comp.getIncomingPortInstance("in1").orElse(null);
         assertNotNull(configPort);
         assertTrue(configPort.isConfig());
         assertTrue(configPort.isIncoming());
