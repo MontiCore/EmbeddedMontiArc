@@ -80,7 +80,7 @@ public class Simulator {
     private boolean isRunning = false;
 
     /** True iff computation of the simulation is currently paused */
-    private boolean isComputationPaused = false;
+    private boolean isPaused = false;
 
     /** True if a computational error occurred, may be reset by user */
     private boolean errorOccurredDuringExecution = false;
@@ -98,6 +98,13 @@ public class Simulator {
     private final List<Long> waitTimers = Collections.synchronizedList(new LinkedList<Long>());
 
     /**
+     * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
+     */
+    protected Simulator() {
+        InformationService.getSharedInstance().offerInformation(Information.SIMULATION_TIME, this::getSimulationTime);
+    }
+
+    /**
      * Resets the shared instance of the simulator.
      * Should only be used for testing purposes.
      */
@@ -107,10 +114,12 @@ public class Simulator {
     }
 
     /**
-     * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
+     * Provides access to the shared instance of the Simulator.
+     *
+     * @return The shared instance of the simulator.
      */
-    protected Simulator() {
-        InformationService.getSharedInstance().offerInformation(Information.SIMULATION_TIME, this::getSimulationTime);
+    public static Simulator getSharedInstance() {
+        return sharedInstance;
     }
 
     /**
@@ -209,65 +218,13 @@ public class Simulator {
             }
 
             // Stop simulation if not paused
-            if(!isComputationPaused){
+            if(!isPaused){
                 stopSimulation();
             }
 
             //Inform user
             Log.info("Simulation " + (isRunning ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + loopCount + " simulation loops executed.");
         }
-    }
-
-    /**
-     * Immediately stop the execution of the simulation
-     */
-    public synchronized void stopSimulation() {
-        if(isRunning == false){
-            throw new IllegalStateException("Simulation is already stopped.");
-        }
-        if (simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME) {
-            //Stop calling simulation loop
-            timer.cancel();
-            timer = null;
-        }
-
-        //Set internal state
-        isRunning = false;
-
-        // Inform observers about stop of simulation
-        for (SimulationLoopNotifiable observer : this.loopObservers) {
-            observer.simulationStopped(getSimulationObjects(), simulationTime);
-        }
-
-        //Keep current daytime for future time extensions
-        // daytimeStart = getDaytime();
-
-        //Wake up waiting threads
-        sharedInstance.wakeupWaitingThreads();
-    }
-
-    /**
-     * Set the simulation duration. Ideally, this value should be set before starting the simulation.
-     *
-     * @param simulationStopTime Time in milliseconds after which the simulation should stop
-     */
-    public void stopAfter(long simulationStopTime) {
-        if (simulationStopTime < this.simulationTime) {
-            throw new IllegalArgumentException("New stop time " + simulationStopTime + " should not be in the past.");
-        }
-        this.simulationStopTime = simulationStopTime;
-    }
-
-    /**
-     * Extend the simulation time.
-     *
-     * @param additionalSimulationTime Time in ms that the simulation should be extended by. Must be positive.
-     */
-    public void extendSimulationTime(long additionalSimulationTime) {
-        if (additionalSimulationTime < 0) {
-            throw new IllegalArgumentException("Additional simulation time " + additionalSimulationTime + " should not be negative");
-        }
-        simulationStopTime += additionalSimulationTime;
     }
 
     /**
@@ -394,7 +351,7 @@ public class Simulator {
 
         //Check if computation should be paused
         while (simulationTime >= simulationPauseTime.get()) {
-            isComputationPaused = true;
+            isPaused = true;
             if(synchronousSimulation){
                 return false;
             }else{
@@ -410,7 +367,7 @@ public class Simulator {
         }
 
         //We're after the pausing while loop, so we are allowed to continue simulation
-        isComputationPaused = false;
+        isPaused = false;
 
         //Check whether we are done
         if (simulationTime >= simulationStopTime) {
@@ -424,6 +381,57 @@ public class Simulator {
             }
         }
         return true;
+    }
+
+    /**
+     * Immediately stop the execution of the simulation
+     */
+    public synchronized void stopSimulation() {
+        if(isRunning == false){
+            throw new IllegalStateException("Simulation is already stopped.");
+        }
+        if (simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME) {
+            //Stop calling simulation loop
+            timer.cancel();
+            timer = null;
+        }
+
+        //Set internal state
+        isRunning = false;
+
+        // Inform observers about stop of simulation
+        synchronized (loopObservers){
+            for (SimulationLoopNotifiable observer : loopObservers) {
+                observer.simulationStopped(getSimulationObjects(), simulationTime);
+            }
+        }
+
+        //Wake up waiting threads
+        sharedInstance.wakeupWaitingThreads();
+    }
+
+    /**
+     * Set the simulation duration. Ideally, this value should be set before starting the simulation.
+     *
+     * @param simulationStopTime Time in milliseconds after which the simulation should stop
+     */
+    public void stopAfter(long simulationStopTime) {
+        if (simulationStopTime < this.simulationTime) {
+            throw new IllegalArgumentException("New stop time " + simulationStopTime + " should not be in the past.");
+        }
+        this.simulationStopTime = simulationStopTime;
+    }
+
+    /**
+     * Extend the simulation time.
+     *
+     * @param additionalSimulationTime Time in ms that the simulation should be extended by. Must be positive.
+     */
+    public void extendSimulationTime(long additionalSimulationTime) {
+        if (additionalSimulationTime < 0) {
+            throw new IllegalArgumentException("Additional simulation time " + additionalSimulationTime + " should not be negative");
+        }
+        simulationStopTime += additionalSimulationTime;
     }
 
 
@@ -591,12 +599,12 @@ public class Simulator {
     }
 
     /**
-     * Retrieves a copy of the physical objects managed by the simulator
+     * Retrieves a copy of the loop observers managed by the simulator
      *
-     * @return Copy of the physical objects
+     * @return Copy of the loop observers
      */
-    public List<PhysicalObject> getPhysicalObjects() {
-        return new LinkedList<>(physicalObjects);
+    public List<SimulationLoopNotifiable> getLoopObservers() {
+        return new LinkedList<>(loopObservers);
     }
 
     /**
@@ -606,6 +614,15 @@ public class Simulator {
      */
     public List<SimulationLoopExecutable> getSimulationObjects() {
         return new LinkedList<>(simulationObjects);
+    }
+
+    /**
+     * Retrieves a copy of the physical objects managed by the simulator
+     *
+     * @return Copy of the physical objects
+     */
+    public List<PhysicalObject> getPhysicalObjects() {
+        return new LinkedList<>(physicalObjects);
     }
 
     /**
@@ -648,19 +665,10 @@ public class Simulator {
      * loop iteration.
      */
     public void resetErrorOccurred() {
-        if (isRunning) {
+        if (!isPaused && isRunning) {
             throw new IllegalStateException("Cannot reset errorOccured. Simulation currently running.");
         }
         errorOccurredDuringExecution = false;
-    }
-
-    /**
-     * Provides access to the shared instance of the Simulator.
-     *
-     * @return The shared instance of the simulator.
-     */
-    public static Simulator getSharedInstance() {
-        return sharedInstance;
     }
 
     /**
@@ -735,7 +743,7 @@ public class Simulator {
         if(daytimeSpeedUp < 1){
             throw new IllegalArgumentException("Daytime speed up " + daytimeSpeedUp + " should not be less than 1.");
         }
-        if (isRunning) {
+        if (!isPaused && isRunning) {
             throw new IllegalStateException("Cannot update simulation daytime speed up. Simulation currently running.");
         }
         this.daytimeSpeedUp = daytimeSpeedUp;
@@ -858,7 +866,7 @@ public class Simulator {
      * returns 5000), and this method is called with 3000 as parameter then the simulator will pause the
      * computation of the simulation after roughly 8000 ms. To continue the computations either call this
      * method again with a specified amount of time or call continueSimulation() to continue the
-     * computation without a new limit. Use isComputationPaused() to check whether or not the simulator is
+     * computation without a new limit. Use isPaused() to check whether or not the simulator is
      * currently pausing its computations.
      * @param timeToPause Simulated time in milliseconds after which the simulator will pause further computations
      */
@@ -867,7 +875,7 @@ public class Simulator {
         if (timeToPause < 0) {
             throw new IllegalArgumentException("Time to simulation pause " + timeToPause + " should not be negative.");
         }
-        if(!isComputationPaused && isRunning){
+        if(!isPaused && isRunning){
             throw new IllegalStateException("Simulation cannot be continued when it is not paused.");
         }
         if(!isRunning){
@@ -889,11 +897,11 @@ public class Simulator {
      * Continues the computation of the simulation without a time limit
      */
     public synchronized void continueSimulation() {
-        if(!isComputationPaused){
+        if(!isPaused && isRunning){
             throw new  IllegalStateException("Simulation cannot be continued when it is not paused.");
         }
         if(!isRunning){
-            throw new IllegalStateException("Simulation cannto be continued if it was not started.");
+            throw new IllegalStateException("Simulation cannot be continued if it was not started.");
         }
         synchronized (simulationPauseTime) {
             //Set new pause time to 'never'
@@ -911,7 +919,7 @@ public class Simulator {
      * Returns whether the computation of the simulation is currently paused
      * @return True iff the computation is currently paused
      */
-    public synchronized boolean isComputationPaused() {
-        return isComputationPaused;
+    public synchronized boolean isPaused() {
+        return isPaused;
     }
 }

@@ -486,7 +486,7 @@ public class SimulatorTest {
             e.printStackTrace();
         }
 
-        assertTrue(sim.isComputationPaused());
+        assertTrue(sim.isPaused());
         long simTime = sim.getSimulationTime();
 
         //We waited the right amount of time + one frame tolerance
@@ -498,7 +498,7 @@ public class SimulatorTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        assertTrue(sim.isComputationPaused());
+        assertTrue(sim.isPaused());
         assertTrue(sim.getSimulationTime() == simTime);
 
         //Run to finish
@@ -520,7 +520,7 @@ public class SimulatorTest {
         sim.setSimulationPauseTime(500);
         sim.startSimulation();
 
-        assertTrue(sim.isComputationPaused());
+        assertTrue(sim.isPaused());
         assertTrue(sim.isRunning());
         long simTime = sim.getSimulationTime();
 
