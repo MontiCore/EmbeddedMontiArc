@@ -30,7 +30,7 @@ public class SimulateTrafficSignal {
         assertTrue(trafficSignal.getSignalB() == RED);
 
         // After 20 sec both signal will be yellow for 10 ms
-        simulator.stopAfter(22000);
+        simulator.setSimulationDuration(22000);
         simulator.startSimulation();
         assertTrue(trafficSignal.getSignalA() == YELLOW);
         assertTrue(trafficSignal.getSignalB() == YELLOW);
