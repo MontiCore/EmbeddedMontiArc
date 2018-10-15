@@ -174,6 +174,8 @@ public class Simulator {
             }
         }
 
+        Log.info("Simulation started.");
+
         if (simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME) {
             //Schedule loop calls
             TimerTask loopIteration = new TimerTask() {
@@ -188,8 +190,6 @@ public class Simulator {
             timer = new Timer();
             timer.scheduleAtFixedRate(loopIteration, 0, timeBetweenCalls);
         }
-
-        Log.info("Simulation " + ((loopCount == 0) ? "started." : "continued."));
 
         if (synchronousSimulation) {
             runSimulation();
@@ -219,6 +219,7 @@ public class Simulator {
         if(!isRunning){
             throw new IllegalStateException("Simulation cannto be continued if it was not started.");
         }
+        Log.info("Simulation continued.");
         synchronized (simulationPauseTime) {
             //Set new pause time
             simulationPauseTime.getAndSet(getSimulationTime() + timeToPause);
@@ -241,6 +242,7 @@ public class Simulator {
         if(!isRunning){
             throw new IllegalStateException("Simulation cannot be continued if it was not started.");
         }
+        Log.info("Simulation continued.");
         synchronized (simulationPauseTime) {
             //Set new pause time to 'never'
             simulationPauseTime.getAndSet(Long.MAX_VALUE);
@@ -270,9 +272,6 @@ public class Simulator {
             if(!isPaused){
                 stopSimulation();
             }
-
-            //Inform user
-            Log.info("Simulation " + (isRunning ? "paused" : "stopped") + " after " + simulationTimeLastLoop + " ms. " + loopCount + " simulation loops executed.");
         }
     }
 
@@ -401,6 +400,7 @@ public class Simulator {
         //Check if computation should be paused
         while (simulationTime >= simulationPauseTime.get()) {
             isPaused = true;
+            Log.info("Simulation paused.");
             if(synchronousSimulation){
                 return false;
             }else{
@@ -439,6 +439,9 @@ public class Simulator {
         if(isRunning == false){
             throw new IllegalStateException("Simulation is already stopped.");
         }
+
+        Log.info("Simulation stopped after " + simulationTimeLastLoop + " ms. " + loopCount + " simulation loops executed.");
+
         if (simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME) {
             //Stop calling simulation loop
             timer.cancel();

@@ -5,6 +5,7 @@ import org.apache.commons.math3.linear.*;
 import org.junit.*;
 import simulation.util.*;
 import java.util.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -121,83 +122,124 @@ public class SimulatorTest {
     //Tests that need to start a simulation to test
 
     /**
-     * Running the same simulation twice should lead to same amount of simulated time and frames
+     * Running the same fixed time simulation twice should lead to the same amount of simulated time and number loop iterations
      */
     @Test
     public void fixedTimeSimulationIsDeterministic() {
+        // Start first run
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-
-        //Start a simulation
         sim.setSimulationDuration(1000);
         sim.startSimulation();
 
-        //Get simulated time
-        long simTime1 = sim.getSimulationTime();
+        // Get simulated time and loop count
+        long simulationTime1 = sim.getSimulationTime();
         long loopCount1 = sim.getLoopCount();
 
-        //Reset simulator
+        // Start second run
         Simulator.resetSimulator();
         sim = Simulator.getSharedInstance();
-
-        //Start another run
         sim.setSimulationDuration(1000);
         sim.startSimulation();
 
-        //Get simulated time
-        long simtTime2= sim.getSimulationTime();
+        // Get simulated time and loop count
+        long simulationTime2= sim.getSimulationTime();
         long loopCount2 = sim.getLoopCount();
 
-        //Compare to first run
-        assertTrue(simTime1 == simtTime2);
-        assertTrue(loopCount1 == loopCount2);
+        // Check if simulation time and loop count are equal
+        assertEquals(simulationTime1, simulationTime2);
+        assertEquals(loopCount1, loopCount2);
     }
 
     /**
-     * Fixed time simulation has fixed time
-     * //todo check time notivied at all notifications
+     * Fixed time simulations should simulate for the specified duration
+     * with the expected number of loop iterations and step size
      */
     @Test
     public void fixedTimeIntervals() {
+        // Calculate expected values
+        int simulationLoopFrequency = 30;
+        long simulationDuration = 5000;
+        long expectedIterationTime = (long) ((1.0 / simulationLoopFrequency) * 1000);
+        long expectedLoopCount = (simulationDuration / expectedIterationTime) + 1;
+
+        // Set up simulator
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+        sim.setSimulationDuration(simulationDuration);
+        sim.setSimulationLoopFrequency(simulationLoopFrequency);
 
-        // Calculate expected iteration time
-        long expectedIterationTime = (long) ((1.0 / 30) * 1000);
-
-        // Create and register observer that tests the iteration time
+        // Create and register observer that checks the step size time
         StepSizeChecker checker = new StepSizeChecker(expectedIterationTime);
         sim.registerLoopObserver(checker);
 
         // Run simulation
-        sim.setSimulationDuration(5000);
         sim.startSimulation();
+
+        // Check if expected simulation time was met
+        checkSimTime(sim, simulationDuration);
+        // Check if expected number of iterations were performed
+        assertEquals(expectedLoopCount, sim.getLoopCount());
     }
 
     /**
-     * Real time simulation actually takes real time
-     * //Todo maxFPS takes real time
+     * Real time simulations should actually takes real time
      */
     @Test
-    public void realTimeSimTakesRealTime() {
+    public void realTimeSimulationTakesRealTime() {
+        // Calculate expected values
+        long simulationDuration = 2000;
+
+        // Set up simulator
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.setSynchronousSimulation(false);
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
-        sim.setSimulationDuration(2000);
+        sim.setSimulationDuration(simulationDuration);
 
-        long millisBefore = System.currentTimeMillis();
+        // Remember start time
+        long startTime = System.currentTimeMillis();
 
+        // Start simulator
         sim.startSimulation();
         sim.waitUntilSimulationStopped();
 
-        long runtime = System.currentTimeMillis() - millisBefore;
+        // Calculate runtime
+        long runtime = System.currentTimeMillis() - startTime;
 
-        //Runtime should be within 10% deviance
-        //assertTrue(runtime - 2000 < 200);
-        assertTrue(runtime >= 2000 - 200);
-        assertTrue(sim.getSimulationTime() > 1800);
+        // Check if runtime is within 10% deviance of the simulationDuration
+        assertTrue(simulationDuration*0.9 <= runtime);
+        assertTrue(runtime <= simulationDuration*1.1);
+    }
+
+    /**
+     * Max FPS simulations should actually takes real time
+     */
+    @Test
+    public void maxFPSSimulationTakesRealTime() {
+        // Calculate expected values
+        long simulationDuration = 2000;
+
+        // Set up simulator
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_MAX_FPS);
+        sim.setSimulationDuration(simulationDuration);
+
+        // Remember start time
+        long startTime = System.currentTimeMillis();
+
+        // Start simulator
+        sim.startSimulation();
+        sim.waitUntilSimulationStopped();
+
+        // Calculate runtime
+        long runtime = System.currentTimeMillis() - startTime;
+
+        // Check if runtime is within 10% deviance of the simulationDuration
+        assertTrue(simulationDuration*0.9 <= runtime);
+        assertTrue(runtime <= simulationDuration*1.1);
     }
 
     /**
@@ -217,7 +259,7 @@ public class SimulatorTest {
 
         //Stop time should be equal to desired runtime. Tolerance: 1 iteration time = 33ms.
         Long stopTime = sim.getSimulationTime();
-        checkSimTime(sim, stopTime, 33);
+        checkSimTime(sim, stopTime);
     }/**
      * A simulation that should stop after 0 ms should stop immediately
      * //Todo
@@ -253,7 +295,7 @@ public class SimulatorTest {
         //Continue for the same amount of time as before
         sim.extendSimulationTime(1000);
         sim.continueSimulation();
-        checkSimTime(sim, 2000, 33);
+        checkSimTime(sim, 2000);
     }
 
     /**
@@ -496,7 +538,7 @@ public class SimulatorTest {
         long simTime = sim.getSimulationTime();
 
         //We waited the right amount of time + one frame tolerance
-        checkSimTime(sim, 500, 33);
+        checkSimTime(sim, 500);
 
         //We're not advancing in simulation time
         try {
@@ -530,7 +572,7 @@ public class SimulatorTest {
         long simTime = sim.getSimulationTime();
 
         //We waited the right amount of time + one frame tolerance
-        checkSimTime(sim, 500, 33);
+        checkSimTime(sim, 500);
 
         //Run to finish
         sim.continueSimulation();
@@ -728,23 +770,30 @@ public class SimulatorTest {
 
     //Todo effects waitUntilSimulationStopped
 
-    private void checkSimTime(Simulator sim, long expectedTime, long tolerance){
-         Assert.assertTrue(expectedTime <= sim.getSimulationTime()&& sim.getSimulationTime() < expectedTime + tolerance);
+    private void checkSimTime(Simulator sim, long expectedTime){
+        long tolerance = (long) ((1.0 / sim.getSimulationLoopFrequency()) * 1000);
+        Assert.assertTrue(expectedTime <= sim.getSimulationTime()&& sim.getSimulationTime() < expectedTime + tolerance);
     }
 
     private class StepSizeChecker implements SimulationLoopNotifiable {
-        private long expectedTime;
+        private long expectedStepSize;
 
-        public StepSizeChecker(long expectedTime){
-            this.expectedTime = expectedTime;
+        public StepSizeChecker(long expectedStepSize){
+            this.expectedStepSize = expectedStepSize;
         }
         public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}
         public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {}
-        public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
-        public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
-        public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
+        public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {
+            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+        }
+        public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {
+            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+        }
+        public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
+            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+        }
         public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-            Assert.assertEquals(expectedTime, Simulator.getSharedInstance().getLastStepSize());
+            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
         }
     }
 
