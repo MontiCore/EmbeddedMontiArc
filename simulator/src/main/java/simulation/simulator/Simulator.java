@@ -34,7 +34,7 @@ public class Simulator {
      * Factor by which the simulation is slowed down in fixed_time mode. See
      * setSlowDownWallClockFactor() for more information. Default: no slowing down
      */
-    private int slowDownWallClockFactor = 0;
+    private int slowDownWallClockFactor = 1;
 
     /** Simulated daytime at the start of the simulation. Default: daytime at creation of class */
     private Date daytimeStart = new Date();
@@ -45,9 +45,6 @@ public class Simulator {
     /** Whether or not the simulation should not be executed in its own thread and therefore blocking. Default: blocking */
     private boolean synchronousSimulation = true;
 
-    /** Whether the simulation will be paused or extended in the future */
-    private boolean isPausedInFuture = false;
-
 
     /** Simulation time */
     private long simulationTime = 0;
@@ -55,8 +52,8 @@ public class Simulator {
     /** Simulation time when the loop was last executed */
     private long lastLoopTime = 0;
 
-    /** Time between last two iteration of the loop */
-    private long timeBetweenLastIterations = 0;
+    /** Size of last iteration step */
+    private long lastStepSize = 0;
 
     /** Service calling the simulation loop */
     private Timer timer = null;
@@ -97,7 +94,7 @@ public class Simulator {
     /** All physical objects in the simulation */
     private final List<PhysicalObject> physicalObjects = Collections.synchronizedList(new LinkedList<PhysicalObject>());
 
-    /** Times for which others wait using the waitForTime() method */
+    /** Times for which others wait using the waitFor() method */
     private final List<Long> waitTimers = Collections.synchronizedList(new LinkedList<Long>());
 
     /**
@@ -138,12 +135,22 @@ public class Simulator {
             throw new IllegalStateException("A simulation with type REAL_TIME cannot be executed synchronously.");
         }
 
-        // Check for sane configurytion
+        // Check for sane configuration
         if (simulationType != SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownFactor != 1) {
             throw new IllegalStateException("Only a simulation with type FIXED_TIME can be slowed down.");
         }
 
-        //Check whether we are already done
+        // Check for sane configuration
+        if (simulationType != SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownWallClockFactor != 1) {
+            throw new IllegalStateException("Only a simulation with type FIXED_TIME can be slowed down to wall clock.");
+        }
+
+        // Check for sane configuration
+        if (slowDownFactor != 1 && slowDownWallClockFactor != 1) {
+            throw new IllegalStateException("Simulation cannot be slowed down and slowed down to wall clock.");
+        }
+
+        // Check whether we are already done
         if (simulationTime >= simulationStopTime) {
             return;
         }
@@ -195,11 +202,19 @@ public class Simulator {
         if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME ||
                 simulationType == SimulationType.SIMULATION_TYPE_MAX_FPS) {
 
-            //Execute simulation
+            // Execute simulation
             boolean successfulIteration = true;
             while (successfulIteration) {
                 successfulIteration = executeSimulationLoop();
             }
+
+            // Stop simulation if not paused
+            if(!isComputationPaused){
+                stopSimulation();
+            }
+
+            //Inform user
+            Log.info("Simulation " + (isRunning ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + loopCount + " simulation loops executed.");
         }
     }
 
@@ -207,6 +222,9 @@ public class Simulator {
      * Immediately stop the execution of the simulation
      */
     public synchronized void stopSimulation() {
+        if(isRunning == false){
+            throw new IllegalStateException("Simulation is already stopped.");
+        }
         if (simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME) {
             //Stop calling simulation loop
             timer.cancel();
@@ -216,21 +234,13 @@ public class Simulator {
         //Set internal state
         isRunning = false;
 
-        // Inform observers about simulation stop if it is not a pause
-        if (!isPausedInFuture) {
-            for (SimulationLoopNotifiable observer : this.loopObservers) {
-                observer.simulationStopped(getSimulationObjects(), simulationTime);
-            }
+        // Inform observers about stop of simulation
+        for (SimulationLoopNotifiable observer : this.loopObservers) {
+            observer.simulationStopped(getSimulationObjects(), simulationTime);
         }
 
         //Keep current daytime for future time extensions
-        daytimeStart = getDaytime();
-
-        // Count objects with a computational error
-        int errorCount = getErrorObjects().size();
-
-        //Inform user
-        Log.info("Simulation " + (isPausedInFuture ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + loopCount + " simulation loops executed. Number of physical objects with a computational error: " + errorCount);
+        // daytimeStart = getDaytime();
 
         //Wake up waiting threads
         sharedInstance.wakeupWaitingThreads();
@@ -266,32 +276,85 @@ public class Simulator {
      * @return true if the loop was actually executed
      */
     private boolean executeSimulationLoop() {
-        if (simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME ||
-                simulationType == SimulationType.SIMULATION_TYPE_MAX_FPS) {
-            //Update time
-            simulationTime = System.currentTimeMillis() - simulationStartTime;
-        } else if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME) {
-            //Convert simulation loop frequency to milliseconds between loop calls
-            long timeBetweenCalls = (long) ((1.0 / simulationLoopFrequency) * 1000);
+        // Remember loop start time
+        long loopStartTime = System.currentTimeMillis();
 
-            simulationTime += timeBetweenCalls;
+        // Advance simulation time
+        switch (simulationType){
+            case SIMULATION_TYPE_REAL_TIME:
+            case SIMULATION_TYPE_MAX_FPS:
+                simulationTime = loopStartTime - simulationStartTime;
+                lastStepSize = simulationTime - lastLoopTime;
+                break;
+            case SIMULATION_TYPE_FIXED_TIME:
+                long timeBetweenCalls = (long) ((1.0 / simulationLoopFrequency) * 1000);
+                simulationTime += timeBetweenCalls;
+                lastStepSize = timeBetweenCalls;
+                break;
         }
 
-        //Check whether we are done
-        if (simulationTime >= simulationStopTime) {
-            simulationTime = lastLoopTime;
-            stopSimulation();
-            return false;
+        // Inform observers about upcoming loop iteration
+        synchronized (loopObservers) {
+            for (SimulationLoopNotifiable observer : loopObservers) {
+                observer.willExecuteLoop(getSimulationObjects(), simulationTime, lastStepSize);
+            }
+            NotificationCenter.getSharedInstance().postNotification(Notification.NOTIFICATION_LOOP_UPCOMING, null);
+        }
+
+        // Loop over simulation objects
+        synchronized (simulationObjects) {
+            for (SimulationLoopExecutable object : simulationObjects) {
+
+                // Inform observers about upcoming loop iteration for each object
+                synchronized (loopObservers) {
+                    for (SimulationLoopNotifiable observer : loopObservers) {
+                        observer.willExecuteLoopForObject(object, simulationTime, lastStepSize);
+                    }
+                }
+
+                if(object instanceof PhysicalObject){
+                    PhysicsEngine.computePhysics((PhysicalObject) object, getPhysicalObjects(), lastStepSize);
+                }
+
+                object.executeLoopIteration(lastStepSize);
+
+                // Inform observers about completed loop iteration for each object
+                synchronized (loopObservers) {
+                    for (SimulationLoopNotifiable observer : loopObservers) {
+                        observer.didExecuteLoopForObject(object, simulationTime, lastStepSize);
+                    }
+                }
+            }
+        }
+
+        // Update loop count
+        loopCount++;
+
+        // Update loop start time
+        lastLoopStartTime = loopStartTime;
+
+        //Update time between last two iterations (i.e. the last iteration and the current one)
+        lastLoopTime = simulationTime;
+
+        //Update simulated daytime
+        daytime.add(Calendar.MILLISECOND, (int) lastStepSize * daytimeSpeedUp);
+
+        //Inform observers about completed loop iteration
+        synchronized (loopObservers) {
+            for (SimulationLoopNotifiable observer : loopObservers) {
+                observer.didExecuteLoop(getSimulationObjects(), simulationTime, lastStepSize);
+            }
+            NotificationCenter.getSharedInstance().postNotification(Notification.NOTIFICATION_LOOP_DONE, null);
         }
 
         //Slow down computations to wall-clock time if requested by user
-        if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownWallClockFactor != 0) {
-            long timeDifference = System.currentTimeMillis() - lastLoopStartTime;
+        if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownWallClockFactor != 1) {
+            long timeDifference = System.currentTimeMillis() - loopStartTime;
             long expectedTimeDifference = (long) ((1.0 / simulationLoopFrequency) * 1000);
 
             //Only slow down if computation was not already slow enough without slowing it down
-            if (timeDifference < expectedTimeDifference * slowDownWallClockFactor) {
-                long slowDownTime = expectedTimeDifference * slowDownWallClockFactor - timeDifference;
+            if (timeDifference < expectedTimeDifference * slowDownWallClockFactor-1) {
+                long slowDownTime = expectedTimeDifference * slowDownWallClockFactor-1  - timeDifference;
                 try {
                     Thread.sleep(slowDownTime);
                 } catch (InterruptedException e) {
@@ -299,99 +362,6 @@ public class Simulator {
                 }
             }
         }
-
-        //Check if computation should be paused
-        while (simulationTime >= simulationPauseTime.get()) {
-            //Pause computation until unlocked by new time limit
-            synchronized (simulationPauseTime) {
-                try {
-                    isComputationPaused = true;
-                    simulationPauseTime.wait();
-                } catch (InterruptedException e) {
-                    Log.warning("Thread of simulation with paused computation was interrupted." + e);
-                }
-            }
-        }
-
-        //We're after the pausing while loop, so we are allowed to continue simulation
-        isComputationPaused = false;
-
-        //Remember computation start time
-        long loopStartTime = System.currentTimeMillis();
-        lastLoopStartTime = loopStartTime;
-
-        //Update time between last two iterations (i.e. the last iteration and the current one)
-        timeBetweenLastIterations = simulationTime - lastLoopTime;
-        lastLoopTime = simulationTime;
-
-        //Update simulated daytime
-        daytime.add(Calendar.MILLISECOND, (int)timeBetweenLastIterations * daytimeSpeedUp);
-
-        synchronized (loopObservers) {
-            //Inform observers about upcoming loop iteration
-            for (SimulationLoopNotifiable observer : loopObservers) {
-                observer.willExecuteLoop(getSimulationObjects(), simulationTime, timeBetweenLastIterations);
-            }
-
-            NotificationCenter.getSharedInstance().postNotification(Notification.NOTIFICATION_LOOP_UPCOMING, null);
-        }
-
-        synchronized (simulationObjects) {
-            for (SimulationLoopExecutable object : simulationObjects) {
-
-                // Inform observers about upcoming loop iteration for each object
-                synchronized (loopObservers) {
-                    for (SimulationLoopNotifiable observer : loopObservers) {
-                        observer.willExecuteLoopForObject(object, simulationTime, timeBetweenLastIterations);
-                    }
-                }
-
-                //Execute loop
-                if(object instanceof PhysicalObject){
-                    PhysicsEngine.computePhysics((PhysicalObject) object, getPhysicalObjects(), timeBetweenLastIterations);
-                }
-
-                object.executeLoopIteration(timeBetweenLastIterations);
-
-                // Inform observers about completed loop iteration for each object
-                synchronized (loopObservers) {
-                    for (SimulationLoopNotifiable observer : loopObservers) {
-                        observer.didExecuteLoopForObject(object, simulationTime, timeBetweenLastIterations);
-                    }
-                }
-            }
-        }
-
-        synchronized (loopObservers) {
-            //Inform observers about completed loop iteration
-            for (SimulationLoopNotifiable observer : loopObservers) {
-                observer.didExecuteLoop(getSimulationObjects(), simulationTime, timeBetweenLastIterations);
-            }
-
-            NotificationCenter.getSharedInstance().postNotification(Notification.NOTIFICATION_LOOP_DONE, null);
-        }
-
-        synchronized (waitTimers) {
-            //See if any thread waited for this simulation time
-            for (long time : waitTimers) {
-                if (simulationTime >= time) {
-                    wakeupWaitingThreads();
-                    break;
-                }
-            }
-
-            //Clean up list
-            waitTimers.removeIf(time -> simulationTime >= time);
-        }
-
-        //Remember if computational errors occurred. Only check this if we don't
-        //already know about computational errors to save processing power
-        if (!errorOccurredDuringExecution) {
-            errorOccurredDuringExecution = errorPresent();
-        }
-
-        Log.finest("Did loop iteration at simulation time " + simulationTime);
-        loopCount++;
 
         //Slow down computation if requested by user
         if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownFactor != 1) {
@@ -403,6 +373,56 @@ public class Simulator {
             }
         }
 
+        Log.finest("Did loop iteration at simulation time " + simulationTime);
+
+        //See if any thread waited for this simulation time
+        synchronized (waitTimers) {
+            for (long time : waitTimers) {
+                if (simulationTime >= time) {
+                    wakeupWaitingThreads();
+                    break;
+                }
+            }
+            //Clean up list
+            waitTimers.removeIf(time -> simulationTime >= time);
+        }
+
+        //Remember if computational errors occurred
+        if (!errorOccurredDuringExecution) {
+            errorOccurredDuringExecution = errorPresent();
+        }
+
+        //Check if computation should be paused
+        while (simulationTime >= simulationPauseTime.get()) {
+            isComputationPaused = true;
+            if(synchronousSimulation){
+                return false;
+            }else{
+                //Pause computation until unlocked by new time limit
+                synchronized (simulationPauseTime) {
+                    try {
+                        simulationPauseTime.wait();
+                    } catch (InterruptedException e) {
+                        Log.warning("Thread of simulation with paused computation was interrupted." + e);
+                    }
+                }
+            }
+        }
+
+        //We're after the pausing while loop, so we are allowed to continue simulation
+        isComputationPaused = false;
+
+        //Check whether we are done
+        if (simulationTime >= simulationStopTime) {
+            switch (simulationType){
+                case SIMULATION_TYPE_REAL_TIME:
+                    stopSimulation();
+                    return false;
+                case SIMULATION_TYPE_MAX_FPS:
+                case SIMULATION_TYPE_FIXED_TIME:
+                    return false;
+            }
+        }
         return true;
     }
 
@@ -410,12 +430,12 @@ public class Simulator {
     /**
      * Blocks the calling thread until simulation is finished
      */
-    public synchronized void waitUntilSimulationFinished() {
+    public synchronized void waitUntilSimulationStopped() {
         if (synchronousSimulation) {
             throw new UnsupportedOperationException("Waiting is not available in a synchronous simulation.");
         }
 
-        while (isSimulationRunning()) {
+        while (isRunning) {
             //Go to wait state
             try {
                 sharedInstance.wait();
@@ -430,7 +450,7 @@ public class Simulator {
      *
      * @param milliseconds Milliseconds of simulation time for which the caller will be blocked
      */
-    public synchronized void waitForTime(long milliseconds) {
+    public synchronized void waitFor(long milliseconds) {
         if (synchronousSimulation) {
             throw new UnsupportedOperationException("Waiting is not available in a synchronous simulation.");
         }
@@ -628,7 +648,7 @@ public class Simulator {
      * loop iteration.
      */
     public void resetErrorOccurred() {
-        if (isSimulationRunning()) {
+        if (isRunning) {
             throw new IllegalStateException("Cannot reset errorOccured. Simulation currently running.");
         }
         errorOccurredDuringExecution = false;
@@ -657,14 +677,14 @@ public class Simulator {
      *
      * @return time in ms between last two iterations
      */
-    public long getTimeBetweenLastIterations() {
-        return timeBetweenLastIterations;
+    public long getLastStepSize() {
+        return lastStepSize;
     }
 
     /**
      * Set the frequency at which the simulation loop should be executed. May be lower in the
      * actual execution. Ask for actual time between last two iterations using
-     * getTimeBetweenLastIterations()
+     * getLastStepSize()
      *
      * @param simulationLoopFrequency frequency in Hz
      */
@@ -680,7 +700,7 @@ public class Simulator {
      *
      * @return true if the simulation is currently running
      */
-    public boolean isSimulationRunning() {
+    public boolean isRunning() {
         return isRunning;
     }
 
@@ -689,7 +709,7 @@ public class Simulator {
      *
      * @return Current simulation time in milliseconds
      */
-    public Long getSimulationTime() {
+    public long getSimulationTime() {
         return simulationTime;
     }
 
@@ -701,7 +721,7 @@ public class Simulator {
         if(daytimeStart == null){
             throw new IllegalArgumentException("Start day time should not be null.");
         }
-        if (isSimulationRunning()) {
+        if (isRunning) {
             throw new IllegalStateException("Cannot update simulation start daytime. Simulation currently running.");
         }
         this.daytimeStart = daytimeStart;
@@ -715,7 +735,7 @@ public class Simulator {
         if(daytimeSpeedUp < 1){
             throw new IllegalArgumentException("Daytime speed up " + daytimeSpeedUp + " should not be less than 1.");
         }
-        if (isSimulationRunning()) {
+        if (isRunning) {
             throw new IllegalStateException("Cannot update simulation daytime speed up. Simulation currently running.");
         }
         this.daytimeSpeedUp = daytimeSpeedUp;
@@ -736,7 +756,7 @@ public class Simulator {
      * @param type Type of the simulation
      */
     public void setSimulationType(SimulationType type) {
-        if (isSimulationRunning()) {
+        if (isRunning) {
             throw new IllegalStateException("Cannot change simulation type. Simulation currently running.");
         }
         simulationType = type;
@@ -771,27 +791,6 @@ public class Simulator {
     }
 
     /**
-     * Checks whether the simulator assumes the simulation will be paused or extended
-     * in the future
-     *
-     * @return True iff the simulator assumes the simulation will be paused or extended
-     */
-    public boolean getIsPausedInFuture() {
-        return isPausedInFuture;
-    }
-
-    /**
-     * Inform the simulator if the simulation will be paused or extended in the future.
-     * This knowledge is used to inform objects waiting for the simulation to be finished
-     * only after it is really finished.
-     *
-     * @param pausedInFuture True iff the simulation will be paused or extended
-     */
-    public void setIsPausedInFuture(boolean pausedInFuture) {
-        isPausedInFuture = pausedInFuture;
-    }
-
-    /**
      * A factor by which the simulation computation is slowed down. This does not affect the
      * simulated time between two frames. For example a factor of 2 doubles the wall-clock
      * time needed to run the simulation and a factor of 3 triples the wall-clock time needed
@@ -810,9 +809,8 @@ public class Simulator {
         if (slowDownFactor < 1) {
             throw new IllegalArgumentException("New slow down factor " + slowDownFactor + " should not be less than 1.");
         }
-        if (slowDownWallClockFactor != 0) {
-            Log.warning("setSlowDownFactor() cannot be used simultaneously with setSlowDownWallClockFactor(). Call setSlowDownWallClockFactor(0) before using this method.");
-            return;
+        if (slowDownWallClockFactor != 1) {
+            throw new IllegalStateException("Simulation is already slowed down to wall clock.");
         }
         this.slowDownFactor = slowDownFactor;
     }
@@ -837,23 +835,12 @@ public class Simulator {
             throw new IllegalArgumentException("New wall clock slow down factor " + slowDownWallClockFactor + " should not be less than 1.");
         }
         if (slowDownFactor != 1) {
-            Log.warning("setSlowDownWallClockFactor() cannot be used simultaneously with setSlowDownFactor(). Call setSlowDownFactor(1) before using this method.");
-            return;
+            throw new IllegalStateException("Simulation is already slowed down.");
         }
         this.slowDownWallClockFactor = slowDownWallClockFactor;
     }
 
-    /**
-     * This method allows to pause the computation of the simulation after a specified amount
-     * of simulated time. For example, if the simulator already simulated 5000 ms (i.e. getSimulationTime()
-     * returns 5000), and this method is called with 3000 as parameter then the simulator will pause the
-     * computation of the simulation after roughly 8000 ms. To continue the computations either call this
-     * method again with a specified amount of time or call continueComputations() to continue the
-     * computation without a new limit. Use isComputationPaused() to check whether or not the simulator is
-     * currently pausing its computations.
-     * @param timeToPause Simulated time in milliseconds after which the simulator will pause further computations
-     */
-    public synchronized void pauseComputationsAfter(long timeToPause) {
+    public synchronized void setSimulationPauseTime(long timeToPause){
         //Check for sane parameter
         if (timeToPause < 0) {
             throw new IllegalArgumentException("Time to simulation pause " + timeToPause + " should not be negative.");
@@ -861,9 +848,62 @@ public class Simulator {
         synchronized (simulationPauseTime) {
             //Set new pause time
             simulationPauseTime.getAndSet(getSimulationTime() + timeToPause);
+        }
 
-            //Wake up possibly paused computation
-            simulationPauseTime.notifyAll();
+    }
+
+    /**
+     * This method allows to pause the computation of the simulation after a specified amount
+     * of simulated time. For example, if the simulator already simulated 5000 ms (i.e. getSimulationTime()
+     * returns 5000), and this method is called with 3000 as parameter then the simulator will pause the
+     * computation of the simulation after roughly 8000 ms. To continue the computations either call this
+     * method again with a specified amount of time or call continueSimulation() to continue the
+     * computation without a new limit. Use isComputationPaused() to check whether or not the simulator is
+     * currently pausing its computations.
+     * @param timeToPause Simulated time in milliseconds after which the simulator will pause further computations
+     */
+    public synchronized void continueSimulation(long timeToPause) {
+        //Check for sane parameter
+        if (timeToPause < 0) {
+            throw new IllegalArgumentException("Time to simulation pause " + timeToPause + " should not be negative.");
+        }
+        if(!isComputationPaused && isRunning){
+            throw new IllegalStateException("Simulation cannot be continued when it is not paused.");
+        }
+        if(!isRunning){
+            throw new IllegalStateException("Simulation cannto be continued if it was not started.");
+        }
+        synchronized (simulationPauseTime) {
+            //Set new pause time
+            simulationPauseTime.getAndSet(getSimulationTime() + timeToPause);
+
+            if(synchronousSimulation){
+                runSimulation();
+            }else{
+                simulationPauseTime.notifyAll();
+            }
+        }
+    }
+
+    /**
+     * Continues the computation of the simulation without a time limit
+     */
+    public synchronized void continueSimulation() {
+        if(!isComputationPaused){
+            throw new  IllegalStateException("Simulation cannot be continued when it is not paused.");
+        }
+        if(!isRunning){
+            throw new IllegalStateException("Simulation cannto be continued if it was not started.");
+        }
+        synchronized (simulationPauseTime) {
+            //Set new pause time to 'never'
+            simulationPauseTime.getAndSet(Long.MAX_VALUE);
+
+            if(synchronousSimulation){
+                runSimulation();
+            }else{
+                simulationPauseTime.notifyAll();
+            }
         }
     }
 
@@ -873,18 +913,5 @@ public class Simulator {
      */
     public synchronized boolean isComputationPaused() {
         return isComputationPaused;
-    }
-
-    /**
-     * Continues the computation of the simulation without a time limit
-     */
-    public synchronized void continueComputations() {
-        synchronized (simulationPauseTime) {
-            //Set new pause time to 'never'
-            simulationPauseTime.getAndSet(Long.MAX_VALUE);
-
-            //Wake up possibly paused computation
-            simulationPauseTime.notifyAll();
-        }
     }
 }

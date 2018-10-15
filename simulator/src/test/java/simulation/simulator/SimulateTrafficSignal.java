@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import static simulation.environment.visualisationadapter.interfaces.TrafficSignalStatus.*;
 
 /**
- * Created by Shahriar Robbani on 28-Jan-17.
+ * Class that tests the TrafficSignalImpl class
  */
 public class SimulateTrafficSignal {
 
@@ -17,7 +17,6 @@ public class SimulateTrafficSignal {
 
         //Set update frequency to 30 loop iterations per second
         Simulator sim = Simulator.getSharedInstance();
-        sim.setIsPausedInFuture(true);
     }
 
     @Test

@@ -8,7 +8,7 @@ import java.util.*;
 import static org.junit.Assert.assertTrue;
 
 /**
- * JUnit Test-suite for simulation logic and object management
+ * Class that tests the Simulator class
  */
 public class SimulatorTest {
 
@@ -69,46 +69,90 @@ public class SimulatorTest {
     }
 
     /**
-     * Unregistering observers should stop calling the methods of the interface
+     * Prevent simulation with invalid settings
      */
-    @Test
-    public void unregisterObserver() {
+    @Test(expected = IllegalStateException.class)
+    public void startSimulationSlowedDownWallClockRealTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
+        sim.setSlowDownWallClockFactor(2);
+        sim.startSimulation();
+    }
 
-        // Create and register counting observers
+    /**
+     * Prevent simulation with invalid settings
+     */
+    @Test(expected = IllegalStateException.class)
+    public void startSimulationSlowedDownWallClockMaxFPS() {
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_MAX_FPS);
+        sim.setSlowDownWallClockFactor(2);
+        sim.startSimulation();
+    }
+
+    /**
+     * Tests if observers are correctly registered
+     * Tests if observers are correctly unregistered
+     * Tests if observers are correctly notified
+     */
+    @Test
+    public void observerTest() {
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.stopAfter(1000);
+
+        // Create observers
         NotificationCounter notNotified = new NotificationCounter();
-        NotificationCounter firstSecsNotified = new NotificationCounter();
+        NotificationCounter firstSecondNotified = new NotificationCounter();
+        NotificationCounter lastSecondNotified = new NotificationCounter();
         NotificationCounter alwaysNotified = new NotificationCounter();
+
+        // Register first, second and fourth observer
         sim.registerLoopObserver(notNotified);
-        sim.registerLoopObserver(firstSecsNotified);
+        sim.registerLoopObserver(firstSecondNotified);
         sim.registerLoopObserver(alwaysNotified);
 
         // Remove first observer and store iteration count
         sim.unregisterLoopObserver(notNotified);
         long iterationCount1 = sim.getLoopCount();
 
-        // Run simulation for 1 second
-        sim.stopAfter(1000);
+        // Run simulation for 0.5 seconds
+        sim.setSimulationPauseTime(500);
         sim.startSimulation();
 
-        // Remove second observer and store iteration count
-        sim.unregisterLoopObserver(firstSecsNotified);
+        // Remove second observer, Register third observer and store iteration count
+        sim.unregisterLoopObserver(firstSecondNotified);
+        sim.registerLoopObserver(lastSecondNotified);
         long iterationCount2 = sim.getLoopCount();
 
-        // Run simulation for 1 second
-        sim.extendSimulationTime(1000);
-        sim.startSimulation();
+        // Run simulation for 1 second and then stop
+        sim.continueSimulation();
 
-        // Remove second observer and store iteration count
+        // Remove third and fourth observer and store iteration count
+        sim.unregisterLoopObserver(lastSecondNotified);
         sim.unregisterLoopObserver(alwaysNotified);
         long iterationCount3 = sim.getLoopCount();
 
         // Check if number of observer calls are correct
+        Assert.assertEquals(0, notNotified.startCounter);
+        Assert.assertEquals(0, notNotified.stopCounter);
         Assert.assertEquals(iterationCount1, notNotified.didExecCounter);
         Assert.assertEquals(iterationCount1, notNotified.willExecCounter);
-        Assert.assertEquals(iterationCount2, firstSecsNotified.didExecCounter);
-        Assert.assertEquals(iterationCount2, firstSecsNotified.willExecCounter);
+
+        Assert.assertEquals(1, firstSecondNotified.startCounter);
+        Assert.assertEquals(0, firstSecondNotified.stopCounter);
+        Assert.assertEquals(iterationCount2, firstSecondNotified.didExecCounter);
+        Assert.assertEquals(iterationCount2, firstSecondNotified.willExecCounter);
+
+        Assert.assertEquals(0, lastSecondNotified.startCounter);
+        Assert.assertEquals(1, lastSecondNotified.stopCounter);
+        Assert.assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.didExecCounter);
+        Assert.assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.willExecCounter);
+
+        Assert.assertEquals(1, alwaysNotified.startCounter);
+        Assert.assertEquals(1, alwaysNotified.stopCounter);
         Assert.assertEquals(iterationCount3, alwaysNotified.didExecCounter);
         Assert.assertEquals(iterationCount3, alwaysNotified.willExecCounter);
     }
@@ -353,7 +397,7 @@ public class SimulatorTest {
         long startTime = System.currentTimeMillis();
 
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
+        sim.waitUntilSimulationStopped();
 
         //Calculate runtime of normal running simulation
         long referenceRuntime = System.currentTimeMillis() - startTime;
@@ -363,7 +407,7 @@ public class SimulatorTest {
         startTime = System.currentTimeMillis();
         sim.extendSimulationTime(5000);
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
+        sim.waitUntilSimulationStopped();
 
         //Compare runtimes
         long slowedRuntime = System.currentTimeMillis() - startTime;
@@ -389,7 +433,7 @@ public class SimulatorTest {
         //Run slowed down simulation
         sim.setSlowDownWallClockFactor(3);
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
+        sim.waitUntilSimulationStopped();
 
         long runtime = System.currentTimeMillis() - startTime;
 
@@ -410,7 +454,7 @@ public class SimulatorTest {
         //Run slowed down simulation
         sim.setSlowDownWallClockFactor(5);
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
+        sim.waitUntilSimulationStopped();
 
         runtime = System.currentTimeMillis() - startTime;
 
@@ -431,9 +475,9 @@ public class SimulatorTest {
         sim.stopAfter(1000);
 
         //Run paused simulation
-        sim.pauseComputationsAfter(500);
+        sim.setSimulationPauseTime(500);
         sim.startSimulation();
-        sim.waitForTime(500 - sim.getSimulationTime() - 10);
+        sim.waitFor(500 - sim.getSimulationTime() - 10);
 
         //Some extra time to enter pausing
         try {
@@ -446,7 +490,7 @@ public class SimulatorTest {
         long simTime = sim.getSimulationTime();
 
         //We waited the right amount of time + one frame tolerance
-        assertTrue(simTime > 500 && simTime <= 533);
+        checkSimTime(sim, 500, 33);
 
         //We're not advancing in simulation time
         try {
@@ -458,7 +502,7 @@ public class SimulatorTest {
         assertTrue(sim.getSimulationTime() == simTime);
 
         //Run to finish
-        sim.continueComputations();
+        sim.continueSimulation();
     }
 
     /**
@@ -473,36 +517,18 @@ public class SimulatorTest {
         sim.stopAfter(1000);
 
         //Run paused simulation
-        sim.pauseComputationsAfter(500);
-
-        //The simulator needs to be in an extra thread because otherwise we would block ourselves forever
-        Runnable thread = () -> sim.startSimulation();
-        new Thread(thread).start();
-
-        //After 1 second we should have entered pausing
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
 
         assertTrue(sim.isComputationPaused());
+        assertTrue(sim.isRunning());
         long simTime = sim.getSimulationTime();
 
         //We waited the right amount of time + one frame tolerance
-        assertTrue(simTime > 500 && simTime <= 533);
-
-        //We're not advancing in simulation time
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        assertTrue(sim.isComputationPaused());
-        assertTrue(sim.getSimulationTime() == simTime);
+        checkSimTime(sim, 500, 33);
 
         //Run to finish
-        sim.continueComputations();
+        sim.continueSimulation();
     }
 
     /**
@@ -531,9 +557,9 @@ public class SimulatorTest {
         //Start simulation
         sim.startSimulation();
 
-        //Stop time should be equal to desired runtime. Tolerance: 1 loop iteration.
+        //Stop time should be equal to desired runtime. Tolerance: 1 iteration time = 33ms.
         Long stopTime = sim.getSimulationTime();
-        assertTrue(stopTime <= 5030 && stopTime >= 4970);
+        checkSimTime(sim, stopTime, 33);
     }
 
     /**
@@ -571,7 +597,7 @@ public class SimulatorTest {
         //Continue for the same amount of time as before
         sim.stopAfter(2000);
         sim.startSimulation();
-        assertTrue(time * 2 == sim.getSimulationTime());
+        checkSimTime(sim, 2000, 33);
     }
 
     /**
@@ -587,23 +613,24 @@ public class SimulatorTest {
         sim.startSimulation();
 
         //Get simulated time
-        long timeRun1 = sim.getSimulationTime();
-        long framesRun1 = sim.getLoopCount();
+        long simTime1 = sim.getSimulationTime();
+        long loopCount1 = sim.getLoopCount();
 
         //Reset simulator
         Simulator.resetSimulator();
+        sim = Simulator.getSharedInstance();
 
         //Start another run
         sim.stopAfter(1000);
         sim.startSimulation();
 
         //Get simulated time
-        long timeRun2 = sim.getSimulationTime();
-        long framesRun2 = sim.getLoopCount();
+        long simtTime2= sim.getSimulationTime();
+        long loopCount2 = sim.getLoopCount();
 
         //Compare to first run
-        assertTrue(timeRun1 == timeRun2);
-        assertTrue(framesRun1 == framesRun2);
+        assertTrue(simTime1 == simtTime2);
+        assertTrue(loopCount1 == loopCount2);
     }
 
     /**
@@ -616,21 +643,13 @@ public class SimulatorTest {
 
         //Start a simulation
         sim.stopAfter(1000);
+        sim.setSimulationPauseTime(500);
         sim.startSimulation();
-
-        //Get simulated time
-        Long time = sim.getSimulationTime();
-
-        //Zero extension
-        sim.extendSimulationTime(0);
-        sim.startSimulation();
-        assertTrue(time.longValue() == sim.getSimulationTime());
-
 
         //Continue for the same amount of time as before
         sim.extendSimulationTime(1000);
-        sim.startSimulation();
-        assertTrue(time * 2 == sim.getSimulationTime());
+        sim.continueSimulation();
+        checkSimTime(sim, 2000, 33);
     }
 
     /**
@@ -703,16 +722,11 @@ public class SimulatorTest {
         assertTrue(sim.isSynchronousSimulation());
         sim.setSynchronousSimulation(false);
         assertTrue(!sim.isSynchronousSimulation());
-
-        //Paused in future
-        sim.setIsPausedInFuture(true);
-        assertTrue(sim.getIsPausedInFuture());
-        sim.setIsPausedInFuture(false);
-        assertTrue(!sim.getIsPausedInFuture());
     }
 
     /**
      * Fixed time simulation has fixed time
+     * //todo check time notivied at all notifications
      */
     @Test
     public void fixedTimeIntervals() {
@@ -746,7 +760,7 @@ public class SimulatorTest {
         long millisBefore = System.currentTimeMillis();
 
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
+        sim.waitUntilSimulationStopped();
 
         long runtime = System.currentTimeMillis() - millisBefore;
 
@@ -756,13 +770,22 @@ public class SimulatorTest {
         assertTrue(sim.getSimulationTime() > 1800);
     }
 
+    private void checkSimTime(Simulator sim, long expectedTime, long tolerance){
+         Assert.assertTrue(expectedTime <= sim.getSimulationTime()&& sim.getSimulationTime() < expectedTime + tolerance);
+    }
     private class NotificationCounter implements SimulationLoopNotifiable {
+        private long startCounter = 0;
+        private long stopCounter = 0;
         private long willExecCounter = 0;
         private long didExecCounter = 0;
 
         public NotificationCounter(){}
-        public void simulationStarted(List<SimulationLoopExecutable> simulationObjects){}
-        public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime){}
+        public void simulationStarted(List<SimulationLoopExecutable> simulationObjects){
+            startCounter++;
+        }
+        public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime){
+            stopCounter++;
+        }
         public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime){}
         public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime){}
         public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime){
@@ -785,7 +808,7 @@ public class SimulatorTest {
         public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {}
         public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {}
         public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-            Assert.assertEquals(expectedTime, Simulator.getSharedInstance().getTimeBetweenLastIterations());
+            Assert.assertEquals(expectedTime, Simulator.getSharedInstance().getLastStepSize());
         }
     }
 
