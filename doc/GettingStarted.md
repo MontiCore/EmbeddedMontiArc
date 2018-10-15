@@ -90,7 +90,21 @@ yarn run build:development
 ```
 
 ## Packaging
-To be written.
+Together with the dependencies loaded during the installation phase of this guide, building
+produces all the files necessary to have a runnable system. For each target it, however, holds
+true that either some files can be ignored or that some other files must also be included
+during deployment in order to have a runnable system in a different environment. An
+unexperienced developer might, however, forget some files or include files which are not
+needed. For this reason, a command has been introduced which eases the burden on the developer
+by automatically packaging the system into a ZIP archive where exactly the necessary files have
+been included. In order to execute the packaging process, a developer has to enter the
+following command in the target's root directory:
+
+```bash
+yarn run package
+```
+
+The resulting archive will be generated into the `dist` folder of the target.
 
 ## Documentation
 One of the key aspects which makes a piece of software maintainable and extensible is how well
