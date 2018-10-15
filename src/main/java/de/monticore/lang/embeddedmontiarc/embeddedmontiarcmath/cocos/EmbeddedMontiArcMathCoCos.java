@@ -44,7 +44,7 @@ public class EmbeddedMontiArcMathCoCos {
                 .addCoCo(new TopLevelComponentHasNoInstanceName())
                 .addCoCo((EmbeddedMontiArcASTConnectorCoCo) new ConnectorEndPointCorrectlyQualified())
                 .addCoCo(new InPortUniqueSender())
-                .addCoCo(new ReferencedSubComponentExists())
+                .addCoCo(new ReferencedSubComponentExistsEMAM())
                 .addCoCo(new PortTypeOnlyBooleanOrSIUnit())
                 .addCoCo(new AtomicComponentCoCo());
     }

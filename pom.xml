@@ -57,7 +57,7 @@
         <!-- .. Plugins ....................................................... -->
         <monticore.plugin>5.0.1</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
-        <compiler.plugin>3.8.0</compiler.plugin>
+        <compiler.plugin>3.3</compiler.plugin>
         <!--<plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>-->
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
