@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Logic and object management of the simulation
  */
-//@SuppressWarnings("unused")
 public class Simulator {
 
     /** Shared instance of the simulator */
@@ -66,10 +65,10 @@ public class Simulator {
     private long simulationStartTime = 0;
 
     /** Time after which to stop simulation. Default: Infinite */
-    private long stopSimulationTime = Long.MAX_VALUE;
+    private long simulationStopTime = Long.MAX_VALUE;
 
-    /** Simulation time at which the simulation computation will be paused. Default: Never */
-    private final AtomicLong computationPauseTime = new AtomicLong(Long.MAX_VALUE);
+    /** Simulation time at which the simulation will be paused. Default: Never */
+    private final AtomicLong simulationPauseTime = new AtomicLong(Long.MAX_VALUE);
 
     /** System time at which the last loop iteration started */
     private long lastLoopStartTime = 0;
@@ -77,8 +76,8 @@ public class Simulator {
     /** Simulated daytime */
     private Calendar daytime = Calendar.getInstance();
 
-    /** Number of simulated frames up to now */
-    private long frameCount = 0;
+    /** Number of loop iterations up to now */
+    private long loopCount = 0;
 
     /** True iff simulation currently running */
     private boolean isRunning = false;
@@ -124,31 +123,28 @@ public class Simulator {
      * continued.
      */
     public void startSimulation() {
-        //Check for sane frequency
+        // Check for sane frequency
         if (simulationLoopFrequency <= 0) {
             throw  new IllegalStateException("Simulation loop frequency " + simulationLoopFrequency + " is not positive.");
         }
 
-        //Check simulation is not already running
+        // Check simulation is not already running
         if (isRunning) {
-            Log.warning("Simulation already running.");
-            return;
+            throw new IllegalStateException("Simulation is already running.");
         }
 
-        //Check for sane configuration
+        // Check for sane configuration
         if (synchronousSimulation && simulationType == SimulationType.SIMULATION_TYPE_REAL_TIME) {
-            Log.severe("A simulation with type REAL_TIME cannot be executed synchronously. Set synchronousSimulation to false or change simulation type.");
-            return;
+            throw new IllegalStateException("A simulation with type REAL_TIME cannot be executed synchronously.");
         }
 
-        //Check is the user tries to slow down a computation that cannot be slowed down
+        // Check for sane configurytion
         if (simulationType != SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownFactor != 1) {
-            Log.warning("setSlowDownFactor() only applies to simulation of type SIMULATION_TYPE_FIXED_TIME. Computation will not be slowed down.");
-            return;
+            throw new IllegalStateException("Only a simulation with type FIXED_TIME can be slowed down.");
         }
 
         //Check whether we are already done
-        if (simulationTime >= stopSimulationTime) {
+        if (simulationTime >= simulationStopTime) {
             return;
         }
 
@@ -183,7 +179,7 @@ public class Simulator {
             timer.scheduleAtFixedRate(loopIteration, 0, timeBetweenCalls);
         }
 
-        Log.info("Simulation " + ((frameCount == 0) ? "started." : "continued."));
+        Log.info("Simulation " + ((loopCount == 0) ? "started." : "continued."));
 
         if (synchronousSimulation) {
             runSimulation();
@@ -221,7 +217,7 @@ public class Simulator {
         isRunning = false;
 
         // Inform observers about simulation stop if it is not a pause
-        if (!getIsPausedInFuture()) {
+        if (!isPausedInFuture) {
             for (SimulationLoopNotifiable observer : this.loopObservers) {
                 observer.simulationStopped(getSimulationObjects(), simulationTime);
             }
@@ -234,7 +230,7 @@ public class Simulator {
         int errorCount = getErrorObjects().size();
 
         //Inform user
-        Log.info("Simulation " + (isPausedInFuture ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + frameCount + " frames simulated. Objects with a computational error: " + errorCount);
+        Log.info("Simulation " + (isPausedInFuture ? "paused" : "stopped") + " after " + lastLoopTime + " ms. " + loopCount + " simulation loops executed. Number of physical objects with a computational error: " + errorCount);
 
         //Wake up waiting threads
         sharedInstance.wakeupWaitingThreads();
@@ -243,30 +239,25 @@ public class Simulator {
     /**
      * Set the simulation duration. Ideally, this value should be set before starting the simulation.
      *
-     * @param milliseconds Time in milliseconds after which the simulation should stop
+     * @param simulationStopTime Time in milliseconds after which the simulation should stop
      */
-    public void stopAfter(long milliseconds) {
-        //Check for sanity and warn user if value seems unwanted
-        if (milliseconds <= this.simulationTime) {
-            Log.warning("You tried to set stop the simulation time at a time in the past. Did you intended to use extendSimulationTime() instead?");
+    public void stopAfter(long simulationStopTime) {
+        if (simulationStopTime < this.simulationTime) {
+            throw new IllegalArgumentException("New stop time " + simulationStopTime + " should not be in the past.");
         }
-
-        stopSimulationTime = milliseconds;
+        this.simulationStopTime = simulationStopTime;
     }
 
     /**
      * Extend the simulation time.
      *
-     * @param milliseconds Time in ms that the simulation should be extended by. Must be positive.
+     * @param additionalSimulationTime Time in ms that the simulation should be extended by. Must be positive.
      */
-    public void extendSimulationTime(long milliseconds) {
-        //Do not allow to reduce simulation time
-        if (milliseconds < 0) {
-            Log.warning("prolongSimulation may only be called with positive values.");
-            return;
+    public void extendSimulationTime(long additionalSimulationTime) {
+        if (additionalSimulationTime < 0) {
+            throw new IllegalArgumentException("Additional simulation time " + additionalSimulationTime + " should not be negative");
         }
-
-        stopSimulationTime += milliseconds;
+        simulationStopTime += additionalSimulationTime;
     }
 
     /**
@@ -287,7 +278,7 @@ public class Simulator {
         }
 
         //Check whether we are done
-        if (simulationTime >= stopSimulationTime) {
+        if (simulationTime >= simulationStopTime) {
             simulationTime = lastLoopTime;
             stopSimulation();
             return false;
@@ -310,12 +301,12 @@ public class Simulator {
         }
 
         //Check if computation should be paused
-        while (simulationTime >= computationPauseTime.get()) {
+        while (simulationTime >= simulationPauseTime.get()) {
             //Pause computation until unlocked by new time limit
-            synchronized (computationPauseTime) {
+            synchronized (simulationPauseTime) {
                 try {
                     isComputationPaused = true;
-                    computationPauseTime.wait();
+                    simulationPauseTime.wait();
                 } catch (InterruptedException e) {
                     Log.warning("Thread of simulation with paused computation was interrupted." + e);
                 }
@@ -400,7 +391,7 @@ public class Simulator {
         }
 
         Log.finest("Did loop iteration at simulation time " + simulationTime);
-        frameCount++;
+        loopCount++;
 
         //Slow down computation if requested by user
         if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownFactor != 1) {
@@ -421,8 +412,7 @@ public class Simulator {
      */
     public synchronized void waitUntilSimulationFinished() {
         if (synchronousSimulation) {
-            Log.warning("Waiting not available in synchronous simulation.");
-            return;
+            throw new UnsupportedOperationException("Waiting is not available in a synchronous simulation.");
         }
 
         while (isSimulationRunning()) {
@@ -442,8 +432,7 @@ public class Simulator {
      */
     public synchronized void waitForTime(long milliseconds) {
         if (synchronousSimulation) {
-            Log.warning("Waiting not available in synchronous simulation.");
-            return;
+            throw new UnsupportedOperationException("Waiting is not available in a synchronous simulation.");
         }
 
         //Save time at which waiting should be ended
@@ -640,10 +629,8 @@ public class Simulator {
      */
     public void resetErrorOccurred() {
         if (isSimulationRunning()) {
-            Log.severe("Cannot reset errorOccurred. Simulation currently running.");
-            return;
+            throw new IllegalStateException("Cannot reset errorOccured. Simulation currently running.");
         }
-
         errorOccurredDuringExecution = false;
     }
 
@@ -714,10 +701,8 @@ public class Simulator {
         if(daytimeStart == null){
             throw new IllegalArgumentException("Start day time should not be null.");
         }
-        //Setting only allowed if simulation not running
         if (isSimulationRunning()) {
-            Log.warning("Cannot update simulation daytime while simulation is running");
-            return;
+            throw new IllegalStateException("Cannot update simulation start daytime. Simulation currently running.");
         }
         this.daytimeStart = daytimeStart;
     }
@@ -730,10 +715,8 @@ public class Simulator {
         if(daytimeSpeedUp < 1){
             throw new IllegalArgumentException("Daytime speed up " + daytimeSpeedUp + " should not be less than 1.");
         }
-        //Setting only allowed if simulation not running
         if (isSimulationRunning()) {
-            Log.warning("Cannot update simulation daytime while simulation is running");
-            return;
+            throw new IllegalStateException("Cannot update simulation daytime speed up. Simulation currently running.");
         }
         this.daytimeSpeedUp = daytimeSpeedUp;
     }
@@ -754,20 +737,18 @@ public class Simulator {
      */
     public void setSimulationType(SimulationType type) {
         if (isSimulationRunning()) {
-            Log.severe("Cannot change simulation type. Simulation already running.");
-            return;
+            throw new IllegalStateException("Cannot change simulation type. Simulation currently running.");
         }
-
         simulationType = type;
     }
 
     /**
-     * Get number of simulated frames
+     * Get number of loop iterations
      *
-     * @return Count of simulated frames
+     * @return Count of loop iterations
      */
-    public long getFrameCount() {
-        return frameCount;
+    public long getLoopCount() {
+        return loopCount;
     }
 
     /**
@@ -823,20 +804,17 @@ public class Simulator {
      *
      * This method cannot be used simultaneously with setSlowDownWallClockFactor().
      *
-     * @param factor Factor by which the computations are slowed down.
+     * @param slowDownFactor Factor by which the computations are slowed down.
      */
-    public synchronized void setSlowDownFactor(int factor) {
-        if (factor < 1) {
-            Log.warning("You cannot slow down the simulation by a factor of less than 1. 1 equals as fast as possible computation.");
-            return;
+    public synchronized void setSlowDownFactor(int slowDownFactor) {
+        if (slowDownFactor < 1) {
+            throw new IllegalArgumentException("New slow down factor " + slowDownFactor + " should not be less than 1.");
         }
-
         if (slowDownWallClockFactor != 0) {
             Log.warning("setSlowDownFactor() cannot be used simultaneously with setSlowDownWallClockFactor(). Call setSlowDownWallClockFactor(0) before using this method.");
             return;
         }
-
-        slowDownFactor = factor;
+        this.slowDownFactor = slowDownFactor;
     }
 
     /**
@@ -852,20 +830,17 @@ public class Simulator {
      *
      * This method cannot be used simultaneously with setSlowDownWallClockFactor().
      *
-     * @param factor Factor of wall-clock time. Factor*wall-clock time is lower bound for runtime.
+     * @param slowDownWallClockFactor Factor of wall-clock time. Factor*wall-clock time is lower bound for runtime.
      */
-    public synchronized void setSlowDownWallClockFactor(int factor) {
-        if (factor < 1) {
-            Log.warning("You cannot slow down the simulation by a factor of less than 1. 1 equals as fast as possible computation.");
-            return;
+    public synchronized void setSlowDownWallClockFactor(int slowDownWallClockFactor) {
+        if (slowDownWallClockFactor < 1) {
+            throw new IllegalArgumentException("New wall clock slow down factor " + slowDownWallClockFactor + " should not be less than 1.");
         }
-
         if (slowDownFactor != 1) {
             Log.warning("setSlowDownWallClockFactor() cannot be used simultaneously with setSlowDownFactor(). Call setSlowDownFactor(1) before using this method.");
             return;
         }
-
-        slowDownWallClockFactor = factor;
+        this.slowDownWallClockFactor = slowDownWallClockFactor;
     }
 
     /**
@@ -876,21 +851,19 @@ public class Simulator {
      * method again with a specified amount of time or call continueComputations() to continue the
      * computation without a new limit. Use isComputationPaused() to check whether or not the simulator is
      * currently pausing its computations.
-     * @param milliseconds Simulated time in milliseconds after which the simulator will pause further computations
+     * @param timeToPause Simulated time in milliseconds after which the simulator will pause further computations
      */
-    public synchronized void pauseComputationsAfter(long milliseconds) {
+    public synchronized void pauseComputationsAfter(long timeToPause) {
         //Check for sane parameter
-        if (milliseconds < 0) {
-            Log.warning("Called pauseComputationsAfter() with negative parameter. May only be called with positive parameter.");
-            return;
+        if (timeToPause < 0) {
+            throw new IllegalArgumentException("Time to simulation pause " + timeToPause + " should not be negative.");
         }
-
-        synchronized (computationPauseTime) {
+        synchronized (simulationPauseTime) {
             //Set new pause time
-            computationPauseTime.getAndSet(getSimulationTime() + milliseconds);
+            simulationPauseTime.getAndSet(getSimulationTime() + timeToPause);
 
             //Wake up possibly paused computation
-            computationPauseTime.notifyAll();
+            simulationPauseTime.notifyAll();
         }
     }
 
@@ -906,12 +879,12 @@ public class Simulator {
      * Continues the computation of the simulation without a time limit
      */
     public synchronized void continueComputations() {
-        synchronized (computationPauseTime) {
+        synchronized (simulationPauseTime) {
             //Set new pause time to 'never'
-            computationPauseTime.getAndSet(Long.MAX_VALUE);
+            simulationPauseTime.getAndSet(Long.MAX_VALUE);
 
             //Wake up possibly paused computation
-            computationPauseTime.notifyAll();
+            simulationPauseTime.notifyAll();
         }
     }
 }

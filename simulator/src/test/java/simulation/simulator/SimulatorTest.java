@@ -35,38 +35,37 @@ public class SimulatorTest {
     /**
      * Prevent simulation with invalid settings
      */
-    @Test
-    public void startSimulation() {
+    @Test(expected = IllegalStateException.class)
+    public void startSimulationSynchronousRealTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        //Set invalid parameters synchronousSimulation & SIMULATION_TYPE_REAL_TIME
         sim.setSynchronousSimulation(true);
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
-
-        //Try to run simulation
         sim.startSimulation();
+    }
 
-        //Simulation did not start
-        assertTrue(sim.getFrameCount() == 0);
-
-        //Not allow to slow down simulation that is not SIMULATION_TYPE_FIXED_TIME
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_MAX_FPS);
-        sim.setSlowDownFactor(2);
-
-        //Try to run simulation
-        sim.startSimulation();
-
-        //Simulation did not start
-        assertTrue(sim.getFrameCount() == 0);
-
+    /**
+     * Prevent simulation with invalid settings
+     */
+    @Test(expected = IllegalStateException.class)
+    public void startSimulationSlowedDownRealTime() {
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
         sim.setSlowDownFactor(2);
-
-        //Try to run simulation
         sim.startSimulation();
+    }
 
-        //Simulation did not start
-        assertTrue(sim.getFrameCount() == 0);
+    /**
+     * Prevent simulation with invalid settings
+     */
+    @Test(expected = IllegalStateException.class)
+    public void startSimulationSlowedDownMaxFPS() {
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_MAX_FPS);
+        sim.setSlowDownFactor(2);
+        sim.startSimulation();
     }
 
     /**
@@ -87,7 +86,7 @@ public class SimulatorTest {
 
         // Remove first observer and store iteration count
         sim.unregisterLoopObserver(notNotified);
-        long iterationCount1 = sim.getFrameCount();
+        long iterationCount1 = sim.getLoopCount();
 
         // Run simulation for 1 second
         sim.stopAfter(1000);
@@ -95,7 +94,7 @@ public class SimulatorTest {
 
         // Remove second observer and store iteration count
         sim.unregisterLoopObserver(firstSecsNotified);
-        long iterationCount2 = sim.getFrameCount();
+        long iterationCount2 = sim.getLoopCount();
 
         // Run simulation for 1 second
         sim.extendSimulationTime(1000);
@@ -103,7 +102,7 @@ public class SimulatorTest {
 
         // Remove second observer and store iteration count
         sim.unregisterLoopObserver(alwaysNotified);
-        long iterationCount3 = sim.getFrameCount();
+        long iterationCount3 = sim.getLoopCount();
 
         // Check if number of observer calls are correct
         Assert.assertEquals(iterationCount1, notNotified.didExecCounter);
@@ -213,7 +212,6 @@ public class SimulatorTest {
         a.setError(true);
         sim.stopAfter(100);
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
         assertTrue(sim.errorPresent() == true);
         assertTrue(sim.errorOccurred() == true);
 
@@ -225,7 +223,6 @@ public class SimulatorTest {
         //Extending simulation updates memory
         sim.extendSimulationTime(100);
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
         assertTrue(sim.errorPresent() == true);
         assertTrue(sim.errorOccurred() == true);
 
@@ -252,10 +249,9 @@ public class SimulatorTest {
 
         //Run simulation
         sim.startSimulation();
-        sim.waitUntilSimulationFinished();
 
         //Function calls should match actual loop iterations
-        long frames = sim.getFrameCount();
+        long frames = sim.getLoopCount();
         assertTrue(frames == exec.execCounter);
     }
 
@@ -535,9 +531,6 @@ public class SimulatorTest {
         //Start simulation
         sim.startSimulation();
 
-        //Wait till simulation is over
-        sim.waitUntilSimulationFinished();
-
         //Stop time should be equal to desired runtime. Tolerance: 1 loop iteration.
         Long stopTime = sim.getSimulationTime();
         assertTrue(stopTime <= 5030 && stopTime >= 4970);
@@ -554,9 +547,6 @@ public class SimulatorTest {
         //Immediately stopping simulation
         sim.stopAfter(0);
         sim.startSimulation();
-
-        //Wait till simulation is over
-        sim.waitUntilSimulationFinished();
 
         //Test no simulation time has passed
         Long stopTime = sim.getSimulationTime();
@@ -598,7 +588,7 @@ public class SimulatorTest {
 
         //Get simulated time
         long timeRun1 = sim.getSimulationTime();
-        long framesRun1 = sim.getFrameCount();
+        long framesRun1 = sim.getLoopCount();
 
         //Reset simulator
         Simulator.resetSimulator();
@@ -609,7 +599,7 @@ public class SimulatorTest {
 
         //Get simulated time
         long timeRun2 = sim.getSimulationTime();
-        long framesRun2 = sim.getFrameCount();
+        long framesRun2 = sim.getLoopCount();
 
         //Compare to first run
         assertTrue(timeRun1 == timeRun2);
@@ -637,16 +627,20 @@ public class SimulatorTest {
         assertTrue(time.longValue() == sim.getSimulationTime());
 
 
-        //Invalid extension
-        sim.extendSimulationTime(-5);
-        sim.startSimulation();
-        assertTrue(time.longValue() == sim.getSimulationTime());
-
-
         //Continue for the same amount of time as before
         sim.extendSimulationTime(1000);
         sim.startSimulation();
         assertTrue(time * 2 == sim.getSimulationTime());
+    }
+
+    /**
+     * Test that extendSimulationTime() actually increases simulation time
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void extendSimulationTimeInvalid() {
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.extendSimulationTime(-5);
     }
 
     /**
