@@ -17,10 +17,7 @@ public class SimulateTrafficSignal {
 
         //Set update frequency to 30 loop iterations per second
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
-        sim.setPausedInFuture(true);
+        sim.setIsPausedInFuture(true);
     }
 
     @Test

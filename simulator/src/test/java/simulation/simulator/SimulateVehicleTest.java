@@ -78,10 +78,7 @@ public class SimulateVehicleTest {
     public void firstTest(){
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
-        sim.setPausedInFuture(true);
+        sim.setIsPausedInFuture(true);
 
         sim.registerLoopObserver(new SimulationPlotter2D());
 
@@ -107,7 +104,7 @@ public class SimulateVehicleTest {
         sim.startSimulation();
         long secondRoundEndTime = System.nanoTime();
 
-        sim.setPausedInFuture(false);
+        sim.setIsPausedInFuture(false);
         sim.stopSimulation();
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
         assertTrue(true);

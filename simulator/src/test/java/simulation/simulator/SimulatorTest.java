@@ -5,7 +5,6 @@ import org.apache.commons.math3.linear.*;
 import org.junit.*;
 import simulation.util.*;
 import java.util.*;
-
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -26,20 +25,20 @@ public class SimulatorTest {
     /**
      * Prevent simulation with invalid settings
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void setSimulationLoopFrequencyFail() {
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationLoopFrequency(0);
+    }
+
+    /**
+     * Prevent simulation with invalid settings
+     */
     @Test
     public void startSimulation() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(0);
-
-        //Try to run simulation
-        sim.stopAfter(500);
-        sim.startSimulation();
-
-        //Simulation did not start
-        assertTrue(sim.getFrameCount() == 0);
-
         //Set invalid parameters synchronousSimulation & SIMULATION_TYPE_REAL_TIME
         sim.setSynchronousSimulation(true);
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
@@ -52,7 +51,7 @@ public class SimulatorTest {
 
         //Not allow to slow down simulation that is not SIMULATION_TYPE_FIXED_TIME
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_MAX_FPS);
-        sim.slowDownComputation(2);
+        sim.setSlowDownFactor(2);
 
         //Try to run simulation
         sim.startSimulation();
@@ -61,7 +60,7 @@ public class SimulatorTest {
         assertTrue(sim.getFrameCount() == 0);
 
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
-        sim.slowDownComputation(2);
+        sim.setSlowDownFactor(2);
 
         //Try to run simulation
         sim.startSimulation();
@@ -77,9 +76,6 @@ public class SimulatorTest {
     public void unregisterObserver() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         // Create and register counting observers
         NotificationCounter notNotified = new NotificationCounter();
@@ -125,8 +121,6 @@ public class SimulatorTest {
     public void unregisteringPhysicalObjects() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
 
         //Create dummy objects
         SimObject a = new SimObject();
@@ -164,8 +158,7 @@ public class SimulatorTest {
     public void returnErrorObjects() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
+
         SimObject a = new SimObject();
         SimObject b = new SimObject();
         SimObject c = new SimObject();
@@ -202,8 +195,6 @@ public class SimulatorTest {
     public void errorObjectsMemory() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
 
         SimObject a = new SimObject();
         SimObject b = new SimObject();
@@ -251,8 +242,6 @@ public class SimulatorTest {
     public void executable() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
 
         //Add a notifiable object
         Executable exec = new Executable();
@@ -277,9 +266,6 @@ public class SimulatorTest {
     public void slowDownSynchronousComputation() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         // Set simulation duration (5 seconds)
         sim.stopAfter(5000);
@@ -297,7 +283,7 @@ public class SimulatorTest {
         long referenceRuntime = System.currentTimeMillis() - startTime;
 
         //Second run with slowed down simulation
-        sim.slowDownComputation(3);
+        sim.setSlowDownFactor(3);
         startTime = System.currentTimeMillis();
         sim.extendSimulationTime(5000);
         sim.startSimulation();
@@ -316,9 +302,6 @@ public class SimulatorTest {
     public void slowDownSynchronousComputationToWallClockTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         // Set simulation duration
         sim.stopAfter(1000);
@@ -326,7 +309,7 @@ public class SimulatorTest {
         long startTime = System.currentTimeMillis();
 
         //Run slowed down simulation
-        sim.slowDownComputationToWallClockTime(3);
+        sim.setSlowDownWallClockFactor(3);
         sim.startSimulation();
 
         long runtime = System.currentTimeMillis() - startTime;
@@ -337,9 +320,7 @@ public class SimulatorTest {
         //Try with different parameters for frequency and slow down factor
         Simulator.resetSimulator();
         sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
         sim.setSimulationLoopFrequency(66);
-        sim.setSynchronousSimulation(true);
 
         // Set simulation duration
         sim.stopAfter(800);
@@ -347,7 +328,7 @@ public class SimulatorTest {
         startTime = System.currentTimeMillis();
 
         //Run slowed down simulation
-        sim.slowDownComputationToWallClockTime(5);
+        sim.setSlowDownWallClockFactor(5);
         sim.startSimulation();
 
         runtime = System.currentTimeMillis() - startTime;
@@ -363,8 +344,6 @@ public class SimulatorTest {
     public void slowDownAsynchronousComputation() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
 
         // Set simulation duration (5 seconds)
@@ -384,7 +363,7 @@ public class SimulatorTest {
         long referenceRuntime = System.currentTimeMillis() - startTime;
 
         //Second run with slowed down simulation
-        sim.slowDownComputation(3);
+        sim.setSlowDownFactor(3);
         startTime = System.currentTimeMillis();
         sim.extendSimulationTime(5000);
         sim.startSimulation();
@@ -404,8 +383,6 @@ public class SimulatorTest {
     public void slowDownAsynchronousComputationToWallClockTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
 
         // Set simulation duration
@@ -414,7 +391,7 @@ public class SimulatorTest {
         long startTime = System.currentTimeMillis();
 
         //Run slowed down simulation
-        sim.slowDownComputationToWallClockTime(3);
+        sim.setSlowDownWallClockFactor(3);
         sim.startSimulation();
         sim.waitUntilSimulationFinished();
 
@@ -426,7 +403,6 @@ public class SimulatorTest {
         //Try with different parameters for frequency and slow down factor
         Simulator.resetSimulator();
         sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
         sim.setSimulationLoopFrequency(66);
         sim.setSynchronousSimulation(false);
 
@@ -436,7 +412,7 @@ public class SimulatorTest {
         startTime = System.currentTimeMillis();
 
         //Run slowed down simulation
-        sim.slowDownComputationToWallClockTime(5);
+        sim.setSlowDownWallClockFactor(5);
         sim.startSimulation();
         sim.waitUntilSimulationFinished();
 
@@ -453,8 +429,6 @@ public class SimulatorTest {
     public void pauseAsyncComputations() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
 
         // Set simulation duration
@@ -498,9 +472,6 @@ public class SimulatorTest {
     public void pauseSyncComputations() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         // Set simulation duration
         sim.stopAfter(1000);
@@ -543,17 +514,11 @@ public class SimulatorTest {
      * Trying to set a negative frequency should not change the current frequency.
      */
     @Test
-    public void simulationFrequencySaneValues () {
+    public void setSimulationFrequencyNormal() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-
-        //Sane example
         sim.setSimulationLoopFrequency(20);
-        assertTrue(sim.getSimulationLoopFrequency() == 20);
-
-        //Illegal examples should not change frequency
-        sim.setSimulationLoopFrequency(-1);
-        assertTrue(sim.getSimulationLoopFrequency() == 20);
+        Assert.assertEquals(20, sim.getSimulationLoopFrequency());
     }
 
     /**
@@ -563,8 +528,6 @@ public class SimulatorTest {
     public void stopTime () {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
 
         // Set simulation duration (5 seconds)
         sim.stopAfter(5000);
@@ -587,8 +550,6 @@ public class SimulatorTest {
     public void immediatelyStopSimulation() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
 
         //Immediately stopping simulation
         sim.stopAfter(0);
@@ -609,9 +570,6 @@ public class SimulatorTest {
     public void continueSimulationIncreasesSimTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         //Start a simulation
         sim.stopAfter(1000);
@@ -633,9 +591,6 @@ public class SimulatorTest {
     public void synchronousSimulationIsDeterministic() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSynchronousSimulation(true);
-        sim.setSimulationLoopFrequency(33);
 
         //Start a simulation
         sim.stopAfter(1000);
@@ -647,8 +602,6 @@ public class SimulatorTest {
 
         //Reset simulator
         Simulator.resetSimulator();
-        sim.setSynchronousSimulation(true);
-        sim.setSimulationLoopFrequency(33);
 
         //Start another run
         sim.stopAfter(1000);
@@ -670,9 +623,6 @@ public class SimulatorTest {
     public void extendSimulationTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         //Start a simulation
         sim.stopAfter(1000);
@@ -706,15 +656,13 @@ public class SimulatorTest {
     public void daytimeSimulation() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
 
         // Set daytime, speedup: 1 second = 1 day
         Calendar cal = Calendar.getInstance();
         cal.set(2000, Calendar.JANUARY, 1, 12, 0, 0);
         Date startTime = cal.getTime();
-        sim.setStartDaytime(startTime, 86400);
+        sim.setStartDaytime(startTime);
+        sim.setDaytimeSpeedUp(86400);
 
         // Set simulation duration (5 seconds)
         sim.stopAfter(5000);
@@ -732,7 +680,8 @@ public class SimulatorTest {
 
         // Extend by another 10 seconds
         sim.extendSimulationTime(10000);
-        sim.setStartDaytime(startTime, 3600);
+        sim.setStartDaytime(startTime);
+        sim.setDaytimeSpeedUp(3600);
         sim.startSimulation();
 
         //Test if 10 hours passed. 2 minutes tolerance (~1 frame)
@@ -754,8 +703,6 @@ public class SimulatorTest {
     public void getters() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
 
         //Synchronous simulation
         sim.setSynchronousSimulation(true);
@@ -764,10 +711,10 @@ public class SimulatorTest {
         assertTrue(!sim.isSynchronousSimulation());
 
         //Paused in future
-        sim.setPausedInFuture(true);
-        assertTrue(sim.isPausedInFuture());
-        sim.setPausedInFuture(false);
-        assertTrue(!sim.isPausedInFuture());
+        sim.setIsPausedInFuture(true);
+        assertTrue(sim.getIsPausedInFuture());
+        sim.setIsPausedInFuture(false);
+        assertTrue(!sim.getIsPausedInFuture());
     }
 
     /**
@@ -778,15 +725,9 @@ public class SimulatorTest {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
-        sim.setSimulationLoopFrequency(30);
-        sim.setSynchronousSimulation(true);
-
-        // Set simulation loop frequency
-        int simulationLoopFrequency = 30;
-        sim.setSimulationLoopFrequency(simulationLoopFrequency);
 
         // Calculate expected iteration time
-        long expectedIterationTime = (long) ((1.0 / simulationLoopFrequency) * 1000);
+        long expectedIterationTime = (long) ((1.0 / 30) * 1000);
 
         // Create and register observer that tests the iteration time
         TimeChecker checker = new TimeChecker(expectedIterationTime);
@@ -804,7 +745,6 @@ public class SimulatorTest {
     public void realTimeSimTakesRealTime() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationLoopFrequency(30);
         sim.setSynchronousSimulation(false);
         sim.setSimulationType(SimulationType.SIMULATION_TYPE_REAL_TIME);
         sim.stopAfter(2000);

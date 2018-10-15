@@ -12,16 +12,45 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Logic and object management of the simulation
  */
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class Simulator {
 
-    /** Update frequency of the simulation loop */
-    private int simulationLoopFrequency;
-
     /** Shared instance of the simulator */
-    private static Simulator sharedInstance = new Simulator(0);
+    private static Simulator sharedInstance = new Simulator();
 
-    /** Simulation time with millisecond precision */
+    /** Simulation parameters with default values */
+    /** Update frequency of the simulation loop. Default 30 */
+    private int simulationLoopFrequency = 30;
+
+    /** Type of the simulation as described in SimulationType class. Default: real-time simulation */
+    private SimulationType simulationType = SimulationType.SIMULATION_TYPE_FIXED_TIME;
+
+    /**
+     * Factor by which the simulation is slowed down in fixed_time mode. See setSlowDownFactor() for
+     * more information. Default: no slowing down
+     */
+    private int slowDownFactor = 1;
+
+    /**
+     * Factor by which the simulation is slowed down in fixed_time mode. See
+     * setSlowDownWallClockFactor() for more information. Default: no slowing down
+     */
+    private int slowDownWallClockFactor = 0;
+
+    /** Simulated daytime at the start of the simulation. Default: daytime at creation of class */
+    private Date daytimeStart = new Date();
+
+    /** Factor by which the simulated day advances faster than the simulation time. Default: no acceleration */
+    private int daytimeSpeedUp = 1;
+
+    /** Whether or not the simulation should not be executed in its own thread and therefore blocking. Default: blocking */
+    private boolean synchronousSimulation = true;
+
+    /** Whether the simulation will be paused or extended in the future */
+    private boolean isPausedInFuture = false;
+
+
+    /** Simulation time */
     private long simulationTime = 0;
 
     /** Simulation time when the loop was last executed */
@@ -36,31 +65,11 @@ public class Simulator {
     /** System time at which simulation started */
     private long simulationStartTime = 0;
 
-    /** Time (in ms) after which to stop simulation. Default: Infinite */
+    /** Time after which to stop simulation. Default: Infinite */
     private long stopSimulationTime = Long.MAX_VALUE;
 
-    /** Simulation time at which the simulation computation will be paused. Default: Long.MAX_VALUE, i.e. never */
+    /** Simulation time at which the simulation computation will be paused. Default: Never */
     private final AtomicLong computationPauseTime = new AtomicLong(Long.MAX_VALUE);
-
-    /**
-     * Type of the simulation as described in SimulationType class. By default use real-time simulation
-     *
-     * @see SimulationType
-     */
-    private SimulationType simulationType = SimulationType.SIMULATION_TYPE_REAL_TIME;
-
-    /**
-     * Factor by which the simulation is slowed down in fixed_time mode. See slowDownComputation() for
-     * more information. Default is 1 and equals no slowing down.
-     */
-    private int slowDownFactor = 1;
-
-    /**
-     * Factor by which the simulation is slowed down in fixed_time mode. See
-     * slowDownComputationToWallClockTime() for more information. Default is 1 and equals no
-     * slowing down.
-     */
-    private int slowDownWallClockFactor = 0;
 
     /** System time at which the last loop iteration started */
     private long lastLoopStartTime = 0;
@@ -68,40 +77,25 @@ public class Simulator {
     /** Simulated daytime */
     private Calendar daytime = Calendar.getInstance();
 
-    /** Simulated daytime at the start of the simulation */
-    private Date daytimeStart = null;
-
-    /** Factor by which the simulated day advances faster than the simulation time */
-    private int daytimeSpeedup = 1;
-
-    /**
-     * Whether or not the simulation should be executed synchronous, i.e.,
-     * not in its own thread and therefore blocking
-     */
-    private boolean synchronousSimulation = false;
-
     /** Number of simulated frames up to now */
     private long frameCount = 0;
 
     /** True iff simulation currently running */
     private boolean isRunning = false;
 
-    /** True iff the simulation will be paused or extended in the future */
-    private boolean isPausedInFuture;
-
     /** True iff computation of the simulation is currently paused */
     private boolean isComputationPaused = false;
 
-    /** True if a computational error occurred, may be reset by used */
+    /** True if a computational error occurred, may be reset by user */
     private boolean errorOccurredDuringExecution = false;
 
     /** All objects that want to be informed about loop executions */
     private final List<SimulationLoopNotifiable> loopObservers = Collections.synchronizedList(new LinkedList<SimulationLoopNotifiable>());
 
-    /** All objects in the simulation that execute the simulation loop */
+    /** All simulation objects in the simulation */
     private final List<SimulationLoopExecutable> simulationObjects = Collections.synchronizedList(new LinkedList<SimulationLoopExecutable>());
 
-    /** All simulation objects */
+    /** All physical objects in the simulation */
     private final List<PhysicalObject> physicalObjects = Collections.synchronizedList(new LinkedList<PhysicalObject>());
 
     /** Times for which others wait using the waitForTime() method */
@@ -113,18 +107,14 @@ public class Simulator {
      */
     public static void resetSimulator() {
         IdGenerator.resetInstance();
-        sharedInstance = new Simulator(0);
+        sharedInstance = new Simulator();
     }
 
     /**
      * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
-     *
-     * @param simulationLoopFrequency Frequency (in Hz) at which the simulation loop should be called.
      */
-    protected Simulator(int simulationLoopFrequency) {
-        this.simulationLoopFrequency = simulationLoopFrequency;
+    protected Simulator() {
         InformationService.getSharedInstance().offerInformation(Information.SIMULATION_TIME, this::getSimulationTime);
-        isPausedInFuture = false;
     }
 
     /**
@@ -135,8 +125,8 @@ public class Simulator {
      */
     public void startSimulation() {
         //Check for sane frequency
-        if (this.getSimulationLoopFrequency() == 0) {
-            Log.severe("You need to set simulation loop update frequency before starting the simulation. Aborting simulation.");
+        if (simulationLoopFrequency <= 0) {
+            throw  new IllegalStateException("Simulation loop frequency " + simulationLoopFrequency + " is not positive.");
         }
 
         //Check simulation is not already running
@@ -153,7 +143,7 @@ public class Simulator {
 
         //Check is the user tries to slow down a computation that cannot be slowed down
         if (simulationType != SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownFactor != 1) {
-            Log.warning("slowDownComputation() only applies to simulation of type SIMULATION_TYPE_FIXED_TIME. Computation will not be slowed down.");
+            Log.warning("setSlowDownFactor() only applies to simulation of type SIMULATION_TYPE_FIXED_TIME. Computation will not be slowed down.");
             return;
         }
 
@@ -166,15 +156,7 @@ public class Simulator {
         simulationStartTime = System.currentTimeMillis();
 
         //Set simulated daytime
-        if (daytimeStart != null) {
-            daytime.setTime(daytimeStart);
-        } else {
-            daytime.setTime(new Date());
-        }
-
-
-        //Convert simulation loop frequency to milliseconds between loop calls
-        long timeBetweenCalls = (long) ((1.0 / getSimulationLoopFrequency()) * 1000);
+        daytime.setTime(daytimeStart);
 
         //Set internal state
         isRunning = true;
@@ -194,6 +176,9 @@ public class Simulator {
                     Simulator.getSharedInstance().executeSimulationLoop();
                 }
             };
+            //Convert simulation loop frequency to milliseconds between loop calls
+            long timeBetweenCalls = (long) ((1.0 / simulationLoopFrequency) * 1000);
+
             timer = new Timer();
             timer.scheduleAtFixedRate(loopIteration, 0, timeBetweenCalls);
         }
@@ -236,7 +221,7 @@ public class Simulator {
         isRunning = false;
 
         // Inform observers about simulation stop if it is not a pause
-        if (!isPausedInFuture()) {
+        if (!getIsPausedInFuture()) {
             for (SimulationLoopNotifiable observer : this.loopObservers) {
                 observer.simulationStopped(getSimulationObjects(), simulationTime);
             }
@@ -296,7 +281,7 @@ public class Simulator {
             simulationTime = System.currentTimeMillis() - simulationStartTime;
         } else if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME) {
             //Convert simulation loop frequency to milliseconds between loop calls
-            long timeBetweenCalls = (long) ((1.0 / getSimulationLoopFrequency()) * 1000);
+            long timeBetweenCalls = (long) ((1.0 / simulationLoopFrequency) * 1000);
 
             simulationTime += timeBetweenCalls;
         }
@@ -311,7 +296,7 @@ public class Simulator {
         //Slow down computations to wall-clock time if requested by user
         if (simulationType == SimulationType.SIMULATION_TYPE_FIXED_TIME && slowDownWallClockFactor != 0) {
             long timeDifference = System.currentTimeMillis() - lastLoopStartTime;
-            long expectedTimeDifference = (long) ((1.0 / getSimulationLoopFrequency()) * 1000);
+            long expectedTimeDifference = (long) ((1.0 / simulationLoopFrequency) * 1000);
 
             //Only slow down if computation was not already slow enough without slowing it down
             if (timeDifference < expectedTimeDifference * slowDownWallClockFactor) {
@@ -349,7 +334,7 @@ public class Simulator {
         lastLoopTime = simulationTime;
 
         //Update simulated daytime
-        daytime.add(Calendar.MILLISECOND, (int)timeBetweenLastIterations * daytimeSpeedup);
+        daytime.add(Calendar.MILLISECOND, (int)timeBetweenLastIterations * daytimeSpeedUp);
 
         synchronized (loopObservers) {
             //Inform observers about upcoming loop iteration
@@ -697,11 +682,9 @@ public class Simulator {
      * @param simulationLoopFrequency frequency in Hz
      */
     public void setSimulationLoopFrequency(int simulationLoopFrequency) {
-        if (simulationLoopFrequency < 0) {
-            Log.severe("Can't set negative simulation loop frequency.");
-            return;
+        if (simulationLoopFrequency <= 0) {
+            throw new IllegalArgumentException("Simulation loop frequency " + simulationLoopFrequency + " must be positive.");
         }
-
         this.simulationLoopFrequency = simulationLoopFrequency;
     }
 
@@ -725,25 +708,34 @@ public class Simulator {
 
     /**
      * Sets the daytime at which the simulation should start. May only be set while simulation is not running.
-     * @param daytime Daytime at which the simulation starts
-     * @param speedup Factor by which the simulated day advances in relation to simulated time. E.g. a factor of 2
-     *                means that 1 second of simulated time equals 2 seconds in the simulated daytime
+     * @param daytimeStart Daytime at which the simulation starts
      */
-    public void setStartDaytime(Date daytime, int speedup) {
+    public void setStartDaytime(Date daytimeStart) {
+        if(daytimeStart == null){
+            throw new IllegalArgumentException("Start day time should not be null.");
+        }
         //Setting only allowed if simulation not running
         if (isSimulationRunning()) {
             Log.warning("Cannot update simulation daytime while simulation is running");
             return;
         }
+        this.daytimeStart = daytimeStart;
+    }
 
-        //Only positive speedups allowed, i.e. not going back in time
-        if (speedup > 1) {
-            daytimeSpeedup = speedup;
-        } else {
-            Log.warning("Cannot set daytime speedup to less than 1. Only setting daytime");
+    /**
+     * Sets the daytime speed up. May only be set while simulation is not running.
+     * @param daytimeSpeedUp Factor by which the simulated day advances in relation to simulated time
+     */
+    public void setDaytimeSpeedUp(int daytimeSpeedUp) {
+        if(daytimeSpeedUp < 1){
+            throw new IllegalArgumentException("Daytime speed up " + daytimeSpeedUp + " should not be less than 1.");
         }
-
-        daytimeStart = daytime;
+        //Setting only allowed if simulation not running
+        if (isSimulationRunning()) {
+            Log.warning("Cannot update simulation daytime while simulation is running");
+            return;
+        }
+        this.daytimeSpeedUp = daytimeSpeedUp;
     }
 
     /**
@@ -803,7 +795,7 @@ public class Simulator {
      *
      * @return True iff the simulator assumes the simulation will be paused or extended
      */
-    public boolean isPausedInFuture() {
+    public boolean getIsPausedInFuture() {
         return isPausedInFuture;
     }
 
@@ -814,7 +806,7 @@ public class Simulator {
      *
      * @param pausedInFuture True iff the simulation will be paused or extended
      */
-    public void setPausedInFuture(boolean pausedInFuture) {
+    public void setIsPausedInFuture(boolean pausedInFuture) {
         isPausedInFuture = pausedInFuture;
     }
 
@@ -829,18 +821,18 @@ public class Simulator {
      * However, keep in mind that this method only sets a lower bound. The simulation may take
      * more time to be calculated.
      *
-     * This method cannot be used simultaneously with slowDownComputationToWallClockTime().
+     * This method cannot be used simultaneously with setSlowDownWallClockFactor().
      *
      * @param factor Factor by which the computations are slowed down.
      */
-    public synchronized void slowDownComputation(int factor) {
+    public synchronized void setSlowDownFactor(int factor) {
         if (factor < 1) {
             Log.warning("You cannot slow down the simulation by a factor of less than 1. 1 equals as fast as possible computation.");
             return;
         }
 
         if (slowDownWallClockFactor != 0) {
-            Log.warning("slowDownComputation() cannot be used simultaneously with slowDownComputationToWallClockTime(). Call slowDownComputationToWallClockTime(0) before using this method.");
+            Log.warning("setSlowDownFactor() cannot be used simultaneously with setSlowDownWallClockFactor(). Call setSlowDownWallClockFactor(0) before using this method.");
             return;
         }
 
@@ -858,18 +850,18 @@ public class Simulator {
      * However, keep in mind that this method only sets a rough lower bound. The simulation may take
      * more time to be calculated.
      *
-     * This method cannot be used simultaneously with slowDownComputationToWallClockTime().
+     * This method cannot be used simultaneously with setSlowDownWallClockFactor().
      *
      * @param factor Factor of wall-clock time. Factor*wall-clock time is lower bound for runtime.
      */
-    public synchronized void slowDownComputationToWallClockTime(int factor) {
+    public synchronized void setSlowDownWallClockFactor(int factor) {
         if (factor < 1) {
             Log.warning("You cannot slow down the simulation by a factor of less than 1. 1 equals as fast as possible computation.");
             return;
         }
 
         if (slowDownFactor != 1) {
-            Log.warning("slowDownComputationToWallClockTime() cannot be used simultaneously with slowDownComputation(). Call slowDownComputation(1) before using this method.");
+            Log.warning("setSlowDownWallClockFactor() cannot be used simultaneously with setSlowDownFactor(). Call setSlowDownFactor(1) before using this method.");
             return;
         }
 
