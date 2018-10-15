@@ -81,6 +81,14 @@ command in the root directory of the respective target:
 yarn run build
 ```
 
+There is also a second build command which will generate more files which include more
+debug information which is useful during the development phase. Similar to the first one,
+the command is as follows:
+
+```bash
+yarn run build:development
+```
+
 ## Packaging
 To be written.
 
