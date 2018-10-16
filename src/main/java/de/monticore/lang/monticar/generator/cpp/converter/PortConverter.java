@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.generator.Variable;
@@ -64,6 +65,13 @@ public class PortConverter {
         variable.setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(typeNameMontiCar, variable, portSymbol).get());
         variable.addAdditionalInformation(Variable.ORIGINPORT);
         bluePrint.getMathInformationRegister().addVariable(variable);
+
+        if(portSymbol instanceof EMADynamicPortInstanceSymbol){
+            variable.setDynamic(((EMADynamicPortInstanceSymbol) portSymbol).isDynamic());
+//            variable.setConstantValue("true");
+//            variable.setIsConstantVariable(true);
+        }
+
         Log.debug("EMAVAR: " + variable.getName() + " targetType:" + variable.getVariableType().getTypeNameTargetLanguage() + " isArray:" + variable.isArray(), "PortConverter");
 
         return variable;

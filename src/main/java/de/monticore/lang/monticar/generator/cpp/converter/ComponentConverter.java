@@ -87,6 +87,8 @@ public class ComponentConverter {
                     bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
                 }
             }
+
+
         }
     }
 
