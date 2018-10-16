@@ -389,12 +389,6 @@ public class GeneratorCPP implements Generator {
         // add jni
         cmake.addCMakeCommand("find_package(JNI)");
         cmake.addCMakeCommand("set(INCLUDE_DIRS ${INCLUDE_DIRS} ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})");
-        // set install dir
-        cmake.addCMakeCommand("IF (WIN32)");
-        cmake.addCMakeCommand("set(CMAKE_INSTALL_PREFIX $ENV{DLL_DIR})");
-        cmake.addCMakeCommand("ELSE()");
-        cmake.addCMakeCommand("set(CMAKE_INSTALL_PREFIX /usr/lib)");
-        cmake.addCMakeCommand("ENDIF()");
         // create shared lib
         cmake.addCMakeCommandEnd("add_library(AutopilotAdapter SHARED AutopilotAdapter.cpp ${CMAKE_CURRENT_SOURCE_DIR})");
         cmake.addCMakeCommandEnd("target_include_directories(AutopilotAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
