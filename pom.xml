@@ -42,7 +42,7 @@
         <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
         <Embedded-MontiArc.version>0.1.6-SNAPSHOT</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Dynamics.version>0.0.1-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
+        <Embedded-MontiArc-Dynamics.version>0.0.2-SNAPSHOT</Embedded-MontiArc-Dynamics.version>
         <Embedded-MontiArc-Behaviour.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <Math.version>0.0.19-SNAPSHOT</Math.version>
         <MathOpt.version>0.1.0</MathOpt.version>
@@ -57,8 +57,8 @@
         <!-- .. Plugins ....................................................... -->
         <monticore.plugin>5.0.1</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
-        <compiler.plugin>3.3</compiler.plugin>
-        <!--<plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>-->
+        <compiler.plugin>3.8.0</compiler.plugin>
+        <plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
         <jacoco.plugin>0.8.1</jacoco.plugin>
@@ -290,16 +290,16 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target><meminitial>1024m</meminitial>
                     <maxmem>2048m</maxmem>
-                    <!--<fork>true</fork>-->
-                    <!--<compilerId>eclipse</compilerId>-->
+                    <fork>true</fork>
+                    <compilerId>eclipse</compilerId>
                 </configuration>
-                <!--<dependencies>-->
-                <!--<dependency>-->
-                <!--<groupId>org.codehaus.plexus</groupId>-->
-                <!--<artifactId>plexus-compiler-eclipse</artifactId>-->
-                <!--<version>${plexus.compiler.eclipse.version}</version>-->
-                <!--</dependency>-->
-                <!--</dependencies>-->
+                <dependencies>
+                <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-compiler-eclipse</artifactId>
+                <version>${plexus.compiler.eclipse.version}</version>
+                </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
