@@ -12,17 +12,21 @@ import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Sascha Schneiders
  */
 public class ExecutionOrderFixer {
     public static void fixExecutionOrder(TaggingResolver taggingResolver, BluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {
-        Method method = bluePrintCPP.getMethod("execute").get();
+        Optional<Method> optMethod = bluePrintCPP.getMethod("execute_inner");
+        Method method = null;
+        if(optMethod.isPresent()){
+            method = optMethod.get();
+        }else {
+            method =  bluePrintCPP.getMethod("execute").get();
+        }
+
         Map<String, List<Instruction>> map = new HashMap<>();
 
         List<EMAComponentInstanceSymbol> threadableSubComponents = bluePrintCPP.getOriginalSymbol().getIndependentSubComponents();

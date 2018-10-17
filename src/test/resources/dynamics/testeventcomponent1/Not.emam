@@ -1,15 +1,33 @@
 package testeventcomponent1;
 
+
+
 component Not {
     ports
         in B a,
-        out B b;
+        out B b,
+        out B b2;
 
+    instance And<2>  and;
+    instance And<2>  and2;
+
+    connect a -> and.in1[1];
+    connect a -> and2.in1[2];
+
+    connect and.out1 -> b;
+    connect and2.out1 -> b2;
+
+/*
+    connect and.out1 -> b;
+    connect a -> and.in1[1];
+    connect a -> and.in1[2];
+*/
     @ a::value(true){
         connect false -> b;
     }
-
+/*
     @ a::value(false){
         connect true -> b;
     }
+*/
 }

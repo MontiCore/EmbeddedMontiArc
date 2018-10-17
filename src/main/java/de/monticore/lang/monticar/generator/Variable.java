@@ -28,6 +28,8 @@ public class Variable {
     int arraySize = 1;
     boolean isArray = false;
 
+
+    boolean isPublic = true;
     boolean isDynamic = false;
 
 
@@ -259,5 +261,13 @@ public class Variable {
 
     public void setDynamic(boolean dynamic) {
         isDynamic = dynamic;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }

@@ -1,10 +1,12 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
@@ -130,6 +132,9 @@ public class GeneratorCPP implements Generator {
         } else {
             //setGenerateMainClass(true);
         }
+
+
+
         currentFileContentList = fileContents;
         fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
         String lastNameWithoutArrayPart = "";
@@ -152,6 +157,11 @@ public class GeneratorCPP implements Generator {
             fileContents.add(OctaveHelper.getOctaveHelperFileContent());
         if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
             fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+
+        if(componentInstanceSymbol instanceof EMADynamicComponentInstanceSymbol){
+            //TODO: add Events Value Helper
+            fileContents.add(EventPortValueCheck.getEventPortValueCheckFileContent());
+        }
 
         if (shouldGenerateMainClass()) {
             //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));

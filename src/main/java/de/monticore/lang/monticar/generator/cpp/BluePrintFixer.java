@@ -66,7 +66,7 @@ public class BluePrintFixer {
         variable.setTypeNameTargetLanguage("bool");
         variable.setIsConstantVariable(true);
         variable.setConstantValue(s);
-
+        variable.setPublic(false);
 
         bluePrint.getMathInformationRegister().addVariable(variable);
 

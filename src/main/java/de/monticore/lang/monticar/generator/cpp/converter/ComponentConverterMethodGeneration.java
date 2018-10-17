@@ -3,14 +3,13 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
-import de.monticore.lang.monticar.generator.Instruction;
-import de.monticore.lang.monticar.generator.Method;
-import de.monticore.lang.monticar.generator.TargetCodeMathInstruction;
-import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.Dynamics.EventHandlerMethodsGenerator;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
@@ -19,6 +18,7 @@ import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,9 +29,43 @@ public class ComponentConverterMethodGeneration {
     public static EMAComponentInstanceSymbol currentComponentSymbol = null;
 
     public static void generateExecuteMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
-        Method method = new Method("execute", "void");
+
+
         currentComponentSymbol = componentSymbol;
-        for (EMAConnectorInstanceSymbol connector : componentSymbol.getConnectorInstances()) {
+
+        if(componentSymbol instanceof EMADynamicComponentInstanceSymbol){
+            EMADynamicComponentInstanceSymbol dynComp = (EMADynamicComponentInstanceSymbol)componentSymbol;
+            if(dynComp.getEventHandlers().size() > 0){
+                Method execute = new Method("execute", "void");
+                Method inner = new Method("execute_inner", "void");
+                inner.setPublic(false);
+
+                generateExecuteMethodInner(inner,componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+                execute.addInstruction(new TargetCodeInstruction("\n//--------------------\n"));
+                execute.addInstruction(new TargetCodeInstruction("execute_inner();\n"));
+                execute.addInstruction(new TargetCodeInstruction("//--------------------\n\n"));
+                bluePrint.addMethod(execute);
+                return;
+            }
+        }
+
+        generateExecuteMethodInner(new Method("execute", "void"),componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+    }
+
+    protected static void generateExecuteMethodInner(Method method, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings){
+
+
+        Collection<EMAConnectorInstanceSymbol> connectors = componentSymbol.getConnectorInstances();
+        generateConnectors(connectors, bluePrint, method);
+
+        if (mathStatementsSymbol != null) {
+            handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        }
+        bluePrint.addMethod(method);
+    }
+
+    protected static void generateConnectors(Collection<EMAConnectorInstanceSymbol> connectors, BluePrintCPP bluePrint, Method method){
+        for (EMAConnectorInstanceSymbol connector : connectors) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
                 Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
@@ -65,10 +99,6 @@ public class ComponentConverterMethodGeneration {
                 }
             }
         }
-        if (mathStatementsSymbol != null) {
-            handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-        }
-        bluePrint.addMethod(method);
     }
 
     private static List<MathExpressionSymbol> visitedMathExpressionSymbols = new ArrayList<>();

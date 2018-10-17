@@ -45,6 +45,7 @@ public class DynamicGenerationTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/Test_02_TestEventComponent1");
+        generatorCPP.setGenerateCMake(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }

@@ -19,6 +19,7 @@
 
 package de.monticore.lang.monticar.generator.cpp;
 
+import alice.tuprolog.Var;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
@@ -134,50 +135,39 @@ public class LanguageUnitCPP extends LanguageUnit {
         //const variables
         for (String constString : bluePrint.getConsts())
             resultString += constString;
+
+        //private variables
+        for (Variable v : bluePrint.getVariables()) {
+            if (v.isPublic()) {
+                continue;
+            }
+            resultString += generateHeaderGenerateVariable(v);
+        }
+
+//        //private methods
+        for (Method method : bluePrint.getMethods()) {
+            if(method.isPublic()){
+                continue;
+            }
+            resultString += generateMethod(method);
+        }
+
         resultString += "public:\n";
 
         //input variable
         for (Variable v : bluePrint.getVariables()) {
-            if (!v.isArray())
-                resultString += v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + ";\n";
-            else
-                resultString += v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + "[" + v.getArraySize() + "]" + ";\n";
+            if(!v.isPublic()){
+                continue;
+            }
+            resultString += generateHeaderGenerateVariable(v);
         }
 
         //generate methods
         for (Method method : bluePrint.getMethods()) {
-            int counter = 0;
-            resultString += method.getReturnTypeName() + " " + method.getName() + "(";
-            for (Variable param : method.getParameters()) {
-                if (counter == 0) {
-                    ++counter;
-                    resultString += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
-                } else {
-                    resultString += ", " + param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
-                }
-                if (param.isArray())
-                    resultString += "[" + param.getArraySize() + "]";
+            if(!method.isPublic()){
+                continue;
             }
-            resultString += ")\n";//TODO add semicolon when using source files
-
-            //method body start
-            resultString += "{\n";
-
-            for (Instruction instruction : method.getInstructions()) {
-                if (instruction instanceof ConnectInstructionCPP) {
-                    ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
-                    Log.info("v1: " + connectInstructionCPP.getVariable1().getName() + "v2: " + connectInstructionCPP.getVariable2().getName(), "Instruction:");
-                } else if (instruction instanceof ExecuteInstruction) {
-                    ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
-
-                }
-                Log.info(resultString, "beforRes:");
-                resultString += instruction.getTargetLanguageInstruction();
-                Log.info(resultString, "afterRes:");
-            }
-
-            //method body end
-            resultString += "}\n";
+            resultString += generateMethod(method);
         }
 
 
@@ -191,5 +181,48 @@ public class LanguageUnitCPP extends LanguageUnit {
         return resultString;
     }
 
+    protected String generateHeaderGenerateVariable(Variable v){
+        if (!v.isArray())
+            return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + ";\n";
+        else
+           return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + "[" + v.getArraySize() + "]" + ";\n";
+    }
+
+    protected String generateMethod(Method method){
+
+        int counter = 0;
+        String resultString = method.getReturnTypeName() + " " + method.getName() + "(";
+        for (Variable param : method.getParameters()) {
+            if (counter == 0) {
+                ++counter;
+                resultString += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+            } else {
+                resultString += ", " + param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+            }
+            if (param.isArray())
+                resultString += "[" + param.getArraySize() + "]";
+        }
+        resultString += ")\n";//TODO add semicolon when using source files
+
+        //method body start
+        resultString += "{\n";
+
+        for (Instruction instruction : method.getInstructions()) {
+            if (instruction instanceof ConnectInstructionCPP) {
+                ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
+                Log.info("v1: " + connectInstructionCPP.getVariable1().getName() + "v2: " + connectInstructionCPP.getVariable2().getName(), "Instruction:");
+            } else if (instruction instanceof ExecuteInstruction) {
+                ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
+
+            }
+            Log.info(resultString, "beforRes:");
+            resultString += instruction.getTargetLanguageInstruction();
+            Log.info(resultString, "afterRes:");
+        }
+
+        //method body end
+        resultString += "}\n";
+        return resultString;
+    }
 
 }

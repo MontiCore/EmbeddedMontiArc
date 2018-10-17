@@ -4,6 +4,7 @@ import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
@@ -36,20 +37,31 @@ public class ComponentConverter {
 
         addVariables(componentSymbol, bluePrint);
 
-        String lastNameWithoutArrayPart = "";
+
+
+//        String lastNameWithoutArrayPart = "";
         for (EMAComponentInstanceSymbol instanceSymbol : componentSymbol.getSubComponents()) {
-            int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
-            boolean generateComponentInstance = true;
-            if (arrayBracketIndex != -1) {
-                generateComponentInstance = !instanceSymbol.getName().substring(0, arrayBracketIndex).equals(lastNameWithoutArrayPart);
-                lastNameWithoutArrayPart = instanceSymbol.getName().substring(0, arrayBracketIndex);
-                Log.info(lastNameWithoutArrayPart, "Without:");
-                Log.info(generateComponentInstance + "", "Bool:");
-            }
-            if (generateComponentInstance) {
-            }
+//            Unused: (?)
+//            int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
+//            boolean generateComponentInstance = true;
+//            if (arrayBracketIndex != -1) {
+//                generateComponentInstance = !instanceSymbol.getName().substring(0, arrayBracketIndex).equals(lastNameWithoutArrayPart);
+//                lastNameWithoutArrayPart = instanceSymbol.getName().substring(0, arrayBracketIndex);
+//                Log.info(lastNameWithoutArrayPart, "Without:");
+//                Log.info(generateComponentInstance + "", "Bool:");
+//            }
+//            if (generateComponentInstance) {
+//            }
             bluePrint.addVariable(ComponentInstanceConverter.convertComponentInstanceSymbolToVariable(instanceSymbol, componentSymbol));
         }
+
+        /*if(componentSymbol instanceof EMADynamicComponentInstanceSymbol){
+            EMADynamicComponentInstanceSymbol dynComp = (EMADynamicComponentInstanceSymbol)componentSymbol;
+            if(dynComp.getEventHandlers().size() > 0){
+                EventHandlerMethodsGenerator.generateMethods(dynComp, bluePrint, generatorCPP, includeStrings);
+            }
+        }*/
+
 
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
@@ -207,10 +219,7 @@ public class ComponentConverter {
                                                                       componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         return convertComponentSymbolToBluePrint(componentSymbol, null, includeStrings, generatorCPP);
     }
-
     public static void fixMathFunctions(MathExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
         MathFunctionFixer.fixMathFunctions(mathExpressionSymbol, bluePrintCPP);
     }
-
-
 }
