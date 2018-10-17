@@ -89,7 +89,7 @@ public class MathHelperTest {
         MathHelper.matrixInvert(matrix);
     }
 
-    //ToDo matrix re-orthonormalize
+    //TODO: matrix re-orthonormalize
 
     @Test
     public void crossProductNormal() {
@@ -147,14 +147,14 @@ public class MathHelperTest {
         RealVector vector2 = new ArrayRealVector(new double[]{-3.79, 26.237, 0.67});
         double angle = MathHelper.angle(vector1, vector2);
         double referenceAngle = Math.acos((vector1.dotProduct(vector2))/(vector1.getNorm() * vector2.getNorm()));
-        Assert.assertEquals(referenceAngle, angle, 0);
+        assertEquals(referenceAngle, angle, 0);
 
         // Test equal vectors
         vector1 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
         vector2 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
         angle = MathHelper.angle(vector1, vector2);
         referenceAngle = Math.acos((vector1.dotProduct(vector2))/(vector1.getNorm() * vector2.getNorm()));
-        Assert.assertEquals(referenceAngle, angle, 0);
+        assertEquals(referenceAngle, angle, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -190,9 +190,9 @@ public class MathHelperTest {
         RealVector vector = new ArrayRealVector(new double[]{19.02, -29.1, -0.02});
         Vector3D vector3D = MathHelper.realTo3D(vector);
         Vector3D referenceVector3D = new Vector3D(19.02, -29.1, -0.02);
-        Assert.assertEquals(referenceVector3D.getX(), vector3D.getX(), 0);
-        Assert.assertEquals(referenceVector3D.getY(), vector3D.getY(), 0);
-        Assert.assertEquals(referenceVector3D.getZ(), vector3D.getZ(), 0);
+        assertEquals(referenceVector3D.getX(), vector3D.getX(), 0);
+        assertEquals(referenceVector3D.getY(), vector3D.getY(), 0);
+        assertEquals(referenceVector3D.getZ(), vector3D.getZ(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -203,7 +203,7 @@ public class MathHelperTest {
 
     @Test
     public void checkIntersection2DTest() {
-        // ToDo Function is unnecessary with three dimensional collision detection
+        //TODO: Function is unnecessary with three dimensional collision detection
         List<Map.Entry<RealVector, RealVector>> list1 = new LinkedList<>();
         Map.Entry<RealVector, RealVector> e1 = new AbstractMap.SimpleEntry<RealVector, RealVector>(new ArrayRealVector(new double[]{0.0, 0.0, 0.0}), new ArrayRealVector(new double[]{4.0, 0.0, 0.0}));
         Map.Entry<RealVector, RealVector> e2 = new AbstractMap.SimpleEntry<RealVector, RealVector>(new ArrayRealVector(new double[]{4.0, 0.0, 0.0}), new ArrayRealVector(new double[]{4.0, 4.0, 0.0}));

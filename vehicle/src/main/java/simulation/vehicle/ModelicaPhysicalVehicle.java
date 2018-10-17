@@ -173,7 +173,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      * @param torque Torque vector that acts around the center of mass
      */
     public void addTorque(RealVector torque){
-        // ToDo Expand the model to accept external torques
+        //TODO: Expand the model to accept external torques
         throw new UnsupportedOperationException("External torques are currently not supported.");
     }
 
@@ -242,7 +242,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
-        // ToDo Function is unnecessary with three dimensional collision detection
+        //TODO: Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {getLength(), 0.0, 0.0});
         RealVector relVectorLeftRight = new ArrayRealVector(new double[] {0.0, -getWidth(), 0.0});
@@ -504,7 +504,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealVector getTorque(){
-        // ToDo Expand the model to accept external torques
+        //TODO: Expand the model to accept external torques
         throw new UnsupportedOperationException("External torques are currently not supported.");
     }
 
@@ -569,7 +569,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         vehicleDynamicsModel.setInput("F_ext_y", localForce.getEntry(1));
 
         // Take the wheel positions and get the frictions coefficients
-        // ToDo Let the physical vehicle look up the ground type and not only the weather
+        //TODO: Let the physical vehicle look up the ground type and not only the weather
         double frictionCoefficient = ((WorldModel.getInstance().isItRaining()) ? PhysicsEngine.ROAD_FRICTION_WET : PhysicsEngine.ROAD_FRICTION_DRY);
         vehicleDynamicsModel.setInput("mu_1", frictionCoefficient);
         vehicleDynamicsModel.setInput("mu_2", frictionCoefficient);

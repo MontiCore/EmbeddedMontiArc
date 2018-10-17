@@ -84,7 +84,7 @@ public class Parser2D implements IParser {
             OSMConnector connector = new OSMConnector();
             //Call Area you want to load. Further instructions in class doc.
 
-            //ToDo For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
+            //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
             Document mapData = connector.getXML(6.05892134,50.77828146,10);
 
             //Create temp file for loaded data.
@@ -184,7 +184,7 @@ public class Parser2D implements IParser {
             OSMConnector connector = new OSMConnector();
             //Call Area you want to load. Further instructions in class doc.
 
-            //ToDo For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
+            //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
             Document mapData = connector.getXML(lon,lat,vicinityRange);
             //Create temp file for loaded data.
             DOMSource source = new DOMSource(mapData);
@@ -287,7 +287,7 @@ public class Parser2D implements IParser {
     }
 
     private void addSomeRandomTrees() {
-        // ToDo: implement here sampling of trees from some distribution e.g. Gaussian
+        //TODO: implement here sampling of trees from some distribution e.g. Gaussian
         ArrayList<EnvNode> trees = new ArrayList<>();
         trees.add(new Node2D(10, 20, 30));
         trees.add(new Node2D(40, 50, 60));

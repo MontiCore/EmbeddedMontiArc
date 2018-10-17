@@ -9,7 +9,7 @@ import java.util.Collection;
  */
 public interface EnvStreet extends EnvObject {
 
-    // ToDo: This should be moved to commons, controller needs to be able to access these constant values
+    //TODO: This should be moved to commons, controller needs to be able to access these constant values
     /**
      * Lists Type of Streets
      */

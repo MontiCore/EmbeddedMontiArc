@@ -1,7 +1,7 @@
 package simulation.vehicle;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import simulation.util.Log;
@@ -24,7 +24,7 @@ public class VehicleTest {
     public void setHeightNormal(){
         Vehicle vehicle = new ModelicaPhysicalVehicle().getSimulationVehicle();
         vehicle.setHeight(2.0);
-        Assert.assertEquals(2.0, vehicle.getHeight(), 0);
+        assertEquals(2.0, vehicle.getHeight(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -44,14 +44,14 @@ public class VehicleTest {
         // Test MassPoint case
         Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
         vehicle.setMass(1000.0);
-        Assert.assertEquals(1000.0, vehicle.getMass(), 0);
+        assertEquals(1000.0, vehicle.getMass(), 0);
 
         // Test Modelica case
         ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
         vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
         vehicle.setMass(1000.0);
         modelicaPhysicalVehicle.initPhysics();
-        Assert.assertEquals(1000.0, vehicle.getMass(), 0);
+        assertEquals(1000.0, vehicle.getMass(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -77,14 +77,14 @@ public class VehicleTest {
         // Test MassPoint case
         Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
         vehicle.setWheelRadius(1.0);
-        Assert.assertEquals(1.0, vehicle.getWheelRadius(), 0);
+        assertEquals(1.0, vehicle.getWheelRadius(), 0);
 
         // Test Modelica case
         ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
         vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
         vehicle.setWheelRadius(1.0);
         modelicaPhysicalVehicle.initPhysics();
-        Assert.assertEquals(1.0, vehicle.getWheelRadius(), 0);
+        assertEquals(1.0, vehicle.getWheelRadius(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -110,14 +110,14 @@ public class VehicleTest {
         // Test MassPoint case
         Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
         vehicle.setWheelDistLeftRightFrontSide(1.0);
-        Assert.assertEquals(1.0, vehicle.getWheelDistLeftRightFrontSide(), 0);
+        assertEquals(1.0, vehicle.getWheelDistLeftRightFrontSide(), 0);
 
         // Test Modelica case
         ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
         vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
         vehicle.setWheelDistLeftRightFrontSide(1.0);
         modelicaPhysicalVehicle.initPhysics();
-        Assert.assertEquals(1.0, vehicle.getWheelDistLeftRightFrontSide(), 0);
+        assertEquals(1.0, vehicle.getWheelDistLeftRightFrontSide(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -143,14 +143,14 @@ public class VehicleTest {
         // Test MassPoint case
         Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
         vehicle.setWheelDistLeftRightBackSide(1.0);
-        Assert.assertEquals(1.0, vehicle.getWheelDistLeftRightBackSide(), 0);
+        assertEquals(1.0, vehicle.getWheelDistLeftRightBackSide(), 0);
 
         // Test Modelica case
         ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
         vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
         vehicle.setWheelDistLeftRightBackSide(1.0);
         modelicaPhysicalVehicle.initPhysics();
-        Assert.assertEquals(1.0, vehicle.getWheelDistLeftRightBackSide(), 0);
+        assertEquals(1.0, vehicle.getWheelDistLeftRightBackSide(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -176,14 +176,14 @@ public class VehicleTest {
         // Test MassPoint case
         Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
         vehicle.setWheelDistToFront(1.0);
-        Assert.assertEquals(1.0, vehicle.getWheelDistToFront(), 0);
+        assertEquals(1.0, vehicle.getWheelDistToFront(), 0);
 
         // Test Modelica case
         ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
         vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
         vehicle.setWheelDistToFront(1.0);
         modelicaPhysicalVehicle.initPhysics();
-        Assert.assertEquals(1.0, vehicle.getWheelDistToFront(), 0);
+        assertEquals(1.0, vehicle.getWheelDistToFront(), 0);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -209,14 +209,14 @@ public class VehicleTest {
         // Test MassPoint case
         Vehicle vehicle = new MassPointPhysicalVehicle().getSimulationVehicle();
         vehicle.setWheelDistToBack(1.0);
-        Assert.assertEquals(1.0, vehicle.getWheelDistToBack(), 0);
+        assertEquals(1.0, vehicle.getWheelDistToBack(), 0);
 
         // Test Modelica case
         ModelicaPhysicalVehicle modelicaPhysicalVehicle = new ModelicaPhysicalVehicle();
         vehicle = modelicaPhysicalVehicle.getSimulationVehicle();
         vehicle.setWheelDistToBack(1.0);
         modelicaPhysicalVehicle.initPhysics();
-        Assert.assertEquals(1.0, vehicle.getWheelDistToBack(), 0);
+        assertEquals(1.0, vehicle.getWheelDistToBack(), 0);
     }
 
     @Test(expected = IllegalStateException.class)

@@ -47,7 +47,7 @@ public class PhysicsEngine{
      * @param timeDiffMs Difference in time measured in milliseconds
      */
     private static void computeCollision(PhysicalObject object, List<PhysicalObject> physicalObjects, long timeDiffMs){
-        // ToDo The collision computation currently detects and handles a collision between two cars twice
+        //TODO: The collision computation currently detects and handles a collision between two cars twice
         // Do not compute collision if the object has a computational error
         if (object.getError()){
             return;
@@ -76,7 +76,7 @@ public class PhysicsEngine{
      * @return Weather a collision has occurred or not
      */
     private static boolean detectCollision(PhysicalObject objectA, PhysicalObject objectB){
-        // ToDo Use better short cuts
+        //TODO: Use better short cuts
         // Do not compute collision if its the same object
         if (objectA.getId() == objectB.getId()){
             return false;
@@ -93,7 +93,7 @@ public class PhysicsEngine{
         }
 
         // Perform collision computation
-        // ToDo Use a three dimensional collision detection
+        //TODO: Use a three dimensional collision detection
         List<Map.Entry<RealVector, RealVector>> boundariesA = objectA.getBoundaryVectors();
         List<Map.Entry<RealVector, RealVector>> boundariesB = objectB.getBoundaryVectors();
         return MathHelper.checkIntersection2D(boundariesA, boundariesB);

@@ -280,7 +280,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
      */
     @Override
     public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
-        // ToDo Function is unnecessary with three dimensional collision detection
+        //TODO: Function is unnecessary with three dimensional collision detection
         // Build relative vectors between vertices
         RealVector relVectorBackFront = new ArrayRealVector(new double[] {0.0, getLength(), 0.0});
         RealVector relVectorLeftRight = new ArrayRealVector(new double[] {getWidth(), 0.0 , 0.0});
@@ -734,7 +734,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
 
             // If mass point position goes way below ground position + wheel radius, then set computational error
             if (massPointPosition.getEntry(2) < (limitZ - 0.5 * simulationVehicle.getWheelRadius())) {
-                // ToDo Build in check if physical vehicle is part of a simulation and then do not set the error if the vehicle is not part of a simulation;
+                //TODO: Build in check if physical vehicle is part of a simulation and then do not set the error if the vehicle is not part of a simulation;
             }
         }
     }
@@ -1194,7 +1194,7 @@ public class MassPointPhysicalVehicle extends PhysicalVehicle {
         double area = Math.abs(areaX) + Math.abs(areaY) + Math.abs(areaZ);
 
         // Scalar for air friction force computations
-        // ToDo Let the physical vehicle look up the ground type and not only the weather
+        //TODO: Let the physical vehicle look up the ground type and not only the weather
         double scalarCoefficient = -0.5 * PhysicsEngine.AIR_DENSITY * MassPointPhysicalVehicle.AIR_DRAG_CAR * area;
 
         // Final force computation, preserve direction that we need for computations in the 3D space

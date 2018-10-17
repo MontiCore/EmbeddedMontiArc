@@ -217,7 +217,7 @@ public class Simulator {
             throw new IllegalStateException("Simulation cannot be continued when it is not paused.");
         }
         if(!isRunning){
-            throw new IllegalStateException("Simulation cannto be continued if it was not started.");
+            throw new IllegalStateException("Simulation cannot be continued if it was not started.");
         }
         Log.info("Simulation continued.");
         synchronized (simulationPauseTime) {
@@ -285,6 +285,7 @@ public class Simulator {
         long loopStartTime = System.currentTimeMillis();
 
         // Advance simulation time
+        //TODO: Check if the proposed advancing of the simulation time would overshoot the set pause time or the simulation duration, and then execute a partial step
         switch (simulationType){
             case SIMULATION_TYPE_REAL_TIME:
             case SIMULATION_TYPE_MAX_FPS:
@@ -338,13 +339,13 @@ public class Simulator {
         // Update loop start time
         lastLoopStartTime = loopStartTime;
 
-        //Update time between last two iterations (i.e. the last iteration and the current one)
+        // Update time between last two iterations (i.e. the last iteration and the current one)
         simulationTimeLastLoop = simulationTime;
 
-        //Update simulated daytime
+        // Update simulated daytime
         daytime.add(Calendar.MILLISECOND, (int) lastStepSize * daytimeSpeedUp);
 
-        //Inform observers about completed loop iteration
+        // Inform observers about completed loop iteration
         synchronized (loopObservers) {
             for (SimulationLoopNotifiable observer : loopObservers) {
                 observer.didExecuteLoop(getSimulationObjects(), simulationTime, lastStepSize);
@@ -358,8 +359,8 @@ public class Simulator {
             long expectedTimeDifference = (long) ((1.0 / simulationLoopFrequency) * 1000);
 
             //Only slow down if computation was not already slow enough without slowing it down
-            if (timeDifference < expectedTimeDifference * slowDownWallClockFactor-1) {
-                long slowDownTime = expectedTimeDifference * slowDownWallClockFactor-1  - timeDifference;
+            if (timeDifference < expectedTimeDifference * slowDownWallClockFactor) {
+                long slowDownTime = expectedTimeDifference * slowDownWallClockFactor  - timeDifference;
                 try {
                     Thread.sleep(slowDownTime);
                 } catch (InterruptedException e) {
@@ -384,7 +385,9 @@ public class Simulator {
         synchronized (waitTimers) {
             for (long time : waitTimers) {
                 if (simulationTime >= time) {
-                    sharedInstance.notifyAll();
+                    synchronized (sharedInstance){
+                        sharedInstance.notifyAll();
+                    }
                     break;
                 }
             }
@@ -399,6 +402,7 @@ public class Simulator {
 
         //Check if computation should be paused
         while (simulationTime >= simulationPauseTime.get()) {
+            //TODO: With proposed overshoot check, should a equal notify and bigger than throw an error
             isPaused = true;
             Log.info("Simulation paused.");
             if(synchronousSimulation){
@@ -420,6 +424,7 @@ public class Simulator {
 
         //Check whether we are done
         if (simulationTime >= simulationDuration) {
+            //TODO: With proposed overshoot check, should a equal notify and bigger than throw an error
             switch (simulationType){
                 case SIMULATION_TYPE_REAL_TIME:
                     stopSimulation();
@@ -436,7 +441,7 @@ public class Simulator {
      * Immediately stop the execution of the simulation
      */
     public synchronized void stopSimulation() {
-        if(isRunning == false){
+        if(!isRunning){
             throw new IllegalStateException("Simulation is already stopped.");
         }
 
@@ -459,7 +464,9 @@ public class Simulator {
         }
 
         //Wake up waiting threads
-        sharedInstance.notifyAll();
+        synchronized (sharedInstance) {
+            sharedInstance.notifyAll();
+        }
     }
 
     /**
@@ -596,9 +603,6 @@ public class Simulator {
      * @param daytimeStart Daytime at which the simulation starts
      */
     public void setStartDaytime(Date daytimeStart) {
-        if(daytimeStart == null){
-            throw new IllegalArgumentException("Start day time should not be null.");
-        }
         if (isRunning) {
             throw new IllegalStateException("Cannot update simulation start daytime. Simulation currently running.");
         }
@@ -720,7 +724,7 @@ public class Simulator {
      * @return True iff there is at least one physical objects with a computational error
      */
     public boolean errorPresent() {
-        return getErrorObjects().size() > 0;
+        return !getErrorObjects().isEmpty();
     }
 
     /**
@@ -891,7 +895,7 @@ public class Simulator {
             waitTimers.add(endTime);
         }
 
-        while (simulationTime < endTime) {
+        while (simulationTime < endTime && isRunning) {
             //Go to wait state
             try {
                 sharedInstance.wait();

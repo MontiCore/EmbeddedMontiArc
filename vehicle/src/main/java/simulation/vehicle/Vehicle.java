@@ -739,7 +739,7 @@ public class Vehicle {
             }
         }
 
-        // ToDo This logic should be moved to the controller
+        //TODO: This logic should be moved to the controller
         Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
         if (streetTypeSensor.isPresent()) {
             String streetType = (String)(streetTypeSensor.get().getValue());

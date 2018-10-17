@@ -214,7 +214,7 @@ public final class MathHelper {
      * @return True if 2D intersection is non-empty, otherwise false
      */
     public static boolean checkIntersection2D(List<Map.Entry<RealVector, RealVector>> vectorsOne, List<Map.Entry<RealVector, RealVector>> vectorsTwo) {
-        // ToDo Function is unnecessary with three dimensional collision detection
+        //TODO: Function is unnecessary with three dimensional collision detection
         // If any list is empty, return false
         if (vectorsOne.isEmpty() || vectorsTwo.isEmpty()) {
             return false;

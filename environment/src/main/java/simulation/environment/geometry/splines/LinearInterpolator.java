@@ -49,7 +49,7 @@ public class LinearInterpolator implements Spline {
             initPointContainer(difference, streetWidth, pavementWidth);
         }
 
-        //ToDo: compute pavement start and endPoints correct!
+        //TODO: compute pavement start and endPoints correct!
         protected void initPointContainer(Point3D difference, double streetWidth, double pavementWidth) {
             //normalize the difference vector
 
@@ -397,7 +397,7 @@ public class LinearInterpolator implements Spline {
      * @param p
      * @return the lane of a given Point
      */
-    //ToDo: check back with other groups
+    //TODO: check back with other groups
     private Direction determineLaneOfPoint(Point3D p) {
         Point3D p0 = computePoint(computeT(p));
         if(p0.getX() == p.getX() && p0.getY() == p.getY()) {

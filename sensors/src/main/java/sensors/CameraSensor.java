@@ -60,7 +60,7 @@ public class CameraSensor extends AbstractSensor {
         Optional<Image> temp = getPhysicalVehicle().getSimulationVehicle().getCameraImage();
         if (temp.isPresent()) {
             this.originalImage = Optional.of(temp.get());
-            // ToDo: Add noise in Image
+            //TODO: Add noise in Image
             ImagePlus imagePlus = new ImagePlus();
             imagePlus.setImage(temp.get());
             int width = imagePlus.getWidth() / 2;
@@ -110,7 +110,7 @@ public class CameraSensor extends AbstractSensor {
         float perspectiveTop = 3f;
         float perspectiveBottom = 3f;
 
-        // ToDo read from artwork profile
+        //TODO: read from artwork profile
         int top3d = (int) (h * perspectiveTop / 10);
         // int top3d = (int) (h * perspectiveTop / 100);
         int bot3d = (int) (h * perspectiveBottom / 100);

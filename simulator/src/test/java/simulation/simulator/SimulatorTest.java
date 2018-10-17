@@ -6,6 +6,7 @@ import org.junit.*;
 import simulation.util.*;
 import java.util.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -18,6 +19,21 @@ public class SimulatorTest {
         Log.setLogEnabled(false);
     }
 
+    @After
+    public void after(){
+        Simulator sim = Simulator.getSharedInstance();
+        try{
+            sim.continueSimulation();
+        }catch (IllegalStateException e){
+            // Simulation was apperently not paused
+        }
+        try{
+            sim.waitUntilSimulationStopped();
+        }catch (UnsupportedOperationException e){
+            // Simulation was apperently blocking
+        }
+    }
+
     @AfterClass
     public static void tearDownClass() {
         Log.setLogEnabled(true);
@@ -27,7 +43,12 @@ public class SimulatorTest {
 
     @Test(expected = IllegalStateException.class)
     public void startSimulationStartTwice(){
-        //ToDo
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(5000);
+        sim.startSimulation();
+        sim.startSimulation();
     }
 
     @Test(expected = IllegalStateException.class)
@@ -75,49 +96,192 @@ public class SimulatorTest {
         sim.startSimulation();
     }
 
-    //Todo continueSimulation + setter
+    @Test(expected = IllegalArgumentException.class)
+    public void continueSimulationUntilNegative(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(1000);
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
+        sim.continueSimulation(-1);
+    }
 
-    //Todo continueSimulation
+    @Test(expected = IllegalStateException.class)
+    public void continueSimulationUntilNotPaused(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(1000);
+        sim.startSimulation();
+        sim.continueSimulation(500);
+    }
 
-    //Todo stopSimulation
+    @Test(expected = IllegalStateException.class)
+    public void continueSimulationUntilNotRunning(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.continueSimulation(500);
+    }
 
-    //Todo set type
+    @Test(expected = IllegalStateException.class)
+    public void continueSimulationNotPaused(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(1000);
+        sim.startSimulation();
+        sim.continueSimulation();
+    }
 
-    //Todo set simulationDuration
+    @Test(expected = IllegalStateException.class)
+    public void continueSimulationNotRunning(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.continueSimulation();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void stopSimulationNotRunning(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.stopSimulation();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void setSimulationTypeRunning(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(1000);
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
+        sim.setSimulationType(SimulationType.SIMULATION_TYPE_FIXED_TIME);
+    }
 
     @Test(expected = IllegalArgumentException.class)
-    public void extendSimulationTimeFail() {
+    public void setSimulationDurationInPast(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(1000);
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
+        sim.setSimulationDuration(250);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void extendSimulationTimeNegative() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.extendSimulationTime(-5);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void setSimulationLoopFrequencyFail() {
+    public void setSimulationLoopFrequencyNonPositive() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.setSimulationLoopFrequency(0);
     }
 
-    //Todo set slowDownFactor
+    @Test(expected = IllegalArgumentException.class)
+    public void setSlowDownFactorLessThenOne(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSlowDownFactor(0);
+    }
 
-    //Todo set slowDownWallClock Factor
+    @Test(expected = IllegalStateException.class)
+    public void setSlowDownFactorAlreadyWallClock(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSlowDownWallClockFactor(2);
+        sim.setSlowDownFactor(2);
+    }
 
-    //Todo set startDaytime
+    @Test(expected = IllegalArgumentException.class)
+    public void setSlowDownWallClockFactorLessThenOne(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSlowDownWallClockFactor(0);
+    }
 
-    //Todo set dayTimeSpeedUp
+    @Test(expected = IllegalStateException.class)
+    public void setSlowWallClockDownFactorAlreadySlowDown(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSlowDownFactor(2);
+        sim.setSlowDownWallClockFactor(2);
+    }
 
-    //Todo set simulationPauseTime
+    @Test(expected = IllegalStateException.class)
+    public void setStartDaytimeNull(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(1000);
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
+        sim.setStartDaytime(Calendar.getInstance().getTime());
+    }
 
-    //Todo resetErrorOccurred
+    @Test(expected = IllegalArgumentException.class)
+    public void setDaytimeSpeedUpLessThanOne(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setDaytimeSpeedUp(0);
+    }
 
-    //Todo registerSimulationObject
+    @Test(expected = IllegalStateException.class)
+    public void setDaytimeSpeedUpNotPaused(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(1000);
+        sim.startSimulation();
+        sim.setDaytimeSpeedUp(2);
+    }
 
-    //Todo unregisterSimulationObject
+    @Test(expected = IllegalArgumentException.class)
+    public void setSimulationPauseTimeNegative(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationPauseTime(-1);
+    }
 
-    //Todo waitFor
+    @Test(expected = IllegalStateException.class)
+    public void resetErrorOccurredNotPaused(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(1000);
+        sim.startSimulation();
+        sim.resetErrorOccurred();
+    }
 
-    //Todo waitUntilSimulationStopped
+    @Test(expected = IllegalArgumentException.class)
+    public void registerSimulationObjectPhysicalObject(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.registerSimulationObject(new TestPhysicalObject());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void unregisterSimulationObject(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.unregisterSimulationObject(new TestPhysicalObject());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void waitForSync(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.waitFor(500);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void waitUntilSimulationStoppedSync(){
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.waitUntilSimulationStopped();
+    }
 
     //Tests that need to start a simulation to test
 
@@ -169,14 +333,14 @@ public class SimulatorTest {
         sim.setSimulationDuration(simulationDuration);
         sim.setSimulationLoopFrequency(simulationLoopFrequency);
 
-        // Create and register observer that checks the step size time
+        // Create and register observer that checks the step sizes
         StepSizeChecker checker = new StepSizeChecker(expectedIterationTime);
         sim.registerLoopObserver(checker);
 
         // Run simulation
         sim.startSimulation();
 
-        // Check if expected simulation time was met
+        // Check if expected simulation duration was met
         checkSimTime(sim, simulationDuration);
         // Check if expected number of iterations were performed
         assertEquals(expectedLoopCount, sim.getLoopCount());
@@ -243,421 +407,478 @@ public class SimulatorTest {
     }
 
     /**
-     * The desired simulation time should be (more or less) met.
-     * //Todo
+     * Continuing a paused synchronous simulation for a specified time should pause the simulation after the specified tine
      */
     @Test
-    public void stopTime () {
+    public void continueSimulationUntilSync(){
+        // Calculate expected values
+        long continueSimulationTime = 500;
+        long simulationPauseTime = 500;
+
+        // Set up and start simulation
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-
-        // Set simulation duration (5 seconds)
         sim.setSimulationDuration(5000);
-
-        //Start simulation
+        sim.setSimulationPauseTime(simulationPauseTime);
         sim.startSimulation();
 
-        //Stop time should be equal to desired runtime. Tolerance: 1 iteration time = 33ms.
-        Long stopTime = sim.getSimulationTime();
-        checkSimTime(sim, stopTime);
-    }/**
-     * A simulation that should stop after 0 ms should stop immediately
-     * //Todo
+        // Continue simulation for the specified time
+        sim.continueSimulation(continueSimulationTime);
+
+        // Check if simulation was continued for the specified time
+        assertTrue(continueSimulationTime + simulationPauseTime <= sim.getSimulationTime());
+        assertTrue(sim.getSimulationTime() < continueSimulationTime + simulationPauseTime + 66);
+    }
+
+    //TODO: Continuing a paused asynchronous simulation for a specified time should pause the simulation after the specified tine
+
+    /**
+     * Continuing a paused synchronous simulation should continue the simulation until the end
      */
     @Test
-    public void immediatelyStopSimulation() {
+    public void continueSimulationSync(){
+        // Calculate expected values
+        long simulationDuration = 5000;
+
+        // Set up and start simulation
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-
-        //Immediately stopping simulation
-        sim.setSimulationDuration(0);
+        sim.setSimulationDuration(simulationDuration);
+        sim.setSimulationPauseTime(500);
         sim.startSimulation();
 
-        //Test no simulation time has passed
-        Long stopTime = sim.getSimulationTime();
-        assertTrue(stopTime == 0);
+        // Continue simulation for the specified time
+        sim.continueSimulation();
+
+        // Check if simulation was continued for the specified time
+        assertTrue(simulationDuration <= sim.getSimulationTime());
+        assertTrue(sim.getSimulationTime() < simulationDuration + 66);
+    }
+
+    //TODO: Continuing a paused synchronous simulation should continue the simulation until the end
+
+    /**
+     * The set simulation duration should be met
+     */
+    @Test
+    public void setSimulationDuration() {
+        // Calculate expected values
+        long simulationDuration = 5000;
+
+        // Set up and start simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(simulationDuration);
+        sim.startSimulation();
+
+        // Check if simulation duration was met
+        checkSimTime(sim, simulationDuration);
     }
 
     /**
-     * Test that extendSimulationTime() actually increases simulation time
-     * //Todo
+     * A simulation with 0 ms simulation duration should stop immediately
+     */
+    @Test
+    public void setSimulationDurationZero() {
+        // Calculate expected values
+        long simulationDuration = 0;
+
+        // Set up simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(simulationDuration);
+
+        // Create and register observer
+        TestObserver checker = new TestObserver();
+        sim.registerLoopObserver(checker);
+
+        // Run simulation
+        sim.startSimulation();
+
+        // Check if simulation stopped immediately
+        assertEquals(simulationDuration, sim.getSimulationTime());
+        // Check if observer was not notified
+        assertEquals(0, checker.startCounter);
+        assertEquals(0, checker.willExecCounter);
+        assertEquals(0, checker.didExecCounter);
+        assertEquals(0, checker.stopCounter);
+    }
+
+    /**
+     * Extending the simulation time should extend the simulation duration
      */
     @Test
     public void extendSimulationTime() {
+        // Calculate expected values
+        long simulationDuration = 5000;
+        long simulationExtensionTime = 500;
+
+        // Setup and run simulation
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-
-        //Start a simulation
-        sim.setSimulationDuration(1000);
+        sim.setSimulationDuration(simulationDuration);
         sim.setSimulationPauseTime(500);
         sim.startSimulation();
 
-        //Continue for the same amount of time as before
-        sim.extendSimulationTime(1000);
+        // Extend simulation time and continue
+        sim.extendSimulationTime(simulationExtensionTime);
         sim.continueSimulation();
-        checkSimTime(sim, 2000);
+
+        // Check if simulation was extended successfully
+        checkSimTime(sim, simulationDuration + simulationExtensionTime);
     }
 
     /**
-     * Slowing down the simulation actually slows down computation
-     * //Todo
+     * The slow down factor should have an effect on the runtime of a synchronous simulation
      */
     @Test
-    public void slowDownSynchronousComputation() {
+    public void setSlowDownFactorSync() {
+        // Set up reference run
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-
-        // Set simulation duration (5 seconds)
         sim.setSimulationDuration(5000);
+        sim.registerSimulationObject(new SlowExecutable());
 
-        //Add a notifiable object
-        SlowExecutable exec = new SlowExecutable();
-        sim.registerSimulationObject(exec);
+        // Remember reference start time
+        long referenceStartTime = System.currentTimeMillis();
 
-        //Remember start time of simulation
-        long startTime = System.currentTimeMillis();
-
+        // Start reference rum
         sim.startSimulation();
 
-        //Calculate runtime of normal running simulation
-        long referenceRuntime = System.currentTimeMillis() - startTime;
+        // Calculate reference runtime
+        long referenceRuntime = System.currentTimeMillis() - referenceStartTime;
 
-        //Second run with slowed down simulation
-        sim.setSlowDownFactor(3);
-        startTime = System.currentTimeMillis();
-        sim.extendSimulationTime(5000);
-        sim.startSimulation();
-
-        //Compare runtimes
-        long slowedRuntime = System.currentTimeMillis() - startTime;
-
-        assertTrue(referenceRuntime * 2.25 < slowedRuntime);
-        assertTrue(referenceRuntime * 3.75 > slowedRuntime);
-    }/**
-     * Slowing down the simulation actually slows down computation
-     * //Todo
-     */
-    @Test
-    public void slowDownAsynchronousComputation() {
-        Simulator.resetSimulator();
-        Simulator sim = Simulator.getSharedInstance();
-        sim.setSynchronousSimulation(false);
-
-        // Set simulation duration (5 seconds)
-        sim.setSimulationDuration(5000);
-
-        //Add a notifiable object
-        SlowExecutable exec = new SlowExecutable();
-        sim.registerSimulationObject(exec);
-
-        //Remember start time of simulation
-        long startTime = System.currentTimeMillis();
-
-        sim.startSimulation();
-        sim.waitUntilSimulationStopped();
-
-        //Calculate runtime of normal running simulation
-        long referenceRuntime = System.currentTimeMillis() - startTime;
-
-        //Second run with slowed down simulation
-        sim.setSlowDownFactor(3);
-        startTime = System.currentTimeMillis();
-        sim.extendSimulationTime(5000);
-        sim.startSimulation();
-        sim.waitUntilSimulationStopped();
-
-        //Compare runtimes
-        long slowedRuntime = System.currentTimeMillis() - startTime;
-
-        assertTrue(referenceRuntime * 2.25 < slowedRuntime);
-        assertTrue(referenceRuntime * 3.75 > slowedRuntime);
-    }
-
-    /**
-     * Slowing down the simulation actually slows down computation
-     * //Todo
-     */
-    @Test
-    public void slowDownWallClockSynchronousComputation() {
-        Simulator.resetSimulator();
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Set simulation duration
-        sim.setSimulationDuration(1000);
-
-        long startTime = System.currentTimeMillis();
-
-        //Run slowed down simulation
-        sim.setSlowDownWallClockFactor(3);
-        sim.startSimulation();
-
-        long runtime = System.currentTimeMillis() - startTime;
-
-        //Compare runtime
-        assertTrue(runtime >= 2800);
-
-        //Try with different parameters for frequency and slow down factor
+        // Set up slowed down run
         Simulator.resetSimulator();
         sim = Simulator.getSharedInstance();
-        sim.setSimulationLoopFrequency(66);
+        sim.setSimulationDuration(5000);
+        sim.setSlowDownFactor(3);
+        sim.registerSimulationObject(new SlowExecutable());
 
-        // Set simulation duration
-        sim.setSimulationDuration(800);
-
-        startTime = System.currentTimeMillis();
-
-        //Run slowed down simulation
-        sim.setSlowDownWallClockFactor(5);
-        sim.startSimulation();
-
-        runtime = System.currentTimeMillis() - startTime;
-
-        //Compare runtime
-        assertTrue(runtime >= 3800);
-    }/**
-     * Slowing down the simulation actually slows down computation
-     * //Todo
-     */
-    @Test
-    public void slowDownAsynchronousComputationToWallClockTime() {
-        Simulator.resetSimulator();
-        Simulator sim = Simulator.getSharedInstance();
-        sim.setSynchronousSimulation(false);
-
-        // Set simulation duration
-        sim.setSimulationDuration(1000);
-
+        // Remember start time
         long startTime = System.currentTimeMillis();
 
-        //Run slowed down simulation
-        sim.setSlowDownWallClockFactor(3);
+        // Start slowed down run
         sim.startSimulation();
-        sim.waitUntilSimulationStopped();
 
+        // Calculate runtime
         long runtime = System.currentTimeMillis() - startTime;
 
-        //Compare runtime
-        assertTrue(runtime >= 2800);
+        // Check if simulation execution was slowed down
+        assertTrue(referenceRuntime * 2.25 < runtime);
+        assertTrue(runtime < referenceRuntime * 3.75);
+    }
 
-        //Try with different parameters for frequency and slow down factor
+    /**
+     * The slow down factor should have an effect on the runtime of an asynchronous simulation
+     */
+    @Test
+    public void setSlowDownFactorAsync() {
+        // Set up reference run
         Simulator.resetSimulator();
-        sim = Simulator.getSharedInstance();
-        sim.setSimulationLoopFrequency(66);
+        Simulator sim = Simulator.getSharedInstance();
         sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(5000);
+        sim.registerSimulationObject(new SlowExecutable());
 
-        // Set simulation duration
-        sim.setSimulationDuration(800);
+        // Remember reference start time
+        long referenceStartTime = System.currentTimeMillis();
 
-        startTime = System.currentTimeMillis();
-
-        //Run slowed down simulation
-        sim.setSlowDownWallClockFactor(5);
+        // Start reference rum
         sim.startSimulation();
         sim.waitUntilSimulationStopped();
 
-        runtime = System.currentTimeMillis() - startTime;
+        // Calculate reference runtime
+        long referenceRuntime = System.currentTimeMillis() - referenceStartTime;
 
-        //Compare runtime
-        assertTrue(runtime >= 3800);
+        // Set up slowed down run
+        Simulator.resetSimulator();
+        sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(5000);
+        sim.setSlowDownFactor(3);
+        sim.registerSimulationObject(new SlowExecutable());
+
+        // Remember start time
+        long startTime = System.currentTimeMillis();
+
+        // Start slowed down run
+        sim.startSimulation();
+        sim.waitUntilSimulationStopped();
+
+        // Calculate runtime
+        long runtime = System.currentTimeMillis() - startTime;
+
+        // Check if simulation execution was slowed down
+        assertTrue(referenceRuntime * 2.25 < runtime);
+        assertTrue(runtime < referenceRuntime * 3.75);
     }
 
     /**
-     * Test the simulated daytime and daytime speedup
-     * //Todo
+     * The slow down factor to wall clock time should have an effect on the runtime of a synchronous simulation
      */
     @Test
-    public void daytimeSimulation() {
+    public void setSlowDownWallClockSync() {
+        // Calculate expected values
+        long simulationDuration = 1000;
+
+        // Set up slowed down run
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(simulationDuration);
+        sim.setSlowDownWallClockFactor(3);
 
-        // Set daytime, speedup: 1 second = 1 day
-        Calendar cal = Calendar.getInstance();
-        cal.set(2000, Calendar.JANUARY, 1, 12, 0, 0);
-        Date startTime = cal.getTime();
-        sim.setStartDaytime(startTime);
-        sim.setDaytimeSpeedUp(86400);
+        // Remember start time
+        long startTime = System.currentTimeMillis();
 
-        // Set simulation duration (5 seconds)
-        sim.setSimulationDuration(5000);
+        // Start slowed down run
         sim.startSimulation();
 
-        // Test if 5 days passed. 50 minutes tolerance (~1 frame)
-        cal.add(Calendar.DAY_OF_MONTH, 5);
-        cal.add(Calendar.MINUTE, -50);
-        Date before = cal.getTime();
-        cal.add(Calendar.MINUTE, 100);
-        Date after = cal.getTime();
+        // Calculate runtime
+        long runtime = System.currentTimeMillis() - startTime;
 
-        assertTrue(after.after(sim.getDaytime()));
-        assertTrue(before.before(sim.getDaytime()));
-
-        // Extend by another 10 seconds
-        sim.extendSimulationTime(10000);
-        sim.setStartDaytime(startTime);
-        sim.setDaytimeSpeedUp(3600);
-        sim.startSimulation();
-
-        //Test if 10 hours passed. 2 minutes tolerance (~1 frame)
-        cal.set(2000, Calendar.JANUARY, 1, 12, 0, 0);
-        cal.add(Calendar.HOUR_OF_DAY, 10);
-        cal.add(Calendar.MINUTE, -2);
-        before = cal.getTime();
-        cal.add(Calendar.MINUTE, 4);
-        after = cal.getTime();
-
-        assertTrue(after.after(sim.getDaytime()));
-        assertTrue(before.before(sim.getDaytime()));
+        // Check if simulation execution was slowed down
+        assertTrue(simulationDuration * 2.25 < runtime);
+        assertTrue(runtime < simulationDuration * 3.75);
     }
 
     /**
-     * Test the manual pausing of computations of asynchronous simulation
-     * //Todo
+     * The slow down factor to wall clock time should have an effect on the runtime of an asynchronous simulation
      */
     @Test
-    public void pauseAsyncComputations() {
+    public void setSlowDownWallClockAsync() {
+        // Calculate expected values
+        long simulationDuration = 1000;
+
+        // Set up slowed down run
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(simulationDuration);
+        sim.setSlowDownWallClockFactor(3);
 
-        // Set simulation duration
-        sim.setSimulationDuration(1000);
+        // Remember start time
+        long startTime = System.currentTimeMillis();
 
-        //Run paused simulation
-        sim.setSimulationPauseTime(500);
+        // Start slowed down run
         sim.startSimulation();
-        sim.waitFor(500 - sim.getSimulationTime() - 10);
+        sim.waitUntilSimulationStopped();
 
-        //Some extra time to enter pausing
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // Calculate runtime
+        long runtime = System.currentTimeMillis() - startTime;
+
+        // Check if simulation execution was slowed down
+        assertTrue(simulationDuration * 2.25 < runtime);
+        assertTrue(runtime < simulationDuration * 3.75);
+    }
+
+    /**
+     * The set start daytime should be set and advanced during the simulation
+     */
+    @Test
+    public void setStartDaytime() {
+        // Calculate expected values
+        long simulationDuration = 5000;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.JANUARY, 1, 0, 0, 0);
+        Date startDaytime = calendar.getTime();
+        calendar.add(Calendar.MILLISECOND, (int) simulationDuration);
+        Date expectedDaytimeLower = calendar.getTime();
+        calendar.add(Calendar.MILLISECOND, 33);
+        Date expectedDaytimeUpper = calendar.getTime();
+
+        // Set up and start simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(simulationDuration);
+        sim.setStartDaytime(startDaytime);
+        sim.startSimulation();
+
+        // Check if start daytime was set and advanced
+        assertTrue(expectedDaytimeLower.before(sim.getDaytime()));
+        assertTrue(sim.getDaytime().before(expectedDaytimeUpper));
+    }
+
+    /**
+     * The set daytime speed up should speed up the simulation day time
+     */
+    @Test
+    public void setDaytimeSpeedUp(){
+        // Calculate expected values
+        long simulationDuration = 5000;
+        int daytimeSpeedUp = 60;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.JANUARY, 1, 0, 0, 0);
+        Date startDaytime = calendar.getTime();
+        calendar.add(Calendar.MILLISECOND, (int) simulationDuration * daytimeSpeedUp);
+        Date expectedDaytimeLower = calendar.getTime();
+        calendar.add(Calendar.MILLISECOND, 33 * daytimeSpeedUp);
+        Date expectedDaytimeUpper = calendar.getTime();
+
+        // Set up and start simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(simulationDuration);
+        sim.setStartDaytime(startDaytime);
+        sim.setDaytimeSpeedUp(daytimeSpeedUp);
+        sim.startSimulation();
+
+        // Check if start daytime was set and advanced
+        assertTrue(expectedDaytimeLower.before(sim.getDaytime()));
+        assertTrue(sim.getDaytime().before(expectedDaytimeUpper));
+    }
+
+    /**
+     * A synchronous simulation should pause at the set pause time
+     */
+    @Test
+    public void setSimulationPauseTimeSync() {
+        // Calculate expected values
+        long simulationDuration = 5000;
+        long simulationPauseTime = 500;
+
+        // Set up and start simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(simulationDuration);
+        sim.setSimulationPauseTime(simulationPauseTime);
+        sim.startSimulation();
+
+        // Check if simulation paused correctly
+        checkSimTime(sim, simulationPauseTime);
+    }
+
+    /**
+     * A asynchronous simulation should pause at the set pause time and stay paused
+     */
+    @Test
+    public void setSimulationPauseTimeAsync() {
+        // Calculate expected values
+        long simulationDuration = 5000;
+        long simulationPauseTime = 500;
+
+        // Set up and start simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(simulationDuration);
+        sim.setSimulationPauseTime(simulationPauseTime);
+        sim.startSimulation();
+
+        // Wait until simulation pauses
+        while(!sim.isPaused()) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
+        // Check if simulation reached the set pause time and is paused
         assertTrue(sim.isPaused());
-        long simTime = sim.getSimulationTime();
+        checkSimTime(sim, simulationPauseTime);
 
-        //We waited the right amount of time + one frame tolerance
-        checkSimTime(sim, 500);
-
-        //We're not advancing in simulation time
+        // Wait
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        // Check if simulation stayed pause
         assertTrue(sim.isPaused());
-        assertTrue(sim.getSimulationTime() == simTime);
-
-        //Run to finish
-        sim.continueSimulation();
-    }/**
-     * Test the manual pausing of computations of synchronous simulation
-     * //Todo
-     */
-    @Test
-    public void pauseSyncComputations() {
-        Simulator.resetSimulator();
-        Simulator sim = Simulator.getSharedInstance();
-
-        // Set simulation duration
-        sim.setSimulationDuration(1000);
-
-        //Run paused simulation
-        sim.setSimulationPauseTime(500);
-        sim.startSimulation();
-
-        assertTrue(sim.isPaused());
-        assertTrue(sim.isRunning());
-        long simTime = sim.getSimulationTime();
-
-        //We waited the right amount of time + one frame tolerance
-        checkSimTime(sim, 500);
-
-        //Run to finish
-        sim.continueSimulation();
+        checkSimTime(sim, simulationPauseTime);
     }
 
     /**
-     * Returning objects with error returns objects with error only
-     * //Todo
+     * Tests if error objects are correctly returned
+     * Tests if a present error is correctly identified
+     * Tests if an occurred error is correctly identified
+     * Tests if errorOccurred is correctly reset
      */
     @Test
-    public void returnErrorObjects() {
+    public void errorObjectsTest() {
+        // Set up simulator
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(3000);
 
-        TestPhysicalObject a = new TestPhysicalObject();
-        TestPhysicalObject b = new TestPhysicalObject();
-        TestPhysicalObject c = new TestPhysicalObject();
+        // Create and register error objects
+        TestPhysicalObject someError = new TestPhysicalObject();
+        TestPhysicalObject noError = new TestPhysicalObject();
+        sim.registerAndPutObject(someError, 10.0, 10.0, 0.0);
+        sim.registerAndPutObject(noError, 20.0, 20.0, 0.0);
 
-        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
-        sim.registerAndPutObject(b, 20.0, 20.0, 0.0);
-        sim.registerAndPutObject(c, 30.0, 30.0, 0.0);
-
-        //No objects with error -> empty list
-        List<commons.simulation.PhysicalObject> error = sim.getErrorObjects();
-        assertTrue(error.size() == 0);
-
-        //error occurred -> return objects with error
-        a.setError(true);
-        error = sim.getErrorObjects();
-        assertTrue(error.contains(a) && !error.contains(b) && !error.contains(c));
-        b.setError(true);
-        error = sim.getErrorObjects();
-        assertTrue(error.contains(a) && error.contains(b) && !error.contains(c));
-
-        //Error resolved -> Not returned anymore
-        a.setError(false);
-        error = sim.getErrorObjects();
-        assertTrue(!error.contains(a) && error.contains(b) && !error.contains(c));
-        b.setError(false);
-        error = sim.getErrorObjects();
-        assertTrue(error.size() == 0);
-    }/**
-     * Checking error memory
-     * //Todo
-     */
-    @Test
-    public void errorObjectsMemory() {
-        Simulator.resetSimulator();
-        Simulator sim = Simulator.getSharedInstance();
-
-        TestPhysicalObject a = new TestPhysicalObject();
-        TestPhysicalObject b = new TestPhysicalObject();
-        TestPhysicalObject c = new TestPhysicalObject();
-
-        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
-        sim.registerAndPutObject(b, 20.0, 20.0, 0.0);
-        sim.registerAndPutObject(c, 30.0, 30.0, 0.0);
-
-        //No objects with error
-        List<commons.simulation.PhysicalObject> error = sim.getErrorObjects();
-        assertTrue(sim.errorPresent() == false);
-        assertTrue(sim.errorOccurred() == false);
-
-        //Error occurred
-        a.setError(true);
-        sim.setSimulationDuration(100);
+        // Run simulation
+        sim.setSimulationPauseTime(0);
         sim.startSimulation();
-        assertTrue(sim.errorPresent() == true);
-        assertTrue(sim.errorOccurred() == true);
 
-        //Reset computational error flag
+        // Check if no error occurred
+        assertFalse(sim.errorOccurred());
+        // Check if no error is present
+        assertFalse(sim.errorPresent());
+        // Check if no error objects are returned
+        assertTrue(sim.getErrorObjects().isEmpty());
+
+        // Run simulation
+        sim.continueSimulation(500);
+
+        // Set computational error
+        someError.setError(true);
+
+        // Run simulation
+        sim.continueSimulation(500);
+
+        // Check if error occurred
+        assertTrue(sim.errorOccurred());
+        // Check if error is present
+        assertTrue(sim.errorPresent());
+        // Check if only the object with error is returned
+        assertTrue(sim.getErrorObjects().contains(someError));
+        assertFalse(sim.getErrorObjects().contains(noError));
+
+        // Reset error occurred
         sim.resetErrorOccurred();
-        assertTrue(sim.errorPresent() == true);
-        assertTrue(sim.errorOccurred() == false);
 
-        //Extending simulation updates memory
-        sim.extendSimulationTime(100);
-        sim.startSimulation();
-        assertTrue(sim.errorPresent() == true);
-        assertTrue(sim.errorOccurred() == true);
+        // Run simulation
+        sim.continueSimulation(500);
 
-        //Error resolved
-        a.setError(false);
-        assertTrue(sim.errorPresent() == false);
-        assertTrue(sim.errorOccurred() == true);
+        // Check if error occurred
+        assertTrue(sim.errorOccurred());
+        // Check if error is present
+        assertTrue(sim.errorPresent());
+        // Check if only the object with error is returned
+        assertTrue(sim.getErrorObjects().contains(someError));
+        assertFalse(sim.getErrorObjects().contains(noError));
+
+        // Run simulation
+        sim.continueSimulation(500);
+
+        // Reset computational error
+        someError.setError(false);
+
+        // Run simulation
+        sim.continueSimulation(500);
+
+        // Check if error occurred
+        assertTrue(sim.errorOccurred());
+        // Check if no error is present
+        assertFalse(sim.errorPresent());
+        // Check if no error objects are returned
+        assertTrue(sim.getErrorObjects().isEmpty());
+
+        // Reset error occurred
+        sim.resetErrorOccurred();
+
+        // Run simulation
+        sim.continueSimulation();
+
+        // Check if no error occurred
+        assertFalse(sim.errorOccurred());
+        // Check if no error is present
+        assertFalse(sim.errorPresent());
+        // Check if no error objects are returned
+        assertTrue(sim.getErrorObjects().isEmpty());
     }
 
     /**
@@ -667,6 +888,7 @@ public class SimulatorTest {
      */
     @Test
     public void observerTest() {
+        // Set up simulation
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
         sim.setSimulationDuration(1000);
@@ -686,7 +908,7 @@ public class SimulatorTest {
         sim.unregisterLoopObserver(notNotified);
         long iterationCount1 = sim.getLoopCount();
 
-        // Run simulation for 0.5 seconds
+        // Run simulation
         sim.setSimulationPauseTime(500);
         sim.startSimulation();
 
@@ -695,7 +917,7 @@ public class SimulatorTest {
         sim.registerLoopObserver(lastSecondNotified);
         long iterationCount2 = sim.getLoopCount();
 
-        // Run simulation for 0.5 seconds and then stop
+        // Run simulation
         sim.continueSimulation();
 
         // Remove third and fourth observer and store iteration count
@@ -704,28 +926,80 @@ public class SimulatorTest {
         long iterationCount3 = sim.getLoopCount();
 
         // Check if number of observer calls are correct
-        Assert.assertEquals(0, notNotified.startCounter);
-        Assert.assertEquals(0, notNotified.stopCounter);
-        Assert.assertEquals(iterationCount1, notNotified.didExecCounter);
-        Assert.assertEquals(iterationCount1, notNotified.willExecCounter);
+        assertEquals(0, notNotified.startCounter);
+        assertEquals(0, notNotified.stopCounter);
+        assertEquals(iterationCount1, notNotified.didExecCounter);
+        assertEquals(iterationCount1, notNotified.willExecCounter);
 
-        Assert.assertEquals(1, firstSecondNotified.startCounter);
-        Assert.assertEquals(0, firstSecondNotified.stopCounter);
-        Assert.assertEquals(iterationCount2, firstSecondNotified.didExecCounter);
-        Assert.assertEquals(iterationCount2, firstSecondNotified.willExecCounter);
+        assertEquals(1, firstSecondNotified.startCounter);
+        assertEquals(0, firstSecondNotified.stopCounter);
+        assertEquals(iterationCount2, firstSecondNotified.didExecCounter);
+        assertEquals(iterationCount2, firstSecondNotified.willExecCounter);
 
-        Assert.assertEquals(0, lastSecondNotified.startCounter);
-        Assert.assertEquals(1, lastSecondNotified.stopCounter);
-        Assert.assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.didExecCounter);
-        Assert.assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.willExecCounter);
+        assertEquals(0, lastSecondNotified.startCounter);
+        assertEquals(1, lastSecondNotified.stopCounter);
+        assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.didExecCounter);
+        assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.willExecCounter);
 
-        Assert.assertEquals(1, alwaysNotified.startCounter);
-        Assert.assertEquals(1, alwaysNotified.stopCounter);
-        Assert.assertEquals(iterationCount3, alwaysNotified.didExecCounter);
-        Assert.assertEquals(iterationCount3, alwaysNotified.willExecCounter);
+        assertEquals(1, alwaysNotified.startCounter);
+        assertEquals(1, alwaysNotified.stopCounter);
+        assertEquals(iterationCount3, alwaysNotified.didExecCounter);
+        assertEquals(iterationCount3, alwaysNotified.willExecCounter);
     }
 
-    // ToDo simulationObjectTest
+    /**
+     * Tests if simulation objects are correctly registered
+     * Tests if simulation objects are correctly unregistered
+     * Tests if simulation objects are correctly notified
+     */
+    @Test
+    public void simulationObjectTest() {
+        // Set up simulator
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(1000);
+
+        // Create simulation objects
+        TestExecutable notNotified = new TestExecutable();
+        TestExecutable firstSecondNotified = new TestExecutable();
+        TestExecutable lastSecondNotified = new TestExecutable();
+        TestExecutable alwaysNotified = new TestExecutable();
+
+        // Register first, second and fourth simulation object
+        sim.registerSimulationObject(notNotified);
+        sim.registerSimulationObject(firstSecondNotified);
+        sim.registerSimulationObject(alwaysNotified);
+
+        // Remove first simulation and store iteration count
+        sim.unregisterSimulationObject(notNotified);
+        long iterationCount1 = sim.getLoopCount();
+
+        // Run simulation
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
+
+        // Remove second simulation object, Register third simulation object and store iteration count
+        sim.unregisterSimulationObject(firstSecondNotified);
+        sim.registerSimulationObject(lastSecondNotified);
+        long iterationCount2 = sim.getLoopCount();
+
+        // Run simulation
+        sim.continueSimulation();
+
+        // Remove third and fourth simulation and store iteration count
+        sim.unregisterSimulationObject(lastSecondNotified);
+        sim.unregisterSimulationObject(alwaysNotified);
+        long iterationCount3 = sim.getLoopCount();
+
+        // Check if number of simulation object calls are correct
+        assertEquals(iterationCount1, notNotified.execCounter);
+
+        assertEquals(iterationCount2, firstSecondNotified.execCounter);
+
+        assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.execCounter);
+
+        assertEquals(iterationCount3, alwaysNotified.execCounter);
+    }
 
     /**
      * Tests if physical objects are correctly registered
@@ -734,45 +1008,141 @@ public class SimulatorTest {
      */
     @Test
     public void physicalObjectTest() {
+        // Set up simulator
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(1000);
 
-        //Create dummy objects
-        TestPhysicalObject a = new TestPhysicalObject();
-        TestPhysicalObject b = new TestPhysicalObject();
+        // Create physical objects
+        TestPhysicalObject notNotified = new TestPhysicalObject();
+        TestPhysicalObject firstSecondNotified = new TestPhysicalObject();
+        TestPhysicalObject lastSecondNotified = new TestPhysicalObject();
+        TestPhysicalObject alwaysNotified = new TestPhysicalObject();
 
-        //(Un)registering physical objects
-        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
-        assertTrue(sim.getPhysicalObjects().contains(a));
-        assertTrue(!sim.getPhysicalObjects().contains(b));
-        sim.registerAndPutObject(b, 20.0, 20.0, 0.0);
-        assertTrue(sim.getPhysicalObjects().contains(a));
-        assertTrue(sim.getPhysicalObjects().contains(b));
+        // Register first, second and fourth physical object
+        sim.registerAndPutObject(notNotified, 0.0, 0.0, 0.0);
+        sim.registerAndPutObject(firstSecondNotified, 1.0, 1.0, 0.0);
+        sim.registerAndPutObject(alwaysNotified, 3.0, 3.0, 0.0);
 
-        sim.unregisterPhysicalObject(a);
-        assertTrue(!sim.getPhysicalObjects().contains(a));
-        assertTrue(sim.getPhysicalObjects().contains(b));
-        sim.unregisterPhysicalObject(b);
-        assertTrue(!sim.getPhysicalObjects().contains(a));
-        assertTrue(!sim.getPhysicalObjects().contains(b));
+        // Remove first observer and store iteration count
+        sim.unregisterPhysicalObject(notNotified);
+        long iterationCount1 = sim.getLoopCount();
 
-        //Unregistering physical objects that are registered as simulation objects is legal
-        sim.registerAndPutObject(a, 10.0, 10.0, 0.0);
-        sim.unregisterPhysicalObject(a);
-        assertTrue(!sim.getPhysicalObjects().contains(a));
+        // Run simulation
+        sim.setSimulationPauseTime(500);
+        sim.startSimulation();
 
-        //Unregistering simulation objects also removes physical object
-        sim.unregisterPhysicalObject(a);
-        assertTrue(!sim.getPhysicalObjects().contains(a));
+        // Remove second physical object, Register third physical object and store iteration count
+        sim.unregisterPhysicalObject(firstSecondNotified);
+        sim.registerAndPutObject(lastSecondNotified, 2.0, 2.0, 0.0);
+        long iterationCount2 = sim.getLoopCount();
+
+        // Run simulation
+        sim.continueSimulation();
+
+        // Remove third and fourth physical and store iteration count
+        sim.unregisterPhysicalObject(lastSecondNotified);
+        sim.unregisterPhysicalObject(alwaysNotified);
+        long iterationCount3 = sim.getLoopCount();
+
+        // Check if number of physical object calls are correct
+        assertEquals(iterationCount1, notNotified.computePhysicsCounter);
+        assertEquals(1, notNotified.putOnSurfaceCounter);
+        assertEquals(iterationCount1, notNotified.executeCounter);
+
+        assertEquals(iterationCount2, firstSecondNotified.computePhysicsCounter);
+        assertEquals(1, notNotified.putOnSurfaceCounter);
+        assertEquals(iterationCount2, firstSecondNotified.executeCounter);
+
+        assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.computePhysicsCounter);
+        assertEquals(1, notNotified.putOnSurfaceCounter);
+        assertEquals(iterationCount3 - iterationCount2, lastSecondNotified.executeCounter);
+
+        assertEquals(iterationCount3, alwaysNotified.computePhysicsCounter);
+        assertEquals(1, notNotified.putOnSurfaceCounter);
+        assertEquals(iterationCount3, alwaysNotified.executeCounter);
     }
 
-    //Todo effects waitFor
+    /**
+     * The simulation is notifying waiting threads after the specified time
+     */
+    @Test
+    public void waitFor(){
+        // Calculate values
+        long expectedWaitForTime = 500;
 
-    //Todo effects waitUntilSimulationStopped
+        // Set up and run simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(5000);
+        sim.startSimulation();
+
+        // Remember waiting begin time
+        long waitBeginTime = sim.getSimulationTime();
+
+        // Wait for the specified time
+        sim.waitFor(expectedWaitForTime);
+
+        // Calculated waiting end time
+        long waitForTime = sim.getSimulationTime() - waitBeginTime;
+
+        // Check if thread was notified at the correct time
+        assertTrue(expectedWaitForTime <= waitForTime);
+        assertTrue(waitForTime < expectedWaitForTime + 33*2);
+    }
+
+    /**
+     * The simulation is notifying waiting threads at the end of the simulation
+     * if the notifying time exceeds the simulation duration
+     */
+    @Test
+    public void waitForEndedToSoon(){
+        // Calculate expected values
+        long simulationDuration = 5000;
+        long waitForTime = simulationDuration + 200;
+
+        // Set up and run simulation
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(simulationDuration);
+        sim.startSimulation();
+
+        // Wait
+        sim.waitFor(waitForTime);
+
+        // Check if thread was notified at the end of the simulation
+        checkSimTime(sim, simulationDuration);
+        // Check if simulation has stopped
+        assertFalse(sim.isRunning());
+    }
+
+    /**
+     * The simulation is notifying waiting threads at the end of the simulation
+     */
+    @Test
+    public void waitUntilSimulationStopped(){
+        // Calculate expected values
+        long simulationDuration = 5000;
+
+        // Set up, run simulation and wait
+        Simulator.resetSimulator();
+        Simulator sim = Simulator.getSharedInstance();
+        sim.setSynchronousSimulation(false);
+        sim.setSimulationDuration(simulationDuration);
+        sim.startSimulation();
+        sim.waitUntilSimulationStopped();
+
+        // Check if thread was notified at the end of the simulation
+        checkSimTime(sim, simulationDuration);
+        // Check if simulation has stopped
+        assertFalse(sim.isRunning());
+    }
 
     private void checkSimTime(Simulator sim, long expectedTime){
         long tolerance = (long) ((1.0 / sim.getSimulationLoopFrequency()) * 1000);
-        Assert.assertTrue(expectedTime <= sim.getSimulationTime()&& sim.getSimulationTime() < expectedTime + tolerance);
+        assertTrue(expectedTime <= sim.getSimulationTime()&& sim.getSimulationTime() < expectedTime + tolerance);
     }
 
     private class StepSizeChecker implements SimulationLoopNotifiable {
@@ -784,16 +1154,16 @@ public class SimulatorTest {
         public void simulationStarted(List<SimulationLoopExecutable> simulationObjects) {}
         public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {}
         public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {
-            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+            assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
         }
         public void didExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long deltaTime) {
-            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+            assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
         }
         public void willExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+            assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
         }
         public void didExecuteLoop(List<SimulationLoopExecutable> simulationObjects, long totalTime, long deltaTime) {
-            Assert.assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
+            assertEquals(expectedStepSize, Simulator.getSharedInstance().getLastStepSize());
         }
     }
 
@@ -821,7 +1191,7 @@ public class SimulatorTest {
     }
 
     private class TestExecutable implements SimulationLoopExecutable {
-        public long execCounter = 0;
+        private long execCounter = 0;
 
         public TestExecutable(){}
         public void executeLoopIteration(long timeDiffMs) {
@@ -830,12 +1200,12 @@ public class SimulatorTest {
     }
 
     private class SlowExecutable implements SimulationLoopExecutable {
-        public long execCounter = 0;
+        private long execCounter = 0;
 
         public SlowExecutable(){}
         public void executeLoopIteration(long timeDiffMs) {
             try {
-                Thread.sleep(20);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -846,6 +1216,9 @@ public class SimulatorTest {
     private class TestPhysicalObject implements SimulationLoopExecutable, PhysicalObject {
         private boolean error = false;
         private long uniqueId = IdGenerator.getSharedInstance().generateUniqueId();
+        private long computePhysicsCounter = 0;
+        private long putOnSurfaceCounter = 0;
+        private long executeCounter = 0;
 
         public TestPhysicalObject() {}
         public RealVector getPosition(){
@@ -907,11 +1280,17 @@ public class SimulatorTest {
             return uniqueId;
         }
         public List<Map.Entry<RealVector, RealVector>> getBoundaryVectors(){
-            // ToDo Function is unnecessary with three dimensional collision detection
+            //TODO: Function is unnecessary with three dimensional collision detection
             return new ArrayList<>();
         }
-        public void computePhysics(long deltaTms){}
-        public void putOnSurface(double posX, double posY, double rotZ){}
-        public void executeLoopIteration(long timeDiffMs){}
+        public void computePhysics(long deltaTms){
+            computePhysicsCounter++;
+        }
+        public void putOnSurface(double posX, double posY, double rotZ){
+            putOnSurfaceCounter++;
+        }
+        public void executeLoopIteration(long timeDiffMs){
+            executeCounter++;
+        }
     }
 }
