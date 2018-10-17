@@ -40,7 +40,7 @@
   "to": "resources"
 }, {
   "//": "Reporting",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.02.reporting&files=reporting.zip",
   "to": "resources"
 }, {
@@ -55,32 +55,32 @@
   "to": "resources"
 }, {
   "//": "OCL Verification",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.15.ocl-verification&files=oclverification.zip",
   "to": "resources"
 }, {
   "//": "SVG Visualization",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.08.22.visualisation&files=visualisation.zip",
   "to": "resources"
 }, {
   "//": "Stream Testing",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.streamTesting&files=streamTesting.zip",
   "to": "resources"
 }, {
   "//": "PacMan",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.pacman&files=pacman.zip",
   "to": "resources"
 }, {
   "//": "SuperMario",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.supermario&files=supermario.zip",
   "to": "resources"
 }, {
   "//": "VisualizationEMAM",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.02.visualization-emam&files=visualization-emam.zip",
   "to": "resources"
 }, {
@@ -100,7 +100,7 @@
   "to": "resources/distributed-simulator"
 }, {
   "//": "IDE",
-  "platforms": ["win32"],
+  "platforms": ["win32", "linux"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.06.ide&files=ide.zip",
   "to": "resources"
 }]

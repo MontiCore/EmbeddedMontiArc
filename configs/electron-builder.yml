@@ -27,10 +27,19 @@ afterPack: "scripts/afterPack.js"
 win:
   icon: build/icon.png
   extraResources:
-  - from: "src/windows/scripts"
-    to: "scripts"
+    - from: "src/windows/scripts"
+      to: "scripts"
   target:
     - "nsis"
+
+linux:
+  icon: build/icon.png
+  category: Development
+  extraResources:
+  - from: "src/linux/scripts"
+    to: "scripts"
+  target:
+  - "deb"
 
 nsis:
   menuCategory: true
@@ -44,3 +53,8 @@ nsis:
   allowToChangeInstallationDirectory: true
   runAfterFinish: false
   artifactName: ${productName}-Installer-${version}.${ext}
+
+# deb:
+#  depends:
+#    - "Package-1"
+#    - "Package-2"
