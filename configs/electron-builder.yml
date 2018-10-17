@@ -25,7 +25,7 @@ extraFiles:
 afterPack: "scripts/afterPack.js"
 
 win:
-  icon: build/icon.png
+  icon: build/icon.ico
   extraResources:
     - from: "src/windows/scripts"
       to: "scripts"
