@@ -6,9 +6,9 @@ directories:
   buildResources: build
   output: dist
 files:
-- "src/electron/**/*"
-- "node_modules/**/*"
-- "package.json"
+  - "src/electron/**/*"
+  - "node_modules/**/*"
+  - "package.json"
 extraResources:
   - from: "src/models"
     to: "models"
@@ -33,13 +33,13 @@ win:
     - "nsis"
 
 linux:
-  icon: build/icon.png
+  icon: build/icons
   category: Development
   extraResources:
-  - from: "src/linux/scripts"
-    to: "scripts"
+    - from: "src/linux/scripts"
+      to: "scripts"
   target:
-  - "deb"
+    - "deb"
 
 nsis:
   menuCategory: true
@@ -54,7 +54,8 @@ nsis:
   runAfterFinish: false
   artifactName: ${productName}-Installer-${version}.${ext}
 
-# deb:
-#  depends:
-#    - "Package-1"
-#    - "Package-2"
+deb:
+  artifactName: ${productName}-Installer-${version}.${ext}
+# depends: Can be used to add Linux package dependencies such as "build-essentials" or similar.
+#   - "Package-1"
+#   - "Package-2"
