@@ -2,10 +2,11 @@
   "private": true,
   "name": "@emastudio/installer",
   "version": "2.0.0",
-  "author": "SE-RWTH",
+  "author": "SE-RWTH <kusmenko@se-rwth.de>",
   "description": "",
   "main": "src/electron/electron.js",
   "license": "???",
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc",
   "scripts": {
     "package:dry": "electron-builder --config configs/electron-builder.yml --dir",
     "package": "electron-builder --config configs/electron-builder.yml",
