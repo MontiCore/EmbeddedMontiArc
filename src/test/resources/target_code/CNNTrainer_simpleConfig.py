@@ -18,7 +18,7 @@ if __name__ == "__main__":
         num_epoch=50,
         batch_size=100,
         opt_type='adam',
-        base_learning_rate=0.001,
+        base_learning_rate=0.001
     )
 
     print '\n********************************************'

@@ -20,12 +20,13 @@ if __name__ == "__main__":
         context='gpu',
         eval_metric='mse',
         opt_type='rmsprop',
-        base_learning_rate=0.001,
-        weight_decay=0.01,
-        policy='step',
-        stepsize=1000,
         epsilon=1.0E-6,
+        weight_decay=0.01,
         gamma=0.9,
+        policy='step',
+        base_learning_rate=0.001,
+        learning_rate_decay=0.9,
+        stepsize=1000
     )
 
     print '\n********************************************'
