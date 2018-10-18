@@ -76,7 +76,10 @@ public class TrainParamSupportChecker implements CNNTrainVisitor {
 
     public void visit(ASTWeightDecayEntry node){}
 
-    public void visit(ASTLRDecayEntry node){}
+    public void visit(ASTLRDecayEntry node){
+        printUnsupportedOptimizerParam(node.getName());
+        this.unsupportedElemList.add(node.getName());
+    }
 
     public void visit(ASTLRPolicyEntry node){}
 
