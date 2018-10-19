@@ -13,7 +13,7 @@ Usage: Navigate to your build directory and run `cmake $srcPath`, where `$srcPat
 ### Cpp
 Armadillo version 8 or higher.
 The version used in EMAStudio can be downloaded from:
-* [Windows](https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/armadillo-8.200.2.zip)
+* [Windows](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=armadillo-8.200.2.zip)
 * [Linux](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-armadillo-linux&files=armadillo-8.500.1-linux.zip)
 
 WARNING: Both linked versions contain a copy of the file `armadillo` called `armadillo.h`, which is not contained in standard armadillo distributions.
