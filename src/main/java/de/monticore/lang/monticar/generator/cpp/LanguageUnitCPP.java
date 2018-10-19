@@ -111,6 +111,12 @@ public class LanguageUnitCPP extends LanguageUnit {
                     resultString += "#include \"" + v.getVariableType().getIncludeName() + ".h\"\n";
                 }
             }
+            if(v instanceof VariablePortValueChecker){
+                if(!alreadyGeneratedIncludes.contains("PortValueCheck")){
+                    alreadyGeneratedIncludes.add("PortValueCheck");
+                    resultString += "#include \"PortValueCheck.h\"\n";
+                }
+            }
         }
 
         for (String string : bluePrint.getAdditionalIncludeStrings())
@@ -182,10 +188,16 @@ public class LanguageUnitCPP extends LanguageUnit {
     }
 
     protected String generateHeaderGenerateVariable(Variable v){
-        if (!v.isArray())
-            return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + ";\n";
-        else
-           return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + "[" + v.getArraySize() + "]" + ";\n";
+
+        if(v instanceof VariablePortValueChecker){
+            return ((VariablePortValueChecker)v).getTypeTargetLanguageFormat() +" "+ v.getNameTargetLanguageFormat()+";\n";
+        }else {
+
+            if (!v.isArray())
+                return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + ";\n";
+            else
+                return v.getVariableType().getTypeNameTargetLanguage() + " " + v.getNameTargetLanguageFormat() + "[" + v.getArraySize() + "]" + ";\n";
+        }
     }
 
     protected String generateMethod(Method method){

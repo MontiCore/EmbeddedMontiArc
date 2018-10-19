@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.cpp;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
@@ -455,6 +456,7 @@ public class GenerationTest extends AbstractSymtabTest {
     //@Ignore
     @Test
     public void testSimulatorMainController() throws IOException {
+        //TODO: new testfile
 //        ConstantPortSymbol.resetLastID();
         ConstantPortHelper.resetLastID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
@@ -489,6 +491,8 @@ public class GenerationTest extends AbstractSymtabTest {
         ThreadingOptimizer.resetID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
+        EMAComponentSymbol component = symtab.<EMAComponentSymbol>resolve("paper.MathUnit", EMAComponentSymbol.KIND).orElse(null);
+        assertNotNull(component);
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("paper.mathUnit", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();

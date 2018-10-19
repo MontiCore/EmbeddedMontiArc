@@ -19,13 +19,9 @@ import java.util.*;
  */
 public class ExecutionOrderFixer {
     public static void fixExecutionOrder(TaggingResolver taggingResolver, BluePrintCPP bluePrintCPP, GeneratorCPP generatorCPP) {
-        Optional<Method> optMethod = bluePrintCPP.getMethod("execute_inner");
-        Method method = null;
-        if(optMethod.isPresent()){
-            method = optMethod.get();
-        }else {
-            method =  bluePrintCPP.getMethod("execute").get();
-        }
+
+        Method method = bluePrintCPP.getMethod("execute").get();
+
 
         Map<String, List<Instruction>> map = new HashMap<>();
 
@@ -48,6 +44,9 @@ public class ExecutionOrderFixer {
 
         newList.addAll(joinInstructions);
         newList.addAll(otherInstructions);
+
+        fixNextInstruction(newList, bluePrintCPP);
+
         method.setInstructions(newList);
     }
 
@@ -61,6 +60,12 @@ public class ExecutionOrderFixer {
         }
     }
 
+    public static void fixNextInstruction(List<Instruction> newList, BluePrintCPP bluePrintCPP){
+        if(bluePrintCPP.getMethod("next").isPresent()){
+            newList.add(0, new TargetCodeInstruction("next();\n"));
+        }
+    }
+
     public static boolean listContainsExecuteInstruction(List<Instruction> list, String name) {
         for (Instruction instruction : list) {
             if (instruction.isExecuteInstruction()) {
@@ -71,7 +76,6 @@ public class ExecutionOrderFixer {
         }
         return false;
     }
-
 
     public static Instruction getExecuteInstruction(String nameToAdd, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
         boolean canBeThreaded = false;
@@ -108,6 +112,9 @@ public class ExecutionOrderFixer {
                     otherInstructions.add(instruction);
                 }
             } else {
+                if(instruction.isTargetCodeInstruction() && instruction.getTargetLanguageInstruction().equals("next();\n")){
+                    continue;
+                }
                 otherInstructions.add(instruction);
             }
         }

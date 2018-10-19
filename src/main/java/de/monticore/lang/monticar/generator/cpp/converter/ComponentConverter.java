@@ -39,19 +39,19 @@ public class ComponentConverter {
 
 
 
-//        String lastNameWithoutArrayPart = "";
+        String lastNameWithoutArrayPart = "";
         for (EMAComponentInstanceSymbol instanceSymbol : componentSymbol.getSubComponents()) {
 //            Unused: (?)
-//            int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
-//            boolean generateComponentInstance = true;
-//            if (arrayBracketIndex != -1) {
-//                generateComponentInstance = !instanceSymbol.getName().substring(0, arrayBracketIndex).equals(lastNameWithoutArrayPart);
-//                lastNameWithoutArrayPart = instanceSymbol.getName().substring(0, arrayBracketIndex);
-//                Log.info(lastNameWithoutArrayPart, "Without:");
-//                Log.info(generateComponentInstance + "", "Bool:");
-//            }
-//            if (generateComponentInstance) {
-//            }
+            int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
+            boolean generateComponentInstance = true;
+            if (arrayBracketIndex != -1) {
+                generateComponentInstance = !instanceSymbol.getName().substring(0, arrayBracketIndex).equals(lastNameWithoutArrayPart);
+                lastNameWithoutArrayPart = instanceSymbol.getName().substring(0, arrayBracketIndex);
+                Log.info(lastNameWithoutArrayPart, "Without:");
+                Log.info(generateComponentInstance + "", "Bool:");
+            }
+            if (generateComponentInstance) {
+            }
             bluePrint.addVariable(ComponentInstanceConverter.convertComponentInstanceSymbolToVariable(instanceSymbol, componentSymbol));
         }
 
@@ -63,15 +63,20 @@ public class ComponentConverter {
         }*/
 
 
+
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-        generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
 
         //generate execute method
-        ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
+        Method init = generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
+        bluePrint.addMethod(init);
+        bluePrint.addMethod(execute);
+
+        EventConverter.generatePVCNextMethod(bluePrint);
 
         return bluePrint;
     }
@@ -104,9 +109,9 @@ public class ComponentConverter {
         }
     }
 
-    public static void generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static Method generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("init", "void");
-        bluePrint.addMethod(method);
+//        bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
             String oldName = v.getName();
             if (v.isArray()) {
@@ -125,13 +130,17 @@ public class ComponentConverter {
         for (Variable v : bluePrint.getVariables()) {
             Log.info("Variable: " + v.getName(), "initBluePrintCreate:");
 
-            if (v.isInputVariable() && !v.isConstantVariable()) {
-                //method.addParameter(v);
-                //Instruction instruction = new ConnectInstructionCPP(v, true, v, false);
-                //method.addInstruction(instruction);
-            } else if (v.isConstantVariable()) {
-                Instruction instruction = new ConstantConnectInstructionCPP(v, v);
-                method.addInstruction(instruction);
+            if(v instanceof VariablePortValueChecker){
+                ((VariablePortValueChecker)v).addInitInstructionsToMethod(method);
+            }else {
+                if (v.isInputVariable() && !v.isConstantVariable()) {
+                    //method.addParameter(v);
+                    //Instruction instruction = new ConnectInstructionCPP(v, true, v, false);
+                    //method.addInstruction(instruction);
+                } else if (v.isConstantVariable()) {
+                    Instruction instruction = new ConstantConnectInstructionCPP(v, v);
+                    method.addInstruction(instruction);
+                }
             }
         }
 
@@ -151,6 +160,7 @@ public class ComponentConverter {
             TargetCodeInstruction instruction = new TargetCodeInstruction(result);
             method.addInstruction(instruction);
         }
+        return method;
     }
 
     public static void generateInitStaticVariablePart(Method method, Variable v, BluePrintCPP bluePrint) {
