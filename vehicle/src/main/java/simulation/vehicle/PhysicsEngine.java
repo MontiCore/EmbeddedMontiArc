@@ -17,7 +17,7 @@ public class PhysicsEngine{
     /** Average air density */
     public static final double AIR_DENSITY = 1.225;
     /** Average road friction coefficient for dry roads (no unit) */
-    public static final double ROAD_FRICTION_DRY = 0.7;
+    public static final double ROAD_FRICTION_DRY = 0.8;
     /** Average road friction coefficient for wet roads (no unit) */
     public static final double ROAD_FRICTION_WET = 0.4;
 

@@ -39,16 +39,12 @@ public final class Plotter2D{
         }
         double deltaT = timeDiffms / 1000.0;
         // Create axis
-        NumberAxis xAxis = new NumberAxis("Vehicle Position (m)");
-        xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
-        xAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
+        NumberAxis xAxis = new NumberAxis();
         xAxis.setTickLabelsVisible(false);
         xAxis.setTickUnit(new NumberTickUnit(2));
         xAxis.setRange(physicalVehicle.getPosition().getEntry(0) - 5.0, physicalVehicle.getPosition().getEntry(0) + 5.0);
 
-        NumberAxis yAxis = new NumberAxis("Vehicle Position (m)");
-        yAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
-        yAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
+        NumberAxis yAxis = new NumberAxis();
         yAxis.setTickLabelsVisible(false);
         yAxis.setTickUnit(new NumberTickUnit(2));
         yAxis.setRange(physicalVehicle.getPosition().getEntry(1) - 5.0, physicalVehicle.getPosition().getEntry(1) + 5.0);
@@ -71,9 +67,12 @@ public final class Plotter2D{
         XYSeries position3 = new XYSeries("x_y_3", false, true);
         XYSeries position4 = new XYSeries("x_y_4", false, true);
 
+        RealVector wheelFrontPositionInternal = new ArrayRealVector(new double[]{physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
+        RealVector wheelBackPositionInternal = new ArrayRealVector(new double[]{-physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
+
         RealMatrix wheelRotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, -physicalVehicle.getSteeringAngle()).getMatrix());
-        RealVector wheelFrontPositionLocal = wheelRotation.operate(new ArrayRealVector(new double[]{physicalVehicle.getWheelRadius() / 2, 0.0, 0.0}));
-        RealVector wheelBackPositionLocal = wheelRotation.operate(new ArrayRealVector(new double[]{-physicalVehicle.getWheelRadius() / 2, 0.0, 0.0}));
+        RealVector wheelFrontPositionLocal = wheelRotation.operate(wheelFrontPositionInternal);
+        RealVector wheelBackPositionLocal = wheelRotation.operate(wheelBackPositionInternal);
 
         RealVector wheelFrontPosition = physicalVehicle.getFrontLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
         RealVector wheelBackPosition = physicalVehicle.getFrontLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
@@ -91,8 +90,8 @@ public final class Plotter2D{
         tempPosition = wheelBackPosition.getEntry(1);
         position2.add(wheelBackPosition.getEntry(0), tempPosition);
 
-        wheelFrontPositionLocal = new ArrayRealVector(new double[]{physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
-        wheelBackPositionLocal = new ArrayRealVector(new double[]{-physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
+        wheelFrontPositionLocal = new ArrayRealVector(wheelFrontPositionInternal);
+        wheelBackPositionLocal = new ArrayRealVector(wheelBackPositionInternal);
 
         wheelFrontPosition = physicalVehicle.getBackLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
         wheelBackPosition = physicalVehicle.getBackLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
@@ -156,11 +155,11 @@ public final class Plotter2D{
         positionPlot.setRangeGridlinePaint(Color.BLACK);
 
         // Create position chart
-        JFreeChart positionChart = new JFreeChart(" ", JFreeChart.DEFAULT_TITLE_FONT, positionPlot, true);
+        JFreeChart positionChart = new JFreeChart(positionPlot);
         positionChart.removeLegend();
 
         try {
-            ChartUtilities.saveChartAsPNG(new File("Position" + counter + ".png"), positionChart, 1080, 1080);
+            ChartUtilities.saveChartAsPNG(new File("ModelicaBrakeTurn" + counter + ".png"), positionChart, 1080, 1080);
         }catch (Exception e){
             Log.severe("Could not save charts as PNGs." + e);
         }

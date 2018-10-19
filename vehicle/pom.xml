@@ -8,7 +8,7 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>${global.version}</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
