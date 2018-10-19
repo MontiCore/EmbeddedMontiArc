@@ -45,11 +45,24 @@ public class VariablePortValueChecker extends Variable {
         int id = 0;
         for (VariablePortValueCheckerTestSymbol test : this.testsInitList){
             String s = getNameTargetLanguageFormat()+".";
-            if(test.testType == VariablePortValueCheckerTestSymbolType.EqualsTest){
-                s += "setEqualsTest("+id+", "+test.value+");\n";
+            if(test.testType == VariablePortValueCheckerTestSymbolType.EqualsTest) {
+                s += "set_Test_Equals";
+            }else if(test.testType == VariablePortValueCheckerTestSymbolType.RangeTest){
+                s += "set_Test_Range";
+            }else if(test.testType == VariablePortValueCheckerTestSymbolType.GreaterTest){
+                s += "set_Test_Greater";
+            }else if(test.testType == VariablePortValueCheckerTestSymbolType.GreaterEqualsTest){
+                s += "set_Test_GreaterEquals";
+            }else if(test.testType == VariablePortValueCheckerTestSymbolType.LowerTest){
+                s += "set_Test_Lower";
+            }else if(test.testType == VariablePortValueCheckerTestSymbolType.LowerEqualsTest) {
+                s += "set_Test_LowerEquals";
+            }else if(test.testType == VariablePortValueCheckerTestSymbolType.NotEquals){
+                s += "set_Test_NotEquals";
             }else{
                 continue;
             }
+            s += "(" + id + ", " + test.value + ");\n";
 
             init.addInstruction(new TargetCodeInstruction(s));
 
@@ -71,10 +84,43 @@ public class VariablePortValueChecker extends Variable {
         );
     }
 
+    public void addTestSymbol_Range(String lower, String upper){
+        addTestSymbol(
+                new VariablePortValueCheckerTestSymbol(lower+", "+upper, VariablePortValueCheckerTestSymbolType.RangeTest)
+        );
+    }
+
+    public void addTestSymbol_Compare(String operator, String value){
+
+        VariablePortValueCheckerTestSymbolType t = VariablePortValueCheckerTestSymbolType.EqualsTest;
+        if(operator.equals(">")){
+            t = VariablePortValueCheckerTestSymbolType.GreaterTest;
+        }else if(operator.equals(">=")){
+            t = VariablePortValueCheckerTestSymbolType.GreaterEqualsTest;
+        }else if(operator.equals("<")){
+            t = VariablePortValueCheckerTestSymbolType.LowerTest;
+        }else if(operator.equals("<=")){
+            t = VariablePortValueCheckerTestSymbolType.LowerEqualsTest;
+        }else if(operator.equals("!=")){
+            t = VariablePortValueCheckerTestSymbolType.NotEquals;
+        }
+
+        addTestSymbol(
+                new VariablePortValueCheckerTestSymbol(value, t)
+        );
+
+    }
+
     //<editor-fold desc="VariablePortValueCheckerTestSymbol">
 
     public enum VariablePortValueCheckerTestSymbolType{
-        EqualsTest
+        EqualsTest,
+        RangeTest,
+        GreaterTest,
+        GreaterEqualsTest,
+        LowerTest,
+        LowerEqualsTest,
+        NotEquals
     }
 
     public class VariablePortValueCheckerTestSymbol{

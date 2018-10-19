@@ -10,9 +10,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.E
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventExpressionSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventLogicalOperationExpressionSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.EventPortExpressionValueSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.PortValueInputSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.PortValueSymbol;
-import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.PortValuesArraySymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.expression.portvalueexpressionvalues.*;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Method;
@@ -166,22 +164,35 @@ public class EventConverter {
 
     public static void addTest(PortValueSymbol pvs, VariablePortValueChecker vpvc){
         if(pvs instanceof PortValueInputSymbol){
-            addTestPortValueInputSymbol((PortValueInputSymbol) pvs, vpvc);
+//            addTestPortValueInputSymbol((PortValueInputSymbol) pvs, vpvc);
+
+            vpvc.addTestSymbol_Equals(((PortValueInputSymbol) pvs).getValueStringRepresentation());
+
         }else if(pvs instanceof PortValuesArraySymbol){
             PortValuesArraySymbol ar = (PortValuesArraySymbol)pvs;
             for(int i = 0; i < ar.size(); ++i){
                 addTest(ar.getForIndex(i), vpvc);
             }
+        }else if(pvs instanceof PortValuePrecisionSymbol){
+
+            PortValuePrecisionSymbol ps = (PortValuePrecisionSymbol)pvs;
+            String value = ps.getValue().getValueStringRepresentation();
+            String prec = ps.getPrecision().getValueStringRepresentation();
+
+            vpvc.addTestSymbol_Range("("+value+" - "+prec+")", "("+value+" + "+prec+")");
+        }else if(pvs instanceof PortValueRangeSymbol){
+            PortValueRangeSymbol ps = (PortValueRangeSymbol)pvs;
+            String lower = ps.getLowerBound().getValueStringRepresentation();
+            String upper = ps.getUpperBound().getValueStringRepresentation();
+
+            vpvc.addTestSymbol_Range(lower, upper);
+        }else if(pvs instanceof PortValueCompareSymbol){
+            PortValueCompareSymbol compare = (PortValueCompareSymbol)pvs;
+
+            vpvc.addTestSymbol_Compare(compare.getOperator(), compare.getCompareValue().getValueStringRepresentation());
+
         }
     }
-
-
-    public static void addTestPortValueInputSymbol(PortValueInputSymbol pvis, VariablePortValueChecker vpvc){
-        if(pvis.isLogic()){
-            vpvc.addTestSymbol_Equals(pvis.isLogicValue() ? "true" : "false");
-        }
-    }
-
 
 
     //</editor-fold>

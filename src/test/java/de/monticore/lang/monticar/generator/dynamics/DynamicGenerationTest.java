@@ -49,4 +49,18 @@ public class DynamicGenerationTest extends AbstractSymtabTest {
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
+
+    @Test
+    public void Test_03_TestEventComponent1() throws IOException {
+        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
+
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("testeventcomponent2.test", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentSymbol);
+        GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/Test_03_TestEventComponent2");
+        generatorCPP.setGenerateCMake(true);
+        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
+    }
 }
