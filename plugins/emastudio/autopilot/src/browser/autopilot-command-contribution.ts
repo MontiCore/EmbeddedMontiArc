@@ -5,15 +5,15 @@
  */
 
 import { injectable, inject } from "inversify";
-import { CommandContribution, CommandRegistry, Command } from "@theia/core/lib/common";
+import { Command, CommandContribution, CommandRegistry } from "@theia/core/lib/common";
 import { AutoPilotConditions } from "./autopilot-conditions";
 import { ScriptsService } from "@emastudio/scripts/lib/browser";
-import { EXECUTE_DISTRIBUTED_SCRIPT, EXECUTE_DISTRIBUTED_KILL_SCRIPT } from "../common";
 import { Process } from "@emastudio/process/lib/browser";
 import { ApplicationShell } from "@theia/core/lib/browser";
 import { WidgetManager } from "@theia/core/lib/browser";
 import { MiniBrowser, MiniBrowserProps } from "@theia/mini-browser/lib/browser/mini-browser";
 import { Deferred } from "@theia/core/lib/common/promise-util";
+import { EXECUTE_ICON_CLASS } from "@emastudio/executing/lib/browser";
 
 import WidgetOptions = ApplicationShell.WidgetOptions;
 
@@ -25,10 +25,16 @@ export namespace AutoPilotCommands {
         label: "Execute Model (Distributed)",
         iconClass: AUTOPILOT_ICON_CLASS
     };
+
+    export const EXECUTE_MODELICA: Command = {
+        id: "emastudio.autopilot.execute.modelica",
+        label: "Execute Model (Modelica)",
+        iconClass: EXECUTE_ICON_CLASS
+    };
 }
 
 @injectable()
-export class AutoPilotCommandContribution implements CommandContribution {
+export abstract class AutoPilotCommandContribution implements CommandContribution {
     @inject(AutoPilotConditions) protected readonly conditions: AutoPilotConditions;
     @inject(ScriptsService) protected readonly scriptsService: ScriptsService;
     @inject(WidgetManager) protected readonly widgetManager: WidgetManager;
@@ -38,33 +44,29 @@ export class AutoPilotCommandContribution implements CommandContribution {
     protected _killPromise: Deferred<void>;
     protected _startPromise: Deferred<void>;
 
-    public constructor() {
+    protected constructor() {
         this._isRunning = false;
     }
 
-    public async registerCommands(commands: CommandRegistry): Promise<void> {
-        const command = commands.registerCommand(AutoPilotCommands.EXECUTE_DISTRIBUTED, {
-            execute: this.executeDistributed.bind(this)
-        });
-
-        return this.conditions.check(command);
-    }
+    public abstract registerCommands(commands: CommandRegistry): void;
 
     public get isRunning(): boolean {
         return this._isRunning;
     }
 
-    protected async executeDistributed(): Promise<void> {
-        if (this.isRunning) await this.executeDistributedKill();
+    protected async execute(): Promise<void> {
+        if (this.isRunning) await this.executeKill();
 
-        return this.executeDistributedStart();
+        return this.executeStart();
     }
 
-    public async executeDistributedKill(): Promise<void> {
+    public abstract async executeKill(): Promise<void>;
+
+    protected async doExecuteKill(script: string): Promise<void> {
         const process = await this.scriptsService.execute({
             label: "Kill Simulation",
             plugin: "executing",
-            script: EXECUTE_DISTRIBUTED_KILL_SCRIPT
+            script: script
         });
 
         this._killPromise = new Deferred<void>();
@@ -74,11 +76,13 @@ export class AutoPilotCommandContribution implements CommandContribution {
         return this._killPromise.promise;
     }
 
-    protected async executeDistributedStart(): Promise<void> {
+    protected abstract async executeStart(): Promise<void>;
+
+    protected async doExecuteStart(label: string, script: string): Promise<void> {
         const process = await this.scriptsService.execute({
-            label: "Simulation (Distributed)",
+            label: label,
             plugin: "executing",
-            script: EXECUTE_DISTRIBUTED_SCRIPT
+            script: script
         });
 
         this._startPromise = new Deferred<void>();
@@ -106,15 +110,9 @@ export class AutoPilotCommandContribution implements CommandContribution {
         this._isRunning = true;
 
         this._startPromise.resolve();
-        window.setTimeout(async () => this.openMiniBrowser(), 10000);
     }
 
-    protected async openMiniBrowser(): Promise<void> {
-        const options = <MiniBrowserProps>{
-            startPage: "http://localhost:80/visualization",
-            toolbar: "read-only",
-            name: "AutoPilot (Distributed)"
-        };
+    protected async openMiniBrowser(options: MiniBrowserProps): Promise<void> {
         const widget = await this.widgetManager.getOrCreateWidget(MiniBrowser.Factory.ID, options);
         const addOptions = <WidgetOptions>{ area: "main", mode: "tab-after" };
 
