@@ -13,7 +13,7 @@ import { AutoPilotCommandContribution } from "./autopilot-command-contribution";
 import { AutoPilotCommands } from "./autopilot-command-contribution";
 
 @injectable()
-export abstract class AutoPilotModelicaCommandContribution extends AutoPilotCommandContribution {
+export class AutoPilotModelicaCommandContribution extends AutoPilotCommandContribution {
     @inject(AutoPilotConditions) protected readonly conditions: AutoPilotConditions;
 
     public async registerCommands(commands: CommandRegistry): Promise<void> {
