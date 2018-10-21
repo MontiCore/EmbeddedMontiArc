@@ -6,30 +6,45 @@ see [TUTORIAL_ADD_MIDDLEWARE.md](https://git.rwth-aachen.de/monticore/EmbeddedMo
 
 ## Dependencies needed to compile the generated projects
 ### All generated projects
-CMake, Make, and a C++ compiler are required to compile the generated projects.
+CMake, Make,a C++ compiler, and Armadillo are required to compile the generated projects.
 #### Linux
 Gcc is recommended as the C++ compiler.
 Example install of all needed packages for ubuntu:
 ```bash
 sudo apt install gcc cmake make
 ```
-#### Windows
-Mingw gcc is recommended as the C++ compiler. See http://www.mingw.org/wiki/howto_install_the_mingw_gcc_compiler_suite for installation details.
-CMake for Windows: https://cmake.org/download/
-Make for Windows: http://gnuwin32.sourceforge.net/packages/make.htm
+Then download Armadillo from here: [Linux](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-armadillo-linux&files=armadillo-8.500.1-linux.zip) and set the environment variable `Armadillo_HOME` to the base dir of your installation.
 
-#### Linux
+To check everything is installed correctly check everything with whereis/ls:
+```bash
+$ whereis g++
+g++: /usr/bin/g++
+$ whereis cmake
+cmake: /usr/bin/cmake
+$ whereis make
+make: /usr/bin/make
+$ ls $Armadillo_HOME/include
+armadillo_bits armadillo.h
+```
+
+
+To compile: 
 Navigate to your build directory and run 
 ```bash
 cmake /path/to/generated/project/source
 make
 ```
 #### Windows
+Mingw gcc is recommended as the C++ compiler. See http://www.mingw.org/wiki/howto_install_the_mingw_gcc_compiler_suite for installation details.
+CMake for Windows: https://cmake.org/download/
+Make for Windows: http://gnuwin32.sourceforge.net/packages/make.htm
+
 Navigate to your build directory and run 
 ```batch
 cmake C:\path\to\generated\project\source
 make
 ```
+
 
 ### Projects with cpp generator
 Armadillo version 8 or higher.
