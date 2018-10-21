@@ -59,7 +59,7 @@ armadillo.h
 Compiling a generated project:
 ```batch
 cd C:\path\to\build\directory
-cmake C:\path\to\generated\project\source
+cmake C:\path\to\generated\project\source -G "MinGW Makefiles"
 make
 ```
 
