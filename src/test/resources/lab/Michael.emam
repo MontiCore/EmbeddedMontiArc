@@ -4,6 +4,7 @@ package lab;
 	in: two int numbers, range 0..99
 	out: random number in the given range of "in"
 */
+/*
 component Michael {
     ports in  (0:1:99) inRangeMin,
 		  in  (0:1:99) inRangeMax, 
@@ -12,4 +13,16 @@ component Michael {
     implementation Math {
         outRangeRand = abs(inRangeMax - inRangeMin) * rand + inRangeMin;
     }
+}
+*/
+/* the above caused some automatic built errors, which were not shown in the Email... so now I'll go with something simpler :-) */
+
+component Michael{
+    ports in Z loop,
+          out Z out1;
+
+    implementation Math{
+        out1 = loop + loop;
+    }
+
 }
