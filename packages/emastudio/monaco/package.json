@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "@emastudio/relay",
+  "name": "@emastudio/monaco",
   "version": "0.1.0",
-  "description": "EmbeddedMontiArcStudio Relay Plugin.",
+  "description": "EmbeddedMontiArcStudio Monaco Package.",
   "keywords": [
     "Elysium IDE"
   ],
@@ -28,12 +28,7 @@
     "docs:clean": "rimraf docs"
   },
   "dependencies": {
-    "@theia/core": "latest"
+    "@theia/monaco": "latest"
   },
-  "devDependencies": {},
-  "theiaExtensions": [
-    {
-      "frontend": "lib/electron-browser/relay-frontend-module"
-    }
-  ]
+  "devDependencies": {}
 }

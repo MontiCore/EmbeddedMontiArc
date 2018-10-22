@@ -13,6 +13,7 @@ import { PathsServerImpl } from "./paths-server";
 import { PATHS_PATH, PathsServer } from "../common";
 import { ConnectionHandler } from "@theia/core/lib/common/messaging";
 import { JsonRpcConnectionHandler } from "@theia/core/lib/common/messaging";
+import { CliContribution } from "@theia/core/lib/node";
 
 export default new ContainerModule(bind => {
     bindContributionProvider(bind, PathContribution);
@@ -24,6 +25,9 @@ export default new ContainerModule(bind => {
 
     bind(RootPathContribution).toSelf().inSingletonScope();
     bind(PathContribution).toDynamicValue(
+        ctx => ctx.container.get(RootPathContribution)
+    ).inSingletonScope();
+    bind(CliContribution).toDynamicValue(
         ctx => ctx.container.get(RootPathContribution)
     ).inSingletonScope();
 

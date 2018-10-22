@@ -62,6 +62,7 @@
     "@emastudio/executing": "^0.1.0",
     "@emastudio/markers": "^0.1.0",
     "@emastudio/models": "^0.1.0",
+    "@emastudio/monaco": "^0.1.0",
     "@emastudio/oclverification": "^0.1.0",
     "@emastudio/pacman": "^0.1.0",
     "@emastudio/paths": "^0.1.0",

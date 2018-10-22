@@ -53,6 +53,11 @@ content = content.replace(
     ""
 );
 
+content = content.replace(
+    ".then(function () { return import('@theia/monaco/lib/browser/monaco-browser-module').then(load) })",
+    ".then(function () { return import('@emastudio/monaco/lib/electron-browser/monaco-electron-module').then(load) })"
+);
+
 fs.writeFileSync(indexFile, content);
 
 workerConfig.output.path = baseConfig.output.path;

@@ -7,22 +7,32 @@
 import { injectable } from "inversify";
 import { PathContribution, PathsRegistry } from "./paths-registry";
 import { FileUri } from "@theia/core/lib/node/file-uri";
+import { CliContribution } from "@theia/core/lib/node";
 
-import * as Path from "path";
-import * as FileSystem from "fs-extra";
+import * as Yargs from "yargs";
+
+import ArgumentVector = Yargs.Argv;
+import Arguments = Yargs.Arguments;
 
 @injectable()
-export class RootPathContribution implements PathContribution {
+export class RootPathContribution implements PathContribution, CliContribution {
+    protected resourcesPath: string;
+
     public registerTo(registry: PathsRegistry): void {
-        const resourcesPath = Path.join(process.cwd(), "resources");
-        const debugRoot = process.env.EMASTUDIO_ROOT;
+        const resourcesPath = this.resourcesPath.replace(/\\/g, '/');
 
-        let rootURI = undefined;
+        registry.setPath('.', FileUri.create(resourcesPath));
+    }
 
-        if (FileSystem.pathExistsSync(resourcesPath)) rootURI = FileUri.create(resourcesPath);
-        else if (debugRoot) rootURI = FileUri.create(debugRoot);
-        else rootURI = FileUri.create(resourcesPath);
+    public configure(configuration: ArgumentVector): void {
+        configuration.option("resources-path", {
+            description: "Path to resources folder.",
+            type: "string",
+            nargs: 1
+        });
+    }
 
-        registry.setPath('.', rootURI);
+    public async setArguments(args: Arguments): Promise<void> {
+        this.resourcesPath = args.resourcesPath;
     }
 }

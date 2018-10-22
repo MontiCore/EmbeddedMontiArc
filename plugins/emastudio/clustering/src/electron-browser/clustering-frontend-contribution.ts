@@ -8,7 +8,7 @@ import { injectable, inject } from "inversify";
 import { FrontendApplication, FrontendApplicationContribution } from "@theia/core/lib/browser/frontend-application";
 import { ScriptsService } from "@emastudio/scripts/lib/browser";
 import { CLUSTERING_PATH, RUN_SCRIPT } from "../common";
-import { RelayService, RelayMessage } from "@emastudio/relay/lib/browser/relay-service";
+import { RelayService, RelayMessage } from "@emastudio/relay/lib/electron-browser/relay-service";
 
 export type ClusterFiddleMessageType = "Cluster" | "Clustered";
 

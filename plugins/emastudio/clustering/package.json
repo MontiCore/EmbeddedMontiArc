@@ -43,7 +43,7 @@
   "devDependencies": {},
   "theiaExtensions": [
     {
-      "frontend": "lib/browser/clustering-frontend-module",
+      "frontend": "lib/electron-browser/clustering-frontend-module",
       "backend": "lib/node/clustering-backend-module"
     }
   ]
