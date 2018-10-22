@@ -1,0 +1,11 @@
+package lab;
+
+component Alex{
+    ports in Z loop,
+          out Z out1;
+
+    implementation Math{
+        out1 = loop * loop;
+    }
+
+}

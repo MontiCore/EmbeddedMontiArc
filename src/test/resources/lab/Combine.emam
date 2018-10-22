@@ -1,0 +1,14 @@
+package lab;
+
+component Combine{
+    ports in Z in1,
+          in Z in2,
+          in Z in3,
+          in Z in4,
+          out Z out1;
+
+    implementation Math{
+        out1 = (in1 + in2 + in3 + in4) % 16;
+    }
+
+}

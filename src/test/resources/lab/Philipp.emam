@@ -1,0 +1,11 @@
+package lab;
+
+component Philipp{
+    ports in Z loop,
+          out Z out1;
+
+    implementation Math{
+        out1 = loop + 1;
+    }
+
+}
