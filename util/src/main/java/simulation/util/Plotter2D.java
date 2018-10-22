@@ -33,8 +33,8 @@ public final class Plotter2D{
     private static java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
     private static java.awt.geom.Ellipse2D.Double shapeLarge = new java.awt.geom.Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0); // remove
 
-    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms){ // remove
-        if(counter != 241){
+    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms, String name){ // remove
+        if(counter != 0){
             //return;
         }
         double deltaT = timeDiffms / 1000.0;
@@ -159,7 +159,7 @@ public final class Plotter2D{
         positionChart.removeLegend();
 
         try {
-            ChartUtilities.saveChartAsPNG(new File("ModelicaBrakeTurn" + counter + ".png"), positionChart, 1080, 1080);
+            ChartUtilities.saveChartAsPNG(new File(name + counter + ".png"), positionChart, 1080, 1080);
         }catch (Exception e){
             Log.severe("Could not save charts as PNGs." + e);
         }

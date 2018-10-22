@@ -14,6 +14,10 @@ import java.util.List;
 
 public class SimulationPlotter2D implements SimulationLoopNotifiable {
 
+    public SimulationPlotter2D(String name){ //remove
+        this.name = name;
+    }
+
     // Lists to store the data separately for plotting later
     private List<Long> simulationTimePoints = new LinkedList<>();
     private List<List<Double>> wheelRotationRates = new LinkedList<>();
@@ -21,6 +25,7 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
     private List<RealVector> vehicleVelocity= new LinkedList<>();
     private List<List<RealVector>> wheelPositions = new LinkedList<>();
     private long counter = 0; //remove
+    private String name; //remove
 
     /**
      * This function retrieves data of the vehicle at every instant and stores it
@@ -81,7 +86,7 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
 
         if(simulationObject instanceof PhysicalVehicle) { // remove
             PhysicalVehicle physicalVehicle = (PhysicalVehicle) simulationObject;
-            Plotter2D.plotOne(physicalVehicle, counter, timeDiffms);
+            Plotter2D.plotOne(physicalVehicle, counter, timeDiffms, name);
         }
         counter++;
     }

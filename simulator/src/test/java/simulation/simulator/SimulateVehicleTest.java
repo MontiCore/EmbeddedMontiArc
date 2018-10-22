@@ -63,8 +63,9 @@ public class SimulateVehicleTest {
     public void firstTest() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
+        sim.setSimulationDuration(31000);
 
-        sim.registerLoopObserver(new SimulationPlotter2D());
+        sim.registerLoopObserver(new SimulationPlotter2D("ModelicaComparasion"));
 
         // Create a new vehicle
         PhysicalVehicle physicalVehicle1 = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();
@@ -77,20 +78,29 @@ public class SimulateVehicleTest {
         setSteering(physicalVehicle1, 0.0);
 
         // Start simulation
-        sim.setSimulationDuration(20000);
         sim.setSimulationPauseTime(5000);
         long firstRoundStartingTime = System.nanoTime();
         sim.startSimulation();
         long firstRoundEndTime = System.nanoTime();
 
         setAccelerating(physicalVehicle1, 0.0);
-        setBraking(physicalVehicle1, Vehicle.VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX);
-        setSteering(physicalVehicle1, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
+        setBraking(physicalVehicle1, 5.0);
+        setSteering(physicalVehicle1, 0.0);
 
+        // Continue Simulation
         long secondRoundStartingTime = System.nanoTime();
-        sim.continueSimulation();
+        sim.continueSimulation(1000);
         long secondRoundEndTime = System.nanoTime();
 
-        System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime));
+        setAccelerating(physicalVehicle1, 0.0);
+        setBraking(physicalVehicle1, 5.0);
+        setSteering(physicalVehicle1, Vehicle.VEHICLE_DEFAULT_STEERING_ANGLE_MAX);
+
+        // Continue Simulation
+        long thirdRoundStartingTime = System.nanoTime();
+        sim.continueSimulation();
+        long thirdRoundEndTime = System.nanoTime();
+
+        System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime) + (thirdRoundEndTime - thirdRoundStartingTime));
     }*/
 }

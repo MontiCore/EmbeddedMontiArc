@@ -1089,7 +1089,7 @@ public class SimulatorTest {
 
         // Check if thread was notified at the correct time
         assertTrue(expectedWaitForTime <= waitForTime);
-        assertTrue(waitForTime < expectedWaitForTime + 33*2);
+        assertTrue(waitForTime < expectedWaitForTime + 33*4);
     }
 
     /**
