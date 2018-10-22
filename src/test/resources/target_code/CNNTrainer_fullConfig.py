@@ -25,7 +25,6 @@ if __name__ == "__main__":
         gamma=0.9,
         policy='step',
         base_learning_rate=0.001,
-        learning_rate_decay=0.9,
         stepsize=1000
     )
 
