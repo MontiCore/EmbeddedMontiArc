@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -40,10 +41,14 @@ public class BluePrintFixer {
             }
             if(isDynamic){
                 newVars.add(addConnectedVariableForVariable(varList, nameWithoutArray, bluePrint));
+                newVars.add(addConnectedRequestQueueForVariable(nameWithoutArray, bluePrint));
             }
         });
 
 
+        //TODO: Generate vectors with output functionality
+//          std::vector<connection<bool>> dynamic_bool_connection_IN;
+//          std::vector<connection<bool>> dynamic_bool_connection_OUT;
 
         bluePrint.setVariables(newVars);
     }
@@ -51,21 +56,31 @@ public class BluePrintFixer {
 
     protected static Variable addConnectedVariableForVariable(List<Variable> varList, String nameWithoutArray, BluePrint bluePrint){
         Log.info("Adding __connected variable for "+nameWithoutArray, "Dynamic Connected Variable");
-        String s = "[";
-        for(int i = 0; i < varList.size(); ++i){
-            s += varList.get(i).isDynamic() ? "false" : "true";
-            if(i < varList.size()-1){
-                s += ", ";
-            }
-        }
-        s += "]";
-        Variable variable = new Variable();
-        variable.setName("__"+nameWithoutArray+"_connected");
+
+        VariableConstantArray variable = new VariableConstantArray("__"+nameWithoutArray+"_connected");
+
         variable.addAdditionalInformation(Variable.ORIGINPORT);
         variable.setArraySize(varList.size());
         variable.setTypeNameTargetLanguage("bool");
-        variable.setIsConstantVariable(true);
-        variable.setConstantValue(s);
+//        variable.setIsConstantVariable(true);
+//        variable.setConstantValue(s);
+
+        variable.setPublic(false);
+        for(int i = 0; i < varList.size(); ++i){
+            variable.addConstantInitValue(varList.get(i).isDynamic() ? "false" : "true");
+        }
+
+        bluePrint.getMathInformationRegister().addVariable(variable);
+
+        return variable;
+    }
+
+    protected static Variable addConnectedRequestQueueForVariable(String nameWithoutArray, BluePrint bluePrint){
+        Log.info("Adding __connect_request variable for "+nameWithoutArray, "Dynamic Request Connect Queue for Variable");
+        Variable variable = new Variable();
+        variable.setName("__"+nameWithoutArray+"_connect_request");
+        variable.setTypeNameTargetLanguage("std::queue<int>");
+
         variable.setPublic(false);
 
         bluePrint.getMathInformationRegister().addVariable(variable);

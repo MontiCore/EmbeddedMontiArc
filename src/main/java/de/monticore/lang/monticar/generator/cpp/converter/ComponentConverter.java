@@ -73,6 +73,8 @@ public class ComponentConverter {
         Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
         Method init = generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
+        EventConverter.generateEvents(execute, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
+
         bluePrint.addMethod(init);
         bluePrint.addMethod(execute);
 
@@ -130,8 +132,10 @@ public class ComponentConverter {
         for (Variable v : bluePrint.getVariables()) {
             Log.info("Variable: " + v.getName(), "initBluePrintCreate:");
 
-            if(v instanceof VariablePortValueChecker){
-                ((VariablePortValueChecker)v).addInitInstructionsToMethod(method);
+            if(v instanceof VariablePortValueChecker) {
+                ((VariablePortValueChecker) v).addInitInstructionsToMethod(method);
+            }else if(v instanceof VariableConstantArray){
+                ((VariableConstantArray) v).generateInit(method);
             }else {
                 if (v.isInputVariable() && !v.isConstantVariable()) {
                     //method.addParameter(v);

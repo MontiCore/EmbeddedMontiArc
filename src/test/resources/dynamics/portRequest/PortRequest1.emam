@@ -1,0 +1,15 @@
+package portRequest;
+
+dynamic component PortRequest1 {
+    ports
+        dynamic in B a[2:8],
+        dynamic out B b[3:8];
+
+    connect a[1] -> b[1];
+    connect a[2] -> b[2];
+
+    @ b::connect && a::connect {
+        connect a[?] -> b[?];
+    }
+
+}

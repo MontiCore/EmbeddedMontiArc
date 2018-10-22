@@ -67,7 +67,7 @@ public class ComponentConverterMethodGeneration {
         Collection<EMAConnectorInstanceSymbol> connectors = componentSymbol.getConnectorInstances();
         generateConnectors(connectors, bluePrint, method);
 
-        EventConverter.generateEventConnectors(method, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
+
 
         if (mathStatementsSymbol != null) {
             handleMathStatementGeneration(method, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
