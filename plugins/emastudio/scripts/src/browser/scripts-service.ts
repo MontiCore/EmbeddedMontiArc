@@ -42,7 +42,7 @@ export class ScriptsService {
         const roots = await this.workspaceService.roots;
         const workspace = roots[0];
 
-        this.workspace = new URI(workspace.uri);
+        if (workspace) this.workspace = new URI(workspace.uri);
     }
 
     public async execute(description: ScriptDescription): Promise<Process | undefined> {
