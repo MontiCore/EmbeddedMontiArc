@@ -1,14 +1,23 @@
-#ifndef Dynamic_Connect_Helper_h
-#define Not_h
+//
+//  DynamicHelper.h
+//  TestForMa2
+//
+//  Created by Nils Kaminski on 20.10.18.
+//  Copyright © 2018 Nils Kaminski. All rights reserved.
+//
+
+#ifndef DynamicHelper_h
+#define DynamicHelper_h
 
 #include <queue>
 #include <vector>
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
-template<typename T>
+template<typename T, typename T2>
 struct connection {
-    T *from;
+    void *afterComponent;
+    T2 *from;
     T *to;
 };
 #endif
@@ -37,5 +46,4 @@ int dynamicconnect(int numPorts, bool* connected, std::queue<int>* request){
     return port;
 }
 
-
-#endif /* Dynamic_Connect_Helper_h */
+#endif /* DynamicHelper_h */
