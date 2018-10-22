@@ -7,7 +7,7 @@ import simulation.util.Log;
 import simulation.vehicle.*;
 
 /**
- * JUnit Test-suite for simulating a vehicle
+ * Debug test that can start a simulation to test implementation isolated to the simulator
  */
 public class SimulateVehicleTest {
 
@@ -63,9 +63,9 @@ public class SimulateVehicleTest {
     public void firstTest() {
         Simulator.resetSimulator();
         Simulator sim = Simulator.getSharedInstance();
-        sim.setSimulationDuration(31000);
+        sim.setSimulationDuration(10000);
 
-        sim.registerLoopObserver(new SimulationPlotter2D("ModelicaComparasion"));
+        sim.registerLoopObserver(new SimulationDebugPlotter("ModelicaComparasion"));
 
         // Create a new vehicle
         PhysicalVehicle physicalVehicle1 = new ModelicaPhysicalVehicleBuilder().buildPhysicalVehicle();

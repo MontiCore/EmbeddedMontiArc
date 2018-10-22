@@ -87,7 +87,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
 
         this.position.ifPresent(physicalVehicle::setPosition);
         this.rotation.ifPresent(rotation -> physicalVehicle.setRotation(new BlockRealMatrix(rotation.getMatrix())));
-
+        //TODO: Add all default sensor per default to the physical vehicle using the sensor util
         return physicalVehicle;
     }
 }

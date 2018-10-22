@@ -4,7 +4,8 @@ import org.apache.commons.math3.linear.RealVector;
 import commons.simulation.SimulationLoopExecutable;
 import commons.simulation.SimulationLoopNotifiable;
 import simulation.util.Plotter2D;
-import simulation.vehicle.PhysicalVehicle;
+import simulation.vehicle.MassPointPhysicalVehicle;
+import simulation.vehicle.ModelicaPhysicalVehicle;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,18 +15,12 @@ import java.util.List;
 
 public class SimulationPlotter2D implements SimulationLoopNotifiable {
 
-    public SimulationPlotter2D(String name){ //remove
-        this.name = name;
-    }
-
     // Lists to store the data separately for plotting later
     private List<Long> simulationTimePoints = new LinkedList<>();
     private List<List<Double>> wheelRotationRates = new LinkedList<>();
     private List<RealVector> vehiclePosition = new LinkedList<>();
     private List<RealVector> vehicleVelocity= new LinkedList<>();
     private List<List<RealVector>> wheelPositions = new LinkedList<>();
-    private long counter = 0; //remove
-    private String name; //remove
 
     /**
      * This function retrieves data of the vehicle at every instant and stores it
@@ -38,7 +33,7 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
     public void willExecuteLoopForObject(SimulationLoopExecutable simulationObject, long totalTime, long timeDiffms) {
 
         // Check if the argument is of type PhysicalVehicle
-        /*if (simulationObject instanceof ModelicaPhysicalVehicle) {
+        if (simulationObject instanceof ModelicaPhysicalVehicle) {
             // Convert the argument to PhysicalVehicle type
             ModelicaPhysicalVehicle plottingVehicle = ((ModelicaPhysicalVehicle) simulationObject);
 
@@ -82,13 +77,7 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
 
             // Store current simulation time
             simulationTimePoints.add(Simulator.getSharedInstance().getSimulationTime());
-        }*/ //add again
-
-        if(simulationObject instanceof PhysicalVehicle) { // remove
-            PhysicalVehicle physicalVehicle = (PhysicalVehicle) simulationObject;
-            Plotter2D.plotOne(physicalVehicle, counter, timeDiffms, name);
         }
-        counter++;
     }
 
 
@@ -101,7 +90,7 @@ public class SimulationPlotter2D implements SimulationLoopNotifiable {
      **/
     @Override
     public void simulationStopped(List<SimulationLoopExecutable> simulationObjects, long totalTime) {
-        //Plotter2D.plot(vehiclePosition, vehicleVelocity, wheelRotationRates, simulationTimePoints); // add again
+        Plotter2D.plot(vehiclePosition, vehicleVelocity, wheelRotationRates, simulationTimePoints);
     }
 
     @Override

@@ -31,9 +31,12 @@ public final class Plotter2D{
 
     /* A circle shape to be used by the plotting renderer */
     private static java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
-    private static java.awt.geom.Ellipse2D.Double shapeLarge = new java.awt.geom.Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0); // remove
+    private static java.awt.geom.Ellipse2D.Double shapeLarge = new java.awt.geom.Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0);
 
-    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms, String name){ // remove
+    /**
+     * Function that is used in the Simulation Debug Plotter
+     */
+    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms, String name){
         if(counter != 0){
             //return;
         }
