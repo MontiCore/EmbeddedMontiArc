@@ -16,7 +16,7 @@ set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 # create static library
 include_directories(${INCLUDE_DIRS})
 add_library(testing_model testing_model.h)
-target_include_directories(testing_model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(testing_model PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIRS})
 target_link_libraries(testing_model PUBLIC ${LIBS})
 set_target_properties(testing_model PROPERTIES LINKER_LANGUAGE CXX)
 
