@@ -18,10 +18,7 @@ import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCP
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class EventConverter {
 
@@ -38,7 +35,6 @@ public class EventConverter {
             boolean generateCondition = false;
 
             if(event.isDynamicPortConnectionEvent()) {
-                //TODO generate dynamic event
                 generateCondition = generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
             }else{
                 Log.info("Create connectors for: "+event.getFullName(), "EventConverter");
@@ -92,6 +88,30 @@ public class EventConverter {
         }
 
         //TODO generate event body method
+        String bodyname = "__event_body_"+event.getName().replace("[", "_").replace("]", "_");
+        Method body = new Method(bodyname, "void");
+        body.setPublic(false);
+
+        body.addInstruction(new TargetCodeInstruction("if("+EventConnectInstructionCPP.getEventNameCPP(event.getName())+"){\n"));
+
+        Map<String,List<String>> newPorts = new HashMap<>();
+//        newPorts.put("_this_", names);
+
+        for(String name : names){
+            body.addInstruction(new TargetCodeInstruction(
+                    String.format("int _%s_dynPortID = __%s_connect_request.front(); __%s_connect_request.pop();\n",
+                            name, name, name)));
+        }
+
+        for (Map.Entry<String,List<String>> entry : newPorts.entrySet()){
+            for(String port : entry.getValue()){
+                body.addInstruction(new TargetCodeInstruction("// TODO:  "+entry.getKey()+" . "+port+"\n"));
+            }
+        }
+
+        body.addInstruction(new TargetCodeInstruction("}\n"));
+
+        bluePrint.addMethod(body);
 
         return true;
     }
