@@ -15,7 +15,11 @@ component Michael {
     }
 }
 */
-/* the above caused some automatic built errors, which were not shown in the Email... so now I'll go with something simpler :-) */
+
+/* 
+the above caused some automatic build error(s), which were not shown in the Email... 
+so nothing I can really do about it right now, so I'll go with something simpler :-) 
+*/
 
 component Michael{
     ports in Z loop,
