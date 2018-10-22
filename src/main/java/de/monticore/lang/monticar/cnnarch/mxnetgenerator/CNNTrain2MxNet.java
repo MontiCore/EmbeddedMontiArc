@@ -2,6 +2,8 @@ package de.monticore.lang.monticar.cnnarch.mxnetgenerator;
 
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.monticar.cnntrain.CNNTrainGenerator;
+import de.monticore.lang.monticar.cnntrain._ast.ASTCNNTrainNode;
+import de.monticore.lang.monticar.cnntrain._ast.ASTOptimizerEntry;
 import de.monticore.lang.monticar.cnntrain._cocos.CNNTrainCocos;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainCompilationUnitSymbol;
 import de.monticore.lang.monticar.cnntrain._symboltable.CNNTrainLanguage;
@@ -18,6 +20,43 @@ import java.util.*;
 public class CNNTrain2MxNet implements CNNTrainGenerator {
     private String generationTargetPath;
     private String instanceName;
+
+    private void supportCheck(ConfigurationSymbol configuration){
+        checkEntryParams(configuration);
+        checkOptimizerParams(configuration);
+    }
+
+    private void checkEntryParams(ConfigurationSymbol configuration){
+        TrainParamSupportChecker funcChecker = new TrainParamSupportChecker();
+        Iterator it = configuration.getEntryMap().keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
+            ASTCNNTrainNode astTrainEntryNode = (ASTCNNTrainNode) configuration.getEntryMap().get(key).getAstNode().get();
+            astTrainEntryNode.accept(funcChecker);
+        }
+        it = configuration.getEntryMap().keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
+            if (funcChecker.getUnsupportedElemList().contains(key)) it.remove();
+        }
+    }
+
+    private void checkOptimizerParams(ConfigurationSymbol configuration){
+        TrainParamSupportChecker funcChecker = new TrainParamSupportChecker();
+        if (configuration.getOptimizer() != null) {
+            ASTOptimizerEntry astOptimizer = (ASTOptimizerEntry) configuration.getOptimizer().getAstNode().get();
+            astOptimizer.accept(funcChecker);
+            if (funcChecker.getUnsupportedElemList().contains(funcChecker.unsupportedOptFlag)) {
+                configuration.setOptimizer(null);
+            }else {
+                Iterator it = configuration.getOptimizer().getOptimizerParamMap().keySet().iterator();
+                while (it.hasNext()) {
+                    String key = it.next().toString();
+                    if (funcChecker.getUnsupportedElemList().contains(key)) it.remove();
+                }
+            }
+        }
+    }
 
     public CNNTrain2MxNet() {
         setGenerationTargetPath("./target/generated-sources-cnnarch/");
@@ -54,6 +93,7 @@ public class CNNTrain2MxNet implements CNNTrainGenerator {
         }
         setInstanceName(compilationUnit.get().getFullName());
         CNNTrainCocos.checkAll(compilationUnit.get());
+        supportCheck(compilationUnit.get().getConfiguration());
         return compilationUnit.get().getConfiguration();
     }
 
