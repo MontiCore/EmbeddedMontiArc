@@ -8,22 +8,21 @@
     <parent>
         <artifactId>simulation</artifactId>
         <groupId>montisim</groupId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
 
     <!-- OUR OWN PROJECT -->
     <artifactId>coverage-report</artifactId>
     <groupId>montisim-simulation</groupId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2</version>
 
     <!-- PROJECT DEPENDENCIES -->
     <dependencies>
-        <!-- All modules have dependency to util -->
         <!-- This is to generate aggregated report of all modules in this project -->
         <dependency>
             <groupId>montisim-simulation</groupId>
             <artifactId>simulator</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
 
