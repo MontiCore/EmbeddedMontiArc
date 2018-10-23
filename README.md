@@ -23,4 +23,4 @@ The settings are:
 
 To quickly debug the simulatro, a simulation can be configured and executed withoud starting up the server. An example is given in the `firstTest` jUnit test in the `SimulatieVehicleTest` test class.
 
-The debug plotter can be used to visualize a simulation that contains only _one_ physical vehicle. A use case for the debug plotter is also given in `firstTest`. The plotter is registered to the simulation as an observer and is then generating one visualisation chart for each loop iteration.
+The debug plotter can be used to visualize a simulation that contains only __one__ physical vehicle. A use case for the debug plotter is also given in `firstTest`. The plotter is registered to the simulation as an observer and is then generating one visualisation chart for each loop iteration.
