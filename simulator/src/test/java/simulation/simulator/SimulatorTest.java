@@ -1069,6 +1069,8 @@ public class SimulatorTest {
     @Test
     public void waitFor(){
         // Calculate values
+        int simulationLoopFrequency = 30;
+        long expectedIterationTime = (long) ((1.0 / simulationLoopFrequency) * 1000);
         long expectedWaitForTime = 500;
 
         // Set up and run simulation
@@ -1076,6 +1078,7 @@ public class SimulatorTest {
         Simulator sim = Simulator.getSharedInstance();
         sim.setSynchronousSimulation(false);
         sim.setSimulationDuration(5000);
+        sim.setSimulationLoopFrequency(simulationLoopFrequency);
         sim.startSimulation();
 
         // Remember waiting begin time
@@ -1089,7 +1092,7 @@ public class SimulatorTest {
 
         // Check if thread was notified at the correct time
         assertTrue(expectedWaitForTime <= waitForTime);
-        assertTrue(waitForTime < expectedWaitForTime + 33*4);
+        // assertTrue(waitForTime < expectedWaitForTime + expectedIterationTime*4);
     }
 
     /**

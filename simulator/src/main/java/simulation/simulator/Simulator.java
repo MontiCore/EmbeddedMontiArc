@@ -22,6 +22,7 @@ public class Simulator {
     private SimulationType simulationType = SimulationType.SIMULATION_TYPE_FIXED_TIME;
 
     /** Whether or not the simulation should not be executed in its own thread and therefore blocking. Default: blocking */
+    // TODO: Simulation should always be synchronous
     private boolean synchronousSimulation = true;
 
     /** Time after which to stop simulation. Default: Infinite */
