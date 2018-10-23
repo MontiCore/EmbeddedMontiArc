@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.network.channels;
 
 import commons.simulation.PhysicalObject;
@@ -7,7 +27,6 @@ import org.apache.commons.math3.util.FastMath;
 import simulation.network.*;
 import simulation.util.Log;
 import simulation.vehicle.Vehicle;
-
 import java.util.*;
 
 /**
@@ -224,7 +243,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         totalBitErrorRate += errorRateNoise;
 
         // Distance and power objects
-        double distance = sender.getPhysicalObject().getGeometryPos().getDistance(otherNode.getPhysicalObject().getGeometryPos());
+        double distance = sender.getPhysicalObject().getGeometryPosition().getDistance(otherNode.getPhysicalObject().getGeometryPosition());
         double errorRateDistance = (PATH_LOSS_FACTOR * Math.pow(distance, PATH_LOSS_EXPONENT));
         totalBitErrorRate += errorRateDistance;
 
@@ -234,8 +253,8 @@ public class ChannelModelCellular extends NetworkChannelModel {
         // Add error for all other physical objects that are near the direct line communication depending on their distance
         for (PhysicalObject physicalObject : NetworkSimulator.getInstance().getPhysicalObjects()) {
             if (physicalObject.getId() != sender.getPhysicalObject().getId() && physicalObject.getId() != otherNode.getPhysicalObject().getId()) {
-                RealVector senderPos = sender.getPhysicalObject().getGeometryPos();
-                RealVector otherPos = physicalObject.getGeometryPos();
+                RealVector senderPos = sender.getPhysicalObject().getGeometryPosition();
+                RealVector otherPos = physicalObject.getGeometryPosition();
                 RealVector diffVector = otherPos.subtract(senderPos);
                 List<RealVector> positionList = Collections.synchronizedList(new LinkedList<>());
 
@@ -269,7 +288,7 @@ public class ChannelModelCellular extends NetworkChannelModel {
         double senderVelocityNorm = senderVelocity.getNorm();
         RealVector otherVelocity = otherNode.getPhysicalObject().getVelocity();
         double otherVelocityNorm = otherVelocity.getNorm();
-        RealVector senderToOther = otherNode.getPhysicalObject().getGeometryPos().subtract(sender.getPhysicalObject().getGeometryPos());
+        RealVector senderToOther = otherNode.getPhysicalObject().getGeometryPosition().subtract(sender.getPhysicalObject().getGeometryPosition());
         RealVector otherToSender = senderToOther.mapMultiply(-1.0);
 
         // There must be a distance for relativistic Doppler Effect
@@ -405,17 +424,17 @@ public class ChannelModelCellular extends NetworkChannelModel {
                 long stationID = cellBaseStationAssignmentMap.get(nodeID);
 
                 if (cellBaseStationMap.containsKey(stationID)) {
-                    RealVector stationPos = cellBaseStationMap.get(stationID).getPhysicalObject().getGeometryPos();
+                    RealVector stationPos = cellBaseStationMap.get(stationID).getPhysicalObject().getGeometryPosition();
                     preferredStationID = cellBaseStationAssignmentMap.get(nodeID);
-                    preferredStationDistance = node.getPhysicalObject().getGeometryPos().getDistance(stationPos);
+                    preferredStationDistance = node.getPhysicalObject().getGeometryPosition().getDistance(stationPos);
                 }
             }
 
             // Check all available base stations and choose nearest one with offset to prefer already connected station
             synchronized (cellBaseStationMap) {
                 for (Map.Entry<Long, NetworkNode> entry : cellBaseStationMap.entrySet()) {
-                    RealVector stationPos = entry.getValue().getPhysicalObject().getGeometryPos();
-                    double distance = node.getPhysicalObject().getGeometryPos().getDistance(stationPos);
+                    RealVector stationPos = entry.getValue().getPhysicalObject().getGeometryPosition();
+                    double distance = node.getPhysicalObject().getGeometryPosition().getDistance(stationPos);
 
                     if (distance + (2.0 * HANDOVER_DISTANCE_OFFSET) < preferredStationDistance) {
                         preferredStationDistance = distance;

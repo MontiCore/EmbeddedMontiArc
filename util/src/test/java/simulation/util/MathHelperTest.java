@@ -1,14 +1,32 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.util;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.apache.commons.math3.linear.*;
 import org.junit.*;
-
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import static org.junit.Assert.*;
 
 /**
@@ -27,153 +45,185 @@ public class MathHelperTest {
     }
 
     @Test
-    public void testMatrixEquals() {
-        // Simple check for equality
-        double[][] matrixEntries1 = {{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}};
-        RealMatrix matrix11 = new BlockRealMatrix(matrixEntries1);
-        RealMatrix matrix12 = new BlockRealMatrix(matrixEntries1);
-        assertTrue(MathHelper.matrixEquals(matrix11, matrix12, 0.0000001));
+    public void vectorEqualsTest() {
+        // Test equal case
+        RealVector vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        RealVector vector2 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        assertTrue(MathHelper.vectorEquals(vector1, vector2, 0.0000001));
 
-        // Matrices with too much difference are not equal
-        double[][] matrixEntries2 = {{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}};
-        RealMatrix matrix21 = new BlockRealMatrix(matrixEntries2);
-        RealMatrix matrix22 = matrix21.scalarAdd(0.0000002);
-        assertFalse(MathHelper.matrixEquals(matrix21, matrix22, 0.0000001));
+        // Test almost equal case
+        vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        vector2 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        vector2 = vector2.mapAdd(0.00000002);
+        assertTrue(MathHelper.vectorEquals(vector1, vector2, 0.0000001));
 
-        // Matrices with a small difference are considered equal
-        RealMatrix matrix23 = matrix21.scalarAdd(0.00000002);
-        assertTrue(MathHelper.matrixEquals(matrix21, matrix23, 0.0000001));
+        // Test not equal case
+        vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        vector2 = new ArrayRealVector(new double[]{0.2537, 87.258, 0.05739});
+        assertFalse(MathHelper.vectorEquals(vector1, vector2, 0.0000001));
     }
 
     @Test
-    public void testMatrixInvert() throws Exception {
-        // Invert - Invert should be equal
-        double[][] matrixEntries1 = {{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}};
-        RealMatrix matrix1 = new BlockRealMatrix(matrixEntries1);
-        RealMatrix inverse11 = MathHelper.matrixInvert(matrix1);
-        RealMatrix inverse12 = MathHelper.matrixInvert(inverse11);
-        assertTrue(MathHelper.matrixEquals(matrix1, inverse12, 0.0000001));
+    public void matrixEqualsTest() {
+        // Test equal case
+        RealMatrix matrix1 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        RealMatrix matrix2 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.0000001));
 
-        // Invert - Invert should be equal
-        double[][] matrixEntries2 = {{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}};
-        RealMatrix matrix2 = new BlockRealMatrix(matrixEntries2);
-        RealMatrix inverse21 = MathHelper.matrixInvert(matrix2);
-        RealMatrix inverse22 = MathHelper.matrixInvert(inverse21);
-        assertTrue(MathHelper.matrixEquals(matrix2, inverse22, 0.0000001));
+        // Test almost equal case
+        matrix1 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        matrix2 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        matrix2 = matrix2.scalarAdd(0.00000002);
+        assertTrue(MathHelper.matrixEquals(matrix1, matrix2, 0.0000001));
 
-        // Non square matrix throws exception
-        boolean exceptionCaught3 = false;
-        double[][] matrixEntries3 = {{0.034, 0.3}, {0.82356, 0.378}, {1.3534, 0.1235}};
-        RealMatrix matrix3 = new BlockRealMatrix(matrixEntries3);
-
-        try {
-            MathHelper.matrixInvert(matrix3);
-        }
-        catch (Exception e) {
-            exceptionCaught3 = true;
-        }
-
-        assertTrue(exceptionCaught3);
-
-        // Non invertible matrix throws exception
-        boolean exceptionCaught4 = false;
-        double[][] matrixEntries4 = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-        RealMatrix matrix4 = new BlockRealMatrix(matrixEntries4);
-
-        try {
-            MathHelper.matrixInvert(matrix4);
-        }
-        catch (Exception e) {
-            exceptionCaught4 = true;
-        }
-
-        assertTrue(exceptionCaught4);
+        // Test not equal case
+        matrix1 = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        matrix2 = new BlockRealMatrix(new double[][]{{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}});
+        assertFalse(MathHelper.matrixEquals(matrix1, matrix2, 0.0000001));
     }
 
     @Test
-    public void testVectorEquals() {
-        // Simple check for equality
-        double[] vectorEntries1 = {23.237, 239.258, 0.2374};
-        RealVector vector11 = new ArrayRealVector(vectorEntries1);
-        RealVector vector12 = new ArrayRealVector(vectorEntries1);
-        assertTrue(MathHelper.vectorEquals(vector11, vector12, 0.00000001));
+    public void matrixInvertNormal() {
+        // Invert - Invert should be identity
+        RealMatrix matrix = new BlockRealMatrix(new double[][]{{23.4, 3.2, 9.3}, {7.5, 9.8, 29.3}, {1.2, 0.8346, 238.3}});
+        RealMatrix inverse1 = MathHelper.matrixInvert(matrix);
+        RealMatrix inverse2 = MathHelper.matrixInvert(inverse1);
+        assertTrue(MathHelper.matrixEquals(matrix, inverse2, 0.0000001));
 
-        // Vectors with too much difference are not equal
-        double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
-        RealVector vector21 = new ArrayRealVector(vectorEntries2);
-        RealVector vector22 = vector21.mapAdd(0.00000002);
-        assertFalse(MathHelper.vectorEquals(vector21, vector22, 0.00000001));
+        // Invert - Invert should be identity
+        matrix = new BlockRealMatrix(new double[][]{{0.034, 0.3, 0.853}, {0.82356, 0.378, 0.385}, {1.3534, 0.1235, 23.248}});
+        inverse1 = MathHelper.matrixInvert(matrix);
+        inverse2 = MathHelper.matrixInvert(inverse1);
+        assertTrue(MathHelper.matrixEquals(matrix, inverse2, 0.0000001));
+    }
 
-        // Vectors with a small difference are considered equal
-        RealVector vector23 = vector21.mapAdd(0.000000002);
-        assertTrue(MathHelper.vectorEquals(vector21, vector23, 0.00000001));
+    @Test(expected = IllegalArgumentException.class)
+    public void matrixInvertNotSquare() {
+        RealMatrix matrix = new BlockRealMatrix(new double[][]{{0.034, 0.3}, {0.82356, 0.378}, {1.3534, 0.1235}});
+        MathHelper.matrixInvert(matrix);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void matrixInvertSingular() {
+        RealMatrix matrix = new BlockRealMatrix(new double[][]{{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}});
+        MathHelper.matrixInvert(matrix);
+    }
+
+    //TODO: matrix re-orthonormalize
+
+    @Test
+    public void crossProductNormal() {
+        RealVector vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        RealVector vector2 = new ArrayRealVector(new double[]{0.2537, 87.258, 0.05739});
+        RealVector crossProduct = MathHelper.crossProduct(vector1, vector2);
+        RealVector referenceCrossProduct = new ArrayRealVector(3);
+        referenceCrossProduct.setEntry(0, vector1.getEntry(1)*vector2.getEntry(2) - vector1.getEntry(2)*vector2.getEntry(1));
+        referenceCrossProduct.setEntry(1, vector1.getEntry(2)*vector2.getEntry(0) - vector1.getEntry(0)*vector2.getEntry(2));
+        referenceCrossProduct.setEntry(2, vector1.getEntry(0)*vector2.getEntry(1) - vector1.getEntry(1)*vector2.getEntry(0));
+        assertTrue(MathHelper.vectorEquals(referenceCrossProduct, crossProduct, 0.00000001));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void crossProductFirstWrongDimension(){
+        RealVector vector1 = new ArrayRealVector(new double[]{23.237, 239.258});
+        RealVector vector2 = new ArrayRealVector(new double[]{0.2537, 87.258, 0.05739});
+        MathHelper.crossProduct(vector1, vector2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void crossProductSecondWrongDimension(){
+        RealVector vector1 = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        RealVector vector2 = new ArrayRealVector(new double[]{0.2537, 87.258});
+        MathHelper.crossProduct(vector1, vector2);
     }
 
     @Test
-    public void testVector3DToCrossProductMatrix() throws Exception {
-        // Compare with default cross product computation
-        double[] vectorEntries1 = {23.237, 239.258, 0.2374};
-        double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
-        RealVector vector1 = new ArrayRealVector(vectorEntries1);
-        RealVector vector2 = new ArrayRealVector(vectorEntries2);
-        RealMatrix crossProductMatrixVector1 = MathHelper.vector3DToCrossProductMatrix(vector1);
-        RealVector crossProduct1 = crossProductMatrixVector1.operate(vector2);
-        Vector3D vector3 = new Vector3D(vectorEntries1);
-        Vector3D vector4 = new Vector3D(vectorEntries2);
-        Vector3D crossProduct2tmp = vector3.crossProduct(vector4);
-        double[] vectorEntries3 = {crossProduct2tmp.getX(), crossProduct2tmp.getY(), crossProduct2tmp.getZ()};
-        RealVector crossProduct2 = new ArrayRealVector(vectorEntries3);
-        assertTrue(MathHelper.vectorEquals(crossProduct1, crossProduct2, 0.00000001));
+    public void vectorToCrossProductMatrix() {
+        RealVector vector = new ArrayRealVector(new double[]{23.237, 239.258, 0.2374});
+        RealMatrix crossProductMatrix = MathHelper.vectorToCrossProductMatrix(vector);
+        RealMatrix referenceCrossProductMatrix = new BlockRealMatrix(3, 3);
+        referenceCrossProductMatrix.setEntry(0, 0, 0.0);
+        referenceCrossProductMatrix.setEntry(0, 1, -vector.getEntry(2));
+        referenceCrossProductMatrix.setEntry(0, 2, vector.getEntry(1));
+        referenceCrossProductMatrix.setEntry(1, 0, vector.getEntry(2));
+        referenceCrossProductMatrix.setEntry(1, 1, 0.0);
+        referenceCrossProductMatrix.setEntry(1, 2, -vector.getEntry(0));
+        referenceCrossProductMatrix.setEntry(2, 0, -vector.getEntry(1));
+        referenceCrossProductMatrix.setEntry(2, 1, vector.getEntry(0));
+        referenceCrossProductMatrix.setEntry(2, 2, 0.0);
+        assertTrue(MathHelper.matrixEquals(referenceCrossProductMatrix, crossProductMatrix, 0.00000001));
+    }
 
-        // Non 3D vector throws exception
-        boolean exceptionCaught5 = false;
-        double[] vectorEntries5 = {0.2537, 87.258, 0.05739, 23.5295};
-        RealVector vector5 = new ArrayRealVector(vectorEntries5);
-
-        try {
-            MathHelper.vector3DToCrossProductMatrix(vector5);
-        }
-        catch (Exception e) {
-            exceptionCaught5 = true;
-        }
-
-        assertTrue(exceptionCaught5);
+    @Test(expected = IllegalArgumentException.class)
+    public void vectorToCrossProductMatrixWrongDimension(){
+        RealVector vector = new ArrayRealVector(new double[]{0.2537, 87.258, 0.05739, 23.5295});
+        MathHelper.vectorToCrossProductMatrix(vector);
     }
 
     @Test
-    public void testVector3DCrossProduct() throws Exception {
-        // Compare with default cross product computation
-        double[] vectorEntries1 = {23.237, 239.258, 0.2374};
-        double[] vectorEntries2 = {0.2537, 87.258, 0.05739};
-        RealVector vector1 = new ArrayRealVector(vectorEntries1);
-        RealVector vector2 = new ArrayRealVector(vectorEntries2);
-        RealVector crossProduct1 = MathHelper.vector3DCrossProduct(vector1, vector2);
-        Vector3D vector3 = new Vector3D(vectorEntries1);
-        Vector3D vector4 = new Vector3D(vectorEntries2);
-        Vector3D crossProduct2tmp = vector3.crossProduct(vector4);
-        double[] vectorEntries3 = {crossProduct2tmp.getX(), crossProduct2tmp.getY(), crossProduct2tmp.getZ()};
-        RealVector crossProduct2 = new ArrayRealVector(vectorEntries3);
-        assertTrue(MathHelper.vectorEquals(crossProduct1, crossProduct2, 0.00000001));
+    public void angleNormal(){
+        // Test normal case
+        RealVector vector1 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
+        RealVector vector2 = new ArrayRealVector(new double[]{-3.79, 26.237, 0.67});
+        double angle = MathHelper.angle(vector1, vector2);
+        double referenceAngle = Math.acos((vector1.dotProduct(vector2))/(vector1.getNorm() * vector2.getNorm()));
+        assertEquals(referenceAngle, angle, 0);
 
-        // Non 3D vector throws exception
-        boolean exceptionCaught5 = false;
-        double[] vectorEntries5 = {0.2537, 87.258};
-        double[] vectorEntries6 = {23.2537, 0.34258};
-        RealVector vector5 = new ArrayRealVector(vectorEntries5);
-        RealVector vector6 = new ArrayRealVector(vectorEntries6);
+        // Test equal vectors
+        vector1 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
+        vector2 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
+        angle = MathHelper.angle(vector1, vector2);
+        referenceAngle = Math.acos((vector1.dotProduct(vector2))/(vector1.getNorm() * vector2.getNorm()));
+        assertEquals(referenceAngle, angle, 0);
+    }
 
-        try {
-            MathHelper.vector3DCrossProduct(vector5, vector6);
-        }
-        catch (Exception e) {
-            exceptionCaught5 = true;
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void angleFirstWrongDimension(){
+        RealVector vector1 = new ArrayRealVector(new double[]{1.245, -12.73});
+        RealVector vector2 = new ArrayRealVector(new double[]{-3.79, 26.237, 0.67});
+        double angle = MathHelper.angle(vector1, vector2);
+    }
 
-        assertTrue(exceptionCaught5);
+    @Test(expected = IllegalArgumentException.class)
+    public void angleSecondWrongDimension(){
+        RealVector vector1 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
+        RealVector vector2 = new ArrayRealVector(new double[]{-3.79, 26.237});
+        double angle = MathHelper.angle(vector1, vector2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void angleFirstZeroNorm(){
+        RealVector vector1 = new ArrayRealVector(3);
+        RealVector vector2 = new ArrayRealVector(new double[]{-3.79, 26.237, 0.67});
+        double angle = MathHelper.angle(vector1, vector2);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void angleSecondZeroNorm(){
+        RealVector vector1 = new ArrayRealVector(new double[]{1.245, -12.73, 19.0});
+        RealVector vector2 = new ArrayRealVector(3);
+        double angle = MathHelper.angle(vector1, vector2);
     }
 
     @Test
-    public void testCheckIntersection2D() {
+    public void realTo3DNormal(){
+        RealVector vector = new ArrayRealVector(new double[]{19.02, -29.1, -0.02});
+        Vector3D vector3D = MathHelper.realTo3D(vector);
+        Vector3D referenceVector3D = new Vector3D(19.02, -29.1, -0.02);
+        assertEquals(referenceVector3D.getX(), vector3D.getX(), 0);
+        assertEquals(referenceVector3D.getY(), vector3D.getY(), 0);
+        assertEquals(referenceVector3D.getZ(), vector3D.getZ(), 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void realTo3DWrongDimension(){
+        RealVector vector = new ArrayRealVector(new double[]{19.02, -29.1});
+        Vector3D vector3D = MathHelper.realTo3D(vector);
+    }
+
+    @Test
+    public void checkIntersection2DTest() {
+        //TODO: Function is unnecessary with three dimensional collision detection
         List<Map.Entry<RealVector, RealVector>> list1 = new LinkedList<>();
         Map.Entry<RealVector, RealVector> e1 = new AbstractMap.SimpleEntry<RealVector, RealVector>(new ArrayRealVector(new double[]{0.0, 0.0, 0.0}), new ArrayRealVector(new double[]{4.0, 0.0, 0.0}));
         Map.Entry<RealVector, RealVector> e2 = new AbstractMap.SimpleEntry<RealVector, RealVector>(new ArrayRealVector(new double[]{4.0, 0.0, 0.0}), new ArrayRealVector(new double[]{4.0, 4.0, 0.0}));
@@ -202,32 +252,48 @@ public class MathHelperTest {
     }
 
     @Test
-    public void testRandomLong() {
-        assertTrue(MathHelper.randomLong(0L, 0L) == 0L);
-        assertTrue(MathHelper.randomLong(-1L, -1L) == -1L);
-        assertTrue(MathHelper.randomLong(Long.MIN_VALUE, Long.MIN_VALUE) == Long.MIN_VALUE);
-        assertTrue(MathHelper.randomLong(Long.MAX_VALUE, Long.MAX_VALUE) == Long.MAX_VALUE);
-        assertTrue(MathHelper.randomLong(20L, 20L) == 20L);
+    public void randomLongNormal() {
+        // Test small range case
+        long result = MathHelper.randomLong(-10L, 10L);
+        assertTrue(result >= -10L && result <= 10L);
 
-        long result1 = MathHelper.randomLong(-10L, 10L);
-        assertTrue(result1 >= -10L && result1 <= 10L);
+        // Test large range case
+        result = MathHelper.randomLong(Long.MIN_VALUE / 2L, Long.MAX_VALUE / 2L);
+        assertTrue(result >= Long.MIN_VALUE / 2L && result <= Long.MAX_VALUE / 2L);
 
-        long result2 = MathHelper.randomLong(Long.MIN_VALUE / 2L, Long.MAX_VALUE / 2L);
-        assertTrue(result2 >= Long.MIN_VALUE / 2L && result2 <= Long.MAX_VALUE / 2L);
+        // Test zero range test at different values
+        assertEquals(0L, MathHelper.randomLong(0L, 0L));
+        assertEquals(-1L, MathHelper.randomLong(-1L, -1L));
+        assertEquals(Long.MIN_VALUE, MathHelper.randomLong(Long.MIN_VALUE, Long.MIN_VALUE));
+        assertEquals(Long.MAX_VALUE, MathHelper.randomLong(Long.MAX_VALUE, Long.MAX_VALUE));
+        assertEquals(20L, MathHelper.randomLong(20L, 20L));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void randomLongFailMinMax(){
+        MathHelper.randomLong(20L, 10L);
     }
 
     @Test
-    public void testRandomInt() {
-        assertTrue(MathHelper.randomInt(0, 0) == 0);
-        assertTrue(MathHelper.randomInt(-1, -1) == -1);
-        assertTrue(MathHelper.randomInt(Integer.MIN_VALUE, Integer.MIN_VALUE) == Integer.MIN_VALUE);
-        assertTrue(MathHelper.randomInt(Integer.MAX_VALUE, Integer.MAX_VALUE) == Integer.MAX_VALUE);
-        assertTrue(MathHelper.randomInt(20, 20) == 20);
+    public void randomIntTest() {
+        // Test small range case
+        long result = MathHelper.randomInt(-10, 10);
+        assertTrue(result >= -10 && result <= 10);
 
-        long result1 = MathHelper.randomInt(-10, 10);
-        assertTrue(result1 >= -10 && result1 <= 10);
+        // Test large range case
+        result = MathHelper.randomInt(Integer.MIN_VALUE / 2, Integer.MAX_VALUE / 2);
+        assertTrue(result >= Integer.MIN_VALUE / 2 && result <= Integer.MAX_VALUE / 2);
 
-        long result2 = MathHelper.randomInt(Integer.MIN_VALUE / 2, Integer.MAX_VALUE / 2);
-        assertTrue(result2 >= Integer.MIN_VALUE / 2 && result2 <= Integer.MAX_VALUE / 2);
+        // Test zero range test at different values
+        assertEquals(0, MathHelper.randomInt(0, 0));
+        assertEquals(-1, MathHelper.randomInt(-1, -1));
+        assertEquals(Integer.MIN_VALUE, MathHelper.randomInt(Integer.MIN_VALUE, Integer.MIN_VALUE));
+        assertEquals(Integer.MAX_VALUE, MathHelper.randomInt(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        assertEquals(20, MathHelper.randomInt(20, 20));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void randomIngFailMinMax(){
+        MathHelper.randomInt(20, 10);
     }
 }

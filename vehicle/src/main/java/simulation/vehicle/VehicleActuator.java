@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.vehicle;
 
 /**
@@ -25,20 +45,31 @@ public class VehicleActuator {
 
     /**
      * Constructor for the actuator class, only sets the type, minimum, maximum and change rate values
-     * Current value and target value are initialized to 0
+     * Current value and target value are initialised to 0.0 or the given minimum value if 0.0 is not in the given range
      *
      * @param actuatorType Type of the actuator
      * @param actuatorValueMin Minimum allowed value of the actuator
      * @param actuatorValueMax Maximum allowed value of the actuator
      * @param actuatorChangeRate Change rate of the actuator
      */
-    public VehicleActuator(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate) {
+    public VehicleActuator(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate){
+        if(actuatorValueMin > actuatorValueMax){
+            throw new IllegalArgumentException("Lower end " + actuatorValueMin + " should not be higher than the upper end " + actuatorValueMax + ".");
+        }
+        if(actuatorChangeRate < 0){
+            throw new IllegalArgumentException("Change rate " + actuatorChangeRate + " should not be negative.");
+        }
         this.actuatorType = actuatorType;
         this.actuatorValueMin = actuatorValueMin;
         this.actuatorValueMax = actuatorValueMax;
         this.actuatorChangeRate = actuatorChangeRate;
-        actuatorValueCurrent = 0.0;
-        actuatorValueTarget = 0.0;
+        if(actuatorValueMin <= 0.0 && 0.0 <= actuatorValueMax){
+            actuatorValueTarget = 0.0;
+            actuatorValueCurrent = 0.0;
+        }else {
+            actuatorValueCurrent = actuatorValueMin;
+            actuatorValueTarget = actuatorValueMin;
+        }
     }
 
     /**
@@ -50,12 +81,11 @@ public class VehicleActuator {
         // Total change of value in given time span
         double valueDiff = (actuatorChangeRate * timeDiff);
 
-        // If the difference between current value and target value is less or equal valueDiff, then just set target value
         if (Math.abs(actuatorValueTarget - actuatorValueCurrent) <= valueDiff) {
+            // If the difference between current value and target value is less or equal valueDiff, then just set target value
             actuatorValueCurrent = actuatorValueTarget;
-        }
-        // Otherwise add or subtract valueDiff to current value
-        else {
+        }else {
+            // Otherwise add or subtract valueDiff to current value
             actuatorValueCurrent = actuatorValueCurrent + ((actuatorValueCurrent < actuatorValueTarget) ? valueDiff : -valueDiff);
         }
     }
@@ -111,13 +141,11 @@ public class VehicleActuator {
      * Actuator will change to target value in time (limited by change rate)
      *
      * @param value New target value of the actuator
-     * @throws Exception If target value is not in allowed value range for actuator
      */
-    public void setActuatorValueTarget(double value) throws Exception {
-
-        if (value > actuatorValueMax || value < actuatorValueMin || Double.isNaN(value))
-            throw new Exception("VehicleActuator: setActuatorValueTarget - Invalid actuator target value: " + value + " for actuator: " + this);
-
+    public void setActuatorValueTarget(double value){
+        if (value > actuatorValueMax || value < actuatorValueMin || Double.isNaN(value)) {
+            throw new IllegalArgumentException("VehicleActuator: setActuatorValueTarget - Invalid actuator target value: " + value + " for actuator: " + this);
+        }
         actuatorValueTarget = value;
     }
 
@@ -126,13 +154,11 @@ public class VehicleActuator {
      * Used to reset actuators in a collision
      *
      * @param value New value of the actuator
-     * @throws Exception If target value is not in allowed value range for actuator
      */
-    public void setActuatorValueCurrent(double value) throws Exception {
-
-        if (value > actuatorValueMax || value < actuatorValueMin || Double.isNaN(value))
-            throw new Exception("VehicleActuator: setActuatorValueCurrent - Invalid actuator target value: " + value + " for actuator: " + this);
-
+    public void setActuatorValueCurrent(double value){
+        if (value > actuatorValueMax || value < actuatorValueMin || Double.isNaN(value)) {
+            throw new IllegalArgumentException("VehicleActuator: setActuatorValueCurrent - Invalid actuator target value: " + value + " for actuator: " + this);
+        }
         actuatorValueCurrent = value;
     }
 

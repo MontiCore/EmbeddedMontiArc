@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.vehicle;
 
 import commons.controller.commons.BusEntry;
@@ -15,14 +35,10 @@ import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.WorldModel;
 import simulation.environment.osm.IntersectionFinder;
 import simulation.util.Log;
-
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-
 import static commons.controller.commons.BusEntry.*;
-import static simulation.environment.visualisationadapter.interfaces.EnvStreet.StreetTypes.*;
-import static simulation.vehicle.MassPointType.*;
 import static simulation.vehicle.VehicleActuatorType.*;
 
 /**
@@ -30,42 +46,14 @@ import static simulation.vehicle.VehicleActuatorType.*;
  */
 public class Vehicle {
 
-    // Default average values for vehicle constructor
-
-    /** Length of the vehicle in meters */
-    public static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
-
-    /** Width of the vehicle in meters */
-    public static final double VEHICLE_DEFAULT_WIDTH = 2.02712567705637776;
-
-    /** Height of the vehicle in meters */
-    public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
-
-    /** Maximum velocity of the vehicle */
-    public static final double VEHICLE_DEFAULT_APPROX_MAX_VELOCITY = 100.0;
-
-    /** Mass of the vehicle's front */
-    public static final double VEHICLE_DEFAULT_MASS_FRONT = 950.0;
-
-    /** Mass of the vehicle's back */
-    public static final double VEHICLE_DEFAULT_MASS_BACK = 850.0;
-
-    /** Radius of the wheels in meters */
-    public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
-
-    /** Distance between the left and the right wheels in meters */
-    public static final double VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT = 1.62025;
-
-    /** Distance between front and back wheels in meters */
-    public static final double VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK = 2.921;
-
+    /** Default average values for vehicle constructor */
     /** Minimum acceleration that can be made by the motor */
     public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN = -1.5;
 
     /** Maximum acceleration that can be made by the motor */
     public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX = 3.5;
 
-    /** Rate at which the motor can accelerate */
+    /** Rate at which the acceleration of the motor can change */
     public static final double VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE = 2.0;
 
     /** Minimum acceleration that can be made by the brakes */
@@ -74,7 +62,7 @@ public class Vehicle {
     /** Maximum acceleration that can be made by the brakes */
     public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX = 5.0;
 
-    /** Acceleration rate of the brakes */
+    /** Rate at which the acceleration of the brakes can change */
     public static final double VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE = 5.0;
 
     /** Minimum steering angle */
@@ -86,20 +74,35 @@ public class Vehicle {
     /** Rate at which the steering angle can change */
     public static final double VEHICLE_DEFAULT_STEERING_ANGLE_RATE = 0.5;
 
-    /** Average tire pressure for car wheels in bar */
-    public static final double VEHICLE_DEFAULT_TIRE_PRESSURE = 2.5;
+    /** Maximum velocity of the vehicle */
+    public static final double VEHICLE_DEFAULT_APPROX_MAX_VELOCITY = 100.0;
 
-    // Variables of the car
+    /** Length of the vehicle in meters */
+    public static final double VEHICLE_DEFAULT_LENGTH = 4.236423828125;
 
-    /** M of formula */
-    private double mass;
+    /** Width of the vehicle in meters */
+    public static final double VEHICLE_DEFAULT_WIDTH = 2.02712567705637776;
 
-    /** Indicator whether the constant bus data was sent */
-    private boolean constantBusDataSent;
+    /** Height of the vehicle in meters */
+    public static final double VEHICLE_DEFAULT_HEIGHT = 1.19524474896355328;
 
-    /** Representation of wheel mass points, indexed data */
-    private MassPoint[] wheelMassPoints = new MassPoint[4];
+    /** Radius of the wheels in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_RADIUS = 0.3334;
 
+    /** Mass of the vehicle */
+    public static final double VEHICLE_DEFAULT_MASS = 1800.0;
+
+    /** Distance between the left and the right wheels in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT = 1.62025;
+
+    /** Distance between front and back wheels in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT = 1.379;
+
+    /** Distance between back wheels and center of mass in meters */
+    public static final double VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK = 1.542;
+
+
+    /**Components */
     /** Motor of vehicle */
     private VehicleActuator motor;
 
@@ -115,24 +118,6 @@ public class Vehicle {
     /** Status logging module */
     private StatusLogger statusLogger;
 
-    /** Dimensions of vehicle in meters */
-    private double length, width, height;
-
-    /** Estimated maximum total velocity of vehicle */
-    private double approxMaxTotalVelocity;
-
-    /** Maximum temporary allowed velocity of vehicle */
-    private double maxTemporaryAllowedVelocity;
-
-    /** Radius of vehicle wheels in meters */
-    private double wheelRadius;
-
-    /** Track of the vehicle wheels */
-    private double wheelDistLeftRight;
-
-    /** Wheelbase of the vehicle wheels */
-    private double wheelDistFrontBack;
-
     /** List of all the sensors of the vehicle */
     private List<Sensor> sensorList;
 
@@ -145,305 +130,105 @@ public class Vehicle {
     /** Navigation for vehicle */
     private Optional<FunctionBlockInterface> navigation;
 
+    /** PhysicalVehicle that this vehicle is part of */
+    private PhysicalVehicle physicalVehicle;
+
+
+    /** Properties */
+    /** M of formula */
+    /** Mass of the vehicle */
+    private double mass;
+
+    /** Dimensions of vehicle in meters */
+    private double width, length, height;
+
+    /** Radius of vehicle wheels */
+    private double wheelRadius;
+
+    /** Track of the vehicle wheels at the front axel */
+    private double wheelDistLeftRightFrontSide;
+
+    /** Track of the vehicle wheels at the back axel */
+    private double wheelDistLeftRightBackSide;
+
+    /** Wheelbase of the vehicle to the front axel */
+    private double wheelDistToFront;
+
+    /** Wheelbase of the vehicle to the back axel */
+    private double wheelDistToBack;
+
+
+    /** Internal Attributes */
     /** Last navigation target for vehicle */
     private Optional<IControllerNode> lastNavigationTarget;
 
     /** Camera image from visualization */
     private Optional<Image> cameraImage;
 
+    /** Maximum temporary allowed velocity of vehicle */
+    private double maxTemporaryAllowedVelocity;
+
+
+    /** Internal flags */
+    /** Flag whether the constant bus data was sent */
+    private boolean constantBusDataSent;
+
+    /** Flag whether the vehicle is initialised */
+    private boolean vehicleInitialised;
+
+
     /**
      * Constructor for a vehicle that is standing at its position
      * Use other functions to initiate movement and position updates
-     *
-     * @param controllerBus Optional bus for the controller of the vehicle
-     * @param controller Optional controller of the vehicle
-     * @param navigation Optional navigation of the vehicle
      */
-    protected Vehicle(Optional<Bus> controllerBus, Optional<FunctionBlockInterface> controller, Optional<FunctionBlockInterface> navigation) {
-        // Dimensions
-        setDimensions(VEHICLE_DEFAULT_LENGTH, VEHICLE_DEFAULT_WIDTH, VEHICLE_DEFAULT_HEIGHT);
-
-        // Approx maximum velocity
-        setApproxMaxTotalVelocity(VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
-
-        // Set mass of entire vehicle
-        setWheelProperties(VEHICLE_DEFAULT_MASS_FRONT, VEHICLE_DEFAULT_MASS_BACK, VEHICLE_DEFAULT_WHEEL_RADIUS, VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT, VEHICLE_DEFAULT_WHEEL_DIST_FRONT_BACK);
-
-        // When created, maximum temporary allowed velocity is not limited
-        maxTemporaryAllowedVelocity = Double.MAX_VALUE;
-
-        // When created, the constant bus data is not sent yet
-        constantBusDataSent = false;
-
-        // Actuators
+    protected Vehicle(PhysicalVehicle physicalVehicle) {
+        // Create the motor
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_MOTOR, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MIN, VEHICLE_DEFAULT_MOTOR_ACCELERATION_MAX, VEHICLE_DEFAULT_MOTOR_ACCELERATION_RATE);
+        // Create the brakes
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MIN, VEHICLE_DEFAULT_BRAKES_ACCELERATION_MAX, VEHICLE_DEFAULT_BRAKES_ACCELERATION_RATE);
+        // Create the steering
         setActuatorProperties(VEHICLE_ACTUATOR_TYPE_STEERING, VEHICLE_DEFAULT_STEERING_ANGLE_MIN, VEHICLE_DEFAULT_STEERING_ANGLE_MAX, VEHICLE_DEFAULT_STEERING_ANGLE_RATE);
-
-        //Create status logger
-        statusLogger = new StatusLogger();
-
-        // Set components of the vehicle
-        sensorList = new ArrayList<>();
-        this.controllerBus = controllerBus;
-        this.controller = controller;
-        this.navigation = navigation;
+        // Create the status logger
+        this.statusLogger = new StatusLogger();
+        // Create the sensor list
+        this.sensorList = new ArrayList<>();
+        // Create the controller bus
+        this.controllerBus = Optional.empty();
+        // Create the controller
+        this.controller = Optional.empty();
+        // Create the navigation unit
+        this.navigation = Optional.empty();
+        // Set physicalVehicle that this vehicle is part of
+        this.physicalVehicle = physicalVehicle;
+        // Set width
+        this.width = VEHICLE_DEFAULT_WIDTH;
+        // Set length
+        this.length = VEHICLE_DEFAULT_LENGTH;
+        // Set height
+        this.height = VEHICLE_DEFAULT_HEIGHT;
+        // Set front mass
+        this.mass = VEHICLE_DEFAULT_MASS;
+        // Set wheel radius
+        this.wheelRadius = VEHICLE_DEFAULT_WHEEL_RADIUS;
+        // Set track
+        this.wheelDistLeftRightFrontSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        this.wheelDistLeftRightBackSide = VEHICLE_DEFAULT_WHEEL_DIST_LEFT_RIGHT;
+        // Set wheel base
+        this.wheelDistToFront = VEHICLE_DEFAULT_WHEEL_DIST_TO_FRONT;
+        this.wheelDistToBack = VEHICLE_DEFAULT_WHEEL_DIST_TO_BACK;
+        // Initialise last navigation target with empty optional
         this.lastNavigationTarget = Optional.empty();
-
-        // Initialize camera image with empty optional
+        // Initialise camera image with empty optional
         cameraImage = Optional.empty();
-
-        Log.finest("Vehicle: Constructor - Vehicle constructed: " + this);
-    }
-
-    /**
-     * Function that sets wheel properties to the vehicle
-     *
-     * @param massFront          Sum of mass for both front wheels
-     * @param massBack           Sum of mass for both back wheels
-     * @param wheelRadius        Radius of wheels
-     * @param wheelDistLeftRight Distance between left and right wheels
-     * @param wheelDistFrontBack Distance between front and back wheels
-     */
-    void setWheelProperties(double massFront, double massBack, double wheelRadius, double wheelDistLeftRight, double wheelDistFrontBack) {
-        Log.finest("Vehicle: setWheelProperties - Vehicle at start: " + this);
-        mass = massFront + massBack;
-        this.wheelRadius = wheelRadius;
-        this.wheelDistLeftRight = wheelDistLeftRight;
-        this.wheelDistFrontBack = wheelDistFrontBack;
-
-        // Create mass points with incomplete information
-        RealVector localPosFrontLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
-        RealVector localPosFrontRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), (wheelDistFrontBack / 2), 0.0});
-        RealVector localPosBackLeft = new ArrayRealVector(new double[]{-(wheelDistLeftRight / 2), -(wheelDistFrontBack / 2), 0.0});
-        RealVector localPosBackRight = new ArrayRealVector(new double[]{(wheelDistLeftRight / 2), -(wheelDistFrontBack / 2), 0.0});
-        RealVector zeroVector = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-        RealVector gravitationVectorFrontWheel = new ArrayRealVector(new double[]{0.0, 0.0, (massFront / 2) * -9.81});
-        RealVector gravitationVectorBackWheel = new ArrayRealVector(new double[]{0.0, 0.0, (massBack / 2) * -9.81});
-
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_FRONT_LEFT, localPosFrontLeft, localPosFrontLeft, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorFrontWheel, (massFront / 2));
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_FRONT_RIGHT, localPosFrontRight, localPosFrontRight, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorFrontWheel, (massFront / 2));
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_BACK_LEFT, localPosBackLeft, localPosBackLeft, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorBackWheel, (massBack / 2));
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()] = new MassPoint(MASS_POINT_TYPE_WHEEL_BACK_RIGHT, localPosBackRight, localPosBackRight, zeroVector, zeroVector, zeroVector, zeroVector, gravitationVectorBackWheel, (massBack / 2));
-
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_LEFT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_FRONT_RIGHT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_LEFT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        wheelMassPoints[MASS_POINT_TYPE_WHEEL_BACK_RIGHT.ordinal()].setPressure(VEHICLE_DEFAULT_TIRE_PRESSURE);
-        Log.finest("Vehicle: setWheelProperties - Vehicle at end: " + this);
-    }
-
-    /**
-     * Function that sets actuator properties to the vehicle
-     *
-     * @param actuatorType       Type of the actuator
-     * @param actuatorValueMin   Minimum allowed value of the actuator
-     * @param actuatorValueMax   Maximum allowed value of the actuator
-     * @param actuatorChangeRate Change rate of the actuator
-     */
-    void setActuatorProperties(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate) {
-        Log.finest("Vehicle: setActuatorProperties - Vehicle at start: " + this);
-
-        switch (actuatorType) {
-            case VEHICLE_ACTUATOR_TYPE_MOTOR:
-                motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
-                break;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
-                brakesFrontLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
-                break;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
-                brakesFrontRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
-                break;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
-                brakesBackLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
-                break;
-            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
-                brakesBackRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
-                break;
-            case VEHICLE_ACTUATOR_TYPE_STEERING:
-                steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
-                break;
-            default:
-                break;
-        }
-
-        Log.finest("Vehicle: setActuatorProperties - Vehicle at end: " + this);
-    }
-
-    /**
-     * Function that sets dimensions to the vehicle
-     *
-     * @param length Length of the vehicle
-     * @param width  Width of the vehicle
-     * @param height Height of the vehicle
-     */
-    void setDimensions(double length, double width, double height) {
-        Log.finest("Vehicle: setDimensions - Vehicle at start: " + this);
-        this.length = length;
-        this.width = width;
-        this.height = height;
-        Log.finest("Vehicle: setDimensions - Vehicle at end: " + this);
-    }
-
-    /**
-     * Function that sets the maximum approximate velocity of vehicle
-     *
-     * @param approxMaxTotalVelocity Maximum approximate velocity of vehicle
-     */
-    protected void setApproxMaxTotalVelocity(double approxMaxTotalVelocity) {
-        this.approxMaxTotalVelocity = approxMaxTotalVelocity;
-    }
-
-    /**
-     * Function that returns the optional controller bus
-     *
-     * @return Optional controller bus of simulated car
-     */
-    protected Optional<Bus> getControllerBus() {
-        return controllerBus;
-    }
-
-    /**
-     * Function that sets the optional controller bus
-     *
-     * @param controllerBus Optional controller bus of simulated car
-     */
-    protected void setControllerBus(Optional<Bus> controllerBus) {
-        this.controllerBus = controllerBus;
-    }
-
-    /**
-     * Function that returns the optional controller
-     *
-     * @return Optional controller of simulated car
-     */
-    protected Optional<FunctionBlockInterface> getController() {
-        return controller;
-    }
-
-    /**
-     * Function that sets the optional controller
-     *
-     * @param controller Optional controller of simulated car
-     */
-    protected void setController(Optional<FunctionBlockInterface> controller) {
-        this.controller = controller;
-    }
-
-    /**
-     * Function that returns the optional navigation
-     *
-     * @return Optional navigation of simulated car
-     */
-    public Optional<FunctionBlockInterface> getNavigation() {
-        return navigation;
-    }
-
-    /**
-     * Function that sets the optional navigation
-     *
-     * @param navigation Optional navigation of simulated car
-     */
-    public void setNavigation(Optional<FunctionBlockInterface> navigation) {
-        this.navigation = navigation;
-    }
-
-    /**
-     * Function that exchanges data with the controller
-     *
-     * @param deltaT Time difference of the last update loop in seconds
-     */
-    protected void exchangeDataWithController(double deltaT) {
-
-        // Send / Retrieve data from controller bus, if available
-        if (controllerBus.isPresent() && controller.isPresent()) {
-
-            // Send vehicle data to controller
-            if (!constantBusDataSent) {
-                controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
-                controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistFrontBack());
-                controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), getApproxMaxTotalVelocity());
-                controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
-                controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
-                controllerBus.get().setData(CONSTANT_BRAKES_MAX_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMax());
-                controllerBus.get().setData(CONSTANT_BRAKES_MIN_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMin());
-                controllerBus.get().setData(CONSTANT_STEERING_MAX_ANGLE.toString(), steering.getActuatorValueMax());
-                controllerBus.get().setData(CONSTANT_STEERING_MIN_ANGLE.toString(), steering.getActuatorValueMin());
-                controllerBus.get().setData(CONSTANT_TRAJECTORY_ERROR.toString(), 0.0);
-
-                constantBusDataSent = true;
-            }
-
-            // Send sensor data: Write values to bus
-            for (Sensor sensor : sensorList) {
-                // Put data from sensor on the bus
-                controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
-
-                // Special case for weather / surface, for now just constant Asphalt
-                if (sensor.getType() == SENSOR_WEATHER) {
-                    Surface surface = Surface.Asphalt;
-                    controllerBus.get().setData(SENSOR_CURRENT_SURFACE.toString(), surface);
-                }
-            }
-
-            // TODO: This logic should be moved to the controller!
-            Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
-            if (streetTypeSensor.isPresent()) {
-                String streetType = (String)(streetTypeSensor.get().getValue());
-                double allowedVelocityByStreetType = Double.MAX_VALUE;
-
-                switch(streetType){
-                    case "MOTORWAY":
-                        allowedVelocityByStreetType = (100.0 / 3.6);
-                        break;
-                    case "A_ROAD":
-                        allowedVelocityByStreetType = (70.0 / 3.6);
-                        break;
-                    case "STREET":
-                        allowedVelocityByStreetType = (50.0 / 3.6);
-                        break;
-                    case "LIVING_STREET":
-                        allowedVelocityByStreetType = (30.0 / 3.6);
-                        break;
-                }
-
-                setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
-            }
-
-            // Set other values on bus that can change during simulation
-            controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
-            controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
-
-            //Give the bus to the mainControlBlock
-            controller.get().setInputs(controllerBus.get().getAllData());
-
-            // Call controller to compute new values
-            controller.get().execute();
-
-            //Pass the data of the mainControlBlock to the bus
-            controllerBus.get().setAllData(controller.get().getOutputs());
-
-            // Read new values from bus
-            double motorValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString()));
-            double brakeValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString()));
-            double steeringValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString()));
-
-            // Set new values from bus to actuators
-            try {
-                motor.setActuatorValueTarget(motorValue);
-                brakesFrontLeft.setActuatorValueTarget(brakeValue);
-                brakesFrontRight.setActuatorValueTarget(brakeValue);
-                brakesBackLeft.setActuatorValueTarget(brakeValue);
-                brakesBackRight.setActuatorValueTarget(brakeValue);
-                steering.setActuatorValueTarget(steeringValue);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // When created, maximum temporary allowed velocity is not limited
+        this.maxTemporaryAllowedVelocity = Double.MAX_VALUE;
+        // When created, the constant bus data is not sent yet
+        this.constantBusDataSent = false;
+        // When created, the physical vehicle is not initialised
+        this.vehicleInitialised = false;
     }
 
     /**
@@ -466,99 +251,433 @@ public class Vehicle {
                 return brakesBackRight;
             case VEHICLE_ACTUATOR_TYPE_STEERING:
                 return steering;
+            default:
+                return null;
         }
-
-        return null;
     }
 
     /**
-     * Function that returns the four wheel mass points of the vehicle
+     * Function that sets the actuator properties
      *
-     * @return Four wheel mass points of the vehicle
+     * @param actuatorType       Type of the actuator
+     * @param actuatorValueMin   Minimum allowed value of the actuator
+     * @param actuatorValueMax   Maximum allowed value of the actuator
+     * @param actuatorChangeRate Change rate of the actuator
      */
-    public MassPoint[] getWheelMassPoints() {
-        return wheelMassPoints;
+    void setActuatorProperties(VehicleActuatorType actuatorType, double actuatorValueMin, double actuatorValueMax, double actuatorChangeRate) {
+        switch (actuatorType) {
+            case VEHICLE_ACTUATOR_TYPE_MOTOR:
+                motor = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_LEFT:
+                brakesFrontLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_FRONT_RIGHT:
+                brakesFrontRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_LEFT:
+                brakesBackLeft = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_BRAKES_BACK_RIGHT:
+                brakesBackRight = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            case VEHICLE_ACTUATOR_TYPE_STEERING:
+                steering = new VehicleActuator(actuatorType, actuatorValueMin, actuatorValueMax, actuatorChangeRate);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
-     * Function that sets the four wheel mass points of the vehicle
+     * Function that returns the status logger of the vehicle
      *
-     * @param wheelMassPoints New MassPoint array with four objects of the four wheel mass points
+     * @return ToDo
      */
-    public void setWheelMassPoints(MassPoint[] wheelMassPoints) {
-        this.wheelMassPoints = wheelMassPoints;
+    public StatusLogger getStatusLogger() {
+        return statusLogger;
     }
 
     /**
-     * Function that returns the maximum approximate velocity of vehicle
+     * Function that sets the status logger of the vehicle
      *
-     * @return Maximum approximate velocity of vehicle
+     * @param statusLogger ToDo
      */
-    public double getApproxMaxTotalVelocity() {
-        return approxMaxTotalVelocity;
+    public void setStatusLogger(StatusLogger statusLogger) {
+        this.statusLogger = statusLogger;
     }
 
     /**
-     * Function that returns the mass of simulated car
+     * Function that returns an optional of the sensor of the requested type
+     * If no such sensor is available return an <code>Optional.empty()</code>
      *
-     * @return Mass of simulated car
+     * @param type ToDo
+     * @return ToDo
      */
-    public double getMass() {
-        return mass;
+    public Optional<Sensor> getSensorByType(BusEntry type) {
+        for (Sensor sensor : sensorList) {
+            if (sensor.getType() == type) {
+                return Optional.of(sensor);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
-     * Function that returns the length of simulated car
+     * Function that adds a sensor the the vehicle
      *
-     * @return Length of simulated car
+     * @param sensor ToDo
      */
-    public double getLength() {
-        return length;
+    public void addSensor(Sensor sensor) {
+        this.sensorList.add(sensor);
     }
 
     /**
-     * Function that returns the width of simulated car
+     * Function that returns the optional controller bus
      *
-     * @return Width of simulated car
+     * @return Optional controller bus of the vehicle
+     */
+    protected Optional<Bus> getControllerBus() {
+        return controllerBus;
+    }
+
+    /**
+     * Function that sets the optional controller bus
+     *
+     * @param controllerBus Optional controller bus of the vehicle
+     */
+    protected void setControllerBus(Optional<Bus> controllerBus) {
+        this.controllerBus = controllerBus;
+    }
+
+    /**
+     * Function that returns the optional controller
+     *
+     * @return Optional controller of the vehicle
+     */
+    protected Optional<FunctionBlockInterface> getController() {
+        return controller;
+    }
+
+    /**
+     * Function that sets the optional controller
+     *
+     * @param controller Optional controller of the vehicle
+     */
+    protected void setController(Optional<FunctionBlockInterface> controller) {
+        this.controller = controller;
+    }
+
+    /**
+     * Function that returns the optional navigation
+     *
+     * @return Optional navigation of the vehicle
+     */
+    public Optional<FunctionBlockInterface> getNavigation() {
+        return navigation;
+    }
+
+    /**
+     * Function that sets the optional navigation
+     *
+     * @param navigation Optional navigation of the vehicle
+     */
+    public void setNavigation(Optional<FunctionBlockInterface> navigation) {
+        this.navigation = navigation;
+    }
+
+    /**
+     * Function that returns the width of the vehicle
+     *
+     * @return Width of the vehicle
      */
     public double getWidth() {
         return width;
     }
 
     /**
+     * Function that sets the width of the vehicle
+     *
+     * @param width New width of the vehicle
+     */
+    public void setWidth(double width){
+        this.width = width;
+    }
+
+    /**
+     * Function that returns the length of the vehicle
+     *
+     * @return Length of the vehicle
+     */
+    public double getLength() {
+        return length;
+    }
+
+    /**
+     * Function that sets the length of the vehicle
+     *
+     * @param length New length of the vehicle
+     */
+    public void setLength(double length){
+        this.length = length;
+    }
+
+    /**
      * Function that returns the height of simulated car
      *
-     * @return Height of simulated car
+     * @return Height of the vehicle
      */
     public double getHeight() {
         return height;
     }
 
     /**
-     * Function that returns the wheelRadius of simulated car
+     * Function that sets the height of the vehicle
      *
-     * @return Wheel radius of simulated car
+     * @param height New height of the vehicle
+     */
+    public void setHeight(double height){
+        if(vehicleInitialised){
+            throw new IllegalStateException("Height can only be set before initialisation.");
+        }
+        this.height = height;
+    }
+
+    /**
+     * Function that returns the mass of the vehicle
+     *
+     * @return Mass of the vehicle
+     */
+    public double getMass() {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            return mass;
+        }else{
+            if(!vehicleInitialised) {
+                throw new IllegalStateException("Mass can only be read after initialisation.");
+            }else{
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return  modelicaPhysicalVehicle.getVDM().getValue("m");
+            }
+        }
+    }
+
+    /**
+     * Function that sets the mass of the vehicle
+     *
+     * @param mass New mass of the vehicle
+     */
+    public void setMass(double mass){
+        if(vehicleInitialised){
+            throw new IllegalStateException("Mass can only be set before initialisation.");
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.mass = mass;
+        }else{
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("m", mass);
+        }
+    }
+
+    /**
+     * Function that returns the wheel radius of the vehicle
+     *
+     * @return Wheel radius of the vehicle
      */
     public double getWheelRadius() {
-        return wheelRadius;
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            return wheelRadius;
+        }else{
+            if(!vehicleInitialised) {
+                throw new IllegalStateException("Wheel radius can only be read after initialisation.");
+            }else{
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("r_nom");
+            }
+        }
     }
 
     /**
-     * Function that returns the distance between left and right wheels of simulated car
+     * Function that sets the wheel radius of the vehicle
      *
-     * @return Distance between left and right wheels of simulated car
+     * @param wheelRadius New wheel radius of the vehicle
      */
-    double getWheelDistLeftRight() {
-        return wheelDistLeftRight;
+    public void setWheelRadius(double wheelRadius){
+        if(vehicleInitialised){
+            throw new IllegalStateException("Wheel radius can only be set before initialisation.");
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelRadius = wheelRadius;
+        }else{
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("r_nom", wheelRadius);
+        }
     }
 
     /**
-     * Function that returns the distance between front and back wheels of simulated car
+     * Function that returns the distance between left and right wheels of the front axel of the vehicle
      *
-     * @return Distance between front and back wheels of simulated car
+     * @return Distance between left and right wheels of the front axel of the vehicle
      */
-    double getWheelDistFrontBack() {
-        return wheelDistFrontBack;
+    double getWheelDistLeftRightFrontSide() {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle){
+            return wheelDistLeftRightFrontSide;
+        }else{
+            if(!vehicleInitialised) {
+                throw new IllegalStateException("Front axel wheel distance can only be read after initialisation.");
+            }else{
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("TW_f");
+            }
+        }
+    }
+
+    /**
+     * Function that sets the distance between left and right wheels of the front axel of the vehicle
+     *
+     * @param wheelDistLeftRightFrontSide New distance between left and right wheels of the front axel of the vehicle
+     */
+    public void setWheelDistLeftRightFrontSide(double wheelDistLeftRightFrontSide){
+        if (vehicleInitialised) {
+            throw new IllegalStateException("Front axel wheel distance can only be set before initialisation.");
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle){
+            this.wheelDistLeftRightFrontSide = wheelDistLeftRightFrontSide;
+        }else{
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("TW_f", wheelDistLeftRightFrontSide);
+        }
+    }
+
+    /**
+     * Function that returns the distance between left and right wheels of the back axel of the vehicle
+     *
+     * @return Distance between left and right wheels of the back axel of the vehicle
+     */
+    double getWheelDistLeftRightBackSide(){
+        if(physicalVehicle instanceof MassPointPhysicalVehicle){
+            return wheelDistLeftRightBackSide;
+        }else{
+            if(!vehicleInitialised){
+                throw new IllegalStateException("Back axel wheel distance can only be set before initialisation.");
+            }else{
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("TW_r");
+            }
+        }
+    }
+
+    /**
+     * Function that sets the distance between left and right wheels of the back axel of the vehicle
+     *
+     * @param wheelDistLeftRightBackSide New distance between left and right wheels of the back axel of the vehicle
+     */
+    public void setWheelDistLeftRightBackSide(double wheelDistLeftRightBackSide){
+        if (vehicleInitialised) {
+            throw new IllegalStateException("Position can only be set after initialisation.");
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelDistLeftRightBackSide = wheelDistLeftRightBackSide;
+        }else{
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("TW_r", wheelDistLeftRightBackSide);
+        }
+    }
+
+    /**
+     * Function that returns the distance between the center of mass and the front axel of the vehicle
+     *
+     * @return Distance between center of mass and front axel of the vehicle
+     */
+    double getWheelDistToFront() {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            return wheelDistToFront;
+        }else{
+            if(!vehicleInitialised){
+                throw new IllegalStateException("Distance from the center of mass to the front axel can only be read after initialisation.");
+            }else{
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("L_1");
+            }
+        }
+    }
+
+    /**
+     * Function that sets the distance between the center of mass and the front axel of the vehicle
+     *
+     * @param wheelDistToFront New distance between center of mass and front axel of the vehicle
+     */
+    public void setWheelDistToFront(double wheelDistToFront){
+        if (vehicleInitialised) {
+            throw new IllegalStateException("Distance from the center of mass to the front axel can only be set before initialisation.");
+        }
+        if (physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelDistToFront = wheelDistToFront;
+        } else {
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("L_1", wheelDistToFront);
+        }
+    }
+
+    /**
+     * Function that returns the distance between the center of mass and the back axel of the vehicle
+     *
+     * @return Distance between center of mass and back axel of the vehicle
+     */
+    double getWheelDistToBack() {
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            return wheelDistToBack;
+        }else{
+            if(!vehicleInitialised){
+                throw new IllegalStateException("Ha"); //tdo error
+            }else{
+                ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+                return modelicaPhysicalVehicle.getVDM().getValue("L_2");
+            }
+        }
+    }
+
+    /**
+     * Function that sets the distance between the center of mass and the back axel of the vehicle
+     *
+     * @param wheelDistToBack New distance between center of mass and back axel of the vehicle
+     */
+    public void setWheelDistToBack(double wheelDistToBack){
+        if (vehicleInitialised) {
+            throw new IllegalStateException("Distance from the center of mass to the back axel can only be set before initialisation.");
+        }
+        if(physicalVehicle instanceof MassPointPhysicalVehicle) {
+            this.wheelDistToBack = wheelDistToBack;
+        }else {
+            ModelicaPhysicalVehicle modelicaPhysicalVehicle = (ModelicaPhysicalVehicle) physicalVehicle;
+            modelicaPhysicalVehicle.getVDM().setParameter("L_2", wheelDistToBack);
+        }
+    }
+
+    /**
+     * Function that returns the last navigation target of the vehicle
+     *
+     * @return ToDo
+     */
+    public Optional<IControllerNode> getLastNavigationTarget() {
+        return lastNavigationTarget;
+    }
+
+    /**
+     * Function that gets the camera image of the vehicle
+     *
+     * @return Optional of the current camera image
+     */
+    public Optional<Image> getCameraImage() {
+        return cameraImage;
+    }
+
+    /**
+     * Function that sets the camera image
+     *
+     * @param cameraImage Optional of the new camera image to be stored
+     */
+    public void setCameraImage(Optional<Image> cameraImage) {
+        this.cameraImage = cameraImage;
     }
 
     /**
@@ -580,63 +699,118 @@ public class Vehicle {
     }
 
     /**
-     * Function that returns the status logging module of the vehicle
+     * Function that sets the vehicle initialised flag to true
+     * Should only be called by initPhysics
      *
-     * @return Status logging module of the vehicle
+     * @param vehicleInitialised New value for the vehicle initialised flag
      */
-    public StatusLogger getStatusLogger() {
-        return statusLogger;
+    public void setVehicleInitialised(boolean vehicleInitialised){
+        if(!vehicleInitialised){
+            throw new IllegalArgumentException("Vehicle can only be initialised once.");
+        }
+        this.vehicleInitialised = vehicleInitialised;
     }
 
-    /**
-     * Setter for internal fault memory of vehicle
-     *
-     * @param statusLogger Fault memory
-     */
-    public void setStatusLogger(StatusLogger statusLogger) {
-        this.statusLogger = statusLogger;
-    }
+
+
+
+
+
+
+
+
+
 
     /**
-     * Add a sensor the the vehicle
+     * Function that exchanges data with the controller
      *
-     * @param sensor the sensor to be added
+     * @param deltaT Time difference of the last update loop in seconds
      */
-    public void addSensor(Sensor sensor) {
-        this.sensorList.add(sensor);
-    }
+    protected void exchangeDataWithController(double deltaT) {
+        // Skip if controller bus or controller are not available
+        if (!controllerBus.isPresent() || !controller.isPresent()) {
+            return;
+        }
+        // Send vehicle data to controller
+        if (!constantBusDataSent) {
+            controllerBus.get().setData(CONSTANT_NUMBER_OF_GEARS.toString(), 1);
+            controllerBus.get().setData(CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
+            controllerBus.get().setData(CONSTANT_MAXIMUM_TOTAL_VELOCITY.toString(), Vehicle.VEHICLE_DEFAULT_APPROX_MAX_VELOCITY);
+            controllerBus.get().setData(CONSTANT_MOTOR_MAX_ACCELERATION.toString(), motor.getActuatorValueMax());
+            controllerBus.get().setData(CONSTANT_MOTOR_MIN_ACCELERATION.toString(), motor.getActuatorValueMin());
+            controllerBus.get().setData(CONSTANT_BRAKES_MAX_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMax());
+            controllerBus.get().setData(CONSTANT_BRAKES_MIN_ACCELERATION.toString(), brakesFrontLeft.getActuatorValueMin());
+            controllerBus.get().setData(CONSTANT_STEERING_MAX_ANGLE.toString(), steering.getActuatorValueMax());
+            controllerBus.get().setData(CONSTANT_STEERING_MIN_ANGLE.toString(), steering.getActuatorValueMin());
+            controllerBus.get().setData(CONSTANT_TRAJECTORY_ERROR.toString(), 0.0);
 
-    /**
-     * Return a optional sensor of the requested type. If no such sensor is available return an <code>Optional.empty()</code>
-     *
-     * @param type the type of the sensor to be requested
-     * @return a concrete sensor
-     */
-    public Optional<Sensor> getSensorByType(BusEntry type) {
+            constantBusDataSent = true;
+        }
+
+        // Send sensor data: Write values to bus
         for (Sensor sensor : sensorList) {
-            if (sensor.getType() == type) {
-                return Optional.of(sensor);
+            // Put data from sensor on the bus
+            controllerBus.get().setData(sensor.getType().toString(), sensor.getValue());
+
+            // Special case for weather / surface, for now just constant Asphalt
+            if (sensor.getType() == SENSOR_WEATHER) {
+                Surface surface = Surface.Asphalt;
+                controllerBus.get().setData(SENSOR_CURRENT_SURFACE.toString(), surface);
             }
         }
-        return Optional.empty();
-    }
 
-    /**
-     * Getter function for the camera image
-     *
-     * @return Optional of the current camera image
-     */
-    public Optional<Image> getCameraImage() {
-        return cameraImage;
-    }
+        //TODO: This logic should be moved to the controller
+        Optional<Sensor> streetTypeSensor = getSensorByType(SENSOR_STREETTYPE);
+        if (streetTypeSensor.isPresent()) {
+            String streetType = (String)(streetTypeSensor.get().getValue());
+            double allowedVelocityByStreetType = Double.MAX_VALUE;
 
-    /**
-     * Setter function for the camera image
-     *
-     * @param cameraImage Optional of the new camera image to be stored
-     */
-    public void setCameraImage(Optional<Image> cameraImage) {
-        this.cameraImage = cameraImage;
+            switch(streetType){
+                case "MOTORWAY":
+                    allowedVelocityByStreetType = (100.0 / 3.6);
+                    break;
+                case "A_ROAD":
+                    allowedVelocityByStreetType = (70.0 / 3.6);
+                    break;
+                case "STREET":
+                    allowedVelocityByStreetType = (50.0 / 3.6);
+                    break;
+                case "LIVING_STREET":
+                    allowedVelocityByStreetType = (30.0 / 3.6);
+                    break;
+                default:
+                    allowedVelocityByStreetType = maxTemporaryAllowedVelocity;
+                    break;
+            }
+
+            setMaxTemporaryAllowedVelocity(Math.min(getMaxTemporaryAllowedVelocity(), allowedVelocityByStreetType));
+        }
+
+        // Set other values on bus that can change during simulation
+        controllerBus.get().setData(SIMULATION_DELTA_TIME.toString(), deltaT);
+        controllerBus.get().setData(VEHICLE_MAX_TEMPORARY_ALLOWED_VELOCITY.toString(), getMaxTemporaryAllowedVelocity());
+
+        //Give the bus to the mainControlBlock
+        controller.get().setInputs(controllerBus.get().getAllData());
+
+        // Call controller to compute new values
+        controller.get().execute();
+
+        //Pass the data of the mainControlBlock to the bus
+        controllerBus.get().setAllData(controller.get().getOutputs());
+
+        // Read new values from bus
+        double motorValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_ENGINE.toString()));
+        double brakeValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_BRAKE.toString()));
+        double steeringValue = (Double)(controllerBus.get().getData(BusEntry.ACTUATOR_STEERING.toString()));
+
+        // Set new values from bus to actuators
+        motor.setActuatorValueTarget(motorValue);
+        brakesFrontLeft.setActuatorValueTarget(brakeValue);
+        brakesFrontRight.setActuatorValueTarget(brakeValue);
+        brakesBackLeft.setActuatorValueTarget(brakeValue);
+        brakesBackRight.setActuatorValueTarget(brakeValue);
+        steering.setActuatorValueTarget(steeringValue);
     }
 
     /**
@@ -674,7 +848,7 @@ public class Vehicle {
         // Process navigation target without avoiding coordinates for reference
         Map<String, Object> navigationInputs = new LinkedHashMap<>();
         navigationInputs.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), WorldModel.getInstance().getControllerMap().getAdjacencies());
-        navigationInputs.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistFrontBack());
+        navigationInputs.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
         navigationInputs.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
         navigationInputs.put(NavigationEntry.TARGET_NODE.toString(), node);
         navigation.get().setInputs(navigationInputs);
@@ -743,7 +917,7 @@ public class Vehicle {
         // Process navigation target without avoiding coordinates for reference
         Map<String, Object> navigationInputsFiltered = new LinkedHashMap<>();
         navigationInputsFiltered.put(NavigationEntry.MAP_ADJACENCY_LIST.toString(), adjacencyFiltered);
-        navigationInputsFiltered.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistFrontBack());
+        navigationInputsFiltered.put(NavigationEntry.CONSTANT_WHEELBASE.toString(), getWheelDistToFront() + getWheelDistToBack());
         navigationInputsFiltered.put(NavigationEntry.GPS_COORDINATES.toString(), gpsCoordinates);
         navigationInputsFiltered.put(NavigationEntry.TARGET_NODE.toString(), node);
         navigation.get().setInputs(navigationInputsFiltered);
@@ -779,26 +953,15 @@ public class Vehicle {
     }
 
     /**
-     * Function that returns lastNavigationTarget
-     *
-     * @return Value for lastNavigationTarget
-     */
-    public Optional<IControllerNode> getLastNavigationTarget() {
-        return lastNavigationTarget;
-    }
-
-    /**
      * Get current trajectory of the vehicle, if available. Otherwise return empty list.
      *
      * @return Current trajectory of the vehicle, if not available return empty list
      */
     public List<Vertex> getTrajectory() {
         // Check if trajectory is available and return copy if valid
-        if (controllerBus.isPresent()) {
-            if (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null) {
+        if (controllerBus.isPresent() && (controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()) != null)) {
                 ArrayList<Vertex> originalList = (ArrayList<Vertex>)(controllerBus.get().getData(NAVIGATION_DETAILED_PATH_WITH_MAX_STEERING_ANGLE.toString()));
                 return new ArrayList<>(originalList);
-            }
         }
 
         // Fallback to empty list
@@ -954,17 +1117,13 @@ public class Vehicle {
         return "Vehicle " + hashCode() + ": length: " + length +
                 " , width: " + width +
                 " , height: " + height +
-                " , approxMaxTotalVelocity: " + approxMaxTotalVelocity +
                 " , maxTemporaryAllowedVelocity: " + maxTemporaryAllowedVelocity +
                 " , wheelRadius: " + wheelRadius +
-                " , wheelDistLeftRight: " + wheelDistLeftRight +
-                " , wheelDistFrontBack: " + wheelDistFrontBack +
+                " , wheelDistLeftRightFrontSide: " + wheelDistLeftRightFrontSide +
+                " , wheelDistToFront: " + wheelDistToFront +
+                " , wheelDistToBack: " + wheelDistToBack +
                 " , mass: " + mass +
                 " , constantBusDataSent: " + constantBusDataSent +
-                " , wheelMassPoints[0]: " + wheelMassPoints[0] +
-                " , wheelMassPoints[1]: " + wheelMassPoints[1] +
-                " , wheelMassPoints[2]: " + wheelMassPoints[2] +
-                " , wheelMassPoints[3]: " + wheelMassPoints[3] +
                 " , motor: " + motor +
                 " , brakesFrontLeft: " + brakesFrontLeft +
                 " , brakesFrontRight: " + brakesFrontRight +

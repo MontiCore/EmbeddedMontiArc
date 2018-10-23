@@ -1,13 +1,31 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package sensors;
 
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
-
 import com.jhlabs.image.MotionBlurFilter;
 import com.jhlabs.image.PerspectiveFilter;
-
 import commons.controller.commons.BusEntry;
 import sensors.abstractsensors.AbstractSensor;
 import ij.ImagePlus;
@@ -21,7 +39,7 @@ public class CameraSensor extends AbstractSensor {
     private Optional<Image> value = Optional.empty();
     private Optional<Image> rightImage = Optional.empty();
     private Optional<Image> originalImage = Optional.empty();
-    // camera parameter TODO: get them from the real used camera
+    // camera parameter ToDo: get them from the real used camera
     private double cameraHFOV = 90.4642140657; // [deg]
     private double focalDistance = 0.1369274884123756; // [m]
     private double baseline = 0.02; // [m]
@@ -62,22 +80,18 @@ public class CameraSensor extends AbstractSensor {
         Optional<Image> temp = getPhysicalVehicle().getSimulationVehicle().getCameraImage();
         if (temp.isPresent()) {
             this.originalImage = Optional.of(temp.get());
-            // TODO: Add noise in Image
+            //TODO: Add noise in Image
             ImagePlus imagePlus = new ImagePlus();
             imagePlus.setImage(temp.get());
-            try {
-                int width = imagePlus.getWidth() / 2;
-                this.value = Optional.of(cropImage(imagePlus, 0, 0, width, imagePlus.getHeight()));
-                this.rightImage = Optional
-                        .of(cropImage(imagePlus, imagePlus.getWidth() / 2, 0, width, imagePlus.getHeight()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            int width = imagePlus.getWidth() / 2;
+            this.value = Optional.of(cropImage(imagePlus, 0, 0, width, imagePlus.getHeight()));
+            this.rightImage = Optional
+                    .of(cropImage(imagePlus, imagePlus.getWidth() / 2, 0, width, imagePlus.getHeight()));
         }
 
     }
 
-    private BufferedImage cropImage(ImagePlus imp, int x, int y, int width, int height) throws Exception {
+    private BufferedImage cropImage(ImagePlus imp, int x, int y, int width, int height){
 
         ImageProcessor ip = imp.getProcessor();
         ip.setInterpolationMethod(ImageProcessor.BILINEAR);
@@ -116,7 +130,7 @@ public class CameraSensor extends AbstractSensor {
         float perspectiveTop = 3f;
         float perspectiveBottom = 3f;
 
-        // TODO read from artwork profile
+        //TODO: read from artwork profile
         int top3d = (int) (h * perspectiveTop / 10);
         // int top3d = (int) (h * perspectiveTop / 100);
         int bot3d = (int) (h * perspectiveBottom / 100);
@@ -136,9 +150,7 @@ public class CameraSensor extends AbstractSensor {
     public static BufferedImage motionBlurFilter(BufferedImage bi) {
         MotionBlurFilter blurFilter = new MotionBlurFilter(0.1f, 0.1f, 0.12f, 0.001f);
 
-        BufferedImage im = blurFilter.filter(bi, null);
-
-        return im;
+        return blurFilter.filter(bi, null);
     }
 
 }

@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.environment.osm;
 
 import de.topobyte.osm4j.core.access.OsmInputException;
@@ -17,7 +37,6 @@ import simulation.environment.visualisationadapter.implementation.Node2D;
 import simulation.environment.visualisationadapter.implementation.Street2D;
 import simulation.environment.visualisationadapter.interfaces.*;
 import simulation.environment.visualisationadapter.implementation.EnvironmentContainer2D;
-
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -76,7 +95,7 @@ public class Parser2D implements IParser {
             if (!StringUtils.isBlank(this.filePath)) {
                 this.in = new FileInputStream(filePath);
             } else {
-                throw new Exception("No Input Exception");
+                throw new IllegalArgumentException("No Input");
             }
         }
         try {
@@ -85,7 +104,7 @@ public class Parser2D implements IParser {
             OSMConnector connector = new OSMConnector();
             //Call Area you want to load. Further instructions in class doc.
 
-            //TODO For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
+            //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
             Document mapData = connector.getXML(6.05892134,50.77828146,10);
 
             //Create temp file for loaded data.
@@ -185,7 +204,7 @@ public class Parser2D implements IParser {
             OSMConnector connector = new OSMConnector();
             //Call Area you want to load. Further instructions in class doc.
 
-            //TODO For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
+            //TODO: For now only RWTH-AAchen coordinates. Can be extended with all possible coordinates.
             Document mapData = connector.getXML(lon,lat,vicinityRange);
             //Create temp file for loaded data.
             DOMSource source = new DOMSource(mapData);
@@ -288,7 +307,7 @@ public class Parser2D implements IParser {
     }
 
     private void addSomeRandomTrees() {
-        // TODO: implement here sampling of trees from some distribution e.g. Gaussian
+        //TODO: implement here sampling of trees from some distribution e.g. Gaussian
         ArrayList<EnvNode> trees = new ArrayList<>();
         trees.add(new Node2D(10, 20, 30));
         trees.add(new Node2D(40, 50, 60));

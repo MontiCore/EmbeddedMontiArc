@@ -1,13 +1,33 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.environment;
 
 import commons.map.ControllerContainer;
 import commons.map.IControllerNode;
+import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
 import javafx.geometry.Point3D;
 import simulation.environment.geometry.osmadapter.GeomStreet;
 import simulation.environment.pedestrians.PedestrianContainer;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
-
 import java.util.List;
 
 /**
@@ -42,44 +62,44 @@ public interface World {
     public abstract Number getDistanceToMiddleOfStreet(PhysicalObject o);
 
     /**
-     * @param o
-     * @return the Distance to the left border of the street for the Point specified by o
+     * @param v
+     * @return the Distance to the left border of the street for the Point specified by v
      */
-    public abstract Number getDistanceToLeftStreetBorder(PhysicalObject o);
+    public abstract Number getDistanceToLeftStreetBorder(IPhysicalVehicle v);
 
-    Number getDistanceLeftFrontToStreetBorder(PhysicalObject o);
+    Number getDistanceLeftFrontToStreetBorder(IPhysicalVehicle v);
 
-    Number getDistanceRightFrontToStreetBorder(PhysicalObject o);
+    Number getDistanceRightFrontToStreetBorder(IPhysicalVehicle v);
 
     /**
-     * @param o
-     * @return the Distance to the right border of the street for the Point specified by o
+     * @param v
+     * @return the Distance to the right border of the street for the Point specified by v
      */
-    public abstract Number getDistanceToRightStreetBorder(PhysicalObject o);
+    public abstract Number getDistanceToRightStreetBorder(IPhysicalVehicle v);
 
     /**
-     * @param o
+     * @param v
      * @return the Distance to the left border of the street for the left back wheel
      */
-    public abstract Number getDistanceFrontLeftWheelToLeftStreetBorder(PhysicalObject o);
+    public abstract Number getDistanceFrontLeftWheelToLeftStreetBorder(IPhysicalVehicle v);
 
     /**
-     * @param o
+     * @param v
      * @return the Distance to the right border of the street for the right front wheel
      */
-    public abstract Number getDistanceFrontRightWheelToRightStreetBorder(PhysicalObject o);
+    public abstract Number getDistanceFrontRightWheelToRightStreetBorder(IPhysicalVehicle v);
 
     /**
-     * @param o
+     * @param v
      * @return the Distance to the left border of the street for the left back wheel
      */
-    public abstract Number getDistanceBackLeftWheelToLeftStreetBorder(PhysicalObject o);
+    public abstract Number getDistanceBackLeftWheelToLeftStreetBorder(IPhysicalVehicle v);
 
     /**
-     * @param o
+     * @param v
      * @return the Distance to the right border of the street for the right back wheel
      */
-    public abstract Number getDistanceBackRightWheelToRightStreetBorder(PhysicalObject o);
+    public abstract Number getDistanceBackRightWheelToRightStreetBorder(IPhysicalVehicle v);
 
     /**
      * @param o

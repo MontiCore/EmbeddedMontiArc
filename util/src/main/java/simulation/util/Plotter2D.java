@@ -1,497 +1,441 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.util;
+
+import commons.simulation.IPhysicalVehicle;
+import jdk.nashorn.internal.runtime.StoredScript;
+import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationConvention;
+import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.BlockRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.axis.NumberAxis;
-import java.awt.Color;
+import java.awt.*;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.apache.commons.math3.linear.RealVector;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
-import org.jfree.ui.ApplicationFrame;
 import org.jfree.chart.plot.XYPlot;
-
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
-
-
 /**
- * Class that Plots the a 2D Graph for two datasets
+ * Class that Plots a 2D Graph for data sets
  */
-public class Plotter2D extends ApplicationFrame
-{
-    public final static int PLOTTER_OUTPUT_POSITION_XY = 1;
-    public final static int PLOTTER_OUTPUT_VELOCITY = 2;
-    public final static int PLOTTER_OUTPUT_Z = 3;
-
-    /* Variables to storing coordinates */
-
-    /* XY coordinates of each wheel position  */
-    List <Double> Wheel_OneX = new LinkedList<Double>();
-    List <Double> Wheel_OneY = new LinkedList<Double>();
-    List <Double> Wheel_TwoX = new LinkedList<Double>();
-    List <Double> Wheel_TwoY = new LinkedList<Double>();
-    List <Double> Wheel_ThreeX = new LinkedList<Double>();
-    List <Double> Wheel_ThreeY = new LinkedList<Double>();
-    List <Double> Wheel_FourX = new LinkedList<Double>();
-    List <Double> Wheel_FourY = new LinkedList<Double>();
-
-    List <Double> Wheel_OneZ = new LinkedList<Double>();
-    List <Double> Wheel_TwoZ = new LinkedList<Double>();
-    List <Double> Wheel_ThreeZ = new LinkedList<Double>();
-    List <Double> Wheel_FourZ = new LinkedList<Double>();
-
-    List <JFreeChart> charts = new LinkedList<JFreeChart>();
-
-    /* XYZ Position of the vehicle */
-    private List<Double> vehiclePosX = new LinkedList<Double>();
-    private List<Double> vehiclePosY = new LinkedList<Double>();
-    private List<Double> vehiclePosZ = new LinkedList<Double>();
-
-    /* XYZ Velocity of the vehicle */
-    private List<Double> vehicleVelocityX = new LinkedList<Double>();
-    private List<Double> vehicleVelocityY = new LinkedList<Double>();
-    private List<Double> vehicleVelocityXY = new LinkedList<Double>();
-    // private List<Double> vehicleVelocityZ = new LinkedList<Double>();
-
-    /* Datasets for poltting*/
-    private XYSeriesCollection WheelsDataSet = new XYSeriesCollection();
-    private XYSeriesCollection VehicleVelDataset = new XYSeriesCollection();
-    private XYSeriesCollection VehiclePosDataset = new XYSeriesCollection();
-
-
-    /* Create XY Series objects for storing the XY coordinates of each wheel*/
-    private XYSeries WheelOne = new XYSeries("WheelOne", false, true);
-    private XYSeries WheelTwo = new XYSeries("WheelTwo", false, true);
-    private XYSeries WheelThree = new XYSeries("WheelThree", false, true);
-    private XYSeries WheelFour = new XYSeries("WheelFour", false, true);
-
-    private XYSeries WheelOne_zAxis = new XYSeries("WheelOne", false, true);
-    private XYSeries WheelTwo_zAxis = new XYSeries("WheelTwo", false, true);
-    private XYSeries WheelThree_zAxis = new XYSeries("WheelThree", false, true);
-    private XYSeries WheelFour_zAxis = new XYSeries("WheelFour", false, true);
-
-
-    /* */
-    private XYPlot PositionPlot;
-    private XYPlot VelocityPlot;
-    private XYPlot zAxisPlot;
-    private JFreeChart VelocityChart;
-    private JFreeChart PositionChart;
-    private JFreeChart zPositionChart;
-
-
+public final class Plotter2D{
 
     /* A circle shape to be used by the plotting renderer */
-    java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0,   2.0, 2.0);
+    private static java.awt.geom.Ellipse2D.Double shape = new java.awt.geom.Ellipse2D.Double(-2.0, -2.0, 4.0, 4.0);
+    private static java.awt.geom.Ellipse2D.Double shapeLarge = new java.awt.geom.Ellipse2D.Double(-3.0, -3.0, 6.0, 6.0);
 
     /**
-     * Constructor of the Plotter 2D object which responsible of creating
-     * the charts for the different data sets related to the vehicle's
-     * movement.
-     * It returns a Plotter 2D object that contains graphs of the data set
-     * specified by the "OutputType" string.
-     * The charts could be displayed using specific functions of the JFree library
-     * " pack()" and  "setVisible()"
-     * @param  WheelsPosition The relative positions of the wheels respective center of mass
-     * @param  vehiclePos Relative position of the center of mass of the vehicle
-     * @param  vehicleVelocity Velocity of the vehicle's center of mass
-     * @param  simulationTimePoints Discrete time vector duration of the simulation
-     * @param  WheelRadius Radius of the wheels
-     * @param  outputType an integer to define which data set to be returned for display
+     * Function that is used in the Simulation Debug Plotter
      */
+    public static void plotOne(IPhysicalVehicle physicalVehicle, long counter, long timeDiffms, String name){
+        if(counter != 0){
+            //return;
+        }
+        double deltaT = timeDiffms / 1000.0;
+        // Create axis
+        NumberAxis xAxis = new NumberAxis();
+        xAxis.setTickLabelsVisible(false);
+        xAxis.setTickUnit(new NumberTickUnit(2));
+        xAxis.setRange(physicalVehicle.getPosition().getEntry(0) - 5.0, physicalVehicle.getPosition().getEntry(0) + 5.0);
 
-    public Plotter2D(List<List<RealVector>> WheelsPosition, List<RealVector> vehiclePos, List<RealVector> vehicleVelocity, List<Long> simulationTimePoints, double WheelRadius, int outputType)
-    {
-        super("Vehicle Simulation Charts");
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setTickLabelsVisible(false);
+        yAxis.setTickUnit(new NumberTickUnit(2));
+        yAxis.setRange(physicalVehicle.getPosition().getEntry(1) - 5.0, physicalVehicle.getPosition().getEntry(1) + 5.0);
 
-        // Creating charts for both position and velocity based on the provided datasets
+        // Create XY series for storing the position
+        XYSeries position = new XYSeries("x_y", false, true);
+        double tempPosition = 0.0;
 
-        PositionChart = VehiclePositionChart ( WheelsPosition, vehiclePos, simulationTimePoints );
-        zPositionChart = zAxisChart ( WheelsPosition, WheelRadius, simulationTimePoints );
-        VelocityChart = VehicleVelocityChart ( vehicleVelocity, simulationTimePoints );
+        RealVector newPosition = physicalVehicle.getPosition().add(physicalVehicle.getVelocity().mapMultiply(deltaT));
 
-        final ChartPanel PositionPanel = new ChartPanel(PositionChart, true, true, true, true, true);
-        final ChartPanel VelocityPanel = new ChartPanel(VelocityChart, true, true, true, true, true);
-        final ChartPanel zAxisPanel = new ChartPanel(zPositionChart, true, true, true, true, true);
+        tempPosition = physicalVehicle.getPosition().getEntry(1);
+        position.add(physicalVehicle.getPosition().getEntry(0), tempPosition);
 
-        // Chart dimensions
-        VelocityPanel.setPreferredSize(new java.awt.Dimension(800, 600));
-        PositionPanel.setPreferredSize(new java.awt.Dimension(800, 600));
-        zAxisPanel.setPreferredSize(new java.awt.Dimension(800, 600));
+        tempPosition = newPosition.getEntry(1);
+        position.add(newPosition.getEntry(0), tempPosition);
 
-        // Selecting which data charts to return for display
-        switch (outputType) {
-            case PLOTTER_OUTPUT_POSITION_XY: setContentPane(PositionPanel); break;
-            case PLOTTER_OUTPUT_VELOCITY: setContentPane(VelocityPanel); break;
-            case PLOTTER_OUTPUT_Z: setContentPane(zAxisPanel); break;
-            default: Log.warning("Plotter: Incorrect plotter output type"); break;
+        // Create XY series for storing the wheel positions
+        XYSeries position1 = new XYSeries("x_y_1", false, true);
+        XYSeries position2 = new XYSeries("x_y_2", false, true);
+        XYSeries position3 = new XYSeries("x_y_3", false, true);
+        XYSeries position4 = new XYSeries("x_y_4", false, true);
+
+        RealVector wheelFrontPositionInternal = new ArrayRealVector(new double[]{physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
+        RealVector wheelBackPositionInternal = new ArrayRealVector(new double[]{-physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
+
+        RealMatrix wheelRotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, -physicalVehicle.getSteeringAngle()).getMatrix());
+        RealVector wheelFrontPositionLocal = wheelRotation.operate(wheelFrontPositionInternal);
+        RealVector wheelBackPositionLocal = wheelRotation.operate(wheelBackPositionInternal);
+
+        RealVector wheelFrontPosition = physicalVehicle.getFrontLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
+        RealVector wheelBackPosition = physicalVehicle.getFrontLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
+
+        tempPosition = wheelFrontPosition.getEntry(1);
+        position1.add(wheelFrontPosition.getEntry(0), tempPosition);
+        tempPosition = wheelBackPosition.getEntry(1);
+        position1.add(wheelBackPosition.getEntry(0), tempPosition);
+
+        wheelFrontPosition = physicalVehicle.getFrontRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
+        wheelBackPosition = physicalVehicle.getFrontRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
+
+        tempPosition = wheelFrontPosition.getEntry(1);
+        position2.add(wheelFrontPosition.getEntry(0), tempPosition);
+        tempPosition = wheelBackPosition.getEntry(1);
+        position2.add(wheelBackPosition.getEntry(0), tempPosition);
+
+        wheelFrontPositionLocal = new ArrayRealVector(wheelFrontPositionInternal);
+        wheelBackPositionLocal = new ArrayRealVector(wheelBackPositionInternal);
+
+        wheelFrontPosition = physicalVehicle.getBackLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
+        wheelBackPosition = physicalVehicle.getBackLeftWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
+
+        tempPosition = wheelFrontPosition.getEntry(1);
+        position3.add(wheelFrontPosition.getEntry(0), tempPosition);
+        tempPosition = wheelBackPosition.getEntry(1);
+        position3.add(wheelBackPosition.getEntry(0), tempPosition);
+
+        wheelFrontPosition = physicalVehicle.getBackRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelFrontPositionLocal));
+        wheelBackPosition = physicalVehicle.getBackRightWheelGeometryPosition().add(physicalVehicle.getRotation().operate(wheelBackPositionLocal));
+
+        tempPosition = wheelFrontPosition.getEntry(1);
+        position4.add(wheelFrontPosition.getEntry(0), tempPosition);
+        tempPosition = wheelBackPosition.getEntry(1);
+        position4.add(wheelBackPosition.getEntry(0), tempPosition);
+
+        // Create a parallel series collection and store data
+        XYSeriesCollection vehiclePositionDataSet = new XYSeriesCollection();
+        vehiclePositionDataSet.addSeries(position);
+        vehiclePositionDataSet.addSeries(position1);
+        vehiclePositionDataSet.addSeries(position2);
+        vehiclePositionDataSet.addSeries(position3);
+        vehiclePositionDataSet.addSeries(position4);
+
+        // Create stroke for data lines
+        Stroke stroke = new BasicStroke(4.0f);
+
+        // Create and customize renderer
+        XYLineAndShapeRenderer positionPlotRenderer = new XYLineAndShapeRenderer();
+        positionPlotRenderer.setBaseShapesFilled(true);
+
+        positionPlotRenderer.setSeriesPaint(0, Color.BLUE);
+        positionPlotRenderer.setSeriesShape(0, shapeLarge);
+        positionPlotRenderer.setSeriesLinesVisible(0, true);
+        positionPlotRenderer.setSeriesStroke(0, stroke);
+
+        positionPlotRenderer.setSeriesPaint(1, Color.GREEN);
+        positionPlotRenderer.setSeriesShape(1, shape);
+        positionPlotRenderer.setSeriesLinesVisible(1, true);
+        positionPlotRenderer.setSeriesStroke(1, stroke);
+
+        positionPlotRenderer.setSeriesPaint(2, Color.GREEN);
+        positionPlotRenderer.setSeriesShape(2, shape);
+        positionPlotRenderer.setSeriesLinesVisible(2, true);
+        positionPlotRenderer.setSeriesStroke(2, stroke);
+
+        positionPlotRenderer.setSeriesPaint(3, Color.RED);
+        positionPlotRenderer.setSeriesShape(3, shape);
+        positionPlotRenderer.setSeriesLinesVisible(3, true);
+        positionPlotRenderer.setSeriesStroke(3, stroke);
+
+        positionPlotRenderer.setSeriesPaint(4, Color.RED);
+        positionPlotRenderer.setSeriesShape(4, shape);
+        positionPlotRenderer.setSeriesLinesVisible(4, true);
+        positionPlotRenderer.setSeriesStroke(4, stroke);
+
+        // Creating position plot
+        XYPlot positionPlot = new XYPlot(vehiclePositionDataSet, xAxis, yAxis, positionPlotRenderer);
+        positionPlot.setDomainGridlinePaint(Color.BLACK);
+        positionPlot.setRangeGridlinePaint(Color.BLACK);
+
+        // Create position chart
+        JFreeChart positionChart = new JFreeChart(positionPlot);
+        positionChart.removeLegend();
+
+        try {
+            ChartUtilities.saveChartAsPNG(new File(name + counter + ".png"), positionChart, 1080, 1080);
+        }catch (Exception e){
+            Log.severe("Could not save charts as PNGs." + e);
         }
     }
 
-
     /**
-     * Function that creates the Vehicle position 2D plot charts
-     * for both the position of the center of mass of the vehicle
-     * and the four wheels centers of mass.
+     * Creates charts from the given data sets and saves them as images
      *
-     * @param Wheels_Positions The Relative positions of the wheels respective center of mass
-     * @param VehicleMassPointPosition Relative position of the center of mass of the vehicle
-     * @param  SimTime Discrete time vector of duration of the simulation
-     * @return Returns a JFree chart object for which a panel needs to be created for display
+     * @param  vehiclePosition Position of the center of mass of the vehicle
+     * @param  vehicleVelocity Velocity of the center of mass of the vehicle
+     * @param  wheelRotationRates Rotation rates of the wheels of the vehicle
+     * @param  simulationTimePoints Discrete time points during the simulation
      */
 
-    private JFreeChart VehiclePositionChart (List<List<RealVector>> Wheels_Positions, List<RealVector> VehicleMassPointPosition, List<Long> SimTime )
-    {
-            // Axis name setting
-            final NumberAxis xAxis = new NumberAxis("X Axis");
-            final ValueAxis yAxis = new NumberAxis("Y axis");
-
-            // Creating Position Dataset for vehicle and wheels center of mass
-            final XYDataset Wheels = WheelsDataset(Wheels_Positions);
-            final XYDataset Position = VehiclePositionDataset(VehicleMassPointPosition, SimTime);
-
-            // Creating and customizing renderer setting
-            final XYLineAndShapeRenderer VehiclePositionRenderer = new XYLineAndShapeRenderer();
-            VehiclePositionRenderer.setBaseShapesFilled(false);
-            VehiclePositionRenderer.setSeriesPaint( 0 , Color.BLUE );
-            VehiclePositionRenderer.setSeriesShape(0, shape);
-            VehiclePositionRenderer.setSeriesPaint( 1 , Color. RED );
-            VehiclePositionRenderer.setSeriesShape(1, shape);
-            VehiclePositionRenderer.setSeriesPaint( 2 , Color.GREEN );
-            VehiclePositionRenderer.setSeriesShape(2, shape);
-            VehiclePositionRenderer.setSeriesPaint( 3 , Color.YELLOW );
-            VehiclePositionRenderer.setSeriesShape(3, shape);
-            VehiclePositionRenderer.setSeriesPaint( 4 , Color.BLACK );
-
-            VehiclePositionRenderer.setSeriesLinesVisible(0, false);
-            VehiclePositionRenderer.setSeriesLinesVisible(1, false);
-            VehiclePositionRenderer.setSeriesLinesVisible(2, false);
-            VehiclePositionRenderer.setSeriesLinesVisible(3, false);
-            VehiclePositionRenderer.setSeriesLinesVisible(4, false);
-
-            // Creating Position Plot object for wheels and adding the vehicle Center of mass
-            PositionPlot = new XYPlot(Wheels, xAxis, yAxis, VehiclePositionRenderer);
-            PositionPlot.setDataset(1, Position);
-
-
-            return new JFreeChart("Vehicle Simulation : Vehicle Position Chart", JFreeChart.DEFAULT_TITLE_FONT, PositionPlot, true);
-
+    public static void plot(List<RealVector> vehiclePosition, List<RealVector> vehicleVelocity, List<List<Double>> wheelRotationRates, List<Long> simulationTimePoints) {
+        JFreeChart positionChart = vehiclePositionChart(vehiclePosition, simulationTimePoints);
+        JFreeChart velocityChart = vehicleVelocityChart(vehicleVelocity, simulationTimePoints);
+        JFreeChart rotationRatesChart = wheelRotationRatesChart(wheelRotationRates, simulationTimePoints);
+        try {
+            ChartUtilities.saveChartAsPNG(new File("Position.png"), positionChart, 750, 450);
+            ChartUtilities.saveChartAsPNG(new File("Velocity.png"), velocityChart, 750, 450);
+            ChartUtilities.saveChartAsPNG(new File("Rotation.png"), rotationRatesChart, 750, 450);
+        }catch (Exception e){
+            Log.severe("Could not save charts as PNGs." + e);
+        }
     }
 
     /**
-     * Function that creates the Vehicle position 2D plot charts
-     * for both the position of the center of mass of the vehicle
-     * and the four wheels centers of mass.
+     * Function that creates the vehicle position chart
      *
-     * @param WheelsPosition Relative position of the center of mass of the vehicle
-     * @param radius Radius of the wheels
-     * @param  SimTime Discrete time vector of duration of the simulation
-     * @return Returns a JFree chart object for which a panel needs to be created for display
+     * @param  vehiclePosition Position of the center of mass of the vehicle
+     * @param  simTime Discrete time points during the simulation
+     * @return Returns a chart of the position of the center of mass of the vehicle
      */
 
-    private JFreeChart zAxisChart (List<List<RealVector>> WheelsPosition, double radius,  List<Long> SimTime )
-    {
-        // Axis name setting
-        final NumberAxis xAxis = new NumberAxis("Time ");
-        final ValueAxis yAxis = new NumberAxis("Z ");
+    private static JFreeChart vehiclePositionChart(List<RealVector> vehiclePosition, List<Long> simTime) {
+        // Create axis
+        NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
+        xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        xAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
 
-        // Creating Position Dataset for vehicle and wheels center of mass
-        final XYDataset VehicleZAxis = zAxisDataset(WheelsPosition, radius, SimTime);
+        ValueAxis yAxis = new NumberAxis("Vehicle Position (m)");
+        yAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        yAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
 
-        // Creating and customizing renderer setting
-        final XYLineAndShapeRenderer zPositionRenderer = new XYLineAndShapeRenderer();
+        // Create position data set
+        XYDataset vehiclePositionDataSet = vehiclePositionDataSet(vehiclePosition, simTime);
 
-        zPositionRenderer.setBaseShapesFilled(false);
-        zPositionRenderer.setSeriesPaint( 0 , Color.BLUE );
-        zPositionRenderer.setSeriesShape(0, shape);
-        zPositionRenderer.setSeriesPaint( 1 , Color. RED );
-        zPositionRenderer.setSeriesShape(1, shape);
-        zPositionRenderer.setSeriesPaint( 2 , Color.GREEN );
-        zPositionRenderer.setSeriesShape(2, shape);
-        zPositionRenderer.setSeriesPaint( 3 , Color.YELLOW );
-        zPositionRenderer.setSeriesShape(3, shape);
-        zPositionRenderer.setSeriesPaint( 4 , Color.BLACK );
+        // Create and customize renderer
+        XYLineAndShapeRenderer positionPlotRenderer = new XYLineAndShapeRenderer();
+        positionPlotRenderer.setBaseShapesFilled(true);
+        positionPlotRenderer.setSeriesPaint(0, Color.BLUE);
+        positionPlotRenderer.setSeriesShape(0, shape);
+        positionPlotRenderer.setSeriesLinesVisible(0, false);
 
-        zPositionRenderer.setSeriesLinesVisible(0, false);
-        zPositionRenderer.setSeriesLinesVisible(1, false);
-        zPositionRenderer.setSeriesLinesVisible(2, false);
-        zPositionRenderer.setSeriesLinesVisible(3, false);
-        zPositionRenderer.setSeriesLinesVisible(4, false);
+        // Creating position plot
+        XYPlot positionPlot = new XYPlot(vehiclePositionDataSet, xAxis, yAxis, positionPlotRenderer);
 
-        // Creating Position Plot object for wheels and adding the vehicle Center of mass
-        zAxisPlot  = new XYPlot(VehicleZAxis, xAxis, yAxis, zPositionRenderer);
+        // Create position chart
+        JFreeChart positionChart = new JFreeChart(" ", JFreeChart.DEFAULT_TITLE_FONT, positionPlot, true);
+        positionChart.removeLegend();
 
-        return new JFreeChart("Vehicle Simulation : Vehicle zAxis Position Chart", JFreeChart.DEFAULT_TITLE_FONT, zAxisPlot, true);
-
+        return positionChart;
     }
 
     /**
-     * Function that creates the Vehilcle Velocity 2D plot charts
-     * for the center of mass of the vehicle
+     * Function that creates the vehicle velocity chart
      *
-     * @param VehicleMassPointVelocity Relative Velocity of the center of mass of the vehicle
-     * @param  SimTime Discrete time vector of duration of the simulation
-     * @return Returns a JFree chart object for which a panel needs to be created for display
+     * @param  vehicleVelocity Velocity of the center of mass of the vehicle
+     * @param  simTime Discrete time points during the simulation
+     * @return Returns a chart of the velocity of the center of mass of the vehicle
      */
-    private JFreeChart VehicleVelocityChart (List<RealVector> VehicleMassPointVelocity,   List<Long> SimTime )
-    {
-        // Axis name setting
-        final NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
-        final ValueAxis yAxis = new NumberAxis("Vehicle Velocity");
+    private static JFreeChart vehicleVelocityChart(List<RealVector> vehicleVelocity, List<Long> simTime ) {
+        // Create axis
+        NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
+        xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        xAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
 
-        // Creating Velocity Dataset
-        final XYDataset Velocity = VehicleVelocityDataset(VehicleMassPointVelocity, SimTime);
+        ValueAxis yAxis = new NumberAxis("Vehicle Velocity (m/s)");
+        yAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        yAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
+        yAxis.setRange(0.0, 17.5);
 
+        // Create velocity data set
+        XYDataset velocity = vehicleVelocityDataSet(vehicleVelocity, simTime);
 
-        // Creating and customizing renderer setting
-        final XYLineAndShapeRenderer VelocityPlotRenderer = new XYLineAndShapeRenderer();
-        VelocityPlotRenderer.setBaseShapesFilled(false);
-        VelocityPlotRenderer.setSeriesPaint( 0 , Color.BLUE );
-        VelocityPlotRenderer.setSeriesShape(0, shape);
+        // Create and customize renderer
+        XYLineAndShapeRenderer velocityPlotRenderer = new XYLineAndShapeRenderer();
+        velocityPlotRenderer.setBaseShapesFilled(true);
+        velocityPlotRenderer.setSeriesPaint(0, Color.BLUE);
+        velocityPlotRenderer.setSeriesShape(0, shape);
+        velocityPlotRenderer.setSeriesLinesVisible(0, false);
 
-        VelocityPlotRenderer.setSeriesLinesVisible(0, false);
+        // Creating velocity plot
+        XYPlot velocityPlot = new XYPlot(velocity, xAxis, yAxis, velocityPlotRenderer);
 
-        // Creating Velocity Plot object for vehicle
-        VelocityPlot = new XYPlot(Velocity, xAxis, yAxis, VelocityPlotRenderer);
+        // Create position chart
+        JFreeChart velocityChart = new JFreeChart(" ", JFreeChart.DEFAULT_TITLE_FONT, velocityPlot, true);
+        velocityChart.removeLegend();
 
-
-        return new JFreeChart("Vehicle Simulation : Velocity Chart", JFreeChart.DEFAULT_TITLE_FONT, VelocityPlot, true);
-
+        return velocityChart;
     }
 
     /**
-     * Function that creates XY datasets for every wheel center of mass
+     * Function that creates the vehicle rotation rates chart
      *
-     * @param Wheels_Position a vector containing the XYZ coordinates of the wheels obtained during the simulation
-     * @return Returns an XY series representing the relative position of every wheel in the plane for plotting
+     * @param  wheelRotationRates Rotation rates of the wheels of the vehicle
+     * @param  simTime Discrete time points during the simulation
+     * @return Returns a chart of the rotation rates of the wheels of the vehicle
      */
-    private XYDataset WheelsDataset( List<List<RealVector>> Wheels_Position)
-    {
 
+    private static JFreeChart wheelRotationRatesChart(List<List<Double>> wheelRotationRates, List<Long> simTime) {
+        // Create axis
+        NumberAxis xAxis = new NumberAxis("Simulation Time (ms)");
+        xAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        xAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
 
-        // Retrieving XY corrdinates of each of the 4 wheels of the vehicle
-        for(int i=0; i<Wheels_Position.size(); i++){
+        ValueAxis yAxis = new NumberAxis("Wheel Rotation Rate (rad/s)");
+        yAxis.setLabelFont(new Font("Dialog", Font.BOLD, 30));
+        yAxis.setTickLabelFont(new Font("Dialog", Font.PLAIN, 25));
 
-            // getting XY coordinates from the input vector
-            Wheel_OneX.add(Wheels_Position.get(i).get(0).getEntry(0));
-            Wheel_OneY.add(Wheels_Position.get(i).get(0).getEntry(1));
-            Wheel_TwoX.add(Wheels_Position.get(i).get(1).getEntry(0));
-            Wheel_TwoY.add(Wheels_Position.get(i).get(1).getEntry(1));
-            Wheel_ThreeX.add(Wheels_Position.get(i).get(2).getEntry(0));
-            Wheel_ThreeY.add(Wheels_Position.get(i).get(2).getEntry(1));
-            Wheel_FourX.add(Wheels_Position.get(i).get(3).getEntry(0));
-            Wheel_FourY.add(Wheels_Position.get(i).get(3).getEntry(1));
+        // Create rotation rates data set
+        XYDataset rotationRates = wheelRotationRatesDataSet(wheelRotationRates, simTime);
 
-            // storing XY coordinates in their respective series
-            WheelOne.add( Wheel_OneX.get(i) , Wheel_OneY.get(i) );
-            WheelTwo.add( Wheel_TwoX.get(i) , Wheel_TwoY.get(i) );
-            WheelThree.add( Wheel_ThreeX.get(i) , Wheel_ThreeY.get(i) );
-            WheelFour.add( Wheel_FourX.get(i) , Wheel_FourY.get(i) );
+        // Create and customize renderer
+        XYLineAndShapeRenderer rotationRatesPlotRenderer = new XYLineAndShapeRenderer();
+
+        rotationRatesPlotRenderer.setBaseShapesFilled(true);
+
+        rotationRatesPlotRenderer.setSeriesPaint(0, Color.BLUE);
+        rotationRatesPlotRenderer.setSeriesPaint(1, Color. RED);
+        rotationRatesPlotRenderer.setSeriesPaint(2, Color.GREEN);
+        rotationRatesPlotRenderer.setSeriesPaint(3, Color.YELLOW);
+
+        rotationRatesPlotRenderer.setSeriesShape(0, shape);
+        rotationRatesPlotRenderer.setSeriesShape(1, shape);
+        rotationRatesPlotRenderer.setSeriesShape(2, shape);
+        rotationRatesPlotRenderer.setSeriesShape(3, shape);
+
+        rotationRatesPlotRenderer.setSeriesLinesVisible(0, false);
+        rotationRatesPlotRenderer.setSeriesLinesVisible(1, false);
+        rotationRatesPlotRenderer.setSeriesLinesVisible(2, false);
+        rotationRatesPlotRenderer.setSeriesLinesVisible(3, false);
+
+        // Create rotation rates plot
+        XYPlot rotationRatePlot  = new XYPlot(rotationRates, xAxis, yAxis, rotationRatesPlotRenderer);
+
+        // Create rotation rates chart
+        JFreeChart rotationRateChart = new JFreeChart(" ", JFreeChart.DEFAULT_TITLE_FONT, rotationRatePlot, true);
+        rotationRateChart.removeLegend();
+
+        return rotationRateChart;
+    }
+
+    /**
+     * Function that creates the vehicle position XY data set
+     *
+     * @param  vehiclePosition Position of the center of mass of the vehicle+
+     * @param  simTime Discrete time points during the simulation
+     * @return Returns a XY date set of the position of the center of mass of the vehicle
+     */
+    private static XYDataset vehiclePositionDataSet(List<RealVector> vehiclePosition, List<Long> simTime) {
+
+        // Create XY series for storing the position
+        XYSeries position = new XYSeries("x_y", false, true);
+        List<Double> tempPosition = new LinkedList<Double>();
+
+        // Fill series with data
+        for(int i=0; i<vehiclePosition.size(); i++){
+
+            tempPosition.add(vehiclePosition.get(i).getEntry(1));
+            //position.add(simTime.get(i), tempPosition.get(i));
+            position.add(vehiclePosition.get(i).getEntry(0), tempPosition.get(i));
 
         }
 
-            // Create a parallel series collection to store data of the 4 wheels
+        // Create a parallel series collection and store data
+        XYSeriesCollection vehiclePositionDataSet = new XYSeriesCollection();
+        vehiclePositionDataSet.addSeries(position);
 
-            WheelsDataSet.addSeries( WheelOne );
-            WheelsDataSet.addSeries( WheelTwo );
-            WheelsDataSet.addSeries( WheelThree );
-            WheelsDataSet.addSeries( WheelFour );
-
-            return WheelsDataSet;
-    }
-
-
-    /**
-     * Function that creates XY position dataset for vehicle center of mass
-     *
-     * @param VehicleMassPointPosition vector containing XYZ coordinates of the vehicle COM obtained during simulation
-     * @param  SimTime Discrete time vector of duration of the simulation
-     * @return Returns an XY series representing the relative position of the vehicle COM  in the plane for plotting
-     * COM = Center of Mass
-     */
-
-    private XYDataset VehiclePositionDataset( List<RealVector> VehicleMassPointPosition,  List<Long> SimTime)
-    {
-
-        // Create XY Series objects for storing the XY coordinates of vehicle
-
-        // X = f(t), Y = f(t)
-        final XYSeries VehiclePosX = new XYSeries("X = f(t) ", false, true);
-        final XYSeries VehiclePosY = new XYSeries(" Y = f(t) ", false, true);
-        // X = f(Y)
-        final XYSeries VehicleXYPos = new XYSeries("Y = f(X)", false, true);
-
-        // Retrieving XY corrdinates of the vehicle
-        for(int i=0; i<VehicleMassPointPosition.size(); i++){
-
-            // getting XY coordinates from the input vector
-            vehiclePosX.add(VehicleMassPointPosition.get(i).getEntry(0));
-            vehiclePosY.add(VehicleMassPointPosition.get(i).getEntry(1));
-            //vehiclePosZ.add(VehicleMassPointPosition.get(i).getEntry(2));
-
-            // Create three element vectors : X versus time, Y versus time, and Y versus X
-//            VehiclePosX.add( SimTime.get(i) , vehiclePosX.get(i));
-//            VehiclePosY.add( SimTime.get(i) , vehiclePosY.get(i));
-              VehicleXYPos.add( vehiclePosX.get(i) , vehiclePosY.get(i));
-
-        }
-
-        // Create a parallel series collection to store data X=f(t), Y=f(t), Y=f(X)
-        final XYSeriesCollection VehiclePosDataset = new XYSeriesCollection();
-//            VehiclePosDataset.addSeries( VehiclePosX );
-//            VehiclePosDataset.addSeries( VehiclePosY );
-              VehiclePosDataset.addSeries( VehicleXYPos );
-
-        return VehiclePosDataset;
+        return vehiclePositionDataSet;
     }
 
     /**
-     * Function that creates Z position dataset for vehicle center of mass
+     * Function that creates the vehicle velocity XY data set
      *
-     * @param Wheels_Position vector containing XYZ coordinates of the vehicle COM obtained during simulation
-     * @param  SimTime Discrete time vector of duration of the simulation
-     * @param WheelRadius Radius of the wheels
-     * @return Returns an XY series representing the relative Z position of the vehicle COM  in the plane for plotting
-     * COM = Center of Mass
+     * @param  vehicleVelocity Velocity of the center of mass of the vehicle
+     * @param  simTime Discrete time points during the simulation
+     * @return Returns a XY date set of the velocity of the center of mass of the vehicle
      */
 
-    private XYDataset zAxisDataset( List<List<RealVector>> Wheels_Position, double WheelRadius,  List<Long> SimTime)
-    {
+    private static XYDataset vehicleVelocityDataSet(List<RealVector> vehicleVelocity, List<Long> simTime) {
 
-        // Create XY Series objects for storing the Z coordinates of vehicle
+        // Create XY series for storing the velocity
+        XYSeries velocity = new XYSeries("v_y", false, true);
+        List<Double>  tempVelocity = new LinkedList<Double>();
 
-        // X = f(t), Y = f(t)
-        double groundZ = 0.0;
-        double WheelOne_zAxisValue;
-        double WheelTwo_zAxisValue;
-        double WheelThree_zAxisValue;
-        double WheelFour_zAxisValue;
+        // Fill series with data
+        for(int i=0; i<vehicleVelocity.size(); i++){
 
-        // Retrieving Z corrdinates of the vehicle
-        for(int i=0; i<Wheels_Position.size(); i++){
-
-            // getting XY coordinates from the input vector
-            //vehiclePosX.add(VehicleMassPointPosition.get(i).getEntry(0));
-            //vehiclePosY.add(VehicleMassPointPosition.get(i).getEntry(1));
-
-            WheelOne_zAxisValue = Wheels_Position.get(i).get(0).getEntry(2) - groundZ - WheelRadius;
-            WheelTwo_zAxisValue = Wheels_Position.get(i).get(1).getEntry(2) - groundZ - WheelRadius;
-            WheelThree_zAxisValue = Wheels_Position.get(i).get(2).getEntry(2) - groundZ - WheelRadius;
-            WheelFour_zAxisValue = Wheels_Position.get(i).get(3).getEntry(2) - groundZ - WheelRadius;
-
-
-            // getting XY coordinates from the input vector
-            Wheel_OneZ.add(WheelOne_zAxisValue);
-            Wheel_TwoZ.add(WheelTwo_zAxisValue);
-            Wheel_ThreeZ.add(WheelThree_zAxisValue);
-            Wheel_FourZ.add(WheelFour_zAxisValue);
-
-
-            // storing XY coordinates in their respective series
-            WheelOne_zAxis.add( SimTime.get(i) , Wheel_OneZ.get(i) );
-            WheelTwo_zAxis.add( SimTime.get(i) , Wheel_TwoZ.get(i) );
-            WheelThree_zAxis.add( SimTime.get(i) , Wheel_ThreeZ.get(i) );
-            WheelFour_zAxis.add( SimTime.get(i) , Wheel_FourZ.get(i) );
-            // Create three element vectors : X versus time, Y versus time, and Y versus X
-//            VehiclePosX.add( SimTime.get(i) , vehiclePosX.get(i));
-//            VehiclePosY.add( SimTime.get(i) , vehiclePosY.get(i));
+            tempVelocity.add(vehicleVelocity.get(i).getEntry(1));
+            velocity.add(simTime.get(i), tempVelocity.get(i));
 
         }
 
-        // Create a parallel series collection to store data Z=f(t)
-        final XYSeriesCollection VehicleZAxisDataset = new XYSeriesCollection();
-              VehicleZAxisDataset.addSeries( WheelOne_zAxis );
-              VehicleZAxisDataset.addSeries( WheelTwo_zAxis );
-              VehicleZAxisDataset.addSeries( WheelThree_zAxis );
-              VehicleZAxisDataset.addSeries( WheelFour_zAxis );
+        // Create a parallel series collection and store data
+        XYSeriesCollection vehicleVelocityDataSet = new XYSeriesCollection();
+        vehicleVelocityDataSet.addSeries(velocity);
 
-        return VehicleZAxisDataset;
+        return vehicleVelocityDataSet;
     }
-
-
 
     /**
-     * Function that creates Velocity dataset for vehicle center of mass
+     * Function that creates the vehicle rotation rates XY data set
      *
-     * @param VehicleMassPointVelocity vector containing XYZ velocities of the vehicle COM obtained during simulation
-     * @param SimTime SimTime Discrete time vector of duration of the simulation
-     * @return Returns an XY series representing the relative position of the vehicle COM  in the plane for plotting
-     * COM = Center of Mass
+     * @param  wheelRotationRates Rotation rates of the wheels of the vehicle
+     * @param  simTime Discrete time points during the simulation
+     * @return Returns a XY date set of the rotation rates of the wheels of the vehicle
      */
 
-    private XYDataset VehicleVelocityDataset(List<RealVector> VehicleMassPointVelocity, List<Long> SimTime)
-    {
+    private static XYDataset wheelRotationRatesDataSet(List<List<Double>> wheelRotationRates, List<Long> simTime) {
 
-        // Create XY Series objects for storing the velocityof vehicle
+        // Create XY series for storing the wheel rotation rates
+        XYSeries wheelOne = new XYSeries("omega_wheel_1", false, true);
+        XYSeries wheelTwo = new XYSeries("omega_wheel_2", false, true);
+        XYSeries wheelThree = new XYSeries("omega_wheel_3", false, true);
+        XYSeries wheelFour = new XYSeries("omega_wheel_4", false, true);
+        List<Double> tempOne = new LinkedList<Double>();
+        List<Double> tempTwo = new LinkedList<Double>();
+        List<Double> tempThree = new LinkedList<Double>();
+        List<Double> tempFour = new LinkedList<Double>();
 
-        // Vx = f(t), Vy = f(t)
-        final XYSeries VehicleVelX = new XYSeries("Vx = f(t)", false, true);
-        final XYSeries VehicleVelY = new XYSeries("Vy = f(t)", false, true);
-        // V = f(t)
-        final XYSeries VehicleVelXY = new XYSeries("V = f(t)", false, true);
-//        final XYSeries VehicleVelZ = new XYSeries("WheelFour", false, true);
+        // Fill series with data
+        for(int i=0; i<wheelRotationRates.size(); i++){
 
-
-        // Retrieving velocity corrdinates of the vehicle
-        for(int i=0; i<VehicleMassPointVelocity.size(); i++){
-
-            // getting Vx Vy velocity coordinates from the input vector
-            vehicleVelocityX.add(VehicleMassPointVelocity.get(i).getEntry(0));
-            vehicleVelocityY.add(VehicleMassPointVelocity.get(i).getEntry(1));
-//            vehicleVelocityZ.add(VehicleMassPointVelocity.get(i).getEntry(2));
-
-            // Calculating the vehicle's velocity based on Vx Vy
-            vehicleVelocityXY.add(Math.sqrt(Math.pow(vehicleVelocityX.get(i),2) + Math.pow(vehicleVelocityY.get(i),2)));
-//            VehicleVelX.add( SimTime.get(i) , vehicleVelocityX.get(i));
-//            VehicleVelY.add( SimTime.get(i) , vehicleVelocityY.get(i));
-
-            // Adding the vehicle velocity V = f(Vx,Vy)
-            VehicleVelXY.add( SimTime.get(i) , vehicleVelocityXY.get(i));
-//            VehicleVelZ.add( SimTime.get(i) , vehiclePosZ.get(i));
+            tempOne.add(wheelRotationRates.get(i).get(0));
+            tempTwo.add(wheelRotationRates.get(i).get(1));
+            tempThree.add(wheelRotationRates.get(i).get(2));
+            tempFour.add(wheelRotationRates.get(i).get(3));
+            wheelOne.add(simTime.get(i), tempOne.get(i));
+            wheelTwo.add(simTime.get(i), tempTwo.get(i));
+            wheelThree.add(simTime.get(i), tempThree.get(i));
+            wheelFour.add(simTime.get(i), tempFour.get(i));
 
         }
 
+        // Create a parallel series collection and store data
+        XYSeriesCollection vehicleRotationRatesDataSet = new XYSeriesCollection();
+        vehicleRotationRatesDataSet.addSeries(wheelOne);
+        vehicleRotationRatesDataSet.addSeries(wheelTwo);
+        vehicleRotationRatesDataSet.addSeries(wheelThree);
+        vehicleRotationRatesDataSet.addSeries(wheelFour);
 
-        // Create a parallel series collection to store data Vx=f(t), Vy=f(t), V=f(Vx, Vy)
-
-
-//            VehicleVelDataset.addSeries( VehicleVelX );
-//            VehicleVelDataset.addSeries( VehicleVelY );
-            VehicleVelDataset.addSeries( VehicleVelXY );
-
-        // Return Data for display
-        return VehicleVelDataset;
+        return vehicleRotationRatesDataSet;
     }
-
-
-    /* Getters */
-    /* */
-    public XYSeriesCollection getWheelsDataSet() {return WheelsDataSet;}
-
-    public XYSeriesCollection getVehicleVelDataSet() {return VehicleVelDataset;}
-
-    public XYSeriesCollection getVehiclePosDataSet() {return VehiclePosDataset;}
-
-    public JFreeChart getPositionChart() {return PositionChart;}
-
-    public JFreeChart getVelocityChart() {return VelocityChart;}
-
-    public JFreeChart getZPositionChart() {return zPositionChart;}
-
-    public XYSeries getWheelOne() {return WheelOne;}
-
-    public XYSeries getWheelTwo() {return WheelTwo;}
-
-    public XYSeries getWheelThree() {return WheelThree;}
-
-    public XYSeries getWheelFour() {return WheelFour;}
-
-    public XYPlot getPositionPlot(){return PositionPlot;}
-
-    public XYPlot getVelocityPlot(){return VelocityPlot;}
-
-    }
+}

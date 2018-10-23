@@ -1,3 +1,23 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.environment.geometry.splines;
 
 import commons.map.ControllerNode;
@@ -7,7 +27,6 @@ import javafx.geometry.Point3D;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.environment.pedestrians.PedestrianStreetParameters;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -167,9 +186,9 @@ public class LinearInterpolator implements Spline {
 
     @Override
     public double computeDistanceToLeft(PhysicalObject o) {
-        RealVector left = o.getGeometryPos().add(o.getGeometryRot().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
-        RealVector right = o.getGeometryPos().add(o.getGeometryRot().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
-        RealVector middle = o.getGeometryPos();
+        RealVector left = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector right = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector middle = o.getGeometryPosition();
 
         Point3D lP = new Point3D(left.getEntry(0),left.getEntry(1),left.getEntry(2));
         Point3D rP = new Point3D(right.getEntry(0),right.getEntry(1),right.getEntry(2));
@@ -187,14 +206,14 @@ public class LinearInterpolator implements Spline {
 
     @Override
     public double computeDistanceToFrontLeft(PhysicalObject o){
-        RealVector front = o.getGeometryPos().add(o.getGeometryRot().operate(new ArrayRealVector(new double[]{-0.25*o.getWidth(),5*o.getLength(),0.0})));
+        RealVector front = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[]{-0.25*o.getWidth(),5*o.getLength(),0.0})));
         Point3D frontpoint= new Point3D(front.getEntry(0),front.getEntry(1),front.getEntry(2));
         return computeDistance(frontpoint,Direction.MIDDLE,false);
     }
 
     @Override
     public double computeDistanceToFrontRight(PhysicalObject o){
-        RealVector front = o.getGeometryPos().add(o.getGeometryRot().operate(new ArrayRealVector(new double[]{0.25*o.getWidth(),5*o.getLength(),0.0})));
+        RealVector front = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[]{0.25*o.getWidth(),5*o.getLength(),0.0})));
         Point3D frontpoint= new Point3D(front.getEntry(0),front.getEntry(1),front.getEntry(2));
         return computeDistance(frontpoint,Direction.MIDDLE,false);
     }
@@ -206,9 +225,9 @@ public class LinearInterpolator implements Spline {
 
     @Override
     public double computeDistanceToRight(PhysicalObject o) {
-        RealVector left = o.getGeometryPos().add(o.getGeometryRot().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
-        RealVector right = o.getGeometryPos().add(o.getGeometryRot().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
-        RealVector middle = o.getGeometryPos();
+        RealVector left = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {-0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector right = o.getGeometryPosition().add(o.getRotation().operate(new ArrayRealVector(new double[] {0.5 * o.getWidth(), 0.0, 0.0})));
+        RealVector middle = o.getGeometryPosition();
 
         Point3D lP = new Point3D(left.getEntry(0),left.getEntry(1),left.getEntry(2));
         Point3D rP = new Point3D(right.getEntry(0),right.getEntry(1),right.getEntry(2));

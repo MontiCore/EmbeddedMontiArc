@@ -1,10 +1,30 @@
+/**
+ *
+ * ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package simulation.environment;
-
 
 import commons.map.Adjacency;
 import commons.map.ControllerContainer;
 import commons.map.IAdjacency;
 import commons.map.IControllerNode;
+import commons.simulation.IPhysicalVehicle;
 import commons.simulation.PhysicalObject;
 import javafx.geometry.Point3D;
 import org.apache.commons.math3.linear.RealVector;
@@ -23,8 +43,6 @@ import simulation.environment.visualisationadapter.interfaces.EnvStreet;
 import simulation.environment.visualisationadapter.interfaces.VisualisationEnvironmentContainer;
 import simulation.environment.weather.Weather;
 import simulation.environment.weather.WeatherSettings;
-
-
 import java.util.*;
 
 /**
@@ -59,7 +77,7 @@ public class WorldModel implements World{
     }
 
     /**
-     * Initialize singleton World instance.
+     * Initialise singleton World instance.
      * 
      * No map parsing done in this method,
      * rather only weather settings are 
@@ -79,7 +97,7 @@ public class WorldModel implements World{
      * Parse only the world map and return
      * its VisualisationEnvironmentContainer.
      * 
-     * This method does not initialize the singleton World instance!
+     * This method does not initialise the singleton World instance!
      * 
      * @param pSettings - parser settings
      * @return VisualisationEnvironmentContainer object
@@ -92,7 +110,7 @@ public class WorldModel implements World{
     /** 
      * Builds controller-container only. 
      *  
-     * Singleton instance is not initialized. 
+     * Singleton instance is not initialised.
      *  
      * @param visContainer - pre-built VisualisationEnvironmentContainer 
      * @param wSettings - weather settings 
@@ -130,7 +148,7 @@ public class WorldModel implements World{
         parseWorld(pSettings);
         constructGeomStreets();
         positionStreetSigns();
-        initWeather(new WeatherSettings(Weather.RAIN));
+        initWeather(new WeatherSettings(Weather.SUNSHINE));
         constructControllerContainer();
         initPedestrians();
     }
@@ -262,7 +280,7 @@ public class WorldModel implements World{
      */
     @Override
     public GeomStreet getStreet(PhysicalObject o){
-        EnvNode n = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        EnvNode n = new Node2D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         GeomStreet street = getMinimumStreetForNode(n);
         return street;
     }
@@ -294,85 +312,85 @@ public class WorldModel implements World{
 
     @Override
     public Number getDistanceToMiddleOfStreet(PhysicalObject o) {
-        EnvNode n = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+        EnvNode n = new Node2D(o.getGeometryPosition().getEntry(0),o.getGeometryPosition().getEntry(1),o.getGeometryPosition().getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
         return minStreet.getDistanceToMiddle(o);
     }
 
     @Override
-    public Number getDistanceToLeftStreetBorder(PhysicalObject o) {
-        EnvNode n = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+    public Number getDistanceToLeftStreetBorder(IPhysicalVehicle v) {
+        EnvNode n = new Node2D(v.getGeometryPosition().getEntry(0),v.getGeometryPosition().getEntry(1),v.getGeometryPosition().getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(o);
+        return minStreet.getDistanceToLeft(v);
     }
 
     @Override
-    public Number getDistanceFrontLeftWheelToLeftStreetBorder(PhysicalObject o) {
-        RealVector pos = o.getFrontLeftWheelGeometryPos();
+    public Number getDistanceFrontLeftWheelToLeftStreetBorder(IPhysicalVehicle v) {
+        RealVector pos = v.getFrontLeftWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(o);
+        return minStreet.getDistanceToLeft(v);
     }
 
     @Override
-    public Number getDistanceBackLeftWheelToLeftStreetBorder(PhysicalObject o) {
-        RealVector pos = o.getBackLeftWheelGeometryPos();
+    public Number getDistanceBackLeftWheelToLeftStreetBorder(IPhysicalVehicle v) {
+        RealVector pos = v.getBackLeftWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(o);
+        return minStreet.getDistanceToLeft(v);
     }
 
     @Override
-    public Number getDistanceLeftFrontToStreetBorder(PhysicalObject o){
-        RealVector pos = o.getBackLeftWheelGeometryPos();
+    public Number getDistanceLeftFrontToStreetBorder(IPhysicalVehicle v){
+        RealVector pos = v.getBackLeftWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistancetoFrontLeft(o);
+        return minStreet.getDistancetoFrontLeft(v);
     }
 
     @Override
-    public Number getDistanceRightFrontToStreetBorder(PhysicalObject o){
-        RealVector pos = o.getBackLeftWheelGeometryPos();
+    public Number getDistanceRightFrontToStreetBorder(IPhysicalVehicle v){
+        RealVector pos = v.getBackLeftWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistancetoFrontRight(o);
+        return minStreet.getDistancetoFrontRight(v);
     }
 
     @Override
-    public Number getDistanceToRightStreetBorder(PhysicalObject o) {
-        EnvNode n = new Node2D(o.getGeometryPos().getEntry(0),o.getGeometryPos().getEntry(1),o.getGeometryPos().getEntry(2));
+    public Number getDistanceToRightStreetBorder(IPhysicalVehicle v) {
+        EnvNode n = new Node2D(v.getGeometryPosition().getEntry(0),v.getGeometryPosition().getEntry(1),v.getGeometryPosition().getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToRight(o);
+        return minStreet.getDistanceToRight(v);
     }
 
     @Override
-    public Number getDistanceFrontRightWheelToRightStreetBorder(PhysicalObject o) {
-        RealVector pos = o.getFrontRightWheelGeometryPos();
+    public Number getDistanceFrontRightWheelToRightStreetBorder(IPhysicalVehicle v) {
+        RealVector pos = v.getFrontRightWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(o);
+        return minStreet.getDistanceToLeft(v);
     }
 
     @Override
-    public Number getDistanceBackRightWheelToRightStreetBorder(PhysicalObject o) {
-        RealVector pos = o.getBackRightWheelGeometryPos();
+    public Number getDistanceBackRightWheelToRightStreetBorder(IPhysicalVehicle v) {
+        RealVector pos = v.getBackRightWheelGeometryPosition();
 
         EnvNode n = new Node2D(pos.getEntry(0),pos.getEntry(1),pos.getEntry(2));
         GeomStreet minStreet = getMinimumStreetForNode(n);
 
-        return minStreet.getDistanceToLeft(o);
+        return minStreet.getDistanceToLeft(v);
     }
 
     @Override
@@ -440,6 +458,4 @@ public class WorldModel implements World{
             return streets.get(street).getNodes().get(r.nextInt(streets.get(street).getNodes().size()));
         }
     }
-
-
 }
