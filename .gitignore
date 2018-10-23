@@ -4,9 +4,9 @@
 # Build
 node_modules/
 /packages/**/lib/
-/plugins/**/lib/
+/extensions/**/lib/
 /packages/**/docs/
-/plugins/**/docs/
+/extensions/**/docs/
 yarn-error.log
 lerna-debug.log
 .browser_modules/

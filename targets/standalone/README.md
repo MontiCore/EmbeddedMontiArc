@@ -12,7 +12,7 @@
 * [**Description**](#description)
 * [**Getting Started**](/doc/GettingStarted.md)
 * [**Packages**](../../packages/standalone)
-* [**Plugins**](../../plugins/standalone)
+* [**Extensions**](../../extensions/standalone)
 * [**Browser Support**](#browser-support)
 
 ## Description

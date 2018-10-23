@@ -6,7 +6,7 @@
 * [**Description**](#description)
 * [**Getting Started**](/doc/GettingStarted.md)
 * [**Packages**](../../packages/emastudio)
-* [**Plugins**](../../plugins/emastudio)
+* [**Extensions**](../../extensions/emastudio)
 
 ## Description
 To be written.

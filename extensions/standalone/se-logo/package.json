@@ -1,0 +1,39 @@
+{
+  "private": true,
+  "name": "@elysium/se-logo",
+  "version": "0.1.0",
+  "description": "Extension for the Integration of the Software Engineering Logo.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "yarn run compile:clean && yarn run docs:clean",
+    "build": "yarn run compile",
+    "compile": "tsc --project compile.tsconfig.json",
+    "compile:clean": "rimraf lib",
+    "watch": "tsc --watch --project compile.tsconfig.json",
+    "docs": "typedoc --tsconfig compile.tsconfig.json --options ../../../configs/typedoc.json",
+    "docs:clean": "rimraf docs"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@theia/core": "latest"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/se-logo-module"
+    }
+  ]
+}

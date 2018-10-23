@@ -14,9 +14,9 @@
   "workspaces": {
     "packages": [
       "packages/standalone/*",
-      "plugins/standalone/*",
+      "extensions/standalone/*",
       "packages/emastudio/*",
-      "plugins/emastudio/*",
+      "extensions/emastudio/*",
       "targets/*"
     ]
   },

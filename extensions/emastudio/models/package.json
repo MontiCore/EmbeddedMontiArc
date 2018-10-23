@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "name": "@emastudio/models",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio Models Extension for the manipulation of available models.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "yarn run compile:clean && yarn run docs:clean",
+    "build": "yarn run compile",
+    "compile": "tsc --project compile.tsconfig.json",
+    "compile:clean": "rimraf lib",
+    "watch": "tsc --watch --project compile.tsconfig.json",
+    "docs": "typedoc --tsconfig compile.tsconfig.json --options ../../../configs/typedoc.json",
+    "docs:clean": "rimraf docs"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@emastudio/paths": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/models-frontend-module",
+      "backend": "lib/node/models-backend-module"
+    }
+  ]
+}
