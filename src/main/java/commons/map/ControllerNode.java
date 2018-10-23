@@ -21,7 +21,6 @@
 package commons.map;
 
 import javafx.geometry.Point3D;
-
 import java.util.HashMap;
 
 /**
