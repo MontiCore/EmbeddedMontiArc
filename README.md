@@ -1,5 +1,3 @@
 # demonstrator
 
-project page for demonstrator, we start with http://demo.embeddedmontiarc.com/
-
-please test all of your code. For Java code use JUnit4 with Maven. For TypeScript code use Jasmin with Maven (see https://github.com/EmbeddedMontiArc/demonstrator/issues/6)
+this is the car web playground of the master thesis "Development of Web Playground for Component and Connector Models" by Ievgen Strepkov
