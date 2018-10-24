@@ -21,7 +21,7 @@ ${cmd}
 # create static library
 include_directories(${r"${INCLUDE_DIRS}"})
 add_library(${viewModel.compName} ${viewModel.compName}.h)
-target_include_directories(${viewModel.compName} PUBLIC ${r"${CMAKE_CURRENT_SOURCE_DIR}"})
+target_include_directories(${viewModel.compName} PUBLIC ${r"${CMAKE_CURRENT_SOURCE_DIR}"} ${r"${INCLUDE_DIRS}"})
 target_link_libraries(${viewModel.compName} PUBLIC ${r"${LIBS}"})
 set_target_properties(${viewModel.compName} PROPERTIES LINKER_LANGUAGE CXX)
 
