@@ -40,7 +40,8 @@ public class UnZip
 
                 //create all non exists folders
                 new File(newFile.getParent()).mkdirs();
-                projectFolderName = new File(newFile.getParent()).getName();
+                if(projectFolderName =="")
+                    projectFolderName = new File(newFile.getParent()).getName();
 
                 FileOutputStream fos = new FileOutputStream(newFile);
 

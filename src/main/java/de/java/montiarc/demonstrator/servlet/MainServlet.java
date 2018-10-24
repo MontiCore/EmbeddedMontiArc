@@ -23,7 +23,10 @@ public class MainServlet extends HttpServlet {
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doOptions(req, resp);
         resp.addHeader("Access-Control-Allow-Origin","*");
-        resp.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        resp.addHeader("Access-Control-Allow-Credentials","true");
+        resp.addHeader("Access-Control-Allow-Methods", "POST, GET, PUT, UPDATE, OPTIONS");
+        resp.addHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With");
+        resp.setStatus(HttpStatus.OK_200);
     }
 
     @Override
@@ -58,28 +61,25 @@ public class MainServlet extends HttpServlet {
 
         //Unzip works here, just read file from current dir
         UnZip unZip = new UnZip();
-        unZip.unZipIt("incomingData/source.zip","../emam2wasm/models");
-        String modelName = unZip.unZipIt("incomingData/source.zip","../EmbeddedMontiArcStudio/model");
+        //unZip.unZipIt("incomingData/source.zip","../emam2wasm/models");
+        //String modelName = unZip.unZipIt("incomingData/source.zip","../EmbeddedMontiArcStudio/model");
+        String modelName = unZip.unZipIt("incomingData/source.zip","../models");
 
         // Compile to C, and run tests
         boolean res0 = true; //compileAndRunTest(modelName) == 0;
-
         //Compile sources, emam2wasm
         boolean res1 = compileEMAM(modelName) == 0;
 
-        // if the compilation was successful then pack data and send back
+        // Send response with encoded zipStream
         if(res0 && res1){
 
             //Read compiled files and pack them into archive
             ZipMultipleFiles zipOut = new ZipMultipleFiles();
 
-            ByteArrayOutputStream zipStream = zipOut.zipItToStream(
-                    "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.wasm",
-                    "C:/Users/Administrator/code/WebServerForDemonstrator/outgoingData/mainController.js");
+            ByteArrayOutputStream zipStream = zipOut.zipItToStream("./outgoingData/mainController.wasm",
+                    "./outgoingData/mainController.js");
 
-            // Send response with encoded zipStream
             resp.addHeader("Access-Control-Allow-Origin", "*");
-//            resp.setContentType("blob");
             resp.setStatus(HttpStatus.OK_200);
             resp.getOutputStream().write(zipStream.toByteArray());
 
@@ -88,13 +88,14 @@ public class MainServlet extends HttpServlet {
 
             resp.addHeader("Access-Control-Allow-Origin", "*");
             resp.setContentType("text/plain");
-            resp.sendError(HttpStatus.INTERNAL_SERVER_ERROR_500,"Error during compilation! Check the model!");
-
+            resp.sendError(500, "Error during compilation! Check the model!");
         }
 
         clearWorkspace(new File("incomingData"));
-        clearWorkspace(new File("../emam2wasm/models"));
-        clearWorkspace(new File("../EmbeddedMontiArcStudio/model"));
+        clearWorkspace(new File("../models"));
+        clearWorkspace(new File("../target"));
+        //clearWorkspace(new File("../emam2wasm/models"));
+        //clearWorkspace(new File("../EmbeddedMontiArcStudio/model"));
     }
 
     protected String generateName(){
@@ -112,7 +113,7 @@ public class MainServlet extends HttpServlet {
         for(File file: dir.listFiles()) {
             if (file.isDirectory()) this.clearWorkspace(file);
             if (file.isDirectory()) System.out.print("Folder ");
-                else System.out.print("File ");
+            else System.out.print("File ");
             System.out.println(dir.getName()+"/"+file.getName()+" will be deleted!");
             file.delete();
         }
@@ -122,7 +123,8 @@ public class MainServlet extends HttpServlet {
     protected int compileEMAM(String modelName) throws IOException {
 
         Runtime rt = Runtime.getRuntime();
-        String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat",modelName + ".mainController"};
+        //String[] commands = {"C:\\Users\\Administrator\\code\\emam2wasm\\compile_notAll.bat", modelName + ".mainController"};
+        String[] commands = new String[]{"/bin/sh", "../compile.sh", modelName + ".mainController"};
         Process proc = rt.exec(commands);
 
         BufferedReader stdInput = new BufferedReader(new
@@ -142,6 +144,17 @@ public class MainServlet extends HttpServlet {
         System.out.println("Here is the standard error of the command (if any):\n");
         while ((s = stdError.readLine()) != null) {
             System.out.println(s);
+        }
+
+        try {
+
+            int exitCode = proc.waitFor();
+
+            if (exitCode != 0) {
+                throw new IOException("Command exited with " + exitCode);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         return proc.exitValue();
