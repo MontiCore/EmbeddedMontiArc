@@ -48,14 +48,16 @@ public class DistributedTargetGenerator extends CMakeGenerator {
             subDirs.add(NameHelper.getNameTargetLanguage(comp.getFullName()));
         }
 
-        subDirs.add("rosMsg");
-        files.add(generateCMake(componentInstanceSymbol));
-        files.add(generateRosMsgGen());
+        //generate rosMsg CMake iff a .msg file was generated
+        if(files.stream().anyMatch(f -> f.getName().endsWith(".msg"))){
+            subDirs.add("rosMsg");
+            files.add(generateRosMsgGen());
+        }
 
+        files.add(generateCMake(componentInstanceSymbol));
         return files;
     }
 
-    //TODO:refactor, dont always generate
     private File generateRosMsgGen() throws IOException {
         File file = new File(generationTargetPath + "rosMsg/CMakeLists.txt");
         FileUtils.write(file, TemplateHelper.getStruct_msgsCmakeTemplate());
