@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.javacodegeeks.snippets.enterprise</groupId>
-    <artifactId>embedded-jetty-example</artifactId>
+    <groupId>de.java.montiarc.demonstrator</groupId>
+    <artifactId>web-server-demonstrator</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
@@ -31,6 +31,19 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>de.java.montiarc.demonstrator.EmbeddedJettyMain</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
             </plugin>
         </plugins>
