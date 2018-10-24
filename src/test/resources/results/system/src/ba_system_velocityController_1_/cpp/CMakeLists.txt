@@ -16,7 +16,7 @@ set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 # create static library
 include_directories(${INCLUDE_DIRS})
 add_library(ba_system_velocityController_1_ ba_system_velocityController_1_.h)
-target_include_directories(ba_system_velocityController_1_ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(ba_system_velocityController_1_ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIRS})
 target_link_libraries(ba_system_velocityController_1_ PUBLIC ${LIBS})
 set_target_properties(ba_system_velocityController_1_ PROPERTIES LINKER_LANGUAGE CXX)
 
