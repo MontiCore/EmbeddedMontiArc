@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 public class GenerationTest extends AbstractSymtabTest {
@@ -316,5 +317,26 @@ public class GenerationTest extends AbstractSymtabTest {
 
         starBridgeGenerator.generate(componentInstanceSymbol, taggingResolver);
         assertTrue(Log.getFindings().isEmpty());
+    }
+
+
+    @Test
+    public void testNoRosMsg() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("tests.a.addComp", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        DistributedTargetGenerator distributedTargetGenerator = new DistributedTargetGenerator();
+        distributedTargetGenerator.setGenerationTargetPath("./target/generated-sources-cmake/noRosMsg/");
+        distributedTargetGenerator.add(new CPPGenImpl(),"cpp");
+
+        List<File> files = distributedTargetGenerator.generate(componentInstanceSymbol, taggingResolver);
+
+
+        List<String> filenames = files.stream().map(File::getAbsolutePath).map(name -> name.replace('\\','/')).collect(Collectors.toList());
+
+        assertFalse(filenames.stream().anyMatch(fn -> fn.endsWith("rosMsg/CMakeLists.txt")));
     }
 }
