@@ -56,7 +56,7 @@ C:\mingw64\bin\g++.exe
 C:\Program Files\CMake\bin\cmake.exe
 > where make
 C:\Program Files\make-3.81-bin\bin\make.exe
-> dir /b "$Armadillo_HOME\include"
+> dir /b "%Armadillo_HOME%\include"
 armadillo
 armadillo.h
 ...
