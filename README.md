@@ -41,11 +41,13 @@ make
 ```
 
 #### Windows
-Mingw gcc is recommended as the C++ compiler. See http://www.mingw.org/wiki/howto_install_the_mingw_gcc_compiler_suite for installation details.
+Mingw64 gcc is recommended as the C++ compiler. Download a version with all needed tools from [here](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=mingw64.zip).
 
 CMake for Windows: https://cmake.org/download/
 
 Make for Windows: http://gnuwin32.sourceforge.net/packages/make.htm
+
+Add the bin directories of all 3 to your PATH variable.
 
 Then download Armadillo from here: [Windows](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=armadillo-8.200.2.zip) and set the environment variable `Armadillo_HOME` to the base dir of your installation.
 To check everything is installed correctly use where/dir:
