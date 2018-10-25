@@ -17,7 +17,7 @@ inputVector=colvec(n);
 void execute()
 {
 maxIndex = 0;
-double maxValue = inputVector(0-1);
+double maxValue = inputVector(1-1);
 for( auto i=2;i<=n;++i){
 if((inputVector(i-1) > maxValue)){
 maxIndex = i-1;
