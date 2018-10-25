@@ -2,19 +2,24 @@ package lab;
 
 component System{
 
+    ports in Q rosIn[4],
+          out Q rosOut;
+
     instance Alex alex;
     instance DinhAn dinhAn;
     instance Philipp philipp;
     instance Michael michael;
     instance Combine combine;
 
+    connect rosIn[1] -> alex.input;
+    connect rosIn[2] -> dinhAn.input;
+    connect rosIn[3] -> philipp.input;
+    connect rosIn[4] -> michael.input;
+
     connect alex.out1 -> combine.in1;
     connect dinhAn.out1 -> combine.in2;
     connect philipp.out1 -> combine.in3;
     connect michael.out1 -> combine.in4;
 
-    connect combine.out1 -> alex.loop;
-    connect combine.out1 -> dinhAn.loop;
-    connect combine.out1 -> philipp.loop;
-    connect combine.out1 -> michael.loop;
+    connect combine.out1 -> rosOut;
 }
