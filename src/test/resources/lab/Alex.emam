@@ -1,11 +1,11 @@
 package lab;
 
 component Alex{
-    ports in Z loop,
-          out Z out1;
+    ports in Q input,
+          out Q out1;
 
     implementation Math{
-        out1 = loop * loop;
+        out1 = input * input;
     }
 
 }
