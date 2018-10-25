@@ -1,6 +1,12 @@
 # EMAM2Middleware
 ![pipeline](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/badges/master/build.svg)
 ![coverage](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/badges/master/coverage.svg)
+## Purpose
+This generator takes an EMAM or EMADL model and connects it to a middleware library. If all Ports of two connected Components are marked as middleware Ports, the generator will create 2 executables that can be deployed on different machines.
+All communication of these 2 Components will then be tunneled trough the specified middleware:
+![MiddlewareAdapter](/uploads/6e9c69e6b56554579551769174df3697/MiddlewareAdapter.png)
+
+
 ## Writing your own Middleware Generator
 see [TUTORIAL_ADD_MIDDLEWARE.md](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/TUTORIAL_ADD_MIDDLEWARE.md)
 
@@ -13,7 +19,7 @@ Example install of all needed packages for ubuntu:
 ```bash
 sudo apt install gcc cmake make
 ```
-Then download Armadillo from here: [Linux](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-armadillo-linux&files=armadillo-8.500.1-linux.zip) and set the environment variable `Armadillo_HOME` to the base dir of your installation.
+Then download Armadillo from here: [Linux](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.10.24-armadillo-linux&files=armadillo-8.500.1-linux.zip) and set the environment variable `Armadillo_HOME` to the base dir of your installation.
 
 To check everything is installed correctly use whereis/ls:
 ```bash
@@ -35,11 +41,13 @@ make
 ```
 
 #### Windows
-Mingw gcc is recommended as the C++ compiler. See http://www.mingw.org/wiki/howto_install_the_mingw_gcc_compiler_suite for installation details.
+Mingw64 gcc is recommended as the C++ compiler. Download a version with all needed tools from [here](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=mingw64.zip).
 
 CMake for Windows: https://cmake.org/download/
 
 Make for Windows: http://gnuwin32.sourceforge.net/packages/make.htm
+
+Add the bin directories of all 3 to your PATH variable.
 
 Then download Armadillo from here: [Windows](https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=armadillo-8.200.2.zip) and set the environment variable `Armadillo_HOME` to the base dir of your installation.
 To check everything is installed correctly use where/dir:
@@ -50,7 +58,7 @@ C:\mingw64\bin\g++.exe
 C:\Program Files\CMake\bin\cmake.exe
 > where make
 C:\Program Files\make-3.81-bin\bin\make.exe
-> dir /b "$Armadillo_HOME\include"
+> dir /b "%Armadillo_HOME%\include"
 armadillo
 armadillo.h
 ...
