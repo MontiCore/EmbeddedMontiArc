@@ -1,6 +1,10 @@
 @ECHO OFF
 call "..\..\common\variables"
 
+if exist "%SFS%\extensions\AllInOne" del /f /q "%SFS%\extensions\AllInOne"
+
+copy "%DISTR_SIM%\SmartFoxExtensions\distributed" "%SFS%\extensions\AllInOne"
+
 call generate.bat
 call compile.bat
 

@@ -47,7 +47,7 @@ function getCheckTask(dependency) {
         task: async () => {
             if (dependency.skipped) return Promise.resolve();
 
-            dependency.skipped = await FileSystem.pathExists(dependency.downloadFile);
+            //dependency.skipped = await FileSystem.pathExists(dependency.downloadFile);
         }
     };
 }
@@ -103,10 +103,10 @@ async function execute() {
     }, {
         title: "Checking Dependencies",
         task: () => { return getCheckTasks(dependencies); }
-    }, {
+    },/* {
         title: "Downloading Dependencies",
         task: () => { return getDownloadTasks(dependencies); }
-    }, {
+    },*/ {
         title: "Decompressing Dependencies",
         task: () => { return getDecompressTasks(dependencies); }
     }]);
