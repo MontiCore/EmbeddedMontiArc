@@ -107,7 +107,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
      */
     @Override
     public RealMatrix getRotation(){
-        return this.rotation.copy();
+        return coordinateRotation.transpose().multiply(this.rotation);
     }
 
     /**
@@ -119,7 +119,7 @@ public class ModelicaPhysicalVehicle extends PhysicalVehicle{
         if(!physicalVehicleInitialised) {
             throw new IllegalStateException("Rotation can only be set after initialisation.");
         }
-        this.rotation = rotation.copy();
+        this.rotation = coordinateRotation.multiply(rotation.copy());
         // Get angles to set yaw_angle
         Rotation rot = new Rotation(rotation.getData(), 0.00000001);
         double[] angles = rot.getAngles(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR);

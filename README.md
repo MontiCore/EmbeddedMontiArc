@@ -14,6 +14,8 @@ A vehicle dynamics model is used to calculate the physical behaviour for a car i
 
 To compile updated Modelica models into functional mock-up units, the _.mo_ files (the models) have to be exported via FMI into a _.fmu_ file using the OpenModelica Connection Editor v.1.12.0 (64-bit).
 
+__NOTE:__ When new fmu's are added to the simulation, the _deployment.bat_ the copies the fmu's into the SmartFoxServer has to be updated as well.
+
 The settings are:
 * Version: 2.0
 * Type: Co-Simulation

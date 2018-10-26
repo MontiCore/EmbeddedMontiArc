@@ -90,8 +90,8 @@ public final class Plotter2D{
         XYSeries position3 = new XYSeries("x_y_3", false, true);
         XYSeries position4 = new XYSeries("x_y_4", false, true);
 
-        RealVector wheelFrontPositionInternal = new ArrayRealVector(new double[]{physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
-        RealVector wheelBackPositionInternal = new ArrayRealVector(new double[]{-physicalVehicle.getWheelRadius() / 2, 0.0, 0.0});
+        RealVector wheelFrontPositionInternal = new ArrayRealVector(new double[]{0.0, physicalVehicle.getWheelRadius() / 2, 0.0});
+        RealVector wheelBackPositionInternal = new ArrayRealVector(new double[]{0.0, -physicalVehicle.getWheelRadius() / 2, 0.0});
 
         RealMatrix wheelRotation = new BlockRealMatrix(new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, -physicalVehicle.getSteeringAngle()).getMatrix());
         RealVector wheelFrontPositionLocal = wheelRotation.operate(wheelFrontPositionInternal);
