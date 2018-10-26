@@ -99,8 +99,12 @@ This guide is based on the installation guide from the Caffe2 website: https://c
 	
 	```
 	git clone --recursive https://github.com/pytorch/pytorch.git && cd pythorch
+	
+	git checkout v0.4.0
         
 	git submodule update --init
+    
+    #Navigate to pytorch folder
       
 	mkdir build && cd build
 
@@ -129,6 +133,8 @@ This guide is based on the installation guide from the Caffe2 website: https://c
 ### Windows 10
 
 This guide is based on the installation guide from the Caffe2 website: https://caffe2.ai/docs/getting-started.html?platform=windows&configuration=compile
+
+NOTE: PENDING TO CHECK WHETHER CAFFE2 IS SUPPORTED ON WINDOWS 10 BECAUSE LMDB WAS NOT DETECTED WHILE THIS GUIDE IS FOLLOWED
 
 - Add the directories C:\Python27 and C:\Python27\Scripts to the system variable _Path_.
 
