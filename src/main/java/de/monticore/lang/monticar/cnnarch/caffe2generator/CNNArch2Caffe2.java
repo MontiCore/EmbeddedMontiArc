@@ -102,9 +102,6 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
         temp = archTc.process("execute", Target.CPP);
         fileContentMap.put(temp.getKey().replace(".h", ""), temp.getValue());
 
-        temp = archTc.process("CNNBufferFile", Target.CPP);
-        fileContentMap.put("CNNBufferFile.h", temp.getValue());
-
         checkValidGeneration(architecture);
 
         return fileContentMap;

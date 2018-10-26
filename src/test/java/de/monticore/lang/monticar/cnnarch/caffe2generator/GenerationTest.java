@@ -54,8 +54,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                 "CNNCreator_CifarClassifierNetwork.py",
                 "CNNPredictor_CifarClassifierNetwork.h",
-                "execute_CifarClassifierNetwork",
-                "CNNBufferFile.h"));
+                "execute_CifarClassifierNetwork"));
     }
 
     @Test
