@@ -1,4 +1,4 @@
-package lenet;
+package mnist;
 
 component ArgMax<Z(1:oo) n = 2>{
     ports in Q^{n} inputVector,

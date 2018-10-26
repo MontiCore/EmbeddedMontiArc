@@ -1,4 +1,4 @@
-package lenet;
+package mnist;
 
 component LeNetNetwork<Z(2:oo) classes = 10>{
     ports in Z(0:255)^{1, 28, 28} image,

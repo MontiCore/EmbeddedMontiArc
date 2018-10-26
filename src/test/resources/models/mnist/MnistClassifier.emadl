@@ -1,4 +1,4 @@
-package lenet;
+package mnist;
 import Network;
 import CalculateClass;
 
