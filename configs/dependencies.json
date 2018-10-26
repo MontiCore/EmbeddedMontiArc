@@ -106,6 +106,6 @@
 }, {
   "//": "IDE",
   "platforms": ["win32", "linux"],
-  "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.06.ide&files=ide.zip",
+  "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.26.ide&files=ide.zip",
   "to": "resources"
 }]
