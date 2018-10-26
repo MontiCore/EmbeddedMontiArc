@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>cnn-arch</artifactId>
-    <version>0.2.7-SNAPSHOT</version>
+    <version>0.2.7</version>
 
 
 
@@ -43,8 +43,8 @@
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <SIUnit.version>0.0.11</SIUnit.version>
-        <Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
-        <Math.version>0.0.19-SNAPSHOT</Math.version>
+        <Common-MontiCar.version>0.0.14-20180704.113055-2</Common-MontiCar.version>
+        <Math.version>0.0.19-20180727.084044-1</Math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
