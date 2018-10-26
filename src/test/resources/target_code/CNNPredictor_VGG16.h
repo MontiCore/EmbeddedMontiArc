@@ -7,7 +7,7 @@
 #include "caffe2/core/tensor.h"
 #include "caffe2/core/init.h"
 
-// Enable define USE_GPU if you want to use gpu
+// Define USE_GPU for GPU computation. Default is CPU computation.
 //#define USE_GPU
 
 #ifdef USE_GPU
@@ -31,13 +31,12 @@ class CNNPredictor_VGG16{
 
     public:
         const std::vector<TIndex> input_shapes = {{1,3,224,224}};
-        const bool use_gpu = false;
 
         explicit CNNPredictor_VGG16(){
             init(input_shapes);
         }
 
-        //~CNNPredictor_VGG16(){};
+        ~CNNPredictor_VGG16(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;
@@ -61,11 +60,11 @@ class CNNPredictor_VGG16{
             CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net, &predictNet));
 
             // Set device type
-#ifdef USE_GPU
+            #ifdef USE_GPU
             predictNet.mutable_device_option()->set_device_type(CUDA);
             initNet.mutable_device_option()->set_device_type(CUDA);
             std::cout << "== GPU mode selected " << " ==" << std::endl;
-#else
+            #else
             predictNet.mutable_device_option()->set_device_type(CPU);
             initNet.mutable_device_option()->set_device_type(CPU);
 
@@ -76,7 +75,7 @@ class CNNPredictor_VGG16{
                 initNet.mutable_op(i)->mutable_device_option()->set_device_type(CPU);
             }
             std::cout << "== CPU mode selected " << " ==" << std::endl;
-#endif
+            #endif
 
             // Load network
             CAFFE_ENFORCE(workSpace.RunNetOnce(initNet));
@@ -91,11 +90,11 @@ class CNNPredictor_VGG16{
             input.ShareExternalPointer((float *) data.data());
 
             // Get input blob
-#ifdef USE_GPU
+            #ifdef USE_GPU
             auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCUDA>();
-#else
+            #else
             auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCPU>();
-#endif
+            #endif
 
             // Copy from input data
             dataBlob->CopyFrom(input);
@@ -104,11 +103,11 @@ class CNNPredictor_VGG16{
             workSpace.RunNet(predictNet.name());
 
             // Get output blob
-#ifdef USE_GPU
+            #ifdef USE_GPU
             auto predictionsBlob = TensorCPU(workSpace.GetBlob("predictions")->Get<TensorCUDA>());
-#else
+            #else
             auto predictionsBlob = workSpace.GetBlob("predictions")->Get<TensorCPU>();
-#endif
+            #endif
             predictions.assign(predictionsBlob.data<float>(),predictionsBlob.data<float>() + predictionsBlob.size());
 
             google::protobuf::ShutdownProtobufLibrary();

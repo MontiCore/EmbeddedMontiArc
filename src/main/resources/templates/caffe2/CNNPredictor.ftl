@@ -7,7 +7,7 @@
 #include "caffe2/core/tensor.h"
 #include "caffe2/core/init.h"
 
-// Enable define USE_GPU if you want to use gpu
+// Define USE_GPU for GPU computation. Default is CPU computation.
 //#define USE_GPU
 
 #ifdef USE_GPU
@@ -31,13 +31,12 @@ class ${tc.fileNameWithoutEnding}{
 
     public:
         const std::vector<TIndex> input_shapes = {<#list tc.architecture.inputs as input>{1,${tc.join(input.definition.type.dimensions, ",")}}<#if input?has_next>,</#if></#list>};
-        const bool use_gpu = false;
 
         explicit ${tc.fileNameWithoutEnding}(){
             init(input_shapes);
         }
 
-        //~${tc.fileNameWithoutEnding}(){};
+        ~${tc.fileNameWithoutEnding}(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;
@@ -61,11 +60,11 @@ class ${tc.fileNameWithoutEnding}{
             CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net, &predictNet));
 
             // Set device type
-#ifdef USE_GPU
+            #ifdef USE_GPU
             predictNet.mutable_device_option()->set_device_type(CUDA);
             initNet.mutable_device_option()->set_device_type(CUDA);
             std::cout << "== GPU mode selected " << " ==" << std::endl;
-#else
+            #else
             predictNet.mutable_device_option()->set_device_type(CPU);
             initNet.mutable_device_option()->set_device_type(CPU);
 
@@ -76,7 +75,7 @@ class ${tc.fileNameWithoutEnding}{
                 initNet.mutable_op(i)->mutable_device_option()->set_device_type(CPU);
             }
             std::cout << "== CPU mode selected " << " ==" << std::endl;
-#endif
+            #endif
 
             // Load network
             CAFFE_ENFORCE(workSpace.RunNetOnce(initNet));
@@ -91,16 +90,12 @@ class ${tc.fileNameWithoutEnding}{
             input.ShareExternalPointer((float *) ${tc.join(tc.architectureInputs, ",", "","")}.data());
 
             // Get input blob
-<#--<#list tc.architectureInputs as inputName>-->
-#ifdef USE_GPU
-            <#--auto ${inputName + "Blob"} = workSpace.GetBlob("${inputName}")->GetMutable<TensorCUDA>();-->
+            #ifdef USE_GPU
             auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCUDA>();
-#else
-            <#--auto ${inputName + "Blob"} = workSpace.GetBlob("${inputName}")->GetMutable<TensorCPU>();-->
+            #else
             auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCPU>();
-#endif
+            #endif
 
-<#--</#list>-->
             // Copy from input data
             dataBlob->CopyFrom(input);
 
@@ -109,11 +104,11 @@ class ${tc.fileNameWithoutEnding}{
 
             // Get output blob
 <#list tc.architectureOutputs as outputName>
-#ifdef USE_GPU
+            #ifdef USE_GPU
             auto ${outputName + "Blob"} = TensorCPU(workSpace.GetBlob("${outputName}")->Get<TensorCUDA>());
-#else
+            #else
             auto ${outputName + "Blob"} = workSpace.GetBlob("${outputName}")->Get<TensorCPU>();
-#endif
+            #endif
             ${outputName}.assign(${outputName + "Blob"}.data<float>(),${outputName + "Blob"}.data<float>() + ${outputName + "Blob"}.size());
 
 </#list>

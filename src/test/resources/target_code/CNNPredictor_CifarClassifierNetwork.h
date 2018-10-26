@@ -7,7 +7,7 @@
 #include "caffe2/core/tensor.h"
 #include "caffe2/core/init.h"
 
-// Enable define USE_GPU if you want to use gpu
+// Define USE_GPU for GPU computation. Default is CPU computation.
 //#define USE_GPU
 
 #ifdef USE_GPU
@@ -31,13 +31,12 @@ class CNNPredictor_CifarClassifierNetwork{
 
     public:
         const std::vector<TIndex> input_shapes = {{1,3,32,32}};
-        const bool use_gpu = false;
 
         explicit CNNPredictor_CifarClassifierNetwork(){
             init(input_shapes);
         }
 
-        //~CNNPredictor_CifarClassifierNetwork(){};
+        ~CNNPredictor_CifarClassifierNetwork(){};
 
         void init(const std::vector<TIndex> &input_shapes){
             int n = 0;
@@ -61,11 +60,11 @@ class CNNPredictor_CifarClassifierNetwork{
             CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net, &predictNet));
 
             // Set device type
-#ifdef USE_GPU
+            #ifdef USE_GPU
             predictNet.mutable_device_option()->set_device_type(CUDA);
             initNet.mutable_device_option()->set_device_type(CUDA);
             std::cout << "== GPU mode selected " << " ==" << std::endl;
-#else
+            #else
             predictNet.mutable_device_option()->set_device_type(CPU);
             initNet.mutable_device_option()->set_device_type(CPU);
 
@@ -76,7 +75,7 @@ class CNNPredictor_CifarClassifierNetwork{
                 initNet.mutable_op(i)->mutable_device_option()->set_device_type(CPU);
             }
             std::cout << "== CPU mode selected " << " ==" << std::endl;
-#endif
+            #endif
 
             // Load network
             CAFFE_ENFORCE(workSpace.RunNetOnce(initNet));
@@ -91,11 +90,11 @@ class CNNPredictor_CifarClassifierNetwork{
             input.ShareExternalPointer((float *) data.data());
 
             // Get input blob
-#ifdef USE_GPU
+            #ifdef USE_GPU
             auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCUDA>();
-#else
+            #else
             auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCPU>();
-#endif
+            #endif
 
             // Copy from input data
             dataBlob->CopyFrom(input);
@@ -104,11 +103,11 @@ class CNNPredictor_CifarClassifierNetwork{
             workSpace.RunNet(predictNet.name());
 
             // Get output blob
-#ifdef USE_GPU
+            #ifdef USE_GPU
             auto softmaxBlob = TensorCPU(workSpace.GetBlob("softmax")->Get<TensorCUDA>());
-#else
+            #else
             auto softmaxBlob = workSpace.GetBlob("softmax")->Get<TensorCPU>();
-#endif
+            #endif
             softmax.assign(softmaxBlob.data<float>(),softmaxBlob.data<float>() + softmaxBlob.size());
 
             google::protobuf::ShutdownProtobufLibrary();
