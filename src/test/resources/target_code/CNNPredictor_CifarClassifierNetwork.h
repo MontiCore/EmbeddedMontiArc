@@ -45,17 +45,16 @@ class CNNPredictor_CifarClassifierNetwork{
             caffe2::GlobalInit(&n, a);
 
             if (!std::ifstream(FLAGS_init_net).good()) {
-                std::cerr << "Network loading failure, init_net file '" << FLAGS_init_net << "' does not exist." << std::endl;
-                return;
+                std::cerr << "\nNetwork loading failure, init_net file '" << FLAGS_init_net << "' does not exist." << std::endl;
+                exit(1);
             }
 
             if (!std::ifstream(FLAGS_predict_net).good()) {
-                std::cerr << "Network loading failure, predict_net file '" << FLAGS_predict_net << "' does not exist." << std::endl;
-                return;
+                std::cerr << "\nNetwork loading failure, predict_net file '" << FLAGS_predict_net << "' does not exist." << std::endl;
+                exit(1);
             }
 
-            std::cout << "****************************************************************" << std::endl;
-            std::cout << "Loading network..." << std::endl;
+            std::cout << "\nLoading network..." << std::endl;
 
             // Read protobuf
             CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_init_net, &initNet));
