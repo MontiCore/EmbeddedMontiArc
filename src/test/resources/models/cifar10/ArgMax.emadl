@@ -6,9 +6,9 @@ component ArgMax<Z(1:oo) n = 2>{
 
     implementation Math{
          maxIndex = 0;
-         Q maxValue = inputVector(0); //should be inputVector(1) but bug in EMAM2CPP
+         Q maxValue = inputVector(1);
 
-         for i = 2:n //should be 2:n but bug in EMAM2CPP
+         for i = 2:n
             if inputVector(i) > maxValue
                 maxIndex = i - 1;
                 maxValue = inputVector(i);
