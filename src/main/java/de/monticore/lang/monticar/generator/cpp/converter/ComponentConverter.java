@@ -71,9 +71,11 @@ public class ComponentConverter {
 
         //generate execute method
         Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-        Method init = generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
+
 
         EventConverter.generateEvents(execute, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
+
+        Method init = generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
         bluePrint.addMethod(init);
         bluePrint.addMethod(execute);

@@ -26,7 +26,7 @@ public class EventConnectInstructionCPP extends EventConnectInstruction {
 
     @Override
     public String getTargetLanguageInstruction() {
-        String resultString = "if( this->"+this.getEventNameCPP()+"() ){ ";
+        String resultString = "if( "+this.getEventNameCPP()+"() ){ ";
 
         Log.info("var1: "+getVariable1().getName()+" var2: "+getVariable2().getName(),"Array False Method:");
         if (isUseThis1())
