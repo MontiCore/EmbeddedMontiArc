@@ -5,7 +5,9 @@ component DinhAn{
           out Q out1;
 
     implementation Math{
-        out1 = input;
+        static Q counter = 0;
+        counter = counter + 0.05;
+        out1 = input + counter;
     }
 
 }
