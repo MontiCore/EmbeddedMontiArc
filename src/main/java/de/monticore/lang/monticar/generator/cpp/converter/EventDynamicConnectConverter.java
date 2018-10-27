@@ -160,34 +160,35 @@ public class EventDynamicConnectConverter {
     protected static void generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, BluePrintCPP bluePrint, Method executeMethod){
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
 
-            Optional<String> afterComponent = Optional.empty();
+            Optional<String> before = Optional.empty();
             String sourceName = connector.getSource();
             String targetName = connector.getTarget();
             EMAPortInstanceSymbol target = connector.getTargetPort();
 
             if(connector.isDynamicSourceNewPort()){
                 sourceName = generateConnectNameForNewPort(sourceName, connector.getSourceComponentName(), connector.getSourcePortName());
-                afterComponent = connector.getSourceComponentName();
+//                afterComponent = connector.getSourceComponentName();
 
             }
 
             if(connector.isDynamicTargetNewPort()){
                 targetName = generateConnectNameForNewPort(targetName, connector.getTargetComponentName(), connector.getTargetPortName());
+                before = connector.getTargetComponentName();
             }
 
 
             Optional<VariableType> vt = TypeConverter.getVariableTypeForMontiCarTypeName(target.getTypeReference().getName());
             generateEventDynamicConnectVector(vt.get().getTypeNameTargetLanguage(), bluePrint);
 
-            executeMethod.addInstruction(new ExecuteDynamicConnects(afterComponent));
+            executeMethod.addInstruction(new ExecuteDynamicConnects(before));
 
-            if(!afterComponent.isPresent()){
-                afterComponent = Optional.of("NULL");
+            if(!before.isPresent()){
+                before = Optional.of("NULL");
             }else{
-                afterComponent = Optional.of("&"+afterComponent.get());
+                before = Optional.of("&"+before.get());
             }
             body.addInstruction(new TargetCodeInstruction(String.format(
-                    "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), afterComponent.get(), sourceName, targetName
+                    "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), before.get(), sourceName, targetName
             )));
 
 

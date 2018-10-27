@@ -126,12 +126,12 @@ public class ExecutionOrderFixer {
 
                 if(instruction.isTargetCodeInstruction() && (instruction instanceof ExecuteDynamicConnects)){
                     ExecuteDynamicConnects edc = (ExecuteDynamicConnects)instruction;
-                    if(edc.getAfterComponent().isPresent()){
-                        if(!map.containsKey(edc.getAfterComponentName())){
+                    if(edc.getBeforeComponent().isPresent()){
+                        if(!map.containsKey(edc.getBeforeComponentName())){
                             List<Instruction> l = new ArrayList<>();
-                            map.put(edc.getAfterComponentName(),l);
+                            map.put(edc.getBeforeComponentName(),l);
                         }
-                        map.get(edc.getAfterComponentName()).add(instruction);
+                        map.get(edc.getBeforeComponentName()).add(instruction);
                         continue;
                     }
 

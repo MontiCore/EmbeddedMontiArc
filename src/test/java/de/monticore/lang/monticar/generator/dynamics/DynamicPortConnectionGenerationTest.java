@@ -28,50 +28,42 @@ public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void Test_00_Exec() throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
-
-        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("execOrder.not", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_00_Exec");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        test("execOrder.not", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_00_Exec");
     }
 
     @Test
     public void Test_01_Not() throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
-
-        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("portRequest.not", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_01_Not");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        test("portRequest.not", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_01_Not");
     }
-
 
     @Test
     public void Test_02_PortRequest1() throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
-
-        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("portRequest.portRequest1", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_02_PortRequest1");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        test("portRequest.portRequest1", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_02_PortRequest1");
     }
 
     @Test
     public void Test_02_PortRequest2() throws IOException {
-        TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
+        test("portRequest.portRequest2", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_02_PortRequest2");
+    }
 
-        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("portRequest.portRequest2", EMAComponentInstanceSymbol.KIND).orElse(null);
-        assertNotNull(componentSymbol);
-        GeneratorCPP generatorCPP = new GeneratorCPP();
-        generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_02_PortRequest2");
-        List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+    @Test
+    public void Test_03_PortRequest3() throws IOException {
+        test("portRequest.portRequest3", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_03_PortRequest3");
+    }
+
+    protected void test(String instName, String target){
+        try {
+            TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
+
+            EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve(instName, EMAComponentInstanceSymbol.KIND).orElse(null);
+            assertNotNull(componentSymbol);
+            GeneratorCPP generatorCPP = new GeneratorCPP();
+            generatorCPP.useArmadilloBackend();
+            generatorCPP.setGenerationTargetPath(target);
+            List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        }catch (IOException ex){
+            ex.printStackTrace();
+            Log.error(ex.getMessage());
+        }
     }
 }

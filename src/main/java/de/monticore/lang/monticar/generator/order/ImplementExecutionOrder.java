@@ -367,6 +367,10 @@ public class ImplementExecutionOrder {
             return port.get();
         }
 
+        if(c.getSourcePort() != null){
+            return c.getSourcePort();
+        }
+
         Log.info("ImplementExecutionOrder", "False Source: " + c.getSource() + " in: " + c.getEnclosingScope().getName().get());
         Log.error("0xAC012 No source have been set for the connector symbol");
         return null;

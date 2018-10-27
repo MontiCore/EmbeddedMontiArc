@@ -40,7 +40,6 @@ public class EventConverter {
 
             if(event.isDynamicPortConnectionEvent()) {
 //                generateCondition = generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
-                int x = 5/0;
                 generateCondition = EventDynamicConnectConverter.generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
             }else{
                 Log.info("Create connectors for: "+event.getFullName(), "EventConverter");

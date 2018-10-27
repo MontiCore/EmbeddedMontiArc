@@ -6,27 +6,27 @@ import java.util.Optional;
 
 public class ExecuteDynamicConnects implements Instruction {
 
-    protected Optional<String> afterComponent;
+    protected Optional<String> beforeComponent;
 
     public ExecuteDynamicConnects(){
-        afterComponent = Optional.empty();
+        beforeComponent = Optional.empty();
     }
 
     public ExecuteDynamicConnects(String after){
-        afterComponent = Optional.of(after);
+        beforeComponent = Optional.of(after);
     }
 
     public ExecuteDynamicConnects(Optional<String> after){
-        afterComponent = after;
+        beforeComponent = after;
     }
 
     @Override
     public String getTargetLanguageInstruction() {
 
-        if(!afterComponent.isPresent()){
+        if(!beforeComponent.isPresent()){
             return  "executeDynamicConnects(NULL);\n";
         }
-        return  "executeDynamicConnects(&"+afterComponent.get()+");\n";
+        return  "executeDynamicConnects(&"+beforeComponent.get()+");\n";
     }
 
     @Override
@@ -44,11 +44,11 @@ public class ExecuteDynamicConnects implements Instruction {
         return false;
     }
 
-    public Optional<String> getAfterComponent() {
-        return afterComponent;
+    public Optional<String> getBeforeComponent() {
+        return beforeComponent;
     }
 
-    public String getAfterComponentName(){
-        return afterComponent.orElse("");
+    public String getBeforeComponentName(){
+        return beforeComponent.orElse("");
     }
 }
