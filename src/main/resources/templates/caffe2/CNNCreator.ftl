@@ -2,30 +2,19 @@ from caffe2.python import workspace, core, model_helper, brew, optimizer
 from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
 import numpy as np
-
 import logging
 import os
 import sys
-#import shutil
-#import cv2
 
 class ${tc.fileNameWithoutEnding}:
 
     module = None
-    _data_dir_ = "data/${tc.fullArchitectureName}/"
-    _model_dir_ = "model/${tc.fullArchitectureName}/"
-    _model_prefix_ = "${tc.architectureName}"
-    _input_names_ = [${tc.join(tc.architectureInputs, ",", "'", "'")}]
-    _input_shapes_ = [<#list tc.architecture.inputs as input>(${tc.join(input.definition.type.dimensions, ",")})</#list>]
-    _output_names_ = [${tc.join(tc.architectureOutputs, ",", "'", "_label'")}]
+    _current_dir_ = os.path.join('./')
+    _data_dir_    = os.path.join(_current_dir_, 'data', '${tc.fullArchitectureName}')
+    _model_dir_   = os.path.join(_current_dir_, 'model', '${tc.fullArchitectureName}')
 
-
-    CURRENT_DIR = os.path.join('./')
-    DATA_DIR    = os.path.join(CURRENT_DIR, 'data', '${tc.fullArchitectureName}')
-    MODEL_DIR   = os.path.join(CURRENT_DIR, 'model', '${tc.fullArchitectureName}')
-
-    INIT_NET    = os.path.join(MODEL_DIR, 'init_net.pb')
-    PREDICT_NET = os.path.join(MODEL_DIR, 'predict_net.pb')
+    INIT_NET    = os.path.join(_model_dir_, 'init_net.pb')<#--TODO: Change name to _init_net_ once it is not used in CNNTrainer for quick testing purposes-->
+    PREDICT_NET = os.path.join(_model_dir_, 'predict_net.pb')<#--TODO:Change name to _predict_net_ once it is not used in CNNTrainer for quick testing purposes-->
 
     def add_input(self, model, batch_size, db, db_type, device_opts):
         with core.DeviceScope(device_opts):
@@ -101,12 +90,12 @@ ${tc.include(tc.architecture.body)}
             device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
             print("GPU mode selected")
 
-    	workspace.ResetWorkspace(self.MODEL_DIR)
+    	workspace.ResetWorkspace(self._model_dir_)
 
     	arg_scope = {"order": "NCHW"}
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
-    	data, label = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self.DATA_DIR, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
     	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(train_model, data, device_opts=device_opts)
     	self.add_training_operators(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, eval_metric)
@@ -128,7 +117,7 @@ ${tc.include(tc.architecture.body)}
     	print("== Running Test model ==")
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
-    	data, label = self.add_input(test_model, batch_size=100, db=os.path.join(self.DATA_DIR, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label = self.add_input(test_model, batch_size=100, db=os.path.join(self._data_dir_, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
     	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(test_model, data, device_opts=device_opts)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
@@ -164,9 +153,9 @@ ${tc.include(tc.architecture.body)}
     	)
 
         try:
-            os.makedirs(self.MODEL_DIR)
+            os.makedirs(self._model_dir_)
         except OSError:
-            if not os.path.isdir(self.MODEL_DIR):
+            if not os.path.isdir(self._model_dir_):
                 raise
 
     	print("Save the model to init_net.pb and predict_net.pb")
@@ -184,7 +173,7 @@ ${tc.include(tc.architecture.body)}
     	print("== Saved init_net and predict_net ==")
 
     def load_net(self, init_net_path, predict_net_path, device_opts):
-        #TODO: Verify that paths ends in '.pb' and not in '.pbtxt'. The extension '.pbtxt' is not supported at the moment.
+        <#--#TODO: Verify that paths ends in '.pb' and not in '.pbtxt'. The extension '.pbtxt' is not supported at the moment.-->
         if not os.path.isfile(init_net_path):
             logging.error("Network loading failure. File '" + os.path.abspath(init_net_path) + "' does not exist.")
             sys.exit(1)
