@@ -16,7 +16,7 @@ dynamic component PortRequest1 {
     }
 
     @ d::connect {
-        connect c -> d;
+        connect c -> d[?];
     }
 
 }

@@ -1,14 +1,9 @@
-package testeventcomponent1;
-
-
+package portRequest;
 
 component Not {
     ports
         in B a,
-        out B b,
-        out B c;
-
-    connect false -> c;
+        out B b;
 
     @ a::value(false){
         connect true -> b;

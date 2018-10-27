@@ -4,6 +4,7 @@ import de.ma2cfg.helper.Names;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.Splitters;
@@ -72,8 +73,16 @@ public class ImplementExecutionOrder {
      * Then the component B will be stored in 'dependencies' with the ports in1 and in2 of component A.
      */
     private static void getDependencies(EMAComponentInstanceSymbol inst) {
+
+        Collection<EMAConnectorInstanceSymbol> connectors;
+        if(inst instanceof EMADynamicComponentInstanceSymbol){
+            connectors = ((EMADynamicComponentInstanceSymbol)inst).getConnectorInstancesAndEventConnectorInstances();
+        }else{
+            connectors = inst.getConnectorInstances();
+        }
+
         //Log.info(inst.toString()," getDependencies from:");
-        for (EMAConnectorInstanceSymbol c : inst.getConnectorInstances()) {
+        for (EMAConnectorInstanceSymbol c : connectors) {
             //Log.info(c.toString(),"ConnectorSymbol:");
             EMAPortInstanceSymbol pt = connectorTargetPort(inst, c);
             EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
@@ -193,7 +202,7 @@ public class ImplementExecutionOrder {
             ExecutionOrder e = new NonVirtualBlock(s, b);
             taggingResolver.addTag(subInst, new TagExecutionOrderSymbol(e));
             b += 1;
-            Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+            Collection<EMAConnectorInstanceSymbol> connects = getAllConnectorInstances(inst).stream()
                     .filter(c -> subInst.getOutgoingPortInstances().contains(connectorSourcePort(inst, c)))
                     .collect(Collectors.toList());
             for (EMAConnectorInstanceSymbol c : connects) {
@@ -226,7 +235,7 @@ public class ImplementExecutionOrder {
      * @param p    The source port
      */
     private static EMAComponentInstanceSymbol dependencyPortDeletion(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst, EMAPortInstanceSymbol p) {
-        Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+        Collection<EMAConnectorInstanceSymbol> connects = getAllConnectorInstances(inst).stream()
                 .filter(c -> p.equals(connectorSourcePort(inst, c)))
                 .collect(Collectors.toList());
         for (EMAConnectorInstanceSymbol c : connects) {
@@ -257,9 +266,13 @@ public class ImplementExecutionOrder {
      * @param inst The 'outest' component
      */
     private static EMAComponentInstanceSymbol dependencyPortsDeletion(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
-        Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+//        Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+//                .filter(c -> inst.getPortInstanceList().contains(connectorSourcePort(inst, c)))
+//                .collect(Collectors.toList());
+        Collection<EMAConnectorInstanceSymbol> connects = getAllConnectorInstances(inst).stream()
                 .filter(c -> inst.getPortInstanceList().contains(connectorSourcePort(inst, c)))
                 .collect(Collectors.toList());
+
         for (EMAConnectorInstanceSymbol c : connects) {
             EMAPortInstanceSymbol pt = connectorTargetPort(inst, c);
             EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
@@ -406,5 +419,20 @@ public class ImplementExecutionOrder {
         Log.info("False target: " + c.getTarget() + " in: " + c.getEnclosingScope().getName().get(), "ImplementExecutionOrder");
         Log.error("0xAC013 No target have been set for the connector symbol");
         return null;
+    }
+
+
+    /**
+     * A wrapper method that returns ALL connectors of a given Instance
+     * (This includes the connectors inside event handlers!)
+     * @param inst
+     * @return
+     */
+    public static Collection<EMAConnectorInstanceSymbol> getAllConnectorInstances(EMAComponentInstanceSymbol inst){
+        if(inst instanceof EMADynamicComponentInstanceSymbol){
+            return ((EMADynamicComponentInstanceSymbol)inst).getConnectorInstancesAndEventConnectorInstances();
+        }else{
+            return inst.getConnectorInstances();
+        }
     }
 }

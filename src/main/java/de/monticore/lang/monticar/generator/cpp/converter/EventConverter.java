@@ -1,7 +1,9 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import alice.tuprolog.Var;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
@@ -16,8 +18,10 @@ import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.VariablePortValueChecker;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
+import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.se_rwth.commons.logging.Log;
 
+import javax.swing.plaf.metal.MetalTheme;
 import java.util.*;
 
 public class EventConverter {
@@ -35,7 +39,9 @@ public class EventConverter {
             boolean generateCondition = false;
 
             if(event.isDynamicPortConnectionEvent()) {
-                generateCondition = generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
+//                generateCondition = generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
+                int x = 5/0;
+                generateCondition = EventDynamicConnectConverter.generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
             }else{
                 Log.info("Create connectors for: "+event.getFullName(), "EventConverter");
 
@@ -76,74 +82,63 @@ public class EventConverter {
         }
         return number > 0;
     }
+
+    @Deprecated
     protected static boolean generateDynamicConnectEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, BluePrintCPP bluePrint ) {
 
-        List<String> names= new ArrayList<>();
-        event.getCondition().getConnectPortNames(names);
-        java.util.Collections.sort(names);
+//        EMADynamicComponentInstanceSymbol dynComp = (EMADynamicComponentInstanceSymbol)componentSymbol;
+//
+//        for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
+//            EMADynamicConnectorInstanceSymbol dynConnect = (EMADynamicConnectorInstanceSymbol) connector;
+//
+////            body.addInstruction(new TargetCodeInstruction(
+////                    "// connect: "+dynConnect.getSource()+" -> "+dynConnect.getTarget()+"\n"
+////            ));
+//
+//            String afterComponent = "";
+//            String sourceName = dynConnect.getSource();
+//            String targetName = dynConnect.getTarget();
+//            EMAPortInstanceSymbol target = dynConnect.getTargetPort();
+//
+//            if(dynConnect.isDynamicSourceNewPort()){
+//                if(sourceName.contains(".")){
+//                    //TODO target hat eine komponente
+//                }else{
+//                    sourceName = EMAPortSymbol.getNameWithoutArrayBracketPart(sourceName);
+//                    sourceName = String.format("%s[_%s_dynPortID]", sourceName, sourceName);
+//                }
+//            }
+//
+//            if(dynConnect.isDynamicTargetNewPort()){
+//                if(targetName.contains(".")){
+//                    //TODO target hat eine komponente
+//                    System.out.println("bla bla");
+//                }else{
+//                    targetName = EMAPortSymbol.getNameWithoutArrayBracketPart(targetName);
+//                    targetName = String.format("%s[_%s_dynPortID]", targetName, targetName);
+//                }
+//            }
+//
+//            Optional<VariableType> vt = TypeConverter.getVariableTypeForMontiCarTypeName(target.getTypeReference().getName());
+//            generateEventDynamicConnectVecotr(vt.get().getTypeNameTargetLanguage(), bluePrint);
+//
+//
+//            body.addInstruction(new TargetCodeInstruction(String.format(
+////                    "// connect: "+sourceName+" - "+targetName+"\n"
+//                    "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), afterComponent, sourceName, targetName
+//            )));
+//
+////            executeMethod.addInstruction(new TargetCodeInstruction(
+////                    "executeDynamicConnects("+afterComponent+");\n"
+////            ));
+//            executeMethod.addInstruction(new ExecuteDynamicConnects(afterComponent));
+//        }
+//
 
-        String connectMethodName = "connect_"+String.join("_", names);
-        if(!bluePrint.getMethod(connectMethodName).isPresent()){
-            generateConnectMethod(connectMethodName,names, componentSymbol, bluePrint);
-        }
-
-        //TODO generate event body method
-        String bodyname = "__event_body_"+event.getName().replace("[", "_").replace("]", "_");
-        Method body = new Method(bodyname, "void");
-        body.setPublic(false);
-
-        body.addInstruction(new TargetCodeInstruction("if("+EventConnectInstructionCPP.getEventNameCPP(event.getName())+"){\n"));
-
-        Map<String,List<String>> newPorts = new HashMap<>();
-//        newPorts.put("_this_", names);
-
-        for(String name : names){
-            body.addInstruction(new TargetCodeInstruction(
-                    String.format("int _%s_dynPortID = __%s_connect_request.front(); __%s_connect_request.pop();\n",
-                            name, name, name)));
-        }
-
-        for (Map.Entry<String,List<String>> entry : newPorts.entrySet()){
-            for(String port : entry.getValue()){
-                body.addInstruction(new TargetCodeInstruction("// TODO:  "+entry.getKey()+" . "+port+"\n"));
-            }
-        }
-
-        body.addInstruction(new TargetCodeInstruction("}\n"));
-
-        bluePrint.addMethod(body);
 
         return true;
     }
 
-    protected static void generateConnectMethod(String name,List<String> names, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint){
-        Log.info("Create connect method: "+name+"(...)", "EventConverter");
-
-        Method method = new Method(name, "bool");
-        List<String> checks = new ArrayList<>();
-        for(String n : names ){
-            Variable v = new Variable();
-            v.setName(n+"_indexref");
-            v.setTypeNameTargetLanguage("int*");
-            method.addParameter(v);
-
-            long counter = componentSymbol.getPortInstanceList().stream().filter(p->p.getNameWithoutArrayBracketPart().equals(n)).count();
-
-            String inst = String.format("*%s_indexref = dynamicconnect(%d, __%s_connected, &__%s_connect_request);\n", n, counter, n,n);
-
-            method.addInstruction(
-                    new TargetCodeInstruction(inst)
-            );
-
-            checks.add(String.format("(*%s_indexref < 0)", n));
-        }
-        method.addInstruction(new TargetCodeInstruction(
-                String.format("if(%s){return false;}\n", String.join(" || ", checks))
-        ));
-        method.addInstruction(new TargetCodeInstruction("return true;\n"));
-        bluePrint.addAdditionalIncludeString("DynamicHelper");
-        bluePrint.addMethod(method);
-    }
 
 
     public static void generatePVCNextMethod(BluePrintCPP bluePrint){
@@ -195,6 +190,10 @@ public class EventConverter {
             }
         }
     }
+
+
+
+
 
     //<editor-fold desc="Generate event condition">
 

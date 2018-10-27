@@ -8,6 +8,7 @@ import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Method;
 import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.Variable;
+import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
@@ -45,6 +46,7 @@ public class ExecutionOrderFixer {
         newList.addAll(joinInstructions);
         newList.addAll(otherInstructions);
 
+        fixDynamicInstruction(newList, bluePrintCPP);
         fixNextInstruction(newList, bluePrintCPP);
 
         method.setInstructions(newList);
@@ -63,6 +65,12 @@ public class ExecutionOrderFixer {
     public static void fixNextInstruction(List<Instruction> newList, BluePrintCPP bluePrintCPP){
         if(bluePrintCPP.getMethod("next").isPresent()){
             newList.add(0, new TargetCodeInstruction("next();\n"));
+        }
+    }
+
+    public static void fixDynamicInstruction(List<Instruction> newList, BluePrintCPP bluePrintCPP){
+        if(bluePrintCPP.getMethod("dynamic").isPresent()){
+            newList.add(0, new TargetCodeInstruction("dynamic();\n"));
         }
     }
 
@@ -115,6 +123,20 @@ public class ExecutionOrderFixer {
                 if(instruction.isTargetCodeInstruction() && instruction.getTargetLanguageInstruction().equals("next();\n")){
                     continue;
                 }
+
+                if(instruction.isTargetCodeInstruction() && (instruction instanceof ExecuteDynamicConnects)){
+                    ExecuteDynamicConnects edc = (ExecuteDynamicConnects)instruction;
+                    if(edc.getAfterComponent().isPresent()){
+                        if(!map.containsKey(edc.getAfterComponentName())){
+                            List<Instruction> l = new ArrayList<>();
+                            map.put(edc.getAfterComponentName(),l);
+                        }
+                        map.get(edc.getAfterComponentName()).add(instruction);
+                        continue;
+                    }
+
+                }
+
                 otherInstructions.add(instruction);
             }
         }
