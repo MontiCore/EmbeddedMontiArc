@@ -74,15 +74,10 @@ public class ImplementExecutionOrder {
      */
     private static void getDependencies(EMAComponentInstanceSymbol inst) {
 
-        Collection<EMAConnectorInstanceSymbol> connectors;
-        if(inst instanceof EMADynamicComponentInstanceSymbol){
-            connectors = ((EMADynamicComponentInstanceSymbol)inst).getConnectorInstancesAndEventConnectorInstances();
-        }else{
-            connectors = inst.getConnectorInstances();
-        }
+
 
         //Log.info(inst.toString()," getDependencies from:");
-        for (EMAConnectorInstanceSymbol c : connectors) {
+        for (EMAConnectorInstanceSymbol c : getAllConnectorInstances(inst)) {
             //Log.info(c.toString(),"ConnectorSymbol:");
             EMAPortInstanceSymbol pt = connectorTargetPort(inst, c);
             EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
@@ -143,7 +138,7 @@ public class ImplementExecutionOrder {
                 taggingResolver.addTag(subInst, new TagExecutionOrderSymbol(e));
                 b += 1;
                 Log.info(subInst.toString(), "Instance after Tagging:");
-                Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+                Collection<EMAConnectorInstanceSymbol> connects = getAllConnectorInstances(inst).stream()
                         .filter(c -> subInst.getPortInstanceList().contains(connectorSourcePort(inst, c)))
                         .collect(Collectors.toList());
                 if (!subInst.getComponentType().getConfigParameters().isEmpty()) {
