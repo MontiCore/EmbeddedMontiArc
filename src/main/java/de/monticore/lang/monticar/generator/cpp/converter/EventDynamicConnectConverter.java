@@ -179,6 +179,7 @@ public class EventDynamicConnectConverter {
                 before = connector.getTargetComponentName();
             }else{
                 targetName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(targetName);
+                before = connector.getTargetComponentName();
             }
 
 

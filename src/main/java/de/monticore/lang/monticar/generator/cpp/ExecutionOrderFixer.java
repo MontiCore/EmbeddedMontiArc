@@ -49,7 +49,11 @@ public class ExecutionOrderFixer {
         fixDynamicInstruction(newList, bluePrintCPP);
         fixNextInstruction(newList, bluePrintCPP);
 
+        fixExecuteDynamicConnects(newList);
+
         method.setInstructions(newList);
+
+
     }
 
     public static void fixSlistExecutionOrder(EMAComponentInstanceSymbol instanceSymbol, List<Instruction> newList, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
@@ -174,6 +178,29 @@ public class ExecutionOrderFixer {
         }
         return newList;
     }
+
+
+    public static void fixExecuteDynamicConnects(List<Instruction> newList){
+
+        List<Integer> idx = new ArrayList<>();
+
+        for(int i = 1; i < newList.size(); ++i){
+            if((newList.get(i-1) instanceof ExecuteDynamicConnects) && (newList.get(i) instanceof ExecuteDynamicConnects)){
+                ExecuteDynamicConnects a = (ExecuteDynamicConnects) newList.get(i-1);
+                ExecuteDynamicConnects b = (ExecuteDynamicConnects) newList.get(i);
+                if(a.getBeforeComponentName().equals(b.getBeforeComponentName())){
+                    idx.add(i);
+                }
+            }
+        }
+
+        Collections.sort(idx, Collections.reverseOrder());
+        for(int i : idx){
+            newList.remove(i);
+        }
+
+    }
+
 
     private static int getIndexOfLastConnectInstruction(List<Instruction> instructions, String componentInstanceName) {
         int result = -1;
