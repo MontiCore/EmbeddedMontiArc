@@ -34,7 +34,7 @@ import de.monticore.lang.monticar.cnntrain._symboltable.ConfigurationSymbol;
 import de.monticore.lang.monticar.emadl._cocos.EMADLCocos;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.ArmadilloHelper;
-import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneratorEMAMOpt2CPP;
 import de.monticore.lang.monticar.generator.cpp.SimulatorIntegrationHelper;
 import de.monticore.lang.monticar.generator.cpp.TypesGeneratorCPP;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
@@ -54,7 +54,7 @@ import java.util.*;
 
 public class EMADLGenerator {
 
-    private GeneratorCPP emamGen;
+    private GeneratorEMAMOpt2CPP emamGen;
     private CNNArchGenerator cnnArchGenerator;
     private CNNTrainGenerator cnnTrainGenerator;
 
@@ -62,7 +62,7 @@ public class EMADLGenerator {
 
 
     public EMADLGenerator(Backend backend) {
-        emamGen = new GeneratorCPP();
+        emamGen = new GeneratorEMAMOpt2CPP();
         emamGen.useArmadilloBackend();
         emamGen.setGenerationTargetPath("./target/generated-sources-emadl/");
         cnnArchGenerator = backend.getCNNArchGenerator();
@@ -95,7 +95,7 @@ public class EMADLGenerator {
         return getEmamGen().getGenerationTargetPath();
     }
 
-    public GeneratorCPP getEmamGen() {
+    public GeneratorEMAMOpt2CPP getEmamGen() {
         return emamGen;
     }
 
