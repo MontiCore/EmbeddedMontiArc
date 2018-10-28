@@ -36,7 +36,7 @@ public class ComponentConverter {
         bluePrint.addDefineGenerics(componentSymbol);
 
         addVariables(componentSymbol, bluePrint);
-
+        BluePrintFixer.fixBluePrintDynamicVariableConnectRequestQueues(bluePrint);
 
 
         String lastNameWithoutArrayPart = "";
@@ -55,17 +55,9 @@ public class ComponentConverter {
             bluePrint.addVariable(ComponentInstanceConverter.convertComponentInstanceSymbolToVariable(instanceSymbol, componentSymbol));
         }
 
-        /*if(componentSymbol instanceof EMADynamicComponentInstanceSymbol){
-            EMADynamicComponentInstanceSymbol dynComp = (EMADynamicComponentInstanceSymbol)componentSymbol;
-            if(dynComp.getEventHandlers().size() > 0){
-                EventHandlerMethodsGenerator.generateMethods(dynComp, bluePrint, generatorCPP, includeStrings);
-            }
-        }*/
-
-
-
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
+
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
 
 

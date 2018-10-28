@@ -19,6 +19,10 @@ import static org.junit.Assert.assertNotNull;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
 
+    protected String path(){
+        return "src/test/resources/dynamics";
+    }
+
     @BeforeClass
     public static void setUp() {
         // ensure an empty log
@@ -56,9 +60,14 @@ public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
         test("portRequest.portRequest4", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_04_PortRequest4");
     }
 
+    @Test
+    public void Test_05_PortRequest5() throws IOException {
+        test("portRequest.portRequest5", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_05_PortRequest5");
+    }
+
     protected void test(String instName, String target){
         try {
-            TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
+            TaggingResolver symtab = createSymTabAndTaggingResolver(path());
 
             EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve(instName, EMAComponentInstanceSymbol.KIND).orElse(null);
             assertNotNull(componentSymbol);

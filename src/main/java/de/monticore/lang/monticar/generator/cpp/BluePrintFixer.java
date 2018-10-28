@@ -41,14 +41,10 @@ public class BluePrintFixer {
             }
             if(isDynamic){
                 newVars.add(addConnectedVariableForVariable(varList, nameWithoutArray, bluePrint));
-                newVars.add(addConnectedRequestQueueForVariable(nameWithoutArray, bluePrint));
+                //newVars.add(addConnectedRequestQueueForVariable(nameWithoutArray, bluePrint));
             }
         });
 
-
-        //TODO: Generate vectors with output functionality
-//          std::vector<connection<bool>> dynamic_bool_connection_IN;
-//          std::vector<connection<bool>> dynamic_bool_connection_OUT;
 
         bluePrint.setVariables(newVars);
     }
@@ -73,6 +69,21 @@ public class BluePrintFixer {
         bluePrint.getMathInformationRegister().addVariable(variable);
 
         return variable;
+    }
+
+
+    public static void fixBluePrintDynamicVariableConnectRequestQueues(BluePrint bluePrint){
+        int s = bluePrint.getVariables().size();
+        for(int i = 0; i < s; ++i){
+            Variable v = bluePrint.getVariables().get(i);
+            if(v.isDynamic()){
+
+                if(!bluePrint.getVariable(String.format("__%s_connect_request", v.getNameWithoutArrayNamePart())).isPresent()){
+                    bluePrint.addVariable(addConnectedRequestQueueForVariable(v.getNameWithoutArrayNamePart(), bluePrint));
+                }
+
+            }
+        }
     }
 
     protected static Variable addConnectedRequestQueueForVariable(String nameWithoutArray, BluePrint bluePrint){
