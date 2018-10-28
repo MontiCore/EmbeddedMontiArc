@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp.instruction;
 
 import de.monticore.lang.monticar.generator.Instruction;
+import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 
 import java.util.Optional;
 
@@ -26,7 +27,8 @@ public class ExecuteDynamicConnects implements Instruction {
         if(!beforeComponent.isPresent()){
             return  "executeDynamicConnects(NULL);\n";
         }
-        return  "executeDynamicConnects(&"+beforeComponent.get()+");\n";
+        return  "executeDynamicConnects(&"+
+                GeneralHelperMethods.getTargetLanguageVariableInstanceName(beforeComponent.get())+");\n";
     }
 
     @Override

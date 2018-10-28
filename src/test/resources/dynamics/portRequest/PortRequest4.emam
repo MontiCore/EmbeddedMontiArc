@@ -1,0 +1,28 @@
+package portRequest;
+
+dynamic component PortRequest4 {
+    ports
+        dynamic in B a[1:5],
+        dynamic out B b[1:5],
+        in Q c [2],
+        dynamic out Q d[0:3],
+        dynamic in Z eee [0:3],
+        out Z f[4];
+
+    instance PortRequest1 p[2];
+
+
+    @ a::connect && b ::connect {
+        connect a[?] -> p[2].a[?];
+        connect p[2].b[?] -> p[1].a[?];
+        connect p[1].b[?] -> b[?];
+    }
+
+    @ d::connect {
+        connect c[2] -> d[?];
+    }
+
+    @ eee::connect {
+        connect eee[?] -> f[2];
+    }
+}

@@ -7,6 +7,7 @@ import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symbol
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicEventHandlerInstanceSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.BluePrintCPP;
+import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.se_rwth.commons.logging.Log;
@@ -169,11 +170,15 @@ public class EventDynamicConnectConverter {
                 sourceName = generateConnectNameForNewPort(sourceName, connector.getSourceComponentName(), connector.getSourcePortName());
 //                afterComponent = connector.getSourceComponentName();
 
+            }else{
+                sourceName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(sourceName);
             }
 
             if(connector.isDynamicTargetNewPort()){
                 targetName = generateConnectNameForNewPort(targetName, connector.getTargetComponentName(), connector.getTargetPortName());
                 before = connector.getTargetComponentName();
+            }else{
+                targetName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(targetName);
             }
 
 
@@ -185,7 +190,7 @@ public class EventDynamicConnectConverter {
             if(!before.isPresent()){
                 before = Optional.of("NULL");
             }else{
-                before = Optional.of("&"+before.get());
+                before = Optional.of("&"+GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
             }
             body.addInstruction(new TargetCodeInstruction(String.format(
                     "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), before.get(), sourceName, targetName
@@ -229,7 +234,7 @@ public class EventDynamicConnectConverter {
         String result = "";
         if(componenName.isPresent()){
             result = String.format("%s["+DYNPORTIDININSTANCE+"]",
-                    EMAPortSymbol.getNameWithoutArrayBracketPart(allName),
+                    GeneralHelperMethods.getTargetLanguageVariableInstanceName(EMAPortSymbol.getNameWithoutArrayBracketPart(allName)),
                     convertName(componenName.get()),
                     EMAPortSymbol.getNameWithoutArrayBracketPart(portName));
         }else{
