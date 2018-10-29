@@ -109,7 +109,10 @@ async function runCluster(clusterPath) {
 }
 
 function forkCluster(clusterPath) {
-    const cluster = fork(clusterPath, ["--startup-timeout", "-1"]);
+    const cluster = fork(clusterPath, [
+        "--startup-timeout", "-1",
+        "--resources-path", process.resourcesPath
+    ]);
 
     cluster.on("message", onClusterMessage);
     cluster.on("error", onClusterError);
