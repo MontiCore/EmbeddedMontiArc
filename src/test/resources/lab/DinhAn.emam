@@ -1,0 +1,13 @@
+package lab;
+
+component DinhAn{
+    ports in Q input,
+          out Q out1;
+
+    implementation Math{
+        static Q counter = 0;
+        counter = counter + 0.05;
+        out1 = input + counter;
+    }
+
+}

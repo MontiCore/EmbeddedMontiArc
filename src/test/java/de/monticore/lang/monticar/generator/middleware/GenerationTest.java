@@ -19,6 +19,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
@@ -338,5 +339,29 @@ public class GenerationTest extends AbstractSymtabTest {
         List<String> filenames = files.stream().map(File::getAbsolutePath).map(name -> name.replace('\\','/')).collect(Collectors.toList());
 
         assertFalse(filenames.stream().anyMatch(fn -> fn.endsWith("rosMsg/CMakeLists.txt")));
+    }
+
+
+    @Test
+    public void testLabComp() throws IOException{
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
+        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+
+        DistributedTargetGenerator middlewareGenerator = new DistributedTargetGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/lab/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+
+
     }
 }
