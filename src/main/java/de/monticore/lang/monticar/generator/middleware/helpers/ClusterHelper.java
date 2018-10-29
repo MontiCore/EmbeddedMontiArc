@@ -30,10 +30,11 @@ public class ClusterHelper {
                 .forEach(c -> {
                     ExpandedComponentInstanceSymbol compSource = c.getSourcePort().getComponentInstance().orElse(null);
                     ExpandedComponentInstanceSymbol compTarget = c.getTargetPort().getComponentInstance().orElse(null);
-                    if (compSource == null || compTarget == null)
+                    if (compSource == null || compTarget == null) {
                         Log.error("ComponentInstance of source or target not found!");
-                        if(!compSource.equals(compTarget))
+                        if (!compSource.equals(compTarget))
                             graph.addEdge(compSource, compTarget);
+                    }
                 });
 
         ConnectivityInspector<ExpandedComponentInstanceSymbol, DefaultEdge> connectivityInspector = new ConnectivityInspector<>(graph);
@@ -43,7 +44,7 @@ public class ClusterHelper {
             return new ArrayList<>();
         }
         //All subcomps are connected via non mw -> only highest level needs to be generated
-        if(instanceSetSize != componentInstanceSymbol.getSubComponents().size() + 1)
+        if (instanceSetSize != componentInstanceSymbol.getSubComponents().size() + 1)
             graph.removeVertex(componentInstanceSymbol);
 
         List<Set<ExpandedComponentInstanceSymbol>> res = connectivityInspector.connectedSets();
@@ -143,5 +144,44 @@ public class ClusterHelper {
         return res;
     }
 
+
+    public static double[][] createAdjacencyMatrix(ExpandedComponentInstanceSymbol component) {
+        // Nodes = subcomponents
+        // Verts = connectors between subcomponents
+        Collection<ExpandedComponentInstanceSymbol> subcomps = component.getSubComponents().stream()
+                .sorted(Comparator.comparing(ExpandedComponentInstanceSymbol::getFullName))
+                .collect(Collectors.toList());
+
+        Map<String, Integer> componentIndecies = new HashMap<>();
+
+        String superCompName = component.getFullName();
+        int[] i = {0};
+        subcomps.forEach(sc -> componentIndecies.put(sc.getFullName(), i[0]++));
+
+        double[][] res = new double[subcomps.size()][subcomps.size()];
+        Collection<ConnectorSymbol> connectors = component.getConnectors().stream()
+                //filter out all connectors to super component
+                .filter(con -> !con.getSourcePort().getComponentInstance().get().getFullName().equals(superCompName)
+                        && !con.getTargetPort().getComponentInstance().get().getFullName().equals(superCompName))
+                .collect(Collectors.toList());
+
+        connectors.forEach(con -> {
+            Optional<ExpandedComponentInstanceSymbol> sourceCompOpt = con.getSourcePort().getComponentInstance();
+            Optional<ExpandedComponentInstanceSymbol> targetCompOpt = con.getTargetPort().getComponentInstance();
+
+            if (sourceCompOpt.isPresent() && targetCompOpt.isPresent()) {
+                int index1 = componentIndecies.get(sourceCompOpt.get().getFullName());
+                int index2 = componentIndecies.get(targetCompOpt.get().getFullName());
+
+                res[index1][index2] = 1.0d;
+                res[index2][index1] = 1.0d;
+            } else {
+                Log.error("0xADE65: Component of source or target not found!");
+            }
+        });
+
+
+        return res;
+    }
 
 }
