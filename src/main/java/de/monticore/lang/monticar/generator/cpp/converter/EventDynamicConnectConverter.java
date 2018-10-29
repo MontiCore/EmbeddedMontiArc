@@ -27,6 +27,8 @@ public class EventDynamicConnectConverter {
         event.getCondition().getConnectPortNames(names);
         java.util.Collections.sort(names);
 
+
+        List<String> newInstances = getNewInstances(event);
         Map<String,List<String>> newPortsInstances = getNewPortsOfInstances(event);
 
         generateConnectMethod(names, componentSymbol, bluePrint);
@@ -96,6 +98,22 @@ public class EventDynamicConnectConverter {
         dynamic.get().addInstruction(new TargetCodeInstruction(eventBodyName+"();\n"));
     }
 
+    protected static List<String> getNewInstances(EMADynamicEventHandlerInstanceSymbol event){
+        Set<String> insts = new HashSet<>();
+        for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
+            Optional<String> comp = connector.getSourceComponentName();
+            if(connector.isDynamicSourceNewComponent() && comp.isPresent()){
+                insts.add(EMAPortSymbol.getNameWithoutArrayBracketPart(comp.get()));
+            }
+
+            comp = connector.getTargetComponentName();
+            if(connector.isDynamicTargetNewComponent() && comp.isPresent()){
+                insts.add(EMAPortSymbol.getNameWithoutArrayBracketPart(comp.get()));
+            }
+        }
+        return new ArrayList<>(insts);
+    }
+
     protected static Map<String, List<String>> getNewPortsOfInstances(EMADynamicEventHandlerInstanceSymbol event){
         Map<String,List<String>> newPorts = new HashMap<>();
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
@@ -156,7 +174,6 @@ public class EventDynamicConnectConverter {
 
         }
     }
-
 
     protected static void generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, BluePrintCPP bluePrint, Method executeMethod){
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
@@ -230,7 +247,6 @@ public class EventDynamicConnectConverter {
         }
     }
 
-
     protected static String generateConnectNameForNewPort(String allName, Optional<String> componenName, String portName){
         String result = "";
         if(componenName.isPresent()){
@@ -244,7 +260,6 @@ public class EventDynamicConnectConverter {
         }
         return result;
     }
-
 
     protected static String convertName(String name){
         return name.replace("[", "_").replace("]", "_");

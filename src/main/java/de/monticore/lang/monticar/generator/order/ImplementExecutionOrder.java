@@ -347,7 +347,7 @@ public class ImplementExecutionOrder {
         Iterator<String> parts = Splitters.DOT.split(c.getSource()).iterator();
         Optional<String> instance = Optional.empty();
         Optional<String> instancePort;
-        Optional<EMAPortInstanceSymbol> port;
+        Optional<EMAPortInstanceSymbol> port = Optional.empty();
         if (parts.hasNext()) {
             instance = Optional.of(parts.next());
         }
@@ -355,8 +355,14 @@ public class ImplementExecutionOrder {
             instancePort = Optional.of(parts.next());
             instance = Optional.of(Names.FirstLowerCase(instance.get()));
 
-            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
-            port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
+            // Old:
+//            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
+//            port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
+
+            Optional<EMAComponentInstanceSymbol> inst2 = inst.getSubComponent(instance.get());
+            if(inst2.isPresent()) {
+                port = inst2.get().getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
+            }
         } else {
             instancePort = instance;
 
@@ -387,7 +393,7 @@ public class ImplementExecutionOrder {
         Iterator<String> parts = Splitters.DOT.split(c.getTarget()).iterator();
         Optional<String> instance = Optional.empty();
         Optional<String> instancePort;
-        Optional<EMAPortInstanceSymbol> port;
+        Optional<EMAPortInstanceSymbol> port = Optional.empty();
         if (parts.hasNext()) {
             instance = Optional.of(parts.next());
         }
@@ -398,8 +404,14 @@ public class ImplementExecutionOrder {
             for(ExpandedComponentInstanceSymbol symbol:inst.getSubComponents()){
                 Log.info(symbol.toString(),"found:");
             }*/
-            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
-            port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
+            //Old:
+//            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
+//            port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
+
+            Optional<EMAComponentInstanceSymbol> inst2 = inst.getSubComponent(instance.get());
+            if(inst2.isPresent()) {
+                port = inst2.get().getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
+            }
         } else {
             instancePort = instance;
 

@@ -11,6 +11,7 @@ public class ExecuteInstruction implements Instruction {
     BluePrint bluePrint;
     String threadName = null;
     boolean canBeThreaded = false;
+    boolean dynamic = false;
     public static int threadCounter = 0;
 
     public ExecuteInstruction(String componentName, BluePrint bluePrint, boolean canBeThreaded) {
@@ -57,6 +58,12 @@ public class ExecuteInstruction implements Instruction {
 
             return result;
         }
+
+        if(dynamic){
+            return String.format("if(true){ executeDynamicConnects(&%s); %s.execute();}\n",
+                    componentName, componentName);
+        }
+
         return componentName + ".execute();\n";
     }
 
@@ -68,5 +75,13 @@ public class ExecuteInstruction implements Instruction {
     @Override
     public boolean isExecuteInstruction() {
         return true;
+    }
+
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
+    public void setDynamic(boolean dynamic) {
+        this.dynamic = dynamic;
     }
 }

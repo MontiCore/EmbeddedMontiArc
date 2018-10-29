@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.cpp;
 
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.ConnectInstruction;
 import de.monticore.lang.monticar.generator.ExecuteInstruction;
 import de.monticore.lang.monticar.generator.Instruction;
@@ -60,6 +61,10 @@ public class ExecutionOrderFixer {
         for (EMAComponentInstanceSymbol subComponent : instanceSymbol.getSubComponents()) {
             if (!listContainsExecuteInstruction(newList, subComponent.getName())) {
                 ExecuteInstruction executeInstruction = (ExecuteInstruction) getExecuteInstruction(subComponent.getName(), bluePrintCPP, threadableComponents, generatorCPP);
+
+                if(subComponent instanceof EMADynamicComponentInstanceSymbol) {
+                    executeInstruction.setDynamic(((EMADynamicComponentInstanceSymbol) subComponent).isDynamicInstance());
+                }
                 int insertionIndex = getIndexOfLastConnectInstruction(newList, subComponent.getName());
                 newList.add(insertionIndex, executeInstruction);
             }
@@ -98,7 +103,8 @@ public class ExecutionOrderFixer {
             }
         String name = GeneralHelperMethods.getTargetLanguageComponentName(nameToAdd);
         Log.info(name, "Adding ExecuteInstruction:");
-        return new ExecuteInstruction(name, bluePrintCPP, canBeThreaded);
+        ExecuteInstruction exI = new ExecuteInstruction(name, bluePrintCPP, canBeThreaded);
+        return exI;
     }
 
     public static Instruction getExecuteInstruction(EMAComponentInstanceSymbol componentInstanceSymbol, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents) {
