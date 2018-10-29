@@ -126,4 +126,23 @@ Look at [GenerationTest::testDistributedTargetGenerator](https://git.rwth-aachen
 1. Start ros and the other nodes
     * minimal working example: run: roscore
 1. If the project was created by a MiddlewareGenerator, run the executable(s) at build/coordinator(/<subcomp.name>)/Coordinator_<(sub)component.name>
+2.
+
+## Automatic Clustering
+To simplify the creation of distributed systems, the generator can automatically split the model into a given number of clusters.
+
+Supported:
+* Spectral Clustering
+* ...
+
+Procedure:
+* Convert the Symbol Table of a Component into a adjacency matrix
+* (Add costs given by type to matrix. E.g. float is cheaper than Matrix of floats)
+* Feed into ml library(e.g. [smile ml](https://github.com/haifengl/smile)) with the selected clustering algorithm
+* (Compare the result of different algorithms)
+* Generate Middleware tags seperating the clusters
+* Feed into existing manual clustering architecture
+* (generate)
+
+
 
