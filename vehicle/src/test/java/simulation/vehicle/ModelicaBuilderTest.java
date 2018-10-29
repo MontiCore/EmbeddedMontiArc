@@ -59,7 +59,7 @@ public class ModelicaBuilderTest {
         double z = referenceVDM.getValue("z");
         double height = Vehicle.VEHICLE_DEFAULT_HEIGHT;
         RealVector expectedPosition = new ArrayRealVector(new Double[]{0.0, 0.0, - height/2 + z});
-        Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, Math.PI / 2);
+        Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 0.0, 0.0, 0.0);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
         RealVector expectedVelocity = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
         RealVector expectedAngularVelocity = new ArrayRealVector(3);
@@ -131,14 +131,15 @@ public class ModelicaBuilderTest {
         RealVector expectedPosition = new ArrayRealVector(new double[]{12.0, -3.0, 3.5});
         Rotation expectedRot = new Rotation(RotationOrder.XYZ, RotationConvention.VECTOR_OPERATOR, 7.0, -3.2, Math.PI / 2);
         RealMatrix expectedRotation = new BlockRealMatrix(expectedRot.getMatrix());
+        RealMatrix internalRotation = ModelicaPhysicalVehicle.coordinateRotation.multiply(expectedRotation);
         RealVector setVelocity = new ArrayRealVector(new double[]{1.0, -5.725, 12.0});
-        RealVector setVelocityLocal = expectedRotation.transpose().operate(setVelocity);
+        RealVector setVelocityLocal = internalRotation.transpose().operate(setVelocity);
         RealVector expectedVelocityLocal = new ArrayRealVector(new double[]{setVelocityLocal.getEntry(0), setVelocityLocal.getEntry(1), 0.0});
-        RealVector expectedVelocity = expectedRotation.operate(expectedVelocityLocal);
+        RealVector expectedVelocity = internalRotation.operate(expectedVelocityLocal);
         RealVector setAngularVelocity = new ArrayRealVector(new double[]{7.0, -2.5, 11.75});
-        RealVector setAngularVelocityLocal = expectedRotation.transpose().operate(setAngularVelocity);
+        RealVector setAngularVelocityLocal = internalRotation.transpose().operate(setAngularVelocity);
         RealVector expectedAngularVelocityLocal = new ArrayRealVector(new double[]{0.0, 0.0, setAngularVelocityLocal.getEntry(2)});
-        RealVector expectedAngularVelocity = expectedRotation.operate(expectedAngularVelocityLocal);
+        RealVector expectedAngularVelocity = internalRotation.operate(expectedAngularVelocityLocal);
         double expectedMass = 1000.0;
         double expectedWidth = 2.125;
         double expectedLength = 10.0;
@@ -151,7 +152,7 @@ public class ModelicaBuilderTest {
 
         // Calculate remaining expected values
         RealVector expectedForce = new ArrayRealVector(new double[]{0.0, 0.0, 0.0});
-        RealVector expectedGeometryPositionOffset = expectedRotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, expectedHeight/2 - z}));
+        RealVector expectedGeometryPositionOffset = internalRotation.operate(new ArrayRealVector(new double[]{0.0, 0.0, expectedHeight/2 - z}));
         RealVector expectedGeometryPosition = expectedPosition.add(expectedGeometryPositionOffset);
         double expectedWheelRotationRate = expectedVelocityLocal.getEntry(0) / expectedWheelRadius;
 

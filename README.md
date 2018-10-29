@@ -4,11 +4,25 @@
 
 This repository includes the classes for the management of the simulation, the physics computations, the environment, the sensors and the vehicles.
 
-Discrete time steps are used to advance the the simulation and a rigid body simulation is used for the physics computations.
+Discrete time steps are used to advance the simulation.
 
-The environment is imported from OpenStreetMap data.
+The environment is created by parsing OpenStreetMap data.
 
-# Simulation modes
-Several simulation modes are available in this module.
+# Vehicle Dynamics Model
 
-An example for the recommended simulation mode is shown in the function `setupSimulator()` in the class `SimulatorMain.java` from the application repository.
+A vehicle dynamics model is used to calculate the physical behaviour for a car in the simulation. This vehicle dynamics model is modeled in Modelica and then compiled into functional mock-up units. These units are then accessed and used in the `VehicleDynamicsModel` class.
+
+To compile updated Modelica models into functional mock-up units, the _.mo_ files (the models) have to be exported via FMI into a _.fmu_ file using the OpenModelica Connection Editor v.1.12.0 (64-bit).
+
+__NOTE:__ When new fmu's are added to the simulation, the _deployment.bat_ the copies the fmu's into the SmartFoxServer has to be updated as well.
+
+The settings are:
+* Version: 2.0
+* Type: Co-Simulation
+* Platform: Static
+
+# Simulation Debugging and Debug Plotter
+
+To quickly debug the simulator, a simulation can be configured and executed without starting up the server. An example is given in the `firstTest()` jUnit test in the `SimulatieVehicleTest` test class.
+
+The debug plotter can be used to visualize a simulation that contains only __one__ physical vehicle. A use case for the debug plotter is also given in `firstTest()`. The plotter is registered to the simulation as an observer and is then generating one visualisation chart for each loop iteration.

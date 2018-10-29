@@ -30,7 +30,7 @@
     <!-- Packaging pom because there are no source files in this project -->
     <artifactId>simulation</artifactId>
     <groupId>montisim</groupId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
 
     <!-- MODULES -->
@@ -44,7 +44,6 @@
         <module>report</module>
     </modules>
 <properties>
-		<global.version>1.0.1-SNAPSHOT</global.version>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.3</compiler.plugin>
         <source.plugin>2.4</source.plugin>

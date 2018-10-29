@@ -49,7 +49,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             // Get rotation
             RealMatrix rotation;
             if(this.rotation.isPresent()){
-                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+                rotation = ModelicaPhysicalVehicle.coordinateRotation.multiply(new BlockRealMatrix(this.rotation.get().getMatrix()));
             }else{
                 rotation = ModelicaPhysicalVehicle.coordinateRotation.copy();
             }
@@ -77,7 +77,7 @@ public class ModelicaPhysicalVehicleBuilder extends PhysicalVehicleBuilder {
             // Get rotation
             RealMatrix rotation;
             if(this.rotation.isPresent()){
-                rotation = new BlockRealMatrix(this.rotation.get().getMatrix());
+                rotation = ModelicaPhysicalVehicle.coordinateRotation.multiply(new BlockRealMatrix(this.rotation.get().getMatrix()));
             }else{
                 rotation = ModelicaPhysicalVehicle.coordinateRotation.copy();
             }
