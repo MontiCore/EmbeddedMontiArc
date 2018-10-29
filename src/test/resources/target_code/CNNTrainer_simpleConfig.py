@@ -18,7 +18,7 @@ if __name__ == "__main__":
         num_epoch=50,
         batch_size=100,
         opt_type='adam',
-        base_learning_rate=0.001,
+        base_learning_rate=0.001
     )
 
     print '\n********************************************'
@@ -32,9 +32,9 @@ if __name__ == "__main__":
         device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
         print("GPU mode selected")
 
-    LeNet.load_net(LeNet.INIT_NET, LeNet.PREDICT_NET, device_opts=device_opts)
+    simpleConfig.load_net(simpleConfig.INIT_NET, simpleConfig.PREDICT_NET, device_opts=device_opts)
 
-    img = cv2.imread("3.jpg")                                   # Load test image
+    img = cv2.imread("./test_img/3.jpg")                        # Load test image
     img = cv2.resize(img, (28,28))                              # Resize to 28x28
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY )                # Covert to grayscale
     img = img.reshape((1,1,28,28)).astype('float32')            # Reshape to (1,1,28,28)

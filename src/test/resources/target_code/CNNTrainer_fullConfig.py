@@ -20,12 +20,12 @@ if __name__ == "__main__":
         context='gpu',
         eval_metric='mse',
         opt_type='rmsprop',
-        base_learning_rate=0.001,
-        weight_decay=0.01,
-        policy='step',
-        stepsize=1000,
         epsilon=1.0E-6,
+        weight_decay=0.01,
         gamma=0.9,
+        policy='step',
+        base_learning_rate=0.001,
+        stepsize=1000
     )
 
     print '\n********************************************'
@@ -39,9 +39,9 @@ if __name__ == "__main__":
         device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
         print("GPU mode selected")
 
-    LeNet.load_net(LeNet.INIT_NET, LeNet.PREDICT_NET, device_opts=device_opts)
+    fullConfig.load_net(fullConfig.INIT_NET, fullConfig.PREDICT_NET, device_opts=device_opts)
 
-    img = cv2.imread("3.jpg")                                   # Load test image
+    img = cv2.imread("./test_img/3.jpg")                        # Load test image
     img = cv2.resize(img, (28,28))                              # Resize to 28x28
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY )                # Covert to grayscale
     img = img.reshape((1,1,28,28)).astype('float32')            # Reshape to (1,1,28,28)

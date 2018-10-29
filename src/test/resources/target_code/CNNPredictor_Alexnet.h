@@ -1,109 +1,117 @@
 #ifndef CNNPREDICTOR_ALEXNET
 #define CNNPREDICTOR_ALEXNET
 
-#include <mxnet/c_predict_api.h>
+#include "caffe2/core/common.h"
+#include "caffe2/utils/proto_utils.h"
+#include "caffe2/core/workspace.h"
+#include "caffe2/core/tensor.h"
+#include "caffe2/core/init.h"
 
-#include <cassert>
+// Define USE_GPU for GPU computation. Default is CPU computation.
+//#define USE_GPU
+
+#ifdef USE_GPU
+#include "caffe2/core/context_gpu.h"
+#endif
+
 #include <string>
-#include <vector>
+#include <iostream>
+#include <map>
 
-#include <CNNBufferFile.h>
+CAFFE2_DEFINE_string(init_net, "./model/Alexnet/init_net.pb", "The given path to the init protobuffer.");
+CAFFE2_DEFINE_string(predict_net, "./model/Alexnet/predict_net.pb", "The given path to the predict protobuffer.");
+
+using namespace caffe2;
 
 class CNNPredictor_Alexnet{
-public:
-    const std::string json_file = "model/Alexnet/Alexnet_newest-symbol.json";
-    const std::string param_file = "model/Alexnet/Alexnet_newest-0000.params";
-    //const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::string> input_keys = {"data"};
-    const std::vector<std::vector<mx_uint>> input_shapes = {{1,3,224,224}};
-    const bool use_gpu = false;
+    private:
+        TensorCPU input;
+        Workspace workSpace;
+        NetDef initNet, predictNet;
 
-    PredictorHandle handle;
+    public:
+        const std::vector<TIndex> input_shapes = {{1,3,224,224}};
 
-    explicit CNNPredictor_Alexnet(){
-        init(json_file, param_file, input_keys, input_shapes, use_gpu);
-    }
-
-    ~CNNPredictor_Alexnet(){
-        if(handle) MXPredFree(handle);
-    }
-
-    void predict(const std::vector<float> &data,
-                 std::vector<float> &predictions){
-        MXPredSetInput(handle, "data", data.data(), data.size());
-        //MXPredSetInput(handle, "data", data.data(), data.size());
-
-        MXPredForward(handle);
-
-        mx_uint output_index;
-        mx_uint *shape = 0;
-        mx_uint shape_len;
-        size_t size;
-
-        output_index = 0;
-        MXPredGetOutputShape(handle, output_index, &shape, &shape_len);
-        size = 1;
-        for (mx_uint i = 0; i < shape_len; ++i) size *= shape[i];
-        assert(size == predictions.size());
-        MXPredGetOutput(handle, 0, &(predictions[0]), predictions.size());
-
-    }
-
-    void init(const std::string &json_file,
-              const std::string &param_file,
-              const std::vector<std::string> &input_keys,
-              const std::vector<std::vector<mx_uint>> &input_shapes,
-              const bool &use_gpu){
-
-        BufferFile json_data(json_file);
-        BufferFile param_data(param_file);
-
-        int dev_type = use_gpu ? 2 : 1;
-        int dev_id = 0;
-
-        handle = 0;
-
-        if (json_data.GetLength() == 0 ||
-            param_data.GetLength() == 0) {
-            std::exit(-1);
+        explicit CNNPredictor_Alexnet(){
+            init(input_shapes);
         }
 
-        const mx_uint num_input_nodes = input_keys.size();
+        ~CNNPredictor_Alexnet(){};
 
-        const char* input_keys_ptr[num_input_nodes];
-        for(mx_uint i = 0; i < num_input_nodes; i++){
-            input_keys_ptr[i] = input_keys[i].c_str();
-        }
+        void init(const std::vector<TIndex> &input_shapes){
+            int n = 0;
+            char **a[1];
+            caffe2::GlobalInit(&n, a);
 
-        mx_uint shape_data_size = 0;
-        mx_uint input_shape_indptr[input_shapes.size() + 1];
-        input_shape_indptr[0] = 0;
-        for(mx_uint i = 0; i < input_shapes.size(); i++){
-            input_shape_indptr[i+1] = input_shapes[i].size();
-            shape_data_size += input_shapes[i].size();
-        }
-
-        mx_uint input_shape_data[shape_data_size];
-        mx_uint index = 0;
-        for(mx_uint i = 0; i < input_shapes.size(); i++){
-            for(mx_uint j = 0; j < input_shapes[i].size(); j++){
-                input_shape_data[index] = input_shapes[i][j];
-                index++;
+            if (!std::ifstream(FLAGS_init_net).good()) {
+                std::cerr << "\nNetwork loading failure, init_net file '" << FLAGS_init_net << "' does not exist." << std::endl;
+                exit(1);
             }
+
+            if (!std::ifstream(FLAGS_predict_net).good()) {
+                std::cerr << "\nNetwork loading failure, predict_net file '" << FLAGS_predict_net << "' does not exist." << std::endl;
+                exit(1);
+            }
+
+            std::cout << "\nLoading network..." << std::endl;
+
+            // Read protobuf
+            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_init_net, &initNet));
+            CAFFE_ENFORCE(ReadProtoFromFile(FLAGS_predict_net, &predictNet));
+
+            // Set device type
+            #ifdef USE_GPU
+            predictNet.mutable_device_option()->set_device_type(CUDA);
+            initNet.mutable_device_option()->set_device_type(CUDA);
+            std::cout << "== GPU mode selected " << " ==" << std::endl;
+            #else
+            predictNet.mutable_device_option()->set_device_type(CPU);
+            initNet.mutable_device_option()->set_device_type(CPU);
+
+            for(int i = 0; i < predictNet.op_size(); ++i){
+                predictNet.mutable_op(i)->mutable_device_option()->set_device_type(CPU);
+            }
+            for(int i = 0; i < initNet.op_size(); ++i){
+                initNet.mutable_op(i)->mutable_device_option()->set_device_type(CPU);
+            }
+            std::cout << "== CPU mode selected " << " ==" << std::endl;
+            #endif
+
+            // Load network
+            CAFFE_ENFORCE(workSpace.RunNetOnce(initNet));
+            CAFFE_ENFORCE(workSpace.CreateNet(predictNet));
+            std::cout << "== Network loaded " << " ==" << std::endl;
+
+            input.Resize(input_shapes);
         }
 
-        MXPredCreate((const char*)json_data.GetBuffer(),
-                     (const char*)param_data.GetBuffer(),
-                     static_cast<size_t>(param_data.GetLength()),
-                     dev_type,
-                     dev_id,
-                     num_input_nodes,
-                     input_keys_ptr,
-                     input_shape_indptr,
-                     input_shape_data,
-                     &handle);
-        assert(handle);
-    }
+        void predict(const std::vector<float> &data, std::vector<float> &predictions){
+            //Note: ShareExternalPointer requires a float pointer.
+            input.ShareExternalPointer((float *) data.data());
+
+            // Get input blob
+            #ifdef USE_GPU
+            auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCUDA>();
+            #else
+            auto dataBlob = workSpace.GetBlob("data")->GetMutable<TensorCPU>();
+            #endif
+
+            // Copy from input data
+            dataBlob->CopyFrom(input);
+
+            // Forward
+            workSpace.RunNet(predictNet.name());
+
+            // Get output blob
+            #ifdef USE_GPU
+            auto predictionsBlob = TensorCPU(workSpace.GetBlob("predictions")->Get<TensorCUDA>());
+            #else
+            auto predictionsBlob = workSpace.GetBlob("predictions")->Get<TensorCPU>();
+            #endif
+            predictions.assign(predictionsBlob.data<float>(),predictionsBlob.data<float>() + predictionsBlob.size());
+
+            google::protobuf::ShutdownProtobufLibrary();
+        }
 };
 
 #endif // CNNPREDICTOR_ALEXNET

@@ -24,51 +24,33 @@ if __name__ == "__main__":
 <#if (config.batchSize)??>
         batch_size=${config.batchSize},
 </#if>
-<#if (config.loadCheckpoint)??>
-        <#--load_checkpoint=${config.loadCheckpoint?string("True","False")}, -->
-</#if>
 <#if (config.context)??>
         context='${config.context}',
-</#if>
-<#if (config.normalize)??>
-        <#--normalize=${config.normalize?string("True","False")}, -->
 </#if>
 <#if (config.evalMetric)??>
         eval_metric='${config.evalMetric}',
 </#if>
 <#if (config.configuration.optimizer)??>
         opt_type='${config.optimizerName}',
-<#--The following gets the optimizer parameter values separately instead of getting them as a list to avoid unsupported parameters in Caffe2-->
-<#if (config.optimizerParams["learning_rate"])??>
-        base_learning_rate=${config.optimizerParams["learning_rate"]},
+<#list config.optimizerParams?keys as param>
+    <#--Adapt parameter names since parameter names in Caffe2 are different than in CNNTrainLang-->
+    <#assign paramName = param>
+    <#if param == "learning_rate">
+        <#assign paramName = "base_learning_rate">
+    <#elseif param == "learning_rate_policy">
+        <#assign paramName = "policy">
+    <#elseif param == "step_size">
+        <#assign paramName = "stepsize">
+    <#elseif param == "gamma1">
+        <#assign paramName = "gamma">
+    </#if>
+        ${paramName}=${config.optimizerParams[param]}<#sep>,
+</#list>
 </#if>
-<#if (config.optimizerParams["weight_decay"])??>
-        weight_decay=${config.optimizerParams["weight_decay"]},
-</#if>
-<#if (config.optimizerParams["learning_rate_policy"])??>
-        policy=${config.optimizerParams["learning_rate_policy"]},
-</#if>
-<#if (config.optimizerParams["step_size"])??>
-        stepsize=${config.optimizerParams["step_size"]},
-</#if>
-<#if (config.optimizerParams["epsilon"])??>
-        epsilon=${config.optimizerParams["epsilon"]},
-</#if>
-<#if (config.optimizerParams["beta1"])??>
-        beta1=${config.optimizerParams["beta1"]},
-</#if>
-<#if (config.optimizerParams["beta2"])??>
-        beta2=${config.optimizerParams["beta2"]},
-</#if>
-<#if (config.optimizerParams["gamma1"])??>
-        gamma=${config.optimizerParams["gamma1"]},
-</#if>
-<#if (config.optimizerParams["momentum"])??>
-        momentum=${config.optimizerParams["momentum"]},
-</#if>
-</#if>
+
     )
 </#list>
+
 <#--Below code can be removed. It is only an specific example to verify that deploy_net works-->
     print '\n********************************************'
     print("Loading Deploy model")
@@ -86,11 +68,11 @@ if __name__ == "__main__":
     elif context == 'gpu':
         device_opts = core.DeviceOption(caffe2_pb2.CUDA, 0)
         print("GPU mode selected")
+
+    ${config.instanceName}.load_net(${config.instanceName}.INIT_NET, ${config.instanceName}.PREDICT_NET, device_opts=device_opts)
 </#list>
 
-    LeNet.load_net(LeNet.INIT_NET, LeNet.PREDICT_NET, device_opts=device_opts)
-
-    img = cv2.imread("3.jpg")                                   # Load test image
+    img = cv2.imread("./test_img/3.jpg")                        # Load test image
     img = cv2.resize(img, (28,28))                              # Resize to 28x28
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY )                # Covert to grayscale
     img = img.reshape((1,1,28,28)).astype('float32')            # Reshape to (1,1,28,28)

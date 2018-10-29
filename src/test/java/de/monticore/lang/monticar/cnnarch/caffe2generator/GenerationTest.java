@@ -54,8 +54,7 @@ public class GenerationTest extends AbstractSymtabTest{
                 Arrays.asList(
                 "CNNCreator_CifarClassifierNetwork.py",
                 "CNNPredictor_CifarClassifierNetwork.h",
-                "execute_CifarClassifierNetwork",
-                "CNNBufferFile.h"));
+                "execute_CifarClassifierNetwork"));
     }
 
     @Test
@@ -122,7 +121,7 @@ public class GenerationTest extends AbstractSymtabTest{
         CNNTrain2Caffe2 trainGenerator = new CNNTrain2Caffe2();
         trainGenerator.generate(Paths.get(sourcePath), "FullConfig");
 
-        assertTrue(Log.getFindings().isEmpty());
+        assertTrue(Log.getFindings().size() == 9);
         checkFilesAreEqual(
                 Paths.get("./target/generated-sources-cnnarch"),
                 Paths.get("./src/test/resources/target_code"),
