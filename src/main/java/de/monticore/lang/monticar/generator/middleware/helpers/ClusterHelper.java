@@ -32,8 +32,9 @@ public class ClusterHelper {
                     ExpandedComponentInstanceSymbol compTarget = c.getTargetPort().getComponentInstance().orElse(null);
                     if (compSource == null || compTarget == null) {
                         Log.error("ComponentInstance of source or target not found!");
-                        if (!compSource.equals(compTarget))
-                            graph.addEdge(compSource, compTarget);
+                    }
+                    if (!compSource.equals(compTarget)) {
+                        graph.addEdge(compSource, compTarget);
                     }
                 });
 
