@@ -69,7 +69,7 @@ public class CMakeConfig {
 
     private CMakeListsCPPViewModel cMakeListsViewModel = new CMakeListsCPPViewModel();
 
-    private HashSet<CMakeFindModule> moduleList = new HashSet<>();
+    private List<CMakeFindModule> moduleList = new ArrayList<>();
 
     private List<String> cmakeCommandList = new ArrayList<>();
 

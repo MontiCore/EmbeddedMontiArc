@@ -16,7 +16,7 @@ set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 # create static library
 include_directories(${INCLUDE_DIRS})
 add_library(test_math_floatDivisionTest test_math_floatDivisionTest.h)
-target_include_directories(test_math_floatDivisionTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(test_math_floatDivisionTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${INCLUDE_DIRS})
 target_link_libraries(test_math_floatDivisionTest PUBLIC ${LIBS})
 set_target_properties(test_math_floatDivisionTest PROPERTIES LINKER_LANGUAGE CXX)
 
