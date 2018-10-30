@@ -8,7 +8,7 @@ set(CMAKE_MODULE_PATH ${r"${CMAKE_MODULE_PATH}"} ${r"${CMAKE_CURRENT_SOURCE_DIR}
 
 # add dependencies
 <#list viewModel.moduleDependencies as var>
-find_package(${var.packageName} <#if var.required>REQUIRED<#else>OPTIONAL</#if>)
+find_package(${var.packageName} <#if var.required>REQUIRED<#else></#if>)
 <#if var.findPath>set(INCLUDE_DIRS ${r"${INCLUDE_DIRS}"} ${r"${"}${var.packageName}${r"_INCLUDE_DIRS}"})</#if>
 <#if var.findLibrary>set(LIBS ${r"${LIBS}"} ${r"${"}${var.packageName}${r"_LIBRARIES}"})</#if>
 </#list>
