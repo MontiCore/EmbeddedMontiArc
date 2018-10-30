@@ -1,6 +1,28 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.ma2cfg.helper.Names;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
@@ -8,7 +30,9 @@ import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
+import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
+import de.monticore.lang.monticar.generator.testing.StreamTestGenerator;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.Scope;
@@ -19,10 +43,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Sascha Schneiders
@@ -33,6 +54,7 @@ public class GeneratorCPP implements Generator {
     private boolean isGenerateTests = false;
     private boolean isGenerateAutopilotAdapter = false;
     private boolean isGenerateServerWrapper = false;
+    protected boolean isExecutionLoggingActive = false;
     private final List<BluePrintCPP> bluePrints = new ArrayList<>();
 
     protected String generationTargetPath = "./target/generated-sources-cpp/";
@@ -44,6 +66,7 @@ public class GeneratorCPP implements Generator {
     protected boolean generateMainClass = false;
     protected boolean generateSimulatorInterface = false;
     protected boolean checkModelDir = false;
+    protected boolean streamTestGenerationMode = false;
 
     // CMake
     private boolean generateCMake = false;
@@ -54,6 +77,15 @@ public class GeneratorCPP implements Generator {
         useOctaveBackend();
         TypeConverter.clearTypeSymbols();
         currentInstance = this;
+    }
+
+
+    public boolean isExecutionLoggingActive() {
+        return isExecutionLoggingActive;
+    }
+
+    public void setExecutionLoggingActive(boolean executionLoggingActive) {
+        isExecutionLoggingActive = executionLoggingActive;
     }
 
     protected void setupCMake() {
@@ -73,13 +105,26 @@ public class GeneratorCPP implements Generator {
         return MathConverter.curBackend instanceof ArmadilloBackend;
     }
 
+    protected String testNamePostFix = "";
+    protected int amountTickValues = 100;
+
+    public void useStreamTestTestGeneration(String testNamePostFix, int amountTickValues) {
+        streamTestGenerationMode = true;
+        this.testNamePostFix = testNamePostFix;
+        this.amountTickValues = amountTickValues;
+    }
+
+    public void useStreamTestTestGeneration(String testNamePostFix) {
+        useStreamTestTestGeneration(testNamePostFix, 100);
+    }
+
     public void useOctaveBackend() {
         MathConverter.curBackend = new OctaveBackend();
         setupCMake();
         //Log.warn("This backend has been deprecated. Armadillo is the recommended backend now.");
     }
 
-    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentInstanceSymbol, symtab);
 
         return generateString(taggingResolver, componentInstanceSymbol, mathSymbol);
@@ -96,14 +141,17 @@ public class GeneratorCPP implements Generator {
     }
 
     @Override
-    public String generateString(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
+    public String generateString(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol) {
+        StreamTestGenerator streamTestGenerator = new StreamTestGenerator();//only used when creating streamTestsForAComponent
         LanguageUnitCPP languageUnitCPP = new LanguageUnitCPP();
         languageUnitCPP.setGeneratorCPP(this);
         languageUnitCPP.addSymbolToConvert(componentSymbol);
         if (mathStatementsSymbol != null)
             languageUnitCPP.addSymbolToConvert(mathStatementsSymbol);
-        languageUnitCPP.generateBluePrints();
-
+        if (!streamTestGenerationMode)
+            languageUnitCPP.generateBluePrints();
+        else
+            streamTestGenerator.createStreamTest(componentSymbol, amountTickValues, testNamePostFix);
         BluePrintCPP bluePrintCPP = null;
         for (BluePrint bluePrint : languageUnitCPP.getBluePrints()) {
             if (bluePrint.getOriginalSymbol().equals(componentSymbol)) {
@@ -114,15 +162,18 @@ public class GeneratorCPP implements Generator {
         if (bluePrintCPP != null) {
             bluePrints.add(bluePrintCPP);
         }
-
-        String result = languageUnitCPP.getGeneratedHeader(taggingResolver, bluePrintCPP);
+        String result;
+        if (!streamTestGenerationMode)
+            result = languageUnitCPP.getGeneratedHeader(taggingResolver, bluePrintCPP);
+        else
+            result = streamTestGenerator.getCurrentGeneratedStreamTest().toString();
         return result;
     }
 
     public static List<FileContent> currentFileContentList = null;
 
     @Override
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab) {
         List<FileContent> fileContents = new ArrayList<>();
         if (componentInstanceSymbol.getFullName().equals("simulator.mainController")) {
             setGenerateSimulatorInterface(true);
@@ -130,43 +181,62 @@ public class GeneratorCPP implements Generator {
             //setGenerateMainClass(true);
         }
         currentFileContentList = fileContents;
-        fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
+        if (!streamTestGenerationMode)
+            fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab), componentInstanceSymbol));
+        else
+            fileContents.add(new FileContent(generateString(taggingResolver, componentInstanceSymbol, symtab),
+                    componentInstanceSymbol.getPackageName().replaceAll("\\.", "\\/") + "/" + Names.FirstUpperCase(componentInstanceSymbol.getName()) + "Test" + testNamePostFix + ".stream"));
         String lastNameWithoutArrayPart = "";
-        for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
-            //fileContents.add(new FileContent(generateString(instanceSymbol, symtab), instanceSymbol));
-            int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
-            boolean generateComponentInstance = true;
-            if (arrayBracketIndex != -1) {
-                generateComponentInstance = !instanceSymbol.getName().substring(0, arrayBracketIndex).equals(lastNameWithoutArrayPart);
-                lastNameWithoutArrayPart = instanceSymbol.getName().substring(0, arrayBracketIndex);
-                Log.info(lastNameWithoutArrayPart, "Without:");
-                Log.info(generateComponentInstance + "", "Bool:");
-            }
-            if (generateComponentInstance) {
+        if (!streamTestGenerationMode) {
+            for (ExpandedComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
+                //fileContents.add(new FileContent(generateString(instanceSymbol, symtab), instanceSymbol));
+                int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
+                boolean generateComponentInstance = true;
+                if (arrayBracketIndex != -1) {
+                    generateComponentInstance = !instanceSymbol.getName().substring(0, arrayBracketIndex).equals(lastNameWithoutArrayPart);
+                    lastNameWithoutArrayPart = instanceSymbol.getName().substring(0, arrayBracketIndex);
+                    Log.info(lastNameWithoutArrayPart, "Without:");
+                    Log.info(generateComponentInstance + "", "Bool:");
+                }
+                if (generateComponentInstance) {
 
-                fileContents.addAll(generateStrings(taggingResolver, instanceSymbol, symtab));
+                    fileContents.addAll(generateStrings(taggingResolver, instanceSymbol, symtab));
+                }
+            }
+            if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
+                fileContents.add(OctaveHelper.getOctaveHelperFileContent());
+            if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
+                fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
+
+            if (shouldGenerateMainClass()) {
+                //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
+            } else if (shouldGenerateSimulatorInterface()) {
+                fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
             }
         }
-        if (MathConverter.curBackend.getBackendName().equals("OctaveBackend"))
-            fileContents.add(OctaveHelper.getOctaveHelperFileContent());
-        if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend"))
-            fileContents.add(ArmadilloHelper.getArmadilloHelperFileContent());
-
-        if (shouldGenerateMainClass()) {
-            //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));
-        } else if (shouldGenerateSimulatorInterface()) {
-            fileContents.addAll(SimulatorIntegrationHelper.getSimulatorIntegrationHelperFileContent());
-        }
-
         return fileContents;
     }
 
     //TODO add incremental generation based on described concept
-    public List<File> generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentSymbol,
+    public List<File> generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol,
                                     Scope symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+        List<FileContent> fileContents = new ArrayList<>();
+        if (componentSymbol == null) {
+            ComponentScanner componentScanner = new ComponentScanner(getModelsDirPath(), symtab, "emam");
+            Set<String> availableComponents = componentScanner.scan();
+            for (String componentFullName : availableComponents) {
+                componentFullName = Names.getExpandedComponentInstanceSymbolName(componentFullName);
+                if (symtab.resolve(componentFullName,
+                        ExpandedComponentInstanceSymbol.KIND).isPresent()) {
+                    ExpandedComponentInstanceSymbol componentInstanceSymbol = (ExpandedComponentInstanceSymbol) symtab.resolve(componentFullName,
+                            ExpandedComponentInstanceSymbol.KIND).get();
+                    fileContents.addAll(generateStrings(taggingResolver, componentInstanceSymbol, symtab));
+                }
+            }
+        } else
+            fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
         fileContents.addAll(generateTypes(TypeConverter.getTypeSymbols()));
-        fileContents.addAll(handleTestAndCheckDir(symtab));
+        fileContents.addAll(handleTestAndCheckDir(symtab, componentSymbol));
         if (isGenerateAutopilotAdapter()) {
             fileContents.addAll(getAutopilotAdapterFiles(componentSymbol));
         }
@@ -185,7 +255,7 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    protected List<File> generateCMakeFiles(EMAComponentInstanceSymbol componentInstanceSymbol) {
+    protected List<File> generateCMakeFiles(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
         List<File> files = new ArrayList<>();
         cMakeConfig.getCMakeListsViewModel().setCompName(componentInstanceSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_'));
         List<FileContent> contents = cMakeConfig.generateCMakeFiles();
@@ -206,17 +276,17 @@ public class GeneratorCPP implements Generator {
         return files;
     }
 
-    public List<FileContent> handleTestAndCheckDir(Scope symtab) {
+    public List<FileContent> handleTestAndCheckDir(Scope symtab, ExpandedComponentInstanceSymbol componentSymbol) {
         List<FileContent> fileContents = new ArrayList<>();
         if (isGenerateTests() || isCheckModelDir()) {
             TestsGeneratorCPP g = new TestsGeneratorCPP(this);
-            List<FileContent> fileConts = g.generateStreamTests(symtab);
+            List<FileContent> fileConts = g.generateStreamTests(symtab, componentSymbol);
             fileContents.addAll(fileConts);
         }
         return fileContents;
     }
 
-    public List<File> generateFiles(EMAComponentInstanceSymbol componentSymbol,
+    public List<File> generateFiles(ExpandedComponentInstanceSymbol componentSymbol,
                                     TaggingResolver taggingResolver) throws IOException {
         return generateFiles(taggingResolver, componentSymbol, taggingResolver);
     }
@@ -247,7 +317,7 @@ public class GeneratorCPP implements Generator {
         return f;
     }
 
-    public FileContent getMainClassFileContent(EMAComponentInstanceSymbol instanceSymbol, FileContent fileContent) {
+    public FileContent getMainClassFileContent(ExpandedComponentInstanceSymbol instanceSymbol, FileContent fileContent) {
         FileContent newFileContent = new FileContent();
 
         newFileContent.setFileName("main.cpp");
@@ -367,18 +437,41 @@ public class GeneratorCPP implements Generator {
         return tg.generateTypes(typeSymbols);
     }
 
-    private static List<FileContent> getAutopilotAdapterFiles(EMAComponentInstanceSymbol componentSymbol) {
+    private static List<FileContent> getAutopilotAdapterFiles(ExpandedComponentInstanceSymbol componentSymbol) {
         List<FileContent> result = new ArrayList<>();
         result.add(FileUtil.getResourceAsFile("/template/autopilotadapter/AutopilotAdapter.h", "AutopilotAdapter.h"));
         result.add(generateAutopilotAdapter(componentSymbol));
         return result;
     }
 
-    private static FileContent generateAutopilotAdapter(EMAComponentInstanceSymbol componentSymbol) {
-        return generateWrapper(componentSymbol, "AutopilotAdapter.cpp");
+    private static FileContent generateAutopilotAdapter(ExpandedComponentInstanceSymbol componentSymbol) {
+        AutopilotAdapterViewModel vm = new AutopilotAdapterViewModel();
+        vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
+        String fileContents = AllTemplates.generateAutopilotAdapter(vm);
+        if (currentInstance.generateCMake)
+            addAutopilotAdapterCMakeConfig();
+        return new FileContent(fileContents, "AutopilotAdapter.cpp");
     }
 
-    private static List<FileContent> getServerWrapperFiles(EMAComponentInstanceSymbol componentSymbol) {
+    private static void addAutopilotAdapterCMakeConfig() {
+        CMakeConfig cmake = currentInstance.cMakeConfig;
+        // add jni
+        cmake.addCMakeCommand("find_package(JNI)");
+        cmake.addCMakeCommand("set(INCLUDE_DIRS ${INCLUDE_DIRS} ${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})");
+        // create shared lib
+        cmake.addCMakeCommandEnd("add_library(AutopilotAdapter SHARED AutopilotAdapter.cpp ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_include_directories(AutopilotAdapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
+        cmake.addCMakeCommandEnd("target_link_libraries(AutopilotAdapter PUBLIC ${LIBS})");
+        cmake.addCMakeCommandEnd("set_target_properties(AutopilotAdapter PROPERTIES LINKER_LANGUAGE CXX)");
+        cmake.addCMakeCommand("IF (WIN32)");
+        cmake.addCMakeCommandEnd("set_target_properties(AutopilotAdapter PROPERTIES PREFIX \"\")");
+        cmake.addCMakeCommand("ENDIF()");
+        // install shared lib
+        cmake.addCMakeCommandEnd("install(TARGETS AutopilotAdapter DESTINATION $ENV{DLL_DIR})");
+        cmake.addCMakeCommandEnd("export(TARGETS AutopilotAdapter FILE de_rwth_armin_modeling_autopilot_autopilotAdapter.cmake)");
+    }
+
+    private static List<FileContent> getServerWrapperFiles(ExpandedComponentInstanceSymbol componentSymbol) {
         List<FileContent> result = new ArrayList<>();
         String[] filesToCopy = new String[]{
                 "Makefile",
@@ -392,11 +485,11 @@ public class GeneratorCPP implements Generator {
         return result;
     }
 
-    private static FileContent generateServerWrapper(EMAComponentInstanceSymbol componentSymbol) {
+    private static FileContent generateServerWrapper(ExpandedComponentInstanceSymbol componentSymbol) {
         return generateWrapper(componentSymbol, "server.cc");
     }
 
-    private static FileContent generateWrapper(EMAComponentInstanceSymbol componentSymbol, String name) {
+    private static FileContent generateWrapper(ExpandedComponentInstanceSymbol componentSymbol, String name) {
         ServerWrapperViewModel vm = new ServerWrapperViewModel();
         vm.setMainModelName(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         String fileContents = AllTemplates.generateServerWrapper(vm);

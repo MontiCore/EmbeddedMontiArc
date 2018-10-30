@@ -4,7 +4,6 @@
 
 #include "catch.hpp"
 #include "../${viewModel.componentName}.h"
-
 <#list viewModel.streams as stream>
 TEST_CASE("${stream.name}", "[${viewModel.componentName}]") {
     ${viewModel.componentName} component;

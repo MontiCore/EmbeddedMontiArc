@@ -1,7 +1,22 @@
-/*
- * Copyright (c) 2015 RWTH Aachen. All rights reserved.
+/**
  *
- * http://www.se-rwth.de/
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
 package de.monticore.lang.monticar.generator;
 
@@ -74,8 +89,8 @@ public class AbstractSymtabTest extends AbstractSymtab {
         }
         int len = lines1.size();
         for (int i = 0; i < len; i++) {
-            String l1 = lines1.get(i);
-            String l2 = lines2.get(i);
+            String l1 = lines1.get(i).trim();
+            String l2 = lines2.get(i).trim();
             Assert.assertEquals("files differ in " + i + " line: "
                             + file1.getAbsolutePath()
                             + " has " + l1

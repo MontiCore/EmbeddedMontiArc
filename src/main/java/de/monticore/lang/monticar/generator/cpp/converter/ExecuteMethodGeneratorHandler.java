@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.math._symboltable.MathAssignmentOperator;
@@ -220,6 +240,10 @@ public class ExecuteMethodGeneratorHandler {
         return mathNumberExpressionSymbol.getTextualRepresentation();
     }
 
+    public static String generateExecuteCodeFloatNumber(MathNumberExpressionSymbol mathNumberExpressionSymbol) {
+        return Double.toString(mathNumberExpressionSymbol.getValue().getRealNumber().doubleValue());
+    }
+
     public static String generateExecuteCode(MathBooleanExpressionSymbol mathBooleanExpressionSymbol, List<String> includeStrings) {
         return mathBooleanExpressionSymbol.getTextualRepresentation();
     }
@@ -334,14 +358,17 @@ public class ExecuteMethodGeneratorHandler {
             list.add(mathExpressionSymbol.getRightExpression());
             String valueListString = "(" + OctaveHelper.getOctaveValueListString(list, ";") + ")";
             return MathConverter.curBackend.getPowerOfString(mathExpressionSymbol, valueListString, ";");
+        } else if (mathExpressionSymbol.getMathOperator().equals("/") && (mathExpressionSymbol.getLeftExpression() instanceof MathNumberExpressionSymbol) && (mathExpressionSymbol.getRightExpression() instanceof MathNumberExpressionSymbol)) {
+            String left = ExecuteMethodGeneratorHandler.generateExecuteCodeFloatNumber((MathNumberExpressionSymbol) mathExpressionSymbol.getLeftExpression());
+            String right = ExecuteMethodGeneratorHandler.generateExecuteCodeFloatNumber((MathNumberExpressionSymbol) mathExpressionSymbol.getRightExpression());
+            result = String.format("%s%s%s", left, mathExpressionSymbol.getMathOperator(), right);
         } else {
             result += /*"("+*/  ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getLeftExpression(), includeStrings) + mathExpressionSymbol.getMathOperator();
-
-            if (mathExpressionSymbol.getRightExpression() != null)
+            if (mathExpressionSymbol.getRightExpression() != null) {
                 result += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol.getRightExpression(), includeStrings);
+            }
         }
         return result;
-
     }
 
 

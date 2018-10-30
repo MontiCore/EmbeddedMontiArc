@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp;
 
 /**
@@ -10,7 +30,64 @@ public class ArmadilloHelperSource {
             "#include \"armadillo.h\"\n" +
             "#include <stdarg.h>\n" +
             "#include <initializer_list>\n" +
+            "#include <fstream>\n" +
             "using namespace arma;\n" +
+            "#ifndef _FILESTRING_CONVERSION___A\n" +
+            "#define _FILESTRING_CONVERSION___A\n" +
+            "#include \"armadillo.h\"\n" +
+            "using namespace arma;\n" +
+            "void toFileString(std::ofstream& myfile, mat A){\n" +
+            "    myfile << \"[\";\n" +
+            "    for (int i = 0; i < A.n_rows; i++){\n" +
+            "        for (int j = 0; j < A.n_cols; j++){\n" +
+            "            myfile << A(i,j);\n" +
+            "            if(j + 1 < A.n_cols){\n" +
+            "                myfile << \", \";\n" +
+            "            }\n" +
+            "        }\n" +
+            "        if(i + 1 < A.n_rows){\n" +
+            "            myfile << \";\";\n" +
+            "        }\n" +
+            "    }\n" +
+            "    myfile << \"]\";\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, double A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, float A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, int A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "void toFileString(std::ofstream& myfile, bool A){\n" +
+            "    myfile << A;\n" +
+            "}\n" +
+            "bool Is_close(mat& X, mat& Y, double tol)\n" +
+            "{\n" +
+            "    // abs returns a mat type then max checks columns and returns a row_vec\n" +
+            "    // max used again will return the biggest element in the row_vec\n" +
+            "    bool close(false);\n" +
+            "    if(arma::max(arma::max(arma::abs(X-Y))) < tol)\n" +
+            "    {\n" +
+            "        close = true;\n" +
+            "    }\n" +
+            "    return close;\n" +
+            "}\n" +
+            "void rangeValueCheck(double A, double lower, double upper){\n" +
+            "    REQUIRE( A >= lower );\n" +
+            "    REQUIRE( A <= upper );\n" +
+            "}\n" +
+            "\n" +
+            "void rangeValueCheck(int A, double lower, double upper){\n" +
+            "    REQUIRE( A >= lower );\n" +
+            "    REQUIRE( A <= upper );\n" +
+            "}\n" +
+            "void rangeValueCheck(mat& A, mat& lower , mat& upper){\n" +
+            "    REQUIRE(Is_close(A, lower, 0.0001));\n" +
+            "    REQUIRE(Is_close(A, upper, 0.0001));\n" +
+            "}\n" +
+            "#endif\n" +
             "class HelperA{\n" +
             "public:\n" +
             "static mat getEigenVectors(mat A){\n" +

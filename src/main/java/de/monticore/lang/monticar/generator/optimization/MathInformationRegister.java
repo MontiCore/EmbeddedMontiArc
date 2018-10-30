@@ -1,7 +1,28 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.optimization;
 
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessOperatorSymbol;
+import de.monticore.lang.math._symboltable.matrix.MathMatrixAccessSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixNameExpressionSymbol;
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Variable;
@@ -214,8 +235,11 @@ public class MathInformationRegister {
      */
     public MathValueSymbol getFullTypeInformation(MathValueSymbol symbol) {
         MathValueSymbol result = getMathValueSymbol(symbol.getName());
-        if (result == null)
+        if (result == null) {
             result = symbol;
+            // ask symbol table
+            result = (MathValueSymbol) symbol.getEnclosingScope().resolve(symbol.getName(), symbol.getKind()).orElse(null);
+        }
         return result;
     }
 
@@ -255,11 +279,43 @@ public class MathInformationRegister {
                 targetExpr.setMathMatrixAccessOperatorSymbol(targetAccessOperator);
                 result = targetExpr;
             } else {
-                result = nonAtomarExpression;
+                // try to resolve access
+                MathExpressionSymbol accessOperator = resolveMathExpressionToAtomarExpression(sourceExpr.getMathMatrixAccessOperatorSymbol(), atomarValueName);
+                targetExpr = sourceExpr;
+                targetExpr.setMathMatrixAccessOperatorSymbol((MathMatrixAccessOperatorSymbol) accessOperator);
+                result = targetExpr;
             }
         } else if (nonAtomarExpression instanceof IMathNamedExpression) {
             // substitute value expr by assigned expr
             result = getSubstituteByName(((IMathNamedExpression) nonAtomarExpression).getNameToAccess(), nonAtomarExpression, atomarValueName);
+        } else if (nonAtomarExpression instanceof MathMatrixAccessOperatorSymbol) {
+            MathMatrixAccessOperatorSymbol sourceExpr = (MathMatrixAccessOperatorSymbol) nonAtomarExpression;
+            MathMatrixAccessOperatorSymbol targetExpression = new MathMatrixAccessOperatorSymbol();
+            targetExpression.setMathMatrixAccessSymbols(new ArrayList<>());
+            boolean hasResult = true;
+            for (int i = 0; i < sourceExpr.getMathMatrixAccessSymbols().size(); i++) {
+                MathMatrixAccessSymbol newAccess;
+                if (sourceExpr.getMathMatrixAccessSymbol(i).isPresent()) {
+                    MathExpressionSymbol newAccessExpr = resolveMathExpressionToAtomarExpression(sourceExpr.getMathMatrixAccessSymbol(i).get(), atomarValueName);
+                    newAccess = new MathMatrixAccessSymbol();
+                    newAccess.setMathExpressionSymbol(newAccessExpr);
+                } else {
+                    newAccess = null;
+                    hasResult = false;
+                    break;
+                }
+                targetExpression.addMathMatrixAccessSymbol(newAccess);
+            }
+            if (!hasResult)
+                result = sourceExpr;
+            else
+                result = targetExpression;
+        } else if (nonAtomarExpression instanceof MathMatrixAccessSymbol) {
+            MathMatrixAccessSymbol source = (MathMatrixAccessSymbol) nonAtomarExpression;
+            MathMatrixAccessSymbol target = new MathMatrixAccessSymbol();
+            MathExpressionSymbol mathExpr = resolveMathExpressionToAtomarExpression(source.getMathExpressionSymbol().get(), atomarValueName);
+            target.setMathExpressionSymbol(mathExpr);
+            result = target;
         } else {
             result = nonAtomarExpression;
         }

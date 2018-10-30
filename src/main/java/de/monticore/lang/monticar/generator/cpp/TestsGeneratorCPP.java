@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.ComponentScanner;
@@ -6,6 +26,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ComponentStreamTestViewModel;
@@ -42,7 +63,7 @@ public final class TestsGeneratorCPP {
         this.generator = Log.errorIfNull(generator);
     }
 
-    public List<FileContent> generateStreamTests(Scope symTab) {
+    public List<FileContent> generateStreamTests(Scope symTab, ExpandedComponentInstanceSymbol componentSymbol) {
         bluePrints = new ArrayList<>(generator.getBluePrints());
         findStreams(symTab);
         findComponents(symTab);
@@ -51,7 +72,7 @@ public final class TestsGeneratorCPP {
             Log.warn("no blue prints were generated");
             //return Collections.emptyList();
         }
-        return generateFiles();
+        return generateFiles(componentSymbol);
     }
 
     private void findStreams(Scope symTab) {
@@ -64,7 +85,7 @@ public final class TestsGeneratorCPP {
         availableComponents = componentScanner.scan();
     }
 
-    private List<FileContent> generateFiles() {
+    private List<FileContent> generateFiles(ExpandedComponentInstanceSymbol componentSymbol) {
         testedComponents = new HashSet<>();
         files = new ArrayList<>();
         viewModelForMain = new TestsMainEntryViewModel();
@@ -90,7 +111,32 @@ public final class TestsGeneratorCPP {
             files.add(new FileContent(getExistingComponentNames(), "/reporting/" + "existingComponents.txt"));
             files.add(new FileContent(getComponentNamesThatHaveTests(), "/reporting/" + "testComponents.txt"));
         }
+        // add to cmake lists
+        if (generator.isGenerateCMakeEnabled())
+            addTestExecutionToCMakeConfig(componentSymbol);
         return files;
+    }
+
+    private void addTestExecutionToCMakeConfig(ExpandedComponentInstanceSymbol componentSymbol) {
+        // executable name
+        String compName;
+        final String execuatablePostFix = "_StreamTests";
+        CMakeConfig cmake = generator.getCMakeConfig();
+        cmake.addCMakeCommandEnd("include_directories(test)");
+        if (componentSymbol != null) {
+            compName = componentSymbol.getFullName().replace('.', '_').replace('[', '_').replace(']', '_');
+        } else {
+            compName = "";
+        }
+        cmake.addCMakeCommandEnd("add_executable(" + compName + execuatablePostFix + "  test/tests_main.cpp)");
+        cmake.addCMakeCommandEnd("target_compile_definitions(" + compName + execuatablePostFix + " PRIVATE CATCH_CONFIG_MAIN=1 ARMA_DONT_USE_WRAPPER)");
+        if (compName.isEmpty()) {
+            cmake.addCMakeCommandEnd("target_include_directories(" + compName + execuatablePostFix + "  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})");
+            cmake.addCMakeCommandEnd("target_link_libraries(" + compName + execuatablePostFix + "  PUBLIC ${LIBS})");
+        } else { // link against already created static library
+            cmake.addCMakeCommandEnd("target_link_libraries(" + compName + execuatablePostFix + "  PUBLIC " + compName + ")");
+        }
+        cmake.addCMakeCommandEnd("set_target_properties(" + compName + execuatablePostFix + "  PROPERTIES LINKER_LANGUAGE CXX)");
     }
 
     private String getExistingComponentNames() {
@@ -179,6 +225,14 @@ public final class TestsGeneratorCPP {
         viewModel.setStreams(new ArrayList<>());
         for (ComponentStreamUnitsSymbol stream : streamsForComponent) {
             StreamViewModel svm = new StreamViewModel();
+
+            Collection<PortSymbol> outPorts = cs.getOutgoingPorts();
+            List<String> names = new ArrayList<>();
+            for (PortSymbol portSymbol : outPorts) {
+                names.add(portSymbol.getName());
+            }
+            svm.outputPortNames = names;
+
             viewModel.getStreams().add(svm);
             svm.setName(stream.getFullName());
             svm.setChecks(getComponentPortChecks(cs, stream));
@@ -244,12 +298,23 @@ public final class TestsGeneratorCPP {
             } else {
                 processOutgoingPort(vm, sv, portName);
             }
+        } else if (nextInstruction.getStreamArrayValuesOpt().isPresent()) {
+            ASTStreamArrayValues sv = nextInstruction.getStreamArrayValues();
+            String portName = port.getName();
+            if (port.isIncoming()) {
+                processIncomingPortArray(vm, sv, portName);
+            } else {
+                processOutgoingPortArray(vm, sv, portName);
+            }
+        } else if (nextInstruction.getStreamCompareOpt().isPresent()) {
+            Log.error("Not handled!");
         }
     }
 
     private static void processIncomingPort(ComponentCheckViewModel vm, ASTStreamValue sv, String portName) {
         ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
         sv.accept(converter);
+        System.out.println("Processing: " + portName);
         if (converter.getResult() != null) {
             vm.getInputPortName2Value().put(portName, converter.getResult());
         }
@@ -257,6 +322,23 @@ public final class TestsGeneratorCPP {
 
     private static void processOutgoingPort(ComponentCheckViewModel vm, ASTStreamValue sv, String portName) {
         ASTStreamValue2OutputPortCheck converter = new ASTStreamValue2OutputPortCheck();
+        sv.accept(converter);
+        if (converter.getResult() != null) {
+            vm.getOutputPortName2Check().put(portName, converter.getResult());
+        }
+    }
+
+    private static void processIncomingPortArray(ComponentCheckViewModel vm, ASTStreamArrayValues sv, String portName) {
+        ASTStreamValue2InputPortValue converter = new ASTStreamValue2InputPortValue();
+        sv.accept(converter);
+        System.out.println("Processing: " + portName);
+        if (converter.getResult() != null) {
+            vm.getInputPortName2Value().put(portName, converter.getResult());
+        }
+    }
+
+    private static void processOutgoingPortArray(ComponentCheckViewModel vm, ASTStreamArrayValues sv, String portName) {
+        ASTStreamValue2OutputPortCheck converter = new ASTStreamValue2OutputPortCheck(portName);
         sv.accept(converter);
         if (converter.getResult() != null) {
             vm.getOutputPortName2Check().put(portName, converter.getResult());
@@ -276,43 +358,171 @@ public final class TestsGeneratorCPP {
 
     private static final class ASTStreamValue2OutputPortCheck implements StreamUnitsVisitor {
 
+
         private IOutputPortCheck result = null;
 
         public IOutputPortCheck getResult() {
             return result;
         }
 
+        boolean handled = false;
+        String portName = "";
+        boolean isMatrix = false;
+
+        public boolean getIsMatrix() {
+            return isMatrix;
+        }
+
+        public ASTStreamValue2OutputPortCheck(String portName) {
+            this.portName = portName;
+        }
+
+        public ASTStreamValue2OutputPortCheck() {
+        }
+
         @Override
         public void visit(ASTBooleanLiteral node) {
-            if (node.getValue()) {
-                result = BooleanOutputPortCheck.TRUE_EXPECTED;
-            } else {
-                result = BooleanOutputPortCheck.FALSE_EXPECTED;
+            if (!handled) {
+                if (node.getValue()) {
+                    result = BooleanOutputPortCheck.TRUE_EXPECTED;
+                } else {
+                    result = BooleanOutputPortCheck.FALSE_EXPECTED;
+                }
             }
+            handled = true;
         }
 
         @Override
         public void visit(ASTPrecisionNumber node) {
-            ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
-            if (!unitNumber.getNumber().isPresent()) {
-                return;
+            if (!handled) {
+                ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
+                if (!unitNumber.getNumber().isPresent()) {
+                    return;
+                }
+                double baseValue = unitNumber.getNumber().get().doubleValue();
+                if (node.getPrecisionOpt().isPresent()
+                        && node.getPrecisionOpt().get().getNumberWithUnit().getNumber().isPresent()) {
+                    double delta = node.getPrecisionOpt().get().getNumberWithUnit().getNumber().get().doubleValue();
+                    result = RangeOutputPortCheck.from(baseValue - delta, baseValue + delta);
+                } else {
+                    result = RangeOutputPortCheck.from(baseValue, baseValue);
+                }
             }
-            double baseValue = unitNumber.getNumber().get().doubleValue();
-            if (node.getPrecisionOpt().isPresent()
-                    && node.getPrecisionOpt().get().getNumberWithUnit().getNumber().isPresent()) {
-                double delta = node.getPrecisionOpt().get().getNumberWithUnit().getNumber().get().doubleValue();
-                result = RangeOutputPortCheck.from(baseValue - delta, baseValue + delta);
-            } else {
-                result = RangeOutputPortCheck.from(baseValue, baseValue);
+            handled = true;
+        }
+
+        @Override
+        public void visit(ASTStreamArrayValues node) {
+            if (!handled) {
+                isMatrix = true;
+                StringBuilder builder = new StringBuilder();
+                StreamValueConverter converter = new StreamValueConverter();
+                if (node.getMatrixPairOpt().isPresent()) {
+                    builder.append(" <<");
+                    for (int j = 0; j < node.getMatrixPair().getValuePairList().size(); ++j) {
+                        ASTValuePair valuePair = node.getMatrixPair().getValuePair(j);
+                        for (int i = 0; i < valuePair.getStreamValueList().size(); ++i) {
+                            ASTStreamValue value = valuePair.getStreamValueList().get(i);
+                            //TODO Name, PrecisionNumber, SignedLiteral, valueAtTick
+                            if (value.getNameOpt().isPresent()) {
+                                builder.append(value.getName());
+                            } else {
+                                builder.append(converter.convert(value));
+                            }
+                            if (i + 1 < valuePair.getStreamValueList().size()) {
+                                builder.append(" << ");
+                            }
+                        }
+                        builder.append("<< arma::endr ");
+
+                        if (j + 1 < node.getMatrixPair().getValuePairList().size()) {
+                            builder.append(" << ");
+                        }
+                    }
+                } else if (node.getValuePairOpt().isPresent()) {
+                    //TODO valuepair conversion
+                    builder.append("NOT HANDLED VALUEPAIROPT!!!");
+                }
+                System.out.println("Result: " + builder.toString());
+                result = RangeOutputPortCheck.from(builder.toString(), builder.toString(),true);
             }
+            handled = true;
         }
     }
+
 
     private static final class ASTStreamValue2InputPortValue implements StreamUnitsVisitor {
 
         private String result = null;
+        boolean handled = false;
 
         public String getResult() {
+            return result;
+        }
+
+        @Override
+        public void visit(ASTBooleanLiteral node) {
+
+            if (!handled) result = "=" + (node.getValue() ? "true" : "false");
+            handled = true;
+        }
+
+        @Override
+        public void visit(ASTPrecisionNumber node) {
+            if (!handled) {
+                ASTNumberWithUnit unitNumber = node.getNumberWithUnit();
+                if (!unitNumber.getNumber().isPresent()) {
+                    return;
+                }
+                result = "= " + Double.toString(unitNumber.getNumber().get().doubleValue());
+            }
+            handled = true;
+        }
+
+        @Override
+        public void visit(ASTStreamArrayValues node) {
+            if (!handled) {
+                StringBuilder builder = new StringBuilder();
+                StreamValueConverter converter = new StreamValueConverter();
+                if (node.getMatrixPairOpt().isPresent()) {
+                    result = " <<";
+                    for (int j = 0; j < node.getMatrixPair().getValuePairList().size(); ++j) {
+                        ASTValuePair valuePair = node.getMatrixPair().getValuePair(j);
+                        for (int i = 0; i < valuePair.getStreamValueList().size(); ++i) {
+                            ASTStreamValue value = valuePair.getStreamValueList().get(i);
+                            //TODO Name, PrecisionNumber, SignedLiteral, valueAtTick
+                            if (value.getNameOpt().isPresent()) {
+                                builder.append(value.getName());
+                            } else {
+                                builder.append(converter.convert(value));
+                            }
+                            if (i + 1 < valuePair.getStreamValueList().size()) {
+                                builder.append(" << ");
+                            }
+                        }
+                        builder.append("<< arma::endr ");
+
+                        if (j + 1 < node.getMatrixPair().getValuePairList().size()) {
+                            builder.append(" << ");
+                        }
+                    }
+                } else if (node.getValuePairOpt().isPresent()) {
+                    //TODO valuepair conversion
+                    result += "NOT HANDLED VALUEPAIROPT!!!";
+                }
+                System.out.println("Result: " + builder.toString());
+                result += builder.toString();
+            }
+            handled = true;
+        }
+    }
+
+    private static class StreamValueConverter implements StreamUnitsVisitor {
+        String result = "";
+
+        public String convert(ASTStreamValue node) {
+            result = "";
+            handle(node);
             return result;
         }
 
@@ -329,5 +539,6 @@ public final class TestsGeneratorCPP {
             }
             result = Double.toString(unitNumber.getNumber().get().doubleValue());
         }
+
     }
 }

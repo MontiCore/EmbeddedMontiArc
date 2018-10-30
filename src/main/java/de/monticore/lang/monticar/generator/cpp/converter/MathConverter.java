@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
@@ -12,6 +32,7 @@ import de.monticore.lang.monticar.generator.optimization.MathInformationRegister
 import de.monticore.numberunit._ast.ASTNumberWithUnit;
 import de.se_rwth.commons.logging.Log;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -74,7 +95,10 @@ public class MathConverter {
             for (MathMatrixAccessSymbol symbolAccess : symbol.getMathMatrixAccessSymbols()) {
                 Log.debug("symbolAccess: " + symbolAccess.getTextualRepresentation(), "MathConverter");
                 result += matrixName + "(" + column + "," + row + ") = ";
-                result += symbolAccess.getTextualRepresentation();
+                if (symbolAccess.getMathExpressionSymbol().isPresent())
+                    result += ExecuteMethodGenerator.generateExecuteCode(symbolAccess.getMathExpressionSymbol().get(), new ArrayList<>());
+                else
+                    result += symbolAccess.getTextualRepresentation();
                 result += ";\n";
                 ++row;
             }
@@ -92,7 +116,6 @@ public class MathConverter {
         }
         return firstPart + result;
     }
-
 
     public static int CONSTANTCONSTANTVECTORID = 0;
 
@@ -120,7 +143,7 @@ public class MathConverter {
         if (!unitNumber.getNumber().isPresent()) {
             Log.error("Number should be present");
         }
-        if ((unitNumber.getNumber().get() %  1) == 0) {
+        if ((unitNumber.getNumber().get() % 1) == 0) {
             return "" + unitNumber.getNumber().get().intValue();
         } else {
             return "" + unitNumber.getNumber().get().doubleValue();
@@ -132,15 +155,15 @@ public class MathConverter {
     }
 
     public static String getWholeNumberMatrixInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberMatrixTypeName() + "(" + v.getDimensionalInformation().get(0) + "," + v.getDimensionalInformation().get(1) + ");\n";
     }
 
     public static String getWholeNumberRowVectorInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberRowVectorTypeName() + "(" + v.getDimensionalInformation().get(1) + ");\n";
     }
 
     public static String getWholeNumberColumnVectorInitLine(Variable v, BluePrintCPP bluePrint) {
-        return MathInformationRegister.getVariableInitName(v,bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
+        return MathInformationRegister.getVariableInitName(v, bluePrint) + "=" + curBackend.getWholeNumberColumnVectorTypeName() + "(" + v.getDimensionalInformation().get(0) + ");\n";
     }
 
     public static String getWholeNumberCubeInitLine(Variable v, BluePrintCPP bluePrint) {
