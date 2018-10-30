@@ -29,6 +29,7 @@ public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
             GeneratorCPP generatorCPP = new GeneratorCPP();
             generatorCPP.useArmadilloBackend();
             generatorCPP.setGenerationTargetPath(target);
+//            generatorCPP.setUseThreadingOptimization(true);
             List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         }catch (IOException ex){
             ex.printStackTrace();

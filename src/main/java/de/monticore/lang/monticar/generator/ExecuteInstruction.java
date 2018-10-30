@@ -46,6 +46,20 @@ public class ExecuteInstruction implements Instruction {
         return threadName;
     }
 
+    protected String addConditionIfDynamic(String exec){
+
+        if(isDynamic()){
+
+
+            String inst = componentName.substring(0, componentName.indexOf("["));
+            String id = componentName.substring(componentName.indexOf("[")+1, componentName.lastIndexOf("]"));
+
+            return String.format("if(_%s_connected[%s]){%s}", inst, id, exec);
+        }
+
+        return exec;
+    }
+
     @Override
     public String getTargetLanguageInstruction() {
         String result = "";
@@ -54,17 +68,15 @@ public class ExecuteInstruction implements Instruction {
             //this.threadName = "thread" + threadCounter;
             result += "std::thread "+ threadName + "( [ this ] {";
             //++threadCounter;
-            result += "this->" + componentName + ".execute();});\n";
+
+            //OLD: result += "this->" + componentName + ".execute();});\n";
+            result += addConditionIfDynamic("this->"+componentName+".execute();");
+            result += "});\n";
 
             return result;
         }
 
-        if(dynamic){
-            return String.format("if(true){ executeDynamicConnects(&%s); %s.execute();}\n",
-                    componentName, componentName);
-        }
-
-        return componentName + ".execute();\n";
+        return addConditionIfDynamic(componentName + ".execute();")+"\n";
     }
 
     @Override
