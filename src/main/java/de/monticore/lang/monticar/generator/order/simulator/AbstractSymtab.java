@@ -23,11 +23,10 @@ package de.monticore.lang.monticar.generator.order.simulator;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
-import de.monticore.lang.monticar.generator.optimization.MathOptimizationRule;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
 import de.monticore.lang.monticar.generator.order.nfp.TagBreakpointsTagSchema.TagBreakpointsTagSchema;
@@ -42,7 +41,6 @@ import de.monticore.lang.monticar.struct._symboltable.StructLanguage;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.GlobalScope;
 import de.monticore.symboltable.Scope;
-import de.se_rwth.commons.logging.Log;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -67,7 +65,7 @@ public class AbstractSymtab {
     }
 
     public static Scope createSymTab(String... modelPath) {
-        EMAConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();
         MathOptimizer.resetIDs();

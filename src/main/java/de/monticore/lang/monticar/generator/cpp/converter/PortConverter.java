@@ -20,7 +20,6 @@
  */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.math._ast.ASTAssignmentType;
@@ -104,7 +103,7 @@ public class PortConverter {
             //name += "Constant" + ++counterConstantPorts;
             name += connectName;
             variable.setIsConstantVariable(true);
-            variable.setConstantValue(((EMAConstantPortSymbol) portSymbol.getTypeReference()).getConstantValue().getValueAsString());
+            variable.setConstantValue(portSymbol.getConstantValue().get().getValueAsString());
 
             // Log.error("0xCOPOSHNOBECRASAAVA Constant Port should not be created as a variable");
         } else {

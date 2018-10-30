@@ -25,6 +25,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.StreamScanner;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -63,7 +64,7 @@ public final class TestsGeneratorCPP {
         this.generator = Log.errorIfNull(generator);
     }
 
-    public List<FileContent> generateStreamTests(Scope symTab, ExpandedComponentInstanceSymbol componentSymbol) {
+    public List<FileContent> generateStreamTests(Scope symTab, EMAComponentInstanceSymbol componentSymbol) {
         bluePrints = new ArrayList<>(generator.getBluePrints());
         findStreams(symTab);
         findComponents(symTab);
@@ -85,7 +86,7 @@ public final class TestsGeneratorCPP {
         availableComponents = componentScanner.scan();
     }
 
-    private List<FileContent> generateFiles(ExpandedComponentInstanceSymbol componentSymbol) {
+    private List<FileContent> generateFiles(EMAComponentInstanceSymbol componentSymbol) {
         testedComponents = new HashSet<>();
         files = new ArrayList<>();
         viewModelForMain = new TestsMainEntryViewModel();
@@ -117,7 +118,7 @@ public final class TestsGeneratorCPP {
         return files;
     }
 
-    private void addTestExecutionToCMakeConfig(ExpandedComponentInstanceSymbol componentSymbol) {
+    private void addTestExecutionToCMakeConfig(EMAComponentInstanceSymbol componentSymbol) {
         // executable name
         String compName;
         final String execuatablePostFix = "_StreamTests";
@@ -226,9 +227,9 @@ public final class TestsGeneratorCPP {
         for (ComponentStreamUnitsSymbol stream : streamsForComponent) {
             StreamViewModel svm = new StreamViewModel();
 
-            Collection<PortSymbol> outPorts = cs.getOutgoingPorts();
+            Collection<EMAPortSymbol> outPorts = cs.getOutgoingPorts();
             List<String> names = new ArrayList<>();
-            for (PortSymbol portSymbol : outPorts) {
+            for (EMAPortSymbol portSymbol : outPorts) {
                 names.add(portSymbol.getName());
             }
             svm.outputPortNames = names;

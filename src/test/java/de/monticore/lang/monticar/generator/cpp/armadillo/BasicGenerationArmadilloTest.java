@@ -275,7 +275,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     @Test
     public void testPortInMatrixDefinition() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.portInMatrixDefinition", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.portInMatrixDefinition", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();

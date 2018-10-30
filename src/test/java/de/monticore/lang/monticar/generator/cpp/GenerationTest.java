@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.Helper;
@@ -141,7 +141,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
     @Test
     public void testBasicPortsConstantConnector() {
-        EMAConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPortsConstantConnector", EMAComponentInstanceSymbol.KIND).orElse(null);
@@ -474,7 +474,7 @@ public class GenerationTest extends AbstractSymtabTest {
     //@Ignore
     @Test
     public void testSimulatorMainController() throws IOException {
-        EMAConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("simulator.mainController", EMAComponentInstanceSymbol.KIND).orElse(null);
@@ -489,7 +489,7 @@ public class GenerationTest extends AbstractSymtabTest {
     //@Ignore
     @Test
     public void testBasicPrecision1() throws IOException {
-        EMAConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPrecisionTest1", EMAComponentInstanceSymbol.KIND).orElse(null);

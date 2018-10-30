@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConstantPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
@@ -36,6 +36,8 @@ import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -63,18 +65,18 @@ public class ComponentConverterMethodGeneration {
                 method.addInstruction(instruction);
             } else {
                 if (connector.getSourcePort().isConstant()) {
-                    EMAConstantPortSymbol constPort = (EMAConstantPortSymbol) connector.getSourcePort().getTypeReference();
+                    EMAPortSymbol constPort = connector.getSourcePort();
                     Variable v1 = new Variable();
-                    v1.setName(constPort.getConstantValue().getValueAsString());
+                    v1.setName(constPort.getName());
                     Variable v2 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getTarget(), bluePrint);
 
 
                     Instruction instruction = new ConnectInstructionCPP(v2, v1);
                     method.addInstruction(instruction);
                 } else if (connector.getTargetPort().isConstant()) {
-                    EMAConstantPortSymbol constPort = (EMAConstantPortSymbol) connector.getTargetPort().getTypeReference();
+                    EMAPortSymbol constPort = connector.getTargetPort();
                     Variable v2 = new Variable();
-                    v2.setName(constPort.getConstantValue().getValueAsString());
+                    v2.setName(constPort.getName());
                     Variable v1 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getSource(), bluePrint);
 
 

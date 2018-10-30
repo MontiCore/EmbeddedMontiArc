@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.testing.AutomaticStreamTestGenerator;
 import de.monticore.lang.monticar.generator.testing.StreamTestExecution;
@@ -154,7 +154,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         String restPath = "streamtest/cluster";*/
         //TaggingResolver streamSymtab = createSymTabAndTaggingResolver("./target/generated-sources-cpp/streamtest/cluster");
         generatorCPP.setGenerateTests(true);
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("de.rwth.armin.modeling.autopilot.motion.calculatePidError", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("de.rwth.armin.modeling.autopilot.motion.calculatePidError", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         //generatorCPP.setModelsDirPath(Paths.get("./target/generated-sources-cpp/streamtest/cluster"));
