@@ -20,6 +20,8 @@ public class EventDynamicConnectConverter {
     protected static final String THISCOMPONENTPORTREQUEST = "int "+DYNPORTID+" = __%s_connect_request.front(); __%s_connect_request.pop();\n";
     protected static final String DYNPORTIDININSTANCE = "_%s_%s_dynPortID";
     protected static final String DYNPORTIDININSTANCEINIT = "int "+DYNPORTIDININSTANCE+" = -1;\n";
+    protected static final String DYNINSTANCEID = "_%s_dynINSTID";
+    protected static final String DYNINSTANCECONNECT = "int "+DYNINSTANCEID+" = dynamicconnect(%d, __%s_connected); if( "+DYNINSTANCEID+" < 0 ){return; }\n";
 
     public static boolean generateDynamicConnectEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, BluePrintCPP bluePrint ) {
 
@@ -42,6 +44,7 @@ public class EventDynamicConnectConverter {
         body.addInstruction(new TargetCodeInstruction("while("+EventConnectInstructionCPP.getEventNameCPP(event.getName())+"()){\n"));
 
         generateHandleConnectRequestsOfQueues(names, body);
+        generateHandleConnectRequestsOfDynamicInstances(newInstances, body, componentSymbol);
         generateHandleConnectRequestInInstances(newPortsInstances, body);
 
 
@@ -151,6 +154,18 @@ public class EventDynamicConnectConverter {
         }
     }
 
+    protected static void generateHandleConnectRequestsOfDynamicInstances(List<String> instancenames, Method body, EMAComponentInstanceSymbol componentSymbol){
+        for (String inst : instancenames){
+            int count = 1;
+            while (componentSymbol.getSubComponent(inst+"["+count+"]").isPresent()){
+                ++count;
+            }
+            body.addInstruction(new TargetCodeInstruction(String.format(DYNINSTANCECONNECT,
+                    inst, count-1, inst, inst
+                    )));
+        }
+    }
+
     protected static void generateHandleConnectRequestInInstances(Map<String, List<String>> newPorts, Method body){
         for (Map.Entry<String,List<String>> entry : newPorts.entrySet()){
             Collections.sort(entry.getValue());
@@ -183,20 +198,30 @@ public class EventDynamicConnectConverter {
             String targetName = connector.getTarget();
             EMAPortInstanceSymbol target = connector.getTargetPort();
 
-            if(connector.isDynamicSourceNewPort()){
+            if(connector.isDynamicSourceNewPort()) {
                 sourceName = generateConnectNameForNewPort(sourceName, connector.getSourceComponentName(), connector.getSourcePortName());
-//                afterComponent = connector.getSourceComponentName();
-
+            }else if(connector.isDynamicSourceNewComponent()){
+                sourceName = generateConnectNameForNewInstance(connector.getSourceComponentName().get(), connector.getSourcePortName());
             }else{
                 sourceName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(sourceName);
             }
 
-            if(connector.isDynamicTargetNewPort()){
+            if(connector.isDynamicTargetNewPort()) {
                 targetName = generateConnectNameForNewPort(targetName, connector.getTargetComponentName(), connector.getTargetPortName());
                 before = connector.getTargetComponentName();
+                if (before.isPresent()) {
+                    before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+                }
+            }else if(connector.isDynamicTargetNewComponent()){
+                targetName = generateConnectNameForNewInstance(connector.getTargetComponentName().get(), connector.getTargetPortName());
+                String inst = EMAPortSymbol.getNameWithoutArrayBracketPart(connector.getTargetComponentName().get());
+                before = Optional.of(String.format("%s["+DYNINSTANCEID+"]", inst, inst));
             }else{
                 targetName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(targetName);
                 before = connector.getTargetComponentName();
+                if(before.isPresent()){
+                    before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+                }
             }
 
 
@@ -208,7 +233,7 @@ public class EventDynamicConnectConverter {
             if(!before.isPresent()){
                 before = Optional.of("NULL");
             }else{
-                before = Optional.of("&"+GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+                before = Optional.of("&"+before.get());
             }
             body.addInstruction(new TargetCodeInstruction(String.format(
                     "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), before.get(), sourceName, targetName
@@ -259,6 +284,14 @@ public class EventDynamicConnectConverter {
             result = String.format("%s["+DYNPORTID+"]", result, result);
         }
         return result;
+    }
+
+    protected static String generateConnectNameForNewInstance(String componentName, String portName){
+
+        String inst = EMAPortSymbol.getNameWithoutArrayBracketPart(componentName);
+
+        return String.format("(%s["+DYNINSTANCEID+"].%s)", inst, inst, GeneralHelperMethods.getTargetLanguageVariableInstanceName(portName));
+
     }
 
     protected static String convertName(String name){
