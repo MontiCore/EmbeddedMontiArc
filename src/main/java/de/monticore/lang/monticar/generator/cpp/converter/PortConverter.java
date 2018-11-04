@@ -1,6 +1,7 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicPortInstanceSymbol;
@@ -75,6 +76,28 @@ public class PortConverter {
         Log.debug("EMAVAR: " + variable.getName() + " targetType:" + variable.getVariableType().getTypeNameTargetLanguage() + " isArray:" + variable.isArray(), "PortConverter");
 
         return variable;
+    }
+
+    public static Variable convertPortNameToVariable(String portName, EMAComponentInstanceSymbol instance, BluePrintCPP bluePrintCPP){
+        String fullName = portName;
+        if(portName.contains(".")){
+            instance = instance.getSubComponent(portName.substring(0, portName.indexOf("."))).orElse(null);
+
+            portName = portName.substring(portName.indexOf(".")+1);
+        }
+        if(instance == null){
+            Log.error("Can't find instance for port: "+portName);
+            return null;
+        }
+
+        Optional<EMAPortInstanceSymbol> port = instance.getPortInstance(portName);
+        if(!port.isPresent()){
+            Log.error("Can't find port: "+portName);
+            return null;
+        }
+
+        return convertPortSymbolToVariable(port.get(), fullName, bluePrintCPP);
+
     }
 
     private static void handlePortDirection(EMAPortInstanceSymbol portSymbol, Variable variable) {
@@ -153,4 +176,6 @@ public class PortConverter {
         }
         return nameWithOutArrayBracketPart;
     }
+
+
 }

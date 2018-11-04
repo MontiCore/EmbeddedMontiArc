@@ -11,6 +11,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.se_rwth.commons.logging.Log;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -49,6 +50,8 @@ public class EventDynamicConnectConverter {
 
 
         generateConnects(event, body, bluePrint, executeMethod);
+
+//        generateDummyConnects(event, componentSymbol, executeMethod, bluePrint);
 
         body.addInstruction(new TargetCodeInstruction("}\n"));
         bluePrint.addMethod(body);
@@ -236,7 +239,7 @@ public class EventDynamicConnectConverter {
                 before = Optional.of("&"+before.get());
             }
             body.addInstruction(new TargetCodeInstruction(String.format(
-                    "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), before.get(), sourceName, targetName
+                    "__dynamic_%s_connect.push_back({%s, &(%s), &(%s)});\n", vt.get().getTypeNameTargetLanguage(), before.get(), sourceName, targetName
             )));
 
 
@@ -290,9 +293,10 @@ public class EventDynamicConnectConverter {
 
         String inst = EMAPortSymbol.getNameWithoutArrayBracketPart(componentName);
 
-        return String.format("(%s["+DYNINSTANCEID+"].%s)", inst, inst, GeneralHelperMethods.getTargetLanguageVariableInstanceName(portName));
+        return String.format("%s["+DYNINSTANCEID+"].%s", inst, inst, GeneralHelperMethods.getTargetLanguageVariableInstanceName(portName));
 
     }
+
 
     protected static String convertName(String name){
         return name.replace("[", "_").replace("]", "_");

@@ -167,8 +167,12 @@ public class ExecutionOrderFixer {
             boolean add = bluePrintCPP.getOriginalSymbol().isSubComponent(instanceSymbol.getFullName());
             if (add) {
                 ExecuteInstruction executeInstruction = (ExecuteInstruction) getExecuteInstruction(instanceSymbol, bluePrintCPP, threadableSubComponents);
-                if (!newList.contains(executeInstruction))
+                if (!newList.contains(executeInstruction)) {
+                    if(instanceSymbol instanceof EMADynamicComponentInstanceSymbol){
+                        executeInstruction.setDynamic(((EMADynamicComponentInstanceSymbol) instanceSymbol).isDynamicInstance());
+                    }
                     newList.add(executeInstruction);
+                }
             }
         }
         for (EMAComponentInstanceSymbol subComponent : bluePrintCPP.getOriginalSymbol().getSubComponents()) {
@@ -184,7 +188,6 @@ public class ExecutionOrderFixer {
         }
         return newList;
     }
-
 
     public static void fixExecuteDynamicConnects(List<Instruction> newList){
 
@@ -206,7 +209,6 @@ public class ExecutionOrderFixer {
         }
 
     }
-
 
     private static int getIndexOfLastConnectInstruction(List<Instruction> instructions, String componentInstanceName) {
         int result = -1;
