@@ -1,10 +1,3 @@
-//
-//  PortValueCheck.h
-//  TestForMa2
-//
-//  Created by Nils Kaminski on 18.10.18.
-//  Copyright © 2018 Nils Kaminski. All rights reserved.
-//
 
 #ifndef PortValueCheck_h
 #define PortValueCheck_h

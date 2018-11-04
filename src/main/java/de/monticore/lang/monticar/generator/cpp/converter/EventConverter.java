@@ -82,64 +82,6 @@ public class EventConverter {
         return number > 0;
     }
 
-    @Deprecated
-    protected static boolean generateDynamicConnectEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, BluePrintCPP bluePrint ) {
-
-//        EMADynamicComponentInstanceSymbol dynComp = (EMADynamicComponentInstanceSymbol)componentSymbol;
-//
-//        for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
-//            EMADynamicConnectorInstanceSymbol dynConnect = (EMADynamicConnectorInstanceSymbol) connector;
-//
-////            body.addInstruction(new TargetCodeInstruction(
-////                    "// connect: "+dynConnect.getSource()+" -> "+dynConnect.getTarget()+"\n"
-////            ));
-//
-//            String afterComponent = "";
-//            String sourceName = dynConnect.getSource();
-//            String targetName = dynConnect.getTarget();
-//            EMAPortInstanceSymbol target = dynConnect.getTargetPort();
-//
-//            if(dynConnect.isDynamicSourceNewPort()){
-//                if(sourceName.contains(".")){
-//                    //TODO target hat eine komponente
-//                }else{
-//                    sourceName = EMAPortSymbol.getNameWithoutArrayBracketPart(sourceName);
-//                    sourceName = String.format("%s[_%s_dynPortID]", sourceName, sourceName);
-//                }
-//            }
-//
-//            if(dynConnect.isDynamicTargetNewPort()){
-//                if(targetName.contains(".")){
-//                    //TODO target hat eine komponente
-//                    System.out.println("bla bla");
-//                }else{
-//                    targetName = EMAPortSymbol.getNameWithoutArrayBracketPart(targetName);
-//                    targetName = String.format("%s[_%s_dynPortID]", targetName, targetName);
-//                }
-//            }
-//
-//            Optional<VariableType> vt = TypeConverter.getVariableTypeForMontiCarTypeName(target.getTypeReference().getName());
-//            generateEventDynamicConnectVecotr(vt.get().getTypeNameTargetLanguage(), bluePrint);
-//
-//
-//            body.addInstruction(new TargetCodeInstruction(String.format(
-////                    "// connect: "+sourceName+" - "+targetName+"\n"
-//                    "__dynamic_%s_connect.push_back({%s, &%s, &%s});\n", vt.get().getTypeNameTargetLanguage(), afterComponent, sourceName, targetName
-//            )));
-//
-////            executeMethod.addInstruction(new TargetCodeInstruction(
-////                    "executeDynamicConnects("+afterComponent+");\n"
-////            ));
-//            executeMethod.addInstruction(new ExecuteDynamicConnects(afterComponent));
-//        }
-//
-
-
-        return true;
-    }
-
-
-
     public static void generatePVCNextMethod(BluePrintCPP bluePrint){
         Method next = new Method("next", "void");
         next.setPublic(false);

@@ -6,6 +6,7 @@ import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
+import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
@@ -162,7 +163,13 @@ public class GeneratorCPP implements Generator {
             //TODO: add Events Value Helper
             if(!((EMADynamicComponentInstanceSymbol) componentInstanceSymbol).getEventHandlers().isEmpty())
                 fileContents.add(EventPortValueCheck.getEventPortValueCheckFileContent());
+
+            if(((EMADynamicComponentInstanceSymbol)componentInstanceSymbol).isDynamicInstance()){
+                fileContents.add(DynamicHelper.getDynamicHelperFileContent());
+            }
         }
+
+
 
         if (shouldGenerateMainClass()) {
             //fileContents.add(getMainClassFileContent(componentInstanceSymbol, fileContents.get(0)));

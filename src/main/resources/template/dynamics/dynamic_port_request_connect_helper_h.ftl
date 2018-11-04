@@ -1,10 +1,3 @@
-//
-//  DynamicHelper.h
-//  TestForMa2
-//
-//  Created by Nils Kaminski on 20.10.18.
-//  Copyright © 2018 Nils Kaminski. All rights reserved.
-//
 
 #ifndef DynamicHelper_h
 #define DynamicHelper_h
