@@ -13,6 +13,7 @@ import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.*;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConstantConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.optimization.MathInformationRegister;
+import de.monticore.symboltable.types.references.ActualTypeArgument;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.List;
@@ -57,9 +58,8 @@ public class ComponentConverter {
 
         //create arrays from variables that only differ at the end by _number_
         BluePrintFixer.fixBluePrintVariableArrays(bluePrint);
-
         MathInformationFilter.filterStaticInformation(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
-
+        generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
         //generate execute method
         Method execute = ComponentConverterMethodGeneration.generateExecuteMethod(componentSymbol, bluePrint, mathStatementsSymbol, generatorCPP, includeStrings);
@@ -67,9 +67,10 @@ public class ComponentConverter {
 
         EventConverter.generateEvents(execute, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
 
-        Method init = generateInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
-        bluePrint.addMethod(init);
+        extendInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
+
+
         bluePrint.addMethod(execute);
 
         EventConverter.generatePVCNextMethod(bluePrint);
@@ -88,6 +89,7 @@ public class ComponentConverter {
             bluePrint.getMathInformationRegister().addVariable(var);
             var.setIsParameterVariable(true);
         }
+
         //add ports as variables to blueprint
         for (EMAPortInstanceSymbol port : componentSymbol.getPortInstanceList()) {
             //Config ports might already be added from adaptable Parameters
@@ -107,7 +109,7 @@ public class ComponentConverter {
 
     public static Method generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("init", "void");
-//        bluePrint.addMethod(method);
+        bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
             String oldName = v.getName();
             if (v.isArray()) {
@@ -127,9 +129,9 @@ public class ComponentConverter {
             Log.info("Variable: " + v.getName(), "initBluePrintCreate:");
 
             if(v instanceof VariablePortValueChecker) {
-                ((VariablePortValueChecker) v).addInitInstructionsToMethod(method);
+//                ((VariablePortValueChecker) v).addInitInstructionsToMethod(method);
             }else if(v instanceof VariableConstantArray){
-                ((VariableConstantArray) v).generateInit(method);
+//                ((VariableConstantArray) v).generateInit(method);
             }else {
                 if (v.isInputVariable() && !v.isConstantVariable()) {
                     //method.addParameter(v);
@@ -159,6 +161,23 @@ public class ComponentConverter {
             method.addInstruction(instruction);
         }
         return method;
+    }
+
+    public static void extendInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings){
+        Optional<Method> init = bluePrint.getMethod("init");
+        if(!init.isPresent()){
+            init = Optional.of(new Method("init", "void"));
+            bluePrint.addMethod(init.get());
+        }
+        for (Variable v : bluePrint.getVariables()) {
+            Log.info("Variable: " + v.getName(), "initBluePrintExtension:");
+
+            if(v instanceof VariablePortValueChecker) {
+                ((VariablePortValueChecker) v).addInitInstructionsToMethod(init.get());
+            }else if(v instanceof VariableConstantArray){
+                ((VariableConstantArray) v).generateInit(init.get());
+            }
+        }
     }
 
     public static void generateInitStaticVariablePart(Method method, Variable v, BluePrintCPP bluePrint) {
