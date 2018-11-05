@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "@elysium/montimath",
+  "version": "0.1.1",
+  "description": "Extension for the MontiMath Language.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@theia/monaco": "latest",
+    "@elysium/languages": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/montimath-frontend-module"
+    }
+  ]
+}

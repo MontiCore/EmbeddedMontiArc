@@ -3,7 +3,6 @@
 ## Table of Contents
 * [**Prerequisites**](#prerequisites)
 * [**Installation**](#installation)
-* [**Multi-Target**](#multi-target)
 * [**Compiling**](#compiling)
 * [**Building**](#building)
 * [**Packaging**](#packaging)
@@ -21,6 +20,8 @@ respective operating system, such as
 [**Python 2.7**](https://www.python.org/downloads) for Windows.
 
 ## Installation
+**Requires**: [**Prerequisites**](#prerequisites)
+
 After having downloaded and installed the prerequisites, a developer can clone this repository
 and continue with the installation of this project. The installation is performed by executing
 a console command from within the root directory or more precisely the directory where the
@@ -32,21 +33,9 @@ yarn install
 
 Depending on the system, the installation might take a few minutes.
 
-## Multi-Target
-At the time of this writing, the IDE supports two different targets, namely **Standalone**
-(`standalone`) and **EmbeddedMontiArcStudio** (`emastudio`). All targets share the same
-supported commands with slight variations in results. Furthermore, they each have their
-own root directory from which these commands have to be executed. In order to change
-directory a developer can use the following command from the root directory of this
-project:
-
-```bash
-cd targets/{target}
-```
-
-where `{target}` is one of the above identifiers of a target.
-
 ## Compiling
+**Requires**: [**Installation**](#installation)
+
 The main programming language used for the implementation of this project as well as of most of
 its dependencies is [**TypeScript**](https://www.typescriptlang.org). TypeScript is a
 programming language developed by Microsoft and is a superset of the JavaScript programming
@@ -56,13 +45,15 @@ respective runtime environment but is translated to JavaScript using the compile
 shipped with it.
 
 In order to execute the compiling process, a developer has to run the following console
-command in the root directory of the respective target:
+command in the root directory:
 
 ```bash
 yarn run compile
 ```
 
 ## Building
+**Requires**: [**Compiling**](#compiling)
+
 The execution of the compiler, however, results in a large amount of JavaScript files which
 all have to be served to the client in order to guarantee a functional system. However, the
 HyperText Transfer Protocol (HTTP) used for the transmission of such files limits the client
@@ -75,7 +66,7 @@ project are combined into bundles using [**WebPack**](https://webpack.js.org/). 
 less files have to be transferred to the client and the total page loading time decreases.
 
 In order to execute the bundling process, a developer has to run the following console
-command in the root directory of the respective target:
+command in the root directory:
 
 ```bash
 yarn run build
@@ -90,6 +81,8 @@ yarn run build:development
 ```
 
 ## Packaging
+**Requires**: [**Building**](#building)
+
 Together with the dependencies loaded during the installation phase of this guide, building
 produces all the files necessary to have a runnable system. For each target it, however, holds
 true that either some files can be ignored or that some other files must also be included
@@ -98,15 +91,17 @@ unexperienced developer might, however, forget some files or include files which
 needed. For this reason, a command has been introduced which eases the burden on the developer
 by automatically packaging the system into a ZIP archive where exactly the necessary files have
 been included. In order to execute the packaging process, a developer has to enter the
-following command in the target's root directory:
+following command in the root directory:
 
 ```bash
 yarn run package
 ```
 
-The resulting archive will be generated into the `dist` folder of the target.
+The resulting archive will be generated into the `dist` folder in the `target` directory.
 
 ## Documentation
+**Requires**: [**Compiling**](#compiling)
+
 One of the key aspects which makes a piece of software maintainable and extensible is how well
 it is documented. The quality of a documentation is both influenced from its content and its
 presentation. For instance, a documentation where a developer cannot deduce whether a class
@@ -119,15 +114,29 @@ of both annotations and code analysis.
 For TypeScript one of the available generators for documentations is
 [**TypeDoc**](http://typedoc.org/) and it is also the one used in this project. A developer
 can generate the documentation from the files of the project by running the following console
-command from the root directory of a respective target:
+command from the root directory:
 
 ```bash
 yarn run docs
 ```
 
 The output path of the documentation defaults to the `docs` folder inside the respective
-package or plugin.
+package or extension.
 
 ## Local Execution
-* [**Standalone**](../targets/standalone/doc/GettingStarted.md#local-execution)
-* [**EmbeddedMontiArcStudio**](../targets/emastudio/doc/GettingStarted.md#local-execution)
+**Requires**: [**Building**](#building)
+
+Transferring the output files to the server responsible for their distribution could become
+quite inefficient when done after each implementation phase in order to test the usability of
+new features. For this reason, this project is shipped with its own server implementation
+based on [**Express**](http://expressjs.com) in order to locally test the functionality.
+Starting this server is performed with the following console command executed in the root
+directory:
+
+```bash
+yarn run start
+```
+
+The port used for the server defaults to `3005` and the implementation can be visited on
+[http://localhost:3005](http://localhost:3005) with any of the
+[supported browsers](../README.md#browser-support).ngStarted.md#local-execution)

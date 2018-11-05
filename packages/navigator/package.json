@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@elysium/navigator",
+  "version": "0.1.0",
+  "description": "Elysium Navigator extending the FileNavigator of Theia.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/workspace": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/navigator": "latest",
+    "@elysium/workspace": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/navigator-frontend-module"
+    }
+  ]
+}

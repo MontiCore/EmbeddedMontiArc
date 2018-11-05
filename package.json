@@ -12,11 +12,9 @@
   },
   "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
   "workspaces": [
-    "packages/standalone/*",
-    "extensions/standalone/*",
-    "packages/emastudio/*",
-    "extensions/emastudio/*",
-    "targets/*"
+    "packages/*",
+    "extensions/*",
+    "target"
   ],
   "resolutions" : {
     "**/inversify": "4.13.0",
@@ -50,7 +48,14 @@
   "devDependencies": {
     "@types/express-fileupload": "^0.4.0",
     "@types/jszip": "^3.1.3",
+    "archiver": "^3.0.0",
+    "chalk": "^2.4.1",
+    "express": "^4.16.3",
     "lerna": "^2.9.0",
+    "listr": "^0.13.0",
+    "log4js": "^3.0.5",
+    "nps": "^5.9.3",
+    "nps-utils": "^1.7.0",
     "rimraf": "^2.6.2",
     "tslint": "^5.7.0",
     "typedoc": "^0.8",
@@ -58,10 +63,13 @@
     "yarn": "^1.9.4"
   },
   "scripts": {
-    "logo": "node scripts/logo",
-    "clean": "yarn run logo && rimraf .browser_modules && rimraf lerna-debug.log && rimraf yarn-error.log",
-    "install": "yarn run standalone:install && yarn run emastudio:install",
-    "standalone:install": "lerna exec --scope @elysium/target-standalone yarn run prepare",
-    "emastudio:install": "lerna exec --scope @emastudio/target-emastudio yarn run prepare"
+    "clean": "yarn start clean",
+    "clean:all": "yarn start clean.all",
+    "build": "yarn start build",
+    "build:development": "yarn start build.development",
+    "compile": "yarn start compile",
+    "docs": "yarn start docs",
+    "package": "yarn start package",
+    "start": "nps --config ./configs/scripts --no-scripts"
   }
 }
