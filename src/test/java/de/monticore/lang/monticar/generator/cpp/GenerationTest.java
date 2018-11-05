@@ -138,19 +138,19 @@ public class GenerationTest extends AbstractSymtabTest {
                 "#include \"octave/oct.h\"\n" +
                 "class test_basicPortsConstantConnector{\n" +
                 "public:\n" +
-                "double out1;\n" +
-                "bool out2;\n" +
                 "bool CONSTANTPORT1;\n" +
                 "double CONSTANTPORT2;\n" +
+                "double out1;\n" +
+                "bool out2;\n" +
                 "void init()\n" +
                 "{\n" +
-                "this->CONSTANTPORT1 = false;\n" +
+                "this->CONSTANTPORT1 = true;\n" +
                 "this->CONSTANTPORT2 = 1;\n" +
                 "}\n" +
                 "void execute()\n" +
                 "{\n" +
-                "out1 = CONSTANTPORT2;\n" +
-                "out2 = CONSTANTPORT1;\n" +
+                "out1 = 1;\n" +
+                "out2 = true;\n" +
                 "}\n" +
                 "\n" +
                 "};\n" +
@@ -520,6 +520,7 @@ public class GenerationTest extends AbstractSymtabTest {
     }
 
     @Test
+    @Ignore // No recursive struct references coco !
     public void testMyComponent2() throws IOException {
         cppCodeForMyComponentXCanBeGenerated(2);
     }

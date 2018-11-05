@@ -7,6 +7,7 @@
 #include "simulator_mainController_steerController1.h"
 class simulator_mainController{
 public:
+double CONSTANTPORT1;
 double pathX[2];
 double pathY[2];
 double gpsX;
@@ -33,7 +34,6 @@ double actuatorEngine;
 double actuatorBrake;
 int actuatorGear;
 double actuatorSteering;
-double CONSTANTPORT1;
 simulator_mainController_steerController1 steerController1;
 void init()
 {
@@ -53,7 +53,7 @@ steerController1.currentSteeringAngle = sensorSteering;
 steerController1.minSteeringAngle = minSteeringAngle;
 steerController1.maxSteeringAngle = maxSteeringAngle;
 steerController1.execute();
-actuatorEngine = CONSTANTPORT1;
+actuatorEngine = 3.5;
 actuatorSteering = steerController1.steeringAngle;
 }
 
