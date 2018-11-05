@@ -1,0 +1,13 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.emastudio-testing-icon {
+    background-image:url("../images/testing.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color:#FFF;
+}

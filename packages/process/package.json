@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@emastudio/process",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio Process Package.",
+  "keywords": [
+    "EmbeddedMontiArcStudio"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/process": "latest"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/process-frontend-module",
+      "backend": "lib/node/process-backend-module"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ const FileSystem = require("fs-extra");
 const TaskList = require("listr");
 
 const ROOT_FOLDER = Path.resolve(__dirname, "..");
-const CACHE_FOLDER = Path.join(ROOT_FOLDER, "cache");
+const CACHE_FOLDER = Path.join(ROOT_FOLDER, "target", "cache");
 const RESOURCES_FOLDER = Path.join(CACHE_FOLDER, "resources");
 
 function getCopyResourcesTask(resourcesFolder) {

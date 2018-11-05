@@ -7,8 +7,8 @@ const extract = require("extract-zip");
 
 const ROOT_FOLDER = Path.resolve(__dirname, "..");
 const CONFIGS_FOLDER = Path.join(ROOT_FOLDER, "configs");
-const DOWNLOADS_FOLDER = Path.join(ROOT_FOLDER, "downloads");
-const CACHE_FOLDER = Path.join(ROOT_FOLDER, "cache");
+const DOWNLOADS_FOLDER = Path.join(ROOT_FOLDER, "target", "downloads");
+const CACHE_FOLDER = Path.join(ROOT_FOLDER, "target", "cache");
 
 function decompress(source, destination) {
     return new Promise((resolve, reject) => {

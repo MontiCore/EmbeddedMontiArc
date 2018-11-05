@@ -3,40 +3,34 @@ appId: se.rwth.emastudio
 
 asar: false
 directories:
-  buildResources: build
-  output: dist
+  buildResources: target/build
+  output: target/dist
 files:
-  - "src/electron/**/*"
   - "node_modules/**/*"
-  - "package.json"
+  - from: "target/src/electron"
+    to: "src/electron"
 extraResources:
-  - from: "src/models"
+  - from: "target/src/models"
     to: "models"
-  - from: "src/cluster-fiddle"
+  - from: "target/src/cluster-fiddle"
     to: "cluster-fiddle"
-  - from: "src/oclverification"
+  - from: "target/src/oclverification"
     to: "oclverification"
-extraFiles:
-  - from: "cache/resources/app/lib/vs"
-    to: "vs"
-    filter:
-      - "**/*.js"
-      - "!**/loader.js"
 afterPack: "scripts/afterPack.js"
 
 win:
-  icon: build/icon.ico
+  icon: target/build/icon.ico
   extraResources:
-    - from: "src/windows/scripts"
+    - from: "target/src/windows/scripts"
       to: "scripts"
   target:
     - "nsis"
 
 linux:
-  icon: build/icons
+  icon: target/build/icons
   category: Development
   extraResources:
-    - from: "src/linux/scripts"
+    - from: "target/src/linux/scripts"
       to: "scripts"
   target:
     - "deb"
@@ -45,11 +39,11 @@ nsis:
   menuCategory: true
   oneClick: false
   perMachine: true
-  installerHeaderIcon: build/icon.ico
-  installerIcon: build/icon.ico
-  uninstallerIcon: build/icon.ico
-  installerSidebar: build/installerSidebar.bmp
-  uninstallerSidebar: build/installerSidebar.bmp
+  installerHeaderIcon: target/build/icon.ico
+  installerIcon: target/build/icon.ico
+  uninstallerIcon: target/build/icon.ico
+  installerSidebar: target/build/installerSidebar.bmp
+  uninstallerSidebar: target/build/installerSidebar.bmp
   allowToChangeInstallationDirectory: true
   runAfterFinish: false
   artifactName: ${productName}-Installer-${version}.${ext}

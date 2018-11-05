@@ -103,9 +103,4 @@
   "platforms": ["win32"],
   "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=SmartFoxExtensions.zip",
   "to": "resources/distributed-simulator"
-}, {
-  "//": "IDE",
-  "platforms": ["win32", "linux"],
-  "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.26.ide&files=ide.zip",
-  "to": "resources"
 }]
