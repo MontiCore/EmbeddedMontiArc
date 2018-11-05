@@ -5,7 +5,7 @@ const yargs = require('yargs');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const rootPath = path.resolve(__dirname, "..");
-const genPath = path.join(rootPath, "plugins", "**", "gen", "*.*");
+const genPath = path.join(rootPath, "extensions", "**", "gen", "*.*");
 
 const { mode }  = yargs.option("mode", {
     description: "Mode to use",
@@ -15,6 +15,7 @@ const { mode }  = yargs.option("mode", {
 
 const workerConfig = {
     entry: path.resolve(rootPath, "build", "worker.js"),
+    context: rootPath,
     output: {
         filename: "bundle.worker.js"
     },
@@ -37,7 +38,7 @@ const workerConfig = {
         new CopyWebpackPlugin([
             {
                 from: genPath,
-                to: path.join("lib", "plugins")
+                to: '.'
             }
         ])
     ],

@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "name": "@elysium/downloader",
+  "version": "0.1.1",
+  "description": "Extension for the Implementation of Workspace Download Procedures.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "jszip": "^3.1.5",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@elysium/core": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/downloader-frontend-module"
+    }
+  ]
+}

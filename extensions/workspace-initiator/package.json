@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "@elysium/workspace-initiator",
+  "version": "0.1.1",
+  "description": "Extension for the behavior when opening a workspace for the first time.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/workspace": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/preview": "latest",
+    "@theia/editor": "latest",
+    "@elysium/mini-browser": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/workspace-initiator-frontend-module"
+    }
+  ]
+}
