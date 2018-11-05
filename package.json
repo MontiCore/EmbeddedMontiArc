@@ -6,13 +6,29 @@
   "description": "",
   "main": "src/electron/electron.js",
   "license": "???",
-  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc",
-  "scripts": {
-    "package:dry": "electron-builder --config configs/electron-builder.yml --dir",
-    "package": "electron-builder --config configs/electron-builder.yml",
-    "clean": "node scripts/clean",
-    "install": "node scripts/install"
+  "contributors": [],
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
   },
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "scripts": {
+    "start": "nps -c ./configs/scripts --no-scripts",
+    "clean": "yarn start clean",
+    "clean:all": "yarn start clean.all",
+    "install": "node scripts/install",
+    "compile": "yarn start compile",
+    "build": "yarn start build",
+    "build:development": "yarn start build.development",
+    "package": "yarn start package",
+    "package:dry": "yarn start package.dry"
+  },
+  "workspaces": [
+    "ide/packages/*",
+    "ide/extensions/*",
+    "packages/*",
+    "extensions/*",
+    "target"
+  ],
   "resolutions" : {
     "**/inversify": "4.13.0",
     "**/@theia/core": "0.3.15",
@@ -66,10 +82,21 @@
     "jimp": "^0.5.3"
   },
   "devDependencies": {
+    "@types/express-fileupload": "^0.4.0",
+    "@types/jszip": "^3.1.3",
+    "chalk": "^2.4.1",
     "download": "^7.1.0",
+    "electron": "1.8.2-beta.5",
     "electron-builder": "^20.28.4",
     "glob": "^7.1.3",
     "glob-promise": "^3.4.0",
-    "listr": "^0.14.2"
+    "lerna": "^2.9.0",
+    "listr": "^0.14.2",
+    "nps": "^5.9.3",
+    "nps-utils": "^1.7.0",
+    "tslint": "^5.7.0",
+    "typedoc": "^0.8",
+    "typescript": "^2.7.2",
+    "yarn": "^1.9.4"
   }
 }

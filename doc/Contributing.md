@@ -3,7 +3,7 @@ EmbeddedMontiArcStudio is the result of the cooperation between a multitude of u
 students and their projects in the context of EmbeddedMontiArc. On that note, a creator of
 an EmbeddedMontiArc project is also invited to contribute to this repository with the
 integration of her models and/or artifacts. To this end, this project distinguishes between
-three different kinds of contribution which are explained in the following.
+four different kinds of contribution which are explained in the following.
 
 ## Adding Use Cases
 EmbeddedMontiArc projects are more often than not working on unique artifacts each being
@@ -14,8 +14,8 @@ beneficial to have these models available as demonstration project in EmbeddedMo
 
 In the following, let us assume that a developer wants to integrate a set of models which she
 denominated `AutoPilot`. In order to do so, she will have to create an `AutoPilot` folder in
-the [`models`](../src/models) directory of this repository. The important aspect here is that
-the name of the folder should follow the **UpperCamelCase** convention. This newly created
+the [`models`](../target/src/models) directory of this repository. The important aspect here is
+that the name of the folder should follow the **UpperCamelCase** convention. This newly created
 folder will act as model root. Therefore, the only thing left for her to do is copying
 the models into the `AutoPilot` folder. EmbeddedMontiArcStudio will automatically derive all
 available demonstration projects from the directory structure of `models`.
@@ -100,7 +100,7 @@ following entry:
 Note that `platforms` could further be extended to include unix-based platforms.
 
 ## Adding Control Scripts
-A last aspect to cover is the large variety of execution parameters of EmbeddedMontiArc
+A next aspect to cover is the large variety of execution parameters of EmbeddedMontiArc
 projects. Some projects, for instance, need the result of some kind of intermediate
 transformation of the models and do not operate on the models themselves. Some others
 assume that a different project has been executed beforehand. In order to cover all
@@ -112,7 +112,7 @@ Shell (.sh) scripts for unix-based platforms. The advantage of using these types
 scripts is that a developer can make use of the entire functions spectrum of the operating
 system. For instance, if a file needs to be copied, a developer can just use `copy` or `cp`
 to perform this task. Usually, a script begins with a call to
-[`variables`](../src/windows/scripts/common/variables.bat), a script which instantiates
+[`variables`](../target/src/windows/scripts/common/variables.bat), a script which instantiates
 useful variables which can be used to ease development of the actual script.
 
 The script will be executed when a certain menu point in EmbeddedMontiArcStudio is selected.
@@ -132,4 +132,25 @@ following table gives an overview of this convention.
 where `{project}` denotes the name of the demonstration project from the first section.
 
 Apart from the project, the scripts should also be sub-divided by platform as can be seen
-[here](../src/windows).
+[here](../target/src/windows).
+
+## Adding Extensions
+Sometimes, the results of an EmbeddedMontiArc project need to be treated further by
+EmbeddedMontiArcStudio itself. Some manifestations of this would be the display of test
+results, or the opening of a tab in which the results are displayed. Furthermore, some
+projects also need functionality which goes beyond the one provided in the previous section.
+Some manifestations of this would be the registration of a hook which runs a terminate
+script once the studio is closed, or the introduction of new menu points. In order to
+complement the studio with these types of functionality, a contributor can develop an
+extension.
+
+To successfully develop an extension, a contributor needs to become familiar with
+[**TypeScript**](https://www.typescriptlang.org/), [**Inversify**](https://github.com/inversify/InversifyJS),
+and especially [**Theia**](https://github.com/theia-ide/theia) as writing an extension for
+EmbeddedMontiArcStudio is the same as writing an extension for Theia.
+
+**Note that extensions must be added to the [`extensions`](../extensions) folder and even
+though it might be compelling, under no circumstances should the contents of the `ide` and
+`packages` folders be modified.**
+
+<!-- Examples -->
