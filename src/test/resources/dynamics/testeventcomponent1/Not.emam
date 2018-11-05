@@ -1,7 +1,5 @@
 package testeventcomponent1;
 
-
-
 component Not {
     ports
         in B a,

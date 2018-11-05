@@ -164,7 +164,7 @@ public class GeneratorCPP implements Generator {
             if(!((EMADynamicComponentInstanceSymbol) componentInstanceSymbol).getEventHandlers().isEmpty())
                 fileContents.add(EventPortValueCheck.getEventPortValueCheckFileContent());
 
-            if(((EMADynamicComponentInstanceSymbol)componentInstanceSymbol).isDynamicInstance()){
+            if(((EMADynamicComponentInstanceSymbol)componentInstanceSymbol).isDynamic()){
                 fileContents.add(DynamicHelper.getDynamicHelperFileContent());
             }
         }
