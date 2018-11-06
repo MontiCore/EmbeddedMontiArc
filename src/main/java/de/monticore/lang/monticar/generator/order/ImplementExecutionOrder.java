@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
  *  @author ernst
  *
  */
+
 public class ImplementExecutionOrder {
     private static Map<EMAComponentInstanceSymbol, Collection<EMAPortInstanceSymbol>> dependencies = new HashMap<>();
     private static int s = 0;
@@ -438,6 +439,8 @@ public class ImplementExecutionOrder {
 
 
     public static Collection<EMAConnectorInstanceSymbol> getAllConnectors(EMAComponentInstanceSymbol inst){
+
+        //TODO: Change this method because it will create to many connectors ...
 
         if(inst instanceof EMADynamicComponentInstanceSymbol) {
 

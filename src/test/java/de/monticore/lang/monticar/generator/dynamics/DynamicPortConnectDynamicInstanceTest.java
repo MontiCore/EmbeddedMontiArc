@@ -30,6 +30,11 @@ public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
         test("instanceRequest.test3", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_03_Test3");
     }
 
+    @Test
+    public void Test_04_Big() throws IOException {
+        test("instanceRequest.testBig", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_04_Big");
+    }
+
     protected void test(String instName, String target){
         try {
             TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources/dynamics");
