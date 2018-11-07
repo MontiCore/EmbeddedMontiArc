@@ -1,0 +1,5 @@
+package clustering;
+
+component OutComp{
+    port out Q out1;
+}

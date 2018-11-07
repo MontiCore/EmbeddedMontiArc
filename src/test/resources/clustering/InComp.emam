@@ -1,0 +1,5 @@
+package clustering;
+
+component InComp{
+    port in Q in1;
+}
