@@ -2,7 +2,8 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.middleware.helpers.ClusterHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.AutomaticClusteringHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -33,10 +34,10 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ClusterHelper.getSubcompsOrderedByName(componentInstanceSymbol);
-        double[][] matrix = ClusterHelper.createAdjacencyMatrix(subcompsOrderedByName,
-                ClusterHelper.getInnerConnectors(componentInstanceSymbol),
-                ClusterHelper.getLabelsForSubcomps(subcompsOrderedByName));
+        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(componentInstanceSymbol);
+        double[][] matrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
+                ComponentHelper.getInnerConnectors(componentInstanceSymbol),
+                ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName));
 
 
         //sorted by full name: alex, combine, dinhAn, michael, philipp
@@ -96,7 +97,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("clustering.unambiguousCluster", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = ClusterHelper.createClusters(componentInstanceSymbol, 2, null);
+        List<Set<ExpandedComponentInstanceSymbol>> clusters = AutomaticClusteringHelper.createClusters(componentInstanceSymbol, 2, null);
 
         assertTrue(clusters.size() == 2);
 
@@ -152,7 +153,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         clusters.add(cluster2);
 
 
-        ClusterHelper.annotateComponentWithRosTagsForClusters(componentInstanceSymbol, clusters);
+        AutomaticClusteringHelper.annotateComponentWithRosTagsForClusters(componentInstanceSymbol, clusters);
 
         List<String> rosPortsSuper = componentInstanceSymbol.getPortsList().stream()
                 .filter(PortSymbol::isRosPort)

@@ -40,7 +40,7 @@ public class DistributedTargetGenerator extends CMakeGenerator {
 
         fixComponentInstance(componentInstanceSymbol);
 
-        List<ExpandedComponentInstanceSymbol> clusterSubcomponents = ClusterHelper.getClusterSubcomponents(componentInstanceSymbol);
+        List<ExpandedComponentInstanceSymbol> clusterSubcomponents = ClusterFromTagsHelper.getClusterSubcomponents(componentInstanceSymbol);
         if (clusterSubcomponents.size() > 0) {
             clusterSubcomponents.forEach(clusterECIS -> {
                 String nameTargetLanguage = NameHelper.getNameTargetLanguage(clusterECIS.getFullName());

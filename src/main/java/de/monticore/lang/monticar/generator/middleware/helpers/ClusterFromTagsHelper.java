@@ -1,7 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware.helpers;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
-import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.symboltable.CommonScope;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.Symbol;
@@ -11,14 +10,13 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
-import smile.clustering.SpectralClustering;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ClusterHelper {
+public class ClusterFromTagsHelper {
 
-    private ClusterHelper() {
+    private ClusterFromTagsHelper() {
     }
 
     public static List<Set<ExpandedComponentInstanceSymbol>> getClusters(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
