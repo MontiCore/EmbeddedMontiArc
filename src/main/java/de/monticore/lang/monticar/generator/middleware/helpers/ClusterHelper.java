@@ -185,4 +185,40 @@ public class ClusterHelper {
         return res;
     }
 
+    public static List<ConnectorSymbol> findConnectorsForRosTagging(int[] clusterlabels, ExpandedComponentInstanceSymbol component){
+        Collection<ExpandedComponentInstanceSymbol> subcomps = component.getSubComponents().stream()
+                .sorted(Comparator.comparing(ExpandedComponentInstanceSymbol::getFullName))
+                .collect(Collectors.toList());
+
+        Map<String, Integer> componentIndecies = new HashMap<>();
+
+        String superCompName = component.getFullName();
+        int[] i = {0};
+        subcomps.forEach(sc -> componentIndecies.put(sc.getFullName(), i[0]++));
+
+        Collection<ConnectorSymbol> connectors = component.getConnectors().stream()
+                //filter out all connectors to super component
+                .filter(con -> !con.getSourcePort().getComponentInstance().get().getFullName().equals(superCompName)
+                        && !con.getTargetPort().getComponentInstance().get().getFullName().equals(superCompName))
+                .collect(Collectors.toList());
+
+        List<ConnectorSymbol> res = new LinkedList<>();
+
+        connectors.forEach(con -> {
+            Optional<ExpandedComponentInstanceSymbol> sourceCompOpt = con.getSourcePort().getComponentInstance();
+            Optional<ExpandedComponentInstanceSymbol> targetCompOpt = con.getTargetPort().getComponentInstance();
+
+            if (sourceCompOpt.isPresent() && targetCompOpt.isPresent()) {
+                if (clusterlabels[componentIndecies.get(sourceCompOpt.get().getFullName())] !=
+                        clusterlabels[componentIndecies.get(targetCompOpt.get().getFullName())]){
+                    res.add(con);
+                }
+            } else {
+                Log.error("0xADE65: Component of source or target not found!");
+            }
+        });
+
+        return res;
+    }
+
 }
