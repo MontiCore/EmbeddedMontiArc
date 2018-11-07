@@ -343,4 +343,25 @@ public class GenerationTest extends AbstractSymtabTest {
 
 
     }
+
+    @Test
+    public void testMiddlewareTagFileGeneration() throws IOException {
+        TaggingResolver taggingResolver = createSymTabAndTaggingResolver(TEST_PATH);
+        RosToEmamTagSchema.registerTagTypes(taggingResolver);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.system", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+        //make sure the middleware tags are loaded
+        Map<PortSymbol, RosConnectionSymbol> tags = TagHelper.resolveTags(taggingResolver, componentInstanceSymbol);
+
+        DistributedTargetGenerator middlewareGenerator = new DistributedTargetGenerator();
+        middlewareGenerator.setGenerationTargetPath("./target/generated-sources-cmake/labWithTags/src/");
+        //generator for component itself
+        middlewareGenerator.add(new CPPGenImpl(), "cpp");
+        //generator for the ros connection
+        middlewareGenerator.add(new RosCppGenImpl(), "roscpp");
+        middlewareGenerator.setGenerateMiddlewareTags(true);
+
+        middlewareGenerator.generate(componentInstanceSymbol, taggingResolver);
+    }
 }

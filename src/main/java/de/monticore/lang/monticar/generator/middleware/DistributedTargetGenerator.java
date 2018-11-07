@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
+import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.apache.commons.io.FileUtils;
 
@@ -12,6 +13,16 @@ import java.io.IOException;
 import java.util.*;
 
 public class DistributedTargetGenerator extends CMakeGenerator {
+    private boolean generateMiddlewareTags = false;
+
+    public boolean isGenerateMiddlewareTags() {
+        return generateMiddlewareTags;
+    }
+
+    public void setGenerateMiddlewareTags(boolean generateMiddlewareTags) {
+        this.generateMiddlewareTags = generateMiddlewareTags;
+    }
+
     private Set<String> subDirs = new HashSet<>();
 
 
@@ -52,6 +63,12 @@ public class DistributedTargetGenerator extends CMakeGenerator {
         if(files.stream().anyMatch(f -> f.getName().endsWith(".msg"))){
             subDirs.add("rosMsg");
             files.add(generateRosMsgGen());
+        }
+
+        if(generateMiddlewareTags){
+            MiddlewareTagGenImpl middlewareTagGen = new MiddlewareTagGenImpl();
+            middlewareTagGen.setGenerationTargetPath(generationTargetPath + "emam/");
+            files.addAll(middlewareTagGen.generate(componentInstanceSymbol,taggingResolver));
         }
 
         files.add(generateCMake(componentInstanceSymbol));
