@@ -5,7 +5,7 @@ import numpy as np
 import logging
 import os
 import sys
-
+import lmdb
 class ${tc.fileNameWithoutEnding}:
 
     module = None
@@ -34,7 +34,10 @@ class ${tc.fileNameWithoutEnding}:
 
             # don't need the gradient for the backward pass
             data = model.StopGradient(data, data)
-            return data, label
+
+            dataset_size = int (lmdb.open(db).stat()['entries'])
+
+            return data, label, dataset_size
 
     def create_model(self, model, data, device_opts):
     	with core.DeviceScope(device_opts):
@@ -95,7 +98,7 @@ ${tc.include(tc.architecture.body)}
     	arg_scope = {"order": "NCHW"}
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
-    	data, label = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
     	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(train_model, data, device_opts=device_opts)
     	self.add_training_operators(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, ${tc.join(tc.architectureOutputs, ",", "","")}, label, device_opts, eval_metric)
@@ -107,28 +110,25 @@ ${tc.include(tc.architecture.body)}
     	workspace.CreateNet(train_model.net, overwrite=True)
 
     	# Main Training Loop
-    	print("== Starting Training for " + str(num_epoch) + " num_epoch ==")
-    	for j in range(0, num_epoch):
+    	print("== Starting Training for " + str(num_epoch) + " epochs ==")
+    	for i in range(num_epoch):
     		workspace.RunNet(train_model.net)
-    		if j % 50 == 0:
-    			print 'Iter: ' + str(j) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss")) + ' - ' + 'Accuracy ' + str(workspace.FetchBlob('accuracy'))
+    		if i % 50 == 0:
+    			print 'Iter ' + str(i) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss")) + ' - ' + 'Accuracy ' + str(workspace.FetchBlob('accuracy'))
     	print("Training done")
 
     	print("== Running Test model ==")
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
-    	data, label = self.add_input(test_model, batch_size=100, db=os.path.join(self._data_dir_, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
     	${tc.join(tc.architectureOutputs, ",", "","")} = self.create_model(test_model, data, device_opts=device_opts)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
 
     	# Main Testing Loop
-    	# batch size:        100
-    	# iteration:         100
-    	# total test images: 10000
-    	test_accuracy = np.zeros(100)
-    	for i in range(100):
+    	test_accuracy = np.zeros(test_dataset_size/batch_size)
+    	for i in range(test_dataset_size/batch_size):
     		# Run a forward pass of the net on the current batch
     		workspace.RunNet(test_model.net)
     		# Collect the batch accuracy from the workspace
