@@ -1,0 +1,29 @@
+EmbeddedMontiArc automated component clustering
+
+Objective:
+
+Bundle interconnected top level components of the model into different clusters. The aim is to reduce connection and communication overhead between components by grouping affine components into different clusters which then are connected using ROS.
+
+Procedure:
+
+1)	Convert the symbol table of a component into an adjacency matrix
+o	Order all sub components by name (neccessary for the adjacency matrix).
+o	Create adjacency matrix to use with a clustering algorithm, with subcomponents as nodes and connectors between subcomponents as vertices. Sift out all connectors to the super component.
+2)	Feed adjacency matrix into the selected clustering algorithm
+o	We are using the machine learning library "smile ml" (see: https://github.com/haifengl/smile) which provides a broad range of different clustering and partitioning approaches. As a prime example we are using "spectral clustering" here. For a closer look at this approach, see the section below. 
+o	The clustring algorithm yields multiple cluster labels with the clustered entries of the adjacency matrix assigned to them. We have to convert them back to a set of symbol tables of components representing the clusters.
+3)	Generate middleware tags separating the clusters
+o	This will build the cluster-to-ROS connections.
+o	We won’t take account of ports of the super component and only consider connected top level components.
+o	A connection will be established if the target cluster label is different from the source cluster label thus connecting different clusters with each other.
+4)	Feed result into existing manual clustering architecture
+
+
+Spectral Clustering in a nutshell
+
+The goal of spectral clustering is to cluster data which is connected but not compact or not clustered within convex boundaries. Data is basically seen as a connected graph and clustering is the process of finding partitions in the graph based on the affinity (similarity or adjacency) of vertices. 
+
+The spectral clustering technique makes use of the eigenvalues (spectrum) of the similarity matrix of the data. Similarity can be defined as an affinity matrix, using a Gaussian kernel, or an adjacency matrix. The general approach is to perform dimensionality reduction before clustering in fewer dimensions using a standard clustering method (like k-means) on relevant eigenvectors of the matrix representation of a graph (Laplacian matrix).
+
+So it is the affinity of data points, which defines clusters, and not the absolute (spatial) location or spatial proximity. This affinity evaluation is done by Principal Component Analysis (PCA).
+Within an affinity matrix, data points belonging to the same cluster have a very similar affinity vector to all other data points (eigenvector). Each eigenvector has an eigenvalue which states how prevalent its vector is in the affinity matrix. So those eigenvectors act like a fingerprint for different clusters, representing all datapoints belonging to a specific cluster, in a lower dimensional space (its dimensionality equals the total number of large eigenvalues).
