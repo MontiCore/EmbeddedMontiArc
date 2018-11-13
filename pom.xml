@@ -58,7 +58,7 @@
         <monticore.plugin>5.0.1</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.8.0</compiler.plugin>
-        <plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>
+        <!--<plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>-->
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
         <jacoco.plugin>0.8.1</jacoco.plugin>
@@ -69,6 +69,8 @@
 
         <!-- .. Misc .......................................................... -->
         <java.version>1.8</java.version>
+        <javac.src.version>1.8</javac.src.version>
+        <javac.target.version>1.8</javac.target.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -291,15 +293,15 @@
                     <target>${java.version}</target><meminitial>1024m</meminitial>
                     <maxmem>2048m</maxmem>
                     <fork>true</fork>
-                    <compilerId>eclipse</compilerId>
+                    <!--<compilerId>eclipse</compilerId>-->
                 </configuration>
-                <dependencies>
-                <dependency>
-                <groupId>org.codehaus.plexus</groupId>
-                <artifactId>plexus-compiler-eclipse</artifactId>
-                <version>${plexus.compiler.eclipse.version}</version>
-                </dependency>
-                </dependencies>
+                <!--<dependencies>-->
+                <!--<dependency>-->
+                <!--<groupId>org.codehaus.plexus</groupId>-->
+                <!--<artifactId>plexus-compiler-eclipse</artifactId>-->
+                <!--<version>${plexus.compiler.eclipse.version}</version>-->
+                <!--</dependency>-->
+                <!--</dependencies>-->
             </plugin>
 
             <plugin>
@@ -419,8 +421,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>2.22.1</version>
                 <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
             <plugin>
