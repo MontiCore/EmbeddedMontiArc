@@ -7,12 +7,13 @@
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
-template<typename T, typename T2>
+template<typename T>
 struct connection {
     void *afterComponent;
-    T2 *from;
-    T *to;
+    T *source;
+    T *target;
 };
+    //template<typename T, typename T2>
 #endif
 
 
@@ -37,6 +38,16 @@ int dynamicconnect(int numPorts, bool* connected, std::queue<int>* request){
         request->push(port);
     }
     return port;
+}
+
+template<typename T>
+void dynamicconnect_remove(std::vector<connection<T>>* vec, void* ac, T* source, T* target){
+    for(long i = vec->size()-1; i >= 0; --i){
+        connection<T> c = vec->at(i);
+        if( (c.afterComponent == ac) && (c.source == source) && (c.target == target)){
+            vec->erase(vec->begin()+i);
+        }
+    }
 }
 
 #endif /* DynamicHelper_h */

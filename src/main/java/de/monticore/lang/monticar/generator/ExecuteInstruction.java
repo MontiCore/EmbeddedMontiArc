@@ -54,7 +54,7 @@ public class ExecuteInstruction implements Instruction {
             String inst = componentName.substring(0, componentName.indexOf("["));
             String id = componentName.substring(componentName.indexOf("[")+1, componentName.lastIndexOf("]"));
 
-            return String.format("if(_%s_connected[%s]){ executeDynamicConnects(&(%s)); %s}", inst, id,componentName, exec);
+            return String.format("if(__%s_connected[%s]){ executeDynamicConnects(&(%s)); %s}", inst, id,componentName, exec);
         }
 
         return exec;

@@ -5,6 +5,7 @@ import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,6 +32,7 @@ public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
     }
 
     @Test
+    @Ignore
     public void Test_04_Big() throws IOException {
         test("instanceRequest.testBig", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_04_Big");
     }
