@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.middleware.helpers.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
+import de.monticore.lang.monticar.generator.middleware.helpers.SpectralClusterer;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -97,7 +98,8 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("clustering.unambiguousCluster", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = AutomaticClusteringHelper.createClusters(componentInstanceSymbol, 2, null);
+        SpectralClusterer spectralClusterer = new SpectralClusterer();
+        List<Set<ExpandedComponentInstanceSymbol>> clusters = spectralClusterer.createClusters(componentInstanceSymbol, 2);
 
         assertTrue(clusters.size() == 2);
 
