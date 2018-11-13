@@ -2,8 +2,8 @@ package instanceRequest;
 
 dynamic component TestBig{
 	port
-		dynamic in B a[0:1024],
-		dynamic out B b[0:1024];
+		dynamic in B a[0:128],
+		dynamic out B b[0:128];
 
     component PassThrough {
         ports
@@ -13,7 +13,7 @@ dynamic component TestBig{
         connect in1 -> out1;
     }
 
-	instance PassThrough pt[0:1024];
+	instance PassThrough pt[0:128];
 
     @ a::connect && b::connect {
         connect a[?] -> pt[?].in1;

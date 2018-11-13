@@ -24,7 +24,7 @@ public class EventDynamicConnectConverter {
     protected static final String DYNPORTIDININSTANCE = "_%s_%s_dynPortID";
     protected static final String DYNPORTIDININSTANCEINIT = "int "+DYNPORTIDININSTANCE+" = -1;\n";
     protected static final String DYNINSTANCEID = "_%s_dynINSTID";
-    protected static final String DYNINSTANCECONNECT = "int "+DYNINSTANCEID+" = dynamicconnect(%d, __%s_connected); if( "+DYNINSTANCEID+" < 0 ){return; }  _connected_idxs[%d] = "+DYNINSTANCEID+";\n";
+    protected static final String DYNINSTANCECONNECT = "int "+DYNINSTANCEID+" = dynamicconnect(%d, __%s_connected); if( "+DYNINSTANCEID+" < 0 ){ free(_connected_idxs); return; }  _connected_idxs[%d] = "+DYNINSTANCEID+";\n";
 
     protected static final String FREE_CONNECTIONTRACARRAY = "__event_connects_%s";
     protected static final String FREE_THISCOMPONENTPORTREQUEST = "int "+DYNPORTID+" = _connected_idxs[%d];\n";
@@ -296,7 +296,7 @@ public class EventDynamicConnectConverter {
             ));
 
             body.addInstruction(new TargetCodeInstruction(String.format(
-                    "if(!"+inst+")){return ;}\n"
+                    "if(!"+inst+")){ free(_connected_idxs); return ;}\n"
             )));
             body.addInstruction(new TargetCodeInstruction(connectIdxs+"\n"));
 
