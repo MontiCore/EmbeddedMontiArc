@@ -4,7 +4,6 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Connecto
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.se_rwth.commons.logging.Log;
-import smile.clustering.SpectralClustering;
 
 import java.util.*;
 
@@ -30,33 +29,6 @@ public class AutomaticClusteringHelper {
             }
         });
 
-
-        return res;
-    }
-
-    public static List<Set<ExpandedComponentInstanceSymbol>> createClusters(ExpandedComponentInstanceSymbol component, int numberOfClusters, ClustererKind clustererKind){
-        //TODO: create wrapper for clusterer for easy exchange
-
-        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
-        Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
-        double[][] adjMatrix = createAdjacencyMatrix(subcompsOrderedByName,
-                ComponentHelper.getInnerConnectors(component),
-                labelsForSubcomps);
-
-        SpectralClustering clustering = new SpectralClustering(adjMatrix,numberOfClusters);
-
-        int[] labels = clustering.getClusterLabel();
-
-        List<Set<ExpandedComponentInstanceSymbol>> res = new ArrayList<>();
-
-        for(int i = 0; i < numberOfClusters; i++){
-            res.add(new HashSet<>());
-        }
-
-        subcompsOrderedByName.forEach(sc -> {
-            int curClusterLabel = labels[labelsForSubcomps.get(sc.getFullName())];
-            res.get(curClusterLabel).add(sc);
-        });
 
         return res;
     }
