@@ -5,6 +5,7 @@ import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,28 +18,21 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
+public class DynamicTestEvent extends AbstractSymtabTest {
 
-    @Test
-    public void Test_00_Test1() throws IOException {
-        test("instanceRequest.test1", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_00_Test1");
-    }
-
-    @Test
-    public void Test_02_Test2() throws IOException {
-        test("instanceRequest.test2", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_02_Test2");
-    }
-
-    @Test
-    public void Test_03_Test3() throws IOException {
-        test("instanceRequest.test3", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_03_Test3");
+    @BeforeClass
+    public static void setUp() {
+        // ensure an empty log
+        Log.getFindings().clear();
+        Log.enableFailQuick(false);
     }
 
     @Test
     @Ignore
-    public void Test_04_Big() throws IOException {
-        test("instanceRequest.testBig", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_04_Big");
+    public void Test_00_TestTrueEvent(){
+        test("event.test00.test00", "./target/generated-sources-cpp/dynamics-event/test00");
     }
+
 
     protected void test(String instName, String target){
         try {
@@ -56,7 +50,4 @@ public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
             Log.error(ex.getMessage());
         }
     }
-
-
-
 }

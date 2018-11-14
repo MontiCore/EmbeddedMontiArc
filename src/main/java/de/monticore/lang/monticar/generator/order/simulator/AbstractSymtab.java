@@ -10,6 +10,7 @@ import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.EmbeddedMontiArcMathLanguage;
 import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
+import de.monticore.lang.embeddedmontiarcdynamic.event._symboltable.EventLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizationRule;
@@ -64,6 +65,7 @@ public class AbstractSymtab {
         fam.addModelingLanguage(new StreamUnitsLanguage());
         fam.addModelingLanguage(new StructLanguage());
         fam.addModelingLanguage(new EnumLangLanguage());
+        fam.addModelingLanguage(new EventLanguage());
         final ModelPath mp = new ModelPath();
         for (String m : modelPath) {
             mp.addEntry(Paths.get(m));

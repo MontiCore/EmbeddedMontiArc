@@ -1,0 +1,8 @@
+package event.test00;
+
+event TrueEvent {
+
+    true
+
+}
+
