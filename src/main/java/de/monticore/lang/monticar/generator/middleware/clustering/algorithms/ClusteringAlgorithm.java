@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.middleware.clustering;
+package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 
