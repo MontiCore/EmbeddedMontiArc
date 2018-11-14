@@ -3,7 +3,9 @@ package de.monticore.lang.monticar.generator.middleware;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithmFactory;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringKind;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -88,18 +90,22 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertTrue( labels[1] != labels[3]);
 
     }
-    
 
     @Test
-    public void testCreateClusters(){
+    public void testClusteringAlgorithms(){
+        for(ClusteringKind kind : ClusteringKind.values()){
+            testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind));
+        }
+    }
+
+    private void testCreateClusters(ClusteringAlgorithm algorithm){
         //UnambiguousCluster
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("clustering.unambiguousCluster", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        SpectralClusteringAlgorithm spectralClusteringAlgorithm = new SpectralClusteringAlgorithm();
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = spectralClusteringAlgorithm.cluster(componentInstanceSymbol, 2);
+        List<Set<ExpandedComponentInstanceSymbol>> clusters = algorithm.cluster(componentInstanceSymbol, 2);
 
         assertTrue(clusters.size() == 2);
 

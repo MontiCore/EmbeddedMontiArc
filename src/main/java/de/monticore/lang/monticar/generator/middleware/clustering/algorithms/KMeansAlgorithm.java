@@ -4,22 +4,23 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
-import smile.clustering.SpectralClustering;
+import smile.clustering.KMeans;
 
 import java.util.*;
 
-// spectral clusterer product implementation
-public class SpectralClusteringAlgorithm implements ClusteringAlgorithm {
+public class KMeansAlgorithm implements ClusteringAlgorithm {
+
+    public static final int MAX_ITER = 10;
+
     @Override
     public List<Set<ExpandedComponentInstanceSymbol>> cluster(ExpandedComponentInstanceSymbol component, int numberOfClusters) {
-
         List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
         Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
         double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
                 ComponentHelper.getInnerConnectors(component),
                 labelsForSubcomps);
 
-        SpectralClustering clustering = new SpectralClustering(adjMatrix,numberOfClusters);
+        KMeans clustering = new KMeans(adjMatrix,numberOfClusters, MAX_ITER);
 
         int[] labels = clustering.getClusterLabel();
 
