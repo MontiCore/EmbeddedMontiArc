@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.middleware.helpers;
+package de.monticore.lang.monticar.generator.middleware.clustering;
 
 // creator for spectral clusterer
 public class SpectralClusterer extends Clusterer {
