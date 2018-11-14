@@ -2,9 +2,9 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
-import de.monticore.lang.monticar.generator.middleware.helpers.AutomaticClusteringHelper;
+import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.SpectralClusterer;
+import de.monticore.lang.monticar.generator.middleware.clustering.SpectralClusterer;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;

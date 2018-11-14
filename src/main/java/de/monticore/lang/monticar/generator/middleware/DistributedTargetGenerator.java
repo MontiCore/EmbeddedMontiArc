@@ -2,6 +2,7 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusterFromTagsHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.*;
 import de.monticore.lang.monticar.generator.middleware.impls.GeneratorImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.MiddlewareTagGenImpl;

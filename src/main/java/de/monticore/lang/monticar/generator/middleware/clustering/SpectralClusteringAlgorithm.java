@@ -1,11 +1,12 @@
-package de.monticore.lang.monticar.generator.middleware.helpers;
+package de.monticore.lang.monticar.generator.middleware.clustering;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
+import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
+import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import smile.clustering.SpectralClustering;
 
 import java.util.*;
-
-import static de.monticore.lang.monticar.generator.middleware.helpers.AutomaticClusteringHelper.createAdjacencyMatrix;
 
 // spectral clusterer product implementation
 public class SpectralClusteringAlgorithm implements ClusteringAlgorithm {

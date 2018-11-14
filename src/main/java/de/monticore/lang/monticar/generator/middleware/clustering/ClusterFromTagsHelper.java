@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.middleware.helpers;
+package de.monticore.lang.monticar.generator.middleware.clustering;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
 import de.monticore.symboltable.CommonScope;
