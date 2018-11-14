@@ -15,10 +15,7 @@ import org.junit.Test;
 import smile.clustering.SpectralClustering;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -189,5 +186,36 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         distributedTargetGenerator.generate(componentInstanceSymbol,taggingResolver);
     }
+
+
+    @Test
+    public void testCostHeuristic(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        //CostHeuristic
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("test.costHeuristic", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        double inC = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inC").get());
+        double inQ = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQ").get());
+        double inZ = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inZ").get());
+        double inB = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inB").get());
+
+        assertTrue(inC > inQ);
+        assertTrue(inQ > inZ);
+        assertTrue(inZ > inB);
+
+        double inQVec = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQVec").get());
+        double inQVec2 = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQVec2").get());
+
+        double inQMat = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQMat").get());
+        double inQMat2 = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inQMat2").get());
+
+        assertTrue(inQVec2 > inQVec);
+        assertTrue(inQMat2 > inQMat);
+
+        double inPos = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inPos").get());
+    }
+
 
 }
