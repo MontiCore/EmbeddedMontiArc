@@ -1,8 +1,8 @@
-package de.monticore.lang.monticar.generator.middleware.clustering;
+package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
-import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
+import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import smile.clustering.SpectralClustering;
 
