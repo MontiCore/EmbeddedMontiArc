@@ -2,7 +2,10 @@ package de.monticore.lang.monticar.generator.middleware.clustering;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
@@ -62,4 +65,17 @@ public class AutomaticClusteringHelper {
         });
 
     }
+
+    public static double getTypeCostHeuristic(PortSymbol port){
+        return getTypeCostHeuristic(port.getTypeReference());
+    }
+
+    public static double getTypeCostHeuristic(MCTypeReference<? extends MCTypeSymbol> typeReference) {
+        //TODO: implement
+        //TODO: base types (Q,Z,B,C)
+        //TODO: Matrix types(recursive?)
+        //TODO: structs
+        return 0;
+    }
+
 }
