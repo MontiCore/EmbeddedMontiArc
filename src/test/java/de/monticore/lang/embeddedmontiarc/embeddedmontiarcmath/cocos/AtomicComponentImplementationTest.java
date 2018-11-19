@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos;
 
-import de.monticore.lang.embeddedmontiarc.cocos.SourceTargetNumberMatch;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
+//import de.monticore.lang.embeddedmontiarc.cocos.SourceTargetNumberMatch;
+//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathCoCoChecker;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
