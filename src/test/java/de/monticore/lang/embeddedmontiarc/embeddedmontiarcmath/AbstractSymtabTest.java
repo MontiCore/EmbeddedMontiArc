@@ -40,7 +40,7 @@ public class AbstractSymtabTest {
         GlobalScope scope = new GlobalScope(mp, fam);
         de.monticore.lang.monticar.Utils.addBuiltInTypes(scope);
 
-        LogConfig.init();
+//        LogConfig.init();
         return scope;
     }
 

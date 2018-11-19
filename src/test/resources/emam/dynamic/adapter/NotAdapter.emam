@@ -7,7 +7,7 @@ dynamic component NotAdapter {
         dynamic in B dIn [1:32],
         dynamic out B dOut [1:32];
 
-    instance Not dynamic notD [2:32];
+    instance Not notD [2:32];
 
     connect dIn[1] -> notD[2].in1;
     connect notD[2].out1 -> dOut[1];
