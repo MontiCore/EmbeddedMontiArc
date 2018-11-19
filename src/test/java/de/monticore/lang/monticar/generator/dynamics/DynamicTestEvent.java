@@ -40,6 +40,7 @@ public class DynamicTestEvent extends AbstractSymtabTest {
 
             EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve(instName, EMAComponentInstanceSymbol.KIND).orElse(null);
             assertNotNull(componentSymbol);
+
             GeneratorCPP generatorCPP = new GeneratorCPP();
             generatorCPP.useArmadilloBackend();
             generatorCPP.setGenerationTargetPath(target);
