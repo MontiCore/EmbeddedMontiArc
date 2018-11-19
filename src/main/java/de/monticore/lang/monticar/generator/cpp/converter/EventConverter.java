@@ -56,7 +56,7 @@ public class EventConverter {
     }
 
     protected static void generateEventConditionMethod(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol,BluePrintCPP bluePrint ){
-        Method condition = new Method(EventConnectInstructionCPP.getEventNameCPP(event.getFullName()), "bool");
+        Method condition = new Method(EventConnectInstructionCPP.getEventNameCPP(event.getName()), "bool");
         condition.setPublic(false);
 
         String conditionExpression = "return ";
@@ -149,6 +149,10 @@ public class EventConverter {
             return generateEventConditionEventPortConnectSymbol((EventPortExpressionConnectSymbol) expression, componentSymbol, bluePrint);
         }
 
+        if(expression instanceof EventBooleanExpressionSymbol){
+            return ((EventBooleanExpressionSymbol)expression).getBooleanValue() ? "true" : "false";
+        }
+
         return "";
     }
 
@@ -188,6 +192,8 @@ public class EventConverter {
         return "(!__"+expressionConnectSymbol.getName()+"_connect_request.empty())";
     }
 
+
+
     //</editor-fold>
 
     //<editor-fold desc="Generate concrete test for port values">
@@ -223,7 +229,6 @@ public class EventConverter {
 
         }
     }
-
 
     //</editor-fold>
 }

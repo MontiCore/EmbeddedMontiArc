@@ -28,15 +28,19 @@ public class EventDynamicConnectConverter {
 
     protected static final String FREE_CONNECTIONTRACARRAY = "__event_connects_%s";
     protected static final String FREE_THISCOMPONENTPORTREQUEST = "int "+DYNPORTID+" = _connected_idxs[%d];\n";
+    protected static final String FREE_THISCOMPONENTPORTREQUEST_CONNECTED_ARRAY = "__%s_connected["+DYNPORTID+"] = false;\n";
     protected static final String FREE_DYNINSTANCECONNECT = "int "+DYNINSTANCEID+" = _connected_idxs[%d];\n";
+    protected static final String FREE_DYNINSTANCECONNECT_CONNECTED_ARRAY =  "__%s_connected["+DYNINSTANCEID+"] = false;\n";
     protected static final String FREE_DYNPORTIDININSTANCE = "int "+DYNPORTIDININSTANCE+" = _connected_idxs[%d];\n";
 
 
     protected static int free_method_index_counter = 0;
+    protected static List<String> resetConnectedArray = new ArrayList<>();
 
     public static boolean generateDynamicConnectEvent(EMADynamicEventHandlerInstanceSymbol event, EMAComponentInstanceSymbol componentSymbol, Method executeMethod, BluePrintCPP bluePrint ) {
 
         free_method_index_counter = 0;
+        resetConnectedArray.clear();
 
         List<String> names= new ArrayList<>();
         event.getCondition().getConnectPortNames(names);
@@ -164,11 +168,16 @@ public class EventDynamicConnectConverter {
     }
 
     protected static void generateEndOfFreeMethod(EMADynamicEventHandlerInstanceSymbol event, Method free){
+
         String name = String.format(FREE_CONNECTIONTRACARRAY, convertName(event.getName()));
         free.addInstruction(new TargetCodeInstruction(
                 name+".erase("+name+".begin()+i);\n"
         ));
+        for(String s : resetConnectedArray){
+            free.addInstruction(new TargetCodeInstruction(s));
+        }
         free.addInstruction(new TargetCodeInstruction("free(_connected_idxs);\n"));
+
         free.addInstruction(new TargetCodeInstruction("}\n}\n"));
     }
 
@@ -237,6 +246,9 @@ public class EventDynamicConnectConverter {
             free.addInstruction(new TargetCodeInstruction(String.format(FREE_THISCOMPONENTPORTREQUEST,
                 name, free_method_index_counter
             )));
+
+            resetConnectedArray.add(String.format(FREE_THISCOMPONENTPORTREQUEST_CONNECTED_ARRAY, name,name));
+
             free_method_index_counter++;
         }
     }
@@ -252,7 +264,11 @@ public class EventDynamicConnectConverter {
                     )));
 
             free.addInstruction(new TargetCodeInstruction(String.format(FREE_DYNINSTANCECONNECT,
-                    inst, free_method_index_counter)));
+                    inst, free_method_index_counter
+            )));
+
+            resetConnectedArray.add(String.format(FREE_DYNINSTANCECONNECT_CONNECTED_ARRAY, inst,inst));
+
             free_method_index_counter++;
         }
     }
