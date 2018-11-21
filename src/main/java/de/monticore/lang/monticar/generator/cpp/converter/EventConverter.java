@@ -21,7 +21,6 @@ import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstruct
 import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.se_rwth.commons.logging.Log;
 
-import javax.swing.plaf.metal.MetalTheme;
 import java.util.*;
 
 public class EventConverter {
@@ -41,6 +40,8 @@ public class EventConverter {
             if(event.isDynamicPortConnectionEvent()) {
 //                generateCondition = generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
                 generateCondition = EventDynamicConnectConverter.generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
+            }else if(event.isDynamicPortFreeEvent()){
+                generateCondition = generateFreeEvent(event, executeMethod, bluePrint);
             }else{
                 Log.info("Create connectors for: "+event.getFullName(), "EventConverter");
 
@@ -80,6 +81,10 @@ public class EventConverter {
             ++number;
         }
         return number > 0;
+    }
+
+    protected static boolean generateFreeEvent(EMADynamicEventHandlerInstanceSymbol event, Method executeMethod, BluePrint bluePrint){
+        return true;
     }
 
     public static void generatePVCNextMethod(BluePrintCPP bluePrint){
@@ -133,9 +138,6 @@ public class EventConverter {
     }
 
 
-
-
-
     //<editor-fold desc="Generate event condition">
 
     protected static String generateEventCondition(EventExpressionSymbol expression, EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint){
@@ -147,6 +149,8 @@ public class EventConverter {
             return generateEventConditionEventPortValueSymbol((EventPortExpressionValueSymbol) expression, componentSymbol, bluePrint);
         }else if(expression instanceof EventPortExpressionConnectSymbol){
             return generateEventConditionEventPortConnectSymbol((EventPortExpressionConnectSymbol) expression, componentSymbol, bluePrint);
+        }else if(expression instanceof EventPortExpressionFreeSymbol){
+            return "( /*"+((EventPortExpressionFreeSymbol) expression).getPortName()+"::free*/ true)";
         }
 
         if(expression instanceof EventBooleanExpressionSymbol){

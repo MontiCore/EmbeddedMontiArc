@@ -3,6 +3,7 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicConnectorInstanceSymbol;
 import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicEventHandlerInstanceSymbol;
 import de.monticore.lang.monticar.generator.*;
@@ -11,9 +12,10 @@ import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.instruction.EventConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.instruction.ExecuteDynamicConnects;
 import de.se_rwth.commons.logging.Log;
-import javafx.util.Pair;
+
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EventDynamicConnectConverter {
 
@@ -75,7 +77,7 @@ public class EventDynamicConnectConverter {
         //finish everything that needs to be set
 //
         body.getInstructions().add(1, new TargetCodeInstruction("int* _connected_idxs = (int *)calloc("+free_method_index_counter+", sizeof(int));\n"));
-        generateEndOfFreeMethod(event, free);
+        generateEndOfFreeMethod(event, free, componentSymbol);
 
         String varName = "__event_connects_"+convertName(event.getName());
         if(!bluePrint.getVariable(varName).isPresent()){
@@ -167,7 +169,7 @@ public class EventDynamicConnectConverter {
         return method;
     }
 
-    protected static void generateEndOfFreeMethod(EMADynamicEventHandlerInstanceSymbol event, Method free){
+    protected static void generateEndOfFreeMethod(EMADynamicEventHandlerInstanceSymbol event, Method free, EMAComponentInstanceSymbol componentSymbol){
 
         String name = String.format(FREE_CONNECTIONTRACARRAY, convertName(event.getName()));
         free.addInstruction(new TargetCodeInstruction(
@@ -177,6 +179,23 @@ public class EventDynamicConnectConverter {
             free.addInstruction(new TargetCodeInstruction(s));
         }
         free.addInstruction(new TargetCodeInstruction("free(_connected_idxs);\n"));
+
+//        free.addInstruction(new TargetCodeInstruction("//----------------------------------------------------------------------------\n"));
+        List<String> names = new ArrayList<>();
+        event.getCondition().getConnectPortNames(names);
+        for(EMADynamicEventHandlerInstanceSymbol freeEvent : getFreeEvents(componentSymbol)){
+            List<String> freeNames = new ArrayList<>();
+            freeEvent.getCondition().getFreePortNames(freeNames);
+            freeNames.removeAll(names);
+
+            if(freeNames.isEmpty()){
+                // free event
+                free.addInstruction(new TargetCodeInstruction("if("+EventConnectInstructionCPP.getEventNameCPP(freeEvent.getName())+"){\n"));
+                generateConnectsForFreeEventBody(freeEvent, free);
+                free.addInstruction(new TargetCodeInstruction("}\n"));
+            }
+        }
+//        free.addInstruction(new TargetCodeInstruction("//----------------------------------------------------------------------------\n"));
 
         free.addInstruction(new TargetCodeInstruction("}\n}\n"));
     }
@@ -322,37 +341,10 @@ public class EventDynamicConnectConverter {
     protected static void generateConnects(EMADynamicEventHandlerInstanceSymbol event, Method body, BluePrintCPP bluePrint, Method executeMethod, Method free){
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
 
-            Optional<String> before = Optional.empty();
-            String sourceName = connector.getSource();
-            String targetName = connector.getTarget();
+            Optional<String> before = generateConnectsBefore(connector);
+            String sourceName = generateConnectsSource(connector);
+            String targetName = generateConnectsTarget(connector);
             EMAPortInstanceSymbol target = connector.getTargetPort();
-
-            if(connector.isDynamicSourceNewPort()) {
-                sourceName = generateConnectNameForNewPort(sourceName, connector.getSourceComponentName(), connector.getSourcePortName());
-            }else if(connector.isDynamicSourceNewComponent()){
-                sourceName = generateConnectNameForNewInstance(connector.getSourceComponentName().get(), connector.getSourcePortName());
-            }else{
-                sourceName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(sourceName);
-            }
-
-            if(connector.isDynamicTargetNewPort()) {
-                targetName = generateConnectNameForNewPort(targetName, connector.getTargetComponentName(), connector.getTargetPortName());
-                before = connector.getTargetComponentName();
-                if (before.isPresent()) {
-                    before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
-                }
-            }else if(connector.isDynamicTargetNewComponent()){
-                targetName = generateConnectNameForNewInstance(connector.getTargetComponentName().get(), connector.getTargetPortName());
-                String inst = EMAPortSymbol.getNameWithoutArrayBracketPart(connector.getTargetComponentName().get());
-                before = Optional.of(String.format("%s["+DYNINSTANCEID+"]", inst, inst));
-            }else{
-                targetName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(targetName);
-                before = connector.getTargetComponentName();
-                if(before.isPresent()){
-                    before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
-                }
-            }
-
 
             Optional<VariableType> vt = TypeConverter.getVariableTypeForMontiCarTypeName(target.getTypeReference().getName());
             generateEventDynamicConnectVector(vt.get().getTypeNameTargetLanguage(), bluePrint);
@@ -372,6 +364,63 @@ public class EventDynamicConnectConverter {
                     vt.get().getTypeNameTargetLanguage(), before.get(), sourceName, targetName
                     )));
         }
+    }
+
+    protected static String generateConnectsSource(EMADynamicConnectorInstanceSymbol connector){
+        String sourceName = connector.getSource();
+        if(connector.isDynamicSourceNewPort()) {
+            sourceName = generateConnectNameForNewPort(sourceName, connector.getSourceComponentName(), connector.getSourcePortName());
+        }else if(connector.isDynamicSourceNewComponent()){
+            sourceName = generateConnectNameForNewInstance(connector.getSourceComponentName().get(), connector.getSourcePortName());
+        }else{
+            sourceName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(sourceName);
+        }
+        return sourceName;
+    }
+
+    protected static String generateConnectsTarget(EMADynamicConnectorInstanceSymbol connector){
+        String targetName = connector.getTarget();
+        if(connector.isDynamicTargetNewPort()) {
+            targetName = generateConnectNameForNewPort(targetName, connector.getTargetComponentName(), connector.getTargetPortName());
+//            before = connector.getTargetComponentName();
+//            if (before.isPresent()) {
+//                before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+//            }
+        }else if(connector.isDynamicTargetNewComponent()){
+            targetName = generateConnectNameForNewInstance(connector.getTargetComponentName().get(), connector.getTargetPortName());
+//            String inst = EMAPortSymbol.getNameWithoutArrayBracketPart(connector.getTargetComponentName().get());
+//            before = Optional.of(String.format("%s["+DYNINSTANCEID+"]", inst, inst));
+        }else{
+            targetName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(targetName);
+//            before = connector.getTargetComponentName();
+//            if(before.isPresent()){
+//                before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+//            }
+        }
+        return targetName;
+    }
+
+    protected static Optional<String> generateConnectsBefore(EMADynamicConnectorInstanceSymbol connector){
+        Optional<String> before = Optional.empty();
+//        String targetName = connector.getTarget();
+        if(connector.isDynamicTargetNewPort()) {
+//            targetName = generateConnectNameForNewPort(targetName, connector.getTargetComponentName(), connector.getTargetPortName());
+            before = connector.getTargetComponentName();
+            if (before.isPresent()) {
+                before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+            }
+        }else if(connector.isDynamicTargetNewComponent()){
+//            targetName = generateConnectNameForNewInstance(connector.getTargetComponentName().get(), connector.getTargetPortName());
+            String inst = EMAPortSymbol.getNameWithoutArrayBracketPart(connector.getTargetComponentName().get());
+            before = Optional.of(String.format("%s["+DYNINSTANCEID+"]", inst, inst));
+        }else{
+//            targetName = GeneralHelperMethods.getTargetLanguageVariableInstanceName(targetName);
+            before = connector.getTargetComponentName();
+            if(before.isPresent()){
+                before = Optional.of(GeneralHelperMethods.getTargetLanguageVariableInstanceName(before.get()));
+            }
+        }
+        return before;
     }
 
     protected static void generateEventDynamicConnectVector(String typeName, BluePrint bluePrint){
@@ -426,7 +475,23 @@ public class EventDynamicConnectConverter {
     }
 
 
+    protected static void generateConnectsForFreeEventBody(EMADynamicEventHandlerInstanceSymbol event, Method free){
+
+        for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
+            String sourceName = generateConnectsSource(connector);
+            String targetName = generateConnectsTarget(connector);
+            free.addInstruction(new TargetCodeInstruction(targetName+" = "+sourceName+";\n"));
+        }
+    }
+
     protected static String convertName(String name){
         return name.replace("[", "_").replace("]", "_");
+    }
+
+    protected static Collection<EMADynamicEventHandlerInstanceSymbol> getFreeEvents(EMAComponentInstanceSymbol component){
+        if(component instanceof EMADynamicComponentInstanceSymbol) {
+            return ((EMADynamicComponentInstanceSymbol)component).getEventHandlers().stream().filter(e -> e.isDynamicPortFreeEvent()).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 }
