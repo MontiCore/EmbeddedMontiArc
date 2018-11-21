@@ -1,11 +1,10 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl.generator.Backend;
 import de.monticore.lang.monticar.emadl.generator.EMADLGenerator;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
-import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
-import de.monticore.lang.monticar.generator.middleware.helpers.TemplateHelper;
+
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 
@@ -43,7 +42,6 @@ public class EMADLGeneratorImpl implements GeneratorImpl {
             files.add(emadlGenerator.getEmamGen().generateFile(fileContent));
         }
 
-        files.add(emadlGenerator.getEmamGen().generateFile((generateCMake(componentInstanceSymbol))));
         return files;
     }
 
@@ -52,13 +50,5 @@ public class EMADLGeneratorImpl implements GeneratorImpl {
         this.generationTargetPath = path;
     }
 
-    private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        FileContent cmake = new FileContent();
-        cmake.setFileName("CMakeLists.txt");
-        String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
-        cmake.setFileContent(TemplateHelper.getCoordinatorCmakeListsTemplate().replace("${compName}", name));
-        cmake.setFileContent(cmake.getFileContent() + "target_link_libraries(" + name + " -lmxnet)");
-        return cmake;
-    }
 }
 

@@ -140,7 +140,7 @@ public class CliTest{
                 modelName + "/cpp/CNNBufferFile.h",
                 modelName + "/cpp/CNNCreator_" + modelName + ".py",
                 modelName + "/cpp/CNNPredictor_" + modelName + ".h",
-                modelName + "/cpp/CNNTrainer_tests_emadlTests_ResNet34.py",
+                modelName + "/cpp/CNNTrainer_" + modelName + ".py",
                 modelName + "/cpp/CNNTranslator.h",
                 modelName + "/cpp/HelperA.h",
                 modelName + "/cpp/CMakeLists.txt",
