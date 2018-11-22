@@ -71,6 +71,8 @@ cmake C:\path\to\generated\project\source -G "MinGW Makefiles"
 make
 ```
 
+Please note: It is highly recommended, you stick to the exact versions as stated above. Otherwise you might run into trouble regarding the interplay between cmake/make and the Armadillo library. In particular problems have been reported using Cygwin.
+
 ### Projects with roscpp generator
 Only for generated projects that contain a ROS adapter(e.g. -g=cpp,roscpp).
 ROS Kinetic currently only supports Linux and the installation is described [here](http://wiki.ros.org/kinetic/Installation/Ubuntu).
