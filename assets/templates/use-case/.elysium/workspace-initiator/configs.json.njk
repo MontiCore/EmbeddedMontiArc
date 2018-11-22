@@ -1,0 +1,7 @@
+[{% if context.hasMainFile() %}{
+  "uri": "file://{{context.getMainFileWorkspacePath()}}",
+  "opener": "code-editor-opener"
+}, {% endif %}{
+  "uri": "file://README.md",
+  "opener": "code-editor-preview"
+}]
