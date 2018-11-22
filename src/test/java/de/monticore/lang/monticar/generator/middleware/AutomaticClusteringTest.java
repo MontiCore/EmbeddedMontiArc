@@ -12,6 +12,7 @@ import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.CommonSymbol;
 import org.junit.Test;
+import smile.clustering.KMeans;
 import smile.clustering.SpectralClustering;
 
 import java.io.IOException;
@@ -101,6 +102,8 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("clustering.unambiguousCluster", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
+
+        System.out.println(algorithm);
 
         List<Set<ExpandedComponentInstanceSymbol>> clusters = algorithm.cluster(componentInstanceSymbol, 2);
 
