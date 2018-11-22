@@ -54,8 +54,8 @@ content = content.replace(
 );
 
 content = content.replace(
-    ".then(function () { return import('@theia/monaco/lib/browser/monaco-browser-module').then(load) })",
-    ".then(function () { return import('@emastudio/monaco/lib/electron-browser/monaco-electron-module').then(load) })"
+    "@theia/monaco/lib/browser/monaco-browser-module",
+    "@emastudio/monaco/lib/electron-browser/monaco-electron-module"
 );
 
 fs.writeFileSync(indexFile, content);
