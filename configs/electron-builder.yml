@@ -16,6 +16,12 @@ extraResources:
     to: "cluster-fiddle"
   - from: "target/src/oclverification"
     to: "oclverification"
+extraFiles:
+  - from: "target/cache/resources/app/lib/vs"
+    to: "vs"
+    filter:
+      - "**/*.js"
+      - "!**/loader.js"
 afterPack: "scripts/afterPack.js"
 
 win:

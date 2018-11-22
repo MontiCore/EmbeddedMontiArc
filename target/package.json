@@ -7,13 +7,7 @@
   "license": "???",
   "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc",
   "scripts": {
-    "clean": "theia clean && lerna run --scope \"*/!(emastudio)\" --parallel clean",
-    "compile": "lerna run --scope \"*/!(emastudio)\" compile",
-    "compile:clean": "lerna run --scope \"*/!(emastudio)\" --parallel compile:clean",
-    "build": "theia build --config configs/webpack.config.js",
-    "build:development": "yarn build --mode development",
-    "docs": "lerna run --scope \"*/!(emastudio)\" --parallel docs",
-    "docs:clean": "lerna run --scope \"*/!(emastudio)\" --parallel docs:clean"
+    "start": "nps -c ../configs/scripts --no-scripts"
   },
   "dependencies": {
     "@elysium/cd": "^0.1.0",
