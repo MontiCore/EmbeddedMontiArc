@@ -1,0 +1,25 @@
+<div class="uk-height-1-1 content-container">
+    <form class="uk-flex uk-flex-column uk-height-1-1">
+        <div class="controls">
+            <button mat-fab (click)="addState()" matTooltip="Add Extension" matTooltipPosition="before">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="uk-flex-1 form-container">
+            <fieldset *ngFor="let state of states" class="extension-form">
+                <legend class="legend">
+                    <button mat-mini-fab matTooltip="Remove Extension" matTooltipPosition="before" (click)="removeState(state)">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </legend>
+                <app-extension-form [state]="state"></app-extension-form>
+            </fieldset>
+        </div>
+        <div class="controls">
+            <button *ngIf="hasStates() && !isSaving()" type="submit" mat-raised-button
+                    color="accent" matTooltip="Save Extensions" matTooltipPosition="before"
+                    [disabled]="hasErrors()" (click)="apply()">Save</button>
+            <mat-progress-bar color="accent" mode="indeterminate" *ngIf="isSaving()"></mat-progress-bar>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,27 @@
+<div class="uk-height-1-1 content-container">
+    <form class="uk-flex uk-flex-column uk-height-1-1">
+        <div class="controls">
+            <button mat-fab matTooltip="Add Use Case" matTooltipPosition="before"
+                    (click)="addState()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="uk-flex-1 form-container">
+            <fieldset *ngFor="let state of states" class="use-case-form">
+                <legend class="legend">
+                    <button mat-mini-fab matTooltip="Remove Use Case" matTooltipPosition="before"
+                            (click)="removeState(state)">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </legend>
+                <app-use-case-form [state]="state"></app-use-case-form>
+            </fieldset>
+        </div>
+        <div class="controls">
+            <button mat-raised-button type="submit" color="accent" matTooltip="Save Use Cases"
+                    matTooltipPosition="before" *ngIf="hasStates() && !isSaving()" [disabled]="hasErrors()"
+                    (click)="apply()">Save</button>
+            <mat-progress-bar color="accent" mode="indeterminate" *ngIf="isSaving()"></mat-progress-bar>
+        </div>
+    </form>
+</div>
