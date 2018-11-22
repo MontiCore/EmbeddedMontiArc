@@ -26,7 +26,7 @@ function createWindow () {
         slashes: true,
         pathname: posix.join(__dirname, "index.html")
     }));
-    window.webContents.openDevTools({ mode: "detach" });
+    // window.webContents.openDevTools({ mode: "detach" });
     window.on("closed", () => { window = null; });
 }
 
