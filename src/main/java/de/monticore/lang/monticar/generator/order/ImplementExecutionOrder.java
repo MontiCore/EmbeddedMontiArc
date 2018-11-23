@@ -45,6 +45,9 @@ public class ImplementExecutionOrder {
     private static int s = 0;
     private static int b = 0;
 
+    protected static Map<EMAComponentInstanceSymbol, Collection<EMAConnectorInstanceSymbol>> instanceConnectorsMap = new HashMap<>();
+    protected static Map<EMAConnectorInstanceSymbol, EMAPortInstanceSymbol> connectorInstanceSourcePortInstance = new HashMap<>();
+
     /**
      * This function initializes the execution order process. This means the dependencies map will cleared,
      * then the execution order indizes will be zero again.
@@ -54,8 +57,10 @@ public class ImplementExecutionOrder {
 
     public static List<EMAComponentInstanceSymbol> exOrder(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
         dependencies.clear();
-        instanceConnectors.clear();
-        instanceSourceConnectors.clear();
+
+        instanceConnectorsMap.clear();
+        connectorInstanceSourcePortInstance.clear();
+
         s = 0;
         b = 0;
         Log.errorIfNull(inst, "The given ExpandedComponentInstanceSymbol in 'exOrder' is null!");
@@ -369,11 +374,8 @@ public class ImplementExecutionOrder {
      */
     public static EMAPortInstanceSymbol connectorSourcePort(EMAComponentInstanceSymbol inst, EMAConnectorInstanceSymbol c) {
 
-        if(instanceConnectors.containsKey(inst)){
-            EMAPortInstanceSymbol p = instanceConnectors.get(inst).getOrDefault(c, null);
-            if(p != null){
-                return p;
-            }
+        if(connectorInstanceSourcePortInstance.containsKey(c)){
+            return connectorInstanceSourcePortInstance.get(c);
         }
 
         Iterator<String> parts = Splitters.DOT.split(c.getSource()).iterator();
@@ -396,6 +398,7 @@ public class ImplementExecutionOrder {
         }
 
         if (port.isPresent()) {
+            connectorInstanceSourcePortInstance.put(c, port.get());
             return port.get();
         }
 
@@ -448,13 +451,18 @@ public class ImplementExecutionOrder {
         return null;
     }
 
+
+
     public static Collection<EMAConnectorInstanceSymbol> getAllConnectors(EMAComponentInstanceSymbol inst){
 
         //TODO: Change this method because it will create to many connectors ...
+        if(instanceConnectorsMap.containsKey(inst)){
+            return instanceConnectorsMap.get(inst);
+        }
 
+        Collection<EMAConnectorInstanceSymbol> result;
         if(inst instanceof EMADynamicComponentInstanceSymbol) {
-
-            Collection<EMAConnectorInstanceSymbol> result = new ArrayList<>();
+            result = new ArrayList<>();
             for (EMAConnectorInstanceSymbol connector : ((EMADynamicComponentInstanceSymbol)inst).getConnectorInstancesAndEventConnectorInstances()) {
                 if (connector instanceof EMADynamicConnectorInstanceSymbol) {
                     EMADynamicConnectorInstanceSymbol d = (EMADynamicConnectorInstanceSymbol) connector;
@@ -468,77 +476,84 @@ public class ImplementExecutionOrder {
                     result.add(connector);
                 }
             }
-
-
-            return result;
+        }else{
+            result = inst.getConnectorInstances();
         }
-        return inst.getConnectorInstances();
+        instanceConnectorsMap.put(inst, result);
+        return result;
     }
 
 
-    protected static Map<EMAComponentInstanceSymbol, Map<EMAConnectorInstanceSymbol, EMAPortInstanceSymbol>> instanceConnectors = new HashMap<>();
-    protected static Map<EMAComponentInstanceSymbol, Map<EMAPortInstanceSymbol, Collection<EMAConnectorInstanceSymbol>>> instanceSourceConnectors = new HashMap<>();
-
     public static Collection<EMAConnectorInstanceSymbol> getAllConnectorsWithSourceIn(EMAComponentInstanceSymbol inst, Collection<EMAPortInstanceSymbol> sources){
 
-        if(inst instanceof EMADynamicComponentInstanceSymbol) {
-            EMAPortInstanceSymbol port;
-            Map<EMAPortInstanceSymbol, Collection<EMAConnectorInstanceSymbol>> map;
+        Collection<EMAConnectorInstanceSymbol> result;
 
-            if(instanceSourceConnectors.containsKey(inst)){
-                map = instanceSourceConnectors.get(inst);
-            }else{
-                Map<EMAConnectorInstanceSymbol, EMAPortInstanceSymbol> sourceMap = new HashMap<>();
-                map = new HashMap<>();
-                for (EMAConnectorInstanceSymbol connector : ((EMADynamicComponentInstanceSymbol)inst).getConnectorInstancesAndEventConnectorInstances()) {
-                    if (connector instanceof EMADynamicConnectorInstanceSymbol) {
-                        EMADynamicConnectorInstanceSymbol d = (EMADynamicConnectorInstanceSymbol) connector;
+//        if(inst instanceof EMADynamicComponentInstanceSymbol) {
+//            EMAPortInstanceSymbol port;
+//            Map<EMAPortInstanceSymbol, Collection<EMAConnectorInstanceSymbol>> map;
+//
+//            if(instanceSourceConnectors.containsKey(inst)){
+//                map = instanceSourceConnectors.get(inst);
+//            }else{
+//                Map<EMAConnectorInstanceSymbol, EMAPortInstanceSymbol> sourceMap = new HashMap<>();
+//                map = new HashMap<>();
+//                for (EMAConnectorInstanceSymbol connector : ((EMADynamicComponentInstanceSymbol)inst).getConnectorInstancesAndEventConnectorInstances()) {
+//                    if (connector instanceof EMADynamicConnectorInstanceSymbol) {
+//                        EMADynamicConnectorInstanceSymbol d = (EMADynamicConnectorInstanceSymbol) connector;
+//
+//                        if (d.hasDynamicNew()) {
+////                            result.addAll(d.getAllPossibleConnectors());
+//                            for(EMAConnectorInstanceSymbol con : d.getAllPossibleConnectors()){
+////System.out.println(con.getSource());
+//                                port = connectorSourcePort(inst, con);
+//                                Collection<EMAConnectorInstanceSymbol> cons = map.getOrDefault(port, new ArrayList<>());
+//                                cons.add(con);
+//                                map.put(port, cons);
+//                                sourceMap.put(con, port);
+//
+//                            }
+//                        } else {
+//                            port = connectorSourcePort(inst, connector);
+//                            Collection<EMAConnectorInstanceSymbol> cons = map.getOrDefault(port, new ArrayList<>());
+//                            cons.add(connector);
+//                            map.put(port, cons);
+//                            sourceMap.put(connector, port);
+//                        }
+//                    } else {
+//                        port = connectorSourcePort(inst, connector);
+//                        Collection<EMAConnectorInstanceSymbol> cons = map.getOrDefault(port, new ArrayList<>());
+//                        cons.add(connector);
+//                        map.put(port, cons);
+//                        sourceMap.put(connector, port);
+//                    }
+//                }
+//
+//                instanceConnectors.put(inst, sourceMap);
+//                instanceSourceConnectors.put(inst, map);
+//            }
+//
+//            result = new ArrayList<>();
+//
+//            for(EMAPortInstanceSymbol p : sources){
+//                if(map.containsKey(p)){
+//                    result.addAll(map.get(p));
+//                }
+//            }
+//
+//            System.out.println("=========================================================================");
+//            System.out.println(result);
+////            return result;
+//        }
 
-                        if (d.hasDynamicNew()) {
-//                            result.addAll(d.getAllPossibleConnectors());
-                            for(EMAConnectorInstanceSymbol con : d.getAllPossibleConnectors()){
-//System.out.println(con.getSource());
-                                port = connectorSourcePort(inst, con);
-                                Collection<EMAConnectorInstanceSymbol> cons = map.getOrDefault(port, new ArrayList<>());
-                                cons.add(con);
-                                map.put(port, cons);
-                                sourceMap.put(con, port);
-
-                            }
-                        } else {
-                            port = connectorSourcePort(inst, connector);
-                            Collection<EMAConnectorInstanceSymbol> cons = map.getOrDefault(port, new ArrayList<>());
-                            cons.add(connector);
-                            map.put(port, cons);
-                            sourceMap.put(connector, port);
-                        }
-                    } else {
-                        port = connectorSourcePort(inst, connector);
-                        Collection<EMAConnectorInstanceSymbol> cons = map.getOrDefault(port, new ArrayList<>());
-                        cons.add(connector);
-                        map.put(port, cons);
-                        sourceMap.put(connector, port);
-                    }
-                }
-
-                instanceConnectors.put(inst, sourceMap);
-                instanceSourceConnectors.put(inst, map);
-            }
-
-            Collection<EMAConnectorInstanceSymbol> result = new ArrayList<>();
-
-            for(EMAPortInstanceSymbol p : sources){
-                if(map.containsKey(p)){
-                    result.addAll(map.get(p));
-                }
-            }
-
-
-            return result;
-
-
-
-        }
+//        System.out.println("--------------------------------------------------------------------");
+//
+//        result = getAllConnectors(inst).stream()
+//                .filter(c -> sources.contains(connectorSourcePort(inst, c)))
+//                .collect(Collectors.toList());
+//
+//        System.out.println(result);
+//
+//        return result;
 
         return getAllConnectors(inst).stream()
                 .filter(c -> sources.contains(connectorSourcePort(inst, c)))
