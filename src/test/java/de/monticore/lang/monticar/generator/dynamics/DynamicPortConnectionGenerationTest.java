@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
 
     protected String path(){
@@ -32,37 +32,37 @@ public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
 
     @Test
     public void Test_00_Exec() throws IOException {
-        test("execOrder.not", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_00_Exec");
+        test("execOrder.not", "./target/generated-sources-cpp/dynamics/port-connect/test00");
     }
 
     @Test
     public void Test_01_Not() throws IOException {
-        test("portRequest.not", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_01_Not");
+        test("portRequest.not", "./target/generated-sources-cpp/dynamics/port-connect/test010");
     }
 
     @Test
     public void Test_02_PortRequest1() throws IOException {
-        test("portRequest.portRequest1", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_02_PortRequest1");
+        test("portRequest.portRequest1", "./target/generated-sources-cpp/dynamics/port-connect/test02_1");
     }
 
     @Test
     public void Test_02_PortRequest2() throws IOException {
-        test("portRequest.portRequest2", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_02_PortRequest2");
+        test("portRequest.portRequest2", "./target/generated-sources-cpp/dynamics/port-connect/test02_2");
     }
 
     @Test
     public void Test_03_PortRequest3() throws IOException {
-        test("portRequest.portRequest3", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_03_PortRequest3");
+        test("portRequest.portRequest3", "./target/generated-sources-cpp/dynamics/port-connect/test03");
     }
 
     @Test
     public void Test_04_PortRequest4() throws IOException {
-        test("portRequest.portRequest4", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_04_PortRequest4");
+        test("portRequest.portRequest4", "./target/generated-sources-cpp/dynamics/port-connect/test04");
     }
 
     @Test
     public void Test_05_PortRequest5() throws IOException {
-        test("portRequest.portRequest5", "./target/generated-sources-cpp/dynamics/DynamicPortConnectionGenerationTest_Test_05_PortRequest5");
+        test("portRequest.portRequest5", "./target/generated-sources-cpp/dynamics/port-connect/test05");
     }
 
     protected void test(String instName, String target){

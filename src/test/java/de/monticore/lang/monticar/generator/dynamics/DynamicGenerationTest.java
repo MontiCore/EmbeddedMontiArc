@@ -31,7 +31,7 @@ public class DynamicGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/Test_01_TestDynamic1");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/test/Test_01_TestDynamic1");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
@@ -44,7 +44,7 @@ public class DynamicGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/Test_02_TestEventComponent1");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/test/Test_02_TestEventComponent1");
         generatorCPP.setGenerateCMake(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
@@ -58,7 +58,7 @@ public class DynamicGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/Test_03_TestEventComponent2");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/test/Test_03_TestEventComponent2");
         generatorCPP.setGenerateCMake(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));

@@ -6,9 +6,7 @@ import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +14,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DynamicIsConnectedInMath extends AbstractSymtabTest {
+
+public class DynamicIsConnectedInMathTest extends AbstractSymtabTest {
 
     @BeforeClass
     public static void setUp() {
@@ -35,9 +33,10 @@ public class DynamicIsConnectedInMath extends AbstractSymtabTest {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics-isconnected/test00");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test00");
 //            generatorCPP.setUseThreadingOptimization(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
     @Test
@@ -49,9 +48,10 @@ public class DynamicIsConnectedInMath extends AbstractSymtabTest {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics-isconnected/test01");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test01");
 //            generatorCPP.setUseThreadingOptimization(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 
     @Test
@@ -63,8 +63,9 @@ public class DynamicIsConnectedInMath extends AbstractSymtabTest {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
-        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics-isconnected/test02");
+        generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/dynamics/isconnected/test02");
 //            generatorCPP.setUseThreadingOptimization(true);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
+        files.stream().forEach(f -> System.out.println("Generated: "+f.getName()));
     }
 }

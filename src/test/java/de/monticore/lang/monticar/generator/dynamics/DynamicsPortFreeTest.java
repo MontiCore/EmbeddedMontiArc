@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class DynamicsPortFreeTest extends AbstractSymtabTest {
 
     protected String path(){
@@ -32,22 +32,22 @@ public class DynamicsPortFreeTest extends AbstractSymtabTest {
 
     @Test
     public void Test_00_BasicFree() throws IOException {
-        test("free.free", "./target/generated-sources-cpp/dynamics-free/test00");
+        test("free.free", "./target/generated-sources-cpp/dynamics/free/test00");
     }
 
     @Test
     public void Test_01_SetFree() throws IOException {
-        test("free.freeSetOnValue", "./target/generated-sources-cpp/dynamics-free/test01");
+        test("free.freeSetOnValue", "./target/generated-sources-cpp/dynamics/free/test01");
     }
 
     @Test
     public void Test_02_OutFree() throws IOException {
-        test("free.outerFree", "./target/generated-sources-cpp/dynamics-free/test02");
+        test("free.outerFree", "./target/generated-sources-cpp/dynamics/free/test02");
     }
 
     @Test
     public void Test_03_OutFree2() throws IOException {
-        test("free.outerFree2", "./target/generated-sources-cpp/dynamics-free/test03");
+        test("free.outerFree2", "./target/generated-sources-cpp/dynamics/free/test03");
     }
 
     protected void test(String instName, String target){

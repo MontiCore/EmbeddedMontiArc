@@ -17,8 +17,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DynamicTestEvent extends AbstractSymtabTest {
+
+public class DynamicEventTest extends AbstractSymtabTest {
 
     @BeforeClass
     public static void setUp() {
@@ -28,9 +28,8 @@ public class DynamicTestEvent extends AbstractSymtabTest {
     }
 
     @Test
-    @Ignore
     public void Test_00_TestTrueEvent(){
-        test("event.test00.test00", "./target/generated-sources-cpp/dynamics-event/test00");
+        test("event.test00.test00", "./target/generated-sources-cpp/dynamics/event/test00");
     }
 
 

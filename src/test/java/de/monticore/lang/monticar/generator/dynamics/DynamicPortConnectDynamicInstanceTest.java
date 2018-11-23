@@ -16,28 +16,27 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void Test_00_Test1() throws IOException {
-        test("instanceRequest.test1", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_00_Test1");
+        test("instanceRequest.test1", "./target/generated-sources-cpp/dynamics/instances/test00");
     }
 
     @Test
     public void Test_02_Test2() throws IOException {
-        test("instanceRequest.test2", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_02_Test2");
+        test("instanceRequest.test2", "./target/generated-sources-cpp/dynamics/instances/test02");
     }
 
     @Test
     public void Test_03_Test3() throws IOException {
-        test("instanceRequest.test3", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_03_Test3");
+        test("instanceRequest.test3", "./target/generated-sources-cpp/dynamics/instances/test03");
     }
 
     @Test
-    @Ignore
     public void Test_04_Big() throws IOException {
-        test("instanceRequest.testBig", "./target/generated-sources-cpp/dynamics/DynamicPortConnectDynamicInstanceTest_Test_04_Big");
+        test("instanceRequest.testBig", "./target/generated-sources-cpp/dynamics/instances/test04");
     }
 
     protected void test(String instName, String target){
