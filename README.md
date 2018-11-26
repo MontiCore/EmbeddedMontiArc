@@ -14,11 +14,15 @@ detailed explanation can be found
 [here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/blob/manager/doc/GettingStarted.md#managing).
 
 ## Gallery
-| ![](doc/media/videos/demo.mp4) | ![](doc/media/images/welcome.png) | ![](doc/media/images/use-cases.png) |
+| ![](doc/media/videos/demo.mp4) |
+| :---: |
+| Demonstration |
+
+| ![](doc/media/images/welcome.png) | ![](doc/media/images/use-cases.png) | ![](doc/media/images/artifacts.png) |
 | :---: | :---: | :---: |
-| Demonstration | Welcome Page | Use Cases Page |
-| ![](doc/media/images/artifacts.png) | ![](doc/media/images/control-scripts.png) | ![](doc/media/images/extensions.png) |
-| Artifacts Page | Control Scripts Page | Extensions Page |
+| Welcome Page | Use Cases Page | Artifacts Page |
+| ![](doc/media/images/control-scripts.png) | ![](doc/media/images/extensions.png) |  |
+| Control Scripts Page | Extensions Page |  |
 
 ## License
 Copyright (C) 2018 SE RWTH.
