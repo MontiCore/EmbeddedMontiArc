@@ -31,7 +31,7 @@ export class ControlScriptStateTransformation {
     protected async getDestination(): Promise<string> {
         const base = await this.getBaseDirectory();
 
-        return path.join(base, this.state.useCase, this.state.extension, this.state.name);
+        return path.join(base, this.state.useCase, this.state.extension.toLowerCase(), this.state.name);
     }
 
     public async apply(): Promise<ControlScript> {
