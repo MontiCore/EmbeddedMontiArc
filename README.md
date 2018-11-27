@@ -11,7 +11,7 @@
 The **Manager** for the EmbeddedMontiArcStudio (**EMAS**) **Installer** or for "short" **EMASInstallerManager**
 is a management tool which leverages the efficient integration of projects into EmbeddedMontiArcStudio. A more
 detailed explanation can be found
-[here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/blob/manager/doc/GettingStarted.md#managing).
+[here](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/blob/master/doc/GettingStarted.md#managing).
 
 ## Gallery
 | ![](doc/media/videos/demo.mp4) |
