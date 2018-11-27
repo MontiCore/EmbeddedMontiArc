@@ -14,11 +14,15 @@ beneficial to have these models available as demonstration project in EmbeddedMo
 
 In the following, let us assume that a developer wants to integrate a set of models which she
 denominated `AutoPilot`. In order to do so, she will have to create an `AutoPilot` folder in
-the [`models`](../target/src/models) directory of this repository. The important aspect here is
-that the name of the folder should follow the **UpperCamelCase** convention. This newly created
-folder will act as model root. Therefore, the only thing left for her to do is copying
-the models into the `AutoPilot` folder. EmbeddedMontiArcStudio will automatically derive all
-available demonstration projects from the directory structure of `models`.
+the `models` directory of the target platform (e.g [`models`](../target/src/windows/models) for
+Windows). The important aspect here is that the name of the folder should follow the
+**UpperCamelCase** convention. This newly created folder will act as model root. Therefore, the
+only thing left for her to do is copying the models into the `AutoPilot` folder.
+EmbeddedMontiArcStudio will automatically derive all available demonstration projects from the
+directory structure of the respective `models` folder.
+
+A computer-assisted integration of new use cases is provided by the
+[**Manager**](GettingStarted.md#managing).
 
 ## Adding Artifacts
 Apart from models, an EmbeddedMontiArc project also often consists of an executable part or
@@ -99,6 +103,9 @@ following entry:
 
 Note that `platforms` could further be extended to include unix-based platforms.
 
+A computer-assisted integration of new artifacts is provided by the
+[**Manager**](GettingStarted.md#managing).
+
 ## Adding Control Scripts
 A next aspect to cover is the large variety of execution parameters of EmbeddedMontiArc
 projects. Some projects, for instance, need the result of some kind of intermediate
@@ -134,6 +141,9 @@ where `{project}` denotes the name of the demonstration project from the first s
 Apart from the project, the scripts should also be sub-divided by platform as can be seen
 [here](../target/src/windows).
 
+A computer-assisted integration of new control scripts and of new entries to above
+conventions is provided by the [**Manager**](GettingStarted.md#managing).
+
 ## Adding Extensions
 Sometimes, the results of an EmbeddedMontiArc project need to be treated further by
 EmbeddedMontiArcStudio itself. Some manifestations of this would be the display of test
@@ -152,5 +162,3 @@ EmbeddedMontiArcStudio is the same as writing an extension for Theia.
 **Note that extensions must be added to the [`extensions`](../extensions) folder and even
 though it might be compelling, under no circumstances should the contents of the `ide` and
 `packages` folders be modified.**
-
-<!-- Examples -->

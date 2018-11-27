@@ -20,14 +20,16 @@
     "build": "yarn start build",
     "build:development": "yarn start build.development",
     "package": "yarn start package",
-    "package:dry": "yarn start package.dry"
+    "package:dry": "yarn start package.dry",
+    "manage": "yarn start manage"
   },
   "workspaces": [
     "ide/packages/*",
     "ide/extensions/*",
     "packages/*",
     "extensions/*",
-    "target"
+    "target",
+    "manager"
   ],
   "resolutions" : {
     "**/inversify": "4.13.0",

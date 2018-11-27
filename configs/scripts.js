@@ -1,9 +1,19 @@
-const { series, concurrent, rimraf, copy } = require("nps-utils");
+const { series, concurrent } = require("nps-utils");
+
+function getScopeFromScript(script) {
+    if (script.startsWith("target")) return "--scope" + " \"@emastudio/emastudio\"";
+    else if (script.startsWith("manager")) return "--scope" + " \"@emastudio/manager\"";
+    else return "--ignore" + " \"@emastudio/+(emastudio|manager)\"";
+}
+
+function getConfigFromScript(script) {
+    if (script.startsWith("target") || script.startsWith("manager")) return "../configs/scripts";
+    else return "../../configs/scripts";
+}
 
 function getLernaCommand(script, parallelized) {
-    const target = script.startsWith("target");
-    const scope = (target ? "--scope" : "--ignore") + " \"@emastudio/emastudio\"";
-    const config = (target ? "../" : "../../") + "configs/scripts";
+    const scope = getScopeFromScript(script);
+    const config = getConfigFromScript(script);
     const parallel = parallelized ? " --parallel " : ' ';
 
     return "lerna exec --stream " + scope + parallel + "-- nps -c " + config + " --no-scripts " + script;
@@ -79,6 +89,10 @@ module.exports = {
                 "description": "Creates the Electron application without installer."
             }
         },
+        "manage": {
+            "script": series("node scripts/logo", getLernaCommand("manager.manage", false)),
+            "description": "Launches the EmbeddedMontiArcStudio Installer Manager."
+        },
         "extension": {
             "clean": {
                 "script": concurrent({
@@ -144,6 +158,12 @@ module.exports = {
                     ),
                     "hiddenFromHelp": true
                 }
+            }
+        },
+        "manager": {
+            "manage": {
+                "script": "electron .",
+                "hiddenFromHelp": true
             }
         }
     }
