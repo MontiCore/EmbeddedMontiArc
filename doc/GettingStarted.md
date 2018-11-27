@@ -8,11 +8,12 @@
 * [**Packaging**](#packaging)
 * [**Documentation**](#documentation)
 * [**Local Execution**](#local-execution)
+* [**Managing**](#managing)
 
 ## Prerequisites
 | ![https://yarnpkg.com](images/yarn.png) | ![https://nodejs.org](images/nodejs.png) |
 | :----: | :-----: |
-| 1.5.1+ | 8.12.0 |
+| [**1.5.1+**](https://yarnpkg.com) | [**8.12.0**](https://nodejs.org) |
 
 Furthermore, one needs a C++ compiler and a Python 2.7 distribution for their
 respective operating system, such as
@@ -23,23 +24,25 @@ respective operating system, such as
 **Requires**: [**Prerequisites**](#prerequisites)
 
 After having downloaded and installed the prerequisites, a developer can clone this repository
-and continue with the installation of this project. The installation is performed by executing
-a console command from within the root directory or more precisely the directory where the
-`yarn.lock` is located. The console command is the following:
+and continue with the installation of this project. The installation is performed in two steps.
+
+First, the submodules of the repository need to be fetched. In order to perform this step, a
+developer has to execute the following console command from within the root directory or more
+precisely the directory where `yarn.lock` is located:
+
+```bash
+git submodule update --init
+```
+
+Secondly, the dependencies of the project need to be downloaded and processed. In order to
+perform this step, a developer has to execute the following console command from within the
+root directory:
 
 ```bash
 yarn install
 ```
 
 Depending on the system, the installation might take a few minutes.
-
-Note that on some rare occasions the `ide` folder is empty after cloning. In order to counter
-this behavior, a developer can execute the following command in the root directory followed by
-the command from above:
-
-```bash
-git submodule update --init
-```
 
 ## Compiling
 **Requires**: [**Installation**](#installation)
@@ -133,3 +136,26 @@ package or extension.
 **Requires**: [**Packaging**](#packaging)
 
 To be written.
+
+## Managing
+**Requires**: [**Installation**](#installation), [**Contributing**](Contributing.md)
+
+The integration of a project can sometimes be overwhelming for a developer which is not
+familiar with the architecture of this repository. As a consequence, integrations are
+often prone to errors. Furthermore, manually performing the steps necessary for an
+integration is often tedious and time-consuming.
+
+However, creating error-free artifacts within a small time frame is a valuable asset in
+Software Engineering. For this reason, projects are often shipped with generators which
+produce error-free output on given data within seconds.
+
+On that note, this repository also implements a
+[**Management Tool**](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMASInstallerManager)
+which enables a computer-assisted integration of a project.
+
+In order to launch the manager, a developer has to run the following console command from
+the root directory:
+
+```bash
+yarn run manage
+```
