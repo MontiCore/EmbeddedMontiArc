@@ -9,7 +9,7 @@
 #define CONNECTION_H
 template<typename T>
 struct connection {
-    void *afterComponent;
+    void *beforeComponent;
     T *source;
     T *target;
 };
@@ -44,7 +44,7 @@ template<typename T>
 void dynamicconnect_remove(std::vector<connection<T>>* vec, void* ac, T* source, T* target){
     for(long i = vec->size()-1; i >= 0; --i){
         connection<T> c = vec->at(i);
-        if( (c.afterComponent == ac) && (c.source == source) && (c.target == target)){
+        if( (c.beforeComponent == ac) && (c.source == source) && (c.target == target)){
             vec->erase(vec->begin()+i);
         }
     }
