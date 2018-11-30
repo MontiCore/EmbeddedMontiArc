@@ -18,8 +18,13 @@ dynamic component Test1{
     connect a[1] -> pt[1].in1;
     connect pt[1].out1 -> b[1];
 
-    @ a::connect && b::connect {
+    @ a[1]::value(false) && a::connect && b::connect {
         connect a[?] -> pt[?].in1;
         connect pt[?].out1 -> b[?];
     }
+
+    @ a[1]::value(true) && a::connect && b::connect {
+            connect a[?] -> pt[?].in1;
+            connect pt[?].out1 -> b[?];
+        }
 }

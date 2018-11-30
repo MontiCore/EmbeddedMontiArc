@@ -6,10 +6,13 @@ component Not {
         out B b,
         out B c;
 
+
     connect false -> c;
 
-    @ a::value(false){
-        connect true -> b;
+
+    @ p.b::value([false, true, false, true]){
+        instance Bla bla;
+        connect bla.b -> b;
     }
 
     @ a::value(true){

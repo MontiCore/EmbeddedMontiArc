@@ -50,7 +50,7 @@ public class EventDynamicConnectConverter {
 
 
         List<String> newInstances = getNewInstances(event);
-        Map<String,List<String>> newPortsInstances = getNewPortsOfInstances(event);
+        Map<String, Map<String, Optional<EMADynamicConnectorInstanceSymbol>>>  newPortsInstances = getNewPortsOfInstances(event);
 
         generateConnectMethod(names, componentSymbol, bluePrint);
         Method free = generateFreeMethod(names, event, bluePrint);
@@ -110,11 +110,22 @@ public class EventDynamicConnectConverter {
 
         Method method = new Method(name, "bool");
         List<String> checks = new ArrayList<>();
+        List<Instruction> valueInits = new ArrayList<>();
         for(String n : names ){
             Variable v = new Variable();
             v.setName(n+"_indexref");
             v.setTypeNameTargetLanguage("int*");
             method.addParameter(v);
+
+            Optional<EMAPortInstanceSymbol> port = componentSymbol.getIncomingPortInstance(n+"[1]");
+            if(port.isPresent()){
+                Variable v_initValue = new Variable();
+                v_initValue.setName(n+"_init");
+                v_initValue.setVariableType(TypeConverter.getVariableTypeForMontiCarTypeName(port.get().getTypeReference().getName(), v_initValue, port.get()).get());
+                method.addParameter(v_initValue);
+
+                valueInits.add(new TargetCodeInstruction(String.format("%1$s[*%1$s_indexref] = %1$s_init;\n", n)));
+            }
 
             long counter = componentSymbol.getPortInstanceList().stream().filter(p->p.getNameWithoutArrayBracketPart().equals(n)).count();
 
@@ -129,6 +140,10 @@ public class EventDynamicConnectConverter {
         method.addInstruction(new TargetCodeInstruction(
                 String.format("if(%s){return false;}\n", String.join(" || ", checks))
         ));
+
+        //add inits to method
+        valueInits.stream().forEach(vi -> method.addInstruction(vi));
+
         method.addInstruction(new TargetCodeInstruction("return true;\n"));
         bluePrint.addAdditionalIncludeString("DynamicHelper");
         bluePrint.addMethod(method);
@@ -227,29 +242,38 @@ public class EventDynamicConnectConverter {
         return new ArrayList<>(insts);
     }
 
-    protected static Map<String, List<String>> getNewPortsOfInstances(EMADynamicEventHandlerInstanceSymbol event){
-        Map<String,List<String>> newPorts = new HashMap<>();
+    protected static Map<String, Map<String, Optional<EMADynamicConnectorInstanceSymbol>>> getNewPortsOfInstances(EMADynamicEventHandlerInstanceSymbol event){
+//        Map<String,List<String>> newPorts = new HashMap<>();
+        Map<String, Map<String, Optional<EMADynamicConnectorInstanceSymbol>>> newPorts = new HashMap<>();
         for(EMADynamicConnectorInstanceSymbol connector : event.getConnectorsDynamic()){
             Optional<String> comp = connector.getSourceComponentName();
             String p;
             if( connector.isDynamicSourceNewPort() && comp.isPresent()){
                 if(!newPorts.containsKey(comp.get())){
-                    newPorts.put(comp.get(), new ArrayList<>());
+//                    newPorts.put(comp.get(), new ArrayList<>());
+                    newPorts.put(comp.get(), new HashMap<>());
                 }
                 p = EMAPortSymbol.getNameWithoutArrayBracketPart(connector.getSourcePortName());
-                if(!newPorts.get(comp.get()).contains(p)){
-                    newPorts.get(comp.get()).add(p);
+//                if(!newPorts.get(comp.get()).contains(p)){
+//                    newPorts.get(comp.get()).add( p );
+//                }
+                if(!newPorts.get(comp.get()).containsKey(p)){
+                    newPorts.get(comp.get()).put(p, Optional.empty());
                 }
             }
 
             comp = connector.getTargetComponentName();
             if(connector.isDynamicTargetNewPort() && comp.isPresent()){
                 if(!newPorts.containsKey(comp.get())){
-                    newPorts.put(comp.get(), new ArrayList<>());
+//                    newPorts.put(comp.get(), new ArrayList<>());
+                    newPorts.put(comp.get(), new HashMap<>());
                 }
                 p = EMAPortSymbol.getNameWithoutArrayBracketPart(connector.getTargetPortName());
-                if(!newPorts.get(comp.get()).contains(p)){
-                    newPorts.get(comp.get()).add(p);
+//                if(!newPorts.get(comp.get()).contains(p)){
+//                    newPorts.get(comp.get()).add(p);
+//                }
+                if(!newPorts.get(comp.get()).containsKey(p)){
+                    newPorts.get(comp.get()).put(p, Optional.of(connector));
                 }
             }
         }
@@ -292,34 +316,43 @@ public class EventDynamicConnectConverter {
         }
     }
 
-    protected static void generateHandleConnectRequestInInstances(Map<String, List<String>> newPorts, Method body, Method free){
-        for (Map.Entry<String,List<String>> entry : newPorts.entrySet()){
-            Collections.sort(entry.getValue());
-            String inst = entry.getKey()+".connect_"+String.join("_", entry.getValue())+"(";
-            String freeInst = entry.getKey()+".free_"+String.join("_", entry.getValue())+"(";
+    protected static void generateHandleConnectRequestInInstances(Map<String, Map<String, Optional<EMADynamicConnectorInstanceSymbol>>>  newPorts, Method body, Method free){
+        for (Map.Entry<String, Map<String, Optional<EMADynamicConnectorInstanceSymbol>>> entry : newPorts.entrySet()){
+
+            List<String> portList = new ArrayList<>();
+            portList.addAll(entry.getValue().keySet());
+            Collections.sort(portList);
+
+            String inst = entry.getKey()+".connect_"+String.join("_", portList)+"(";
+            String freeInst = entry.getKey()+".free_"+String.join("_", portList)+"(";
 
             String connectIdxs = "";
 //            for(String port : entry.getValue()){
-            for(int i = 0; i < entry.getValue().size(); ++i){
+            for(int i = 0; i < portList.size(); ++i){
 
                 body.addInstruction(new TargetCodeInstruction(String.format(
-                        DYNPORTIDININSTANCEINIT, convertName(entry.getKey()), entry.getValue().get(i)
+                        DYNPORTIDININSTANCEINIT, convertName(entry.getKey()), portList.get(i)
                 )));
 
-                inst = inst + "&"+String.format(DYNPORTIDININSTANCE, convertName(entry.getKey()), entry.getValue().get(i));
-                if(i < entry.getValue().size()-1){
+                inst = inst + "&"+String.format(DYNPORTIDININSTANCE, convertName(entry.getKey()), portList.get(i));
+
+                if(entry.getValue().get(portList.get(i)).isPresent()){
+                    inst += ", "+generateConnectsSource(entry.getValue().get(portList.get(i)).get());
+                }
+
+                if(i < portList.size()-1){
                     inst += ", ";
                 }
 
                 free.addInstruction(new TargetCodeInstruction(String.format(FREE_DYNPORTIDININSTANCE,
-                        convertName(entry.getKey()), entry.getValue().get(i), free_method_index_counter)));
+                        convertName(entry.getKey()), portList.get(i), free_method_index_counter)));
 
-                freeInst += String.format(DYNPORTIDININSTANCE, convertName(entry.getKey()), entry.getValue().get(i));
-                if(i < entry.getValue().size()-1){
+                freeInst += String.format(DYNPORTIDININSTANCE, convertName(entry.getKey()), portList.get(i));
+                if(i < portList.size()-1){
                     freeInst += ", ";
                 }
 
-                connectIdxs += "_connected_idxs["+free_method_index_counter+"] = "+String.format(DYNPORTIDININSTANCE, convertName(entry.getKey()), entry.getValue().get(i))+";";
+                connectIdxs += "_connected_idxs["+free_method_index_counter+"] = "+String.format(DYNPORTIDININSTANCE, convertName(entry.getKey()), portList.get(i))+";";
 
                 free_method_index_counter++;
 
@@ -429,7 +462,7 @@ public class EventDynamicConnectConverter {
         if(!execDynConnects.isPresent()){
             Method m = new Method("executeDynamicConnects", "void");
             Variable p = new Variable();
-            p.setName("afterComponent");
+            p.setName("beforeComponent");
             p.setTypeNameTargetLanguage("void*");
             m.addParameter(p);
 
@@ -446,7 +479,7 @@ public class EventDynamicConnectConverter {
             bluePrint.addVariable(vdConnect);
 
             execDynConnects.get().addInstruction(new TargetCodeInstruction(String.format(
-                    "for (std::vector<connection<%s>>::iterator it = __dynamic_%s_connect.begin(); it < __dynamic_%s_connect.end(); ++it) {if(it->afterComponent == afterComponent){*(*it).target = *(*it).source;}}\n",
+                    "for (std::vector<connection<%s>>::iterator it = __dynamic_%s_connect.begin(); it < __dynamic_%s_connect.end(); ++it) {if(it->beforeComponent == beforeComponent){*(*it).target = *(*it).source;}}\n",
                     typeName, typeName,typeName
             )));
         }
@@ -473,7 +506,6 @@ public class EventDynamicConnectConverter {
         return String.format("%s["+DYNINSTANCEID+"].%s", inst, inst, GeneralHelperMethods.getTargetLanguageVariableInstanceName(portName));
 
     }
-
 
     protected static void generateConnectsForFreeEventBody(EMADynamicEventHandlerInstanceSymbol event, Method free){
 

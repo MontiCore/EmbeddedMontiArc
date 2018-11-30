@@ -65,6 +65,11 @@ public class DynamicPortConnectionGenerationTest extends AbstractSymtabTest {
         test("portRequest.portRequest5", "./target/generated-sources-cpp/dynamics/port-connect/test05");
     }
 
+    @Test
+    public void Test_06_PortRequest6() throws IOException {
+        test("portRequest.portRequest6", "./target/generated-sources-cpp/dynamics/port-connect/test06");
+    }
+
     protected void test(String instName, String target){
         try {
             TaggingResolver symtab = createSymTabAndTaggingResolver(path());
