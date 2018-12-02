@@ -23,13 +23,17 @@ public class LanguageUnitRosCMake {
                     "\n" +
                     "export(TARGETS <name> FILE <name>.cmake)";
 
-    FileContent generate(EMAComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages) {
+    FileContent generate(EMAComponentInstanceSymbol componentInstanceSymbol, List<String> additionalPackages, boolean isRos2Mode) {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("CMakeLists.txt");
 
         List<String> allPackages = new ArrayList<>();
         allPackages.addAll(additionalPackages);
-        allPackages.add("roscpp");
+        if(!isRos2Mode) {
+            allPackages.add("roscpp");
+        }else{
+            allPackages.add("rclcpp");
+        }
 
         List<String> distinctSortedPackages = allPackages.stream()
                 .distinct()

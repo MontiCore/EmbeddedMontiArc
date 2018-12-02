@@ -21,7 +21,10 @@ public class InitHelper {
             result.add(new TargetCodeInstruction("ros::init(i, &tmp, \"" + classname + "_node\");"));
             result.add(new TargetCodeInstruction("ros::NodeHandle node_handle = ros::NodeHandle();"));
         }else{
-            //TODO: fill
+            result.add(new TargetCodeInstruction("this->component = comp;"));
+            result.add(new TargetCodeInstruction("char* tmp = strdup(\"\");"));
+            result.add(new TargetCodeInstruction("int i = 0;"));
+            result.add(new TargetCodeInstruction("rclcpp::init(i, &tmp);"));
         }
         return result;
     }

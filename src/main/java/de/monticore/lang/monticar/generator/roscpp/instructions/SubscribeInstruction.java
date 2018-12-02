@@ -12,7 +12,7 @@ public class SubscribeInstruction extends TargetCodeInstruction {
         if (!isRos2) {
             this.instruction = subscriber.getNameTargetLanguageFormat() + " = node_handle.subscribe(\"" + topicName + "\" ," + MSG_QUEUE_SIZE + ",&" + className + "::" + callback + ", this, ros::TransportHints().tcpNoDelay());";
         } else {
-            this.instruction = subscriber.getNameTargetLanguageFormat() + " = node_handle->create_subscribe<" + fullRosType + ">(" + topicName + ", " + callback + ");";
+            this.instruction = subscriber.getNameTargetLanguageFormat() + " = node_handle->create_subscription<" + fullRosType + ">(\"" + topicName + "\", " + callback + ");";
         }
     }
     @Override

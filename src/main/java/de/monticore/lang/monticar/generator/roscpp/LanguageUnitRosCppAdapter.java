@@ -64,21 +64,39 @@ public class LanguageUnitRosCppAdapter {
     }
 
     private void generateIncludes(EMAComponentInstanceSymbol componentSymbol, List<EMAPortSymbol> rosPorts, BluePrintCPP currentBluePrint) {
-        currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
-        String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
-        currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
-        currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
-        //Add each msg include exactly once
+        if(!isRos2Mode()) {
+            currentBluePrint.addAdditionalIncludeString("<ros/ros.h>");
+            String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
+            currentBluePrint.addAdditionalIncludeString("\"" + compName + ".h\"");
+            currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".h\"");
+            //Add each msg include exactly once
 
-        rosPorts.stream()
-                .map(EMAPortSymbol::getMiddlewareSymbol)
-                .map(Optional::get)
-                .map(mws -> (RosConnectionSymbol) mws)
-                .map(RosConnectionSymbol::getTopicType)
-                .map(Optional::get)
-                .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
-                .map(type -> "<" + type + ".h>")
-                .forEach(currentBluePrint::addAdditionalIncludeString);
+            rosPorts.stream()
+                    .map(EMAPortSymbol::getMiddlewareSymbol)
+                    .map(Optional::get)
+                    .map(mws -> (RosConnectionSymbol) mws)
+                    .map(RosConnectionSymbol::getTopicType)
+                    .map(Optional::get)
+                    .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
+                    .map(type -> "<" + type + ".h>")
+                    .forEach(currentBluePrint::addAdditionalIncludeString);
+        }else{
+            currentBluePrint.addAdditionalIncludeString("<rclpp/rclpp.hpp>");
+            String compName = NameHelper.getComponentNameTargetLanguage(componentSymbol.getFullName());
+            currentBluePrint.addAdditionalIncludeString("\"" + compName + ".hpp\"");
+            currentBluePrint.addAdditionalIncludeString("\"IAdapter_" + compName + ".hpp\"");
+            //Add each msg include exactly once
+
+            rosPorts.stream()
+                    .map(EMAPortSymbol::getMiddlewareSymbol)
+                    .map(Optional::get)
+                    .map(mws -> (RosConnectionSymbol) mws)
+                    .map(RosConnectionSymbol::getTopicType)
+                    .map(Optional::get)
+                    .peek(topicType -> additionalPackages.add(NameHelper.getPackageOfMsgType(topicType)))
+                    .map(type -> "<" + type + ".hpp>")
+                    .forEach(currentBluePrint::addAdditionalIncludeString);
+        }
 
         msgConverts.stream()
                 .map(MsgConverter::getAdditionalIncludes)
@@ -146,18 +164,21 @@ public class LanguageUnitRosCppAdapter {
 
         //subs
         subscribers.keySet().stream()
-                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback", ros2Mode, getFullRosType(subscribers.get(var))))
+                .map(var -> new SubscribeInstruction(classname, var, subscribers.get(var).getTopicName().get(), getTopicNameTargetLanguage(subscribers.get(var).getTopicName().get()) + "Callback", isRos2Mode(), getFullRosType(subscribers.get(var))))
                 .distinct()
                 .sorted(Comparator.comparing(SubscribeInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
 
         publishers.keySet().stream()
-                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get(),ros2Mode))
+                .map(var -> new AdvertiseInstruction(var, getFullRosType(publishers.get(var)), publishers.get(var).getTopicName().get(),isRos2Mode()))
                 .distinct()
                 .sorted(Comparator.comparing(AdvertiseInstruction::getTargetLanguageInstruction))
                 .forEach(initMethod::addInstruction);
-
-        initMethod.addInstruction(new TargetCodeInstruction("ros::spin();"));
+        if(!isRos2Mode()) {
+            initMethod.addInstruction(new TargetCodeInstruction("ros::spin();"));
+        }else{
+            initMethod.addInstruction(new TargetCodeInstruction("rclcpp::spin("+ classname + ");"));
+        }
 
         currentBluePrint.addMethod(initMethod);
     }
@@ -182,7 +203,11 @@ public class LanguageUnitRosCppAdapter {
                     String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Subscriber";
                     if (!uniqueSubFields.containsKey(name)) {
                         Variable field = new Variable();
-                        field.setTypeNameTargetLanguage("ros::Subscriber");
+                        if(!isRos2Mode()) {
+                            field.setTypeNameTargetLanguage("ros::Subscriber");
+                        }else{
+                            field.setTypeNameTargetLanguage("rclpp::Subscriber");
+                        }
                         field.setName(name);
                         uniqueSubFields.put(name, field);
                         currBluePrint.addVariable(field);
@@ -198,7 +223,11 @@ public class LanguageUnitRosCppAdapter {
                     String name = getTopicNameTargetLanguage(rosConnectionSymbol.getTopicName().get()).toLowerCase() + "Publisher";
                     if (!uniquePubFields.containsKey(name)) {
                         Variable field = new Variable();
-                        field.setTypeNameTargetLanguage("ros::Publisher");
+                        if(!isRos2Mode()) {
+                            field.setTypeNameTargetLanguage("ros::Publisher");
+                        }else{
+                            field.setTypeNameTargetLanguage("rclpp::Publisher");
+                        }
                         field.setName(name);
                         uniquePubFields.put(name, field);
                         currBluePrint.addVariable(field);
@@ -241,7 +270,12 @@ public class LanguageUnitRosCppAdapter {
                         Method method = new Method(getTopicNameTargetLanguage(rosCon.getTopicName().get()) + "Callback", "void");
                         Variable tmpParam = new Variable();
                         tmpParam.setName("msg");
-                        tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::ConstPtr&");
+                        if(!isRos2Mode())
+                        {
+                            tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::ConstPtr&");
+                        }else{
+                            tmpParam.setTypeNameTargetLanguage("const " + getFullRosType(rosCon) + "::SharedPtr");
+                        }
                         method.addParameter(tmpParam);
                         uniqueMethods.put(rosCon.getTopicName().get(), method);
                     }
