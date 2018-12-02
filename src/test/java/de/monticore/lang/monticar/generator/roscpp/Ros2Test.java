@@ -32,7 +32,7 @@ public class Ros2Test extends AbstractSymtabTest{
         generatorRosCpp.setRos2Mode(true);
         List<File> files = TagHelper.resolveAndGenerate(generatorRosCpp, taggingResolver, componentInstanceSymbol);
 
-        //testFilesAreEqual(files, "echoCMakeRos2/");
+        testFilesAreEqual(files, "echoCMakeRos2/");
     }
     @Test
     public void testGenerateCMakeRos2() throws IOException {
