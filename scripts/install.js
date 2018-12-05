@@ -3,21 +3,11 @@ const FileSystem = require("fs-extra");
 const TaskList = require("listr");
 
 const fetch = require("download");
-const extract = require("extract-zip");
 
 const ROOT_FOLDER = Path.resolve(__dirname, "..");
 const CONFIGS_FOLDER = Path.join(ROOT_FOLDER, "configs");
 const DOWNLOADS_FOLDER = Path.join(ROOT_FOLDER, "target", "downloads");
 const CACHE_FOLDER = Path.join(ROOT_FOLDER, "target", "cache");
-
-function decompress(source, destination) {
-    return new Promise((resolve, reject) => {
-        extract(source, { dir: destination }, error => {
-            if (error) reject(error);
-            else resolve();
-        });
-    });
-}
 
 function getPrepareTask(dependency) {
     return {
@@ -76,23 +66,6 @@ function getDownloadTasks(dependencies) {
     );
 }
 
-function getDecompressTask(dependency) {
-    return {
-        title: `Decompressing: ${dependency.filename} ${dependency.skipped ? "-> Skipped" : ''}`,
-        task: async () => {
-            if (dependency.skipped) return Promise.resolve();
-
-            return decompress(`${dependency.downloadFile}`, `${dependency.decompressFolder}`);
-        }
-    };
-}
-
-function getDecompressTasks(dependencies) {
-    return new TaskList(
-        dependencies.map(dependency => { return getDecompressTask(dependency); }), { concurrent: 4 }
-    );
-}
-
 async function execute() {
     const dependenciesFile = Path.join(CONFIGS_FOLDER, "dependencies.json");
     const dependencies = await FileSystem.readJSON(dependenciesFile);
@@ -106,9 +79,6 @@ async function execute() {
     }, {
         title: "Downloading Dependencies",
         task: () => { return getDownloadTasks(dependencies); }
-    }, {
-        title: "Decompressing Dependencies",
-        task: () => { return getDecompressTasks(dependencies); }
     }]);
 
     return tasks.run();

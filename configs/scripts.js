@@ -21,6 +21,10 @@ function getLernaCommand(script, parallelized) {
 
 module.exports = {
     scripts: {
+        "default": {
+            "script": series("node scripts/logo", getLernaCommand("target.start", false)),
+            "description": "Injects build and executes EmbeddedMontiArcStudio."
+        },
         "clean": {
             "default": {
                 "script": series("node scripts/logo", concurrent({
@@ -158,6 +162,10 @@ module.exports = {
                     ),
                     "hiddenFromHelp": true
                 }
+            },
+            "start": {
+                "script": "node scripts/start",
+                "hiddenFromHelp": true
             }
         },
         "manager": {

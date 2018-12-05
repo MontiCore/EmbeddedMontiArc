@@ -135,7 +135,20 @@ package or extension.
 ## Local Execution
 **Requires**: [**Packaging**](#packaging)
 
-To be written.
+In theory, each compile and build step would have to be followed by a packaging step in order
+to try out newly implemented functionality. However, the time that a packaging step consumes
+increases in duration with each artifact to be included. As a consequence, the packaging step
+should only be executed when absolutely necessary. Nonetheless, a developer should be able to
+try out new features as quick as possible.
+
+For this reason, a procedure has been put into place which enables the injection of newly
+built files into an already existing dry-packaged version of this repository. In order to
+trigger the injection and the execution of the application, a developer needs to execute the
+following command from the root directory:
+
+```bash
+yarn start
+```
 
 ## Managing
 **Requires**: [**Installation**](#installation), [**Contributing**](Contributing.md)
