@@ -956,6 +956,8 @@ THE SOFTWARE.
 
 @angular/material/checkbox
 
+@angular/material/autocomplete
+
 @angular/material/menu
 
 @angular/material/divider
