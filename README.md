@@ -1,5 +1,5 @@
 # EMASInstallerManager
-![](https://img.shields.io/badge/Version-0.1.0-blue.svg?longCache=true&style=flat-square)
+![](https://img.shields.io/badge/Version-0.1.1-blue.svg?longCache=true&style=flat-square)
 
 ## Table of Contents
 * [**Description**](#description)

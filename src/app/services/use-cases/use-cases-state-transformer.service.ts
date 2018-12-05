@@ -57,7 +57,8 @@ export class UseCasesStateTransformerService {
             const transformation = new UseCaseStateTransformation(state, this.workspace, this.generator);
             const useCase = await transformation.apply();
 
-            this.states.removeState(state);
+            state.saved = true;
+
             this.collection.addUseCase(useCase);
         }
     }

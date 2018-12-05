@@ -23,6 +23,17 @@ export class ExtensionsService implements LoadableService {
         return this.extensions;
     }
 
+    public getExtensionsWithPrefix(prefix: string): Extension[] {
+        const prefixLowerCase = prefix.toLowerCase();
+
+        return this.extensions.filter(extension => {
+            const nameWithoutNamespace = extension.name.replace("@emastudio/", '');
+            const nameLowerCase = nameWithoutNamespace.toLowerCase();
+
+            return nameLowerCase.startsWith(prefixLowerCase);
+        });
+    }
+
     public addExtension(extension: Extension): void {
         this.extensions.push(extension);
     }

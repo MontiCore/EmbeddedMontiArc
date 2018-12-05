@@ -1,7 +1,5 @@
 {
   "private": true,
   "name": "@emastudio/manager",
-  "version": "0.1.0",
-  "author": "SE RWTH",
   "main": "electron.js"
 }

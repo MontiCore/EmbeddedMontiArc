@@ -14,7 +14,7 @@
     </div>
     <div class="uk-flex-1">
         <button mat-mini-fab matTooltip="Add Extension Element" matTooltipPosition="after"
-                class="add-button" [matMenuTriggerFor]="menu">
+                class="add-button" [matMenuTriggerFor]="menu" [disabled]="state.saved">
             <mat-icon>add</mat-icon>
         </button>
     </div>
@@ -23,7 +23,7 @@
 <div class="uk-width-1-1 form-container" *ngFor="let button of state.getButtons()">
     <app-extension-button-form [state]="button"></app-extension-button-form>
     <button mat-mini-fab matTooltip="Remove Button" matTooltipPosition="above"
-            class="control-button" (click)="removeButton(button)">
+            class="control-button" (click)="removeButton(button)" [disabled]="button.saved">
         <mat-icon>clear</mat-icon>
     </button>
 </div>

@@ -12,13 +12,13 @@
     <mat-hint>The target platform of the model.</mat-hint>
 </mat-form-field>
 <div>
-    <button mat-raised-button [color]="state.hasError('folder') ? 'error' : 'accent'" class="button">
+    <button mat-raised-button [color]="state.hasError('folder') ? 'error' : 'accent'" class="button" [disabled]="state.saved">
         <label>
             Select the Model Root... *
             <input type="file" class="hidden" (change)="onFolderChange($event)" webkitdirectory/>
         </label>
     </button>
-    <button mat-raised-button [color]="state.hasError('mainFile') ? 'error' : 'accent'" class="button">
+    <button mat-raised-button [color]="state.hasError('mainFile') ? 'error' : 'accent'" class="button" [disabled]="state.saved">
         <label>
             Select the Main File...
             <input type="file" class="hidden" (change)="onMainFileChange($event)"/>

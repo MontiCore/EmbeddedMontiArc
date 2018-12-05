@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@emastudio/manager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "SE RWTH",
   "main": "dist/electron.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "@angular/common": "~7.0.0",
     "@angular/compiler": "~7.0.0",
     "@angular/core": "~7.0.0",
-    "@angular/flex-layout": "^7.0.0-beta.19",
     "@angular/forms": "~7.0.0",
     "@angular/http": "~7.0.0",
     "@angular/material": "^7.0.2",

@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { ControlScriptFormComponent } from "./control-script-form.component";
 import {
+    MatAutocompleteModule,
     MatButtonModule, MatCheckboxModule,
     MatDividerModule,
     MatFormFieldModule,
@@ -17,7 +18,7 @@ import { BrowserModule } from "@angular/platform-browser";
     imports: [
         MatIconModule, MatDividerModule, MatButtonModule, FormsModule, MatFormFieldModule,
         MatInputModule, BrowserModule, MatSelectModule, MatOptionModule, MatCheckboxModule,
-        MatTooltipModule
+        MatTooltipModule, MatAutocompleteModule
     ],
     providers: [],
     exports: [ControlScriptFormComponent]
