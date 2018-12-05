@@ -56,7 +56,7 @@
 }, {
   "//": "OCL Verification",
   "platforms": ["win32", "linux"],
-  "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.15.ocl-verification&files=oclverification.zip",
+  "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.12.03.ocl-verification&files=oclverification.zip",
   "to": "resources"
 }, {
   "//": "SVG Visualization",
