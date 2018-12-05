@@ -28,6 +28,16 @@ export class UseCasesService implements LoadableService {
         return this.useCases;
     }
 
+    public getUseCasesWithPrefix(prefix: string): UseCase[] {
+        const prefixLowerCase = prefix.toLowerCase();
+
+        return this.useCases.filter(useCase => {
+            const nameLowerCase = useCase.name.toLowerCase();
+
+            return nameLowerCase.startsWith(prefixLowerCase);
+        });
+    }
+
     protected async fetchUseCases(): Promise<UseCase[]> {
         const commonUseCases = await this.getCommonUseCases();
         const windowsUseCases = await this.getWindowsUseCases();

@@ -42,7 +42,8 @@ export class ArtifactsStateTransformerService {
             const transformation = new ArtifactStateTransformation(state, this.collection);
             const artifact = await transformation.apply();
 
-            this.states.removeState(state);
+            state.saved = true;
+
             this.collection.addArtifact(artifact);
         }
     }

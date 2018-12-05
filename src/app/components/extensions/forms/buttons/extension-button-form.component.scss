@@ -22,7 +22,7 @@ mat-form-field:last-child {
   display:inline;
 }
 
-.button label {
+.button:not(:disabled) label {
   cursor:pointer;
   width:100%;
   height:100%;

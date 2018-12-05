@@ -1,6 +1,8 @@
 import { AbstractControl, ValidationErrors } from "@angular/forms";
 
 export interface State {
+    saved: boolean;
+
     hasError(key: string): boolean;
     hasErrorWithControl(key: string, control: AbstractControl): boolean;
     hasAnyError(): boolean;
@@ -25,8 +27,11 @@ export interface StateComponent {
 export abstract class AbstractState implements State {
     protected readonly errors: ValidationErrors;
 
+    public saved: boolean;
+
     protected constructor() {
         this.errors = {};
+        this.saved = false;
     }
 
     public hasError(key: string): boolean {
@@ -68,8 +73,8 @@ export abstract class AbstractStateService implements StateService {
         this.states = [];
     }
 
-    public getStates(copy: boolean = false): State[] {
-        return copy ? this.states.slice(0) : this.states;
+    public getStates(unsaved: boolean = false): State[] {
+        return unsaved ? this.states.filter(state => !state.saved) : this.states;
     }
 
     public hasErrors(): boolean {
@@ -81,7 +86,9 @@ export abstract class AbstractStateService implements StateService {
     }
 
     public hasStates(): boolean {
-        return this.states.length > 0;
+        const states = this.getStates(true);
+
+        return states.length > 0;
     }
 
     protected abstract getNewState(): State;

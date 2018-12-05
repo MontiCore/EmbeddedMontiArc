@@ -52,7 +52,8 @@ export class ExtensionStateTransformation {
             const transformation = new ButtonStateTransformation(this, button);
 
             await transformation.apply();
-            this.state.removeButton(button);
+
+            button.saved = true;
         }
 
         await this.addToTarget();
@@ -77,7 +78,8 @@ export class ExtensionsStateTransformer {
             const transformation = new ExtensionStateTransformation(state, this.extensions, this.generator, this.target);
             const extension = await transformation.apply();
 
-            this.states.removeState(state);
+            state.saved = true;
+
             this.extensions.addExtension(extension);
             this.target.addDependency(extension);
         }

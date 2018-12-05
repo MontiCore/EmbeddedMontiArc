@@ -57,7 +57,8 @@ export class ControlScriptsStateTransformerService {
             const transformation = new ControlScriptStateTransformation(state, this.workspace);
             /*const script = */await transformation.apply();
 
-            this.states.removeState(state);
+            state.saved = true;
+
             // TODO: Add script to collection.
         }
     }

@@ -63,8 +63,8 @@ export class ExtensionState extends AbstractState {
         this._name.set(name);
     }
 
-    public getButtons(copy: boolean = false): ButtonState[] {
-        return copy ? this._buttons.slice(0) : this._buttons;
+    public getButtons(unsaved: boolean = false): ButtonState[] {
+        return unsaved ? this._buttons.filter(state => !state.saved) : this._buttons;
     }
 
     public addButton(): void {
