@@ -1,10 +1,14 @@
 package de.monticore.lang.monticar.generator.middleware.clustering;
 
+import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
+import de.monticore.lang.math._ast.ASTNumberExpression;
+import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCASTTypeSymbolReference;
 import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
@@ -71,11 +75,40 @@ public class AutomaticClusteringHelper {
     }
 
     public static double getTypeCostHeuristic(MCTypeReference<? extends MCTypeSymbol> typeReference) {
-        //TODO: implement
-        //TODO: base types (Q,Z,B,C)
-        //TODO: Matrix types(recursive?)
         //TODO: structs
-        return 0;
+        if (typeReference.getName().equals("CommonMatrixType")){
+            double value = getTypeCostHeuristicHelper(
+                    ((ASTCommonMatrixType)((MCASTTypeSymbolReference)typeReference).getAstType()).getElementType().getName());
+            double res = 0;
+            List<ASTExpression> vectors = ((ASTCommonMatrixType) ((MCASTTypeSymbolReference) typeReference).
+                    getAstType()).getDimension().getDimensionList();
+            for (ASTExpression expression : vectors){
+                if (((ASTNumberExpression) expression).getNumberWithUnit().getNumber().isPresent()) {
+                    res += value * ((ASTNumberExpression) expression).getNumberWithUnit().getNumber().get();
+                }
+            }
+            return res;
+        } else {
+            return getTypeCostHeuristicHelper(typeReference.getName());
+        }
+    }
+
+    private static double getTypeCostHeuristicHelper(String name) {
+        double bool = 1;
+        double z = 5;
+        double q = 10;
+        double c = 20;
+        switch (name) {
+            case "B":
+                return bool;
+            case "Z":
+                return z;
+            case "Q":
+                return q;
+            case "C":
+                return c;
+        }
+        return 50;
     }
 
 }
