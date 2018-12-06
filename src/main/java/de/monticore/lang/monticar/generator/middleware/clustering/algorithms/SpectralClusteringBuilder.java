@@ -9,6 +9,22 @@ public class SpectralClusteringBuilder {
     private Integer l;
     private Double sigma;
 
+    // parameter list, true if mandatory
+    public enum SpectralParameters {
+        SPECTRAL_NUM_CLUSTERS(true),
+        SPECTRAL_L(false),
+        SPECTRAL_SIGMA(false);
+
+        private Boolean mandatory;
+
+        SpectralParameters(Boolean mandatory) {
+            this.mandatory = mandatory;
+        }
+
+        public Boolean isMandatory() {
+            return this.mandatory;
+        }
+    }
 
     public SpectralClusteringBuilder(double[][] data, int k) {
         this.data = data;

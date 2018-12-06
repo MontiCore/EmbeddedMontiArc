@@ -4,6 +4,7 @@ import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.Expanded
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
+import de.se_rwth.commons.logging.Log;
 import smile.clustering.SpectralClustering;
 
 import java.util.*;
@@ -11,60 +12,92 @@ import java.util.*;
 // spectral clusterer product implementation
 public class SpectralClusteringAlgorithm implements ClusteringAlgorithm {
     @Override
-    public List<Set<ExpandedComponentInstanceSymbol>> cluster(ExpandedComponentInstanceSymbol component, int numClusters, Object... args) {
+    public List<Set<ExpandedComponentInstanceSymbol>> cluster(ExpandedComponentInstanceSymbol component, Object... args) {
 
-        List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
-        Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
-        double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
-                ComponentHelper.getInnerConnectors(component),
-                labelsForSubcomps);
+        List<Set<ExpandedComponentInstanceSymbol>> res = new ArrayList<>();
 
-        SpectralClustering clustering;
-        SpectralClusteringBuilder builder = new SpectralClusteringBuilder(adjMatrix, numClusters);
+        // params
+        Integer numClusters= null;
+        Integer l= null;
+        Double sigma= null;
 
-        // Handle optional additional params for SpectralClustering.
-        // Additional params come as one or multiple key-value-pairs in the optional varargs array for this method,
+        // find mandatory params
+        Map<SpectralClusteringBuilder.SpectralParameters, Boolean> mandatoryParams = new HashMap<SpectralClusteringBuilder.SpectralParameters, Boolean>();
+        SpectralClusteringBuilder.SpectralParameters[] spectralParams = SpectralClusteringBuilder.SpectralParameters.values();
+        for (SpectralClusteringBuilder.SpectralParameters param : spectralParams) {
+            // set all mandatory params to "unset"
+            if (param.isMandatory()) mandatoryParams.put(param, false);
+        }
+
+        // Handle (optional) params for SpectralClustering.
+        // Params come as one or multiple key-value-pairs in the optional varargs array for this method,
         // with key as a string (containing the name of the parameter to pass thru to the spectral clusterer) followed by its value as an object
-        String key;
+        SpectralClusteringBuilder.SpectralParameters key;
         Object value;
         int v = 0;
         while (v < args.length) {
-            if (args[v] instanceof String) {
-                key = (String)args[v];
+            if (args[v] instanceof SpectralClusteringBuilder.SpectralParameters) {
+                key = (SpectralClusteringBuilder.SpectralParameters)args[v];
                 if (v+1 < args.length) {
                     value = args[v + 1];
                     switch (key) {
-                        case "l":
+                        case SPECTRAL_NUM_CLUSTERS:
                             if (value instanceof Integer) {
-                                builder.setL((Integer) value);
+                                numClusters= (Integer) value;
                             }
                             break;
-                        case "sigma":
+                        case SPECTRAL_L:
+                            if (value instanceof Integer) {
+                                l= (Integer) value;
+                            }
+                            break;
+                        case SPECTRAL_SIGMA:
                             if (value instanceof Double) {
-                                builder.setSigma((Double) value);
+                                sigma= (Double) value;
                             }
                             break;
                     }
+                    // set mandatory param to "set"
+                    if (key.isMandatory()) mandatoryParams.replace(key, true);
                 }
             }
             v = v + 2;
         }
 
-        clustering = builder.build();
-        //SpectralClustering clustering = new SpectralClustering(adjMatrix,numberOfClusters);
-
-        int[] labels = clustering.getClusterLabel();
-
-        List<Set<ExpandedComponentInstanceSymbol>> res = new ArrayList<>();
-
-        for(int i = 0; i < clustering.getNumClusters(); i++){
-            res.add(new HashSet<>());
+        // are all mandatory params set?
+        boolean error= false;
+        Iterator iterator = mandatoryParams.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry param = (Map.Entry) iterator.next();
+            if (!(Boolean)param.getValue()) error= true;
         }
 
-        subcompsOrderedByName.forEach(sc -> {
-            int curClusterLabel = labels[labelsForSubcomps.get(sc.getFullName())];
-            res.get(curClusterLabel).add(sc);
-        });
+        if (error) {
+            Log.error("SpectralClusteringAlgorithm: Mandatory parameter(s) missing!");
+        } else {
+            List<ExpandedComponentInstanceSymbol> subcompsOrderedByName = ComponentHelper.getSubcompsOrderedByName(component);
+            Map<String, Integer> labelsForSubcomps = ComponentHelper.getLabelsForSubcomps(subcompsOrderedByName);
+            double[][] adjMatrix = AutomaticClusteringHelper.createAdjacencyMatrix(subcompsOrderedByName,
+                    ComponentHelper.getInnerConnectors(component),
+                    labelsForSubcomps);
+
+            SpectralClustering clustering;
+            SpectralClusteringBuilder builder = new SpectralClusteringBuilder(adjMatrix, numClusters);
+            if (l != null) builder.setL(l);
+            if (sigma != null) builder.setSigma(sigma);
+            clustering = builder.build();
+
+            int[] labels = clustering.getClusterLabel();
+
+            for (int i = 0; i < clustering.getNumClusters(); i++) {
+                res.add(new HashSet<>());
+            }
+
+            subcompsOrderedByName.forEach(sc -> {
+                int curClusterLabel = labels[labelsForSubcomps.get(sc.getFullName())];
+                res.get(curClusterLabel).add(sc);
+            });
+        }
 
         return res;
     }
