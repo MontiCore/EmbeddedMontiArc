@@ -7,5 +7,5 @@ import java.util.Set;
 
 // product if for clustering factory
 public interface ClusteringAlgorithm {
-    public List<Set<ExpandedComponentInstanceSymbol>> cluster(ExpandedComponentInstanceSymbol component, int numClusters, Object... args);
+    public List<Set<ExpandedComponentInstanceSymbol>> cluster(ExpandedComponentInstanceSymbol component, Object... args);
 }

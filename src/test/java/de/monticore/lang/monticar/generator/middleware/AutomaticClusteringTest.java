@@ -6,6 +6,7 @@ import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClust
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithmFactory;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringKind;
+import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -105,7 +106,7 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
         System.out.println(algorithm);
 
-        List<Set<ExpandedComponentInstanceSymbol>> clusters = algorithm.cluster(componentInstanceSymbol, 2);
+        List<Set<ExpandedComponentInstanceSymbol>> clusters = algorithm.cluster(componentInstanceSymbol, SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 2);
 
         assertTrue(clusters.size() == 2);
 
