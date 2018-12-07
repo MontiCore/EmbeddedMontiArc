@@ -47,6 +47,9 @@ public class ImplementExecutionOrder {
 
     protected static Map<EMAComponentInstanceSymbol, Collection<EMAConnectorInstanceSymbol>> instanceConnectorsMap = new HashMap<>();
     protected static Map<EMAConnectorInstanceSymbol, EMAPortInstanceSymbol> connectorInstanceSourcePortInstance = new HashMap<>();
+    protected static Map<EMAConnectorInstanceSymbol, EMAPortInstanceSymbol> connectorInstanceTargetPortInstance = new HashMap<>();
+
+    protected static Map<EMAPortInstanceSymbol, Collection<EMAConnectorInstanceSymbol>> sourcePortConnectorsList = new HashMap<>();
 
     /**
      * This function initializes the execution order process. This means the dependencies map will cleared,
@@ -60,6 +63,8 @@ public class ImplementExecutionOrder {
 
         instanceConnectorsMap.clear();
         connectorInstanceSourcePortInstance.clear();
+        connectorInstanceTargetPortInstance.clear();
+        sourcePortConnectorsList.clear();
 
         s = 0;
         b = 0;
@@ -415,6 +420,11 @@ public class ImplementExecutionOrder {
      * @return Target port of c
      */
     public static EMAPortInstanceSymbol connectorTargetPort(EMAComponentInstanceSymbol inst, EMAConnectorInstanceSymbol c) {
+
+        if(connectorInstanceTargetPortInstance.containsKey(c)){
+            return connectorInstanceTargetPortInstance.get(c);
+        }
+
         Iterator<String> parts = Splitters.DOT.split(c.getTarget()).iterator();
         Optional<String> instance = Optional.empty();
         Optional<String> instancePort;
@@ -438,10 +448,12 @@ public class ImplementExecutionOrder {
         }
 
         if (port.isPresent()) {
+            connectorInstanceTargetPortInstance.put(c, port.get());
             return port.get();
         }
 
         if (c.getTargetPort() != null) {
+            connectorInstanceTargetPortInstance.put(c,c.getTargetPort());
             return c.getTargetPort();
         }
         Log.info(c.getEnclosingScope().toString(), "Scope:");
@@ -479,6 +491,17 @@ public class ImplementExecutionOrder {
         }else{
             result = inst.getConnectorInstances();
         }
+
+        for (EMAConnectorInstanceSymbol con :result) {
+            EMAPortInstanceSymbol source = connectorSourcePort(inst, con);
+            if(!sourcePortConnectorsList.containsKey(source)){
+                sourcePortConnectorsList.put(source, new ArrayList<>());
+            }
+            if(!sourcePortConnectorsList.get(source).contains(con)) {
+                sourcePortConnectorsList.get(source).add(con);
+            }
+        }
+
         instanceConnectorsMap.put(inst, result);
         return result;
     }
@@ -486,12 +509,34 @@ public class ImplementExecutionOrder {
 
     public static Collection<EMAConnectorInstanceSymbol> getAllConnectorsWithSourceIn(EMAComponentInstanceSymbol inst, Collection<EMAPortInstanceSymbol> sources){
 
-        Collection<EMAConnectorInstanceSymbol> result;
+        List<EMAConnectorInstanceSymbol> result = new ArrayList<>();
+        if(!instanceConnectorsMap.containsKey(inst)){
+            getAllConnectors(inst);
+        }
 
+        for(EMAPortInstanceSymbol s : sources){
+            if(sourcePortConnectorsList.containsKey(s)){
+                result.addAll(sourcePortConnectorsList.get(s));
+            }
+        }
+        if(!result.isEmpty()) {
+            Collections.sort(result, (a, b) -> a.getSourcePosition().compareTo(b.getSourcePosition()));
+        }
 
-        return getAllConnectors(inst).stream()
-                .filter(c -> sources.contains(connectorSourcePort(inst, c)))
-                .collect(Collectors.toList());
+//        result = getAllConnectors(inst).stream()
+//                .filter(c -> sources.contains(connectorSourcePort(inst, c)))
+//                .collect(Collectors.toList());
+
+//        System.out.println(result);
+
+        return result;
+
+//        //OLD:
+//        Collection<EMAConnectorInstanceSymbol> result;
+//
+//        return getAllConnectors(inst).stream()
+//                .filter(c -> sources.contains(connectorSourcePort(inst, c)))
+//                .collect(Collectors.toList());
 
     }
 }

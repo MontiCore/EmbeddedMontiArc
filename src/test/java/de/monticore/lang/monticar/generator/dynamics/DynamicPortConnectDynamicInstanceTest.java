@@ -12,6 +12,8 @@ import org.junit.runners.MethodSorters;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -35,8 +37,12 @@ public class DynamicPortConnectDynamicInstanceTest extends AbstractSymtabTest {
     }
 
     @Test
+    @Ignore
     public void Test_04_Big() throws IOException {
+        Instant start = Instant.now();
         test("instanceRequest.testBig", "./target/generated-sources-cpp/dynamics/instances/test04");
+        Instant end = Instant.now();
+        Log.info("TestBig time: "+Duration.between(start, end), "Test_04_Big");
     }
 
     protected void test(String instName, String target){
