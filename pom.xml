@@ -52,6 +52,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.sourceforge</groupId>
+            <artifactId>javaml</artifactId>
+            <version>0.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>be.abeel</groupId>
+            <artifactId>ajt</artifactId>
+            <version>2.9</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
             <version>1.5.2</version>
@@ -147,6 +157,15 @@
 
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>java-ds</id>
+            <!--
+                        <url>https://raw.githubusercontent.com/alexeygrigorev/maven-repo/master/</url>
+            -->
+            <url>https://raw.githubusercontent.com/mgbeyer/maven-repo/master/</url>
+        </repository>
+    </repositories>
 
     <!-- == PROJECT BUILD SETTINGS =========================================== -->
 

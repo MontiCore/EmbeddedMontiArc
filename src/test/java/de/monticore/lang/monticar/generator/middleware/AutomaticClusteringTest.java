@@ -12,6 +12,12 @@ import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.symboltable.CommonSymbol;
+import net.sf.javaml.clustering.mcl.MarkovClustering;
+import net.sf.javaml.clustering.mcl.SparseMatrix;
+import net.sf.javaml.core.Dataset;
+import net.sf.javaml.core.DefaultDataset;
+import net.sf.javaml.core.DenseInstance;
+import net.sf.javaml.core.Instance;
 import org.junit.Test;
 import smile.clustering.KMeans;
 import smile.clustering.SpectralClustering;
@@ -87,6 +93,165 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertTrue( labels[0] != labels[3]);
         assertTrue( labels[1] != labels[2]);
         assertTrue( labels[1] != labels[3]);
+
+    }
+
+
+    // todo: gotta move this thing later, just temporarily here for testing purposes
+    public static Dataset[] getClustering(Dataset data, SparseMatrix matrix) {
+        int[] sparseMatrixSize = matrix.getSize();
+        int attractors = 0;
+
+        // just for testing/debugging purposes
+        for(int i = 0; i < sparseMatrixSize[0]; ++i) {
+            double val = matrix.get(i, i);
+            if (val != 0.0D) {
+                ++attractors;
+            }
+        }
+
+        Vector<Vector<Instance>> finalClusters = new Vector();
+
+        for(int i = 0; i < sparseMatrixSize[0]; ++i) {
+            Vector<Instance> cluster = new Vector();
+            double val = matrix.get(i, i);
+            if (val >= 0.98D) {
+                for(int j = 0; j < sparseMatrixSize[0]; ++j) {
+                    double value = matrix.get(j, i);
+                    if (value != 0.0D) {
+                        cluster.add(data.instance(j));
+                    }
+                }
+
+                finalClusters.add(cluster);
+            }
+        }
+
+        Dataset[] output = new Dataset[finalClusters.size()];
+
+        int i;
+        for(i = 0; i < finalClusters.size(); ++i) {
+            output[i] = new DefaultDataset();
+        }
+
+        for(i = 0; i < finalClusters.size(); ++i) {
+            new Vector();
+            Vector<Instance> getCluster = (Vector)finalClusters.get(i);
+
+            for(int j = 0; j < getCluster.size(); ++j) {
+                output[i].add((Instance)getCluster.get(j));
+            }
+        }
+
+        return output;
+    }
+
+    @Test
+    public void testMarkovClustering(){
+
+        /*
+
+        0----1----4---6
+        | \/ |     \ /
+        | /\ |      5
+        2----3
+
+        expected: 2 clusters a, b with a={0,1,2,3} and b={4,5,6}
+
+        */
+
+//        row-major order (for java-ml)
+//        0 1 1 1 0 0 0
+//        1 0 1 1 1 0 0
+//        1 1 0 1 0 0 0
+//        1 1 1 0 0 0 0
+//        0 1 0 0 0 1 1
+//        0 0 0 0 1 0 1
+//        0 0 0 0 1 1 0
+
+        double[][] adjacencyMatrix =
+                {
+                        {0, 1, 1, 1, 0, 0, 0},
+                        {1, 0, 1, 1, 1, 0, 0},
+                        {1, 1, 0, 1, 0, 0, 0},
+                        {1, 1, 1, 0, 0, 0, 0},
+                        {0, 1, 0, 0, 0, 1, 1},
+                        {0, 0, 0, 0, 1, 0, 1},
+                        {0, 0, 0, 0, 1, 1, 0},
+                };
+
+        // expected trans. matrix
+        /*
+        double[][] transitionMatrix =
+            {
+                {  0, .33, .33, .33,   0,   0,   0},
+                {.25,   0, .25, .25, .25,   0,   0},
+                {.33, .33,   0, .33,   0,   0,   0},
+                {.33, .33, .33,   0,   0,   0,   0},
+                {  0, .33,   0,   0,   0, .33, .33},
+                {  0,   0,   0,   0,  .5,   0,  .5},
+                {  0,   0,   0,   0,  .5,  .5,   0}
+            };
+        */
+        double[][] transitionMatrix = AutomaticClusteringHelper.adjacencyMatrix2transitionMatrix(adjacencyMatrix);
+
+        // |nodes| instances of data with one attribute denoting the node order
+        Dataset original_ds= new DefaultDataset();
+        for (int i=0; i<adjacencyMatrix[0].length; i++) {
+            original_ds.add(new DenseInstance(new double[]{i}));
+        }
+
+        SparseMatrix smatrix = new SparseMatrix(transitionMatrix);
+        MarkovClustering mcl = new MarkovClustering();
+        double maxResidual = 0.001;
+        double gammaExp = 2.0;
+        double loopGain = 0.;
+        double zeroMax = 0.001;
+        SparseMatrix matrix = mcl.run(smatrix, maxResidual, gammaExp, loopGain, zeroMax);
+
+        Dataset[] clustered_ds= getClustering(original_ds, matrix);
+
+        // translate for monti stuff
+        int data_point;
+        int[] labels = new int[original_ds.size()];
+        for (int cluster=0; cluster < clustered_ds.length; cluster++) {
+            for (int instance=0; instance < clustered_ds[cluster].size(); instance++) {
+                data_point= clustered_ds[cluster].instance(instance).get(0).intValue();
+                labels[data_point]= cluster;
+            }
+        }
+
+        for (int label : labels) {
+            System.out.println(label);
+        }
+
+        assertEquals(7, labels.length);
+        assertTrue(labels[0] == labels[1]);
+        assertTrue(labels[0] == labels[2]);
+        assertTrue(labels[0] == labels[3]);
+
+        assertTrue(labels[1] == labels[0]);
+        assertTrue(labels[1] == labels[2]);
+        assertTrue(labels[1] == labels[3]);
+        assertTrue(labels[1] != labels[4]);     // expected cut
+
+        assertTrue(labels[2] == labels[0]);
+        assertTrue(labels[2] == labels[1]);
+        assertTrue(labels[2] == labels[3]);
+
+        assertTrue(labels[3] == labels[0]);
+        assertTrue(labels[3] == labels[1]);
+        assertTrue(labels[3] == labels[2]);
+
+        assertTrue(labels[4] != labels[1]);     // expected cut
+        assertTrue(labels[4] == labels[5]);
+        assertTrue(labels[4] == labels[6]);
+
+        assertTrue(labels[5] == labels[4]);
+        assertTrue(labels[5] == labels[6]);
+
+        assertTrue(labels[6] == labels[4]);
+        assertTrue(labels[6] == labels[5]);
 
     }
 
