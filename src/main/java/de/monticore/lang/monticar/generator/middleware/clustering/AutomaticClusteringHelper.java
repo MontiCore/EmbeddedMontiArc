@@ -40,6 +40,23 @@ public class AutomaticClusteringHelper {
         return res;
     }
 
+    public static double[][] adjacencyMatrix2transitionMatrix(double[][] adjacencyMatrix) {
+        double[][] transitionMatrix= adjacencyMatrix;
+
+        int degree;
+        for(int i = 0; i < adjacencyMatrix[0].length; i++) {
+            degree= 0;
+            for(int j = 0; j < adjacencyMatrix[0].length; j++) {
+                if (adjacencyMatrix[i][j] == 1) degree++;
+            }
+            for(int j = 0; j < adjacencyMatrix[0].length; j++) {
+                if (adjacencyMatrix[i][j] == 1) transitionMatrix[i][j] = 1.0/degree;
+            }
+        }
+
+        return transitionMatrix;
+    }
+
     public static void annotateComponentWithRosTagsForClusters(ExpandedComponentInstanceSymbol componentInstanceSymbol, List<Set<ExpandedComponentInstanceSymbol>> clusters) {
         Collection<ConnectorSymbol> connectors = componentInstanceSymbol.getConnectors();
 
