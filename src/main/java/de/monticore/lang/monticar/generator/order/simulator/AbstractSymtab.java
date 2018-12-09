@@ -58,6 +58,7 @@ public class AbstractSymtab {
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();
         MathOptimizer.resetIDs();
+
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         EmbeddedMontiArcMathLanguage montiArcLanguage = new EmbeddedMontiArcMathLanguage();
 

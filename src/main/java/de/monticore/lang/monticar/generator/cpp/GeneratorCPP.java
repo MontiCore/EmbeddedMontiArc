@@ -8,8 +8,11 @@ import de.monticore.lang.monticar.generator.cmake.CMakeConfig;
 import de.monticore.lang.monticar.generator.cmake.CMakeFindModule;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.DynamicHelper;
 import de.monticore.lang.monticar.generator.cpp.Dynamics.EventPortValueCheck;
+import de.monticore.lang.monticar.generator.cpp.converter.ExecuteMethodGenerator;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
+import de.monticore.lang.monticar.generator.cpp.converter.OptimizationSymbolHandler;
 import de.monticore.lang.monticar.generator.cpp.converter.TypeConverter;
+import de.monticore.lang.monticar.generator.cpp.mathopt.MathOptSolverConfig;
 import de.monticore.lang.monticar.generator.cpp.template.AllTemplates;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.AutopilotAdapterViewModel;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ServerWrapperViewModel;
@@ -53,11 +56,20 @@ public class GeneratorCPP implements Generator {
     private boolean generateCMake = false;
     private CMakeConfig cMakeConfig;
 
+    //MathOpt
+    private MathOptSolverConfig mathOptSolverConfig = new MathOptSolverConfig();
+    private OptimizationSymbolHandler mathOptExecuteMethodGenerator = new OptimizationSymbolHandler();
+    private MathOptFunctionFixer mathOptFunctionFixer = new MathOptFunctionFixer();
+
     public GeneratorCPP() {
         this.mathCommandRegister = new MathCommandRegisterCPP();
-        useOctaveBackend();
+        setGenerateCMake(true);
+        useArmadilloBackend();
         TypeConverter.clearTypeSymbols();
         currentInstance = this;
+
+        mathOptExecuteMethodGenerator.setSuccessor(ExecuteMethodGenerator.getInstance());
+        mathOptFunctionFixer.setSuccessor(MathFunctionFixer.getInstance());
     }
 
     protected void setupCMake() {
@@ -462,4 +474,13 @@ public class GeneratorCPP implements Generator {
         return cMakeConfig;
     }
 
+
+
+    public MathOptSolverConfig getMathOptSolverConfig() {
+        return mathOptSolverConfig;
+    }
+
+    public OptimizationSymbolHandler getMathOptExecuteMethodGenerator() {
+        return mathOptExecuteMethodGenerator;
+    }
 }

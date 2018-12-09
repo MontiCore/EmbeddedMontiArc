@@ -4,6 +4,7 @@ package de.monticore.lang.monticar.generator.mathopt;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
+import de.monticore.lang.monticar.generator.cpp.mathopt.optimizationSolver.solver.Solver;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
 
@@ -39,6 +40,10 @@ public class GeneratorCplexSolverTest extends AbstractSymtabTest {
 //                g.setForceUsePreferredSolver(true);
 //            }
 //        }
+
+        generator.getMathOptSolverConfig().setPreferedSolver(Solver.Cplex);
+        generator.getMathOptSolverConfig().setForceUsePreferredSolver(true);
+
         generator.setGenerationTargetPath("./target/generated-sources-cpp/mathopt/cplex/" + fullModelName.substring(fullModelName.lastIndexOf(".") + 1, fullModelName.length()) + "/src/");
         return generator.generateFiles(componentInstanceSymbol, symtab);
     }

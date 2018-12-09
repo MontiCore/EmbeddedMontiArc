@@ -1,4 +1,4 @@
-package de.monticore.lang.monticar.generator.cpp.mathopt;
+package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
 import de.monticore.lang.mathopt._symboltable.MathOptimizationStatementSymbol;
