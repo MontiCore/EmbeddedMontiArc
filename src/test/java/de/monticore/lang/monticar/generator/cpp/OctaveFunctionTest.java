@@ -27,6 +27,10 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math." + namePart + "CommandTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";
@@ -41,6 +45,10 @@ public class OctaveFunctionTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math." + namePart + "CommandTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testMath/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testMath/l0/";

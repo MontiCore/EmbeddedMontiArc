@@ -64,6 +64,10 @@ public class GeneratorCppCliTest extends AbstractSymtabTest {
         ).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath(targetPath);
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
         Assert.assertNotNull(files);

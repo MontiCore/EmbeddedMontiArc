@@ -42,6 +42,7 @@ public class GenerationTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testBooleanVariableComp");
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "testBooleanVariableComp/";
         testFilesAreEqual(files, restPath);
@@ -54,6 +55,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.singleElemArray", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testSingleElemArray");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "testSingleElemArray/";
@@ -67,6 +72,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicConstantAssignment", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testConstantAssignment");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "testConstantAssignment/";
@@ -80,6 +89,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicConstantAssignment2", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testConstantAssignment2");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "testConstantAssignment2/";
@@ -93,6 +106,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPorts", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         //System.out.println(generatorCPP.generateString(componentSymbol));
         assertEquals("#ifndef TEST_BASICPORTS\n" +
                 "#define TEST_BASICPORTS\n" +
@@ -129,6 +146,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPortsConstantConnector", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         //System.out.println(generatorCPP.generateString(componentSymbol));
         assertEquals("#ifndef TEST_BASICPORTSCONSTANTCONNECTOR\n" +
                 "#define TEST_BASICPORTSCONSTANTCONNECTOR\n" +
@@ -168,6 +189,10 @@ public class GenerationTest extends AbstractSymtabTest {
         //MathStatementsSymbol mathSymbol = symtab.<MathStatementsSymbol>resolve("test.BasicPortsMath.MathStatements", MathStatementsSymbol.KIND).orElse(null);
         //assertNotNull(mathSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         //System.out.println(generatorCPP.generateString(componentSymbol, mathSymbol));
         assertEquals("#ifndef TEST_BASICPORTSMATH\n" +
                 "#define TEST_BASICPORTSMATH\n" +
@@ -209,6 +234,10 @@ public class GenerationTest extends AbstractSymtabTest {
         MathStatementsSymbol mathSymbol = Helper.getMathStatementsSymbolFor(componentSymbol, symtab);
         assertNotNull(mathSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         //System.out.println(generatorCPP.generateString(componentSymbol, mathSymbol));
         assertEquals("#ifndef TEST_BASICPORTSLOOP\n" +
                 "#define TEST_BASICPORTSLOOP\n" +
@@ -374,6 +403,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicGenericArrayInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testBasicGenericArrayInstance");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testBasicGenericArrayInstance/";
@@ -464,6 +497,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("simulator.mainController", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/simulatorMainController");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "simulatorMainController/";
@@ -480,6 +517,10 @@ public class GenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPrecisionTest1", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/test");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "test/";
@@ -498,6 +539,10 @@ public class GenerationTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setUseThreadingOptimization(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/paperMatrixModifier/l3");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "paperMatrixModifier/l3/";
@@ -539,6 +584,10 @@ public class GenerationTest extends AbstractSymtabTest {
         ).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/MyComponent4v1");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
         Assert.assertNotNull(files);
@@ -554,6 +603,10 @@ public class GenerationTest extends AbstractSymtabTest {
         ).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symTab);
         String restPath = "testing/";
@@ -616,6 +669,10 @@ public class GenerationTest extends AbstractSymtabTest {
         assertNotNull(componentInstanceSymbol);
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/Parameter/");
 
         List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
@@ -633,6 +690,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/WholeNumberPort/");
 
         List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);
@@ -649,6 +707,7 @@ public class GenerationTest extends AbstractSymtabTest {
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/WholeNumberMatrix/");
 
         List<File> files = generatorCPP.generateFiles(componentInstanceSymbol, taggingResolver);

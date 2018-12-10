@@ -29,6 +29,8 @@ public class TestsGenTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setModelsDirPath(MODELS_DIR_PATH);
         generatorCPP.setGenerateTests(true);
+        generatorCPP.setGenerateCMake(false);
+        generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/MySuperAwesomeComponent1/");
         generatorCPP.setCheckModelDir(true);
         List<File> files = generatorCPP.generateFiles(symTab, componentSymbol, symTab);

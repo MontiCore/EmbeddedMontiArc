@@ -37,6 +37,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testConstantAssignment");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testConstantAssignment/";
@@ -52,6 +53,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testConstantAssignment2");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testConstantAssignment2/";
@@ -67,6 +69,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/paperMatrixModifier/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/paperMatrixModifier/l0/";
@@ -83,6 +86,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/paperMatrixModifier/l1");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/paperMatrixModifier/l1/";
@@ -99,6 +103,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
         generatorCPP.setUseAlgebraicOptimizations(true);
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/paperMatrixModifier/l2");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/paperMatrixModifier/l2/";
@@ -116,6 +121,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/paperMatrixModifier/l3");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/paperMatrixModifier/l3/";
@@ -147,6 +153,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l0");
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
 
@@ -154,6 +161,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setUseThreadingOptimization(false);
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l1");
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
 
@@ -161,6 +169,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setUseAlgebraicOptimizations(false);
         generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l2");
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
 
@@ -168,6 +177,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.useArmadilloBackend();
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setUseThreadingOptimization(true);
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetectorTest/l3");
         generatorCPP.generateFiles(symtab, componentSymbol, symtab);
     }
@@ -201,6 +211,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseAlgebraicOptimizations(false);
         generatorCPP.setUseThreadingOptimization(false);
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/detectionObjectDetector" + number + "/l0/";
@@ -216,6 +227,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setUseThreadingOptimization(false);
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l1");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/detectionObjectDetector" + number + "/l1/";
@@ -231,6 +243,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.setUseAlgebraicOptimizations(false);
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l2");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/detectionObjectDetector" + number + "/l2/";
@@ -247,6 +260,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         generatorCPP.setUseAlgebraicOptimizations(true);
         generatorCPP.setUseThreadingOptimization(true);
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/detectionObjectDetector" + number + "/l3");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/detectionObjectDetector" + number + "/l3/";
@@ -260,6 +274,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/portInMatrixDefinition");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/portInMatrixDefinition/";

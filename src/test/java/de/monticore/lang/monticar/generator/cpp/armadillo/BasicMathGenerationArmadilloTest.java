@@ -26,6 +26,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -40,6 +41,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -54,6 +56,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -69,6 +72,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -83,6 +87,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -97,6 +102,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -111,6 +117,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/test/custom/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/test/custom/l0/";
@@ -125,6 +132,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/test/custom/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/test/custom/l0/";
@@ -139,6 +147,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -153,6 +162,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";
@@ -167,6 +177,7 @@ public class BasicMathGenerationArmadilloTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testMath/l0");
         List<File> files = generatorCPP.generateFiles(symtab, componentSymbol, symtab);
         String restPath = "armadillo/testMath/l0/";

@@ -34,6 +34,10 @@ public class ConfigPortTest extends AbstractSymtabTest{
         assertNull(subInst1.getIncomingPortInstance("param2").orElse(null));
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPort/");
         List<File> files = generatorCPP.generateFiles(comp, symtab);
 
@@ -53,6 +57,10 @@ public class ConfigPortTest extends AbstractSymtabTest{
         assertTrue(configPort.isIncoming());
 
         GeneratorCPP generatorCPP = new GeneratorCPP();
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/configPortFromKeyword/");
         List<File> files = generatorCPP.generateFiles(comp, symtab);
 

@@ -24,6 +24,8 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("testing.basicLookUpInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "testing/l0/";
@@ -37,6 +39,8 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("testing.model", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
+        generatorCPP.setGenerateCMake(false);
+        generatorCPP.useOctaveBackend();
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/testing/l0");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
     }
@@ -91,6 +95,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         } else {
             firstPartOfPath = "./target/generated-sources-cpp/paperMatrixModifier/l";
         }
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath(firstPartOfPath + additionalPath);
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
@@ -103,6 +108,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testing");
         generatorCPP.generateFiles(componentSymbol, symtab);
     }
@@ -114,6 +120,7 @@ public class BasicGenerationTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
+        generatorCPP.setGenerateCMake(false);
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/armadillo/testing");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "armadillo/testing/";

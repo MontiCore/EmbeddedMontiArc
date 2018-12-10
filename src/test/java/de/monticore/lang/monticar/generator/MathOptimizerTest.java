@@ -35,6 +35,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -50,6 +54,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -64,6 +72,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -79,6 +91,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -94,6 +110,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -108,6 +128,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -123,6 +147,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -138,6 +166,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -154,6 +186,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -168,6 +204,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -183,6 +223,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -198,6 +242,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -212,6 +260,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -227,6 +279,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -242,6 +298,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -256,6 +316,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -271,6 +335,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
@@ -286,6 +354,10 @@ public class MathOptimizerTest extends AbstractSymtabTest {
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
+
+        generatorCPP.useOctaveBackend();
+        generatorCPP.setGenerateCMake(false);
+
         generatorCPP.setGenerationTargetPath("./target/generated-sources-cpp/optimizer/l1/");
         List<File> files = generatorCPP.generateFiles(componentSymbol, symtab);
         String restPath = "optimizer/l1/";
