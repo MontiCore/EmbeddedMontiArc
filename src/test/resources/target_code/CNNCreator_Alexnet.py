@@ -2,6 +2,7 @@ from caffe2.python import workspace, core, model_helper, brew, optimizer
 from caffe2.python.predictor import mobile_exporter
 from caffe2.proto import caffe2_pb2
 import numpy as np
+import math
 import logging
 import os
 import sys
@@ -15,6 +16,17 @@ class CNNCreator_Alexnet:
 
     INIT_NET    = os.path.join(_model_dir_, 'init_net.pb')
     PREDICT_NET = os.path.join(_model_dir_, 'predict_net.pb')
+
+    def get_total_num_iter(self, num_epoch, batch_size, dataset_size):
+        #Force floating point calculation
+        batch_size_float = float(batch_size)
+        dataset_size_float = float(dataset_size)
+
+        iterations_float = math.ceil(num_epoch*(dataset_size_float/batch_size_float))
+        iterations_int = int(iterations_float)
+
+        return iterations_int
+
 
     def add_input(self, model, batch_size, db, db_type, device_opts):
         with core.DeviceScope(device_opts):
@@ -202,8 +214,9 @@ class CNNCreator_Alexnet:
     	workspace.CreateNet(train_model.net, overwrite=True)
 
     	# Main Training Loop
-    	print("== Starting Training for " + str(num_epoch) + " epochs ==")
-    	for i in range(num_epoch):
+    	iterations = self.get_total_num_iter(num_epoch, batch_size, train_dataset_size)
+        print("** Starting Training for " + str(num_epoch) + " epochs = " + str(iterations) + " iterations **")
+    	for i in range(iterations):
     		workspace.RunNet(train_model.net)
     		if i % 50 == 0:
     			print 'Iter ' + str(i) + ': ' + 'Loss ' + str(workspace.FetchBlob("loss")) + ' - ' + 'Accuracy ' + str(workspace.FetchBlob('accuracy'))
