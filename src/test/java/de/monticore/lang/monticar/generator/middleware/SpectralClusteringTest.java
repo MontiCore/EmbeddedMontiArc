@@ -65,6 +65,7 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
         for (int label : labels) {
             System.out.println(label);
         }
+        System.out.println("Distortion C1: "+clustering.distortion());
 
         assertEquals(6, labels.length);
         assertTrue(labels[0] == labels[1]);
@@ -90,6 +91,7 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
         for (int label : labels2) {
             System.out.println(label);
         }
+        System.out.println("Distortion C2: "+clustering2.distortion());
 
         assertEquals(6, labels2.length);
         assertTrue(labels2[0] == labels2[1]);
@@ -111,13 +113,14 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
                 {0, 0, 1, 1, 0, 1},
                 {0, 0, 0, 1, 1, 0}};
 
-        SpectralClustering clustering = new SpectralClustering(adjMatrix,2,2);
+        SpectralClustering clustering = new SpectralClustering(adjMatrix,2,10);
 
         int[] labels = clustering.getClusterLabel();
 
         for (int label : labels) {
             System.out.println(label);
         }
+        System.out.println("Distortion C1S: "+clustering.distortion());
 
         assertEquals(6, labels.length);
         assertTrue(labels[0] == labels[1]);
@@ -309,6 +312,7 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
         for (int label : labels) {
             System.out.println(label);
         }
+        System.out.println("Distortion C1: "+clustering.distortion());
 
         assertEquals(30, labels.length);
         assertTrue(labels[0] == labels[1]);
@@ -385,14 +389,14 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0}}; //29 x 26,28,17
 
 
-        SpectralClustering clustering = new SpectralClustering(adjMatrix,3,2);
+        SpectralClustering clustering = new SpectralClustering(adjMatrix,3,6);
 
         int[] labels = clustering.getClusterLabel();
 
         for (int label : labels) {
             System.out.println(label);
         }
-
+        System.out.println("Distortion: "+clustering.distortion());
         assertEquals(30, labels.length);
         assertTrue(labels[0] == labels[1]);
         assertTrue(labels[0] == labels[2]);
