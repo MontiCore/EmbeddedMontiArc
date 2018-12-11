@@ -4,7 +4,7 @@ import smile.clustering.SpectralClustering;
 
 public class SpectralClusteringBuilder {
 
-    private double[][] data;
+    private double[][] data;    // expected: adjacency matrix
     private Integer k;
     private Integer l;
     private Double sigma;
