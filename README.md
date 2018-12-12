@@ -1,6 +1,6 @@
 ![](doc/images/elysium-emas.png)
 
-![](https://img.shields.io/badge/EmbeddedMontiArcStudio_Version-2.0.0-blue.svg?longCache=true&style=flat-square)
+![](https://img.shields.io/badge/EmbeddedMontiArcStudio_Version-2.0.1-blue.svg?longCache=true&style=flat-square)
 ![](https://img.shields.io/badge/Elysium_Version-2018.10.28-blue.svg?longCache=true&style=flat-square)
 ![](https://img.shields.io/badge/Manager_Version-2018.12.05-blue.svg?longCache=true&style=flat-square)
 

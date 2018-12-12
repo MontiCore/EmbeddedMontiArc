@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@emastudio/installer",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "SE-RWTH <kusmenko@se-rwth.de>",
   "description": "",
   "main": "src/electron/electron.js",
@@ -32,6 +32,7 @@
     "manager"
   ],
   "resolutions" : {
+    "**/event-stream": "3.3.4",
     "**/inversify": "4.13.0",
     "**/@theia/core": "0.3.15",
     "**/@theia/output": "0.3.15",
