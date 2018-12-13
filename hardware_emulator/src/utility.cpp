@@ -71,6 +71,10 @@ void Utility::color_new() {
     ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::DARK_YELLOW ) );
 }
 
+void Utility::color_note() {
+    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::PINK ) );
+}
+
 
 void Array<bool>::resize( uint new_size ) {
     if ( new_size == m_size )

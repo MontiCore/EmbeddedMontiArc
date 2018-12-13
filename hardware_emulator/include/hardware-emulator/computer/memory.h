@@ -1,5 +1,6 @@
 #pragma once
 #include "utility.h"
+#include "computer/computer_layout.h"
 
 
 enum class MemAccess {
@@ -55,6 +56,8 @@ struct Annotations {
     static constexpr ulong DEFAULT_ANNOTATION_SIZE = 128;
     Array<Annotation> annotations;
     uint annotation_pos;
+    
+    Annotations() : annotations( DEFAULT_ANNOTATION_SIZE ) {}
     
     void init_annotations();
     
@@ -161,7 +164,7 @@ struct Memory {
     
     Array<uint8_t> buffer;
     
-    Memory() : internal_uc( nullptr ), section_pos( 0 ) {}
+    Memory() : internal_uc( nullptr ), section_pos( 0 ), sections( SECTION_SIZE ), buffer( BUFFER_SIZE ) {}
     
     void init( void *uc );
     bool loaded() {
@@ -199,6 +202,7 @@ struct Handles {
     }
     
     ulong get_handle( const char *name );
+    ulong add_handle( const char *name );
 };
 
 struct VirtualHeap {
@@ -206,7 +210,9 @@ struct VirtualHeap {
     ulong heap_handle;
     ulong heap_size;
     Array<bool> free_map;
+    Array<uint> size_map;
     static constexpr ulong BLOCK_SIZE = 0x100;
+    static constexpr ulong HEAP_BLOCKS = ComputerLayout::HEAP_SIZE / BLOCK_SIZE;
     
     VirtualHeap() : section( nullptr ) {}
     
@@ -216,6 +222,7 @@ struct VirtualHeap {
     
     void init( Memory &mem, Handles &handles );
     bool alloc( ulong size, ulong &address );
+    bool free( ulong &address );
 };
 
 struct Registers;
@@ -235,4 +242,5 @@ struct VirtualStack {
     void init( Memory &mem, Registers &regs );
     
     ulong pop_long();
+    void push_long( ulong val );
 };

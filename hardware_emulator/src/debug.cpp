@@ -15,7 +15,7 @@ void ComputerDebug::init( Memory &mem, Registers &regs ) {
 }
 
 void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
-    if ( debug && !d_syscalls )
+    if ( !debug || !d_syscalls )
         return;
     Utility::color_sys();
     cout << "[S] ";
@@ -32,48 +32,51 @@ void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
 }
 
 void ComputerDebug::debug_code( ulong addr, uint size ) {
-    if ( debug && d_code ) {
-        if ( d_regs )
-            regs->print_registers();
-        else if ( d_reg_update )
-            regs->print_changed_registers();
+    if ( !debug || !d_code )
+        return;
+        
+    if ( d_regs )
+        regs->print_registers();
+    else if ( d_reg_update )
+        regs->print_changed_registers();
+        
+    Utility::color_code();
+    cout << "[I] ";
+    
+    ZyanUSize offset = 0;
+    const ZyanUSize length = size;
+    ZydisDecodedInstruction instruction;
+    auto code = mem->read_memory( addr, size );
+    if ( ZYAN_SUCCESS( ZydisDecoderDecodeBuffer( &decoder, code, length, &instruction ) ) ) {
+        // Print current instruction pointer.
+        Utility::color_def();
+        printf( "%016" PRIX64 "  ", addr );
+        
+        for ( uint i : Range( size ) )
+            printf( "%02" PRIX64, ( uint64_t )code[i] );
+        sint printed = size * 2;
+        auto to_print = 16 + 5 - printed;
+        if ( to_print < 0 )
+            to_print = 0;
+        for ( uint i : Range( to_print ) )
+            printf( " " );
             
+        // Format & print the binary instruction structure to human readable format
         Utility::color_code();
-        cout << "[I] ";
-        
-        ZyanUSize offset = 0;
-        const ZyanUSize length = size;
-        ZydisDecodedInstruction instruction;
-        auto code = mem->read_memory( addr, size );
-        if ( ZYAN_SUCCESS( ZydisDecoderDecodeBuffer( &decoder, mem, length, &instruction ) ) ) {
-            // Print current instruction pointer.
-            Utility::color_def();
-            printf( "%016" PRIX64 "  ", addr );
-            
-            for ( uint i : Range( size ) )
-                printf( "%02" PRIX64, ( uint64_t )code[i] );
-            sint printed = size * 2;
-            auto to_print = 16 + 5 - printed;
-            if ( to_print < 0 )
-                to_print = 0;
-            for ( uint i : Range( to_print ) )
-                printf( " " );
-                
-            // Format & print the binary instruction structure to human readable format
-            Utility::color_code();
-            ZydisFormatterFormatInstruction( &formatter, &instruction, buffer.begin(), buffer.size(), addr );
-            puts( buffer.begin() );
-        }
-        
+        ZydisFormatterFormatInstruction( &formatter, &instruction, buffer.begin(), buffer.size(), addr );
+        puts( buffer.begin() );
     }
+    
+    
 }
 
 void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong val ) {
 
     Utility::color_err();
     mem->print_address_info( addr );
-    cout << ">>> Invalid memory " << ( type == MemAccess::READ ? "read" : type == MemAccess::WRITE ? "write" : "fetch" ) <<
-         " at 0x";
+    Utility::color_err();
+    cout << "\n>>> Invalid memory " << ( type == MemAccess::READ ? "read" : type == MemAccess::WRITE ? "write" : "fetch" )
+         << " at 0x";
     printf( "%016" PRIX64 "  ", addr );
     
     
@@ -83,7 +86,7 @@ void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong add
 }
 
 void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val ) {
-    if ( !d_mem )
+    if ( !debug || !d_mem )
         return;
         
     switch ( type ) {
@@ -132,7 +135,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
 }
 
 void ComputerDebug::debug_register_syscall( SysCall const &call, ulong addr ) {
-    if ( !d_syscalls )
+    if ( !debug || !d_syscalls )
         return;
     Utility::color_mem_write();
     cout << "Added Syscall: " << call.module << "!" << call.name;

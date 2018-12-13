@@ -16,6 +16,7 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   
   include/hardware-emulator/os_windows/dll_loader.h
   include/hardware-emulator/os_windows/os_windows.h
+  include/hardware-emulator/os_windows/windows_calls.h
   
   src/debug.cpp
   src/dll_interface.cpp
@@ -30,9 +31,20 @@ list(APPEND HARDWARE_EMU_SOURCEFILES
   
   src/os_windows/dll_loader.cpp
   src/os_windows/os_windows.cpp
+  src/os_windows/windows_calls.cpp
   
   src/main.cpp
 )
+
+foreach(source IN LISTS HARDWARE_EMU_SOURCEFILES)
+    
+    string(REPLACE "include/hardware-emulator/" "" trunc_source "${source}")
+    string(REPLACE "src/" "" trunc_source2 "${trunc_source}")
+    get_filename_component(source_path "${trunc_source2}" PATH)
+    string(REPLACE "/" "\\" source_path_msvc "${source_path}")
+    source_group("${source_path_msvc}" FILES "${source}")
+    #message("Source: ${source} trunc: ${trunc_source2} source_path_msvc: ${source_path_msvc}")
+endforeach()
 
 list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   include/hardware-emulator

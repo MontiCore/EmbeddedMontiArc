@@ -1,11 +1,12 @@
 
 stages:
 - windows
+- test
  
 masterJobWindows:
   stage: windows
   script: 
-  - VsDevCmd.bat
+#  - VsDevCmd.bat
   - cd pe-parse
   - "..\\docs\\build.bat"
   - msbuild build\pe-parse.sln /m /p:Configuration=Debug /p:Platform=x64
@@ -30,3 +31,20 @@ masterJobWindows:
   - Windows10
   only:
   - master
+  artifacts:
+    paths:
+      - hardware_emulator/build/Debug/hardware-emulator-test.exe
+      - hardware_emulator/bin/AutopilotModel.dll
+      - hardware_emulator/bin/loaded_dll.dll
+      - hardware_emulator/bin/SampleDLL.dll
+
+test_windows:
+  stage: test
+  tags:
+  - Windows10
+  script:
+    - copy "hardware_emulator\build\Debug\hardware-emulator-test.exe" "hardware_emulator\bin"
+    - cd hardware_emulator\bin
+    - hardware-emulator-test
+  dependencies:
+    - masterJobWindows

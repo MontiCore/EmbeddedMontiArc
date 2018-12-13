@@ -33,9 +33,8 @@ int iter_sections( void *data, VA secBase, std::string &name, image_section_head
 }
 
 bool OS::DLLLoader::init( const std::string &file_name, SystemCalls &sys_calls, Memory &mem ) {
-    if ( loaded() )
-        return true;
-        
+    drop();
+    
     this->sys_calls = &sys_calls;
     this->mem = &mem;
     this->file_name = file_name;
@@ -51,6 +50,7 @@ bool OS::DLLLoader::init( const std::string &file_name, SystemCalls &sys_calls, 
     if ( pe == NULL ) {
         std::cout << "Error: " << GetPEErr() << " (" << GetPEErrString() << ")" << "\n";
         std::cout << "Location: " << GetPEErrLoc() << "\n";
+        file.drop();
         return false;
     }
     
@@ -66,7 +66,7 @@ bool OS::DLLLoader::init( const std::string &file_name, SystemCalls &sys_calls, 
 }
 
 void OS::DLLLoader::drop() {
-    if ( pe ) {
+    if ( loaded() ) {
         DestructParsedPE( static_cast<peparse::parsed_pe *>( pe ) );
         pe = nullptr;
     }

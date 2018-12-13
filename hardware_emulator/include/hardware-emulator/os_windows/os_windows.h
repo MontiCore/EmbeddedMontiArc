@@ -14,7 +14,9 @@ namespace OS {
         MemoryRange cmd_line_wstr;
         MemoryRange cmd_line_str;
         
-        Windows() : computer( nullptr ) {}
+        Array<char> name_buffer;
+        
+        Windows() : computer( nullptr ), name_buffer( 1024 ) {}
         
         void init( Computer &computer );
         
@@ -24,6 +26,7 @@ namespace OS {
         
         bool load_dll( const char *file );
         
+        ulong add_symbol( const std::string &mod, const std::string &name, uint64_t size );
     };
     
     

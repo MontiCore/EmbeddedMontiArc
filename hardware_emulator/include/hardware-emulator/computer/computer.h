@@ -47,4 +47,9 @@ struct Computer {
     
     static MemAccess get_mem_access( uint type );
     static MemAccessError get_mem_err( uint type );
+    
+    static bool exit_callback( Computer &inter, SysCall &syscall );
+    void exit_emulation();
+    ulong exit_code_addr;
+    bool stopped;
 };

@@ -5,7 +5,6 @@
 
 
 void Annotations::init_annotations() {
-    annotations.init( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
     new_annotation( 0, Annotation( "NO-NOTE", Annotation::NONE ) );
 }
@@ -23,7 +22,6 @@ Annotation &Annotations::get_annotation( std::string const &name ) {
         auto &note = annotations[i];
         if ( note.name == name )
             return note;
-            
     }
     return annotations[0];
 }
@@ -159,7 +157,8 @@ void SectionStack::init( MemorySection *mem ) {
 MemoryRange SectionStack::get_range( uint size ) {
     throw_assert( loaded(), "SectionStack::get_range() on uninitialized SectionStack" );
     auto temp = pos;
-    pos += size;
+    auto inc = ( ( ( size - 1 ) / 8 ) + 1 ) * 8;
+    pos += inc;
     return MemoryRange( temp + mem->address_range.start_address, size );
 }
 uint64_t SectionStack::get_8byte_slot() {
@@ -175,13 +174,10 @@ uint64_t SectionStack::get_8byte_slot() {
 
 void Memory::init( void *uc ) {
     this->internal_uc = uc;
-    sections.init( SECTION_SIZE );
     section_pos = 0;
-    buffer.init( BUFFER_SIZE );
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
     
     annotations.init_annotations();
-    
 }
 
 
@@ -223,6 +219,17 @@ void Memory::print_address_info( ulong  virtual_address ) {
         if ( file_address != virtual_address )
             printf( " 0x%0" PRIx64, file_address );
         std::cout << "] ";
+        if ( sec.has_annotations() ) {
+            auto note_ptr = sec.annotations.get_annotation( virtual_address );
+            if ( note_ptr ) {
+                Utility::color_note();
+                auto &note = *note_ptr;
+                std::cout << "(" << note.name;
+                if ( note.base != virtual_address )
+                    std::cout << "[" << ( virtual_address - note.base ) << "]";
+                std::cout << ") ";
+            }
+        }
     }
     else
         std::cout << "[NON-ALLOCATED] ";
@@ -304,44 +311,68 @@ void Handles::init( Memory &mem ) {
                  );
     section->init_annotations();
     handle_stack.init( section );
-    section->annotations.init( &mem.annotations, section->address_range );
 }
 
 ulong Handles::get_handle( const char *name ) {
-    throw_assert( loaded() && section->has_annotations(), "Handles::get_handles() on uninitialized Handles" );
+    throw_assert( loaded() && section->has_annotations(), "Handles::get_handle() on uninitialized Handles" );
+    auto &note = section->annotations.annotations->get_annotation( name );
+    if ( note.type == Annotation::HANDLE )
+        return note.base;
+    return 0;
+}
+
+ulong Handles::add_handle( const char *name ) {
+    throw_assert( loaded() && section->has_annotations(), "Handles::add_handle() on uninitialized Handles" );
     auto handle = handle_stack.get_8byte_slot();
-    section->annotations.add_annotation( handle, Annotation( "HeapHandle", Annotation::HANDLE ) );
+    section->annotations.add_annotation( handle, Annotation( name, Annotation::HANDLE ) );
     return handle;
 }
 
 
 void VirtualHeap::init( Memory &mem, Handles &handles ) {
     heap_size = ComputerLayout::HEAP_SIZE;
-    free_map.init( ( uint )heap_size / BLOCK_SIZE );
-    heap_handle = handles.get_handle( "HeapHandle" );
+    free_map.init( HEAP_BLOCKS );
+    size_map.init( HEAP_BLOCKS );
+    size_map.set_zero();
+    heap_handle = handles.add_handle( "HeapHandle" );
     section = &mem.new_section();
-    section->init( MemoryRange( ComputerLayout::HEAP_ADDRESS, ComputerLayout::HEAP_SIZE ), "HEAP", "System",
+    section->init( MemoryRange( ComputerLayout::HEAP_ADDRESS, ComputerLayout::HEAP_SIZE ),
+                   "HEAP", "System",
                    false, true, true );
 }
 
 bool VirtualHeap::alloc( ulong size, ulong &address ) {
     throw_assert( loaded(), "VirtualHeap::alloc() on uninitialized VirtualHeap" );
+    if ( size == 0 )
+        return false;
+        
+    ulong target_blocks = ( ( size - 1 ) / BLOCK_SIZE ) + 1;
     ulong pos = 0;
-    ulong l_addr = 0;
     ulong count = 0;
     do {
         if ( free_map[( uint )pos] )
             count = 0;
         else
-            count += BLOCK_SIZE;
-        if ( count >= size ) {
-            address = ComputerLayout::HEAP_ADDRESS + l_addr;
+            ++count;
+            
+        if ( count >= target_blocks ) {
+            address = ComputerLayout::HEAP_ADDRESS + ( pos * BLOCK_SIZE );
+            size_map[pos] = target_blocks;
+            for ( auto i : Range( target_blocks ) )
+                free_map[pos + i] = true;
             return true;
         }
         ++pos;
-        l_addr += BLOCK_SIZE;
-    } while ( l_addr < ComputerLayout::HEAP_SIZE );
+    } while ( pos < HEAP_BLOCKS );
     return false;
+}
+
+bool VirtualHeap::free( ulong &address ) {
+    auto pos = section->address_range.get_local_index( address ) / BLOCK_SIZE;
+    for ( auto i : Range( size_map[pos] ) )
+        free_map[pos + i] = false;
+    size_map[pos] = 0;
+    return true;
 }
 
 void VirtualStack::init( Memory &mem, Registers &regs ) {
@@ -349,7 +380,9 @@ void VirtualStack::init( Memory &mem, Registers &regs ) {
     stack_size = 0x1000 * 0x10;
     
     section = &mem.new_section();
-    section->init( MemoryRange( ComputerLayout::STACK_ADDRESS, ( uint )stack_size ), "STACK", "System", false, true, true );
+    section->init( MemoryRange( ComputerLayout::STACK_ADDRESS, ( uint )stack_size ),
+                   "STACK", "System",
+                   false, true, true );
     stack_start = ComputerLayout::STACK_ADDRESS + stack_size - 0x100;
     regs.set_rsp( stack_start );
     this->registers = &regs;
@@ -363,5 +396,15 @@ ulong VirtualStack::pop_long() {
     auto mem_res = Utility::read_uint64_t( ( char * )data ); //Read long word from it
     registers->set_rsp( rsp + 8 ); //Increase stack pointer
     return mem_res;
+}
+
+void VirtualStack::push_long( ulong val ) {
+    throw_assert( loaded(), "VirtualStack::push_long() on uninitialized VirtualStack." );
+    auto rsp = registers->get_rsp() + 8; //Read stack pointer
+    uint32_t size = 8;
+    auto data = section->mem->buffer.begin();
+    Utility::write_uint64_t( ( char * )data, val );
+    section->write( rsp, size, data ); //Set memory at stack pointer location
+    registers->set_rsp( rsp ); //Decrease stack pointer
 }
 

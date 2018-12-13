@@ -1,5 +1,6 @@
 #pragma once
 #include "memory.h"
+#include "computer_layout.h"
 
 struct Computer;
 struct SysCall;
@@ -37,7 +38,7 @@ struct SystemCalls {
     Array<SysCall> sys_calls;
     uint64_t sys_call_pos;
     
-    SystemCalls() : section( nullptr ) {}
+    SystemCalls() : section( nullptr ), sys_calls( ComputerLayout::SYSCALLS_RANGE ) {}
     
     bool loaded() {
         return section != nullptr;

@@ -15,6 +15,7 @@ namespace ADD_DLL {
         bool test_main();
         void init();
         int add( int a, int b );
+        bool call_success;
     };
     
     
@@ -30,9 +31,10 @@ namespace LOADED_DLL {
             TEST_METHOD,
             FUNCTION_COUNT
         };
-        void test_main();
+        bool test_main();
         void init();
         void test_method( void );
+        bool call_success;
     };
     
     
@@ -49,9 +51,10 @@ namespace AUTOPILOT_DLL {
             INIT,
             FUNCTION_COUNT
         };
-        void test_main();
+        bool test_main();
         void init();
         void init( void *a, void *b );
+        bool call_success;
     };
     
     

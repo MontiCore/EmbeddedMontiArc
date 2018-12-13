@@ -21,6 +21,7 @@ namespace Utility {
     void color_code();
     void color_reg();
     void color_new();
+    void color_note();
 }
 
 
@@ -174,6 +175,8 @@ class Array {
             init( size );
         }
         void init( uint size ) {
+            if ( size == m_size )
+                return;
             drop();
             m_size = size;
             if ( size > 0 )

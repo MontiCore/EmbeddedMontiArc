@@ -1,4 +1,4 @@
-#include "computer\computer.h"
+#include "computer/computer.h"
 #include "unicorn/unicorn.h"
 
 struct InternalComputer {
@@ -8,8 +8,7 @@ struct InternalComputer {
 };
 
 void Computer::init() {
-    if ( loaded() )
-        return;
+    drop();
     internal = new InternalComputer();
     
     internal->err = uc_open( UC_ARCH_X86, UC_MODE_64, &internal->uc );
@@ -32,6 +31,8 @@ void Computer::init() {
     uc_hook_add( internal->uc, &internal->trace1, UC_HOOK_CODE, Computer::hook_code, this, 1, 0 );
     uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, Computer::hook_mem, this, 1, 0 );
     uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, Computer::hook_mem_err, this, 1, 0 );
+    
+    exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ) );
 }
 
 void Computer::drop() {
@@ -44,6 +45,8 @@ void Computer::drop() {
 
 
 bool Computer::call( ulong address ) {
+    stopped = false;
+    stack.push_long( exit_code_addr );
     internal->err = uc_emu_start( internal->uc, address, 0, 0, 0 );
     if ( internal->err ) {
         printf( "Failed on uc_emu_start() with error returned %u: %s\n",
@@ -51,8 +54,9 @@ bool Computer::call( ulong address ) {
         return false;
     }
     else {
-        Utility::color_new();
-        printf( "Emulator call successful\n" );
+        /*Utility::color_new();
+        printf( "Emulator call successful\n" );*/
+        std::cout << std::endl << std::endl;
     }
     return true;
 }
@@ -72,21 +76,23 @@ void Computer::cb_code( ulong addr, uint size ) {
         if ( call.type != SysCall::SUPPORTED || !call.callback( *this, call ) )
             fast_call.set_return( 0 );
             
-        //Return to code (simulate 'ret' code)
-        auto ret_address = stack.pop_long();
-        registers.set_rip( ret_address ); //Set instruction pointer to popped address
+        if ( !stopped ) {
+            //Return to code (simulate 'ret' code)
+            auto ret_address = stack.pop_long();
+            registers.set_rip( ret_address ); //Set instruction pointer to popped address
+        }
     }
     else {
-        auto rsp = registers.get_rsp();
-        if ( rsp == stack.stack_start ) {
-            auto mem = memory.read_memory( addr, size );
-            if ( mem[0] == 0xC3 ) {
-                Utility::color_code();
-                std::cout << "Return statement at end of stack reached" << std::endl;
-                uc_emu_stop( internal->uc );
-                return;
-            }
-        }
+        //auto rsp = registers.get_rsp();
+        //if ( rsp == stack.stack_start ) {
+        //    auto mem = memory.read_memory( addr, size );
+        //    if ( mem[0] == 0xC3 ) {
+        //        /*Utility::color_code();
+        //        std::cout << "Return statement at end of stack reached" << std::endl;*/
+        //        uc_emu_stop( internal->uc );
+        //        return;
+        //    }
+        //}
         
         debug.debug_code( addr, size );
     }
@@ -143,4 +149,14 @@ MemAccessError Computer::get_mem_err( uint type ) {
         default:
             return MemAccessError::NONE;
     }
+}
+
+bool Computer::exit_callback( Computer &inter, SysCall &syscall ) {
+    inter.exit_emulation();
+    return true;
+}
+
+void Computer::exit_emulation() {
+    uc_emu_stop( internal->uc );
+    stopped = true;
 }

@@ -8,7 +8,6 @@ void SystemCalls::init( Memory &mem, ComputerDebug &debug ) {
     section->init( MemoryRange( ComputerLayout::SYSCALLS_ADDRESS, ComputerLayout::SYSCALLS_RANGE ), "SYSCALLS", "System",
                    true, false, false );
     section->init_annotations();
-    sys_calls.init( ComputerLayout::SYSCALLS_RANGE );
     sys_call_pos = 0;
     syscall_stack.init( section );
 }
@@ -16,7 +15,7 @@ void SystemCalls::init( Memory &mem, ComputerDebug &debug ) {
 ulong SystemCalls::get_syscall( const std::string &mod, const std::string &name ) {
     std::string res_name = mod + "!" + name;
     auto note = section->annotations.annotations->get_annotation( res_name );
-    if ( note.type == Annotation::PROC )
+    if ( note.type == Annotation::PROC || note.type == Annotation::SYMBOL )
         return note.base;
     else if ( note.type == Annotation::LIBRARY_EXPORT )
         return note.param;
