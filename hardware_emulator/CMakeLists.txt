@@ -43,12 +43,14 @@ list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../zydis/msvc
 )
 
+
 list(APPEND HARDWARE_EMU_LIB_DIRS
-  ../Zydis/build/Release
-  ../unicorn/build/Release
-  ../unicorn/build/qemu/Release
-  ../pe-parse/build/pe-parser-library/Debug
+  ../Zydis/build/$<CONFIG>
+  ../unicorn/build/$<CONFIG>
+  ../unicorn/build/qemu/$<CONFIG>
+  ../pe-parse/build/pe-parser-library/$<CONFIG>
 )
+
 
 list(APPEND HARDWARE_EMU_LIBRARIES
   Zydis.lib
