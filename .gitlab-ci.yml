@@ -31,8 +31,6 @@ masterJobWindows:
   - cd ..
   tags:
   - Windows10
-  only:
-  - master
   artifacts:
     paths:
       - hardware_emulator/build/Debug/hardware-emulator-test.exe
