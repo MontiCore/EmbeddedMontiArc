@@ -26,8 +26,12 @@ import commons.simulation.SimulationLoopNotifiable;
 import commons.simulation.SimulationLoopExecutable;
 import simulation.vehicle.*;
 import commons.simulation.PhysicalObject;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 /**
  * Logic and object management of the simulation
@@ -112,6 +116,48 @@ public class Simulator {
     /** Times for which others wait using the waitFor() method */
     private final List<Long> waitTimers = Collections.synchronizedList(new LinkedList<Long>());
 
+    /** Global Variables for VDM */
+    private String chassis;
+
+    private String inputFilter;
+
+    private String suspension;
+
+    private String tires;
+
+    public String getChassis() {
+        return chassis;
+    }
+
+    public String getInputFilter() {
+        return inputFilter;
+    }
+
+    public String getSuspension() {
+        return suspension;
+    }
+
+    public String getTires() {
+        return tires;
+    }
+
+    public void setChassis(String chassis) {
+        this.chassis = chassis;
+    }
+
+    public void setInputFilter(String inputFilter) {
+        this.inputFilter = inputFilter;
+    }
+
+    public void setSuspension(String suspension) {
+        this.suspension = suspension;
+    }
+
+    public void setTires(String tires) {
+        this.tires = tires;
+    }
+
+
     /**
      * Simulator constructor. Should not be called directly but only by the initialization of "sharedInstance".
      */
@@ -144,6 +190,8 @@ public class Simulator {
      * continued.
      */
     public void startSimulation() {
+
+        setVDM();
         // Check for sane frequency
         if (simulationLoopFrequency <= 0) {
             throw  new IllegalStateException("Simulation loop frequency " + simulationLoopFrequency + " is not positive.");
@@ -216,6 +264,42 @@ public class Simulator {
             runSimulation();
         } else {
             new Thread(this::runSimulation).start();
+        }
+    }
+
+    private void setVDM() {
+        try {
+            System.out.println("Enter Chassis name:");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String c = "lib/" + br.readLine() + ".fmu";
+            setChassis(c);
+        } catch (IOException e){
+            System.err.println("No Chassis name given");
+        }
+
+        try {
+            System.out.println("Enter InputFilter name:");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String i = "lib/" + br.readLine() + ".fmu";
+            setInputFilter(i);
+        } catch (IOException e){
+            System.err.println("No InputFilter name given");
+        }
+        try {
+            System.out.println("Enter Suspension name:");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String s = "lib/" + br.readLine() + ".fmu";
+            setSuspension(s);
+        } catch (IOException e){
+            System.err.println("No Suspension name given");
+        }
+        try {
+            System.out.println("Enter Tires name:");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String t = "lib/" + br.readLine() + ".fmu";
+            setTires(t);
+        } catch (IOException e){
+            System.err.println("No Tires name given");
         }
     }
 

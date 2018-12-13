@@ -49,10 +49,10 @@ public class VehicleDynamicsModel {
      * Constructor for an uninitialised VDM
      */
     public VehicleDynamicsModel(){
-        inputFilter = new Simulation("lib/InputFilter.fmu");
-        chassis = new Simulation("lib/Chassis.fmu");
-        suspension = new Simulation("lib/Suspension.fmu");
-        tires = new Simulation("lib/Tires.fmu");
+        inputFilter = new Simulation(simulation.simulator.Simulator.getInputFilter);
+        chassis = new Simulation(simulation.simulator.Simulator.getChassis);
+        suspension = new Simulation(simulation.simulator.Simulator.getSuspension);
+        tires = new Simulation(simulation.simulator.Simulator.getTires);
         isInitialised = false;
         needsExchanging = false;
     }
