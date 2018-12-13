@@ -30,6 +30,13 @@ class CNNCreator_Alexnet:
 
     def add_input(self, model, batch_size, db, db_type, device_opts):
         with core.DeviceScope(device_opts):
+            if not os.path.isdir(db):
+                logging.error("Data loading failure. Directory '" + os.path.abspath(db) + "' does not exist.")
+                sys.exit(1)
+            elif not (os.path.isfile(os.path.join(db, 'data.mdb')) and os.path.isfile(os.path.join(db, 'lock.mdb'))):
+                logging.error("Data loading failure. Directory '" + os.path.abspath(db) + "' does not contain lmdb files.")
+                sys.exit(1)
+
             # load the data
             data_uint8, label = brew.db_input(
                 model,
@@ -202,7 +209,7 @@ class CNNCreator_Alexnet:
     	arg_scope = {"order": "NCHW"}
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
-    	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'mnist-train-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
     	predictions = self.create_model(train_model, data, device_opts=device_opts)
     	self.add_training_operators(train_model, predictions, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
@@ -225,7 +232,7 @@ class CNNCreator_Alexnet:
     	print("== Running Test model ==")
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
-    	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'mnist-test-nchw-lmdb'), db_type='lmdb', device_opts=device_opts)
+    	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
     	predictions = self.create_model(test_model, data, device_opts=device_opts)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
