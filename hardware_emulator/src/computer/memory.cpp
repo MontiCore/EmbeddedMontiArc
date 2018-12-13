@@ -1,0 +1,367 @@
+#include "computer/memory.h"
+#include <unicorn/unicorn.h>
+#include "computer/computer_layout.h"
+#include "computer/registers.h"
+
+
+void Annotations::init_annotations() {
+    annotations.init( DEFAULT_ANNOTATION_SIZE );
+    annotation_pos = 0;
+    new_annotation( 0, Annotation( "NO-NOTE", Annotation::NONE ) );
+}
+
+uint Annotations::new_annotation( ulong base, Annotation const &annotation ) {
+    if ( annotation_pos >= annotations.size() )
+        annotations.resize( ( annotations.size() ) * 3 / 2 + 1 );
+    auto &target = annotations[annotation_pos];
+    target = annotation;
+    target.base = base;
+    return annotation_pos++;
+}
+Annotation &Annotations::get_annotation( std::string const &name ) {
+    for ( uint i : Range( annotation_pos ) ) {
+        auto &note = annotations[i];
+        if ( note.name == name )
+            return note;
+            
+    }
+    return annotations[0];
+}
+uint64_t Annotations::get_handle( std::string const &name ) {
+    return get_annotation( name ).base;
+}
+
+
+
+
+
+
+void SectionAnnotation::init( Annotations *annotations, MemoryRange address_range ) {
+    this->annotations = annotations;
+    this->address_range = address_range;
+    annotated.init( address_range.size );
+    annotation_id.init( address_range.size );
+}
+
+void SectionAnnotation::add_annotation( MemoryRange range, Annotation const &annotation ) {
+    throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
+    auto note_id = annotations->new_annotation( range.start_address, annotation );
+    auto start_index = address_range.get_local_index( range.start_address );
+    for ( auto i : Range( start_index, start_index + range.size ) ) {
+        annotated[i] = true;
+        annotation_id[i] = note_id;
+    }
+}
+
+void SectionAnnotation::add_annotation( ulong address, Annotation const &annotation ) {
+    throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
+    auto note_id = annotations->new_annotation( address, annotation );
+    auto index = address_range.get_local_index( address );
+    annotated[index] = true;
+    annotation_id[index] = note_id;
+}
+
+Annotation *SectionAnnotation::get_annotation( ulong address ) {
+    throw_assert( loaded(), "SectionAnnotation::get_annotation() on uninitialized SectionAnnotation" );
+    auto local_address = address_range.get_local_index( address );
+    if ( !annotated[local_address] )
+        return nullptr;
+    return &( annotations->annotations[annotation_id[local_address]] );
+}
+
+
+
+
+
+
+
+bool MemorySection::init( MemoryRange address_range, std::string const &name, std::string const &mod,
+                          bool execute, bool read, bool write ) {
+    throw_assert( linked(), "MemorySection::init() on unlinked MemorySection." );
+    this->address_range = address_range;
+    this->file_range = address_range;
+    this->name = name;
+    this->mod = mod;
+    this->p_execute = execute;
+    this->p_read = read;
+    this->p_write = write;
+    address_range.size = ( ( ( address_range.size - 1 ) / ( uint ) page_size ) + 1 ) * ( uint )page_size;
+    uint32_t prot = 0;
+    if ( execute )
+        prot |= UC_PROT_EXEC;
+    if ( read )
+        prot |= UC_PROT_READ;
+    if ( write )
+        prot |= UC_PROT_WRITE;
+    if ( uc_mem_map( static_cast<uc_engine *>( internal_uc ), address_range.start_address, address_range.size, prot ) ) {
+        printf( "Error mapping emulator memory!\n" );
+        return false;
+    }
+    return true;
+}
+
+bool MemorySection::upload( char *data, uint64_t size ) {
+    throw_assert( loaded(), "MemorySection::upload() on uninitialized MemorySection." );
+    throw_assert( linked(), "MemorySection::upload() on unlinked MemorySection." );
+    throw_assert( size <= address_range.size, "MemorySection::upload() outside section." );
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address_range.start_address, data, size ) ) {
+        printf( "Failed to write emulation code to memory, quit!\n" );
+        return false;
+    }
+    return true;
+}
+
+uchar *MemorySection::read( ulong address, ulong size ) {
+    throw_assert( loaded(), "MemorySection::read() on uninitialized MemorySection." );
+    throw_assert( linked(), "MemorySection::read() on unlinked MemorySection." );
+    throw_assert( address_range.contains( address ), "MemorySection::read() outside address range." );
+    throw_assert( address_range.contains( address + size ), "MemorySection::read() outside address range." );
+    return mem->read_memory( address, size );
+}
+
+void MemorySection::write( ulong address, ulong size, uchar *data ) {
+    throw_assert( loaded(), "MemorySection::write() on uninitialized MemorySection." );
+    throw_assert( linked(), "MemorySection::write() on unlinked MemorySection." );
+    throw_assert( address_range.contains( address ), "MemorySection::write() outside address range." );
+    throw_assert( address_range.contains( address + size ), "MemorySection::write() outside address range." );
+    mem->write_memory( address, size, data );
+}
+
+void MemorySection::link( void *internal_uc, ulong page_size, Memory &mem ) {
+    this->internal_uc = internal_uc;
+    this->page_size = page_size;
+    this->mem = &mem;
+}
+
+uint64_t MemorySection::address_to_file( uint64_t virtual_address ) {
+    throw_assert( loaded(), "MemorySection::address_to_file() on uninitialized memory section." );
+    if ( file_range.start_address != address_range.start_address && address_range.contains( virtual_address ) ) {
+        auto local_pos = address_range.get_local_index( virtual_address );
+        if ( local_pos < file_range.size )
+            return local_pos + file_range.start_address;
+    }
+    return virtual_address;
+}
+
+void MemorySection::init_annotations() {
+    annotations.init( &mem->annotations, address_range );
+}
+
+
+
+
+
+void SectionStack::init( MemorySection *mem ) {
+    this->mem = mem;
+    pos = 0;
+}
+
+MemoryRange SectionStack::get_range( uint size ) {
+    throw_assert( loaded(), "SectionStack::get_range() on uninitialized SectionStack" );
+    auto temp = pos;
+    pos += size;
+    return MemoryRange( temp + mem->address_range.start_address, size );
+}
+uint64_t SectionStack::get_8byte_slot() {
+    throw_assert( loaded(), "SectionStack::get_8byte_slot() on uninitialized SectionStack" );
+    auto temp = pos;
+    pos += 8;
+    return temp + mem->address_range.start_address;
+}
+
+
+
+
+
+void Memory::init( void *uc ) {
+    this->internal_uc = uc;
+    sections.init( SECTION_SIZE );
+    section_pos = 0;
+    buffer.init( BUFFER_SIZE );
+    uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
+    
+    annotations.init_annotations();
+    
+}
+
+
+uint8_t *Memory::read_memory( ulong address, ulong size ) {
+    if ( size > BUFFER_SIZE )
+        size = BUFFER_SIZE;
+    uc_mem_read( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), size );
+    return buffer.begin();
+}
+
+void Memory::write_memory( ulong address, ulong size, uchar *data ) {
+    auto s = size > BUFFER_SIZE ? BUFFER_SIZE : size;
+    for ( uint i : Range( ( uint )s ) )
+        buffer[i] = data[i];
+    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), s );
+}
+
+
+MemorySection &Memory::new_section() {
+    auto &sec = sections[section_pos++];
+    sec.link( internal_uc, page_size, *this );
+    return sec;
+}
+
+MemorySection *Memory::get_section( ulong virtual_address ) {
+    for ( uint i : Range( section_pos ) ) {
+        if ( sections[i].address_range.contains( virtual_address ) )
+            return sections.begin() + i;
+    }
+    return nullptr;
+}
+
+void Memory::print_address_info( ulong  virtual_address ) {
+    auto sec_ptr = get_section( virtual_address );
+    if ( sec_ptr ) {
+        auto &sec = *sec_ptr;
+        auto file_address = sec.address_to_file( virtual_address );
+        std::cout << "[" << sec.mod << ":" << sec.name;
+        if ( file_address != virtual_address )
+            printf( " 0x%0" PRIx64, file_address );
+        std::cout << "] ";
+    }
+    else
+        std::cout << "[NON-ALLOCATED] ";
+}
+
+wchar_t *Memory::read_wstr( ulong address ) {
+    uint size = 0;
+    wchar_t c;
+    do {
+        uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 2 );
+        c = *( wchar_t * )( buffer.begin() + size );
+        size += 2;
+    } while ( c != 0 && size < BUFFER_SIZE );
+    
+    if ( size >= BUFFER_SIZE )
+        *( wchar_t * )( buffer.begin() + ( size - 2 ) ) = 0;
+    return ( wchar_t * )buffer.begin();
+}
+
+uchar *Memory::read_wstr_as_str( ulong address ) {
+    auto name_str = read_wstr( address );
+    ulong p = 0;
+    wchar_t next;
+    do {
+        next = name_str[p];
+        uchar c = *( uchar * )&next;
+        buffer[( uint )p] = c;
+        ++p;
+    } while ( next != 0 );
+    return buffer.begin();
+}
+
+uchar *Memory::read_str( ulong address ) {
+    uint size = 0;
+    uchar c;
+    do {
+        uc_mem_read( static_cast<uc_engine *>( internal_uc ), address + size, buffer.begin() + size, 1 );
+        c = buffer[size];
+        ++size;
+    } while ( c != 0 && size < BUFFER_SIZE );
+    
+    if ( size >= BUFFER_SIZE )
+        buffer[size - 1] = 0;
+    return buffer.begin();
+}
+
+void Memory::write_str( ulong address, std::string const &text ) {
+    char *buff = ( char * )buffer.begin();
+    uint size = ( uint )text.size();
+    for ( uint i : Range( size ) )
+        buff[i] = text[i];
+    buff[size] = 0;
+    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, size + 1 );
+}
+
+void Memory::write_wstr( ulong address, std::string const &text ) {
+    wchar_t *buff = ( wchar_t * )buffer.begin();
+    uint size = ( uint )text.size();
+    for ( uint i : Range( size ) ) {
+        wchar_t t = 0;
+        *( char * )&t = text[i];
+        buff[i] = t;
+    }
+    buff[size] = 0;
+    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buff, ( size + 1 ) * sizeof( wchar_t ) );
+}
+
+void Memory::write_long_word( ulong address, ulong value ) {
+    Utility::write_uint64_t( ( char * )buffer.begin(), value );
+    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), 8 );
+}
+
+
+void Handles::init( Memory &mem ) {
+    section = &mem.new_section();
+    section->init( MemoryRange( ComputerLayout::HANDLES_ADDRESS, ComputerLayout::HANDLES_RANGE ),
+                   "HANDLES", "System",
+                   false, false, false
+                 );
+    section->init_annotations();
+    handle_stack.init( section );
+    section->annotations.init( &mem.annotations, section->address_range );
+}
+
+ulong Handles::get_handle( const char *name ) {
+    throw_assert( loaded() && section->has_annotations(), "Handles::get_handles() on uninitialized Handles" );
+    auto handle = handle_stack.get_8byte_slot();
+    section->annotations.add_annotation( handle, Annotation( "HeapHandle", Annotation::HANDLE ) );
+    return handle;
+}
+
+
+void VirtualHeap::init( Memory &mem, Handles &handles ) {
+    heap_size = ComputerLayout::HEAP_SIZE;
+    free_map.init( ( uint )heap_size / BLOCK_SIZE );
+    heap_handle = handles.get_handle( "HeapHandle" );
+    section = &mem.new_section();
+    section->init( MemoryRange( ComputerLayout::HEAP_ADDRESS, ComputerLayout::HEAP_SIZE ), "HEAP", "System",
+                   false, true, true );
+}
+
+bool VirtualHeap::alloc( ulong size, ulong &address ) {
+    throw_assert( loaded(), "VirtualHeap::alloc() on uninitialized VirtualHeap" );
+    ulong pos = 0;
+    ulong l_addr = 0;
+    ulong count = 0;
+    do {
+        if ( free_map[( uint )pos] )
+            count = 0;
+        else
+            count += BLOCK_SIZE;
+        if ( count >= size ) {
+            address = ComputerLayout::HEAP_ADDRESS + l_addr;
+            return true;
+        }
+        ++pos;
+        l_addr += BLOCK_SIZE;
+    } while ( l_addr < ComputerLayout::HEAP_SIZE );
+    return false;
+}
+
+void VirtualStack::init( Memory &mem, Registers &regs ) {
+    //Init stack memory
+    stack_size = 0x1000 * 0x10;
+    
+    section = &mem.new_section();
+    section->init( MemoryRange( ComputerLayout::STACK_ADDRESS, ( uint )stack_size ), "STACK", "System", false, true, true );
+    stack_start = ComputerLayout::STACK_ADDRESS + stack_size - 0x100;
+    regs.set_rsp( stack_start );
+    this->registers = &regs;
+}
+
+ulong VirtualStack::pop_long() {
+    throw_assert( loaded(), "VirtualStack::pop_long() on uninitialized VirtualStack." );
+    auto rsp = registers->get_rsp(); //Read stack pointer
+    uint32_t size = 8;
+    auto data = section->read( rsp, size ); //Get memory at stack pointer location
+    auto mem_res = Utility::read_uint64_t( ( char * )data ); //Read long word from it
+    registers->set_rsp( rsp + 8 ); //Increase stack pointer
+    return mem_res;
+}
+
