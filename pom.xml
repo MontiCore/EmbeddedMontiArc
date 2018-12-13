@@ -54,13 +54,13 @@
         <dependency>
             <groupId>net.sourceforge</groupId>
             <artifactId>javaml</artifactId>
-            <version>0.1.7</version>
+            <version>0.1.5</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>be.abeel</groupId>
             <artifactId>ajt</artifactId>
             <version>2.9</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>

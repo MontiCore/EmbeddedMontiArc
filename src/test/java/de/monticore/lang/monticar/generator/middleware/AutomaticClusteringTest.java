@@ -51,11 +51,11 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
 
         //sorted by full name: alex, combine, dinhAn, michael, philipp
-        double[][] expRes = {{0,1,0,0,0}
-                            ,{1,0,1,1,1}
-                            ,{0,1,0,0,0}
-                            ,{0,1,0,0,0}
-                            ,{0,1,0,0,0}};
+        double[][] expRes = {{0,10,0,0,0}
+                            ,{10,0,10,10,10}
+                            ,{0,10,0,0,0}
+                            ,{0,10,0,0,0}
+                            ,{0,10,0,0,0}};
 
         for(int i = 0; i< expRes.length; i++){
             for(int j = 0; j < expRes[i].length;j++){
