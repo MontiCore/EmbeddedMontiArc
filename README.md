@@ -98,7 +98,7 @@ This guide is based on the installation guide from the Caffe2 website: https://c
 - Clone Pytorch which now contains Caffe2 in your desired YourRepositoryPath and compile it:
 	
 	```
-	git clone --recursive https://github.com/pytorch/pytorch.git && cd pythorch
+	git clone --recursive https://github.com/pytorch/pytorch.git && cd pytorch
 	
 	git checkout v0.4.0
         
@@ -108,7 +108,7 @@ This guide is based on the installation guide from the Caffe2 website: https://c
       
 	mkdir build && cd build
 
-	cmake..
+	cmake ..
 	```
 
 	Review the output from cmake configuration. CUDA value should be CUDA 8.0 and cuDNN value should be 7.0.5.
