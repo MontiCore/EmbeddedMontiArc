@@ -103,8 +103,6 @@ This guide is based on the installation guide from the Caffe2 website: https://c
 	git checkout v0.4.0
         
 	git submodule update --init
-    
-    #Navigate to pytorch folder
       
 	mkdir build && cd build
 
