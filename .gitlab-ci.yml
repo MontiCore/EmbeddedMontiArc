@@ -1,0 +1,12 @@
+stages:
+  - Linux
+
+Linux:
+  stage: Linux
+  image: electronuserland/builder:10
+  script:
+    - git submodule update --init
+    - yarn install
+    - yarn run compile
+    - yarn run build
+    - yarn run package

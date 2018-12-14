@@ -13,7 +13,7 @@
 ## Prerequisites
 | ![https://yarnpkg.com](images/yarn.png) | ![https://nodejs.org](images/nodejs.png) |
 | :----: | :-----: |
-| [**1.5.1+**](https://yarnpkg.com) | [**8.12.0**](https://nodejs.org) |
+| [**1.5.1+**](https://yarnpkg.com) | [**10.14.2**](https://nodejs.org) |
 
 Furthermore, one needs a C++ compiler and a Python 2.7 distribution for their
 respective operating system, such as
