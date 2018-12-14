@@ -205,3 +205,11 @@ NOTE: PENDING TO CHECK WHETHER CAFFE2 IS SUPPORTED ON WINDOWS 10 BECAUSE LMDB WA
 	C:\Phyton27\Lib\lib-tk;
 	YourRepositoryPath\pytorch\build
 
+## EMADL2CPP with CNNAcr2Caffe2
+
+Once you managed to install Caffe2 you can clone the EMADL2CPP project https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP.git and install it
+using `mvn clean install -s settings.xml`. This installs the generator into the .m2 directory of your maven nstallation (in Linux usually `/home/username/.m2`) under
+`.m2\repository\de\monticore\lang\monticar\embedded-montiarc-emadl-generator\0.2.4\embedded-montiarc-emadl-generator-0.2.4-jar-with-dependencies.jar`.
+
+You can run the generator with the following command `java -jar embedded-montiarc-emadl-generator-0.2.4-jar-with-dependencies.jar -m modelpath -r modelname -o output path -b CAFFE2`
+
