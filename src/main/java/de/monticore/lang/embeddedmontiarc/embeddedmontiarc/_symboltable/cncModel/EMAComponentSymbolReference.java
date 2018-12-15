@@ -116,7 +116,7 @@ public class EMAComponentSymbolReference extends EMAComponentSymbol implements
         for (ResolutionDeclarationSymbol resDeclSym : getResolutionDeclarationSymbols()) {
             //Log.debug("" + ((ASTUnitNumberResolution) getResolutionDeclarationSymbols().get(count).getASTResolution()).getNumber().get().intValue(), "resolus:");
             String lastNameStart = "";
-            for (EMAPortSymbol emaPortSymbol : getIncomingPorts()) {
+            for (EMAPortSymbol emaPortSymbol : getPortsList()) {
                 Log.debug(emaPortSymbol.getName(), "Found Port:");
                 if (!emaPortSymbol.getNameWithoutArrayBracketPart().equals(lastNameStart)) {
                     lastNameStart = emaPortSymbol.getNameWithoutArrayBracketPart();
