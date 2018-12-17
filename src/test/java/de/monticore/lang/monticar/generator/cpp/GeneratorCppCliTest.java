@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.apache.commons.cli.Option;
@@ -77,9 +77,9 @@ public class GeneratorCppCliTest extends AbstractSymtabTest {
         };
         GeneratorCppCli.main(args);
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources");
-        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
+        EMAComponentInstanceSymbol componentSymbol = symTab.<EMAComponentInstanceSymbol>resolve(
                 component,
-                ExpandedComponentInstanceSymbol.KIND
+                EMAComponentInstanceSymbol.KIND
         ).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();

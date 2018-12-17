@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.ConnectInstruction;
 import de.monticore.lang.monticar.generator.ExecuteInstruction;
 import de.monticore.lang.monticar.generator.Instruction;
@@ -44,9 +44,9 @@ public class ExecutionOrderFixer {
         Method method = bluePrintCPP.getMethod("execute").get();
         Map<String, List<Instruction>> map = new HashMap<>();
 
-        List<ExpandedComponentInstanceSymbol> threadableSubComponents = bluePrintCPP.getOriginalSymbol().getIndependentSubComponents();
+        List<EMAComponentInstanceSymbol> threadableSubComponents = bluePrintCPP.getOriginalSymbol().getIndependentSubComponents();
         List<Instruction> otherInstructions = computeOtherInstructions(map, method);
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(taggingResolver, bluePrintCPP.getOriginalSymbol());
+        List<EMAComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(taggingResolver, bluePrintCPP.getOriginalSymbol());
         List<Instruction> newList = getExecutionOrderInstructionsList(exOrder, map, bluePrintCPP, threadableSubComponents);
         fixSlistExecutionOrder(bluePrintCPP.getOriginalSymbol(), newList, bluePrintCPP, threadableSubComponents, generatorCPP);
         List<TargetCodeInstruction> joinInstructions = new ArrayList<>();
@@ -66,8 +66,8 @@ public class ExecutionOrderFixer {
         method.setInstructions(newList);
     }
 
-    public static void fixSlistExecutionOrder(ExpandedComponentInstanceSymbol instanceSymbol, List<Instruction> newList, BluePrintCPP bluePrintCPP, List<ExpandedComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
-        for (ExpandedComponentInstanceSymbol subComponent : instanceSymbol.getSubComponents()) {
+    public static void fixSlistExecutionOrder(EMAComponentInstanceSymbol instanceSymbol, List<Instruction> newList, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
+        for (EMAComponentInstanceSymbol subComponent : instanceSymbol.getSubComponents()) {
             if (!listContainsExecuteInstruction(newList, subComponent.getName())) {
                 ExecuteInstruction executeInstruction = (ExecuteInstruction) getExecuteInstruction(subComponent.getName(), bluePrintCPP, threadableComponents, generatorCPP);
                 int insertionIndex = getIndexOfLastConnectInstruction(newList, subComponent.getName());
@@ -88,10 +88,10 @@ public class ExecutionOrderFixer {
     }
 
 
-    public static Instruction getExecuteInstruction(String nameToAdd, BluePrintCPP bluePrintCPP, List<ExpandedComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
+    public static Instruction getExecuteInstruction(String nameToAdd, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents, GeneratorCPP generatorCPP) {
         boolean canBeThreaded = false;
         if (generatorCPP.useThreadingOptimizations())
-            for (ExpandedComponentInstanceSymbol instanceSymbol : threadableComponents) {
+            for (EMAComponentInstanceSymbol instanceSymbol : threadableComponents) {
                 if (nameToAdd.equals(instanceSymbol.getName()))
                     canBeThreaded = true;
             }
@@ -100,7 +100,7 @@ public class ExecutionOrderFixer {
         return new ExecuteInstruction(name, bluePrintCPP, canBeThreaded);
     }
 
-    public static Instruction getExecuteInstruction(ExpandedComponentInstanceSymbol componentInstanceSymbol, BluePrintCPP bluePrintCPP, List<ExpandedComponentInstanceSymbol> threadableComponents) {
+    public static Instruction getExecuteInstruction(EMAComponentInstanceSymbol componentInstanceSymbol, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableComponents) {
         return getExecuteInstruction(componentInstanceSymbol.getName(), bluePrintCPP, threadableComponents, (GeneratorCPP) bluePrintCPP.getGenerator());
     }
 
@@ -129,9 +129,9 @@ public class ExecutionOrderFixer {
         return otherInstructions;
     }
 
-    public static List<Instruction> getExecutionOrderInstructionsList(List<ExpandedComponentInstanceSymbol> exOrder, Map<String, List<Instruction>> map, BluePrintCPP bluePrintCPP, List<ExpandedComponentInstanceSymbol> threadableSubComponents) {
+    public static List<Instruction> getExecutionOrderInstructionsList(List<EMAComponentInstanceSymbol> exOrder, Map<String, List<Instruction>> map, BluePrintCPP bluePrintCPP, List<EMAComponentInstanceSymbol> threadableSubComponents) {
         List<Instruction> newList = new ArrayList<>();
-        for (ExpandedComponentInstanceSymbol instanceSymbol : exOrder) {
+        for (EMAComponentInstanceSymbol instanceSymbol : exOrder) {
             String namey = instanceSymbol.getName();
             Log.info(namey, "Trying to add:");
             if (map.containsKey(namey)) {
@@ -147,7 +147,7 @@ public class ExecutionOrderFixer {
                     newList.add(executeInstruction);
             }
         }
-        for (ExpandedComponentInstanceSymbol subComponent : bluePrintCPP.getOriginalSymbol().getSubComponents()) {
+        for (EMAComponentInstanceSymbol subComponent : bluePrintCPP.getOriginalSymbol().getSubComponents()) {
             String namey = subComponent.getName();
             if (map.containsKey(namey)) {
                 List<Instruction> instructionsToAdd = map.get(namey);

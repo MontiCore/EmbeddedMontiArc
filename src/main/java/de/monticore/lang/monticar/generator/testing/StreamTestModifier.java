@@ -93,8 +93,8 @@ public class StreamTestModifier {
         File streamTest = new File(filePath);
         if (!streamTest.exists()) {
 
-            File curDir = new File("N:\\target\\generated-sources-cpp\\streamtest\\exec\\");
-            File curDir2 = new File("N:\\target\\generated-sources-cpp\\streamtest\\");
+            File curDir = new File("N:/target/generated-sources-cpp/streamtest/exec/");
+            File curDir2 = new File("N:/target/generated-sources-cpp/streamtest/");
             System.out.println("Directories:");
             getAllFiles(curDir);
             getAllFiles(curDir2);

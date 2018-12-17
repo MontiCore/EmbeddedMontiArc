@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.generator.order.tools;
 
 import de.ma2cfg.helper.Names;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.monticar.generator.order.NonVirtualBlock;
 import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
@@ -76,18 +76,18 @@ public class Slist extends AbstractSymtab {
             br.close();
 
             TaggingResolver symTab = createSymTabAndTaggingResolver(modelPath);
-            ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
+            EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                     Names.getExpandedComponentInstanceSymbolName(componentName),
-                    ExpandedComponentInstanceSymbol.KIND).orElse(null);
+                    EMAComponentInstanceSymbol.KIND).orElse(null);
             System.out.println(execute(symTab, inst));
         }
     }
 
     // creates an indent printer and prints the first line of slist.
     // After this printComponentBlockOrder will be executed to print all components
-    public static String execute(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
+    public static String execute(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
         IndentPrinter ip = new IndentPrinter();
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(taggingResolver, inst);
+        List<EMAComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(taggingResolver, inst);
         getNonVirtualBlockSize(taggingResolver, inst);
 
         ip.println("---- Sorted list for '" + inst.getName() + "' [" + nonVirtualBlockSize +
@@ -97,15 +97,15 @@ public class Slist extends AbstractSymtab {
     }
 
     // This method prints every component
-    public static void printComponentBlockOrder(TaggingResolver taggingResolver, List<ExpandedComponentInstanceSymbol> exOrder, IndentPrinter ip) {
-        for (ExpandedComponentInstanceSymbol order : exOrder) {
+    public static void printComponentBlockOrder(TaggingResolver taggingResolver, List<EMAComponentInstanceSymbol> exOrder, IndentPrinter ip) {
+        for (EMAComponentInstanceSymbol order : exOrder) {
             ip.indent();
             ip.print(((TagExecutionOrderSymbol) taggingResolver.getTags(order, TagExecutionOrderSymbol.KIND)
                     .iterator().next()).getExecutionOrder());
             ip.print("    ");
             ip.print("'" + order.getFullName() + "' (");
             ip.print(order.getComponentType().getName() + ", ");
-            if (order.getIncomingPorts().isEmpty() && !order.getActualTypeArguments().isEmpty()) {
+            if (order.getIncomingPortInstances().isEmpty() && !order.getActualTypeArguments().isEmpty()) {
                 ip.println("tid=PRM)");
             } else {
                 ip.println("tid=0)");
@@ -115,8 +115,8 @@ public class Slist extends AbstractSymtab {
     }
 
     // Counts how much NonVirtualBlocks are in the component
-    public static int getNonVirtualBlockSize(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
-        for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
+    public static int getNonVirtualBlockSize(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
+        for (EMAComponentInstanceSymbol subInst : inst.getSubComponents()) {
             if (taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
                     && !subInst.getSubComponents().isEmpty()) {
                 getNonVirtualBlockSize(taggingResolver, subInst);
@@ -130,7 +130,7 @@ public class Slist extends AbstractSymtab {
     }
 
     // Counts how much DirectFeeds in the component are present
-    public static int getDirectFeedSize(ExpandedComponentInstanceSymbol inst) {
+    public static int getDirectFeedSize(EMAComponentInstanceSymbol inst) {
         //TODO Implementation
         return 0;
     }

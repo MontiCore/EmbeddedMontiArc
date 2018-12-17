@@ -31,30 +31,22 @@
   <groupId>de.monticore.lang.monticar</groupId>
   <artifactId>embedded-montiarc-math-generator</artifactId>
 
-  <version>0.0.27-SNAPSHOT</version>
+  <version>0.1.2-SNAPSHOT</version>
 
   <!-- == PROJECT DEPENDENCIES ============================================= -->
 
   <properties>
 
     <!-- .. SE-Libraries .................................................. -->
-    <monticore.version>5.0.0</monticore.version>
     <se-commons.version>1.7.7</se-commons.version>
-    <mc.grammars.assembly.version>0.0.6-SNAPSHOT</mc.grammars.assembly.version>
-	<Common-MontiCar.version>0.0.14-SNAPSHOT</Common-MontiCar.version>
-	<Embedded-MontiArc.version>0.0.18-SNAPSHOT</Embedded-MontiArc.version>
-	<Embedded-MontiArc-Behaviour.version>0.0.14-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
-    <Math.version>0.0.19-SNAPSHOT</Math.version>
-	<Embedded-MontiArc-Math.version>0.0.19-SNAPSHOT</Embedded-MontiArc-Math.version>
-    <tagging.version>0.0.4</tagging.version>
+	<Embedded-MontiArc-Math.version>0.1.4-SNAPSHOT</Embedded-MontiArc-Math.version>
+
     <!-- .. Libraries .................................................. -->
     <guava.version>18.0</guava.version>
     <junit.version>4.12</junit.version>
     <logback.version>1.1.2</logback.version>
-	<jscience.version>4.3.1</jscience.version>
 
     <!-- .. Plugins ....................................................... -->
-    <monticore.plugin>4.5.3.1</monticore.plugin>
     <assembly.plugin>2.5.4</assembly.plugin>
     <compiler.plugin>3.8.0</compiler.plugin>
     <source.plugin>2.4</source.plugin>
@@ -81,11 +73,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.monticore.lang</groupId>
-      <artifactId>Tagging</artifactId>
-      <version>${tagging.version}</version>
-    </dependency>
-    <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-logging</artifactId>
       <version>${se-commons.version}</version>
@@ -99,26 +86,6 @@
 
     <!-- MontiCore Dependencies -->
     <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-grammar</artifactId>
-      <version>${monticore.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-grammar</artifactId>
-      <version>${monticore.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>de.se_rwth.commons</groupId>
       <artifactId>se-commons-groovy</artifactId>
       <version>${se-commons.version}</version>
@@ -126,49 +93,6 @@
 
     <dependency>
       <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>common-monticar</artifactId>
-      <version>${Common-MontiCar.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>common-monticar</artifactId>
-      <version>${Common-MontiCar.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc</artifactId>
-      <version>${Embedded-MontiArc.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc</artifactId>
-      <version>${Embedded-MontiArc.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
-
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-behaviour</artifactId>
-      <version>${Embedded-MontiArc-Behaviour.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
-      <artifactId>embedded-montiarc-behaviour</artifactId>
-      <version>${Embedded-MontiArc-Behaviour.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
-	
-	 <dependency>
-      <groupId>de.monticore.lang.monticar</groupId>
       <artifactId>embedded-montiarc-math</artifactId>
       <version>${Embedded-MontiArc-Math.version}</version>
     </dependency>
@@ -180,22 +104,6 @@
       <classifier>${grammars.classifier}</classifier>
       <scope>provided</scope>
     </dependency>
-
-
-    <dependency>
-      <groupId>de.monticore.lang</groupId>
-      <artifactId>math</artifactId>
-      <version>${Math.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.monticore.lang</groupId>
-      <artifactId>math</artifactId>
-      <version>${Math.version}</version>
-      <classifier>${grammars.classifier}</classifier>
-      <scope>provided</scope>
-    </dependency>
-
 
     <dependency>
       <groupId>montiarc.verification</groupId>
@@ -224,26 +132,11 @@
     </dependency>
 
     <dependency>
-      <groupId>de.monticore</groupId>
-      <artifactId>monticore-runtime</artifactId>
-      <version>${monticore.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
     </dependency>
-  
-    <dependency>
-      <groupId>org.jscience</groupId>
-      <artifactId>jscience</artifactId>
-      <version>${jscience.version}</version>
-    </dependency>
 
-  
   </dependencies>
   
 
@@ -366,6 +259,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
                 <configuration>
+                  <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
             <plugin>

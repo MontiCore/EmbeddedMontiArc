@@ -21,8 +21,8 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.InstanceInformation;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.InstanceInformation;
 import de.monticore.lang.monticar.generator.BluePrint;
 import de.monticore.lang.monticar.generator.Instruction;
 import de.monticore.lang.monticar.generator.Variable;
@@ -70,7 +70,7 @@ public class BluePrintCPP extends BluePrint {
         return consts;
     }
 
-    public void addDefineGenerics(ExpandedComponentInstanceSymbol componentSymbol) {
+    public void addDefineGenerics(EMAComponentInstanceSymbol componentSymbol) {
         if (componentSymbol.getInstanceInformation().isPresent()) {
             int index = 0;
             Log.info(componentSymbol.getName(), "HasInstanceInformation:");
@@ -102,8 +102,8 @@ public class BluePrintCPP extends BluePrint {
         }
     }
 
-    public void fixSubComponentInstanceNumbers(ExpandedComponentInstanceSymbol componentInstanceSymbol, String nameToResolve, int numberToSet, int index) {
-        for (ExpandedComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
+    public void fixSubComponentInstanceNumbers(EMAComponentInstanceSymbol componentInstanceSymbol, String nameToResolve, int numberToSet, int index) {
+        for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
 
             for (ResolutionDeclarationSymbol resolutionDeclarationSymbol : instanceSymbol.getResolutionDeclarationSymbols()) {
                 Log.info(resolutionDeclarationSymbol.getNameToResolve(), "ResDeclFix:");

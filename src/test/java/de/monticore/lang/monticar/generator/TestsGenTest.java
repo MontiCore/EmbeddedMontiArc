@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import org.junit.Test;
@@ -41,9 +41,9 @@ public class TestsGenTest extends AbstractSymtabTest {
     @Test
     public void testMySuperAwesomeComponent1() throws IOException {
         TaggingResolver symTab = createSymTabAndTaggingResolver(MODELS_DIR_PATH.toString());
-        ExpandedComponentInstanceSymbol componentSymbol = symTab.<ExpandedComponentInstanceSymbol>resolve(
+        EMAComponentInstanceSymbol componentSymbol = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.subpackage1.mySuperAwesomeComponent1",
-                ExpandedComponentInstanceSymbol.KIND
+                EMAComponentInstanceSymbol.KIND
         ).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();

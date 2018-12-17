@@ -20,14 +20,9 @@
  */
 package de.monticore.lang.monticar.generator.cpp.viewmodel;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.cpp.viewmodel.check.ComponentCheckViewModel;
-import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsSymbol;
 
-import javax.sound.sampled.Port;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

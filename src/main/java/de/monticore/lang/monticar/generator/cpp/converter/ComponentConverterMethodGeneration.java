@@ -20,9 +20,9 @@
  */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
@@ -36,6 +36,8 @@ import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -46,16 +48,16 @@ import java.util.List;
  */
 public class ComponentConverterMethodGeneration {
     public static int currentGenerationIndex = 0;
-    public static ExpandedComponentInstanceSymbol currentComponentSymbol = null;
+    public static EMAComponentInstanceSymbol currentComponentSymbol = null;
 
-    public static void generateExecuteMethod(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static void generateExecuteMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, MathStatementsSymbol mathStatementsSymbol, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("execute", "void");
         currentComponentSymbol = componentSymbol;
-        for (ConnectorSymbol connector : componentSymbol.getConnectors()) {
+        for (EMAConnectorInstanceSymbol connector : componentSymbol.getConnectorInstances()) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
-                Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
-                Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
+                Variable v1 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getSource(), bluePrint);
+                Variable v2 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getTarget(), bluePrint);
                 Log.info("v1: " + v1.getName() + " v2: " + v2.getName(), "Variable Info:");
                 Log.info("v1: " + v1.getNameTargetLanguageFormat() + " v2: " + v2.getNameTargetLanguageFormat(), "Variable Info:");
 
@@ -63,19 +65,19 @@ public class ComponentConverterMethodGeneration {
                 method.addInstruction(instruction);
             } else {
                 if (connector.getSourcePort().isConstant()) {
-                    ConstantPortSymbol constPort = (ConstantPortSymbol) connector.getSourcePort();
+                    EMAPortSymbol constPort = connector.getSourcePort();
                     Variable v1 = new Variable();
-                    v1.setName(constPort.getConstantValue().getValueAsString());
-                    Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
+                    v1.setName(constPort.getName());
+                    Variable v2 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getTarget(), bluePrint);
 
 
                     Instruction instruction = new ConnectInstructionCPP(v2, v1);
                     method.addInstruction(instruction);
                 } else if (connector.getTargetPort().isConstant()) {
-                    ConstantPortSymbol constPort = (ConstantPortSymbol) connector.getTargetPort();
+                    EMAPortSymbol constPort = connector.getTargetPort();
                     Variable v2 = new Variable();
-                    v2.setName(constPort.getConstantValue().getValueAsString());
-                    Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
+                    v2.setName(constPort.getName());
+                    Variable v1 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getSource(), bluePrint);
 
 
                     Instruction instruction = new ConnectInstructionCPP(v2, v1);

@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
@@ -58,7 +58,7 @@ public class LanguageUnitCPP extends LanguageUnit {
             Symbol symbol = symbolsToConvert.get(i);
             //only works with ExpandedComponentSymbols and MathStatementsSymbol
 
-            if (symbol.isKindOf(ExpandedComponentInstanceSymbol.KIND)) {
+            if (symbol.isKindOf(EMAComponentInstanceSymbol.KIND)) {
                 Log.info(symbol.toString(), "Current Symbol(size:" + symbolsToConvert.size() + ")" + ":");
 
                 if (i + 1 < symbolsToConvert.size()) {
@@ -67,14 +67,14 @@ public class LanguageUnitCPP extends LanguageUnit {
                     if (nextSymbol.isKindOf(MathStatementsSymbol.KIND)) {
 
 
-                        BluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((ExpandedComponentInstanceSymbol) symbol, (MathStatementsSymbol) nextSymbol, includeStrings, generatorCPP);
+                        BluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((EMAComponentInstanceSymbol) symbol, (MathStatementsSymbol) nextSymbol, includeStrings, generatorCPP);
                         bluePrints.add(bluePrint);
 
                         ++i;
                     }
 
                 } else {
-                    BluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((ExpandedComponentInstanceSymbol) symbol, includeStrings, generatorCPP);
+                    BluePrint bluePrint = ComponentConverter.convertComponentSymbolToBluePrint((EMAComponentInstanceSymbol) symbol, includeStrings, generatorCPP);
                     bluePrints.add(bluePrint);
                 }
             }

@@ -22,8 +22,8 @@ package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.math._ast.ASTAssignmentType;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._ast.ASTNumberExpression;
@@ -183,7 +183,7 @@ public class TypeConverter {
         return result;
     }
 
-    public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
+    public static Optional<VariableType> getVariableTypeForMontiCarTypeName(String typeNameMontiCar, Variable variable, EMAPortInstanceSymbol portSymbol) {
         Optional<VariableType> getDefaultType = getNonPrimitiveVariableType(typeNameMontiCar, variable, portSymbol);
         if (getDefaultType.isPresent())
             return getDefaultType;
@@ -202,12 +202,12 @@ public class TypeConverter {
         return Optional.empty();
     }
 
-    public static Optional<VariableType> getNonPrimitiveVariableType(String typeNameMontiCar, Variable variable, PortSymbol portSymbol) {
+    public static Optional<VariableType> getNonPrimitiveVariableType(String typeNameMontiCar, Variable variable, EMAPortInstanceSymbol portSymbol) {
         for (VariableType variableType : nonPrimitiveVariableTypes) {
             if (variableType.getTypeNameMontiCar().equals(typeNameMontiCar)) {
                 if (typeNameMontiCar.equals("CommonMatrixType")) {
                     if (MathConverter.curBackend.getBackendName().equals("ArmadilloBackend")) {
-                        variableType = getRealVariableTypeFromPortSymbol(portSymbol);
+                        variableType = getRealVariableTypeFromEMAPortInstanceSymbol(portSymbol);
                     }
                     handleCommonMatrixType(variable, portSymbol);
                 } else if (typeNameMontiCar.equals("AssignmentType")) {
@@ -222,9 +222,9 @@ public class TypeConverter {
         return Optional.empty();
     }
 
-    private static VariableType getRealVariableTypeFromPortSymbol(PortSymbol portSymbol) {
+    private static VariableType getRealVariableTypeFromEMAPortInstanceSymbol(EMAPortInstanceSymbol portSymbol) {
         VariableType variableType;
-        Optional<ASTCommonMatrixType> astCommonMatrixType = PortConverter.getCommonMatrixTypeFromPortSymbol(portSymbol);
+        Optional<ASTCommonMatrixType> astCommonMatrixType = PortConverter.getCommonMatrixTypeFromEMAPortInstanceSymbol(portSymbol);
         if (astCommonMatrixType.isPresent()) {
             variableType = getRealVariableType(astCommonMatrixType.get());
         } else {
@@ -233,7 +233,7 @@ public class TypeConverter {
         return variableType;
     }
 
-    public static void handleCommonMatrixType(Variable variable, PortSymbol portSymbol) {
+    public static void handleCommonMatrixType(Variable variable, EMAPortInstanceSymbol portSymbol) {
         ASTCommonMatrixType astCommonMatrixType = (ASTCommonMatrixType) ((ASTPort) portSymbol.getAstNode().get()).getType();
         handleCommonMatrixType(variable, astCommonMatrixType);
     }
@@ -255,7 +255,7 @@ public class TypeConverter {
         }
     }
 
-    public static void handleAssignmentType(Variable variable, PortSymbol portSymbol) {
+    public static void handleAssignmentType(Variable variable, EMAPortInstanceSymbol portSymbol) {
         ASTAssignmentType astAssignmentType = (ASTAssignmentType) ((ASTPort) portSymbol.getAstNode().get()).getType();
         handleAssignmentType(variable, astAssignmentType);
     }
@@ -269,7 +269,7 @@ public class TypeConverter {
         }
     }
 
-    public static VariableType getVariableTypeForMontiCarInstance(ExpandedComponentInstanceSymbol instanceSymbol) {
+    public static VariableType getVariableTypeForMontiCarInstance(EMAComponentInstanceSymbol instanceSymbol) {
         VariableType type = TypeConverter.getVariableTypeForMontiCarTypeName(instanceSymbol.getFullName()).orElse(null);
         if (type != null)
             return type;

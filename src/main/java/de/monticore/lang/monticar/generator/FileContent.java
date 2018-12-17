@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.cpp.GeneralHelperMethods;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 
@@ -35,7 +35,7 @@ public class FileContent {
 
     }
 
-    public FileContent(String fileContent, ExpandedComponentInstanceSymbol instanceSymbol) {
+    public FileContent(String fileContent, EMAComponentInstanceSymbol instanceSymbol) {
         this.fileContent = fileContent;
         fileName = GeneralHelperMethods.getTargetLanguageComponentName(instanceSymbol.getFullName())+".h";
     }

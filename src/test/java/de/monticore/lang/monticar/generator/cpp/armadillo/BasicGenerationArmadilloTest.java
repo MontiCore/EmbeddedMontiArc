@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp.armadillo;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.monticar.generator.optimization.ThreadingOptimizer;
@@ -52,7 +52,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     public void testBasicConstantAssignment() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicConstantAssignment", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -67,7 +67,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     public void testBasicConstantAssignment2() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment2", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicConstantAssignment2", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -82,7 +82,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         ThreadingOptimizer.resetID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("paper.mathUnit", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -97,7 +97,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         ThreadingOptimizer.resetID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("paper.mathUnit", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -113,7 +113,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         ThreadingOptimizer.resetID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("paper.mathUnit", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -129,7 +129,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
         ThreadingOptimizer.resetID();
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("paper.mathUnit", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -145,7 +145,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     public void testObjectDetectorInstancing() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("detection.objectDetector", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -162,7 +162,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     public void testObjectDetectorTestInstancing() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector4Test", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("detection.objectDetector4Test", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -214,7 +214,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     private void testObjectDetectorInstancingL0(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("detection.objectDetector" + number, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(false);
@@ -229,7 +229,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     private void testObjectDetectorInstancingL1(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("detection.objectDetector" + number, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
@@ -244,7 +244,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     private void testObjectDetectorInstancingL2(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("detection.objectDetector" + number, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseThreadingOptimization(true);
@@ -260,7 +260,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     private void testObjectDetectorInstancingL3(int number) throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
 
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("detection.objectDetector" + number, ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("detection.objectDetector" + number, EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.setUseAlgebraicOptimizations(true);
@@ -275,7 +275,7 @@ public class BasicGenerationArmadilloTest extends AbstractSymtabTest {
     @Test
     public void testPortInMatrixDefinition() throws IOException {
         TaggingResolver symtab = createSymTabAndTaggingResolver("src/test/resources");
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.portInMatrixDefinition", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.portInMatrixDefinition", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();

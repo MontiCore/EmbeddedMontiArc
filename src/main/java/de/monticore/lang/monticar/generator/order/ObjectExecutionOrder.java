@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.order;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 
 /**
  * Stores an object and its corresponding execution order.

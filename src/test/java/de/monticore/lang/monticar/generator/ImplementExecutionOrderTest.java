@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.*;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.ImplementExecutionOrder;
 import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -45,11 +45,11 @@ public class ImplementExecutionOrderTest extends AbstractSymtabTest {
     @Test
     public void testVelocityControlExecOrder() throws Exception {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "fas.demo_fas_Fkt_m.velocityControl", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "fas.demo_fas_Fkt_m.velocityControl", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         System.out.println("Before inst: " + inst);
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
+        List<EMAComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
         System.out.println("After inst: " + inst);
         assertEquals(13, exOrder.size());
         System.out.println(exOrder);
@@ -84,10 +84,10 @@ public class ImplementExecutionOrderTest extends AbstractSymtabTest {
     @Test
     public void testRSFlipFlopExecOrder() throws Exception {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "fas.advancedLibrary.rSFlipFlop", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "fas.advancedLibrary.rSFlipFlop", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
+        List<EMAComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
         assertEquals(6, exOrder.size());
         assertEquals(exOrder.get(0).getName(), "oneS");
         assertEquals(symTab.getTags(exOrder.get(0), TagExecutionOrderSymbol.KIND).toString(), "[TagExecutionOrder = 0:0]");
@@ -106,13 +106,13 @@ public class ImplementExecutionOrderTest extends AbstractSymtabTest {
     @Test
     public void testMainControllerExecOrder() throws Exception {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "simulator.mainController", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "simulator.mainController", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
-        List<ExpandedComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
+        List<EMAComponentInstanceSymbol> exOrder = ImplementExecutionOrder.exOrder(symTab, inst);
         Log.info(exOrder.size() + "", "size:");
 
-        for (ExpandedComponentInstanceSymbol instanceSymbol : exOrder)
+        for (EMAComponentInstanceSymbol instanceSymbol : exOrder)
             Log.info(instanceSymbol.getName(), "Name:");
        /* assertEquals(6, exOrder.size());
         assertEquals(exOrder.get(0).getName(), "oneS");

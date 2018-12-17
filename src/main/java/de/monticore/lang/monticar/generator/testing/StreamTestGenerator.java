@@ -24,8 +24,8 @@ import alice.tuprolog.Int;
 import de.ma2cfg.helper.Names;
 import de.monticore.ast.ASTNode;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTPort;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.common2._ast.ASTCommonMatrixType;
 import de.monticore.lang.monticar.types2._ast.ASTElementType;
@@ -43,15 +43,15 @@ public class StreamTestGenerator {
     double doubleMin, doubleMax;
     int intMin, intMax;
 
-    public void createStreamTest(ExpandedComponentInstanceSymbol expandedComponentInstanceSymbol, int amountOfValues, String testNamePostFix) {
+    public void createStreamTest(EMAComponentInstanceSymbol expandedComponentInstanceSymbol, int amountOfValues, String testNamePostFix) {
         //TODO remove System.out.printlns
         currentGeneratedStreamTest = new StreamTest();
-        Collection<PortSymbol> inPorts = expandedComponentInstanceSymbol.getIncomingPorts();
+        Collection<EMAPortInstanceSymbol> inPorts = expandedComponentInstanceSymbol.getIncomingPortInstances();
         currentGeneratedStreamTest.setComponentName(Names.FirstUpperCase(expandedComponentInstanceSymbol.getName()));
         currentGeneratedStreamTest.setPackageName(expandedComponentInstanceSymbol.getPackageName());
         currentGeneratedStreamTest.setName(currentGeneratedStreamTest.getComponentName() + "Test" + testNamePostFix);
         System.out.println("Generating StreamTest for component " + currentGeneratedStreamTest.getComponentName());
-        for (PortSymbol p : inPorts) {
+        for (EMAPortInstanceSymbol p : inPorts) {
             if (p.getAstNode().isPresent()) {
                 System.out.println(p.getAstNode().get().getClass().getName());
                 ASTPort astPort = (ASTPort) p.getAstNode().get();

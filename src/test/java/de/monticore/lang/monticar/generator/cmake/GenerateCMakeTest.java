@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cmake;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.AbstractSymtabTest;
 import de.monticore.lang.monticar.generator.cpp.GeneratorCPP;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
@@ -53,7 +53,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeGenerationForBasicConstantAssignment() throws IOException {
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicConstantAssignment", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicConstantAssignment", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -66,7 +66,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeGenerationForModel() throws IOException {
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("testing.model", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("testing.model", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -79,7 +79,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void testCMakeStreamTestGenerationForBasicPortsMath() throws IOException {
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.basicPortsMath", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.basicPortsMath", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();
@@ -115,7 +115,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
 
     @Test
     public void floatDivisionTest() throws IOException {
-        ExpandedComponentInstanceSymbol componentSymbol = symtab.<ExpandedComponentInstanceSymbol>resolve("test.math.floatDivisionTest", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol componentSymbol = symtab.<EMAComponentInstanceSymbol>resolve("test.math.floatDivisionTest", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentSymbol);
         GeneratorCPP generatorCPP = new GeneratorCPP();
         generatorCPP.useArmadilloBackend();

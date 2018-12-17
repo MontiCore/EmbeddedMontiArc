@@ -67,7 +67,7 @@ public class StringValueListExtractorUtil {
                     fullName = MathCommandRegisterCPP.removeTrailingStrings(fullName, "(");
                     String name = MathCommandRegisterCPP.calculateName(fullName);
                     Log.info("" + input + " name: " + name, "containsCommandExpression");
-                    if (ComponentConverterMethodGeneration.currentComponentSymbol.getPort(name).isPresent()) {
+                    if (ComponentConverterMethodGeneration.currentComponentSymbol.getPortInstance(name).isPresent()) {
                         return true;
                     }
                     fullName = fullName.substring(name.length() + 1);

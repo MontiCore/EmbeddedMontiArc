@@ -20,14 +20,11 @@
  */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.tools.Slist;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.monticore.prettyprint.IndentPrinter;
-import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -42,8 +39,8 @@ public class SListTest extends AbstractSymtabTest {
     public void testSList() {
         Slist.resetNonVirtualBlockSize();
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "fas.advancedLibrary.rSFlipFlop", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "fas.advancedLibrary.rSFlipFlop", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         IndentPrinter ip = new IndentPrinter();
         ip.println("---- Sorted list for 'rSFlipFlop' [6 nonvirtual block(s), directfeed=0]");
@@ -63,12 +60,12 @@ public class SListTest extends AbstractSymtabTest {
     @Test
     public void testSlistDetection() {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "detection.objectDetector", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "detection.objectDetector", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         Log.info(inst.toString(), "Component:");
         Log.info(Slist.execute(symTab, inst), "SLIST");
-        for (ExpandedComponentInstanceSymbol symbol : inst.getIndependentSubComponents())
+        for (EMAComponentInstanceSymbol symbol : inst.getIndependentSubComponents())
             Log.info(symbol.getName(), "Independent comps");
 
     }
@@ -76,12 +73,12 @@ public class SListTest extends AbstractSymtabTest {
     @Test
     public void testSlistMatrixModifier() {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "paper.matrixModifier", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "paper.matrixModifier", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         Log.info(inst.toString(), "Component:");
         Log.info(Slist.execute(symTab, inst), "SLIST");
-        for (ExpandedComponentInstanceSymbol symbol : inst.getIndependentSubComponents())
+        for (EMAComponentInstanceSymbol symbol : inst.getIndependentSubComponents())
             Log.info(symbol.getName(), "Independent comps");
 
     }
@@ -89,12 +86,12 @@ public class SListTest extends AbstractSymtabTest {
     @Test
     public void testSlistMathUnit() {
         TaggingResolver symTab = createSymTabAndTaggingResolver("src/test/resources/streams", "src/test/resources");
-        ExpandedComponentInstanceSymbol inst = symTab.<ExpandedComponentInstanceSymbol>resolve(
-                "paper.mathUnit", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
+                "paper.mathUnit", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         Log.info(inst.toString(), "Component:");
         Log.info(Slist.execute(symTab, inst), "SLIST");
-        for (ExpandedComponentInstanceSymbol symbol : inst.getIndependentSubComponents())
+        for (EMAComponentInstanceSymbol symbol : inst.getIndependentSubComponents())
             Log.info(symbol.getName(), "Independent comps");
 
     }

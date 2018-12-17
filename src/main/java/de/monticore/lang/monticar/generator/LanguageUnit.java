@@ -20,8 +20,8 @@
  */
 package de.monticore.lang.monticar.generator;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.cpp.converter.ComponentConverter;
 import de.monticore.symboltable.Symbol;

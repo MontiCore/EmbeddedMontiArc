@@ -21,9 +21,9 @@
 package de.monticore.lang.monticar.generator.order;
 
 import de.ma2cfg.helper.Names;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.order.nfp.TagExecutionOrderTagSchema.TagExecutionOrderSymbol;
 import de.monticore.lang.tagging._symboltable.TaggingResolver;
 import de.se_rwth.commons.Splitters;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
  *
  */
 public class ImplementExecutionOrder {
-    private static Map<ExpandedComponentInstanceSymbol, Collection<PortSymbol>> dependencies = new HashMap<>();
+    private static Map<EMAComponentInstanceSymbol, Collection<EMAPortInstanceSymbol>> dependencies = new HashMap<>();
     private static int s = 0;
     private static int b = 0;
 
@@ -57,21 +57,21 @@ public class ImplementExecutionOrder {
      * Then tagExOrder searches for a possible execution order.
      */
 
-    public static List<ExpandedComponentInstanceSymbol> exOrder(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
+    public static List<EMAComponentInstanceSymbol> exOrder(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
         dependencies.clear();
         s = 0;
         b = 0;
-        Log.errorIfNull(inst, "The given ExpandedComponentInstanceSymbol in 'exOrder' is null!");
+        Log.errorIfNull(inst, "The given EMAComponentInstanceSymbol in 'exOrder' is null!");
         getDependencies(inst);
-       /* for (ExpandedComponentInstanceSymbol symbol : dependencies.keySet()) {
+       /* for (EMAComponentInstanceSymbol symbol : dependencies.keySet()) {
             Log.info(symbol.toString(), "KeySet contains:");
         }*/
-        ExpandedComponentInstanceSymbol instTagged = tagExOrder(taggingResolver, inst);
+        EMAComponentInstanceSymbol instTagged = tagExOrder(taggingResolver, inst);
         return getExecutionOrder(taggingResolver, instTagged);
     }
 
     /**
-     * get a map of ExpandedComponentInstanceSymbols with their dependent ports.
+     * get a map of EMAComponentInstanceSymbols with their dependent ports.
      * For example:
      * component A {
      * port
@@ -91,21 +91,21 @@ public class ImplementExecutionOrder {
      * }
      * Then the component B will be stored in 'dependencies' with the ports in1 and in2 of component A.
      */
-    private static void getDependencies(ExpandedComponentInstanceSymbol inst) {
+    private static void getDependencies(EMAComponentInstanceSymbol inst) {
         //Log.info(inst.toString()," getDependencies from:");
-        for (ConnectorSymbol c : inst.getConnectors()) {
-            //Log.info(c.toString(),"ConnectorSymbol:");
-            PortSymbol pt = connectorTargetPort(inst, c);
-            PortSymbol ps = connectorSourcePort(inst, c);
-            ExpandedComponentInstanceSymbol inst2 = (ExpandedComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
-            ExpandedComponentInstanceSymbol inst3 = (ExpandedComponentInstanceSymbol) ps.getEnclosingScope().getSpanningSymbol().get();
+        for (EMAConnectorInstanceSymbol c : inst.getConnectorInstances()) {
+            //Log.info(c.toString(),"EMAConnectorInstanceSymbol:");
+            EMAPortInstanceSymbol pt = connectorTargetPortInstance(inst, c);
+            EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
+            EMAComponentInstanceSymbol inst2 = (EMAComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
+            EMAComponentInstanceSymbol inst3 = (EMAComponentInstanceSymbol) ps.getEnclosingScope().getSpanningSymbol().get();
             if (!dependencies.containsKey(inst2) && pt.isIncoming()) {
-                Collection<PortSymbol> ports = inst3.getPortsList().stream()
+                Collection<EMAPortInstanceSymbol> ports = inst3.getPortInstanceList().stream()
                         .filter(po -> po.equals(ps)).collect(Collectors.toList());
                 //Log.info(inst2.toString(), "Added to dependencies");
                 dependencies.put(inst2, ports);
             } else if (dependencies.containsKey(inst2) && pt.isIncoming()) {
-                Collection<PortSymbol> ports2 = dependencies.get(inst2);
+                Collection<EMAPortInstanceSymbol> ports2 = dependencies.get(inst2);
                 ports2.add(ps);
                 //Log.info(inst2.toString(), "Added to dependencies already present");
                 dependencies.put(inst2, ports2);
@@ -114,7 +114,7 @@ public class ImplementExecutionOrder {
                 Log.info("" + pt.toString(), "Case not handled");
             }
         }
-        for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
+        for (EMAComponentInstanceSymbol subInst : inst.getSubComponents()) {
             if (!subInst.getSubComponents().isEmpty()) {
                 getDependencies(subInst);
             }
@@ -128,16 +128,16 @@ public class ImplementExecutionOrder {
      * @param inst The component where the execution order is searched for
      * @return returns the tagged component
      */
-    private static ExpandedComponentInstanceSymbol tagExOrder(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
+    private static EMAComponentInstanceSymbol tagExOrder(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
 
-        for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
+        for (EMAComponentInstanceSymbol subInst : inst.getSubComponents()) {
 //		  //Case that the given block is a switch and has a selfloop to port in3
 //			if(subInst.getComponentType().getName().equals("SwitchB")
 //          || subInst.getComponentType().getName().equals("SwitchM")) {
 //			  if(dependencies.containsKey(subInst)) {
-//          for (PortSymbol p : subInst.getOutgoingPorts()) {
+//          for (EMAPortInstanceSymbol p : subInst.getOutgoingPorts()) {
 //            if (dependencies.get(subInst).contains(p)) {
-//              Collection<PortSymbol> newPorts = dependencies.get(subInst);
+//              Collection<EMAPortInstanceSymbol> newPorts = dependencies.get(subInst);
 //              newPorts.remove(p);
 //              dependencies.put(subInst, newPorts);
 //            }
@@ -146,7 +146,7 @@ public class ImplementExecutionOrder {
 //      }
             //Case that given block is a block with an initial value parameter such as
             // Constant, Memory or Delay
-            if ((subInst.getSubComponents().isEmpty() && subInst.getIncomingPorts().isEmpty()
+            if ((subInst.getSubComponents().isEmpty() && subInst.getIncomingPortInstances().isEmpty()
                     || !subInst.getComponentType().getConfigParameters().isEmpty())
                     && taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()) {
                 ExecutionOrder e = new NonVirtualBlock(s, b);
@@ -154,24 +154,24 @@ public class ImplementExecutionOrder {
                 taggingResolver.addTag(subInst, new TagExecutionOrderSymbol(e));
                 b += 1;
                 Log.info(subInst.toString(), "Instance after Tagging:");
-                Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
-                        .filter(c -> subInst.getPortsList().contains(connectorSourcePort(inst, c)))
+                Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+                        .filter(c -> subInst.getPortInstanceList().contains(connectorSourcePort(inst, c)))
                         .collect(Collectors.toList());
                 if (!subInst.getComponentType().getConfigParameters().isEmpty()) {
-                    dependencies.put(subInst, new ArrayList<PortSymbol>());
+                    dependencies.put(subInst, new ArrayList<EMAPortInstanceSymbol>());
                 }
-                for (ConnectorSymbol c : connects) {
-                    PortSymbol pt = connectorTargetPort(inst, c);
-                    PortSymbol ps = connectorSourcePort(inst, c);
-                    ExpandedComponentInstanceSymbol inst2 = (ExpandedComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
-                    if (inst2.getIncomingPorts().contains(pt)) {
-                        Collection<PortSymbol> ports = dependencies.get(inst2);
+                for (EMAConnectorInstanceSymbol c : connects) {
+                    EMAPortInstanceSymbol pt = connectorTargetPortInstance(inst, c);
+                    EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
+                    EMAComponentInstanceSymbol inst2 = (EMAComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
+                    if (inst2.getIncomingPortInstances().contains(pt)) {
+                        Collection<EMAPortInstanceSymbol> ports = dependencies.get(inst2);
                         ports.remove(ps);
                         dependencies.put(inst2, ports);
-                    } else if (inst.getOutgoingPorts().contains(pt) && inst.getEnclosingScope()
+                    } else if (inst.getOutgoingPortInstances().contains(pt) && inst.getEnclosingScope()
                             .getSpanningSymbol().isPresent()) {
                         dependencyPortDeletion(taggingResolver,
-                                (ExpandedComponentInstanceSymbol) inst.getEnclosingScope().getSpanningSymbol().get(), pt);
+                                (EMAComponentInstanceSymbol) inst.getEnclosingScope().getSpanningSymbol().get(), pt);
                     }
                     //delete dependency of port in target component
                     if (!inst2.getSubComponents().isEmpty()) {
@@ -189,7 +189,7 @@ public class ImplementExecutionOrder {
         }
 
         //tag components that are newly independent from ports
-        for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
+        for (EMAComponentInstanceSymbol subInst : inst.getSubComponents()) {
             if (taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
                     && subInst.getSubComponents().isEmpty()
                     && (!dependencies.containsKey(subInst) || dependencies.get(subInst).isEmpty())) {
@@ -206,26 +206,26 @@ public class ImplementExecutionOrder {
      * if an atomic component got tagged, then first look at components, that are
      * connected to this component's outputs
      */
-    private static ExpandedComponentInstanceSymbol tagExOrderBranch(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol subInst, ExpandedComponentInstanceSymbol inst) {
+    private static EMAComponentInstanceSymbol tagExOrderBranch(TaggingResolver taggingResolver, EMAComponentInstanceSymbol subInst, EMAComponentInstanceSymbol inst) {
         if ((taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).isEmpty()
                 && subInst.getSubComponents().isEmpty()
                 && dependencies.get(subInst) != null && dependencies.get(subInst).isEmpty())) {
             ExecutionOrder e = new NonVirtualBlock(s, b);
             taggingResolver.addTag(subInst, new TagExecutionOrderSymbol(e));
             b += 1;
-            Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
-                    .filter(c -> subInst.getOutgoingPorts().contains(connectorSourcePort(inst, c)))
+            Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+                    .filter(c -> subInst.getOutgoingPortInstances().contains(connectorSourcePort(inst, c)))
                     .collect(Collectors.toList());
-            for (ConnectorSymbol c : connects) {
-                PortSymbol pt = connectorTargetPort(inst, c);
-                PortSymbol ps = connectorSourcePort(inst, c);
-                ExpandedComponentInstanceSymbol inst2 = (ExpandedComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
-                if (inst2.getIncomingPorts().contains(pt)) {
-                    Collection<PortSymbol> ports = dependencies.get(inst2);
+            for (EMAConnectorInstanceSymbol c : connects) {
+                EMAPortInstanceSymbol pt = connectorTargetPortInstance(inst, c);
+                EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
+                EMAComponentInstanceSymbol inst2 = (EMAComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
+                if (inst2.getIncomingPortInstances().contains(pt)) {
+                    Collection<EMAPortInstanceSymbol> ports = dependencies.get(inst2);
                     ports.remove(ps);
                     dependencies.put(inst2, ports);
-                } else if (inst.getOutgoingPorts().contains(pt) && inst.getEnclosingScope().getSpanningSymbol().isPresent()) {
-                    dependencyPortDeletion(taggingResolver, (ExpandedComponentInstanceSymbol) inst.getEnclosingScope().getSpanningSymbol().get(), pt);
+                } else if (inst.getOutgoingPortInstances().contains(pt) && inst.getEnclosingScope().getSpanningSymbol().isPresent()) {
+                    dependencyPortDeletion(taggingResolver, (EMAComponentInstanceSymbol) inst.getEnclosingScope().getSpanningSymbol().get(), pt);
                 }
                 if (!inst2.getSubComponents().isEmpty()) {
                     dependencyPortDeletion(taggingResolver, inst2, pt);
@@ -245,20 +245,20 @@ public class ImplementExecutionOrder {
      * @param inst The component which encloses the component of the port p
      * @param p    The source port
      */
-    private static ExpandedComponentInstanceSymbol dependencyPortDeletion(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst, PortSymbol p) {
-        Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
+    private static EMAComponentInstanceSymbol dependencyPortDeletion(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst, EMAPortInstanceSymbol p) {
+        Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
                 .filter(c -> p.equals(connectorSourcePort(inst, c)))
                 .collect(Collectors.toList());
-        for (ConnectorSymbol c : connects) {
-            PortSymbol pt = connectorTargetPort(inst, c);
-            ExpandedComponentInstanceSymbol inst2 = (ExpandedComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
-            if (inst2.getIncomingPorts().contains(pt)) {
-                Collection<PortSymbol> ports = dependencies.get(inst2);
+        for (EMAConnectorInstanceSymbol c : connects) {
+            EMAPortInstanceSymbol pt = connectorTargetPortInstance(inst, c);
+            EMAComponentInstanceSymbol inst2 = (EMAComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
+            if (inst2.getIncomingPortInstances().contains(pt)) {
+                Collection<EMAPortInstanceSymbol> ports = dependencies.get(inst2);
                 ports.remove(p);
                 dependencies.put(inst2, ports);
-            } else if (inst.getOutgoingPorts().contains(pt) && inst.getEnclosingScope()
+            } else if (inst.getOutgoingPortInstances().contains(pt) && inst.getEnclosingScope()
                     .getSpanningSymbol().isPresent()) {
-                dependencyPortDeletion(taggingResolver, (ExpandedComponentInstanceSymbol) inst.getEnclosingScope().getSpanningSymbol().get(), pt);
+                dependencyPortDeletion(taggingResolver, (EMAComponentInstanceSymbol) inst.getEnclosingScope().getSpanningSymbol().get(), pt);
             }
 
             if (!inst2.getSubComponents().isEmpty()) {
@@ -276,18 +276,18 @@ public class ImplementExecutionOrder {
      *
      * @param inst The 'outest' component
      */
-    private static ExpandedComponentInstanceSymbol dependencyPortsDeletion(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
-        Collection<ConnectorSymbol> connects = inst.getConnectors().stream()
-                .filter(c -> inst.getPortsList().contains(connectorSourcePort(inst, c)))
+    private static EMAComponentInstanceSymbol dependencyPortsDeletion(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
+        Collection<EMAConnectorInstanceSymbol> connects = inst.getConnectorInstances().stream()
+                .filter(c -> inst.getPortInstanceList().contains(connectorSourcePort(inst, c)))
                 .collect(Collectors.toList());
-        for (ConnectorSymbol c : connects) {
-            PortSymbol pt = connectorTargetPort(inst, c);
-            PortSymbol ps = connectorSourcePort(inst, c);
-            ExpandedComponentInstanceSymbol inst2 = (ExpandedComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
-            Collection<PortSymbol> ports = dependencies.get(inst2);
+        for (EMAConnectorInstanceSymbol c : connects) {
+            EMAPortInstanceSymbol pt = connectorTargetPortInstance(inst, c);
+            EMAPortInstanceSymbol ps = connectorSourcePort(inst, c);
+            EMAComponentInstanceSymbol inst2 = (EMAComponentInstanceSymbol) pt.getEnclosingScope().getSpanningSymbol().get();
+            Collection<EMAPortInstanceSymbol> ports = dependencies.get(inst2);
             if (ports == null) {//nullpointer fix
                 Log.info(inst2.getName(), "INFO:");
-                for (ExpandedComponentInstanceSymbol instanceSymbol : dependencies.keySet()) {
+                for (EMAComponentInstanceSymbol instanceSymbol : dependencies.keySet()) {
                     Log.info(instanceSymbol.getName(), "Available:");
                 }
                 //return inst;
@@ -312,8 +312,8 @@ public class ImplementExecutionOrder {
      * @param inst
      * @return A list which contains all atomic subComponents of inst in a sorted order regarding the NonvirtualBlocks
      */
-    private static List<ExpandedComponentInstanceSymbol> getExecutionOrder(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol inst) {
-        Map<ExecutionOrder, ExpandedComponentInstanceSymbol> exOrder = new HashMap<ExecutionOrder, ExpandedComponentInstanceSymbol>();
+    private static List<EMAComponentInstanceSymbol> getExecutionOrder(TaggingResolver taggingResolver, EMAComponentInstanceSymbol inst) {
+        Map<ExecutionOrder, EMAComponentInstanceSymbol> exOrder = new HashMap<ExecutionOrder, EMAComponentInstanceSymbol>();
         exOrder = exOrderRecursion(taggingResolver, exOrder, inst);
         List<ExecutionOrder> sortedBlocks = new LinkedList<ExecutionOrder>();
         for (ExecutionOrder o : exOrder.keySet()) {
@@ -321,7 +321,7 @@ public class ImplementExecutionOrder {
         }
         Collections.sort(sortedBlocks);
 
-        List<ExpandedComponentInstanceSymbol> orderSorted = new LinkedList<ExpandedComponentInstanceSymbol>();
+        List<EMAComponentInstanceSymbol> orderSorted = new LinkedList<EMAComponentInstanceSymbol>();
         Iterator<ExecutionOrder> it = sortedBlocks.iterator();
         while (it.hasNext()) {
             orderSorted.add(exOrder.get(it.next()));
@@ -332,10 +332,10 @@ public class ImplementExecutionOrder {
     /**
      * A recursive Method to get all atomic subComponents of a given component
      */
-    private static Map<ExecutionOrder, ExpandedComponentInstanceSymbol> exOrderRecursion(TaggingResolver taggingResolver,
+    private static Map<ExecutionOrder, EMAComponentInstanceSymbol> exOrderRecursion(TaggingResolver taggingResolver,
                                                                                          Map<ExecutionOrder,
-                                                                                                 ExpandedComponentInstanceSymbol> exOrder, ExpandedComponentInstanceSymbol inst) {
-        for (ExpandedComponentInstanceSymbol subInst : inst.getSubComponents()) {
+                                                                                                 EMAComponentInstanceSymbol> exOrder, EMAComponentInstanceSymbol inst) {
+        for (EMAComponentInstanceSymbol subInst : inst.getSubComponents()) {
             Log.info(taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).size() + "",
                     "Amount of ExecutionOrder Tags");
             if (taggingResolver.getTags(subInst, TagExecutionOrderSymbol.KIND).size() == 1) {
@@ -355,11 +355,11 @@ public class ImplementExecutionOrder {
      * @param c    The given connector
      * @return Source port of c
      */
-    public static PortSymbol connectorSourcePort(ExpandedComponentInstanceSymbol inst, ConnectorSymbol c) {
+    public static EMAPortInstanceSymbol connectorSourcePort(EMAComponentInstanceSymbol inst, EMAConnectorInstanceSymbol c) {
         Iterator<String> parts = Splitters.DOT.split(c.getSource()).iterator();
         Optional<String> instance = Optional.empty();
         Optional<String> instancePort;
-        Optional<PortSymbol> port;
+        Optional<EMAPortInstanceSymbol> port;
         if (parts.hasNext()) {
             instance = Optional.of(parts.next());
         }
@@ -367,12 +367,12 @@ public class ImplementExecutionOrder {
             instancePort = Optional.of(parts.next());
             instance = Optional.of(Names.FirstLowerCase(instance.get()));
 
-            ExpandedComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
-            port = inst2.getSpannedScope().<PortSymbol>resolve(instancePort.get(), PortSymbol.KIND);
+            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
+            port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
         } else {
             instancePort = instance;
 
-            port = inst.getSpannedScope().<PortSymbol>resolve(instancePort.get(), PortSymbol.KIND);
+            port = inst.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
         }
 
         if (port.isPresent()) {
@@ -391,11 +391,11 @@ public class ImplementExecutionOrder {
      * @param c    The given connector
      * @return Target port of c
      */
-    public static PortSymbol connectorTargetPort(ExpandedComponentInstanceSymbol inst, ConnectorSymbol c) {
+    public static EMAPortInstanceSymbol connectorTargetPortInstance(EMAComponentInstanceSymbol inst, EMAConnectorInstanceSymbol c) {
         Iterator<String> parts = Splitters.DOT.split(c.getTarget()).iterator();
         Optional<String> instance = Optional.empty();
         Optional<String> instancePort;
-        Optional<PortSymbol> port;
+        Optional<EMAPortInstanceSymbol> port;
         if (parts.hasNext()) {
             instance = Optional.of(parts.next());
         }
@@ -403,15 +403,15 @@ public class ImplementExecutionOrder {
             instancePort = Optional.of(parts.next());
             instance = Optional.of(Names.FirstLowerCase(instance.get()));
             /*Log.info(instance.get().toString(),"before error");
-            for(ExpandedComponentInstanceSymbol symbol:inst.getSubComponents()){
+            for(EMAComponentInstanceSymbol symbol:inst.getSubComponents()){
                 Log.info(symbol.toString(),"found:");
             }*/
-            ExpandedComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
-            port = inst2.getSpannedScope().<PortSymbol>resolve(instancePort.get(), PortSymbol.KIND);
+            EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();
+            port = inst2.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
         } else {
             instancePort = instance;
 
-            port = inst.getSpannedScope().<PortSymbol>resolve(instancePort.get(), PortSymbol.KIND);
+            port = inst.getSpannedScope().<EMAPortInstanceSymbol>resolve(instancePort.get(), EMAPortInstanceSymbol.KIND);
         }
 
         if (port.isPresent()) {

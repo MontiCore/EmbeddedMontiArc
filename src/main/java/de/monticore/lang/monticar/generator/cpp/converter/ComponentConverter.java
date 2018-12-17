@@ -21,8 +21,8 @@
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc.types.EMAVariable;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.math._symboltable.expression.MathExpressionSymbol;
@@ -47,7 +47,7 @@ public class ComponentConverter {
 
     public static BluePrintCPP currentBluePrint = null;
 
-    public static BluePrint convertComponentSymbolToBluePrint(ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
+    public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         BluePrintCPP bluePrint = new BluePrintCPP(GeneralHelperMethods.getTargetLanguageComponentName(componentSymbol.getFullName()));
         ComponentConverter.currentBluePrint = bluePrint;
         bluePrint.setGenerator(generatorCPP);
@@ -57,7 +57,7 @@ public class ComponentConverter {
         addVariables(componentSymbol, bluePrint);
 
         String lastNameWithoutArrayPart = "";
-        for (ExpandedComponentInstanceSymbol instanceSymbol : componentSymbol.getSubComponents()) {
+        for (EMAComponentInstanceSymbol instanceSymbol : componentSymbol.getSubComponents()) {
             int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
             boolean generateComponentInstance = true;
             if (arrayBracketIndex != -1) {
@@ -84,7 +84,7 @@ public class ComponentConverter {
         return bluePrint;
     }
 
-    public static void addVariables(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint) {
+    public static void addVariables(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint) {
         //add parameters as variables
         for (EMAVariable variable : componentSymbol.getParameters()) {
             Log.debug("EMAVAR: " + variable.getName() + " " + variable.getType().toString(), "ComponentConverter");
@@ -96,21 +96,21 @@ public class ComponentConverter {
             var.setIsParameterVariable(true);
         }
         //add ports as variables to blueprint
-        for (PortSymbol port : componentSymbol.getPortsList()) {
+        for (EMAPortInstanceSymbol port : componentSymbol.getPortInstanceList()) {
             //Config ports might already be added from adaptable Parameters
             if(!port.isConfig()) {
-                bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+                bluePrint.addVariable(PortConverter.convertEMAPortInstanceSymbolToVariable(port, port.getName(), bluePrint));
             }else{
                 Set<String> paramNames = componentSymbol.getParameters().stream().map(EMAVariable::getName).collect(Collectors.toSet());
                 if(!paramNames.contains(port.getName())){
                     //The port was not created by an adaptable parameter with the same name -> add
-                    bluePrint.addVariable(PortConverter.convertPortSymbolToVariable(port, port.getName(), bluePrint));
+                    bluePrint.addVariable(PortConverter.convertEMAPortInstanceSymbolToVariable(port, port.getName(), bluePrint));
                 }
             }
         }
     }
 
-    public static void generateInitMethod(ExpandedComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
+    public static void generateInitMethod(EMAComponentInstanceSymbol componentSymbol, BluePrintCPP bluePrint, GeneratorCPP generatorCPP, List<String> includeStrings) {
         Method method = new Method("init", "void");
         bluePrint.addMethod(method);
         for (Variable v : bluePrint.getMathInformationRegister().getVariables()) {
@@ -141,7 +141,7 @@ public class ComponentConverter {
             }
         }
 
-        for (ExpandedComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
+        for (EMAComponentInstanceSymbol subComponent : componentSymbol.getSubComponents()) {
             String parameterString = "";
             int i = 0;
             for (ASTExpression var : subComponent.getArguments()) {
@@ -221,7 +221,7 @@ public class ComponentConverter {
         return parameterString;
     }
 
-    public static BluePrint convertComponentSymbolToBluePrint(ExpandedComponentInstanceSymbol
+    public static BluePrint convertComponentSymbolToBluePrint(EMAComponentInstanceSymbol
                                                                       componentSymbol, List<String> includeStrings, GeneratorCPP generatorCPP) {
         return convertComponentSymbolToBluePrint(componentSymbol, null, includeStrings, generatorCPP);
     }

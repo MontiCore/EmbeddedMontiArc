@@ -20,10 +20,9 @@
  */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
-import de.monticore.symboltable.ImportStatement;
 import de.se_rwth.commons.logging.Log;
 
 /**
@@ -31,7 +30,7 @@ import de.se_rwth.commons.logging.Log;
  */
 public class ComponentInstanceConverter {
 
-    public static Variable convertComponentInstanceSymbolToVariable(ExpandedComponentInstanceSymbol instanceSymbol, ExpandedComponentInstanceSymbol componentSymbol) {
+    public static Variable convertComponentInstanceSymbolToVariable(EMAComponentInstanceSymbol instanceSymbol, EMAComponentInstanceSymbol componentSymbol) {
         //TODO implement templating
 
         Log.info(componentSymbol.toString(), "Parent:");

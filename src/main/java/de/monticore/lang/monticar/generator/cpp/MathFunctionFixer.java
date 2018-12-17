@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.generator.cpp;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.math._symboltable.expression.*;
 import de.monticore.lang.math._symboltable.matrix.*;
 import de.monticore.lang.monticar.generator.BaseMathFunctionFixerHandler;
@@ -210,7 +210,7 @@ public class MathFunctionFixer extends BaseMathFunctionFixerHandler {
     }
 
     public static void fixMathFunctions(MathMatrixNameExpressionSymbol mathExpressionSymbol, BluePrintCPP bluePrintCPP) {
-        String name = PortSymbol.getNameWithoutArrayBracketPart(mathExpressionSymbol.getNameToAccess());
+        String name = EMAPortInstanceSymbol.getNameWithoutArrayBracketPart(mathExpressionSymbol.getNameToAccess());
         Variable variable = bluePrintCPP.getVariable(name).orElse(null);
         //change () to [] if it is a variable and no function
         if (variable != null && variable.isArray()) {

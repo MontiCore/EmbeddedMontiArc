@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
 import de.monticore.lang.monticar.streamunits._ast.ASTComponentStreamUnits;
@@ -35,7 +35,7 @@ import de.monticore.lang.monticar.streamunits._symboltable.ComponentStreamUnitsS
  */
 public class TestConverter {
 
-    public static FileContent generateMainTestFile(ComponentStreamUnitsSymbol symbol, ExpandedComponentInstanceSymbol instanceSymbol) {
+    public static FileContent generateMainTestFile(ComponentStreamUnitsSymbol symbol, EMAComponentInstanceSymbol instanceSymbol) {
         FileContent fileContent = new FileContent();
         fileContent.setFileName("main_" + GeneralHelperMethods.getTargetLanguageComponentName(symbol.getFullName()) + ".cpp");
         String fileContentString = "";
@@ -50,7 +50,7 @@ public class TestConverter {
             fileContentString += "testInstance.execute();\n";
             for (ASTNamedStreamUnits astNamedStreamUnit : ast.getNamedStreamUnitsList()) {
                 String portName = astNamedStreamUnit.getName();
-                if (!instanceSymbol.getPort(portName).get().isIncoming()) {
+                if (!instanceSymbol.getPortInstance(portName).get().isIncoming()) {
                     if (astNamedStreamUnit.getStream().getStreamInstructionList().size() > 0) {
                         ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructionList().get(executionCounter);
                         if (streamInstruction.getStreamValueOpt().isPresent() && streamInstruction.getStreamValueOpt().get().getPrecisionNumberOpt().isPresent()) {
@@ -104,10 +104,10 @@ public class TestConverter {
         return fileContentString;
     }
 
-    public static String getFileContentStringFor(ExpandedComponentInstanceSymbol instanceSymbol, ASTNamedStreamUnits astNamedStreamUnit, int executionCounter) {
+    public static String getFileContentStringFor(EMAComponentInstanceSymbol instanceSymbol, ASTNamedStreamUnits astNamedStreamUnit, int executionCounter) {
         String fileContentString = "";
         String portName = astNamedStreamUnit.getName();
-        if (instanceSymbol.getPort(portName).get().isIncoming()) {
+        if (instanceSymbol.getPortInstance(portName).get().isIncoming()) {
             if (astNamedStreamUnit.getStream().getStreamInstructionList().size() > 0) {
                 ASTStreamInstruction streamInstruction = astNamedStreamUnit.getStream().getStreamInstructionList().get(executionCounter);
                 if (streamInstruction.getStreamValueOpt().isPresent() && streamInstruction.getStreamValueOpt().get().getPrecisionNumberOpt().isPresent())
