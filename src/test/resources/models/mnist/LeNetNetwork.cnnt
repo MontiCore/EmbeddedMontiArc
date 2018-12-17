@@ -1,6 +1,6 @@
 configuration LeNetNetwork{
-     num_epoch:1000
-     batch_size:256
+     num_epoch:11
+     batch_size:64
      context:gpu
      eval_metric:accuracy
      optimizer:adam{
