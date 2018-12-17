@@ -14,8 +14,8 @@ class ${tc.fileNameWithoutEnding}:
     _data_dir_    = os.path.join(_current_dir_, 'data', '${tc.fullArchitectureName}')
     _model_dir_   = os.path.join(_current_dir_, 'model', '${tc.fullArchitectureName}')
 
-    INIT_NET    = os.path.join(_model_dir_, 'init_net.pb')<#--TODO: Change name to _init_net_ once it is not used in CNNTrainer for quick testing purposes-->
-    PREDICT_NET = os.path.join(_model_dir_, 'predict_net.pb')<#--TODO:Change name to _predict_net_ once it is not used in CNNTrainer for quick testing purposes-->
+    _init_net_    = os.path.join(_model_dir_, 'init_net.pb')
+    _predict_net_ = os.path.join(_model_dir_, 'predict_net.pb')
 
     def get_total_num_iter(self, num_epoch, batch_size, dataset_size):
         #Force floating point calculation
@@ -162,7 +162,7 @@ ${tc.include(tc.architecture.body)}
     	self.create_model(deploy_model, "data", device_opts)
 
     	print("Saving deploy model")
-    	self.save_net(self.INIT_NET, self.PREDICT_NET, deploy_model)
+    	self.save_net(self._init_net_, self._predict_net_, deploy_model)
 
     def save_net(self, init_net_path, predict_net_path, model):
 
