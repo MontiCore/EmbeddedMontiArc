@@ -7,8 +7,8 @@ component BasicGenericArrayInstance{
     instance BasicGenericArraySize<3> basicGenericArraySize1;
     instance BasicGenericArraySize<3> basicGenericArraySize2;
 
-    connect val1[1:3] -> basicGenericArraySize1.val1[:];
-    connect val1[4:6] -> basicGenericArraySize2.val1[:];
-    connect basicGenericArraySize1.valOut[:] -> valOut[1:3];
-    connect basicGenericArraySize2.valOut[:] -> valOut[4:6];
+    connect aVal1[1:3] -> basicGenericArraySize1.val1[:];
+    connect aVal1[4:6] -> basicGenericArraySize2.val1[:];
+    connect basicGenericArraySize1.valOut[:] -> aValOut[1:3];
+    connect basicGenericArraySize2.valOut[:] -> aValOut[4:6];
 }
