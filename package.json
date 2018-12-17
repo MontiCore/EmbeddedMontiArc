@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@emastudio/manager",
-  "version": "0.1.1",
+  "version": "2018.12.17",
   "author": "SE RWTH",
   "main": "dist/electron.js",
   "scripts": {
