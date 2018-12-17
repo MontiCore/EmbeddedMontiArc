@@ -7,11 +7,11 @@
         </div>
         <div class="uk-flex-1 form-container">
             <fieldset *ngFor="let state of states" class="control-script-form" [disabled]="state.saved" [style.opacity]="state.saved ? 0.7 : 1.0">
-                <legend class="legend">
+                <legend class="legend" [style.height]="state.saved ? '40px' : 'auto'">
                     <button mat-mini-fab (click)="removeState(state)" matTooltip="Remove Control Script" matTooltipPosition="before" *ngIf="!state.saved">
                         <mat-icon>clear</mat-icon>
                     </button>
-                    <span class="stamp is-approved" *ngIf="state.saved">Saved</span>
+                    <img src="assets/images/saved.png" *ngIf="state.saved" style="height:50px;"/>
                 </legend>
                 <app-control-script-form [state]="state"></app-control-script-form>
             </fieldset>
