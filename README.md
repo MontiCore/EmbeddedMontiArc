@@ -68,16 +68,16 @@ This guide is based on the installation guide from the Caffe2 website: https://c
     sudo gedit ~/.bashrc
     ```
    
-    Add the following at the end of the file: 
+    Add the following at the end of the file. Don't forget to replace YourRepositoryPath (see below in clone Pytorch), e.g. by /home/carlos/Documents/git
 	
     ```
-    #caffe2 
+    #caffe2
     #echo $PYTHONPATH
-    export PYTHONPATH = /usr/local
-    export PYTHONPATH = $PYTHONPATH:YourRepositoryPath/pytorch/build
-    export PYTHONPATH = $PYTHONPATH:/usr/bin/python
+    export PYTHONPATH=/usr/local
+    export PYTHONPATH=$PYTHONPATH:YourRepositoryPath/pytorch/build
+    export PYTHONPATH=$PYTHONPATH:/usr/bin/python
     #echo $LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH = /usr/local/lib 
+    export LD_LIBRARY_PATH=/usr/local/lib
     ```
 
     Save the file and close it. Then, in terminal do the following: 
