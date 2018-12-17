@@ -14,8 +14,8 @@ class CNNCreator_Alexnet:
     _data_dir_    = os.path.join(_current_dir_, 'data', 'Alexnet')
     _model_dir_   = os.path.join(_current_dir_, 'model', 'Alexnet')
 
-    INIT_NET    = os.path.join(_model_dir_, 'init_net.pb')
-    PREDICT_NET = os.path.join(_model_dir_, 'predict_net.pb')
+    _init_net_    = os.path.join(_model_dir_, 'init_net.pb')
+    _predict_net_ = os.path.join(_model_dir_, 'predict_net.pb')
 
     def get_total_num_iter(self, num_epoch, batch_size, dataset_size):
         #Force floating point calculation
@@ -254,7 +254,7 @@ class CNNCreator_Alexnet:
     	self.create_model(deploy_model, "data", device_opts)
 
     	print("Saving deploy model")
-    	self.save_net(self.INIT_NET, self.PREDICT_NET, deploy_model)
+    	self.save_net(self._init_net_, self._predict_net_, deploy_model)
 
     def save_net(self, init_net_path, predict_net_path, model):
 
