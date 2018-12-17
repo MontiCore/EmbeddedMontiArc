@@ -868,5 +868,31 @@ public class SymtabTest extends AbstractSymtabTest {
 
     }
 
+    @Test
+    public void testBasicGenericArrayInstance(){
+        Scope symTab = createSymTab("src/test/resources");
+        EMAComponentInstanceSymbol componentInstanceSymbol = symTab.<EMAComponentInstanceSymbol>resolve("test.basicGenericArrayInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        for(int i = 1; i <= 6; i++){
+            assertTrue(componentInstanceSymbol.getPortInstance("aVal1["+i+"]").isPresent());
+            assertTrue(componentInstanceSymbol.getPortInstance("aValOut["+i+"]").isPresent());
+        }
+
+        EMAComponentInstanceSymbol subComp1 = componentInstanceSymbol.getSubComponent("basicGenericArraySize1").orElse(null);
+        EMAComponentInstanceSymbol subComp2 = componentInstanceSymbol.getSubComponent("basicGenericArraySize2").orElse(null);
+
+        assertNotNull(subComp1);
+        assertNotNull(subComp2);
+
+        for(int i = 1; i <= 3; i++) {
+            assertTrue("basicGenericArraySize1.val1["+i+"] not found", subComp1.getPortInstance("val1["+i+"]").isPresent());
+            assertTrue("basicGenericArraySize2.val1["+i+"] not found", subComp2.getPortInstance("val1["+i+"]").isPresent());
+            assertTrue("basicGenericArraySize1.valOut["+i+"] not found",subComp1.getPortInstance("valOut["+i+"]").isPresent());
+            assertTrue("basicGenericArraySize2.valOut["+i+"] not found",subComp2.getPortInstance("valOut["+i+"]").isPresent());
+        }
+
+    }
+
 }
 
