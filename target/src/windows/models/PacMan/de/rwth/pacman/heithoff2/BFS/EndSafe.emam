@@ -24,16 +24,16 @@ component EndSafe {
         if oldSafe
             for i = 1:4
                 if (ghostEatable(i) == 0)
-                    Z xG = round(ghostX(i));
-                    Z yG = round(ghostY(i));
+                    Z xG = round(ghostX(i) + 1);
+                    Z yG = round(ghostY(i) + 1);
                     Z xC = currentX;
                     Z yC = currentY;
                     if (xG == xC) && (yG == yC)
                         safe = 0;
                     end
-                    for j = 0:3
-                        xC = currentX + xOffSet(0,j);
-                        yC = currentY + yOffSet(0,j);
+                    for j = 1:4
+                        xC = currentX + xOffSet(1,j);
+                        yC = currentY + yOffSet(1,j);
                         if (xG == xC) && (yG == yC) && (ghostEatable(i) == 0) && (ghostDirection(i) != j)
                             safe = 0;
                         end

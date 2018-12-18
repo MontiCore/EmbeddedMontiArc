@@ -9,8 +9,8 @@ component StartLeft{
         out Z startD;
         
     implementation Math {
-        startX = round(pacManX - 0.51);
-        startY = round(pacManY);
+        startX = round(pacManX - 0.51 + 1);
+        startY = round(pacManY + 1);
         startD = 2;
     }
 }

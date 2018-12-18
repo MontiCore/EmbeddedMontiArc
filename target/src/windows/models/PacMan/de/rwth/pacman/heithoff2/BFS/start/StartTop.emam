@@ -9,8 +9,8 @@ component StartTop{
         out Z startD;
         
     implementation Math {
-        startX = round(pacManX);
-        startY = round(pacManY - 0.51);
+        startX = round(pacManX + 1);
+        startY = round(pacManY - 0.51 + 1);
         startD = 0;
     }
 }
