@@ -17,8 +17,8 @@ component SafePosition {
         
         // check whether the current tile is safe
         for i = 1:4
-            Z xG = round(ghostX(i));
-            Z yG = round(ghostY(i));
+            Z xG = round(ghostX(i) + 1);
+            Z yG = round(ghostY(i) + 1);
             if (abs(xG - currentX) < 1) && (abs(yG - currentY) < 1) && (ghostEatable(i) == 0) && (ghostDirection(i) != oldDirection)
                 safe = 0;
             end

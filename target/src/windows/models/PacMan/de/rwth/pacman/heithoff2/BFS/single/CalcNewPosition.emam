@@ -27,24 +27,17 @@ component CalcNewPosition {
             Z^{1,4} yOffSet = [-1,1,0,0];
             safeFound = 0;
             Z newPathsFound = 0;
-            for i = 0:3
-                Z indexY = 0;
-                Z indexX = i;
-                Z xOff = xOffSet(indexY, indexX);
-                Z yOff = yOffSet(indexY, indexX);
-                Q xT = currentX + xOff;
-                Q yT = currentY + yOff;
+            for i = 1:4
+                Q xT = currentX + xOffSet(1, i);
+                Q yT = currentY + yOffSet(1, i);
                 
                 if (abs(xT - oldX) >= 1) || (abs(yT - oldY) >= 1)
                     Z nextTile = map(yT, xT);
-                    // if (yT < 23) && (yT > 0) && (xT < 20) && (xT > 0)
-                    //     nextTile = map(yT, xT);
-                    // end
                     if (nextTile != 0) && (nextTile != 3) // a non-blocking tile was found
                         newPathsFound = newPathsFound + 1;
                         newX = xT;
                         newY = yT;
-                        newDirection = i;
+                        newDirection = i - 1;
                         if newPathsFound > 1
                             safeFound = 1;
                             newX = currentX;
