@@ -6,9 +6,6 @@ masterJobWindows:
   stage: windows
   script: 
   - call VsDevCmd.bat
-  - msbuild
-  - echo %PATH%
-  - cmake -h
   - cd pe-parse
   - "..\\docs\\build.bat"
   - msbuild build\pe-parse.sln /m /p:Configuration=Debug /p:Platform=x64
