@@ -14,4 +14,7 @@ To insert your own controller, exchange the component *controller* within *PacMa
 * **Debug Model (Without SVG)**: compile the model and show a debugging tool
 * **Play PacMan**: play a game of **PacMan**
 
-Note: **Debug Model** might take some time to execute because of the visualization generation. This is only neccessary if a component is changed outside its *implementation Math*-block. Otherwise **Debug Model (Without SVG)** can be used.
+###Note: 
+**Debug Model** might take some time to execute because of the visualization generation. This is only neccessary if a component is changed outside its *implementation Math*-block. Otherwise **Debug Model (Without SVG)** can be used.
+
+When resizing the windows inside the debugging tool with the black bar, you might need to scroll within the blue area.
