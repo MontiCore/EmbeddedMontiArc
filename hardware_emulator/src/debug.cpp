@@ -50,7 +50,7 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
     if ( ZYAN_SUCCESS( ZydisDecoderDecodeBuffer( &decoder, code, length, &instruction ) ) ) {
         // Print current instruction pointer.
         Utility::color_def();
-        printf( "%016" PRIX64 "  ", addr );
+        printf( "%016" PRIX64 "   ", addr );
         
         for ( uint i : Range( size ) )
             printf( "%02" PRIX64, ( uint64_t )code[i] );
@@ -64,10 +64,11 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
         // Format & print the binary instruction structure to human readable format
         Utility::color_code();
         ZydisFormatterFormatInstruction( &formatter, &instruction, buffer.begin(), buffer.size(), addr );
-        puts( buffer.begin() );
+        //puts( buffer.begin() );
+        printf( "%-40s", buffer.begin() );
     }
-    
-    
+    mem->print_annotation( addr );
+    printf( "\n" );
 }
 
 void ComputerDebug::debug_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong val ) {
@@ -102,7 +103,7 @@ void ComputerDebug::debug_mem( MemAccess type, ulong addr, uint size, slong val 
         default: cout << "[M] "; break;
     }
     
-    printf( "%016" PRIX64 "  ", addr );
+    printf( "%016" PRIX64 "   ", addr );
     switch ( type ) {
         case MemAccess::READ: Utility::color_mem_read(); break;
         case MemAccess::WRITE: Utility::color_mem_write(); break;

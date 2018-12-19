@@ -13,15 +13,28 @@ void WindowsCalls::add_windows_calls( SystemCalls &sys_calls, OS::Windows &windo
     /*sys_calls.add_syscall( SysCall( "GetCommandLineA", "KERNEL32.DLL", get_cmd_line_a ) );
     sys_calls.add_syscall( SysCall( "GetCommandLineW", "KERNEL32.DLL", get_cmd_line_w ) );*/
     sys_calls.add_syscall( SysCall( "GetModuleHandleW", "KERNEL32.DLL", get_module_handle ) );
+    sys_calls.add_syscall( SysCall( "GetCurrentProcessId", "KERNEL32.DLL", get_current_process_id ) );
+    sys_calls.add_syscall( SysCall( "GetSystemTimeAsFileTime", "KERNEL32.DLL", get_sys_time_as_file_time ) );
+    sys_calls.add_syscall( SysCall( "QueryPerformanceCounter", "KERNEL32.DLL", query_perf_counter ) );
+    sys_calls.add_syscall( SysCall( "GetCurrentThreadId", "KERNEL32.DLL", get_current_thread_id ) );
     
+    sys_calls.add_syscall( SysCall( "strlen", "MSVCRT.DLL", strlen ) );
+    sys_calls.add_syscall( SysCall( "strncmp", "MSVCRT.DLL", strncmp ) );
+    sys_calls.add_syscall( SysCall( "__iob_func", "MSVCRT.DLL", iob_func ) );
+    sys_calls.add_syscall( SysCall( "abort", "MSVCRT.DLL", abort ) );
+    sys_calls.add_syscall( SysCall( "fwrite", "MSVCRT.DLL", fwrite ) );
+    sys_calls.add_syscall( SysCall( "VirtualQuery", "KERNEL32.DLL", virtual_query ) );
+    sys_calls.add_syscall( SysCall( "VirtualProtect", "KERNEL32.DLL", virtual_protect ) );
+    sys_calls.add_syscall( SysCall( "malloc", "MSVCRT.DLL", malloc ) );
 }
 
 bool WindowsCalls::load_library_exw( Computer &inter, SysCall &syscall ) {
-    auto name_addr = inter.fast_call.arg2.get_param1();
+    auto name_addr = inter.fast_call.get_param1();
     auto name_str = inter.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
     if ( name.compare( "api-ms-win-core-fibers-l1-1-1" ) == 0 ||
             name.compare( "api-ms-win-core-synch-l1-2-0" ) == 0 ) {
+        cout << name << endl;
         inter.fast_call.set_return( 0 );
         return true;
     }
@@ -34,7 +47,7 @@ bool WindowsCalls::load_library_exw( Computer &inter, SysCall &syscall ) {
     return true;
 }
 bool WindowsCalls::get_proc_address( Computer &inter, SysCall &syscall ) {
-    auto mod = inter.fast_call.arg2.get_param1();
+    auto mod = inter.fast_call.get_param1();
     auto sec_ptr = inter.memory.get_section( mod );
     if ( sec_ptr == nullptr || sec_ptr != inter.handles.section ) {
         cout << "Invalid Module HANDLE";
@@ -48,13 +61,14 @@ bool WindowsCalls::get_proc_address( Computer &inter, SysCall &syscall ) {
         return false;
     }
     auto &note = *note_ptr;
-    auto name_addr = inter.fast_call.arg2.get_param2();
+    auto name_addr = inter.fast_call.get_param2();
     auto name_str = inter.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
-    
-    /*if ( name.compare( "IiilzCiiaScinx" ) == 0 ) {
-    inter.fast_call.set_return( 1 );
-    return true;
+    /*
+    if ( name.compare( "IiilzCiiaScinx" ) == 0 ) {
+        cout << name << endl;
+        inter.fast_call.set_return( 0x21 );
+        return true;
     }*/
     cout << "Module ID: " << mod << " ";
     cout << " Module name: " << note.name << " ";
@@ -77,13 +91,13 @@ bool WindowsCalls::get_proc_heap( Computer &inter, SysCall &syscall ) {
 
 
 bool WindowsCalls::heap_alloc( Computer &inter, SysCall &syscall ) {
-    auto heap_handle = inter.fast_call.arg3.get_param1();
+    auto heap_handle = inter.fast_call.get_param1();
     if ( inter.heap.heap_handle != heap_handle ) {
         cerr << "Trying to alloc on non-existing heap" << endl;
         return false;
     }
-    auto flags = inter.fast_call.arg3.get_param2();
-    auto byte_count = inter.fast_call.arg3.get_param3();
+    auto flags = inter.fast_call.get_param2();
+    auto byte_count = inter.fast_call.get_param3();
     uint64_t addr;
     if ( inter.heap.alloc( byte_count, addr ) )
         inter.fast_call.set_return( addr );
@@ -93,13 +107,13 @@ bool WindowsCalls::heap_alloc( Computer &inter, SysCall &syscall ) {
 }
 
 bool WindowsCalls::heap_free( Computer &inter, SysCall &syscall ) {
-    auto heap_handle = inter.fast_call.arg3.get_param1();
+    auto heap_handle = inter.fast_call.get_param1();
     if ( inter.heap.heap_handle != heap_handle ) {
         cerr << "Trying to alloc on non-existing heap" << endl;
         return false;
     }
-    auto flags = inter.fast_call.arg3.get_param2();
-    auto memory = inter.fast_call.arg3.get_param3();
+    auto flags = inter.fast_call.get_param2();
+    auto memory = inter.fast_call.get_param3();
     uint64_t addr;
     if ( inter.heap.free( memory ) )
         inter.fast_call.set_return( 1 );
@@ -119,7 +133,8 @@ bool WindowsCalls::heap_free( Computer &inter, SysCall &syscall ) {
 //}
 
 bool WindowsCalls::get_module_handle( Computer &inter, SysCall &syscall ) {
-    auto name_addr = inter.fast_call.arg1.get_param1();
+    //ERROR ???
+    auto name_addr = inter.fast_call.get_param1();
     auto name_str = inter.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
     auto res = inter.handles.get_handle( ( char * )name_str );
@@ -128,5 +143,128 @@ bool WindowsCalls::get_module_handle( Computer &inter, SysCall &syscall ) {
     printf( "Name VA: 0x%016" PRIX64 " ", name_addr );
     cout << "Module ID: " << res << " ";
     cout << " Module name: " << name << endl;
+    return true;
+}
+
+bool WindowsCalls::get_current_process_id( Computer &inter, SysCall &syscall ) {
+    inter.fast_call.set_return( 0x25 );
+    return true;
+}
+
+bool WindowsCalls::get_sys_time_as_file_time( Computer &inter, SysCall &syscall ) {
+    auto addr = inter.fast_call.get_param1();
+    inter.memory.write_long_word( addr, 0x123 );
+    return true;
+}
+
+bool WindowsCalls::query_perf_counter( Computer &inter, SysCall &syscall ) {
+    auto addr = inter.fast_call.get_param1();
+    inter.memory.write_long_word( addr, 0x456 );
+    return true;
+}
+
+bool WindowsCalls::get_current_thread_id( Computer &inter, SysCall &syscall ) {
+    inter.fast_call.set_return( 0x29 );
+    return true;
+}
+
+bool WindowsCalls::strlen( Computer &inter, SysCall &syscall ) {
+    auto addr = inter.fast_call.get_param1();
+    auto name_str = inter.memory.read_str( addr );
+    string name = ( char * )name_str;
+    uint size = name.size();
+    cout << "strlen(\"" << name << "\"): " << size << endl;
+    inter.fast_call.set_return( size );
+    return true;
+}
+
+bool WindowsCalls::strncmp( Computer &inter, SysCall &syscall ) {
+    auto addr1 = inter.fast_call.get_param1();
+    auto addr2 = inter.fast_call.get_param2();
+    auto count = inter.fast_call.get_param3();
+    string str1 = ( char * )inter.memory.read_str( addr1 );
+    string str2 = ( char * )inter.memory.read_str( addr2 );
+    sint res = ::strncmp( str1.c_str(), str2.c_str(), count );
+    cout << "strncmp(\"" << str1 << "\",\"" << str2 << "\"," << count << ")=" << res << endl;
+    inter.fast_call.set_return( res );
+    return true;
+}
+
+bool WindowsCalls::iob_func( Computer &inter, SysCall &syscall ) {
+    inter.fast_call.set_return( OS::io_slot.start_address );
+    return true;
+}
+
+bool WindowsCalls::abort( Computer &inter, SysCall &syscall ) {
+    inter.exit_emulation();
+    return true;
+}
+
+bool WindowsCalls::fwrite( Computer &inter, SysCall &syscall ) {
+    //size_t fwrite ( const void * ptr, size_t size, size_t count, FILE * stream );
+    auto data = inter.fast_call.get_param1();
+    auto size = inter.fast_call.get_param2();
+    auto count = inter.fast_call.get_param3();
+    auto stream = inter.fast_call.get_param4();
+    string str1 = ( char * )inter.memory.read_str( data );
+    printf( "fwrite(\"%s\", %d, %d, %016" PRIX64 ")", str1.c_str(), size, count, stream );
+    inter.memory.print_annotation( stream );
+    inter.fast_call.set_return( size * count );
+    return false;
+}
+
+bool WindowsCalls::virtual_query( Computer &inter, SysCall &syscall ) {
+    typedef struct _MEMORY_BASIC_INFORMATION {
+        ulong  BaseAddress;
+        ulong  AllocationBase;
+        uint  AllocationProtect;
+        ulong RegionSize;
+        uint  State;
+        uint  Protect;
+        uint  Type;
+    } MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
+    MEMORY_BASIC_INFORMATION mem_info;
+    
+    auto lpaddr = inter.fast_call.get_param1();
+    auto lpbuffer = inter.fast_call.get_param2();
+    auto size = inter.fast_call.get_param3();
+    if ( size < sizeof( MEMORY_BASIC_INFORMATION ) )
+        cout << "VirtualQuery with size < sizeof(MEMORY_BASIC_INFORMATION)" << endl;
+    auto sec_ptr = inter.memory.get_section( lpaddr );
+    if ( sec_ptr == nullptr ) {
+        cout << "VirtualQuery outside pages" << endl;
+        return false;
+    }
+    printf( "VirtualQuery(%016" PRIX64 ")", lpaddr );
+    auto &sec = *sec_ptr;
+    mem_info.BaseAddress = sec.address_range.start_address;
+    mem_info.AllocationBase = sec.address_range.start_address;
+    mem_info.AllocationProtect = 0;
+    mem_info.RegionSize = 0;
+    mem_info.State = 0;
+    mem_info.Protect = 0;
+    mem_info.Type = 0;
+    inter.memory.write_memory( lpbuffer, size, ( uchar * )&mem_info );
+    inter.fast_call.set_return( size );
+    return true;
+}
+
+bool WindowsCalls::virtual_protect( Computer &inter, SysCall &syscall ) {
+    auto lpaddr = inter.fast_call.get_param1();
+    auto size = inter.fast_call.get_param2();
+    auto protect = inter.fast_call.get_param3();
+    printf( "VirtualProtect(%016" PRIX64 ", %" PRIX64", %" PRIX64")", lpaddr, size, protect );
+    inter.fast_call.set_return( 1 );
+    return true;
+}
+
+bool WindowsCalls::malloc( Computer &inter, SysCall &syscall ) {
+    auto byte_count = inter.fast_call.get_param1();
+    cout << "malloc(" << byte_count << ")" << endl;
+    uint64_t addr;
+    if ( inter.heap.alloc( byte_count, addr ) )
+        inter.fast_call.set_return( addr );
+    else
+        inter.fast_call.set_return( 0 );
     return true;
 }

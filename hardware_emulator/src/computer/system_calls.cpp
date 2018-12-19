@@ -14,8 +14,8 @@ void SystemCalls::init( Memory &mem, ComputerDebug &debug ) {
 
 ulong SystemCalls::get_syscall( const std::string &mod, const std::string &name ) {
     std::string res_name = mod + "!" + name;
-    auto note = section->annotations.annotations->get_annotation( res_name );
-    if ( note.type == Annotation::PROC || note.type == Annotation::SYMBOL )
+    auto note = section->annotations.annotations->get_annotation( res_name, Annotation::PROC | Annotation::LIBRARY_EXPORT );
+    if ( note.type == Annotation::PROC )
         return note.base;
     else if ( note.type == Annotation::LIBRARY_EXPORT )
         return note.param;

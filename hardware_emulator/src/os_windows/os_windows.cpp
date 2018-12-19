@@ -2,6 +2,8 @@
 #include "computer/computer_layout.h"
 #include <unicorn/unicorn.h>
 
+MemoryRange OS::io_slot;
+
 struct LOCAL_EXCEPTION_REGISTRATION_RECORD {
     LOCAL_EXCEPTION_REGISTRATION_RECORD *Next;
     void *ExceptionRountineHandler;
@@ -171,11 +173,32 @@ void OS::Windows::init( Computer &computer ) {
     section->annotations.add_annotation( cmd_line_str, Annotation( "Command Line STR", Annotation::SYMBOL ) );
     
     auto cout_ptr_addr = add_symbol( "MSVCP140.DLL", "?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A",
-                                     8 );
+                                     8, Annotation::PROC );
     auto cout_slot = section_stack.get_range( sizeof( std::cout ) );
     computer.memory.write_memory( cout_ptr_addr, 8, ( uchar * )&cout_slot.start_address );
     section->annotations.add_annotation( cout_ptr_addr, Annotation( "Cout pointer", Annotation::SYMBOL ) );
     section->annotations.add_annotation( cout_slot, Annotation( "STD::COUT", Annotation::SYMBOL ) );
+    
+    typedef struct {
+        short level;
+        short token;
+        short bsize;
+        char fd;
+        unsigned flags;
+        unsigned char hold;
+        unsigned char *buffer;
+        unsigned char *curp;
+        unsigned istemp;
+    } FILE;
+    FILE io_files[3] = {};
+    io_slot = section_stack.get_range( sizeof( io_files ) );
+    io_stdin = MemoryRange( io_slot.start_address, sizeof( FILE ) );
+    io_stdout = MemoryRange( io_slot.start_address + sizeof( FILE ), sizeof( FILE ) );
+    io_stderr = MemoryRange( io_slot.start_address + sizeof( FILE ) * 2, sizeof( FILE ) );
+    section->annotations.add_annotation( io_stdin, Annotation( "io_stdin", Annotation::SYMBOL ) );
+    section->annotations.add_annotation( io_stdout, Annotation( "io_stdout", Annotation::SYMBOL ) );
+    section->annotations.add_annotation( io_stderr, Annotation( "io_stderr", Annotation::SYMBOL ) );
+    computer.memory.write_memory( io_slot.start_address, io_slot.size, ( uchar * )io_files );
 }
 
 bool OS::Windows::load_dll( const char *file ) {
@@ -186,10 +209,10 @@ bool OS::Windows::load_dll( const char *file ) {
     return true;
 }
 
-ulong OS::Windows::add_symbol( const std::string &mod, const std::string &name, uint64_t size ) {
+ulong OS::Windows::add_symbol( const std::string &mod, const std::string &name, uint64_t size, Annotation::Type type ) {
     std::string res_name = mod + "!" + name;
     auto proc_handle = section_stack.get_range( size );
-    section->annotations.add_annotation( proc_handle, Annotation( res_name, Annotation::SYMBOL ) );
+    section->annotations.add_annotation( proc_handle, Annotation( res_name, type ) );
     
     Utility::color_mem_write();
     std::cout << "Added Symbol: " << mod << "!" << name;

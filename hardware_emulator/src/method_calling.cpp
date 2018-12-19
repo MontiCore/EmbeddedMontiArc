@@ -2,44 +2,42 @@
 
 
 
-ulong FastCall::FastCall1::get_param1() {
-    return registers.get_rdx();
+void FastCall::set_params( ulong p1 ) {
+    registers.set_rcx( p1 );
 }
 
-void FastCall::FastCall1::set_param( ulong p1 ) {
-    registers.set_rdx( p1 );
-}
-
-ulong FastCall::FastCall2::get_param1() {
-    return registers.get_rcx();
-}
-
-ulong FastCall::FastCall2::get_param2() {
-    return registers.get_rdx();
-}
-
-void FastCall::FastCall2::set_params( ulong p1, ulong p2 ) {
+void FastCall::set_params( ulong p1, ulong p2 ) {
     registers.set_rcx( p1 );
     registers.set_rdx( p2 );
 }
+void FastCall::set_params( ulong p1, ulong p2, ulong p3 ) {
+    registers.set_rcx( p1 );
+    registers.set_rdx( p2 );
+    registers.set_r8( p3 );
+}
+void FastCall::set_params( ulong p1, ulong p2, ulong p3, ulong p4 ) {
+    registers.set_rcx( p1 );
+    registers.set_rdx( p2 );
+    registers.set_r8( p3 );
+    registers.set_r9( p4 );
+}
 
-ulong FastCall::FastCall3::get_param1() {
+ulong FastCall::get_param1() {
     return registers.get_rcx();
 }
 
-ulong FastCall::FastCall3::get_param2() {
+ulong FastCall::get_param2() {
     return registers.get_rdx();
 }
 
-ulong FastCall::FastCall3::get_param3() {
-    return registers.get_r8d();
+ulong FastCall::get_param3() {
+    return registers.get_r8();
+}
+ulong FastCall::get_param4() {
+    return registers.get_r9();
 }
 
-void FastCall::FastCall3::set_params( ulong p1, ulong p2, ulong p3 ) {
-    registers.set_rcx( p1 );
-    registers.set_rdx( p2 );
-    registers.set_r8d( p3 );
-}
+
 
 ulong FastCall::get_return() {
     return registers.get_rax();

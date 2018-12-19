@@ -5,3 +5,5 @@
 bool test_simple_dll();
 
 bool test_syscall_dll();
+
+bool test_autopilot_dll();

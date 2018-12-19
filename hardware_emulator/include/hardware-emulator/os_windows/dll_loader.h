@@ -13,8 +13,13 @@ namespace OS {
         ulong base_of_code;
         ulong entry_point;
         ulong section_align;
+        ulong size_of_headers;
         
         void load_values( void *pe );
+    };
+    
+    struct SectionInfo {
+        MemorySection *mem;
     };
     
     struct DLLLoader {
@@ -26,6 +31,9 @@ namespace OS {
         Memory *mem;
         
         DLLInfo info;
+        
+        Array<SectionInfo> sections;
+        uint section_pos;
         
         DLLLoader() : pe( nullptr ), sys_calls( nullptr ), mem( nullptr ) {}
         ~DLLLoader() {

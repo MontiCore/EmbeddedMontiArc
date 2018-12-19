@@ -9,3 +9,8 @@ bool test_syscall_dll() {
     LOADED_DLL::DllInterface interf;
     return interf.test_main();
 }
+
+bool test_autopilot_dll() {
+    AUTOPILOT_DLL::DllInterface interf;
+    return interf.test_main();
+}

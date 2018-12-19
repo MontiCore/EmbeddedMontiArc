@@ -3,6 +3,7 @@
 #include "computer/computer_layout.h"
 #include "computer/registers.h"
 
+#include <iostream>
 
 void Annotations::init_annotations() {
     annotation_pos = 0;
@@ -17,16 +18,17 @@ uint Annotations::new_annotation( ulong base, Annotation const &annotation ) {
     target.base = base;
     return annotation_pos++;
 }
-Annotation &Annotations::get_annotation( std::string const &name ) {
+Annotation &Annotations::get_annotation( std::string const &name, uint type_mask ) {
     for ( uint i : Range( annotation_pos ) ) {
         auto &note = annotations[i];
-        if ( note.name == name )
-            return note;
+        if ( note.type & type_mask )
+            if ( note.name == name )
+                return note;
     }
     return annotations[0];
 }
-uint64_t Annotations::get_handle( std::string const &name ) {
-    return get_annotation( name ).base;
+uint64_t Annotations::get_handle( std::string const &name, uint type_mask ) {
+    return get_annotation( name, type_mask ).base;
 }
 
 
@@ -83,7 +85,7 @@ bool MemorySection::init( MemoryRange address_range, std::string const &name, st
     this->p_execute = execute;
     this->p_read = read;
     this->p_write = write;
-    address_range.size = ( ( ( address_range.size - 1 ) / ( uint ) page_size ) + 1 ) * ( uint )page_size;
+    this->address_range.size = ( ( ( address_range.size - 1 ) / ( uint ) page_size ) + 1 ) * ( uint )page_size;
     uint32_t prot = 0;
     if ( execute )
         prot |= UC_PROT_EXEC;
@@ -91,7 +93,8 @@ bool MemorySection::init( MemoryRange address_range, std::string const &name, st
         prot |= UC_PROT_READ;
     if ( write )
         prot |= UC_PROT_WRITE;
-    if ( uc_mem_map( static_cast<uc_engine *>( internal_uc ), address_range.start_address, address_range.size, prot ) ) {
+    if ( uc_mem_map( static_cast<uc_engine *>( internal_uc ), this->address_range.start_address, this->address_range.size,
+                     prot ) ) {
         printf( "Error mapping emulator memory!\n" );
         return false;
     }
@@ -215,24 +218,38 @@ void Memory::print_address_info( ulong  virtual_address ) {
     if ( sec_ptr ) {
         auto &sec = *sec_ptr;
         auto file_address = sec.address_to_file( virtual_address );
-        std::cout << "[" << sec.mod << ":" << sec.name;
+        char temp[128];
         if ( file_address != virtual_address )
-            printf( " 0x%0" PRIx64, file_address );
-        std::cout << "] ";
-        if ( sec.has_annotations() ) {
-            auto note_ptr = sec.annotations.get_annotation( virtual_address );
-            if ( note_ptr ) {
-                Utility::color_note();
-                auto &note = *note_ptr;
-                std::cout << "(" << note.name;
-                if ( note.base != virtual_address )
-                    std::cout << "[" << ( virtual_address - note.base ) << "]";
-                std::cout << ") ";
-            }
-        }
+            sprintf( temp, "[%s:%s 0x%0" PRIx64 "]", sec.mod.c_str(), sec.name.c_str(), file_address );
+        else
+            sprintf( temp, "[%s:%s]", sec.mod.c_str(), sec.name.c_str() );
+        printf( "%-40s", temp );
+        print_annotation( sec, virtual_address );
     }
     else
         std::cout << "[NON-ALLOCATED] ";
+}
+
+void Memory::print_annotation( ulong virtual_address ) {
+    auto sec_ptr = get_section( virtual_address );
+    if ( sec_ptr ) {
+        auto &sec = *sec_ptr;
+        print_annotation( sec, virtual_address );
+    }
+}
+
+void Memory::print_annotation( MemorySection &sec, ulong virtual_address ) {
+    if ( sec.has_annotations() ) {
+        auto note_ptr = sec.annotations.get_annotation( virtual_address );
+        if ( note_ptr ) {
+            Utility::color_note();
+            auto &note = *note_ptr;
+            std::cout << "(" << note.name;
+            if ( note.base != virtual_address )
+                std::cout << "[" << ( virtual_address - note.base ) << "]";
+            std::cout << ") ";
+        }
+    }
 }
 
 wchar_t *Memory::read_wstr( ulong address ) {
@@ -299,7 +316,8 @@ void Memory::write_wstr( ulong address, std::string const &text ) {
 
 void Memory::write_long_word( ulong address, ulong value ) {
     Utility::write_uint64_t( ( char * )buffer.begin(), value );
-    uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), 8 );
+    if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), 8 ) != UC_ERR_OK )
+        std::cout << "Error writing long" << std::endl;
 }
 
 
@@ -315,9 +333,7 @@ void Handles::init( Memory &mem ) {
 
 ulong Handles::get_handle( const char *name ) {
     throw_assert( loaded() && section->has_annotations(), "Handles::get_handle() on uninitialized Handles" );
-    auto &note = section->annotations.annotations->get_annotation( name );
-    if ( note.type == Annotation::HANDLE )
-        return note.base;
+    auto &note = section->annotations.annotations->get_annotation( name, Annotation::HANDLE );
     return 0;
 }
 

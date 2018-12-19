@@ -6,7 +6,7 @@ stages:
 masterJobWindows:
   stage: windows
   script: 
-#  - VsDevCmd.bat
+  - VsDevCmd.bat
   - msbuild
   - echo %PATH%
   - cmake -h

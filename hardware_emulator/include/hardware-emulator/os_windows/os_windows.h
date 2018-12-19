@@ -3,7 +3,7 @@
 #include "computer/computer.h"
 
 namespace OS {
-
+    extern MemoryRange io_slot;
     struct Windows {
         Computer *computer;
         MemorySection *section;
@@ -13,6 +13,10 @@ namespace OS {
         
         MemoryRange cmd_line_wstr;
         MemoryRange cmd_line_str;
+        
+        MemoryRange io_stdin;
+        MemoryRange io_stdout;
+        MemoryRange io_stderr;
         
         Array<char> name_buffer;
         
@@ -26,7 +30,8 @@ namespace OS {
         
         bool load_dll( const char *file );
         
-        ulong add_symbol( const std::string &mod, const std::string &name, uint64_t size );
+        ulong add_symbol( const std::string &mod, const std::string &name, uint64_t size,
+                          Annotation::Type type = Annotation::SYMBOL );
     };
     
     

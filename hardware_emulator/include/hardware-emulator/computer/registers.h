@@ -27,7 +27,8 @@ struct Registers {
     ulong get_rcx();
     ulong get_rdx();
     
-    ulong get_r8d();
+    ulong get_r8();
+    ulong get_r9();
     
     
     ulong get_rsp();
@@ -49,7 +50,8 @@ struct Registers {
     void set_rdx( ulong val );
     
     
-    void set_r8d( ulong val );
+    void set_r8( ulong val );
+    void set_r9( ulong val );
     
     void set_rsp( ulong val );
     void set_rsi( ulong val );

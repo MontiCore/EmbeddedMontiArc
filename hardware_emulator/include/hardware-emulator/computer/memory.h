@@ -37,10 +37,10 @@ struct MemoryRange {
 struct Annotation {
     enum Type {
         NONE,
-        HANDLE,
-        PROC,
-        SYMBOL,
-        LIBRARY_EXPORT
+        HANDLE = BIT( 1 ),
+        PROC = BIT( 2 ),
+        SYMBOL = BIT( 3 ),
+        LIBRARY_EXPORT = BIT( 4 )
     };
     ulong base;
     std::string name;
@@ -62,8 +62,8 @@ struct Annotations {
     void init_annotations();
     
     uint new_annotation( ulong base, Annotation const &annotation );
-    Annotation &get_annotation( std::string const &name );
-    uint64_t get_handle( std::string const &name );
+    Annotation &get_annotation( std::string const &name, uint type_mask );
+    uint64_t get_handle( std::string const &name, uint type_mask );
 };
 
 struct SectionAnnotation {
@@ -178,6 +178,8 @@ struct Memory {
     MemorySection *get_section( ulong virtual_address );
     
     void print_address_info( ulong virtual_address );
+    void print_annotation( ulong virtual_address );
+    void print_annotation( MemorySection &sec, ulong virtual_address );
     
     wchar_t *read_wstr( ulong address );
     uchar *read_wstr_as_str( ulong address );

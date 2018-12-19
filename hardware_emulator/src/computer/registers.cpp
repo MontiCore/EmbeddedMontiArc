@@ -75,7 +75,7 @@ void Registers::print_changed_registers() {
             continue;
         if ( regs[i] != regs_old[i] ) {
             Utility::color_reg();
-            printf( "    %-18s", Registers::regs_names[i] );
+            printf( "    %-19s", Registers::regs_names[i] );
             Utility::color_new();
             printf( "%016" PRIX64 "\n", regs[i] );
         }
@@ -124,8 +124,13 @@ ulong Registers::get_rdx() {
     return reg;
 }
 
-ulong Registers::get_r8d() {
-    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R8D, &reg );
+ulong Registers::get_r8() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R8, &reg );
+    return reg;
+}
+
+ulong Registers::get_r9() {
+    uc_reg_read( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R9, &reg );
     return reg;
 }
 
@@ -193,9 +198,13 @@ void Registers::set_rdx( ulong val ) {
     uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_RDX, &reg );
 }
 
-void Registers::set_r8d( ulong val ) {
+void Registers::set_r8( ulong val ) {
     reg = val;
-    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R8D, &reg );
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R8, &reg );
+}
+void Registers::set_r9( ulong val ) {
+    reg = val;
+    uc_reg_write( static_cast<uc_engine *>( internal_uc ), UC_X86_REG_R9, &reg );
 }
 
 void Registers::set_rsp( ulong val ) {
