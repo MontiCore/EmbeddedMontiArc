@@ -194,7 +194,6 @@ endforeach()
 
 add_library(${PROJECT_NAME} ${UNICORN_SOURCEFILES} ${UNICORN_EXTERNAL_SOURCEFILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${UNICORN_INCLUDE_DIRS})
-add_link_options("x86_64-softmmu.lib")
 
 add_definitions(
     /FI"x86_64.h"
