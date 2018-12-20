@@ -7,22 +7,22 @@ masterJobWindows:
   script: 
   - call VsDevCmd.bat
   - cd pe-parse
-  - "..\\docs\\build.bat"
+  - call "..\\docs\\build.bat"
   - msbuild build\pe-parse.sln /m /p:Configuration=Debug /p:Platform=x64
   - msbuild build\pe-parse.sln /m /p:Configuration=Release /p:Platform=x64
   - cd ..
   - cd unicorn
-  - "..\\docs\\build.bat"
+  - call "..\\docs\\build.bat"
   - msbuild build\unicorn.sln /m /p:Configuration=Debug /p:Platform=x64
   - msbuild build\unicorn.sln /m /p:Configuration=Release /p:Platform=x64
   - cd ..
   - cd zydis
-  - "..\\docs\\build.bat"
+  - call "..\\docs\\build.bat"
   - msbuild build\Zydis.sln /m /p:Configuration=Debug /p:Platform=x64
   - msbuild build\Zydis.sln /m /p:Configuration=Release /p:Platform=x64
   - cd ..
   - cd hardware_emulator
-  - "..\\docs\\build.bat"
+  - call "..\\docs\\build.bat"
   - msbuild build\hardware-emulator.sln /m /p:Configuration=Debug /p:Platform=x64
   - msbuild build\hardware-emulator.sln /m /p:Configuration=Release /p:Platform=x64
   - cd ..
