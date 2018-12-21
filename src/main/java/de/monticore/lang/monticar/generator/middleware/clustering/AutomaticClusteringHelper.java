@@ -29,8 +29,8 @@ public class AutomaticClusteringHelper {
                 int index1 = subcompLabels.get(sourceCompOpt.get().getFullName());
                 int index2 = subcompLabels.get(targetCompOpt.get().getFullName());
 
-                res[index1][index2] = 1.0d;
-                res[index2][index1] = 1.0d;
+                res[index1][index2] = getTypeCostHeuristic(con.getSourcePort());
+                res[index2][index1] = getTypeCostHeuristic(con.getSourcePort());
             } else {
                 Log.error("0xADE65: Component of source or target not found!");
             }
@@ -92,7 +92,6 @@ public class AutomaticClusteringHelper {
     }
 
     public static double getTypeCostHeuristic(MCTypeReference<? extends MCTypeSymbol> typeReference) {
-        //TODO: structs
         if (typeReference.getName().equals("CommonMatrixType")){
             double value = getTypeCostHeuristicHelper(
                     ((ASTCommonMatrixType)((MCASTTypeSymbolReference)typeReference).getAstType()).getElementType().getName());
