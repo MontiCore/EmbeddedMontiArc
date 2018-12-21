@@ -55,12 +55,11 @@ list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../zydis/msvc
 )
 
-
 list(APPEND HARDWARE_EMU_LIB_DIRS
-  ../Zydis/build/$<CONFIG>
-  ../unicorn/build/$<CONFIG>
-  ../unicorn/build/qemu/$<CONFIG>
-  ../pe-parse/build/pe-parser-library/$<CONFIG>
+  ../Zydis/build
+  ../unicorn/build
+  ../unicorn/build/qemu
+  ../pe-parse/build/pe-parser-library
 )
 
 
