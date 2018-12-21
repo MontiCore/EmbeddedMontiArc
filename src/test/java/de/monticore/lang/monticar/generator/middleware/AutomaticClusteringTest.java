@@ -6,10 +6,7 @@ import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClust
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithmFactory;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringKind;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.DBSCANDistance;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.MarkovClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
+import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -345,6 +342,12 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                 case SPECTRAL_CLUSTERER:
                     params= new Object[] { SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 2 };
                 break;
+                case DBSCAN_CLUSTERER:
+                    params= new Object[] {
+                            DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_MIN_PTS, 1,
+                            DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_RADIUS, 10.0
+                    };
+                    break;
             }
             testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind), params);
         }
