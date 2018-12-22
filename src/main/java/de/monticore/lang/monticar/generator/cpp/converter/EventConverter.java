@@ -31,7 +31,7 @@ public class EventConverter {
         }
         EMADynamicComponentInstanceSymbol dynComponent = (EMADynamicComponentInstanceSymbol) componentSymbol;
 
-
+        EventDynamicConnectConverter.resetFreePositionInCodeCounter();
         for(EMADynamicEventHandlerInstanceSymbol event : dynComponent.getEventHandlers()){
             Log.info("Create Event: "+event.getName(), "EventConverter");
 
@@ -41,7 +41,8 @@ public class EventConverter {
 //                generateCondition = generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
                 generateCondition = EventDynamicConnectConverter.generateDynamicConnectEvent(event, componentSymbol, executeMethod, bluePrint);
             }else if(event.isDynamicPortFreeEvent()){
-                generateCondition = generateFreeEvent(event, executeMethod, bluePrint);
+//                generateCondition = generateFreeEvent(event, executeMethod, bluePrint);
+                generateCondition = EventDynamicConnectConverter.free_generateDynamicFreeEvent(event, componentSymbol, executeMethod, bluePrint);
             }else{
                 Log.info("Create connectors for: "+event.getFullName(), "EventConverter");
 
@@ -84,6 +85,9 @@ public class EventConverter {
     }
 
     protected static boolean generateFreeEvent(EMADynamicEventHandlerInstanceSymbol event, Method executeMethod, BluePrint bluePrint){
+
+
+
         return true;
     }
 
@@ -150,7 +154,8 @@ public class EventConverter {
         }else if(expression instanceof EventPortExpressionConnectSymbol){
             return generateEventConditionEventPortConnectSymbol((EventPortExpressionConnectSymbol) expression, componentSymbol, bluePrint);
         }else if(expression instanceof EventPortExpressionFreeSymbol){
-            return "( /*"+((EventPortExpressionFreeSymbol) expression).getPortName()+"::free*/ true)";
+//            return "( /*"+((EventPortExpressionFreeSymbol) expression).getPortName()+"::free*/ true)";
+            return "("+expression.getName()+"_has_free_request())";
         }
 
         if(expression instanceof EventBooleanExpressionSymbol){

@@ -24,8 +24,6 @@ dynamic component OuterFree2{
     }
 
     @ b::free {
-        connect 1024 -> g[?].x;
-        connect 123.456 -> f.a[?];
-        connect f.b[?] -> b[?];
+        connect 1024 ->   b[?];
     }
 }

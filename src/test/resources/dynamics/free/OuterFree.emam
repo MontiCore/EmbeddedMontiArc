@@ -14,7 +14,6 @@ dynamic component OuterFree{
     }
 
     @ b::free {
-        connect 123.456 -> f.a[?];
-        connect f.b[?] -> b[?];
+        connect 123.456 ->  b[?];
     }
 }

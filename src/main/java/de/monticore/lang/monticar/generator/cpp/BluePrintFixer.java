@@ -128,6 +128,15 @@ public class BluePrintFixer {
                     m.addInstruction(new TargetCodeInstruction("return r;\n"));
                     bluePrint.addMethod(m);
                 }
+
+                if(!bluePrint.getMethod(v.getNameWithoutArrayNamePart()+"_free_request_front_peak").isPresent()) {
+                    Method m = new Method();
+                    m.setName(v.getNameWithoutArrayNamePart()+"_free_request_front_peak");
+                    m.setReturnTypeName("int");
+
+                    m.addInstruction(new TargetCodeInstruction(String.format("return __%s_free_request.front();\n", v.getNameWithoutArrayNamePart())));
+                    bluePrint.addMethod(m);
+                }
             }
         }
     }
