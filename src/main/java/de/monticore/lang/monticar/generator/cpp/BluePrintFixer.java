@@ -1,6 +1,8 @@
 package de.monticore.lang.monticar.generator.cpp;
 
 import de.monticore.lang.monticar.generator.BluePrint;
+import de.monticore.lang.monticar.generator.Method;
+import de.monticore.lang.monticar.generator.TargetCodeInstruction;
 import de.monticore.lang.monticar.generator.Variable;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.se_rwth.commons.logging.Log;
@@ -81,7 +83,51 @@ public class BluePrintFixer {
                 if(!bluePrint.getVariable(String.format("__%s_connect_request", v.getNameWithoutArrayNamePart())).isPresent()){
                     bluePrint.addVariable(addConnectedRequestQueueForVariable(v.getNameWithoutArrayNamePart(), bluePrint));
                 }
+                if(!bluePrint.getVariable(String.format("__%s_free_request", v.getNameWithoutArrayNamePart())).isPresent()){
+                    bluePrint.addVariable(addFreeRequestQueueForVariable(v.getNameWithoutArrayNamePart(), bluePrint));
+                }
 
+
+                if(!bluePrint.getMethod(v.getNameWithoutArrayNamePart()+"_has_connect_request").isPresent()){
+                    Method m = new Method();
+                    m.setName(v.getNameWithoutArrayNamePart()+"_has_connect_request");
+                    m.setReturnTypeName("bool");
+                    m.addInstruction(new TargetCodeInstruction(String.format("return !__%s_connect_request.empty();\n", v.getNameWithoutArrayNamePart())));
+                    bluePrint.addMethod(m);
+                }
+
+                if(!bluePrint.getMethod(v.getNameWithoutArrayNamePart()+"_connect_request_front").isPresent()) {
+                    Method m = new Method();
+                    m.setName(v.getNameWithoutArrayNamePart()+"_connect_request_front");
+                    m.setReturnTypeName("int");
+
+                    m.addInstruction(new TargetCodeInstruction(String.format("int r = __%s_connect_request.front();\n", v.getNameWithoutArrayNamePart())));
+                    m.addInstruction(new TargetCodeInstruction(String.format("__%s_connect_request.pop();\n", v.getNameWithoutArrayNamePart())));
+                    m.addInstruction(new TargetCodeInstruction("return r;\n"));
+                    bluePrint.addMethod(m);
+                }
+
+                // free part
+
+                if(!bluePrint.getMethod(v.getNameWithoutArrayNamePart()+"_has_free_request").isPresent()){
+                    Method m = new Method();
+                    m.setName(v.getNameWithoutArrayNamePart()+"_has_free_request");
+                    m.setReturnTypeName("bool");
+                    m.addInstruction(new TargetCodeInstruction(String.format("return !__%s_free_request.empty();\n", v.getNameWithoutArrayNamePart())));
+                    bluePrint.addMethod(m);
+                }
+
+                if(!bluePrint.getMethod(v.getNameWithoutArrayNamePart()+"_free_request_front").isPresent()) {
+                    Method m = new Method();
+                    m.setName(v.getNameWithoutArrayNamePart()+"_free_request_front");
+                    m.setReturnTypeName("int");
+
+                    m.addInstruction(new TargetCodeInstruction(String.format("int r = __%s_free_request.front();\n", v.getNameWithoutArrayNamePart())));
+                    m.addInstruction(new TargetCodeInstruction(String.format("__%s_free_request.pop();\n", v.getNameWithoutArrayNamePart())));
+                    m.addInstruction(new TargetCodeInstruction(String.format("__%s_connected[r] = false;\n", v.getNameWithoutArrayNamePart())));
+                    m.addInstruction(new TargetCodeInstruction("return r;\n"));
+                    bluePrint.addMethod(m);
+                }
             }
         }
     }
@@ -90,6 +136,19 @@ public class BluePrintFixer {
         Log.info("Adding __connect_request variable for "+nameWithoutArray, "Dynamic Request Connect Queue for Variable");
         Variable variable = new Variable();
         variable.setName("__"+nameWithoutArray+"_connect_request");
+        variable.setTypeNameTargetLanguage("std::queue<int>");
+
+        variable.setPublic(false);
+
+        bluePrint.getMathInformationRegister().addVariable(variable);
+
+        return variable;
+    }
+
+    protected static Variable addFreeRequestQueueForVariable(String nameWithoutArray, BluePrint bluePrint){
+        Log.info("Adding __free_request variable for "+nameWithoutArray, "Dynamic Request Free Queue for Variable");
+        Variable variable = new Variable();
+        variable.setName("__"+nameWithoutArray+"_free_request");
         variable.setTypeNameTargetLanguage("std::queue<int>");
 
         variable.setPublic(false);

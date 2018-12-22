@@ -193,7 +193,10 @@ public class EventConverter {
     }
 
     protected static String generateEventConditionEventPortConnectSymbol(EventPortExpressionConnectSymbol expressionConnectSymbol, EMAComponentInstanceSymbol componentSymbol, BluePrint bluePrint){
-        return "(!__"+expressionConnectSymbol.getName()+"_connect_request.empty())";
+
+        return "("+expressionConnectSymbol.getName()+"_has_connect_request())";
+
+//        return "(!__"+expressionConnectSymbol.getName()+"_connect_request.empty())";
     }
 
 

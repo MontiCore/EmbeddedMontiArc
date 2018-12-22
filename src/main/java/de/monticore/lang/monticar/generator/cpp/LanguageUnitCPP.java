@@ -136,7 +136,9 @@ public class LanguageUnitCPP extends LanguageUnit {
         }
 
         //class definition start
-        resultString += "class " + bluePrint.getName() + "{\n";
+        resultString += "class " + bluePrint.getName() ;
+
+        resultString += "{\n";
 
         //const variables
         for (String constString : bluePrint.getConsts())

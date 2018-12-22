@@ -1,0 +1,16 @@
+package connectionFromInner.test3;
+
+dynamic component FAS {
+    ports
+        out Q numberOfCars;
+
+    instance CommunicationController<16> comc;
+    instance CarCounter<16> carc;
+
+
+    @ comc.velocity::connect {
+        connect comc.velocity[?] -> carc.velocity[?];
+    }
+
+    connect carc.numberOfCars -> numberOfCars;
+}

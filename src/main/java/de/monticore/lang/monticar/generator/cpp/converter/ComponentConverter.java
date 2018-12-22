@@ -67,13 +67,22 @@ public class ComponentConverter {
 
         EventConverter.generateEvents(execute, componentSymbol, bluePrint, mathStatementsSymbol,generatorCPP, includeStrings);
 
-
         extendInitMethod(componentSymbol, bluePrint, generatorCPP, includeStrings);
 
 
         bluePrint.addMethod(execute);
 
         EventConverter.generatePVCNextMethod(bluePrint);
+
+        if(componentSymbol instanceof EMADynamicComponentInstanceSymbol){
+            if(((EMADynamicComponentInstanceSymbol) componentSymbol).isDynamic()){
+//                bluePrint.setHasSuperClass(Optional.of("__dynamicComponent"));
+                //TODO: ADD parent dynamic function pointer
+                addParentDynamicFunctionPointer(bluePrint);
+
+                bluePrint.addAdditionalIncludeString("DynamicHelper");
+            }
+        }
 
         return bluePrint;
     }
@@ -104,6 +113,47 @@ public class ComponentConverter {
             }
 
 
+        }
+    }
+
+    public static void addParentDynamicFunctionPointer(BluePrint bluePrint){
+        if(!bluePrint.getVariable("(*__parent_dynamic)(void)").isPresent()) {
+            Variable pd = new Variable();
+            pd.setTypeNameTargetLanguage("void*");
+            pd.setName("__parent");
+            pd.setPublic(false);
+            bluePrint.addVariable(pd);
+
+            pd = new Variable();
+            pd.setTypeNameTargetLanguage("void");
+            pd.setName("(*__parent_dynamic)(void* pt2parrent, bool dynFunc, bool freeFunc)");
+            pd.setPublic(false);
+            bluePrint.addVariable(pd);
+
+            if (bluePrint.getMethod("init").isPresent()) {
+                bluePrint.getMethod("init").get().addInstruction(new TargetCodeInstruction("__parent = NULL;\n"));
+                bluePrint.getMethod("init").get().addInstruction(new TargetCodeInstruction("__parent_dynamic = NULL;\n"));
+            }
+
+            if(!bluePrint.getMethod("set_Parent_Dynamic").isPresent()){
+                Method m = new Method();
+                m.setReturnTypeName("void");
+                m.setName("set_Parent_Dynamic");
+
+                pd = new Variable();
+                pd.setTypeNameTargetLanguage("void* ");
+                pd.setName("parentObj");
+                m.addParameter(pd);
+
+                pd = new Variable();
+                pd.setTypeNameTargetLanguage("void");
+                pd.setName("(*func)(void* pt2parrent, bool d, bool f)");
+                m.addParameter(pd);
+
+                m.addInstruction(new TargetCodeInstruction("__parent = parentObj;\n"));
+                m.addInstruction(new TargetCodeInstruction("__parent_dynamic = func;\n"));
+                bluePrint.addMethod(m);
+            }
         }
     }
 
@@ -156,6 +206,12 @@ public class ComponentConverter {
             }
             String result = "";
             result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getName()) + ".init(" + parameterString + ");\n";
+
+            if((componentSymbol instanceof EMADynamicComponentInstanceSymbol) && (subComponent instanceof EMADynamicComponentInstanceSymbol)){
+                if(((EMADynamicComponentInstanceSymbol) componentSymbol).isDynamic() && ((EMADynamicComponentInstanceSymbol) subComponent).isDynamic()){
+                    result += GeneralHelperMethods.getTargetLanguageVariableInstanceName(subComponent.getName()) +".set_Parent_Dynamic(this, dynamicWrapper);\n";
+                }
+            }
 
             TargetCodeInstruction instruction = new TargetCodeInstruction(result);
             method.addInstruction(instruction);

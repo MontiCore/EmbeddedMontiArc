@@ -36,10 +36,16 @@ public class DynamicMathPortIsConnectedCommand extends MathCommand {
             MathFunctionFixer.fixMathFunctions(accessSymbol, (BluePrintCPP) bluePrint);
 
 
+
+
 //        valueListString += ExecuteMethodGenerator.generateExecuteCode(mathExpressionSymbol, new ArrayList<String>());
 
         String portinstanceName = ExecuteMethodGenerator.generateExecuteCode(symbols.get(0), new ArrayList<>());
         String indexCall = ExecuteMethodGenerator.generateExecuteCode(symbols.get(1), new ArrayList<>());
+
+        if(!bluePrint.getVariable(portinstanceName).isPresent()){
+            Log.error("Is_Connected("+portinstanceName+"...) : Can't find port "+portinstanceName+"!");
+        }
 
         List<MathMatrixAccessSymbol> newMatrixAccessSymbols = new ArrayList<>();
         MathStringExpression stringExpression = new MathStringExpression("__"+portinstanceName+"_connected["+indexCall+"-1]",

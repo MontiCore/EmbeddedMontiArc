@@ -8,7 +8,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-math-generator</artifactId>
-    <version>0.0.26-SNAPSHOT</version>
+    <version>0.1.3-SNAPSHOT</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -25,7 +25,7 @@
         <!--<Embedded-MontiArc-Math.version>0.0.19-SNAPSHOT</Embedded-MontiArc-Math.version>-->
         <!--<tagging.version>0.0.4</tagging.version>-->
 
-        <Embedded-MontiArc-Math.version>0.1.3-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-Math.version>0.1.5-SNAPSHOT</Embedded-MontiArc-Math.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -227,6 +227,26 @@
                     <check/>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.14</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-core</artifactId>
+                        <version>1.6</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-site-renderer</artifactId>
+                        <version>1.6</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
 

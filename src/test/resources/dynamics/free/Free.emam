@@ -1,6 +1,6 @@
 package free;
 
-component Free{
+dynamic component Free{
 
     ports
         dynamic in Q a[1:7],
