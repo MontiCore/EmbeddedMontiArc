@@ -25,6 +25,8 @@ import commons.simulation.PhysicalObjectType;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 import simulation.util.MathHelper;
+import simulation.util.OrientedBoundingBox;
+
 import java.util.List;
 import java.util.Map;
 
@@ -112,11 +114,12 @@ public class PhysicsEngine{
             return false;
         }
 
-        // Perform collision computation
-        //TODO: Use a three dimensional collision detection
-        List<Map.Entry<RealVector, RealVector>> boundariesA = objectA.getBoundaryVectors();
-        List<Map.Entry<RealVector, RealVector>> boundariesB = objectB.getBoundaryVectors();
-        return MathHelper.checkIntersection2D(boundariesA, boundariesB);
+        // Construct bounding boxes
+        OrientedBoundingBox boxA = new OrientedBoundingBox(objectA.getGeometryPosition(), objectA.getWidth(), objectA.getHeight(), objectA.getLength(), objectA.getRotation());
+        OrientedBoundingBox boxB = new OrientedBoundingBox(objectB.getGeometryPosition(), objectB.getWidth(), objectB.getHeight(), objectB.getLength(), objectB.getRotation());
+
+        // Perform collision computation and return result
+        return MathHelper.checkIntersection(boxA, boxB);
     }
 
     /**
