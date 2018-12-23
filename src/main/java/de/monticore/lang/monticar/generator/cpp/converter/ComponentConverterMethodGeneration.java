@@ -41,6 +41,7 @@ import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -106,7 +107,7 @@ public class ComponentConverterMethodGeneration {
         for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
             int beginIndex = currentGenerationIndex;
             MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
-            if (!visitedMathExpressionSymbols.contains(mathExpressionSymbol)) {
+            if (!containsExactObject(visitedMathExpressionSymbols, mathExpressionSymbol)) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
                     List<MathExpressionSymbol> precedingExpressions = new ArrayList<>();
                     for (int i = 0; i < counter; ++i)
@@ -122,6 +123,16 @@ public class ComponentConverterMethodGeneration {
         }
         if (generatorCPP.useAlgebraicOptimizations())
             removeUselessVariableDefinitions(method);
+    }
+
+    private static boolean containsExactObject(Collection collection, Object obj){
+        for(Object other : collection){
+            //equals is not used on purpose!
+            //the jvm object id must be the same!
+            if(other == obj) return true;
+        }
+
+        return false;
     }
 
     private static void removeUselessVariableDefinitions(Method method) {

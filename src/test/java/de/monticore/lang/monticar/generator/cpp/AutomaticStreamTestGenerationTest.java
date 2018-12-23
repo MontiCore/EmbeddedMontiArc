@@ -327,4 +327,18 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
 
     }
     //Maybe add test that executes all stream tests in the resource dir(will take longer than an hour to execute) later
+
+    @Test
+    public void testMultipleAssignments() throws Exception {
+        AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
+        String fullComponentInstanceName = "test.multipleAssignments";
+        String modelDir = "src/test/resources/streamtests/multipleAssignmentsBase";
+        generator.generateTests(fullComponentInstanceName,
+                modelDir, "N:/target/generated-sources-cpp/streamtest/multipleAssignments/", "1", 1);
+
+        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/multipleAssignments",
+                modelDir, "./target/generated-sources-cpp/streamtest/multipleAssignments",
+                fullComponentInstanceName,
+                "test.MultipleAssignmentsTest");
+    }
 }
