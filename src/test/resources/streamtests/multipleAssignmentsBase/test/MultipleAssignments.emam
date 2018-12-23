@@ -1,0 +1,15 @@
+package test;
+
+component MultipleAssignments{
+       ports
+            in Q a,
+            out Q c;
+
+        implementation Math{
+            Q b = 42 + a;
+            c = 1 + b;
+
+            b = 43;
+            c = 1 + b;
+        }
+}

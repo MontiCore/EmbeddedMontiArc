@@ -1,0 +1,6 @@
+package test;
+
+stream MultipleAssignmentsTest for MultipleAssignments{
+    a: 10;
+    c: 44;
+}
