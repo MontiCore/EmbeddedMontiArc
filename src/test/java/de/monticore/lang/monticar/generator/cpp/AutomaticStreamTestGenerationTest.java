@@ -272,6 +272,17 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
                 "detection.ObjectDetector1Test1");
     }
 
+    @Test
+    public void testMultipleAssignments() throws Exception {
+        String fullComponentInstanceName = "de.multipleAssignments";
+        String modelDir = "src/test/resources/streamtests/multipleAssignmentsBase";
+        String targetBasePath = "./target/generated-sources-cpp/streamtest";
+        String targetRestPath = "/multipleAssignments";
+        String streamTestBaseName = "de.MultipleAssignmentsTest";
+
+        executeTest(fullComponentInstanceName, streamTestBaseName, modelDir, targetBasePath, targetRestPath, "1", 1, false);
+    }
+
     public void testGenCPPFilesAndExec(String targetBasePath, String targetRestPath, String modelDirectory, String outputDirectory,
                                        String fullComponentInstanceName, String fullStreamTestName) throws Exception {
         String targetFullPath = targetBasePath + targetRestPath;
@@ -298,7 +309,6 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         StreamTestExecution.executeTests(targetBasePath);
 
     }
-
     public void testGenCPPFilesAndExecWithExecLogging(String targetBasePath, String targetRestPath, String modelDirectory, String outputDirectory,
                                        String fullComponentInstanceName, String fullStreamTestName) throws Exception {
         String targetFullPath = targetBasePath + targetRestPath;
@@ -328,17 +338,22 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     }
     //Maybe add test that executes all stream tests in the resource dir(will take longer than an hour to execute) later
 
-    @Test
-    public void testMultipleAssignments() throws Exception {
+    private void executeTest(String fullComponentInstanceName, String streamTestBaseName, String modelDir, String targetBasePath, String targetRestPath, String testNamePostfix, int amountTickValues, boolean logging) throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
-        String fullComponentInstanceName = "de.multipleAssignments";
-        String modelDir = "src/test/resources/streamtests/multipleAssignmentsBase";
+        String targetPath = targetBasePath + targetRestPath;
         generator.generateTests(fullComponentInstanceName,
-                modelDir, "N:/target/generated-sources-cpp/streamtest/multipleAssignments/", "1", 1);
+                modelDir, targetPath, testNamePostfix, amountTickValues);
 
-        testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/multipleAssignments",
-                modelDir, "./target/generated-sources-cpp/streamtest/multipleAssignments",
-                fullComponentInstanceName,
-                "de.MultipleAssignmentsTest1");
+        if(logging) {
+            testGenCPPFilesAndExecWithExecLogging(targetBasePath, targetRestPath,
+                    modelDir, targetPath,
+                    fullComponentInstanceName,
+                    streamTestBaseName + testNamePostfix);
+        }else{
+            testGenCPPFilesAndExec(targetBasePath, targetRestPath,
+                    modelDir, targetPath,
+                    fullComponentInstanceName,
+                    streamTestBaseName + testNamePostfix);
+        }
     }
 }
