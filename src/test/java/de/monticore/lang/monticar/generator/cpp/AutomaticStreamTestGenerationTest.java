@@ -339,6 +339,6 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/multipleAssignments",
                 modelDir, "./target/generated-sources-cpp/streamtest/multipleAssignments",
                 fullComponentInstanceName,
-                "de.MultipleAssignmentsTest");
+                "de.MultipleAssignmentsTest1");
     }
 }
