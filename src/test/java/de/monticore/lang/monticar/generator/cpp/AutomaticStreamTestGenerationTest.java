@@ -331,7 +331,7 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
     @Test
     public void testMultipleAssignments() throws Exception {
         AutomaticStreamTestGenerator generator = new AutomaticStreamTestGenerator();
-        String fullComponentInstanceName = "test.multipleAssignments";
+        String fullComponentInstanceName = "de.multipleAssignments";
         String modelDir = "src/test/resources/streamtests/multipleAssignmentsBase";
         generator.generateTests(fullComponentInstanceName,
                 modelDir, "N:/target/generated-sources-cpp/streamtest/multipleAssignments/", "1", 1);
@@ -339,6 +339,6 @@ public class AutomaticStreamTestGenerationTest extends AbstractSymtabTest {
         testGenCPPFilesAndExec("./target/generated-sources-cpp/streamtest", "/multipleAssignments",
                 modelDir, "./target/generated-sources-cpp/streamtest/multipleAssignments",
                 fullComponentInstanceName,
-                "test.MultipleAssignmentsTest");
+                "de.MultipleAssignmentsTest");
     }
 }

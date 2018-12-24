@@ -1,4 +1,4 @@
-package test;
+package de;
 
 stream MultipleAssignmentsTest for MultipleAssignments{
     a: 10;
