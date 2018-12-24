@@ -45,6 +45,11 @@ public class StreamTestExecution {
             execName = "generic_platform";
             System.out.println("ERROR: Unsupported platform!!!");
         }
+
+        //Check if g++ is available
+        //will throw IOException if not found
+        Runtime.getRuntime().exec("g++ --version");
+
         Process p = Runtime.
                 getRuntime().
                 exec(new String[]{execName, targetFullPath, targetBasePath + "/exec"});
