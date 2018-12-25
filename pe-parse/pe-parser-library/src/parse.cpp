@@ -1679,7 +1679,7 @@ namespace peparse {
             else {
                 std::ios::fmtflags originalStreamFlags( std::cerr.flags() );
                 
-                auto storageClassName = GetSymbolTableStorageClassName( sym.storageClass );
+                /*auto storageClassName = GetSymbolTableStorageClassName( sym.storageClass );
                 if ( storageClassName == nullptr ) {
                     std::cerr << "Warning: Skipping auxiliary symbol of type 0x" << std::hex
                               << static_cast<std::uint32_t>( sym.storageClass )
@@ -1689,7 +1689,7 @@ namespace peparse {
                     std::cerr << "Warning: Skipping auxiliary symbol of type "
                               << storageClassName << " at offset 0x" << std::hex << offset
                               << "\n";
-                }
+                }*/
                 
                 std::cerr.flags( originalStreamFlags );
                 offset = nextSymbolOffset;

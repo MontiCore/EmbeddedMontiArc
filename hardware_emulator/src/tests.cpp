@@ -11,6 +11,6 @@ bool test_syscall_dll() {
 }
 
 bool test_autopilot_dll() {
-    AUTOPILOT_DLL::DllInterface interf;
+    AutopilotInterface interf;
     return interf.test_main();
 }

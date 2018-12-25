@@ -1,5 +1,5 @@
 #include "dll_interface.h"
-
+#include "autopilot_interface.h"
 
 
 bool test_simple_dll();

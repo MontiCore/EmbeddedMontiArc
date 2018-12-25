@@ -164,6 +164,9 @@ struct Memory {
     
     Array<uint8_t> buffer;
     
+    MemorySection *sys_section;
+    SectionStack sys_section_stack;
+    
     Memory() : internal_uc( nullptr ), section_pos( 0 ), sections( SECTION_SIZE ), buffer( BUFFER_SIZE ) {}
     
     void init( void *uc );
@@ -173,6 +176,9 @@ struct Memory {
     
     uchar *read_memory( ulong address, ulong size );
     void write_memory( ulong address, ulong size, uchar *data );
+    
+    uchar *read_memory( MemoryRange range );
+    void write_memory( MemoryRange range, uchar *data );
     
     MemorySection &new_section();
     MemorySection *get_section( ulong virtual_address );

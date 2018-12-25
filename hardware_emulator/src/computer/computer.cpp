@@ -18,10 +18,12 @@ void Computer::init() {
         return;
     }
     
+    ZydisDecoderInit( &decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64 );
+    
     memory.init( internal->uc );
     registers.init( internal->uc );
     
-    debug.init( memory, registers );
+    debug.init( memory, registers, decoder );
     handles.init( memory );
     
     heap.init( memory, handles );
@@ -33,6 +35,7 @@ void Computer::init() {
     uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, Computer::hook_mem_err, this, 1, 0 );
     
     exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ) );
+    
 }
 
 void Computer::drop() {

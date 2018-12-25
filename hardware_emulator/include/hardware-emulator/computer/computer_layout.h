@@ -4,7 +4,7 @@
 
 namespace ComputerLayout {
     constexpr ulong SYSPAGE_ADDRESS = 0x1000;
-    constexpr ulong SYSPAGE_RANGE = 0x1000;
+    constexpr ulong SYSPAGE_RANGE = 0x4000;
     constexpr ulong HANDLES_ADDRESS = SYSPAGE_ADDRESS + SYSPAGE_RANGE;
     constexpr ulong HANDLES_RANGE = 0x1000;
     constexpr ulong HANDLE_COUNT = 0x100;

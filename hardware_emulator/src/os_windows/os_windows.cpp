@@ -112,17 +112,14 @@ struct SegmentDescriptor {
 
 void OS::Windows::init( Computer &computer ) {
     this->computer = &computer;
-    section = &computer.memory.new_section();
-    section->init( MemoryRange( ComputerLayout::SYSPAGE_ADDRESS, ComputerLayout::SYSPAGE_RANGE ), "SYSPAGE", "OS",
-                   false, true, true );
-    section->init_annotations();
-    section_stack.init( section );
+    section = computer.memory.sys_section;
+    section_stack = &computer.memory.sys_section_stack;
     
     
     constexpr uint gdt_size = 2;
-    auto gdt_slot = section_stack.get_range( sizeof( SegmentDescriptor ) * gdt_size );
-    auto tib_slot = section_stack.get_range( sizeof( LOCAL_TIB ) );
-    auto eer_slot = section_stack.get_range( sizeof( LOCAL_EXCEPTION_REGISTRATION_RECORD ) );
+    auto gdt_slot = section_stack->get_range( sizeof( SegmentDescriptor ) * gdt_size );
+    auto tib_slot = section_stack->get_range( sizeof( LOCAL_TIB ) );
+    auto eer_slot = section_stack->get_range( sizeof( LOCAL_EXCEPTION_REGISTRATION_RECORD ) );
     
     //Setup TIB
     LOCAL_TIB thread_info_block;
@@ -137,9 +134,9 @@ void OS::Windows::init( Computer &computer ) {
     eer.ExceptionRountineHandler = ( void * )computer.handles.get_handle( "ExceptionRountineHandler" );
     eer.Next = 0;
     
-    computer.memory.write_memory( tib_slot.start_address, tib_slot.size, ( uchar * )&thread_info_block );
+    computer.memory.write_memory( tib_slot, ( uchar * )&thread_info_block );
     section->annotations.add_annotation( tib_slot, Annotation( "Thread Information Block", Annotation::SYMBOL ) );
-    computer.memory.write_memory( eer_slot.start_address, eer_slot.size, ( uchar * )&eer );
+    computer.memory.write_memory( eer_slot, ( uchar * )&eer );
     section->annotations.add_annotation( eer_slot, Annotation( "Exception Registration Record", Annotation::SYMBOL ) );
     
     //Setup Segment Descriptor Table
@@ -147,7 +144,7 @@ void OS::Windows::init( Computer &computer ) {
     table[0].set_standard_segment( 0, 0xFFFFF, true );
     table[1].set_standard_segment( tib_slot.start_address, 0xFFF, false );
     
-    computer.memory.write_memory( gdt_slot.start_address, gdt_slot.size, ( uchar * )table );
+    computer.memory.write_memory( gdt_slot, ( uchar * )table );
     section->annotations.add_annotation( gdt_slot, Annotation( "Global Descriptor Table", Annotation::SYMBOL ) );
     
     //Set Segment register to link to DescriptorTable
@@ -164,8 +161,8 @@ void OS::Windows::init( Computer &computer ) {
     
     //Set command line
     std::string cmd_line = "program_name";
-    cmd_line_wstr = section_stack.get_range( ( ( uint )cmd_line.size() + 2 ) * 2 );
-    cmd_line_str = section_stack.get_range( ( uint )cmd_line.size() + 2 );
+    cmd_line_wstr = section_stack->get_range( ( ( uint )cmd_line.size() + 2 ) * 2 );
+    cmd_line_str = section_stack->get_range( ( uint )cmd_line.size() + 2 );
     
     computer.memory.write_wstr( cmd_line_wstr.start_address, cmd_line );
     section->annotations.add_annotation( cmd_line_wstr, Annotation( "Command Line WSTR", Annotation::SYMBOL ) );
@@ -174,7 +171,7 @@ void OS::Windows::init( Computer &computer ) {
     
     auto cout_ptr_addr = add_symbol( "MSVCP140.DLL", "?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A",
                                      8, Annotation::PROC );
-    auto cout_slot = section_stack.get_range( sizeof( std::cout ) );
+    auto cout_slot = section_stack->get_range( sizeof( std::cout ) );
     computer.memory.write_memory( cout_ptr_addr, 8, ( uchar * )&cout_slot.start_address );
     section->annotations.add_annotation( cout_ptr_addr, Annotation( "Cout pointer", Annotation::SYMBOL ) );
     section->annotations.add_annotation( cout_slot, Annotation( "STD::COUT", Annotation::SYMBOL ) );
@@ -191,14 +188,14 @@ void OS::Windows::init( Computer &computer ) {
         unsigned istemp;
     } FILE;
     FILE io_files[3] = {};
-    io_slot = section_stack.get_range( sizeof( io_files ) );
+    io_slot = section_stack->get_range( sizeof( io_files ) );
     io_stdin = MemoryRange( io_slot.start_address, sizeof( FILE ) );
     io_stdout = MemoryRange( io_slot.start_address + sizeof( FILE ), sizeof( FILE ) );
     io_stderr = MemoryRange( io_slot.start_address + sizeof( FILE ) * 2, sizeof( FILE ) );
     section->annotations.add_annotation( io_stdin, Annotation( "io_stdin", Annotation::SYMBOL ) );
     section->annotations.add_annotation( io_stdout, Annotation( "io_stdout", Annotation::SYMBOL ) );
     section->annotations.add_annotation( io_stderr, Annotation( "io_stderr", Annotation::SYMBOL ) );
-    computer.memory.write_memory( io_slot.start_address, io_slot.size, ( uchar * )io_files );
+    computer.memory.write_memory( io_slot, ( uchar * )io_files );
 }
 
 bool OS::Windows::load_dll( const char *file ) {
@@ -211,19 +208,19 @@ bool OS::Windows::load_dll( const char *file ) {
 
 ulong OS::Windows::add_symbol( const std::string &mod, const std::string &name, uint64_t size, Annotation::Type type ) {
     std::string res_name = mod + "!" + name;
-    auto proc_handle = section_stack.get_range( size );
+    auto proc_handle = section_stack->get_range( size );
     section->annotations.add_annotation( proc_handle, Annotation( res_name, type ) );
     
-    Utility::color_mem_write();
+    /*Utility::color_mem_write();
     std::cout << "Added Symbol: " << mod << "!" << name;
-    printf( "  %03" PRIx32 "\n", section->address_range.get_local_index( proc_handle.start_address ) );
+    printf( "  %03" PRIx32 "\n", section->address_range.get_local_index( proc_handle.start_address ) );*/
     
     
     if ( undercorate_function_name( name, name_buffer )
             && name.compare( name_buffer.begin() ) != 0 ) {
         // UnDecorateSymbolName returned success
-        Utility::color_reg();
-        printf( "%s\n", name_buffer.begin() );
+        /*Utility::color_reg();
+        printf( "%s\n", name_buffer.begin() );*/
     }
     return proc_handle.start_address;
 }

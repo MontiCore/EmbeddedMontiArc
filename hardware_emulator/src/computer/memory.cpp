@@ -181,6 +181,12 @@ void Memory::init( void *uc ) {
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
     
     annotations.init_annotations();
+    
+    sys_section = &new_section();
+    sys_section->init( MemoryRange( ComputerLayout::SYSPAGE_ADDRESS, ComputerLayout::SYSPAGE_RANGE ), "SYSPAGE", "OS",
+                       false, true, true );
+    sys_section->init_annotations();
+    sys_section_stack.init( sys_section );
 }
 
 
@@ -196,6 +202,14 @@ void Memory::write_memory( ulong address, ulong size, uchar *data ) {
     for ( uint i : Range( ( uint )s ) )
         buffer[i] = data[i];
     uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), s );
+}
+
+uchar *Memory::read_memory( MemoryRange range ) {
+    return read_memory( range.start_address, range.size );
+}
+
+void Memory::write_memory( MemoryRange range, uchar *data ) {
+    write_memory( range.start_address, range.size, data );
 }
 
 
@@ -363,7 +377,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
         return false;
         
     ulong target_blocks = ( ( size - 1 ) / BLOCK_SIZE ) + 1;
-    ulong pos = 0;
+    uint pos = 0;
     ulong count = 0;
     do {
         if ( free_map[( uint )pos] )
@@ -373,7 +387,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
             
         if ( count >= target_blocks ) {
             address = ComputerLayout::HEAP_ADDRESS + ( pos * BLOCK_SIZE );
-            size_map[pos] = target_blocks;
+            size_map[pos] = ( uint )target_blocks;
             for ( auto i : Range( target_blocks ) )
                 free_map[pos + i] = true;
             return true;
@@ -384,7 +398,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
 }
 
 bool VirtualHeap::free( ulong &address ) {
-    auto pos = section->address_range.get_local_index( address ) / BLOCK_SIZE;
+    uint pos = section->address_range.get_local_index( address ) / BLOCK_SIZE;
     for ( auto i : Range( size_map[pos] ) )
         free_map[pos + i] = false;
     size_map[pos] = 0;

@@ -41,21 +41,3 @@ namespace LOADED_DLL {
 }
 
 
-namespace AUTOPILOT_DLL {
-
-    struct DllInterface {
-        Computer computer;
-        OS::Windows os_windows;
-        Array<uint64_t> addresses;
-        enum Functions {
-            INIT,
-            FUNCTION_COUNT
-        };
-        bool test_main();
-        void init();
-        void init( void *a, void *b );
-        bool call_success;
-    };
-    
-    
-}

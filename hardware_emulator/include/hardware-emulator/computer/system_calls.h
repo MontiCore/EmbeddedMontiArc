@@ -19,12 +19,14 @@ struct SysCall {
     std::string module;
     SystemCallback callback;
     ulong addr;
-    SysCall() : type( UNSUPPORTED ), addr( 0 ) {}
-    SysCall( std::string const &name, std::string const &module,  SystemCallback const callback ) :
-        type( callback != nullptr ? SUPPORTED : UNSUPPORTED ),
+    void *user_data;
+    SysCall() : type( UNSUPPORTED ), addr( 0 ), user_data( nullptr ) {}
+    SysCall( std::string const &name, std::string const &module,  SystemCallback const callback,
+             void *user_data = nullptr ) :
+        type( callback != nullptr ? SUPPORTED : UNSUPPORTED ), user_data( user_data ),
         name( name ), module( module ), callback( callback ), addr( 0 ) {}
-    SysCall( std::string const &name, std::string const &module, ulong addr ) :
-        type( LIBRARY_EXPORT ), name( name ), module( module ), callback( nullptr ), addr( addr ) {}
+    SysCall( std::string const &name, std::string const &module, ulong addr, void *user_data = nullptr ) :
+        type( LIBRARY_EXPORT ), name( name ), module( module ), callback( nullptr ), addr( addr ), user_data( user_data ) {}
 };
 
 struct SystemCalls {

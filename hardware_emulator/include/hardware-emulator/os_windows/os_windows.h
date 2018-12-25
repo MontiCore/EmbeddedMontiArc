@@ -7,7 +7,7 @@ namespace OS {
     struct Windows {
         Computer *computer;
         MemorySection *section;
-        SectionStack section_stack;
+        SectionStack *section_stack;
         
         DLLLoader dll;
         

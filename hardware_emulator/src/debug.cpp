@@ -1,17 +1,17 @@
 #include "debug.h"
 using namespace std;
 
-void ComputerDebug::init( Memory &mem, Registers &regs ) {
+void ComputerDebug::init( Memory &mem, Registers &regs, ZydisDecoder &decoder ) {
     this->mem = &mem;
     this->regs = &regs;
-    ZydisDecoderInit( &decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64 );
+    this->decoder = &decoder;
     ZydisFormatterInit( &formatter, ZYDIS_FORMATTER_STYLE_INTEL );
-    this->debug = true;
+    /*this->debug = true;
     this->d_code = true;
     this->d_regs = false;
     this->d_reg_update = true;
     this->d_mem = true;
-    this->d_syscalls = true;
+    this->d_syscalls = true;*/
 }
 
 void ComputerDebug::debug_syscall( SysCall &sys_call, ulong id ) {
@@ -47,7 +47,7 @@ void ComputerDebug::debug_code( ulong addr, uint size ) {
     const ZyanUSize length = size;
     ZydisDecodedInstruction instruction;
     auto code = mem->read_memory( addr, size );
-    if ( ZYAN_SUCCESS( ZydisDecoderDecodeBuffer( &decoder, code, length, &instruction ) ) ) {
+    if ( ZYAN_SUCCESS( ZydisDecoderDecodeBuffer( decoder, code, length, &instruction ) ) ) {
         // Print current instruction pointer.
         Utility::color_def();
         printf( "%016" PRIX64 "   ", addr );

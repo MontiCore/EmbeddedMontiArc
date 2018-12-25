@@ -5,6 +5,8 @@
 #include "system_calls.h"
 #include "method_calling.h"
 
+#include <Zydis/Zydis.h>
+
 struct InternalComputer;
 
 struct Computer {
@@ -19,11 +21,15 @@ struct Computer {
     Memory memory;
     Registers registers;
     
+    ZydisDecoder decoder;
+    
     ComputerDebug debug;
     
     FastCall fast_call;
     
-    Computer() : internal( nullptr ), fast_call( registers ) {}
+    uint computing_time;
+    
+    Computer() : internal( nullptr ), fast_call( registers ), computing_time( 0 ) {}
     ~Computer() {
         drop();
     }
