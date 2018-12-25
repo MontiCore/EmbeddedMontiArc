@@ -20,19 +20,21 @@
 # *******************************************************************************
 #
 
+# exit with code on error
+set -e
 
-sh variables.sh
-set STREAM_TESTING=%PROJECT_ROOT%/target/generated-sources-cpp/streamtest
-set AUTOPILOT_TESTS=%STREAM_TESTING%/target/generated-sources-cpp/streamtest/autopilot
-set STREAM_TEST_EXEC_DIR=%STREAM_TESTING%/exec
+source variables.sh
+export STREAM_TESTING="${PROJECT_ROOT}/target/generated-sources-cpp/streamtest"
+export AUTOPILOT_TESTS="${STREAM_TESTING}/target/generated-sources-cpp/streamtest/autopilot"
+export STREAM_TEST_EXEC_DIR="${STREAM_TESTING}/exec"
 
-g++ -std=c++11 ^
-   -I"%JAVA_HOME%/include_linux" ^
-   -I"%JAVA_HOME%/include_linux/linux" ^
-   -I"%ARMADILLO_HOME%/include" ^
-   -L"%HOME%/lib/linux" ^
-   -o "%2/TestsForCurrentModel.exe" ^
-   "%ARMADILLO_HOME%/include/catch_tests_main.o"  ^
-   "%1/test/tests_main.cpp" ^
-   -include %ARMADILLO_HOME%/include/armadillo.h ^
-   -DARMA_DONT_USE_WRAPPER -lgdi32 -lopenblas -llibarpack-2
+g++ -std=c++11 \
+   -I"${JAVA_HOME}/include_linux" \
+   -I"${JAVA_HOME}/include_linux/linux" \
+   -I"${ARMADILLO_HOME}/include" \
+   -L"${HOME}/lib/linux" \
+   -o "${2}/TestsForCurrentModel" \
+   "${ARMADILLO_HOME}/include/catch_tests_main.cpp.ghc"  \
+   "${1}/test/tests_main.cpp" \
+   -include "${ARMADILLO_HOME}/include/armadillo.h" \
+   -DARMA_DONT_USE_WRAPPER -lopenblas

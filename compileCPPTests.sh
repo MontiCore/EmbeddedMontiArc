@@ -20,9 +20,9 @@
 # *******************************************************************************
 #
 
+# exit with code on error
+set -e
 
 cd native
-sh variables.sh
-sh compileTestsArmadilloBackendOpenBLAS.sh %PROJECT_ROOT%%1 %PROJECT_ROOT%%2
-
-exit
+source variables.sh
+source compileTestsArmadilloBackendOpenBLAS.sh "${PROJECT_ROOT}/$1" "${PROJECT_ROOT}/$2"
