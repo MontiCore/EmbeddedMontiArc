@@ -29,7 +29,8 @@ test_windows:
 
 linux_build:
   stage: build
-  image: maven:3-jdk-8
+  tags:
+  - linux
   script: 
   - docs/build.sh
   artifacts:
@@ -41,9 +42,8 @@ linux_build:
 
 test_linux:
   stage: test
-  image: maven:3-jdk-8
   tags:
-  - Windows10
+  - linux
   script:
     - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
     - cd hardware_emulator/bin
