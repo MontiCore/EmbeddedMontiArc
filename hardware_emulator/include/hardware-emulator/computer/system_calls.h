@@ -32,22 +32,22 @@ struct SysCall {
 struct SystemCalls {
     MemorySection *section;
     SectionStack syscall_stack;
-    
-    
+
+
     ComputerDebug *debug;
-    
-    
+
+
     Array<SysCall> sys_calls;
     uint64_t sys_call_pos;
-    
-    SystemCalls() : section( nullptr ), sys_calls( ComputerLayout::SYSCALLS_RANGE ) {}
-    
+
+    SystemCalls() : section( nullptr ) {}
+
     bool loaded() {
         return section != nullptr;
     }
-    
+
     void init( Memory &mem, ComputerDebug &debug );
-    
+
     ulong get_syscall( const std::string &mod, const std::string &name );
     ulong add_syscall( SysCall const &call );
 };

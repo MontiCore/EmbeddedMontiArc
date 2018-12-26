@@ -19,7 +19,7 @@ else ()
 
   list(APPEND DEFAULT_CXX_FLAGS
 
-    -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy -Wdisabled-optimization
+    -pedantic -Wall -Wextra -Wcast-align -Wcast-qual -Wctor-dtor-privacy 
     -Wformat=2 -Winit-self -Wlong-long -Wmissing-declarations -Wmissing-include-dirs -Wcomment
     -Wold-style-cast -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion
     -Wsign-promo -Wstrict-overflow=5 -Wswitch-default -Wundef -Werror -Wunused -Wuninitialized
@@ -34,9 +34,9 @@ else ()
     message(STATUS "This is a debug build; enabling -Weverything...")
 
     list(APPEND DEFAULT_CXX_FLAGS
-      -Weverything -Wno-c++98-compat -Wno-missing-prototypes
+      -Wall -Wextra -pedantic -Wno-c++98-compat -Wno-missing-prototypes
       -Wno-missing-variable-declarations -Wno-global-constructors
-      -Wno-exit-time-destructors -Wno-padded -Wno-error
+      -Wno-exit-time-destructors -Wno-padded -Wno-error -g -Wdisabled-optimization
     )
   endif ()
 endif ()

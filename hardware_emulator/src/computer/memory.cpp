@@ -6,6 +6,7 @@
 #include <iostream>
 
 void Annotations::init_annotations() {
+    annotations.init(DEFAULT_ANNOTATION_SIZE);
     annotation_pos = 0;
     new_annotation( 0, Annotation( "NO-NOTE", Annotation::NONE ) );
 }
@@ -176,12 +177,14 @@ uint64_t SectionStack::get_8byte_slot() {
 
 
 void Memory::init( void *uc ) {
+    sections.init(SECTION_SIZE);
+    buffer.init(BUFFER_SIZE);
     this->internal_uc = uc;
     section_pos = 0;
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
-    
+
     annotations.init_annotations();
-    
+
     sys_section = &new_section();
     sys_section->init( MemoryRange( ComputerLayout::SYSPAGE_ADDRESS, ComputerLayout::SYSPAGE_RANGE ), "SYSPAGE", "OS",
                        false, true, true );
@@ -274,7 +277,7 @@ wchar_t *Memory::read_wstr( ulong address ) {
         c = *( wchar_t * )( buffer.begin() + size );
         size += 2;
     } while ( c != 0 && size < BUFFER_SIZE );
-    
+
     if ( size >= BUFFER_SIZE )
         *( wchar_t * )( buffer.begin() + ( size - 2 ) ) = 0;
     return ( wchar_t * )buffer.begin();
@@ -301,7 +304,7 @@ uchar *Memory::read_str( ulong address ) {
         c = buffer[size];
         ++size;
     } while ( c != 0 && size < BUFFER_SIZE );
-    
+
     if ( size >= BUFFER_SIZE )
         buffer[size - 1] = 0;
     return buffer.begin();
@@ -375,7 +378,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
     throw_assert( loaded(), "VirtualHeap::alloc() on uninitialized VirtualHeap" );
     if ( size == 0 )
         return false;
-        
+
     ulong target_blocks = ( ( size - 1 ) / BLOCK_SIZE ) + 1;
     uint pos = 0;
     ulong count = 0;
@@ -384,7 +387,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
             count = 0;
         else
             ++count;
-            
+
         if ( count >= target_blocks ) {
             address = ComputerLayout::HEAP_ADDRESS + ( pos * BLOCK_SIZE );
             size_map[pos] = ( uint )target_blocks;
@@ -408,7 +411,7 @@ bool VirtualHeap::free( ulong &address ) {
 void VirtualStack::init( Memory &mem, Registers &regs ) {
     //Init stack memory
     stack_size = 0x1000 * 0x10;
-    
+
     section = &mem.new_section();
     section->init( MemoryRange( ComputerLayout::STACK_ADDRESS, ( uint )stack_size ),
                    "STACK", "System",

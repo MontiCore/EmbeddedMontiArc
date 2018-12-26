@@ -13,12 +13,6 @@ endif ()
 include(cmake/compilation_flags.cmake)
 list(APPEND GLOBAL_CXXFLAGS ${DEFAULT_CXX_FLAGS})
 
-if ( CMAKE_COMPILER_IS_GNUCC )
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -W")
-endif()
-if ( MSVC )
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4")
-endif()
 
 option(BUILD_SHARED_LIBS "Build Shared Libraries" OFF)
 option(BUILD_COMMAND_LINE_TOOLS "Build Command Line Tools" ON)
