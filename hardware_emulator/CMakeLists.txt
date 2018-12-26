@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.7)
 project(hardware-emulator)
 
+find_package(Threads)
+
 set(AUTOPILO_ADAPTER_NAME "AutopilotAdapter")
 
 list(APPEND HARDWARE_EMU_SOURCEFILES
@@ -100,7 +102,10 @@ if ( CMAKE_COMPILER_IS_GNUCC )
   /usr/lib/jvm/java-11-openjdk-amd64/include/linux
 )
 list(APPEND HARDWARE_EMU_LIBRARIES
-  libunicorn.a
+  unicorn
+  pthread
+  Zydis
+  pe-parser-library
 )
 list(APPEND HARDWARE_EMU_LIB_DIRS
   ../unicorn
@@ -117,6 +122,8 @@ list(APPEND HARDWARE_EMU_LIBRARIES
   Dbghelp
   x86_64-softmmu
   unicorn
+  Zydis
+  pe-parser-library
 )
 list(APPEND HARDWARE_EMU_LIB_DIRS
   ../unicorn/build
@@ -125,22 +132,29 @@ list(APPEND HARDWARE_EMU_LIB_DIRS
 endif()
 
 
-list(APPEND HARDWARE_EMU_LIBRARIES
-  Zydis
-  pe-parser-library
-)
 
-list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_INCLUDE_DIRS
+if ( CMAKE_COMPILER_IS_GNUCC )
+list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS
+  /usr/lib/jvm/java-11-openjdk-amd64/lib
 )
-
+list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
+    jawt
+    java
+)
+endif()
+if ( MSVC )
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS
   ../jdk/lib
 )
-
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
     jawt
     jvm
 )
+endif()
+list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_INCLUDE_DIRS
+)
+
+
 
 LINK_DIRECTORIES(${PROJECT_NAME}-test ${HARDWARE_EMU_LIB_DIRS})
 add_executable(${PROJECT_NAME}-test ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_TEST_SOURCEFILES})
@@ -174,6 +188,7 @@ target_link_libraries(${AUTOPILO_ADAPTER_NAME} ${HARDWARE_EMU_LIBRARIES} ${HARDW
 if ( CMAKE_COMPILER_IS_GNUCC )
     add_definitions(
       -std=c++17
+      -fPIC
       /DZYDIS_STATIC_DEFINE
     )
 endif()
