@@ -10,12 +10,12 @@ echo.
 echo **************************************
 echo       Building pe-parse (Debug)
 echo **************************************
-msbuild build\pe-parse.sln /m /p:Configuration=Debug /p:Platform=x64
+msbuild -verbosity:quiet build\pe-parse.sln /m /p:Configuration=Debug /p:Platform=x64
 echo.
 echo **************************************
 echo      Building pe-parse (Release)
 echo **************************************
-msbuild build\pe-parse.sln /m /p:Configuration=Release /p:Platform=x64
+msbuild -verbosity:quiet build\pe-parse.sln /m /p:Configuration=Release /p:Platform=x64
 cd ..
 
 
@@ -29,12 +29,12 @@ echo.
 echo **************************************
 echo       Building unicorn (Debug)
 echo **************************************
-msbuild build\unicorn.sln /m /p:Configuration=Debug /p:Platform=x64
+msbuild -verbosity:quiet build\unicorn.sln /m /p:Configuration=Debug /p:Platform=x64
 echo.
 echo **************************************
 echo      Building unicorn (Release)
 echo **************************************
-msbuild build\unicorn.sln /m /p:Configuration=Release /p:Platform=x64
+msbuild -verbosity:quiet build\unicorn.sln /m /p:Configuration=Release /p:Platform=x64
 cd ..
 
 
@@ -48,12 +48,12 @@ echo.
 echo **************************************
 echo         Building Zydis (Debug)
 echo **************************************
-msbuild build\Zydis.sln /m /p:Configuration=Debug /p:Platform=x64
+msbuild -verbosity:quiet build\Zydis.sln /m /p:Configuration=Debug /p:Platform=x64
 echo.
 echo **************************************
 echo        Building Zydis (Release)
 echo **************************************
-msbuild build\Zydis.sln /m /p:Configuration=Release /p:Platform=x64
+msbuild -verbosity:quiet build\Zydis.sln /m /p:Configuration=Release /p:Platform=x64
 cd ..
 
 echo.
@@ -66,10 +66,10 @@ echo.
 echo **************************************
 echo   Building Hardware Emulator (Debug)
 echo **************************************
-msbuild build\hardware-emulator.sln /m /p:Configuration=Debug /p:Platform=x64
+msbuild -verbosity:quiet build\hardware-emulator.sln /m /p:Configuration=Debug /p:Platform=x64
 echo.
 echo **************************************
 echo  Building Hardware Emulator (Release)
 echo **************************************
-msbuild build\hardware-emulator.sln /m /p:Configuration=Release /p:Platform=x64
+msbuild -verbosity:quiet build\hardware-emulator.sln /m /p:Configuration=Release /p:Platform=x64
 cd ..
