@@ -30,9 +30,9 @@ void Computer::init() {
     stack.init( memory, registers );
     sys_calls.init( memory, debug );
     
-    uc_hook_add( internal->uc, &internal->trace1, UC_HOOK_CODE, Computer::hook_code, this, 1, 0 );
-    uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, Computer::hook_mem, this, 1, 0 );
-    uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, Computer::hook_mem_err, this, 1, 0 );
+    uc_hook_add( internal->uc, &internal->trace1, UC_HOOK_CODE, (void*)Computer::hook_code, this, 1, 0 );
+    uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, (void*)Computer::hook_mem, this, 1, 0 );
+    uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, (void*)Computer::hook_mem_err, this, 1, 0 );
     
     exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ) );
     

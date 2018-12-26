@@ -1,4 +1,4 @@
-#include "os_windows\dll_loader.h"
+#include "os_windows/dll_loader.h"
 #include <parser-library/parse.h>
 #include "computer/system_calls.h"
 using namespace std;

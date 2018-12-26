@@ -220,7 +220,6 @@ $(LIBNAME)_LDFLAGS += -lm
 
 .PHONY: all
 all: unicorn
-	$(MAKE) -C samples
 
 qemu/config-host.h-timestamp:
 	cd qemu && \

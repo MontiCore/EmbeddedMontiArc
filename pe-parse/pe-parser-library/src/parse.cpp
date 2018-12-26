@@ -544,8 +544,10 @@ namespace peparse {
                 thisSec.sectionBase =
                     nthdr.OptionalHeader64.ImageBase + curSec.VirtualAddress;
             }
-            else
+            else {
                 PE_ERR( PEERR_MAGIC );
+            }
+                
                 
             thisSec.sec = curSec;
             std::uint32_t lowOff = curSec.PointerToRawData;

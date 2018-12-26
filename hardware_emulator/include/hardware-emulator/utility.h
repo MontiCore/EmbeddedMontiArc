@@ -5,6 +5,8 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <memory>
+#include <cstring>
 
 namespace Utility {
 
@@ -430,7 +432,7 @@ class Array < bool> {
         static uint get_array_size( uint size ) {
             return ( size - 1 ) / sizeof( ulong ) + 1;
         }
-        static inline typename BoolMirror get_bool_mirror( Array<ulong> &data, uint pos ) {
+        static inline BoolMirror get_bool_mirror( Array<ulong> &data, uint pos ) {
             return BoolMirror( pos % sizeof( ulong ), data[pos / sizeof( ulong )] );
         }
         static inline bool get_bool( const Array<ulong> &data, uint pos ) {
@@ -466,7 +468,7 @@ class Array < bool> {
             m_size = 0;
         }
         
-        typename BoolMirror operator[]( uint i ) {
+        BoolMirror operator[]( uint i ) {
             throw_assert( i < m_size, "Array<bool> OOB" );
             return get_bool_mirror( data, i );
         }
@@ -577,10 +579,10 @@ class IndexArray {
             return *target;
         }
         
-        typename Iterator begin() {
+        Iterator begin() {
             return Iterator( *this, 0 );
         }
-        typename Iterator end() {
+        Iterator end() {
             return Iterator( *this, m_size );
         }
         
@@ -714,7 +716,7 @@ class Queue {
 
 
 namespace ConsoleColor {
-    #ifdef WIN32
+    #if defined _WIN32 || defined _WIN64
     enum ColorValue {
         BLACK = 0,
         DARK_BLUE = 1,
@@ -760,36 +762,44 @@ namespace ConsoleColor {
     
     
     #else
+
+        extern const char *BLACK;
+        extern const char *DARK_BLUE;
+        extern const char *DARK_GREEN;
+        extern const char *TURQUOISE;
+        extern const char *DARK_RED;
+        extern const char *PURPLE;
+        extern const char *DARK_YELLOW;
+        extern const char *LIGHT_GRAY;
+        extern const char *DARK_GRAY;
+        extern const char *BLUE;
+        extern const char *GREEN;
+        extern const char *LIGHT_BLUE;
+        extern const char *RED;
+        extern const char *PINK;
+        extern const char *YELLOW;
+        extern const char *WHITE;
+        extern const char *DEFAULT;
     
-#define B_WHITE "\033[38;5;16;48;5;231m"
-#define B_RED "\033[38;5;16;48;5;196m"
-#define B_GREEN "\033[38;5;16;48;5;46m"
-#define B_LIGHT_BLUE "\033[38;5;16;48;5;51m"
-#define B_YELLOW "\033[38;5;16;48;5;220m"
-#define B_DARK_BLUE "\033[38;5;250;48;5;21m"
-#define B_BLUE "\033[38;5;231;48;5;33m"
+	struct Color {
+const char *val;
+Color( const char *text_color = DEFAULT, const char *bg_color = BLACK ) : val( text_color ) {}
+        const char *get() {
+            return val;
+        }
+};
     
-#define RED "\033[38;5;196m"
-#define GREEN "\033[38;5;46m"
-#define BLUE "\033[38;5;33m"
-#define LIGHT_BLUE "\033[38;5;51m"
-#define YELLOW "\033[38;5;220m"
-    
-#define W_RED "\033[38;5;231;48;5;196m"
-#define W_GREEN "\033[38;5;224;48;5;46m"
-    
-#define DEFAULT "\033[0m"
-    
-    struct Color {
+    struct Console {
     
         public:
-            static void init();
-    
-            static void close();
-            static void c( const char *which );
-    
-            static void testColor();
+            static void init() {}
+            
+            static void drop();
+            static void set_color( Color which );
+            
+            static void test_color() {}
     };
+
     
     #endif
     

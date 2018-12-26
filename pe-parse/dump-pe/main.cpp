@@ -236,7 +236,7 @@ void print_number( uint64_t val ) {
     ofs << "0x" << std::hex << val << "/" << std::dec << val;
 }
 
-void print_number( char *name, uint64_t val ) {
+void print_number( const char *name, uint64_t val ) {
     ofs << name  << ": ";
     print_number( val );
     ofs << "\n";
@@ -393,7 +393,7 @@ int main( int argc, char *argv[] ) {
             if ( nb_rva_size != NUM_DIR_ENTRIES )
                 ofs << "\tNon conform NumberOfRvaAndSizes value (!= 16)\n";
             ofs << "DataDirectory[16]:\n";
-            for ( int i = 0; i < nb_rva_size; ++i ) {
+            for ( unsigned long i = 0; i < nb_rva_size; ++i ) {
                 auto &v = p->peHeader.nt.OptionalHeader.DataDirectory[i];
                 ofs << data_directory_values[i].name << ":\t[VA=0x" << std::hex
                     << v.VirtualAddress << " Size=" << std::dec << v.Size
@@ -446,7 +446,7 @@ int main( int argc, char *argv[] ) {
             if ( nb_rva_size != NUM_DIR_ENTRIES )
                 ofs << "\tNon conform NumberOfRvaAndSizes value (!= 16)\n";
             ofs << "DataDirectory[16]:\n";
-            for ( int i = 0; i < nb_rva_size; ++i ) {
+            for ( unsigned long i = 0; i < nb_rva_size; ++i ) {
                 auto &v = p->peHeader.nt.OptionalHeader64.DataDirectory[i];
                 if ( v.Size == 0 && v.VirtualAddress == 0 )
                     continue;

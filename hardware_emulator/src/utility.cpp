@@ -96,7 +96,7 @@ void Array<bool>::resize( uint new_size ) {
 }
 
 
-#ifdef WIN32
+#if defined _WIN32 || defined _WIN64
 void *ConsoleColor::Console::hstdout = 0;
 uchar ConsoleColor::Console::csbi[22];
 
@@ -131,10 +131,46 @@ void ConsoleColor::Console::test_color() {
         std::cout << std::endl;
     }
 }
-#endif
+#else 
 
+const char *ConsoleColor::BLACK = "\033[30m";
+const char *ConsoleColor::DARK_BLUE = "\033[34m";
+const char *ConsoleColor::DARK_GREEN = "\033[32m";
+const char *ConsoleColor::TURQUOISE = "\033[36m";
+const char *ConsoleColor::DARK_RED = "\033[31m";
+const char *ConsoleColor::PURPLE = "\033[35m";
+const char *ConsoleColor::DARK_YELLOW = "\033[33m";
+const char *ConsoleColor::LIGHT_GRAY = "\033[37m";
+const char *ConsoleColor::DARK_GRAY = "\033[90m";
+const char *ConsoleColor::BLUE = "\033[94m";
+const char *ConsoleColor::GREEN = "\033[92m";
+const char *ConsoleColor::LIGHT_BLUE = "\033[96m";
+const char *ConsoleColor::RED = "\033[91m";
+const char *ConsoleColor::PINK = "\033[95m";
+const char *ConsoleColor::YELLOW = "\033[93m";
+const char *ConsoleColor::WHITE = "\033[97m";
+const char *ConsoleColor::DEFAULT = "\033[0m";
+    
+void ConsoleColor::Console::drop() {
+    std::cout << DEFAULT;
+}
+
+void ConsoleColor::Console::set_color( Color which ) {
+    std::cout << which.get();
+}
+
+
+
+#endif
+#if defined _WIN32 || defined _WIN64
 #include <DbgHelp.h>
 
 bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
     return UnDecorateSymbolName( name.c_str(), buffer.begin(), buffer.size(), UNDNAME_COMPLETE );
 }
+#else
+bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
+    return false;
+}
+
+#endif

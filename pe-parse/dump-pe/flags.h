@@ -3,7 +3,7 @@
 
 struct Flag {
     uint64_t bit;
-    char *name;
+    const char *name;
 };
 
 

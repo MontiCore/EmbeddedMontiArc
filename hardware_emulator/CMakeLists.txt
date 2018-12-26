@@ -83,25 +83,51 @@ list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../pe-parse/pe-parser-library/include
   ../zydis/include
   ../zydis/dependencies/zycore/include
-  ../zydis/msvc
-  ../jdk/include
-  ../jdk/include/win32
 )
 
 list(APPEND HARDWARE_EMU_LIB_DIRS
-  ../Zydis/build
+  ../pe-parse/build/pe-parser-library
+  ../zydis/build
   ../unicorn/build
   ../unicorn/build/qemu
-  ../pe-parse/build/pe-parser-library
 )
+
+if ( CMAKE_COMPILER_IS_GNUCC )
+    list(APPEND HARDWARE_EMU_INCLUDE_DIRS
+  ../zydis/build
+  ../zydis/dependencies/zycore/build
+  /usr/lib/jvm/java-11-openjdk-amd64/include
+  /usr/lib/jvm/java-11-openjdk-amd64/include/linux
+)
+list(APPEND HARDWARE_EMU_LIBRARIES
+  libunicorn.a
+)
+list(APPEND HARDWARE_EMU_LIB_DIRS
+  ../unicorn
+  ../unicorn/qemu
+)
+endif()
+if ( MSVC )
+    list(APPEND HARDWARE_EMU_INCLUDE_DIRS
+  ../zydis/msvc
+  ../jdk/include/win32
+  ../jdk/include
+)
+list(APPEND HARDWARE_EMU_LIBRARIES
+  Dbghelp
+  x86_64-softmmu
+  unicorn
+)
+list(APPEND HARDWARE_EMU_LIB_DIRS
+  ../unicorn/build
+  ../unicorn/build/qemu
+)
+endif()
 
 
 list(APPEND HARDWARE_EMU_LIBRARIES
   Zydis
-  unicorn
   pe-parser-library
-  x86_64-softmmu
-  Dbghelp
 )
 
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_INCLUDE_DIRS
@@ -121,10 +147,22 @@ add_executable(${PROJECT_NAME}-test ${HARDWARE_EMU_SOURCEFILES} ${HARDWARE_EMU_T
 target_include_directories(${PROJECT_NAME}-test PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}-test ${HARDWARE_EMU_LIBRARIES})
 
-add_definitions(
-    /std:c++17
-    /DZYDIS_STATIC_DEFINE
-)
+if ( CMAKE_COMPILER_IS_GNUCC )
+    add_definitions(
+      -std=c++17
+      /DZYDIS_STATIC_DEFINE
+    )
+endif()
+if ( MSVC )
+    add_definitions(
+      /std:c++17
+      /DZYDIS_STATIC_DEFINE
+    )
+endif()
+
+
+
+
 
 set_target_properties(${PROJECT_NAME}-test PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
@@ -133,7 +171,15 @@ add_library(${AUTOPILO_ADAPTER_NAME} SHARED ${HARDWARE_EMU_SOURCEFILES} ${HARDWA
 target_include_directories(${AUTOPILO_ADAPTER_NAME} PUBLIC ${HARDWARE_EMU_INCLUDE_DIRS} ${HARDWARE_EMU_AUTOPILOT_ADAPTER_INCLUDE_DIRS} )
 target_link_libraries(${AUTOPILO_ADAPTER_NAME} ${HARDWARE_EMU_LIBRARIES} ${HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES})
 
-add_definitions(
-    /std:c++17
-    /DZYDIS_STATIC_DEFINE
-)
+if ( CMAKE_COMPILER_IS_GNUCC )
+    add_definitions(
+      -std=c++17
+      /DZYDIS_STATIC_DEFINE
+    )
+endif()
+if ( MSVC )
+    add_definitions(
+      /std:c++17
+      /DZYDIS_STATIC_DEFINE
+    )
+endif()
