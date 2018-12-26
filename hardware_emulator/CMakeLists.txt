@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.7)
 project(hardware-emulator)
 
 find_package(Threads)
+find_package(Java COMPONENTS Development)
+message("Java_JAVA_EXECUTABLE ${Java_JAVA_EXECUTABLE}")
+get_filename_component(JAVA_BIN_DIR "${Java_JAVA_EXECUTABLE}" PATH)
+message("JAVA_BIN_DIR ${JAVA_BIN_DIR}")
+set(JAVA_DIR "${JAVA_BIN_DIR}/..")
+message("JAVA_DIR ${JAVA_DIR}")
 
 set(AUTOPILO_ADAPTER_NAME "AutopilotAdapter")
 
@@ -98,8 +104,8 @@ if ( CMAKE_COMPILER_IS_GNUCC )
     list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../zydis/build
   ../zydis/dependencies/zycore/build
-  /usr/lib/jvm/java-11-openjdk-amd64/include
-  /usr/lib/jvm/java-11-openjdk-amd64/include/linux
+  "${JAVA_DIR}/include"
+  "${JAVA_DIR}/include/linux"
 )
 list(APPEND HARDWARE_EMU_LIBRARIES
   unicorn
@@ -115,8 +121,8 @@ endif()
 if ( MSVC )
     list(APPEND HARDWARE_EMU_INCLUDE_DIRS
   ../zydis/msvc
-  ../jdk/include/win32
-  ../jdk/include
+  "${JAVA_DIR}/include/win32"
+  "${JAVA_DIR}/include"
 )
 list(APPEND HARDWARE_EMU_LIBRARIES
   Dbghelp
@@ -135,7 +141,7 @@ endif()
 
 if ( CMAKE_COMPILER_IS_GNUCC )
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS
-  /usr/lib/jvm/java-11-openjdk-amd64/lib
+  "${JAVA_DIR}/lib"
 )
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
     jawt
@@ -144,7 +150,7 @@ list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
 endif()
 if ( MSVC )
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIB_DIRS
-  ../jdk/lib
+  "${JAVA_DIR}/lib"
 )
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_LIBRARIES
     jawt
@@ -198,3 +204,4 @@ if ( MSVC )
       /DZYDIS_STATIC_DEFINE
     )
 endif()
+

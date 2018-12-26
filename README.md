@@ -17,6 +17,8 @@ docs\build_all_msvc.bat
 
 ### Linux
 
+Requires `cmake`,`python`, `java` and a valid `JAVA_PATH`
+
 To build all projects for Linux:
 
 ```
