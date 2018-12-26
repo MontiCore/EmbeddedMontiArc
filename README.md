@@ -22,5 +22,5 @@ To build all projects for Linux:
 ```
 git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/hardware_emulator.git
 cd hardware_emulator
-docs\build.sh
+docs/build.sh
 ```
