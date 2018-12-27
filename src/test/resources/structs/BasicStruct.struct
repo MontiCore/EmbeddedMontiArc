@@ -2,8 +2,8 @@ package structs;
 
 struct BasicStruct{
     Q fieldQ1;
-    Q (0:0.1:100) fieldQ2;
+    Q fieldQ2;
     Z fieldZ1;
-    Z (-100:2:100) fieldZ2;
+    Z fieldZ2;
     B fieldB1;
 }
