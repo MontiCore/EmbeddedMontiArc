@@ -20,8 +20,10 @@
 # *******************************************************************************
 #
 
+# exit with code on error
+set -e
 
 cd native
-sh variables.sh
-cd %PROJECT_ROOT%%1
-sh TestsForCurrentModel.exe
+source variables.sh
+cd "${PROJECT_ROOT}/${1}"
+./TestsForCurrentModel

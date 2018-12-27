@@ -21,6 +21,7 @@
 package de.monticore.lang.monticar.generator.testing;
 
 import de.se_rwth.commons.logging.Log;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -31,7 +32,7 @@ import java.io.*;
 public class StreamTestExecution {
 
     public static void compileTests(String targetFullPath, String targetBasePath) throws IOException {
-        File f = new File( "N:/"+targetBasePath + "/exec");
+        File f = new File( OSHelper.getDirPrefix() + "/"+targetBasePath + "/exec");
         if (!f.exists()) {
             f.mkdirs();
             f.mkdir();
@@ -45,16 +46,52 @@ public class StreamTestExecution {
             execName = "generic_platform";
             System.out.println("ERROR: Unsupported platform!!!");
         }
+
+        //Check if g++ is available
+        //will throw IOException if not found
+        Runtime.getRuntime().exec("g++ --version");
+
         Process p = Runtime.
                 getRuntime().
                 exec(new String[]{execName, targetFullPath, targetBasePath + "/exec"});
+        execWithExitCheck(p, "Compiler error:");
+
+    }
+
+    private static void execWithExitCheck(Process p, String errorPrefix) throws IOException {
+
         while (p.isAlive()) {
             //if (Log.isInfoEnabled(""))
             {
-                System.out.print((char) p.getInputStream().read());
-                //System.out.print((char) p.getErrorStream().read());
+                char read = (char) p.getInputStream().read();
+                if(isSafeToPrint(read)) {
+                    System.out.print(read);
+                }
             }
         }
+
+        while (p.getInputStream().available() > 0){
+            char read = (char) p.getInputStream().read();
+            if(isSafeToPrint(read)) {
+                System.out.print(read);
+            }
+        }
+
+        if(p.exitValue() != 0){
+            StringBuilder errorStream = new StringBuilder();
+            while(p.getErrorStream().available() > 0){
+                char read = (char) p.getErrorStream().read();
+                if(isSafeToPrint(read)) {
+                    errorStream.append(read);
+                }
+            }
+            Log.error(errorPrefix + "\n" + errorStream.toString());
+        }
+    }
+
+    private static boolean isSafeToPrint(char c){
+        String cs = "" + c;
+        return StringUtils.isWhitespace(cs) || StringUtils.isAsciiPrintable(cs);
     }
 
     public static void executeTests(String targetBasePath) throws IOException {
@@ -71,13 +108,9 @@ public class StreamTestExecution {
         Process p = Runtime.
                 getRuntime().
                 exec(new String[]{execName, targetBasePath + "/exec"});
-        while (p.isAlive()) {
-            //if (Log.isInfoEnabled(""))
-            {
 
-                System.out.print((char) p.getInputStream().read());
-                //System.out.print((char) p.getErrorStream().read());
-            }
-        }
+        execWithExitCheck(p, "Execution error:");
+
+
     }
 }
