@@ -156,7 +156,14 @@ public class CNNArch2Caffe2 implements CNNArchGenerator{
 
         CMakeConfig cMakeConfig = new CMakeConfig(rootModelName);
         cMakeConfig.addModuleDependency(new CMakeFindModule("Armadillo", true));
-        cMakeConfig.addCMakeCommand("set(LIBS ${LIBS} mxnet)");
+        cMakeConfig.addModuleDependency(new CMakeFindModule("Caffe2", true));
+        cMakeConfig.addCMakeCommand("find_package(CUDA)" + "\n"
+                                        + "set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})" + "\n"
+                                        + "set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})" + "\n"); //Needed since CUDA cannot be found correctly (including CUDA_curand_LIBRARY) and as optional using CMakeFindModule
+
+
+        cMakeConfig.addCMakeCommand("if(CUDA_FOUND)" + "\n" + "  set(LIBS ${LIBS} caffe2 caffe2_gpu)"
+                                        + "\n" + "else()" + "\n" + "  set(LIBS ${LIBS} caffe2)" + "\n" + "endif()");
 
         Map<String,String> fileContentMap = new HashMap<>();
         for (FileContent fileContent : cMakeConfig.generateCMakeFiles()){

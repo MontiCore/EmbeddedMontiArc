@@ -7,12 +7,23 @@ project(alexnet LANGUAGES CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # add dependencies
+find_package(Caffe2 REQUIRED)
+set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Caffe2_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${Caffe2_LIBRARIES})
 find_package(Armadillo REQUIRED)
 set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Armadillo_INCLUDE_DIRS})
 set(LIBS ${LIBS} ${Armadillo_LIBRARIES})
 
 # additional commands
-set(LIBS ${LIBS} mxnet)
+find_package(CUDA)
+set(INCLUDE_DIRS ${INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS})
+set(LIBS ${LIBS} ${CUDA_LIBRARIES} ${CUDA_curand_LIBRARY})
+
+if(CUDA_FOUND)
+  set(LIBS ${LIBS} caffe2 caffe2_gpu)
+else()
+  set(LIBS ${LIBS} caffe2)
+endif()
 
 # create static library
 include_directories(${INCLUDE_DIRS})
