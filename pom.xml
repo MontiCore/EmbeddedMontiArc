@@ -58,7 +58,7 @@
         <monticore.plugin>5.0.1</monticore.plugin>
         <assembly.plugin>2.5.4</assembly.plugin>
         <compiler.plugin>3.8.0</compiler.plugin>
-        <!--<plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>-->
+
         <source.plugin>2.4</source.plugin>
         <shade.plugin>2.4.3</shade.plugin>
         <jacoco.plugin>0.8.1</jacoco.plugin>
@@ -71,6 +71,9 @@
         <java.version>1.8</java.version>
         <javac.src.version>1.8</javac.src.version>
         <javac.target.version>1.8</javac.target.version>
+
+        <!-- Use plexus compiler to speed up testing -->
+        <!--<plexus.compiler.eclipse.version>2.8</plexus.compiler.eclipse.version>-->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
