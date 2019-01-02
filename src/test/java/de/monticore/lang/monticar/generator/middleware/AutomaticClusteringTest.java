@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
@@ -96,6 +97,36 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         assertTrue( labels[1] != labels[2]);
         assertTrue( labels[1] != labels[3]);
 
+    }
+
+    @Test
+    public void testFlattenAlgorithm1(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.overallSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        assertEquals(10, subComponents.size());
+        assertEquals(20, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithm2(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.spanningSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        assertEquals(20, subComponents.size());
+        assertEquals(40, connectors.size());
     }
 
 
