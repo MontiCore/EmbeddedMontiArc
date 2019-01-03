@@ -18,16 +18,14 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable.instanceStructure;
 
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbolCreator;
 
-
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
-
-import de.monticore.symboltable.resolving.CommonResolvingFilter;
-
-public class EMAMCompilationUnitResolvingFilter extends CommonResolvingFilter<EMAMCompilationUnitSymbol> {
-
-    public EMAMCompilationUnitResolvingFilter() {
-        super(EMAMCompilationUnitSymbol.KIND);
+public class ModifiedEMAComponentInstanceSymbolCreator extends EMADynamicComponentInstanceSymbolCreator {
+    @Override
+    protected EMADynamicComponentInstanceBuilder getNewBuilder() {
+        return new ModifiedEMAComponentInstanceBuilder();
     }
 }

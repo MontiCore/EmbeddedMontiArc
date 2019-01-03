@@ -23,6 +23,9 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos;
 import de.monticore.lang.embeddedmontiarc.cocos.*;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTConnectorCoCo;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathCoCoChecker;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.DynamicComponentDynamicBodyElements;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.NoDynamicNewComponentAndPort;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._cocos.NoDynamicNewConnectsOutsideEventHandler;
 
 /**
  * @author Sascha Schneiders
@@ -44,8 +47,12 @@ public class EmbeddedMontiArcMathCoCos {
                 .addCoCo(new TopLevelComponentHasNoInstanceName())
                 .addCoCo((EmbeddedMontiArcASTConnectorCoCo) new ConnectorEndPointCorrectlyQualified())
                 .addCoCo(new InPortUniqueSender())
-                .addCoCo(new ReferencedSubComponentExists())
+                .addCoCo(new ReferencedSubComponentExistsEMAM())
                 .addCoCo(new PortTypeOnlyBooleanOrSIUnit())
-                .addCoCo(new AtomicComponentCoCo());
+                .addCoCo(new AtomicComponentCoCo())
+                //Dynamic Cocos
+                .addCoCo(new DynamicComponentDynamicBodyElements())
+                .addCoCo(new NoDynamicNewComponentAndPort())
+                .addCoCo(new NoDynamicNewConnectsOutsideEventHandler());
     }
 }

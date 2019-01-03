@@ -20,33 +20,26 @@
  */
 package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos;
 
-//import de.monticore.lang.embeddedmontiarc.cocos.SourceTargetNumberMatch;
-//import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcCoCoChecker;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._cocos.EmbeddedMontiArcMathCoCoChecker;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTSubComponent;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._cocos.EmbeddedMontiArcASTSubComponentCoCo;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.helper.ArcTypePrinter;
+import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
-/**
- * @author Sascha Schneiders
- */
-public class AtomicComponentImplementationTest extends AbstractCoCoTest {
-    @BeforeClass
-    public static void setUp() {
-        Log.enableFailQuick(false);
-    }
-    //@Ignore
-    @Test
-    public void testValid() {
-        checkValid("", "detection.EigenSolver");
+import java.util.Optional;
+
+public class ReferencedSubComponentExistsEMAM implements EmbeddedMontiArcASTSubComponentCoCo {
+    public ReferencedSubComponentExistsEMAM() {
     }
 
-    @Ignore
-    @Test
-    public void testInvalid() {
-        checkInvalid(new EmbeddedMontiArcMathCoCoChecker().addCoCo(new AtomicComponentCoCo()),
-                getAstNode("", "detection.EigenSolver"),
-                new ExpectedErrorInfo());
+    public void check(ASTSubComponent node) {
+        String referenceName = ArcTypePrinter.printTypeWithoutTypeArgumentsAndDimension(node.getType());
+        Scope scope = node.getEnclosingScope();
+        Optional<EMAComponentSymbol> componentSymbol = scope.resolve(referenceName, EMAComponentSymbol.KIND);
+        if (!componentSymbol.isPresent()) {
+            Log.error(String.format("0x069B7 Type \"%s\" could not be resolved", referenceName), node.get_SourcePositionStart());
+        }
+
     }
 }

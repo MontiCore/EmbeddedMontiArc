@@ -18,15 +18,16 @@
  *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
  * *******************************************************************************
  */
+package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.opt;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.ParserTest;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 
-package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._symboltable;
+public class EmbeddedMontiArcMathOptParserTest extends ParserTest {
 
-public class EMAMCompilationUnitSymbol extends EMAMCompilationUnitSymbolEMPTY {
-
-  public EMAMCompilationUnitSymbol(String name) {
-    super(name);
-  }
-
-
+    @Override
+    public void setUp() {
+        super.setUp();
+        setParser(new EmbeddedMontiArcMathParser());
+    }
 }

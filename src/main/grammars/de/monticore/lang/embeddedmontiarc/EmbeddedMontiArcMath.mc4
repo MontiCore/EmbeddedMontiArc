@@ -20,8 +20,12 @@
 package de.monticore.lang.embeddedmontiarc;
 
 
-grammar EmbeddedMontiArcMath extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior, de.monticore.lang.Math{
-    EMAMCompilationUnit = EMACompilationUnit;
+grammar EmbeddedMontiArcMath extends  de.monticore.lang.embeddedmontiarcdynamic.EmbeddedMontiArcDynamic,
+                                      de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior,
+                                      de.monticore.lang.MathOpt {
+
+    //EMAMCompilationUnit = EMACompilationUnit;
+    start EMACompilationUnit;
 
     BehaviorEmbedding =  Statement+;
 

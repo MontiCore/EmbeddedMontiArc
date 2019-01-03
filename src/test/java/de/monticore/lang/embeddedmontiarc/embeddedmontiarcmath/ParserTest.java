@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 import de.monticore.antlr4.MCConcreteParser;
 import de.monticore.ast.ASTNode;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._ast.ASTEMAMCompilationUnit;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath._parser.EmbeddedMontiArcMathParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Before;
@@ -60,19 +59,19 @@ public class ParserTest {
 
   public static final boolean ENABLE_FAIL_QUICK = false;
   private static List<String> expectedParseErrorModels = Arrays.asList(
-      "src/test/resources/arc/context/a/CG12false.arc",
+      "src/test/resources/emam/arc/context/a/CG12false.arc",
 
       // "component" is a keyword and may not be used as component name
-      "src/test/resources/arc/context/a/component.arc",
+      "src/test/resources/emam/arc/context/a/component.arc",
 
       // "connect" is a keyword
-      "src/test/resources/arc/context/a/S2.arc",
+      "src/test/resources/emam/arc/context/a/S2.arc",
 
       // TODO we do not support OCL Expressions yet
-      "src/test/resources/arc/prettyPrint/example1/StatusControl.arc",
+      "src/test/resources/emam/arc/prettyPrint/example1/StatusControl.arc",
 
       // TODO we do not support OCL Expressions yet
-      "src/test/resources/arc/symtab/ocl/OCLFieldToPort.arc")
+      "src/test/resources/emam/arc/symtab/ocl/OCLFieldToPort.arc")
 
       .stream().map(s -> Paths.get(s).toString())
       .collect(Collectors.toList());
@@ -103,7 +102,7 @@ public class ParserTest {
 
   private void test(String fileEnding) throws IOException {
     ParseTest parserTest = new ParseTest("." + fileEnding, parser);
-    Files.walkFileTree(Paths.get("src/test/resources"), parserTest);
+    Files.walkFileTree(Paths.get("src/test/resources/emam"), parserTest);
 
     if (!parserTest.getModelsInError().isEmpty()) {
       Log.debug("Models in error", "ParserTest");

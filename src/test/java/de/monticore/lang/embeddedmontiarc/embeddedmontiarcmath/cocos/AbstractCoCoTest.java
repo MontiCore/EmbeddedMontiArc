@@ -45,7 +45,7 @@ import static org.junit.Assert.*;
  */
 public class AbstractCoCoTest extends AbstractSymtabTest {
   
-  private static final String MODEL_PATH = "src/test/resources/";
+  private static final String MODEL_PATH = "src/test/resources/emam/";
   
   protected static ASTEmbeddedMontiArcNode getAstNode(String modelPath, String model) {
     

@@ -23,6 +23,7 @@ package de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath;
 import de.monticore.expressionsbasis._ast.ASTExpression;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.UnitNumberExpressionSymbol;
+import de.monticore.lang.embeddedmontiarcdynamic.embeddedmontiarcdynamic._symboltable.instanceStructure.EMADynamicComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticExpressionSymbol;
 import de.monticore.lang.math._symboltable.matrix.MathMatrixArithmeticValueSymbol;
 import de.monticore.symboltable.Scope;
@@ -43,7 +44,7 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
     @Ignore
     @Test
     public void testComponentSub2() throws Exception {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "a.sub2", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
@@ -57,17 +58,18 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
 
     @Test
     public void testDetection() throws Exception {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "detection.objectDetector", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
         System.out.println(inst);
         //TODO add MathStatements to EMAComponentInstanceSymbol and print them
+
     }
 
     @Test
     public void testLookUp() throws Exception {
-        Scope symTab = createSymTab("src/test/resources");
+        Scope symTab = createSymTab("src/test/resources/emam");
         EMAComponentInstanceSymbol inst = symTab.<EMAComponentInstanceSymbol>resolve(
                 "testing.basicLookUpInstance", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(inst);
@@ -86,6 +88,15 @@ public class ExpandedComponentInstanceTest extends AbstractSymtabTest {
         assertEquals(1,iterator.next().getArguments().size());
         assertEquals(1,iterator.next().getArguments().size());
         assertEquals(1,iterator.next().getArguments().size());
+
+    }
+
+    @Test
+    public void testDynamic_1(){
+        Scope symTab = createSymTab("src/test/resources/emam/dynamic");
+        EMADynamicComponentInstanceSymbol inst = symTab.<EMADynamicComponentInstanceSymbol>resolve(
+                "adapter.notAdapter", EMADynamicComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(inst);
 
     }
 

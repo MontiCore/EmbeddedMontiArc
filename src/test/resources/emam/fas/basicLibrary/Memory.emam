@@ -1,6 +1,6 @@
 package fas.basicLibrary;
 
-component Memory<T>(T value) {
+component Memory <T> (T initValue) {
 	port
 		in T in1,
 		out T out1;
