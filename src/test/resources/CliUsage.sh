@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-java -cp target/embedded-montiarc-math-middleware-generator-0.0.1-SNAPSHOT-jar-with-dependencies.jar \
-de.monticore.lang.monticar.generator.middleware.DistributedTargetGeneratorCli \
---models-dir=src/test/resources/ \
---root-model=tests.a.addComp \
---output-dir=target/cli-test/src \
---generators=cpp,roscpp
+# via config file
+java -jar target/embedded-montiarc-math-middleware-generator-0.0.13-SNAPSHOT-jar-with-dependencies.jar src/test/resources/config/valid.json
+# via raw json string
+java -jar target/embedded-montiarc-math-middleware-generator-0.0.13-SNAPSHOT-jar-with-dependencies.jar -r "{'modelsDir': 'src/test/resources/','outputDir': 'target/cliTest/validConfigFile','rootModel':'tests.a.addComp','generators': ['cpp','roscpp']}"
