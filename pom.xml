@@ -74,12 +74,6 @@
             <artifactId>smile-core</artifactId>
             <version>1.5.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/de.lmu.ifi.dbs.elki/elki -->
-        <dependency>
-            <groupId>de.lmu.ifi.dbs.elki</groupId>
-            <artifactId>elki</artifactId>
-            <version>0.7.1</version>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
