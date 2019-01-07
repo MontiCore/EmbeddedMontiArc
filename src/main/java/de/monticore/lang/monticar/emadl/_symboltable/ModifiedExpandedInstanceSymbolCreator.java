@@ -20,7 +20,12 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbolReference;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAConnectorSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbolCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstantiationSymbol;
 import de.monticore.lang.monticar.si._symboltable.ResolutionDeclarationSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.ResolvingFilter;
@@ -29,26 +34,26 @@ import de.se_rwth.commons.logging.Log;
 import java.util.List;
 import java.util.Set;
 
-public class ModifiedExpandedInstanceSymbolCreator extends EmbeddedMontiArcExpandedComponentInstanceSymbolCreator {
+public class ModifiedExpandedInstanceSymbolCreator extends EMAComponentInstanceSymbolCreator {
 
     @Override
-    protected ExpandedComponentInstanceBuilder createInstance(ComponentSymbol cmp, Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols) {
+    protected EMAComponentInstanceBuilder createInstance(EMAComponentSymbol cmp, Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols, String packageName) {
         ModifiedExpandedComponentInstanceBuilder builder = new ModifiedExpandedComponentInstanceBuilder();
 
         //everything below is copied from super class
-        builder.setSymbolReference(new ComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope()))
+        builder.setSymbolReference(new EMAComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope()))
                 .addPorts(cmp.getPortsList())
                 .addConnectors(cmp.getConnectors()).addResolutionDeclarationSymbols(cmp.getResolutionDeclarationSymbols()).addParameters(cmp.getParameters()).addArguments(cmp.getArguments());
 
-        for (ConnectorSymbol connectorSymbol : cmp.getConnectors())
+        for (EMAConnectorSymbol connectorSymbol : cmp.getConnectors())
             Log.info(connectorSymbol.toString(), "Building Connector:");
         // add sub components
-        for (ComponentInstanceSymbol inst : cmp.getSubComponents()) {
+        for (EMAComponentInstantiationSymbol inst : cmp.getSubComponents()) {
             //      System.err.println("would create now: " + inst.getName() + "[" + inst.getComponentType().getFullName() + "]");
             Log.info(inst.getComponentType().getReferencedSymbol().howManyResolutionDeclarationSymbol() + "", "Important:");
             Log.debug(inst.toString(), "ComponentInstance CreateInstance PreSub");
             builder.addSubComponent(
-                    createInstance(inst.getComponentType(), filters, inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols())
+                    createInstance(inst.getComponentType(), filters, inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols(), packageName)
                             .setName(inst.getName())
                             .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(),
                                     inst.getComponentType().getActualTypeArguments()).addResolvingFilters(filters).addResolutionDeclarationSymbols(inst.getComponentType().getResolutionDeclarationSymbols()).addParameters(inst.getComponentType().getReferencedSymbol().getParameters()).addArguments(inst.getComponentType().getReferencedSymbol().getArguments()).build());
@@ -58,7 +63,7 @@ public class ModifiedExpandedInstanceSymbolCreator extends EmbeddedMontiArcExpan
         }
 
         // add inherited ports and sub components
-        for (ComponentSymbol superCmp = cmp;
+        for (EMAComponentSymbol superCmp = cmp;
              superCmp.getSuperComponent().isPresent();
              superCmp = superCmp.getSuperComponent().get()) {
 
@@ -79,7 +84,7 @@ public class ModifiedExpandedInstanceSymbolCreator extends EmbeddedMontiArcExpan
             //Log.debug(superCmp.toString(), "superCmp pre lambda");
             superCmp.getSuperComponent().get().getSubComponents().stream().forEachOrdered(
                     inst -> builder.addSubComponentIfNameDoesNotExists(
-                            createInstance(inst.getComponentType(), filters, null).setName(inst.getName())
+                            createInstance(inst.getComponentType(), filters, null, packageName).setName(inst.getName())
                                     .addActualTypeArguments(inst.getComponentType().getFormalTypeParameters(),
                                             inst.getComponentType().getActualTypeArguments())
                                     .addResolvingFilters(filters).addResolutionDeclarationSymbols(inst.getComponentType().getReferencedSymbol().getResolutionDeclarationSymbols()).addParameters(inst.getComponentType().getReferencedSymbol().getParameters()).build())
@@ -93,7 +98,7 @@ public class ModifiedExpandedInstanceSymbolCreator extends EmbeddedMontiArcExpan
     }
 
     @Override
-    public void createInstances(ComponentSymbol topComponent) {
-        super.createInstances(topComponent);
+    public void createInstances(EMAComponentSymbol topComponent, String instanceName) {
+        super.createInstances(topComponent,instanceName);
     }
 }
