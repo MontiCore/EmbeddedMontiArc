@@ -1,14 +1,13 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithmFactory;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringKind;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.MarkovClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringAlgorithm;
-import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.SpectralClusteringBuilder;
+import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -21,8 +20,10 @@ import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import org.junit.Test;
+import smile.clustering.DBSCAN;
 import smile.clustering.KMeans;
 import smile.clustering.SpectralClustering;
+import smile.math.distance.MinkowskiDistance;
 
 import java.io.IOException;
 import java.util.*;
@@ -98,6 +99,36 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
 
     }
 
+    @Test
+    public void testFlattenAlgorithm1(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.overallSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        assertEquals(10, subComponents.size());
+        assertEquals(20, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithm2(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.spanningSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        assertEquals(20, subComponents.size());
+        assertEquals(40, connectors.size());
+    }
+
 
     // todo: gotta move this thing later, just temporarily here for testing purposes
     public static Dataset[] getClustering(Dataset data, SparseMatrix matrix) {
@@ -146,6 +177,82 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         }
 
         return output;
+    }
+
+    @Test
+    public void testDBSCANClustering(){
+
+        /*
+
+        0----1----4---6
+        | \/ |     \ /
+        | /\ |      5
+        2----3
+
+        expected: 2 clusters a, b with a={0,1,2,3} and b={4,5,6}
+
+        */
+
+        // for DBSCAN this could be directly weighted
+        double[][] adjacencyMatrix =
+                {
+                        {0, 1, 1, 1, 0, 0, 0},
+                        {1, 0, 1, 1, 1, 0, 0},
+                        {1, 1, 0, 1, 0, 0, 0},
+                        {1, 1, 1, 0, 0, 0, 0},
+                        {0, 1, 0, 0, 0, 1, 1},
+                        {0, 0, 0, 0, 1, 0, 1},
+                        {0, 0, 0, 0, 1, 1, 0},
+                };
+
+
+        // |nodes| instances of data with pseudo x,y coords. set to node no.
+        double[][] data = new double[adjacencyMatrix.length][2];
+        for (int i=0; i<data.length; i++) {
+            data[i][0]= i;
+            data[i][1]= i;
+        }
+
+        // mission critical
+        int minPts= 2;
+        double radius= 5;
+
+        DBSCAN clustering = new DBSCAN(data, new DBSCANDistance(adjacencyMatrix), minPts, radius);
+
+        int[] labels = clustering.getClusterLabel();
+
+        for (int label : labels) {
+            System.out.println(label);
+        }
+
+        assertEquals(7, labels.length);
+        assertTrue(labels[0] == labels[1]);
+        assertTrue(labels[0] == labels[2]);
+        assertTrue(labels[0] == labels[3]);
+
+        assertTrue(labels[1] == labels[0]);
+        assertTrue(labels[1] == labels[2]);
+        assertTrue(labels[1] == labels[3]);
+        assertTrue(labels[1] != labels[4]);     // expected cut
+
+        assertTrue(labels[2] == labels[0]);
+        assertTrue(labels[2] == labels[1]);
+        assertTrue(labels[2] == labels[3]);
+
+        assertTrue(labels[3] == labels[0]);
+        assertTrue(labels[3] == labels[1]);
+        assertTrue(labels[3] == labels[2]);
+
+        assertTrue(labels[4] != labels[1]);     // expected cut
+        assertTrue(labels[4] == labels[5]);
+        assertTrue(labels[4] == labels[6]);
+
+        assertTrue(labels[5] == labels[4]);
+        assertTrue(labels[5] == labels[6]);
+
+        assertTrue(labels[6] == labels[4]);
+        assertTrue(labels[6] == labels[5]);
+
     }
 
     @Test
@@ -266,6 +373,12 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
                 case SPECTRAL_CLUSTERER:
                     params= new Object[] { SpectralClusteringBuilder.SpectralParameters.SPECTRAL_NUM_CLUSTERS, 2 };
                 break;
+                case DBSCAN_CLUSTERER:
+                    params= new Object[] {
+                            DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_MIN_PTS, 1,
+                            DBSCANClusteringBuilder.DBSCANParameters.DBSCAN_RADIUS, 10.0
+                    };
+                    break;
             }
             testCreateClusters(ClusteringAlgorithmFactory.getFromKind(kind), params);
         }
