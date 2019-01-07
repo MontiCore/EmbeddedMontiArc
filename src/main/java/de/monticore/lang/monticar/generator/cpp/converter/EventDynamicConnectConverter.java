@@ -524,6 +524,14 @@ public class EventDynamicConnectConverter {
         }
         //TODO: check if names > 0
         if(names.size() > 0) {
+            String c = "";
+            for(int i = 0; i < free_method_index_counter; ++i){
+                c += "(_connected_idxs["+i+"] < 0)";
+                if( i < free_method_index_counter -1){
+                    c += " || ";
+                }
+            }
+            body.addInstruction(new TargetCodeInstruction("if("+c+"){free(_connected_idxs); return;}\n"));
             body.addInstruction(new TargetCodeInstruction("if(__parent != NULL){__parent_dynamic(__parent, true, false);}\n"));
             free.addInstruction(new TargetCodeInstruction("if(__parent != NULL){__parent_dynamic(__parent, false, true);}\n"));
         }

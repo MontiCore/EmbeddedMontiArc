@@ -164,14 +164,18 @@ public:
     }
 
     bool check(){
+        if(N == 0){
+            return false;
+        }
         if(!isNreached){
             return false;
         }
 
-        if(isChecked){
+        if(isChecked && (valueHistory[N-1] == *portReference)){
             return checkedValue;
         }
 
+        valueHistory[N-1] = *portReference;
         isChecked = true;
         for(int i = 0; i < N; ++i){
             if(!checkers[i]->check()){

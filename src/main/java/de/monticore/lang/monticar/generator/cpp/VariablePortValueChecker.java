@@ -30,8 +30,8 @@ public class VariablePortValueChecker extends Variable {
 
     @Override
     public String getNameTargetLanguageFormat() {
-        return "__pvc_"+this.idPVC+"_"+GeneralHelperMethods.getTargetLanguageVariableInstanceName(this.getName());
-        //return name.replaceAll("\\[", "_").replaceAll("\\]", "_");
+        String s =  "__pvc_"+this.idPVC+"_"+this.getName();
+        return s.replaceAll("\\[", "_").replaceAll("\\]", "_");
     }
 
     public String getTypeTargetLanguageFormat(){
@@ -39,7 +39,7 @@ public class VariablePortValueChecker extends Variable {
     }
 
     public void addInitInstructionsToMethod(Method init){
-        TargetCodeInstruction ti = new TargetCodeInstruction(getNameTargetLanguageFormat()+".setPortReference(&"+this.getName()+");\n" );
+        TargetCodeInstruction ti = new TargetCodeInstruction(getNameTargetLanguageFormat()+".setPortReference(&"+GeneralHelperMethods.getTargetLanguageVariableInstanceName(this.getName())+");\n" );
         init.addInstruction(ti);
 
         int id = 0;
