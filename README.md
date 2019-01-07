@@ -82,16 +82,23 @@ ROS Kinetic currently only supports Linux and the installation is described [her
 Maven generates the jar `embedded-montiarc-math-middleware-generator-{Version}-jar-with-dependencies.jar`
 and the cli is located in `de.monticore.lang.monticar.generator.middleware.DistributedTargetGeneratorCli`.
 
-CLI Options:
-* -m/--models-dir: full path to directory with EMAM models
-* -r/--root-model: fully qualified name of the root model
-* -o/--output-dir: full path to output directory for generated files
-* -g/--generators: identifiers for the generators that should be used
-    * currently supported:
-        * cpp
-        * roscpp
-    * seperated by ','
-    * example: cpp,roscpp
+Parameters: `${file path to config json}` OR `-r ${raw json config string}`
+```
+Schema of config json:
+{
+    'modelsDir':'<path to directory with EMAM models>',
+    'outputDir':'<path to output directory for generated files>',
+    'rootModel':'<fully qualified name of the root model>',
+    'generators':['<identifier for first generator>', '<identifier for second generator>',...],
+    'emadlBackend':'<deep-learning-framework backend. Options: MXNET, CAFFE2>'
+}
+```
+Generator Options:
+- Behaviour generators:
+    - 'cpp': EMAM2CPP
+    - 'emadlcpp': EMADL2CPP
+- Middleware generators:
+    - 'roscpp': EMAM2Roscpp
     
 Example: [CliUsage.sh](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware/blob/master/src/test/resources/CliUsage.sh)
 

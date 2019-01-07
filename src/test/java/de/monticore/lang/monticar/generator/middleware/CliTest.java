@@ -2,89 +2,115 @@ package de.monticore.lang.monticar.generator.middleware;
 
 import de.monticore.lang.embeddedmontiarc.LogConfig;
 import de.se_rwth.commons.logging.Finding;
+import de.se_rwth.commons.logging.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
 
 
-public class CliTest{
-    private static final String VALID_MODELS_DIR_OPTION = "--models-dir=src/test/resources/";
-    private static final String VALID_ROOT_MODEL_OPTION = "--root-model=tests.a.addComp";
-    private static final String VALID_GENERATOR_CPP_OPTION = "--generators=cpp";
-    private static final String VALID_GENERATOR_ALL_OPTION = "--generators=cpp,roscpp,odv";
+public class CliTest {
+    private static final String VALID_MODELS_DIR_OPTION = "src/test/resources/";
+    private static final String VALID_ROOT_MODEL_OPTION = "tests.a.addComp";
+    private static final List<String> VALID_GENERATOR_CPP_OPTION = Arrays.asList("cpp");
+    private static final List<String> VALID_GENERATOR_ALL_OPTION = Arrays.asList("cpp", "roscpp", "odv");
 
-    private static final String INVALID_MODELS_DIR_OPTION = "--models-dir=src/invalid/resources/";
-    private static final String INVALID_ROOT_MODEL_OPTION = "--root-model=invalid.invalid.addComp";
-    private static final String INVALID_GENERATOR_OPTION = "--generators=invalid";
-    private static final String INVALID_GENERATOR_EMPTY_OPTION = "--generators=";
+    private static final String INVALID_MODELS_DIR_OPTION = "src/invalid/resources/";
+    private static final String INVALID_ROOT_MODEL_OPTION = "invalid.invalid.addComp";
+    private static final List<String> INVALID_GENERATOR_OPTION = Arrays.asList("invalid");
+    private static final List<String> INVALID_GENERATOR_EMPTY_OPTION = new ArrayList<>();
     public static final String RESNET_MODELNAME = "tests.emadlTests.resNet34";
 
+    private String buildParameterJson(String modelsDir, String rootModel, Collection<String> generators, String outputDir) {
+        return buildParameterJson(modelsDir, rootModel, generators, outputDir, null);
+    }
+
+    private String buildParameterJson(String modelsDir, String rootModel, Collection<String> generators, String outputDir, String emadlBackend) {
+        String result = "{";
+        result += "'modelsDir': '" + modelsDir + "', ";
+        result += "'rootModel': '" + rootModel + "', ";
+        result += "'generators': [" + generators.stream().map(g -> "'" + g + "'").collect(Collectors.joining(", ")) + "], ";
+        if (emadlBackend != null) {
+            result += "'emadlBackend': '" + emadlBackend + "', ";
+        }
+
+        result += "'outputDir': '" + outputDir + "'";
+        result += "}";
+        return result;
+    }
+
     @BeforeClass
-    public static void initLog(){
+    public static void initLog() {
         LogConfig.init();
         LogConfig.enableFailQuick(false);
     }
 
     @Before
-    public void clearFindings(){
+    public void clearFindings() {
         LogConfig.getFindings().clear();
     }
 
     @AfterClass
-    public static void resetLog(){
+    public static void resetLog() {
         LogConfig.getFindings().clear();
         LogConfig.enableFailQuick(true);
     }
 
 
     @Test
-    public void testParserError(){
+    public void testParserError() {
         String[] args = {
                 "invalidParsingArg"};
 
         DistributedTargetGeneratorCli.main(args);
         assertTrue(LogConfig.getErrorCount() == 1);
-        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0x9A1AC")));
+        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0x49E6A")));
     }
 
-
     @Test
-    public void testNoGenerators(){
-        String[] args = {
+    public void testNoGenerators() {
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
                 VALID_ROOT_MODEL_OPTION,
                 INVALID_GENERATOR_EMPTY_OPTION,
-                "--output-dir=target/cliTest/NoGenerators/"};
-        DistributedTargetGeneratorCli.main(args);
+                "target/cliTest/NoGenerators/");
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
         assertTrue(LogConfig.getErrorCount() == 1);
-        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0xE28B6")));
+        assertTrue(LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains("0x6178E")));
     }
 
     @Test
-    public void testInvalidGenerator(){
-        String[] args = {
+    public void testInvalidGenerator() {
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
                 VALID_ROOT_MODEL_OPTION,
                 INVALID_GENERATOR_OPTION,
-                "--output-dir=target/cliTest/InvalidGenerators/"};
-        DistributedTargetGeneratorCli.main(args);
+                "target/cliTest/InvalidGenerators/");
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
         assertTrue(LogConfig.getErrorCount() == 1);
         assertTrue(logContains("0xE28B6"));
     }
 
     @Test
-    public void testOneGenerator(){
+    public void testOneGenerator() {
         String targetDir = "target/cliTest/OneGenerator/";
-        String[] args = {
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
                 VALID_ROOT_MODEL_OPTION,
                 VALID_GENERATOR_CPP_OPTION,
-                "--output-dir=" + targetDir};
-        DistributedTargetGeneratorCli.main(args);
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
         String[] positiveFileNames = {
                 "CMakeLists.txt",
                 "tests_a_addComp/cpp/tests_a_addComp.h",
@@ -99,15 +125,17 @@ public class CliTest{
     }
 
     @Test
-    public void testSingleEMADLGenerator(){
+    public void testSingleEMADLGenerator() {
         String targetDir = "target/cliTest/SingleEmadlTest/";
-        String[] args = {
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
-                "--root-model="+RESNET_MODELNAME,
-                "--generators=emadlcpp",
-                "--backend=MXNET",
-                "--output-dir=" + targetDir};
-        DistributedTargetGeneratorCli.main(args);
+                RESNET_MODELNAME,
+                Arrays.asList("emadlcpp"),
+                targetDir,
+                "MXNET");
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
         String[] positiveFileNames = getEMADLGeneratedFilesList(false);
 
         for (String positiveFileName : positiveFileNames) {
@@ -118,18 +146,37 @@ public class CliTest{
     @Test
     public void testEMADLAndRosGenerator(){
         String targetDir = "target/cliTest/EmadlRosTest/";
-        String[] args = {
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
-                "--root-model="+RESNET_MODELNAME,
-                "--generators=emadlcpp,roscpp",
-                "--backend=MXNET",
-                "--output-dir=" + targetDir};
-        DistributedTargetGeneratorCli.main(args);
+                RESNET_MODELNAME,
+                Arrays.asList("emadlcpp","roscpp"),
+                targetDir,
+                "MXNET");
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
         String[] positiveFileNames = getEMADLGeneratedFilesList(true);
 
         for (String positiveFileName : positiveFileNames) {
             assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
         }
+    }
+
+    @Test
+    public void testEMADLConfigFile(){
+        String targetDir = "target/cliTest/emadlConfigFile/";
+
+        DistributedTargetGeneratorCli.main(new String[]{"src/test/resources/config/emadl.json"});
+        String[] positiveFileNames = getEMADLGeneratedFilesList(true);
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get(targetDir + positiveFileName)));
+        }
+    }
+
+    @Test
+    public void testInvalidConfigFile(){
+        DistributedTargetGeneratorCli.main(new String[]{"src/test/resources/config/invalid.json"});
+        assertTrue(Log.getErrorCount() > 0);
     }
 
     private String[] getEMADLGeneratedFilesList(boolean generateRosFiles) {
@@ -161,14 +208,35 @@ public class CliTest{
     }
 
     @Test
+    public void testValidConfigFile(){
+        String[] args = {"src/test/resources/config/valid.json"};
+        DistributedTargetGeneratorCli.main(args);
+
+        String[] positiveFileNames = {
+                "CMakeLists.txt",
+                "tests_a_addComp/cpp/tests_a_addComp.h",
+                "tests_a_addComp/cpp/CMakeLists.txt",
+                "tests_a_addComp/coordinator/CMakeLists.txt",
+                "tests_a_addComp/coordinator/Coordinator_tests_a_addComp.cpp",
+                "tests_a_addComp/roscpp/RosAdapter_tests_a_addComp.h",
+                "tests_a_addComp/roscpp/CMakeLists.txt",
+        };
+
+        for (String positiveFileName : positiveFileNames) {
+            assertTrue(Files.exists(Paths.get("target/cliTest/validConfigFile/" + positiveFileName)));
+        }
+    }
+
+    @Test
     public void testAllGenerators(){
         String targetDir = "target/cliTest/AllGenerators/";
-        String[] args = {
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
                 VALID_ROOT_MODEL_OPTION,
                 VALID_GENERATOR_ALL_OPTION,
-                "--output-dir=" + targetDir};
-        DistributedTargetGeneratorCli.main(args);
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
 
         String[] positiveFileNames = {
                 "CMakeLists.txt",
@@ -187,30 +255,35 @@ public class CliTest{
 
     @Test
     public void testInvalidRootModelError(){
-        String[] args = {
+        String targetDir = "target/cliTest/InvalidRootModel/";
+        String json = buildParameterJson(
                 VALID_MODELS_DIR_OPTION,
                 INVALID_ROOT_MODEL_OPTION,
                 VALID_GENERATOR_CPP_OPTION,
-                "--output-dir=target/cliTest/InvalidRootModel/"};
-        DistributedTargetGeneratorCli.main(args);
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
+
         assertTrue(LogConfig.getErrorCount() == 1);
         assertTrue(logContains("0x5FFAE"));
     }
 
     @Test
     public void testInvalidModelsDirError(){
-        String[] args = {
+        String targetDir="target/cliTest/InvalidModelsDir/";
+        String json = buildParameterJson(
                 INVALID_MODELS_DIR_OPTION,
                 VALID_ROOT_MODEL_OPTION,
                 VALID_GENERATOR_CPP_OPTION,
-                "--output-dir=target/cliTest/InvalidModelsDir/"};
-        DistributedTargetGeneratorCli.main(args);
+                targetDir);
+
+        DistributedTargetGeneratorCli.main(new String[]{"-r", json});
         assertTrue(LogConfig.getErrorCount() == 1);
         assertTrue(logContains("0x6444B"));
     }
 
 
-    private boolean logContains(String errorCode){
+    private boolean logContains(String errorCode) {
         return LogConfig.getFindings().stream().map(Finding::getMsg).anyMatch(msg -> msg.contains(errorCode));
     }
 }
