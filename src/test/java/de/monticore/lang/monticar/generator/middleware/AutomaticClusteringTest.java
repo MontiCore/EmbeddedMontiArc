@@ -8,6 +8,8 @@ import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgo
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithmFactory;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringKind;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
+import de.monticore.lang.monticar.generator.middleware.helpers.AffinityPropagationHelper.clust4j.algo.AffinityPropagation;
+import de.monticore.lang.monticar.generator.middleware.helpers.AffinityPropagationHelper.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -19,6 +21,8 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
 import smile.clustering.KMeans;
@@ -539,5 +543,83 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
         double inPos = AutomaticClusteringHelper.getTypeCostHeuristic(componentInstanceSymbol.getPort("inPos").get());
     }
 
+    @Test
+    public void testAffinityPropagation(){
+        // Nodes: 4
+        double[][] adjMatrix =  {{0, 0, 1, 0},
+                {0, 0, 0, 1},
+                {1, 0, 0, 0},
+                {0, 1, 0, 0}};
 
+        RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
+
+        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        final int[] labels = clustering.getLabels();
+
+        for (int label : labels) {
+            System.out.println(label);
+        }
+
+        assertEquals(4, labels.length);
+        assertTrue(labels[0] != labels[1]);
+        assertTrue(labels[0] == labels[2]);
+        assertTrue(labels[0] != labels[3]);
+        assertTrue(labels[1] != labels[0]);
+        assertTrue(labels[1] != labels[2]);
+        assertTrue(labels[1] == labels[3]);
+        assertTrue(labels[2] == labels[0]);
+        assertTrue(labels[2] != labels[1]);
+        assertTrue(labels[2] != labels[3]);
+    }
+
+    @Test
+    public void testAffinityPropagation2(){
+        // Nodes: 4
+        double[][] adjMatrix =  {{0, 0, 1, 0},
+                {0, 0, 0, 5},
+                {1, 0, 0, 0},
+                {0, 5, 0, 0}};
+
+        RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
+
+        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        final int[] labels = clustering.getLabels();
+
+        for (int label : labels) {
+            System.out.println(label);
+        }
+
+        assertEquals(4, labels.length);
+        assertTrue(labels[0] != labels[1]);
+        assertTrue(labels[0] == labels[2]);
+        assertTrue(labels[0] == labels[3]);
+        assertTrue(labels[1] != labels[0]);
+        assertTrue(labels[1] != labels[2]);
+        assertTrue(labels[1] != labels[3]);
+        assertTrue(labels[2] == labels[0]);
+        assertTrue(labels[2] != labels[1]);
+        assertTrue(labels[2] == labels[3]);
+    }
+
+    @Test
+    public void testAffinityPropagation3(){
+        // Nodes: 2
+        // 0 1
+        // 1 0
+
+        double[][] adjMatrix =  {{1, 0},
+                {0, 1}};
+
+        RealMatrix mat = new Array2DRowRealMatrix(adjMatrix);
+
+        AffinityPropagation clustering = new AffinityPropagationParameters().fitNewModel(mat);
+        final int[] labels = clustering.getLabels();
+
+        for (int label : labels) {
+            System.out.println(label);
+        }
+
+        assertEquals(2, labels.length);
+        assertTrue(labels[0] != labels[1]);
+    }
 }
