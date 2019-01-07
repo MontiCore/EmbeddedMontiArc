@@ -1,5 +1,6 @@
 package de.monticore.lang.monticar.generator.middleware;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import smile.clustering.SpectralClustering;
 
@@ -104,6 +105,7 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
         assertTrue(labels2[3] == labels2[5]);
     }
 
+    @Ignore
     @Test
     public void testSpectralClusteringN6Sigma(){
         double[][] adjMatrix =  {{0, 1, 1, 0, 0, 0},
@@ -199,6 +201,7 @@ public class SpectralClusteringTest extends AbstractSymtabTest{
         assertTrue(labels2[4] == labels2[7]);
     }
 
+    @Ignore
     @Test
     public void testSpectralClusteringN12Sigma(){
         /*
