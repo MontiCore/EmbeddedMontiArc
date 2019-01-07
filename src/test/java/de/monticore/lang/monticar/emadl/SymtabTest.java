@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.emadl;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.emadl._parser.EMADLParser;
 import de.monticore.symboltable.Scope;
 import de.se_rwth.commons.logging.Log;
@@ -51,7 +51,7 @@ public class SymtabTest extends AbstractSymtabTest {
     public void testAlexnet(){
         Scope symTab = createSymTab("src/test/resources/models");
         ComponentSymbol a = symTab.<ComponentSymbol>resolve("ResNet34", ComponentSymbol.KIND).orElse(null);
-        ExpandedComponentInstanceSymbol c = symTab.<ExpandedComponentInstanceSymbol>resolve("resNet34", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        EMAComponentInstanceSymbol c = symTab.<EMAComponentInstanceSymbol>resolve("resNet34", EMAComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(a);
     }
 

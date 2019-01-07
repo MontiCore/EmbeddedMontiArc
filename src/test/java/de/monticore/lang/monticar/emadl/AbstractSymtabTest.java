@@ -23,7 +23,7 @@ package de.monticore.lang.monticar.emadl;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.streamunits._symboltable.StreamUnitsLanguage;
@@ -35,7 +35,7 @@ import java.nio.file.Paths;
 
 public class AbstractSymtabTest {
     protected static Scope createSymTab(String... modelPath) {
-        ConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         ModelingLanguageFamily fam = new ModelingLanguageFamily();
         EMADLLanguage montiArcLanguage = new EMADLLanguage();
 

@@ -30,7 +30,7 @@
 
     <groupId>de.monticore.lang.monticar</groupId>
     <artifactId>embedded-montiarc-deeplearning</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
 
     <!-- == PROJECT DEPENDENCIES ============================================= -->
 
@@ -41,13 +41,13 @@
         <se-commons.version>1.7.8</se-commons.version>
         <mc.grammars.assembly.version>0.0.6</mc.grammars.assembly.version>
         <Common-MontiCar.version>0.0.14-20180704.113055-2</Common-MontiCar.version>
-        <Embedded-MontiArc.version>0.0.18-20180615.111713-1</Embedded-MontiArc.version>
-        <Embedded-MontiArc-Math.version>0.0.19-20180718.152548-1</Embedded-MontiArc-Math.version>
-        <Embedded-MontiArc-MathOpt.version>0.1.1</Embedded-MontiArc-MathOpt.version>
-        <Embedded-MontiArc-Behaviour.version>0.0.14-20180704.112922-2</Embedded-MontiArc-Behaviour.version>
+        <Embedded-MontiArc.version>0.1.7-SNAPSHOT</Embedded-MontiArc.version>
+        <Embedded-MontiArc-Math.version>0.1.4-SNAPSHOT</Embedded-MontiArc-Math.version>
+        <Embedded-MontiArc-MathOpt.version>0.1.3-SNAPSHOT</Embedded-MontiArc-MathOpt.version>
+        <Embedded-MontiArc-Behaviour.version>0.0.15-SNAPSHOT</Embedded-MontiArc-Behaviour.version>
         <CNNArch.version>0.2.7</CNNArch.version>
-        <Math.version>0.0.19-20180727.084044-1</Math.version>
-        <MathOpt.version>0.1.0</MathOpt.version>
+        <Math.version>0.0.19-SNAPSHOT</Math.version>
+        <MathOpt.version>0.1.1-SNAPSHOT</MathOpt.version>
 
         <!-- .. Libraries .................................................. -->
         <guava.version>18.0</guava.version>
@@ -85,6 +85,12 @@
         <dependency>
             <groupId>de.se_rwth.commons</groupId>
             <artifactId>se-commons-logging</artifactId>
+            <version>${se-commons.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.se_rwth.commons</groupId>
+            <artifactId>se-commons-utilities</artifactId>
             <version>${se-commons.version}</version>
         </dependency>
 

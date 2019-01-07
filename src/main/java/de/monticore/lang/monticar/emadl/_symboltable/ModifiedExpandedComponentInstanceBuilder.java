@@ -20,7 +20,11 @@
  */
 package de.monticore.lang.monticar.emadl._symboltable;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceBuilder;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
@@ -33,12 +37,12 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
 
-public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentInstanceBuilder {
+public class ModifiedExpandedComponentInstanceBuilder extends EMAComponentInstanceBuilder {
 
     @Override
-    public ExpandedComponentInstanceSymbol build() {
-        ExpandedComponentInstanceSymbol instance = super.build();
-        ComponentSymbol component = instance.getComponentType().getReferencedSymbol();
+    public EMAComponentInstanceSymbol build() {
+        EMAComponentInstanceSymbol instance = super.build();
+        EMAComponentSymbol component = instance.getComponentType().getReferencedSymbol();
         Optional<ArchitectureSymbol> architecture = component.getSpannedScope()
                 .resolve("", ArchitectureSymbol.KIND);
 
@@ -54,7 +58,7 @@ public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentI
         return instance;
     }
 
-    public void addVariableSymbolsToInstance(ExpandedComponentInstanceSymbol instance){
+    public void addVariableSymbolsToInstance(EMAComponentInstanceSymbol instance){
         //add generics
         for (ResolutionDeclarationSymbol sym : instance.getResolutionDeclarationSymbols()){
             if (sym.getASTResolution() instanceof ASTUnitNumberResolution){
@@ -96,18 +100,18 @@ public class ModifiedExpandedComponentInstanceBuilder extends ExpandedComponentI
         }
     }
 
-    public void addPortArraySymbolsToInstance(ExpandedComponentInstanceSymbol instance){
-        Map<String, List<PortSymbol>> nameToPortList = new HashMap<>();
-        for (PortSymbol port : instance.getPortsList()){
-            List<PortSymbol> list = nameToPortList
+    public void addPortArraySymbolsToInstance(EMAComponentInstanceSymbol instance){
+        Map<String, List<EMAPortInstanceSymbol>> nameToPortList = new HashMap<>();
+        for (EMAPortInstanceSymbol port : instance.getPortInstanceList()){
+            List<EMAPortInstanceSymbol> list = nameToPortList
                     .computeIfAbsent(port.getNameWithoutArrayBracketPart(), k -> new ArrayList<>());
             list.add(port);
         }
 
         for (String name : nameToPortList.keySet()){
-            if (!instance.getSpannedScope().resolveLocally(name, PortArraySymbol.KIND).isPresent()) {
-                List<PortSymbol> ports = nameToPortList.get(name);
-                PortArraySymbol portArray = new PortArraySymbol(name, null);
+            if (!instance.getSpannedScope().resolveLocally(name, EMAPortArraySymbol.KIND).isPresent()) {
+                List<EMAPortInstanceSymbol> ports = nameToPortList.get(name);
+                EMAPortArraySymbol portArray = new EMAPortArraySymbol(name, null);
                 portArray.setDimension(ports.size());
                 portArray.setDirection(ports.get(0).isIncoming());
                 portArray.setTypeReference(ports.get(0).getTypeReference());

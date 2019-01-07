@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.CompositeElementSymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.LayerSymbol;
@@ -44,12 +44,12 @@ public class InstanceTest extends AbstractSymtabTest {
     @Test
     public void testInstances(){
         Scope symtab = createSymTab("src/test/resources/models/");
-        ExpandedComponentInstanceSymbol mainInstance = symtab.<ExpandedComponentInstanceSymbol>
-                resolve("InstanceTest.mainB", ExpandedComponentInstanceSymbol.KIND).get();
-        ExpandedComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<ExpandedComponentInstanceSymbol>
-                resolve("net1", ExpandedComponentInstanceSymbol.KIND).get();
-        ExpandedComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<ExpandedComponentInstanceSymbol>
-                resolve("net2", ExpandedComponentInstanceSymbol.KIND).get();
+        EMAComponentInstanceSymbol mainInstance = symtab.<EMAComponentInstanceSymbol>
+                resolve("InstanceTest.mainB", EMAComponentInstanceSymbol.KIND).get();
+        EMAComponentInstanceSymbol net1 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
+                resolve("net1", EMAComponentInstanceSymbol.KIND).get();
+        EMAComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
+                resolve("net2", EMAComponentInstanceSymbol.KIND).get();
 
         ArchitectureSymbol arch1 = net1.getSpannedScope().<ArchitectureSymbol>
                 resolve("", ArchitectureSymbol.KIND).get();
