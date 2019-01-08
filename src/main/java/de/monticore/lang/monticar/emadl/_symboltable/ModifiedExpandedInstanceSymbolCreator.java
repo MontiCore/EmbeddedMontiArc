@@ -99,6 +99,6 @@ public class ModifiedExpandedInstanceSymbolCreator extends EMAComponentInstanceS
 
     @Override
     public void createInstances(EMAComponentSymbol topComponent, String instanceName) {
-        super.createInstances(topComponent,instanceName);
+        super.createInstances(topComponent,instanceName.substring(0,1).toLowerCase() + instanceName.substring(1));
     }
 }

@@ -54,6 +54,7 @@
         <junit.version>4.12</junit.version>
         <logback.version>1.1.2</logback.version>
         <jscience.version>4.3.1</jscience.version>
+        <commons-io.version>2.6</commons-io.version>
 
         <!-- .. Plugins ....................................................... -->
         <monticore.plugin>5.0.1</monticore.plugin>
@@ -75,6 +76,12 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.antlr</groupId>
