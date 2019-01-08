@@ -100,7 +100,7 @@ public class GenerateCMakeTest extends AbstractSymtabTest {
         for (File f : files) {
             if (f.getName().startsWith("Find"))
                 findFiles.add(f);
-            else if (f.getName().endsWith(".hpp") || f.getName().endsWith(".cpp"))
+            else if (f.getName().endsWith(".hpp") || f.getName().endsWith("tests_main.cpp"))
                 testFiles.add(f);
             else if (f.toPath().getParent().endsWith("reporting")) {
                 //don't care about reporting files
