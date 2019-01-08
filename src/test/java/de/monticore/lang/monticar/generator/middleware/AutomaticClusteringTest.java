@@ -8,8 +8,8 @@ import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgo
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithmFactory;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringKind;
 import de.monticore.lang.monticar.generator.middleware.clustering.algorithms.*;
-import de.monticore.lang.monticar.generator.middleware.helpers.AffinityPropagationHelper.clust4j.algo.AffinityPropagation;
-import de.monticore.lang.monticar.generator.middleware.helpers.AffinityPropagationHelper.clust4j.algo.AffinityPropagationParameters;
+import com.clust4j.algo.AffinityPropagation;
+import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.monticar.generator.middleware.helpers.ComponentHelper;
 import de.monticore.lang.monticar.generator.middleware.impls.CPPGenImpl;
 import de.monticore.lang.monticar.generator.middleware.impls.RosCppGenImpl;
@@ -25,9 +25,7 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.Test;
 import smile.clustering.DBSCAN;
-import smile.clustering.KMeans;
 import smile.clustering.SpectralClustering;
-import smile.math.distance.MinkowskiDistance;
 
 import java.io.IOException;
 import java.util.*;

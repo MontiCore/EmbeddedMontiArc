@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware.clustering.algorithms;
 
-import de.monticore.lang.monticar.generator.middleware.helpers.AffinityPropagationHelper.clust4j.algo.AffinityPropagation;
-import de.monticore.lang.monticar.generator.middleware.helpers.AffinityPropagationHelper.clust4j.algo.AffinityPropagationParameters;
+import com.clust4j.algo.AffinityPropagation;
+import com.clust4j.algo.AffinityPropagationParameters;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
 import de.monticore.lang.monticar.generator.middleware.clustering.AutomaticClusteringHelper;
 import de.monticore.lang.monticar.generator.middleware.clustering.ClusteringAlgorithm;
