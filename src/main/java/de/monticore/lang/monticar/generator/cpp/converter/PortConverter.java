@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 
@@ -30,7 +50,7 @@ public class PortConverter {
         /*Optional<Variable> variable = bluePrint.getVariable(PortSymbol.getNameWithoutArrayBracketPart(connectName));
         if (variable.isPresent())
             return variable.get();*/
-        return convertPortSymbolToVariable(connectorSymbol, connectName, bluePrint);
+        return convertEMAPortInstanceSymbolToVariable(connectorSymbol, connectName, bluePrint);
     }
 
     public static Variable convertPortSymbolToVariable(EMAConnectorInstanceSymbol connectorSymbol, String connectName, BluePrintCPP bluePrint) {
@@ -45,7 +65,7 @@ public class PortConverter {
             portSymbol = connectorSymbol.getTargetPort();
 
 
-        return convertPortSymbolToVariable(portSymbol, connectName, bluePrint);
+        return convertEMAPortInstanceSymbolToVariable(portSymbol, connectName, bluePrint);
     }
 
     public static Variable convertPortSymbolToVariable(EMAPortInstanceSymbol portSymbol, String connectName, BluePrintCPP bluePrint) {
@@ -156,7 +176,7 @@ public class PortConverter {
 
     public static Optional<ASTCommonMatrixType> getCommonMatrixTypeFromPortSymbol(EMAPortInstanceSymbol portSymbol) {
         Optional<ASTCommonMatrixType> result = Optional.empty();
-        Optional<ASTType> astType = getAstTypeFromPortSymbol(portSymbol);
+        Optional<ASTType> astType = getAstTypeFromEMAPortInstanceSymbol(portSymbol);
         if (astType.isPresent()) {
             if (astType.get() instanceof ASTCommonMatrixType) {
                 result = Optional.of((ASTCommonMatrixType) astType.get());

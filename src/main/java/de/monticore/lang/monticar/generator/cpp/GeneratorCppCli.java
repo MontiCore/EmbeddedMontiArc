@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp;
 
 
@@ -80,6 +100,13 @@ public final class GeneratorCppCli {
             .required(false)
             .build();
 
+    public static final Option OPTION_FLAG_EXEC_LOGGING = Option.builder("a")
+            .longOpt("flag-use-exec-logging")
+            .desc("optional flag indicating if execution logging should be on")
+            .hasArg(false)
+            .required(false)
+            .build();
+
 
     public static final Option OPTION_FLAG_AUTOPILOT_ADAPTER = Option.builder()
             .longOpt("flag-generate-autopilot-adapter")
@@ -114,7 +141,7 @@ public final class GeneratorCppCli {
         }
     }
 
-    private static Options getOptions() {
+    public static Options getOptions() {
         Options options = new Options();
         options.addOption(OPTION_MODELS_PATH);
         options.addOption(OPTION_ROOT_MODEL);
@@ -126,22 +153,23 @@ public final class GeneratorCppCli {
         options.addOption(OPTION_FLAG_SERVER_WRAPPER);
         options.addOption(OPTION_FLAG_ALGEBRAIC);
         options.addOption(OPTION_FLAG_THREADING);
+        options.addOption(OPTION_FLAG_EXEC_LOGGING);
         return options;
     }
 
-    private static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
-        CommandLine cliArgs;
+    public static CommandLine parseArgs(Options options, CommandLineParser parser, String[] args) {
+        CommandLine cliArgs = null;
         try {
             cliArgs = parser.parse(options, args);
         } catch (ParseException e) {
             System.err.println("argument parsing exception: " + e.getMessage());
-            System.exit(1);
-            return null;
+            //System.exit(1);
+            //return null;
         }
         return cliArgs;
     }
 
-    private static void runGenerator(CommandLine cliArgs) {
+    public static void runGenerator(CommandLine cliArgs) {
         Path modelsDirPath = Paths.get(cliArgs.getOptionValue(OPTION_MODELS_PATH.getOpt()));
         String rootModelName = cliArgs.getOptionValue(OPTION_ROOT_MODEL.getOpt());
         String outputPath = cliArgs.getOptionValue(OPTION_OUTPUT_PATH.getOpt());
@@ -164,6 +192,8 @@ public final class GeneratorCppCli {
 
         g.setUseAlgebraicOptimizations(cliArgs.hasOption(OPTION_FLAG_ALGEBRAIC.getLongOpt()));
         g.setUseThreadingOptimization(cliArgs.hasOption(OPTION_FLAG_THREADING.getLongOpt()));
+        g.setExecutionLoggingActive(cliArgs.hasOption(OPTION_FLAG_EXEC_LOGGING.getLongOpt()));
+
         try {
             if (componentSymbol != null) {
                 g.generateFiles(componentSymbol, symTab);
@@ -172,7 +202,7 @@ public final class GeneratorCppCli {
             }
         } catch (IOException e) {
             Log.error("error during generation", e);
-            System.exit(1);
+            //System.exit(1);
         }
 
     }

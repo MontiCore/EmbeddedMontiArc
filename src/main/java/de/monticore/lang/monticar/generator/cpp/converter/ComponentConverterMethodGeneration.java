@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cpp.converter;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
@@ -13,6 +33,8 @@ import de.monticore.lang.monticar.generator.cpp.MathFunctionFixer;
 import de.monticore.lang.monticar.generator.cpp.instruction.ConnectInstructionCPP;
 import de.monticore.lang.monticar.generator.cpp.symbols.MathStringExpression;
 import de.monticore.lang.monticar.generator.optimization.MathOptimizer;
+import de.monticore.lang.monticar.ts.MCTypeSymbol;
+import de.monticore.lang.monticar.ts.references.MCTypeReference;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -79,8 +101,8 @@ public class ComponentConverterMethodGeneration {
         for (EMAConnectorInstanceSymbol connector : connectors) {
             if (!connector.isConstant()) {
                 Log.info("source:" + connector.getSource() + " target:" + connector.getTarget(), "Port info:");
-                Variable v1 = PortConverter.getVariableForPortSymbol(connector, connector.getSource(), bluePrint);
-                Variable v2 = PortConverter.getVariableForPortSymbol(connector, connector.getTarget(), bluePrint);
+                Variable v1 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getSource(), bluePrint);
+                Variable v2 = PortConverter.getVariableForEMAPortInstanceSymbol(connector, connector.getTarget(), bluePrint);
                 Log.info("v1: " + v1.getName() + " v2: " + v2.getName(), "Variable Info:");
                 Log.info("v1: " + v1.getNameTargetLanguageFormat() + " v2: " + v2.getNameTargetLanguageFormat(), "Variable Info:");
 
@@ -125,7 +147,7 @@ public class ComponentConverterMethodGeneration {
         for (currentGenerationIndex = 0; currentGenerationIndex < mathStatementsSymbol.getMathExpressionSymbols().size(); ++currentGenerationIndex) {
             int beginIndex = currentGenerationIndex;
             MathExpressionSymbol mathExpressionSymbol = mathStatementsSymbol.getMathExpressionSymbols().get(currentGenerationIndex);
-            if (!visitedMathExpressionSymbols.contains(mathExpressionSymbol)) {
+            if (!containsExactObject(visitedMathExpressionSymbols, mathExpressionSymbol)) {
                 if (generatorCPP.useAlgebraicOptimizations()) {
                     List<MathExpressionSymbol> precedingExpressions = new ArrayList<>();
                     for (int i = 0; i < counter; ++i)
@@ -141,6 +163,16 @@ public class ComponentConverterMethodGeneration {
         }
         if (generatorCPP.useAlgebraicOptimizations())
             removeUselessVariableDefinitions(method);
+    }
+
+    private static boolean containsExactObject(Collection collection, Object obj){
+        for(Object other : collection){
+            //equals is not used on purpose!
+            //the jvm object id must be the same!
+            if(other == obj) return true;
+        }
+
+        return false;
     }
 
     private static void removeUselessVariableDefinitions(Method method) {

@@ -1,25 +1,25 @@
-/*
- * ******************************************************************************
- * MontiCore Language Workbench, www.monticore.de
- * Copyright (c) 2017, MontiCore, All rights reserved.
+/**
  *
- * This project is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3.0 of the License, or (at your option) any later version.
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this project. If not, see <http://www.gnu.org/licenses/>.
- * ******************************************************************************
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
  */
-
 package de.monticore.lang.monticar.generator.cpp;
 
-import alice.tuprolog.Var;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.generator.*;
@@ -117,10 +117,19 @@ public class LanguageUnitCPP extends LanguageUnit {
                     resultString += "#include \"PortValueCheck.h\"\n";
                 }
             }
+
+        }
+
+        if (!alreadyGeneratedIncludes.contains("HelperA") && generatorCPP.isExecutionLoggingActive) {
+            alreadyGeneratedIncludes.add("HelperA");
+            resultString += "#include \"" + "HelperA" + ".h\"\n";
         }
 
         for (String string : bluePrint.getAdditionalIncludeStrings())
             resultString += "#include \"" + string + ".h\"\n";
+
+        if (generatorCPP.isExecutionLoggingActive)
+            resultString += "#include <fstream>\n";
 
         for (String include : includeStrings) {
             resultString += include;
@@ -143,8 +152,11 @@ public class LanguageUnitCPP extends LanguageUnit {
         //const variables
         for (String constString : bluePrint.getConsts())
             resultString += constString;
-
-        //private variables
+        resultString += "public:\n";
+        if (generatorCPP.isExecutionLoggingActive) {
+            resultString += "int __EXECCOUNTER;\n";
+        }
+        //input variable
         for (Variable v : bluePrint.getVariables()) {
             if (v.isPublic()) {
                 continue;
@@ -154,28 +166,60 @@ public class LanguageUnitCPP extends LanguageUnit {
 
 //        //private methods
         for (Method method : bluePrint.getMethods()) {
-            if(method.isPublic()){
-                continue;
+
+            int counter = 0;
+            resultString += method.getReturnTypeName() + " " + method.getName() + "(";
+
+            for (Variable param : method.getParameters()) {
+                if (counter == 0) {
+                    ++counter;
+                    resultString += param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+                } else {
+                    resultString += ", " + param.getVariableType().getTypeNameTargetLanguage() + " " + param.getNameTargetLanguageFormat();
+                }
+                if (param.isArray())
+                    resultString += "[" + param.getArraySize() + "]";
             }
             resultString += generateMethod(method);
         }
 
-        resultString += "public:\n";
+            //method body start
+            resultString += "{\n";
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+                resultString += "std::ofstream __LogExecutionFile;\n";
+                resultString += "__LogExecutionFile.open(\"execution\" + std::to_string(__EXECCOUNTER) + \""+bluePrint.getOriginalSymbol().getPackageName()+"."+bluePrint.getOriginalSymbol().getName() +".res\");\n";
 
-        //input variable
-        for (Variable v : bluePrint.getVariables()) {
-            if(!v.isPublic()){
-                continue;
             }
-            resultString += generateHeaderGenerateVariable(v);
-        }
+            for (Instruction instruction : method.getInstructions()) {
+                if (instruction instanceof ConnectInstructionCPP) {
+                    ConnectInstructionCPP connectInstructionCPP = (ConnectInstructionCPP) instruction;
+                    Log.info("v1: " + connectInstructionCPP.getVariable1().getName() + "v2: " + connectInstructionCPP.getVariable2().getName(), "Instruction:");
+                } else if (instruction instanceof ExecuteInstruction) {
+                    ExecuteInstruction executeInstruction = (ExecuteInstruction) instruction;
 
         //generate methods
         for (Method method : bluePrint.getMethods()) {
             if(!method.isPublic()){
                 continue;
             }
-            resultString += generateMethod(method);
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+                for (Variable v : bluePrint.getVariables()) {
+                    if (v.hasAdditionalInformation(Variable.ORIGINPORT)) {
+                        resultString += "__LogExecutionFile << \"" + v.getNameTargetLanguageFormat() + " : \";\n";
+                        resultString += "toFileString(__LogExecutionFile, " + v.getNameTargetLanguageFormat() + ");\n";
+                        resultString += "__LogExecutionFile << \"\\n\";\n";
+                    }
+                }
+            }
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("execute")) {
+                resultString += "__LogExecutionFile.close();\n";
+                resultString += "__EXECCOUNTER = __EXECCOUNTER + 1;\n";
+            }
+            if (generatorCPP.isExecutionLoggingActive && method.getName().equals("init")) {
+                resultString += "__EXECCOUNTER = 0;\n";
+            }
+            //method body end
+            resultString += "}\n";
         }
 
 

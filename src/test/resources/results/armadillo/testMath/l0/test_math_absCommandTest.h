@@ -12,7 +12,7 @@ void init()
 }
 void execute()
 {
-double a = (abs(-1));
+double a = (std::abs(-1));
 }
 
 };

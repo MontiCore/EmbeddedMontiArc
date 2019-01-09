@@ -68,9 +68,9 @@ public class ImplementExecutionOrder {
 
         s = 0;
         b = 0;
-        Log.errorIfNull(inst, "The given ExpandedComponentInstanceSymbol in 'exOrder' is null!");
+        Log.errorIfNull(inst, "The given EMAComponentInstanceSymbol in 'exOrder' is null!");
         getDependencies(inst);
-       /* for (ExpandedComponentInstanceSymbol symbol : dependencies.keySet()) {
+       /* for (EMAComponentInstanceSymbol symbol : dependencies.keySet()) {
             Log.info(symbol.toString(), "KeySet contains:");
         }*/
         EMAComponentInstanceSymbol instTagged = tagExOrder(taggingResolver, inst);
@@ -78,7 +78,7 @@ public class ImplementExecutionOrder {
     }
 
     /**
-     * get a map of ExpandedComponentInstanceSymbols with their dependent ports.
+     * get a map of EMAComponentInstanceSymbols with their dependent ports.
      * For example:
      * component A {
      * port
@@ -145,9 +145,9 @@ public class ImplementExecutionOrder {
 //			if(subInst.getComponentType().getName().equals("SwitchB")
 //          || subInst.getComponentType().getName().equals("SwitchM")) {
 //			  if(dependencies.containsKey(subInst)) {
-//          for (PortSymbol p : subInst.getOutgoingPorts()) {
+//          for (EMAPortInstanceSymbol p : subInst.getOutgoingPorts()) {
 //            if (dependencies.get(subInst).contains(p)) {
-//              Collection<PortSymbol> newPorts = dependencies.get(subInst);
+//              Collection<EMAPortInstanceSymbol> newPorts = dependencies.get(subInst);
 //              newPorts.remove(p);
 //              dependencies.put(subInst, newPorts);
 //            }
@@ -436,7 +436,7 @@ public class ImplementExecutionOrder {
             instancePort = Optional.of(parts.next());
             instance = Optional.of(Names.FirstLowerCase(instance.get()));
             /*Log.info(instance.get().toString(),"before error");
-            for(ExpandedComponentInstanceSymbol symbol:inst.getSubComponents()){
+            for(EMAComponentInstanceSymbol symbol:inst.getSubComponents()){
                 Log.info(symbol.toString(),"found:");
             }*/
             EMAComponentInstanceSymbol inst2 = inst.getSubComponent(instance.get()).get();

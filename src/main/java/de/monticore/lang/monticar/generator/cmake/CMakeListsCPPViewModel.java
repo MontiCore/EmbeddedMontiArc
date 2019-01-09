@@ -1,3 +1,23 @@
+/**
+ *
+ *  ******************************************************************************
+ *  MontiCAR Modeling Family, www.se-rwth.de
+ *  Copyright (c) 2017, Software Engineering Group at RWTH Aachen,
+ *  All rights reserved.
+ *
+ *  This project is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3.0 of the License, or (at your option) any later version.
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this project. If not, see <http://www.gnu.org/licenses/>.
+ * *******************************************************************************
+ */
 package de.monticore.lang.monticar.generator.cmake;
 
 import de.monticore.lang.monticar.generator.cpp.viewmodel.ViewModelBase;
@@ -19,7 +39,7 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
     // fields
     private String compName;
 
-    private HashSet<CMakeFindModule> moduleDependencies;
+    private List<CMakeFindModule> moduleDependencies;
 
     private List<String> cmakeCommandList = new ArrayList<>();
 
@@ -35,11 +55,11 @@ public class CMakeListsCPPViewModel extends ViewModelBase {
         this.compName = compName;
     }
 
-    public HashSet<CMakeFindModule> getModuleDependencies() {
+    public List<CMakeFindModule> getModuleDependencies() {
         return moduleDependencies;
     }
 
-    public void setModuleDependencies(HashSet<CMakeFindModule> moduleDependencies) {
+    public void setModuleDependencies(List<CMakeFindModule> moduleDependencies) {
         this.moduleDependencies = moduleDependencies;
     }
 
