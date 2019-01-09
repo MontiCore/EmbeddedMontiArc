@@ -13,11 +13,14 @@ model Suspension
   type Velocity=Real(unit="m/s");
   type AngularVelocity=Real(unit="rad/s");
   type AngularAcceleration=Real(unit="rad/s2");
+  type AngularForce=Real(unit="rad/(kg.m/s2)");
+  type AngularTorque=Real(unit="rad/(kg.m2/s2)");
   type Stiffness=Real(unit="kg/s2");
   type Damping=Real(unit="kg/s");
   type Pressure=Real(unit="kg/(m.s2)");
   type BeamInertia=Real(unit="m4");
   type Coefficient = Real(start = 1);
+  type RPM=Real(unit="rpm");
   
   //Parameters Suspension
   parameter Length Roll_c_f=0.045;

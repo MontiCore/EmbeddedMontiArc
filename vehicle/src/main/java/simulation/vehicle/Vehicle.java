@@ -833,7 +833,7 @@ public class Vehicle {
      */
     public void navigateTo(IControllerNode node, List<RealVector> avoidCoordinates) {
         // Check for valid objects
-        if (!navigation.isPresent() || !controllerBus.isPresent() || !getSensorByType(BusEntry.SENSOR_GPS_COORDINATES).isPresent()) {
+        if (!navigation.isPresent() || !controllerBus.isPresent() || !getSensorByType(SENSOR_GPS_COORDINATES).isPresent()) {
             Log.warning("Vehicle: navigateTo called without valid navigation or controllerBus or GPS sensor");
             return;
         }
@@ -842,8 +842,8 @@ public class Vehicle {
         this.lastNavigationTarget = Optional.of(node);
 
         // Get current GPS coordinates from sensor
-        getSensorByType(BusEntry.SENSOR_GPS_COORDINATES).get().update();
-        Object gpsCoordinates = getSensorByType(BusEntry.SENSOR_GPS_COORDINATES).get().getValue();
+        getSensorByType(SENSOR_GPS_COORDINATES).get().update();
+        Object gpsCoordinates = getSensorByType(SENSOR_GPS_COORDINATES).get().getValue();
 
         // Process navigation target without avoiding coordinates for reference
         Map<String, Object> navigationInputs = new LinkedHashMap<>();

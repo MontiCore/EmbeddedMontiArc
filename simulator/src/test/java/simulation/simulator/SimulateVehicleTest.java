@@ -22,9 +22,11 @@ package simulation.simulator;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+//import org.testng.annotations.BeforeClass;
 import org.junit.Test;
 import simulation.util.Log;
 import simulation.vehicle.*;
+
 
 /**
  * Debug test that can start a simulation to test implementation isolated to the simulator
@@ -78,7 +80,7 @@ public class SimulateVehicleTest {
 
         steering.setActuatorValueTarget(value);
     }
-    /*
+
     @Test
     public void firstTest() {
         Simulator.resetSimulator();
@@ -122,5 +124,6 @@ public class SimulateVehicleTest {
         long thirdRoundEndTime = System.nanoTime();
 
         System.out.println(firstRoundEndTime - firstRoundStartingTime + (secondRoundEndTime - secondRoundStartingTime) + (thirdRoundEndTime - thirdRoundStartingTime));
-    }*/
+
+    }
 }
