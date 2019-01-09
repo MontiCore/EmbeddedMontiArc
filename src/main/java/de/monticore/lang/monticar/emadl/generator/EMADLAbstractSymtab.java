@@ -23,7 +23,7 @@ package de.monticore.lang.monticar.emadl.generator;
 import de.monticore.ModelingLanguageFamily;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.lang.embeddedmontiarc.LogConfig;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConstantPortSymbol;
+import de.monticore.lang.embeddedmontiarc.helper.ConstantPortHelper;
 import de.monticore.lang.monticar.emadl._symboltable.EMADLLanguage;
 import de.monticore.lang.monticar.enumlang._symboltable.EnumLangLanguage;
 import de.monticore.lang.monticar.generator.cpp.converter.MathConverter;
@@ -62,7 +62,7 @@ public class EMADLAbstractSymtab {
     }
 
     public static Scope createSymTab(String... modelPath) {
-        ConstantPortSymbol.resetLastID();
+        ConstantPortHelper.resetLastID();
         MathConverter.resetIDs();
         ThreadingOptimizer.resetID();
         ModelingLanguageFamily fam = new ModelingLanguageFamily();

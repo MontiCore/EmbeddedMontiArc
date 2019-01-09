@@ -24,8 +24,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.io.Resources;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.math._symboltable.MathStatementsSymbol;
 import de.monticore.lang.monticar.cnnarch.CNNArchGenerator;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchitectureSymbol;
@@ -102,7 +102,7 @@ public class EMADLGenerator {
     public void generate(String modelPath, String qualifiedName) throws IOException, TemplateException {
         setModelsPath( modelPath );
         TaggingResolver symtab = EMADLAbstractSymtab.createSymTabAndTaggingResolver(getModelsPath());
-        ComponentSymbol component = symtab.<ComponentSymbol>resolve(qualifiedName, ComponentSymbol.KIND).orElse(null);
+        EMAComponentSymbol component = symtab.<EMAComponentSymbol>resolve(qualifiedName, EMAComponentSymbol.KIND).orElse(null);
 
         List<String> splitName = Splitters.DOT.splitToList(qualifiedName);
         String componentName = splitName.get(splitName.size() - 1);
@@ -113,22 +113,22 @@ public class EMADLGenerator {
             System.exit(1);
         }
 
-        ExpandedComponentInstanceSymbol instance = component.getEnclosingScope().<ExpandedComponentInstanceSymbol>resolve(instanceName, ExpandedComponentInstanceSymbol.KIND).get();
+        EMAComponentInstanceSymbol instance = component.getEnclosingScope().<EMAComponentInstanceSymbol>resolve(instanceName, EMAComponentInstanceSymbol.KIND).get();
 
         generateFiles(symtab, instance, symtab);
     }
 
-    public void generateFiles(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, Scope symtab) throws IOException {
-        List<FileContent> fileContents = generateStrings(taggingResolver, componentSymbol, symtab);
+    public void generateFiles(TaggingResolver taggingResolver, EMAComponentInstanceSymbol EMAComponentSymbol, Scope symtab) throws IOException {
+        List<FileContent> fileContents = generateStrings(taggingResolver, EMAComponentSymbol, symtab);
 
         for (FileContent fileContent : fileContents) {
             emamGen.generateFile(fileContent);
         }
     }
 
-    public List<FileContent> generateStrings(TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
+    public List<FileContent> generateStrings(TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
         List<FileContent> fileContents = new ArrayList<>();
-        Set<ExpandedComponentInstanceSymbol> allInstances = new HashSet<>();
+        Set<EMAComponentInstanceSymbol> allInstances = new HashSet<>();
 
         generateComponent(fileContents, allInstances, taggingResolver, componentInstanceSymbol, symtab);
 
@@ -159,20 +159,20 @@ public class EMADLGenerator {
     }
 
     protected void generateComponent(List<FileContent> fileContents,
-                                     Set<ExpandedComponentInstanceSymbol> allInstances,
+                                     Set<EMAComponentInstanceSymbol> allInstances,
                                      TaggingResolver taggingResolver,
-                                     ExpandedComponentInstanceSymbol componentInstanceSymbol,
+                                     EMAComponentInstanceSymbol componentInstanceSymbol,
                                      Scope symtab){
         allInstances.add(componentInstanceSymbol);
-        ComponentSymbol componentSymbol = componentInstanceSymbol.getComponentType().getReferencedSymbol();
+        EMAComponentSymbol EMAComponentSymbol = componentInstanceSymbol.getComponentType().getReferencedSymbol();
 
         /* remove the following two lines if the component symbol full name bug with generic variables is fixed */
-        componentSymbol.setFullName(null);
-        componentSymbol.getFullName();
+        EMAComponentSymbol.setFullName(null);
+        EMAComponentSymbol.getFullName();
         /* */
 
         Optional<ArchitectureSymbol> architecture = componentInstanceSymbol.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
-        Optional<MathStatementsSymbol> mathStatements = componentSymbol.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
+        Optional<MathStatementsSymbol> mathStatements = EMAComponentSymbol.getSpannedScope().resolve("MathStatements", MathStatementsSymbol.KIND);
 
         EMADLCocos.checkAll(componentInstanceSymbol);
 
@@ -195,7 +195,7 @@ public class EMADLGenerator {
         }
     }
 
-    public void generateCNN(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol instance, ArchitectureSymbol architecture){
+    public void generateCNN(List<FileContent> fileContents, TaggingResolver taggingResolver, EMAComponentInstanceSymbol instance, ArchitectureSymbol architecture){
         Map<String,String> contentMap = cnnArchGenerator.generateStrings(architecture);
         String fullName = instance.getFullName().replaceAll("\\.", "_");
 
@@ -238,16 +238,16 @@ public class EMADLGenerator {
         return component;
     }
 
-    public void generateMathComponent(List<FileContent> fileContents, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentSymbol, MathStatementsSymbol mathStatementsSymbol){
+    public void generateMathComponent(List<FileContent> fileContents, TaggingResolver taggingResolver, EMAComponentInstanceSymbol EMAComponentSymbol, MathStatementsSymbol mathStatementsSymbol){
         fileContents.add(new FileContent(
-                emamGen.generateString(taggingResolver, componentSymbol, mathStatementsSymbol),
-                componentSymbol));
+                emamGen.generateString(taggingResolver, EMAComponentSymbol, mathStatementsSymbol),
+                EMAComponentSymbol));
     }
 
-    public void generateSubComponents(List<FileContent> fileContents, Set<ExpandedComponentInstanceSymbol> allInstances, TaggingResolver taggingResolver, ExpandedComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
+    public void generateSubComponents(List<FileContent> fileContents, Set<EMAComponentInstanceSymbol> allInstances, TaggingResolver taggingResolver, EMAComponentInstanceSymbol componentInstanceSymbol, Scope symtab){
         fileContents.add(new FileContent(emamGen.generateString(taggingResolver, componentInstanceSymbol, (MathStatementsSymbol) null), componentInstanceSymbol));
         String lastNameWithoutArrayPart = "";
-        for (ExpandedComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
+        for (EMAComponentInstanceSymbol instanceSymbol : componentInstanceSymbol.getSubComponents()) {
             int arrayBracketIndex = instanceSymbol.getName().indexOf("[");
             boolean generateComponentInstance = true;
             if (arrayBracketIndex != -1) {
@@ -262,10 +262,10 @@ public class EMADLGenerator {
         }
     }
 
-    public List<FileContent> generateCNNTrainer(Set<ExpandedComponentInstanceSymbol> allInstances, String mainComponentName) {
+    public List<FileContent> generateCNNTrainer(Set<EMAComponentInstanceSymbol> allInstances, String mainComponentName) {
         List<FileContent> fileContents = new ArrayList<>();
-        for (ExpandedComponentInstanceSymbol componentInstance : allInstances) {
-            ComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
+        for (EMAComponentInstanceSymbol componentInstance : allInstances) {
+            EMAComponentSymbol component = componentInstance.getComponentType().getReferencedSymbol();
             Optional<ArchitectureSymbol> architecture = component.getSpannedScope().resolve("", ArchitectureSymbol.KIND);
 
             if (architecture.isPresent()) {
