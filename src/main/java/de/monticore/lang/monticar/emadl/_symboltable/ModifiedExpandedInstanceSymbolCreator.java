@@ -39,7 +39,7 @@ public class ModifiedExpandedInstanceSymbolCreator extends EMAComponentInstanceS
     @Override
     protected EMAComponentInstanceBuilder createInstance(EMAComponentSymbol cmp, Set<ResolvingFilter<? extends Symbol>> filters, List<ResolutionDeclarationSymbol> resolutionDeclarationSymbols, String packageName) {
         ModifiedExpandedComponentInstanceBuilder builder = new ModifiedExpandedComponentInstanceBuilder();
-
+        builder.setPackageName(packageName);
         //everything below is copied from super class
         builder.setSymbolReference(new EMAComponentSymbolReference(cmp.getName(), cmp.getEnclosingScope()))
                 .addPorts(cmp.getPortsList())

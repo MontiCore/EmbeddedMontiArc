@@ -51,6 +51,9 @@ public class InstanceTest extends AbstractSymtabTest {
         EMAComponentInstanceSymbol net2 = mainInstance.getSpannedScope().<EMAComponentInstanceSymbol>
                 resolve("net2", EMAComponentInstanceSymbol.KIND).get();
 
+        assertEquals("InstanceTest.mainB.net1",net1.getFullName());
+        assertEquals("InstanceTest.mainB.net2",net2.getFullName());
+
         ArchitectureSymbol arch1 = net1.getSpannedScope().<ArchitectureSymbol>
                 resolve("", ArchitectureSymbol.KIND).get();
 
