@@ -13,17 +13,6 @@ namespace Utility {
     void write_uint64_t( char *mem_pos, uint64_t value );
     uint64_t read_uint64_t( char *mem_pos );
     
-    
-    void color_def();
-    void color_err();
-    void color_sys();
-    void color_mem_read();
-    void color_mem_write();
-    void color_mem_fetch();
-    void color_code();
-    void color_reg();
-    void color_new();
-    void color_note();
 }
 
 
@@ -745,6 +734,9 @@ namespace ConsoleColor {
         uint get() {
             return text_color + ( bg_color * 16 );
         }
+        bool operator!=( const Color &other ) {
+            return text_color != other.text_color || bg_color != other.bg_color;
+        }
     };
     
     struct Console {
@@ -762,44 +754,44 @@ namespace ConsoleColor {
     
     
     #else
-
-        extern const char *BLACK;
-        extern const char *DARK_BLUE;
-        extern const char *DARK_GREEN;
-        extern const char *TURQUOISE;
-        extern const char *DARK_RED;
-        extern const char *PURPLE;
-        extern const char *DARK_YELLOW;
-        extern const char *LIGHT_GRAY;
-        extern const char *DARK_GRAY;
-        extern const char *BLUE;
-        extern const char *GREEN;
-        extern const char *LIGHT_BLUE;
-        extern const char *RED;
-        extern const char *PINK;
-        extern const char *YELLOW;
-        extern const char *WHITE;
-        extern const char *DEFAULT;
     
-	struct Color {
-const char *val;
-Color( const char *text_color = DEFAULT, const char *bg_color = BLACK ) : val( text_color ) {}
+    extern const char *BLACK;
+    extern const char *DARK_BLUE;
+    extern const char *DARK_GREEN;
+    extern const char *TURQUOISE;
+    extern const char *DARK_RED;
+    extern const char *PURPLE;
+    extern const char *DARK_YELLOW;
+    extern const char *LIGHT_GRAY;
+    extern const char *DARK_GRAY;
+    extern const char *BLUE;
+    extern const char *GREEN;
+    extern const char *LIGHT_BLUE;
+    extern const char *RED;
+    extern const char *PINK;
+    extern const char *YELLOW;
+    extern const char *WHITE;
+    extern const char *DEFAULT;
+    
+    struct Color {
+        const char *val;
+        Color( const char *text_color = DEFAULT, const char *bg_color = BLACK ) : val( text_color ) {}
         const char *get() {
             return val;
         }
-};
+    };
     
     struct Console {
     
         public:
             static void init() {}
-            
+    
             static void drop();
             static void set_color( Color which );
-            
+    
             static void test_color() {}
     };
-
+    
     
     #endif
     
@@ -826,3 +818,71 @@ struct FileReader {
 
 
 bool undercorate_function_name( const std::string &name, Array<char> &buffer );
+
+#include <iomanip>
+
+inline std::string to_hex( ulong val, uchar size = 16, bool prefix = false ) {
+    char buff[24];
+    if ( size == 0 ) {
+        if ( prefix )
+            sprintf( buff, "%#llX", val );
+        else
+            sprintf( buff, "%llX",  val );
+    }
+    else {
+        if ( prefix )
+            sprintf( buff, "%#0*llX", size, val );
+        else
+            sprintf( buff, "%0*llX", size, val );
+    }
+    return buff;
+}
+
+struct Log {
+        static ConsoleColor::Color current_color;
+        struct TagStruct {};
+        static TagStruct tag;
+        class LogStream {
+                ConsoleColor::Color color;
+                const char *tag;
+            public:
+                bool hide;
+                LogStream( ConsoleColor::Color color, const char *tag ) : color( color ), tag( tag ), hide( false ) {}
+                LogStream &operator<<( const TagStruct &param ) {
+                    if ( hide )
+                        return *this;
+                    if ( current_color != color ) {
+                        current_color = color;
+                        ConsoleColor::Console::set_color( color );
+                    }
+                    printf( "%-6s", tag );
+                    return *this;
+                }
+                template<typename T>
+                LogStream &operator<<( const T &param ) {
+                    if ( hide )
+                        return *this;
+                    if ( current_color != color ) {
+                        current_color = color;
+                        ConsoleColor::Console::set_color( color );
+                    }
+                    std::cout << param;
+                    return *this;
+                }
+        };
+        
+        static LogStream info;
+        static LogStream err;
+        static LogStream debug;
+        static LogStream sys;
+        static LogStream mem_read;
+        static LogStream mem_write;
+        static LogStream mem_fetch;
+        static LogStream code;
+        static LogStream reg;
+        static LogStream new_val;
+        static LogStream note;
+        static LogStream white;
+        static LogStream test;
+        
+};

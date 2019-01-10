@@ -1,5 +1,6 @@
 @echo off
-
+for %%I in (.) do set CurrDirName=%%~nxI
+IF "%CurrDirName%"=="docs" ( cd .. )
 cd pe-parse
 rmdir /S /Q build
 cd ..

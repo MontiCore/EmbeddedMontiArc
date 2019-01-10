@@ -35,46 +35,6 @@ uint64_t Utility::read_uint64_t( char *mem_pos ) {
     return res;
 }
 
-void Utility::color_def() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::DEFAULT ) );
-}
-
-void Utility::color_err() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::RED ) );
-}
-
-void Utility::color_sys() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::YELLOW ) );
-}
-
-void Utility::color_mem_write() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::LIGHT_BLUE ) );
-}
-
-void Utility::color_mem_fetch() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::PINK ) );
-}
-
-void Utility::color_mem_read() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::BLUE ) );
-}
-
-void Utility::color_code() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::GREEN ) );
-}
-
-void Utility::color_reg() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::DARK_GRAY ) );
-}
-
-void Utility::color_new() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::DARK_YELLOW ) );
-}
-
-void Utility::color_note() {
-    ConsoleColor::Console::set_color( ConsoleColor::Color( ConsoleColor::PINK ) );
-}
-
 
 void Array<bool>::resize( uint new_size ) {
     if ( new_size == m_size )
@@ -131,7 +91,7 @@ void ConsoleColor::Console::test_color() {
         std::cout << std::endl;
     }
 }
-#else 
+#else
 
 const char *ConsoleColor::BLACK = "\033[30m";
 const char *ConsoleColor::DARK_BLUE = "\033[34m";
@@ -150,7 +110,7 @@ const char *ConsoleColor::PINK = "\033[95m";
 const char *ConsoleColor::YELLOW = "\033[93m";
 const char *ConsoleColor::WHITE = "\033[97m";
 const char *ConsoleColor::DEFAULT = "\033[0m";
-    
+
 void ConsoleColor::Console::drop() {
     std::cout << DEFAULT;
 }
@@ -174,3 +134,20 @@ bool undercorate_function_name( const std::string &name, Array<char> &buffer ) {
 }
 
 #endif
+
+ConsoleColor::Color Log::current_color = ConsoleColor::DEFAULT;
+Log::TagStruct Log::tag;
+Log::LogStream Log::info( ConsoleColor::DEFAULT, "[I]" );
+Log::LogStream Log::err( ConsoleColor::RED, "[ERR]" );
+Log::LogStream Log::debug( ConsoleColor::LIGHT_BLUE, "[DBG]" );
+Log::LogStream Log::sys( ConsoleColor::YELLOW, "[SYS]" );
+Log::LogStream Log::mem_read( ConsoleColor::BLUE, "[R]" );
+Log::LogStream Log::mem_write( ConsoleColor::LIGHT_BLUE, "[W]" );
+Log::LogStream Log::mem_fetch( ConsoleColor::PINK, "[F]" );
+Log::LogStream Log::code( ConsoleColor::GREEN, "[C]" );
+Log::LogStream Log::reg( ConsoleColor::DARK_GRAY, "[REG]" );
+Log::LogStream Log::new_val( ConsoleColor::DARK_YELLOW, "[NEW]" );
+Log::LogStream Log::note( ConsoleColor::PINK, "[N]" );
+Log::LogStream Log::white( ConsoleColor::WHITE, "" );
+Log::LogStream Log::test( ConsoleColor::GREEN, "" );
+

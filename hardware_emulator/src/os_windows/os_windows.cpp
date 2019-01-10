@@ -71,13 +71,13 @@ struct SegmentDescriptor {
     }
     
     void set_base( ulong base ) {
-        BASE_0_15 = base & BIT_MASKS[16];
-        BASE_16_23 = ( base >> 16 ) & BIT_MASKS[8];
-        BASE_24_31 = ( base >> 24 ) & BIT_MASKS[8];
+        BASE_0_15 = ( ushort )( base & BIT_MASKS[16] );
+        BASE_16_23 = ( uchar )( ( base >> 16 ) & BIT_MASKS[8] );
+        BASE_24_31 = ( uchar )( ( base >> 24 ) & BIT_MASKS[8] );
     }
     void set_limit( ulong limit ) {
-        LIMIT_0_15 = limit & BIT_MASKS[16];
-        LIMIT16_19_FLAGS |= ( limit >> 16 ) & BIT_MASKS[4];
+        LIMIT_0_15 = ( ushort )( limit & BIT_MASKS[16] );
+        LIMIT16_19_FLAGS |= ( ushort )( ( limit >> 16 ) & BIT_MASKS[4] );
     }
     void set_present() {
         setBitHigh( ACCESS_BYTE, Pr );
@@ -206,7 +206,7 @@ bool OS::Windows::load_dll( const char *file ) {
     return true;
 }
 
-ulong OS::Windows::add_symbol( const std::string &mod, const std::string &name, uint64_t size, Annotation::Type type ) {
+ulong OS::Windows::add_symbol( const std::string &mod, const std::string &name, uint size, Annotation::Type type ) {
     std::string res_name = mod + "!" + name;
     auto proc_handle = section_stack->get_range( size );
     section->annotations.add_annotation( proc_handle, Annotation( res_name, type ) );

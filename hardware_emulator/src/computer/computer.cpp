@@ -18,7 +18,7 @@ void Computer::init() {
         return;
     }
     
-    ZydisDecoderInit( &decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64 );
+    ZydisDecoderInit( &decoder.decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64 );
     
     memory.init( internal->uc );
     registers.init( internal->uc );
@@ -30,9 +30,9 @@ void Computer::init() {
     stack.init( memory, registers );
     sys_calls.init( memory, debug );
     
-    uc_hook_add( internal->uc, &internal->trace1, UC_HOOK_CODE, (void*)Computer::hook_code, this, 1, 0 );
-    uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, (void*)Computer::hook_mem, this, 1, 0 );
-    uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, (void*)Computer::hook_mem_err, this, 1, 0 );
+    uc_hook_add( internal->uc, &internal->trace1, UC_HOOK_CODE, ( void * )Computer::hook_code, this, 1, 0 );
+    uc_hook_add( internal->uc, &internal->trace2, UC_HOOK_MEM_VALID, ( void * )Computer::hook_mem, this, 1, 0 );
+    uc_hook_add( internal->uc, &internal->trace3, UC_HOOK_MEM_INVALID, ( void * )Computer::hook_mem_err, this, 1, 0 );
     
     exit_code_addr = sys_calls.add_syscall( SysCall( "exit", "SYSTEM", exit_callback ) );
     
@@ -49,23 +49,23 @@ void Computer::drop() {
 
 bool Computer::call( ulong address ) {
     stopped = false;
+    registers.set_rsp( stack.stack_start );
     stack.push_long( exit_code_addr );
     internal->err = uc_emu_start( internal->uc, address, 0, 0, 0 );
     if ( internal->err ) {
-        printf( "Failed on uc_emu_start() with error returned %u: %s\n",
-                internal->err, uc_strerror( internal->err ) );
+        Log::err << Log::tag << "Failed on uc_emu_start() with error returned "
+                 << internal->err
+                 << ": "
+                 << uc_strerror( internal->err )
+                 << "\n";
         return false;
-    }
-    else {
-        /*Utility::color_new();
-        printf( "Emulator call successful\n" );*/
-        std::cout << std::endl << std::endl;
     }
     return true;
 }
 
 void Computer::cb_code( ulong addr, uint size ) {
 
+    uint computer_time = 1000;
     if ( sys_calls.section->address_range.contains( addr ) ) {
         //Next instruction in sys_call range => has to be handled manually or by registered SysCalls.
         auto note_ptr = sys_calls.section->annotations.get_annotation( addr );
@@ -84,21 +84,22 @@ void Computer::cb_code( ulong addr, uint size ) {
             auto ret_address = stack.pop_long();
             registers.set_rip( ret_address ); //Set instruction pointer to popped address
         }
+        
+        //TODO add computer time
     }
     else {
-        //auto rsp = registers.get_rsp();
-        //if ( rsp == stack.stack_start ) {
-        //    auto mem = memory.read_memory( addr, size );
-        //    if ( mem[0] == 0xC3 ) {
-        //        /*Utility::color_code();
-        //        std::cout << "Return statement at end of stack reached" << std::endl;*/
-        //        uc_emu_stop( internal->uc );
-        //        return;
-        //    }
-        //}
-        
-        debug.debug_code( addr, size );
+        decoder.length = size;
+        decoder.code = memory.read_memory( addr, size );
+        decoder.succeeded = ZYAN_SUCCESS(
+                                ZydisDecoderDecodeBuffer( &decoder.decoder, decoder.code, decoder.length, &decoder.instruction )
+                            );
+        if ( decoder.succeeded )
+            computer_time = get_instruction_ticks( decoder.instruction );
+            
+        if ( computer_time == 1000 )
+            debug.debug_code( addr, size );
     }
+    //computing_time += computer_time;
 }
 
 void Computer::cb_mem( MemAccess type, ulong addr, uint size, slong value ) {

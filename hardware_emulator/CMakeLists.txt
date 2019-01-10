@@ -15,44 +15,45 @@ set(AUTOPILO_ADAPTER_NAME "AutopilotAdapter")
 
 #Basic source files
 list(APPEND HARDWARE_EMU_SOURCEFILES
-  include/hardware-emulator/debug.h
-  include/hardware-emulator/dll_interface.h
-  include/hardware-emulator/autopilot_interface.h
-  include/hardware-emulator/method_calling.h
-  include/hardware-emulator/tests.h
-  include/hardware-emulator/utility.h
-  include/hardware-emulator/instruction_time.h
-  
-  include/hardware-emulator/computer/computer.h
-  include/hardware-emulator/computer/computer_layout.h
-  include/hardware-emulator/computer/memory.h
-  include/hardware-emulator/computer/registers.h
-  include/hardware-emulator/computer/system_calls.h
-  
-  include/hardware-emulator/os_windows/dll_loader.h
-  include/hardware-emulator/os_windows/os_windows.h
-  include/hardware-emulator/os_windows/windows_calls.h
-  
-  include/hardware-emulator/jni/jni_emulator.h
-  
+  src/debug.h
   src/debug.cpp
-  src/dll_interface.cpp
-  src/autopilot_interface.cpp
-  src/method_calling.cpp
+  src/tests.h
   src/tests.cpp
+  src/utility.h
   src/utility.cpp
-  src/instruction_time.cpp
   
+  src/interfaces/dll_interface.h
+  src/interfaces/dll_interface.cpp
+  src/interfaces/autopilot_interface.h
+  src/interfaces/autopilot_interface.cpp
+  
+  src/emulation/instruction_time.h
+  src/emulation/instruction_time.cpp
+  src/emulation/hardware_emulator.h
+  src/emulation/hardware_emulator.cpp
+  
+  src/computer/computer.h
   src/computer/computer.cpp
+  src/computer/computer_layout.h
+  src/computer/memory.h
   src/computer/memory.cpp
+  src/computer/registers.h
   src/computer/registers.cpp
+  src/computer/system_calls.h
   src/computer/system_calls.cpp
+  src/computer/method_calling.h
+  src/computer/method_calling.cpp
   
+  src/os_windows/dll_loader.h
   src/os_windows/dll_loader.cpp
+  src/os_windows/os_windows.h
   src/os_windows/os_windows.cpp
+  src/os_windows/windows_calls.h
   src/os_windows/windows_calls.cpp
   
+  src/jni/jni_emulator.h
   src/jni/jni_emulator.cpp
+  
 )
 
 #Source files for the test project
@@ -62,15 +63,14 @@ list(APPEND HARDWARE_EMU_TEST_SOURCEFILES
 
 #Source files for the Autopilot Library
 list(APPEND HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES
-  include/hardware-emulator/jni/simulator_integration_AutopilotAdapter.h
+  src/jni/simulator_integration_AutopilotAdapter.h
   src/jni/AutopilotAdapter.cpp
 )
 
 #Setup the project file structure for Visual Studio projects
 foreach(source IN LISTS HARDWARE_EMU_SOURCEFILES HARDWARE_EMU_TEST_SOURCEFILES HARDWARE_EMU_AUTOPILOT_ADAPTER_SOURCEFILES)
-    string(REPLACE "include/hardware-emulator/" "" trunc_source "${source}")
-    string(REPLACE "src/" "" trunc_source2 "${trunc_source}")
-    get_filename_component(source_path "${trunc_source2}" PATH)
+    string(REPLACE "src/" "" trunc_source "${source}")
+    get_filename_component(source_path "${trunc_source}" PATH)
     string(REPLACE "/" "\\" source_path_msvc "${source_path}")
     source_group("${source_path_msvc}" FILES "${source}")
 endforeach()
@@ -78,7 +78,7 @@ endforeach()
 
 #Include directories
 list(APPEND HARDWARE_EMU_INCLUDE_DIRS
-  include/hardware-emulator
+  src
   ../unicorn/include
   ../pe-parse/pe-parser-library/include
   ../zydis/include
@@ -178,6 +178,7 @@ if ( MSVC )
   add_definitions(
     /std:c++17
     /DZYDIS_STATIC_DEFINE
+    /D_CRT_SECURE_NO_WARNINGS
   )
 endif()
 
@@ -203,6 +204,7 @@ if ( MSVC )
     add_definitions(
       /std:c++17
       /DZYDIS_STATIC_DEFINE
+      /D_CRT_SECURE_NO_WARNINGS
     )
 endif()
 

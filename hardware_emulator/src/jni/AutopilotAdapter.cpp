@@ -1,6 +1,6 @@
 #include "jni/simulator_integration_AutopilotAdapter.h"
 
-#include "autopilot_interface.h"
+#include "interfaces/autopilot_interface.h"
 
 
 void get_double_array( JNIEnv *jenv, jdoubleArray &source, double *&data, uint &count ) {
@@ -27,7 +27,7 @@ void free_double_array( JNIEnv *jenv, jdoubleArray &source, double *&data ) {
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1timeIncrement
 ( JNIEnv *, jobject, jdouble time_inc ) {
-    AutopilotInterface::instance.jni_set_timeIncrement( time_inc );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_TIME_INC, time_inc );
 }
 
 /*
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1timeIncr
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentVelocity
 ( JNIEnv *, jobject, jdouble vel ) {
-    AutopilotInterface::instance.jni_set_currentVelocity( vel );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_VELOCITY, vel );
 }
 
 /*
@@ -47,7 +47,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentV
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1x
 ( JNIEnv *, jobject, jdouble x ) {
-    AutopilotInterface::instance.jni_set_x( x );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_X, x );
 }
 
 /*
@@ -57,7 +57,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1x
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1y
 ( JNIEnv *, jobject, jdouble y ) {
-    AutopilotInterface::instance.jni_set_y( y );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_Y, y );
 }
 
 /*
@@ -67,7 +67,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1y
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1compass
 ( JNIEnv *, jobject, jdouble compass_value ) {
-    AutopilotInterface::instance.jni_set_compass( compass_value );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_COMPASS, compass_value );
 }
 
 /*
@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1compass
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentEngine
 ( JNIEnv *, jobject, jdouble engine_value ) {
-    AutopilotInterface::instance.jni_set_currentEngine( engine_value );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_ENGINE, engine_value );
 }
 
 /*
@@ -87,7 +87,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentE
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentSteering
 ( JNIEnv *, jobject, jdouble steering_value ) {
-    AutopilotInterface::instance.jni_set_currentSteering( steering_value );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_STEERING, steering_value );
 }
 
 /*
@@ -97,7 +97,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentS
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentBrakes
 ( JNIEnv *, jobject, jdouble brake_val ) {
-    AutopilotInterface::instance.jni_set_currentBrakes( brake_val );
+    AutopilotInterface::instance.emulator.set_input_double( AutopilotInterface::SET_BRAKES, brake_val );
 }
 
 /*
@@ -107,7 +107,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1currentB
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1trajectory_1length
 ( JNIEnv *, jobject, jint length ) {
-    AutopilotInterface::instance.jni_set_trajectory_length( length );
+    AutopilotInterface::instance.emulator.set_input_int( AutopilotInterface::SET_X, length );
 }
 
 /*
@@ -120,7 +120,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1trajecto
     double *data;
     uint count;
     get_double_array( jenv, darray, data, count );
-    AutopilotInterface::instance.jni_set_trajectory_x( data, count );
+    AutopilotInterface::instance.emulator.set_input_array( AutopilotInterface::SET_TRAJECTORY_X, data, count );
     free_double_array( jenv, darray, data );
 }
 
@@ -134,7 +134,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1trajecto
     double *data;
     uint count;
     get_double_array( jenv, darray, data, count );
-    AutopilotInterface::instance.jni_set_trajectory_y( data, count );
+    AutopilotInterface::instance.emulator.set_input_array( AutopilotInterface::SET_TRAJECTORY_Y, data, count );
     free_double_array( jenv, darray, data );
 }
 
@@ -145,7 +145,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_set_1trajecto
 */
 JNIEXPORT jdouble JNICALL Java_simulator_integration_AutopilotAdapter_get_1engine
 ( JNIEnv *, jobject ) {
-    return AutopilotInterface::instance.jni_get_engine();
+    return AutopilotInterface::instance.emulator.get_output( AutopilotInterface::GET_ENGINE );
 }
 
 /*
@@ -155,7 +155,7 @@ JNIEXPORT jdouble JNICALL Java_simulator_integration_AutopilotAdapter_get_1engin
 */
 JNIEXPORT jdouble JNICALL Java_simulator_integration_AutopilotAdapter_get_1steering
 ( JNIEnv *, jobject ) {
-    return AutopilotInterface::instance.jni_get_steering();
+    return AutopilotInterface::instance.emulator.get_output( AutopilotInterface::GET_STEERING );
 }
 
 /*
@@ -165,7 +165,7 @@ JNIEXPORT jdouble JNICALL Java_simulator_integration_AutopilotAdapter_get_1steer
 */
 JNIEXPORT jdouble JNICALL Java_simulator_integration_AutopilotAdapter_get_1brakes
 ( JNIEnv *, jobject ) {
-    return AutopilotInterface::instance.jni_get_brakes();
+    return AutopilotInterface::instance.emulator.get_output( AutopilotInterface::GET_BRAKES );
 }
 
 /*
@@ -175,7 +175,7 @@ JNIEXPORT jdouble JNICALL Java_simulator_integration_AutopilotAdapter_get_1brake
 */
 JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_exec
 ( JNIEnv *, jobject ) {
-    AutopilotInterface::instance.jni_exec();
+    AutopilotInterface::instance.exec();
 }
 
 /*
@@ -187,7 +187,7 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_init
 ( JNIEnv *, jobject ) {
     if ( !AutopilotInterface::instance.loaded )
         AutopilotInterface::instance.init();
-    AutopilotInterface::instance.jni_init();
+    AutopilotInterface::instance.emulator.call( AutopilotInterface::INIT );
 }
 
 /*
@@ -196,7 +196,9 @@ JNIEXPORT void JNICALL Java_simulator_integration_AutopilotAdapter_init
 * Signature: (Ljava/lang/String;)Ljava/lang/String;
 */
 JNIEXPORT jstring JNICALL Java_simulator_integration_AutopilotAdapter_message
-( JNIEnv *, jobject, jstring ) {
-
-    return jstring();
+( JNIEnv *jni, jobject, jstring string ) {
+    auto message = jni->GetStringUTFChars( string, 0 );
+    auto res = AutopilotInterface::instance.message( message );
+    jni->ReleaseStringUTFChars( string, message );
+    return jni->NewStringUTF( res.c_str() );
 }

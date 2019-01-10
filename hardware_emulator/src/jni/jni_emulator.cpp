@@ -21,16 +21,23 @@ void JNIEmulator::init( Computer &computer ) {
     buffer_slot = section_stack->get_range( 1024 );
     section->annotations.add_annotation( buffer_slot, Annotation( "JNI buffer", Annotation::SYMBOL ) );
     
-    JNINativeInterface_ interface;
+    JNINativeInterface_ interf;
+    uchar *interface_data = ( uchar * )&interf;
     
-    *( ulong * )&interface.GetArrayLength =
+#define GET_FUNC_DATA(func_name) *(ulong*)(interface_data + offsetof(JNINativeInterface_, func_name));
+    ulong &func_get_array_length = GET_FUNC_DATA( GetArrayLength );
+    ulong &func_release_double_array_elements = GET_FUNC_DATA( ReleaseDoubleArrayElements );
+    ulong &func_get_double_array_elements = GET_FUNC_DATA( GetDoubleArrayElements );
+#undef GET_FUNC_DATA
+    
+    func_get_array_length =
         sys_calls.add_syscall( SysCall( "GetArrayLength", "JNI", get_array_length, this ) );
-    *( ulong * )&interface.ReleaseDoubleArrayElements =
-        sys_calls.add_syscall( SysCall( "ReleaseDoubleArrayElements", "JNI", get_double_array_elements, this ) );
-    *( ulong * )&interface.GetDoubleArrayElements =
-        sys_calls.add_syscall( SysCall( "GetDoubleArrayElements", "JNI", release_double_array_elements, this ) );
+    func_release_double_array_elements =
+        sys_calls.add_syscall( SysCall( "ReleaseDoubleArrayElements", "JNI", release_double_array_elements, this ) );
+    func_get_double_array_elements =
+        sys_calls.add_syscall( SysCall( "GetDoubleArrayElements", "JNI", get_double_array_elements, this ) );
         
-    computer.memory.write_memory( jni_interface_slot, ( uchar * )&interface );
+    computer.memory.write_memory( jni_interface_slot, interface_data );
     
     JNIEnv jnienv = { ( JNINativeInterface_ * )jni_interface_slot.start_address };
     
@@ -61,6 +68,7 @@ bool JNIEmulator::call( ulong function_addr, double *buffer, uint size ) {
     }
     computer->memory.write_memory( buffer_slot.start_address, size * sizeof( double ), ( uchar * )buffer );
     current_handle = rand();
+    current_array_size = size;
     computer->fast_call.set_params( jni_env_slot.start_address, jobject_handle, current_handle );
     return computer->call( function_addr );
 }

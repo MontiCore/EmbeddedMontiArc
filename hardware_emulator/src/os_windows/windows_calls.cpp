@@ -34,11 +34,9 @@ bool WindowsCalls::load_library_exw( Computer &inter, SysCall &syscall ) {
     string name = ( char * )name_str;
     if ( name.compare( "api-ms-win-core-fibers-l1-1-1" ) == 0 ||
             name.compare( "api-ms-win-core-synch-l1-2-0" ) == 0 ) {
-        //cout << name << endl;
         inter.fast_call.set_return( 0 );
         return true;
     }
-    //cout << "Module name: " << name_str << endl;
     
     auto res = inter.handles.get_handle( ( char * )name_str );
     if ( res == 0 )
@@ -50,29 +48,18 @@ bool WindowsCalls::get_proc_address( Computer &inter, SysCall &syscall ) {
     auto mod = inter.fast_call.get_param1();
     auto sec_ptr = inter.memory.get_section( mod );
     if ( sec_ptr == nullptr || sec_ptr != inter.handles.section ) {
-        cout << "Invalid Module HANDLE";
-        printf( " (%016" PRIx64 ")\n", mod );
+        Log::err << "Invalid Module HANDLE (" << to_hex( mod ) << ")\n";
         return false;
     }
     auto note_ptr = inter.handles.section->annotations.get_annotation( mod );
     if ( note_ptr == nullptr ) {
-        cout << "Module HANDLE does not exists";
-        printf( " (%016" PRIx64 ")\n", mod );
+        Log::err << "Module HANDLE does not exists (" << to_hex( mod ) << ")\n";
         return false;
     }
     auto &note = *note_ptr;
     auto name_addr = inter.fast_call.get_param2();
     auto name_str = inter.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
-    /*
-    if ( name.compare( "IiilzCiiaScinx" ) == 0 ) {
-        cout << name << endl;
-        inter.fast_call.set_return( 0x21 );
-        return true;
-    }*/
-    /*cout << "Module ID: " << mod << " ";
-    cout << " Module name: " << note.name << " ";
-    cout << "Function name: " << name_str << endl;*/
     
     auto existing_call = inter.sys_calls.get_syscall( note.name, name );
     if ( existing_call == 0 ) {
@@ -114,7 +101,6 @@ bool WindowsCalls::heap_free( Computer &inter, SysCall &syscall ) {
     }
     auto flags = inter.fast_call.get_param2();
     auto memory = inter.fast_call.get_param3();
-    uint64_t addr;
     if ( inter.heap.free( memory ) )
         inter.fast_call.set_return( 1 );
     else
@@ -133,16 +119,11 @@ bool WindowsCalls::heap_free( Computer &inter, SysCall &syscall ) {
 //}
 
 bool WindowsCalls::get_module_handle( Computer &inter, SysCall &syscall ) {
-    //ERROR ???
     auto name_addr = inter.fast_call.get_param1();
     auto name_str = inter.memory.read_wstr_as_str( name_addr );
     string name = ( char * )name_str;
     auto res = inter.handles.get_handle( ( char * )name_str );
     inter.fast_call.set_return( res );
-    inter.memory.print_address_info( name_addr );
-    /*printf( "Name VA: 0x%016" PRIX64 " ", name_addr );
-    cout << "Module ID: " << res << " ";
-    cout << " Module name: " << name << endl;*/
     return true;
 }
 
@@ -172,8 +153,8 @@ bool WindowsCalls::strlen( Computer &inter, SysCall &syscall ) {
     auto addr = inter.fast_call.get_param1();
     auto name_str = inter.memory.read_str( addr );
     string name = ( char * )name_str;
-    uint size = name.size();
-    //cout << "strlen(\"" << name << "\"): " << size << endl;
+    uint size = ( uint ) name.size();
+    Log::sys << Log::tag << "strlen(\"" << name << "\"): " << to_string( size ) << "\n";
     inter.fast_call.set_return( size );
     return true;
 }
@@ -185,7 +166,8 @@ bool WindowsCalls::strncmp( Computer &inter, SysCall &syscall ) {
     string str1 = ( char * )inter.memory.read_str( addr1 );
     string str2 = ( char * )inter.memory.read_str( addr2 );
     sint res = ::strncmp( str1.c_str(), str2.c_str(), count );
-    //cout << "strncmp(\"" << str1 << "\",\"" << str2 << "\"," << count << ")=" << res << endl;
+    Log::sys << Log::tag << "strncmp(\"" << str1 << "\",\"" << str2 << "\"," + to_string( count ) << "\"): " << to_string(
+                 res ) << "\n";
     inter.fast_call.set_return( res );
     return true;
 }
@@ -208,7 +190,6 @@ bool WindowsCalls::fwrite( Computer &inter, SysCall &syscall ) {
     auto stream = inter.fast_call.get_param4();
     string str1 = ( char * )inter.memory.read_str( data );
     //printf( "fwrite(\"%s\", %d, %d, %016" PRIX64 ")", str1.c_str(), size, count, stream );
-    inter.memory.print_annotation( stream );
     inter.fast_call.set_return( size * count );
     return false;
 }
@@ -229,10 +210,10 @@ bool WindowsCalls::virtual_query( Computer &inter, SysCall &syscall ) {
     auto lpbuffer = inter.fast_call.get_param2();
     auto size = inter.fast_call.get_param3();
     if ( size < sizeof( MEMORY_BASIC_INFORMATION ) )
-        cout << "VirtualQuery with size < sizeof(MEMORY_BASIC_INFORMATION)" << endl;
+        Log::err << Log::tag << "VirtualQuery with size < sizeof(MEMORY_BASIC_INFORMATION)" << "\n";
     auto sec_ptr = inter.memory.get_section( lpaddr );
     if ( sec_ptr == nullptr ) {
-        cout << "VirtualQuery outside pages" << endl;
+        Log::err << Log::tag << "VirtualQuery outside pages" << "\n";
         return false;
     }
     //printf( "VirtualQuery(%016" PRIX64 ")", lpaddr );

@@ -13,7 +13,7 @@ namespace OS {
         ulong base_of_code;
         ulong entry_point;
         ulong section_align;
-        ulong size_of_headers;
+        uint size_of_headers;
         
         void load_values( void *pe );
     };

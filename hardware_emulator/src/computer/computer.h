@@ -4,10 +4,13 @@
 #include "debug.h"
 #include "system_calls.h"
 #include "method_calling.h"
+#include "emulation/instruction_time.h"
 
 #include <Zydis/Zydis.h>
 
 struct InternalComputer;
+
+
 
 struct Computer {
 
@@ -21,13 +24,13 @@ struct Computer {
     Memory memory;
     Registers registers;
     
-    ZydisDecoder decoder;
+    CodeDecoder decoder;
     
     ComputerDebug debug;
     
     FastCall fast_call;
     
-    uint computing_time;
+    ulong computing_time;
     
     Computer() : internal( nullptr ), fast_call( registers ), computing_time( 0 ) {}
     ~Computer() {

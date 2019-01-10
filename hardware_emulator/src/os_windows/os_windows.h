@@ -30,7 +30,7 @@ namespace OS {
         
         bool load_dll( const char *file );
         
-        ulong add_symbol( const std::string &mod, const std::string &name, uint64_t size,
+        ulong add_symbol( const std::string &mod, const std::string &name, uint size,
                           Annotation::Type type = Annotation::SYMBOL );
     };
     

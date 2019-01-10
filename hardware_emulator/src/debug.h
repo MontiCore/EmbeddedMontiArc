@@ -2,6 +2,7 @@
 #include "computer/memory.h"
 #include "computer/registers.h"
 #include "computer/system_calls.h"
+#include "emulation/instruction_time.h"
 
 #include <Zydis/Zydis.h>
 
@@ -9,7 +10,7 @@ struct ComputerDebug {
     static constexpr uint BUFFER_SIZE = 0x400;
     Memory *mem;
     Registers *regs;
-    ZydisDecoder *decoder;
+    CodeDecoder *decoder;
     ZydisFormatter formatter;
     
     Array<char> buffer;
@@ -24,7 +25,7 @@ struct ComputerDebug {
     ComputerDebug() : mem( nullptr ), regs( nullptr ), buffer( BUFFER_SIZE ), debug( true ), d_code( true ), d_mem( true ),
         d_regs( false ), d_syscalls( true ), d_reg_update( true ), decoder( nullptr ) {}
         
-    void init( Memory &mem, Registers &regs, ZydisDecoder &decoder );
+    void init( Memory &mem, Registers &regs, CodeDecoder &decoder );
     
     void debug_syscall( SysCall &sys_call, ulong id );
     void debug_code( ulong addr, uint size );

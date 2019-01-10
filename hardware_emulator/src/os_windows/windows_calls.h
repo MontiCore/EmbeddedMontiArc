@@ -5,7 +5,7 @@
 
 struct WindowsCalls {
 
-    void add_windows_calls( SystemCalls &sys_calls, OS::Windows &windows );
+    static void add_windows_calls( SystemCalls &sys_calls, OS::Windows &windows );
     
     static bool load_library_exw( Computer &inter, SysCall &syscall );
     static bool get_proc_address( Computer &inter, SysCall &syscall );

@@ -6,7 +6,7 @@
 #include <iostream>
 
 void Annotations::init_annotations() {
-    annotations.init(DEFAULT_ANNOTATION_SIZE);
+    annotations.init( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
     new_annotation( 0, Annotation( "NO-NOTE", Annotation::NONE ) );
 }
@@ -177,14 +177,14 @@ uint64_t SectionStack::get_8byte_slot() {
 
 
 void Memory::init( void *uc ) {
-    sections.init(SECTION_SIZE);
-    buffer.init(BUFFER_SIZE);
+    sections.init( SECTION_SIZE );
+    buffer.init( BUFFER_SIZE );
     this->internal_uc = uc;
     section_pos = 0;
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
-
+    
     annotations.init_annotations();
-
+    
     sys_section = &new_section();
     sys_section->init( MemoryRange( ComputerLayout::SYSPAGE_ADDRESS, ComputerLayout::SYSPAGE_RANGE ), "SYSPAGE", "OS",
                        false, true, true );
@@ -235,16 +235,17 @@ void Memory::print_address_info( ulong  virtual_address ) {
     if ( sec_ptr ) {
         auto &sec = *sec_ptr;
         auto file_address = sec.address_to_file( virtual_address );
-        char temp[128];
+        Log::info << "[";
+        Log::note << sec.mod;
+        Log::info << ":";
+        Log::note << sec.name;
         if ( file_address != virtual_address )
-            sprintf( temp, "[%s:%s 0x%0" PRIx64 "]", sec.mod.c_str(), sec.name.c_str(), file_address );
-        else
-            sprintf( temp, "[%s:%s]", sec.mod.c_str(), sec.name.c_str() );
-        printf( "%-40s", temp );
+            Log::white << to_hex( file_address, 16, true );
+        Log::info << "] ";
         print_annotation( sec, virtual_address );
     }
     else
-        std::cout << "[NON-ALLOCATED] ";
+        Log::info << "[NON-ALLOCATED] ";
 }
 
 void Memory::print_annotation( ulong virtual_address ) {
@@ -259,12 +260,13 @@ void Memory::print_annotation( MemorySection &sec, ulong virtual_address ) {
     if ( sec.has_annotations() ) {
         auto note_ptr = sec.annotations.get_annotation( virtual_address );
         if ( note_ptr ) {
-            Utility::color_note();
             auto &note = *note_ptr;
-            std::cout << "(" << note.name;
+            Log::info << "(";
+            Log::note << note.name;
             if ( note.base != virtual_address )
-                std::cout << "[" << ( virtual_address - note.base ) << "]";
-            std::cout << ") ";
+                //Log::info << "[" << to_hex( virtual_address - note.base, 0 ) << "]";
+                Log::info << "[" << ( virtual_address - note.base ) << "]";
+            Log::info << ") ";
         }
     }
 }
@@ -277,7 +279,7 @@ wchar_t *Memory::read_wstr( ulong address ) {
         c = *( wchar_t * )( buffer.begin() + size );
         size += 2;
     } while ( c != 0 && size < BUFFER_SIZE );
-
+    
     if ( size >= BUFFER_SIZE )
         *( wchar_t * )( buffer.begin() + ( size - 2 ) ) = 0;
     return ( wchar_t * )buffer.begin();
@@ -304,7 +306,7 @@ uchar *Memory::read_str( ulong address ) {
         c = buffer[size];
         ++size;
     } while ( c != 0 && size < BUFFER_SIZE );
-
+    
     if ( size >= BUFFER_SIZE )
         buffer[size - 1] = 0;
     return buffer.begin();
@@ -334,7 +336,7 @@ void Memory::write_wstr( ulong address, std::string const &text ) {
 void Memory::write_long_word( ulong address, ulong value ) {
     Utility::write_uint64_t( ( char * )buffer.begin(), value );
     if ( uc_mem_write( static_cast<uc_engine *>( internal_uc ), address, buffer.begin(), 8 ) != UC_ERR_OK )
-        std::cout << "Error writing long" << std::endl;
+        Log::err << Log::tag << "Error writing long\n";
 }
 
 
@@ -378,7 +380,7 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
     throw_assert( loaded(), "VirtualHeap::alloc() on uninitialized VirtualHeap" );
     if ( size == 0 )
         return false;
-
+        
     ulong target_blocks = ( ( size - 1 ) / BLOCK_SIZE ) + 1;
     uint pos = 0;
     ulong count = 0;
@@ -387,11 +389,11 @@ bool VirtualHeap::alloc( ulong size, ulong &address ) {
             count = 0;
         else
             ++count;
-
+            
         if ( count >= target_blocks ) {
             address = ComputerLayout::HEAP_ADDRESS + ( pos * BLOCK_SIZE );
             size_map[pos] = ( uint )target_blocks;
-            for ( auto i : Range( target_blocks ) )
+            for ( auto i : Range( ( uint ) target_blocks ) )
                 free_map[pos + i] = true;
             return true;
         }
@@ -411,7 +413,7 @@ bool VirtualHeap::free( ulong &address ) {
 void VirtualStack::init( Memory &mem, Registers &regs ) {
     //Init stack memory
     stack_size = 0x1000 * 0x10;
-
+    
     section = &mem.new_section();
     section->init( MemoryRange( ComputerLayout::STACK_ADDRESS, ( uint )stack_size ),
                    "STACK", "System",
@@ -433,7 +435,7 @@ ulong VirtualStack::pop_long() {
 
 void VirtualStack::push_long( ulong val ) {
     throw_assert( loaded(), "VirtualStack::push_long() on uninitialized VirtualStack." );
-    auto rsp = registers->get_rsp() + 8; //Read stack pointer
+    auto rsp = registers->get_rsp() - 8; //Read stack pointer
     uint32_t size = 8;
     auto data = section->mem->buffer.begin();
     Utility::write_uint64_t( ( char * )data, val );

@@ -62,15 +62,15 @@ bool OS::DLLLoader::init( const std::string &file_name, SystemCalls &sys_calls, 
     
     FileReader fr;
     if ( !fr.open( file_name ) ) {
-        cout << "Could not open DLL: " << file_name << endl;
+        Log::err << Log::tag << "Could not open DLL: " << file_name << "\n";
         return false;
     }
     
     fr.read( file );
     pe = ParsePEFromMemory( file.begin(), file.size() );
     if ( pe == NULL ) {
-        std::cout << "Error: " << GetPEErr() << " (" << GetPEErrString() << ")" << "\n";
-        std::cout << "Location: " << GetPEErrLoc() << "\n";
+        Log::err << Log::tag << "PEParse: " << to_string( GetPEErr() ) << " (" << GetPEErrString() << ")\n";
+        Log::err << "      Location: " << GetPEErrLoc() << "\n";
         file.drop();
         return false;
     }

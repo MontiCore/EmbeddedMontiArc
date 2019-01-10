@@ -6,7 +6,11 @@ using namespace std;
 
 
 bool LOADED_DLL::DllInterface::test_main() {
-    computer.debug.debug = false;
+    computer.debug.debug = true;
+    computer.debug.d_mem = false;
+    computer.debug.d_regs = false;
+    computer.debug.d_reg_update = false;
+    computer.debug.d_syscalls = false;
     
     computer.init();
     if ( !computer.loaded() )
@@ -21,8 +25,7 @@ bool LOADED_DLL::DllInterface::test_main() {
         
         
     init();
-    Utility::color_def();
-    cout << "test_method()" << endl;
+    Log::debug << "test_method()\n";
     test_method();
     
     return call_success;
@@ -40,7 +43,11 @@ void LOADED_DLL::DllInterface::test_method() {
 
 
 bool ADD_DLL::DllInterface::test_main() {
-    computer.debug.debug = false;
+    computer.debug.debug = true;
+    computer.debug.d_mem = false;
+    computer.debug.d_regs = false;
+    computer.debug.d_reg_update = false;
+    computer.debug.d_syscalls = false;
     
     computer.init();
     if ( !computer.loaded() )
@@ -55,10 +62,9 @@ bool ADD_DLL::DllInterface::test_main() {
         
         
     init();
-    Utility::color_def();
-    cout << "add(2,3):" << endl;
+    Log::debug << "add(2,3):\n";
     auto res = add( 2, 3 );
-    cout << "Result=" << res << endl;
+    Log::debug << "Result=" << res << "\n";
     
     return call_success;
 }

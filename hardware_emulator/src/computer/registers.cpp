@@ -57,11 +57,12 @@ void Registers::init( void *uc ) {
 
 
 void Registers::print_registers() {
-    Utility::color_reg();
+    char buff[128];
     for ( auto i : Range( 18 ) ) {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
-        printf( "    %-18s", Registers::regs_names[i] );
-        printf( "%016" PRIX64 "\n", reg );
+        Log::reg << "      ";
+        sprintf( buff,  "%16s   ", Registers::regs_names[i] );
+        Log::reg << buff << to_hex( reg ) << "\n";
     }
 }
 
@@ -70,14 +71,15 @@ void Registers::print_changed_registers() {
         uc_reg_read( static_cast<uc_engine *>( internal_uc ), Registers::regs_id[i], &reg );
         regs[i] = reg;
     }
+    char buff[128];
     for ( auto i : Range( 18 ) ) {
         if ( Registers::regs_id[i] == UC_X86_REG_RIP && ( regs_old[i] != 0 ) )
             continue;
         if ( regs[i] != regs_old[i] ) {
-            Utility::color_reg();
-            printf( "    %-19s", Registers::regs_names[i] );
-            Utility::color_new();
-            printf( "%016" PRIX64 "\n", regs[i] );
+            Log::reg << "      ";
+            sprintf( buff, "%16s   ", Registers::regs_names[i] );
+            Log::reg << buff;
+            Log::new_val << to_hex( regs[i] ) << "\n";
         }
     }
     for ( auto i : Range( 18 ) )
