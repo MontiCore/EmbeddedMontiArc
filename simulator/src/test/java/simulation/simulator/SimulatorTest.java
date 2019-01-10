@@ -1249,7 +1249,7 @@ public class SimulatorTest {
         }
         public void setPosition(RealVector position){}
         public RealMatrix getRotation(){
-            return new BlockRealMatrix(3, 3);
+            return MatrixUtils.createRealIdentityMatrix(3);
         }
         public void setRotation(RealMatrix rotation){}
         public RealVector getVelocity(){
