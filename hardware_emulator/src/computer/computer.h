@@ -11,7 +11,39 @@
 struct InternalComputer;
 
 
+/*
+    The Computer structure is a representation of our OS-less virtual computer.
+    It handles the creation of the Unicorn engine, which emulates virtual memory and cpu instructions.
+    Computer has hooks into the emulator for Code (every instruction before their execution),
+    for memory access and invalid access (R/W) (only used for debugging).
+    It initiates the VirtualStack, VirtualHeap, Memory, Handles and SystemCalls stuctures.
 
+    The Memory structure provides an interface to intiate virtual memory sections and to annotate
+    them (for debugging and handle managment).
+
+    The Handle structure creates a section in virtual memory where emulated system functions can allocate
+    dummy handles to give back to the calling code (the *address* of these dummies is returned, allowing to
+    catch a potential memory access is the handle section).
+
+    SystemCalls works in a similar way as Handles: a reserved virtual memory section where virtual addresses of
+    functions are allocated. The Unicorn code hook implemented by Computer checks for any code execution in the
+    system call section, intercepting it, checking for a manual implementation of the given call and simulating
+    the return to the calling function.
+
+    VirtualStack is the isolated virtual memory section reserved for the program stack, with wrapper functions
+    allowing to simulate pop/push from outside the emulator (for manual reading/placing of data).
+
+    VirtualHeap is a simple implementation of a heap used by the alloc/free system call functions.
+
+    The ComputerDebug sturcture contains functions to display register changes, memory W/R and dissasembled code.
+    The different type of debug outputs can be switched on/off.
+
+    The Code hook is used to count or approximate the number of CUP ticks used by the instructions using the
+    get_instruction_ticks() method.
+
+
+    Computer gives the entry point for code emulation through the call() method.
+*/
 struct Computer {
 
     InternalComputer *internal;

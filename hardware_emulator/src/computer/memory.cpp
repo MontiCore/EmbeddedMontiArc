@@ -5,13 +5,13 @@
 
 #include <iostream>
 
-void Annotations::init_annotations() {
+void AnnotationCollection::init() {
     annotations.init( DEFAULT_ANNOTATION_SIZE );
     annotation_pos = 0;
     new_annotation( 0, Annotation( "NO-NOTE", Annotation::NONE ) );
 }
 
-uint Annotations::new_annotation( ulong base, Annotation const &annotation ) {
+uint AnnotationCollection::new_annotation( ulong base, Annotation const &annotation ) {
     if ( annotation_pos >= annotations.size() )
         annotations.resize( ( annotations.size() ) * 3 / 2 + 1 );
     auto &target = annotations[annotation_pos];
@@ -19,7 +19,7 @@ uint Annotations::new_annotation( ulong base, Annotation const &annotation ) {
     target.base = base;
     return annotation_pos++;
 }
-Annotation &Annotations::get_annotation( std::string const &name, uint type_mask ) {
+Annotation &AnnotationCollection::get_annotation( std::string const &name, uint type_mask ) {
     for ( uint i : Range( annotation_pos ) ) {
         auto &note = annotations[i];
         if ( note.type & type_mask )
@@ -28,7 +28,7 @@ Annotation &Annotations::get_annotation( std::string const &name, uint type_mask
     }
     return annotations[0];
 }
-uint64_t Annotations::get_handle( std::string const &name, uint type_mask ) {
+uint64_t AnnotationCollection::get_handle( std::string const &name, uint type_mask ) {
     return get_annotation( name, type_mask ).base;
 }
 
@@ -37,8 +37,8 @@ uint64_t Annotations::get_handle( std::string const &name, uint type_mask ) {
 
 
 
-void SectionAnnotation::init( Annotations *annotations, MemoryRange address_range ) {
-    this->annotations = annotations;
+void SectionAnnotation::init( AnnotationCollection *annotation_collection, MemoryRange address_range ) {
+    this->collection = annotation_collection;
     this->address_range = address_range;
     annotated.init( address_range.size );
     annotation_id.init( address_range.size );
@@ -46,7 +46,7 @@ void SectionAnnotation::init( Annotations *annotations, MemoryRange address_rang
 
 void SectionAnnotation::add_annotation( MemoryRange range, Annotation const &annotation ) {
     throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
-    auto note_id = annotations->new_annotation( range.start_address, annotation );
+    auto note_id = collection->new_annotation( range.start_address, annotation );
     auto start_index = address_range.get_local_index( range.start_address );
     for ( auto i : Range( start_index, start_index + range.size ) ) {
         annotated[i] = true;
@@ -56,7 +56,7 @@ void SectionAnnotation::add_annotation( MemoryRange range, Annotation const &ann
 
 void SectionAnnotation::add_annotation( ulong address, Annotation const &annotation ) {
     throw_assert( loaded(), "SectionAnnotation::add_annotation() on uninitialized SectionAnnotation" );
-    auto note_id = annotations->new_annotation( address, annotation );
+    auto note_id = collection->new_annotation( address, annotation );
     auto index = address_range.get_local_index( address );
     annotated[index] = true;
     annotation_id[index] = note_id;
@@ -67,7 +67,7 @@ Annotation *SectionAnnotation::get_annotation( ulong address ) {
     auto local_address = address_range.get_local_index( address );
     if ( !annotated[local_address] )
         return nullptr;
-    return &( annotations->annotations[annotation_id[local_address]] );
+    return &( collection->annotations[annotation_id[local_address]] );
 }
 
 
@@ -146,7 +146,7 @@ uint64_t MemorySection::address_to_file( uint64_t virtual_address ) {
 }
 
 void MemorySection::init_annotations() {
-    annotations.init( &mem->annotations, address_range );
+    annotations.init( &mem->annotation_collection, address_range );
 }
 
 
@@ -183,7 +183,7 @@ void Memory::init( void *uc ) {
     section_pos = 0;
     uc_query( static_cast<uc_engine *>( internal_uc ), UC_QUERY_PAGE_SIZE, &page_size );
     
-    annotations.init_annotations();
+    annotation_collection.init();
     
     sys_section = &new_section();
     sys_section->init( MemoryRange( ComputerLayout::SYSPAGE_ADDRESS, ComputerLayout::SYSPAGE_RANGE ), "SYSPAGE", "OS",
@@ -230,35 +230,21 @@ MemorySection *Memory::get_section( ulong virtual_address ) {
     return nullptr;
 }
 
-void Memory::print_address_info( ulong  virtual_address ) {
-    auto sec_ptr = get_section( virtual_address );
-    if ( sec_ptr ) {
-        auto &sec = *sec_ptr;
-        auto file_address = sec.address_to_file( virtual_address );
-        Log::info << "[";
-        Log::note << sec.mod;
-        Log::info << ":";
-        Log::note << sec.name;
-        if ( file_address != virtual_address )
-            Log::white << to_hex( file_address, 16, true );
-        Log::info << "] ";
-        print_annotation( sec, virtual_address );
-    }
-    else
-        Log::info << "[NON-ALLOCATED] ";
+void MemorySection::print_address_info( ulong virtual_address ) {
+    auto file_address = address_to_file( virtual_address );
+    Log::info << "[";
+    Log::note << mod;
+    Log::info << ":";
+    Log::note << name;
+    if ( file_address != virtual_address )
+        Log::white << to_hex( file_address, 16, true );
+    Log::info << "] ";
+    print_annotation( virtual_address );
 }
 
-void Memory::print_annotation( ulong virtual_address ) {
-    auto sec_ptr = get_section( virtual_address );
-    if ( sec_ptr ) {
-        auto &sec = *sec_ptr;
-        print_annotation( sec, virtual_address );
-    }
-}
-
-void Memory::print_annotation( MemorySection &sec, ulong virtual_address ) {
-    if ( sec.has_annotations() ) {
-        auto note_ptr = sec.annotations.get_annotation( virtual_address );
+void MemorySection::print_annotation( ulong virtual_address ) {
+    if ( has_annotations() ) {
+        auto note_ptr = annotations.get_annotation( virtual_address );
         if ( note_ptr ) {
             auto &note = *note_ptr;
             Log::info << "(";
@@ -270,6 +256,22 @@ void Memory::print_annotation( MemorySection &sec, ulong virtual_address ) {
         }
     }
 }
+
+void Memory::print_address_info( ulong  virtual_address ) {
+    auto sec_ptr = get_section( virtual_address );
+    if ( sec_ptr )
+        sec_ptr->print_address_info( virtual_address );
+    else
+        Log::info << "[NON-ALLOCATED] ";
+}
+
+void Memory::print_annotation( ulong virtual_address ) {
+    auto sec_ptr = get_section( virtual_address );
+    if ( sec_ptr )
+        sec_ptr->print_annotation( virtual_address );
+}
+
+
 
 wchar_t *Memory::read_wstr( ulong address ) {
     uint size = 0;
@@ -352,7 +354,7 @@ void Handles::init( Memory &mem ) {
 
 ulong Handles::get_handle( const char *name ) {
     throw_assert( loaded() && section->has_annotations(), "Handles::get_handle() on uninitialized Handles" );
-    auto &note = section->annotations.annotations->get_annotation( name, Annotation::HANDLE );
+    auto &note = section->annotations.collection->get_annotation( name, Annotation::HANDLE );
     return 0;
 }
 

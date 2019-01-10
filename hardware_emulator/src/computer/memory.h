@@ -16,6 +16,10 @@ enum class MemAccessError {
     MAPPED
 };
 
+/*
+    Describes a start address and size of a range in memory.
+    get_local_index() returns the index into the range as if it was an array for a given global address.
+*/
 struct MemoryRange {
     ulong start_address;
     uint size;
@@ -33,7 +37,21 @@ struct MemoryRange {
 };
 
 
+/*
+    Annotations are used to mark memory addresses or ranges.
+    An Annotation has a name, a type and an optional param (ulong).
+    The param is used for instance by the syscall system to give the index into the SysCall
+    array storing name and procedure of syscall implementations.
 
+    The HANDLE type is used by the Handles section.
+    The PROC (procedure) type is used by the syscall annotations.
+    The SYMBOL type is used to annotate System symbols and DLL symbols.
+    The LIBRARY_EXPORT type is used by the code loader to annotate (and thus list) exported
+    library functions (entry points for the different functions of a DLL/Archive)
+
+    Annotations can be easily search for by address (from the section) or by type and name
+    from the Annotations structure (which holds old the annotations).
+*/
 struct Annotation {
     enum Type {
         NONE,
@@ -51,39 +69,63 @@ struct Annotation {
         : base( 0 ), name( name ), type( type ), param( param ) {}
 };
 
-struct Annotations {
+/*
+    The AnnotationCollection structure is used by SectionAnnotation to store annotations
+    and is used to look through all annotations. (But it uses linear search).
+*/
+struct AnnotationCollection {
 
     static constexpr ulong DEFAULT_ANNOTATION_SIZE = 128;
     Array<Annotation> annotations;
+    //'Stack' position in the annotations array (= first free position).
     uint annotation_pos;
     
-    void init_annotations();
+    void init();
     
     uint new_annotation( ulong base, Annotation const &annotation );
     Annotation &get_annotation( std::string const &name, uint type_mask );
     uint64_t get_handle( std::string const &name, uint type_mask );
 };
 
+/*
+    A SectionAnnotation is to be used in combination with a MemorySection in order to annotated it.
+    An Annotation can be added for a address or an address range.
+    get_annotation() returns nullptr when no annotation exists at the given address.
+*/
 struct SectionAnnotation {
-    Annotations *annotations;
+    AnnotationCollection *collection;
     MemoryRange address_range;
     Array<bool> annotated;
     Array<uint> annotation_id;
     
-    SectionAnnotation() : annotations( nullptr ) {}
+    SectionAnnotation() : collection( nullptr ) {}
     
-    void init( Annotations *annotations, MemoryRange address_range );
+    void init( AnnotationCollection *annotation_collection, MemoryRange address_range );
     
     void add_annotation( MemoryRange range, Annotation const &annotation );
     void add_annotation( ulong address, Annotation const &annotation );
     Annotation *get_annotation( ulong address );
     
     bool loaded() {
-        return annotations != nullptr;
+        return collection != nullptr;
     }
 };
 
 struct Memory;
+
+/*
+    A MemorySection represents a Virtual memory section in the Unicorn engine.
+    link() the section before using any method.
+    Use init() to declare the section in virtual memory with given execute/read/write rights.
+    Use upload() to write the data of the section to the engine memory. (Starting at section start)
+
+    Use write() to write data to a custom location within the section.
+    Use read() to write data from a custom location within the section.
+    read() uses the Memory::read() function, which stores the result in a unique buffer, meaning subsequent
+    calls to read() invalidate the data from previous calls.
+
+    To get numbers from the byte stream use the Utility (namespace) functions.
+*/
 struct MemorySection {
     void *internal_uc;
     Memory *mem;
@@ -126,11 +168,18 @@ struct MemorySection {
     }
     
     void init_annotations();
+    
+    void print_address_info( ulong virtual_address );
+    void print_annotation( ulong virtual_address );
 };
 
 
 
-
+/*
+    A Simple allocating Stack structure on top of a MemorySection.
+    get_range(size) allocates 'size' bytes on top of the stack.
+    get_8byte_slot() allocates a 8 byte slot on top of the stack.
+*/
 struct SectionStack {
     uint pos;
     MemorySection *mem;
@@ -149,14 +198,23 @@ struct SectionStack {
 
 
 
+/*
+    The Memory structure handles the creation of MemorySections, writing/reading memory,
+    helper read/write methods for strings and printing virtual addresses info for debuggin.
 
+    MemorySections are created by the VirtualHeap, VirtualStack, SystemCalls, Handles and
+    by the DLL/Archive loader for each library section.
+
+    The read methods return the data in a unique buffer, so subsequent calls to any read method
+    invalidates the data from the previous call.
+*/
 struct Memory {
     static constexpr ulong BUFFER_SIZE = 4096;
     static constexpr ulong SECTION_SIZE = 128;
     void *internal_uc;
     ulong page_size;
     
-    Annotations annotations;
+    AnnotationCollection annotation_collection;
     Array<MemorySection> sections;
     uint section_pos;
     
@@ -183,7 +241,6 @@ struct Memory {
     
     void print_address_info( ulong virtual_address );
     void print_annotation( ulong virtual_address );
-    void print_annotation( MemorySection &sec, ulong virtual_address );
     
     wchar_t *read_wstr( ulong address );
     uchar *read_wstr_as_str( ulong address );
@@ -195,6 +252,11 @@ struct Memory {
     void write_long_word( ulong address, ulong value );
 };
 
+/*
+    The Handle structure creates a section in virtual memory where emulated system functions can allocate
+    dummy handles to give back to the calling code (the *address* of these dummies is returned, allowing to
+    catch a potential memory access is the handle section).
+*/
 struct Handles {
     MemorySection *section;
     SectionStack handle_stack;
@@ -211,6 +273,9 @@ struct Handles {
     ulong add_handle( const char *name );
 };
 
+/*
+    VirtualHeap is a simple implementation of a heap used by the alloc/free system call functions.
+*/
 struct VirtualHeap {
     MemorySection *section;
     ulong heap_handle;
@@ -233,6 +298,10 @@ struct VirtualHeap {
 
 struct Registers;
 
+/*
+    VirtualStack is the isolated virtual memory section reserved for the program stack, with wrapper functions
+    allowing to simulate pop/push from outside the emulator (for manual reading/placing of data).
+*/
 struct VirtualStack {
     MemorySection *section;
     Registers *registers;

@@ -66,8 +66,12 @@ bool Computer::call( ulong address ) {
 void Computer::cb_code( ulong addr, uint size ) {
 
     uint computer_time = 1000;
+    /*
+        Check if the instruction is in the SystemCalls memory range. If so, it means call (ASM) was called
+        with a registered sytem call function address.
+    */
     if ( sys_calls.section->address_range.contains( addr ) ) {
-        //Next instruction in sys_call range => has to be handled manually or by registered SysCalls.
+        //Use memory annotation system to find external procedure.
         auto note_ptr = sys_calls.section->annotations.get_annotation( addr );
         if ( note_ptr == nullptr || note_ptr->type != Annotation::PROC ) {
             std::cerr << "Instruction pointer in invalid PROC region" << std::endl;
@@ -77,9 +81,9 @@ void Computer::cb_code( ulong addr, uint size ) {
         auto &call = sys_calls.sys_calls[( uint )note.param];
         debug.debug_syscall( call, note.param );
         if ( call.type != SysCall::SUPPORTED || !call.callback( *this, call ) )
-            fast_call.set_return( 0 );
+            fast_call.set_return( 0 ); //No external syscall registered or syscall error.
             
-        if ( !stopped ) {
+        if ( !stopped ) { //Do not change stack and instruction pointers if exit() was called on the unicorn engine (it cancels uc_emu_stop())
             //Return to code (simulate 'ret' code)
             auto ret_address = stack.pop_long();
             registers.set_rip( ret_address ); //Set instruction pointer to popped address
@@ -104,7 +108,6 @@ void Computer::cb_code( ulong addr, uint size ) {
 
 void Computer::cb_mem( MemAccess type, ulong addr, uint size, slong value ) {
     debug.debug_mem( type, addr, size, value );
-    
 }
 
 void Computer::cb_mem_err( MemAccess type, MemAccessError err, ulong addr, uint size, slong value ) {

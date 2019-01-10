@@ -1,20 +1,25 @@
 #pragma once
 #include "utility.h"
 
-
+/*
+    Contains the virtual memory layout for the computer.
+*/
 namespace ComputerLayout {
+    //A section to allocate system owned data passed to the emulated code (can be read/written to).
     constexpr ulong SYSPAGE_ADDRESS = 0x1000;
     constexpr ulong SYSPAGE_RANGE = 0x4000;
+    //A section for allocatable external handles.
     constexpr ulong HANDLES_ADDRESS = SYSPAGE_ADDRESS + SYSPAGE_RANGE;
     constexpr ulong HANDLES_RANGE = 0x1000;
     constexpr ulong HANDLE_COUNT = 0x100;
+    //A section for registering system calls.
     constexpr ulong SYSCALLS_ADDRESS = HANDLES_ADDRESS + HANDLES_RANGE;
     constexpr ulong SYSCALLS_RANGE = 0x1000;
-    constexpr ulong SYMBOLS_ADDRESS = SYSCALLS_ADDRESS + SYSCALLS_RANGE;
-    constexpr ulong SYMBOLS_RANGE = 0x1000;
+    //Virtual stack position and max size.
     constexpr ulong STACK_BOUNDARY = 0x1000;
-    constexpr ulong STACK_ADDRESS = SYMBOLS_ADDRESS + SYMBOLS_RANGE + STACK_BOUNDARY;
+    constexpr ulong STACK_ADDRESS = SYSCALLS_ADDRESS + SYSCALLS_RANGE + STACK_BOUNDARY;
     constexpr ulong STACK_MAX_SIZE = 0x100000;
+    //Virtual heap section.
     constexpr ulong HEAP_ADDRESS = STACK_ADDRESS + STACK_MAX_SIZE + STACK_BOUNDARY;
     constexpr ulong HEAP_SIZE = 0x10000;
     constexpr ulong HEAP_MAX_SIZE = 0x100000;

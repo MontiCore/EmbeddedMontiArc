@@ -1,6 +1,13 @@
 #pragma once
 #include "utility.h"
 
+/*
+    A Simple wrapper to access the registers of the Unicorn Engine.
+
+    Contains printing methods for debugging. print_changed_registers() compares the
+    registers with their last known value (last print_changed_registers()) and only
+    shows the updated registers.
+*/
 struct Registers {
     static constexpr ulong BUFFER_SIZE = 32;
     void *internal_uc;

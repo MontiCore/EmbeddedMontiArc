@@ -8,6 +8,13 @@ struct ComputerDebug;
 
 using SystemCallback = bool( * )( Computer &, SysCall &syscall );
 
+
+/*
+    A SysCall represents a System/OS function that is not in the actual memory of the emulator.
+    It has a module (ex. KERNEL32.DLL) and a symbol name (can be a decorated name).
+    It can have an optional callback method registered, which is an external implementation of
+    the named function.
+*/
 struct SysCall {
     enum Type {
         UNSUPPORTED,
@@ -29,6 +36,12 @@ struct SysCall {
         type( LIBRARY_EXPORT ), name( name ), module( module ), callback( nullptr ), addr( addr ), user_data( user_data ) {}
 };
 
+/*
+    Collection of registered SysCalls.
+    Use get_syscall() to get a registered SysCall by module and name.
+    Use add_syscall() to register a SysCall.
+    Both return the virtual address of the function handle.
+*/
 struct SystemCalls {
     MemorySection *section;
     SectionStack syscall_stack;
