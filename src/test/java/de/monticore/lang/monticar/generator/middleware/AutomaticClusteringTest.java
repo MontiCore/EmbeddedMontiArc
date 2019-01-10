@@ -105,10 +105,29 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     public void testFlattenAlgorithm1(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.overallSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<ExpandedComponentInstanceSymbol>resolve("lab.overallSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper
+                .flattenArchitecture(componentInstanceSymbol);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        assertEquals(10, subComponents.size());
+        assertEquals(20, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithm1ShortNames(){
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<ExpandedComponentInstanceSymbol>resolve("lab.overallSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper
+                .flattenArchitecture(componentInstanceSymbol, new HashMap<>());
         assertNotNull(newComponentInstanceSymbol);
         Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
         Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
@@ -120,10 +139,29 @@ public class AutomaticClusteringTest extends AbstractSymtabTest{
     public void testFlattenAlgorithm2(){
         TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
 
-        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver.<ExpandedComponentInstanceSymbol>resolve("lab.spanningSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<ExpandedComponentInstanceSymbol>resolve("lab.spanningSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
         assertNotNull(componentInstanceSymbol);
 
-        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper.flattenArchitecture(componentInstanceSymbol);
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper
+                .flattenArchitecture(componentInstanceSymbol);
+        assertNotNull(newComponentInstanceSymbol);
+        Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
+        Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
+        assertEquals(20, subComponents.size());
+        assertEquals(40, connectors.size());
+    }
+
+    @Test
+    public void testFlattenAlgorithm2ShortNames() {
+        TaggingResolver taggingResolver = AbstractSymtabTest.createSymTabAndTaggingResolver(TEST_PATH);
+
+        ExpandedComponentInstanceSymbol componentInstanceSymbol = taggingResolver
+                .<ExpandedComponentInstanceSymbol>resolve("lab.spanningSystem", ExpandedComponentInstanceSymbol.KIND).orElse(null);
+        assertNotNull(componentInstanceSymbol);
+
+        ExpandedComponentInstanceSymbol newComponentInstanceSymbol = AutomaticClusteringHelper
+                .flattenArchitecture(componentInstanceSymbol, new HashMap<>());
         assertNotNull(newComponentInstanceSymbol);
         Collection<ExpandedComponentInstanceSymbol> subComponents = newComponentInstanceSymbol.getSubComponents();
         Collection<ConnectorSymbol> connectors = newComponentInstanceSymbol.getConnectors();
