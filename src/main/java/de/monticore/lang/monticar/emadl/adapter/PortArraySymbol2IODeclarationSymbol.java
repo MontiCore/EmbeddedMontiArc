@@ -22,7 +22,7 @@ package de.monticore.lang.monticar.emadl.adapter;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressionsbasis._ast.ASTExpression;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.math._ast.ASTNameExpression;
 import de.monticore.lang.math._ast.ASTNumberExpression;
 import de.monticore.lang.monticar.cnnarch._symboltable.ArchSimpleExpressionSymbol;
@@ -42,11 +42,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
-        implements SymbolAdapter<PortArraySymbol> {
+        implements SymbolAdapter<EMAPortArraySymbol> {
 
-    private final PortArraySymbol adaptee;
+    private final EMAPortArraySymbol adaptee;
 
-    public PortArraySymbol2IODeclarationSymbol(PortArraySymbol ps) {
+    public PortArraySymbol2IODeclarationSymbol(EMAPortArraySymbol ps) {
         super(ps.getName());
         setInput(ps.isIncoming());
         setArrayLength(ps.getDimension());
@@ -71,12 +71,12 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
     }
 
     @Override
-    public PortArraySymbol getAdaptee() {
+    public EMAPortArraySymbol getAdaptee() {
         return adaptee;
     }
 
 
-    private ASTType getASTType(PortArraySymbol port){
+    private ASTType getASTType(EMAPortArraySymbol port){
         MCTypeSymbol type = port.getTypeReference().getReferencedSymbol();
         if (type instanceof MCASTTypeSymbol){
             return ((MCASTTypeSymbol) type).getAstType();
@@ -86,7 +86,7 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         }
     }
 
-    private List<ArchSimpleExpressionSymbol> getShape(PortArraySymbol port){
+    private List<ArchSimpleExpressionSymbol> getShape(EMAPortArraySymbol port){
         List<ArchSimpleExpressionSymbol> dimensionList = new ArrayList<>(4);
         ASTType astType = getASTType(port);
 
@@ -109,7 +109,7 @@ public class PortArraySymbol2IODeclarationSymbol extends IODeclarationSymbol
         return dimensionList;
     }
 
-    private ASTElementType getElementType(PortArraySymbol port){
+    private ASTElementType getElementType(EMAPortArraySymbol port){
         ASTType astType = getASTType(port);
         if (astType instanceof ASTCommonMatrixType){
             return  ((ASTCommonMatrixType) astType).getElementType();

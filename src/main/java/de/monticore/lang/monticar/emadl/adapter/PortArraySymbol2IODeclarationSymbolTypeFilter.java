@@ -20,7 +20,7 @@
  */
 package de.monticore.lang.monticar.emadl.adapter;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortArraySymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAPortArraySymbol;
 import de.monticore.lang.monticar.cnnarch._symboltable.IODeclarationSymbol;
 import de.monticore.symboltable.Symbol;
 import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
@@ -28,14 +28,14 @@ import de.monticore.symboltable.resolving.TransitiveAdaptedResolvingFilter;
 public class PortArraySymbol2IODeclarationSymbolTypeFilter extends TransitiveAdaptedResolvingFilter<IODeclarationSymbol> {
 
     public PortArraySymbol2IODeclarationSymbolTypeFilter() {
-        super(PortArraySymbol.KIND,
+        super(EMAPortArraySymbol.KIND,
                 IODeclarationSymbol.class,
                 IODeclarationSymbol.KIND);
     }
 
     @Override
     public Symbol translate(Symbol adaptee) {
-        assert adaptee instanceof PortArraySymbol;
-        return new PortArraySymbol2IODeclarationSymbol((PortArraySymbol) adaptee);
+        assert adaptee instanceof EMAPortArraySymbol;
+        return new PortArraySymbol2IODeclarationSymbol((EMAPortArraySymbol) adaptee);
     }
 }

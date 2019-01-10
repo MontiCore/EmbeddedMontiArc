@@ -21,7 +21,7 @@
 package de.monticore.lang.monticar.emadl._cocos;
 
 import de.monticore.lang.embeddedmontiarc.cocos.*;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.cocos.AtomicComponentCoCo;
 import de.monticore.lang.math._cocos.MatrixAssignmentDeclarationCheck;
 import de.monticore.lang.monticar.cnnarch._cocos.CNNArchCocos;
@@ -32,7 +32,7 @@ import java.util.Optional;
 //check all cocos
 public class EMADLCocos {
 
-    public static void checkAll(ExpandedComponentInstanceSymbol instance){
+    public static void checkAll(EMAComponentInstanceSymbol instance){
         Optional<ArchitectureSymbol> architecture = instance.getSpannedScope().
                 resolve("", ArchitectureSymbol.KIND);
 

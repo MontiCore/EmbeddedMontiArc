@@ -21,8 +21,8 @@
 package de.monticore.lang.monticar.emadl._symboltable;
 
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._ast.ASTEMACompilationUnit;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ComponentSymbol;
 import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.EmbeddedMontiArcSymbolTableCreator;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.cncModel.EMAComponentSymbol;
 import de.monticore.symboltable.MutableScope;
 import de.monticore.symboltable.ResolvingConfiguration;
 import de.se_rwth.commons.logging.Log;
@@ -50,7 +50,7 @@ public class ModifiedEMASymbolTableCreator extends EmbeddedMontiArcSymbolTableCr
         this.removeCurrentScope();
         if (!this.aboartVisitComponent) {
             Log.debug("endVisit of " + node.getComponent().getSymbolOpt().get().getFullName(), "SymbolTableCreator:");
-            getInstanceSymbolCreator().createInstances((ComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))));
+            getInstanceSymbolCreator().createInstances((EMAComponentSymbol)(Log.errorIfNull(node.getComponent().getSymbolOpt().orElse(null))),node.getComponent().getSymbolOpt().get().getName());
         }
     }
 
