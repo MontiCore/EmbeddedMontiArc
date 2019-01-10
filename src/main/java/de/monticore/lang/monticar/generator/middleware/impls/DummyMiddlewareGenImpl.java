@@ -1,7 +1,7 @@
 package de.monticore.lang.monticar.generator.middleware.impls;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.monticar.generator.FileContent;
 import de.monticore.lang.monticar.generator.middleware.helpers.FileHelper;
 import de.monticore.lang.monticar.generator.middleware.helpers.NameHelper;
@@ -19,7 +19,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
     private String generationTargetPath;
 
     @Override
-    public List<File> generate(ExpandedComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
+    public List<File> generate(EMAComponentInstanceSymbol componentInstanceSymbol, TaggingResolver taggingResolver) throws IOException {
 
         List<File> res = new ArrayList<>();
         res.add(FileHelper.generateFile(generationTargetPath, generateCMake(componentInstanceSymbol)));
@@ -28,7 +28,7 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
     }
 
 
-    private FileContent generateAdapter(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateAdapter(EMAComponentInstanceSymbol componentInstanceSymbol) {
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = TemplateHelper.getDummyAdapterTemplate()
                 .replace("${compName}", name);
@@ -45,16 +45,16 @@ public class DummyMiddlewareGenImpl implements GeneratorImpl {
     }
 
     @Override
-    public boolean willAccept(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        return componentInstanceSymbol.getPortsList().stream()
-                .map(PortSymbol::getMiddlewareSymbol)
+    public boolean willAccept(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        return componentInstanceSymbol.getPortInstanceList().stream()
+                .map(EMAPortInstanceSymbol::getMiddlewareSymbol)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(mws -> mws.isKindOf(DummyMiddlewareSymbol.KIND))
                 .count() > 0;
     }
 
-    private FileContent generateCMake(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
+    private FileContent generateCMake(EMAComponentInstanceSymbol componentInstanceSymbol) {
         FileContent res = new FileContent();
         String name = NameHelper.getNameTargetLanguage(componentInstanceSymbol.getFullName());
         String content = TemplateHelper.getDummyCmakeTemplate()

@@ -1,8 +1,8 @@
 package de.monticore.lang.monticar.generator.middleware.helpers;
 
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ConnectorSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.ExpandedComponentInstanceSymbol;
-import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.PortSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAComponentInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAConnectorInstanceSymbol;
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.instanceStructure.EMAPortInstanceSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.MiddlewareSymbol;
 import de.monticore.lang.embeddedmontiarc.tagging.middleware.ros.RosConnectionSymbol;
 import de.monticore.lang.monticar.generator.rosmsg.GeneratorRosMsg;
@@ -16,15 +16,15 @@ public class RosHelper {
     }
 
 
-    public static void fixRosConnectionSymbols(ExpandedComponentInstanceSymbol componentInstanceSymbol) {
-        componentInstanceSymbol.getConnectors().stream()
+    public static void fixRosConnectionSymbols(EMAComponentInstanceSymbol componentInstanceSymbol) {
+        componentInstanceSymbol.getConnectorInstances().stream()
                 .filter(connectorSymbol -> connectorSymbol.getSourcePort().isRosPort() && connectorSymbol.getTargetPort().isRosPort())
                 .forEach(connectorSymbol -> {
-                    if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance().orElse(null), componentInstanceSymbol)) {
+                    if (Objects.equals(connectorSymbol.getSourcePort().getComponentInstance(), componentInstanceSymbol)) {
                         //In port of supercomp
                         inferRosConnectionIfPossible(connectorSymbol.getSourcePort(), connectorSymbol.getTargetPort());
                         generateRosConnectionIfPossible(connectorSymbol);
-                    } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance().orElse(null), componentInstanceSymbol)) {
+                    } else if (Objects.equals(connectorSymbol.getTargetPort().getComponentInstance(), componentInstanceSymbol)) {
                         //out port of supercomp
                         inferRosConnectionIfPossible(connectorSymbol.getTargetPort(), connectorSymbol.getSourcePort());
                         generateRosConnectionIfPossible(connectorSymbol);
@@ -37,7 +37,7 @@ public class RosHelper {
     }
 
     //Cannot be moved to GeneratorRosCpp: target port name needed for topic name
-    private static void generateRosConnectionIfPossible(ConnectorSymbol connectorSymbol) {
+    private static void generateRosConnectionIfPossible(EMAConnectorInstanceSymbol connectorSymbol) {
         MiddlewareSymbol sourceTag = connectorSymbol.getSourcePort().getMiddlewareSymbol().orElse(null);
         MiddlewareSymbol targetTag = connectorSymbol.getTargetPort().getMiddlewareSymbol().orElse(null);
         if (sourceTag == null || targetTag == null || !sourceTag.isKindOf(RosConnectionSymbol.KIND) || !targetTag.isKindOf(RosConnectionSymbol.KIND)) {
@@ -72,7 +72,7 @@ public class RosHelper {
         }
     }
 
-    private static void inferRosConnectionIfPossible(PortSymbol sourcePort, PortSymbol targetPort) {
+    private static void inferRosConnectionIfPossible(EMAPortInstanceSymbol sourcePort, EMAPortInstanceSymbol targetPort) {
         MiddlewareSymbol sourceTag = sourcePort.getMiddlewareSymbol().orElse(null);
         MiddlewareSymbol targetTag = targetPort.getMiddlewareSymbol().orElse(null);
         if (sourceTag == null || targetTag == null || !sourceTag.isKindOf(RosConnectionSymbol.KIND) || !targetTag.isKindOf(RosConnectionSymbol.KIND)) {
