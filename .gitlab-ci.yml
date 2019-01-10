@@ -27,26 +27,26 @@ test_windows:
   dependencies:
     - windows_build
 
-linux_build:
-  stage: build
-  tags:
-  - linux
-  script: 
-  - docs/build.sh
-  artifacts:
-    paths:
-      - hardware_emulator/build/hardware-emulator-test
-      - hardware_emulator/bin/AutopilotModel.dll
-      - hardware_emulator/bin/loaded_dll.dll
-      - hardware_emulator/bin/SampleDLL.dll
+#linux_build:
+#  stage: build
+#  tags:
+#  - linux
+#  script: 
+#  - docs/build.sh
+#  artifacts:
+#    paths:
+#      - hardware_emulator/build/hardware-emulator-test
+#      - hardware_emulator/bin/AutopilotModel.dll
+#      - hardware_emulator/bin/loaded_dll.dll
+#      - hardware_emulator/bin/SampleDLL.dll
 
-test_linux:
-  stage: test
-  tags:
-  - linux
-  script:
-    - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
-    - cd hardware_emulator/bin
-    - hardware-emulator-test
-  dependencies:
-    - linux_build
+#test_linux:
+#  stage: test
+#  tags:
+#  - linux
+#  script:
+#    - mv hardware_emulator/build/hardware-emulator-test hardware_emulator/bin/hardware-emulator-test
+#    - cd hardware_emulator/bin
+#    - hardware-emulator-test
+#  dependencies:
+#    - linux_build
