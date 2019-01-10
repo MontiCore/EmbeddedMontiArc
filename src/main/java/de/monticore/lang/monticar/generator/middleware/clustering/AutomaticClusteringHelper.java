@@ -15,7 +15,6 @@ import de.monticore.symboltable.resolving.ResolvingFilter;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class AutomaticClusteringHelper {
@@ -176,6 +175,175 @@ public class AutomaticClusteringHelper {
         return 50;
     }
 
+    public static ExpandedComponentInstanceSymbol flattenArchitecture(ExpandedComponentInstanceSymbol symbol, Map<String,Integer> map){
+        if (symbol.getSubComponents().isEmpty()){
+            if (symbol.getEnclosingComponent().isPresent()){
+                if (map.containsKey(symbol.getName())) {
+                    map.replace(symbol.getName(), map.get(symbol.getName()) + 1);
+                    return copySymbolWithSystemName(symbol, symbol.getName() + map.get(symbol.getName()), true);
+                }else {
+                    map.put(symbol.getName(), 0);
+                    return symbol.getEnclosingComponent().get();
+                }
+            }
+            return symbol;
+        }
+
+        for (ExpandedComponentInstanceSymbol sym : symbol.getSubComponents()){
+            symbol = flattenArchitecture(sym, map);
+        }
+
+        if (symbol.getEnclosingComponent().isPresent()) {
+            ExpandedComponentInstanceSymbol enclosingComponent = copySymbolWithSystemName(symbol, symbol.getName(), false);
+            ExpandedComponentInstanceSymbol thisSymbol = symbol;
+
+            List<ExpandedComponentInstanceSymbol> newSubcomponents = enclosingComponent.getSubComponents().stream()
+                    .filter(e -> !e.getFullName().equals(thisSymbol.getFullName())).collect(Collectors.toList());
+            newSubcomponents.addAll(newSubcomponents.size(), new ArrayList<>(symbol.getSubComponents()));
+
+            HashSet<String> incomingPorts = new HashSet<>(symbol.getIncomingPorts().stream().map(p -> {
+                return p.getName();
+            }).collect(Collectors.toList()));
+            HashSet<String> outgoingPorts = new HashSet<>(symbol.getOutgoingPorts().stream().map(p -> {
+                return p.getName();
+            }).collect(Collectors.toList()));
+
+            //only connectors from incoming ports
+            Set<ConnectorSymbol> incomingConnectors = symbol.getConnectors().stream()
+                    .filter(c -> incomingPorts.contains(c.getSource()))
+                    .collect(Collectors.toSet());
+
+            //only connectors from outgoing ports
+            Set<ConnectorSymbol> outgoingConnectors = symbol.getConnectors().stream()
+                    .filter(c -> outgoingPorts.contains(c.getTarget()))
+                    .collect(Collectors.toSet());
+            return connectNewConnectors(symbol, enclosingComponent, thisSymbol, newSubcomponents, incomingConnectors, outgoingConnectors);
+
+        }else {
+            return symbol;
+        }
+
+    }
+
+    private static ExpandedComponentInstanceSymbol connectNewConnectors(ExpandedComponentInstanceSymbol symbol, ExpandedComponentInstanceSymbol enclosingComponent, ExpandedComponentInstanceSymbol thisSymbol, List<ExpandedComponentInstanceSymbol> newSubcomponents, Set<ConnectorSymbol> incomingConnectors, Set<ConnectorSymbol> outgoingConnectors) {
+        //only connectors going into symbol
+        Set<ConnectorSymbol> incomingParentConnectors = enclosingComponent.getConnectors().stream()
+                .filter(c -> c.getTargetPort().getComponentInstance().get().getFullName().equals(thisSymbol.getFullName()))
+                .collect(Collectors.toSet());
+
+        //only connectors going out of symbol
+        Set<ConnectorSymbol> outgoingParentConnectors = enclosingComponent.getConnectors().stream()
+                .filter(c -> c.getSourcePort().getComponentInstance().get().getFullName().equals(thisSymbol.getFullName()))
+                .collect(Collectors.toSet());
+
+        //untouched connectors of enclosing symbol
+        Set<ConnectorSymbol> newConnectors = enclosingComponent.getConnectors().stream()
+                .filter(c -> !(incomingParentConnectors.contains(c) || outgoingParentConnectors.contains(c)))
+                .collect(Collectors.toSet());
+
+        //untouched connectors of symbol with renamed ports
+        newConnectors.addAll(symbol.getConnectors().stream()
+                //.map(c -> {return mapToNewName(c);})
+                .filter(c -> !(incomingConnectors.contains(c) || outgoingConnectors.contains(c)))
+                .collect(Collectors.toSet()));
+
+        connectNewConnectorsIncoming(incomingConnectors, incomingParentConnectors, newConnectors);
+
+        connectNewConnectorsOutgoing(outgoingConnectors, outgoingParentConnectors, newConnectors);
+
+        ExpandedComponentInstanceSymbol res = constructECIS(enclosingComponent, newSubcomponents, newConnectors,
+                enclosingComponent.getName(), new ArrayList<>(enclosingComponent.getPortsList()));
+
+        return res;
+    }
+
+    private static void connectNewConnectorsOutgoing(Set<ConnectorSymbol> outgoingConnectors, Set<ConnectorSymbol> outgoingParentConnectors, Set<ConnectorSymbol> newConnectors) {
+        for (ConnectorSymbol con : outgoingConnectors) {
+            for (ConnectorSymbol connectorSymbol : outgoingParentConnectors) {
+                if (con.getTarget().equals(connectorSymbol.getSource().replaceFirst(".*_", ""))) {
+                    ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
+                            .setSource(con.getSource())
+                            .setTarget(connectorSymbol.getTarget())
+                            .build();
+                    newConnectors.add(tmpConnector);
+                }
+            }
+        }
+    }
+
+    private static void connectNewConnectorsIncoming(Set<ConnectorSymbol> incomingConnectors, Set<ConnectorSymbol> incomingParentConnectors, Set<ConnectorSymbol> newConnectors) {
+        for (ConnectorSymbol con : incomingConnectors) {
+            for (ConnectorSymbol connectorSymbol : incomingParentConnectors) {
+                if (con.getSource().equals(connectorSymbol.getTarget().replaceFirst(".*_", ""))) {
+                    ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
+                            .setSource(connectorSymbol.getSource())
+                            .setTarget(con.getTarget())
+                            .build();
+                    newConnectors.add(tmpConnector);
+                }
+            }
+        }
+    }
+
+    private static ExpandedComponentInstanceSymbol copySymbolWithSystemName(ExpandedComponentInstanceSymbol symbol, String newName,
+                                                                            boolean atomic) {
+        ExpandedComponentInstanceSymbol enclosingComponent = symbol.getEnclosingComponent().get();
+        ExpandedComponentInstanceSymbol thisSymbol = symbol;
+        List<ExpandedComponentInstanceSymbol> subcomponents = enclosingComponent.getSubComponents().stream()
+                .filter(e -> !e.getFullName().equals(thisSymbol.getFullName())).collect(Collectors.toList());
+        List<PortSymbol> ports = new LinkedList<>();
+        if (atomic) {
+            ports.addAll(symbol.getPortsList());
+        }else {
+            createNewPorts(symbol, newName, ports);
+        }
+        ExpandedComponentInstanceSymbol e = constructECIS(symbol, new ArrayList<>(symbol.getSubComponents()),
+                new HashSet<>(symbol.getConnectors()), newName, ports);
+        subcomponents.add(e);
+        HashSet<String> incomingPorts = new HashSet<>(symbol.getIncomingPorts().stream().map(p ->{
+            return symbol.getName() + "." + p.getName();
+        }).collect(Collectors.toList()));
+        HashSet<String> outgoingPorts = new HashSet<>(symbol.getOutgoingPorts().stream().map(p ->{
+            return symbol.getName() + "." + p.getName();
+        }).collect(Collectors.toList()));
+        Set<ConnectorSymbol> newConnectors = enclosingComponent.getConnectors().stream()
+                .map(c ->{
+                    if (incomingPorts.contains(c.getTarget().substring(0,1).toLowerCase()
+                            + c.getTarget().substring(1))){
+                        c.setSource(c.getSource());
+                        if (atomic){
+                            c.setTarget(c.getTarget().replaceFirst("[^.]*.", newName + "."));
+                        }else {
+                            c.setTarget(c.getTarget().replaceFirst("[^.]*.", newName + "." + newName + "_"));
+                        }
+                    } else if (outgoingPorts.contains(c.getSource().substring(0,1).toLowerCase()
+                            + c.getSource().substring(1))){
+                        if (atomic) {
+                            c.setSource(c.getSource().replaceFirst("[^.]*.", newName + "."));
+                        }else {
+                            c.setSource(c.getSource().replaceFirst("[^.]*.",newName + "." + newName + "_"));
+                        }
+                        c.setTarget(c.getTarget());
+                    }
+                    return c;
+                })
+                .collect(Collectors.toSet());
+        return constructECIS(enclosingComponent, subcomponents, newConnectors, enclosingComponent.getName(),
+                new ArrayList<>(enclosingComponent.getPortsList()));
+    }
+
+    private static void createNewPorts(ExpandedComponentInstanceSymbol symbol, String newName, List<PortSymbol> ports) {
+        for (PortSymbol port : symbol.getPortsList()) {
+            ports.add((PortSymbol) (port.isConstant() ?
+                    (new EMAPortBuilder()).setName(newName + "_" + port.getName()).setDirection(port.isIncoming())
+                            .setTypeReference(port.getTypeReference()).setConstantValue(((ConstantPortSymbol) port).getConstantValue())
+                            .setASTNode(port.getAstNode()).buildConstantPort()
+                    : (new EMAPortBuilder()).setName(newName + "_" + port.getName()).setDirection(port.isIncoming())
+                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig())
+                    .setMiddlewareSymbol(port.getMiddlewareSymbol()).build()));
+        }
+    }
+
     public static ExpandedComponentInstanceSymbol flattenArchitecture(ExpandedComponentInstanceSymbol symbol){
         if (symbol.getSubComponents().isEmpty()){
             if (symbol.getEnclosingComponent().isPresent()){
@@ -208,60 +376,12 @@ public class AutomaticClusteringHelper {
                     .filter(c -> incomingPorts.contains(thisSymbol.getFullName() + "." + thisSymbol.getName() + "_"+ c.getSource()))
                     .collect(Collectors.toSet());
 
-            //only connectors going into symbol
-            Set<ConnectorSymbol> incomingParentConnectors = enclosingComponent.getConnectors().stream()
-                    .filter(c -> c.getTargetPort().getComponentInstance().get().getFullName().equals(thisSymbol.getFullName()))
-                    .collect(Collectors.toSet());
-
             //only connectors from outgoing ports
             Set<ConnectorSymbol> outgoingConnectors = symbol.getConnectors().stream()
                     .filter(c -> outgoingPorts.contains(thisSymbol.getFullName() + "." + thisSymbol.getName() + "_"+ c.getTarget()))
                     .collect(Collectors.toSet());
 
-            //only connectors going out of symbol
-            Set<ConnectorSymbol> outgoingParentConnectors = enclosingComponent.getConnectors().stream()
-                    .filter(c -> c.getSourcePort().getComponentInstance().get().getFullName().equals(thisSymbol.getFullName()))
-                    .collect(Collectors.toSet());
-
-            //untouched connectors of enclosing symbol
-            Set<ConnectorSymbol> newConnectors = enclosingComponent.getConnectors().stream()
-                    .filter(c -> !(incomingParentConnectors.contains(c) || outgoingParentConnectors.contains(c)))
-                    .collect(Collectors.toSet());
-
-            //untouched connectors of symbol with renamed ports
-            newConnectors.addAll(symbol.getConnectors().stream()
-                    //.map(c -> {return mapToNewName(c);})
-                    .filter(c -> !(incomingConnectors.contains(c) || outgoingConnectors.contains(c)))
-                    .collect(Collectors.toSet()));
-
-            for (ConnectorSymbol con : incomingConnectors){
-                for (ConnectorSymbol connectorSymbol : incomingParentConnectors){
-                    if (con.getSource().equals(connectorSymbol.getTarget().replaceFirst(".*_", ""))){
-                        ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
-                                .setSource(connectorSymbol.getSource())
-                                .setTarget(con.getTarget())
-                                .build();
-                        newConnectors.add(tmpConnector);
-                    }
-                }
-            }
-
-            for (ConnectorSymbol con : outgoingConnectors){
-                for (ConnectorSymbol connectorSymbol : outgoingParentConnectors){
-                    if (con.getTarget().equals(connectorSymbol.getSource().replaceFirst(".*_", ""))){
-                        ConnectorSymbol tmpConnector = ConnectorSymbol.builder()
-                                .setSource(con.getSource())
-                                .setTarget(connectorSymbol.getTarget())
-                                .build();
-                        newConnectors.add(tmpConnector);
-                    }
-                }
-            }
-
-            ExpandedComponentInstanceSymbol res = constructECIS(enclosingComponent, newSubcomponents, newConnectors,
-                    enclosingComponent.getName(), new ArrayList<>(enclosingComponent.getPortsList()));
-
-            return res;
+            return connectNewConnectors(symbol, enclosingComponent, thisSymbol, newSubcomponents, incomingConnectors, outgoingConnectors);
         } else {
             return symbol;
         }
@@ -275,15 +395,7 @@ public class AutomaticClusteringHelper {
         List<PortSymbol> ports = new ArrayList<>();
         String newName = symbol.getFullName().replace(".", "_");
         String newEnclosingName = enclosingComponent.getFullName().replace(".", "_");
-        for (PortSymbol port : symbol.getPortsList()) {
-            ports.add((PortSymbol)(port.isConstant() ?
-                    (new EMAPortBuilder()).setName(newName + "_" + port.getName()).setDirection(port.isIncoming())
-                            .setTypeReference(port.getTypeReference()).setConstantValue(((ConstantPortSymbol)port).getConstantValue())
-                            .setASTNode(port.getAstNode()).buildConstantPort()
-                    : (new EMAPortBuilder()).setName(newName + "_" + port.getName()).setDirection(port.isIncoming())
-                    .setTypeReference(port.getTypeReference()).setASTNode(port.getAstNode()).setConfig(port.isConfig())
-                    .setMiddlewareSymbol(port.getMiddlewareSymbol()).build()));
-        }
+        createNewPorts(symbol, newName, ports);
         ExpandedComponentInstanceSymbol e = constructECIS(symbol, new ArrayList<>(symbol.getSubComponents()),
                 new HashSet<>(symbol.getConnectors()), newName, ports);
         subcomponents.add(e);
