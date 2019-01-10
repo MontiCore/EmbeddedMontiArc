@@ -1,3 +1,3 @@
-    		${element.name} = mx.symbol.Dropout(data=${element.inputs[0]},
-    		    p=${element.p?c},
-    		    name="${element.name}")
+<#assign input = element.inputs[0]>
+<#assign ratio = element.p?c?string>
+    		${element.name} = brew.dropout(model, ${input}, '${element.name}', ratio=${ratio}, is_test=False)

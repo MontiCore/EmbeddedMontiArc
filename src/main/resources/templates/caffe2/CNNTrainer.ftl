@@ -41,6 +41,8 @@ if __name__ == "__main__":
     <#elseif param == "step_size">
         <#assign paramName = "stepsize">
     <#elseif param == "gamma1">
+        <#assign paramName = "gamma1">
+    <#elseif param == "learning_rate_decay">
         <#assign paramName = "gamma">
     </#if>
         ${paramName}=${config.optimizerParams[param]}<#sep>,

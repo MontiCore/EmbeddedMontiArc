@@ -7,6 +7,7 @@ import logging
 import os
 import sys
 import lmdb
+
 class CNNCreator_VGG16:
 
     module = None
@@ -58,7 +59,7 @@ class CNNCreator_VGG16:
 
             return data, label, dataset_size
 
-    def create_model(self, model, data, device_opts):
+    def create_model(self, model, data, device_opts, is_test):
     	with core.DeviceScope(device_opts):
 
     		data = data
@@ -115,15 +116,11 @@ class CNNCreator_VGG16:
     		fc13_ = brew.fc(model, pool13_, 'fc13_', dim_in=512 * 7 * 7, dim_out=4096)
     		# fc13_, output shape: {[4096,1,1]}
     		relu14_ = brew.relu(model, fc13_, fc13_)
-    		dropout14_ = mx.symbol.Dropout(data=relu14_,
-    		    p=0.5,
-    		    name="dropout14_")
+    		dropout14_ = brew.dropout(model, relu14_, 'dropout14_', ratio=0.5, is_test=False)
     		fc14_ = brew.fc(model, dropout14_, 'fc14_', dim_in=4096, dim_out=4096)
     		# fc14_, output shape: {[4096,1,1]}
     		relu15_ = brew.relu(model, fc14_, fc14_)
-    		dropout15_ = mx.symbol.Dropout(data=relu15_,
-    		    p=0.5,
-    		    name="dropout15_")
+    		dropout15_ = brew.dropout(model, relu15_, 'dropout15_', ratio=0.5, is_test=False)
     		fc15_ = brew.fc(model, dropout15_, 'fc15_', dim_in=4096, dim_out=1000)
     		# fc15_, output shape: {[1000,1,1]}
     		predictions = brew.softmax(model, fc15_, 'predictions')
@@ -185,7 +182,7 @@ class CNNCreator_VGG16:
     	# == Training model ==
     	train_model= model_helper.ModelHelper(name="train_net", arg_scope=arg_scope)
     	data, label, train_dataset_size = self.add_input(train_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'train_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(train_model, data, device_opts=device_opts)
+    	predictions = self.create_model(train_model, data, device_opts=device_opts, is_test=False)
     	self.add_training_operators(train_model, predictions, label, device_opts, opt_type, base_learning_rate, policy, stepsize, epsilon, beta1, beta2, gamma, momentum)
     	self.add_accuracy(train_model, predictions, label, device_opts, eval_metric)
     	with core.DeviceScope(device_opts):
@@ -208,7 +205,7 @@ class CNNCreator_VGG16:
     	# == Testing model. ==
     	test_model= model_helper.ModelHelper(name="test_net", arg_scope=arg_scope, init_params=False)
     	data, label, test_dataset_size = self.add_input(test_model, batch_size=batch_size, db=os.path.join(self._data_dir_, 'test_lmdb'), db_type='lmdb', device_opts=device_opts)
-    	predictions = self.create_model(test_model, data, device_opts=device_opts)
+    	predictions = self.create_model(test_model, data, device_opts=device_opts, is_test=True)
     	self.add_accuracy(test_model, predictions, label, device_opts, eval_metric)
     	workspace.RunNetOnce(test_model.param_init_net)
     	workspace.CreateNet(test_model.net, overwrite=True)
@@ -226,7 +223,7 @@ class CNNCreator_VGG16:
     	# == Deployment model. ==
     	# We simply need the main AddModel part.
     	deploy_model = model_helper.ModelHelper(name="deploy_net", arg_scope=arg_scope, init_params=False)
-    	self.create_model(deploy_model, "data", device_opts)
+    	self.create_model(deploy_model, "data", device_opts, is_test=True)
 
     	print("Saving deploy model")
     	self.save_net(self._init_net_, self._predict_net_, deploy_model)
